@@ -1035,7 +1035,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
-#warning TODO: we shouldn't depend on layer IDs other than 0
+#warning TODO: we should not depend on layer IDs other than 0
 	switch (lnum) {
 		case 0:
 		case 15:
@@ -1214,9 +1214,120 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+{
+	unsigned long required;
+	pcb_coord_t X1, Y1, X2, Y2, Thickness;
+	pcb_flag_t Flags;
+
+	int square;
+
+	if (throughHole == 1) { /* "pad" for thru-hole pin */
+		/*pcb_trace("\tcreating new pin %s in element\n", pinName); */
+		required = BV(0) | BV(1) | BV(3) | BV(5);
+		if ((*featureTally & required) == required) {
+			*moduleEmpty = 0;
+
+			if (pad_shape == NULL)
+				return kicad_error(subtree, "pin with no shape");
+
+			if (strcmp(pad_shape, "circle") == 0) {
+				square = 0;
+			}
+			else {
+				square = 1; /* this will catch obround, roundrect, trapezoidal as well. Kicad does not do octagonal pads */
+			}
+
+ /* using clearance value for arg 5 = mask too */
+/*
+			pcb_element_pin_new(subc, X + moduleX, Y + moduleY, padXsize, Clearance, Clearance, drill, pinName, pinName, Flags);
+*/
+		}
+		else {
+			return kicad_error(subtree, "malformed module pad/pin definition.");
+		}
+	}
+	else if (subc != NULL) { /* "pad" for smd pad */
+		/*pcb_trace("\tcreating new pad %s in element\n", pinName); */
+		required = BV(0) | BV(1) | BV(2) | BV(5);
+		if ((*featureTally & required) == required) {
+			if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
+				Y1 = Y2 = Y;
+				X1 = X - (padXsize - padYsize) / 2;
+				X2 = X + (padXsize - padYsize) / 2;
+				Thickness = padYsize;
+			}
+			else { /* rectangular pad, taller than wide */
+				X1 = X2 = X;
+				Y1 = Y - (padYsize - padXsize) / 2;
+				Y2 = Y + (padYsize - padXsize) / 2;
+				Thickness = padXsize;
+			}
+
+			if (square && kicadLayer) {
+				Flags = pcb_flag_make(PCB_FLAG_SQUARE);
+			}
+			else if (kicadLayer) {
+				Flags = pcb_flag_make(0);
+			}
+			else if (square && !kicadLayer) {
+				Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
+			}
+			else {
+				Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+			}
+
+			*moduleEmpty = 0;
+			/* the rotation value describes rotation to the pad
+			   versus the original pad orientation, _NOT_ rotation
+			   that now needs to be applied, it seems */
+			if (padRotation != 0 && padRotation != moduleRotation) {
+				padRotation = padRotation / 90; /*ignore rotation != n*90 */
+				PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
+				PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
+			}
+
+			/* using clearance value for arg 7 = mask too */
+/*
+			pcb_element_pad_new(subc, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, Clearance, pinName, pinName, Flags);
+*/
+
+		}
+		else
+			return kicad_error(subtree, "error parsing incomplete module definition.");
+	}
+	else
+		return kicad_error(subtree, "error - unable to create incomplete module definition.");
+	return 0;
+}
+
+pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
+{
+	int pcb_idx = -1;
+	pcb_layer_type_t lyt;
+	pcb_layer_combining_t comb;
+	const char *lnm;
+
+	if (layer_name != NULL) {
+		pcb_idx = kicad_get_layeridx(st, layer_name);
+		lnm = layer_name;
+	}
+	if (pcb_idx < 0) {
+		pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, using module layer.\n");
+		pcb_idx = kicad_get_layeridx(st, default_layer_name);
+		if (pcb_idx < 0)
+			return NULL;
+		lnm = default_layer_name;
+	}
+
+	lyt = pcb_layer_flags(st->pcb, pcb_idx);
+	comb = 0;
+	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm);
+}
+
+
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
-
 	gsxl_node_t *l, *n, *m, *p;
 	int i;
 	int scaling = 100;
@@ -1226,7 +1337,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int PCBLayer = 0;
 	int moduleLayer = 0; /* used in case empty module element layer defs found */
 	int kicadLayer = 15; /* default = top side */
-	int moduleOnTop = 1;
+	int on_bottom = 0;
 	int padLayerDefCount = 0;
 	int SMD = 0;
 	int square = 0;
@@ -1246,16 +1357,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
 	char *end, *textLabel, *text;
-	char *moduleName, *moduleRefdes, *moduleValue, *pinName;
-	pcb_element_t *newModule;
+	char *pinName, *moduleName;
+	const char *subc_layer_str;
+	pcb_subc_t *subc;
+	pcb_layer_t *subc_layer;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
-
-	moduleName = NULL;
-	moduleRefdes = "";
-	moduleValue = "";
 
 	if (subtree->str != NULL) {
 		/*pcb_trace("Name of module element being parsed: '%s'\n", subtree->str); */
@@ -1272,14 +1381,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					moduleLayer = PCBLayer;
-					if (PCBLayer < 0) {
+					subc_layer_str = n->children->str;
+					if (PCBLayer < 0)
 						return kicad_error(subtree, "module layer error - layer < 0.");
-					}
-					else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-						TextFlags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-						moduleOnTop = 0;
-					}
+					else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
+						on_bottom = 1;
 				}
 				else {
 					return kicad_error(subtree, "unexpected empty/NULL module layer node");
@@ -1355,10 +1461,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (moduleName != NULL && moduleDefined == 0) {
 					moduleDefined = 1; /* but might be empty, wait and see */
 					/*pcb_trace("Have new module name and location, defining module/element %s\n", moduleName); */
-					newModule = pcb_element_new(st->pcb->Data, NULL, pcb_font(st->pcb, 0, 1), Flags, moduleName, moduleRefdes, moduleValue, moduleX, moduleY, direction, refdesScaling, TextFlags, pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
-					pcb_move_obj(PCB_TYPE_ELEMENT_NAME, newModule, &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()], &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()], X, Y);
-					moduleRefdes = NULL;
-					moduleValue = NULL;
+					subc = pcb_subc_new();
+					pcb_add_subc_to_data(st->pcb->Data, subc);
+					pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
+					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 				}
 			}
 			else if (n->str != NULL && strcmp("model", n->str) == 0) {
@@ -1376,16 +1482,20 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						text = n->children->next->str;
 						if (strcmp("reference", textLabel) == 0) {
 							SEEN_NO_DUP(tally, 7);
-							moduleRefdes = text;
+							pcb_attribute_put(&subc->Attributes, "refdes", text);
 							foundRefdes = 1;
-							for(i = 0; text[i] != 0; i++) {
-								textLength++;
-							}
+							textLength = strlen(text);
 							/*pcb_trace("\tmoduleRefdes now: '%s'\n", moduleRefdes); */
 						}
 						else if (strcmp("value", textLabel) == 0) {
 							SEEN_NO_DUP(tally, 8);
-							moduleValue = text;
+							pcb_attribute_put(&subc->Attributes, "value", text);
+							foundValue = 1;
+							/*pcb_trace("\tmoduleValue now: '%s'\n", moduleValue); */
+						}
+						else if (strcmp("descr", textLabel) == 0) {
+							SEEN_NO_DUP(tally, 12);
+							pcb_attribute_put(&subc->Attributes, "footprint", text);
 							foundValue = 1;
 							/*pcb_trace("\tmoduleValue now: '%s'\n", moduleValue); */
 						}
@@ -1626,6 +1736,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				/* pads next  - have thru_hole, circle, rect, roundrect, to think about */
 			}
 			else if (n->str != NULL && strcmp("pad", n->str) == 0) {
+				char *pad_shape = NULL;
 				featureTally = 0;
 				padLayerDefCount = 0;
 				padRotation = 0;
@@ -1642,12 +1753,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							throughHole = 0;
 						}
 						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-							if (strcmp("circle", n->children->next->next->str) == 0) {
-								square = 0;
-							}
-							else {
-								square = 1; /* this will catch obround, roundrect, trapezoidal as well. Kicad does not do octagonal pads */
-							}
+							pad_shape = n->children->next->next->str;
 						}
 						else {
 							return kicad_error(subtree, "unexpected empty/NULL module pad shape node");
@@ -1720,7 +1826,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 											/*pcb_trace("Default placement of pad is the copper layer defined for module as a whole\n"); */
 
 											/*return -1; */
-											if (!moduleOnTop) {
+											if (on_bottom) {
 												kicadLayer = 0;
 											}
 										}
@@ -1814,64 +1920,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					}
 				}
-				if (throughHole == 1 && newModule != NULL) {
-					/*pcb_trace("\tcreating new pin %s in element\n", pinName); */
-					required = BV(0) | BV(1) | BV(3) | BV(5);
-					if ((featureTally & required) == required) {
-						moduleEmpty = 0;
-						pcb_element_pin_new(newModule, X + moduleX, Y + moduleY, padXsize, Clearance, Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
-					}
-					else {
-						return kicad_error(subtree, "malformed module pad/pin definition.");
-					}
-				}
-				else if (newModule != NULL) {
-					/*pcb_trace("\tcreating new pad %s in element\n", pinName); */
-					required = BV(0) | BV(1) | BV(2) | BV(5);
-					if ((featureTally & required) == required) {
-						if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
-							Y1 = Y2 = Y;
-							X1 = X - (padXsize - padYsize) / 2;
-							X2 = X + (padXsize - padYsize) / 2;
-							Thickness = padYsize;
-						}
-						else { /* rectangular pad, taller than wide */
-							X1 = X2 = X;
-							Y1 = Y - (padYsize - padXsize) / 2;
-							Y2 = Y + (padYsize - padXsize) / 2;
-							Thickness = padXsize;
-						}
-						if (square && kicadLayer) {
-							Flags = pcb_flag_make(PCB_FLAG_SQUARE);
-						}
-						else if (kicadLayer) {
-							Flags = pcb_flag_make(0);
-						}
-						else if (square && !kicadLayer) {
-							Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
-						}
-						else {
-							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-						}
-						moduleEmpty = 0;
-						/* the rotation value describes rotation to the pad
-						   versus the original pad orientation, _NOT_ rotation
-						   that now needs to be applied, it seems */
-						if (padRotation != 0 && padRotation != moduleRotation) {
-							padRotation = padRotation / 90; /*ignore rotation != n*90 */
-							PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
-							PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
-						}
-						pcb_element_pad_new(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
-					}
-					else {
-						return kicad_error(subtree, "error parsing incomplete module definition.");
-					}
-				}
-				else {
-					return kicad_error(subtree, "error - unable to create incomplete module definition.");
-				}
-
+				if (subc != NULL)
+					if (kicad_make_pad(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, &featureTally, &moduleEmpty, kicadLayer) != 0)
+						return -1;
+				pad_shape = NULL;
 			}
 			else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 				/*pcb_trace("fp_line found\n"); */
@@ -1943,18 +1995,17 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							SEEN_NO_DUP(featureTally, 6);
 							if (l->children != NULL && l->children->str != NULL) {
 								SEEN_NO_DUP(featureTally, 7);
-								PCBLayer = kicad_get_layeridx(st, l->children->str);
-								if (PCBLayer < 0) {
-									pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, using module layer.\n");
-									PCBLayer = moduleLayer;
-									/*return 0; this terminates module parsing prematurely */
-								}
+								subc_layer = kicad_get_subc_layer(st, subc, l->children->str, subc_layer_str);
+								if (subc_layer == NULL)
+									return kicad_error(l, "unable to set subcircuit layer");
 							}
 							else {
 								pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
-								PCBLayer = moduleLayer; /* default to module layer */
+								subc_layer = kicad_get_subc_layer(st, subc, NULL, subc_layer_str); /* default to module layer */
 								/* return -1; */
 							}
+							if (subc_layer == NULL)
+								return kicad_error(l, "unable to set subcircuit layer");
 						}
 						else if (l->str != NULL && strcmp("width", l->str) == 0) {
 							SEEN_NO_DUP(featureTally, 8);
@@ -1999,10 +2050,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					}
 				}
 				required = BV(0) | BV(3) | BV(6) | BV(8);
-				if (((featureTally & required) == required) && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
+				if (((featureTally & required) == required) && subc_layer != NULL) { /* need start, end, layer, thickness at a minimum */
 					moduleEmpty = 0;
-					pcb_element_line_new(newModule, X1, Y1, X2, Y2, Thickness);
-					/*pcb_trace("\tnew fp_line on layer created\n"); */
+					pcb_line_new(subc_layer, X1, Y1, X2, Y2, Thickness, 0, pcb_no_flags());
 				}
 
 /* ********************************************************** */
@@ -2103,20 +2153,22 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								return kicad_error(subtree, "unexpected fp_arc end Y null node.");
 							}
 						}
+#warning TODO: this is just code duplication of fp_line code
 						else if (l->str != NULL && strcmp("layer", l->str) == 0) {
 							SEEN_NO_DUP(featureTally, 6);
 							if (l->children != NULL && l->children->str != NULL) {
 								SEEN_NO_DUP(featureTally, 7);
-								PCBLayer = kicad_get_layeridx(st, l->children->str);
-								if (PCBLayer < 0) {
-									pcb_message(PCB_MSG_ERROR, "\tinvalid gr_arc layer def, using module default layer.\n");
-									PCBLayer = moduleLayer; /* revert to default */
-								}
+								subc_layer = kicad_get_subc_layer(st, subc, l->children->str, subc_layer_str);
+								if (subc_layer == NULL)
+									return kicad_error(l, "unable to set subcircuit layer");
 							}
 							else {
-								PCBLayer = moduleLayer;
-								pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_arc element.\n");
+								pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
+								subc_layer = kicad_get_subc_layer(st, subc, NULL, subc_layer_str); /* default to module layer */
+								/* return -1; */
 							}
+							if (subc_layer == NULL)
+								return kicad_error(l, "unable to set subcircuit layer");
 						}
 						else if (l->str != NULL && strcmp("width", l->str) == 0) {
 							SEEN_NO_DUP(featureTally, 8);
@@ -2168,7 +2220,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					}
 				}
 				required = BV(0) | BV(6) | BV(8);
-				if (((featureTally & required) == required) && newModule != NULL) {
+				if (((featureTally & required) == required) && subc != NULL) {
 					moduleEmpty = 0;
 					/* need start, layer, thickness at a minimum */
 					/* same code used above for gr_arc parsing */
@@ -2189,8 +2241,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							startAngle += 360.0;
 						}
 					}
-					pcb_element_arc_new(newModule, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness); /* was endAngle */
-
+					pcb_arc_new(subc_layer, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness, 0, pcb_no_flags());
 				}
 
 /* ********************************************************** */
@@ -2205,32 +2256,29 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		}
 
 
-		if (newModule != NULL) {
+		if (subc != NULL) {
 			if (moduleEmpty) { /* should try and use module empty function here */
+#warning TODO: why do we try to do this? an error is an error
 				Thickness = PCB_MM_TO_COORD(0.200);
-				pcb_element_line_new(newModule, moduleX, moduleY, moduleX + 1, moduleY + 1, Thickness);
+/*				pcb_element_line_new(subc, moduleX, moduleY, moduleX + 1, moduleY + 1, Thickness);*/
 				/*pcb_trace("\tEmpty Module!! 1nm line created at module centroid.\n"); */
 			}
-			pcb_element_bbox(st->pcb->Data, newModule, pcb_font(PCB, 0, 1));
+
+			pcb_subc_bbox(subc);
+			pcb_add_subc_to_data(st->pcb->Data, subc);
+			if (st->pcb->Data->subc_tree == NULL)
+				st->pcb->Data->subc_tree = pcb_r_create_tree();
+			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
+
 			if (moduleRotation != 0) {
+#warning TODO: fix rotation code for non-90
 				moduleRotation = moduleRotation / 90; /* ignore rotation != n*90 for now */
-				pcb_element_rotate90(st->pcb->Data, newModule, moduleX, moduleY, moduleRotation);
+				pcb_subc_rotate90(subc, moduleX, moduleY, moduleRotation);
 				/* can test for rotation != n*90 degrees if necessary, and call
 				 * void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element,
 				 *    pcb_coord_t X, pcb_coord_t Y, double 
 				 *    cosa, double sina, pcb_angle_t angle);
 				 */
-			}
-
-			/* update the newly created module's refdes field, if available */
-			if (moduleDefined && moduleRefdes) {
-				free(newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
-				newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString = pcb_strdup(moduleRefdes);
-			}
-			/* update the newly created module's value field, if available */
-			if (moduleDefined && moduleValue) {
-				free(newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
-				newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString = pcb_strdup(moduleValue);
 			}
 			return 0;
 		}
@@ -2241,6 +2289,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	else {
 		return kicad_error(subtree, "module parsing failure.");
 	}
+	return kicad_error(subtree, "Internal error #4");
 }
 
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
