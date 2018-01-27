@@ -50,6 +50,8 @@
 #include "safe_fs.h"
 #include "attrib.h"
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
+
 typedef struct {
 	pcb_board_t *pcb;
 	const char *Filename;
@@ -1219,10 +1221,11 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	unsigned long required;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
+	pcb_pstk_t *ps = NULL;
 
 	int square;
 
-	if (throughHole == 1) { /* "pad" for thru-hole pin */
+	if (throughHole) { /* "pad" for thru-hole pin */
 		/*pcb_trace("\tcreating new pin %s in element\n", pinName); */
 		required = BV(0) | BV(1) | BV(3) | BV(5);
 		if ((*featureTally & required) == required) {
@@ -1231,16 +1234,40 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 			if (pad_shape == NULL)
 				return kicad_error(subtree, "pin with no shape");
 
+			X += moduleX;
+			Y += moduleY;
 			if (strcmp(pad_shape, "circle") == 0) {
-				square = 0;
+				ps = pcb_pstk_new_compat_via(subc->data, X, Y, drill, padXsize, Clearance, Clearance, PCB_PSTK_COMPAT_ROUND, 1);
 			}
-			else {
-				square = 1; /* this will catch obround, roundrect, trapezoidal as well. Kicad does not do octagonal pads */
+			else if (strcmp(pad_shape, "rect") == 0) {
+				pcb_pstk_shape_t sh[6];
+				sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = 0; pcb_shape_rect(&sh[0], padXsize+Clearance, padYsize+Clearance);
+				sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = 0; pcb_shape_rect(&sh[1], padXsize+Clearance, padYsize+Clearance);
+				sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; sh[2].comb = 0; pcb_shape_rect(&sh[2], padXsize, padYsize);
+				sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; sh[3].comb = 0; pcb_shape_rect(&sh[3], padXsize, padYsize);
+				sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; sh[4].comb = 0; pcb_shape_rect(&sh[4], padXsize, padYsize);
+				sh[5].layer_mask = 0;
+				ps = pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
 			}
+			else if (strcmp(pad_shape, "oval") == 0) {
+				pcb_pstk_shape_t sh[6];
+				sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = 0; pcb_shape_oval(&sh[0], padXsize+Clearance, padYsize+Clearance);
+				sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = 0; pcb_shape_oval(&sh[1], padXsize+Clearance, padYsize+Clearance);
+				sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; sh[2].comb = 0; pcb_shape_oval(&sh[2], padXsize, padYsize);
+				sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; sh[3].comb = 0; pcb_shape_oval(&sh[3], padXsize, padYsize);
+				sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; sh[4].comb = 0; pcb_shape_oval(&sh[4], padXsize, padYsize);
+				sh[5].layer_mask = 0;
+				ps = pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
+			}
+			else
+				return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+
+			if (ps == NULL)
+				return kicad_error(subtree, "failed to created padstack");
 
  /* using clearance value for arg 5 = mask too */
 /*
-			pcb_element_pin_new(subc, X + moduleX, Y + moduleY, padXsize, Clearance, Clearance, drill, pinName, pinName, Flags);
+			pcb_element_pin_new(subc, , padXsize, Clearance, Clearance, drill, pinName, pinName, Flags);
 */
 		}
 		else {
@@ -1483,6 +1510,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					subc = pcb_subc_new();
 					pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
 					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+					pcb_add_subc_to_data(st->pcb->Data, subc);
 				}
 			}
 			else if (n->str != NULL && strcmp("model", n->str) == 0) {
@@ -2283,7 +2311,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 
 			pcb_subc_bbox(subc);
-			pcb_add_subc_to_data(st->pcb->Data, subc);
 			if (st->pcb->Data->subc_tree == NULL)
 				st->pcb->Data->subc_tree = pcb_r_create_tree();
 			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
