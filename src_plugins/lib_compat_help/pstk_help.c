@@ -323,7 +323,10 @@ void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
 	pcb_pstk_poly_t *dst = &shape->data.poly;
 
 	pcb_pstk_shape_alloc_poly(dst, 4);
-	shape->shape = PCB_PSSH_CIRC;
+	shape->shape = PCB_PSSH_POLY;
+
+	width/=2;
+	height/=2;
 
 	dst->x[0] = -width; dst->y[0] = -height;
 	dst->x[1] = +width; dst->y[1] = -height;
