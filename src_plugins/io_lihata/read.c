@@ -977,7 +977,6 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 
 	pcb_subc_bbox(subc);
 
-	pcb_add_subc_to_data(dt, subc);
 	if (dt->subc_tree == NULL)
 		dt->subc_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)subc);
