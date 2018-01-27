@@ -113,7 +113,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-static void pcb_pstk_bbox_(pcb_box_t *dst, const pcb_pstk_t *ps)
+static void pcb_pstk_bbox_(pcb_box_t *dst, const pcb_pstk_t *ps, pcb_bool copper_only)
 {
 	int n, sn;
 	pcb_line_t line;
@@ -150,7 +150,7 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, const pcb_pstk_t *ps)
 		}
 	}
 
-	if (PCB_NONPOLY_HAS_CLEARANCE(ps)) {
+	if (!copper_only && PCB_NONPOLY_HAS_CLEARANCE(ps)) {
 		dst->X1 -= ps->Clearance;
 		dst->Y1 -= ps->Clearance;
 		dst->X2 += ps->Clearance;
@@ -168,7 +168,12 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, const pcb_pstk_t *ps)
 
 void pcb_pstk_bbox(pcb_pstk_t *ps)
 {
-	pcb_pstk_bbox_(&ps->BoundingBox, ps);
+	pcb_pstk_bbox_(&ps->BoundingBox, ps, pcb_false);
+}
+
+void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps)
+{
+	pcb_pstk_bbox_(dst, ps, pcb_true);
 }
 
 
