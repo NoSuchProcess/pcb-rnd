@@ -2336,8 +2336,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 			else if (moduleRotation != 0) {
 				double rot = moduleRotation;
-#warning subc TODO: this does not seem to rotate the padstacks
-				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot), sin(rot), rot);
+				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot/PCB_RAD_TO_DEG), sin(rot/PCB_RAD_TO_DEG), rot);
 			}
 			return 0;
 		}
