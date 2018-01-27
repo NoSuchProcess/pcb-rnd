@@ -1462,7 +1462,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					moduleDefined = 1; /* but might be empty, wait and see */
 					/*pcb_trace("Have new module name and location, defining module/element %s\n", moduleName); */
 					subc = pcb_subc_new();
-					pcb_add_subc_to_data(st->pcb->Data, subc);
 					pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
 					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 				}
