@@ -339,9 +339,10 @@ void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
 	shape->shape = PCB_PSSH_LINE;
 
 	if (width == height) {
-		shape->data.line.x1 = shape->data.line.y1 = 0;
-		shape->data.line.x2 = shape->data.line.y2 = 0;
-		shape->data.line.thickness = height;
+		shape->shape = PCB_PSSH_CIRC;
+
+		shape->data.circ.x = shape->data.circ.y = 0;
+		shape->data.circ.dia = height;
 	}
 	else if (width > height) {
 		shape->data.line.x1 = -width/2 + height/2; shape->data.line.y1 = 0;
