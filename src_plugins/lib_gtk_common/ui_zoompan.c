@@ -251,6 +251,10 @@ about the actual resolution of most screens - resulting in an "actual
 size" board.  Similarly, a @var{factor} of 100 gives you a 10x actual
 size.
 
+@item ?
+
+Print the current zoom level in the message log (as an info line)
+
 @end table
 
 Note that zoom factors of zero are silently ignored.
