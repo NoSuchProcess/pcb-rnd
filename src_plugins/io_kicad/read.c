@@ -51,6 +51,8 @@
 #include "attrib.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
+#include "../src_plugins/lib_compat_help/pstk_help.h"
+#include "../src_plugins/lib_compat_help/subc_help.h"
 
 typedef struct {
 	pcb_board_t *pcb;
