@@ -938,7 +938,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	{
 		pcb_layer_type_t silk_side = onsld ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 		const char *name = onsld ? "bottom-silk" : "top-silk";
-		silk = pcb_subc_get_layer(subc, PCB_LYT_SILK | silk_side, /*PCB_LYC_AUTO*/0, pcb_true, name);
+		silk = pcb_subc_get_layer(subc, PCB_LYT_SILK | silk_side, /*PCB_LYC_AUTO*/0, pcb_true, name, pcb_false);
 	}
 
 	lst = lht_dom_hash_get(obj, "objects");

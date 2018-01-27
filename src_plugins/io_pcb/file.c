@@ -1047,7 +1047,7 @@ static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
 {
 	pcb_layer_type_t side = yysubc_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 	const char *name = yysubc_bottom ? "bottom-silk" : "top-silk";
-	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, pcb_true, name);
+	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, pcb_true, name, pcb_false);
 }
 
 pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)

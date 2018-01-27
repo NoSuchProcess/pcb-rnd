@@ -491,12 +491,12 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 
 	if (strcmp(lloc, "all") == 0) {
 		sprintf(name, "top_%s", ltyp);
-		layers[0] = pcb_subc_get_layer(subc, lyt | PCB_LYT_TOP, -1, pcb_true, name);
+		layers[0] = pcb_subc_get_layer(subc, lyt | PCB_LYT_TOP, -1, pcb_true, name, pcb_false);
 		sprintf(name, "bottom_%s", ltyp);
-		layers[1] = pcb_subc_get_layer(subc, lyt | PCB_LYT_BOTTOM, -1, pcb_true, name);
+		layers[1] = pcb_subc_get_layer(subc, lyt | PCB_LYT_BOTTOM, -1, pcb_true, name, pcb_false);
 		if (lyt == PCB_LYT_COPPER) {
 			sprintf(name, "intern_%s", ltyp);
-			layers[2] = pcb_subc_get_layer(subc, lyt | PCB_LYT_INTERN, -1, pcb_true, name);
+			layers[2] = pcb_subc_get_layer(subc, lyt | PCB_LYT_INTERN, -1, pcb_true, name, pcb_false);
 		}
 		return layers;
 	}
@@ -510,7 +510,7 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 	}
 
 	sprintf(name, "%s_%s", lloc, ltyp);
-	layers[0] = pcb_subc_get_layer(subc, lyt, -1, pcb_true, name);
+	layers[0] = pcb_subc_get_layer(subc, lyt, -1, pcb_true, name, pcb_false);
 	return layers;
 }
 

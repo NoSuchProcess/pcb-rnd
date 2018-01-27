@@ -1323,7 +1323,7 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 			pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
 			lyt = PCB_LYT_VIRTUAL;
 			comb = 0;
-			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm);
+			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
 		}
 	}
 	else {
@@ -1341,7 +1341,7 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 
 	lyt = pcb_layer_flags(st->pcb, pcb_idx);
 	comb = 0;
-	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm);
+	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
 }
 
 
