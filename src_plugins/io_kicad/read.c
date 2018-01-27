@@ -1314,7 +1314,8 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	else
 		*moduleEmpty = 0;
 
-#warning TODO: set pin name
+	if (pinName != NULL)
+		pcb_attribute_put(&ps->Attributes, "term", pinName);
 
 #warning TODO: pad rotation?
 #if 0
