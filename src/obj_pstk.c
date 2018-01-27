@@ -113,7 +113,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-void pcb_pstk_bbox(pcb_pstk_t *ps)
+static void pcb_pstk_bbox_(pcb_box_t *dst, const pcb_pstk_t *ps)
 {
 	int n, sn;
 	pcb_line_t line;
@@ -121,8 +121,8 @@ void pcb_pstk_bbox(pcb_pstk_t *ps)
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
 	assert(proto != NULL);
 
-	ps->BoundingBox.X1 = ps->BoundingBox.X2 = ps->x;
-	ps->BoundingBox.Y1 = ps->BoundingBox.Y2 = ps->y;
+	dst->X1 = dst->X2 = ps->x;
+	dst->Y1 = dst->Y2 = ps->y;
 
 	if (ts != NULL)
 	for(sn = 0; sn < ts->len; sn++) {
@@ -141,30 +141,36 @@ void pcb_pstk_bbox(pcb_pstk_t *ps)
 				line.Clearance = 0;
 				line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
 				pcb_line_bbox(&line);
-				pcb_box_bump_box(&ps->BoundingBox, &line.BoundingBox);
+				pcb_box_bump_box(dst, &line.BoundingBox);
 				break;
 			case PCB_PSSH_CIRC:
-				pcb_box_bump_point(&ps->BoundingBox, ps->x - shape->data.circ.dia/2, ps->y - shape->data.circ.dia/2);
-				pcb_box_bump_point(&ps->BoundingBox, ps->x + shape->data.circ.dia/2, ps->y + shape->data.circ.dia/2);
+				pcb_box_bump_point(dst, ps->x - shape->data.circ.dia/2, ps->y - shape->data.circ.dia/2);
+				pcb_box_bump_point(dst, ps->x + shape->data.circ.dia/2, ps->y + shape->data.circ.dia/2);
 				break;
 		}
 	}
 
 	if (PCB_NONPOLY_HAS_CLEARANCE(ps)) {
-		ps->BoundingBox.X1 -= ps->Clearance;
-		ps->BoundingBox.Y1 -= ps->Clearance;
-		ps->BoundingBox.X2 += ps->Clearance;
-		ps->BoundingBox.Y2 += ps->Clearance;
+		dst->X1 -= ps->Clearance;
+		dst->Y1 -= ps->Clearance;
+		dst->X2 += ps->Clearance;
+		dst->Y2 += ps->Clearance;
 	}
 
 	if (proto->hdia != 0) {
 		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
-		pcb_box_bump_point(&ps->BoundingBox, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
-		pcb_box_bump_point(&ps->BoundingBox, ps->x + proto->hdia/2, ps->y + proto->hdia/2);
+		pcb_box_bump_point(dst, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
+		pcb_box_bump_point(dst, ps->x + proto->hdia/2, ps->y + proto->hdia/2);
 	}
 
-	pcb_close_box(&ps->BoundingBox);
+	pcb_close_box(dst);
 }
+
+void pcb_pstk_bbox(pcb_pstk_t *ps)
+{
+	pcb_pstk_bbox_(&ps->BoundingBox, ps);
+}
+
 
 /*** utils ***/
 
