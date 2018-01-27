@@ -1311,9 +1311,15 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 	if (layer_name != NULL) {
 		pcb_idx = kicad_get_layeridx(st, layer_name);
 		lnm = layer_name;
+		if (pcb_idx < 0) {
+			pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
+			lyt = PCB_LYT_VIRTUAL;
+			comb = 0;
+			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm);
+		}
 	}
-	if (pcb_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "\tline layer '%s' not found or not defined for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
+	else {
+		pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
 		pcb_idx = kicad_get_layeridx(st, default_layer_name);
 		if (pcb_idx < 0)
 			return NULL;
