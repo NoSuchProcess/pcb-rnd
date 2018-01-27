@@ -2269,6 +2269,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (st->pcb->Data->subc_tree == NULL)
 				st->pcb->Data->subc_tree = pcb_r_create_tree();
 			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
+			pcb_subc_rebind(st->pcb, subc);
 
 			if (moduleRotation != 0) {
 #warning TODO: fix rotation code for non-90
