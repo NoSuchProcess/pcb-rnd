@@ -317,3 +317,39 @@ pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 
 	return pcb_pstk_new(data, pid, x, y, glob_clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
+
+void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)
+{
+	pcb_pstk_poly_t *dst = &shape->data.poly;
+
+	memset(shape, 0, sizeof(pcb_pstk_shape_t));
+	pcb_pstk_shape_alloc_poly(dst, 4);
+	shape->shape = PCB_PSSH_CIRC;
+
+	dst->x[0] = -width; dst->y[0] = -height;
+	dst->x[1] = +width; dst->y[1] = -height;
+	dst->x[2] = +width; dst->y[2] = +height;
+	dst->x[3] = -width; dst->y[3] = +height;
+}
+
+void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)
+{
+	memset(shape, 0, sizeof(pcb_pstk_shape_t));
+	shape->shape = PCB_PSSH_LINE;
+
+	if (width == height) {
+		shape->data.line.x1 = shape->data.line.y1 = 0;
+		shape->data.line.x2 = shape->data.line.y2 = 0;
+		shape->data.line.thickness = height;
+	}
+	else if (width > height) {
+		shape->data.line.x1 = -width/2 + height/2; shape->data.line.y1 = 0;
+		shape->data.line.x2 = +width/2 - height/2; shape->data.line.y2 = 0;
+		shape->data.line.thickness = height;
+	}
+	else {
+		shape->data.line.x1 = 0; shape->data.line.y1 = -height/2 + width/2;
+		shape->data.line.x2 = 0; shape->data.line.y2 = +height/2 - width/2;
+		shape->data.line.thickness = width;
+	}
+}

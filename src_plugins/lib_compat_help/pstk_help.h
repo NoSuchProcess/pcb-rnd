@@ -11,7 +11,6 @@ pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pc
    a padstack. */
 pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated, pcb_coord_t glob_clearance, pcb_pstk_shape_t *shape);
 
-
 /* Convert a vector of (pcb_any_obj_t *) into zero or more padstacks. Remove
    objects that are converted  from both data and objs. New padstacks are
    placed back in objs. Quiet controls log messages. Return the number
@@ -22,5 +21,10 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /*
 
 /* Same as above, but convert both; returns -1 only if both failed */
 int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet);
+
+/*** shape generators ***/
+void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height);
+void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height);
+
 
 #endif
