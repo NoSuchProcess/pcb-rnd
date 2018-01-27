@@ -1220,11 +1220,10 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 
 static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape)
 {
-	pcb_coord_t X1, Y1, X2, Y2, Thickness;
-	pcb_flag_t Flags;
-
-	if (pad_shape == NULL)
-		return kicad_error(subtree, "pin with no shape");
+	if (pad_shape == NULL) {
+		kicad_error(subtree, "pin with no shape");
+		return NULL;
+	}
 
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[6];
@@ -1255,16 +1254,15 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 
 static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, pcb_layer_type_t side)
 {
-	pcb_coord_t X1, Y1, X2, Y2, Thickness;
-	pcb_flag_t Flags;
-	pcb_pstk_t *ps = NULL;
+	if ((side & PCB_LYT_TOP) && (side & PCB_LYT_BOTTOM)) {
+		kicad_error(subtree, "can't place the same smd pad on both sides");
+		return NULL;
+	}
 
-pcb_trace("SIDE=%lx t%d b%d\n", side, side & PCB_LYT_TOP, side & PCB_LYT_BOTTOM);
-	if ((side & PCB_LYT_TOP) && (side & PCB_LYT_BOTTOM))	
-		return kicad_error(subtree, "can't place the same smd pad on both sides");
-
-	if (!(side & PCB_LYT_TOP) && !(side & PCB_LYT_BOTTOM))	
-		return kicad_error(subtree, "can't place smd pad on no side");
+	if (!(side & PCB_LYT_TOP) && !(side & PCB_LYT_BOTTOM)) {
+		kicad_error(subtree, "can't place smd pad on no side");
+		return NULL;
+	}
 
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[4];
@@ -1389,15 +1387,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
-	int moduleLayer = 0; /* used in case empty module element layer defs found */
-	int kicadLayer = 15; /* default = top side */
 	int on_bottom = 0;
 	int padLayerDefCount = 0;
 	int SMD = 0;
-	int square = 0;
 	int throughHole = 0;
 	int foundRefdes = 0;
-	int foundValue = 0;
 	int refdesScaling = 100;
 	int moduleEmpty = 1;
 	unsigned int moduleRotation = 0; /* for rotating modules */
@@ -1417,8 +1411,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_layer_t *subc_layer;
 	pcb_layer_type_t smd_side;
 
-	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
+#warning TODO: this should be coming from the s-expr file preferences part
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (subtree->str != NULL) {
@@ -1435,7 +1428,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					moduleLayer = PCBLayer;
 					subc_layer_str = n->children->str;
 					if (PCBLayer < 0)
 						return kicad_error(subtree, "module layer error - layer < 0.");
@@ -1546,13 +1538,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						else if (strcmp("value", textLabel) == 0) {
 							SEEN_NO_DUP(tally, 8);
 							pcb_attribute_put(&subc->Attributes, "value", text);
-							foundValue = 1;
 							/*pcb_trace("\tmoduleValue now: '%s'\n", moduleValue); */
 						}
 						else if (strcmp("descr", textLabel) == 0) {
 							SEEN_NO_DUP(tally, 12);
 							pcb_attribute_put(&subc->Attributes, "footprint", text);
-							foundValue = 1;
 							/*pcb_trace("\tmoduleValue now: '%s'\n", moduleValue); */
 						}
 						else if (strcmp("hide", textLabel) == 0) {
@@ -1624,10 +1614,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								PCBLayer = kicad_get_layeridx(st, l->children->str);
 								if (PCBLayer < 0) {
 									/*pcb_trace("\ttext layer not defined for module text, default being used.\n"); */
-									Flags = pcb_flag_make(0);
+/*									Flags = pcb_flag_make(0);*/
 								}
 								else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-									Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+/*									Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);*/
 								}
 							}
 							else {
@@ -1872,7 +1862,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 #warning TODO: rather pass this subtree directly to the shape generator code so it doesn't need to guess the layers
 						if (SMD) { /* skip testing for pins */
 							SEEN_NO_DUP(featureTally, 2);
-							kicadLayer = 15;
 							smd_side = 0;
 							for(l = m->children; l != NULL; l = l->next) {
 								if (l->str != NULL) {
@@ -1887,18 +1876,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 										/*pcb_trace("Unknown layer definition: %s\n", l->str); */
 										if (!padLayerDefCount) {
 											/*pcb_trace("Default placement of pad is the copper layer defined for module as a whole\n"); */
-
 											/*return -1; */
-											if (on_bottom) {
-												kicadLayer = 0;
-											}
 										}
 									}
 									else if (PCBLayer < -1) {
 										/*pcb_trace("\tUnimplemented layer definition: %s\n", l->str); */
 									}
 									else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-										kicadLayer = 0;
 										padLayerDefCount++;
 									}
 									else if (padLayerDefCount) {
