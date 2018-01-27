@@ -1218,7 +1218,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape)
+static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape)
 {
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
@@ -1248,11 +1248,12 @@ static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 		sh[5].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
 	}
-	else
-		return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+
+	kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+	return NULL;
 }
 
-static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, pcb_layer_type_t side)
+static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, pcb_layer_type_t side)
 {
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
@@ -1283,8 +1284,9 @@ pcb_trace("SIDE=%lx t%d b%d\n", side, side & PCB_LYT_TOP, side & PCB_LYT_BOTTOM)
 		sh[3].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, Clearance, sh);
 	}
-	else
-		return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+
+	kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+	return NULL;
 }
 
 static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
