@@ -322,7 +322,6 @@ void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
 {
 	pcb_pstk_poly_t *dst = &shape->data.poly;
 
-	memset(shape, 0, sizeof(pcb_pstk_shape_t));
 	pcb_pstk_shape_alloc_poly(dst, 4);
 	shape->shape = PCB_PSSH_CIRC;
 
@@ -334,7 +333,6 @@ void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
 
 void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)
 {
-	memset(shape, 0, sizeof(pcb_pstk_shape_t));
 	shape->shape = PCB_PSSH_LINE;
 
 	if (width == height) {
