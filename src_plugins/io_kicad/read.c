@@ -1313,7 +1313,7 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 		lnm = layer_name;
 	}
 	if (pcb_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, using module layer.\n");
+		pcb_message(PCB_MSG_ERROR, "\tline layer '%s' not found or not defined for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
 		pcb_idx = kicad_get_layeridx(st, default_layer_name);
 		if (pcb_idx < 0)
 			return NULL;
