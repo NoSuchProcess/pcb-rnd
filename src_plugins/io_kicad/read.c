@@ -1304,11 +1304,19 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
 {
 	int pcb_idx = -1;
+	pcb_layer_id_t lid;
 	pcb_layer_type_t lyt;
 	pcb_layer_combining_t comb;
 	const char *lnm;
 
+
+
 	if (layer_name != NULL) {
+		/* check if the layer already exists (by name) */
+		lid = pcb_layer_by_name(subc->data, layer_name);
+		if (lid >= 0)
+			return &subc->data->Layer[lid];
+
 		pcb_idx = kicad_get_layeridx(st, layer_name);
 		lnm = layer_name;
 		if (pcb_idx < 0) {
@@ -1319,6 +1327,11 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 		}
 	}
 	else {
+		/* check if the layer already exists (by name) */
+		lid = pcb_layer_by_name(subc->data, default_layer_name);
+		if (lid >= 0)
+			return &subc->data->Layer[lid];
+
 		pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
 		pcb_idx = kicad_get_layeridx(st, default_layer_name);
 		if (pcb_idx < 0)
