@@ -1216,7 +1216,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, int kicadLayer)
+static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape)
 {
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
@@ -1250,15 +1250,18 @@ static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 		return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
 }
 
-static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, int kicadLayer)
+static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, pcb_layer_type_t side)
 {
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
 	pcb_pstk_t *ps = NULL;
-	pcb_layer_type_t side;
 
-#warning TODO: decide this by the layer
-	side = PCB_LYT_TOP;
+pcb_trace("SIDE=%lx t%d b%d\n", side, side & PCB_LYT_TOP, side & PCB_LYT_BOTTOM);
+	if ((side & PCB_LYT_TOP) && (side & PCB_LYT_BOTTOM))	
+		return kicad_error(subtree, "can't place the same smd pad on both sides");
+
+	if (!(side & PCB_LYT_TOP) && !(side & PCB_LYT_BOTTOM))	
+		return kicad_error(subtree, "can't place smd pad on no side");
 
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[4];
@@ -1282,7 +1285,7 @@ static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 		return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
 }
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1297,13 +1300,13 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		required = BV(0) | BV(1) | BV(3) | BV(5);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "malformed module pad/pin definition.");
-		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, kicadLayer);
+		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape);
 	}
 	else {
 		required = BV(0) | BV(1) | BV(2) | BV(5);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "error parsing incomplete module definition.");
-		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, kicadLayer);
+		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, smd_side);
 	}
 
 	if (ps == NULL)
@@ -1407,6 +1410,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	const char *subc_layer_str;
 	pcb_subc_t *subc;
 	pcb_layer_t *subc_layer;
+	pcb_layer_type_t smd_side;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
@@ -1860,11 +1864,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					}
 					else if (m->str != NULL && strcmp("layers", m->str) == 0) {
+#warning TODO: rather pass this subtree directly to the shape generator code so it doesn't need to guess the layers
 						if (SMD) { /* skip testing for pins */
 							SEEN_NO_DUP(featureTally, 2);
 							kicadLayer = 15;
+							smd_side = 0;
 							for(l = m->children; l != NULL; l = l->next) {
 								if (l->str != NULL) {
+									if ((l->str[0] == 'F') || (l->str[0] == '*'))
+										smd_side |= PCB_LYT_TOP;
+									if ((l->str[0] == 'B') || (l->str[0] == '*'))
+										smd_side |= PCB_LYT_BOTTOM;
+									
 									PCBLayer = kicad_get_layeridx(st, l->str);
 									if (PCBLayer < 0) {
 										/* we ignore *.mask, *.paste, etc., if valid layer def already found */
@@ -1968,7 +1979,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					}
 				}
 				if (subc != NULL)
-					if (kicad_make_pad(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, &featureTally, &moduleEmpty, kicadLayer) != 0)
+					if (kicad_make_pad(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, &featureTally, &moduleEmpty, smd_side) != 0)
 						return -1;
 				pad_shape = NULL;
 			}
