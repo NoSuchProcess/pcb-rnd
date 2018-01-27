@@ -6,6 +6,7 @@
  *
  *  Specctra .dsn export HID
  *  Copyright (C) 2008, 2011 Josh Jordan, Dan McMahill, and Jared Casper
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -68,6 +69,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "plugins.h"
 #include "obj_line.h"
 #include "obj_pinvia.h"
+#include "obj_pstk_inlines.h"
 
 static const char *dsn_cookie = "dsn exporter";
 
@@ -433,6 +435,18 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 	}
 }
 
+void print_pstk_shape(FILE *fp, pcb_pstk_t *padstack, pcb_layer_type_t lyt, int side)
+{
+	pcb_pstk_shape_t *shp = pcb_pstk_shape(padstack, lyt, 0);
+	switch(shp->shape) {
+		case PCB_PSSH_POLY:
+			break;
+		case PCB_PSSH_LINE:
+			break;
+		case PCB_PSSH_CIRC:
+			break;
+	}
+}
 
 static void print_library(FILE * fp)
 {
@@ -489,6 +503,13 @@ static void print_library(FILE * fp)
 			}
 		}
 		PCB_ENDALL_LOOP;
+
+		PCB_PADSTACK_LOOP(subc->data);
+		{
+			print_pstk_shape(fp, padstack, PCB_LYT_TOP | PCB_LYT_COPPER, 0);
+			print_pstk_shape(fp, padstack, PCB_LYT_BOTTOM | PCB_LYT_COPPER, g_list_length(layerlist) - 1);
+		}
+		PCB_END_LOOP;
 
 		PCB_VIA_LOOP(subc->data);
 		{
