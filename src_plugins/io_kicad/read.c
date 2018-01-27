@@ -2328,15 +2328,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
 			pcb_subc_rebind(st->pcb, subc);
 
-			if (moduleRotation != 0) {
-#warning TODO: fix rotation code for non-90
-				moduleRotation = moduleRotation / 90; /* ignore rotation != n*90 for now */
+			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
+				/* lossles module rotation for round steps */
+				moduleRotation = moduleRotation / 90;
 				pcb_subc_rotate90(subc, moduleX, moduleY, moduleRotation);
-				/* can test for rotation != n*90 degrees if necessary, and call
-				 * void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element,
-				 *    pcb_coord_t X, pcb_coord_t Y, double 
-				 *    cosa, double sina, pcb_angle_t angle);
-				 */
+			}
+			else if (moduleRotation != 0) {
+				double rot = moduleRotation;
+#warning subc TODO: this does not seem to rotate the padstacks
+				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot), sin(rot), rot);
 			}
 			return 0;
 		}
