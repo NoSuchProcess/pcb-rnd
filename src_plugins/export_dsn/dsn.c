@@ -392,6 +392,28 @@ static void print_pad(FILE *fp, GList **pads, pcb_pad_t *pad, pcb_point_t centro
 	add_padstack(pads, padstack);
 }
 
+static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name)
+{
+	char tmp[512];
+	int fld;
+	pcb_coord_t x, y;
+	int n;
+
+	pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%s\" 0", layer_name);
+	gds_append_str(term_shapes, tmp);
+
+	fld = 0;
+	for(n = 0; n < ply->len; n++) {
+		if ((fld % 3) == 0)
+			gds_append_str(term_shapes, "\n       ");
+		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", ply->x[n] - ox, ply->y[n] - oy);
+		gds_append_str(term_shapes, tmp);
+		fld++;
+	}
+
+	gds_append_str(term_shapes, "\n        )\n");
+}
+
 static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name)
 {
 	char tmp[512];
@@ -446,7 +468,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 	}
 }
 
-void print_pstk_shape(FILE *fp, gds_t *term_shapes, pcb_pstk_t *padstack, int lid)
+void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coord_t ox, pcb_coord_t oy)
 {
 	pcb_pstk_shape_t *shp;
 	pcb_layer_t *lay = g_list_nth_data(layerlist, lid);
@@ -462,6 +484,7 @@ void print_pstk_shape(FILE *fp, gds_t *term_shapes, pcb_pstk_t *padstack, int li
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY:
+			print_polyshape(term_shapes, &shp->data.poly, ox, oy, lay->name);
 			break;
 		case PCB_PSSH_LINE:
 			break;
@@ -538,7 +561,7 @@ static void print_library(FILE * fp)
 
 			gds_append_str(&term_shapes, "      (shape ");
 			for(n = 0; n < g_list_length(layerlist); n++)
-				print_pstk_shape(fp, &term_shapes, padstack, n);
+				print_pstk_shape(&term_shapes, padstack, n, ox, oy);
 			gds_append_str(&term_shapes, "      )\n");
 			gds_append_str(&term_shapes, "      (attach off)\n");
 			gds_append_str(&term_shapes, "    )\n");
