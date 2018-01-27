@@ -273,6 +273,11 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 	}
 
 	vp = argv[0];
+	if (*vp == '?') {
+		pcb_message(PCB_MSG_INFO, "Current gtk zoom level: %f\n", vw->coord_per_px);
+		return 0;
+	}
+
 	if (*vp == '+' || *vp == '-' || *vp == '=')
 		vp++;
 	v = g_ascii_strtod(vp, 0);
