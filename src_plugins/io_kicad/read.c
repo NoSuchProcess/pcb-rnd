@@ -1270,51 +1270,37 @@ static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
 	pcb_pstk_t *ps = NULL;
-
-	int square;
+	pcb_layer_type_t side;
 
 	required = BV(0) | BV(1) | BV(2) | BV(5);
 	if ((*featureTally & required) == required) {
-		if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
-			Y1 = Y2 = Y;
-			X1 = X - (padXsize - padYsize) / 2;
-			X2 = X + (padXsize - padYsize) / 2;
-			Thickness = padYsize;
-		}
-		else { /* rectangular pad, taller than wide */
-			X1 = X2 = X;
-			Y1 = Y - (padYsize - padXsize) / 2;
-			Y2 = Y + (padYsize - padXsize) / 2;
-			Thickness = padXsize;
-		}
-
-		if (square && kicadLayer) {
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
-		}
-		else if (kicadLayer) {
-			Flags = pcb_flag_make(0);
-		}
-		else if (square && !kicadLayer) {
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
-		}
-		else {
-			Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-		}
-
 		*moduleEmpty = 0;
-		/* the rotation value describes rotation to the pad
-		   versus the original pad orientation, _NOT_ rotation
-		   that now needs to be applied, it seems */
-		if (padRotation != 0 && padRotation != moduleRotation) {
-			padRotation = padRotation / 90; /*ignore rotation != n*90 */
-			PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
-			PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
-		}
 
-		/* using clearance value for arg 7 = mask too */
-/*
-		pcb_element_pad_new(subc, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, Clearance, pinName, pinName, Flags);
-*/
+#warning TODO: decide this by the layer
+		side = PCB_LYT_TOP;
+
+		X += moduleX;
+		Y += moduleY;
+		if (strcmp(pad_shape, "rect") == 0) {
+			pcb_pstk_shape_t sh[4];
+			memset(sh, 0, sizeof(sh));
+			sh[0].layer_mask = side | PCB_LYT_MASK;   sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+Clearance, padYsize+Clearance);
+			sh[1].layer_mask = side | PCB_LYT_PASTE;  sh[1].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize, padYsize);
+			sh[2].layer_mask = side | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], padXsize, padYsize);
+			sh[3].layer_mask = 0;
+			return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, Clearance, sh);
+		}
+		else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
+			pcb_pstk_shape_t sh[4];
+			memset(sh, 0, sizeof(sh));
+			sh[0].layer_mask = side | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+Clearance, padYsize+Clearance);
+			sh[1].layer_mask = side | PCB_LYT_PASTE; pcb_shape_oval(&sh[1], padXsize, padYsize);
+			sh[2].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[2], padXsize, padYsize);
+			sh[3].layer_mask = 0;
+			return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, Clearance, sh);
+		}
+		else
+			return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
 
 	}
 	else
@@ -1335,6 +1321,18 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 
 	if (ps == NULL)
 		return kicad_error(subtree, "failed to created padstack");
+
+#warning TODO: pad rotation?
+#if 0
+		/* the rotation value describes rotation to the pad
+		   versus the original pad orientation, _NOT_ rotation
+		   that now needs to be applied, it seems */
+		if (padRotation != 0 && padRotation != moduleRotation) {
+			padRotation = padRotation / 90; /*ignore rotation != n*90 */
+			PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
+			PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
+		}
+#endif
 
 	return 0;
 }
