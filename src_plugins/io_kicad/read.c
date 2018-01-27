@@ -1294,19 +1294,15 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	Y += moduleY;
 
 	if (throughHole) {
-		if (featureTally != NULL) {
-			required = BV(0) | BV(1) | BV(3) | BV(5);
-			if ((*featureTally & required) != required)
-				return kicad_error(subtree, "malformed module pad/pin definition.");
-		}
+		required = BV(0) | BV(1) | BV(3) | BV(5);
+		if ((*featureTally & required) != required)
+			return kicad_error(subtree, "malformed module pad/pin definition.");
 		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, kicadLayer);
 	}
 	else {
-		if (featureTally != NULL) {
-			required = BV(0) | BV(1) | BV(2) | BV(5);
-			if ((*featureTally & required) != required)
-				return kicad_error(subtree, "error parsing incomplete module definition.");
-		}
+		required = BV(0) | BV(1) | BV(2) | BV(5);
+		if ((*featureTally & required) != required)
+			return kicad_error(subtree, "error parsing incomplete module definition.");
 		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, kicadLayer);
 	}
 
