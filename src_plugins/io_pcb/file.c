@@ -1037,7 +1037,6 @@ void io_pcb_element_fin(pcb_data_t *Data)
 	pcb_subc_xy_rot_pnp(yysubc, yysubc_ox, yysubc_oy, yysubc_bottom);
 
 	pcb_subc_bbox(yysubc);
-	pcb_add_subc_to_data(Data, yysubc);
 	if (Data->subc_tree == NULL)
 		Data->subc_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)yysubc);
