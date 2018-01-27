@@ -7,6 +7,11 @@
 /* create a new adstack that contains only a hole, but no shapes */
 pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated);
 
+/* Convert an array of shapes, terminated by a shape with layer_mask=0, into
+   a padstack. */
+pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated, pcb_coord_t glob_clearance, pcb_pstk_shape_t *shape);
+
+
 /* Convert a vector of (pcb_any_obj_t *) into zero or more padstacks. Remove
    objects that are converted  from both data and objs. New padstacks are
    placed back in objs. Quiet controls log messages. Return the number

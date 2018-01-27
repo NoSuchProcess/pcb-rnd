@@ -215,7 +215,6 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
 	int l, n, done = 0, ci;
-	pcb_pstk_proto_t *p;
 	pcb_coord_t cx, cy;
 	pcb_any_obj_t *cand[NUM_LYTS];
 	int num_cand[NUM_LYTS];
@@ -292,3 +291,29 @@ int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 	return t+s;
 }
 
+
+pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated, pcb_coord_t glob_clearance, pcb_pstk_shape_t *shape)
+{
+	pcb_pstk_proto_t proto;
+	pcb_cardinal_t pid;
+	pcb_pstk_tshape_t tshp;
+	pcb_pstk_shape_t *s;
+
+	memset(&proto, 0, sizeof(proto));
+	memset(&tshp, 0, sizeof(tshp));
+
+	tshp.len = 0;
+	for(s = shape; s->layer_mask != 0; s++,tshp.len++) ;
+	tshp.shape = shape;
+	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
+	proto.tr.array = &tshp;
+
+	proto.hdia = drill_dia;
+	proto.hplated = plated;
+
+	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
+	if (pid == PCB_PADSTACK_INVALID)
+		return NULL;
+
+	return pcb_pstk_new(data, pid, x, y, glob_clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+}
