@@ -32,6 +32,8 @@
 #include "obj_pstk_inlines.h"
 #include "compat_misc.h"
 
+#include "plug_io.h"
+
 #define sqr(o) ((double)(o)*(double)(o))
 
 /* emulate old pcb-rnd "pin shape" feature */
