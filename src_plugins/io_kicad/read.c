@@ -1216,25 +1216,13 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, int kicadLayer)
 {
-	unsigned long required;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
 
-	if (featureTally != NULL) {
-		required = BV(0) | BV(1) | BV(3) | BV(5);
-		if ((*featureTally & required) != required)
-			return kicad_error(subtree, "malformed module pad/pin definition.");
-	}
-
-	*moduleEmpty = 0;
-
 	if (pad_shape == NULL)
 		return kicad_error(subtree, "pin with no shape");
-
-	X += moduleX;
-	Y += moduleY;
 
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[6];
@@ -1262,27 +1250,16 @@ static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 		return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
 }
 
-static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t Clearance, pcb_coord_t drill, const char *pad_shape, int kicadLayer)
 {
-	unsigned long required;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
 	pcb_flag_t Flags;
 	pcb_pstk_t *ps = NULL;
 	pcb_layer_type_t side;
 
-	if (featureTally != NULL) {
-		required = BV(0) | BV(1) | BV(2) | BV(5);
-		if ((*featureTally & required) != required)
-			return kicad_error(subtree, "error parsing incomplete module definition.");
-	}
-
-	*moduleEmpty = 0;
-
 #warning TODO: decide this by the layer
 	side = PCB_LYT_TOP;
 
-	X += moduleX;
-	Y += moduleY;
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
@@ -1308,17 +1285,37 @@ static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
 {
 	pcb_pstk_t *ps;
+	unsigned long required;
 
 	if (subc == NULL)
 		return kicad_error(subtree, "error - unable to create incomplete module definition.");
 
-	if (throughHole)
-		ps = kicad_make_pad_thr(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, featureTally, moduleEmpty, kicadLayer);
-	else
-		ps = kicad_make_pad_smd(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, featureTally, moduleEmpty, kicadLayer);
+	X += moduleX;
+	Y += moduleY;
+
+	if (throughHole) {
+		if (featureTally != NULL) {
+			required = BV(0) | BV(1) | BV(3) | BV(5);
+			if ((*featureTally & required) != required)
+				return kicad_error(subtree, "malformed module pad/pin definition.");
+		}
+		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, kicadLayer);
+	}
+	else {
+		if (featureTally != NULL) {
+			required = BV(0) | BV(1) | BV(2) | BV(5);
+			if ((*featureTally & required) != required)
+				return kicad_error(subtree, "error parsing incomplete module definition.");
+		}
+		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, Clearance, drill, pad_shape, kicadLayer);
+	}
 
 	if (ps == NULL)
 		return kicad_error(subtree, "failed to created padstack");
+	else
+		*moduleEmpty = 0;
+
+#warning TODO: set pin name
 
 #warning TODO: pad rotation?
 #if 0
