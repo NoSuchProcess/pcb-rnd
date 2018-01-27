@@ -113,7 +113,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-static void pcb_pstk_bbox_(pcb_box_t *dst, const pcb_pstk_t *ps, pcb_bool copper_only)
+static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, pcb_bool copper_only)
 {
 	int n, sn;
 	pcb_line_t line;
