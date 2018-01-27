@@ -1235,10 +1235,8 @@ static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 
 	X += moduleX;
 	Y += moduleY;
-	if (strcmp(pad_shape, "circle") == 0) {
-		return pcb_pstk_new_compat_via(subc->data, X, Y, drill, padXsize, Clearance, Clearance, PCB_PSTK_COMPAT_ROUND, 1);
-	}
-	else if (strcmp(pad_shape, "rect") == 0) {
+
+	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[6];
 		memset(sh, 0, sizeof(sh));
 		sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+Clearance, padYsize+Clearance);
@@ -1249,7 +1247,7 @@ static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t
 		sh[5].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
 	}
-	else if (strcmp(pad_shape, "oval") == 0) {
+	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
 		pcb_pstk_shape_t sh[6];
 		memset(sh, 0, sizeof(sh));
 		sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+Clearance, padYsize+Clearance);
