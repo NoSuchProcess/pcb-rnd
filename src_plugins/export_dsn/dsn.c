@@ -561,7 +561,7 @@ static void print_library(FILE * fp)
 
 			gds_append_str(&term_shapes, "      (shape ");
 			for(n = 0; n < g_list_length(layerlist); n++)
-				print_pstk_shape(&term_shapes, padstack, n, ox, oy);
+				print_pstk_shape(&term_shapes, padstack, n, 0, 0);
 			gds_append_str(&term_shapes, "      )\n");
 			gds_append_str(&term_shapes, "      (attach off)\n");
 			gds_append_str(&term_shapes, "    )\n");
