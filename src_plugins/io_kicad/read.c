@@ -1216,7 +1216,55 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+static int kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+{
+	unsigned long required;
+	pcb_coord_t X1, Y1, X2, Y2, Thickness;
+	pcb_flag_t Flags;
+
+	required = BV(0) | BV(1) | BV(3) | BV(5);
+	if ((*featureTally & required) == required) {
+		*moduleEmpty = 0;
+
+		if (pad_shape == NULL)
+			return kicad_error(subtree, "pin with no shape");
+
+		X += moduleX;
+		Y += moduleY;
+		if (strcmp(pad_shape, "circle") == 0) {
+			return pcb_pstk_new_compat_via(subc->data, X, Y, drill, padXsize, Clearance, Clearance, PCB_PSTK_COMPAT_ROUND, 1);
+		}
+		else if (strcmp(pad_shape, "rect") == 0) {
+			pcb_pstk_shape_t sh[6];
+			memset(sh, 0, sizeof(sh));
+			sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+Clearance, padYsize+Clearance);
+			sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize+Clearance, padYsize+Clearance);
+			sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], padXsize, padYsize);
+			sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[3], padXsize, padYsize);
+			sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[4], padXsize, padYsize);
+			sh[5].layer_mask = 0;
+			return pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
+		}
+		else if (strcmp(pad_shape, "oval") == 0) {
+			pcb_pstk_shape_t sh[6];
+			memset(sh, 0, sizeof(sh));
+			sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+Clearance, padYsize+Clearance);
+			sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[1], padXsize+Clearance, padYsize+Clearance);
+			sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_oval(&sh[2], padXsize, padYsize);
+			sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_oval(&sh[3], padXsize, padYsize);
+			sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_oval(&sh[4], padXsize, padYsize);
+			sh[5].layer_mask = 0;
+			return pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
+		}
+		else
+			return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+
+	}
+
+	return kicad_error(subtree, "malformed module pad/pin definition.");
+}
+
+static int kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
 {
 	unsigned long required;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness;
@@ -1225,108 +1273,69 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 
 	int square;
 
-	if (throughHole) { /* "pad" for thru-hole pin */
-		/*pcb_trace("\tcreating new pin %s in element\n", pinName); */
-		required = BV(0) | BV(1) | BV(3) | BV(5);
-		if ((*featureTally & required) == required) {
-			*moduleEmpty = 0;
+	required = BV(0) | BV(1) | BV(2) | BV(5);
+	if ((*featureTally & required) == required) {
+		if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
+			Y1 = Y2 = Y;
+			X1 = X - (padXsize - padYsize) / 2;
+			X2 = X + (padXsize - padYsize) / 2;
+			Thickness = padYsize;
+		}
+		else { /* rectangular pad, taller than wide */
+			X1 = X2 = X;
+			Y1 = Y - (padYsize - padXsize) / 2;
+			Y2 = Y + (padYsize - padXsize) / 2;
+			Thickness = padXsize;
+		}
 
-			if (pad_shape == NULL)
-				return kicad_error(subtree, "pin with no shape");
-
-			X += moduleX;
-			Y += moduleY;
-			if (strcmp(pad_shape, "circle") == 0) {
-				ps = pcb_pstk_new_compat_via(subc->data, X, Y, drill, padXsize, Clearance, Clearance, PCB_PSTK_COMPAT_ROUND, 1);
-			}
-			else if (strcmp(pad_shape, "rect") == 0) {
-				pcb_pstk_shape_t sh[6];
-				memset(sh, 0, sizeof(sh));
-				sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+Clearance, padYsize+Clearance);
-				sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize+Clearance, padYsize+Clearance);
-				sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], padXsize, padYsize);
-				sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[3], padXsize, padYsize);
-				sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[4], padXsize, padYsize);
-				sh[5].layer_mask = 0;
-				ps = pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
-			}
-			else if (strcmp(pad_shape, "oval") == 0) {
-				pcb_pstk_shape_t sh[6];
-				memset(sh, 0, sizeof(sh));
-				sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+Clearance, padYsize+Clearance);
-				sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[1], padXsize+Clearance, padYsize+Clearance);
-				sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_oval(&sh[2], padXsize, padYsize);
-				sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_oval(&sh[3], padXsize, padYsize);
-				sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_oval(&sh[4], padXsize, padYsize);
-				sh[5].layer_mask = 0;
-				ps = pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, Clearance, sh);
-			}
-			else
-				return kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
-
-			if (ps == NULL)
-				return kicad_error(subtree, "failed to created padstack");
-
- /* using clearance value for arg 5 = mask too */
-/*
-			pcb_element_pin_new(subc, , padXsize, Clearance, Clearance, drill, pinName, pinName, Flags);
-*/
+		if (square && kicadLayer) {
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
+		}
+		else if (kicadLayer) {
+			Flags = pcb_flag_make(0);
+		}
+		else if (square && !kicadLayer) {
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
 		}
 		else {
-			return kicad_error(subtree, "malformed module pad/pin definition.");
+			Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 		}
-	}
-	else if (subc != NULL) { /* "pad" for smd pad */
-		/*pcb_trace("\tcreating new pad %s in element\n", pinName); */
-		required = BV(0) | BV(1) | BV(2) | BV(5);
-		if ((*featureTally & required) == required) {
-			if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
-				Y1 = Y2 = Y;
-				X1 = X - (padXsize - padYsize) / 2;
-				X2 = X + (padXsize - padYsize) / 2;
-				Thickness = padYsize;
-			}
-			else { /* rectangular pad, taller than wide */
-				X1 = X2 = X;
-				Y1 = Y - (padYsize - padXsize) / 2;
-				Y2 = Y + (padYsize - padXsize) / 2;
-				Thickness = padXsize;
-			}
 
-			if (square && kicadLayer) {
-				Flags = pcb_flag_make(PCB_FLAG_SQUARE);
-			}
-			else if (kicadLayer) {
-				Flags = pcb_flag_make(0);
-			}
-			else if (square && !kicadLayer) {
-				Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
-			}
-			else {
-				Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-			}
+		*moduleEmpty = 0;
+		/* the rotation value describes rotation to the pad
+		   versus the original pad orientation, _NOT_ rotation
+		   that now needs to be applied, it seems */
+		if (padRotation != 0 && padRotation != moduleRotation) {
+			padRotation = padRotation / 90; /*ignore rotation != n*90 */
+			PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
+			PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
+		}
 
-			*moduleEmpty = 0;
-			/* the rotation value describes rotation to the pad
-			   versus the original pad orientation, _NOT_ rotation
-			   that now needs to be applied, it seems */
-			if (padRotation != 0 && padRotation != moduleRotation) {
-				padRotation = padRotation / 90; /*ignore rotation != n*90 */
-				PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
-				PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
-			}
-
-			/* using clearance value for arg 7 = mask too */
+		/* using clearance value for arg 7 = mask too */
 /*
-			pcb_element_pad_new(subc, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, Clearance, pinName, pinName, Flags);
+		pcb_element_pad_new(subc, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, Clearance, pinName, pinName, Flags);
 */
 
-		}
-		else
-			return kicad_error(subtree, "error parsing incomplete module definition.");
 	}
 	else
+		return kicad_error(subtree, "error parsing incomplete module definition.");
+}
+
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t Clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, int kicadLayer)
+{
+	pcb_pstk_t *ps;
+
+	if (subc == NULL)
 		return kicad_error(subtree, "error - unable to create incomplete module definition.");
+
+	if (throughHole)
+		ps = kicad_make_pad_thr(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, featureTally, moduleEmpty, kicadLayer);
+	else
+		ps = kicad_make_pad_smd(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, featureTally, moduleEmpty, kicadLayer);
+
+	if (ps == NULL)
+		return kicad_error(subtree, "failed to created padstack");
+
 	return 0;
 }
 
