@@ -1357,6 +1357,17 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 	return chgly;
 }
 
+void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	if (pcb->Data->via_tree == NULL)
+		pcb->Data->via_tree = pcb_r_create_tree();
+	subc->data->via_tree = pcb->Data->via_tree;
+	if (pcb->Data->padstack_tree == NULL)
+		pcb->Data->padstack_tree = pcb_r_create_tree();
+	subc->data->padstack_tree = pcb->Data->padstack_tree;
+#warning subc TODO: subc-in-subc: bind subc rtree
+}
+
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeSizeFunctions, ctx);
