@@ -786,7 +786,6 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	char *end, *name; /* not using via name for now */
 	double val;
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
-	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 /*	int PCBLayer = 0;   not used for now; no blind or buried vias currently in pcb-rnd */
 
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -896,7 +895,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1);
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_via_new(st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_pstk_new_compat_via(st->pcb->Data, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, pcb_true);
 		return 0;
 	}
 	return -1;
