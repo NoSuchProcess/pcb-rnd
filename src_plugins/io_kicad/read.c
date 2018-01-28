@@ -330,7 +330,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 			else if (n->str != NULL && strcmp("hide", n->str) == 0) {
-				pcb_printf("\tignoring gr_text \"hide\" flag\n");
+#warning TODO
 			}
 			else if (n->str != NULL && strcmp("effects", n->str) == 0) {
 				for(m = n->children; m != NULL; m = m->next) {
@@ -840,7 +840,6 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 2);
 				for(m = n->children; m != NULL; m = m->next) {
 					if (m->str != NULL) {
-						pcb_printf("\tvia layer: '%s'\n", (m->str));
 /*							PCBLayer = kicad_get_layeridx(st, m->str);
  *							if (PCBLayer < 0) {
  *								return -1;
@@ -1173,7 +1172,6 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 			return kicad_error(subtree, "Internal error: can't find a silk or mask layer while parsing KiCad layout");
 		}
 
-		pcb_printf("Board layer descriptions:\n");
 		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 			if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL)) {
 				int lnum = atoi(n->str);
