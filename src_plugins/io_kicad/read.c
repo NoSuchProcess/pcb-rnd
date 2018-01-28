@@ -184,7 +184,7 @@ do { \
 /* kicad_pcb/parse_page */
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
-
+#warning TODO: size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb)
 	if (subtree != NULL && subtree->str != NULL) {
 		if (strcmp("A4", subtree->str) == 0) {
 			st->pcb->MaxWidth = PCB_MM_TO_COORD(297.0);
