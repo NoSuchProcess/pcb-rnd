@@ -197,9 +197,9 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
 
 	/* module descriptions come next */
-
 	fputs("\n", FP);
 	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
+	write_kicad_layout_subc(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	currentKicadLayer = 0;
@@ -1021,6 +1021,226 @@ int write_kicad_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data,
 			fprintf(FP, "%*s)\n", indentation + 2, "");
 
 		}
+
+		fprintf(FP, "%*s)\n\n", indentation, ""); /*  finish off module */
+	}
+	/* Release unique name utility memory */
+	unm_uninit(&group1);
+	/* free the state used for deduplication */
+	elementlist_dedup_free(ededup);
+
+	return 0;
+}
+
+int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
+{
+	gdl_iterator_t sit;
+	pcb_line_t *line;
+	pcb_arc_t *arc;
+	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
+	pcb_coord_t xPos, yPos;
+
+	pcb_subc_t *subc;
+	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	const char *currentElementName;
+	const char *currentElementRef;
+	const char *currentElementVal;
+
+	pcb_lib_menu_t *current_pin_menu;
+	pcb_lib_menu_t *current_pad_menu;
+
+
+	elementlist_dedup_initializer(ededup);
+	/* Now initialize the group with defaults */
+	unm_init(&group1);
+
+	subclist_foreach(&Data->subc, &sit, subc) {
+		gdl_iterator_t it;
+		pcb_pin_t *pin;
+		pcb_pad_t *pad;
+		pcb_coord_t xPos, yPos;
+		int on_bottom;
+		double rot;
+
+
+#warning TODO: get this from data table (see also #1)
+		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
+		int copperLayer = 15; /* hard coded default, 0 is bottom copper */
+
+		/* elementlist_dedup_skip(ededup, element);  */
+#warning TODO: why?
+		/* let's not skip duplicate elements for layout export */
+
+		if (pcb_subc_get_origin(subc, &xPos, &yPos) != 0) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+			continue;
+		}
+		if (pcb_subc_get_side(subc, &on_bottom) != 0) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
+			continue;
+		}
+
+		xPos += xOffset;
+		yPos += yOffset;
+
+		if (on_bottom) {
+			silkLayer = 20;
+			copperLayer = 0;
+		}
+
+#warning TODO: we should probably do unm_name() on the refdes, not on footprint-name?
+#warning TODO: the unique name makes no sense if we override it with unknown - if the unique name is NULL, it's more likely a save-incompatibility error
+		currentElementName = unm_name(&group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
+		if (currentElementName == NULL) {
+			currentElementName = "unknown";
+		}
+		currentElementRef = pcb_attribute_get(&subc->Attributes, "refdes");
+		if (currentElementRef == NULL) {
+			currentElementRef = "unknown";
+		}
+		currentElementVal = pcb_attribute_get(&subc->Attributes, "value");
+		if (currentElementVal == NULL) {
+			currentElementVal = "unknown";
+		}
+
+#warning TODO: why the heck do we hardwire timestamps?!!?!?!
+		fprintf(FP, "%*s", indentation, "");
+		pcb_fprintf(FP, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(copperLayer));
+		fprintf(FP, "%*s", indentation + 2, "");
+		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos);
+
+		fprintf(FP, "%*s", indentation + 2, "");
+		pcb_fprintf(FP, "(descr %[4])\n", currentElementName);
+
+		fprintf(FP, "%*s", indentation + 2, "");
+
+#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+		pcb_fprintf(FP, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
+		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
+
+#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+		fprintf(FP, "%*s", indentation + 4, "");
+		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(FP, "%*s)\n", indentation + 2, "");
+
+#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+		fprintf(FP, "%*s", indentation + 2, "");
+		pcb_fprintf(FP, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
+		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
+
+#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+		fprintf(FP, "%*s", indentation + 4, "");
+		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(FP, "%*s)\n", indentation + 2, "");
+
+#if 0
+		linelist_foreach(&element->Line, &it, line) {
+			fprintf(FP, "%*s", indentation + 2, "");
+			pcb_fprintf(FP, "(fp_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+									line->Point1.X - element->MarkX, line->Point1.Y - element->MarkY, line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, kicad_sexpr_layer_to_text(silkLayer), line->Thickness);
+		}
+
+		arclist_foreach(&element->Arc, &it, arc) {
+
+			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
+			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
+
+			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
+				fprintf(FP, "%*s", indentation + 2, "");
+				pcb_fprintf(FP, "(fp_circle (center %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arcStartX - element->MarkX, /* x on circle */
+										arcStartY - element->MarkY, /* y on circle */
+										kicad_sexpr_layer_to_text(silkLayer), arc->Thickness); /* stroke thickness */
+			}
+			else {
+				fprintf(FP, "%*s", indentation + 2, "");
+				pcb_fprintf(FP, "(fp_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arcEndX - element->MarkX, /* x on arc */
+										arcEndY - element->MarkY, /* y on arc */
+										arc->Delta, /* CW delta angle in decidegrees */
+										kicad_sexpr_layer_to_text(silkLayer), arc->Thickness); /* stroke thickness */
+			}
+		}
+
+
+		pinlist_foreach(&element->Pin, &it, pin) {
+			fprintf(FP, "%*s", indentation + 2, "");
+			fputs("(pad ", FP);
+			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pin->Number));
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
+				fputs(" thru_hole rect ", FP); /* square */
+			}
+			else {
+				fputs(" thru_hole circle ", FP); /* circular */
+			}
+			pcb_fprintf(FP, "(at %.3mm %.3mm)", /* positions of pad */
+									pin->X - element->MarkX, pin->Y - element->MarkY);
+			/* pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Number)); */
+			pcb_fprintf(FP, " (size %.3mm %.3mm)", pin->Thickness, pin->Thickness); /* height = width */
+			/* drill details; size */
+			pcb_fprintf(FP, " (drill %.3mm)\n", pin->DrillingHole);
+			fprintf(FP, "%*s", indentation + 4, "");
+			fprintf(FP, "(layers *.Cu *.Mask)\n"); /* define included layers for pin */
+			current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
+			fprintf(FP, "%*s", indentation + 4, "");
+			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
+				pcb_fprintf(FP, "(net %d %[4])\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+			}
+			else {
+				fprintf(FP, "(net 0 \"\")\n"); /* unconnected pads have zero for net */
+			}
+			fprintf(FP, "%*s)\n", indentation + 2, "");
+			/*
+			   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
+			   fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
+			 */
+		}
+		padlist_foreach(&element->Pad, &it, pad) {
+			fprintf(FP, "%*s", indentation + 2, "");
+			fputs("(pad ", FP);
+			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pad->Number));
+			fputs(" smd rect ", FP); /* square for now */
+			pcb_fprintf(FP, "(at %.3mm %.3mm)", /* positions of pad */
+									(pad->Point1.X + pad->Point2.X) / 2 - element->MarkX, (pad->Point1.Y + pad->Point2.Y) / 2 - element->MarkY);
+			pcb_fprintf(FP, " (size ");
+			if ((pad->Point1.X - pad->Point2.X) <= 0 && (pad->Point1.Y - pad->Point2.Y) <= 0) {
+				pcb_fprintf(FP, "%.3mm %.3mm)\n", pad->Point2.X - pad->Point1.X + pad->Thickness, /* width */
+										pad->Point2.Y - pad->Point1.Y + pad->Thickness); /* height */
+			}
+			else if ((pad->Point1.X - pad->Point2.X) <= 0 && (pad->Point1.Y - pad->Point2.Y) > 0) {
+				pcb_fprintf(FP, "%.3mm %.3mm)\n", pad->Point2.X - pad->Point1.X + pad->Thickness, /* width */
+										pad->Point1.Y - pad->Point2.Y + pad->Thickness); /* height */
+			}
+			else if ((pad->Point1.X - pad->Point2.X) > 0 && (pad->Point1.Y - pad->Point2.Y) > 0) {
+				pcb_fprintf(FP, "%.3mm %.3mm)\n", pad->Point1.X - pad->Point2.X + pad->Thickness, /* width */
+										pad->Point1.Y - pad->Point2.Y + pad->Thickness); /* height */
+			}
+			else if ((pad->Point1.X - pad->Point2.X) > 0 && (pad->Point1.Y - pad->Point2.Y) <= 0) {
+				pcb_fprintf(FP, "%.3mm %.3mm)\n", pad->Point1.X - pad->Point2.X + pad->Thickness, /* width */
+										pad->Point2.Y - pad->Point1.Y + pad->Thickness); /* height */
+			}
+
+			fprintf(FP, "%*s", indentation + 4, "");
+			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
+				fprintf(FP, "(layers B.Cu B.Paste B.Mask)\n"); /* May break if odd layer names */
+			}
+			else {
+				fprintf(FP, "(layers F.Cu F.Paste F.Mask)\n"); /* May break if odd layer names */
+			}
+
+			current_pin_menu = pcb_netlist_find_net4pad(Layout, pad);
+			fprintf(FP, "%*s", indentation + 4, "");
+			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
+				pcb_fprintf(FP, "(net %d %[4])\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+			}
+			else {
+				fprintf(FP, "(net 0 \"\")\n"); /* unconnected pads have zero for net */
+			}
+			fprintf(FP, "%*s)\n", indentation + 2, "");
+		}
+#endif
 
 		fprintf(FP, "%*s)\n\n", indentation, ""); /*  finish off module */
 	}
