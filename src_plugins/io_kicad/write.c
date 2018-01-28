@@ -39,6 +39,8 @@
 #include "netlist.h"
 #include "obj_all.h"
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
+
 /* layer "0" is first copper layer = "0. Back - Solder"
  * and layer "15" is "15. Front - Component"
  * and layer "20" SilkScreen Back
@@ -447,10 +449,35 @@ int write_kicad_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
+	pcb_pstk_t *ps;
+
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
 		fprintf(FP, "%*s", indentation, "");
 		pcb_fprintf(FP, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n", via->X + xOffset, via->Y + yOffset, via->Thickness, kicad_sexpr_layer_to_text(0), kicad_sexpr_layer_to_text(15)); /* skip (net 0) for now */
+	}
+	padstacklist_foreach(&Data->padstack, &it, ps) {
+		int klayer_from = 0, klayer_to = 15;
+		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		pcb_pstk_compshape_t cshape;
+		pcb_bool plated;
+
+		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
+			continue;
+		}
+
+		if (cshape != PCB_PSTK_COMPAT_ROUND) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to via", "only round vias are supported");
+			continue;
+		}
+#warning TODO: set klayer_from and klayer_to using bb span of ps
+
+		fprintf(FP, "%*s", indentation, "");
+		pcb_fprintf(FP, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+			x + xOffset, y + yOffset, pad_dia,
+			kicad_sexpr_layer_to_text(klayer_from), kicad_sexpr_layer_to_text(klayer_to)
+			); /* skip (net 0) for now */
 	}
 	return 0;
 }
