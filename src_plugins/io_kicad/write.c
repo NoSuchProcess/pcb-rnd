@@ -166,6 +166,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 		kicadLayerCount++; /* kicad doesn't like odd numbers of layers, has been deprecated for some time apparently */
 	}
 
+#warning TODO: print this from data (see also: #1)
 	layer = 0;
 	if (physicalLayerCount >= 1) {
 		fprintf(FP, "%*s(%d B.Cu signal)\n", baseSExprIndent + 2, "", layer);
@@ -484,6 +485,7 @@ int write_kicad_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb
 
 static char *kicad_sexpr_layer_to_text(int layer)
 {
+#warning TODO: convert this to data (see also: #1)
 	switch (layer) {
 		case 0:
 			return "B.Cu";
