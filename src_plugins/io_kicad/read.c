@@ -919,6 +919,8 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 
 	if (subtree->str != NULL) {
 		for(n = subtree; n != NULL; n = n->next) {
+#warning TODO: it is enough to test n->str == NULL only once, and do a "continue"
+#warning TODO: none of the kicad_errors() here should refer to subtree - they should use n or even n->children
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1018,12 +1020,11 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					return kicad_error(subtree, "unexpected empty/NULL segment tstamp node");
 				}
 			}
-			else {
-				if (n->str != NULL) {
-					/*pcb_trace("Unknown segment argument %s:", n->str); */
-				}
-				return kicad_error(subtree, "unexpected empty/NULL segment argument node");
+			else if (n->str != NULL && strcmp("status", n->str) == 0) {
+#warning TODO: process this
 			}
+			else
+				return kicad_error(n, "unexpected empty/NULL segment argument node: '%s'", n->str);
 		}
 	}
 	required = BV(0) | BV(1) | BV(2) | BV(3);
