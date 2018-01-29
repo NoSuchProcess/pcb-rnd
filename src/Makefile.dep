@@ -516,7 +516,8 @@
  hid_attrib.h hid_helper.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h obj_line.h obj_pinvia.h dolists.h
+ ../src_3rd/puplug/error.h obj_line.h obj_pinvia.h obj_pstk_inlines.h \
+ data.h thermal.h dolists.h
 ../src_plugins/export_dxf/dxf.o: ../src_plugins/export_dxf/dxf.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -2456,7 +2457,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad/write.h layer.h const.h netlist.h route_style.h \
- obj_all.h
+ obj_all.h ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_kicad_legacy/io_kicad_legacy.o: \
  ../src_plugins/io_kicad_legacy/io_kicad_legacy.c ../config.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
