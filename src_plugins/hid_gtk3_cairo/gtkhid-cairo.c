@@ -874,7 +874,6 @@ static void ghid_cairo_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 																pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	gint vrx2, vry2;
 	double w, h, radius, angle1, angle2;
 	render_priv_t *priv = gport->render_priv;
 
@@ -887,8 +886,6 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 		return;
 
 	USE_GC(gc);
-	vrx2 = Vz(xradius * 2.0);
-	vry2 = Vz(yradius * 2.0);
 
 	if ((delta_angle > 360.0) || (delta_angle < -360.0)) {
 		start_angle = 0;
