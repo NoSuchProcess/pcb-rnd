@@ -869,7 +869,7 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 																pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	gint vrx2, vry2;
-	double w, h, radius;
+	double w, h, radius, angle1, angle2;
 	render_priv_t *priv = gport->render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -902,10 +902,16 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	if (start_angle >= 180)
 		start_angle -= 360;
 
+	angle1 = (180.0 - start_angle);
+	angle2 = (delta_angle < 0) ? (angle1 - delta_angle) : angle1;
+	if (delta_angle > 0) {
+		angle1 = (180.0 - start_angle - delta_angle);
+	}
+	angle1 *= (M_PI / 180.0);
+	angle2 *= (M_PI / 180.0);
 	cairo_save(priv->cr);
 	/*FIXME: this will draw an arc of a circle, not an ellipse ! Explore matrix transformation here. */
-	cairo_arc(priv->cr, pcb_round(Vxd(cx)), pcb_round(Vyd(cy)), Vzd(radius),
-						(start_angle) * (M_PI / 180.0), delta_angle * (M_PI / 180.0));
+	cairo_arc(priv->cr, pcb_round(Vxd(cx)), pcb_round(Vyd(cy)), Vzd(radius), angle1, angle2);
 	cairo_stroke(priv->cr);
 	cairo_restore(priv->cr);
 	//gdk_draw_arc(gport->drawable, priv->u_gc, 0,
