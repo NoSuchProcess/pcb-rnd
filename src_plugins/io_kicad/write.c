@@ -41,13 +41,6 @@
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
-/* layer "0" is first copper layer = "0. Back - Solder"
- * and layer "15" is "15. Front - Component"
- * and layer "20" SilkScreen Back
- * and layer "21" SilkScreen Front
- */
-
-
 /* generates a default via drill size for the layout */
 static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentation);
 
@@ -223,10 +216,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	int baseSExprIndent = 2;
 
 	pcb_cardinal_t i;
-	int physicalLayerCount = 0;
 	int layer = 0;
-	int currentKicadLayer = 0;
-	int currentGroup = 0;
 	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
 
 	pcb_coord_t LayoutXOffset;
