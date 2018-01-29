@@ -96,7 +96,10 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 {
 	const char *aterm = pcb_attribute_get(&obj->Attributes, "term");
 	const char *s_intconn = pcb_attribute_get(&obj->Attributes, "intconn");
-	
+
+	if (pcb_obj_id_invalid(aterm))
+		pcb_message(PCB_MSG_ERROR, CHK "%s %ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
+
 	if ((aterm == NULL) && (obj->term == NULL))
 		return;
 	if (obj->term == NULL) {
@@ -152,6 +155,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 {
 	int n;
 	pcb_pin_t *via;
+	pcb_pstk_t *ps;
 
 	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
 	chk_subc_cache(subc);
@@ -159,6 +163,8 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	/* check term chaches */
 	for(via = pinlist_first(&subc->data->Via); via != NULL; via = pinlist_next(via))
 		chk_term("via", (pcb_any_obj_t *)via);
+	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps))
+		chk_term("padstack", (pcb_any_obj_t *)ps);
 
 	for(n = 0; n < subc->data->LayerN; n++) {
 		pcb_layer_t *ly = &subc->data->Layer[n];
@@ -236,10 +242,17 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		pcb_pin_t *via;
 		pcb_element_t *elem;
 		pcb_subc_t *subc;
+		pcb_pstk_t *ps;
 
 		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via)) {
 			check_parent("via", via, PCB_PARENT_DATA, data);
 			chk_attr("via", via);
+		}
+
+		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+			check_parent("padstack", ps, PCB_PARENT_DATA, data);
+			chk_attr("padstack", ps);
+			chk_term("padstack", (pcb_any_obj_t *)ps);
 		}
 
 		for(elem = elementlist_first(&data->Element); elem != NULL; elem = elementlist_next(elem)) {
