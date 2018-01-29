@@ -53,8 +53,9 @@ int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_
 
 #define KICAD_MAX_LAYERS 64
 typedef struct {
-	FILE *f;                                     /* output file */
-	pcb_board_t *pcb;                            /* board being exported */
+	FILE *f;                     /* output file */
+	pcb_board_t *pcb;            /* board being exported */
+	pcb_coord_t ox, oy;          /* move every object by this origin */
 	struct {
 		pcb_layergrp_t *grp;
 		char name[32];             /* kicad layer name */
@@ -186,6 +187,15 @@ static int kicad_map_layers(wctx_t *ctx)
 	return 0;
 }
 
+static const char *kicad_sexpr_layer_to_text(wctx_t *ctx, int layer)
+{
+	if ((layer < 0) || (layer >= ctx->num_layers)) {
+		assert(!"invalid layer");
+		return "";
+	}
+	return ctx->layer[layer].name;
+}
+
 static void kicad_print_layers(wctx_t *ctx, int ind)
 {
 	int n;
@@ -197,13 +207,68 @@ static void kicad_print_layers(wctx_t *ctx, int ind)
 	fprintf(ctx->f, "%*s)\n", ind, "");
 }
 
-static const char *kicad_sexpr_layer_to_text(wctx_t *ctx, int layer)
+static void kicad_print_line(wctx_t *ctx, int klayer, pcb_line_t *line, pcb_bool skip_term, int ind)
 {
-	if ((layer < 0) || (layer >= ctx->num_layers)) {
-		assert(!"invalid layer");
-		return "";
+#warning TODO: this should come from the layer table not from layer ID
+	int is_copper = (klayer < 16) || (klayer == 28);
+	const char *cmd = (is_copper ? "segment" : "gr_line");
+
+	fprintf(ctx->f, "%*s", ind, "");
+	pcb_fprintf(ctx->f,
+		"(%s (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+		cmd,
+		line->Point1.X + ctx->ox, line->Point1.Y + ctx->oy,
+		line->Point2.X + ctx->ox, line->Point2.Y + ctx->oy,
+		kicad_sexpr_layer_to_text(ctx, klayer), line->Thickness);
+		/* neglect (net ___ ) for now */
+}
+
+/* Print all objects of a kicad layer; if skip_term is true, ignore the objects
+   with term ID set */
+static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, int klayer, pcb_bool skip_term, int ind)
+{
+	gdl_iterator_t it;
+	pcb_line_t *line;
+
+
+	linelist_foreach(&ly->Line, &it, line)
+		if ((line->term == NULL) || !skip_term)
+			kicad_print_line(ctx, klayer, line, skip_term, ind);
+
+/*		write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
+		write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
+		write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]), LayoutXOffset, LayoutYOffset, ind);*/
+}
+
+
+void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
+{
+	int n, klayer;
+	for(n = 0; n < data->LayerN; n++) {
+		pcb_layer_t *ly = &data->Layer[n];
+		pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
+		pcb_layergrp_t *grp;
+		int found = 0;
+
+		if (gid < 0)
+			continue; /* unbound, should not be exported */
+
+		grp = &ctx->pcb->LayerGroups.grp[gid];
+
+		for(klayer = 0; klayer < ctx->num_layers; klayer++) {
+			if (ctx->layer[klayer].grp == grp) {
+				found = 1;
+				break;
+			}
+		}
+
+		if (!found) {
+			pcb_io_incompat_save(data, NULL, "unmapped layer on data export", NULL);
+			continue;
+		}
+
+		kicad_print_layer(ctx, ly, klayer, pcb_false, ind);
 	}
-	return ctx->layer[layer].name;
 }
 
 /* ---------------------------------------------------------------------------
@@ -286,6 +351,8 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	}
 
 
+	wctx.ox = LayoutXOffset;
+	wctx.oy = LayoutYOffset;
 
 	kicad_map_layers(&wctx);
 	kicad_print_layers(&wctx, baseSExprIndent);
@@ -304,7 +371,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
 	write_kicad_layout_subc(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
 
-
+	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
 
 #if 0
 old, per layer export
