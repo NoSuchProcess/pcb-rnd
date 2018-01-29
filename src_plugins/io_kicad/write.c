@@ -86,7 +86,7 @@ typedef struct {
 
 static fixed_layer_t fixed_layers[] = {
 	{"F.Cu",       "signal", PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
-	{"Inner%d.Cu", "signal", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_INT },
+	{"Inner%d.Cu", "signal", PCB_LYT_COPPER | PCB_LYT_INTERN, FLP_COP_INT },
 	{"B.Cu",       "signal", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
 	{"F.Paste",    "user",   PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_MISC },
 	{"B.Paste",    "user",   PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
