@@ -163,7 +163,7 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		obj->term = value;
 		inv = pcb_obj_id_invalid(obj->term);
 		if (inv != NULL)
-			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, obj->term);
+			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
 	}
 	else if (strcmp(name, "intconn") == 0) {
 		long cid = 0;
