@@ -134,6 +134,12 @@ static void chk_subc_cache(pcb_subc_t *subc)
 	if (pcb_obj_id_invalid(arefdes))
 		pcb_message(PCB_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
 
+	if ((subc->BoundingBox.X2 < 0) || (subc->BoundingBox.Y2 < 0))
+		pcb_message(PCB_MSG_ERROR, CHK "subc %ld is on negative coordinates; its bottom right corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X2, subc->BoundingBox.Y2);
+
+	if ((subc->BoundingBox.X1 > PCB->MaxWidth) || (subc->BoundingBox.Y1 > PCB->MaxHeight))
+		pcb_message(PCB_MSG_ERROR, CHK "subc %ld is olost beyond board extents; its top left corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X1, subc->BoundingBox.Y1);
+
 	if ((arefdes == NULL) && (subc->refdes == NULL))
 		return;
 	if (subc->refdes == NULL) {
