@@ -178,7 +178,8 @@ static int kicad_map_layers(wctx_t *ctx)
 	}
 
 	for(n = 0; n < ctx->pcb->LayerGroups.len; n++) {
-		if (mapped[n] == 0)
+		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[n];
+		if ((mapped[n] == 0) && !(grp->type & PCB_LYT_SUBSTRATE))
 			pcb_io_incompat_save(ctx->pcb->Data, NULL, "Failed to map layer for export - layer omitted", NULL);
 		else if (mapped[n] > 1)
 			pcb_io_incompat_save(ctx->pcb->Data, NULL, "Mapped layer for export multiple times", NULL);
