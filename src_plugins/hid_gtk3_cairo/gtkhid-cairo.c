@@ -865,6 +865,12 @@ static void ghid_cairo_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 	//gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
 }
 
+/** Draws an arc from center (cx, cy), cx>0 to the right, cy>0 to the bottom, using
+    xradius on X axis, and yradius on Y axis, sweeping a delta_angle from start_angle.
+
+    Angles (in degres) originate at 9 o'clock and are positive CCW (counter clock wise).
+    delta_angle sweeps the angle from start_angle, CW if negative.
+ */
 static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 																pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
@@ -902,6 +908,7 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	if (start_angle >= 180)
 		start_angle -= 360;
 
+	/* cairo lib. originates angles at 3 o'clock, positive traveling CW, requires angle1 < angle2 */
 	angle1 = (180.0 - start_angle);
 	angle2 = (delta_angle < 0) ? (angle1 - delta_angle) : angle1;
 	if (delta_angle > 0) {
