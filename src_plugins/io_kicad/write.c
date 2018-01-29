@@ -60,6 +60,7 @@ typedef struct {
 		pcb_layergrp_t *grp;
 		char name[32];             /* kicad layer name */
 		const char *param;
+		int is_sig;
 	} layer[KICAD_MAX_LAYERS];   /* pcb-rnd layer groups indexed by kicad's stackup */
 	int num_layers;              /* number of groups in use */
 } wctx_t;
@@ -74,21 +75,22 @@ typedef enum {
 typedef struct {
 	char *name;
 	char *param;
+	int is_sig;
 	pcb_layer_type_t type;
 	fixed_layer_place_t place;
 } fixed_layer_t;
 
 static fixed_layer_t fixed_layers[] = {
-	{"F.Cu",       "signal", PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
-	{"Inner%d.Cu", "signal", PCB_LYT_COPPER | PCB_LYT_INTERN, FLP_COP_INT },
-	{"B.Cu",       "signal", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
-	{"F.Paste",    "user",   PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_MISC },
-	{"B.Paste",    "user",   PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
-	{"F.SilkS",    "user",   PCB_LYT_SILK | PCB_LYT_TOP,      FLP_MISC },
-	{"B.SilkS",    "user",   PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"F.Maks",     "user",   PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
-	{"B.Mask",     "user",   PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"Edge.Cuts",  "user",   PCB_LYT_OUTLINE,                 FLP_MISC },
+	{"F.Cu",       "signal", 1, PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
+	{"Inner%d.Cu", "signal", 1, PCB_LYT_COPPER | PCB_LYT_INTERN, FLP_COP_INT },
+	{"B.Cu",       "signal", 1, PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
+	{"F.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_MISC },
+	{"B.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
+	{"F.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_TOP,      FLP_MISC },
+	{"B.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_MISC },
+	{"F.Maks",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
+	{"B.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_MISC },
+	{"Edge.Cuts",  "user",   0, PCB_LYT_OUTLINE,                 FLP_MISC },
 	{NULL, NULL, 0}
 };
 
@@ -140,6 +142,7 @@ static int kicad_map_layers(wctx_t *ctx)
 						inner += KICAD_NEXT_INNER;
 						ctx->layer[idx].grp = &ctx->pcb->LayerGroups.grp[gid[n]];
 						ctx->layer[idx].param = fl->param;
+						ctx->layer[idx].is_sig = fl->is_sig;
 						mapped[gid[n]]++;
 						if (idx > ctx->num_layers)
 							ctx->num_layers = idx;
@@ -165,6 +168,7 @@ static int kicad_map_layers(wctx_t *ctx)
 			strcpy(ctx->layer[idx].name, fl->name);
 			ctx->layer[idx].grp = &ctx->pcb->LayerGroups.grp[gid[0]];
 			ctx->layer[idx].param = fl->param;
+			ctx->layer[idx].is_sig = fl->is_sig;
 			mapped[gid[0]]++;
 			if (idx > ctx->num_layers)
 				ctx->num_layers = idx;
@@ -209,8 +213,8 @@ static void kicad_print_layers(wctx_t *ctx, int ind)
 
 static void kicad_print_line(wctx_t *ctx, int klayer, pcb_line_t *line, pcb_bool skip_term, int ind)
 {
-#warning TODO: this should come from the layer table not from layer ID
-	int is_copper = (klayer < 16) || (klayer == 28);
+#warning TODO: this should be a safe lookup, merged with kicad_sexpr_layer_to_text()
+	int is_copper = ctx->layer[klayer].is_sig;
 	const char *cmd = (is_copper ? "segment" : "gr_line");
 
 	fprintf(ctx->f, "%*s", ind, "");
