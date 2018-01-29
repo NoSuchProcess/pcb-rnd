@@ -373,6 +373,8 @@ void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats)
 	User = pcb_false;
 }
 
+static pcb_bool pcb_reset_found_subc(pcb_subc_t *subc, pcb_bool AndDraw);
+
 /* ---------------------------------------------------------------------------
  * resets all used flags of pins and vias
  */
@@ -435,8 +437,7 @@ static pcb_bool pcb_reset_found_pins_vias_pads_(pcb_data_t *data, pcb_bool AndDr
 
 	PCB_SUBC_LOOP(data);
 	{
-		pcb_flag_change(PCB, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND, PCB_TYPE_SUBC, subc, subc, subc);
-		if (pcb_reset_found_pins_vias_pads_(subc->data, AndDraw))
+		if (pcb_reset_found_subc(subc, AndDraw))
 			change = pcb_true;
 	}
 	PCB_END_LOOP;
@@ -513,13 +514,25 @@ static pcb_bool pcb_reset_found_lines_polys_(pcb_data_t *data, pcb_bool AndDraw)
 
 	PCB_SUBC_LOOP(data);
 	{
-		pcb_flag_change(PCB, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND, PCB_TYPE_SUBC, subc, subc, subc);
-		if (pcb_reset_found_lines_polys_(subc->data, AndDraw))
+		if (pcb_reset_found_subc(subc, AndDraw))
 			change = pcb_true;
 	}
 	PCB_END_LOOP;
 
 	return change;
+}
+
+static pcb_bool pcb_reset_found_subc(pcb_subc_t *subc, pcb_bool AndDraw)
+{
+	pcb_bool res = pcb_false;
+
+	if (pcb_reset_found_lines_polys_(subc->data, AndDraw))
+		res = pcb_true;
+
+	if (pcb_reset_found_pins_vias_pads_(subc->data, AndDraw))
+		res = pcb_true;
+
+	return res;
 }
 
 pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
