@@ -128,6 +128,9 @@ static void chk_subc_cache(pcb_subc_t *subc)
 {
 	const char *arefdes = pcb_attribute_get(&subc->Attributes, "refdes");
 
+	if (pcb_obj_id_invalid(arefdes))
+		pcb_message(PCB_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
+
 	if ((arefdes == NULL) && (subc->refdes == NULL))
 		return;
 	if (subc->refdes == NULL) {
