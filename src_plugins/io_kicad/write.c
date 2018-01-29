@@ -85,16 +85,16 @@ typedef struct {
 } fixed_layer_t;
 
 static fixed_layer_t fixed_layers[] = {
-	{"F.Cu",       "user", PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
-	{"Inner%d.Cu", "user", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_INT },
-	{"B.Cu",       "user", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
-	{"F.Paste",    "user", PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_MISC },
-	{"B.Paste",    "user", PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
-	{"F.SilkS",    "user", PCB_LYT_SILK | PCB_LYT_TOP,      FLP_MISC },
-	{"B.SilkS",    "user", PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"F.Maks",     "user", PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
-	{"B.Mask",     "user", PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"Edge.Cuts",  "user", PCB_LYT_OUTLINE,                 FLP_MISC },
+	{"F.Cu",       "signal", PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
+	{"Inner%d.Cu", "signal", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_INT },
+	{"B.Cu",       "signal", PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
+	{"F.Paste",    "user",   PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_MISC },
+	{"B.Paste",    "user",   PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
+	{"F.SilkS",    "user",   PCB_LYT_SILK | PCB_LYT_TOP,      FLP_MISC },
+	{"B.SilkS",    "user",   PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_MISC },
+	{"F.Maks",     "user",   PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
+	{"B.Mask",     "user",   PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_MISC },
+	{"Edge.Cuts",  "user",   PCB_LYT_OUTLINE,                 FLP_MISC },
 	{NULL, NULL, 0}
 };
 
