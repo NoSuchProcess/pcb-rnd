@@ -88,7 +88,7 @@ static fixed_layer_t fixed_layers[] = {
 	{"B.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
 	{"F.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_TOP,      FLP_MISC },
 	{"B.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"F.Maks",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
+	{"F.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
 	{"B.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_MISC },
 	{"Edge.Cuts",  "user",   0, PCB_LYT_OUTLINE,                 FLP_MISC },
 	{NULL, NULL, 0}
@@ -504,7 +504,7 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 	}
 }
 
-static int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
+static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
 {
 	gdl_iterator_t sit;
 	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
@@ -1040,7 +1040,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	fputs("\n", FP);
 
 	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
-	write_kicad_layout_subc(&wctx, PCB->Data, baseSExprIndent);
+	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
 
 	fputs(")\n", FP); /* finish off the board */
