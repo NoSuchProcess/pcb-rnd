@@ -950,19 +950,8 @@ int write_kicad_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data,
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes PCB to file in s-expression format
- */
-int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+static void kicad_paper(wctx_t *ctx, int ind)
 {
-	wctx_t wctx;
-
-	int baseSExprIndent = 2;
-
-	pcb_cardinal_t i;
-	int layer = 0;
-	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
-
 	pcb_coord_t LayoutXOffset;
 	pcb_coord_t LayoutYOffset;
 
@@ -972,19 +961,6 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	int sheetHeight = A4HeightMil;
 	int sheetWidth = A4WidthMil;
 	int paperSize = 4; /* default paper size is A4 */
-
-	memset(&wctx, 0, sizeof(wctx));
-	wctx.pcb = PCB;
-	wctx.f = FP;
-
-	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
-	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
-
-#warning TODO: DO NOT fake we are kicad - print pcb-rnd and pcb-rnd version info in the quotes
-	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")", FP);
-
-	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
-	fprintf(FP, "%*s)\n", baseSExprIndent, "");
 
 #warning TODO: rewrite this: rather have a table and a loop that hardwired calculations in code
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
@@ -1008,31 +984,60 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 		sheetWidth = 4 * A4WidthMil; /* 46.8"  */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
 	}
-	fprintf(FP, "\n%*s(page A%d)\n", baseSExprIndent, "", paperSize);
+	fprintf(ctx->f, "\n%*s(page A%d)\n", ind, "", paperSize);
 
 
 	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
 	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
-		/* fprintf(FP, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
+		/* fprintf(ctx->f, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
 		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->MaxWidth / 2;
 	}
 	else { /* the layout is bigger than A0; most unlikely, but... */
-		/* pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth); */
+		/* pcb_fprintf(ctx->f, "%.0ml ", PCB->MaxWidth); */
 		LayoutXOffset = 0;
 	}
 	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
-		/* fprintf(FP, "%d", sheetHeight); */
+		/* fprintf(ctx->f, "%d", sheetHeight); */
 		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->MaxHeight / 2;
 	}
 	else { /* the layout is bigger than A0; most unlikely, but... */
-		/* pcb_fprintf(FP, "%.0ml", PCB->MaxHeight); */
+		/* pcb_fprintf(ctx->f, "%.0ml", PCB->MaxHeight); */
 		LayoutYOffset = 0;
 	}
 
+	ctx->ox = LayoutXOffset;
+	ctx->oy = LayoutYOffset;
+}
 
-	wctx.ox = LayoutXOffset;
-	wctx.oy = LayoutYOffset;
+/* ---------------------------------------------------------------------------
+ * writes PCB to file in s-expression format
+ */
+int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+{
+	wctx_t wctx;
 
+	int baseSExprIndent = 2;
+
+	pcb_cardinal_t i;
+	int layer = 0;
+	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
+
+
+
+	memset(&wctx, 0, sizeof(wctx));
+	wctx.pcb = PCB;
+	wctx.f = FP;
+
+	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
+	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
+
+#warning TODO: DO NOT fake we are kicad - print pcb-rnd and pcb-rnd version info in the quotes
+	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")", FP);
+
+	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
+	fprintf(FP, "%*s)\n", baseSExprIndent, "");
+
+	kicad_paper(&wctx, baseSExprIndent);
 	kicad_map_layers(&wctx);
 	kicad_print_layers(&wctx, baseSExprIndent);
 
@@ -1048,12 +1053,11 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	/* module descriptions come next */
 	fputs("\n", FP);
 
-	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
+	write_kicad_layout_elements(FP, PCB, PCB->Data, wctx.ox, wctx.oy, baseSExprIndent);
 	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
 
 	fputs(")\n", FP); /* finish off the board */
-
 
 	return 0;
 }
