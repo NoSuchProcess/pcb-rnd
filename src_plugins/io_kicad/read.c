@@ -2,7 +2,7 @@
  *			COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
- *	Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas
+ *	Copyright (C) 2016, 2017, 2018 Tibor 'Igor2' Palinkas
  *	Copyright (C) 2016, 2017 Erich S. Heinzle
  *	Copyright (C) 2017 Miloh
  *
