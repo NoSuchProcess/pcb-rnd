@@ -504,6 +504,9 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 	}
 }
 
+int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind);
+
+
 /* ---------------------------------------------------------------------------
  * writes PCB to file in s-expression format
  */
@@ -603,7 +606,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	fputs("\n", FP);
 
 	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
-	write_kicad_layout_subc(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
+	write_kicad_layout_subc(&wctx, PCB->Data, baseSExprIndent);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
 
 	fputs(")\n", FP); /* finish off the board */
@@ -937,23 +940,16 @@ int write_kicad_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data,
 	return 0;
 }
 
-int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
+int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
 {
 	gdl_iterator_t sit;
-	pcb_line_t *line;
-	pcb_arc_t *arc;
 	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
 	pcb_coord_t xPos, yPos;
-
 	pcb_subc_t *subc;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char *currentElementName;
 	const char *currentElementRef;
 	const char *currentElementVal;
-
-	pcb_lib_menu_t *current_pin_menu;
-	pcb_lib_menu_t *current_pad_menu;
-
 
 	elementlist_dedup_initializer(ededup);
 	/* Now initialize the group with defaults */
@@ -961,8 +957,6 @@ int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb
 
 	subclist_foreach(&Data->subc, &sit, subc) {
 		gdl_iterator_t it;
-		pcb_pin_t *pin;
-		pcb_pad_t *pad;
 		pcb_coord_t xPos, yPos;
 		int on_bottom;
 		double rot;
@@ -985,8 +979,8 @@ int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb
 			continue;
 		}
 
-		xPos += xOffset;
-		yPos += yOffset;
+		xPos += ctx->ox;
+		yPos += ctx->oy;
 
 		if (on_bottom) {
 			silkLayer = 20;
@@ -1009,34 +1003,34 @@ int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb
 		}
 
 #warning TODO: why the heck do we hardwire timestamps?!!?!?!
-		fprintf(FP, "%*s", indentation, "");
-		pcb_fprintf(FP, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(NULL, copperLayer));
-		fprintf(FP, "%*s", indentation + 2, "");
-		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos);
+		fprintf(ctx->f, "%*s", ind, "");
+		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(NULL, copperLayer));
+		fprintf(ctx->f, "%*s", ind + 2, "");
+		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
 
-		fprintf(FP, "%*s", indentation + 2, "");
-		pcb_fprintf(FP, "(descr %[4])\n", currentElementName);
+		fprintf(ctx->f, "%*s", ind + 2, "");
+		pcb_fprintf(ctx->f, "(descr %[4])\n", currentElementName);
 
-		fprintf(FP, "%*s", indentation + 2, "");
-
-#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
-		pcb_fprintf(FP, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
-		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
-
-#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
-		fprintf(FP, "%*s", indentation + 4, "");
-		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
-		fprintf(FP, "%*s)\n", indentation + 2, "");
+		fprintf(ctx->f, "%*s", ind + 2, "");
 
 #warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
-		fprintf(FP, "%*s", indentation + 2, "");
-		pcb_fprintf(FP, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
-		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
+		pcb_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
+		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
 
 #warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
-		fprintf(FP, "%*s", indentation + 4, "");
-		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
-		fprintf(FP, "%*s)\n", indentation + 2, "");
+		fprintf(ctx->f, "%*s", ind + 4, "");
+		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(ctx->f, "%*s)\n", ind + 2, "");
+
+#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+		fprintf(ctx->f, "%*s", ind + 2, "");
+		pcb_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
+		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
+
+#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+		fprintf(ctx->f, "%*s", ind + 4, "");
+		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
 #warning TODO: call kicad_print_data() here
 /*		kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)*/
@@ -1046,7 +1040,7 @@ int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb
 #warning TODO: warn for vias
 #warning TODO: warn for heavy terminals
 
-		fprintf(FP, "%*s)\n\n", indentation, ""); /*  finish off module */
+		fprintf(ctx->f, "%*s)\n\n", ind, ""); /*  finish off module */
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
