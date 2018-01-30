@@ -633,9 +633,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
  Description layer 0 netcode timestamp status
  Shape parameter is set to 0 (reserved for futu
 */
-
-
-int write_kicad_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
+static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
@@ -643,8 +641,11 @@ int write_kicad_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb
 
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
-		fprintf(FP, "%*s", indentation, "");
-		pcb_fprintf(FP, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n", via->X + xOffset, via->Y + yOffset, via->Thickness, kicad_sexpr_layer_to_text(NULL, 0), kicad_sexpr_layer_to_text(NULL, 15)); /* skip (net 0) for now */
+		fprintf(ctx->f, "%*s", ind, "");
+		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+			via->X + ctx->ox, via->Y + ctx->oy,
+			via->Thickness,
+			kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 	}
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		int klayer_from = 0, klayer_to = 15;
@@ -663,13 +664,12 @@ int write_kicad_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb
 		}
 #warning TODO: set klayer_from and klayer_to using bb span of ps
 
-		fprintf(FP, "%*s", indentation, "");
-		pcb_fprintf(FP, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-			x + xOffset, y + yOffset, pad_dia,
-			kicad_sexpr_layer_to_text(NULL, klayer_from), kicad_sexpr_layer_to_text(NULL, klayer_to)
+		fprintf(ctx->f, "%*s", ind, "");
+		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+			x + ctx->ox, y + ctx->oy, pad_dia,
+			kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
 			); /* skip (net 0) for now */
 	}
-	return 0;
 }
 
 
@@ -1099,6 +1099,8 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	write_kicad_layout_elements(FP, PCB, PCB->Data, wctx.ox, wctx.oy, baseSExprIndent);
 	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
+#warning TODO: this should be part of kicad_print_data
+	kicad_print_pstk(&wctx, PCB->Data, baseSExprIndent);
 
 	kicad_fixup_outline(&wctx, baseSExprIndent);
 
