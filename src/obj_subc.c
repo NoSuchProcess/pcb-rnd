@@ -342,7 +342,7 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 
 	if (rot == 0.0) {
 		cs = 1;
-		sn = 1;
+		sn = 0;
 	}
 	else {
 		cs = cos(rot/PCB_RAD_TO_DEG);
