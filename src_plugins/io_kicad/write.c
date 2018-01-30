@@ -41,9 +41,6 @@
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
-/* generates a default via drill size for the layout */
-static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentation);
-
 /* writes the buffer to file */
 int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
@@ -678,6 +675,7 @@ int write_kicad_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb
 
 static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentation)
 {
+#warning TODO: do not hardwire the drill size here - does kicad support only one size, or what?
 	fprintf(FP, "%*s", indentation, "");
 	pcb_fprintf(FP, "(via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
 	return 0;
