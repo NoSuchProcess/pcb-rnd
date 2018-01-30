@@ -448,9 +448,18 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 		if ((arc->term == NULL) || !kly->skip_term)
 			kicad_print_arc(ctx, kly, arc, ind);
 
-	textlist_foreach(&ly->Text, &it, text)
+	textlist_foreach(&ly->Text, &it, text) {
+		if (kly->type == KLYT_FP) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text)) {
+				pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "can't export custom text in footprint", NULL);
+				break;
+			}
+			else
+				continue;
+		}
 		if ((text->term == NULL) || !kly->skip_term)
 			kicad_print_text(ctx, kly, text, ind);
+	}
 
 	polylist_foreach(&ly->Polygon, &it, poly)
 		if ((poly->term == NULL) || !kly->skip_term)
