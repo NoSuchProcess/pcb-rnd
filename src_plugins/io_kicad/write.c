@@ -568,7 +568,7 @@ static int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t
 
 #warning TODO: why the heck do we hardwire timestamps?!!?!?!
 		fprintf(ctx->f, "%*s", ind, "");
-		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(NULL, copperLayer));
+		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(ctx, copperLayer));
 		fprintf(ctx->f, "%*s", ind + 2, "");
 		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
 
@@ -579,7 +579,7 @@ static int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t
 
 #warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
 		pcb_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
-		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
+		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
 
 #warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
 		fprintf(ctx->f, "%*s", ind + 4, "");
@@ -589,15 +589,14 @@ static int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t
 #warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
 		fprintf(ctx->f, "%*s", ind + 2, "");
 		pcb_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
-		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
+		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
 
 #warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
 		fprintf(ctx->f, "%*s", ind + 4, "");
 		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
-#warning TODO: call kicad_print_data() here
-/*		kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)*/
+		kicad_print_data(ctx, subc->data, ind+2);
 
 #warning TODO: export padstacks
 #warning TODO: warn for vias
