@@ -463,40 +463,6 @@ static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentatio
 	return 0;
 }
 
-int write_kicad_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
-{
-	gdl_iterator_t it;
-	pcb_line_t *line;
-	pcb_cardinal_t currentLayer = number;
-
-	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		/*
-		   fprintf(FP, "Layer(%i ", (int) Number + 1);
-		   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->name));
-		   fputs(")\n(\n", FP);
-		   WriteAttributeList(FP, &layer->Attributes, "\t");
-		 */
-		int localFlag = 0;
-		linelist_foreach(&layer->Line, &it, line) {
-			if ((currentLayer < 16) || (currentLayer == 28)) { /* a copper line i.e. track, or an outline edge cut */
-				fprintf(FP, "%*s", indentation, "");
-				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", line->Point1.X + xOffset, line->Point1.Y + yOffset, line->Point2.X + xOffset, line->Point2.Y + yOffset, kicad_sexpr_layer_to_text(NULL, currentLayer), line->Thickness); /* neglect (net ___ ) for now */
-			}
-			else if ((currentLayer == 20) || (currentLayer == 21) || (currentLayer == 28)) { /* a silk line or outline line */
-				fprintf(FP, "%*s", indentation, "");
-				pcb_fprintf(FP, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
-										line->Point1.X + xOffset, line->Point1.Y + yOffset, line->Point2.X + xOffset, line->Point2.Y + yOffset, kicad_sexpr_layer_to_text(NULL, currentLayer), line->Thickness);
-			}
-			localFlag |= 1;
-		}
-		return localFlag;
-	}
-	else {
-		return 0;
-	}
-}
-
 int write_kicad_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
