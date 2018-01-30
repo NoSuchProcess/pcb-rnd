@@ -238,6 +238,54 @@ static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t 
 		/* neglect (net ___ ) for now */
 }
 
+static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *arc, int ind)
+{
+	pcb_arc_t localArc = *arc; /* for converting ellipses to circular arcs */
+	int kicadArcShape; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
+	pcb_coord_t copperStartX, copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
+	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
+
+	if (arc->Width > arc->Height) {
+		radius = arc->Height;
+		localArc.Width = radius;
+	}
+	else {
+		radius = arc->Width;
+		localArc.Height = radius;
+	}
+
+	/* Return the x;y coordinate of the endpoint of an arc; if which is 0, return
+	   the endpoint that corresponds to StartAngle, else return the end angle's. */
+	if ((arc->Delta == 360.0) || (arc->Delta == -360.0))
+		kicadArcShape = 3; /* it's a circle */
+	else
+		kicadArcShape = 2;  /* it's an arc */
+
+	xStart = localArc.X + ctx->ox;
+	yStart = localArc.Y + ctx->oy;
+	pcb_arc_get_end(&localArc, 1, &xEnd, &yEnd);
+	xEnd += ctx->ox;
+	yEnd += ctx->oy;
+	pcb_arc_get_end(&localArc, 0, &copperStartX, &copperStartY);
+	copperStartX += ctx->ox;
+	copperStartY += ctx->oy;
+
+	fprintf(ctx->f, "%*s", ind, "");
+
+	switch(kly->type) {
+		case KLYT_COPPER:
+#warning TODO: this should be a proper line approximation using a helper (to be written)
+			pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", copperStartX, copperStartY, xEnd, yEnd, kly->name, arc->Thickness); /* neglect (net ___ ) for now */
+			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)arc, "Kicad does not support copper arcs; using line approximation", NULL);
+			break;
+		case KLYT_GR:
+			pcb_fprintf(ctx->f, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
+			break;
+		case KLYT_FP:
+			pcb_fprintf(ctx->f, "(fp_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
+			break;
+	}
+}
 
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
@@ -245,13 +293,17 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
+	pcb_arc_t *arc;
 
 	linelist_foreach(&ly->Line, &it, line)
 		if ((line->term == NULL) || !kly->skip_term)
 			kicad_print_line(ctx, kly, line, ind);
 
-/*		write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
-		write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
+	arclist_foreach(&ly->Arc, &it, arc)
+		if ((arc->term == NULL) || !kly->skip_term)
+			kicad_print_arc(ctx, kly, arc, ind);
+
+/*	write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
 		write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]), LayoutXOffset, LayoutYOffset, ind);*/
 }
 
@@ -463,74 +515,6 @@ static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentatio
 	return 0;
 }
 
-int write_kicad_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
-{
-	gdl_iterator_t it;
-	pcb_arc_t *arc;
-	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
-	pcb_cardinal_t currentLayer = number;
-	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
-	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
-	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
-
-	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		/*
-		   fprintf(FP, "Layer(%i ", (int) Number + 1);
-		   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->name));
-		   fputs(")\n(\n", FP);
-		   WriteAttributeList(FP, &layer->Attributes, "\t");
-		 */
-		int localFlag = 0;
-		int kicadArcShape = 2; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
-		arclist_foreach(&layer->Arc, &it, arc) {
-			localArc = *arc;
-			if (arc->Width > arc->Height) {
-				radius = arc->Height;
-				localArc.Width = radius;
-			}
-			else {
-				radius = arc->Width;
-				localArc.Height = radius;
-			}
-
-/* Return the x;y coordinate of the endpoint of an arc; if which is 0, return
-   the endpoint that corresponds to StartAngle, else return the end angle's.
-void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y);
-
-Obsolete: please use pcb_arc_get_end() instead
-pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc); */
-
-			if (arc->Delta == 360.0 || arc->Delta == -360.0) { /* it's a circle */
-				kicadArcShape = 3;
-			}
-			else { /* it's an arc */
-				kicadArcShape = 2;
-			}
-			xStart = localArc.X + xOffset;
-			yStart = localArc.Y + yOffset;
-			pcb_arc_get_end(&localArc, 1, &xEnd, &yEnd);
-			xEnd += xOffset;
-			yEnd += yOffset;
-			pcb_arc_get_end(&localArc, 0, &copperStartX, &copperStartY);
-			copperStartX += xOffset;
-			copperStartY += yOffset;
-			if ((currentLayer < 16)) { /*|| (currentLayer == 28)) {  a copper arc, i.e. track, but not edge cut, is unsupported by kicad, and will be exported as a line */
-				fprintf(FP, "%*s", indentation, "");
-				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", copperStartX, copperStartY, xEnd, yEnd, kicad_sexpr_layer_to_text(NULL, currentLayer), arc->Thickness); /* neglect (net ___ ) for now */
-			}
-			else if ((currentLayer == 20) || (currentLayer == 21) || (currentLayer == 28)) { /* a silk arc, or outline */
-				fprintf(FP, "%*s", indentation, "");
-				pcb_fprintf(FP, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kicad_sexpr_layer_to_text(NULL, currentLayer), arc->Thickness);
-			}
-			localFlag |= 1;
-		}
-		return localFlag;
-	}
-	else {
-		return 0;
-	}
-}
 
 int write_kicad_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
