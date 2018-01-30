@@ -211,33 +211,44 @@ static void kicad_print_layers(wctx_t *ctx, int ind)
 	fprintf(ctx->f, "%*s)\n", ind, "");
 }
 
-static void kicad_print_line(wctx_t *ctx, int klayer, pcb_line_t *line, pcb_bool skip_term, int ind)
+
+
+typedef struct {
+	int klayer;       /* kicad layer ID, index of wctx->layer */
+	const char *name; /* kicad layer name (cached from wctx) */
+	enum {
+		KLYT_COPPER,    /* board: copper/signal/trace objects */
+		KLYT_GR,        /* board: "grpahical" objects: silk and misc */
+		KLYT_FP         /* module: any */
+	} type;
+	int skip_term;    /* do not print terminals on this layer */
+} klayer_t;
+
+static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t *line, int ind)
 {
-#warning TODO: this should be a safe lookup, merged with kicad_sexpr_layer_to_text()
-	int is_copper = ctx->layer[klayer].is_sig;
-	const char *cmd = (is_copper ? "segment" : "gr_line");
+	const char *cmd[] = {"segment", "gr_line", "fp_line"};
 
 	fprintf(ctx->f, "%*s", ind, "");
 	pcb_fprintf(ctx->f,
 		"(%s (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
-		cmd,
+		cmd[kly->type],
 		line->Point1.X + ctx->ox, line->Point1.Y + ctx->oy,
 		line->Point2.X + ctx->ox, line->Point2.Y + ctx->oy,
-		kicad_sexpr_layer_to_text(ctx, klayer), line->Thickness);
+		kly->name, line->Thickness);
 		/* neglect (net ___ ) for now */
 }
 
+
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
-static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, int klayer, pcb_bool skip_term, int ind)
+static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
 
-
 	linelist_foreach(&ly->Line, &it, line)
-		if ((line->term == NULL) || !skip_term)
-			kicad_print_line(ctx, klayer, line, skip_term, ind);
+		if ((line->term == NULL) || !kly->skip_term)
+			kicad_print_line(ctx, kly, line, ind);
 
 /*		write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
 		write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
@@ -248,11 +259,14 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, int klayer, pcb_bool
 void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 {
 	int n, klayer;
+
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_layer_t *ly = &data->Layer[n];
 		pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
 		pcb_layergrp_t *grp;
 		int found = 0;
+		klayer_t kly;
+
 
 		if (gid < 0)
 			continue; /* unbound, should not be exported */
@@ -271,7 +285,18 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 			continue;
 		}
 
-		kicad_print_layer(ctx, ly, klayer, pcb_false, ind);
+#warning TODO: this should be a safe lookup, merged with kicad_sexpr_layer_to_text()
+		kly.name = kicad_sexpr_layer_to_text(ctx, klayer);
+		if (data->parent_type != PCB_PARENT_SUBC) {
+			kly.type = ctx->layer[klayer].is_sig ? KLYT_COPPER : KLYT_GR;
+			kly.skip_term = pcb_false;
+		}
+		else {
+			kly.type = KLYT_FP;
+			kly.skip_term = pcb_true;
+		}
+
+		kicad_print_layer(ctx, ly, &kly, ind);
 	}
 }
 
