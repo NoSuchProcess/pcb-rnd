@@ -827,7 +827,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	pcb_pstk_t *ps;
 	unsigned char intconn = 0;
 	pcb_coord_t Thickness, Clearance, Mask, DrillingHole, X, Y;
-	char *Name, *Number;
+	char *Name = NULL, *Number = NULL;
 	pcb_flag_t flg;
 
 	if (dt == NULL)
@@ -870,7 +870,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	unsigned char intconn = 0;
 	pcb_flag_t flg;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask;
-	char *Name, *Number;
+	char *Name = NULL, *Number = NULL;
 
 	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD, &intconn);
 
@@ -925,14 +925,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	subc->Flags.f &= ~PCB_FLAG_ONSOLDER;
 
 	/* bind the via rtree so that vias added in this subc show up on the board */
-	if (pcb != NULL) {
-		if (dt->via_tree == NULL)
-			dt->via_tree = pcb_r_create_tree();
-		subc->data->via_tree = dt->via_tree;
-		if (dt->padstack_tree == NULL)
-			dt->padstack_tree = pcb_r_create_tree();
-		subc->data->padstack_tree = dt->padstack_tree;
-	}
+	if (pcb != NULL)
+		pcb_subc_bind_globals(pcb, subc);
 
 	/* the only layer objects are put on from and old element is the primary silk layer */
 	{
