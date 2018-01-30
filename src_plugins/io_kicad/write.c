@@ -216,6 +216,8 @@ static void kicad_print_layers(wctx_t *ctx, int ind)
 typedef struct {
 	int klayer;       /* kicad layer ID, index of wctx->layer */
 	const char *name; /* kicad layer name (cached from wctx) */
+	pcb_layer_t *ly;
+	pcb_layer_type_t lyt;
 	enum {
 		KLYT_COPPER,    /* board: copper/signal/trace objects */
 		KLYT_GR,        /* board: "grpahical" objects: silk and misc */
@@ -287,12 +289,117 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 	}
 }
 
+static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t *text, int ind)
+{
+	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
+	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
+	pcb_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
+	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */
+	pcb_coord_t defaultXSize;
+	pcb_coord_t defaultYSize;
+	pcb_coord_t strokeThickness;
+	int rotation;
+	pcb_coord_t textOffsetX;
+	pcb_coord_t textOffsetY;
+	pcb_coord_t halfStringWidth;
+	pcb_coord_t halfStringHeight;
+
+	if (!(kly->lyt & PCB_LYT_COPPER) && !(kly->lyt & PCB_LYT_SILK)) {
+		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "Kicad supports text only on copper or silk - omitting text object on misc layer", NULL);
+		return;
+	}
+
+	fprintf(ctx->f, "%*s", ind, "");
+	pcb_fprintf(ctx->f, "(gr_text %[4] ", text->TextString);
+	defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, text->Scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
+	defaultYSize = defaultXSize;
+	strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale / 2);
+	rotation = 0;
+	textOffsetX = 0;
+	textOffsetY = 0;
+	halfStringWidth = (text->BoundingBox.X2 - text->BoundingBox.X1) / 2;
+	if (halfStringWidth < 0) {
+		halfStringWidth = -halfStringWidth;
+	}
+	halfStringHeight = (text->BoundingBox.Y2 - text->BoundingBox.Y1) / 2;
+	if (halfStringHeight < 0) {
+		halfStringHeight = -halfStringHeight;
+	}
+	if (text->Direction == 3) { /*vertical down */
+		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
+			rotation = 2700;
+			kicadMirrored = 0; /* mirrored */
+			textOffsetY -= halfStringHeight;
+			textOffsetX -= 2 * halfStringWidth; /* was 1*hsw */
+		}
+		else { /* front copper or silk */
+			rotation = 2700;
+			kicadMirrored = 1; /* not mirrored */
+			textOffsetY = halfStringHeight;
+			textOffsetX -= halfStringWidth;
+		}
+	}
+	else if (text->Direction == 2) { /*upside down */
+		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
+			rotation = 0;
+			kicadMirrored = 0; /* mirrored */
+			textOffsetY += halfStringHeight;
+		}
+		else { /* front copper or silk */
+			rotation = 1800;
+			kicadMirrored = 1; /* not mirrored */
+			textOffsetY -= halfStringHeight;
+		}
+		textOffsetX = -halfStringWidth;
+	}
+	else if (text->Direction == 1) { /*vertical up */
+		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
+			rotation = 900;
+			kicadMirrored = 0; /* mirrored */
+			textOffsetY = halfStringHeight;
+			textOffsetX += halfStringWidth;
+		}
+		else { /* front copper or silk */
+			rotation = 900;
+			kicadMirrored = 1; /* not mirrored */
+			textOffsetY = -halfStringHeight;
+			textOffsetX = 0; /* += halfStringWidth; */
+		}
+	}
+	else if (text->Direction == 0) { /*normal text */
+		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
+			rotation = 1800;
+			kicadMirrored = 0; /* mirrored */
+			textOffsetY -= halfStringHeight;
+		}
+		else { /* front copper or silk */
+			rotation = 0;
+			kicadMirrored = 1; /* not mirrored */
+			textOffsetY += halfStringHeight;
+		}
+		textOffsetX = halfStringWidth;
+	}
+	pcb_fprintf(ctx->f, "(at %.3mm %.3mm", text->X + ctx->ox + textOffsetX, text->Y + ctx->oy + textOffsetY);
+	if (rotation != 0) {
+		fprintf(ctx->f, " %d", rotation / 10); /* convert decidegrees to degrees */
+	}
+	pcb_fprintf(ctx->f, ") (layer %s)\n", kly->name);
+	fprintf(ctx->f, "%*s", ind + 2, "");
+	pcb_fprintf(ctx->f, "(effects (font (size %.3mm %.3mm) (thickness %.3mm))", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
+	if (kicadMirrored == 0) {
+		fprintf(ctx->f, " (justify mirror)");
+	}
+	fprintf(ctx->f, ")\n%*s)\n", ind, "");
+}
+
+
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
 static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
+	pcb_text_t *text;
 	pcb_arc_t *arc;
 
 	linelist_foreach(&ly->Line, &it, line)
@@ -302,6 +409,10 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 	arclist_foreach(&ly->Arc, &it, arc)
 		if ((arc->term == NULL) || !kly->skip_term)
 			kicad_print_arc(ctx, kly, arc, ind);
+
+	textlist_foreach(&ly->Text, &it, text)
+		if ((text->term == NULL) || !kly->skip_term)
+			kicad_print_text(ctx, kly, text, ind);
 
 /*	write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
 		write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]), LayoutXOffset, LayoutYOffset, ind);*/
@@ -339,6 +450,8 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 
 #warning TODO: this should be a safe lookup, merged with kicad_sexpr_layer_to_text()
 		kly.name = kicad_sexpr_layer_to_text(ctx, klayer);
+		kly.ly = ly;
+		kly.lyt = pcb_layer_flags_(ly);
 		if (data->parent_type != PCB_PARENT_SUBC) {
 			kly.type = ctx->layer[klayer].is_sig ? KLYT_COPPER : KLYT_GR;
 			kly.skip_term = pcb_false;
@@ -516,129 +629,6 @@ static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentatio
 }
 
 
-int write_kicad_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
-{
-	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
-	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
-	pcb_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
-	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */
-
-	pcb_coord_t defaultXSize;
-	pcb_coord_t defaultYSize;
-	pcb_coord_t strokeThickness;
-	int rotation;
-	pcb_coord_t textOffsetX;
-	pcb_coord_t textOffsetY;
-	pcb_coord_t halfStringWidth;
-	pcb_coord_t halfStringHeight;
-	int localFlag;
-
-	gdl_iterator_t it;
-	pcb_text_t *text;
-	pcb_cardinal_t currentLayer = number;
-
-	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		/*
-		   fprintf(FP, "Layer(%i ", (int) Number + 1);
-		   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->name));
-		   fputs(")\n(\n", FP);
-		   WriteAttributeList(FP, &layer->Attributes, "\t");
-		 */
-		localFlag = 0;
-		textlist_foreach(&layer->Text, &it, text) {
-			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21)) { /* copper or silk layer text */
-				pcb_fprintf(FP, "%*s(gr_text %[4] ", indentation, "", text->TextString);
-				defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, text->Scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
-				defaultYSize = defaultXSize;
-				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale / 2);
-				rotation = 0;
-				textOffsetX = 0;
-				textOffsetY = 0;
-				halfStringWidth = (text->BoundingBox.X2 - text->BoundingBox.X1) / 2;
-				if (halfStringWidth < 0) {
-					halfStringWidth = -halfStringWidth;
-				}
-				halfStringHeight = (text->BoundingBox.Y2 - text->BoundingBox.Y1) / 2;
-				if (halfStringHeight < 0) {
-					halfStringHeight = -halfStringHeight;
-				}
-				if (text->Direction == 3) { /*vertical down */
-					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
-						rotation = 2700;
-						kicadMirrored = 0; /* mirrored */
-						textOffsetY -= halfStringHeight;
-						textOffsetX -= 2 * halfStringWidth; /* was 1*hsw */
-					}
-					else { /* front copper or silk */
-						rotation = 2700;
-						kicadMirrored = 1; /* not mirrored */
-						textOffsetY = halfStringHeight;
-						textOffsetX -= halfStringWidth;
-					}
-				}
-				else if (text->Direction == 2) { /*upside down */
-					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
-						rotation = 0;
-						kicadMirrored = 0; /* mirrored */
-						textOffsetY += halfStringHeight;
-					}
-					else { /* front copper or silk */
-						rotation = 1800;
-						kicadMirrored = 1; /* not mirrored */
-						textOffsetY -= halfStringHeight;
-					}
-					textOffsetX = -halfStringWidth;
-				}
-				else if (text->Direction == 1) { /*vertical up */
-					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
-						rotation = 900;
-						kicadMirrored = 0; /* mirrored */
-						textOffsetY = halfStringHeight;
-						textOffsetX += halfStringWidth;
-					}
-					else { /* front copper or silk */
-						rotation = 900;
-						kicadMirrored = 1; /* not mirrored */
-						textOffsetY = -halfStringHeight;
-						textOffsetX = 0; /* += halfStringWidth; */
-					}
-				}
-				else if (text->Direction == 0) { /*normal text */
-					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
-						rotation = 1800;
-						kicadMirrored = 0; /* mirrored */
-						textOffsetY -= halfStringHeight;
-					}
-					else { /* front copper or silk */
-						rotation = 0;
-						kicadMirrored = 1; /* not mirrored */
-						textOffsetY += halfStringHeight;
-					}
-					textOffsetX = halfStringWidth;
-				}
-/*				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
-				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY);     TODO need to sort out rotation */
-				pcb_fprintf(FP, "(at %.3mm %.3mm", text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY);
-				if (rotation != 0) {
-					fprintf(FP, " %d", rotation / 10); /* convert decidegrees to degrees */
-				}
-				pcb_fprintf(FP, ") (layer %s)\n", kicad_sexpr_layer_to_text(NULL, currentLayer));
-				fprintf(FP, "%*s", indentation + 2, "");
-				pcb_fprintf(FP, "(effects (font (size %.3mm %.3mm) (thickness %.3mm))", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
-				if (kicadMirrored == 0) {
-					fprintf(FP, " (justify mirror)");
-				}
-				fprintf(FP, ")\n%*s)\n", indentation, "");
-			}
-			localFlag |= 1;
-		}
-		return localFlag;
-	}
-	else {
-		return 0;
-	}
-}
 
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a .mod library
