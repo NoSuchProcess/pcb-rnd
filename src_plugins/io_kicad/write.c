@@ -1031,8 +1031,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
 	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
 
-#warning TODO: DO NOT fake we are kicad - print pcb-rnd and pcb-rnd version info in the quotes
-	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")", FP);
+	fprintf(FP, "(kicad_pcb (version 3) (host pcb-rnd \"(%s %s)\")", PCB_VERSION, PCB_REVISION);
 
 	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
 	fprintf(FP, "%*s)\n", baseSExprIndent, "");
