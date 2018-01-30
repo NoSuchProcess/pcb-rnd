@@ -908,7 +908,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
 	int onsld, tdir = 0, tscale = 100;
-	pcb_coord_t ox, oy, tx, ty;
+	pcb_coord_t ox = 0, oy = 0, tx, ty;
 	pcb_text_t *txt;
 
 	pcb_add_subc_to_data(dt, subc);
