@@ -466,6 +466,49 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 			kicad_print_poly(ctx, kly, poly, ind);
 }
 
+/* writes kicad format via data
+   For a track segment: Position shape Xstart Ystart Xend Yend width
+   Description layer 0 netcode timestamp status; Shape parameter is set to 0 (reserved for future) */
+static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
+{
+	gdl_iterator_t it;
+	pcb_pin_t *via;
+	pcb_pstk_t *ps;
+
+	/* write information about vias */
+	pinlist_foreach(&Data->Via, &it, via) {
+		fprintf(ctx->f, "%*s", ind, "");
+		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+			via->X + ctx->ox, via->Y + ctx->oy,
+			via->Thickness,
+			kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+	}
+	padstacklist_foreach(&Data->padstack, &it, ps) {
+		int klayer_from = 0, klayer_to = 15;
+		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		pcb_pstk_compshape_t cshape;
+		pcb_bool plated;
+
+		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
+			continue;
+		}
+
+		if (cshape != PCB_PSTK_COMPAT_ROUND) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to via", "only round vias are supported");
+			continue;
+		}
+#warning TODO: set klayer_from and klayer_to using bb span of ps
+
+		fprintf(ctx->f, "%*s", ind, "");
+		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+			x + ctx->ox, y + ctx->oy, pad_dia,
+			kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
+			); /* skip (net 0) for now */
+	}
+}
+
+
 
 void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 {
@@ -619,57 +662,6 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
 	elementlist_dedup_free(ededup);
 
 	return 0;
-}
-
-
-
-
-
-
-/* ---------------------------------------------------------------------------
- * writes kicad format via data
- For a track segment:
- Position shape Xstart Ystart Xend Yend width
- Description layer 0 netcode timestamp status
- Shape parameter is set to 0 (reserved for futu
-*/
-static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
-{
-	gdl_iterator_t it;
-	pcb_pin_t *via;
-	pcb_pstk_t *ps;
-
-	/* write information about vias */
-	pinlist_foreach(&Data->Via, &it, via) {
-		fprintf(ctx->f, "%*s", ind, "");
-		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-			via->X + ctx->ox, via->Y + ctx->oy,
-			via->Thickness,
-			kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
-	}
-	padstacklist_foreach(&Data->padstack, &it, ps) {
-		int klayer_from = 0, klayer_to = 15;
-		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
-		pcb_pstk_compshape_t cshape;
-		pcb_bool plated;
-
-		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
-			continue;
-		}
-
-		if (cshape != PCB_PSTK_COMPAT_ROUND) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to via", "only round vias are supported");
-			continue;
-		}
-#warning TODO: set klayer_from and klayer_to using bb span of ps
-
-		fprintf(ctx->f, "%*s", ind, "");
-		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-			x + ctx->ox, y + ctx->oy, pad_dia,
-			kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
-			); /* skip (net 0) for now */
-	}
 }
 
 
