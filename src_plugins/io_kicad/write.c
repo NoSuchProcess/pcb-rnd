@@ -393,6 +393,43 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 }
 
 
+static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind)
+{
+	int i, j;
+
+	if (polygon->HoleIndexN != 0) {
+#warning TODO: does kicad suppor holes? of so, use them; else (and only else) there is a polygon.h call that can split up a holed poly into a set of hole-free polygons
+		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)polygon, "can't export polygon with holes", NULL);
+		return;
+	}
+
+	/* preliminaries for zone settings */
+#warning TODO: never hardwire tstamp
+#warning TODO: do not hardwire thicknesses and gaps and hatch values!
+	fprintf(ctx->f, "%*s(zone (net 0) (net_name \"\") (layer %s) (tstamp 478E3FC8) (hatch edge 0.508)\n", ind, "", kly->name);
+	fprintf(ctx->f, "%*s(connect_pads no (clearance 0.508))\n", ind + 2, "");
+	fprintf(ctx->f, "%*s(min_thickness 0.4826)\n", ind + 2, "");
+	fprintf(ctx->f, "%*s(fill (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 0.508))\n", ind + 2, "");
+	fprintf(ctx->f, "%*s(polygon\n", ind + 2, "");
+	fprintf(ctx->f, "%*s(pts\n", ind + 4, "");
+
+	/* now the zone outline is defined */
+	for(i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
+		fprintf(ctx->f, "%*s", ind + 6, ""); /* pcb_fprintf does not support %*s   */
+		for(j = 0; (j < polygon->PointN) && (j < 5); j++) {
+			pcb_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + ctx->ox, polygon->Points[i + j].Y + ctx->oy);
+			if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
+				fputs(" ", ctx->f);
+			}
+		}
+		fputs("\n", ctx->f);
+	}
+	fprintf(ctx->f, "%*s)\n", ind + 4, "");
+	fprintf(ctx->f, "%*s)\n", ind + 2, "");
+	fprintf(ctx->f, "%*s)\n", ind, "");
+}
+
+
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
 static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind)
@@ -400,6 +437,7 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 	gdl_iterator_t it;
 	pcb_line_t *line;
 	pcb_text_t *text;
+	pcb_poly_t *poly;
 	pcb_arc_t *arc;
 
 	linelist_foreach(&ly->Line, &it, line)
@@ -414,8 +452,9 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 		if ((text->term == NULL) || !kly->skip_term)
 			kicad_print_text(ctx, kly, text, ind);
 
-/*	write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]), LayoutXOffset, LayoutYOffset, ind);
-		write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]), LayoutXOffset, LayoutYOffset, ind);*/
+	polylist_foreach(&ly->Polygon, &it, poly)
+		if ((poly->term == NULL) || !kly->skip_term)
+			kicad_print_poly(ctx, kly, poly, ind);
 }
 
 
@@ -1119,57 +1158,3 @@ int write_kicad_layout_subc(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb
 }
 
 
-/* ---------------------------------------------------------------------------
- * writes polygon data in kicad legacy format for use in a layout .brd file
- */
-
-int write_kicad_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
-{
-	int i, j;
-	gdl_iterator_t it;
-	pcb_poly_t *polygon;
-	pcb_cardinal_t currentLayer = number;
-
-	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		int localFlag = 0;
-		polylist_foreach(&layer->Polygon, &it, polygon) {
-			if (polygon->HoleIndexN == 0) { /* no holes defined within polygon, which we implement support for first */
-
-				/* preliminaries for zone settings */
-
-				fprintf(FP, "%*s(zone (net 0) (net_name \"\") (layer %s) (tstamp 478E3FC8) (hatch edge 0.508)\n", indentation, "", kicad_sexpr_layer_to_text(NULL, currentLayer));
-				fprintf(FP, "%*s(connect_pads no (clearance 0.508))\n", indentation + 2, "");
-				fprintf(FP, "%*s(min_thickness 0.4826)\n", indentation + 2, "");
-				fprintf(FP, "%*s(fill (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 0.508))\n", indentation + 2, "");
-				fprintf(FP, "%*s(polygon\n", indentation + 2, "");
-				fprintf(FP, "%*s(pts\n", indentation + 4, "");
-
-				/* now the zone outline is defined */
-
-				for(i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
-					fprintf(FP, "%*s", indentation + 6, ""); /* pcb_fprintf does not support %*s   */
-					for(j = 0; (j < polygon->PointN) && (j < 5); j++) {
-						pcb_fprintf(FP, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + xOffset, polygon->Points[i + j].Y + yOffset);
-						if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
-							fputs(" ", FP);
-						}
-					}
-					fputs("\n", FP);
-				}
-				fprintf(FP, "%*s)\n", indentation + 4, "");
-				fprintf(FP, "%*s)\n", indentation + 2, "");
-				fprintf(FP, "%*s)\n", indentation, ""); /* end zone */
-				/*
-				 *   in here could go additional polygon descriptors for holes removed from  the previously defined outer polygon
-				 */
-
-			}
-			localFlag |= 1;
-		}
-		return localFlag;
-	}
-	else {
-		return 0;
-	}
-}
