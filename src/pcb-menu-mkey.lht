@@ -130,11 +130,6 @@ ha:{
 						ha:Subcircuit                 = { action=Attributes(Subc) }
 					}
 				}
-				ha:Change flags {
-					li:submenu {
-						ha:Nonetlist                  = { a=Alt<Key>n; action=ChangeNonetlist(Element) }
-					}
-				}
 				ha:Route Styles {
 					li:submenu {
 						@routestyles
