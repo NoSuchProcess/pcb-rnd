@@ -34,7 +34,7 @@ Select(All)
 PasteBuffer(ConvertSubc)
 
 # save 
-SaveTo(PasteBuffer, "'$out_subc'")
+SaveTo(PasteBuffer, "'$out_subc'", "lihata board v4")
 ' | "$pcb_rnd" $conf --gui batch
 }
 
