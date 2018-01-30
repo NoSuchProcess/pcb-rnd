@@ -51,6 +51,9 @@ int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_
 	return -1;
 }
 
+/* if implicit outline needs to be drawn, use lines of this thickness */
+#define KICAD_OUTLINE_THICK (PCB_MIL_TO_COORD(10))
+
 #define KICAD_MAX_LAYERS 64
 typedef struct {
 	FILE *f;                     /* output file */
@@ -1009,20 +1012,63 @@ static void kicad_paper(wctx_t *ctx, int ind)
 	ctx->oy = LayoutYOffset;
 }
 
+static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, pcb_coord_t thick, int ind)
+{
+	fprintf(ctx->f, "%*s", ind, "");
+	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+		ctx->pcb->MaxWidth/2 - ctx->ox, ctx->pcb->MaxHeight/2 - ctx->oy,
+		ctx->pcb->MaxWidth/2 + ctx->ox, ctx->pcb->MaxHeight/2 - ctx->oy,
+		lynam, thick);
+	fprintf(ctx->f, "%*s", ind, "");
+	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+		ctx->pcb->MaxWidth/2 + ctx->ox, ctx->pcb->MaxHeight/2 - ctx->oy,
+		ctx->pcb->MaxWidth/2 + ctx->ox, ctx->pcb->MaxHeight/2 + ctx->oy,
+		lynam, thick);
+	fprintf(ctx->f, "%*s", ind, "");
+	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+		ctx->pcb->MaxWidth/2 + ctx->ox, ctx->pcb->MaxHeight/2 + ctx->oy,
+		ctx->pcb->MaxWidth/2 - ctx->ox, ctx->pcb->MaxHeight/2 + ctx->oy,
+		lynam, thick);
+	fprintf(ctx->f, "%*s", ind, "");
+	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+		ctx->pcb->MaxWidth/2 - ctx->ox, ctx->pcb->MaxHeight/2 + ctx->oy,
+		ctx->pcb->MaxWidth/2 - ctx->ox, ctx->pcb->MaxHeight/2 - ctx->oy,
+		lynam, thick);
+}
+
+static void kicad_fixup_outline(wctx_t *ctx, int ind)
+{
+	int n;
+	fixed_layer_t *l;
+
+	/* if any outline layer is non-empty, don't draw the implicit outline */
+	for(n = 0; n < ctx->pcb->Data->LayerN; n++) {
+		if (!(pcb_layer_flags(ctx->pcb, n) & PCB_LYT_OUTLINE))
+			continue;
+		if (!pcb_layer_is_pure_empty(&ctx->pcb->Data->Layer[n]))
+			return;
+	}
+
+	/* find the first kicad outline layer */
+	for(l = fixed_layers; l->name != NULL; l++) {
+		if (l->type & PCB_LYT_OUTLINE) {
+			kicad_print_implicit_outline(ctx, l->name, KICAD_OUTLINE_THICK, ind);
+			return;
+		}
+	}
+
+	pcb_message(PCB_MSG_ERROR, "io_kicad: internal error: can not find output outline layer for drawing the implicit outline\n");
+}
+
 /* ---------------------------------------------------------------------------
  * writes PCB to file in s-expression format
  */
 int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	wctx_t wctx;
-
 	int baseSExprIndent = 2;
-
 	pcb_cardinal_t i;
 	int layer = 0;
-	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
-
-
 
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.pcb = PCB;
@@ -1055,6 +1101,8 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	write_kicad_layout_elements(FP, PCB, PCB->Data, wctx.ox, wctx.oy, baseSExprIndent);
 	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
+
+	kicad_fixup_outline(&wctx, baseSExprIndent);
 
 	fputs(")\n", FP); /* finish off the board */
 
