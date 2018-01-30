@@ -504,116 +504,118 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 	}
 }
 
-int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind);
-
-
-/* ---------------------------------------------------------------------------
- * writes PCB to file in s-expression format
- */
-int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+static int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
 {
-	wctx_t wctx;
+	gdl_iterator_t sit;
+	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
+	pcb_coord_t xPos, yPos;
+	pcb_subc_t *subc;
+	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	const char *currentElementName;
+	const char *currentElementRef;
+	const char *currentElementVal;
 
-	int baseSExprIndent = 2;
+	elementlist_dedup_initializer(ededup);
+	/* Now initialize the group with defaults */
+	unm_init(&group1);
 
-	pcb_cardinal_t i;
-	int layer = 0;
-	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
+	subclist_foreach(&Data->subc, &sit, subc) {
+		gdl_iterator_t it;
+		pcb_coord_t xPos, yPos;
+		int on_bottom;
+		double rot;
 
-	pcb_coord_t LayoutXOffset;
-	pcb_coord_t LayoutYOffset;
 
-	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
-	int A4HeightMil = 8267;
-	int A4WidthMil = 11700;
-	int sheetHeight = A4HeightMil;
-	int sheetWidth = A4WidthMil;
-	int paperSize = 4; /* default paper size is A4 */
+#warning TODO: get this from data table (see also #1)
+		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
+		int copperLayer = 15; /* hard coded default, 0 is bottom copper */
 
-	memset(&wctx, 0, sizeof(wctx));
-	wctx.pcb = PCB;
-	wctx.f = FP;
+		/* elementlist_dedup_skip(ededup, element);  */
+#warning TODO: why?
+		/* let's not skip duplicate elements for layout export */
 
-	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
-	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
+		if (pcb_subc_get_origin(subc, &xPos, &yPos) != 0) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+			continue;
+		}
+		if (pcb_subc_get_side(subc, &on_bottom) != 0) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
+			continue;
+		}
 
-#warning TODO: DO NOT fake we are kicad - print pcb-rnd and pcb-rnd version info in the quotes
-	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")", FP);
+		xPos += ctx->ox;
+		yPos += ctx->oy;
 
-	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
-	fprintf(FP, "%*s)\n", baseSExprIndent, "");
+		if (on_bottom) {
+			silkLayer = 20;
+			copperLayer = 0;
+		}
 
-#warning TODO: rewrite this: rather have a table and a loop that hardwired calculations in code
-	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil || PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
-		sheetHeight = A4WidthMil; /* 11.7" */
-		sheetWidth = 2 * A4HeightMil; /* 16.5" */
-		paperSize = 3; /* this is A3 size */
+#warning TODO: we should probably do unm_name() on the refdes, not on footprint-name?
+#warning TODO: the unique name makes no sense if we override it with unknown - if the unique name is NULL, it's more likely a save-incompatibility error
+		currentElementName = unm_name(&group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
+		if (currentElementName == NULL) {
+			currentElementName = "unknown";
+		}
+		currentElementRef = pcb_attribute_get(&subc->Attributes, "refdes");
+		if (currentElementRef == NULL) {
+			currentElementRef = "unknown";
+		}
+		currentElementVal = pcb_attribute_get(&subc->Attributes, "value");
+		if (currentElementVal == NULL) {
+			currentElementVal = "unknown";
+		}
+
+#warning TODO: why the heck do we hardwire timestamps?!!?!?!
+		fprintf(ctx->f, "%*s", ind, "");
+		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(NULL, copperLayer));
+		fprintf(ctx->f, "%*s", ind + 2, "");
+		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
+
+		fprintf(ctx->f, "%*s", ind + 2, "");
+		pcb_fprintf(ctx->f, "(descr %[4])\n", currentElementName);
+
+		fprintf(ctx->f, "%*s", ind + 2, "");
+
+#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+		pcb_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
+		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
+
+#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+		fprintf(ctx->f, "%*s", ind + 4, "");
+		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(ctx->f, "%*s)\n", ind + 2, "");
+
+#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+		fprintf(ctx->f, "%*s", ind + 2, "");
+		pcb_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
+		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
+
+#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+		fprintf(ctx->f, "%*s", ind + 4, "");
+		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(ctx->f, "%*s)\n", ind + 2, "");
+
+#warning TODO: call kicad_print_data() here
+/*		kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)*/
+
+#warning TODO: export padstacks
+#warning TODO: warn for vias
+#warning TODO: warn for heavy terminals
+
+		fprintf(ctx->f, "%*s)\n\n", ind, ""); /*  finish off module */
 	}
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
-		sheetHeight = 2 * A4HeightMil; /* 16.5" */
-		sheetWidth = 2 * A4WidthMil; /* 23.4" */
-		paperSize = 2; /* this is A2 size */
-	}
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
-		sheetHeight = 2 * A4WidthMil; /* 23.4" */
-		sheetWidth = 4 * A4HeightMil; /* 33.1" */
-		paperSize = 1; /* this is A1 size */
-	}
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
-		sheetHeight = 4 * A4HeightMil; /* 33.1" */
-		sheetWidth = 4 * A4WidthMil; /* 46.8"  */
-		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
-	}
-	fprintf(FP, "\n%*s(page A%d)\n", baseSExprIndent, "", paperSize);
-
-
-	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
-	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
-		/* fprintf(FP, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
-		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->MaxWidth / 2;
-	}
-	else { /* the layout is bigger than A0; most unlikely, but... */
-		/* pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth); */
-		LayoutXOffset = 0;
-	}
-	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
-		/* fprintf(FP, "%d", sheetHeight); */
-		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->MaxHeight / 2;
-	}
-	else { /* the layout is bigger than A0; most unlikely, but... */
-		/* pcb_fprintf(FP, "%.0ml", PCB->MaxHeight); */
-		LayoutYOffset = 0;
-	}
-
-
-	wctx.ox = LayoutXOffset;
-	wctx.oy = LayoutYOffset;
-
-	kicad_map_layers(&wctx);
-	kicad_print_layers(&wctx, baseSExprIndent);
-
-	/* setup section */
-	fprintf(FP, "\n%*s(setup\n", baseSExprIndent, "");
-	write_kicad_layout_via_drill_size(FP, baseSExprIndent + 2);
-	fprintf(FP, "%*s)\n", baseSExprIndent, "");
-
-	/* now come the netlist "equipotential" descriptors */
-
-	write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
-
-	/* module descriptions come next */
-	fputs("\n", FP);
-
-	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
-	write_kicad_layout_subc(&wctx, PCB->Data, baseSExprIndent);
-	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
-
-	fputs(")\n", FP); /* finish off the board */
-
+	/* Release unique name utility memory */
+	unm_uninit(&group1);
+	/* free the state used for deduplication */
+	elementlist_dedup_free(ededup);
 
 	return 0;
 }
+
+
+
+
 
 
 /* ---------------------------------------------------------------------------
@@ -940,114 +942,111 @@ int write_kicad_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data,
 	return 0;
 }
 
-int write_kicad_layout_subc(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
+/* ---------------------------------------------------------------------------
+ * writes PCB to file in s-expression format
+ */
+int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
-	gdl_iterator_t sit;
-	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
-	pcb_coord_t xPos, yPos;
-	pcb_subc_t *subc;
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
-	const char *currentElementName;
-	const char *currentElementRef;
-	const char *currentElementVal;
+	wctx_t wctx;
 
-	elementlist_dedup_initializer(ededup);
-	/* Now initialize the group with defaults */
-	unm_init(&group1);
+	int baseSExprIndent = 2;
 
-	subclist_foreach(&Data->subc, &sit, subc) {
-		gdl_iterator_t it;
-		pcb_coord_t xPos, yPos;
-		int on_bottom;
-		double rot;
+	pcb_cardinal_t i;
+	int layer = 0;
+	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
 
+	pcb_coord_t LayoutXOffset;
+	pcb_coord_t LayoutYOffset;
 
-#warning TODO: get this from data table (see also #1)
-		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
-		int copperLayer = 15; /* hard coded default, 0 is bottom copper */
+	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
+	int A4HeightMil = 8267;
+	int A4WidthMil = 11700;
+	int sheetHeight = A4HeightMil;
+	int sheetWidth = A4WidthMil;
+	int paperSize = 4; /* default paper size is A4 */
 
-		/* elementlist_dedup_skip(ededup, element);  */
-#warning TODO: why?
-		/* let's not skip duplicate elements for layout export */
+	memset(&wctx, 0, sizeof(wctx));
+	wctx.pcb = PCB;
+	wctx.f = FP;
 
-		if (pcb_subc_get_origin(subc, &xPos, &yPos) != 0) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
-			continue;
-		}
-		if (pcb_subc_get_side(subc, &on_bottom) != 0) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
-			continue;
-		}
+	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
+	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
 
-		xPos += ctx->ox;
-		yPos += ctx->oy;
+#warning TODO: DO NOT fake we are kicad - print pcb-rnd and pcb-rnd version info in the quotes
+	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")", FP);
 
-		if (on_bottom) {
-			silkLayer = 20;
-			copperLayer = 0;
-		}
+	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
+	fprintf(FP, "%*s)\n", baseSExprIndent, "");
 
-#warning TODO: we should probably do unm_name() on the refdes, not on footprint-name?
-#warning TODO: the unique name makes no sense if we override it with unknown - if the unique name is NULL, it's more likely a save-incompatibility error
-		currentElementName = unm_name(&group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
-		if (currentElementName == NULL) {
-			currentElementName = "unknown";
-		}
-		currentElementRef = pcb_attribute_get(&subc->Attributes, "refdes");
-		if (currentElementRef == NULL) {
-			currentElementRef = "unknown";
-		}
-		currentElementVal = pcb_attribute_get(&subc->Attributes, "value");
-		if (currentElementVal == NULL) {
-			currentElementVal = "unknown";
-		}
-
-#warning TODO: why the heck do we hardwire timestamps?!!?!?!
-		fprintf(ctx->f, "%*s", ind, "");
-		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(NULL, copperLayer));
-		fprintf(ctx->f, "%*s", ind + 2, "");
-		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
-
-		fprintf(ctx->f, "%*s", ind + 2, "");
-		pcb_fprintf(ctx->f, "(descr %[4])\n", currentElementName);
-
-		fprintf(ctx->f, "%*s", ind + 2, "");
-
-#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
-		pcb_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
-		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
-
-#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
-		fprintf(ctx->f, "%*s", ind + 4, "");
-		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
-		fprintf(ctx->f, "%*s)\n", ind + 2, "");
-
-#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
-		fprintf(ctx->f, "%*s", ind + 2, "");
-		pcb_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
-		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(NULL, silkLayer));
-
-#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
-		fprintf(ctx->f, "%*s", ind + 4, "");
-		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
-		fprintf(ctx->f, "%*s)\n", ind + 2, "");
-
-#warning TODO: call kicad_print_data() here
-/*		kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)*/
-
-
-#warning TODO: export padstacks
-#warning TODO: warn for vias
-#warning TODO: warn for heavy terminals
-
-		fprintf(ctx->f, "%*s)\n\n", ind, ""); /*  finish off module */
+#warning TODO: rewrite this: rather have a table and a loop that hardwired calculations in code
+	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil || PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
+		sheetHeight = A4WidthMil; /* 11.7" */
+		sheetWidth = 2 * A4HeightMil; /* 16.5" */
+		paperSize = 3; /* this is A3 size */
 	}
-	/* Release unique name utility memory */
-	unm_uninit(&group1);
-	/* free the state used for deduplication */
-	elementlist_dedup_free(ededup);
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+		sheetHeight = 2 * A4HeightMil; /* 16.5" */
+		sheetWidth = 2 * A4WidthMil; /* 23.4" */
+		paperSize = 2; /* this is A2 size */
+	}
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+		sheetHeight = 2 * A4WidthMil; /* 23.4" */
+		sheetWidth = 4 * A4HeightMil; /* 33.1" */
+		paperSize = 1; /* this is A1 size */
+	}
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+		sheetHeight = 4 * A4HeightMil; /* 33.1" */
+		sheetWidth = 4 * A4WidthMil; /* 46.8"  */
+		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
+	}
+	fprintf(FP, "\n%*s(page A%d)\n", baseSExprIndent, "", paperSize);
+
+
+	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
+	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
+		/* fprintf(FP, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
+		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->MaxWidth / 2;
+	}
+	else { /* the layout is bigger than A0; most unlikely, but... */
+		/* pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth); */
+		LayoutXOffset = 0;
+	}
+	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
+		/* fprintf(FP, "%d", sheetHeight); */
+		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->MaxHeight / 2;
+	}
+	else { /* the layout is bigger than A0; most unlikely, but... */
+		/* pcb_fprintf(FP, "%.0ml", PCB->MaxHeight); */
+		LayoutYOffset = 0;
+	}
+
+
+	wctx.ox = LayoutXOffset;
+	wctx.oy = LayoutYOffset;
+
+	kicad_map_layers(&wctx);
+	kicad_print_layers(&wctx, baseSExprIndent);
+
+	/* setup section */
+	fprintf(FP, "\n%*s(setup\n", baseSExprIndent, "");
+	write_kicad_layout_via_drill_size(FP, baseSExprIndent + 2);
+	fprintf(FP, "%*s)\n", baseSExprIndent, "");
+
+	/* now come the netlist "equipotential" descriptors */
+
+	write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
+
+	/* module descriptions come next */
+	fputs("\n", FP);
+
+	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
+	write_kicad_layout_subc(&wctx, PCB->Data, baseSExprIndent);
+	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
+
+	fputs(")\n", FP); /* finish off the board */
+
 
 	return 0;
 }
-
 
