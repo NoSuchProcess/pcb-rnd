@@ -148,21 +148,29 @@ static pcb_line_t *find_aux_line(pcb_layer_t *aux, const char *key)
 	return NULL;
 }
 
+/* Find and save the aux layer in the cache, of it exists */
+static void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc)
+{
+	int n;
+	for(n = 0; n < sc->data->LayerN; n++) {
+		if (strcmp(sc->data->Layer[n].name, SUBC_AUX_NAME) == 0) {
+			sc->aux_layer = sc->data->Layer + n;
+			return;
+		}
+	}
+
+	if (sc->aux_layer == NULL)
+		sc->aux_layer = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
+}
+
 /* Looking up aux objects for determining orientation/origin of a subc
    is somewhat expensive. Instead of doing that every time, we just save
    the pointer of those objects/layers. They don't change once the
    subc is loaded into memory */
 static int pcb_subc_cache_update(pcb_subc_t *sc)
 {
-	if (sc->aux_layer == NULL) {
-		int n;
-		for(n = 0; n < sc->data->LayerN; n++) {
-			if (strcmp(sc->data->Layer[n].name, SUBC_AUX_NAME) == 0) {
-				sc->aux_layer = sc->data->Layer + n;
-				break;
-			}
-		}
-	}
+	if (sc->aux_layer == NULL)
+		pcb_subc_cache_find_aux(sc, 0);
 
 	if (sc->aux_cache[0] != NULL)
 		return 0;
@@ -318,11 +326,11 @@ static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 	return mask;
 }
 
-static void get_aux_layer(pcb_subc_t *sc)
+static void get_aux_layer(pcb_subc_t *sc, int alloc)
 {
-	pcb_subc_cache_update(sc);
 	if (sc->aux_layer == NULL)
-		sc->aux_layer = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
+		pcb_subc_cache_find_aux(sc, 1);
+	pcb_subc_cache_update(sc);
 }
 
 void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot, pcb_bool bottom)
@@ -330,7 +338,7 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 	double unit = PCB_MM_TO_COORD(1);
 	double cs, sn;
 
-	get_aux_layer(sc);
+	get_aux_layer(sc, 1);
 
 	if (rot == 0.0) {
 		cs = 1;
@@ -355,7 +363,7 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 
 void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role)
 {
-	get_aux_layer(sc);
+	get_aux_layer(sc, 1);
 	add_aux_line(sc->aux_layer, "subc-role", role, x, y, x, y);
 }
 
