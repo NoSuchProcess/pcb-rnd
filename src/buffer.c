@@ -263,7 +263,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	return pcb_false;
 }
 
-void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
+void pcb_buffer_rotate90(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
 	/* rotate vias */
 	PCB_VIA_LOOP(Buffer->Data);
@@ -329,7 +329,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	pcb_box_rotate90(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
-void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
+void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 {
 	double cosa, sina;
 
@@ -417,7 +417,7 @@ int pcb_act_FreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		return 0;
 
 	pcb_notify_crosshair_change(pcb_false);
-	pcb_buffer_free_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
+	pcb_buffer_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
@@ -854,7 +854,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 		case F_Rotate:
 			if (sbufnum) {
-				pcb_buffer_rotate(PCB_PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
+				pcb_buffer_rotate90(PCB_PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
 				pcb_crosshair_range_to_buffer();
 			}
 			break;
