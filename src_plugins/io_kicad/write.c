@@ -1122,22 +1122,22 @@ static void kicad_paper(wctx_t *ctx, int ind)
 static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, pcb_coord_t thick, int ind)
 {
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->ox, ctx->oy,
 		ctx->pcb->MaxWidth + ctx->ox, ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->pcb->MaxWidth + ctx->ox, ctx->oy,
 		ctx->pcb->MaxWidth + ctx->ox, ctx->pcb->MaxHeight + ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->pcb->MaxWidth + ctx->ox, ctx->pcb->MaxHeight + ctx->oy,
 		ctx->ox, ctx->pcb->MaxHeight + ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->ox, ctx->pcb->MaxHeight + ctx->oy,
 		ctx->ox, ctx->oy,
 		lynam, thick);
