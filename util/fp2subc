@@ -35,7 +35,7 @@ PasteBuffer(ConvertSubc)
 
 # save 
 SaveTo(PasteBuffer, "'$out_subc'", "lihata board v4")
-' | "$dbg" "$pcb_rnd" $conf --gui batch
+' | $dbg "$pcb_rnd" $conf --gui batch
 }
 
 conv_lib_fp()
@@ -51,7 +51,7 @@ PasteBuffer(ConvertSubc)
 
 # save 
 SaveTo(PasteBuffer, "'$2'")
-' | "$dbg" "$pcb_rnd" $conf --gui batch
+' | $dbg "$pcb_rnd" $conf --gui batch
 }
 
 help()
@@ -74,6 +74,7 @@ lib=0
 in_fp=""
 out_subc=""
 pcb_rnd=pcb-rnd
+dbg=""
 conf=""
 while test $# -gt 0
 do
