@@ -1216,7 +1216,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 		if (sc->data->via_tree != NULL)
 			pcb_r_delete_entry(sc->data->via_tree, (pcb_box_t *)via);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
-		if (dst->via_tree != NULL)
+		if ((dst != NULL) && (dst->via_tree != NULL))
 			pcb_r_insert_entry(dst->via_tree, (pcb_box_t *)via);
 		chg++;
 	}
@@ -1226,7 +1226,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 		if (sc->data->padstack_tree != NULL)
 			pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
-		if (dst->padstack_tree != NULL)
+		if ((dst != NULL) && (dst->padstack_tree != NULL))
 			pcb_r_insert_entry(dst->padstack_tree, (pcb_box_t *)ps);
 		ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
 		ps->protoi = -1;
@@ -1234,7 +1234,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 	}
 
 	/* bind globals */
-	if (dst_is_pcb) {
+	if ((dst != NULL) && (dst_is_pcb)) {
 		if (dst->via_tree == NULL)
 			dst->via_tree = pcb_r_create_tree();
 		sc->data->via_tree = dst->via_tree;
