@@ -835,18 +835,6 @@ int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardin
 	return 0;
 }
 
-/* may need to export a netclass or two 
-(net_class Default "Ceci est la Netclass par dÃ©faut"
-(clearance 0.254)
-(trace_width 0.254)
-(via_dia 0.889)
-(via_drill 0.635)
-(uvia_dia 0.508)
-(uvia_drill 0.127)
-(add_net "")
-*/
-
-
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
