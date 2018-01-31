@@ -35,7 +35,7 @@ PasteBuffer(ConvertSubc)
 
 # save 
 SaveTo(PasteBuffer, "'$out_subc'", "lihata board v4")
-' | "$pcb_rnd" $conf --gui batch
+' | "$dbg" "$pcb_rnd" $conf --gui batch
 }
 
 conv_lib_fp()
@@ -51,7 +51,7 @@ PasteBuffer(ConvertSubc)
 
 # save 
 SaveTo(PasteBuffer, "'$2'")
-' | "$pcb_rnd" $conf --gui batch
+' | "$dbg" "$pcb_rnd" $conf --gui batch
 }
 
 help()
@@ -62,6 +62,8 @@ help()
 	echo "  --lib       same as -l"
 	echo "  -p path     specify the full path of the pcb-rnd executable to use"
 	echo "  --pcb-rnd   same as -p"
+	echo "  -d path     specify the the debugger to wrap pcb-rnd in (e.g. valgrind)"
+	echo "  --debugger  same as -d"
 	echo "  -c key=val  pass on a configuration setting to pcb-rnd"
 	echo "  fp          the path or library name of the footprint"
 	echo "  subc        the path of the output subc file"
@@ -78,6 +80,7 @@ do
 	cmd="$1"
 	shift 1
 	case "$cmd" in
+		-d|--debugger) dbg="$1"; shift 1;;
 		-p|--pcb-rnd) pcb_rnd="$1"; shift 1;;
 		-c) conf="$conf -c $1"; shift 1;;
 		-l|--lib) lib=1 ;;
