@@ -479,7 +479,7 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 /* writes kicad format via data
    For a track segment: Position shape Xstart Ystart Xend Yend width
    Description layer 0 netcode timestamp status; Shape parameter is set to 0 (reserved for future) */
-static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
+static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
@@ -554,19 +554,19 @@ static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
 
 						switch(shape->shape) {
 							case PCB_PSSH_POLY:
-								bx.X1 = bx.X2 = shape->data.poly.x[0] + ps->x;
-								bx.Y1 = bx.Y2 = shape->data.poly.y[0] + ps->y;
+								bx.X1 = bx.X2 = shape->data.poly.x[0];
+								bx.Y1 = bx.Y2 = shape->data.poly.y[0];
 								for(n = 1; n < shape->data.poly.len; n++)
-									pcb_box_bump_point(&bx, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
+									pcb_box_bump_point(&bx, shape->data.poly.x[n], shape->data.poly.y[n]);
 								w = (bx.X2 - bx.X1);
 								h = (bx.Y2 - bx.Y1);
 								shape_str = "rect";
 								break;
 							case PCB_PSSH_LINE:
-								line.Point1.X = shape->data.line.x1 + ps->x;
-								line.Point1.Y = shape->data.line.y1 + ps->y;
-								line.Point2.X = shape->data.line.x2 + ps->x;
-								line.Point2.Y = shape->data.line.y2 + ps->y;
+								line.Point1.X = shape->data.line.x1;
+								line.Point1.Y = shape->data.line.y1;
+								line.Point2.X = shape->data.line.x2;
+								line.Point2.Y = shape->data.line.y2;
 								line.Thickness = shape->data.line.thickness;
 								line.Clearance = 0;
 								line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
@@ -587,8 +587,8 @@ static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
 
 
 				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm) (size %.3mm %.3mm) (layers",
-					via->term, shape_str,
-					via->X + ctx->ox, via->Y + ctx->oy,
+					ps->term, shape_str,
+					ps->x + ctx->ox, ps->y + ctx->oy,
 					w, h,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 				
@@ -669,6 +669,8 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 
 		kicad_print_layer(ctx, ly, &kly, ind);
 	}
+
+	kicad_print_pstks(ctx, data, ind);
 }
 
 static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
@@ -1206,8 +1208,6 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	write_kicad_layout_elements(FP, PCB, PCB->Data, wctx.ox, wctx.oy, baseSExprIndent);
 	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
-#warning TODO: this should be part of kicad_print_data
-	kicad_print_pstk(&wctx, PCB->Data, baseSExprIndent);
 
 	kicad_fixup_outline(&wctx, baseSExprIndent);
 
