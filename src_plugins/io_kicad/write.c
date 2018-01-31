@@ -794,9 +794,7 @@ static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentatio
 
 
 
-/* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format for use in a .mod library
- */
+/* writes element data in kicad legacy format for use in a .mod library */
 int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
 	if (elementlist_length(&Data->Element) > 1) {
@@ -811,10 +809,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 }
 
 
-/* ---------------------------------------------------------------------------
- * writes netlist data in kicad legacy format for use in a layout .brd file
- */
-
+/* writes netlist data in kicad legacy format for use in a layout .brd file */
 int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
 {
 	int n; /* code mostly lifted from netlist.c */
@@ -837,9 +832,7 @@ int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardin
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format for use in a layout .brd file
- */
+/* writes element data in kicad legacy format for use in a layout .brd file */
 int write_kicad_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 
@@ -1157,9 +1150,7 @@ static void kicad_fixup_outline(wctx_t *ctx, int ind)
 	pcb_message(PCB_MSG_ERROR, "io_kicad: internal error: can not find output outline layer for drawing the implicit outline\n");
 }
 
-/* ---------------------------------------------------------------------------
- * writes PCB to file in s-expression format
- */
+/* writes PCB to file in s-expression format */
 int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	wctx_t wctx;
