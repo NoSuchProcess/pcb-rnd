@@ -1004,3 +1004,25 @@ pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 
 
 #include "obj_pstk_op.c"
+
+void pcb_pstk_rotate90(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, int steps)
+{
+	pcb_opctx_t ctx;
+
+	ctx.rotate.center_x = cx;
+	ctx.rotate.center_y = cy;
+	ctx.rotate.number = steps;
+	pcb_pstkop_rotate90(&ctx, pstk);
+}
+
+void pcb_pstk_rotate(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle)
+{
+	pcb_opctx_t ctx;
+
+	ctx.rotate.center_x = cx;
+	ctx.rotate.center_y = cy;
+	ctx.rotate.angle = angle;
+	ctx.rotate.cosa = cosa;
+	ctx.rotate.sina = sina;
+	pcb_pstkop_rotate(&ctx, pstk);
+}
