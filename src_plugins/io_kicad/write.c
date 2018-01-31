@@ -592,11 +592,11 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 					w, h,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 				
-				fprintf(ctx->f, " %s.Cu", side_str); /* always has copper */
+				fprintf(ctx->f, " %sCu", side_str); /* always has copper */
 				if (has_mask)
-					fprintf(ctx->f, " %s.Mask", side_str);
+					fprintf(ctx->f, " %sMask", side_str);
 				if (!nopaste)
-					fprintf(ctx->f, " %s.Paste", side_str);
+					fprintf(ctx->f, " %sPaste", side_str);
 				fprintf(ctx->f, "))\n");
 			}
 			else
