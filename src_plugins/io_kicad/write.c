@@ -545,6 +545,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 
 				for(n = 0; n < tshp->len; n++) {
 					if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
+						int i;
 						pcb_line_t line;
 						pcb_box_t bx;
 						pcb_pstk_shape_t *shape = &tshp->shape[n];
@@ -556,8 +557,8 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 							case PCB_PSSH_POLY:
 								bx.X1 = bx.X2 = shape->data.poly.x[0];
 								bx.Y1 = bx.Y2 = shape->data.poly.y[0];
-								for(n = 1; n < shape->data.poly.len; n++)
-									pcb_box_bump_point(&bx, shape->data.poly.x[n], shape->data.poly.y[n]);
+								for(i = 1; i < shape->data.poly.len; i++)
+									pcb_box_bump_point(&bx, shape->data.poly.x[i], shape->data.poly.y[i]);
 								w = (bx.X2 - bx.X1);
 								h = (bx.Y2 - bx.Y1);
 								shape_str = "rect";
@@ -584,7 +585,6 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 					if (tshp->shape[n].layer_mask & PCB_LYT_MASK)
 						has_mask = 1;
 				}
-
 
 				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm) (size %.3mm %.3mm) (layers",
 					ps->term, shape_str,
