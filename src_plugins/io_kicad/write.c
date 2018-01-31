@@ -38,6 +38,7 @@
 #include "const.h"
 #include "netlist.h"
 #include "obj_all.h"
+#include "obj_pstk_inlines.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
@@ -489,49 +490,136 @@ static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
 	pinlist_foreach(&Data->Via, &it, via) {
 		fprintf(ctx->f, "%*s", ind, "");
 		if (is_subc && (via->term == NULL)) {
-			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)via, "can't export non-terminal via in subcircuit, omitting the object", NULL);
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)via, "can't export non-terminal via in subcircuit, omitting the object", NULL);
 			continue;
 		}
 		if (!is_subc && (via->term != NULL)) {
-			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)via, "can't export terminal info for a via outside of a subcircuit (omitting terminal info)", NULL);
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)via, "can't export terminal info for a via outside of a subcircuit (omitting terminal info)", NULL);
 			continue;
 		}
-		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-			via->X + ctx->ox, via->Y + ctx->oy,
-			via->Thickness,
-			kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+		if (is_subc) {
+			pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
+				via->term, (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via) ? "rect" : "oval"),
+				via->X + ctx->ox, via->Y + ctx->oy,
+				via->Thickness, via->Thickness,
+				via->DrillingHole,
+				kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+		}
+		else {
+			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+				via->X + ctx->ox, via->Y + ctx->oy,
+				via->Thickness,
+				kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+		}
 	}
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		int klayer_from = 0, klayer_to = 15;
-		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
 		pcb_pstk_compshape_t cshape;
-		pcb_bool plated;
+		pcb_bool plated, square, nopaste;
 
 		if (is_subc && (ps->term == NULL)) {
-			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)ps, "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
 			continue;
 		}
 		if (!is_subc && (ps->term != NULL)) {
-			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)ps, "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
 			continue;
 		}
 
-		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
-			continue;
-		}
+		if (is_subc) {
+			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
+					via->term, (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via) ? "rect" : "oval"),
+					via->X + ctx->ox, via->Y + ctx->oy,
+					via->Thickness, via->Thickness,
+					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+			}
+			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
+				/* the above check only makes sure this is a plain padstack, get the geometry from the copper layer shape */
+				const char *shape_str, *side_str = "F.";
+				int n, has_mask = 0;
+				pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(Data, ps->proto);
+				pcb_pstk_tshape_t *tshp = &proto->tr.array[0];
+				pcb_coord_t w, h;
 
-		if (cshape != PCB_PSTK_COMPAT_ROUND) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to via", "only round vias are supported");
-			continue;
+				for(n = 0; n < tshp->len; n++) {
+					if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
+						pcb_line_t line;
+						pcb_box_t bx;
+						pcb_pstk_shape_t *shape = &tshp->shape[n];
+						
+						if (tshp->shape[n].layer_mask & PCB_LYT_BOTTOM)
+							side_str = "B.";
+
+						switch(shape->shape) {
+							case PCB_PSSH_POLY:
+								bx.X1 = bx.X2 = shape->data.poly.x[0] + ps->x;
+								bx.Y1 = bx.Y2 = shape->data.poly.y[0] + ps->y;
+								for(n = 1; n < shape->data.poly.len; n++)
+									pcb_box_bump_point(&bx, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
+								w = (bx.X2 - bx.X1);
+								h = (bx.Y2 - bx.Y1);
+								shape_str = "rect";
+								break;
+							case PCB_PSSH_LINE:
+								line.Point1.X = shape->data.line.x1 + ps->x;
+								line.Point1.Y = shape->data.line.y1 + ps->y;
+								line.Point2.X = shape->data.line.x2 + ps->x;
+								line.Point2.Y = shape->data.line.y2 + ps->y;
+								line.Thickness = shape->data.line.thickness;
+								line.Clearance = 0;
+								line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
+								pcb_line_bbox(&line);
+								w = (line.BoundingBox.X2 - line.BoundingBox.X1);
+								h = (line.BoundingBox.Y2 - line.BoundingBox.Y1);
+								shape_str = shape->data.line.square ? "rect" : "oval";
+								break;
+							case PCB_PSSH_CIRC:
+								w = h = shape->data.circ.dia;
+								shape_str = "oval";
+								break;
+						}
+					}
+					if (tshp->shape[n].layer_mask & PCB_LYT_MASK)
+						has_mask = 1;
+				}
+
+
+				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm) (size %.3mm %.3mm) (layers",
+					via->term, shape_str,
+					via->X + ctx->ox, via->Y + ctx->oy,
+					w, h,
+					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+				
+				fprintf(ctx->f, " %s.Cu", side_str); /* always has copper */
+				if (has_mask)
+					fprintf(ctx->f, " %s.Mask", side_str);
+				if (!nopaste)
+					fprintf(ctx->f, " %s.Paste", side_str);
+				fprintf(ctx->f, "))\n");
+			}
+			else
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
 		}
+		else { /* global via */
+			if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
+				continue;
+			}
+
+			if (cshape != PCB_PSTK_COMPAT_ROUND) {
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to via", "only round vias are supported");
+				continue;
+			}
 #warning TODO: set klayer_from and klayer_to using bb span of ps
 
-		fprintf(ctx->f, "%*s", ind, "");
-		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-			x + ctx->ox, y + ctx->oy, pad_dia,
-			kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
-			); /* skip (net 0) for now */
+			fprintf(ctx->f, "%*s", ind, "");
+			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+				x + ctx->ox, y + ctx->oy, pad_dia,
+				kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
+				); /* skip (net 0) for now */
+		}
 	}
 }
 
