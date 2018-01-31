@@ -529,6 +529,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 
 		if (is_subc) {
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+				fprintf(ctx->f, "%*s", ind, "");
 				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
 					via->term, (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via) ? "rect" : "oval"),
 					via->X + ctx->ox, via->Y + ctx->oy,
@@ -586,6 +587,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 						has_mask = 1;
 				}
 
+				fprintf(ctx->f, "%*s", ind, "");
 				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm) (size %.3mm %.3mm) (layers",
 					ps->term, shape_str,
 					ps->x + ctx->ox, ps->y + ctx->oy,
