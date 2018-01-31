@@ -49,6 +49,7 @@
 #include "obj_all_op.h"
 #include "obj_subc_op.h"
 #include "obj_pstk_op.h"
+#include "obj_pstk.h"
 #include "layer_grp.h"
 #include "event.h"
 #include "safe_fs.h"
@@ -274,6 +275,12 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	}
 	PCB_END_LOOP;
 
+	PCB_PADSTACK_LOOP(Buffer->Data);
+	{
+		pcb_pstk_rotate90(padstack, Buffer->X, Buffer->Y, Number);
+	}
+	PCB_END_LOOP;
+
 	/* elements */
 	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
@@ -333,6 +340,12 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	PCB_VIA_LOOP(Buffer->Data);
 	{
 		pcb_via_rotate(Buffer->Data, via, Buffer->X, Buffer->Y, cosa, sina);
+	}
+	PCB_END_LOOP;
+
+	PCB_PADSTACK_LOOP(Buffer->Data);
+	{
+		pcb_pstk_rotate(padstack, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
 	PCB_END_LOOP;
 
