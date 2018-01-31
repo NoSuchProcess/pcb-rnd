@@ -1228,7 +1228,8 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
 		if ((dst != NULL) && (dst->padstack_tree != NULL))
 			pcb_r_insert_entry(dst->padstack_tree, (pcb_box_t *)ps);
-		ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
+		if (dst != NULL)
+			ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
 		ps->protoi = -1;
 		chg++;
 	}
@@ -1319,12 +1320,22 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 {
 	pcb_subc_t *subc;
+	int n;
 
 	if (pcb_subclist_length(&buff->Data->subc) != 1)
 		return pcb_false;
 
 	subc = pcb_subclist_first(&buff->Data->subc);
 	pcb_subclist_remove(subc);
+
+	/* relocate to NULL to get trees detached */
+	for(n = 0; n < subc->data->LayerN; n++) {
+		pcb_layer_t *sl = subc->data->Layer + n;
+		int src_has_real_layer = (sl->meta.bound.real != NULL);
+		subc_relocate_layer_objs(NULL, subc->data, sl, src_has_real_layer, 0);
+	}
+	subc_relocate_globals(NULL, subc, 0);
+
 
 	pcb_data_free(buff->Data);
 	buff->Data = subc->data;
@@ -1345,7 +1356,7 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 
 	EraseSubc(sc);
 
-	/* relocate bindings */
+/* relocate bindings */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *sl = sc->data->Layer + n;
 		pcb_layer_t *dl = pcb_layer_resolve_binding(dst_top, sl);
