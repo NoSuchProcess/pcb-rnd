@@ -1205,6 +1205,52 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	return chg;
 }
 
+static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb)
+{
+		pcb_pin_t *via;
+		pcb_pstk_t *ps;
+		gdl_iterator_t it;
+		int chg = 0;
+
+		pinlist_foreach(&sc->data->Via, &it, via) {
+			if (sc->data->via_tree != NULL)
+				pcb_r_delete_entry(sc->data->via_tree, (pcb_box_t *)via);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
+			if (dst->via_tree != NULL)
+				pcb_r_insert_entry(dst->via_tree, (pcb_box_t *)via);
+			chg++;
+		}
+
+		padstacklist_foreach(&sc->data->padstack, &it, ps) {
+			const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			if (sc->data->padstack_tree != NULL)
+				pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
+			if (dst->padstack_tree != NULL)
+				pcb_r_insert_entry(dst->padstack_tree, (pcb_box_t *)ps);
+			ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
+			ps->protoi = -1;
+			chg++;
+		}
+
+	/* bind globals */
+	if (dst_is_pcb) {
+		if (dst->via_tree == NULL)
+			dst->via_tree = pcb_r_create_tree();
+		sc->data->via_tree = dst->via_tree;
+
+		if (dst->padstack_tree == NULL)
+			dst->padstack_tree = pcb_r_create_tree();
+		sc->data->padstack_tree = dst->padstack_tree;
+		chg++;
+	}
+	else {
+		sc->data->via_tree = NULL;
+		sc->data->padstack_tree = NULL;
+	}
+	return chg;
+}
+
 void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	int n;
@@ -1253,46 +1299,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb);
 	}
 
-	/* move globals */
-	{
-		pcb_pin_t *via;
-		pcb_pstk_t *ps;
-		gdl_iterator_t it;
-
-		pinlist_foreach(&sc->data->Via, &it, via) {
-			if (sc->data->via_tree != NULL)
-				pcb_r_delete_entry(sc->data->via_tree, (pcb_box_t *)via);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
-			if (ctx->buffer.dst->via_tree != NULL)
-				pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *)via);
-		}
-
-		padstacklist_foreach(&sc->data->padstack, &it, ps) {
-			const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-			if (sc->data->padstack_tree != NULL)
-				pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
-			if (ctx->buffer.dst->padstack_tree != NULL)
-				pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps);
-			ps->proto = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
-			ps->protoi = -1;
-		}
-	}
-
-	/* bind globals */
-	if (dst_is_pcb) {
-		if (ctx->buffer.dst->via_tree == NULL)
-			ctx->buffer.dst->via_tree = pcb_r_create_tree();
-		sc->data->via_tree = ctx->buffer.dst->via_tree;
-
-		if (ctx->buffer.dst->padstack_tree == NULL)
-			ctx->buffer.dst->padstack_tree = pcb_r_create_tree();
-		sc->data->padstack_tree = ctx->buffer.dst->padstack_tree;
-	}
-	else {
-		sc->data->via_tree = NULL;
-		sc->data->padstack_tree = NULL;
-	}
+	subc_relocate_globals(ctx->buffer.dst, sc, dst_is_pcb);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
