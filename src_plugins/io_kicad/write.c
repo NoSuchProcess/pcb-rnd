@@ -483,10 +483,19 @@ static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
 	gdl_iterator_t it;
 	pcb_pin_t *via;
 	pcb_pstk_t *ps;
+	int is_subc = Data->parent_type == PCB_PARENT_SUBC;
 
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
 		fprintf(ctx->f, "%*s", ind, "");
+		if (is_subc && (via->term == NULL)) {
+			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)via, "can't export non-terminal via in subcircuit, omitting the object", NULL);
+			continue;
+		}
+		if (!is_subc && (via->term != NULL)) {
+			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)via, "can't export terminal info for a via outside of a subcircuit (omitting terminal info)", NULL);
+			continue;
+		}
 		pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
 			via->X + ctx->ox, via->Y + ctx->oy,
 			via->Thickness,
@@ -497,6 +506,15 @@ static void kicad_print_pstk(wctx_t *ctx, pcb_data_t *Data, int ind)
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated;
+
+		if (is_subc && (ps->term == NULL)) {
+			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)ps, "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
+			continue;
+		}
+		if (!is_subc && (ps->term != NULL)) {
+			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)ps, "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
+			continue;
+		}
 
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
