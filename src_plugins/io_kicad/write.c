@@ -69,10 +69,12 @@ typedef enum {
 	FLP_COP_FIRST,
 	FLP_COP_INT,
 	FLP_COP_LAST,
-	FLP_MISC
+	FLP_FIXED,
+	FLP_MISC /* auto-number from the last known layer */
 } fixed_layer_place_t;
 
 typedef struct {
+	int fixed_layernum;
 	char *name;
 	char *param;
 	int is_sig;
@@ -81,16 +83,18 @@ typedef struct {
 } fixed_layer_t;
 
 static fixed_layer_t fixed_layers[] = {
-	{"F.Cu",       "signal", 1, PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
-	{"Inner%d.Cu", "signal", 1, PCB_LYT_COPPER | PCB_LYT_INTERN, FLP_COP_INT },
-	{"B.Cu",       "signal", 1, PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
-	{"F.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_MISC },
-	{"B.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_MISC },
-	{"F.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_TOP,      FLP_MISC },
-	{"B.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"F.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_MISC },
-	{"B.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_MISC },
-	{"Edge.Cuts",  "user",   0, PCB_LYT_OUTLINE,                 FLP_MISC },
+	{0,  "F.Cu",       "signal", 1, PCB_LYT_COPPER | PCB_LYT_TOP,    FLP_COP_FIRST },
+	{0,  "Inner%d.Cu", "signal", 1, PCB_LYT_COPPER | PCB_LYT_INTERN, FLP_COP_INT },
+	{0,  "B.Cu",       "signal", 1, PCB_LYT_COPPER | PCB_LYT_BOTTOM, FLP_COP_LAST },
+/*	{16, "B.Adhes",    "user",   0, PCB_LYT_ADHES | PCB_LYT_BOTTOM,  FLP_FIXED },
+	{17, "F.Adhes",    "user",   0, PCB_LYT_ADHES | PCB_LYT_TOP,     FLP_FIXED },*/
+	{18, "B.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_BOTTOM,  FLP_FIXED },
+	{19, "F.Paste",    "user",   0, PCB_LYT_PASTE | PCB_LYT_TOP,     FLP_FIXED },
+	{20, "B.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_BOTTOM,   FLP_FIXED },
+	{21, "F.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_TOP,      FLP_FIXED },
+	{22, "B.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_FIXED },
+	{23, "F.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_FIXED },
+	{28, "Edge.Cuts",  "user",   0, PCB_LYT_OUTLINE,                 FLP_FIXED },
 	{NULL, NULL, 0}
 };
 
@@ -98,7 +102,7 @@ static fixed_layer_t fixed_layers[] = {
 #define KICAD_COPPERS       16
 #define KICAD_FIRST_INNER   1
 #define KICAD_NEXT_INNER   +1
-#define KICAD_FIRST_MISC    KICAD_COPPERS
+#define KICAD_FIRST_MISC    29
 
 #define grp_idx(grp) ((grp) - ctx->pcb->LayerGroups->grp)
 
@@ -152,6 +156,11 @@ static int kicad_map_layers(wctx_t *ctx)
 			case FLP_COP_LAST:
 				idx = KICAD_COPPERS - 1;
 				break;
+
+			case FLP_FIXED:
+				idx = fl->fixed_layernum;
+				break;
+
 			case FLP_MISC:
 				idx = misc;
 				if (gid[0] >= 0)
