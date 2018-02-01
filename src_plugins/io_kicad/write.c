@@ -533,9 +533,9 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				fprintf(ctx->f, "%*s", ind, "");
 #warning TODO: handle all cshapes (throw warnings)
-				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
+				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
 					ps->term, ((cshape == PCB_PSTK_COMPAT_SQUARE) ? "rect" : "oval"),
-					x + dx, y + dy,
+					x + dx, y + dy, ps->rot,
 					pad_dia, pad_dia,
 					drill_dia,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
