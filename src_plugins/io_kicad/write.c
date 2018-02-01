@@ -697,7 +697,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 
 	subclist_foreach(&Data->subc, &sit, subc) {
 		gdl_iterator_t it;
-		pcb_coord_t xPos, yPos;
+		pcb_coord_t xPos, yPos, sox, soy;
 		int on_bottom;
 		double rot;
 
@@ -710,7 +710,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 #warning TODO: why?
 		/* let's not skip duplicate elements for layout export */
 
-		if (pcb_subc_get_origin(subc, &xPos, &yPos) != 0) {
+		if (pcb_subc_get_origin(subc, &sox, &soy) != 0) {
 			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
 			continue;
 		}
@@ -719,8 +719,8 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 			continue;
 		}
 
-		xPos += dx;
-		yPos += dy;
+		xPos = sox + dx;
+		yPos = soy + dy;
 
 		if (on_bottom) {
 			silkLayer = 20;
@@ -772,7 +772,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
-		kicad_print_data(ctx, subc->data, ind+2, 0, 0);
+		kicad_print_data(ctx, subc->data, ind+2, -sox, -soy);
 
 #warning TODO: export padstacks
 #warning TODO: warn for vias
