@@ -114,7 +114,6 @@ static fixed_layer_t fixed_layers[] = {
    Assumption: the first KICAD_COPPERS layers are the copper layers */
 static int kicad_map_layers(wctx_t *ctx)
 {
-
 	fixed_layer_t *fl;
 	int n;
 	int inner = KICAD_FIRST_INNER;
@@ -223,8 +222,6 @@ static void kicad_print_layers(wctx_t *ctx, int ind)
 			fprintf(ctx->f, "%*s(%d %s %s)\n", ind+2, "", n, ctx->layer[n].name, ctx->layer[n].param);
 	fprintf(ctx->f, "%*s)\n", ind, "");
 }
-
-
 
 typedef struct {
 	int klayer;       /* kicad layer ID, index of wctx->layer */
@@ -405,7 +402,6 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 	fprintf(ctx->f, ")\n%*s)\n", ind, "");
 }
 
-
 static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i, j;
@@ -441,7 +437,6 @@ static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t 
 	fprintf(ctx->f, "%*s)\n", ind + 2, "");
 	fprintf(ctx->f, "%*s)\n", ind, "");
 }
-
 
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
@@ -630,8 +625,6 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 	}
 }
 
-
-
 void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int n, klayer;
@@ -700,7 +693,6 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 		pcb_coord_t xPos, yPos, sox, soy;
 		int on_bottom;
 		double rot;
-
 
 #warning TODO: get this from data table (see also #1)
 		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
@@ -788,7 +780,6 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 	return 0;
 }
 
-
 static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentation)
 {
 #warning TODO: do not hardwire the drill size here - does kicad support only one size, or what?
@@ -796,8 +787,6 @@ static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentatio
 	pcb_fprintf(FP, "(via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
 	return 0;
 }
-
-
 
 /* writes element data in kicad legacy format for use in a .mod library */
 int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
@@ -822,7 +811,6 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 
 	return kicad_print_subcs(&wctx, Data, 0, 0, 0);
 }
-
 
 /* writes netlist data in kicad legacy format for use in a layout .brd file */
 int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
@@ -880,8 +868,6 @@ static void kicad_paper(wctx_t *ctx, int ind)
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
 	}
 	fprintf(ctx->f, "\n%*s(page A%d)\n", ind, "", paperSize);
-
-
 
 	if (force_center) {
 		pcb_coord_t LayoutXOffset;
@@ -1005,4 +991,3 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 
 	return 0;
 }
-
