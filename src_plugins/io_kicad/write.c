@@ -236,7 +236,7 @@ typedef struct {
 	int skip_term;    /* do not print terminals on this layer */
 } klayer_t;
 
-static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t *line, int ind)
+static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t *line, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	const char *cmd[] = {"segment", "gr_line", "fp_line"};
 
@@ -244,13 +244,13 @@ static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t 
 	pcb_fprintf(ctx->f,
 		"(%s (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		cmd[kly->type],
-		line->Point1.X + ctx->ox, line->Point1.Y + ctx->oy,
-		line->Point2.X + ctx->ox, line->Point2.Y + ctx->oy,
+		line->Point1.X + dx, line->Point1.Y + dy,
+		line->Point2.X + dx, line->Point2.Y + dy,
 		kly->name, line->Thickness);
 		/* neglect (net ___ ) for now */
 }
 
-static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *arc, int ind)
+static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *arc, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_arc_t localArc = *arc; /* for converting ellipses to circular arcs */
 	int kicadArcShape; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
@@ -273,14 +273,14 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 	else
 		kicadArcShape = 2;  /* it's an arc */
 
-	xStart = localArc.X + ctx->ox;
-	yStart = localArc.Y + ctx->oy;
+	xStart = localArc.X + dx;
+	yStart = localArc.Y + dy;
 	pcb_arc_get_end(&localArc, 1, &xEnd, &yEnd);
-	xEnd += ctx->ox;
-	yEnd += ctx->oy;
+	xEnd += dx;
+	yEnd += dy;
 	pcb_arc_get_end(&localArc, 0, &copperStartX, &copperStartY);
-	copperStartX += ctx->ox;
-	copperStartY += ctx->oy;
+	copperStartX += dx;
+	copperStartY += dy;
 
 	fprintf(ctx->f, "%*s", ind, "");
 
@@ -299,7 +299,7 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 	}
 }
 
-static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t *text, int ind)
+static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t *text, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
@@ -389,7 +389,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 		}
 		textOffsetX = halfStringWidth;
 	}
-	pcb_fprintf(ctx->f, "(at %.3mm %.3mm", text->X + ctx->ox + textOffsetX, text->Y + ctx->oy + textOffsetY);
+	pcb_fprintf(ctx->f, "(at %.3mm %.3mm", text->X + dx + textOffsetX, text->Y + dy + textOffsetY);
 	if (rotation != 0) {
 		fprintf(ctx->f, " %d", rotation / 10); /* convert decidegrees to degrees */
 	}
@@ -403,7 +403,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 }
 
 
-static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind)
+static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i, j;
 
@@ -427,7 +427,7 @@ static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t 
 	for(i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
 		fprintf(ctx->f, "%*s", ind + 6, ""); /* pcb_fprintf does not support %*s   */
 		for(j = 0; (j < polygon->PointN) && (j < 5); j++) {
-			pcb_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + ctx->ox, polygon->Points[i + j].Y + ctx->oy);
+			pcb_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + dx, polygon->Points[i + j].Y + dy);
 			if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
 				fputs(" ", ctx->f);
 			}
@@ -442,7 +442,7 @@ static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t 
 
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
-static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind)
+static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -452,11 +452,11 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 
 	linelist_foreach(&ly->Line, &it, line)
 		if ((line->term == NULL) || !kly->skip_term)
-			kicad_print_line(ctx, kly, line, ind);
+			kicad_print_line(ctx, kly, line, ind, dx, dy);
 
 	arclist_foreach(&ly->Arc, &it, arc)
 		if ((arc->term == NULL) || !kly->skip_term)
-			kicad_print_arc(ctx, kly, arc, ind);
+			kicad_print_arc(ctx, kly, arc, ind, dx, dy);
 
 	textlist_foreach(&ly->Text, &it, text) {
 		if (kly->type == KLYT_FP) {
@@ -468,18 +468,18 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 				continue;
 		}
 		if ((text->term == NULL) || !kly->skip_term)
-			kicad_print_text(ctx, kly, text, ind);
+			kicad_print_text(ctx, kly, text, ind, dx, dy);
 	}
 
 	polylist_foreach(&ly->Polygon, &it, poly)
 		if ((poly->term == NULL) || !kly->skip_term)
-			kicad_print_poly(ctx, kly, poly, ind);
+			kicad_print_poly(ctx, kly, poly, ind, dx, dy);
 }
 
 /* writes kicad format via data
    For a track segment: Position shape Xstart Ystart Xend Yend width
    Description layer 0 netcode timestamp status; Shape parameter is set to 0 (reserved for future) */
-static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
+static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
@@ -500,14 +500,14 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 		if (is_subc) {
 			pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
 				via->term, (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via) ? "rect" : "oval"),
-				via->X + ctx->ox, via->Y + ctx->oy,
+				via->X + dx, via->Y + dy,
 				via->Thickness, via->Thickness,
 				via->DrillingHole,
 				kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 		}
 		else {
 			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-				via->X + ctx->ox, via->Y + ctx->oy,
+				via->X + dx, via->Y + dy,
 				via->Thickness,
 				kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 		}
@@ -532,7 +532,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 				fprintf(ctx->f, "%*s", ind, "");
 				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
 					via->term, (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via) ? "rect" : "oval"),
-					via->X + ctx->ox, via->Y + ctx->oy,
+					via->X + dx, via->Y + dy,
 					via->Thickness, via->Thickness,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 			}
@@ -590,7 +590,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 				fprintf(ctx->f, "%*s", ind, "");
 				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm) (size %.3mm %.3mm) (layers",
 					ps->term, shape_str,
-					ps->x + ctx->ox, ps->y + ctx->oy,
+					ps->x + dx, ps->y + dy,
 					w, h,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 				
@@ -618,7 +618,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 
 			fprintf(ctx->f, "%*s", ind, "");
 			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-				x + ctx->ox, y + ctx->oy, pad_dia,
+				x + dx, y + dy, pad_dia,
 				kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
 				); /* skip (net 0) for now */
 		}
@@ -627,7 +627,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind)
 
 
 
-void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
+void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int n, klayer;
 
@@ -669,13 +669,13 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind)
 			kly.skip_term = pcb_true;
 		}
 
-		kicad_print_layer(ctx, ly, &kly, ind);
+		kicad_print_layer(ctx, ly, &kly, ind, dx, dy);
 	}
 
-	kicad_print_pstks(ctx, data, ind);
+	kicad_print_pstks(ctx, data, ind, dx, dy);
 }
 
-static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
+static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	gdl_iterator_t sit;
 	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
@@ -714,8 +714,8 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
 			continue;
 		}
 
-		xPos += ctx->ox;
-		yPos += ctx->oy;
+		xPos += dx;
+		yPos += dy;
 
 		if (on_bottom) {
 			silkLayer = 20;
@@ -767,7 +767,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind)
 		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
-		kicad_print_data(ctx, subc->data, ind+2);
+		kicad_print_data(ctx, subc->data, ind+2, dx, dy);
 
 #warning TODO: export padstacks
 #warning TODO: warn for vias
@@ -1187,8 +1187,8 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	fputs("\n", FP);
 
 	write_kicad_layout_elements(FP, PCB, PCB->Data, wctx.ox, wctx.oy, baseSExprIndent);
-	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent);
-	kicad_print_data(&wctx, PCB->Data, baseSExprIndent);
+	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent, wctx.ox, wctx.oy);
+	kicad_print_data(&wctx, PCB->Data, baseSExprIndent, wctx.ox, wctx.oy);
 
 	kicad_fixup_outline(&wctx, baseSExprIndent);
 
