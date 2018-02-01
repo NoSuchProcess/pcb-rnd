@@ -42,6 +42,9 @@
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
+/* When non-zero, introduce an offset to move the whole board to the center of the page */
+static int force_center = 0;
+
 /* writes the buffer to file */
 int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
@@ -1047,8 +1050,6 @@ int write_kicad_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data,
 
 static void kicad_paper(wctx_t *ctx, int ind)
 {
-	pcb_coord_t LayoutXOffset;
-	pcb_coord_t LayoutYOffset;
 
 	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
 	int A4HeightMil = 8267;
@@ -1082,26 +1083,34 @@ static void kicad_paper(wctx_t *ctx, int ind)
 	fprintf(ctx->f, "\n%*s(page A%d)\n", ind, "", paperSize);
 
 
-	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
-	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
-		/* fprintf(ctx->f, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
-		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->MaxWidth / 2;
-	}
-	else { /* the layout is bigger than A0; most unlikely, but... */
-		/* pcb_fprintf(ctx->f, "%.0ml ", PCB->MaxWidth); */
-		LayoutXOffset = 0;
-	}
-	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
-		/* fprintf(ctx->f, "%d", sheetHeight); */
-		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->MaxHeight / 2;
-	}
-	else { /* the layout is bigger than A0; most unlikely, but... */
-		/* pcb_fprintf(ctx->f, "%.0ml", PCB->MaxHeight); */
-		LayoutYOffset = 0;
+
+	if (force_center) {
+		pcb_coord_t LayoutXOffset;
+		pcb_coord_t LayoutYOffset;
+
+		/* we now sort out the offsets for centring the layout in the chosen sheet size here */
+		if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
+			/* fprintf(ctx->f, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
+			LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->MaxWidth / 2;
+		}
+		else { /* the layout is bigger than A0; most unlikely, but... */
+			/* pcb_fprintf(ctx->f, "%.0ml ", PCB->MaxWidth); */
+			LayoutXOffset = 0;
+		}
+		if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
+			/* fprintf(ctx->f, "%d", sheetHeight); */
+			LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->MaxHeight / 2;
+		}
+		else { /* the layout is bigger than A0; most unlikely, but... */
+			/* pcb_fprintf(ctx->f, "%.0ml", PCB->MaxHeight); */
+			LayoutYOffset = 0;
 	}
 
 	ctx->ox = LayoutXOffset;
 	ctx->oy = LayoutYOffset;
+	}
+	else
+		ctx->ox = ctx->oy = 0;
 }
 
 static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, pcb_coord_t thick, int ind)
