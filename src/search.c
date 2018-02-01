@@ -72,15 +72,18 @@ static pcb_bool SearchSubcByLocation(unsigned long, unsigned long, pcb_subc_t **
 /* Return not-found for subc parts and locked items unless objst says otherwise
    obj is the object to be checked if part of subc; check lock on locked_obj
    Also return not-found if flags are required but the object doesn't have them */
-#define TEST_OBJST(objst, req_flag, locality, obj, locked_obj) \
+#define TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, reject) \
 do { \
 	if ((req_flag != 0) && (!PCB_FLAG_TEST(req_flag, obj))) \
-		return PCB_R_DIR_NOT_FOUND; \
+		reject; \
 	if (!(objst & PCB_TYPE_SUBC_PART) && (pcb_ ## locality ## obj_parent_subc(obj->parent_type, &obj->parent))) \
-		return PCB_R_DIR_NOT_FOUND; \
+		reject; \
 	if (!(objst & PCB_TYPE_LOCKED) && (PCB_FLAG_TEST(objst & PCB_FLAG_LOCK, locked_obj))) \
-		return PCB_R_DIR_NOT_FOUND; \
+		reject; \
 } while(0)
+
+#define TEST_OBJST(objst, req_flag, locality, obj, locked_obj) \
+	TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, return PCB_R_DIR_NOT_FOUND)
 
 /* ---------------------------------------------------------------------------
  * searches a via
@@ -704,6 +707,54 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	return pcb_false;
 }
 
+/* find the first floater on any layer */
+static pcb_bool SearchSubcFloaterByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **out_subc, pcb_text_t **out_txt, void **dummy, pcb_bool other_side)
+{
+	pcb_rtree_it_t it;
+	void *obj;
+	int n;
+	pcb_layer_type_t my_side_lyt;
+
+	if (other_side)
+		my_side_lyt = conf_core.editor.show_solder_side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
+	else
+		my_side_lyt = conf_core.editor.show_solder_side ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+
+	for(n = 0; n < PCB->Data->LayerN; n++)  {
+		pcb_layer_t *ly = pcb_get_layer(PCB->Data, pcb_layer_stack[n]);
+		pcb_layer_type_t lyt;
+
+		if ((ly == NULL) || (ly->text_tree == NULL) || (!ly->meta.real.vis))
+			continue;
+
+		lyt = pcb_layer_flags_(ly);
+		if (!(lyt & my_side_lyt))
+			continue;
+
+		for(obj = pcb_rtree_first(&it, ly->text_tree, (pcb_rtree_box_t *)&SearchBox); obj != NULL; obj = pcb_rtree_next(&it)) {
+			pcb_text_t *txt = (pcb_text_t *)obj;
+			pcb_subc_t *subc;
+
+			if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, txt) == 0)
+				continue;
+
+			subc = pcb_lobj_parent_subc(txt->parent_type, &txt->parent);
+			if (subc == NULL)
+				continue;
+
+			TEST_OBJST_(objst, req_flag, l, txt, subc, continue);
+
+			*out_subc = subc;
+			*out_txt = txt;
+			*dummy = txt;
+			return pcb_true;
+		}
+	}
+
+	return pcb_false;
+}
+
+
 pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
 {
 	pcb_coord_t t = PIN_SIZE(pin) / 2;
@@ -1274,6 +1325,13 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
 
+	if (!HigherAvail && Type & PCB_TYPE_SUBC_FLOATER &&
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_false)) {
+		pcb_box_t *box = &((pcb_text_t *) r2)->BoundingBox;
+		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
+		HigherAvail = PCB_TYPE_SUBC_FLOATER;
+	}
+
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_element_t **) pr2, (pcb_element_t **) pr3, pcb_false)) {
 		pcb_box_t *box = &((pcb_element_t *) r1)->BoundingBox;
@@ -1391,6 +1449,10 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	if (Type & PCB_TYPE_ELEMENT_NAME &&
 			SearchElementNameByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3, pcb_true))
 		return PCB_TYPE_ELEMENT_NAME;
+
+	if (Type & PCB_TYPE_SUBC_FLOATER &&
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_true))
+		return PCB_TYPE_SUBC_FLOATER;
 
 	if (Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))

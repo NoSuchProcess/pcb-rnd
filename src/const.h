@@ -83,6 +83,7 @@ typedef enum {
 
 	PCB_TYPE_ARC_POINT     = 0x80000,
 	PCB_TYPE_PSTK          = 0x100000,
+	PCB_TYPE_SUBC_FLOATER  = 0x200000, /* prefer subc floaters in search by location; TODO: should be 2 slots up */
 
 	/* groups/properties */
 	PCB_TYPEMASK_PIN       = (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART),
