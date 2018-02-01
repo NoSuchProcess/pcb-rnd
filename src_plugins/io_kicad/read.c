@@ -2306,8 +2306,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (moduleEmpty) { /* should try and use module empty function here */
 #warning TODO: why do we try to do this? an error is an error
 				Thickness = PCB_MM_TO_COORD(0.200);
-/*				pcb_element_line_new(subc, moduleX, moduleY, moduleX + 1, moduleY + 1, Thickness);*/
-				/*pcb_trace("\tEmpty Module!! 1nm line created at module centroid.\n"); */
 			}
 
 			pcb_subc_bbox(subc);
