@@ -767,7 +767,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
-		kicad_print_data(ctx, subc->data, ind+2, dx, dy);
+		kicad_print_data(ctx, subc->data, ind+2, 0, 0);
 
 #warning TODO: export padstacks
 #warning TODO: warn for vias
