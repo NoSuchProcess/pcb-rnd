@@ -519,6 +519,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated, square, nopaste;
+		double psrot;
 
 		if (is_subc && (ps->term == NULL)) {
 			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
@@ -529,13 +530,17 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 			continue;
 		}
 
+		psrot = ps->rot;
+		if (ps->smirror)
+			psrot = -psrot;
+
 		if (is_subc) {
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				fprintf(ctx->f, "%*s", ind, "");
 #warning TODO: handle all cshapes (throw warnings)
 				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
 					ps->term, ((cshape == PCB_PSTK_COMPAT_SQUARE) ? "rect" : "oval"),
-					x + dx, y + dy, ps->rot,
+					x + dx, y + dy, psrot,
 					pad_dia, pad_dia,
 					drill_dia,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
@@ -595,7 +600,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 				fprintf(ctx->f, "%*s", ind, "");
 				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (layers",
 					ps->term, shape_str,
-					ps->x + dx, ps->y + dy, ps->rot,
+					ps->x + dx, ps->y + dy, psrot,
 					w, h,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 				
