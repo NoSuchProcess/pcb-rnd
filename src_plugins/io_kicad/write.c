@@ -253,7 +253,7 @@ static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t 
 static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *arc, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_arc_t localArc = *arc; /* for converting ellipses to circular arcs */
-	int kicadArcShape; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
+/*	int kicadArcShape;  3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
 	pcb_coord_t copperStartX, copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
 
@@ -266,12 +266,15 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 		localArc.Height = radius;
 	}
 
+#warning TODO: what do we need this for?
+#if 0
 	/* Return the x;y coordinate of the endpoint of an arc; if which is 0, return
 	   the endpoint that corresponds to StartAngle, else return the end angle's. */
 	if ((arc->Delta == 360.0) || (arc->Delta == -360.0))
 		kicadArcShape = 3; /* it's a circle */
 	else
 		kicadArcShape = 2;  /* it's an arc */
+#endif
 
 	xStart = localArc.X + dx;
 	yStart = localArc.Y + dy;
