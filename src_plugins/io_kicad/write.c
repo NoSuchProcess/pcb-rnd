@@ -99,7 +99,7 @@ static fixed_layer_t fixed_layers[] = {
 	{22, "B.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_FIXED },
 	{23, "F.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_FIXED },
 	{28, "Edge.Cuts",  "user",   0, PCB_LYT_OUTLINE,                 FLP_FIXED },
-	{NULL, NULL, 0}
+	{0, NULL, NULL, 0}
 };
 
 /* number of copper layers, where to start inners, how to increment iners */
@@ -679,8 +679,6 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, pcb_coord_t dx, pc
 static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	gdl_iterator_t sit;
-	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
-	pcb_coord_t xPos, yPos;
 	pcb_subc_t *subc;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char *currentElementName;
@@ -692,10 +690,8 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 	unm_init(&group1);
 
 	subclist_foreach(&Data->subc, &sit, subc) {
-		gdl_iterator_t it;
 		pcb_coord_t xPos, yPos, sox, soy;
 		int on_bottom;
-		double rot;
 
 #warning TODO: get this from data table (see also #1)
 		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
@@ -954,8 +950,6 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 {
 	wctx_t wctx;
 	int baseSExprIndent = 2;
-	pcb_cardinal_t i;
-	int layer = 0;
 
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.pcb = PCB;
