@@ -542,8 +542,8 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				/* the above check only makes sure this is a plain padstack, get the geometry from the copper layer shape */
-				const char *shape_str, *side_str = "F.";
-				int n, has_mask = 0;
+				const char *shape_str, *side_str;
+				int n, has_mask = 0, on_bottom;
 				pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(Data, ps->proto);
 				pcb_pstk_tshape_t *tshp = &proto->tr.array[0];
 				pcb_coord_t w, h;
@@ -555,8 +555,9 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 						pcb_box_t bx;
 						pcb_pstk_shape_t *shape = &tshp->shape[n];
 						
-						if (tshp->shape[n].layer_mask & PCB_LYT_BOTTOM)
-							side_str = "B.";
+						on_bottom = tshp->shape[n].layer_mask & PCB_LYT_BOTTOM;
+						if (ps->smirror) on_bottom = !on_bottom;
+						side_str = (on_bottom ? "B." : "F.");
 
 						switch(shape->shape) {
 							case PCB_PSSH_POLY:
