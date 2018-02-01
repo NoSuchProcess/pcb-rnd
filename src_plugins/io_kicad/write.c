@@ -537,6 +537,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 					ps->term, ((cshape == PCB_PSTK_COMPAT_SQUARE) ? "rect" : "oval"),
 					x + dx, y + dy,
 					pad_dia, pad_dia,
+					drill_dia,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
@@ -591,9 +592,9 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 				}
 
 				fprintf(ctx->f, "%*s", ind, "");
-				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm) (size %.3mm %.3mm) (layers",
+				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (layers",
 					ps->term, shape_str,
-					ps->x + dx, ps->y + dy,
+					ps->x + dx, ps->y + dy, ps->rot,
 					w, h,
 					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
 				
