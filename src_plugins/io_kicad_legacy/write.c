@@ -51,9 +51,7 @@
 /* generates a default via drill size for the layout */
 static int write_kicad_legacy_layout_via_drill_size(FILE *FP);
 
-/* ---------------------------------------------------------------------------
- * writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX
- */
+/* writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX */
 static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
@@ -86,13 +84,9 @@ static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes kicad format via data
- For a track segment:
- Position shape Xstart Ystart Xend Yend width
- Description layer 0 netcode timestamp status
- Shape parameter is set to 0 (reserved for futu
-*/
+/* via is: Position shape Xstart Ystart Xend Yend width
+   Description layer 0 netcode timestamp status
+   Shape parameter is set to 0 (reserved for future) */
 static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
@@ -334,9 +328,6 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format for use in a .mod library
- */
 static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
 	/*
@@ -518,9 +509,6 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes netlist data in kicad legacy format for use in a layout .brd file
- */
 static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 {
 	int n; /* code mostly lifted from netlist.c */
@@ -548,9 +536,6 @@ static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layo
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format for use in a layout .brd file
- */
 static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t eit;
@@ -730,9 +715,6 @@ static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes polygon data in kicad legacy format for use in a layout .brd file
- */
 static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	int i, j;
@@ -778,7 +760,6 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 	}
 }
 
-/* writes the buffer to file */
 int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
 	/*fputs("io_kicad_legacy_write_buffer()", FP); */
@@ -804,9 +785,6 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes PCB to file
- */
 int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	/* this is the first step in exporting a layout;
