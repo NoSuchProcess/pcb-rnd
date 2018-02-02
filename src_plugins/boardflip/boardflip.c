@@ -171,7 +171,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		pcb_poly_restore_to_poly(data, PCB_TYPE_PSTK, padstack, padstack);
 		XFLIP(padstack->x);
 		YFLIP(padstack->y);
-		pcb_pin_bbox(padstack);
+		pcb_pstk_bbox(padstack);
 		pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)padstack);
 		pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, padstack, padstack);
 	}
