@@ -26,7 +26,7 @@
 
 #include "conf_core.h"
 
-static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, pcb_coord_t y0, const char *transf, const char *param)
+static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, pcb_coord_t y0, double rot, int on_bottom, const char *transf, const char *param)
 {
 	FILE *fin;
 	char *ref;
@@ -73,16 +73,30 @@ static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, 
 	}
 	ref = htsp_get(models, (char *)name);
 	if (ref != NULL) {
-		const char *tab = "";
-		pcb_append_printf(&model_calls, "	translate([%mm,%mm,0.8])\n", x0, y0);
-		if (transf != NULL) {
-			pcb_append_printf(&model_calls, "		%s\n", transf);
-			tab = "\t";
+		char tab[] = "\t\t\t\t\t\t\t\t";
+		int ind = 0;
+		pcb_append_printf(&model_calls, "	translate([%mm,%mm,%c0.8])\n", x0, y0, on_bottom ? '-' : '+');
+		ind++;
+		tab[ind] = '\0';
+
+		if (on_bottom) {
+			pcb_append_printf(&model_calls, "	%smirror([0,0,1])\n", tab);
+			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
+		if (rot != 0) {
+			pcb_append_printf(&model_calls, "	%srotate([0,0,%f])\n", tab, -rot);
+			tab[ind] = '\t'; ind++; tab[ind] = '\0';
+		}
+		if (transf != NULL) {
+			pcb_append_printf(&model_calls, "	%s%s\n", tab, transf);
+			tab[ind] = '\t'; ind++; tab[ind] = '\0';
+		}
+
+		
 		if (param != NULL)
-			pcb_append_printf(&model_calls, "		%s%s(%s);\n", tab, ref, param);
+			pcb_append_printf(&model_calls, "	%s%s(%s);\n", tab, ref, param);
 		else
-			pcb_append_printf(&model_calls, "		%s%s();\n", tab, ref);
+			pcb_append_printf(&model_calls, "	%s%s();\n", tab, ref);
 	}
 }
 
@@ -99,7 +113,7 @@ static void scad_insert_models(void)
 		if (mod != NULL) {
 			transf = pcb_attribute_get(&element->Attributes, "openscad-transformation");
 			param = pcb_attribute_get(&element->Attributes, "openscad-param");
-			scad_insert_model(&models, mod, TRX_(element->MarkX), TRY_(element->MarkY), transf, param);
+			scad_insert_model(&models, mod, TRX_(element->MarkX), TRY_(element->MarkY), 0, 0, transf, param);
 		}
 	} PCB_END_LOOP;
 
@@ -115,11 +129,9 @@ static void scad_insert_models(void)
 			pcb_subc_get_rotation(subc, &rot);
 			pcb_subc_get_side(subc, &on_bottom);
 
-#warning subc TODO: apply rot and on_bottom
-
 			transf = pcb_attribute_get(&subc->Attributes, "openscad-transformation");
 			param = pcb_attribute_get(&subc->Attributes, "openscad-param");
-			scad_insert_model(&models, mod, TRX_(ox), TRY_(oy), transf, param);
+			scad_insert_model(&models, mod, TRX_(ox), TRY_(oy), rot, on_bottom, transf, param);
 		}
 	} PCB_END_LOOP;
 
