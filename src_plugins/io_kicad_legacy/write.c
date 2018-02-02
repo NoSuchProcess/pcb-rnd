@@ -49,36 +49,32 @@
  * and layer "21" SilkScreen Front
  */
 
+static const char *or_empty(const char *s)
+{
+	if (s == NULL) return "";
+	return s;
+}
+
 /* writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX */
-static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
+static int io_kicad_legacy_write_subc_index(FILE *FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
-	pcb_element_t *element;
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	pcb_subc_t *subc;
+	unm_t group1;
 
-	elementlist_dedup_initializer(ededup);
-
-	/* Now initialize the group with defaults */
 	unm_init(&group1);
 
-	elementlist_foreach(&Data->Element, &eit, element) {
-		elementlist_dedup_skip(ededup, element);
-		/* skip duplicate elements */
-		/* only non empty elements */
-
-		if (!linelist_length(&element->Line)
-				&& !pinlist_length(&element->Pin)
-				&& !arclist_length(&element->Arc)
-				&& !padlist_length(&element->Pad))
+	subclist_foreach(&Data->Element, &eit, subc) {
+		if (pcb_data_is_empty(subc->data))
 			continue;
 
-		fprintf(FP, "%s\n", unm_name(&group1, element->Name[0].TextString, element));
+#warning TODO: need a subc dedup
+/*		elementlist_dedup_skip(ededup, element);*/
 
+		fprintf(FP, "%s\n", unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc));
 	}
-	/* Release unique name utility memory */
+
 	unm_uninit(&group1);
-	/* free the state used for deduplication */
-	elementlist_dedup_free(ededup);
 	return 0;
 }
 
@@ -344,13 +340,6 @@ static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layo
 	}
 	return 0;
 }
-
-static const char *or_empty(const char *s)
-{
-	if (s == NULL) return "";
-	return s;
-}
-
 
 static void print_pstk_net(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
 {
@@ -670,7 +659,7 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", FP);
 	fputs("Units mm\n", FP);
 	fputs("$INDEX\n", FP);
-	io_kicad_legacy_write_element_index(FP, buff->Data);
+	io_kicad_legacy_write_subc_index(FP, buff->Data);
 	fputs("$EndINDEX\n", FP);
 
 	pcb_write_element_data(FP, buff->Data, "kicadl");
