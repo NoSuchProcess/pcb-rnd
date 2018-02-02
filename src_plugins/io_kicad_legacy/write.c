@@ -300,6 +300,34 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 	}
 }
 
+
+static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
+{
+	int n; /* code mostly lifted from netlist.c */
+	int netNumber;
+	pcb_lib_menu_t *menu;
+	pcb_lib_entry_t *netlist;
+
+	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
+	fputs("$EQUIPOT\n", FP);
+	fputs("Na 0 \"\"\n", FP);
+	fputs("St ~\n", FP);
+	fputs("$EndEQUIPOT\n", FP);
+
+	/* now we step through any available netlists and generate descriptors */
+	for(n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber++) {
+		menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
+		netlist = &menu->Entry[0];
+		if (netlist != NULL) {
+			fputs("$EQUIPOT\n", FP);
+			fprintf(FP, "Na %d \"%s\"\n", netNumber, pcb_netlist_name(menu)); /* netlist 0 was used for unconnected pads  */
+			fputs("St ~\n", FP);
+			fputs("$EndEQUIPOT\n", FP);
+		}
+	}
+	return 0;
+}
+
 static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
@@ -464,33 +492,6 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 	/* free the state used for deduplication */
 	elementlist_dedup_free(ededup);
 
-	return 0;
-}
-
-static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
-{
-	int n; /* code mostly lifted from netlist.c */
-	int netNumber;
-	pcb_lib_menu_t *menu;
-	pcb_lib_entry_t *netlist;
-
-	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
-	fputs("$EQUIPOT\n", FP);
-	fputs("Na 0 \"\"\n", FP);
-	fputs("St ~\n", FP);
-	fputs("$EndEQUIPOT\n", FP);
-
-	/* now we step through any available netlists and generate descriptors */
-	for(n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber++) {
-		menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
-		netlist = &menu->Entry[0];
-		if (netlist != NULL) {
-			fputs("$EQUIPOT\n", FP);
-			fprintf(FP, "Na %d \"%s\"\n", netNumber, pcb_netlist_name(menu)); /* netlist 0 was used for unconnected pads  */
-			fputs("St ~\n", FP);
-			fputs("$EndEQUIPOT\n", FP);
-		}
-	}
 	return 0;
 }
 
