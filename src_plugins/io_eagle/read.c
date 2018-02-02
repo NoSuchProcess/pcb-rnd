@@ -31,8 +31,6 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../src_plugins/boardflip/boardflip.h"
-
 #include "board.h"
 #include "read.h"
 #include "conf.h"
@@ -45,6 +43,9 @@
 #include "trparse.h"
 #include "trparse_xml.h"
 #include "trparse_bin.h"
+
+#include "../src_plugins/boardflip/boardflip.h"
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MIL_TO_COORD(50)
@@ -852,9 +853,20 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj, int type, int hole)
 {
 	eagle_loc_t loc = type;
-	pcb_coord_t x, y, drill, dia;
-	pcb_pin_t *pin;
+	pcb_coord_t x, y, drill, dia, clr, mask;
+	pcb_pstk_t *ps;
 	const char *name, *shape;
+	pcb_pstk_compshape_t cshp = PCB_PSTK_COMPAT_INVALID;
+	pcb_data_t *data;
+
+	switch(loc) {
+		case IN_ELEM:
+			data = ((pcb_subc_t *)obj)->data;
+			break;
+		case ON_BOARD:
+			data = st->pcb->Data;
+			break;
+	}
 
 	name = eagle_get_attrs(st, subtree, "name", NULL);
 	x = eagle_get_attrc(st, subtree, "x", 0);
@@ -863,30 +875,31 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
 	shape = eagle_get_attrs(st, subtree, "shape", 0);
 
+	clr = conf_core.design.clearance; /* eagle doesn't seem to support per via clearance */
+	mask = (loc == IN_ELEM) ? conf_core.design.clearance : 0; /* board vias don't have mask */
+
 	if ((dia - drill) / 2.0 < st->ms_width)
 		dia = drill + 2*st->ms_width;
 
-	switch((eagle_loc_t)type) {
-		case IN_ELEM:
-			pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
-				conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
-			break;
-		case ON_BOARD:
-			pin = pcb_via_new(st->pcb->Data, x, y, dia,
-				conf_core.design.clearance, 0, drill, name, pcb_no_flags());
-			break;
+#warning padstack TODO: process the extent attribute for bbvia
+#warning padstack TODO: revise this for numeric values ?
+	/* shape = {square, round, octagon, long, offset} binary */
+	
+	if (shape != NULL) {
+		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
+			cshp = PCB_PSTK_COMPAT_OCTAGON;
+		else if ((strcmp(shape, "square") == 0) || (strcmp(shape, "0") == 0))
+			cshp = PCB_PSTK_COMPAT_SQUARE;
+		else if ((strcmp(shape, "round") == 0) || (strcmp(shape, "1") == 0))
+			cshp = PCB_PSTK_COMPAT_ROUND;
 	}
 
-	if (hole)
-		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pin);
-#warning TODO padstacks will allow more pad shapes
- 	/* shape = {square, round, octagon, long, offset} binary */
-	if ((shape != NULL) && ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0)))
-		PCB_FLAG_SET(PCB_FLAG_OCTAGON, pin);
-	else if ((shape != NULL) && ((strcmp(shape, "square") == 0) || (strcmp(shape, "0") == 0)))
-		PCB_FLAG_SET(PCB_FLAG_SQUARE, pin);
-	else
-		PCB_FLAG_SET(PCB_FLAG_VIA, pin);
+	if (cshp == PCB_PSTK_COMPAT_INVALID) {
+		cshp = PCB_PSTK_COMPAT_OCTAGON;
+		pcb_message(PCB_MSG_ERROR, "Invalid padstack shape: '%s' - using octagon instead\n", shape);
+	}
+
+	ps = pcb_pstk_new_compat_via(data, x, y, drill, dia, clr, mask,  cshp, !hole);
 
 	switch(loc) {
 		case IN_ELEM: break;
@@ -905,7 +918,8 @@ static int eagle_read_hole(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 static int eagle_read_pad(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);
+/*	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);*/
+	return 0;
 }
 
 static int eagle_read_via(read_state_t *st, trnode_t *subtree, void *obj, int type)
