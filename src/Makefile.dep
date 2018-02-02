@@ -774,9 +774,10 @@
  math_helper.h misc_util.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_actions.h hid_attrib.h hid_color.h hid_helper.h \
- hid_flags.h ../src_plugins/export_openscad/scad_draw.c \
+ ../src_3rd/puplug/error.h safe_fs.h obj_pstk_inlines.h data.h thermal.h \
+ hid.h hid_nogui.h hid_draw_helpers.h hid_init.h hid_actions.h \
+ hid_attrib.h hid_color.h hid_helper.h hid_flags.h \
+ ../src_plugins/export_openscad/scad_draw.c \
  ../src_plugins/export_openscad/../lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openscad/scad_models.c dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
@@ -2457,7 +2458,8 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad/write.h layer.h const.h netlist.h route_style.h \
- obj_all.h ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
+ obj_all.h obj_pstk_inlines.h data.h thermal.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_kicad_legacy/io_kicad_legacy.o: \
  ../src_plugins/io_kicad_legacy/io_kicad_legacy.c ../config.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -2501,14 +2503,15 @@
  plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h list_conf.h error.h \
- ../src_plugins/io_kicad_legacy/../io_kicad/uniq_name.h data.h \
- crosshair.h vtonpoint.h hid.h error.h drc.h route.h buffer.h \
- obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
- rtree2.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
+ ../src_3rd/genht/htsp.h list_conf.h error.h data.h crosshair.h \
+ vtonpoint.h hid.h error.h drc.h route.h buffer.h obj_subc_list.h \
+ obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h rtree2.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad_legacy/write.h layer.h const.h netlist.h \
- route_style.h obj_all.h
+ route_style.h obj_all.h obj_pstk_inlines.h data.h thermal.h \
+ ../src_plugins/io_kicad_legacy/../io_kicad/uniq_name.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_lihata/common.o: ../src_plugins/io_lihata/common.c \
  ../config.h data.h globalconst.h global_typedefs.h pcb_bool.h unit.h \
  layer.h attrib.h obj_all_list.h obj_arc_list.h obj_common.h \
