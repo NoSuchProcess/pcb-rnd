@@ -375,14 +375,14 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc,
 		pcb_layergrp_id_t gid;
 		switch (id) {
 			case 51: /* = tDocu */
-				typ		= PCB_LYT_SILK | PCB_LYT_TOP;
-				ly->name	= "tDocu";
-				ly->color	= 14;
+				typ        = PCB_LYT_SILK | PCB_LYT_TOP;
+				ly->name   = "tDocu";
+				ly->color  = 14;
 				break;
 			default: /* i.e. 52 = bDocu: */
-				typ             = PCB_LYT_SILK | PCB_LYT_BOTTOM;
-				ly->name        = "bDocu";
-				ly->color       = 7;
+				typ        = PCB_LYT_SILK | PCB_LYT_BOTTOM;
+				ly->name   = "bDocu";
+				ly->color  = 7;
 				break;
 		}
 
