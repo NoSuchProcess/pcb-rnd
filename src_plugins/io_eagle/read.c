@@ -46,6 +46,7 @@
 
 #include "../src_plugins/boardflip/boardflip.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
+#include "../src_plugins/lib_compat_help/subc_help.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MIL_TO_COORD(50)
@@ -69,7 +70,7 @@ typedef struct eagle_layer_s {
 	int visible;
 	int active;
 
-	pcb_layer_id_t ly;
+	pcb_layer_id_t lid;
 } eagle_layer_t;
 
 typedef struct eagle_library_s {
@@ -303,7 +304,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->fill    = eagle_get_attrl(st, n, "fill", -1);
 			ly->visible = eagle_get_attrl(st, n, "visible", -1);
 			ly->active  = eagle_get_attrl(st, n, "active", -1);
-			ly->ly      = -1;
+			ly->lid     = -1;
 #warning TODO we are reading uint as signed int when getting layer, and ignoring half of them
 			id = eagle_get_attrl(st, n, "number", -1);
 			if (id >= 0) {
@@ -335,7 +336,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					break;
 				case 20: /*199:   20 is dimension, 199 is contour */
 					grp = pcb_get_grp_new_intern(st->pcb, -1);
-					ly->ly = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name);
+					ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name);
 					pcb_layergrp_fix_turn_to_outline(grp);
 					break;
 
@@ -343,14 +344,14 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					if ((id > 1) && (id < 16)) {
 						/* new internal layer */
 						grp = pcb_get_grp_new_intern(st->pcb, -1);
-						ly->ly = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name);
+						ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name);
 					}
 			}
 			if (typ != 0) {
 				if (reuse)
-					pcb_layer_list(st->pcb, typ, &ly->ly, 1);
-				if ((ly->ly < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
-					ly->ly = pcb_layer_create(st->pcb, gid, ly->name);
+					pcb_layer_list(st->pcb, typ, &ly->lid, 1);
+				if ((ly->lid < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
+					ly->lid = pcb_layer_create(st->pcb, gid, ly->name);
 			}
 		}
 	}
@@ -359,7 +360,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 	return 0;
 }
 
-static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, void *obj)
+static pcb_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, void *obj)
 {
 	/* tDocu & bDocu are used for info used when designing, but not necessarily for
 	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
@@ -374,8 +375,11 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc,
 	const char *lnm;
 
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
-	if ((id == 51 || id == 52) && ly->ly < 0) {
-		unsigned long typ;
+	if ((ly == NULL) || (ly->lid < 0)) {
+#warning TODO: move this out to a separate function
+		if (id == 51 || id == 52) {
+			/* create docu on the first reference */
+		pcb_layer_type_t typ;
 		pcb_layergrp_id_t gid;
 		switch (id) {
 			case 51: /* = tDocu */
@@ -394,25 +398,28 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc,
 		ly->visible = 0;
 		ly->active  = 1;
 		pcb_layergrp_list(st->pcb, typ, &gid, 1);
-		ly->ly = pcb_layer_create(st->pcb, gid, ly->name);	
+		ly->lid = pcb_layer_create(st->pcb, gid, ly->name);	
+		}
+		else
+			return NULL; /* not found and not supported */
 	}
 
 	switch(loc) {
 		case ON_BOARD:
-			return ly;
+			return &st->pcb->Data->Layer[ly->lid];
 		case IN_SUBC:
 			/* check if the layer already exists (by name) */
 			lid = pcb_layer_by_name(subc->data, ly->name);
 			if (lid >= 0)
 				return &subc->data->Layer[lid];
 
-			if (ly->ly < 0) {
+			if (ly->lid < 0) {
 				pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", ly->name);
 				lyt = PCB_LYT_VIRTUAL;
 				comb = 0;
 				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, pcb_true);
 			}
-			lyt = pcb_layer_flags(st->pcb, ly->ly);
+			lyt = pcb_layer_flags(st->pcb, ly->lid);
 			comb = 0;
 			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
 	}
@@ -516,17 +523,13 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	const char *rot, *text_val;
 	unsigned int text_direction = 0, text_scaling = 100;
 	pcb_flag_t text_flags = pcb_flag_make(0);
-	eagle_layer_t *ly;
+	pcb_layer_t *ly;
 	ly = eagle_layer_get(st, ln, type, obj);
 	if (ly == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
 #warning TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags
-	if (ly->ly < 0) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring text on Eagle layer: %ld\n", ln);
-		return 0;
-	}
 #warning TODO: remove this hack - if there is a bug, fix it, do not work it around like this
 	if (ln == 51) {
 		ln = 21; /* we seem to trigger a segfault if we create text with ln = 51 */
@@ -572,11 +575,8 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 			text_direction = 3;
 		}
 	}
-	/* pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont) */
 
-#warning TODO: do not index with ln
-	pcb_text_new( &st->pcb->Data->Layer[ln], pcb_font(st->pcb, 0, 1), X, Y, text_direction
-, text_scaling, text_val, text_flags); /*Flags);*/
+	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, text_direction, text_scaling, text_val, text_flags);
 	return 0;
 }
 
@@ -596,19 +596,15 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	eagle_loc_t loc = type;
 	pcb_arc_t *circ;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
-	eagle_layer_t *ly;
+	pcb_layer_t *ly;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
-		return 0;
-	}
-	if (ly->ly < 0) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring circle on layer %s\n", ly->name);
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate circle layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
 
-	circ = pcb_arc_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	circ = pcb_arc_alloc(ly);
 	circ->X = eagle_get_attrc(st, subtree, "x", -1);
 	circ->Y = eagle_get_attrc(st, subtree, "y", -1);
 	circ->Width = eagle_get_attrc(st, subtree, "radius", -1);
@@ -624,7 +620,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 		case IN_SUBC: break;
 		case ON_BOARD:
 			size_bump(st, circ->X + circ->Width + circ->Thickness, circ->Y + circ->Width + circ->Thickness);
-			pcb_add_arc_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), circ);
+			pcb_add_arc_on_layer(ly, circ);
 			break;
 	}
 
@@ -636,7 +632,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	eagle_loc_t loc = type;
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
-	eagle_layer_t *ly;
+	pcb_layer_t *ly;
 	unsigned long int flags;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
@@ -644,16 +640,12 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate rect layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
-	if (ly->ly < 0) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring rect on layer %s\n", ly->name);
-		return 0;
-	}
 
 #warning TODO: rewrite this with only one lin
-	lin1 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-	lin2 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-	lin3 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-	lin4 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	lin1 = pcb_line_alloc(ly);
+	lin2 = pcb_line_alloc(ly);
+	lin3 = pcb_line_alloc(ly);
+	lin4 = pcb_line_alloc(ly);
 
 	lin1->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 	lin1->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
@@ -687,10 +679,10 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 		case ON_BOARD:
 			size_bump(st, lin1->Point1.X + lin1->Thickness, lin1->Point1.Y + lin1->Thickness);
 			size_bump(st, lin3->Point1.X + lin3->Thickness, lin3->Point1.Y + lin3->Thickness);
-			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin1);
-			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin2);
-			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin3);
-			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin4);
+			pcb_add_line_on_layer(ly, lin1);
+			pcb_add_line_on_layer(ly, lin2);
+			pcb_add_line_on_layer(ly, lin3);
+			pcb_add_line_on_layer(ly, lin4);
 
 			break;
 	}
@@ -702,7 +694,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
-	eagle_layer_t *ly;
+	pcb_layer_t *ly;
 	unsigned long flags;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
@@ -717,12 +709,8 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
-	if (ly->ly < 0) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
-		return 0;
-	}
 
-	lin = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	lin = pcb_line_alloc(ly);
 	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
 	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
@@ -738,7 +726,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		case ON_BOARD:
 			size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
 			size_bump(st, lin->Point2.X + lin->Thickness, lin->Point2.Y + lin->Thickness);
-			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin);
+			pcb_add_line_on_layer(ly, lin);
 			break;
 	}
 
@@ -1145,7 +1133,7 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
-	eagle_layer_t *ly;
+	pcb_layer_t *ly;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_poly_t *poly;
 	trnode_t *n;
@@ -1155,12 +1143,8 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
-	if (ly->ly < 0) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring polygon on layer %s\n", ly->name);
-		return 0;
-	}
 
-	poly = pcb_poly_new(&st->pcb->Data->Layer[ly->ly], 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {
@@ -1194,8 +1178,8 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 		}
 	}
 
-	pcb_add_poly_on_layer(&st->pcb->Data->Layer[ly->ly], poly);
-	pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[ly->ly], poly);
+	pcb_add_poly_on_layer(ly, poly);
+	pcb_poly_init_clip(st->pcb->Data, ly, poly);
 
 	return 0;
 }
