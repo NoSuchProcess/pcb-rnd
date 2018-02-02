@@ -114,6 +114,17 @@ static void scad_draw_drill(const pcb_pin_t *pin)
 	pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", pin->DrillingHole/2);
 }
 
+static void scad_draw_pstk(const pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+#warning padstack TODO: this ignores bbvias
+	if (proto->hdia > 0) {
+		pcb_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x), TRY_(ps->y));
+		pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", proto->hdia/2);
+	}
+}
+
 static void scad_draw_drills(void)
 {
 	pcb_rtree_it_t it;
@@ -123,6 +134,10 @@ static void scad_draw_drills(void)
 
 	for(obj = pcb_r_first(PCB->Data->via_tree, &it); obj != NULL; obj = pcb_r_next(&it))
 		scad_draw_drill((pcb_pin_t *)obj);
+	pcb_r_end(&it);
+
+	for(obj = pcb_r_first(PCB->Data->padstack_tree, &it); obj != NULL; obj = pcb_r_next(&it))
+		scad_draw_pstk((pcb_pstk_t *)obj);
 	pcb_r_end(&it);
 
 	PCB_PIN_ALL_LOOP(PCB->Data); {

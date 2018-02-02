@@ -46,6 +46,7 @@
 #include "misc_util.h"
 #include "plugins.h"
 #include "safe_fs.h"
+#include "obj_pstk_inlines.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
