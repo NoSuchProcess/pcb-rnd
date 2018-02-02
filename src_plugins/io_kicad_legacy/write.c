@@ -98,7 +98,7 @@ static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
 */
 
 
-int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
@@ -120,7 +120,7 @@ static int write_kicad_legacy_layout_via_drill_size(FILE *FP)
 	return 0;
 }
 
-int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -155,7 +155,7 @@ int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_
 	}
 }
 
-int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
@@ -221,7 +221,7 @@ int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t 
 	}
 }
 
-int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
@@ -342,7 +342,7 @@ int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t 
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a .mod library
  */
-int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
+static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
 
 
@@ -534,7 +534,7 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data
  * writes netlist data in kicad legacy format for use in a layout .brd file
  */
 
-int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
+static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 {
 	int n; /* code mostly lifted from netlist.c */
 	int netNumber;
@@ -565,7 +565,7 @@ int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 
 	gdl_iterator_t eit;
@@ -750,7 +750,7 @@ int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t
  * writes polygon data in kicad legacy format for use in a layout .brd file
  */
 
-int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	int i, j;
 	gdl_iterator_t it;
@@ -1191,4 +1191,9 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 		free(outlineLayers);
 	}
 	return 0;
+}
+
+int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
+{
+	return io_kicad_legacy_write_element_(ctx, FP, Data);
 }
