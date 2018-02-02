@@ -612,7 +612,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 				fprintf(ctx->f, "))\n");
 			}
 			else
-				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can't convert padstack to pin or pad", "use a simpler, uniform shape");
 		}
 		else { /* global via */
 			if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
