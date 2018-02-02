@@ -1234,7 +1234,7 @@ pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_c
 
 /* TODO: set pt coords to x and y */
 
-	for(l = pcb_rtree_first(&it, &layer->line_tree, &pt); l != NULL; l = pcb_rtree_next(&it)) {
+	for(l = pcb_rtree_first(&it, layer->line_tree, &pt); l != NULL; l = pcb_rtree_next(&it)) {
 		/* check if line needs to be ignored and "continue;" if so:
 		   l->term is non-NULL if it's a terminal,
 		   pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p) returns non-NULL if it's in a subc
