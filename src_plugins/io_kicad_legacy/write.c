@@ -87,9 +87,6 @@ static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_
 	pcb_pin_t *via;
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
-		/*    pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
-		   via->X, via->Y, via->X, via->Y, via->Thickness);
-		   pcb_fprintf(FP, "De F0 1 0 0 0\n"); */
 		pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
 								via->X + xOffset, via->Y + yOffset, via->X + xOffset, via->Y + yOffset, via->Thickness);
 		pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
@@ -112,12 +109,6 @@ static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		/*
-		   fprintf(FP, "Layer(%i ", (int) Number + 1);
-		   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->name));
-		   fputs(")\n(\n", FP);
-		   WriteAttributeList(FP, &layer->Attributes, "\t");
-		 */
 		int localFlag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
 			if (currentLayer < 16) { /* a copper line i.e. track */
@@ -151,12 +142,6 @@ static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_l
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		/*
-		   fprintf(FP, "Layer(%i ", (int) Number + 1);
-		   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->name));
-		   fputs(")\n(\n", FP);
-		   WriteAttributeList(FP, &layer->Attributes, "\t");
-		 */
 		int localFlag = 0;
 		int kicadArcShape = 2; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
 		arclist_foreach(&layer->Arc, &it, arc) {
@@ -228,12 +213,6 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
-		/*
-		   fprintf(FP, "Layer(%i ", (int) Number + 1);
-		   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->name));
-		   fputs(")\n(\n", FP);
-		   WriteAttributeList(FP, &layer->Attributes, "\t");
-		 */
 		localFlag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21)) { /* copper or silk layer text */
@@ -308,8 +287,6 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 					}
 					textOffsetX = halfStringWidth;
 				}
-/*				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
-				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY); */
 				pcb_fprintf(FP, "Po %.0mk %.0mk %.0mk %.0mk %.0mk %d\n", text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY, defaultXSize, defaultYSize, strokeThickness, rotation);
 				pcb_fprintf(FP, "De %d %d B98C Normal\n", currentLayer, kicadMirrored); /* timestamp made up B98C  */
 				fputs("$EndTEXTPCB\n", FP);
@@ -325,11 +302,6 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 
 static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
-	/*
-	   write_kicad_legacy_module_header(FP);
-	   fputs("io_kicad_legacy_write_element()", FP);
-	   return 0;
-	 */
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
@@ -351,15 +323,14 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 
 		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
 
-		/* TOOD: Footprint name element->Name[0].TextString */
+#warning TOOD: Footprint name element->Name[0].TextString ???
 
 		/* only non empty elements */
 		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
 			continue;
 		/* the coordinates and text-flags are the same for
-		 * both names of an element
-		 */
-		/* the following element summary is not used
+		   both names of an element
+		   the following element summary is not used
 		   in kicad; the module's header contains this
 		   information
 
@@ -376,8 +347,6 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 		   PCB_ELEM_TEXT_DESCRIPTION(element).Direction,
 		   PCB_ELEM_TEXT_DESCRIPTION(element).Scale, F2S(&(PCB_ELEM_TEXT_DESCRIPTION(element)), PCB_TYPE_ELEMENT_NAME));
 		 */
-
-		/*    //WriteAttributeList(FP, &element->Attributes, "\t"); */
 
 		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
 		fprintf(FP, "$MODULE %s\n", currentElementName);
@@ -405,8 +374,7 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 										arc->Thickness); /* stroke thickness */
 			}
 			else {
-				/*
-				   as far as can be determined from the Kicad documentation,
+				/* as far as can be determined from the Kicad documentation,
 				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
 
 				   the origin for rotation is the positive x direction, and going CW
@@ -415,8 +383,7 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 				   with rotation CCW, so we need to reverse delta angle
 
 				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in pcb-rnd
-				   NB it is in degrees in the newer s-file kicad module/footprint format
-				 */
+				   NB it is in degrees in the newer s-file kicad module/footprint format */
 				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %mA %.3mm ", arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										arcEndX - element->MarkX, /* x on arc */
@@ -452,10 +419,6 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
 			fputs("Ne 0 \"\"\n", FP); /* library parts have empty net descriptors */
-			/*
-			   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
-			   fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
-			 */
 			fputs("$EndPAD\n", FP);
 		}
 		padlist_foreach(&element->Pad, &it, pad) {
@@ -558,9 +521,10 @@ static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb
 		pcb_pad_t *pad;
 
 		/* elementlist_dedup_skip(ededup, element);  */
+#warning TODO: why?
 		/* let's not skip duplicate elements for layout export */
 
-		/* TOOD: Footprint name element->Name[0].TextString */
+#warning TOOD: Footprint name element->Name[0].TextString ???
 
 		/* only non empty elements */
 		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
@@ -622,10 +586,6 @@ static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb
 			else {
 				fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
 			}
-			/*
-			   pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
-			   fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
-			 */
 			fputs("$EndPAD\n", FP);
 		}
 		padlist_foreach(&element->Pad, &it, pad) {
@@ -741,9 +701,7 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 					pcb_fprintf(FP, "ZCorner %.0mk %.0mk %d\n", polygon->Points[i].X + xOffset, polygon->Points[i].Y + yOffset, j);
 				}
 
-				/*
-				 *   in here could go additional plolygon descriptors for holes removed from  the previously defined outer polygon
-				 */
+				/* in here could go additional plolygon descriptors for holes removed from  the previously defined outer polygon */
 				fputs("$endCZONE_OUTLINE\n", FP);
 			}
 			localFlag |= 1;
@@ -757,7 +715,6 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 
 int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
-	/*fputs("io_kicad_legacy_write_buffer()", FP); */
 	if (elementlist_length(&buff->Data->Element) == 0) {
 		pcb_message(PCB_MSG_ERROR, "Buffer has no elements!\n");
 		return -1;
@@ -769,25 +726,13 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 	io_kicad_legacy_write_element_index(FP, buff->Data);
 	fputs("$EndINDEX\n", FP);
 
-	/* WriteViaData(FP, buff->Data); */
-
 	pcb_write_element_data(FP, buff->Data, "kicadl");
 
-	/*
-	   for (i = 0; i < pcb_max_layer; i++)
-	   WriteLayerData(FP, i, &(buff->Data->Layer[i]));
-	 */
 	return 0;
 }
 
 int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
-	/* this is the first step in exporting a layout;
-	 * creating a kicd module containing the elements used in the layout
-	 */
-
-	/*fputs("io_kicad_legacy_write_pcb()", FP); */
-
 	pcb_cardinal_t i;
 	int kicadLayerCount = 0;
 	int physicalLayerCount = 0;
@@ -828,7 +773,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 
 	fputs("$SHEETDESCR\n", FP);
 
-
+#warning TODO: se this from io_kicad, do not duplicate the code here
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
 	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil || PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
 		sheetHeight = A4WidthMil; /* 11.7" */
@@ -850,6 +795,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 		sheetWidth = 4 * A4WidthMil; /* 46.8"  */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
 	}
+
 	fprintf(FP, "Sheet A%d ", paperSize);
 	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
 	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
@@ -899,12 +845,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 
 	fputs("$EndSETUP\n", FP);
 
-	/* now come the netlist "equipotential" descriptors */
-
 	write_kicad_legacy_equipotential_netlists(FP, PCB);
-
-	/* module descriptions come next */
-
 	write_kicad_legacy_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
@@ -1043,7 +984,6 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 	}
 
 	/* having done the graphical elements, we move onto tracks and vias */
-
 	fputs("$TRACK\n", FP);
 	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
