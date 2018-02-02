@@ -366,9 +366,13 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc,
 	   These layers within the silk groups will be needed when subc replaces elements
 	   since most Eagle packages use tDocu, bDocu for some of their artwork */
 
-#warning TODO: if loc is IN_SUBC, do it for the subc instead
-
 	eagle_layer_t *ly = htip_get(&st->layers, id);
+	pcb_layer_id_t lid;
+	pcb_subc_t *subc = obj;
+	pcb_layer_type_t lyt;
+	pcb_layer_combining_t comb;
+	const char *lnm;
+
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
 	if ((id == 51 || id == 52) && ly->ly < 0) {
 		unsigned long typ;
@@ -392,7 +396,27 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc,
 		pcb_layergrp_list(st->pcb, typ, &gid, 1);
 		ly->ly = pcb_layer_create(st->pcb, gid, ly->name);	
 	}
-	return htip_get(&st->layers, id);
+
+	switch(loc) {
+		case ON_BOARD:
+			return ly;
+		case IN_SUBC:
+			/* check if the layer already exists (by name) */
+			lid = pcb_layer_by_name(subc->data, ly->name);
+			if (lid >= 0)
+				return &subc->data->Layer[lid];
+
+			if (ly->ly < 0) {
+				pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", ly->name);
+				lyt = PCB_LYT_VIRTUAL;
+				comb = 0;
+				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, pcb_true);
+			}
+			lyt = pcb_layer_flags(st->pcb, ly->ly);
+			comb = 0;
+			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
+	}
+	return NULL;
 }
 
 static pcb_subc_t *eagle_libelem_by_name(read_state_t *st, const char *lib, const char *elem)
@@ -503,6 +527,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_WARNING, "Ignoring text on Eagle layer: %ld\n", ln);
 		return 0;
 	}
+#warning TODO: remove this hack - if there is a bug, fix it, do not work it around like this
 	if (ln == 51) {
 		ln = 21; /* we seem to trigger a segfault if we create text with ln = 51 */
 		pcb_message(PCB_MSG_WARNING, "Moved text on tDocu layer: 51 to top silk\n", ln);
@@ -549,6 +574,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	}
 	/* pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont) */
 
+#warning TODO: do not index with ln
 	pcb_text_new( &st->pcb->Data->Layer[ln], pcb_font(st->pcb, 0, 1), X, Y, text_direction
 , text_scaling, text_val, text_flags); /*Flags);*/
 	return 0;
