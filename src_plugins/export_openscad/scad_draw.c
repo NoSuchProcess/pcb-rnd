@@ -118,6 +118,11 @@ static void scad_draw_pstk(const pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 
+	if (proto == NULL) {
+		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "failed to retrieve padstack prototype", "internal pcb-rnd error, please file a bugreport");
+		return;
+	}
+
 #warning padstack TODO: this ignores bbvias
 	if (proto->hdia > 0) {
 		pcb_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x), TRY_(ps->y));
