@@ -1,23 +1,23 @@
 /*
- *														COPYRIGHT
+ *                            COPYRIGHT
  *
- *	pcb-rnd, interactive printed circuit board design
- *	Copyright (C) 2016 Tibor 'Igor2' Palinkas
- *     Copyright (C) 2016 Erich S. Heinzle
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016 Erich S. Heinzle
  *
- *	This program is free software; you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation; either version 2 of the License, or
- *	(at your option) any later version.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
- *	GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *	You should have received a copy of the GNU General Public License
- *	along with this program; if not, write to the Free Software
- *	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *  Contact:
  *    Project page: http://repo.hu/projects/pcb-rnd
@@ -86,9 +86,6 @@ static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
 	return 0;
 }
 
-
-
-
 /* ---------------------------------------------------------------------------
  * writes kicad format via data
  For a track segment:
@@ -96,8 +93,6 @@ static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
  Description layer 0 netcode timestamp status
  Shape parameter is set to 0 (reserved for futu
 */
-
-
 static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
@@ -344,15 +339,11 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
  */
 static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
-
-
 	/*
 	   write_kicad_legacy_module_header(FP);
 	   fputs("io_kicad_legacy_write_element()", FP);
 	   return 0;
 	 */
-
-
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
@@ -398,11 +389,9 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 		   PCB_ELEM_TEXT_DESCRIPTION(element).Y - element->MarkY,
 		   PCB_ELEM_TEXT_DESCRIPTION(element).Direction,
 		   PCB_ELEM_TEXT_DESCRIPTION(element).Scale, F2S(&(PCB_ELEM_TEXT_DESCRIPTION(element)), PCB_TYPE_ELEMENT_NAME));
-
 		 */
 
-		/*    //WriteAttributeList(FP, &element->Attributes, "\t");
-		 */
+		/*    //WriteAttributeList(FP, &element->Attributes, "\t"); */
 
 		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
 		fprintf(FP, "$MODULE %s\n", currentElementName);
@@ -529,11 +518,9 @@ static int io_kicad_legacy_write_element_(pcb_plug_io_t *ctx, FILE *FP, pcb_data
 	return 0;
 }
 
-
 /* ---------------------------------------------------------------------------
  * writes netlist data in kicad legacy format for use in a layout .brd file
  */
-
 static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 {
 	int n; /* code mostly lifted from netlist.c */
@@ -561,13 +548,11 @@ static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layo
 	return 0;
 }
 
-
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
 static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
-
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
@@ -745,11 +730,9 @@ static int write_kicad_legacy_layout_elements(FILE *FP, pcb_board_t *Layout, pcb
 	return 0;
 }
 
-
 /* ---------------------------------------------------------------------------
  * writes polygon data in kicad legacy format for use in a layout .brd file
  */
-
 static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	int i, j;
@@ -784,9 +767,7 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 				/*
 				 *   in here could go additional plolygon descriptors for holes removed from  the previously defined outer polygon
 				 */
-
 				fputs("$endCZONE_OUTLINE\n", FP);
-
 			}
 			localFlag |= 1;
 		}
@@ -801,7 +782,6 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
 	/*fputs("io_kicad_legacy_write_buffer()", FP); */
-
 	if (elementlist_length(&buff->Data->Element) == 0) {
 		pcb_message(PCB_MSG_ERROR, "Buffer has no elements!\n");
 		return -1;
