@@ -103,6 +103,26 @@ static void scad_insert_models(void)
 		}
 	} PCB_END_LOOP;
 
+	PCB_SUBC_LOOP(PCB->Data); {
+		mod = pcb_attribute_get(&subc->Attributes, "openscad");
+		if (mod != NULL) {
+			pcb_coord_t ox, oy;
+			double rot = 0;
+			int on_bottom = 0;
+			
+			if (pcb_subc_get_origin(subc, &ox, &oy) != 0)
+				continue;
+			pcb_subc_get_rotation(subc, &rot);
+			pcb_subc_get_side(subc, &on_bottom);
+
+#warning subc TODO: apply rot and on_bottom
+
+			transf = pcb_attribute_get(&subc->Attributes, "openscad-transformation");
+			param = pcb_attribute_get(&subc->Attributes, "openscad-param");
+			scad_insert_model(&models, mod, TRX_(ox), TRY_(oy), transf, param);
+		}
+	} PCB_END_LOOP;
+
 	for (e = htsp_first(&models); e; e = htsp_next(&models, e))
 		free(e->value);
 
