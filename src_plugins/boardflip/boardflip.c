@@ -8,7 +8,7 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
- * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016; generalized in 2017.
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016 and generalized in 2017, 2018.
  *
  * Original source was: http://www.delorie.com/pcb/boardflip.c
  *
