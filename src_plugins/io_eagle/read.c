@@ -103,10 +103,9 @@ typedef struct {
 } dispatch_t;
 
 typedef enum {
-	IN_ELEM = 1,
+	IN_SUBC = 1,
 	ON_BOARD
 } eagle_loc_t;
-
 
 /* Xml path walk that's much simpler than xpath; the ... is a NULL
    terminated list of node names */
@@ -360,12 +359,14 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 	return 0;
 }
 
-static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
+static eagle_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, void *obj)
 {
 	/* tDocu & bDocu are used for info used when designing, but not necessarily for
 	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
 	   These layers within the silk groups will be needed when subc replaces elements
 	   since most Eagle packages use tDocu, bDocu for some of their artwork */
+
+#warning TODO: if loc is IN_SUBC, do it for the subc instead
 
 	eagle_layer_t *ly = htip_get(&st->layers, id);
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
@@ -394,7 +395,7 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 	return htip_get(&st->layers, id);
 }
 
-static pcb_element_t *eagle_libelem_by_name(read_state_t *st, const char *lib, const char *elem)
+static pcb_subc_t *eagle_libelem_by_name(read_state_t *st, const char *lib, const char *elem)
 {
 	eagle_library_t *l;
 	l = htsp_get(&st->libs, lib);
@@ -403,10 +404,10 @@ static pcb_element_t *eagle_libelem_by_name(read_state_t *st, const char *lib, c
 	return htsp_get(&l->elems, elem);
 }
 
-static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long libi, long pkgi)
+static pcb_subc_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long libi, long pkgi)
 {
 	trnode_t *n;
-	pcb_element_t *res;
+	pcb_subc_t *res;
 
 	/* count children of libs so n ends up at the libith library */
 	for(n = CHILDREN(libs); (n != NULL) && (libi > 1); n = NEXT(n), libi--) ;
@@ -492,8 +493,11 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	unsigned int text_direction = 0, text_scaling = 100;
 	pcb_flag_t text_flags = pcb_flag_make(0);
 	eagle_layer_t *ly;
-	ly = eagle_layer_get(st, ln);
-
+	ly = eagle_layer_get(st, ln, type, obj);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' via eagle_layer_get(st, ln)\n");
+		return 0;
+	}
 #warning TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags
 	if (ly->ly < 0) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring text on Eagle layer: %ld\n", ln);
@@ -568,25 +572,17 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	eagle_layer_t *ly;
 
-	switch(loc) {
-		case IN_ELEM:
-			if ((ln != 21) && (ln != 22) && (ln != 51) && (ln != 52)) /* consider silk circles only */
-				return 0; /* 121, 122 are negative silk, top, bottom, ignore for now */
-
-			circ = pcb_element_arc_alloc((pcb_element_t *)obj);
-#warning TODO subc will need to implement layer 51, 52 when subc replaces elements
-			if ((ln == 22) || (ln == 52))
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, circ);
-			break;
-		case ON_BOARD:
-			ly = eagle_layer_get(st, ln);
-			if (ly->ly < 0) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring circle on layer %s\n", ly->name);
-				return 0;
-			}
-			circ = pcb_arc_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-			break;
+	ly = eagle_layer_get(st, ln, loc, obj);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
+		return 0;
 	}
+	if (ly->ly < 0) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring circle on layer %s\n", ly->name);
+		return 0;
+	}
+
+	circ = pcb_arc_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
 	circ->X = eagle_get_attrc(st, subtree, "x", -1);
 	circ->Y = eagle_get_attrc(st, subtree, "y", -1);
 	circ->Width = eagle_get_attrc(st, subtree, "radius", -1);
@@ -599,7 +595,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 
 
 	switch(loc) {
-		case IN_ELEM: break;
+		case IN_SUBC: break;
 		case ON_BOARD:
 			size_bump(st, circ->X + circ->Width + circ->Thickness, circ->Y + circ->Width + circ->Thickness);
 			pcb_add_arc_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), circ);
@@ -617,44 +613,21 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	eagle_layer_t *ly;
 	unsigned long int flags;
 
-	ly = eagle_layer_get(st, ln);
-	switch(loc) {
-		case IN_ELEM:
-			if (ly == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring element rectangle on NULL layer\n");
-				return 0;
-			}
-			if (ly->ly < 0)
-				return 0;
-			flags = pcb_layer_flags(st->pcb, ly->ly);
-#warning TODO subc will need to implement layer 51, 52 when subc replaces elements
-			if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
-				return 0;
-			lin1 = pcb_element_line_alloc((pcb_element_t *)obj);
-			lin2 = pcb_element_line_alloc((pcb_element_t *)obj);
-			lin3 = pcb_element_line_alloc((pcb_element_t *)obj);
-			lin4 = pcb_element_line_alloc((pcb_element_t *)obj);
-			if (flags & PCB_LYT_BOTTOM)
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin1);
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin2);
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin3);
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin4);
-			break;
-		case ON_BOARD:
-			if (ly == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on NULL layer\n");
-				return 0;
-			}
-			if (ly->ly < 0) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on layer %s\n", ly->name);
-				return 0;
-			}
-			lin1 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-			lin2 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-			lin3 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-			lin4 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
-			break;
+	ly = eagle_layer_get(st, ln, loc, obj);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate rect layer 'ly' via eagle_layer_get(st, ln)\n");
+		return 0;
 	}
+	if (ly->ly < 0) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring rect on layer %s\n", ly->name);
+		return 0;
+	}
+
+#warning TODO: rewrite this with only one lin
+	lin1 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	lin2 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	lin3 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	lin4 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
 
 	lin1->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 	lin1->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
@@ -682,7 +655,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	lin4->Thickness = lin1->Thickness;
 
 	switch(loc) {
-		case IN_ELEM:
+		case IN_SUBC:
 			break;
 
 		case ON_BOARD:
@@ -713,33 +686,17 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		return eagle_read_circle(st, subtree, obj, type);
 	}
 
-	ly = eagle_layer_get(st, ln);
+	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
-
-	switch (loc) {
-		case IN_ELEM:
-			if ((ly->ly) < 0 && (ln != 51) && (ln != 52)) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring element wire on layer %s\n", ly->name);
-				return 0;
-			}
-#warning TODO subc will need to implement layer 51, 52 when subc replaces elements
-			flags = pcb_layer_flags(st->pcb, ly->ly);
-			/*if (!(flags & PCB_LYT_SILK)) consider silk lines only */
-			/*	return 0;*/
-			lin = pcb_element_line_alloc((pcb_element_t *) obj);
-			if (flags & PCB_LYT_BOTTOM)
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
-			break;
-		case ON_BOARD:
-			if (ly->ly < 0) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
-				return 0;
-			}
-			lin = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+	if (ly->ly < 0) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
+		return 0;
 	}
+
+	lin = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
 	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
 	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
@@ -750,7 +707,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	lin->ID = pcb_create_ID_get();
 
 	switch (loc) {
-		case IN_ELEM:
+		case IN_SUBC:
 			break;
 		case ON_BOARD:
 			size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
@@ -771,7 +728,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	int deg = 0;
 	long roundness = 0;
 
-	assert(type == IN_ELEM);
+	assert(type == IN_SUBC);
 
 	name = eagle_get_attrs(st, subtree, "name", NULL);
 	x = eagle_get_attrc(st, subtree, "x", 0);
@@ -803,6 +760,8 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 		deg = eagle_rot2degrees(rot);
 	}
 
+#warning subc TODO: load padstack
+#if 0
 	switch(deg) {
 		case 0:
 			x -= dx/2;
@@ -846,7 +805,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 	if (ln == 16)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pad);
-
+#endif
 	return 0;
 }
 
@@ -860,7 +819,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	pcb_data_t *data;
 
 	switch(loc) {
-		case IN_ELEM:
+		case IN_SUBC:
 			data = ((pcb_subc_t *)obj)->data;
 			break;
 		case ON_BOARD:
@@ -876,7 +835,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	shape = eagle_get_attrs(st, subtree, "shape", 0);
 
 	clr = conf_core.design.clearance; /* eagle doesn't seem to support per via clearance */
-	mask = (loc == IN_ELEM) ? conf_core.design.clearance : 0; /* board vias don't have mask */
+	mask = (loc == IN_SUBC) ? conf_core.design.clearance : 0; /* board vias don't have mask */
 
 	if ((dia - drill) / 2.0 < st->ms_width)
 		dia = drill + 2*st->ms_width;
@@ -902,7 +861,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	ps = pcb_pstk_new_compat_via(data, x, y, drill, dia, clr, mask,  cshp, !hole);
 
 	switch(loc) {
-		case IN_ELEM: break;
+		case IN_SUBC: break;
 		case ON_BOARD:
 			size_bump(st, x + dia, y + dia);
 			break;
@@ -963,8 +922,10 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	return 0;
 }
 
-#warning TODO subc need to implement polygon-within-package support when subc replaces element
-static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *elem)
+#warning TODO: eliminate this fwd declaration by reorder
+static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type);
+
+static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 {
 	static const dispatch_t disp[] = { /* possible children of package */
 		{"description", eagle_read_nop},
@@ -975,11 +936,10 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_pkg_txt},
-		/*{"polygon",	eagle_read_poly}, */
+		{"polygon",     eagle_read_poly}, /* TODO: check this to handle subc */
 		{"rectangle",   eagle_read_rect},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
-#warning subc TODO can dd polygon to package
 	};
 	/* zero these out before current pkg read */
 	st->refdes_x = 0;
@@ -988,7 +948,7 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 	st->value_x = 0;
 	st->value_y = 0;
 	st->value_scale = 0;
-	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, elem, IN_ELEM);
+	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, subc, IN_SUBC);
 }
 
 static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
@@ -1001,61 +961,45 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		pcb_trace("looking at child %s of packages node\n", NODENAME(n)); 
 		if (STRCMP(NODENAME(n), "package") == 0) {
-			pcb_element_t *elem, *new_elem;
+			pcb_subc_t *subc;
 			pcb_coord_t x, y;
 
-			elem = calloc(sizeof(pcb_element_t), 1);
-			eagle_read_pkg(st, n, elem);
-			if (pcb_element_is_empty(elem)) {
+			subc = pcb_subc_alloc();
+			pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+			pcb_add_subc_to_data(st->pcb->Data, subc);
+			pcb_subc_bind_globals(st->pcb, subc);
+			eagle_read_pkg(st, n, subc);
+			if (pcb_data_is_empty(subc->data)) {
+				pcb_subc_free(subc);
 				pcb_message(PCB_MSG_WARNING, "Ignoring empty package in library\n");
-				free(elem);
 				continue;
 			}
 
-#warning subc TODO subcircuits can have distinct refdes, value, description text attributes
-			t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
-			t->X = 0;
-			t->Y = 0;
-			t->Scale = 100;
-			t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
-			t->X = 0;
-			t->Y = 0;
-			t->Scale = 100;
-			t = &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION];
-			t->X = 0;
-			t->Y = 0;
-			t->Scale = 100;
+			pcb_attribute_put(&subc->Attributes, "refdes", eagle_get_attrs(st, n, "name", NULL));
+			pcb_attribute_put(&subc->Attributes, "value", eagle_get_attrs(st, n, "value", NULL));
+			pcb_attribute_put(&subc->Attributes, "footprint", eagle_get_attrs(st, n, "package", NULL));
 
-			x = 0;
-			y = 0;
-#warning TODO: use pcb_elem_new() instead of this?
-			new_elem = pcb_element_alloc(st->pcb->Data);
-			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
-			new_elem->Flags = pcb_no_flags();
-			new_elem->ID = pcb_create_ID_get();
+			pcb_subc_bbox(subc);
+#warning subc TODO: revise this: are we loading an instance here? do we need to place it? don't even bump if not!
+			if (st->pcb->Data->subc_tree == NULL)
+				st->pcb->Data->subc_tree = pcb_r_create_tree();
+			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
+			pcb_subc_rebind(st->pcb, subc);
 
-			PCB_ELEMENT_PCB_TEXT_LOOP(new_elem);
-			{
-				if (st->pcb->Data && st->pcb->Data->name_tree[n])
-					pcb_r_delete_entry(st->pcb->Data->name_tree[n], (pcb_box_t *) text);
+#warning TODO: revise rotation and flip
+#if 0
+			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
+				/* lossles module rotation for round steps */
+				moduleRotation = moduleRotation / 90;
+				pcb_subc_rotate90(subc, moduleX, moduleY, moduleRotation);
 			}
-			PCB_END_LOOP;
+			else if (moduleRotation != 0) {
+				double rot = moduleRotation;
+				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot/PCB_RAD_TO_DEG), sin(rot/PCB_RAD_TO_DEG), rot);
+			}
+#endif
 
-#warning subc TODO this code ensures mainline element refdes, value, descr texts all get refdes x,y,scale
-			st->refdes_x = st->refdes_y = 0;
-			st->value_x = st->value_y = 0;
-			st->refdes_scale = st->value_scale = 100; /* default values */
-
-#warning TODO need to sanitise the package name from binary libraries, can contain non ASCII chars
-			pcb_element_text_set(&PCB_ELEM_TEXT_DESCRIPTION(new_elem), pcb_font(st->pcb, 0, 1), x, y, direction, eagle_get_attrs(st, n, "name", NULL), st->refdes_scale, TextFlags);
-			pcb_element_text_set(&PCB_ELEM_TEXT_REFDES(new_elem), pcb_font(st->pcb, 0, 1), x, y, direction, "NAME", st->refdes_scale, TextFlags);
-			pcb_element_text_set(&PCB_ELEM_TEXT_VALUE(new_elem), pcb_font(st->pcb, 0, 1), x, y, direction, "VALUE", st->refdes_scale, TextFlags);
-			(&new_elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION])->Element = new_elem;
-			(&new_elem->Name[PCB_ELEMNAME_IDX_REFDES])->Element = new_elem;
-			(&new_elem->Name[PCB_ELEMNAME_IDX_VALUE])->Element = new_elem;
-
-			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
-			size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
+			size_bump(st, subc->BoundingBox.X2, subc->BoundingBox.Y2);
 		}
 	}
 	return 0;
@@ -1069,37 +1013,25 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "package") == 0) {
+			pcb_subc_t *subc;
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
-			pcb_element_t *elem;
+
 			if ((st->elem_by_name) && (name == NULL)) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring package with no name\n");
 				continue;
 			}
 
-			elem = calloc(sizeof(pcb_element_t), 1);
-			eagle_read_pkg(st, n, elem);
-			if (pcb_element_is_empty(elem)) {
+			subc = pcb_subc_alloc();
+			eagle_read_pkg(st, n, subc);
+			if (pcb_data_is_empty(subc->data)) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring empty package %s\n", name);
-				free(elem);
+				free(subc);
 				continue;
 			}
-#warning subc TODO subcircuits can have distinct refdes, value, description text attributes
-			t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
-			t->X = st->refdes_x;
-			t->Y = st->refdes_y;
-			t->Scale = st->refdes_scale;
-			t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
-			t->X = st->refdes_x;
-			t->Y = st->refdes_y;
-			t->Scale = st->refdes_scale;
-			t = &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION];
-			t->X = st->refdes_x;
-			t->Y = st->refdes_y;
-			t->Scale = st->refdes_scale;
 
 			if (st->elem_by_name)
-				htsp_set(&lib->elems, (char *)name, elem);
-			st->parser.calls->set_user_data(n, elem);
+				htsp_set(&lib->elems, (char *)name, subc);
+			st->parser.calls->set_user_data(n, subc);
 		}
 	}
 	return 0;
@@ -1192,7 +1124,11 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_poly_t *poly;
 	trnode_t *n;
 
-	ly = eagle_layer_get(st, ln);
+	ly = eagle_layer_get(st, ln, loc, obj);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' via eagle_layer_get(st, ln)\n");
+		return 0;
+	}
 	if (ly->ly < 0) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring polygon on layer %s\n", ly->name);
 		return 0;
@@ -1207,7 +1143,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 			y = eagle_get_attrc(st, n, "y", 0);
 			pcb_poly_point_new(poly, x, y);
 			switch (loc) {
-				case IN_ELEM:
+				case IN_SUBC:
 					break;
 				case ON_BOARD:
 					size_bump(st, x, y);
@@ -1223,7 +1159,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 			y = eagle_get_attrc(st, n, "linetype_0_y2", 0);
 			pcb_poly_point_new(poly, x, y);
 			switch (loc) {
-				case IN_ELEM:
+				case IN_SUBC:
 					break;
 				case ON_BOARD:
 					size_bump(st, x, y);
@@ -1319,7 +1255,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 		if (STRCMP(NODENAME(n), "element") == 0) {
 			pcb_coord_t x, y;
 			const char *name, *val, *lib, *pkg, *rot, *mirrored;
-			pcb_element_t *elem, *new_elem;
+			pcb_subc_t *subc, *new_subc;
 			int steps, back = 0;
 
 			name = eagle_get_attrs(st, n, "name", NULL);
@@ -1339,7 +1275,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					pcb_message(PCB_MSG_WARNING, "Ignoring element with incomplete library reference\n");
 					continue;
 				}
-				elem = eagle_libelem_by_name(st, lib, pkg);
+				subc = eagle_libelem_by_name(st, lib, pkg);
 			}
 			else {
 				long libi = eagle_get_attrl(st, n, "library", -1);
@@ -1348,15 +1284,15 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					pcb_message(PCB_MSG_WARNING, "Ignoring element with broken library reference: %s/%s\n", lib, pkg);
 					continue;
 				}
-				elem = eagle_libelem_by_idx(st, nlib, libi, pkgi);
+				subc = eagle_libelem_by_idx(st, nlib, libi, pkgi);
 			}
 
 			/* sanity checks: the element exists and is non-empty */
-			if (elem == NULL) {
+			if (subc == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
 				continue;
 			}
-			if (pcb_element_is_empty(elem)) {
+			if (pcb_data_is_empty(subc->data)) {
 				pcb_message(PCB_MSG_WARNING, "Not placing empty element: %s/%s\n", lib, pkg);
 				continue;
 			}
@@ -1372,47 +1308,44 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				back = 1;
 			}
 
-#warning TODO: use pcb_elem_new() instead of this?
-			new_elem = pcb_element_alloc(st->pcb->Data);
-			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
-			new_elem->Flags = pcb_no_flags();
-			new_elem->ID = pcb_create_ID_get();
+#warning subc TODO: use pcb_subc_new() instead of this?
+			new_subc = pcb_subc_dup_at(st->pcb, st->pcb->Data, subc, x, y, pcb_false);
+			new_subc->Flags = pcb_no_flags();
+			new_subc->ID = pcb_create_ID_get();
 
-			PCB_ELEMENT_PCB_TEXT_LOOP(new_elem);
-			{
-				if (st->pcb->Data && st->pcb->Data->name_tree[n])
-					pcb_r_delete_entry(st->pcb->Data->name_tree[n], (pcb_box_t *) text);
-			}
-			PCB_END_LOOP;
-
-#warning subc TODO this code ensures mainline element refdes, value, descr texts all get refdes x,y,scale
+#warning subc TODO: upgrade this to DYNTEXT
 			st->refdes_x = st->refdes_y = 0;
 			st->value_x = st->value_y = 0;
 			st->refdes_scale = st->value_scale = 100; /* default values */
-			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_DESCRIPTION(new_elem), &PCB_ELEM_TEXT_DESCRIPTION(elem), x, y, "PROD_ID", pkg);
-			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_REFDES(new_elem), &PCB_ELEM_TEXT_REFDES(elem), x, y, "NAME", name);
-			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), &PCB_ELEM_TEXT_VALUE(elem), x, y, "VALUE", val);
+			eagle_read_elem_text(st, n, new_subc, NULL, NULL, x, y, "PROD_ID", pkg);
+			eagle_read_elem_text(st, n, new_subc, NULL, NULL, x, y, "NAME", name);
+			eagle_read_elem_text(st, n, new_subc, NULL, NULL, x, y, "VALUE", val);
 
+			pcb_subc_bbox(new_subc);
+			if (st->pcb->Data->subc_tree == NULL)
+				st->pcb->Data->subc_tree = pcb_r_create_tree();
+			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)new_subc);
+			pcb_subc_rebind(st->pcb, new_subc);
+
+#warning subc TODO: why not use the arbtirary angle rot?
 			if (rot != NULL) {
 				steps = eagle_rot2steps(rot);
 				if (back) {
 					steps = (steps + 2)%4;
 				}
 				if (steps > 0)
-					pcb_element_rotate90(st->pcb->Data, new_elem, x, y, steps);
+					pcb_subc_rotate90(new_subc, x, y, steps);
 				else
 					pcb_message(PCB_MSG_WARNING, "0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
 			}
 
-			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
-			size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
-
 			if (back)
-				pcb_element_change_side(new_elem, 2 * y - st->pcb->MaxHeight);
+				pcb_subc_change_side(new_subc, 2 * y - st->pcb->MaxHeight);
 
 			if (st->refdes_x != st->value_x || st->refdes_y != st->value_y || st->refdes_scale != st->value_scale) {
 				pcb_message(PCB_MSG_WARNING, "element \"value\" text x ,y, scaling != those of refdes text; set to refdes x, y, scaling.\n");
 			}
+			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}
 	}
 	return 0;
