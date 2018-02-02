@@ -372,7 +372,6 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, v
 	pcb_subc_t *subc = obj;
 	pcb_layer_type_t lyt;
 	pcb_layer_combining_t comb;
-	const char *lnm;
 
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
 	if ((ly == NULL) || (ly->lid < 0)) {
@@ -421,7 +420,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, v
 			}
 			lyt = pcb_layer_flags(st->pcb, ly->lid);
 			comb = 0;
-			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
+			return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, pcb_true);
 	}
 	return NULL;
 }
@@ -633,7 +632,6 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
-	unsigned long int flags;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
@@ -695,7 +693,6 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
 	pcb_layer_t *ly;
-	unsigned long flags;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
 
@@ -753,6 +750,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	deg = eagle_rot2degrees(rot);
 
+#warning TODO: why don't we use roundness?
 	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
 #warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
@@ -1350,7 +1348,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			}
 
 			if (back)
-				pcb_subc_change_side(new_subc, 2 * y - st->pcb->MaxHeight);
+				pcb_subc_change_side(&new_subc, 2 * y - st->pcb->MaxHeight);
 
 			if (st->refdes_x != st->value_x || st->refdes_y != st->value_y || st->refdes_scale != st->value_scale) {
 				pcb_message(PCB_MSG_WARNING, "element \"value\" text x ,y, scaling != those of refdes text; set to refdes x, y, scaling.\n");
