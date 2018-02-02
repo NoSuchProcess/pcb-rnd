@@ -45,12 +45,6 @@
  * and layer "21" SilkScreen Front
  */
 
-/* generates a line by line listing of the elements being saved */
-
-
-/* generates a default via drill size for the layout */
-static int write_kicad_legacy_layout_via_drill_size(FILE *FP);
-
 /* writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX */
 static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
 {
@@ -103,6 +97,7 @@ static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_
 	return 0;
 }
 
+/* generates a default via drill size for the layout */
 static int write_kicad_legacy_layout_via_drill_size(FILE *FP)
 {
 	pcb_fprintf(FP, "ViaDrill 250\n"); /* decimil format, default for now, ~= 0.635mm */
