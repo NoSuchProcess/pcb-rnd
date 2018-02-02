@@ -88,12 +88,24 @@ static int io_kicad_legacy_write_element_index(FILE *FP, pcb_data_t *Data)
 static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
-	pcb_pin_t *via;
-	/* write information about vias */
-	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
-								via->X + xOffset, via->Y + yOffset, via->X + xOffset, via->Y + yOffset, via->Thickness);
-		pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
+	pcb_pstk_t *ps;
+	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+	pcb_pstk_compshape_t cshape;
+	pcb_bool plated;
+
+	padstacklist_foreach(&Data->padstack, &it, ps) {
+		if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+			if (cshape != PCB_PSTK_COMPAT_ROUND) {
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to export via: only round shaped vias, with copper ring, are supported", NULL);
+				continue;
+			}
+
+			pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
+				x + xOffset, y + yOffset, x + xOffset, y + yOffset, pad_dia);
+#warning TODO: check if drill_dia can be applied
+#warning TODO: bbvia
+			pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
+		}
 	}
 	return 0;
 }
@@ -101,6 +113,7 @@ static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_
 /* generates a default via drill size for the layout */
 static int write_kicad_legacy_layout_via_drill_size(FILE *FP)
 {
+#warning TODO: do not hardwire this
 	pcb_fprintf(FP, "ViaDrill 250\n"); /* decimil format, default for now, ~= 0.635mm */
 	return 0;
 }
