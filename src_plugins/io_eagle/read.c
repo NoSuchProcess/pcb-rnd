@@ -872,6 +872,9 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 
 	ps = pcb_pstk_new_compat_via(data, x, y, drill, dia, clr, mask,  cshp, !hole);
 
+	if (name != NULL)
+		pcb_attribute_put(&ps->Attributes, "term", name);
+
 	switch(loc) {
 		case IN_SUBC: break;
 		case ON_BOARD:
