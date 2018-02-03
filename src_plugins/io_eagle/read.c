@@ -1226,7 +1226,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			pcb_coord_t x, y;
 			const char *name, *val, *lib, *pkg, *rot, *mirrored;
 			pcb_subc_t *subc, *new_subc;
-			int steps, back = 0;
+			int back = 0;
 
 			name = eagle_get_attrs(st, n, "name", NULL);
 			val = eagle_get_attrs(st, n, "value", NULL);
@@ -1296,14 +1296,28 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 
 #warning subc TODO: why not use the arbtirary angle rot?
 			if (rot != NULL) {
-				steps = eagle_rot2steps(rot);
-				if (back) {
-					steps = (steps + 2)%4;
+				char *end;
+				double ang = strtod(rot+1, &end);
+				if (*end == '\0') {
+					if (fmod(ang, 90) == 0) {
+						int steps = eagle_rot2steps(rot);
+						if (back)
+							steps = (steps + 2)%4;
+						if (steps > 0)
+							pcb_subc_rotate90(new_subc, x, y, steps);
+						else
+							pcb_message(PCB_MSG_WARNING, "0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
+					}
+					else {
+						double sina, cosa;
+						ang = -ang;
+						sina = sin(ang / PCB_RAD_TO_DEG);
+						cosa = cos(ang / PCB_RAD_TO_DEG);
+						pcb_subc_rotate(new_subc, x, y, cosa, sina, ang);
+					}
 				}
-				if (steps > 0)
-					pcb_subc_rotate90(new_subc, x, y, steps);
 				else
-					pcb_message(PCB_MSG_WARNING, "0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
+					pcb_message(PCB_MSG_ERROR, "syntax error in element rotation '%s': %s/%s/%s\n", rot, name, pkg, lib);
 			}
 
 			if (back)
