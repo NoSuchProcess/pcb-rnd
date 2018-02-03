@@ -109,7 +109,14 @@ do { \
 
 pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 {
-	/* normal case: a layer is empty if all lists are empty */
+	/* if any local list is non-empty, the layer is non-empty */
+	if (layer->Line.lst.length > 0) return pcb_false;
+	if (layer->Arc.lst.length > 0) return pcb_false;
+	if (layer->Polygon.lst.length > 0) return pcb_false;
+	if (layer->Text.lst.length > 0) return pcb_false;
+
+	/* if the layer is locally empty, it might be a board layer that has
+	   objects from subcircuits so also check the rtrees */
 	return
 		PCB_RTREE_EMPTY(layer->line_tree) && 
 		PCB_RTREE_EMPTY(layer->arc_tree) && 
