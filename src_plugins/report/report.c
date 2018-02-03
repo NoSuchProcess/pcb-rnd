@@ -831,6 +831,12 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			return -1;
 		}
 
+		if (((l->Point1.X == x) && (l->Point1.X == y)) || ((l->Point2.X == x) && (l->Point2.X == y))) {
+			pcb_message(PCB_MSG_ERROR, "Can not split at the endpoint of a line\n");
+			return -1;
+		}
+
+		pcb_gui->log("The two arms of the net are:\n");
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
