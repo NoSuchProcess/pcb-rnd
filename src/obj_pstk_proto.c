@@ -401,30 +401,36 @@ void pcb_pstk_tshape_copy(pcb_pstk_tshape_t *ts_dst, pcb_pstk_tshape_t *ts_src)
 	}
 }
 
+void pcb_pstk_shape_rot(pcb_pstk_shape_t *sh, double sina, double cosa, double angle)
+{
+	int i;
+
+	switch(sh->shape) {
+		case PCB_PSSH_LINE:
+			pcb_rotate(&sh->data.line.x1, &sh->data.line.y1, 0, 0, cosa, sina);
+			pcb_rotate(&sh->data.line.x2, &sh->data.line.y2, 0, 0, cosa, sina);
+			break;
+		case PCB_PSSH_CIRC:
+			pcb_rotate(&sh->data.circ.x, &sh->data.circ.y, 0, 0, cosa, sina);
+			break;
+		case PCB_PSSH_POLY:
+			if (sh->data.poly.pa != NULL)
+				pcb_polyarea_free(&sh->data.poly.pa);
+			for(i = 0; i < sh->data.poly.len; i++)
+				pcb_rotate(&sh->data.poly.x[i], &sh->data.poly.y[i], 0, 0, cosa, sina);
+			pcb_pstk_shape_update_pa(&sh->data.poly);
+			break;
+	}
+}
+
+
 void pcb_pstk_tshape_rot(pcb_pstk_tshape_t *ts, double angle)
 {
-	int n, i;
+	int n;
 	double cosa = cos(angle / PCB_RAD_TO_DEG), sina = sin(angle / PCB_RAD_TO_DEG);
 
-	for(n = 0; n < ts->len; n++) {
-		pcb_pstk_shape_t *sh = &ts->shape[n];
-		switch(sh->shape) {
-			case PCB_PSSH_LINE:
-				pcb_rotate(&sh->data.line.x1, &sh->data.line.y1, 0, 0, cosa, sina);
-				pcb_rotate(&sh->data.line.x2, &sh->data.line.y2, 0, 0, cosa, sina);
-				break;
-			case PCB_PSSH_CIRC:
-				pcb_rotate(&sh->data.circ.x, &sh->data.circ.y, 0, 0, cosa, sina);
-				break;
-			case PCB_PSSH_POLY:
-				if (sh->data.poly.pa != NULL)
-					pcb_polyarea_free(&sh->data.poly.pa);
-				for(i = 0; i < sh->data.poly.len; i++)
-					pcb_rotate(&sh->data.poly.x[i], &sh->data.poly.y[i], 0, 0, cosa, sina);
-				pcb_pstk_shape_update_pa(&sh->data.poly);
-				break;
-		}
-	}
+	for(n = 0; n < ts->len; n++)
+		pcb_pstk_shape_rot(&ts->shape[n], sina, cosa, angle);
 }
 
 void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
