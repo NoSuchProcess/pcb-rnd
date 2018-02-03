@@ -1223,6 +1223,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 
 	padstacklist_foreach(&sc->data->padstack, &it, ps) {
 		const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		if (sc->data->padstack_tree != NULL)
 			pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
@@ -1231,6 +1232,8 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 		if (dst != NULL)
 			ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
 		ps->protoi = -1;
+		ps->parent.data = dst;
+		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		chg++;
 	}
 
