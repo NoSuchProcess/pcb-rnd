@@ -889,8 +889,7 @@ static int eagle_read_hole(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 static int eagle_read_pad(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-/*	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);*/
-	return 0;
+	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);
 }
 
 static int eagle_read_via(read_state_t *st, trnode_t *subtree, void *obj, int type)
