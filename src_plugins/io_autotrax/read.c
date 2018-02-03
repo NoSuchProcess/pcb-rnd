@@ -516,12 +516,13 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	int Shape = 0;
 	int autotrax_layer = 0;
 	pcb_layer_id_t PCB_layer;
-
 	int valid = 1;
 	int success;
-
 	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
+#warning subc TODO: or subc
+	pcb_data_t *data = st->pcb->Data;
+	pcb_pstk_t *ps;
 
 	Thickness = 0;
 	Clearance = st->copper_clearance; /* start with sane default */
@@ -555,7 +556,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 		Connects = strtol(argv[6], &end, 10);
 		if (*end != '\0') valid = 0;
 		/* which specifies GND or Power connection for pin/pad/via */
-		autotrax_layer = strtol(argv[6], &end, 10);
+		autotrax_layer = strtol(argv[7], &end, 10);
 		if (*end != '\0') valid = 0;
 		valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 		qparse_free(argc, &argv);
@@ -624,13 +625,69 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	}
 
 	if (el == NULL) { /* pad not within element, i.e. a free pad/pin/via */
-		if (Shape == 3)
-			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-		else if (Shape == 2 || Shape == 4)
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
-		/* should this in fact be an SMD pad, +/- a hole in it ? */
-		pcb_via_new(st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, line, Flags);
-		return 1;
+		pcb_pstk_shape_t sh[8];
+		int n;
+
+		memset(sh, 0, sizeof(sh));
+		sh[0].layer_mask = PCB_LYT_PASTE; sh[0].comb = PCB_LYC_AUTO;
+		sh[1].layer_mask = PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
+		sh[2].layer_mask = PCB_LYT_COPPER;
+		sh[3].layer_mask = PCB_LYT_COPPER;
+		sh[4].layer_mask = PCB_LYT_COPPER;
+		sh[5].layer_mask = PCB_LYT_MASK; sh[5].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
+		sh[6].layer_mask = PCB_LYT_PASTE; sh[6].comb = PCB_LYC_AUTO;
+
+		switch(autotrax_layer) {
+			case 1:
+				for(n = 0; n < 3; n++)
+					sh[n].layer_mask |= PCB_LYT_TOP;
+				sh[3].layer_mask = 0;
+				break;
+			case 6:
+				for(n = 0; n < 3; n++)
+					sh[n].layer_mask |= PCB_LYT_BOTTOM;
+				sh[3].layer_mask = 0;
+				break;
+			case 13:
+				for(n = 0; n < 3; n++)
+					sh[n].layer_mask |= PCB_LYT_TOP;
+				sh[3].layer_mask |= PCB_LYT_INTERN;
+				for(n = 4; n < 7; n++)
+					sh[n].layer_mask |= PCB_LYT_BOTTOM;
+				break;
+			default:
+				pcb_message(PCB_MSG_ERROR, "Unsupported FP layer: %d, %s:%d.\n", autotrax_layer, st->Filename, st->lineno);
+				return 0;
+		}
+
+		switch(Shape) {
+			case 1: /* round */
+				for(n = 0; n < 7; n++) {
+					pcb_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
+					if (sh[n].layer_mask == 0) break;
+					pcb_shape_oval(&sh[n], X_size+clr, Y_size+clr);
+				}
+				break;
+			case 2: /* rect */
+			case 4: /* round-rect - for now */
+#warning TODO: generate round-rect
+				for(n = 0; n < 7; n++) {
+					pcb_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
+					if (sh[n].layer_mask == 0) break;
+					pcb_shape_rect(&sh[n], X_size+clr, Y_size+clr);
+				}
+				break;
+			case 3: /* octa */
+#warning TODO: generate octa
+			default:
+				pcb_message(PCB_MSG_ERROR, "Unsupported FP shape: %d, %s:%d.\n", Shape, st->Filename, st->lineno);
+				return 0;
+		}
+		ps = pcb_pstk_new_from_shape(data, X, Y, Drill, 1, Clearance, sh);
+		if (ps == NULL)
+			pcb_message(PCB_MSG_ERROR, "Failed to convert FP to padstack, %s:%d.\n", st->Filename, st->lineno);
+
+		return (ps != NULL);
 	}
 	else { /* pad within element */
 #warning subc TODO: use the code above after subc support
@@ -1149,8 +1206,12 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		pcb_message(PCB_MSG_ERROR, "Ignored %d auto/easytrax layer zero feature(s)\n", st.ignored_layer_zero_element);
 	}
 
-	Ptr->MaxWidth = box->X2;
-	Ptr->MaxHeight = box->Y2;
+	if (box != NULL) {
+		Ptr->MaxWidth = box->X2;
+		Ptr->MaxHeight = box->Y2;
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Can not determine board extents - empty board?\n");
 
 	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */
 	pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
