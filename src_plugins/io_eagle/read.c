@@ -1217,15 +1217,18 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 	return 0;
 }
 
-static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *elem, pcb_text_t *text, pcb_text_t *def_text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
+static void eagle_read_subc_attrs(read_state_t *st, trnode_t *nd, pcb_subc_t *subc, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *subc_attr, const char *str, pcb_bool add_text)
 {
 	int direction = 0;
-	pcb_flag_t TextFlags = pcb_no_flags();
-	/*pcb_coord_t size;
-	int TextScale; */ /* <- both can be used for distinct subc text fields */
+	pcb_coord_t size;
 
-	x += def_text->X;
-	y += def_text->Y + EAGLE_TEXT_SIZE_100;
+	pcb_attribute_put(&subc->Attributes, subc_attr, str);
+	if (!add_text)
+		return;
+
+#warning TODO: text objects should be already created in the library; we should probably set the attributes here only
+#if 0
+	y += EAGLE_TEXT_SIZE_100;
 
 	for(nd = CHILDREN(nd); nd != NULL; nd = NEXT(nd)) {
 		const char *this_attr = eagle_get_attrs(st, nd, "name", "");
@@ -1235,20 +1238,11 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 			direction = eagle_rot2steps(eagle_get_attrs(st, nd, "rot", NULL));
 			if (direction < 0)
 				direction = 0;
-			/* size = eagle_get_attrc(st, nd, "size", EAGLE_TEXT_SIZE_100);*/
+			size = eagle_get_attrc(st, nd, "size", EAGLE_TEXT_SIZE_100);
 			break;
 		}
 	}
-#warning subc TODO can have unique text scaling in subcircuits
-
-/*	TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);*/
-#warning TODO scaling not behaving due to size read issue so hard wired for now
-/*	if (size >= 0)
-		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
-	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
-*/
-	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, st->refdes_scale, TextFlags);
-	text->Element = elem;
+#endif
 }
 
 static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
@@ -1321,13 +1315,13 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			new_subc->Flags = pcb_no_flags();
 			new_subc->ID = pcb_create_ID_get();
 
-#warning subc TODO: upgrade this to DYNTEXT
+#warning TODO: do we need these in st? probably not
 			st->refdes_x = st->refdes_y = 0;
 			st->value_x = st->value_y = 0;
 			st->refdes_scale = st->value_scale = 100; /* default values */
-			eagle_read_elem_text(st, n, new_subc, NULL, NULL, x, y, "PROD_ID", pkg);
-			eagle_read_elem_text(st, n, new_subc, NULL, NULL, x, y, "NAME", name);
-			eagle_read_elem_text(st, n, new_subc, NULL, NULL, x, y, "VALUE", val);
+			eagle_read_subc_attrs(st, n, new_subc, x, y, "PROD_ID", "footprint", pkg,  0);
+			eagle_read_subc_attrs(st, n, new_subc, x, y, "NAME",    "refdes",    name, 1);
+			eagle_read_subc_attrs(st, n, new_subc, x, y, "VALUE",   "value",     val,  0);
 
 			pcb_subc_bbox(new_subc);
 			if (st->pcb->Data->subc_tree == NULL)
