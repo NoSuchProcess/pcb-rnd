@@ -1316,7 +1316,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				back = 1;
 			}
 
-#warning subc TODO: use pcb_subc_new() instead of this?
 			new_subc = pcb_subc_dup_at(st->pcb, st->pcb->Data, subc, x, y, pcb_false);
 			new_subc->Flags = pcb_no_flags();
 			new_subc->ID = pcb_create_ID_get();
