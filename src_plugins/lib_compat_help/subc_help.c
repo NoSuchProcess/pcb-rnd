@@ -68,13 +68,18 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	return &sc->data->Layer[n];
 }
 
-pcb_text_t *pcb_subc_add_refdes_text(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale, pcb_bool bottom)
+pcb_text_t *pcb_subc_add_dyntex(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale, pcb_bool bottom, const char *pattern)
 {
 	pcb_layer_type_t side = bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 	pcb_layer_t *ly = pcb_subc_get_layer(sc, side | PCB_LYT_SILK, 0, pcb_true, "top-silk", pcb_false);
 	if (ly != NULL)
-		return pcb_text_new(ly, pcb_font(PCB, 0, 0), x, y, direction, scale, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER | (bottom ? PCB_FLAG_ONSOLDER : 0)));
+		return pcb_text_new(ly, pcb_font(PCB, 0, 0), x, y, direction, scale, pattern, pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER | (bottom ? PCB_FLAG_ONSOLDER : 0)));
 	return 0;
+}
+
+pcb_text_t *pcb_subc_add_refdes_text(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale, pcb_bool bottom)
+{
+	return pcb_subc_add_dyntex(sc, x, y, direction, scale, bottom, "%a.parent.refdes%");
 }
 
 pcb_text_t *pcb_subc_get_refdes_text(pcb_subc_t *sc)
