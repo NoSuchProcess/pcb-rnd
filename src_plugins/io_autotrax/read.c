@@ -53,6 +53,10 @@
 #include "../src_plugins/boardflip/boardflip.h"
 #include "hid_actions.h"
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
+#include "../src_plugins/lib_compat_help/pstk_help.h"
+#include "../src_plugins/lib_compat_help/subc_help.h"
+
 #define PCB REPLACE_THIS
 
 #define MAXREAD 255
@@ -448,6 +452,9 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	char *name;
 	int success;
 	int valid = 1;
+#warning subc TODO: use subc data
+	pcb_data_t *data = (el == NULL) ? st->pcb->Data : st->pcb->Data;
+	pcb_pstk_t *ps;
 
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 	pcb_flag_t Flags = pcb_flag_make(0);
@@ -491,16 +498,8 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	Mask = Thickness + st->mask_clearance;
 
-	if (el == NULL) {
-		pcb_via_new(st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
-		return 1;
-	}
-	else if (el != NULL && st != NULL) {
-		pcb_via_new(st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
-		return 1;
-	}
-	return -1;
-
+	ps = pcb_pstk_new_compat_via(data, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, 1);
+	return ps != NULL;
 }
 
 /* autotrax_pcb free or component pad
