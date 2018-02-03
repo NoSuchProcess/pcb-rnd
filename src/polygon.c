@@ -2004,9 +2004,9 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	pcb_data_t *dt = Data;
-	while(dt->parent_type == PCB_PARENT_SUBC)
+	while((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC))
 		dt = dt->parent.subc->parent.data;
-	if (dt->parent_type != PCB_PARENT_BOARD) /* clear/restore only on boards */
+	if ((dt == NULL) || (dt->parent_type != PCB_PARENT_BOARD)) /* clear/restore only on boards */
 		return;
 	if (type == PCB_TYPE_POLY)
 		pcb_poly_init_clip(dt, (pcb_layer_t *) ptr1, (pcb_poly_t *) ptr2);
@@ -2016,9 +2016,9 @@ void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	pcb_data_t *dt = Data;
-	while(dt->parent_type == PCB_PARENT_SUBC)
+	while((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC))
 		dt = dt->parent.subc->parent.data;
-	if (dt->parent_type != PCB_PARENT_BOARD) /* clear/restore only on boards */
+	if ((dt == NULL) || (dt->parent_type != PCB_PARENT_BOARD)) /* clear/restore only on boards */
 		return;
 	if (type == PCB_TYPE_POLY)
 		pcb_poly_init_clip(dt, (pcb_layer_t *) ptr1, (pcb_poly_t *) ptr2);
