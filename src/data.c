@@ -323,6 +323,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	pcb_cardinal_t i;
 
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
+	hasNoObjects &= (padstacklist_length(&Data->padstack) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
 	for (i = 0; i < Data->LayerN; i++)
 		hasNoObjects = hasNoObjects && pcb_layer_is_empty_(PCB, &(Data->Layer[i]));
