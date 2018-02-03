@@ -778,6 +778,8 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	}
 
 	ps = pcb_pstk_new_from_shape(subc->data, x, y, 0, 0, clr, sh);
+	if (ps == NULL)
+		pcb_message(PCB_MSG_ERROR, "Failed to load smd pad\n");
 
 	return 0;
 }
