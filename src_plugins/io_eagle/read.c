@@ -47,6 +47,7 @@
 #include "../src_plugins/boardflip/boardflip.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
+#include "../src_plugins/lib_compat_help/pstk_help.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MIL_TO_COORD(50)
@@ -733,11 +734,14 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	pcb_coord_t x, y, dx, dy;
-	pcb_pad_t *pad;
+	pcb_pstk_t *ps;
+	pcb_subc_t *subc = obj;
+	const char *name;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
-	const char *name, *rot;
-	int deg = 0;
 	long roundness = 0;
+	pcb_pstk_shape_t sh[4];
+	pcb_coord_t clr;
+	double rot;
 
 	assert(type == IN_SUBC);
 
@@ -746,30 +750,31 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	y = eagle_get_attrc(st, subtree, "y", 0);
 	dx = eagle_get_attrc(st, subtree, "dx", 0);
 	dy = eagle_get_attrc(st, subtree, "dy", 0);
-
-	rot = eagle_get_attrs(st, subtree, "rot", NULL);
-	deg = eagle_rot2degrees(rot);
+	rot = eagle_get_attrd(st, subtree, "rot", 0);
 
 #warning TODO: why don't we use roundness?
 	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
 #warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
 
-#warning TODO binary dx, dy are unsigned, so the following may not be needed if XML does not need it
-	if (dx < 0) {
-		x -= dx;
-		dx = -dx;
+#warning TODO: this should be coming from the eagle file
+	clr = conf_core.design.clearance;
+
+	memset(sh, 0, sizeof(sh));
+	sh[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], dx+clr, dy+clr);
+	sh[1].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE; sh[1].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[1], dx, dy);
+	sh[2].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], dx, dy);
+	sh[3].layer_mask = 0;
+
+	if (rot != 0) {
+		double sina = sin(rot / PCB_RAD_TO_DEG), cosa = cos(rot / PCB_RAD_TO_DEG);
+		pcb_pstk_shape_rot(&sh[0], sina, cosa, rot);
+		pcb_pstk_shape_rot(&sh[1], sina, cosa, rot);
+		pcb_pstk_shape_rot(&sh[2], sina, cosa, rot);
 	}
 
-	if (dy < 0) {
-		y -= dy;
-		dy = -dy;
-	}
+	ps = pcb_pstk_new_from_shape(subc->data, x, y, 0, 0, clr, sh);
 
-	if (rot == NULL)
-		deg = 0;
-	else
-		deg = eagle_rot2degrees(rot);
 
 #warning subc TODO: load padstack
 #if 0
