@@ -199,6 +199,7 @@
 - BUG: hackvana gerber export uses .drl ending instead of .cnc for excellon drill file [report: erich]
 - BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
+- BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
  
 3. Long term ===============================================================================
 
