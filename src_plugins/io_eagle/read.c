@@ -751,14 +751,18 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	dx = eagle_get_attrc(st, subtree, "dx", 0);
 	dy = eagle_get_attrc(st, subtree, "dy", 0);
 	rot = eagle_get_attrd(st, subtree, "rot", 0);
-
-#warning TODO: why don't we use roundness?
 	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
 #warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
 
 #warning TODO: this should be coming from the eagle file
 	clr = conf_core.design.clearance;
+
+#warning TODO padstacks - consider roundrect, oval etc shapes when padstacks available
+#if 0
+	if (roundness >= 65) /* round smd pads found in fiducials, some discretes, it seems */
+		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
+#endif
 
 	memset(sh, 0, sizeof(sh));
 	sh[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], dx+clr, dy+clr);
@@ -775,53 +779,6 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 	ps = pcb_pstk_new_from_shape(subc->data, x, y, 0, 0, clr, sh);
 
-
-#warning subc TODO: load padstack
-#if 0
-	switch(deg) {
-		case 0:
-			x -= dx/2;
-			y -= dy/2;
-			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-				x+dx, y+dy, x, y,
-				conf_core.design.clearance, conf_core.design.clearance,
-				name, name, pcb_flag_make(0));
-			break;
-		case 180:
-			x -= dx/2;
-			y -= dy/2;
-			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-				x+dx, y+dy, x, y,
-				conf_core.design.clearance, conf_core.design.clearance,
-				name, name, pcb_flag_make(0));
-			break;
-		case 90:
-			y -= dx/2;
-			x -= dy/2;
-			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-				x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
-					conf_core.design.clearance, conf_core.design.clearance,
-				name, name, pcb_flag_make(0));
-			break;
-		case 270:
-			y -= dx/2;
-			x -= dy/2;
-			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-				x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
-				conf_core.design.clearance, conf_core.design.clearance,
-				name, name, pcb_flag_make(0));
-			break;
-		default:
-			pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation of smd pad: %s\n", rot);
-	}
-
-#warning TODO padstacks - consider roundrect, oval etc shapes when padstacks available
-	if (roundness >= 65) /* round smd pads found in fiducials, some discretes, it seems */
-		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
-
-	if (ln == 16)
-		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pad);
-#endif
 	return 0;
 }
 
