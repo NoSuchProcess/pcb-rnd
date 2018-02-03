@@ -32,8 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*#include "footprint.h"*/
-
 #include "plugins.h"
 #include "plug_io.h"
 #include "write.h"
@@ -51,13 +49,6 @@
 static pcb_plug_io_t io_autotrax;
 static const char *autotrax_cookie = "autotrax IO";
 
-static const char pcb_acts_Saveautotrax[] = "SaveAutotrax(type, filename)";
-static const char pcb_acth_Saveautotrax[] = "Saves the specific type of data in an autotrax file. Type can be: board-footprints";
-/*static const char *autotrax_cookie = "Protel Autotrax importer";
-*/
-static const char pcb_acts_LoadAutotraxFrom[] = "LoadAutotraxFrom(filename)";
-static const char pcb_acth_LoadAutotraxFrom[] = "Loads the specified autotrax layout.";
-
 
 int io_autotrax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
@@ -71,36 +62,6 @@ int io_autotrax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *
 	return 100;
 }
 
-/*PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie) 
-*/
-
-
-/*
-pcb_hid_action_t autotrax_action_list[] = {
-        {"LoadAutotraxFrom", 0, pcb_act_LoadAutotraxFrom, pcb_acth_LoadAutotraxFrom, pcb_acts_LoadAutotraxFrom}
-};
-
-*/
-
-/*PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie)
-
-int pplg_check_ver_import_autotrax(int ver_needed) { return 0; }
-
-void pplg_uninit_import_autotrax(void)
-{
-        pcb_hid_remove_actions_by_cookie(autotrax_cookie);
-}
-*/
-/*#include "dolists.h"
-int pplg_init_import_autotrax(void)
-{
-        PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie)
-        return 0;
-}
-//////////////////// */
-
-
-
 int pplg_check_ver_io_autotrax(int ver_needed) { return 0; }
 
 void pplg_uninit_io_autotrax(void)
@@ -108,12 +69,8 @@ void pplg_uninit_io_autotrax(void)
 	pcb_hid_remove_actions_by_cookie(autotrax_cookie);
 }
 
-#include "dolists.h"
-
 int pplg_init_io_autotrax(void)
 {
-
-	/* register the IO hook */
 	io_autotrax.plugin_data = NULL;
 	io_autotrax.fmt_support_prio = io_autotrax_fmt;
 	io_autotrax.test_parse = io_autotrax_test_parse;
@@ -130,12 +87,7 @@ int pplg_init_io_autotrax(void)
 	io_autotrax.fp_extension = ".PCB";
 	io_autotrax.mime_type = "application/x-autotrax-pcb";
 
-
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
-/*
-	PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie);
-*/
-	/* TODO: Alloc plugin-globals here. */
 
 	return 0;
 }
