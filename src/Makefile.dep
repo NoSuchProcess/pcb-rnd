@@ -2196,7 +2196,8 @@
  ../src_3rd/libminuid/libminuid.h ht_subc.h vtpadstack.h obj_pstk_shape.h \
  polygon.h vtpadstack_t.h unit.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
- ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h
+ ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h \
+ ../src_plugins/lib_compat_help/pstk_help.h
 ../src_plugins/io_eagle/read_dru.o: ../src_plugins/io_eagle/read_dru.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
