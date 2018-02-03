@@ -2110,7 +2110,9 @@
  ../src_plugins/io_autotrax/read.h layer.h const.h netlist.h \
  route_style.h polygon.h misc_util.h conf_core.h move.h macro.h obj_all.h \
  safe_fs.h rotate.h ../src_plugins/boardflip/boardflip.h unit.h \
- hid_actions.h
+ hid_actions.h ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
+ ../src_plugins/lib_compat_help/pstk_help.h \
+ ../src_plugins/lib_compat_help/subc_help.h obj_subc.h
 ../src_plugins/io_autotrax/write.o: ../src_plugins/io_autotrax/write.c \
  ../config.h compat_misc.h board.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
