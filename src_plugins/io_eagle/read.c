@@ -781,6 +781,9 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	if (ps == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to load smd pad\n");
 
+	if (name != NULL)
+		pcb_attribute_put(&ps->Attributes, "term", name);
+
 	return 0;
 }
 
