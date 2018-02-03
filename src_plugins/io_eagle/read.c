@@ -87,9 +87,6 @@ typedef struct read_state_s {
 	htip_t layers;
 	htsp_t libs;
 
-	/* current element refdes X, Y, height, and value X, Y, height */
-	pcb_coord_t refdes_x, refdes_y, refdes_scale, value_x, value_y, value_scale;
-
 	/* design rules */
 	pcb_coord_t md_wire_wire; /* minimal distance between wire and wire (clearance) */
 	pcb_coord_t ms_width; /* minimal trace width */
@@ -875,8 +872,9 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	pcb_coord_t size;
 	trnode_t *n;
 	const char *cont;
-
-#warning subc TODO subcircuits will allow distinct refdes, descr and value text field attributes
+	pcb_coord_t x, y;
+	int dir = 0, scale, layer;
+	const char *pattern;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
 		if (IS_TEXT(n))
@@ -885,19 +883,22 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	if ((n == NULL) || ((cont = GET_TEXT(n)) == NULL))
 		return 0;
 
-	if (STRCMP(cont, ">NAME") == 0) {
-		size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
-		st->refdes_scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
-		st->refdes_x = eagle_get_attrc(st, subtree, "x", 0);
-		st->refdes_y = eagle_get_attrc(st, subtree, "y", 0);
-	} else if (STRCMP(cont, ">VALUE") == 0) {
-		size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
-		st->value_scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
-		st->value_x = eagle_get_attrc(st, subtree, "x", 0);
-		st->value_y = eagle_get_attrc(st, subtree, "y", 0);
-	} else {
+	/* create dyntext for name and value only (the core could handle any attribute, but we can't pick them up on the element ref) */
+	if (STRCMP(cont, ">NAME") == 0)
+		pattern = "%a.parent.refdes%";
+	else if (STRCMP(cont, ">VALUE") == 0)
+		pattern = "%a.parent.value%";
+	else
 		return 0;
-	}
+
+	layer = eagle_get_attrl(st, subtree, "layer", 0);
+	size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
+	x = eagle_get_attrc(st, subtree, "x", 0);
+	y = eagle_get_attrc(st, subtree, "y", 0);
+	y += size; /* different text object origin in eagle */
+	scale = (int)(((double)size/(double)EAGLE_TEXT_SIZE_100) * 100.0);
+
+	pcb_subc_add_dyntex((pcb_subc_t *)obj, x, y, dir, scale, (layer == 27), pattern);
 
 	return 0;
 }
@@ -921,13 +922,7 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
-	/* zero these out before current pkg read */
-	st->refdes_x = 0;
-	st->refdes_y = 0;
-	st->refdes_scale = 0;
-	st->value_x = 0;
-	st->value_y = 0;
-	st->value_scale = 0;
+
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, subc, IN_SUBC);
 }
 
@@ -1283,10 +1278,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			new_subc->Flags = pcb_no_flags();
 			new_subc->ID = pcb_create_ID_get();
 
-#warning TODO: do we need these in st? probably not
-			st->refdes_x = st->refdes_y = 0;
-			st->value_x = st->value_y = 0;
-			st->refdes_scale = st->value_scale = 100; /* default values */
 			eagle_read_subc_attrs(st, n, new_subc, x, y, "PROD_ID", "footprint", pkg,  0);
 			eagle_read_subc_attrs(st, n, new_subc, x, y, "NAME",    "refdes",    name, 1);
 			eagle_read_subc_attrs(st, n, new_subc, x, y, "VALUE",   "value",     val,  0);
@@ -1323,9 +1314,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			if (back)
 				pcb_subc_change_side(&new_subc, 2 * y - st->pcb->MaxHeight);
 
-			if (st->refdes_x != st->value_x || st->refdes_y != st->value_y || st->refdes_scale != st->value_scale) {
-				pcb_message(PCB_MSG_WARNING, "element \"value\" text x ,y, scaling != those of refdes text; set to refdes x, y, scaling.\n");
-			}
 			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}
 	}
