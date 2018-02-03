@@ -831,10 +831,12 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			return -1;
 		}
 
-		if (((l->Point1.X == x) && (l->Point1.X == y)) || ((l->Point2.X == x) && (l->Point2.X == y))) {
-			pcb_message(PCB_MSG_ERROR, "Can not split at the endpoint of a line\n");
+#define MINDIST PCB_MIL_TO_COORD(40)
+		if ((pcb_distance(l->Point1.X, l->Point1.Y, x, y) < MINDIST) || (pcb_distance(l->Point2.X, l->Point2.Y, x, y) < MINDIST)) {
+			pcb_message(PCB_MSG_ERROR, "Can not split near the endpoint of a line\n");
 			return -1;
 		}
+#undef MINDIST2
 
 		pcb_gui->log("The two arms of the net are:\n");
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
@@ -852,6 +854,8 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		l->Point2.X = ox; l->Point2.Y = oy;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
+
+		PCB_FLAG_SET(PCB_FLAG_SELECTED, l);
 
 		return 0;
 	}
