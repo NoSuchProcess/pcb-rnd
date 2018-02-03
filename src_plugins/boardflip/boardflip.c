@@ -160,7 +160,14 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, padstack, padstack);
 	}
 	PCB_END_LOOP;
-#warning subc TODO
+	PCB_SUBC_LOOP(data);
+	{
+		pcb_flip_data(subc->data, flip_x, flip_y, xo, yo, et_swap_sides);
+		if (et_swap_sides) {
+#warning subc TODO: layer mirror, also test one-sided padstack
+		}
+	}
+	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(data);
 	{
 		XFLIP(element->MarkX);
