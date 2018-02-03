@@ -41,22 +41,6 @@
 #include "compat_misc.h"
 #include "boardflip.h"
 
-
-/* Things that need to be flipped:
-
-  lines
-  text
-  polygons
-  arcs
-  vias
-  elements
-    elementlines
-    elementarcs
-    pins
-    pads
-  rats
-*/
-
 #define XFLIP(v) (v) = ((flip_x ? -(v) : (v)) + xo)
 #define YFLIP(v) (v) = ((flip_y ? -(v) : (v)) + yo)
 #define AFLIP(a) (a) = aflip((a), flip_x, flip_y)
