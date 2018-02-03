@@ -787,10 +787,13 @@ static int ReportNetLength_(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	}
 	PCB_END_LOOP;
 
+	goto noelem;
+
 got_net_name:
 	pcb_reset_conns(pcb_false);
 	pcb_undo(pcb_true);
 
+noelem:;
 	{
 		char buf[50];
 		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
