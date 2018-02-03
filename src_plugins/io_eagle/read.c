@@ -1324,9 +1324,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			eagle_read_subc_attrs(st, n, new_subc, x, y, "VALUE",   "value",     val,  0);
 
 			pcb_subc_bbox(new_subc);
-			if (st->pcb->Data->subc_tree == NULL)
-				st->pcb->Data->subc_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)new_subc);
 			pcb_subc_rebind(st->pcb, new_subc);
 
 #warning subc TODO: why not use the arbtirary angle rot?
