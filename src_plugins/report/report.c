@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,1999 Thomas Nau
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This module, report.c, was written and is Copyright (C) 1997 harry eaton
  *
