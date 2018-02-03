@@ -1016,14 +1016,11 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		return -1;
 	}
 
-
 	new_module = pcb_subc_alloc();
 	pcb_subc_create_aux(new_module, module_X, module_Y, 0.0, 0);
 	pcb_attribute_put(&new_module->Attributes, "refdes", "A1");
 	pcb_add_subc_to_data(st->pcb->Data, new_module);
 	pcb_subc_bind_globals(st->pcb, new_module);
-
-/*	pcb_element_new(st->pcb->Data, NULL, pcb_font(st->pcb, 0, 1), Flags, module_name, module_refdes, module_value, module_X, module_Y, direction, refdes_scaling, text_flags, pcb_false);*/
 
 	nonempty = 0;
 	while(!feof(FP)) {
@@ -1046,6 +1043,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 			}
 		}
 		else if (length >= 2) {
+#warning TODO: this does not handle return -1
 			if (strncmp(s, "CT", 2) == 0) {
 				nonempty |= autotrax_parse_track(st, FP, new_module);
 			}
