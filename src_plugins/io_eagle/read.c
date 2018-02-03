@@ -508,7 +508,7 @@ static int eagle_rot2steps(const char *rot)
 		case 180: return 2;
 		case 270: return 1;
 	}
-	pcb_message(PCB_MSG_WARNING, "Unexpected non n*90 degree rotation value ignored\n");
+	pcb_message(PCB_MSG_WARNING, "Unexpected non n*90 degree rotation value '%s' ignored\n", rot);
 	return -1;
 }
 
