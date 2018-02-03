@@ -1035,7 +1035,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 
 			subc = pcb_subc_alloc();
 			eagle_read_pkg(st, n, subc);
-			if (pcb_data_is_empty(subc->data)) {
+			if (pcb_subc_is_empty(subc)) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring empty package %s\n", name);
 				free(subc);
 				continue;
@@ -1301,7 +1301,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
 				continue;
 			}
-			if (pcb_data_is_empty(subc->data)) {
+			if (pcb_subc_is_empty(subc)) {
 				pcb_message(PCB_MSG_WARNING, "Not placing empty element: %s/%s\n", lib, pkg);
 				continue;
 			}
