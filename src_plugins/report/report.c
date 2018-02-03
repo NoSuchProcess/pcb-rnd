@@ -714,13 +714,11 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 	return 0;
 }
 
-static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int ReportNetLength_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_coord_t length = 0;
 	char *netname = 0;
 	int found = 0;
-
-	pcb_gui->get_coords("Click on a connection", &x, &y);
 
 	/* Reset all connection flags and save an undo-state to get back
 	 * to the state the board was in when we started this function.
@@ -804,6 +802,56 @@ got_net_name:
 
 	return 0;
 }
+
+static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y, int split)
+{
+
+	if (split) {
+		void *r1, *r2, *r3;
+		pcb_line_t *l;
+		pcb_layer_t *ly;
+		int type;
+		pcb_coord_t ox, oy;
+
+		pcb_gui->get_coords("Click on a copper line", &x, &y);
+
+		type = pcb_search_screen(x, y, PCB_TYPE_LINE, &r1, &r2, &r3);
+		if (type != PCB_TYPE_LINE) {
+			pcb_message(PCB_MSG_ERROR, "can't find a line to split\n");
+			return -1;
+		}
+		l = r2;
+		assert(l->parent_type == PCB_PARENT_LAYER);
+		ly = l->parent.layer;
+		if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER)) {
+			pcb_message(PCB_MSG_ERROR, "not a copper line, can't split it\n");
+			return -1;
+		}
+
+		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
+		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
+		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
+		ReportNetLength_(argc, argv, x, y);
+		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
+		l->Point1.X = ox; l->Point1.Y = oy;
+		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
+
+		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
+		ox = l->Point2.X; oy = l->Point2.Y; l->Point2.X = x; l->Point2.Y = y;
+		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
+		ReportNetLength_(argc, argv, x, y);
+		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
+		l->Point2.X = ox; l->Point2.Y = oy;
+		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
+
+		return 0;
+	}
+	else {
+/*		pcb_gui->get_coords("Click on a connection", &x, &y);*/
+		return ReportNetLength_(argc, argv, x, y);
+	}
+}
+
 
 static int ReportNetLengthByName(const char *tofind, pcb_coord_t x, pcb_coord_t y)
 {
@@ -910,7 +958,7 @@ static int ReportNetLengthByName(const char *tofind, pcb_coord_t x, pcb_coord_t 
  * syntax:
  */
 
-static const char report_syntax[] = "Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name])";
+static const char report_syntax[] = "Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])";
 
 static const char report_help[] = "Produce various report.";
 
@@ -960,7 +1008,9 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else if (pcb_strcasecmp(argv[0], "FoundPins") == 0)
 		return ReportFoundPins(argc - 1, argv + 1, x, y);
 	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 1))
-		return ReportNetLength(argc - 1, argv + 1, x, y);
+		return ReportNetLength(argc - 1, argv + 1, x, y, 0);
+	else if ((pcb_strcasecmp(argv[0], "NetLengthTo") == 0) && (argc == 1))
+		return ReportNetLength(argc - 1, argv + 1, x, y, 1);
 	else if (pcb_strcasecmp(argv[0], "AllNetLengths") == 0)
 		return ReportAllNetLengths(argc - 1, argv + 1, x, y);
 	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 2))
