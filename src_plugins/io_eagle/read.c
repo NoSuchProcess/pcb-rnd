@@ -766,11 +766,10 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 		dy = -dy;
 	}
 
-	if (rot == NULL) {
+	if (rot == NULL)
 		deg = 0;
-	} else {
+	else
 		deg = eagle_rot2degrees(rot);
-	}
 
 #warning subc TODO: load padstack
 #if 0
