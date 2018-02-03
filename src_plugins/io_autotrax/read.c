@@ -530,36 +530,35 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
-		char **argv;
+		char **argv, *end;
 		s = line;
 		ltrim(s);
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
-		if (argc > 6) {
-			X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
-			valid &= success;
-			Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
-			valid &= success;
-			X_size = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
-			valid &= success;
-			Y_size = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
-			valid &= success;
-			Shape = pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
-			valid &= success;
-			Drill = pcb_get_value_ex(argv[5], NULL, NULL, NULL, "mil", &success);
-			valid &= success;
-			Connects = pcb_get_value_ex(argv[6], NULL, NULL, NULL, NULL, &success);
-			valid &= success; /* which specifies GND or Power connection for pin/pad/via */
-			autotrax_layer = pcb_get_value_ex(argv[7], NULL, NULL, NULL, NULL, &success);
-			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
-			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
-			qparse_free(argc, &argv);
-		}
-		else {
+		if (argc <= 6) {
 			qparse_free(argc, &argv);
 			pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
+		X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+		valid &= success;
+		Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+		valid &= success;
+		X_size = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+		valid &= success;
+		Y_size = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+		valid &= success;
+		Shape = strtol(argv[4], &end, 10);
+		if (*end != '\0') valid = 0;
+		Drill = pcb_get_value_ex(argv[5], NULL, NULL, NULL, "mil", &success);
+		valid &= success;
+		Connects = strtol(argv[6], &end, 10);
+		if (*end != '\0') valid = 0;
+		/* which specifies GND or Power connection for pin/pad/via */
+		autotrax_layer = strtol(argv[6], &end, 10);
+		if (*end != '\0') valid = 0;
+		valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
+		qparse_free(argc, &argv);
 	}
 
 	if (!valid) {
@@ -568,13 +567,16 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	}
 
 /* now find name as string on next line and copy it */
-
+#warning TODO: can not exit above if we need to read this line
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error parsing pad text field line, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 	s = line;
 	rtrim(s); /* avoid rendering oddities on layout, and netlist matching confusion */
+
+	if (autotrax_layer == 11) return 1; /* layer 11: "board" layer - looks like an ignore */
+	PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
 
 	/* these features can have connections to GND and PWR
 	   planes specified in protel autotrax (seems rare though)
@@ -600,18 +602,6 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	Thickness = MIN(X_size, Y_size);
 	Mask = Thickness + st->mask_clearance;
 
-/*
-	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
-	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
-	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
-	The onsolder flags are redundant for now with vias.
-
-	currently ignore:
-	shape:
-		5 Cross Hair Target
-		6 Moiro Target
-*/
-
 	if (autotrax_layer == 0) {
 		pcb_message(PCB_MSG_ERROR, "Ignored pad on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
@@ -624,25 +614,26 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 		Drill = st->minimum_comp_pin_drill; /* ?may be better off using half the thickness for drill */
 	}
 
-	if ((Shape == 5 || Shape == 6) && el == NULL) {
+/* currently ignore:
+   shape:
+    5 Cross Hair Target
+    6 Moiro Target */
+	if ((Shape == 5) || (Shape == 6)) {
+		pcb_message(PCB_MSG_ERROR, "Unsupported FP target shape %d, %s:%d.\n", Shape, st->Filename, st->lineno);
 		return 0;
 	}
-	else if ((Shape == 5 || Shape == 6) && el != NULL) {
-		return 0;
-	}
-	else if (st != NULL && el == NULL) { /* pad not within element, i.e. a free pad/pin/via */
-		if (Shape == 3) {
+
+	if (el == NULL) { /* pad not within element, i.e. a free pad/pin/via */
+		if (Shape == 3)
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-		}
-		else if (Shape == 2 || Shape == 4) {
+		else if (Shape == 2 || Shape == 4)
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
-		}
 		/* should this in fact be an SMD pad, +/- a hole in it ? */
 		pcb_via_new(st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, line, Flags);
 		return 1;
 	}
-	else if (st != NULL && el != NULL) { /* pad within element */
-
+	else { /* pad within element */
+#warning subc TODO: use the code above after subc support
 		/* first we sort out pad shapes, and layer flags */
 		if ((Shape == 2 || Shape == 4) && autotrax_layer == 6) {
 			/* square (2) or rounded rect (4) on top layer */
