@@ -213,7 +213,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 				if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
-					pcb_message(PCB_MSG_ERROR, _("No subcricuit found there\n"));
+					pcb_message(PCB_MSG_ERROR, _("No subcircuit found there\n"));
 					return 1;
 				}
 			}
