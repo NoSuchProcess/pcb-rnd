@@ -392,7 +392,7 @@ static void print_pad(FILE *fp, GList **pads, pcb_pad_t *pad, pcb_point_t centro
 	add_padstack(pads, padstack);
 }
 
-static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name)
+static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
 {
 	char tmp[512];
 	int fld;
@@ -406,7 +406,7 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	for(n = 0; n < ply->len; n++) {
 		if ((fld % 3) == 0)
 			gds_append_str(term_shapes, "\n       ");
-		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", ply->x[n] - ox, ply->y[n] - oy);
+		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox) * partsidesign, ply->y[n] - oy);
 		gds_append_str(term_shapes, tmp);
 		fld++;
 	}
@@ -414,7 +414,7 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	gds_append_str(term_shapes, "\n        )\n");
 }
 
-static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name)
+static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
 {
 	char tmp[512];
 	int fld;
@@ -429,7 +429,7 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 		for(go = pcb_poly_vect_first(it, &x, &y); go; go = pcb_poly_vect_next(it, &x, &y)) {
 			if ((fld % 3) == 0)
 				gds_append_str(term_shapes, "\n       ");
-			pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", x - ox, y - oy);
+			pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x - ox) * partsidesign, y - oy);
 			gds_append_str(term_shapes, tmp);
 			fld++;
 		}
@@ -438,7 +438,7 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 	}
 }
 
-static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy, int term_side)
+static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy, int term_side, int partsidesign)
 {
 	if (poly->term != NULL) {
 		pcb_layer_t *lay = g_list_nth_data(layerlist, term_side);
@@ -459,7 +459,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 
 			pl = pcb_poly_contour(&it);
 
-			print_polyline(term_shapes, &it, pl, ox, oy, lay->name);
+			print_polyline(term_shapes, &it, pl, ox, oy, lay->name, partsidesign);
 		}
 
 		gds_append_str(term_shapes, "      )\n");
@@ -468,7 +468,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 	}
 }
 
-void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coord_t ox, pcb_coord_t oy)
+void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coord_t ox, pcb_coord_t oy, int partsidesign)
 {
 	pcb_pstk_shape_t *shp;
 	pcb_layer_t *lay = g_list_nth_data(layerlist, lid);
@@ -484,11 +484,13 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coo
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY:
-			print_polyshape(term_shapes, &shp->data.poly, ox, oy, lay->name);
+			print_polyshape(term_shapes, &shp->data.poly, ox, oy, lay->name, partsidesign);
 			break;
 		case PCB_PSSH_LINE:
+#warning TODO
 			break;
 		case PCB_PSSH_CIRC:
+#warning TODO
 			break;
 	}
 }
@@ -544,7 +546,7 @@ static void print_library(FILE * fp)
 			pcb_layer_type_t lyt = pcb_layer_flags_(layer);
 			if ((lyt & PCB_LYT_COPPER) && ((lyt & PCB_LYT_TOP) || (lyt & PCB_LYT_BOTTOM))) {
 				int termside = (lyt & PCB_LYT_BOTTOM) ? g_list_length(layerlist) - 1 : 0;
-				print_term_poly(fp, &term_shapes, polygon, ox, oy, termside);
+				print_term_poly(fp, &term_shapes, polygon, ox, oy, termside, partsidesign);
 			}
 		}
 		PCB_ENDALL_LOOP;
@@ -561,7 +563,7 @@ static void print_library(FILE * fp)
 
 			gds_append_str(&term_shapes, "      (shape ");
 			for(n = 0; n < g_list_length(layerlist); n++)
-				print_pstk_shape(&term_shapes, padstack, n, 0, 0);
+				print_pstk_shape(&term_shapes, padstack, n, 0, 0, partsidesign);
 			gds_append_str(&term_shapes, "      )\n");
 			gds_append_str(&term_shapes, "      (attach off)\n");
 			gds_append_str(&term_shapes, "    )\n");
