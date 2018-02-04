@@ -39,37 +39,42 @@
 #include "polygon_offs.h"
 #include "../lib_polyhelp/polyhelp.h"
 
+typedef struct {
+	FILE *f;
+	pcb_board_t *pcb;
+} wctx_t;
+
 /* writes autotrax vias to file */
-static int write_autotrax_layout_vias(FILE *FP, pcb_data_t *Data)
+static int write_autotrax_layout_vias(wctx_t *ctx, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
 	int via_drill_mil = 25; /* a reasonable default */
 	/* write information about via */
 	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X, PCB->MaxHeight - via->Y, via->Thickness, via_drill_mil);
+		pcb_fprintf(ctx->f, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X, PCB->MaxHeight - via->Y, via->Thickness, via_drill_mil);
 	}
 	return 0;
 }
 
 /* writes generic autotrax track descriptor line for components and layouts  */
-static int write_autotrax_track(FILE *FP, pcb_line_t *line, pcb_cardinal_t layer)
+static int write_autotrax_track(wctx_t *ctx, pcb_line_t *line, pcb_cardinal_t layer)
 {
 	int user_routed = 1;
-	pcb_fprintf(FP, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X, PCB->MaxHeight - line->Point1.Y, line->Point2.X, PCB->MaxHeight - line->Point2.Y, line->Thickness, layer, user_routed);
+	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X, PCB->MaxHeight - line->Point1.Y, line->Point2.X, PCB->MaxHeight - line->Point2.Y, line->Thickness, layer, user_routed);
 	return 0;
 }
 
 /* writes autotrax track descriptor for a pair of polyline vertices */
-static int write_autotrax_pline_segment(FILE *FP, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t Thickness, pcb_cardinal_t layer)
+static int write_autotrax_pline_segment(wctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t Thickness, pcb_cardinal_t layer)
 {
 	int user_routed = 1;
-	pcb_fprintf(FP, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->MaxHeight - y1, x2, PCB->MaxHeight - y2, Thickness, layer, user_routed);
+	pcb_fprintf(ctx->f, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->MaxHeight - y1, x2, PCB->MaxHeight - y2, Thickness, layer, user_routed);
 	return 0;
 }
 
 typedef struct {
-	FILE *file;
+	wctx_t *wctx;
 	pcb_cardinal_t layer;
 	pcb_coord_t thickness;
 } autotrax_hatch_ctx_t;
@@ -77,19 +82,19 @@ typedef struct {
 
 static void autotrax_hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	autotrax_hatch_ctx_t *ctx = (autotrax_hatch_ctx_t *) ctx_;
-	write_autotrax_pline_segment(ctx->file, x1, y1, x2, y2, ctx->thickness, ctx->layer);
+	autotrax_hatch_ctx_t *hctx = (autotrax_hatch_ctx_t *) ctx_;
+	write_autotrax_pline_segment(hctx->wctx, x1, y1, x2, y2, hctx->thickness, hctx->layer);
 }
 
 /* generates autotrax tracks to cross hatch a complex polygon being exported */
-static void autotrax_cpoly_hatch_lines(FILE *FP, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer)
+static void autotrax_cpoly_hatch_lines(wctx_t *ctx, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer)
 {
-	autotrax_hatch_ctx_t ctx;
+	autotrax_hatch_ctx_t hctx;
 
-	ctx.file = FP;
-	ctx.layer = layer;
-	ctx.thickness = thickness;
-	pcb_cpoly_hatch(src, dir, (thickness / 2) + 1, period, &ctx, autotrax_hatch_cb);
+	hctx.wctx = ctx;
+	hctx.layer = layer;
+	hctx.thickness = thickness;
+	pcb_cpoly_hatch(src, dir, (thickness / 2) + 1, period, &hctx, autotrax_hatch_cb);
 }
 
 /* generates an autotrax arc "segments" value to approximate an arc being exported   */
@@ -134,7 +139,7 @@ static int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t a
 }
 
 /* writes generic autotrax arc descriptor line for components and layouts */
-static int write_autotrax_arc(FILE *FP, pcb_arc_t *arc, int current_layer)
+static int write_autotrax_arc(wctx_t *ctx, pcb_arc_t *arc, int current_layer)
 {
 	pcb_coord_t radius;
 	if (arc->Width > arc->Height) {
@@ -143,12 +148,12 @@ static int write_autotrax_arc(FILE *FP, pcb_arc_t *arc, int current_layer)
 	else {
 		radius = arc->Width;
 	}
-	pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", arc->X, PCB->MaxHeight - arc->Y, radius, pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta), arc->Thickness, current_layer);
+	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", arc->X, PCB->MaxHeight - arc->Y, radius, pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta), arc->Thickness, current_layer);
 	return 0;
 }
 
 /* writes netlist data in autotrax format */
-static int write_autotrax_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
+static int write_autotrax_equipotential_netlists(wctx_t *ctx)
 {
 	int show_status = 0;
 	/* show status can be 0 or 1 for a net:
@@ -161,22 +166,22 @@ static int write_autotrax_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 
 		for(n = 0; n < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; n++) {
 			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
-			fprintf(FP, "NETDEF\r\n");
-			pcb_fprintf(FP, "%s\r\n", &menu->Name[2]);
-			pcb_fprintf(FP, "%d\r\n", show_status);
-			fprintf(FP, "(\r\n");
+			fprintf(ctx->f, "NETDEF\r\n");
+			pcb_fprintf(ctx->f, "%s\r\n", &menu->Name[2]);
+			pcb_fprintf(ctx->f, "%d\r\n", show_status);
+			fprintf(ctx->f, "(\r\n");
 			for(p = 0; p < menu->EntryN; p++) {
 				pcb_lib_entry_t *entry = &menu->Entry[p];
-				pcb_fprintf(FP, "%s\r\n", entry->ListEntry);
+				pcb_fprintf(ctx->f, "%s\r\n", entry->ListEntry);
 			}
-			fprintf(FP, ")\r\n");
+			fprintf(ctx->f, ")\r\n");
 		}
 	}
 	return 0;
 }
 
 
-static int write_autotrax_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
+static int write_autotrax_layout_tracks(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -186,8 +191,8 @@ static int write_autotrax_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_lay
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
 		int local_flag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(FP, "FT\r\n");
-			write_autotrax_track(FP, line, current_layer);
+			pcb_fprintf(ctx->f, "FT\r\n");
+			write_autotrax_track(ctx, line, current_layer);
 			local_flag |= 1;
 		}
 		return local_flag;
@@ -197,7 +202,7 @@ static int write_autotrax_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_lay
 }
 
 /* writes autotrax arcs for layouts */
-static int write_autotrax_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
+static int write_autotrax_layout_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
@@ -207,8 +212,8 @@ static int write_autotrax_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer
 	if (!pcb_layer_is_empty_(PCB, layer)) { /*|| (layer->name && *layer->name)) { */
 		int local_flag = 0;
 		arclist_foreach(&layer->Arc, &it, arc) {
-			pcb_fprintf(FP, "FA\r\n");
-			write_autotrax_arc(FP, arc, current_layer);
+			pcb_fprintf(ctx->f, "FA\r\n");
+			write_autotrax_arc(ctx, arc, current_layer);
 			local_flag |= 1;
 		}
 		return local_flag;
@@ -218,7 +223,7 @@ static int write_autotrax_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer
 }
 
 /* writes generic autotrax text descriptor line layouts onl, since no text in .fp */
-static int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
+static int write_autotrax_layout_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	pcb_coord_t mHeight = myfont->MaxHeight; /* autotrax needs the width of the widest letter */
@@ -242,7 +247,7 @@ static int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer
 		local_flag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if (current_layer < 9) { /* copper or silk layer text */
-				fputs("FS\r\n", FP);
+				fputs("FS\r\n", ctx->f);
 				strokeThickness = PCB_SCALE_TEXT(default_stroke_thickness, text->Scale / 2);
 				textHeight = PCB_SCALE_TEXT(mHeight, text->Scale);
 				rotation = 0;
@@ -257,16 +262,16 @@ static int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer
 				else if (text->Direction == 0) /*normal text */
 					rotation = 0;
 
-				pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X, PCB->MaxHeight - text->Y, textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
+				pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X, PCB->MaxHeight - text->Y, textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
 				for(index = 0; index < 32; index++) {
 					if (text->TextString[index] == '\0')
 						index = 32;
 					else if (text->TextString[index] < 32 || text->TextString[index] > 126)
-						fputc(' ', FP); /* replace non alphanum with space */
+						fputc(' ', ctx->f); /* replace non alphanum with space */
 					else /* need to truncate to 32 alphanumeric chars */
-						fputc(text->TextString[index], FP);
+						fputc(text->TextString[index], ctx->f);
 				}
-				pcb_fprintf(FP, "\r\n");
+				pcb_fprintf(ctx->f, "\r\n");
 			}
 			local_flag |= 1;
 		}
@@ -277,7 +282,7 @@ static int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer
 }
 
 /* writes element data in autotrax format for use in a layout .PCB file */
-static int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data)
+static int write_autotrax_layout_elements(wctx_t *ctx, pcb_board_t *Layout, pcb_data_t *Data)
 {
 
 	gdl_iterator_t eit;
@@ -321,14 +326,14 @@ static int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_dat
 			copper_layer = 1;
 		}
 
-		fprintf(FP, "COMP\r\n%s\r\n", element->Name[PCB_ELEMNAME_IDX_REFDES].TextString); /* designator */
-		fprintf(FP, "%s\r\n", element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString); /* designator */
-		fprintf(FP, "%s\r\n", element->Name[PCB_ELEMNAME_IDX_VALUE].TextString); /* designator */
-		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\r\n", /* designator */
+		fprintf(ctx->f, "COMP\r\n%s\r\n", element->Name[PCB_ELEMNAME_IDX_REFDES].TextString); /* designator */
+		fprintf(ctx->f, "%s\r\n", element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString); /* designator */
+		fprintf(ctx->f, "%s\r\n", element->Name[PCB_ELEMNAME_IDX_VALUE].TextString); /* designator */
+		pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", /* designator */
 								xPos, yPos, silk_layer);
-		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\r\n", /* pattern */
+		pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", /* pattern */
 								xPos, yPos2, silk_layer);
-		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\r\n", /* comment field */
+		pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", /* comment field */
 								xPos, yPos3, silk_layer);
 
 		pinlist_foreach(&element->Pin, &it, pin) {
@@ -339,52 +344,52 @@ static int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_dat
 			else
 				pad_shape = 1; /* circular */
 
-			pcb_fprintf(FP, "CP\r\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n%s\r\n", pin->X, PCB->MaxHeight - (pin->Y), pin->Thickness, pin->Thickness, pad_shape, pin->DrillingHole, copper_layer, (char *)PCB_EMPTY(pin->Number)); /* or ->Name? */
+			pcb_fprintf(ctx->f, "CP\r\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n%s\r\n", pin->X, PCB->MaxHeight - (pin->Y), pin->Thickness, pin->Thickness, pad_shape, pin->DrillingHole, copper_layer, (char *)PCB_EMPTY(pin->Number)); /* or ->Name? */
 		}
 
 		padlist_foreach(&element->Pad, &it, pad) {
 			pad_shape = 2; /* rectangular */
 
-			pcb_fprintf(FP, "CP\r\n%.0ml %.0ml ", /* positions of pad */
+			pcb_fprintf(ctx->f, "CP\r\n%.0ml %.0ml ", /* positions of pad */
 									(pad->Point1.X + pad->Point2.X) / 2, PCB->MaxHeight - ((pad->Point1.Y + pad->Point2.Y) / 2));
 
 			if ((pad->Point1.X - pad->Point2.X) <= 0 && (pad->Point1.Y - pad->Point2.Y) <= 0) {
-				pcb_fprintf(FP, "%.0ml %.0ml ", pad->Point2.X - pad->Point1.X + pad->Thickness, /* width */
+				pcb_fprintf(ctx->f, "%.0ml %.0ml ", pad->Point2.X - pad->Point1.X + pad->Thickness, /* width */
 										(pad->Point2.Y - pad->Point1.Y + pad->Thickness)); /* height */
 			}
 			else if ((pad->Point1.X - pad->Point2.X) <= 0 && (pad->Point1.Y - pad->Point2.Y) > 0) {
-				pcb_fprintf(FP, "%.0ml %.0ml ", pad->Point2.X - pad->Point1.X + pad->Thickness, /* width */
+				pcb_fprintf(ctx->f, "%.0ml %.0ml ", pad->Point2.X - pad->Point1.X + pad->Thickness, /* width */
 										(pad->Point1.Y - pad->Point2.Y + pad->Thickness)); /* height */
 			}
 			else if ((pad->Point1.X - pad->Point2.X) > 0 && (pad->Point1.Y - pad->Point2.Y) > 0) {
-				pcb_fprintf(FP, "%.0ml %.0ml ", pad->Point1.X - pad->Point2.X + pad->Thickness, /* width */
+				pcb_fprintf(ctx->f, "%.0ml %.0ml ", pad->Point1.X - pad->Point2.X + pad->Thickness, /* width */
 										(pad->Point1.Y - pad->Point2.Y + pad->Thickness)); /* height */
 			}
 			else if ((pad->Point1.X - pad->Point2.X) > 0 && (pad->Point1.Y - pad->Point2.Y) <= 0) {
-				pcb_fprintf(FP, "%.0ml %.0ml ", pad->Point1.X - pad->Point2.X + pad->Thickness, /* width */
+				pcb_fprintf(ctx->f, "%.0ml %.0ml ", pad->Point1.X - pad->Point2.X + pad->Thickness, /* width */
 										(pad->Point2.Y - pad->Point1.Y + pad->Thickness)); /* height */
 			}
 
-			pcb_fprintf(FP, "%d %d 1 %d\r\n%s\r\n", pad_shape, drill_hole, copper_layer, (char *)PCB_EMPTY(pad->Number)); /*or Name? */
+			pcb_fprintf(ctx->f, "%d %d 1 %d\r\n%s\r\n", pad_shape, drill_hole, copper_layer, (char *)PCB_EMPTY(pad->Number)); /*or Name? */
 
 		}
 		linelist_foreach(&element->Line, &it, line) { /* autotrax supports tracks in COMPs */
-			pcb_fprintf(FP, "CT\r\n");
-			write_autotrax_track(FP, line, silk_layer);
+			pcb_fprintf(ctx->f, "CT\r\n");
+			write_autotrax_track(ctx, line, silk_layer);
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
-			pcb_fprintf(FP, "CA\r\n");
-			write_autotrax_arc(FP, arc, silk_layer);
+			pcb_fprintf(ctx->f, "CA\r\n");
+			write_autotrax_arc(ctx, arc, silk_layer);
 		}
 
-		fprintf(FP, "ENDCOMP\r\n");
+		fprintf(ctx->f, "ENDCOMP\r\n");
 	}
 	return 0;
 }
 
 /* writes polygon data in autotrax fill (rectangle) format for use in a layout .PCB file */
-static int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
+static int write_autotrax_layout_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	int i;
 	gdl_iterator_t it;
@@ -420,7 +425,7 @@ static int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_l
 					if (maxy < polygon->Points[i].Y)
 						maxy = polygon->Points[i].Y;
 				}
-				pcb_fprintf(FP, "FF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", minx, PCB->MaxHeight - miny, maxx, PCB->MaxHeight - maxy, current_layer);
+				pcb_fprintf(ctx->f, "FF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", minx, PCB->MaxHeight - miny, maxx, PCB->MaxHeight - maxy, current_layer);
 
 				local_flag |= 1;
 /* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
@@ -432,7 +437,7 @@ static int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_l
 			else {
 				pcb_coord_t Thickness;
 				Thickness = PCB_MIL_TO_COORD(10);
-				autotrax_cpoly_hatch_lines(FP, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer);
+				autotrax_cpoly_hatch_lines(ctx, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer);
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
 					pcb_pline_t *pl, *track;
@@ -444,7 +449,7 @@ static int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_l
 						v = &track->head;
 						do {
 							n = v->next;
-							write_autotrax_pline_segment(FP, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
+							write_autotrax_pline_segment(ctx, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
 						} while((v = v->next) != &track->head);
 						pcb_poly_contour_del(&track);
 
@@ -455,7 +460,7 @@ static int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_l
 							v = &track->head;
 							do {
 								n = v->next;
-								write_autotrax_pline_segment(FP, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
+								write_autotrax_pline_segment(ctx, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
 							} while((v = v->next) != &track->head);
 							pcb_poly_contour_del(&track);
 						}
@@ -476,6 +481,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	int physical_layer_count = 0;
 	int current_autotrax_layer = 0;
 	int current_group = 0;
+	wctx_t wctx;
 
 	int bottom_count;
 	pcb_layer_id_t *bottomLayers;
@@ -493,6 +499,9 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	/* autotrax expects layout dimensions to be specified in mils */
 	int max_width_mil = 32000;
 	int max_height_mil = 32000;
+
+	wctx.f = FP;
+	wctx.pcb = PCB;
 
 	if (pcb_board_normalize(PCB) < 0) {
 		pcb_message(PCB_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
@@ -517,7 +526,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 
 	/* component "COMP" descriptions come next */
 
-	write_autotrax_layout_elements(FP, PCB, PCB->Data);
+	write_autotrax_layout_elements(&wctx, PCB, PCB->Data);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	current_autotrax_layer = 0;
@@ -586,27 +595,27 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	current_autotrax_layer = 12; /* 11 is the "board layer" in autotrax, and 12 the keepout */
 	if (outline_count > 0) { /* Steven at airborn.com.au tells me outline <=> layer 12 */
 		for(i = 0; i < outline_count; i++) { /* write top copper tracks, if any */
-			write_autotrax_layout_tracks(FP, current_autotrax_layer, &(PCB->Data->Layer[outlineLayers[i]]));
-			write_autotrax_layout_arcs(FP, current_autotrax_layer, &(PCB->Data->Layer[outlineLayers[i]]));
+			write_autotrax_layout_tracks(&wctx, current_autotrax_layer, &(PCB->Data->Layer[outlineLayers[i]]));
+			write_autotrax_layout_arcs(&wctx, current_autotrax_layer, &(PCB->Data->Layer[outlineLayers[i]]));
 		}
 	}
 
 	/* we now proceed to write the bottom silk lines, arcs, text to the autotrax file, using layer 8 */
 	current_autotrax_layer = 8; /* 8 is the "bottom overlay" layer in autotrax */
 	for(i = 0; i < bottom_silk_count; i++) { /* write bottom silk lines, if any */
-		write_autotrax_layout_tracks(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-		write_autotrax_layout_arcs(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-		write_autotrax_layout_text(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-		write_autotrax_layout_polygons(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
+		write_autotrax_layout_tracks(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
+		write_autotrax_layout_arcs(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
+		write_autotrax_layout_text(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
+		write_autotrax_layout_polygons(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
 	}
 
 	/* we now proceed to write the bottom copper features to the autorax file, layer by layer */
 	current_autotrax_layer = 6; /* 6 is the bottom layer in autotrax */
 	for(i = 0; i < bottom_count; i++) { /* write bottom copper tracks, if any */
-		write_autotrax_layout_tracks(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-		write_autotrax_layout_arcs(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-		write_autotrax_layout_text(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-		write_autotrax_layout_polygons(FP, current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
+		write_autotrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
+		write_autotrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
+		write_autotrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
+		write_autotrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
 	}
 
 	/* we now proceed to write the internal copper features to the autotrax file, layer by layer */
@@ -618,32 +627,32 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 			current_group = pcb_layer_get_group(PCB, innerLayers[i]);
 			current_autotrax_layer++;
 		} /* autotrax inner layers are layers 2 to 5 inclusive */
-		write_autotrax_layout_tracks(FP, current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-		write_autotrax_layout_arcs(FP, current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-		write_autotrax_layout_text(FP, current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-		write_autotrax_layout_polygons(FP, current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
+		write_autotrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
+		write_autotrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
+		write_autotrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
+		write_autotrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
 	}
 
 	/* we now proceed to write the top copper features to the autotrax file, layer by layer */
 	current_autotrax_layer = 1; /* 1 is the top most copper layer in autotrax */
 	for(i = 0; i < top_count; i++) { /* write top copper features, if any */
-		write_autotrax_layout_tracks(FP, current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-		write_autotrax_layout_arcs(FP, current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-		write_autotrax_layout_text(FP, current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-		write_autotrax_layout_polygons(FP, current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
+		write_autotrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
+		write_autotrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
+		write_autotrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
+		write_autotrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
 	}
 
 	/* we now proceed to write the top silk lines, arcs, text to the autotrax file, using layer 7 */
 	current_autotrax_layer = 7; /* 7 is the top silk layer in autotrax */
 	for(i = 0; i < top_silk_count; i++) { /* write top silk features, if any */
-		write_autotrax_layout_tracks(FP, current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-		write_autotrax_layout_arcs(FP, current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-		write_autotrax_layout_text(FP, current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-		write_autotrax_layout_polygons(FP, current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
+		write_autotrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
+		write_autotrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
+		write_autotrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
+		write_autotrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
 	}
 
 	/* having done the graphical elements, we move onto vias */
-	write_autotrax_layout_vias(FP, PCB->Data);
+	write_autotrax_layout_vias(&wctx,PCB->Data);
 
 	/* now free memory from arrays that were used */
 	if (bottom_count > 0)
@@ -660,7 +669,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		free(outlineLayers);
 
 	/* last are the autotrax netlist descriptors */
-	write_autotrax_equipotential_netlists(FP, PCB);
+	write_autotrax_equipotential_netlists(&wctx);
 
 	fputs("ENDPCB\r\n", FP); /*autotrax footer */
 
