@@ -149,6 +149,7 @@ static int wrax_layout_vias(wctx_t *ctx, pcb_data_t *Data)
 	pinlist_foreach(&Data->Via, &it, via) {
 		pcb_fprintf(ctx->f, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X, PCB->MaxHeight - via->Y, via->Thickness, via_drill_mil);
 	}
+#warning TODO: padstakcs
 	return 0;
 }
 
@@ -569,6 +570,28 @@ static int wrax_layout_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t 
 	return 0;
 }
 
+int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
+{
+	int n;
+	for(n = 0; n < data->LayerN; n++) {
+		pcb_layer_t *ly = &data->Layer[n];
+		int alid = wrax_layer2id(ctx, ly); /* autotrax layer ID */
+		if (alid == 0) {
+			char tmp[256];
+			pcb_snprintf(tmp, sizeof(tmp), "Ignoring unmapped layer: %s", ly->name);
+			pcb_io_incompat_save(data, NULL, tmp, NULL);
+			continue;
+		}
+		wrax_layout_tracks(ctx, alid, ly);
+		wrax_layout_arcs(ctx, alid, ly);
+		wrax_layout_text(ctx, alid, ly);
+		wrax_layout_polygons(ctx, alid, ly);
+	}
+
+	wrax_layout_elements(ctx, ctx->pcb, data);
+	wrax_layout_vias(ctx, data);
+}
+
 /* writes autotrax PCB to file */
 int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
@@ -577,19 +600,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	int current_autotrax_layer = 0;
 	int current_group = 0;
 	wctx_t wctx;
-
-	int bottom_count;
-	pcb_layer_id_t *bottomLayers;
-	int inner_count;
-	pcb_layer_id_t *innerLayers;
-	int top_count;
-	pcb_layer_id_t *topLayers;
-	int bottom_silk_count;
-	pcb_layer_id_t *bottomSilk;
-	int top_silk_count;
-	pcb_layer_id_t *topSilk;
-	int outline_count;
-	pcb_layer_id_t *outlineLayers;
 
 	/* autotrax expects layout dimensions to be specified in mils */
 	int max_width_mil = 32000;
@@ -619,154 +629,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	/* here we count the copper layers to be exported to the autotrax file */
 	physical_layer_count = pcb_layergrp_list(PCB, PCB_LYT_COPPER, NULL, 0);
 
-	if (physical_layer_count > 8) {
-		pcb_message(PCB_MSG_ERROR, "Warning: Physical layer count exceeds protel autotrax layer support for 6 layers plus GND and PWR planes.\n");
-		/*return -1; */
-	}
-
-	/* component "COMP" descriptions come next */
-
-	wrax_layout_elements(&wctx, PCB, PCB->Data);
-
-	/* we now need to map pcb's layer groups onto the kicad layer numbers */
-	current_autotrax_layer = 0;
-	current_group = 0;
-
-	/* figure out which pcb layers are bottom copper and make a list */
-	bottom_count = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
-	if (bottom_count > 0) {
-		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottom_count);
-		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottom_count);
-	}
-	else
-		bottomLayers = NULL;
-
-	/* figure out which pcb layers are internal copper layers and make a list */
-	inner_count = pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
-	if (inner_count > 0) {
-		innerLayers = malloc(sizeof(pcb_layer_id_t) * inner_count);
-		pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, inner_count);
-	}
-	else
-		innerLayers = NULL;
-
-	if (inner_count > 4) {
-		pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner copper layers.\n");
-		/*return -1; */
-	}
-
-	/* figure out which pcb layers are top copper and make a list */
-	top_count = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
-	if (top_count > 0) {
-		topLayers = malloc(sizeof(pcb_layer_id_t) * top_count);
-		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, top_count);
-	}
-	else
-		topLayers = NULL;
-
-	/* figure out which pcb layers are bottom silk and make a list */
-	bottom_silk_count = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
-	if (bottom_silk_count > 0) {
-		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottom_silk_count);
-		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottom_silk_count);
-	}
-	else
-		bottomSilk = NULL;
-
-	/* figure out which pcb layers are top silk and make a list */
-	top_silk_count = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
-	if (top_silk_count > 0) {
-		topSilk = malloc(sizeof(pcb_layer_id_t) * top_silk_count);
-		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, topSilk, top_silk_count);
-	}
-	else
-		topSilk = NULL;
-
-	/* figure out which pcb layers are outlines and make a list */
-	outline_count = pcb_layer_list(PCB, PCB_LYT_OUTLINE, NULL, 0);
-	if (outline_count > 0) {
-		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outline_count);
-		pcb_layer_list(PCB, PCB_LYT_OUTLINE, outlineLayers, outline_count);
-	}
-	else
-		outlineLayers = NULL;
-
-	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
-	current_autotrax_layer = 12; /* 11 is the "board layer" in autotrax, and 12 the keepout */
-	if (outline_count > 0) { /* Steven at airborn.com.au tells me outline <=> layer 12 */
-		for(i = 0; i < outline_count; i++) { /* write top copper tracks, if any */
-			wrax_layout_tracks(&wctx, current_autotrax_layer, &(PCB->Data->Layer[outlineLayers[i]]));
-			wrax_layout_arcs(&wctx, current_autotrax_layer, &(PCB->Data->Layer[outlineLayers[i]]));
-		}
-	}
-
-	/* we now proceed to write the bottom silk lines, arcs, text to the autotrax file, using layer 8 */
-	current_autotrax_layer = 8; /* 8 is the "bottom overlay" layer in autotrax */
-	for(i = 0; i < bottom_silk_count; i++) { /* write bottom silk lines, if any */
-		wrax_layout_tracks(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-		wrax_layout_arcs(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-		wrax_layout_text(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-		wrax_layout_polygons(&wctx, current_autotrax_layer, &(PCB->Data->Layer[bottomSilk[i]]));
-	}
-
-	/* we now proceed to write the bottom copper features to the autorax file, layer by layer */
-	current_autotrax_layer = 6; /* 6 is the bottom layer in autotrax */
-	for(i = 0; i < bottom_count; i++) { /* write bottom copper tracks, if any */
-		wrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-		wrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-		wrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-		wrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[bottomLayers[i]]));
-	}
-
-	/* we now proceed to write the internal copper features to the autotrax file, layer by layer */
-	if (inner_count > 0)
-		current_group = pcb_layer_get_group(PCB, innerLayers[0]);
-
-	for(i = 0, current_autotrax_layer = 2; i < inner_count; i++) { /* write inner copper text, group by group */
-		if (current_group != pcb_layer_get_group(PCB, innerLayers[i])) {
-			current_group = pcb_layer_get_group(PCB, innerLayers[i]);
-			current_autotrax_layer++;
-		} /* autotrax inner layers are layers 2 to 5 inclusive */
-		wrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-		wrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-		wrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-		wrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[innerLayers[i]]));
-	}
-
-	/* we now proceed to write the top copper features to the autotrax file, layer by layer */
-	current_autotrax_layer = 1; /* 1 is the top most copper layer in autotrax */
-	for(i = 0; i < top_count; i++) { /* write top copper features, if any */
-		wrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-		wrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-		wrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-		wrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topLayers[i]]));
-	}
-
-	/* we now proceed to write the top silk lines, arcs, text to the autotrax file, using layer 7 */
-	current_autotrax_layer = 7; /* 7 is the top silk layer in autotrax */
-	for(i = 0; i < top_silk_count; i++) { /* write top silk features, if any */
-		wrax_layout_tracks(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-		wrax_layout_arcs(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-		wrax_layout_text(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-		wrax_layout_polygons(&wctx,current_autotrax_layer, &(PCB->Data->Layer[topSilk[i]]));
-	}
-
-	/* having done the graphical elements, we move onto vias */
-	wrax_layout_vias(&wctx,PCB->Data);
-
-	/* now free memory from arrays that were used */
-	if (bottom_count > 0)
-		free(bottomLayers);
-	if (inner_count > 0)
-		free(innerLayers);
-	if (top_count > 0)
-		free(topLayers);
-	if (top_silk_count > 0)
-		free(topSilk);
-	if (bottom_silk_count > 0)
-		free(bottomSilk);
-	if (outline_count > 0)
-		free(outlineLayers);
+	wrax_data(&wctx, PCB->Data, 0, 0);
 
 	/* last are the autotrax netlist descriptors */
 	wrax_equipotential_netlists(&wctx);
