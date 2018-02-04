@@ -40,9 +40,51 @@
 #include "../lib_polyhelp/polyhelp.h"
 
 typedef struct {
+	pcb_layer_type_t lyt;
+	pcb_bool plane;
+} layer_map_t;
+
+/* The hardwired layer map of autotrax */
+#define LAYER_MAP_LEN 14
+static layer_map_t layer_map[LAYER_MAP_LEN] = {
+	/*  0 */ { 0,                               0}, /* unused */
+	/*  1 */ { PCB_LYT_TOP    | PCB_LYT_COPPER, 0}, /* "top" */
+	/*  2 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
+	/*  3 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
+	/*  4 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
+	/*  5 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
+	/*  6 */ { PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0}, /* "bottom" */
+	/*  7 */ { PCB_LYT_TOP    | PCB_LYT_SILK,   0}, /* "top overlay" */
+	/*  8 */ { PCB_LYT_BOTTOM | PCB_LYT_SILK,   0}, /* "bottom overlay" */
+	/*  9 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 1}, /* "ground plane" */
+	/* 10 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 1}, /* "power plane" */
+	/* 11 */ { PCB_LYT_OUTLINE,                 0}, /* "board layer" */
+	/* 12 */ { 0,                               0}, /* "keepout" */
+	/* 13 */ { 0,                               0}, /* "multi layer" - used to indicate padstacks are on all layers */
+};
+
+typedef struct {
 	FILE *f;
 	pcb_board_t *pcb;
+	pcb_layergrp_t *id2grp[LAYER_MAP_LEN];
+	int grp2id[PCB_MAX_LAYERGRP];
 } wctx_t;
+
+static int wrax_layer2id(wctx_t *ctx, pcb_layer_t *ly)
+{
+	pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
+	if ((gid >= 0) && (gid < PCB_MAX_LAYERGRP))
+		return ctx->grp2id[gid];
+	return 0;
+}
+
+static pcb_layergrp_t *wrax_id2grp(wctx_t *ctx, int alayer_id)
+{
+	if ((alayer_id <= 0) || (alayer_id >= LAYER_MAP_LEN))
+		return NULL;
+	return ctx->id2grp[alayer_id];
+}
+
 
 /* writes autotrax vias to file */
 static int write_autotrax_layout_vias(wctx_t *ctx, pcb_data_t *Data)
