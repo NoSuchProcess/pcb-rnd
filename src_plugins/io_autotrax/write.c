@@ -85,6 +85,59 @@ static pcb_layergrp_t *wrax_id2grp(wctx_t *ctx, int alayer_id)
 	return ctx->id2grp[alayer_id];
 }
 
+static int wrax_lyt2id(wctx_t *ctx, pcb_layer_type_t lyt)
+{
+	int n;
+	for(n = 1; n < LAYER_MAP_LEN; n++)
+		if (layer_map[n].lyt == lyt)
+			return n;
+	return 0;
+}
+
+static void wrax_map_layer_error(wctx_t *ctx, pcb_layergrp_t *grp, const char *msg, const char *hint)
+{
+	char tmp[256];
+	pcb_snprintf(tmp, sizeof(tmp), "%s (omitting layer group): %s", msg, grp->name);
+	pcb_io_incompat_save(ctx->pcb->Data, NULL, tmp, hint);
+}
+
+static int wrax_map_layers(wctx_t *ctx)
+{
+	int n, intcnt = 0;
+
+	for(n = 0; n < ctx->pcb->LayerGroups.len; n++) {
+		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[n];
+		int al;
+
+		if ((grp->type & PCB_LYT_SUBSTRATE) || (grp->type & PCB_LYT_VIRTUAL) || (grp->type & PCB_LYT_PASTE) || (grp->type & PCB_LYT_MASK))
+			continue;
+
+		al = wrax_lyt2id(ctx, grp->type);
+		if (al == 0) {
+			wrax_map_layer_error(ctx, grp, "Unable to map pcb-rnd layer group to autotrax layer", "change layer type");
+			continue;
+		}
+
+		if (grp->type & PCB_LYT_INTERN) {
+			/* intern copper: find the first free slot */
+			while((layer_map[al+intcnt].lyt & PCB_LYT_INTERN) && (ctx->id2grp[al+intcnt] != NULL)) intcnt++;
+			al += intcnt;
+			if (!(layer_map[al+intcnt].lyt & PCB_LYT_INTERN)) {
+				wrax_map_layer_error(ctx, grp, "Ran out of internal layer groups while mapping pcb-rnd layer group to autotrax layer", "autotrax supports only 4 internal signal layers - use less internal layers");
+				continue;
+			}
+		}
+
+		if (ctx->id2grp[al] != NULL) {
+			wrax_map_layer_error(ctx, grp, "Attempt to map multiple layer groups to the same autotrax layer", "use only one layer group per layer group type");
+			continue;
+		}
+
+		ctx->id2grp[al] = grp;
+		ctx->grp2id[grp - ctx->pcb->LayerGroups.grp] = al;
+	}
+	return 0;
+}
 
 /* writes autotrax vias to file */
 static int wrax_layout_vias(wctx_t *ctx, pcb_data_t *Data)
@@ -542,6 +595,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	int max_width_mil = 32000;
 	int max_height_mil = 32000;
 
+	memset(&wctx, 0, sizeof(wctx));
 	wctx.f = FP;
 	wctx.pcb = PCB;
 
@@ -550,6 +604,9 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		pcb_message(PCB_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
 		return -1;
 	}
+
+	if (wrax_map_layers(&wctx) != 0)
+		return -1;
 
 	fputs("PCB FILE 4\r\n", FP); /*autotrax header */
 
