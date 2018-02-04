@@ -294,7 +294,7 @@ static human_coord_t human_coord[] = {
 
 static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
 {
-	double v, frac;
+	double v, frac, save;
 	long int digs, zeros;
 	unsigned int score;
 
@@ -303,7 +303,8 @@ static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, dou
 		v = PCB_COORD_TO_MM(coord);
 	else
 		v = PCB_COORD_TO_MIL(coord);
-	v = v * unit->scale_factor;
+	save = v = v * unit->scale_factor;
+	if (v < 0) v = -v;
 
 	/* Check if neighbour units are better */
 	if ((down_limit > 0) && (v < down_limit))
@@ -326,7 +327,7 @@ static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, dou
 
 	/* update the best score */
 	if (score > *best) {
-		*value = v;
+		*value = save;
 		*best = score;
 		*suffix = unit->suffix;
 	}
