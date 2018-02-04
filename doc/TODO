@@ -179,6 +179,7 @@
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format: test all
 	- keep unknown subtrees
+	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file. [report: Alain]
 - query & advanced search
 	- search expr wizard should pick up the expression from the button when clicked
 	- field accessors:
