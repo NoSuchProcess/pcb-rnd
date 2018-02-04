@@ -406,7 +406,7 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	for(n = 0; n < ply->len; n++) {
 		if ((fld % 3) == 0)
 			gds_append_str(term_shapes, "\n       ");
-		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox) * partsidesign, -(ply->y[n] - oy));
+		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox), -(ply->y[n] - oy));
 		gds_append_str(term_shapes, tmp);
 		fld++;
 	}
@@ -555,7 +555,7 @@ static void print_library(FILE * fp)
 		{
 			int n;
 			char *pid = pcb_strdup_printf("Pstk_shape_%ld", padstack->ID);
-			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, -(padstack->x-ox)*partsidesign, padstack->y-oy);
+			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, -(padstack->x-ox), padstack->y-oy);
 
 			gds_append_str(&term_shapes, "    (padstack ");
 			gds_append_str(&term_shapes, pid);
