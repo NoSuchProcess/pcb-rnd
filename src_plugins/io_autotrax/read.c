@@ -119,7 +119,7 @@ typedef struct {
 	int ignored_layer_zero_element;
 } read_state_t;
 
-static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
+static int rdax_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
 
 /* Look up (or even alloc) a layer on the board or in a subc, by autotrax layer number */
 static pcb_layer_t *autotrax_get_layer(read_state_t *st, pcb_subc_t *subc, int autotrax_layer, const char *otyp)
@@ -152,7 +152,7 @@ static pcb_layer_t *autotrax_get_layer(read_state_t *st, pcb_subc_t *subc, int a
 }
 
 /* autotrax_free_text/component_text */
-static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
+static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 {
 	int height_mil;
 	int autotrax_layer = 0;
@@ -237,7 +237,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 }
 
 /* autotrax_pcb free_track/component_track */
-static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_subc_t *subc)
+static int rdax_track(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 {
 	char line[MAXREAD];
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
@@ -291,7 +291,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 }
 
 /* autotrax_pcb free arc and component arc parser */
-static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
+static int rdax_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 {
 	char line[MAXREAD];
 	int segments = 15; /* full circle by default */
@@ -435,7 +435,7 @@ document used reflects actual outputs from protel autotrax
 }
 
 /* autotrax_pcb via parser */
-static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
+static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 {
 	char line[MAXREAD];
 	char *name;
@@ -493,7 +493,7 @@ x y X_size Y_size shape holesize pwr/gnd layer
 padname
 may need to think about hybrid outputs, like pad + hole, to match possible features in protel autotrax
 */
-static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
+static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 {
 	char line[MAXREAD], *s;
 	int Connects = 0;
@@ -672,7 +672,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int 
 }
 
 /* protel autorax free fill (rectangular pour) parser - the closest thing protel autotrax has to a polygon */
-static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_subc_t *subc)
+static int rdax_fill(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 {
 	int success;
 	int valid = 1;
@@ -830,8 +830,8 @@ static int autotrax_create_layers(read_state_t *st)
 	return 0;
 }
 
-/* autotrax_pcb  autotrax_parse_net ;   used to read net descriptions for the entire layout */
-static int autotrax_parse_net(read_state_t *st, FILE *FP)
+/* autotrax_pcb  rdax_net ;   used to read net descriptions for the entire layout */
+static int rdax_net(read_state_t *st, FILE *FP)
 {
 	symattr_t sattr;
 
@@ -947,7 +947,7 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 
 /* protel autotrax component definition parser */
 /* no mark() or location as such it seems */
-static int autotrax_parse_component(read_state_t *st, FILE *FP)
+static int rdax_component(read_state_t *st, FILE *FP)
 {
 	int success;
 	int valid = 1;
@@ -1045,22 +1045,22 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		else if (length >= 2) {
 #warning TODO: this does not handle return -1
 			if (strncmp(s, "CT", 2) == 0) {
-				nonempty |= autotrax_parse_track(st, FP, new_module);
+				nonempty |= rdax_track(st, FP, new_module);
 			}
 			else if (strncmp(s, "CA", 2) == 0) {
-				nonempty |= autotrax_parse_arc(st, FP, new_module);
+				nonempty |= rdax_arc(st, FP, new_module);
 			}
 			else if (strncmp(s, "CV", 2) == 0) {
-				nonempty |= autotrax_parse_via(st, FP, new_module);
+				nonempty |= rdax_via(st, FP, new_module);
 			}
 			else if (strncmp(s, "CF", 2) == 0) {
-				nonempty |= autotrax_parse_fill(st, FP, new_module);
+				nonempty |= rdax_fill(st, FP, new_module);
 			}
 			else if (strncmp(s, "CP", 2) == 0) {
-				nonempty |= autotrax_parse_pad(st, FP, new_module, 1); /* flag in COMP */
+				nonempty |= rdax_pad(st, FP, new_module, 1); /* flag in COMP */
 			}
 			else if (strncmp(s, "CS", 2) == 0) {
-				nonempty |= autotrax_parse_text(st, FP, new_module);
+				nonempty |= rdax_text(st, FP, new_module);
 			}
 		}
 	}
@@ -1131,21 +1131,21 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 					pcb_hid_actionl("Netlist", "Clear", NULL);
 				}
 				netdefs |= 1;
-				autotrax_parse_net(&st, FP);
+				rdax_net(&st, FP);
 			}
 		}
 		else if (length >= 4) {
 			if (strncmp(line, "COMP", 4) == 0) {
-				autotrax_parse_component(&st, FP);
+				rdax_component(&st, FP);
 			}
 		}
 		else if (length >= 2) {
-			if (strncmp(s, "FT", 2) == 0)      autotrax_parse_track(&st, FP, subc);
-			else if (strncmp(s, "FA", 2) == 0) autotrax_parse_arc(&st, FP, subc);
-			else if (strncmp(s, "FV", 2) == 0) autotrax_parse_via(&st, FP, subc);
-			else if (strncmp(s, "FF", 2) == 0) autotrax_parse_fill(&st, FP, subc);
-			else if (strncmp(s, "FP", 2) == 0) autotrax_parse_pad(&st, FP, subc, 0); /* flag not in a component */
-			else if (strncmp(s, "FS", 2) == 0) autotrax_parse_text(&st, FP, subc);
+			if (strncmp(s, "FT", 2) == 0)      rdax_track(&st, FP, subc);
+			else if (strncmp(s, "FA", 2) == 0) rdax_arc(&st, FP, subc);
+			else if (strncmp(s, "FV", 2) == 0) rdax_via(&st, FP, subc);
+			else if (strncmp(s, "FF", 2) == 0) rdax_fill(&st, FP, subc);
+			else if (strncmp(s, "FP", 2) == 0) rdax_pad(&st, FP, subc, 0); /* flag not in a component */
+			else if (strncmp(s, "FS", 2) == 0) rdax_text(&st, FP, subc);
 		}
 	}
 	if (netdefs) {
