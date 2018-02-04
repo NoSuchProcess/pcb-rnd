@@ -120,7 +120,7 @@
 - layer group rewrite:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 	- make the color config dynamic too; invent color for new layers
-- layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs.
+- layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
 - layer groups from config (e.g. CLI) is ignored
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
