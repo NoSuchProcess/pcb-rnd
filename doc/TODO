@@ -19,7 +19,7 @@
 - BUG: non-ASCII in a text object crashes if selected and then ctrl-x, or if mouse-click-dragged, see text-cut-or-drag-crash-erich.lht, with non-ASCII text that was created on importing an eagle binary layout. ? perhaps it is more of an io_module sanitising of inputs issue.
 - BUG: bug_files/delete-undo-crash-erich.lht mouse over via element, hit delete key until deleted, undo, hover over diode element, hit delete/undo, await crash
 - BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
-- BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
++ BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
