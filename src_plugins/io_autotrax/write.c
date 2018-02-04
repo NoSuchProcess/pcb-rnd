@@ -39,9 +39,7 @@
 #include "polygon_offs.h"
 #include "../lib_polyhelp/polyhelp.h"
 
-/* ---------------------------------------------------------------------------
- * writes autotrax vias to file
- */
+/* writes autotrax vias to file */
 int write_autotrax_layout_vias(FILE *FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
@@ -54,9 +52,7 @@ int write_autotrax_layout_vias(FILE *FP, pcb_data_t *Data)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes generic autotrax track descriptor line for components and layouts 
- */
+/* writes generic autotrax track descriptor line for components and layouts  */
 int write_autotrax_track(FILE *FP, pcb_line_t *line, pcb_cardinal_t layer)
 {
 	int user_routed = 1;
@@ -64,9 +60,7 @@ int write_autotrax_track(FILE *FP, pcb_line_t *line, pcb_cardinal_t layer)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes autotrax track descriptor for a pair of polyline vertices 
- */
+/* writes autotrax track descriptor for a pair of polyline vertices */
 int write_autotrax_pline_segment(FILE *FP, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t Thickness, pcb_cardinal_t layer)
 {
 	int user_routed = 1;
@@ -87,9 +81,7 @@ static void autotrax_hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	write_autotrax_pline_segment(ctx->file, x1, y1, x2, y2, ctx->thickness, ctx->layer);
 }
 
-/* ---------------------------------------------------------------------------
- * generates autotrax tracks to cross hatch a complex polygon being exported 
- */
+/* generates autotrax tracks to cross hatch a complex polygon being exported */
 void autotrax_cpoly_hatch_lines(FILE *FP, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer)
 {
 	autotrax_hatch_ctx_t ctx;
@@ -100,9 +92,7 @@ void autotrax_cpoly_hatch_lines(FILE *FP, const pcb_poly_t *src, pcb_cpoly_hatch
 	pcb_cpoly_hatch(src, dir, (thickness / 2) + 1, period, &ctx, autotrax_hatch_cb);
 }
 
-/* -------------------------------------------------------------------------------
- * generates an autotrax arc "segments" value to approximate an arc being exported  
- */
+/* generates an autotrax arc "segments" value to approximate an arc being exported   */
 int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delta)
 {
 	int arc_segments = 0; /* start with no arc segments */
@@ -123,7 +113,7 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 	while(arc_start > 360) {
 		arc_start -= 360;
 	}
-	/* pcb_printf("Arc start: %ma, Arc delta: %ma\r\n", arc_start, arc_delta); */
+
 	if (arc_delta >= 360) { /* it's a circle */
 		arc_segments |= 0x0F;
 	}
@@ -153,9 +143,7 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 	return arc_segments;
 }
 
-/* ---------------------------------------------------------------------------
- * writes generic autotrax arc descriptor line for components and layouts 
- */
+/* writes generic autotrax arc descriptor line for components and layouts */
 int write_autotrax_arc(FILE *FP, pcb_arc_t *arc, int current_layer)
 {
 	pcb_coord_t radius;
@@ -169,9 +157,7 @@ int write_autotrax_arc(FILE *FP, pcb_arc_t *arc, int current_layer)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes netlist data in autotrax format
- */
+/* writes netlist data in autotrax format */
 int write_autotrax_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 {
 	int show_status = 0;
@@ -199,9 +185,7 @@ int write_autotrax_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes autotrax PCB to file
- */
+/* writes autotrax PCB to file */
 int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	pcb_cardinal_t i;
@@ -432,9 +416,7 @@ int write_autotrax_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *l
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes autotrax arcs for layouts 
- */
+/* writes autotrax arcs for layouts */
 int write_autotrax_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
@@ -456,9 +438,7 @@ int write_autotrax_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *lay
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes generic autotrax text descriptor line layouts onl, since no text in .fp 
- */
+/* writes generic autotrax text descriptor line layouts onl, since no text in .fp */
 int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
@@ -524,9 +504,7 @@ int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *lay
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes element data in autotrax format for use in a layout .PCB file
- */
+/* writes element data in autotrax format for use in a layout .PCB file */
 int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data)
 {
 
@@ -540,7 +518,7 @@ int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Da
 	int silk_layer = 7; /* hard coded default, 7 is bottom silk */
 	int copper_layer = 1; /* hard coded default, 1 is bottom copper */
 	int pad_shape = 1; /* 1=circle, 2=Rectangle, 3=Octagonal, 4=Rounded Rectangle, 
-										   5=Cross Hair Target, 6=Moiro Target */
+	                      5=Cross Hair Target, 6=Moiro Target */
 	int drill_hole = 0; /* for SMD */
 
 	pcb_box_t *box;
@@ -636,11 +614,7 @@ int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Da
 	return 0;
 }
 
-
-/* ---------------------------------------------------------------------------
- * writes polygon data in autotrax fill (rectangle) format for use in a layout .PCB file
- */
-
+/* writes polygon data in autotrax fill (rectangle) format for use in a layout .PCB file */
 int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer)
 {
 	int i;
