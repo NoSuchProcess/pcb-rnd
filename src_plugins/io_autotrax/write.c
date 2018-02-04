@@ -97,9 +97,8 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 {
 	int arc_segments = 0; /* start with no arc segments */
 	/* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */
-	if (arc_delta == -360) { /* it's a circle */
+	if (arc_delta == -360) /* it's a circle */
 		arc_delta = 360;
-	}
 	if (arc_delta < 0) {
 		arc_delta = -arc_delta;
 		arc_start -= arc_delta;
@@ -107,38 +106,29 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 
 #warning TODO arc segments less than 90 degrees do not convert well.
 
-	while(arc_start < 0) {
+	while(arc_start < 0)
 		arc_start += 360;
-	}
-	while(arc_start > 360) {
+	while(arc_start > 360)
 		arc_start -= 360;
-	}
 
 	if (arc_delta >= 360) { /* it's a circle */
 		arc_segments |= 0x0F;
 	}
 	else {
-		if (arc_start <= 0.0 && (arc_start + arc_delta) >= 90.0) {
+		if (arc_start <= 0.0 && (arc_start + arc_delta) >= 90.0)
 			arc_segments |= 0x04; /* LLQ */
-		}
-		if (arc_start <= 90.0 && (arc_start + arc_delta) >= 180.0) {
+		if (arc_start <= 90.0 && (arc_start + arc_delta) >= 180.0)
 			arc_segments |= 0x08; /* LRQ */
-		}
-		if (arc_start <= 180.0 && (arc_start + arc_delta) >= 270.0) {
+		if (arc_start <= 180.0 && (arc_start + arc_delta) >= 270.0)
 			arc_segments |= 0x01; /* URQ */
-		}
-		if (arc_start <= 270.0 && (arc_start + arc_delta) >= 360.0) {
+		if (arc_start <= 270.0 && (arc_start + arc_delta) >= 360.0)
 			arc_segments |= 0x02; /* ULQ */
-		}
-		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 450.0) {
+		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 450.0)
 			arc_segments |= 0x04; /* LLQ */
-		}
-		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 540.0) {
+		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 540.0)
 			arc_segments |= 0x08; /* LRQ */
-		}
-		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 630.0) {
+		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 630.0)
 			arc_segments |= 0x01; /* URQ */
-		}
 	}
 	return arc_segments;
 }
@@ -245,9 +235,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottom_count);
 		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottom_count);
 	}
-	else {
+	else
 		bottomLayers = NULL;
-	}
 
 	/* figure out which pcb layers are internal copper layers and make a list */
 	inner_count = pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
@@ -255,9 +244,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		innerLayers = malloc(sizeof(pcb_layer_id_t) * inner_count);
 		pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, inner_count);
 	}
-	else {
+	else
 		innerLayers = NULL;
-	}
 
 	if (inner_count > 4) {
 		pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner copper layers.\n");
@@ -270,9 +258,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		topLayers = malloc(sizeof(pcb_layer_id_t) * top_count);
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, top_count);
 	}
-	else {
+	else
 		topLayers = NULL;
-	}
 
 	/* figure out which pcb layers are bottom silk and make a list */
 	bottom_silk_count = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
@@ -280,9 +267,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottom_silk_count);
 		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottom_silk_count);
 	}
-	else {
+	else
 		bottomSilk = NULL;
-	}
 
 	/* figure out which pcb layers are top silk and make a list */
 	top_silk_count = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
@@ -290,9 +276,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		topSilk = malloc(sizeof(pcb_layer_id_t) * top_silk_count);
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, topSilk, top_silk_count);
 	}
-	else {
+	else
 		topSilk = NULL;
-	}
 
 	/* figure out which pcb layers are outlines and make a list */
 	outline_count = pcb_layer_list(PCB, PCB_LYT_OUTLINE, NULL, 0);
@@ -300,9 +285,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outline_count);
 		pcb_layer_list(PCB, PCB_LYT_OUTLINE, outlineLayers, outline_count);
 	}
-	else {
+	else
 		outlineLayers = NULL;
-	}
 
 	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
 	current_autotrax_layer = 12; /* 11 is the "board layer" in autotrax, and 12 the keepout */
@@ -332,9 +316,9 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	}
 
 	/* we now proceed to write the internal copper features to the autotrax file, layer by layer */
-	if (inner_count > 0) {
+	if (inner_count > 0)
 		current_group = pcb_layer_get_group(PCB, innerLayers[0]);
-	}
+
 	for(i = 0, current_autotrax_layer = 2; i < inner_count; i++) { /* write inner copper text, group by group */
 		if (current_group != pcb_layer_get_group(PCB, innerLayers[i])) {
 			current_group = pcb_layer_get_group(PCB, innerLayers[i]);
@@ -368,24 +352,18 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	write_autotrax_layout_vias(FP, PCB->Data);
 
 	/* now free memory from arrays that were used */
-	if (bottom_count > 0) {
+	if (bottom_count > 0)
 		free(bottomLayers);
-	}
-	if (inner_count > 0) {
+	if (inner_count > 0)
 		free(innerLayers);
-	}
-	if (top_count > 0) {
+	if (top_count > 0)
 		free(topLayers);
-	}
-	if (top_silk_count > 0) {
+	if (top_silk_count > 0)
 		free(topSilk);
-	}
-	if (bottom_silk_count > 0) {
+	if (bottom_silk_count > 0)
 		free(bottomSilk);
-	}
-	if (outline_count > 0) {
+	if (outline_count > 0)
 		free(outlineLayers);
-	}
 
 	/* last are the autotrax netlist descriptors */
 	write_autotrax_equipotential_netlists(FP, PCB);
@@ -411,9 +389,8 @@ int write_autotrax_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *l
 		}
 		return local_flag;
 	}
-	else {
-		return 0;
-	}
+
+	return 0;
 }
 
 /* writes autotrax arcs for layouts */
@@ -433,9 +410,8 @@ int write_autotrax_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *lay
 		}
 		return local_flag;
 	}
-	else {
-		return 0;
-	}
+
+	return 0;
 }
 
 /* writes generic autotrax text descriptor line layouts onl, since no text in .fp */
@@ -466,32 +442,25 @@ int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *lay
 				strokeThickness = PCB_SCALE_TEXT(default_stroke_thickness, text->Scale / 2);
 				textHeight = PCB_SCALE_TEXT(mHeight, text->Scale);
 				rotation = 0;
-				if (current_layer == 6 || current_layer == 8) { /* back copper or silk */
+				if (current_layer == 6 || current_layer == 8) /* back copper or silk */
 					autotrax_mirrored = 16; /* mirrored */
-				}
-				if (text->Direction == 3) { /*vertical down */
+				if (text->Direction == 3) /*vertical down */
 					rotation = 3;
-				}
-				else if (text->Direction == 2) { /*upside down */
+				else if (text->Direction == 2) /*upside down */
 					rotation = 2;
-				}
-				else if (text->Direction == 1) { /*vertical up */
+				else if (text->Direction == 1) /*vertical up */
 					rotation = 1;
-				}
-				else if (text->Direction == 0) { /*normal text */
+				else if (text->Direction == 0) /*normal text */
 					rotation = 0;
-				}
+
 				pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X, PCB->MaxHeight - text->Y, textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
 				for(index = 0; index < 32; index++) {
-					if (text->TextString[index] == '\0') {
+					if (text->TextString[index] == '\0')
 						index = 32;
-					}
-					else if (text->TextString[index] < 32 || text->TextString[index] > 126) {
+					else if (text->TextString[index] < 32 || text->TextString[index] > 126)
 						fputc(' ', FP); /* replace non alphanum with space */
-					}
-					else { /* need to truncate to 32 alphanumeric chars */
+					else /* need to truncate to 32 alphanumeric chars */
 						fputc(text->TextString[index], FP);
-					}
 				}
 				pcb_fprintf(FP, "\r\n");
 			}
@@ -499,9 +468,8 @@ int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *lay
 		}
 		return local_flag;
 	}
-	else {
-		return 0;
-	}
+
+	return 0;
 }
 
 /* writes element data in autotrax format for use in a layout .PCB file */
@@ -560,19 +528,16 @@ int write_autotrax_layout_elements(FILE *FP, pcb_board_t *Layout, pcb_data_t *Da
 								xPos, yPos3, silk_layer);
 
 		pinlist_foreach(&element->Pin, &it, pin) {
-
-			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
 				pad_shape = 2;
-			}
-			else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin)) {
+			else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
 				pad_shape = 3;
-			}
-			else {
+			else
 				pad_shape = 1; /* circular */
-			}
 
 			pcb_fprintf(FP, "CP\r\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n%s\r\n", pin->X, PCB->MaxHeight - (pin->Y), pin->Thickness, pin->Thickness, pad_shape, pin->DrillingHole, copper_layer, (char *)PCB_EMPTY(pin->Number)); /* or ->Name? */
 		}
+
 		padlist_foreach(&element->Pad, &it, pad) {
 			pad_shape = 2; /* rectangular */
 
@@ -641,18 +606,14 @@ int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t 
 				/* now the fill zone outline is defined by a rectangle enclosing the poly */
 				/* hmm. or, could use a bounding box... */
 				for(i = 0; i < polygon->PointN; i++) {
-					if (minx > polygon->Points[i].X) {
+					if (minx > polygon->Points[i].X)
 						minx = polygon->Points[i].X;
-					}
-					if (maxx < polygon->Points[i].X) {
+					if (maxx < polygon->Points[i].X)
 						maxx = polygon->Points[i].X;
-					}
-					if (miny > polygon->Points[i].Y) {
+					if (miny > polygon->Points[i].Y)
 						miny = polygon->Points[i].Y;
-					}
-					if (maxy < polygon->Points[i].Y) {
+					if (maxy < polygon->Points[i].Y)
 						maxy = polygon->Points[i].Y;
-					}
 				}
 				pcb_fprintf(FP, "FF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", minx, PCB->MaxHeight - miny, maxx, PCB->MaxHeight - maxy, current_layer);
 
@@ -699,7 +660,6 @@ int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t 
 		}
 		return local_flag;
 	}
-	else {
-		return 0;
-	}
+
+	return 0;
 }
