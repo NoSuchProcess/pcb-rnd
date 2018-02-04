@@ -431,6 +431,7 @@ int write_autotrax_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *lay
 
 	int index = 0;
 
+#warning TODO: why do we hardwire this here?
 	default_stroke_thickness = 200000;
 
 	/* write information about non empty layers */
@@ -600,6 +601,7 @@ int write_autotrax_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t 
 			if (pcb_cpoly_is_simple_rect(polygon)) {
 				pcb_trace(" simple rectangular polyogon\n");
 
+#warning TODO: why do we recalculate the bounding box here?
 				minx = maxx = polygon->Points[0].X;
 				miny = maxy = polygon->Points[0].Y;
 
