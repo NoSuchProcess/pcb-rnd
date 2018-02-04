@@ -503,6 +503,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	wctx.f = FP;
 	wctx.pcb = PCB;
 
+#warning TODO: this is a bug - exporting to a file shall not change the content we are exporting
 	if (pcb_board_normalize(PCB) < 0) {
 		pcb_message(PCB_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
 		return -1;
