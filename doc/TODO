@@ -20,7 +20,7 @@
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - doc: explain the library path in 03_data [report: karl]
-- BUG: can't rotate polygon [report: sam]
++ BUG: can't rotate polygon [report: sam]
 - BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
