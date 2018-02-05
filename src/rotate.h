@@ -50,7 +50,7 @@
 		}											\
 	} while(0)
 
-#define PCB_ROTATE_TYPES (PCB_TYPE_PSTK | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE)
+#define PCB_ROTATE_TYPES (PCB_TYPE_PSTK | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_POLY)
 
 /* rotates an object passed;
  * the center of rotation is determined by the current cursor location
