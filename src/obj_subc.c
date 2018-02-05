@@ -1255,6 +1255,12 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 	return chg;
 }
 
+/* change the parent of all global objects to new_parent */
+static void subc_set_parent_globals(pcb_subc_t *sc, pcb_data_t *new_parent)
+{
+	pcb_data_set_parent_globals(sc->data, new_parent);
+}
+
 void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	int n;
@@ -1344,6 +1350,8 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	buff->Data = subc->data;
 	buff->Data->parent_type = PCB_PARENT_INVALID;
 	buff->Data->parent.data = NULL;
+
+	subc_set_parent_globals(subc, buff->Data);
 
 	return pcb_true;
 }
