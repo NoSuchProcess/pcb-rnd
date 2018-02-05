@@ -11,7 +11,6 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
-- BUG: load old element from the library using 'i': the value attribute is set [report: Evan]
 - BUG: the property editor doesn't handle padstacks [report: Evan]
 - BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 - BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
@@ -213,6 +212,9 @@ SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- remove Line->Number and *->Number: we use ->term
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
+	- convert pcblib to subcircuits:
+		- revise the value attribute - should be empty by default
+
 
 GTK2:
 	- next_gui: keep them open, hide
