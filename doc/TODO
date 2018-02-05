@@ -1,16 +1,12 @@
 0. For the upcoming release ===============================================================================
++ feature req: show grid in both mm and mil in the status bar [report:smilie]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
++ BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
 - Replacing an existing element with a subc in the buffer using shift-click doesn't pick-up the refdes from the existing element. [report: Ade]
 - BUG: Far-side silk text can be selected and moved when the mouse is over front-side objects. [report: Ade]
-
-2. For later releases ===============================================================================
-- key rewrite: (base key swap bug (q<->a, y<->z))
-	- for <char> (punctuation): learn key for non-US users
-	- lesstif code upgrade for the new API
-	- menu file fixup on punctuation in lesstif
 - BUG: the property editor doesn't handle padstacks [report: Evan]
 - BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 - BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
@@ -19,18 +15,11 @@
 - BUG: non-ASCII in a text object crashes if selected and then ctrl-x, or if mouse-click-dragged, see text-cut-or-drag-crash-erich.lht, with non-ASCII text that was created on importing an eagle binary layout. ? perhaps it is more of an io_module sanitising of inputs issue.
 - BUG: bug_files/delete-undo-crash-erich.lht mouse over via element, hit delete key until deleted, undo, hover over diode element, hit delete/undo, await crash
 - BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
-+ BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - doc: explain the library path in 03_data [report: karl]
-- buffer: break up padstack, just like breaking up subcircuits
-- BUG: subc/term:
-	- term netlist connectivity (r10843):
-		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
-		- autoroute.c:961
-		- autoroute.c:1000
 - BUG: can't rotate polygon [report: sam]
 - BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 - BUG: subc terminals should be drawn at the end [report: Ade]
@@ -56,6 +45,31 @@
 	- Use :PolyHatch(interactive) to bring up the window.  :PolyHatch() is valid, and will perform the hatches using default values.
 - BUG: shift-m of alt-a selected polyhatch() lines to top mask layer can induce a crash.  Start pcb-rnd, create large polygon on top copper i.e. over half the area, invoke polyhatch(), click on crosshatched polygon and hit delete to delete the polygon. Then hit 'u' to undo associated line deletion, alt-a to select all lines (bug_files/polyhatch4a.lht and polyhatch2a.lht), switch to top mask, 'm' to move lines, and up with residual polygon copied to mask layer along with lines. rtree related segfault seems to have been fixed. [report: erich]
 - BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
+- BUG: Rubberband Arcs:
+	- BUG: Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Fixing:Ade]
+	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
+- BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
+- BUG: padstack check box in gtk-hid does not hide the padstacks; this may be due to my failure to specify soldermask openings for the padstacks  [report: erich]
+- BUG: hackvana gerber export exports .g5, .g7, rather than soldermask file-endings, .gts, .gbs, when there are no soldermask openings defined for padstacks in use. When padstackss have defined soldermask openings, the .gts and .gbs file are generated, but the .g5 and .g7 are still generated as well along with the .gts and .gbs files. Also, in another layout, .gbs and .bts looked more like drill files, and .g4 and .g5 seemed to be the top and bottom solder mask gerbers  [report: erich]
+- BUG: hackvana gerber export with "copy silk outline", only exports to sides of the outline rectangle [report: erich]
+- BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers.
+- BUG: hackvana gerber export uses .drl ending instead of .cnc for excellon drill file [report: erich]
+- BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
+- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
+- BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
+
+2. For later releases ===============================================================================
+- key rewrite: (base key swap bug (q<->a, y<->z))
+	- for <char> (punctuation): learn key for non-US users
+	- lesstif code upgrade for the new API
+	- menu file fixup on punctuation in lesstif
+- buffer: break up padstack, just like breaking up subcircuits
+- BUG: subc/term:
+	- term netlist connectivity (r10843):
+		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
+		- autoroute.c:961
+		- autoroute.c:1000
 - feature: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - feature: property editor should deal with flags
@@ -68,18 +82,12 @@
 - feature: fp_wget cache dir configurable [report: agaran]
 - feature in subc/term:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
-+ feature req: show grid in both mm and mil in the status bar [report:smilie]
 - update /usr/share/pcb-rnd/default.pcb to default lihata 
 	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- Rubberband Arcs:
-	- BUG: Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Fixing:Ade]
-	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - fontsel: ttf import?
 - library window: allow long tags and long location text to split
 - undo on new layer from right-click menu in gtk layersel doesn't work
-- GTK layers [report: Ade]:
-	- BUG: move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h)
 - gtk layersel feature requests:
 	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - layer rewrite:
@@ -195,16 +203,7 @@
 	- distalign doesn't work with subc ( align() and distribute()) [report:Miloh]
 	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
-- BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - feature req: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-- BUG: padstack check box in gtk-hid does not hide the padstacks; this may be due to my failure to specify soldermask openings for the padstacks  [report: erich]
-- BUG: hackvana gerber export exports .g5, .g7, rather than soldermask file-endings, .gts, .gbs, when there are no soldermask openings defined for padstacks in use. When padstackss have defined soldermask openings, the .gts and .gbs file are generated, but the .g5 and .g7 are still generated as well along with the .gts and .gbs files. Also, in another layout, .gbs and .bts looked more like drill files, and .g4 and .g5 seemed to be the top and bottom solder mask gerbers  [report: erich]
-- BUG: hackvana gerber export with "copy silk outline", only exports to sides of the outline rectangle [report: erich]
-- BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers.
-- BUG: hackvana gerber export uses .drl ending instead of .cnc for excellon drill file [report: erich]
-- BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
-- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-- BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
  
 3. Long term ===============================================================================
 
@@ -214,7 +213,6 @@ SUBC: element removal:
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
-
 
 GTK2:
 	- next_gui: keep them open, hide
