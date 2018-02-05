@@ -162,6 +162,9 @@ int pcb_data_normalize(pcb_data_t *data);
    (e.g. is a global buffer) */
 pcb_board_t *pcb_data_get_top(pcb_data_t *data);
 
+/* Force-set the parent.data field of each global object in data (but not
+   the layers!) */
+void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent);
 
 void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too, pcb_bool pstk_smirror);
 

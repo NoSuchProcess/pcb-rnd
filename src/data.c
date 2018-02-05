@@ -531,6 +531,27 @@ int pcb_data_normalize(pcb_data_t *data)
 	return pcb_data_normalize_(data, NULL);
 }
 
+void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent)
+{
+	pcb_pin_t *via;
+	pcb_pstk_t *ps;
+	pcb_subc_t *sc;
+	gdl_iterator_t it;
+
+	pinlist_foreach(&data->Via, &it, via) {
+		via->parent_type = PCB_PARENT_DATA;
+		via->parent.data = new_parent;
+	}
+	padstacklist_foreach(&data->padstack, &it, ps) {
+		ps->parent_type = PCB_PARENT_DATA;
+		ps->parent.data = new_parent;
+	}
+	subclist_foreach(&data->subc, &it, sc) {
+		sc->parent_type = PCB_PARENT_DATA;
+		sc->parent.data = new_parent;
+	}
+}
+
 
 extern pcb_opfunc_t MoveFunctions;
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
