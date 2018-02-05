@@ -42,7 +42,8 @@
 - BUG: GTK-GL: segfaults : Open an empty pcb, open Library window. Select ../pcblib > parametric > alf() . This will open a parametric dialog. Cancel it -> crash. [report: Alain] problem: pcb_rtree_search_any_nd()
 + BUG: polyhatch() - start pcb-rnd, draw a polygon on top copper signal, then invoking :PolyHatch() fails to bring up window allowing user to specify crosshatch parameters [report: erich]
 	- Use :PolyHatch(interactive) to bring up the window.  :PolyHatch() is valid, and will perform the hatches using default values.
-- BUG: shift-m of alt-a selected polyhatch() lines to top mask layer can induce a crash.  Start pcb-rnd, create large polygon on top copper i.e. over half the area, invoke polyhatch(), click on crosshatched polygon and hit delete to delete the polygon. Then hit 'u' to undo associated line deletion, alt-a to select all lines (bug_files/polyhatch4a.lht and polyhatch2a.lht), switch to top mask, 'm' to move lines, and up with residual polygon copied to mask layer along with lines. rtree related segfault seems to have been fixed. [report: erich]
+? BUG: shift-m of alt-a selected polyhatch() lines to top mask layer can induce a crash.  Start pcb-rnd, create large polygon on top copper i.e. over half the area, invoke polyhatch(), click on crosshatched polygon and hit delete to delete the polygon. Then hit 'u' to undo associated line deletion, alt-a to select all lines (bug_files/polyhatch4a.lht and polyhatch2a.lht), switch to top mask, 'm' to move lines, and up with residual polygon copied to mask layer along with lines. rtree related segfault seems to have been fixed. [report: erich]
+	-> can't reproduce, everything works as expected
 - BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
 - BUG: Rubberband Arcs:
 	- BUG: Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Fixing:Ade]
