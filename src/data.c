@@ -325,6 +325,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	if (pinlist_length(&Data->Via) != 0) return pcb_false;
 	if (padstacklist_length(&Data->padstack) != 0) return pcb_false;
 	if (elementlist_length(&Data->Element) != 0) return pcb_false;
+	if (pcb_subclist_length(&Data->subc) != 0) return pcb_false;
 	for (i = 0; i < Data->LayerN; i++)
 		if (!pcb_layer_is_empty_(PCB, &(Data->Layer[i])))
 			return pcb_false;
