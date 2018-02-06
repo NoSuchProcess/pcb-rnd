@@ -491,7 +491,7 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 	g->type |= PCB_LYT_OUTLINE;
 	g->type &= ~PCB_LYT_COPPER;
 	free(g->name);
-	g->name = pcb_strdup("global outline");
+	g->name = pcb_strdup("global_outline");
 }
 
 
