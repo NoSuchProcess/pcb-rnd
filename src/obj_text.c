@@ -840,7 +840,10 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 			defaultsymbol.Y1 += Text->Y;
 			defaultsymbol.X2 += Text->X;
 			defaultsymbol.Y2 += Text->Y;
-			pcb_gui->fill_rect(pcb_draw_out.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
+			if (xordraw)
+				pcb_gui->draw_rect(pcb_crosshair.GC, xordx+defaultsymbol.X1, xordy+defaultsymbol.Y1, xordx+defaultsymbol.X2, xordy+defaultsymbol.Y2);
+			else
+				pcb_gui->fill_rect(pcb_draw_out.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
 
 			/* move on to next cursor position */
 			x += size;
