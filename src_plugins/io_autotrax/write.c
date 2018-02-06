@@ -172,6 +172,7 @@ static int wrax_pline_segment(wctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 typedef struct {
 	wctx_t *wctx;
 	pcb_cardinal_t layer;
+	pcb_coord_t dx, dy;
 	pcb_coord_t thickness;
 } autotrax_hatch_ctx_t;
 
@@ -179,17 +180,22 @@ typedef struct {
 static void autotrax_hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	autotrax_hatch_ctx_t *hctx = (autotrax_hatch_ctx_t *) ctx_;
-	wrax_pline_segment(hctx->wctx, x1, y1, x2, y2, hctx->thickness, hctx->layer);
+	wrax_pline_segment(
+		hctx->wctx,
+		x1+hctx->dx, y1+hctx->dy, x2+hctx->dx, y2+hctx->dy,
+		hctx->thickness, hctx->layer);
 }
 
 /* generates autotrax tracks to cross hatch a complex polygon being exported */
-static void autotrax_cpoly_hatch_lines(wctx_t *ctx, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer)
+static void autotrax_cpoly_hatch_lines(wctx_t *ctx, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer, pcb_coord_t dx, pcb_coord_t dy)
 {
 	autotrax_hatch_ctx_t hctx;
 
 	hctx.wctx = ctx;
 	hctx.layer = layer;
 	hctx.thickness = thickness;
+	hctx.dx = dx;
+	hctx.dy = dy;
 	pcb_cpoly_hatch(src, dir, (thickness / 2) + 1, period, &hctx, autotrax_hatch_cb);
 }
 
@@ -533,7 +539,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 			else {
 				pcb_coord_t Thickness;
 				Thickness = PCB_MIL_TO_COORD(10);
-				autotrax_cpoly_hatch_lines(ctx, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer);
+				autotrax_cpoly_hatch_lines(ctx, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer, dx, dy);
 #warning TODO: do we really need to reimplement this, can't cpoly_hatch_lines handle it?
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
@@ -546,7 +552,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 						v = &track->head;
 						do {
 							n = v->next;
-							wrax_pline_segment(ctx, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
+							wrax_pline_segment(ctx, v->point[0]+dx, v->point[1]+dy, n->point[0]+dx, n->point[1]+dy, Thickness, current_layer);
 						} while((v = v->next) != &track->head);
 						pcb_poly_contour_del(&track);
 
@@ -557,7 +563,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 							v = &track->head;
 							do {
 								n = v->next;
-								wrax_pline_segment(ctx, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
+								wrax_pline_segment(ctx, v->point[0]+dx, v->point[1]+dy, n->point[0]+dx, n->point[1]+dy, Thickness, current_layer);
 							} while((v = v->next) != &track->head);
 							pcb_poly_contour_del(&track);
 						}
