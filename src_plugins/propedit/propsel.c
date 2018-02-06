@@ -94,11 +94,17 @@ static void map_attr(void *ctx, const pcb_attribute_list_t *list)
 		free(big);
 }
 
+static void map_common(void *ctx, pcb_any_obj_t *obj)
+{
+#warning TODO: flags
+}
+
 static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
 	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, line->Thickness);
 	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance/2);
+	map_common(ctx, (pcb_any_obj_t *)line);
 	map_attr(ctx, &line->Attributes);
 }
 
@@ -111,6 +117,7 @@ static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	map_add_prop(ctx, "p/arc/height",      pcb_coord_t, arc->Height);
 	map_add_prop(ctx, "p/arc/angle/start", pcb_angle_t, arc->StartAngle);
 	map_add_prop(ctx, "p/arc/angle/delta", pcb_angle_t, arc->Delta);
+	map_common(ctx, (pcb_any_obj_t *)arc);
 	map_attr(ctx, &arc->Attributes);
 }
 
@@ -120,6 +127,7 @@ static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_tex
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
 	map_add_prop(ctx, "p/text/rotation", int, text->Direction);
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
+	map_common(ctx, (pcb_any_obj_t *)text);
 	map_attr(ctx, &text->Attributes);
 }
 
@@ -127,6 +135,7 @@ static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 {
 	map_chk_skip(ctx, poly);
 	map_attr(ctx, &poly->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)poly);
 }
 
 static void map_eline_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_line_t *line)
@@ -134,6 +143,7 @@ static void map_eline_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	map_chk_skip(ctx, line);
 	map_line_cb(ctx, pcb, NULL, line);
 	map_attr(ctx, &line->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)line);
 }
 
 static void map_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_arc_t *arc)
@@ -141,6 +151,7 @@ static void map_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	map_chk_skip(ctx, arc);
 	map_arc_cb(ctx, pcb, NULL, arc);
 	map_attr(ctx, &arc->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)arc);
 }
 
 static void map_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text)
@@ -148,6 +159,7 @@ static void map_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	map_chk_skip(ctx, text);
 	map_text_cb(ctx, pcb, NULL, text);
 	map_attr(ctx, &text->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)text);
 }
 
 static void map_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
@@ -158,6 +170,7 @@ static void map_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	map_add_prop(ctx, "p/pin/mask",      pcb_coord_t, pin->Mask);
 	map_add_prop(ctx, "p/pin/hole",      pcb_coord_t, pin->DrillingHole);
 	map_attr(ctx, &pin->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)pin);
 }
 
 static void map_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
@@ -165,13 +178,14 @@ static void map_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	map_chk_skip(ctx, pad);
 	map_add_prop(ctx, "p/pad/mask",      pcb_coord_t, pad->Mask);
 	map_attr(ctx, &pad->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)pad);
 }
 
 static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
 {
 	map_chk_skip(ctx, subc);
 	map_attr(ctx, &subc->Attributes);
-	return;
+	map_common(ctx, (pcb_any_obj_t *)subc);
 }
 
 static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
@@ -188,6 +202,7 @@ static void map_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	map_add_prop(ctx, "p/via/mask",      pcb_coord_t, via->Mask);
 	map_add_prop(ctx, "p/via/hole",      pcb_coord_t, via->DrillingHole);
 	map_attr(ctx, &via->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)via);
 }
 
 static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
@@ -208,6 +223,7 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_add_prop(ctx, "p/padstack/hbottom", int, proto->hbottom);
 
 	map_attr(ctx, &ps->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)ps);
 }
 
 void pcb_propsel_map_core(htsp_t *props)
@@ -253,6 +269,12 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 
 #define DONE { st->set_cnt++; pcb_undo_restore_serial(); return; }
 
+static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
+{
+#warning TODO: flags
+	return 0;
+}
+
 static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
@@ -264,6 +286,8 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 		set_attr(st, &line->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)line)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    pcb_chg_obj_1st_size(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
@@ -283,6 +307,8 @@ static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 		set_attr(st, &arc->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)arc)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    pcb_chg_obj_1st_size(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
@@ -317,6 +343,8 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 		set_attr(st, &text->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)text)) return;
 
 	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
 	    pcb_chg_obj_size(type, layer_or_element, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
@@ -354,6 +382,8 @@ static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 
 	set_chk_skip(st, poly);
 
+	if (set_common(st, (pcb_any_obj_t *)poly)) return;
+
 	if (st->is_attr) {
 		set_attr(st, &poly->Attributes);
 		return;
@@ -370,6 +400,8 @@ static void set_eline_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 		set_attr(st, &line->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)line)) return;
 }
 
 static void set_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_arc_t *arc)
@@ -382,6 +414,8 @@ static void set_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 		set_attr(st, &arc->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)arc)) return;
 }
 
 static void set_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text)
@@ -400,6 +434,8 @@ static void set_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 		set_attr(st, &pin->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)pin)) return;
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    pcb_chg_obj_1st_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
@@ -426,6 +462,8 @@ static void set_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 		return;
 	}
 
+	if (set_common(st, (pcb_any_obj_t *)pad)) return;
+
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
 	    pcb_chg_obj_mask_size(PCB_TYPE_PAD, pad->Element, pad, NULL, st->c, st->c_absolute)) DONE;
 }
@@ -435,6 +473,8 @@ static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
 	set_chk_skip(st, subc);
+
+	if (set_common(st, (pcb_any_obj_t *)subc)) return;
 
 	if (st->is_attr) {
 		set_attr(st, &subc->Attributes);
@@ -460,6 +500,8 @@ static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 		set_attr(st, &via->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)via)) return;
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    pcb_chg_obj_1st_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
@@ -488,6 +530,8 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 		set_attr(st, &ps->Attributes);
 		return;
 	}
+
+	if (set_common(st, (pcb_any_obj_t *)ps)) return;
 
 	ca = i = (st->c != 0);
 	proto = pcb_pstk_get_proto(ps);
