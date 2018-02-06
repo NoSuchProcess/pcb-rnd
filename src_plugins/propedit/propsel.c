@@ -167,7 +167,18 @@ static void map_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	map_attr(ctx, &pad->Attributes);
 }
 
+static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	map_chk_skip(ctx, subc);
+	map_attr(ctx, &subc->Attributes);
+	return;
+}
 
+static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	map_subc_cb_(ctx, pcb, subc);
+	return 0;
+}
 
 static void map_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
@@ -208,7 +219,7 @@ void pcb_propsel_map_core(htsp_t *props)
 	pcb_loop_all(PCB, &ctx,
 		NULL, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
 		NULL, map_eline_cb, map_earc_cb, map_etext_cb, map_epin_cb, map_epad_cb,
-		NULL,
+		map_subc_cb,
 		map_via_cb, map_pstk_cb
 	);
 }
@@ -419,6 +430,25 @@ static void set_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	    pcb_chg_obj_mask_size(PCB_TYPE_PAD, pad->Element, pad, NULL, st->c, st->c_absolute)) DONE;
 }
 
+static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+
+	set_chk_skip(st, subc);
+
+	if (st->is_attr) {
+		set_attr(st, &subc->Attributes);
+		return;
+	}
+}
+
+static int set_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	set_subc_cb_(ctx, pcb, subc);
+	return 0;
+}
+
+
 static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
@@ -539,7 +569,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/text/", set_etext_cb),
 		MAYBE_PROP(0, "p/pin/", set_epin_cb),
 		MAYBE_PROP(0, "p/pad/", set_epad_cb),
-		NULL, /* subc */
+		MAYBE_PROP(0, "p/subc/", set_subc_cb),
 		MAYBE_PROP(0, "p/via/", set_via_cb),
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
@@ -618,6 +648,18 @@ static void del_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	del_attr(ctx, &pad->Attributes);
 }
 
+static void del_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	map_chk_skip(ctx, subc);
+	del_attr(ctx, &subc->Attributes);
+}
+
+static int del_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	del_subc_cb_(ctx, pcb, subc);
+	return 0;
+}
+
 static void del_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	map_chk_skip(ctx, via);
@@ -643,7 +685,7 @@ int pcb_propsel_del(const char *key)
 	pcb_loop_all(PCB, &st,
 		NULL, del_line_cb, del_arc_cb, del_text_cb, del_poly_cb,
 		NULL, del_eline_cb, del_earc_cb, del_etext_cb, del_epin_cb, del_epad_cb,
-		NULL, /* subc */
+		del_subc_cb,
 		del_via_cb, del_pstk_cb
 	);
 	return st.del_cnt;
