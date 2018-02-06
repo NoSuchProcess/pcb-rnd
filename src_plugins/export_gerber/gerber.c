@@ -450,7 +450,7 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
 		suff = "gbs";
 	else if (fmatch(flags, PCB_LYT_PDRILL))
-		suff = "drl";
+		suff = "cnc";
 	else if (fmatch(flags, PCB_LYT_UDRILL))
 		suff = "_NPTH.drl";
 	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
