@@ -142,12 +142,14 @@ static int wrax_map_layers(wctx_t *ctx)
 }
 
 
+#define PCB_PSTK_COMPAT_RRECT 250
 static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	const char *name;
-	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
+	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness, w, h;
 	pcb_pstk_compshape_t cshape;
 	pcb_bool plated, square, nopaste;
+	int ashape, alayer;
 
 	if (ps->term != NULL) {
 		const char *s;
@@ -169,11 +171,26 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 		name = "none";
 
 	if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-		/* fine, process the results below */
+		w = h = pad_dia;
+		alayer = 13;
 	}
 	else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
+		if ((x1 != x2) && (y1 != y2)) {
+			pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export rotated rectangular/line pin/pad/via", "shape must be axis-aligned");
+			return 0;
+		}
 		/* convert to the same format as via */
-		
+		cshape = square ? PCB_PSTK_COMPAT_SQUARE : PCB_PSTK_COMPAT_RRECT;
+
+		/* calculate center and disable hole */
+		x = (x1+x2)/2;
+		y = (y1+y2)/2;
+		w = x2 - x1;
+		h = y2 - y1;
+		drill_dia = 0;
+
+#warning TODO: need to figure which side the padstack is on!
+		alayer = 1;
 	}
 	else {
 		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export complex pin/pad/via", "use uniform shaped pins/vias and simpler pads, with simple shapes (no generic polygons)");
@@ -185,8 +202,28 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 		return 0;
 	}
 
+	switch((int)cshape) {
+		case PCB_PSTK_COMPAT_ROUND:   ashape = 1; break;
+		case PCB_PSTK_COMPAT_SQUARE:  ashape = 2; break;
+		case PCB_PSTK_COMPAT_OCTAGON: ashape = 3; break;
+		case PCB_PSTK_COMPAT_RRECT:   ashape = 4; break;
+		default:
+			pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export: invalid pad shape", "use circle, octagon, rectangle or round rectangle");
+			return 0;
+	}
+
+	if (in_subc)
+		fputs("CP", ctx->f);
+	else
+		fputs("FP", ctx->f);
+
+	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 0 %d\r\n",
+		x+dx, PCB->MaxHeight - (y+dy), w, h,
+		ashape, drill_dia, alayer);
+
 	fputs(name, ctx->f);
 	fputs("\r\n", ctx->f);
+	return 0;
 }
 
 static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
