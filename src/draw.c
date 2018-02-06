@@ -796,6 +796,8 @@ static void expose_end(pcb_hid_t *old_gui)
 	pcb_gui->destroy_gc(pcb_draw_out.pmGC);
 	pcb_gui = old_gui;
 
+	pcb_draw_out.fgGC = NULL;
+
 	delayed_labels_enabled = pcb_false;
 	vtp0_truncate(&delayed_labels, 0);
 }
