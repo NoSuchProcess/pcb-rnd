@@ -140,7 +140,7 @@ static int wrax_map_layers(wctx_t *ctx)
 }
 
 /* writes autotrax vias to file */
-static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t dy)
+static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
@@ -283,7 +283,7 @@ static int wrax_equipotential_netlists(wctx_t *ctx)
 }
 
 
-static int wrax_lines(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy)
+static int wrax_lines(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -304,7 +304,7 @@ static int wrax_lines(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pc
 }
 
 /* writes autotrax arcs for layouts */
-static int wrax_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy)
+static int wrax_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
@@ -325,7 +325,7 @@ static int wrax_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 }
 
 /* writes generic autotrax text descriptor line layouts onl, since no text in .fp */
-static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy)
+static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	pcb_coord_t mHeight = myfont->MaxHeight; /* autotrax needs the width of the widest letter */
@@ -491,7 +491,7 @@ static int wrax_layout_elements(wctx_t *ctx, pcb_board_t *Layout, pcb_data_t *Da
 }
 
 /* writes polygon data in autotrax fill (rectangle) format for use in a layout .PCB file */
-static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy)
+static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	int i;
 	gdl_iterator_t it;
@@ -580,6 +580,8 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int n;
+	pcb_bool in_subc = (data->parent_type == PCB_PARENT_SUBC);
+
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_layer_t *ly = &data->Layer[n];
 		int alid = wrax_layer2id(ctx, ly); /* autotrax layer ID */
@@ -589,14 +591,14 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 			pcb_io_incompat_save(data, NULL, tmp, NULL);
 			continue;
 		}
-		wrax_lines(ctx, alid, ly, dx, dy);
-		wrax_arcs(ctx, alid, ly, dx, dy);
-		wrax_text(ctx, alid, ly, dx, dy);
-		wrax_polygons(ctx, alid, ly, dx, dy);
+		wrax_lines(ctx, alid, ly, dx, dy, in_subc);
+		wrax_arcs(ctx, alid, ly, dx, dy, in_subc);
+		wrax_text(ctx, alid, ly, dx, dy, in_subc);
+		wrax_polygons(ctx, alid, ly, dx, dy, in_subc);
 	}
 
 	wrax_layout_elements(ctx, ctx->pcb, data);
-	wrax_vias(ctx, data, dx, dy);
+	wrax_vias(ctx, data, dx, dy, in_subc);
 	return 0;
 }
 
