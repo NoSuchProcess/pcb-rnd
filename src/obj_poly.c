@@ -401,8 +401,8 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 }
 
 
-/* moves a polygon to buffer. Doesn't allocate memory for the points */
-void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_t * polygon)
+/* moves a polygon between board and buffer. Doesn't allocate memory for the points */
+void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_t * polygon)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 

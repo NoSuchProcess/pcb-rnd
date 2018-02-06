@@ -133,8 +133,8 @@ void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
-/* moves a rat-line to paste buffer */
-void *pcb_ratop_move_to_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
+/* moves a rat-line between board and buffer */
+void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
 	pcb_r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
 

@@ -38,7 +38,7 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 void *pcb_lineop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 void *pcb_lineop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line);
+void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line);
 void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);

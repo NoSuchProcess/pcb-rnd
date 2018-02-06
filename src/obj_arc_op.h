@@ -31,7 +31,7 @@
 #include "operation.h"
 
 void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *pcb_arcop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t *arc);
+void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t *arc);
 void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
 void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
 void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);

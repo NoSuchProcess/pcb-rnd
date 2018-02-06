@@ -33,7 +33,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src);
 void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *pcb_subcop_change_clear_size(pcb_opctx_t *ctx, pcb_subc_t *sc);

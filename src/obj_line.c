@@ -352,8 +352,8 @@ void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t 
 	return pcb_line_copy_meta(line, Line);
 }
 
-/* moves a line to buffer */
-void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
+/* moves a line between board and buffer */
+void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 

@@ -29,7 +29,7 @@
 #include "operation.h"
 
 void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps);
-void *pcb_pstkop_move_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps);
+void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 
 void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 void *pcb_pstkop_move(pcb_opctx_t *ctx, pcb_pstk_t *ps);

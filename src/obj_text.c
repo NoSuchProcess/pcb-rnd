@@ -340,8 +340,8 @@ void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t 
 	return t;
 }
 
-/* moves a text to buffer without allocating memory for the name */
-void *pcb_textop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
+/* moves a text without allocating memory for the name between board and buffer */
+void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 

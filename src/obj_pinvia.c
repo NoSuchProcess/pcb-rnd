@@ -361,8 +361,8 @@ void *pcb_viaop_add_to_buffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	return pcb_via_copy_meta(v, Via);
 }
 
-/* moves a via to paste buffer without allocating memory for the name */
-void *pcb_viaop_move_to_buffer(pcb_opctx_t *ctx, pcb_pin_t * via)
+/* moves a via beteen board and buffer without allocating memory for the name */
+void *pcb_viaop_move_buffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 {
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_VIA, via, via);
 

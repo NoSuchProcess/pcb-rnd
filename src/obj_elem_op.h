@@ -31,7 +31,7 @@
 #include "operation.h"
 
 void *pcb_elemop_add_to_buffer(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *pcb_elemop_move_to_buffer(pcb_opctx_t *ctx, pcb_element_t * element);
+void *pcb_elemop_move_buffer(pcb_opctx_t *ctx, pcb_element_t * element);
 void *pcb_elemop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element);
 void *pcb_elemop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element);
 void *pcb_elemop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element);

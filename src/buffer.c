@@ -74,21 +74,21 @@ static pcb_opfunc_t AddBufferFunctions = {
 
 #warning TODO: rename this; move_to_buffer is also used to move from buffer to pcb
 static pcb_opfunc_t MoveBufferFunctions = {
-	pcb_lineop_move_to_buffer,
-	pcb_textop_move_to_buffer,
-	pcb_polyop_move_to_buffer,
-	pcb_viaop_move_to_buffer,
-	pcb_elemop_move_to_buffer,
+	pcb_lineop_move_buffer,
+	pcb_textop_move_buffer,
+	pcb_polyop_move_buffer,
+	pcb_viaop_move_buffer,
+	pcb_elemop_move_buffer,
 	NULL,
 	NULL,
 	NULL,
 	NULL,
 	NULL,
-	pcb_arcop_move_to_buffer,
-	pcb_ratop_move_to_buffer,
+	pcb_arcop_move_buffer,
+	pcb_ratop_move_buffer,
 	NULL,
-	pcb_subcop_move_to_buffer,
-	pcb_pstkop_move_to_buffer,
+	pcb_subcop_move_buffer,
+	pcb_pstkop_move_buffer,
 };
 
 int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)

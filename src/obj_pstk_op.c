@@ -40,7 +40,8 @@ void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	return pcb_pstk_copy_meta(p, ps);
 }
 
-void *pcb_pstkop_move_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+/* Move between board and buffer */
+void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_cardinal_t npid;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);

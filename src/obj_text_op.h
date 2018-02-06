@@ -31,7 +31,7 @@
 #include "operation.h"
 
 void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
-void *pcb_textop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text);
+void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text);
 void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
 void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
 void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);

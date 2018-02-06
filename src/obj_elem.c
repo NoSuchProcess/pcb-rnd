@@ -1322,7 +1322,7 @@ void *pcb_elemop_add_to_buffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* moves a element to buffer without allocating memory for pins/names */
-void *pcb_elemop_move_to_buffer(pcb_opctx_t *ctx, pcb_element_t * element)
+void *pcb_elemop_move_buffer(pcb_opctx_t *ctx, pcb_element_t * element)
 {
 	/*
 	 * Delete the element from the source (remove it from trees,

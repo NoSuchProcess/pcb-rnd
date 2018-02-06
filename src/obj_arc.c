@@ -328,8 +328,8 @@ void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 	return a;
 }
 
-/* moves an arc to buffer */
-void *pcb_arcop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
+/* moves an arc between board and buffer */
+void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 

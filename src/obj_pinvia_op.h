@@ -31,7 +31,7 @@
 #include "operation.h"
 
 void *pcb_viaop_add_to_buffer(pcb_opctx_t *ctx, pcb_pin_t *Via);
-void *pcb_viaop_move_to_buffer(pcb_opctx_t *ctx, pcb_pin_t * via);
+void *pcb_viaop_move_buffer(pcb_opctx_t *ctx, pcb_pin_t * via);
 void *pcb_viaop_change_thermal(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_pinop_change_thermal(pcb_opctx_t *ctx, pcb_element_t *element, pcb_pin_t *Pin);
 void *pcb_viaop_change_size(pcb_opctx_t *ctx, pcb_pin_t *Via);

@@ -31,7 +31,7 @@
 #include "operation.h"
 
 void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat);
-void *pcb_ratop_move_to_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat);
+void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat);
 void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat);
 void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat);
 void *pcb_ratop_destroy(pcb_opctx_t *ctx, pcb_rat_t *Rat);

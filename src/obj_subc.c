@@ -1316,6 +1316,14 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	return sc;
 }
 
+/* Move between board and buffer */
+void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+	return pcb_subcop_move_to_buffer(ctx, sc);
+#warning subc TODO: buffer->board
+}
+
+
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_t *nsc;
