@@ -12,10 +12,10 @@
 - BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
 - BUG: ground/bottom copper thermal flags are being saved in subc pin but not displayed on reload. Open bug_files/thermal-save-erich.lht, switch to bottom copper, add thermal to pin on switch subc, save, reopen.. no thermal spokes seen. Seems to be aresult of absent soldermask layers. If the layout with themrals is imported into a default empty layout, they seem to appear [erich]
 + BUG: non-ASCII in a text object crashes if selected and then ctrl-x, or if mouse-click-dragged, see text-cut-or-drag-crash-erich.lht, with non-ASCII text that was created on importing an eagle binary layout. ? perhaps it is more of an io_module sanitising of inputs issue.
-	-> it's okay if the io plugin keeps non-ASCII as long as it's really what the user had in the text and not just memory garbage - but in the latter case we need to fix the bug, not work it around by some sanitizer
-- BUG: bug_files/delete-undo-crash-erich.lht mouse over via element, hit delete key until deleted, undo, hover over diode element, hit delete/undo, await crash
-	-> it's subc delete undo bug: undo doesn't properly restore parents
-	-> related new bug: dyntext refdes text with no refdes attribute results in an invisible object
+	+> it's okay if the io plugin keeps non-ASCII as long as it's really what the user had in the text and not just memory garbage - but in the latter case we need to fix the bug, not work it around by some sanitizer
++ BUG: bug_files/delete-undo-crash-erich.lht mouse over via element, hit delete key until deleted, undo, hover over diode element, hit delete/undo, await crash
+	+> it was subc delete undo bug: undo doesn't properly restore parents; happened on save after undo a subc deletion
+- BUG: dyntext refdes text with no refdes attribute results in an invisible object that can be deleted (confusing) [report: Igor2]
 - BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade]
