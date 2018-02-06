@@ -213,9 +213,9 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 	}
 
 	if (in_subc)
-		fputs("CP", ctx->f);
+		fputs("CP ", ctx->f);
 	else
-		fputs("FP", ctx->f);
+		fputs("FP ", ctx->f);
 
 	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 0 %d\r\n",
 		x+dx, PCB->MaxHeight - (y+dy), w, h,
