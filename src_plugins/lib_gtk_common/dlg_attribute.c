@@ -241,12 +241,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	int j, i, n;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
 
-	/*
-	 * Iterate over all the export options and build up a dialog box
-	 * that lets us control all of the options.  By doing things this
-	 * way, any changes to the exporter HID's automatically are
-	 * reflected in this dialog box.
-	 */
 	for (j = start_from; j < ctx->n_attrs; j++) {
 		const pcb_unit_t *unit_list;
 		if (ctx->attrs[j].help_text == ATTR_UNDOCUMENTED)
