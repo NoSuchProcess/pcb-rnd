@@ -1205,7 +1205,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	return chg;
 }
 
-static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb)
+static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_subc_t *sc, int dst_is_pcb)
 {
 	pcb_pin_t *via;
 	pcb_pstk_t *ps;
@@ -1232,7 +1232,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb
 		if (dst != NULL)
 			ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
 		ps->protoi = -1;
-		ps->parent.data = dst;
+		ps->parent.data = new_parent;
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		chg++;
 	}
@@ -1261,7 +1261,7 @@ static void subc_set_parent_globals(pcb_subc_t *sc, pcb_data_t *new_parent)
 	pcb_data_set_parent_globals(sc->data, new_parent);
 }
 
-void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	int n;
 	pcb_board_t *dst_top = pcb_data_get_top(ctx->buffer.dst);
@@ -1309,20 +1309,12 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb);
 	}
 
-	subc_relocate_globals(ctx->buffer.dst, sc, dst_is_pcb);
+	subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
 	return sc;
 }
-
-/* Move between board and buffer */
-void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
-{
-	return pcb_subcop_move_to_buffer(ctx, sc);
-#warning subc TODO: buffer->board
-}
-
 
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
@@ -1351,7 +1343,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 		int src_has_real_layer = (sl->meta.bound.real != NULL);
 		subc_relocate_layer_objs(NULL, subc->data, sl, src_has_real_layer, 0);
 	}
-	subc_relocate_globals(NULL, subc, 0);
+	subc_relocate_globals(NULL, NULL, subc, 0);
 
 
 	pcb_data_free(buff->Data);
@@ -1594,7 +1586,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 
 	oldhack = pcb_pstk_data_hack;
 	pcb_pstk_data_hack = ctx.buffer.dst;
-	newsc = pcb_subcop_move_to_buffer(&ctx, *subc);
+	newsc = pcb_subcop_move_buffer(&ctx, *subc);
 
 
 	/* mirror object geometry and stackup */
