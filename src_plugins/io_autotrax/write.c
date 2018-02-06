@@ -147,7 +147,10 @@ static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t 
 	int via_drill_mil = 25; /* a reasonable default */
 	/* write information about via */
 	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(ctx->f, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X+dx, PCB->MaxHeight - (via->Y+dy), via->Thickness, via_drill_mil);
+		if (in_subc)
+			pcb_io_incompat_save(Data, via, "Not exporting old-style via in subc", "convert to padstack");
+		else
+			pcb_fprintf(ctx->f, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X+dx, PCB->MaxHeight - (via->Y+dy), via->Thickness, via_drill_mil);
 	}
 #warning TODO: padstakcs
 	return 0;
@@ -293,7 +296,10 @@ static int wrax_lines(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pc
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
 		int local_flag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(ctx->f, "FT\r\n");
+			if (in_subc)
+				pcb_fprintf(ctx->f, "CT\r\n");
+			else
+				pcb_fprintf(ctx->f, "FT\r\n");
 			wrax_line(ctx, line, current_layer, dx, dy);
 			local_flag |= 1;
 		}
@@ -314,7 +320,10 @@ static int wrax_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 	if (!pcb_layer_is_empty_(PCB, layer)) { /*|| (layer->name && *layer->name)) { */
 		int local_flag = 0;
 		arclist_foreach(&layer->Arc, &it, arc) {
-			pcb_fprintf(ctx->f, "FA\r\n");
+			if (in_subc)
+				pcb_fprintf(ctx->f, "CA\r\n");
+			else
+				pcb_fprintf(ctx->f, "FA\r\n");
 			wrax_arc(ctx, arc, current_layer, dx, dy);
 			local_flag |= 1;
 		}
@@ -349,7 +358,10 @@ static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 		local_flag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if (current_layer < 9) { /* copper or silk layer text */
-				fputs("FS\r\n", ctx->f);
+				if (in_subc)
+					fputs("CS\r\n", ctx->f);
+				else
+					fputs("FS\r\n", ctx->f);
 				strokeThickness = PCB_SCALE_TEXT(default_stroke_thickness, text->Scale / 2);
 				textHeight = PCB_SCALE_TEXT(mHeight, text->Scale);
 				rotation = 0;
@@ -527,7 +539,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 					if (maxy < polygon->Points[i].Y)
 						maxy = polygon->Points[i].Y;
 				}
-				pcb_fprintf(ctx->f, "FF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", minx+dx, PCB->MaxHeight - (miny+dy), maxx+dx, PCB->MaxHeight - (maxy+dy), current_layer);
+				pcb_fprintf(ctx->f, "%cF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", (in_subc ? 'C' : 'F'), minx+dx, PCB->MaxHeight - (miny+dy), maxx+dx, PCB->MaxHeight - (maxy+dy), current_layer);
 
 				local_flag |= 1;
 /* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
