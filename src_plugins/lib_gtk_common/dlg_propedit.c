@@ -284,6 +284,7 @@ static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 			list_cursor_changed_cb(dlg->tree, dlg);
 			if ((*val == '+') || (*val == '-') || (*val == '#'))
 				gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val);	/* keep relative and forced absolute values intact for a reapply */
+			pcb_gui->invalidate_all();
 		}
 		else
 			pcb_message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
