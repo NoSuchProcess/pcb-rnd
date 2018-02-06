@@ -99,8 +99,8 @@ ha:pcb-rnd-board-v4 {
     name = grp_4
    }
    ha:5 {
-    name = global outline
-    ha:type { outline=1; intern=1; }
+    name = global_outline
+    ha:type { outline=1; }
     li:layers { 6; }
    }
    ha:6 {
