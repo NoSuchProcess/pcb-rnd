@@ -39,6 +39,8 @@
 #include "polygon_offs.h"
 #include "../lib_polyhelp/polyhelp.h"
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
+
 typedef struct {
 	pcb_layer_type_t lyt;
 	pcb_bool plane;
@@ -139,20 +141,69 @@ static int wrax_map_layers(wctx_t *ctx)
 	return 0;
 }
 
-/* writes autotrax vias to file */
+
+static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
+{
+	const char *name;
+	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
+	pcb_pstk_compshape_t cshape;
+	pcb_bool plated, square, nopaste;
+
+	if (ps->term != NULL) {
+		const char *s;
+		int len;
+
+		name = ps->term;
+		for(s = name, len = 0; *s != '\0'; s++,len++) {
+			if (!isalnum(*s)) {
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "autotrax pad name (terminal name) must consists of alphanumeric characters only - omitting padstack", "rename the terminal to something simpler");
+				return 0;
+			}
+			if (len >= 4) {
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "autotrax pad name (terminal name) must consists of alphanumeric characters only - omitting padstack", "rename the terminal to something simpler");
+				return 0;
+			}
+		}
+	}
+	else
+		name = "none";
+
+	if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+		/* fine, process the results below */
+	}
+	else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
+		/* convert to the same format as via */
+		
+	}
+	else {
+		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export complex pin/pad/via", "use uniform shaped pins/vias and simpler pads, with simple shapes (no generic polygons)");
+		return 0;
+	}
+
+	if ((cshape != PCB_PSTK_COMPAT_ROUND) && (ps->rot != 0)) {
+		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export rotated pin/pad/via", "remove rotation, shapes must be axis-aligned");
+		return 0;
+	}
+
+	fputs(name, ctx->f);
+	fputs("\r\n", ctx->f);
+}
+
 static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
+	pcb_pstk_t *ps;
 	int via_drill_mil = 25; /* a reasonable default */
 	/* write information about via */
 	pinlist_foreach(&Data->Via, &it, via) {
 		if (in_subc)
-			pcb_io_incompat_save(Data, via, "Not exporting old-style via in subc", "convert to padstack");
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)via, "Not exporting old-style via in subc", "convert to padstack");
 		else
 			pcb_fprintf(ctx->f, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X+dx, PCB->MaxHeight - (via->Y+dy), via->Thickness, via_drill_mil);
 	}
-#warning TODO: padstakcs
+	padstacklist_foreach(&Data->padstack, &it, ps)
+		wrax_padstack(ctx, ps, dx, dy, in_subc);
 	return 0;
 }
 
