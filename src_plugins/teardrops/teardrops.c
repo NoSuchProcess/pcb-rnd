@@ -45,11 +45,7 @@ static int new_arcs = 0;
 
 int distance_between_points(int x1, int y1, int x2, int y2)
 {
-	/* int a; */
-	/* int b; */
 	int distance;
-	/* a = (x1-x2); */
-	/* b = (y1-y2); */
 	distance = sqrt((pow(x1 - x2, 2)) + (pow(y1 - y2, 2)));
 	return distance;
 }
@@ -143,8 +139,7 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 	lx = px + dx * ldist;
 	ly = py + dy * ldist;
 
-	/* We need one up front to determine how many segments it will take
-	   to fill.  */
+	/* We need one up front to determine how many segments it will take to fill.  */
 	ax = lx - dy * adist;
 	ay = ly + dx * adist;
 	vl = sqrt(r * r - t * t);
@@ -262,17 +257,6 @@ static void check_pad(pcb_pad_t * _pad)
 					PCB_COORD_TO_MM((pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2),
 					PCB_COORD_TO_MM((pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2),
 					PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
-
-	/* fprintf(stderr, */
-	/*   "Pad %s (%s) at ((%.6f, %.6f), (%.6f, %.6f)) (element %s, %s, %s) \n", */
-	/*           PCB_EMPTY(pad->Number), PCB_EMPTY(pad->Name), */
-	/*           PCB_COORD_TO_MM(pad->BoundingBox.X1), */
-	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y1), */
-	/*           PCB_COORD_TO_MM(pad->BoundingBox.X2), */
-	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y2), */
-	/*           PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), */
-	/*           PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), */
-	/*           PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element))); */
 
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
