@@ -53,7 +53,7 @@
 static const char pcb_acts_Renumber[] = "Renumber()\n" "Renumber(filename)";
 
 static const char pcb_acth_Renumber[] =
-	"Renumber all elements.  The changes will be recorded to filename\n"
+	"Renumber all subcircuits.  The changes will be recorded to filename\n"
 	"for use in backannotating these changes to the schematic.";
 
 /* %start-doc actions Renumber
@@ -62,11 +62,18 @@ static const char pcb_acth_Renumber[] =
 
 #define WTF 0
 
+static const char *or_empty(const char *s)
+{
+	if (s == NULL) return "";
+	return s;
+}
+
 static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool changed = pcb_false;
-	pcb_element_t **element_list;
-	pcb_element_t **locked_element_list;
+	pcb_subc_t **subc_list;
+	pcb_subc_t **locked_subc_list;
+	pcb_coord_t *ox_list, *oy_list;
 	unsigned int i, j, k, cnt, lock_cnt;
 	unsigned int tmpi;
 	size_t sz;
@@ -80,7 +87,7 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		unsigned int cnt;
 	} *cnt_list;
 	char **was, **is, *pin;
-	unsigned int c_cnt = 0, numele;
+	unsigned int c_cnt = 0, numsubc;
 	int ok;
 	pcb_bool free_name = pcb_false;
 
@@ -131,18 +138,20 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	fprintf(out, "*FILEVERSION* 20061031\n");
 
 	/*
-	 * Make a first pass through all of the elements and sort them out
+	 * Make a first pass through all of the subcircuits and sort them out
 	 * by location on the board.  While here we also collect a list of
-	 * locked elements.
+	 * locked subcircuits.
 	 *
 	 * We'll actually renumber things in the 2nd pass.
 	 */
-	numele = elementlist_length(&PCB->Data->Element);
-	element_list = (pcb_element_t **) calloc(numele, sizeof(pcb_element_t *));
-	locked_element_list = (pcb_element_t **) calloc(numele, sizeof(pcb_element_t *));
-	was = (char **) calloc(numele, sizeof(char *));
-	is = (char **) calloc(numele, sizeof(char *));
-	if (element_list == NULL || locked_element_list == NULL || was == NULL || is == NULL) {
+	numsubc = pcb_subclist_length(&PCB->Data->subc);
+	subc_list = calloc(numsubc, sizeof(pcb_subc_t *));
+	ox_list = calloc(numsubc, sizeof(pcb_coord_t));
+	oy_list = calloc(numsubc, sizeof(pcb_coord_t));
+	locked_subc_list =  calloc(numsubc, sizeof(pcb_subc_t *));
+	was = calloc(numsubc, sizeof(char *));
+	is = calloc(numsubc, sizeof(char *));
+	if (subc_list == NULL || locked_subc_list == NULL || was == NULL || is == NULL || ox_list == NULL || oy_list == NULL) {
 		fprintf(stderr, "calloc() failed in pcb_act_Renumber\n");
 		exit(1);
 	}
@@ -150,49 +159,54 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	cnt = 0;
 	lock_cnt = 0;
-	PCB_ELEMENT_LOOP(PCB->Data);
+
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, element->Name) || PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
-			/*
-			 * add to the list of locked elements which we won't try to
-			 * renumber and whose reference designators are now reserved.
-			 */
-			pcb_fprintf(out,
-									"*WARN* Element \"%s\" at %$md is locked and will not be renumbered.\n",
-									PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), element->MarkX, element->MarkY);
-			locked_element_list[lock_cnt] = element;
-			lock_cnt++;
+		pcb_coord_t ox, oy;
+		
+		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
+			ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2)/2;
+			oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2)/2;
 		}
 
+		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)) {
+			/* add to the list of locked subcircuits which we won't try to renumber and whose reference designators are now reserved. */
+			pcb_fprintf(out,
+				"*WARN* subc \"%s\" at %$md is locked and will not be renumbered.\n",
+				PCB_UNKNOWN(subc->refdes), ox, oy);
+			locked_subc_list[lock_cnt] = subc;
+			lock_cnt++;
+		}
 		else {
 			/* count of devices which will be renumbered */
 			cnt++;
 
 			/* search for correct position in the list */
 			i = 0;
-			while (element_list[i] && element->MarkY > element_list[i]->MarkY)
+			while (subc_list[i] && oy > oy_list[i])
 				i++;
 
-			/*
-			 * We have found the position where we have the first element that
+			/* We have found the position where we have the first subcircuits that
 			 * has the same Y value or a lower Y value.  Now move forward if
-			 * needed through the X values
-			 */
-			while (element_list[i]
-						 && element->MarkY == element_list[i]->MarkY && element->MarkX > element_list[i]->MarkX)
+			 * needed through the X values */
+			while (subc_list[i] && oy == oy_list[i] && ox > ox_list[i])
 				i++;
 
 			for (j = cnt - 1; j > i; j--) {
-				element_list[j] = element_list[j - 1];
+				subc_list[j] = subc_list[j - 1];
+				ox_list[j] = ox_list[j - 1];
+				oy_list[j] = oy_list[j - 1];
 			}
-			element_list[i] = element;
+			subc_list[i] = subc;
+			ox_list[j] = ox;
+			oy_list[j] = oy;
 		}
 	}
 	PCB_END_LOOP;
 
 
 	/*
-	 * Now that the elements are sorted by board position, we go through
+	 * Now that the subcircuits are sorted by board position, we go through
 	 * and renumber them.
 	 */
 
@@ -206,10 +220,9 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	cnt_list = (struct _cnt_list *) calloc(cnt_list_sz, sizeof(struct _cnt_list));
 	for (i = 0; i < cnt; i++) {
-		/* If there is no refdes, maybe just spit out a warning */
-		if (PCB_ELEM_NAME_REFDES(element_list[i])) {
+		if (subc_list[i]->refdes) {
 			/* figure out the prefix */
-			tmps = pcb_strdup(PCB_ELEM_NAME_REFDES(element_list[i]));
+			tmps = pcb_strdup(or_empty(subc_list[i]->refdes));
 			j = 0;
 			while (tmps[j] && (tmps[j] < '0' || tmps[j] > '9')
 						 && tmps[j] != '?')
@@ -235,19 +248,13 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				}
 			}
 
-			/*
-			 * start a new counter if we don't have a counter for this
-			 * prefix
-			 */
+			/* start a new counter if we don't have a counter for this prefix */
 			if (!cnt_list[j].name) {
 				cnt_list[j].name = pcb_strdup(tmps);
 				cnt_list[j].cnt = 0;
 			}
 
-			/*
-			 * check to see if the new refdes is already used by a
-			 * locked element
-			 */
+			/* check to see if the new refdes is already used by a locked subcircuit */
 			do {
 				ok = 1;
 				cnt_list[j].cnt++;
@@ -267,10 +274,10 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 				/*
 				 * now compare to the list of reserved (by locked
-				 * elements) names
+				 * subcircuits) names
 				 */
 				for (k = 0; k < lock_cnt; k++) {
-					if (strcmp(PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(locked_element_list[k])), tmps) == 0) {
+					if (strcmp(PCB_UNKNOWN(locked_subc_list[k]->refdes), tmps) == 0) {
 						ok = 0;
 						break;
 					}
@@ -279,17 +286,17 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 			while (!ok);
 
-			if (strcmp(tmps, PCB_ELEM_NAME_REFDES(element_list[i])) != 0) {
-				fprintf(out, "*RENAME* \"%s\" \"%s\"\n", PCB_ELEM_NAME_REFDES(element_list[i]), tmps);
+			if (strcmp(tmps, or_empty(subc_list[i]->refdes)) != 0) {
+				fprintf(out, "*RENAME* \"%s\" \"%s\"\n", or_empty(subc_list[i]->refdes), tmps);
 
 				/* add this rename to our table of renames so we can update the netlist */
-				was[c_cnt] = pcb_strdup(PCB_ELEM_NAME_REFDES(element_list[i]));
+				was[c_cnt] = pcb_strdup(or_empty(subc_list[i]->refdes));
 				is[c_cnt] = pcb_strdup(tmps);
 				c_cnt++;
 
-				pcb_undo_add_obj_to_change_name(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], PCB_ELEM_NAME_REFDES(element_list[i]));
+				pcb_undo_add_obj_to_change_name(PCB_TYPE_SUBC, NULL, NULL, subc_list[i], or_empty(subc_list[i]->refdes));
 
-				pcb_chg_obj_name(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
+				pcb_chg_obj_name(PCB_TYPE_SUBC, subc_list[i], NULL, NULL, tmps);
 				changed = pcb_true;
 
 				/* we don't free tmps in this case because it is used */
@@ -298,9 +305,9 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				free(tmps);
 		}
 		else {
-			pcb_fprintf(out, "*WARN* Element at %$md has no name.\n", element_list[i]->MarkX, element_list[i]->MarkY);
+			/* If there is no refdes, maybe just spit out a warning */
+			pcb_fprintf(out, "*WARN* Subcircuit at %$md has no name.\n", ox_list[i], oy_list[i]);
 		}
-
 	}
 
 	fclose(out);
@@ -354,8 +361,10 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		pcb_board_set_changed_flag(pcb_true);
 	}
 
-	free(locked_element_list);
-	free(element_list);
+	free(locked_subc_list);
+	free(subc_list);
+	free(ox_list);
+	free(oy_list);
 	free(cnt_list);
 	return 0;
 }
