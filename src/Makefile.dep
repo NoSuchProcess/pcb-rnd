@@ -5344,14 +5344,14 @@
  ../src_3rd/libminuid/libminuid.h rtree.h rtree2.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h error.h \
- undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h stub_vendor.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h action_helper.h \
  hid_flags.h hid_actions.h hid_cfg.h \
  ../src_plugins/vendordrill/vendor_conf.h conf.h compat_misc.h \
- compat_nls.h obj_pinvia.h event.h ../src_3rd/liblihata/tree.h dolists.h \
+ compat_nls.h obj_pinvia.h obj_pstk_inlines.h data.h thermal.h event.h \
+ ../src_3rd/liblihata/tree.h dolists.h \
  ../src_plugins/vendordrill/vendor_conf_fields.h
 ../src_3rd/gensexpr/gsx_parse.o: ../src_3rd/gensexpr/gsx_parse.c \
  ../src_3rd/gensexpr/gsx_parse.h
