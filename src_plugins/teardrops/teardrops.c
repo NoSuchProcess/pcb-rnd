@@ -27,12 +27,16 @@
 
 #define MIN_LINE_LENGTH 700
 #define MAX_DISTANCE 700
+
 /* changed MAX_DISTANCE to 0.5 mm below */
  /* 0.5mm */
 /* #define MAX_DISTANCE 500000 */
 /* #define MAX_DISTANCE 2000000 */
  /* 1 mm */
 /* #define MAX_DISTANCE 1000000 */
+
+#define MIN_LINE_LENGTH2 ((double)MIN_LINE_LENGTH*(double)MIN_LINE_LENGTH)
+#define MAX_DISTANCE2 ((double)MAX_DISTANCE*(double)MAX_DISTANCE)
 
 static pcb_pin_t *pin;
 static pcb_pad_t *pad;
@@ -42,13 +46,6 @@ static pcb_coord_t thickness;
 static pcb_element_t *element;
 
 static int new_arcs = 0;
-
-int distance_between_points(int x1, int y1, int x2, int y2)
-{
-	int distance;
-	distance = sqrt((pow(x1 - x2, 2)) + (pow(y1 - y2, 2)));
-	return distance;
-}
 
 static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 {
@@ -67,20 +64,20 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 					PCB_COORD_TO_MM(l->Point1.X), PCB_COORD_TO_MM(l->Point1.Y), PCB_COORD_TO_MM(l->Point2.X), PCB_COORD_TO_MM(l->Point2.Y));
 
 	/* if our line is to short ignore it */
-	if (distance_between_points(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH) {
+	if (pcb_distance2(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH2) {
 		fprintf(stderr, "not within max line length\n");
 		return 1;
 	}
 
 	fprintf(stderr, "......Point (%.6f, %.6f): ", PCB_COORD_TO_MM(px), PCB_COORD_TO_MM(py));
 
-	if (distance_between_points(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE) {
+	if (pcb_distance2(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE2) {
 		x1 = l->Point1.X;
 		y1 = l->Point1.Y;
 		x2 = l->Point2.X;
 		y2 = l->Point2.Y;
 	}
-	else if (distance_between_points(l->Point2.X, l->Point2.Y, px, py) < MAX_DISTANCE) {
+	else if (pcb_distance(l->Point2.X, l->Point2.Y, px, py) < MAX_DISTANCE2) {
 		x1 = l->Point2.X;
 		y1 = l->Point2.Y;
 		x2 = l->Point1.X;
