@@ -53,6 +53,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_pinvia.h"
+#include "obj_pstk_inlines.h"
 #include "event.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
@@ -93,6 +94,9 @@ static double sf;
 static int rounding_method = ROUND_UP;
 
 #define FREE(x) if((x) != NULL) { free (x) ; (x) = NULL; }
+
+static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc);
+static pcb_bool vendorIsElementMappable(pcb_element_t *element);
 
 /* ************************************************************ */
 
@@ -304,9 +308,36 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 0;
 }
 
+static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data)
+{
+	gdl_iterator_t it;
+	pcb_pstk_t *pstk;
+	pcb_cardinal_t changed = 0;
+
+	padstacklist_foreach(&data->subc, &it, pstk) {
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pstk);
+		pcb_coord_t target;
+
+		if ((proto == NULL) || (proto->hdia == 0) || PCB_FLAG_TEST(PCB_FLAG_LOCK, pstk)) continue;
+
+		target = vendorDrillMap(proto->hdia);
+		if (proto->hdia != target) {
+			if (pcb_chg_obj_2nd_size(PCB_TYPE_PSTK, pstk, NULL, NULL, target, pcb_true, pcb_false))
+				changed++;
+			else {
+				pcb_message(PCB_MSG_WARNING, _
+					("Via at %ml, %ml not changed.  Possible reasons:\n"
+					 "\t- pad size too small\n"
+					 "\t- new size would be too large or too small\n"), pstk->x, pstk->y);
+			}
+		}
+	}
+	return changed;
+}
+
 static void apply_vendor_map(void)
 {
-	int changed, tot;
+	pcb_cardinal_t changed = 0, tot = 0;
 	pcb_bool state;
 
 	state = conf_vendor.plugins.vendor.enable;
@@ -314,13 +345,11 @@ static void apply_vendor_map(void)
 	/* enable mapping */
 	conf_force_set_bool(conf_vendor.plugins.vendor.enable, 1);
 
-	/* reset our counts */
-	changed = 0;
-	tot = 0;
-
 	/* If we have loaded vendor drills, then apply them to the design */
 	if (n_vendor_drills > 0) {
 
+		changed += apply_vendor_pstk(PCB->Data);
+		
 		/* first all the vias */
 		PCB_VIA_LOOP(PCB->Data);
 		{
@@ -341,6 +370,13 @@ static void apply_vendor_map(void)
 					pcb_message(PCB_MSG_WARNING, _("Locked via at %ml, %ml not changed.\n"), via->X, via->Y);
 				}
 			}
+		}
+		PCB_END_LOOP;
+
+		PCB_SUBC_LOOP(PCB->Data);
+		{
+			if (vendorIsSubcMappable(subc))
+				changed += apply_vendor_pstk(subc->data);
 		}
 		PCB_END_LOOP;
 
@@ -382,7 +418,7 @@ static void apply_vendor_map(void)
 		}
 		PCB_END_LOOP;
 
-		pcb_message(PCB_MSG_INFO, _("Updated %d drill sizes out of %d total\n"), changed, tot);
+		pcb_message(PCB_MSG_INFO, _("Updated %ld drill sizes out of %ld total\n"), (long)changed, (long)tot);
 
 #warning TODO: this should not happen; modify some local setting?
 #if 0
@@ -575,7 +611,7 @@ static void process_skips(lht_node_t *res)
 	}
 }
 
-pcb_bool vendorIsElementMappable(pcb_element_t *element)
+static pcb_bool vendorIsElementMappable(pcb_element_t *element)
 {
 	int i;
 	int noskip;
@@ -614,6 +650,58 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 
 	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
 		pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because element %s is locked\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
+		noskip = 0;
+	}
+
+	if (noskip)
+		return pcb_true;
+	else
+		return pcb_false;
+}
+
+static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc)
+{
+	int i;
+	int noskip;
+
+	if (!conf_vendor.plugins.vendor.enable)
+		return pcb_false;
+
+#warning TODO: these 3 loops should be wrapped in a single loop that iterates over attribute keys
+	noskip = 1;
+	for (i = 0; i < n_refdes; i++) {
+		if ((PCB_NSTRCMP(PCB_UNKNOWN(subc->refdes), ignore_refdes[i]) == 0)
+				|| rematch(ignore_refdes[i], PCB_UNKNOWN(subc->refdes))) {
+			pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because refdes = %s matches %s\n"), PCB_UNKNOWN(subc->refdes), ignore_refdes[i]);
+			noskip = 0;
+		}
+	}
+	if (noskip) {
+		const char *vl = pcb_attribute_get(&subc->Attributes, "value");
+		for (i = 0; i < n_value; i++) {
+			if ((PCB_NSTRCMP(PCB_UNKNOWN(vl), ignore_value[i]) == 0)
+					|| rematch(ignore_value[i], PCB_UNKNOWN(vl))) {
+				pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because value = %s matches %s\n"), PCB_UNKNOWN(vl), ignore_value[i]);
+				noskip = 0;
+			}
+		}
+	}
+
+	if (noskip) {
+		const char *fp = pcb_attribute_get(&subc->Attributes, "footprint");
+		for (i = 0; i < n_descr; i++) {
+			if ((PCB_NSTRCMP(PCB_UNKNOWN(fp), ignore_descr[i]) == 0)
+					|| rematch(ignore_descr[i], PCB_UNKNOWN(fp))) {
+				pcb_message(PCB_MSG_INFO, _
+								("Vendor mapping skipped because descr = %s matches %s\n"),
+								PCB_UNKNOWN(fp), ignore_descr[i]);
+				noskip = 0;
+			}
+		}
+	}
+
+	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)) {
+		pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because element %s is locked\n"), PCB_UNKNOWN(subc->refdes));
 		noskip = 0;
 	}
 
