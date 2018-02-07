@@ -40,6 +40,7 @@
 #include "crosshair.h"
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "drill.h"
 #include "error.h"
 #include "search.h"
@@ -563,6 +564,8 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 	gds_t list;
 	int col = 0;
+	gdl_iterator_t sit;
+	pcb_subc_t *subc;
 
 	gds_init(&list);
 	gds_append_str(&list, "The following pins/pads are FOUND:\n");
@@ -582,6 +585,14 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+
+	subclist_foreach(&PCB->Data->subc, &sit, subc) {
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+			if ((o->term != NULL) && (PCB_FLAG_TEST(PCB_FLAG_FOUND, o)))
+				pcb_append_printf(&list, "%s-%s,%c", subc->refdes, o->term, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
+	}
 
 	pcb_gui->report_dialog("Report", list.array);
 	gds_uninit(&list);
