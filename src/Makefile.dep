@@ -2083,7 +2083,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_autotrax/read.h hid_actions.h board.h vtroutestyle.h \
  rats_patch.h board.h netlist.h route_style.h conf_core.h buffer.h hid.h \
- action_helper.h compat_misc.h dolists.h
+ action_helper.h compat_misc.h
 ../src_plugins/io_autotrax/read.o: ../src_plugins/io_autotrax/read.c \
  ../config.h ../src_3rd/qparse/qparse.h compat_misc.h board.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -2138,7 +2138,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_autotrax/write.h layer.h const.h obj_all.h \
  polygon_offs.h ../src_plugins/io_autotrax/../lib_polyhelp/polyhelp.h \
- obj_poly.h
+ obj_poly.h ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
  ../config.h ../src_plugins/io_eagle/eagle_bin.h \
  ../src_plugins/io_eagle/egb_tree.h ../src_3rd/genht/htss.h \
@@ -5129,7 +5129,7 @@
  crosshair.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h rtree2.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
  ../src_plugins/report/drill.h error.h search.h rats.h netlist.h \
  route_style.h rats.h rtree.h flag_str.h macro.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h find.h draw.h pcb-printf.h \
@@ -5138,7 +5138,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h action_helper.h \
  hid_actions.h misc_util.h ../src_plugins/report/report_conf.h conf.h \
  compat_misc.h compat_nls.h layer.h obj_all.h obj_pstk.h \
- obj_pstk_inlines.h data.h thermal.h ../src_3rd/genregex/regex_sei.h \
+ obj_pstk_inlines.h thermal.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
