@@ -235,19 +235,13 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
 	gdl_iterator_t it;
-	pcb_pin_t *via;
 	pcb_pstk_t *ps;
-	int via_drill_mil = 25; /* a reasonable default */
-	/* write information about via */
-	pinlist_foreach(&Data->Via, &it, via) {
-		if (in_subc)
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)via, "Not exporting old-style via in subc", "convert to padstack");
-		else
-			pcb_fprintf(ctx->f, "FV\r\n%.0ml %.0ml %.0ml %d\r\n", via->X+dx, PCB->MaxHeight - (via->Y+dy), via->Thickness, via_drill_mil);
-	}
+	int res = 0;
+
 	padstacklist_foreach(&Data->padstack, &it, ps)
-		wrax_padstack(ctx, ps, dx, dy, in_subc);
-	return 0;
+		res |= wrax_padstack(ctx, ps, dx, dy, in_subc);
+
+	return res;
 }
 
 /* writes generic autotrax track descriptor line for components and layouts  */
