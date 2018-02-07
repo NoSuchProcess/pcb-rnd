@@ -588,7 +588,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 				pcb_coord_t Thickness;
 				Thickness = PCB_MIL_TO_COORD(10);
 				autotrax_cpoly_hatch_lines(ctx, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer, dx, dy);
-#warning TODO: do we really need to reimplement this, can't cpoly_hatch_lines handle it?
+#warning TODO: do we really need to reimplement this, can not cpoly_hatch_lines handle it?
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
 					pcb_pline_t *pl, *track;
@@ -653,10 +653,6 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 /* writes autotrax PCB to file */
 int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
-	pcb_cardinal_t i;
-	int physical_layer_count = 0;
-	int current_autotrax_layer = 0;
-	int current_group = 0;
 	wctx_t wctx;
 
 	/* autotrax expects layout dimensions to be specified in mils */
@@ -683,9 +679,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 		pcb_message(PCB_MSG_ERROR, "Layout size exceeds protel autotrax 32000 mil x 32000 mil maximum.");
 		return -1;
 	}
-
-	/* here we count the copper layers to be exported to the autotrax file */
-	physical_layer_count = pcb_layergrp_list(PCB, PCB_LYT_COPPER, NULL, 0);
 
 	wrax_data(&wctx, PCB->Data, 0, 0);
 
