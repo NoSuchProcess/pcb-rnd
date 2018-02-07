@@ -24,6 +24,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "obj_all.h"
+#include "obj_pstk_inlines.h"
 
 #define MIN_LINE_LENGTH 700
 #define MAX_DISTANCE 700
@@ -40,8 +41,9 @@
 
 static pcb_pin_t *pin;
 static pcb_pad_t *pad;
+static pcb_pstk_t *pstk;
 static int layer;
-static int px, py;
+static pcb_coord_t px, py;
 static pcb_coord_t thickness;
 static pcb_element_t *element;
 
@@ -182,6 +184,74 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 	return 1;
 }
 
+static void check_pstk(pcb_pstk_t *ps)
+{
+	pstk = ps;
+
+	for (layer = 0; layer < pcb_max_layer; layer++) {
+		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
+		pcb_pstk_shape_t *shp;
+		pcb_box_t spot;
+		int n;
+		double mindist;
+
+		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
+			continue;
+
+		shp = pcb_pstk_shape_at(PCB, ps, l);
+		if (shp == NULL)
+			continue;
+
+		switch(shp->shape) {
+			case PCB_PSSH_POLY:
+				/* Simplistic approach on polygons; works only on the simplest cases
+				   How this could be handled better: list the 1 or 2 polygon edges
+				   that cross the incoming line's sides and do the teardrops there;
+				   but there are corner cases lurking: what if the next edges out
+				   from the 1..2 edges are curving back? */
+				px = py = 0;
+				for(n = 0; n < shp->data.poly.len; n++) {
+					px += shp->data.poly.x[n];
+					py += shp->data.poly.y[n];
+				}
+				px /= shp->data.poly.len;
+				py /= shp->data.poly.len;
+
+				mindist = PCB_MM_TO_COORD(8);
+				mindist *= mindist;
+				for(n = 0; n < shp->data.poly.len; n++) {
+					double dist = pcb_distance2(px, py, shp->data.poly.x[n], shp->data.poly.y[n]);
+					if (dist < mindist)
+						mindist = dist;
+				}
+				thickness = sqrt(mindist)*1.4;
+				px += ps->x;
+				py += ps->y;
+				break;
+
+			case PCB_PSSH_LINE:
+				thickness = shp->data.line.thickness;
+				px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
+				py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
+				break;
+
+			case PCB_PSSH_CIRC:
+				thickness = shp->data.circ.dia;
+				px = ps->x + shp->data.circ.x;
+				py = ps->y + shp->data.circ.y;
+				break;
+		}
+
+		spot.X1 = px - 10;
+		spot.Y1 = py - 10;
+		spot.X2 = px + 10;
+		spot.Y2 = py + 10;
+
+		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
+	}
+}
+
+
 static void check_pin(pcb_pin_t * _pin)
 {
 	pcb_box_t spot;
@@ -266,6 +336,13 @@ static void check_pad(pcb_pad_t * _pad)
 static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	new_arcs = 0;
+	pcb_box_t *b;
+	pcb_rtree_it_t it;
+
+	for(b = pcb_r_first(PCB->Data->padstack_tree, &it); b != NULL; b = pcb_r_next(&it))
+		check_pstk((pcb_pstk_t *)b);
+	pcb_r_end(&it);
+
 
 	PCB_VIA_LOOP(PCB->Data);
 	{
