@@ -41,6 +41,7 @@
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
+
 typedef struct {
 	pcb_layer_type_t lyt;
 	pcb_bool plane;
@@ -225,6 +226,8 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 	fputs("\r\n", ctx->f);
 	return 0;
 }
+
+int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 
 static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
@@ -590,6 +593,61 @@ static int wrax_layout_elements(wctx_t *ctx, pcb_board_t *Layout, pcb_data_t *Da
 	return 0;
 }
 
+static const char *or_empty(const char *s)
+{
+	if (s == NULL) return "";
+	return s;
+}
+
+static int wrax_subc(wctx_t *ctx, pcb_subc_t *subc)
+{
+	int res, on_bottom = 0, silk_layer;
+	pcb_box_t *box = &subc->BoundingBox;
+	pcb_coord_t xPos, yPos, yPos2, yPos3;
+
+#warning TODO: do not hardcode things like this, especially when actual data is available
+	pcb_coord_t text_offset = PCB_MIL_TO_COORD(400); /* this gives good placement of refdes relative to element */
+
+#warning TODO: rename these variables to something more expressive
+#warning TODO: instead of hardwiring coords, just read existing dyntex coords
+	xPos = (box->X1 + box->X2) / 2;
+	yPos = PCB->MaxHeight - (box->Y1 - text_offset);
+	yPos2 = yPos - PCB_MIL_TO_COORD(200);
+	yPos3 = yPos2 - PCB_MIL_TO_COORD(200);
+
+	pcb_subc_get_side(subc, &on_bottom);
+
+#warning TODO: do not hardwire these layers, even if the autotrax format hardwires them - look them up from the static table, let the hardwiring happen only at one place
+	if (on_bottom)
+		silk_layer = 8;
+	else
+		silk_layer = 7;
+
+	fprintf(ctx->f, "COMP\r\n%s\r\n", or_empty(subc->refdes));
+	fprintf(ctx->f, "%s\r\n", or_empty(pcb_attribute_get(&subc->Attributes, "footprint")));
+	fprintf(ctx->f, "%s\r\n", or_empty(pcb_attribute_get(&subc->Attributes, "value")));
+	pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos, silk_layer); /* designator */
+	pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos2, silk_layer); /* pattern */
+	pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos3, silk_layer); /* comment field */
+
+	res = wrax_data(ctx, subc->data, 0, 0);
+
+	fprintf(ctx->f, "ENDCOMP\r\n");
+	return res;
+}
+
+static int wrax_subcs(wctx_t *ctx, pcb_data_t *data)
+{
+	gdl_iterator_t sit;
+	pcb_subc_t *subc;
+	int res = 0;
+
+	subclist_foreach(&data->subc, &sit, subc)
+		res |= wrax_subc(ctx, subc);
+
+	return res;
+}
+
 /* writes polygon data in autotrax fill (rectangle) format for use in a layout .PCB file */
 static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t dx, pcb_coord_t dy, pcb_bool in_subc)
 {
@@ -698,6 +756,7 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 	}
 
 	wrax_layout_elements(ctx, ctx->pcb, data);
+	wrax_subcs(ctx, data);
 	wrax_vias(ctx, data, dx, dy, in_subc);
 	return 0;
 }
