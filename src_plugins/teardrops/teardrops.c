@@ -7,6 +7,7 @@
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Updated to new data model by Tibor 'Igor2' Palinkas in 2018.
  *
  * Original source: http://www.delorie.com/pcb/teardrops/
 */
