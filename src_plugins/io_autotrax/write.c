@@ -218,6 +218,9 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 	else
 		fputs("FP ", ctx->f);
 
+#warning TODO: figure which is the gnd and which is the power plane
+#warning TODO: add checks for thermals: only gnd/pwr can have them, warn for others
+
 	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n",
 		x+dx, PCB->MaxHeight - (y+dy), w, h,
 		ashape, drill_dia, alayer);
