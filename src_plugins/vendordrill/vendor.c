@@ -42,7 +42,6 @@
 #include "draw.h"
 #include "error.h"
 #include "undo.h"
-#include "vendor.h"
 #include "stub_vendor.h"
 #include "plugins.h"
 #include "action_helper.h"
