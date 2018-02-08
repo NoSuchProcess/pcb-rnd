@@ -813,7 +813,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	return pt;
 }
 
-void doPerturb(PerturbationType * pt, pcb_bool undo)
+void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 {
 	pcb_box_t *bb;
 	pcb_coord_t bbcx, bbcy;
@@ -865,7 +865,11 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 					pcb_element_move(PCB->Data, elem, 0, y - elem->VBox.Y1);
 				}
 				else {
+					pcb_cardinal_t n;
 					pcb_subc_change_side(&subc, 0);
+					for(n = 0; n < vtp0_len(selected); n++)
+						if (selected->array[n] == pt->comp)
+							selected->array[n] = subc;
 					pt->comp = (pcb_any_obj_t *)subc;
 				}
 			}
@@ -895,9 +899,11 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 				mypt.comp = pt->comp;
 				mypt.which = ROTATE;
 				mypt.rotate = 0;				/* flip */
-				doPerturb(&mypt, undo);
+				doPerturb(selected, &mypt, undo);
+				pt->comp = mypt.comp;
 				mypt.comp = pt->other;
-				doPerturb(&mypt, undo);
+				doPerturb(selected, &mypt, undo);
+				pt->other = mypt.comp;
 			}
 			/* done */
 			return;
@@ -947,9 +953,9 @@ pcb_bool AutoPlaceSelected(void)
 		C00 = C0 = ComputeCost(Nets, Tx, Tx);
 		for (i = 0; i < TRIALS; i++) {
 			pt = createPerturbation(&Selected, PCB_INCH_TO_COORD(1));
-			doPerturb(&pt, pcb_false);
+			doPerturb(&Selected, &pt, pcb_false);
 			Cs += fabs(ComputeCost(Nets, Tx, Tx) - C0);
-			doPerturb(&pt, pcb_true);
+			doPerturb(&Selected, &pt, pcb_true);
 		}
 		T0 = -(Cs / TRIALS) / log(P);
 		printf("Initial T: %f\n", T0);
@@ -966,7 +972,7 @@ pcb_bool AutoPlaceSelected(void)
 		while (1) {
 			double Cprime;
 			pt = createPerturbation(&Selected, T);
-			doPerturb(&pt, pcb_false);
+			doPerturb(&Selected, &pt, pcb_false);
 			Cprime = ComputeCost(Nets, T0, T);
 			if (Cprime < C0) {				/* good move! */
 				C0 = Cprime;
@@ -979,7 +985,7 @@ pcb_bool AutoPlaceSelected(void)
 				steps++;
 			}
 			else
-				doPerturb(&pt, pcb_true);		/* undo last change */
+				doPerturb(&Selected, &pt, pcb_true);		/* undo last change */
 			moves++;
 			/* are we at the end of a stage? */
 			if (good_moves >= good_move_cutoff || moves >= move_cutoff) {
