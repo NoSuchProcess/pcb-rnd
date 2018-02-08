@@ -51,7 +51,12 @@
 #include "rats_mincut_conf.h"
 conf_mincut_t conf_mincut;
 
-static void debprintf(const char *fmt, ...) {}
+/* define to 1 to enable debug prints */
+#if 0
+#	define debprintf pcb_trace
+#else
+	static void debprintf(const char *fmt, ...) {}
+#endif
 
 typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
