@@ -175,6 +175,16 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		}
 		obj->intconn = cid;
 	}
+	else if (strcmp(name, "intnoconn") == 0) {
+		long cid = 0;
+		if (value != NULL) {
+			char *end;
+			cid = strtol(value, &end, 10);
+			if (*end != '\0')
+				cid = 0;
+		}
+		obj->intnoconn = cid;
+	}
 }
 
 const char *pcb_obj_id_invalid(const char *id)

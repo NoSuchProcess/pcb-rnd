@@ -133,7 +133,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	const char           *term; \
 	void                 *ratconn; \
 	unsigned char        thermal; \
-	unsigned char        intconn; \
+	unsigned char        intconn, intnoconn; \
 	pcb_attribute_list_t Attributes; \
 	char                 override_color[sizeof("#XXXXXX")]
 
