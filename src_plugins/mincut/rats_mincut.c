@@ -151,7 +151,6 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 		lut_by_oid[n->to->ID] = n;
 		lut_by_gid[n->gid] = n;
 
-		s = malloc(256);
 		parent = NULL;
 		switch (n->to_type) {
 			case PCB_TYPE_PIN:
@@ -177,12 +176,12 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 			pcb_text_t *name;
 			name = &parent->Name[1];
 			if ((name->TextString == NULL) || (*name->TextString == '\0'))
-				sprintf(s, "%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
+				pcb_strdup_printf(s, "%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
 			else
-				sprintf(s, "%s #%ld \\nof %s", typ, n->to->ID, name->TextString);
+				pcb_strdup_printf(s, "%s #%ld \\nof %s", typ, n->to->ID, name->TextString);
 		}
 		else
-			sprintf(s, "%s #%ld", typ, n->to->ID);
+			pcb_strdup_printf(s, "%s #%ld", typ, n->to->ID);
 		g->node2name[n->gid] = s;
 	}
 	g->node2name[0] = pcb_strdup("S");
