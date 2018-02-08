@@ -797,10 +797,22 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 
 	thl = lht_dom_hash_get(obj, "thermal");
 	if ((thl != NULL) && (thl->type == LHT_LIST)) {
-		int n;
-		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next) n++;
-		ps->thermals.used = n;
-		ps->thermals.shape = malloc(sizeof(ps->thermals.shape[0]) * n);
+		int max, n;
+		max = 0;
+		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next,n++)
+		{
+			if (t->type == LHT_LIST) {
+				char *end;
+				int ly = strtol(t->name, &end, 10);
+				if ((*end == '\0') && (ly > max))
+					max = ly;
+			}
+		}
+		if (n > max)
+			max = n;
+
+		ps->thermals.used = max+1;
+		ps->thermals.shape = calloc(sizeof(ps->thermals.shape[0]), ps->thermals.used);
 		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next, n++) {
 			int i;
 			if (t->type == LHT_TEXT) {
@@ -809,13 +821,15 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 			}
 			else if (t->type == LHT_LIST) {
 				unsigned char dst;
-				parse_thermal(&dst, t);
-				ps->thermals.shape[n] = dst;
+				char *end;
+				int ly = strtol(t->name, &end, 10);
+				if ((*end == '\0') && (ly < ps->thermals.used)) {
+					parse_thermal(&dst, t);
+					ps->thermals.shape[ly] = dst;
+				}
 			}
 		}
 	}
-
-
 
 	pcb_pstk_add(dt, ps);
 
