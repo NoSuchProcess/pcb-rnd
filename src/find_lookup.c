@@ -365,7 +365,7 @@ static pcb_r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_pin(&i->pv, line) && !PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_pin(&i->pv, line) && !PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv) && !INOCN(&i->pv, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_PIN, &i->pv, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -391,7 +391,9 @@ static pcb_r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 
 	if (!PCB_FLAG_TEST(TheFlag, pad) && IS_PV_ON_PAD(&i->pv, pad) &&
 			!PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv) &&
-			ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, PCB_TYPE_PIN, &i->pv, PCB_FCT_COPPER))
+			ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, PCB_TYPE_PIN, &i->pv, PCB_FCT_COPPER)
+			&& !INOCN(&i->pv, pad)
+			)
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -419,7 +421,9 @@ static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 	 */
 	if (!PCB_FLAG_TEST(TheFlag, polygon) && !PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv) &&
 			(PCB_FLAG_THERM_TEST(i->layer, &i->pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
-			 || !i->pv.Clearance)) {
+			 || !i->pv.Clearance)
+			&& !INOCN(&i->pv, polygon)
+			) {
 		double wide = MAX(0.5 * i->pv.Thickness + Bloat, 0);
 		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, &i->pv)) {
 			pcb_coord_t x1 = i->pv.X - (i->pv.Thickness + 1 + Bloat) / 2;
@@ -454,7 +458,7 @@ static pcb_r_dir_t LOCtoPSline_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_pstk_intersect_line(&i->ps, line)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_pstk_intersect_line(&i->ps, line) && !INOCN(&i->ps, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -466,7 +470,7 @@ static pcb_r_dir_t LOCtoPSarc_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_pstk_intersect_arc(&i->ps, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_pstk_intersect_arc(&i->ps, arc) && !INOCN(&i->ps, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -488,7 +492,7 @@ static pcb_r_dir_t LOCtoPSpoly_callback(const pcb_box_t * b, void *cl)
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_pstk_intersect_poly(&i->ps, polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_pstk_intersect_poly(&i->ps, polygon) && !INOCN(&i->ps, polygon)) {
 		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -564,7 +568,7 @@ static pcb_r_dir_t PStoPS_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_t *ps2 = (pcb_pstk_t *)b;
 	struct ps_info *i = (struct ps_info *)cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps2) && pcb_pstk_intersect_pstk(&i->ps, ps2)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps2) && pcb_pstk_intersect_pstk(&i->ps, ps2) && !INOCN(&i->ps, ps2)) {
 		if (ADD_PADSTACK_TO_LIST(ps2, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -741,7 +745,7 @@ static pcb_r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pin) && PV_TOUCH_PV(&i->pv, pin)) {
+	if (!PCB_FLAG_TEST(TheFlag, pin) && PV_TOUCH_PV(&i->pv, pin) && !INOCN(&i->pv, pin)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pin);
 			conf_core.temp.rat_warn = pcb_true;
@@ -812,7 +816,7 @@ static pcb_r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pv) && pcb_intersect_line_pin(pv, &i->line)) {
+	if (!PCB_FLAG_TEST(TheFlag, pv) && pcb_intersect_line_pin(pv, &i->line) && !INOCN(pv, &i->line)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pv);
 			conf_core.temp.rat_warn = pcb_true;
@@ -829,7 +833,7 @@ static pcb_r_dir_t ps_line_callback(const pcb_box_t * b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_line(ps, &i->line)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_line(ps, &i->line) && !INOCN(ps, &i->line)) {
 		if (ADD_PS_TO_LIST(ps, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -841,7 +845,7 @@ static pcb_r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pv) && IS_PV_ON_PAD(pv, &i->pad)) {
+	if (!PCB_FLAG_TEST(TheFlag, pv) && IS_PV_ON_PAD(pv, &i->pad) && !INOCN(pv, &i->pad)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pv);
 			conf_core.temp.rat_warn = pcb_true;
@@ -858,7 +862,7 @@ static pcb_r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pv) && IS_PV_ON_ARC(pv, &i->arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, pv) && IS_PV_ON_ARC(pv, &i->arc) && !INOCN(pv, &i->arc)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pv);
 			conf_core.temp.rat_warn = pcb_true;
@@ -875,7 +879,7 @@ static pcb_r_dir_t ps_arc_callback(const pcb_box_t * b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_arc(ps, &i->arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_arc(ps, &i->arc) && !INOCN(ps, &i->arc)) {
 		if (ADD_PS_TO_LIST(ps, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -889,7 +893,8 @@ static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 
 	/* note that holes in polygons are ok, so they don't generate warnings. */
 	if (!PCB_FLAG_TEST(TheFlag, pv) && !PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) &&
-			(PCB_FLAG_THERM_TEST(i->layer, pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, &i->polygon) || !pv->Clearance)) {
+			(PCB_FLAG_THERM_TEST(i->layer, pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, &i->polygon) || !pv->Clearance)
+			&& !INOCN(pv, &i->polygon)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv)) {
 			pcb_coord_t x1, x2, y1, y2;
 			x1 = pv->X - (PIN_SIZE(pv) + 1 + Bloat) / 2;
@@ -919,7 +924,7 @@ static pcb_r_dir_t ps_poly_callback(const pcb_box_t * b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_poly(ps, &i->polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_poly(ps, &i->polygon) && !INOCN(ps, &i->polygon)) {
 		if (ADD_PS_TO_LIST(ps, PCB_TYPE_POLY, &i->polygon, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1111,7 +1116,7 @@ static pcb_r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_arc(line, &i->arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_arc(line, &i->arc) && !INOCN(line, &i->arc)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1125,7 +1130,7 @@ static pcb_r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && ArcArcIntersect(&i->arc, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && ArcArcIntersect(&i->arc, arc) && !INOCN(&i->arc, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1240,7 +1245,7 @@ static pcb_r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_line(&i->line, line)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_line(&i->line, line) && !INOCN(&i->line, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1254,7 +1259,7 @@ static pcb_r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_line_arc(&i->line, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_line_arc(&i->line, arc) && !INOCN(&i->line, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1287,7 +1292,8 @@ static pcb_r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
-			&& pcb_intersect_line_pad(&i->line, pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
+			&& pcb_intersect_line_pad(&i->line, pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER)
+			&& !INOCN(&i->line, pad))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -1469,7 +1475,7 @@ static pcb_r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_pad(line, &i->pad)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_pad(line, &i->pad) && !INOCN(line, &i->pad)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1483,7 +1489,7 @@ static pcb_r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_arc_pad(arc, &i->pad)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_arc_pad(arc, &i->pad) && !INOCN(arc, &i->pad)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1496,7 +1502,7 @@ static pcb_r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 
-	if (!PCB_FLAG_TEST(TheFlag, polygon) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon) || !i->pad.Clearance)) {
+	if (!PCB_FLAG_TEST(TheFlag, polygon) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon) || !i->pad.Clearance) && !INOCN(&i->pad, polygon)) {
 		if (pcb_is_pad_in_poly(&i->pad, polygon) && ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1536,7 +1542,7 @@ static pcb_r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
-			&& PadPadIntersect(pad, &i->pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER))
+			&& PadPadIntersect(pad, &i->pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER) && !INOCN(&i->pad, pad))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -1615,7 +1621,7 @@ static pcb_r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_is_line_in_poly(line, &i->polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_is_line_in_poly(line, &i->polygon) && !INOCN(line, &i->polygon)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_POLY, &i->polygon, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1629,7 +1635,7 @@ static pcb_r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_is_arc_in_poly(arc, &i->polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_is_arc_in_poly(arc, &i->polygon) && !INOCN(arc, &i->polygon)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_POLY, &i->polygon, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1642,7 +1648,7 @@ static pcb_r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
-			&& pcb_is_pad_in_poly(pad, &i->polygon)) {
+			&& pcb_is_pad_in_poly(pad, &i->polygon) && !INOCN(pad, &i->polygon)) {
 		if (ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_POLY, &i->polygon, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}

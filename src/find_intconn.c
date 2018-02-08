@@ -133,3 +133,24 @@ no find through text yet
 	PCB_ENDALL_LOOP;
 #endif
 }
+
+/* return whether a and b are in the same internal-no-connection group */
+static pcb_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
+{
+	pcb_subc_t *pa, *pb;
+
+	/* cheap test: they need to have valid and matching intnoconn */
+	if ((a->intnoconn == 0) || (a->intnoconn != b->intnoconn))
+		return pcb_false;
+
+	/* expensive tests: they need to be in the same subc */
+	pa = pcb_obj_parent_subc(a);
+	if (pa == NULL)
+		return pcb_false;
+
+	pb = pcb_obj_parent_subc(b);
+
+	return (pa == pb);
+}
+
+#define INOCN(a,b) int_noconn((pcb_any_obj_t *)a, (pcb_any_obj_t *)b)

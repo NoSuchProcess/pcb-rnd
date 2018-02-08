@@ -83,6 +83,7 @@
 #include "obj_all.h"
 #include "obj_pstk.h"
 #include "obj_text_draw.h"
+#include "obj_subc_parent.h"
 
 #undef DEBUG
 
