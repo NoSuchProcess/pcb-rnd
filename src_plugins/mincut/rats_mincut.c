@@ -207,13 +207,8 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	S = NULL;
 	T = NULL;
 	for (n = short_conns; n != NULL; n = n->next) {
-		void *spare;
+		void *spare = ((pcb_any_obj_t *) n->to)->ratconn;
 
-		spare = NULL;
-		if (n->to_type == PCB_TYPE_PIN)
-			spare = ((pcb_pin_t *) n->to)->ratconn;
-		if (n->to_type == PCB_TYPE_PAD)
-			spare = ((pcb_pad_t *) n->to)->ratconn;
 		if (spare != NULL) {
 			void *net = &(((pcb_lib_menu_t *) spare)->Name[2]);
 			debprintf(" net=%s\n", net);
