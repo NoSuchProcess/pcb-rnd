@@ -41,6 +41,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "obj_subc_parent.h"
 
 #include "rats.h"
 #include "pcb-mincut/graph.h"
@@ -145,7 +146,9 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	for (n = short_conns, gids = 2; n != NULL; n = n->next, gids++) {
 		char *s;
 		const char *typ;
-		pcb_element_t *parent;
+		pcb_subc_t *parent;
+		pcb_any_obj_t *o = (pcb_any_obj_t *)n;
+
 		n->gid = gids;
 		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, (void *)n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;
@@ -153,35 +156,23 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 
 		parent = NULL;
 		switch (n->to_type) {
-			case PCB_TYPE_PIN:
-				typ = "pin";
-				parent = ((pcb_pin_t *) (n->to))->Element;
-				break;
-			case PCB_TYPE_VIA:
-				typ = "via";
-				parent = ((pcb_pin_t *) (n->to))->Element;
-				break;
-			case PCB_TYPE_PAD:
-				typ = "pad";
-				parent = ((pcb_pad_t *) (n->to))->Element;
-				break;
-			case PCB_TYPE_LINE:
-				typ = "line";
-				break;
-			default:
-				typ = "other";
-				break;
+			case PCB_TYPE_LINE: typ = "line";       parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_TYPE_ARC:  typ = "arc";        parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_TYPE_POLY: typ = "polygon";    parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_TYPE_TEXT: typ = "text";       parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_TYPE_PSTK: typ = "padstack";   parent = pcb_gobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_TYPE_SUBC: typ = "subcircuit"; parent = pcb_gobj_parent_subc(o->parent_type, &o->parent); break;
+			default: typ = "<unknown>";             parent = NULL; break;
 		}
 		if (parent != NULL) {
-			pcb_text_t *name;
-			name = &parent->Name[1];
-			if ((name->TextString == NULL) || (*name->TextString == '\0'))
-				pcb_strdup_printf(s, "%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
+			if (parent->refdes == NULL)
+				s = pcb_strdup_printf("%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
 			else
-				pcb_strdup_printf(s, "%s #%ld \\nof %s", typ, n->to->ID, name->TextString);
+				s = pcb_strdup_printf("%s #%ld \\nof %s", typ, n->to->ID, parent->refdes);
 		}
 		else
-			pcb_strdup_printf(s, "%s #%ld", typ, n->to->ID);
+			s = pcb_strdup_printf("%s #%ld", typ, n->to->ID);
+
 		g->node2name[n->gid] = s;
 	}
 	g->node2name[0] = pcb_strdup("S");
