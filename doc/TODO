@@ -58,8 +58,12 @@
 - BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
+- pool: import work/format_dev_chest
 
 2. For later releases ===============================================================================
+- lihata v5:
+	- store thermal on a layer name basis instead of layer ID
+	- remove elements, pins, pads
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
