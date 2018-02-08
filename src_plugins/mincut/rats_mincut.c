@@ -154,24 +154,24 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 		s = malloc(256);
 		parent = NULL;
 		switch (n->to_type) {
-		case PCB_TYPE_PIN:
-			typ = "pin";
-			parent = ((pcb_pin_t *) (n->to))->Element;
-			break;
-		case PCB_TYPE_VIA:
-			typ = "via";
-			parent = ((pcb_pin_t *) (n->to))->Element;
-			break;
-		case PCB_TYPE_PAD:
-			typ = "pad";
-			parent = ((pcb_pad_t *) (n->to))->Element;
-			break;
-		case PCB_TYPE_LINE:
-			typ = "line";
-			break;
-		default:
-			typ = "other";
-			break;
+			case PCB_TYPE_PIN:
+				typ = "pin";
+				parent = ((pcb_pin_t *) (n->to))->Element;
+				break;
+			case PCB_TYPE_VIA:
+				typ = "via";
+				parent = ((pcb_pin_t *) (n->to))->Element;
+				break;
+			case PCB_TYPE_PAD:
+				typ = "pad";
+				parent = ((pcb_pad_t *) (n->to))->Element;
+				break;
+			case PCB_TYPE_LINE:
+				typ = "line";
+				break;
+			default:
+				typ = "other";
+				break;
 		}
 		if (parent != NULL) {
 			pcb_text_t *name;
