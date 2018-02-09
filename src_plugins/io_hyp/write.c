@@ -48,6 +48,7 @@ typedef struct hyp_wr_s {
 	size_t elem_name_len;
 	pcb_cardinal_t poly_id;
 	htpi_t pstk_cache;
+	htpp_t grp_names;
 	long pstk_cache_next;
 	struct {
 		unsigned elliptic:1;
@@ -58,6 +59,44 @@ typedef struct hyp_wr_s {
 static pcb_coord_t flip(pcb_coord_t y)
 {
 	return (PCB->MaxHeight - y);
+}
+
+static void hyp_grp_init(hyp_wr_t *wr)
+{
+	htpp_init(&wr->grp_names, ptrhash, ptrkeyeq);
+}
+
+static void hyp_grp_uninit(hyp_wr_t *wr)
+{
+	htpp_entry_t *e;
+	for (e = htpp_first(&wr->grp_names); e; e = htpp_next(&wr->grp_names, e))
+		free(e->value);
+	htpp_uninit(&wr->grp_names);
+}
+
+static const char *hyp_grp_name(hyp_wr_t *wr, pcb_layergrp_t *grp, const char *sugg_name)
+{
+	const char *name;
+	name = htpp_get(&wr->grp_names, grp);
+	if (name == NULL) {
+		int n, dup = 0;
+		name = sugg_name;
+		if (name == NULL)
+			name = grp->name;
+		for(n = 0; n < wr->pcb->LayerGroups.len; n++) {
+			pcb_layergrp_t *g = &wr->pcb->LayerGroups.grp[n];
+			if ((g != grp) && (strcmp(g->name, name) == 0)) {
+				dup = 1;
+				break;
+			}
+		}
+		if (dup)
+			name = pcb_strdup_printf("%s___%d", name, n);
+		else
+			name = pcb_strdup(name);
+		htpp_set(&wr->grp_names, grp, (char *)name);
+	}
+	return name;
 }
 
 static const char *safe_subc_name(hyp_wr_t *wr, pcb_subc_t *subc)
@@ -211,7 +250,7 @@ static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int pri
 				pcb_layergrp_t *lg = &wr->pcb->LayerGroups.grp[l];
 				pcb_layer_type_t lyt = lg->type;
 				if ((lyt & PCB_LYT_COPPER) && (lyt & loc))
-					hyp_pstk_shape(wr, lg->name, shp);
+					hyp_pstk_shape(wr, hyp_grp_name(wr, lg, NULL), shp);
 			}
 		}
 
@@ -355,7 +394,7 @@ static int write_lstack(hyp_wr_t * wr)
 		const char *name = grp->name;
 
 		if (grp->type & PCB_LYT_COPPER) {
-			pcb_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", name);
+			pcb_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", hyp_grp_name(wr, grp, name));
 			if (grp->type & PCB_LYT_TOP)
 				wr->ln_top = name;
 			else if (grp->type & PCB_LYT_BOTTOM)
@@ -367,7 +406,7 @@ static int write_lstack(hyp_wr_t * wr)
 				sprintf(tmp, "dielectric layer %d", n);
 				name = tmp;
 			}
-			pcb_fprintf(wr->f, "  (DIELECTRIC T=0.160000 L=%[4])\n", name);
+			pcb_fprintf(wr->f, "  (DIELECTRIC T=0.160000 L=%[4])\n", hyp_grp_name(wr, grp, name));
 		}
 	}
 
@@ -491,6 +530,7 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 	wr.fn = new_filename;
 
 	hyp_pstk_init(&wr);
+	hyp_grp_init(&wr);
 
 	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"=}mq";
 
@@ -516,11 +556,13 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 		goto err;
 
 	hyp_pstk_uninit(&wr);
+	hyp_grp_uninit(&wr);
 	free(wr.elem_name);
 	return 0;
 
 err:;
 	hyp_pstk_uninit(&wr);
+	hyp_grp_uninit(&wr);
 	free(wr.elem_name);
 	return -1;
 }
