@@ -2011,6 +2011,8 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 #warning TODO: generic padstack creation here
 	if (drillinghole > 0) {
 		pstk = pcb_pstk_new_compat_via(data, x, y, drillinghole, thickness, clearance, mask, cshp, 1);
+		if (pin_name != NULL)
+			pcb_attribute_put(&pstk->Attributes, "term", pin_name);
 	}
 
 	if (subc != NULL) /* add pin to current net */
