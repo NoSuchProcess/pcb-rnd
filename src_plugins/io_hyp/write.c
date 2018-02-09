@@ -319,7 +319,7 @@ static int write_board(hyp_wr_t * wr)
 
 	fprintf(wr->f, "{BOARD\n");
 
-	if (pcb_layer_list(PCB, PCB_LYT_OUTLINE, &lid, 1) != 1) {
+	if ((pcb_layer_list(PCB, PCB_LYT_OUTLINE, &lid, 1) != 1) || (pcb_layer_is_pure_empty(&wr->pcb->Data->Layer[lid]))) {
 		/* implicit outline */
 		fprintf(wr->f, "* implicit outline derived from board width and height\n");
 		write_pr_line(wr, 0, 0, PCB->MaxWidth, 0);
