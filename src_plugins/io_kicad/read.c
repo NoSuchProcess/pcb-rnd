@@ -41,6 +41,7 @@
 #include "const.h"
 #include "netlist.h"
 #include "polygon.h"
+#include "plug_footprint.h"
 #include "misc_util.h" /* for distance calculations */
 #include "conf_core.h"
 #include "move.h"
@@ -56,6 +57,7 @@
 
 typedef struct {
 	pcb_board_t *pcb;
+	pcb_data_t *fp_data;
 	const char *Filename;
 	conf_role_t settings_dest;
 	gsxl_dom_t dom;
@@ -1510,8 +1512,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					subc = pcb_subc_new();
 					pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
 					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
-					pcb_add_subc_to_data(st->pcb->Data, subc);
-					pcb_subc_bind_globals(st->pcb, subc);
+					if (st->pcb != NULL) {
+						pcb_add_subc_to_data(st->pcb->Data, subc);
+						pcb_subc_bind_globals(st->pcb, subc);
+					}
+					else
+						pcb_add_subc_to_data(st->fp_data, subc);
 				}
 			}
 			else if (n->str != NULL && strcmp("model", n->str) == 0) {
@@ -2639,11 +2645,59 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	return readres;
 }
 
+int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+{
+	int mres;
+	pcb_fp_fopen_ctx_t fpst;
+	FILE *f;
+	pcb_subc_t *sc;
+	read_state_t st;
+	gsx_parse_res_t res;
+
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &fpst);
+
+	if (f == NULL) {
+		return -1;
+	}
+
+	/* set up the parse context */
+	memset(&st, 0, sizeof(st));
+	st.pcb = NULL;
+	st.fp_data = Ptr;
+	st.Filename = name;
+	st.settings_dest = CFR_invalid;
+
+	res = kicad_parse_file(f, &st.dom);
+	pcb_fp_fclose(f, &fpst);
+
+	if (res != GSX_RES_EOE) {
+		if (!pcb_io_err_inhibit)
+			pcb_message(PCB_MSG_ERROR, "Error parsing s-expression '%s'\n", name);
+		gsxl_uninit(&st.dom);
+		return -1;
+	}
+
+	if ((st.dom.root->str == NULL) || (strcmp(st.dom.root->str, "module") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "Wrong root node '%s', expected 'module'\n", st.dom.root->str);
+		gsxl_uninit(&st.dom);
+		return -1;
+	}
+
+	htsi_init(&st.layer_k2i, strhash, strkeyeq);
+
+	mres = kicad_parse_module(&st, st.dom.root);
+/*	if (mres == 0)
+		pcb_data_clip_polys(sc->data);*/
+
+	gsxl_uninit(&st.dom);
+	return mres;
+}
+
 int io_kicad_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[1024], *s;
 
-	if ((typ != PCB_IOT_PCB) || (typ != PCB_IOT_FOOTPRINT))
+	if ((typ != PCB_IOT_PCB) && (typ != PCB_IOT_FOOTPRINT))
 		return 0; /* support only boards for now - kicad footprints are in the legacy format */
 
 	while(!(feof(f))) {
