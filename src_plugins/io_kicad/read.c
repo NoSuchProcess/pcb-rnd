@@ -61,6 +61,7 @@ typedef struct {
 	const char *Filename;
 	conf_role_t settings_dest;
 	gsxl_dom_t dom;
+	unsigned auto_layers:1;
 	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
 } read_state_t;
 
@@ -1107,13 +1108,27 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask)
 {
 	pcb_layer_id_t id;
-	if (pcb_layer_list(st->pcb, mask, &id, 1) != 1) {
-		pcb_layergrp_id_t gid;
-		pcb_layergrp_list(PCB, mask, &gid, 1);
-		id = pcb_layer_create(st->pcb, gid, kicad_name);
+	if (st->pcb != NULL) {
+		if (pcb_layer_list(st->pcb, mask, &id, 1) != 1) {
+			pcb_layergrp_id_t gid;
+			pcb_layergrp_list(PCB, mask, &gid, 1);
+			id = pcb_layer_create(st->pcb, gid, kicad_name);
+		}
+	}
+	else {
+		/* registering a new layer in buffer */
+		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name);
+		id = ly - st->fp_data->Layer;
 	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
 	return 0;
+}
+
+static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
+{
+	if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN) == 0)
+		return kicad_get_layeridx(st, kicad_name);
+	return -1;
 }
 
 /* Returns the pcb-rnd layer index for a kicad_name, or -1 if not found */
@@ -1134,6 +1149,8 @@ static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
 				/*pcb_trace("Failed to create implicit copper layer %s as %d\n", kicad_name, id); */
 			}
 		}
+		if (st->auto_layers)
+			return kicad_get_layeridx_auto(st, kicad_name);
 		return -1;
 	}
 	return e->value;
@@ -2650,7 +2667,6 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	int mres;
 	pcb_fp_fopen_ctx_t fpst;
 	FILE *f;
-	pcb_subc_t *sc;
 	read_state_t st;
 	gsx_parse_res_t res;
 
@@ -2666,6 +2682,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	st.fp_data = Ptr;
 	st.Filename = name;
 	st.settings_dest = CFR_invalid;
+	st.auto_layers = 1;
 
 	res = kicad_parse_file(f, &st.dom);
 	pcb_fp_fclose(f, &fpst);
