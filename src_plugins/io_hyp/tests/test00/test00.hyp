@@ -142,7 +142,7 @@
 {NET=oldviatst
   (VIA X=14 Y=1 D=0.2 L1=component S1=ROUND S1X=0.5 S1Y=0.5)
   (VIA X=14 Y=2 D=0.2 L1=component L2=solder S1=RECT S1X=0.5 S1Y=0.5)
-  (VIA X=14 Y=3 D=0.2 L1=component L2=solder S1=OBLONG S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=3 D=0.2 L1=component L2=solder S1=OBLONG S1X=0.75 S1Y=0.5)
   (VIA X=14 Y=4 D=0.0 L1=component L2=solder S1=ROUND S1X=0.5 S1Y=0.5)
   (SEG X1=14 Y1=1 X2=14 Y2=2 W=0.1 L=component)
   (SEG X1=14 Y1=2 X2=14 Y2=3 W=0.1 L=component)
@@ -156,10 +156,10 @@
 {NET=padtst
   (PAD X=16 Y=1 L=component S=ROUND SX=0.5 SY=0.5)
   (PAD X=16 Y=2 L=component S=RECT SX=0.5 SY=0.5)
-  (PAD X=16 Y=3 L=component S=OBLONG SX=0.5 SY=0.5)
+  (PAD X=16 Y=3 L=component S=OBLONG SX=0.75 SY=0.5)
   (PAD X=17 Y=1 L=solder S=ROUND SX=0.5 SY=0.5)
   (PAD X=17 Y=2 L=solder S=RECT SX=0.5 SY=0.5)
-  (PAD X=17 Y=3 L=solder S=OBLONG SX=0.5 SY=0.5)
+  (PAD X=17 Y=3 L=solder S=OBLONG SX=0.75 SY=0.5)
 }
 {NET=usegtst
   (USEG X1=18 Y1=1 L1=component X2=19 Y2=1 L2=component ZL=component ZW=0.1 ZLEN=2 )
