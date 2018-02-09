@@ -80,7 +80,16 @@ static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
 static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 
-#define F2S(OBJ, TYPE) (pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn)))
+#define IGNORE_FLAGS (PCB_FLAG_FLOATER | PCB_FLAG_DRC_INTCONN | PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_DYNTEXT)
+
+static char *pcb_strflg_f2s_compat(pcb_flag_t flags, int object_type, unsigned char *intconn)
+{
+	flags.f &= ~IGNORE_FLAGS;
+	return pcb_strflg_f2s(flags, object_type, intconn);
+}
+
+
+#define F2S(OBJ, TYPE) (pcb_strflg_f2s_compat(((OBJ)->Flags), TYPE, &((OBJ)->intconn)))
 
 /* The idea here is to avoid gratuitously breaking backwards
    compatibility due to a new but rarely used feature.  The first such
