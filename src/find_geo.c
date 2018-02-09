@@ -1043,7 +1043,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_pstk(pcb_pstk_t *ps1, pcb_pstk_t *ps2)
 	pcb_data_t *data = ps1->parent.data;
 	int n;
 
-	for(n = 0, ly = data->Layer; n < data->LayerN; n++,ly++) {
+	for(n = 0, ly = PCB->Data->Layer; n < PCB->Data->LayerN; n++,ly++) {
 		pcb_pstk_shape_t *shape1 = pcb_pstk_shape_at(PCB, ps1, ly);
 		pcb_pstk_shape_t *shape2;
 		if (shape1 == NULL) continue;
