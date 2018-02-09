@@ -858,7 +858,6 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 			}
 			else {
 				pcb_coord_t y = bb->Y1;
-
 				if (pt->comp->type == PCB_OBJ_ELEMENT) {
 					pcb_element_mirror(PCB->Data, elem, 0);
 					/* mirroring moves the element.  move it back. */
@@ -866,7 +865,10 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 				}
 				else {
 					pcb_cardinal_t n;
-					pcb_subc_change_side(&subc, 0);
+					pcb_coord_t y = bb->Y1;
+					pcb_subc_change_side(&subc, (bb->Y1+bb->Y2)/2);
+					/* mirroring moves the subc.  move it back. */
+					pcb_subc_move(subc, 0, y - subc->BoundingBox.Y1, 1);
 					for(n = 0; n < vtp0_len(selected); n++)
 						if (selected->array[n] == pt->comp)
 							selected->array[n] = subc;
@@ -892,7 +894,6 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 				pcb_element_move(PCB->Data, (pcb_element_t *)pt->other, x1 - x2, y1 - y2);
 			else
 				pcb_subc_move((pcb_subc_t *)pt->other, x1 - x2, y1 - y2, 1);
-
 			/* then flip both elements if they are on opposite sides */
 			if (on_bottom(pt->comp) != on_bottom(pt->other)) {
 				PerturbationType mypt;
