@@ -106,7 +106,9 @@ typedef struct
 	restring_limit13_mil, restring_limit14_mil, mask_limit1_mil,
 	mask_limit2_mil, mask_limit3_mil, mask_limit4_mil;
 	double mask_percentages1_ratio, mask_percentages2_ratio;
-
+	char *free_text;
+	char *free_text_cursor;
+	size_t free_text_len;
 } egb_ctx_t;
 
 #define TERM {0}
@@ -1089,42 +1091,45 @@ int bin_rot2degrees(const char *rot, char *tmp, int mirrored)
 	return -1; /* should not get here */
 }
 
-int read_notes(void *ctx, FILE *f, const char *fn)
+int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 {
 	unsigned char block[8];
 	unsigned char free_text[400];
-	int notes_length = 0;
 	int text_remaining = 0;
+	egb_ctx->free_text_len = 0;
+	egb_ctx->free_text = NULL;
+	egb_ctx->free_text_cursor = NULL;
 
 	if (fread(block, 1, 8, f) != 8) {
-		printf("E: short attempted free text section read. Text section, DRC, not found.\n");
+		pcb_message(PCB_MSG_ERROR, "Short attempted free text section read. Text section not found.\n");
 		return -1;
 	}
 
 	if (load_long(block, 0, 1) == 0x13
 		&& load_long(block, 1, 1) == 0x12) {
-		printf("Start of pre-DRC free text section found.\n");
+		pcb_trace("Start of pre-DRC free text section found.\n");
 	} else {
-		printf("Failed to find 0x1312 start of pre-DRC free text section.\n");
+		pcb_message(PCB_MSG_ERROR, "Failed to find 0x1312 start of pre-DRC free text section.\n");
 		return -1;
 	}
 
-	text_remaining = notes_length = (int)load_long(block, 4, 2);
+	text_remaining = egb_ctx->free_text_len = (int)load_long(block, 4, 2);
 	text_remaining += 4; /* there seems to be a 4 byte checksum or something at the end */
-	printf("Pre-DRC free text section length remaining: %d\n", notes_length);
+	pcb_trace("Pre-DRC free text section length remaining: %d\n", egb_ctx->free_text_len);
 
+#warning TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it
 	while (text_remaining > 400) {
 		if (fread(free_text, 1, 400, f) != 400) {
-			printf("E: short attempted free text block read. Truncated file?\n");
+			pcb_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 			return -1;
 		}
 		text_remaining -= 400;
 	}
 	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
-		printf("E: short attempted free text block read. Truncated file?\n");
+		pcb_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 		return -1;
 	} else {
-		printf("Pre-DRC free text block has been read.\n");
+		pcb_trace("Pre-DRC free text block has been read.\n");
 	}
 	return 0;
 }
@@ -2285,7 +2290,7 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 	long *numblocks = &test;
 	int res = 0;
 
-	egb_ctx_t eagle_drc_ctx;
+	egb_ctx_t eagle_bin_ctx;
 
 	pcb_trace("blocks remaining prior to function call = %ld\n", *numblocks);
 
@@ -2301,12 +2306,12 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 	pcb_trace("Section blocks have been parsed. Next job is finding DRC.\n\n");
 
 	/* could test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text end blocks */
-	read_notes(ctx, f, fn);
+	read_notes(ctx, f, fn, &eagle_bin_ctx);
 	/* read_drc will determine sane defaults if no DRC block found */
-	if (read_drc(ctx, f, fn, &eagle_drc_ctx) != 0) {
+	if (read_drc(ctx, f, fn, &eagle_bin_ctx) != 0) {
 		pcb_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
-	} /* we now use the drc_ctx results for post_proc */
+	} /* we now use the eagle_bin_ctx results for post_proc */
 
-	return postproc(ctx, *root, &eagle_drc_ctx);
+	return postproc(ctx, *root, &eagle_bin_ctx);
 }
 
