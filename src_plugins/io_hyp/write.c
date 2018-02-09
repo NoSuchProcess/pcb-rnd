@@ -198,14 +198,17 @@ void hyp_pstk_shape(hyp_wr_t *wr, const char *lynam, const pcb_pstk_shape_t *shp
 			}
 			sx = maxx - minx;
 			sy = maxy - miny;
-			shnum = 2;
+			shnum = 1;
 			break;
 		case PCB_PSSH_LINE:
 			sx = shp->data.line.x2 - shp->data.line.x1;
 			sy = shp->data.line.y2 - shp->data.line.y1;
 			if (sx < 0) sx = -sx;
 			if (sy < 0) sy = -sy;
-			shnum = 2;
+			if (shp->data.line.square)
+				shnum = 1;
+			else
+				shnum = 2;
 			break;
 	}
 	pcb_fprintf(wr->f, "	(%s, %d, %me, %me, 0)\n", lynam, shnum, sx, sy);
