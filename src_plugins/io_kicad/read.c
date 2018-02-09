@@ -2577,9 +2577,29 @@ static int kicad_parse_pcb(read_state_t *st)
 	return kicad_foreach_dispatch(st, st->dom.root->children, disp);
 }
 
+static gsx_parse_res_t kicad_parse_file(FILE *FP, gsxl_dom_t *dom)
+{
+	int c;
+	gsx_parse_res_t res;
+
+	gsxl_init(dom, gsxl_node_t);
+	dom->parse.line_comment_char = '#';
+	do {
+		c = fgetc(FP);
+	} while((res = gsxl_parse_char(dom, c)) == GSX_RES_NEXT);
+	fclose(FP);
+
+	if (res == GSX_RES_EOE) {
+		/* compact and simplify the tree */
+		gsxl_compact_tree(dom);
+	}
+
+	return res;
+}
+
 int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
-	int c, readres = 0;
+	int readres = 0;
 	read_state_t st;
 	gsx_parse_res_t res;
 	FILE *FP;
@@ -2596,17 +2616,9 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
 
 	/* load the file into the dom */
-	gsxl_init(&st.dom, gsxl_node_t);
-	st.dom.parse.line_comment_char = '#';
-	do {
-		c = fgetc(FP);
-	} while((res = gsxl_parse_char(&st.dom, c)) == GSX_RES_NEXT);
-	fclose(FP);
+	res = kicad_parse_file(FP, &st.dom);
 
 	if (res == GSX_RES_EOE) {
-		/* compact and simplify the tree */
-		gsxl_compact_tree(&st.dom);
-
 		/* recursively parse the dom */
 		readres = kicad_parse_pcb(&st);
 	}
@@ -2631,7 +2643,7 @@ int io_kicad_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *File
 {
 	char line[1024], *s;
 
-	if (typ != PCB_IOT_PCB)
+	if ((typ != PCB_IOT_PCB) || (typ != PCB_IOT_FOOTPRINT))
 		return 0; /* support only boards for now - kicad footprints are in the legacy format */
 
 	while(!(feof(f))) {
@@ -2639,7 +2651,9 @@ int io_kicad_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *File
 			s = line;
 			while(isspace(*s))
 				s++; /* strip leading whitespace */
-			if (strncmp(s, "(kicad_pcb", 10) == 0) /* valid root */
+			if ((strncmp(s, "(kicad_pcb", 10) == 0) && (typ == PCB_IOT_PCB)) /* valid root */
+				return 1;
+			if (strncmp(s, "(module", 7) == 0) /* valid root */
 				return 1;
 			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0')) /* ignore empty lines and comments */
 				continue;
