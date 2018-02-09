@@ -379,7 +379,7 @@ void hyp_error(const char *msg)
 /*
  * find padstack by name 
  */
-
+#warning TODO: use a hash instead
 padstack_t *hyp_pstk_by_name(char *padstack_name)
 {
 	padstack_t *i;
