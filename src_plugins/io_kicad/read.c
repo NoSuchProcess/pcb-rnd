@@ -2685,7 +2685,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
 
-	mres = kicad_parse_module(&st, st.dom.root);
+	mres = kicad_parse_module(&st, st.dom.root->children);
 /*	if (mres == 0)
 		pcb_data_clip_polys(sc->data);*/
 
