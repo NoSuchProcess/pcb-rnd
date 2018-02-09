@@ -32,8 +32,11 @@
 #include "data.h"
 #include "compat_misc.h"
 #include "polygon.h"
-#include "src_plugins/lib_padstack_hash/padstack_hash.h"
+#include "obj_subc_parent.h"
+#include "obj_pstk_inlines.h"
 #include "src_plugins/lib_netmap/netmap.h"
+#include <genht/htpi.h>
+#include <genht/hash.h>
 
 typedef struct hyp_wr_s {
 	pcb_board_t *pcb;
@@ -41,10 +44,11 @@ typedef struct hyp_wr_s {
 	const char *fn;
 
 	const char *ln_top, *ln_bottom;	/* "layer name" for top and bottom groups */
-	pcb_pshash_hash_t psh;
 	char *elem_name;
 	size_t elem_name_len;
 	pcb_cardinal_t poly_id;
+	htpi_t pstk_cache;
+	long pstk_cache_next;
 	struct {
 		unsigned elliptic:1;
 	} warn;
@@ -56,9 +60,9 @@ static pcb_coord_t flip(pcb_coord_t y)
 	return (PCB->MaxHeight - y);
 }
 
-static const char *safe_element_name(hyp_wr_t * wr, pcb_element_t * elem)
+static const char *safe_subc_name(hyp_wr_t *wr, pcb_subc_t *subc)
 {
-	const char *orig = PCB_ELEM_NAME_REFDES(elem);
+	const char *orig = subc->refdes;
 	char *s;
 	int len;
 
@@ -122,22 +126,109 @@ static void write_pr_line(hyp_wr_t * wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coo
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, flip(y1), x2, flip(y2));
 }
 
-static void write_pv(hyp_wr_t * wr, pcb_pin_t * pin)
+static void hyp_pstk_init(hyp_wr_t *wr)
 {
-	if (pin->type == PCB_OBJ_PIN) {
-		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
-								pin->X, flip(pin->Y), safe_element_name(wr, pin->Element), pin->Number, pcb_pshash_pin(&wr->psh, pin, NULL));
-	}
-	else {
-		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", pin->X, flip(pin->Y), pcb_pshash_pin(&wr->psh, pin, NULL));
-	}
+	htpi_init(&wr->pstk_cache, ptrhash, ptrkeyeq);
+	wr->pstk_cache_next = 1;
 }
 
-static void write_pad(hyp_wr_t * wr, pcb_pad_t * pad)
+static void hyp_pstk_uninit(hyp_wr_t *wr)
 {
-	pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
-							(pad->Point1.X + pad->Point2.X) / 2, flip((pad->Point1.Y + pad->Point2.Y) / 2),
-							safe_element_name(wr, (pcb_element_t *) pad->Element), pad->Number, pcb_pshash_pad(&wr->psh, pad, NULL));
+	htpi_uninit(&wr->pstk_cache);
+}
+
+void hyp_pstk_shape(hyp_wr_t *wr, const char *lynam, const pcb_pstk_shape_t *shp)
+{
+	pcb_coord_t sx, sy, minx, miny, maxx, maxy;
+	int shnum = 0, n;
+#warning TODO: this ignores rotation
+	switch(shp->shape) {
+		case PCB_PSSH_CIRC:
+			sx = sy = shp->data.circ.dia;
+			shnum = 0;
+			break;
+		case PCB_PSSH_POLY:
+#warning TODO: check if it is a rectangle
+			minx = maxx = shp->data.poly.x[0];
+			miny = maxy = shp->data.poly.y[0];
+			for(n = 1; n < shp->data.poly.len; n++) {
+				if (shp->data.poly.x[n] < minx) minx = shp->data.poly.x[n];
+				if (shp->data.poly.y[n] < miny) miny = shp->data.poly.y[n];
+				if (shp->data.poly.x[n] > maxx) maxx = shp->data.poly.x[n];
+				if (shp->data.poly.y[n] > maxy) maxy = shp->data.poly.y[n];
+			}
+			sx = maxx - minx;
+			sy = maxy - miny;
+			shnum = 2;
+			break;
+		case PCB_PSSH_LINE:
+			sx = shp->data.line.x2 - shp->data.line.x1;
+			sy = shp->data.line.y2 - shp->data.line.y1;
+			if (sx < 0) sx = -sx;
+			if (sy < 0) sy = -sy;
+			shnum = 2;
+			break;
+	}
+	pcb_fprintf(wr->f, "	(%s, %d, %me, %me, 0)\n", lynam, shnum, sx, sy);
+}
+
+/* WARNING: not reentrant! */
+static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int print)
+{
+	static char name[16];
+	long id;
+
+	id = htpi_get(&wr->pstk_cache, proto);
+	if (id == 0) { /* not found */
+		if (print) { /* auto-allocate */
+			id = wr->pstk_cache_next++;
+			htpi_set(&wr->pstk_cache, proto, id);
+		}
+		else
+			pcb_message(PCB_MSG_ERROR, "Internal error: unknown padstack prototype\n");
+	}
+
+	sprintf(name, "proto_%ld", id);
+	if (print) {
+		pcb_pstk_tshape_t *tshp = &proto->tr.array[0];
+		int n;
+
+		if (proto->hdia > 0)
+			pcb_fprintf(wr->f, "{PADSTACK=%s,%me\n", name, proto->hdia);
+		else
+			fprintf(wr->f, "{PADSTACK=%s\n", name);
+
+		for(n = 0; n < tshp->len; n++) {
+			pcb_pstk_shape_t *shp = &tshp->shape[n];
+			pcb_layer_type_t loc;
+			pcb_layer_id_t l;
+
+			if (!(shp->layer_mask & PCB_LYT_COPPER))
+				continue; /* hyp suppports copper only */
+
+			loc = (shp->layer_mask & PCB_LYT_ANYWHERE);
+			for(l = 0; l < wr->pcb->LayerGroups.len; l++) {
+				pcb_layergrp_t *lg = &wr->pcb->LayerGroups.grp[l];
+				pcb_layer_type_t lyt = lg->type;
+				if ((lyt & PCB_LYT_COPPER) && (lyt & loc))
+					hyp_pstk_shape(wr, lg->name, shp);
+			}
+		}
+
+		fprintf(wr->f, "}\n");
+	}
+	return name;
+}
+
+static void write_pstk(hyp_wr_t *wr, pcb_pstk_t *ps)
+{
+	pcb_subc_t *subc = pcb_gobj_parent_subc(ps->parent_type, &ps->parent);
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+	if ((subc != NULL) && (ps->term != NULL))
+		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n", ps->x, flip(ps->y), safe_subc_name(wr, subc), ps->term, hyp_pstk_cache(wr, proto, 0));
+	else
+		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", ps->x, flip(ps->y), hyp_pstk_cache(wr, proto, 0));
 }
 
 static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
@@ -287,23 +378,27 @@ static int write_lstack(hyp_wr_t * wr)
 static int write_devices(hyp_wr_t * wr)
 {
 	gdl_iterator_t it;
-	pcb_element_t *elem;
+	pcb_subc_t *subc;
 	int cnt;
 
 	fprintf(wr->f, "{DEVICES\n");
 
 	cnt = 0;
-	elementlist_foreach(&wr->pcb->Data->Element, &it, elem) {
+	subclist_foreach(&wr->pcb->Data->subc, &it, subc) {
 		const char *layer, *descr;
-		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, elem))
+		int on_bottom = 0;
+
+		pcb_subc_get_side(subc, &on_bottom);
+
+		if (on_bottom)
 			layer = wr->ln_bottom;
 		else
 			layer = wr->ln_top;
-		descr = PCB_ELEM_NAME_DESCRIPTION(elem);
+		descr = subc->refdes;
 		if (descr == NULL)
 			descr = "?";
 
-		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_element_name(wr, elem), descr, layer);
+		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_subc_name(wr, subc), descr, layer);
 		cnt++;
 	}
 
@@ -315,68 +410,21 @@ static int write_devices(hyp_wr_t * wr)
 	return 0;
 }
 
-static void write_pstk_pv(hyp_wr_t * wr, const pcb_pin_t * pin)
+static int write_pstk_protos(hyp_wr_t *wr, pcb_data_t *data)
 {
-	int new_item;
-	int pin_shape;
-	const char *name = pcb_pshash_pin(&wr->psh, pin, &new_item);
-	if (!new_item)
-		return;
+	gdl_iterator_t it;
+	pcb_subc_t *subc;
+	pcb_cardinal_t n, end;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
-		pin_shape = 2;
-	else if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
-		pin_shape = 1;
-	else
-		pin_shape = 0;
+	/* print the protos */
+	end = pcb_vtpadstack_proto_len(&data->ps_protos);
+	for(n = 0; n < end; n++)
+		hyp_pstk_cache(wr, &data->ps_protos.array[n], 1);
 
-	pcb_fprintf(wr->f, "{PADSTACK=%s, %me\n", name, pin->DrillingHole);
-#warning TODO: pin shapes and thermal
-	pcb_fprintf(wr->f, "  (MDEF, %d, %me, %me, 0, M)\n", pin_shape, pin->Thickness, pin->Thickness);
-	fprintf(wr->f, "}\n");
-}
+	/* recurse on subcircuits */
+	subclist_foreach(&wr->pcb->Data->subc, &it, subc)
+		write_pstk_protos(wr, subc->data);
 
-static void write_pstk_pad(hyp_wr_t * wr, const pcb_pad_t * pad)
-{
-	int new_item;
-	int pad_shape;
-	const char *name = pcb_pshash_pad(&wr->psh, pad, &new_item), *side;
-	if (!new_item)
-		return;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pad))
-		pad_shape = 2;
-	else if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad))
-		pad_shape = 1;
-	else
-		pad_shape = 0;
-
-	side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? wr->ln_bottom : wr->ln_top;
-
-	fprintf(wr->f, "{PADSTACK=%s\n", name);
-	pcb_fprintf(wr->f, "  (%[4], %d, %me, %me, 0, M)\n", side, pad_shape, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness,
-							PCB_ABS(pad->Point1.Y - pad->Point2.Y) + pad->Thickness);
-	fprintf(wr->f, "}\n");
-}
-
-static int write_pstk(hyp_wr_t * wr)
-{
-	gdl_iterator_t it, it2;
-	pcb_element_t *elem;
-	pcb_pin_t *pin;
-	pcb_pad_t *pad;
-
-	elementlist_foreach(&wr->pcb->Data->Element, &it, elem) {
-		pinlist_foreach(&elem->Pin, &it2, pin) {
-			write_pstk_pv(wr, pin);
-		}
-		padlist_foreach(&elem->Pad, &it2, pad) {
-			write_pstk_pad(wr, pad);
-		}
-	}
-	pinlist_foreach(&wr->pcb->Data->Via, &it, pin) {
-		write_pstk_pv(wr, pin);
-	}
 	return 0;
 }
 
@@ -398,19 +446,18 @@ static int write_nets(hyp_wr_t * wr)
 			case PCB_OBJ_ARC:
 				write_arc(wr, (pcb_arc_t *) o->obj);
 				break;
+			case PCB_OBJ_PSTK:
+				write_pstk(wr, (pcb_pstk_t *) o->obj);
+
 			case PCB_OBJ_PIN:
 			case PCB_OBJ_VIA:
-				write_pv(wr, (pcb_pin_t *) o->obj);
-				break;
 			case PCB_OBJ_PAD:
-				write_pad(wr, (pcb_pad_t *) o->obj);
 				break;
+
 			case PCB_OBJ_POLY:
 				write_poly(wr, (pcb_poly_t *) o->obj);
 				break;
 
-			case PCB_OBJ_PSTK:
-#warning padstack TODO
 			case PCB_OBJ_RAT:
 				break;									/* not yet done */
 
@@ -443,7 +490,7 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 	wr.f = f;
 	wr.fn = new_filename;
 
-	pcb_pshash_init(&wr.psh);
+	hyp_pstk_init(&wr);
 
 	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"=}mq";
 
@@ -459,7 +506,7 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 	if (write_devices(&wr) != 0)
 		goto err;
 
-	if (write_pstk(&wr) != 0)
+	if (write_pstk_protos(&wr, wr.pcb->Data) != 0)
 		goto err;
 
 	if (write_nets(&wr) != 0)
@@ -468,13 +515,12 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 	if (write_foot(&wr) != 0)
 		goto err;
 
-
-	pcb_pshash_uninit(&wr.psh);
+	hyp_pstk_uninit(&wr);
 	free(wr.elem_name);
 	return 0;
 
 err:;
-	pcb_pshash_uninit(&wr.psh);
+	hyp_pstk_uninit(&wr);
 	free(wr.elem_name);
 	return -1;
 }
