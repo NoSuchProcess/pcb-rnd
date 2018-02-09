@@ -131,6 +131,13 @@ static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pad, 0, found);
 }
 
+int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	PCB_PADSTACK_LOOP(subc->data) {
+		list_pstk_cb(ctx, pcb, padstack);
+	} PCB_END_LOOP;
+	return 0;
+}
 
 int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 {
@@ -154,7 +161,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* etext */
 		list_epin_cb,
 		list_epad_cb,
-		NULL, /* subc */
+		list_subc_cb, /* subc */
 		NULL, /* via */
 		NULL /* pstk */
 	);
