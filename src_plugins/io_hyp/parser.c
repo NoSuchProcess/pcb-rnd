@@ -1950,17 +1950,11 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 		}
 	}
 
-	mask = thickness;
-	data = hyp_dest;
-
-	if ((drillinghole > 0) && (ref == NULL)) {
-		pstk = pcb_pstk_new_compat_via(data, x, y, drillinghole, thickness, clearance, mask, cshp, 1);
-		return;
-	}
-
 	/* device and pin name, if any */
 	device_name = NULL;
 	pin_name = NULL;
+	mask = thickness;
+	data = hyp_dest;
 	if (ref != NULL) {
 		char *dot;
 		/* reference has format 'device_name.pin_name' */
@@ -1993,6 +1987,10 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", name, number);
 
+	if ((drillinghole > 0) && (ref == NULL)) {
+		pstk = pcb_pstk_new_compat_via(data, x, y, drillinghole, thickness, clearance, mask, cshp, 1);
+		return;
+	}
 	if ((drillinghole > 0) && (element != NULL)) {
 		/* create */
 		pcb_element_pin_new(element, x, y, thickness, clearance, mask, drillinghole, name, number, flags);
