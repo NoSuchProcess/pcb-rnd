@@ -528,16 +528,28 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	/* if the shape is poly, convert to line to make the rest of the code simpler */
 	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
 		for(n = 0; n < tshp->len; n++) {
-			pcb_coord_t w, h;
+			pcb_coord_t w, h, x1, x2, y1, y2;
 
 			if (tshp->shape[0].data.poly.len != 4)
 				return pcb_false;
 
-			w = tshp->shape[0].data.poly.x[0] - tshp->shape[0].data.poly.x[2];
-			h = tshp->shape[0].data.poly.y[0] - tshp->shape[0].data.poly.y[2];
+			x1 = tshp->shape[0].data.poly.x[0];
+			x2 = tshp->shape[0].data.poly.x[2];
+			if (x1 < x2) {
+				x2 = tshp->shape[0].data.poly.x[0];
+				x1 = tshp->shape[0].data.poly.x[2];
+			}
+			y1 = tshp->shape[0].data.poly.y[0];
+			y2 = tshp->shape[0].data.poly.y[2];
+			if (y1 < y2) {
+				y2 = tshp->shape[0].data.poly.y[0];
+				y1 = tshp->shape[0].data.poly.y[2];
+			}
+			w = x1 - x2;
+			h = y1 - y2;
 			lt[n] = (w < h) ? w : h;
-			lx1[n] = tshp->shape[0].data.poly.x[2] + lt[n] / 2;
-			ly1[n] = tshp->shape[0].data.poly.y[2] + lt[n] / 2;
+			lx1[n] = x2 + lt[n] / 2;
+			ly1[n] = y2 + lt[n] / 2;
 			lx2[n] = lx1[n] + (w - lt[n]);
 			ly2[n] = ly1[n] + (h - lt[n]);
 		}
