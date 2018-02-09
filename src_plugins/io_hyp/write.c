@@ -461,7 +461,7 @@ static int write_pstk_protos(hyp_wr_t *wr, pcb_data_t *data)
 		hyp_pstk_cache(wr, &data->ps_protos.array[n], 1);
 
 	/* recurse on subcircuits */
-	subclist_foreach(&wr->pcb->Data->subc, &it, subc)
+	subclist_foreach(&data->subc, &it, subc)
 		write_pstk_protos(wr, subc->data);
 
 	return 0;
