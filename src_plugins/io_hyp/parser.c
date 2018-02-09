@@ -1,6 +1,7 @@
 /*
  * read hyperlynx files
  * Copyright 2016 Koen De Vleeschauwer.
+ * Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  * This file is part of pcb-rnd.
  *
