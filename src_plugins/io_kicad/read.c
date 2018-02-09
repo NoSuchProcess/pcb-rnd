@@ -2593,7 +2593,6 @@ static gsx_parse_res_t kicad_parse_file(FILE *FP, gsxl_dom_t *dom)
 	do {
 		c = fgetc(FP);
 	} while((res = gsxl_parse_char(dom, c)) == GSX_RES_NEXT);
-	fclose(FP);
 
 	if (res == GSX_RES_EOE) {
 		/* compact and simplify the tree */
@@ -2623,6 +2622,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	/* load the file into the dom */
 	res = kicad_parse_file(FP, &st.dom);
+	fclose(FP);
 
 	if (res == GSX_RES_EOE) {
 		/* recursively parse the dom */
