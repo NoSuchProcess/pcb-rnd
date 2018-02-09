@@ -86,7 +86,7 @@ outline_t *outline_tail;
 void hyp_set_origin();					/* set origin so all coordinates are positive */
 void hyp_perimeter();						/* add board outline to pcb */
 void hyp_draw_polygons();				/* add all hyperlynx polygons to pcb */
-void hyp_create_silkscreen();		/* add silkscreen outlines to all devices on board */
+static void hyp_subcs_fin(void);
 void hyp_resize_board();				/* resize board to fit outline */
 pcb_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
 
@@ -171,13 +171,7 @@ typedef struct padstack_s {
 padstack_t *padstack_head;
 padstack_t *current_pstk;
 
-	/* pads */
-pcb_element_t *component_side_pads;
-pcb_element_t *solder_side_pads;
-#define PAD_TOP "PAD_TOP"
-#define PAD_BOTTOM "PAD_BOTTOM"
-
-	/* polygons */
+/* polygons */
 
 /* 
  * a hyperlynx polygon is a sequence of line and arc segments.
@@ -306,10 +300,6 @@ void hyp_init(void)
 	unknown_device_number = 0;
 	unknown_pin_number = 0;
 
-	/* clear pads */
-	component_side_pads = NULL;
-	solder_side_pads = NULL;
-
 	/* clear polygon data */
 	polygon_head = NULL;
 	current_vertex = NULL;
@@ -356,8 +346,8 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* set up polygons */
 	hyp_draw_polygons();
 
-	/* create device outlines */
-	hyp_create_silkscreen();
+	/* postprocess/finalize subcircuits */
+	hyp_subcs_fin();
 
 	/* add board outline last */
 	hyp_perimeter();
@@ -804,75 +794,9 @@ void hyp_perimeter()
 	return;
 }
 
-/*
- * silkscreen a simple box around an element
- */
-
-void hyp_element_silkscreen_new(pcb_data_t * Data, pcb_element_t * Element, pcb_font_t * Font)
-{
-	pcb_coord_t x1, x2, y1, y2;
-
-	/* get bounding box of device */
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Element)) {
-		/* put component part no. bottom left. on solder side bottom left is (X2, Y2) */
-		x1 = Element->BoundingBox.X2;
-		x2 = Element->BoundingBox.X1;
-	}
-	else {
-		/* put component part no. bottom left. on component side bottom left is (X1, Y2) */
-		x1 = Element->BoundingBox.X1;
-		x2 = Element->BoundingBox.X2;
-	};
-	y1 = Element->BoundingBox.Y1;
-	y2 = Element->BoundingBox.Y2;
-
-	/* draw rectangle around device on silkscreen */
-	pcb_element_line_new(Element, x1, y1, x1, y2, 1);
-	pcb_element_line_new(Element, x1, y2, x2, y2, 1);
-	pcb_element_line_new(Element, x2, y2, x2, y1, 1);
-	pcb_element_line_new(Element, x2, y1, x1, y1, 1);
-
-	/* put part no. bottom left */
-	PCB_ELEM_TEXT_REFDES(Element).X = x1;
-	PCB_ELEM_TEXT_REFDES(Element).Y = y2;
-
-	/* put description top left */
-	PCB_ELEM_TEXT_DESCRIPTION(Element).X = x1;
-	PCB_ELEM_TEXT_DESCRIPTION(Element).Y = y1;
-
-	/* put value bottom right */
-	PCB_ELEM_TEXT_VALUE(Element).X = x2;
-	PCB_ELEM_TEXT_VALUE(Element).Y = y2;
-
-	/* update */
-	pcb_element_bbox(Data, Element, Font);
-
-	return;
-}
-
-/*
- * create device outlines and clean up device reference text. 
- * call after all devices have been created.
- */
-
-void hyp_create_silkscreen()
-{
-	device_t *i;
-	pcb_element_t *elem;
-
-	for (i = device_head; i != NULL; i = i->next) {
-		elem = pcb_search_elem_by_name(hyp_dest, i->ref);
-		if (elem != NULL)
-			hyp_element_silkscreen_new(hyp_dest, elem, pcb_font(PCB, 0, 1));
-	}
-
-	return;
-}
-
 /* 
  * reset pcb layer stack 
  */
-
 void hyp_reset_layers()
 {
 
@@ -2803,7 +2727,6 @@ pcb_bool exec_end(parse_param * h)
 {
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "end:\n");
-	hyp_subcs_fin();
 	return 0;
 }
 
