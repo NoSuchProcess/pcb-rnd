@@ -19,13 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
- * ~/.indent.pro:
- *   --line-length128 -brs -br -nce --tab-size2 -ut -npsl -npcs -hnl
- * ~/.vimrc:
- *   set tabstop=2
- */
-
 #define MAX_STRING 256
 
 #include "parser.h"
