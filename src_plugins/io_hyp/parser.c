@@ -44,7 +44,9 @@
 #include "plug_io.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
+#warning TODO: this wont be needed
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
+#include "../src_plugins/lib_compat_help/subc_help.h"
 #include <string.h>
 
 #undef min
@@ -131,6 +133,7 @@ typedef struct device_s {
 	char *name;										/* optional */
 	char *value;									/* optional */
 	char *layer_name;
+	pcb_subc_t *subc;
 	struct device_s *next;
 } device_t;
 
@@ -428,7 +431,7 @@ void hyp_netlist_end()
 /*
  * find hyperlynx device by name 
  */
-
+#warning TODO: convert this into a hash
 device_t *hyp_device_by_name(char *device_name)
 {
 	device_t *i;
@@ -438,48 +441,67 @@ device_t *hyp_device_by_name(char *device_name)
 	return NULL;
 }
 
-/*
- * create pcb element by name
- * parameters: name, (x, y) coordinates of element text.
- */
-
-pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb_coord_t y)
+pcb_subc_t *hyp_create_subc_by_name(char *refdes, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_element_t *elem;
-	pcb_flag_t flags;
+	pcb_subc_t *subc;
 	pcb_uint8_t text_direction = 0;
 	int text_scale = 100;
+	device_t *dev;
+	int on_bottom;
 
-	flags = pcb_no_flags();
 	/* does the device already exist? */
-	elem = pcb_search_elem_by_name(hyp_dest, element_name);
-	if (elem == NULL) {
-		/* device needs to be created. Search in DEVICE records. */
-		device_t *dev = hyp_device_by_name(element_name);
-		if (dev != NULL) {
-			/* device on component or solder side? */
-			if (hyp_is_bottom_layer(dev->layer_name)) {
-				flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
-				text_direction = 2;
-			}
-			/* create */
-			if (hyp_debug)
-				pcb_message(PCB_MSG_DEBUG, "creating device \"%s\".\n", dev->ref);
-			elem =
-				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, dev->name, dev->ref, dev->value, x, y, text_direction,
-												text_scale, flags, pcb_false);
-		}
-		else {
-			/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
-			pcb_message(PCB_MSG_WARNING, "device \"%s\" not specified in DEVICE record. Assuming device is on component side.\n",
-									element_name);
-			elem =
-				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, element_name, element_name, NULL, x, y, text_direction,
-												text_scale, flags, pcb_false);
-		}
+	subc = pcb_subc_by_refdes(hyp_dest, refdes);
+	if (subc != NULL)
+		return subc;
+
+	/* device needs to be created. Search in DEVICE records. */
+	dev = hyp_device_by_name(refdes);
+	if (dev == NULL) {
+		/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
+		pcb_message(PCB_MSG_WARNING, "device \"%s\" not specified in DEVICE record. Assuming device is on component side.\n", refdes);
+
+		dev = calloc(sizeof(device_t), 1);
+		dev->next = device_head;
+		device_head = dev;
 	}
 
-	return elem;
+	/* device on component or solder side? */
+	if (dev->layer_name != NULL)
+		on_bottom = hyp_is_bottom_layer(dev->layer_name);
+	if (on_bottom)
+		text_direction = 2;
+
+	/* create */
+	if (hyp_debug)
+		pcb_message(PCB_MSG_DEBUG, "creating device \"%s\".\n", dev->ref);
+
+	subc = pcb_subc_alloc();
+	pcb_subc_create_aux(subc, x, y, 0.0, on_bottom);
+	pcb_attribute_put(&subc->Attributes, "refdes", refdes);
+	pcb_subc_add_refdes_text(subc, x, y, text_direction, text_scale, on_bottom);
+	pcb_add_subc_to_data(hyp_dest, subc);
+	pcb_subc_bind_globals(hyp_dest->parent.board, subc);
+
+	dev->subc = subc;
+
+	return subc;
+}
+
+static void hyp_subc_fin(pcb_subc_t *subc)
+{
+	pcb_subc_bbox(subc);
+	if (hyp_dest->subc_tree == NULL)
+		hyp_dest->subc_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(hyp_dest->subc_tree, (pcb_box_t *)subc);
+	pcb_subc_rebind(hyp_dest->parent.board, subc);
+}
+
+static void hyp_subcs_fin(void)
+{
+	device_t *d;
+	for(d = device_head; d != NULL; d = d->next)
+		if (d->subc != NULL)
+			hyp_subc_fin(d->subc);
 }
 
 /*
@@ -1655,10 +1677,7 @@ pcb_bool exec_plane(parse_param * h)
 	return 0;
 }
 
-/*
- * DEVICE record.
- */
-
+/* DEVICE record. */
 pcb_bool exec_devices(parse_param * h)
 {
 	device_t *new_device;
@@ -1680,7 +1699,7 @@ pcb_bool exec_devices(parse_param * h)
 	}
 
 	/* add device to list  */
-	new_device = malloc(sizeof(device_t));
+	new_device = calloc(sizeof(device_t), 1);
 
 	new_device->ref = pcb_strdup(h->ref);
 
@@ -1857,7 +1876,7 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
  * if there is no drill hole, it's a pad. Use pcb_element_pad_new().
  */
 
-	pcb_element_t *element = NULL;
+	pcb_subc_t *subc = NULL;
 	pcb_coord_t x1 = 0;
 	pcb_coord_t y1 = 0;
 	pcb_coord_t x2 = 0;
@@ -1955,6 +1974,7 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 	pin_name = NULL;
 	mask = thickness;
 	data = hyp_dest;
+
 	if (ref != NULL) {
 		char *dot;
 		/* reference has format 'device_name.pin_name' */
@@ -1977,7 +1997,8 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 		}
 
 		/* find device by name */
-		element = hyp_create_element_by_name(device_name, x, y);
+		subc = hyp_create_subc_by_name(device_name, x, y);
+		data = subc->data;
 	}
 
 	/* name and number NULL if no reference given */
@@ -1987,21 +2008,16 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", name, number);
 
-	if ((drillinghole > 0) && (ref == NULL)) {
+#warning TODO: generic padstack creation here
+	if (drillinghole > 0) {
 		pstk = pcb_pstk_new_compat_via(data, x, y, drillinghole, thickness, clearance, mask, cshp, 1);
-		return;
-	}
-	if ((drillinghole > 0) && (element != NULL)) {
-		/* create */
-		pcb_element_pin_new(element, x, y, thickness, clearance, mask, drillinghole, name, number, flags);
-		/* add pin to current net */
-		hyp_netlist_add(name, number);
-		/* update bounding box */
-		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
-		return;
 	}
 
+	if (subc != NULL) /* add pin to current net */
+		hyp_netlist_add(name, number);
+
 	/* we're now pretty sure it's not a pin or via but a pad. */
+#if 0
 
 	/* layer */
 	layer_name = NULL;
@@ -2112,7 +2128,7 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
 		return;
 	}
-
+#endif
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "draw padstack: skipped.\n");
 
@@ -2906,7 +2922,7 @@ pcb_bool exec_end(parse_param * h)
 {
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "end:\n");
-
+	hyp_subcs_fin();
 	return 0;
 }
 
