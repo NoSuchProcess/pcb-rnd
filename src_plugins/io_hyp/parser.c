@@ -44,6 +44,7 @@
 #include "plug_io.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include <string.h>
 
 #undef min
@@ -1873,6 +1874,9 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 	char *pin_name = NULL;
 	char *layer_name = NULL;
 	padstack_element_t *i;
+	pcb_pstk_compshape_t cshp;
+	pcb_pstk_t *pstk;
+	pcb_data_t *data;
 
 	if (padstk == NULL) {
 		if (hyp_debug)
@@ -1932,18 +1936,25 @@ void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 	if (i != NULL) {
 		/* layer found */
 		thickness = min(i->pad_sx, i->pad_sy);
-		if (i->pad_shape == 1)
+		if (i->pad_shape == 1) {
 			flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
-		else if (i->pad_shape == 2)
+			cshp = PCB_PSTK_COMPAT_SQUARE;
+		}
+		else if (i->pad_shape == 2) {
 			flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
-		else
+			cshp = PCB_PSTK_COMPAT_OCTAGON;
+		}
+		else {
 			flags = pcb_no_flags();		/* round */
+			cshp = PCB_PSTK_COMPAT_ROUND;
+		}
 	}
 
 	mask = thickness;
+	data = hyp_dest;
 
 	if ((drillinghole > 0) && (ref == NULL)) {
-		pcb_via_new(hyp_dest, x, y, thickness, clearance, mask, drillinghole, name, flags);
+		pstk = pcb_pstk_new_compat_via(data, x, y, drillinghole, thickness, clearance, mask, cshp, 1);
 		return;
 	}
 
