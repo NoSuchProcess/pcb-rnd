@@ -1893,6 +1893,8 @@ static pcb_pstk_t *hyp_new_pstk(padstack_t *padstk, pcb_data_t *data, pcb_coord_
 	int sh_used = 0, have_top = 0, have_bottom = 0, have_inner = 0;
 	const char *ln_top, *ln_bot;
 
+	memset(sh, 0, sizeof(sh));
+
 	ln_top = pcb_layer_name(PCB->Data, top_layer_id);
 	ln_bot = pcb_layer_name(PCB->Data, bottom_layer_id);
 
@@ -1934,7 +1936,6 @@ static pcb_pstk_t *hyp_new_pstk(padstack_t *padstk, pcb_data_t *data, pcb_coord_
 		}
 	}
 
-	sh[sh_used].layer_mask = 0; /* terminator */
 	ps = pcb_pstk_new_from_shape(data, x, y, padstk->drill_size, 1, 0, sh);
 	if (ps == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to convert padstack at %$mm;%$mm.\n", x, y);
