@@ -4708,8 +4708,8 @@
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h rats.h \
- ../src_plugins/mincut/pcb-mincut/graph.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
+ obj_subc_parent.h data.h rats.h ../src_plugins/mincut/pcb-mincut/graph.h \
  ../src_plugins/mincut/pcb-mincut/../../../config.h \
  ../src_plugins/mincut/pcb-mincut/solve.h \
  ../src_plugins/mincut/pcb-mincut/graph.h conf.h \
@@ -5318,7 +5318,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_actions.h \
- obj_all.h dolists.h
+ obj_all.h obj_pstk_inlines.h data.h thermal.h dolists.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -5893,13 +5893,13 @@ find.o: find.c ../config.h const.h math_helper.h conf_core.h conf.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h find.h \
  search.h rats.h netlist.h library.h route_style.h vtroutestyle.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h plug_io.h hid_actions.h \
- compat_misc.h event.h layer_vis.h obj_all.h obj_text_draw.h find_geo.c \
- obj_arc_ui.h obj_pstk_inlines.h board.h rats_patch.h thermal.h \
- find_lookup.c compat_nls.h obj_subc_parent.h find_intconn.c find_drc.c \
- data_it.h obj_arc_draw.h obj_pad_draw.h obj_rat_draw.h obj_line_draw.h \
- obj_elem_draw.h obj_poly_draw.h obj_pinvia_draw.h obj_pstk_draw.h \
- find_misc.c change.h find_clear.c find_debug.c find_print.c \
- find_any_isect.c
+ compat_misc.h event.h layer_vis.h obj_all.h obj_text_draw.h \
+ obj_subc_parent.h find_geo.c obj_arc_ui.h obj_pstk_inlines.h board.h \
+ rats_patch.h thermal.h find_lookup.c compat_nls.h find_intconn.c \
+ find_drc.c data_it.h obj_arc_draw.h obj_pad_draw.h obj_rat_draw.h \
+ obj_line_draw.h obj_elem_draw.h obj_poly_draw.h obj_pinvia_draw.h \
+ obj_pstk_draw.h find_misc.c change.h find_clear.c find_debug.c \
+ find_print.c find_any_isect.c
 find_act.o: find_act.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
