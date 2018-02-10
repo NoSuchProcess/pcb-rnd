@@ -120,15 +120,14 @@ char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
 	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg, PCB_SUBST_ALL);
 }
 
-static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
+int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
 {
-	gds_t s;
 	const char *curr, *next;
 
 	if (template == NULL)
-		return NULL;
+		return -1;
 
-	gds_init(&s);
+	gds_init(s);
 
 	if (*template == '?')
 		template++;
@@ -138,19 +137,19 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 			pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
 			goto error;
 		}
-		gds_append_str(&s, conf_core.rc.path.home);
+		gds_append_str(s, conf_core.rc.path.home);
 		template++;
 	}
 
 	for(curr = template;;) {
 		next = strpbrk(curr, "%$\\");
 		if (next == NULL) {
-			gds_append_str(&s, curr);
-			gds_enlarge(&s, gds_len(&s) + extra_room);
-			return s.array;
+			gds_append_str(s, curr);
+			gds_enlarge(s, gds_len(s) + extra_room);
+			return 0;
 		}
 		if (next > curr)
-			gds_append_len(&s, curr, next-curr);
+			gds_append_len(s, curr, next-curr);
 
 		switch(*next) {
 			case '\\':
@@ -164,11 +163,11 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 						case '\\': c = '\\'; break;
 						default: c = *next;
 					}
-					gds_append(&s, c);
+					gds_append(s, c);
 					curr = next;
 				}
 				else {
-					gds_append(&s, *next);
+					gds_append(s, *next);
 					curr = next+1;
 				}
 				break;
@@ -177,19 +176,19 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 					next++;
 					switch(*next) {
 						case '%':
-							gds_append(&s, '%');
+							gds_append(s, '%');
 							curr = next+1;
 							break;
 						default:
-							if (cb(ctx, &s, &next) != 0) {
+							if (cb(ctx, s, &next) != 0) {
 								/* keep the directive intact */
-								gds_append(&s, '%');
+								gds_append(s, '%');
 							}
 							curr = next;
 					}
 				}
 				else {
-					gds_append(&s, '%');
+					gds_append(s, '%');
 					curr = next+1;
 				}
 				break;
@@ -225,7 +224,7 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 									goto error;
 								}
 								if (cn->val.string[0] != NULL)
-									gds_append_str(&s, cn->val.string[0]);
+									gds_append_str(s, cn->val.string[0]);
 								curr = end+1;
 							}
 							else {
@@ -234,17 +233,17 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 							}
 							break;
 						case '$':
-							gds_append(&s, '$');
+							gds_append(s, '$');
 							curr = next+1;
 							break;
 						default:
-							gds_append(&s, '$');
+							gds_append(s, '$');
 							curr = next;
 							break;
 					}
 				}
 				else {
-					gds_append(&s, '$');
+					gds_append(s, '$');
 					curr = next+1;
 				}
 				break;
@@ -253,6 +252,21 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 	abort(); /* can't get here */
 
 	error:;
+	return -1;
+}
+
+static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
+{
+	gds_t s;
+
+	if (template == NULL)
+		return NULL;
+
+	gds_init(&s);
+
+	if (pcb_subst_append(&s, template, cb, ctx, flags, extra_room) == 0)
+		return s.array;
+
 	gds_uninit(&s);
 	return NULL;
 }

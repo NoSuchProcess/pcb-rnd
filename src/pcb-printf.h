@@ -153,6 +153,12 @@ typedef enum {
 	PCB_SUBST_ALL = 0xff
 } pcb_strdup_subst_t;
 
+/* Substitute template using cb, leaving extra room at the end and append the
+   result to s. Returns 0 on success. */
+int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room);
+
+/* Same as pcb_subst_append(), but returns a dynamic allocated string
+   (the caller needs to free() after use) or NULL on error. */
 char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags);
 
 #endif
