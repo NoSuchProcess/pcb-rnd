@@ -33,6 +33,7 @@
 
 #include "obj_common.h"
 #include "font.h"
+#include <genvector/gds_char.h>
 
 struct pcb_text_s {
 	PCB_ANYOBJECTFIELDS;
@@ -70,6 +71,9 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text);
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */
 void pcb_text_dyn_bbox_update(pcb_data_t *data);
+
+/* Append dyntext fmt rendered from the perspective of obj */
+int pcb_append_dyntext(gds_t *dst, pcb_any_obj_t *obj, const char *fmt);
 
 void pcb_text_init(void);
 void pcb_text_uninit(void);

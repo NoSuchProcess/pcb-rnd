@@ -184,6 +184,11 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 	return (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 }
 
+int pcb_append_dyntext(gds_t *dst, pcb_any_obj_t *obj, const char *fmt)
+{
+	return pcb_subst_append(dst, fmt, pcb_text_render_str_cb, obj, PCB_SUBST_PERCENT | PCB_SUBST_CONF, 0);
+}
+
 /* Free rendered if it was allocated */
 static void pcb_text_free_str(pcb_text_t *text, unsigned char *rendered)
 {
