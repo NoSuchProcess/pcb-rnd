@@ -1,4 +1,4 @@
-/* Functions to distribute (evenly spread out) and align PCB elements.
+/* Functions to distribute (evenly spread out) and align PCB subcircuits.
  *
  * Copyright (C) 2007 Ben Jackson <ben@ben.com>
  *
@@ -95,56 +95,59 @@ static int keyword(const char *s)
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
 static inline pcb_coord_t		        			\
-coord ## DIR(pcb_element_t *element, int point)			\
+coord ## DIR(pcb_subc_t *subc, int point)			\
 {								\
+	pcb_coord_t oX, oY; \
 	switch (point) {					\
 	case K_Marks:						\
-		return element->Mark ## DIR;			\
+		oX = oY = 0; \
+		pcb_subc_get_origin(subc, &oX, &oY); \
+		return o ## DIR;			\
 	case K_Lefts:						\
 	case K_Tops:						\
-		return element->BoundingBox.DIR ## 1;		\
+		return subc->BoundingBox.DIR ## 1;		\
 	case K_Rights:						\
 	case K_Bottoms:						\
-		return element->BoundingBox.DIR ## 2;		\
+		return subc->BoundingBox.DIR ## 2;		\
 	case K_Centers:						\
 	case K_Gaps:						\
-		return (element->BoundingBox.DIR ## 1 +		\
-		       element->BoundingBox.DIR ## 2) / 2;	\
+		return (subc->BoundingBox.DIR ## 1 +		\
+		       subc->BoundingBox.DIR ## 2) / 2;	\
 	}							\
 	return 0;						\
 }
 
 COORD(X)
-	COORD(Y)
+COORD(Y)
 
-/* return the element coordinate associated with the given internal point */
-		 static pcb_coord_t coord(pcb_element_t * element, int dir, int point)
+/* return the subcircuit coordinate associated with the given internal point */
+static pcb_coord_t coord(pcb_subc_t *subc, int dir, int point)
 {
 	if (dir == K_X)
-		return coordX(element, point);
+		return coordX(subc, point);
 	else
-		return coordY(element, point);
+		return coordY(subc, point);
 }
 
-static struct element_by_pos {
-	pcb_element_t *element;
+static struct subc_by_pos {
+	pcb_subc_t *subc;
 	pcb_coord_t pos;
 	pcb_coord_t width;
-} *elements_by_pos;
+} *subcs_by_pos;
 
-static int nelements_by_pos;
+static int nsubcs_by_pos;
 
 static int cmp_ebp(const void *a, const void *b)
 {
-	const struct element_by_pos *ea = a;
-	const struct element_by_pos *eb = b;
+	const struct subc_by_pos *ea = a;
+	const struct subc_by_pos *eb = b;
 
 	return ea->pos - eb->pos;
 }
 
 /*
  * Find all selected objects, then order them in order by coordinate in
- * the 'dir' axis. This is used to find the "First" and "Last" elements
+ * the 'dir' axis. This is used to find the "First" and "Last" subcircuits
  * and also to choose the distribution order.
  *
  * For alignment, first and last are in the orthogonal axis (imagine if
@@ -153,49 +156,49 @@ static int cmp_ebp(const void *a, const void *b)
  *
  * For distribution, first and last are in the distribution axis.
  */
-static int sort_elements_by_pos(int op, int dir, int point)
+static int sort_subcs_by_pos(int op, int dir, int point)
 {
 	int nsel = 0;
 
-	if (nelements_by_pos)
-		return nelements_by_pos;
+	if (nsubcs_by_pos)
+		return nsubcs_by_pos;
 	if (op == K_align)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
 			continue;
 		nsel++;
 	}
 	PCB_END_LOOP;
 	if (!nsel)
 		return 0;
-	elements_by_pos = malloc(nsel * sizeof(*elements_by_pos));
-	nelements_by_pos = nsel;
+	subcs_by_pos = malloc(nsel * sizeof(*subcs_by_pos));
+	nsubcs_by_pos = nsel;
 	nsel = 0;
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
 			continue;
-		elements_by_pos[nsel].element = element;
-		elements_by_pos[nsel++].pos = coord(element, dir, point);
+		subcs_by_pos[nsel].subc = subc;
+		subcs_by_pos[nsel++].pos = coord(subc, dir, point);
 	}
 	PCB_END_LOOP;
-	qsort(elements_by_pos, nelements_by_pos, sizeof(*elements_by_pos), cmp_ebp);
-	return nelements_by_pos;
+	qsort(subcs_by_pos, nsubcs_by_pos, sizeof(*subcs_by_pos), cmp_ebp);
+	return nsubcs_by_pos;
 }
 
-static void free_elements_by_pos(void)
+static void free_subcs_by_pos(void)
 {
-	if (nelements_by_pos) {
-		free(elements_by_pos);
-		elements_by_pos = NULL;
-		nelements_by_pos = 0;
+	if (nsubcs_by_pos) {
+		free(subcs_by_pos);
+		subcs_by_pos = NULL;
+		nsubcs_by_pos = 0;
 	}
 }
 
 /* Find the reference coordinate from the specified points of all
- * selected elements. */
+ * selected subcircuits. */
 static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
 	pcb_coord_t q;
@@ -209,14 +212,14 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		else
 			q = y;
 		break;
-	case K_Average:							/* the average among selected elements */
+	case K_Average:							/* the average among selected subcircuits */
 		nsel = 0;
 		q = 0;
-		PCB_ELEMENT_LOOP(PCB->Data);
+		PCB_SUBC_LOOP(PCB->Data);
 		{
-			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
 				continue;
-			q += coord(element, dir, point);
+			q += coord(subc, dir, point);
 			nsel++;
 		}
 		PCB_END_LOOP;
@@ -225,15 +228,15 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		break;
 	case K_First:								/* first or last in the orthogonal direction */
 	case K_Last:
-		if (!sort_elements_by_pos(op, dir, point)) {
+		if (!sort_subcs_by_pos(op, dir, point)) {
 			q = 0;
 			break;
 		}
 		if (reference == K_First) {
-			q = coord(elements_by_pos[0].element, dir, point);
+			q = coord(subcs_by_pos[0].subc, dir, point);
 		}
 		else {
-			q = coord(elements_by_pos[nelements_by_pos - 1].element, dir, point);
+			q = coord(subcs_by_pos[nsubcs_by_pos - 1].subc, dir, point);
 		}
 		break;
 	}
@@ -247,7 +250,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  * X or Y - Select which axis will move, other is untouched.
  * Lefts, Rights,
  * Tops, Bottoms,
- * Centers, Marks - Pick alignment point within each element.
+ * Centers, Marks - Pick alignment point within each subcircuit
  * First, Last,
  * pcb_crosshair,
  * Average - Alignment reference, First=Topmost/Leftmost,
@@ -276,7 +279,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	default:
 		PCB_AFAIL(align);
 	}
-	/* parse point (within each element) which will be aligned */
+	/* parse point (within each subcircuit) which will be aligned */
 	switch ((point = keyword(ARG(1)))) {
 	case K_Centers:
 	case K_Marks:
@@ -325,19 +328,19 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
-	/* move all selected elements to the new coordinate */
-	PCB_ELEMENT_LOOP(PCB->Data);
+	/* move all selected subcircuits to the new coordinate */
+	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_coord_t p, dp, dx, dy;
 
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
 			continue;
 		/* find delta from reference point to reference point */
-		p = coord(element, dir, point);
+		p = coord(subc, dir, point);
 		dp = q - p;
 		/* ...but if we're gridful, keep the mark on the grid */
 		if (!gridless) {
-			dp -= (coord(element, dir, K_Marks) + dp) % (long) (PCB->Grid);
+			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->Grid);
 		}
 		if (dp) {
 			/* move from generic to X or Y */
@@ -346,8 +349,8 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				dy = 0;
 			else
 				dx = 0;
-			pcb_element_move(PCB->Data, element, dx, dy);
-			pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
+			pcb_subc_move(subc, dx, dy, 1);
+			pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, subc, dx, dy);
 			changed = 1;
 		}
 	}
@@ -357,7 +360,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_redraw();
 		pcb_board_set_changed_flag(1);
 	}
-	free_elements_by_pos();
+	free_subcs_by_pos();
 	return 0;
 }
 
@@ -374,7 +377,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
  *
  * Defaults are Marks, First, Last
  *
- * Distributed elements always retain the same relative order they had
+ * Distributed subcircuits always retain the same relative order they had
  * before they were distributed.
  */
 static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -399,7 +402,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	default:
 		PCB_AFAIL(distribute);
 	}
-	/* parse point (within each element) which will be distributed */
+	/* parse point (within each subcircuit) which will be distributed */
 	switch ((point = keyword(ARG(1)))) {
 	case K_Centers:
 	case K_Marks:
@@ -463,46 +466,46 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	default:
 		PCB_AFAIL(distribute);
 	}
-	/* build list of elements in orthogonal axis order */
-	sort_elements_by_pos(K_distribute, dir, point);
+	/* build list of subcircuitss in orthogonal axis order */
+	sort_subcs_by_pos(K_distribute, dir, point);
 	/* find the endpoints given the above options */
 	s = reference_coord(K_distribute, x, y, dir, point, refa);
 	e = reference_coord(K_distribute, x, y, dir, point, refb);
 	slack = e - s;
 	/* use this divisor to calculate spacing (for 1 elt, avoid 1/0) */
-	divisor = (nelements_by_pos > 1) ? (nelements_by_pos - 1) : 1;
+	divisor = (nsubcs_by_pos > 1) ? (nsubcs_by_pos - 1) : 1;
 	/* even the gaps instead of the edges or whatnot */
 	/* find the "slack" in the row */
 	if (point == K_Gaps) {
 		pcb_coord_t w;
 
 		/* subtract all the "widths" from the slack */
-		for (i = 0; i < nelements_by_pos; ++i) {
-			pcb_element_t *element = elements_by_pos[i].element;
+		for (i = 0; i < nsubcs_by_pos; ++i) {
+			pcb_subc_t *subc = subcs_by_pos[i].subc;
 			/* coord doesn't care if I mix Lefts/Tops */
-			w = elements_by_pos[i].width = coord(element, dir, K_Rights) - coord(element, dir, K_Lefts);
+			w = subcs_by_pos[i].width = coord(subc, dir, K_Rights) - coord(subc, dir, K_Lefts);
 			/* Gaps distribution is on centers, so half of
-			 * first and last element don't count */
-			if (i == 0 || i == nelements_by_pos - 1) {
+			 * first and last subcircuit don't count */
+			if (i == 0 || i == nsubcs_by_pos - 1) {
 				w /= 2;
 			}
 			slack -= w;
 		}
 		/* slack could be negative */
 	}
-	/* move all selected elements to the new coordinate */
-	for (i = 0; i < nelements_by_pos; ++i) {
-		pcb_element_t *element = elements_by_pos[i].element;
+	/* move all selected subcircuits to the new coordinate */
+	for (i = 0; i < nsubcs_by_pos; ++i) {
+		pcb_subc_t *subc = subcs_by_pos[i].subc;
 		pcb_coord_t p, q, dp, dx, dy;
 
-		/* find reference point for this element */
+		/* find reference point for this subcircuit */
 		q = s + slack * i / divisor;
 		/* find delta from reference point to reference point */
-		p = coord(element, dir, point);
+		p = coord(subc, dir, point);
 		dp = q - p;
 		/* ...but if we're gridful, keep the mark on the grid */
 		if (!gridless) {
-			dp -= (coord(element, dir, K_Marks) + dp) % (long) (PCB->Grid);
+			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->Grid);
 		}
 		if (dp) {
 			/* move from generic to X or Y */
@@ -511,17 +514,17 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				dy = 0;
 			else
 				dx = 0;
-			pcb_element_move(PCB->Data, element, dx, dy);
-			pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
+			pcb_subc_move(subc, dx, dy, 1);
+			pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, subc, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */
 		if (point == K_Gaps) {
-			/* move remaining half of our element */
-			s += elements_by_pos[i].width / 2;
-			/* move half of next element */
-			if (i < nelements_by_pos - 1)
-				s += elements_by_pos[i + 1].width / 2;
+			/* move remaining half of our subcircuits */
+			s += subcs_by_pos[i].width / 2;
+			/* move half of next subcircuits */
+			if (i < nsubcs_by_pos - 1)
+				s += subcs_by_pos[i + 1].width / 2;
 		}
 	}
 	if (changed) {
@@ -529,13 +532,13 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_redraw();
 		pcb_board_set_changed_flag(1);
 	}
-	free_elements_by_pos();
+	free_subcs_by_pos();
 	return 0;
 }
 
 static pcb_hid_action_t distalign_action_list[] = {
-	{"distribute", NULL, distribute, "Distribute Elements", distribute_syntax},
-	{"align", NULL, align, "Align Elements", align_syntax}
+	{"distribute", NULL, distribute, "Distribute subcircuits", distribute_syntax},
+	{"align", NULL, align, "Align subcircuits", align_syntax}
 };
 
 static char *distalign_cookie = "distalign plugin";
@@ -555,5 +558,3 @@ int pplg_init_distalign(void)
 	PCB_REGISTER_ACTIONS(distalign_action_list, distalign_cookie);
 	return 0;
 }
-
-
