@@ -142,7 +142,7 @@ static int cmp_ebp(const void *a, const void *b)
 	return ea->pos - eb->pos;
 }
 
-/*!
+/*
  * Find all selected objects, then order them in order by coordinate in
  * the 'dir' axis. This is used to find the "First" and "Last" elements
  * and also to choose the distribution order.
@@ -194,10 +194,8 @@ static void free_elements_by_pos(void)
 	}
 }
 
-/*!
- * \brief Find the reference coordinate from the specified points of all
- * selected elements.
- */
+/* Find the reference coordinate from the specified points of all
+ * selected elements. */
 static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
 	pcb_coord_t q;
@@ -242,19 +240,19 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 	return q;
 }
 
-/*!
- * Align(X, [Lefts/Rights/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])\n
+/*
+ * Align(X, [Lefts/Rights/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])
  * Align(Y, [Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])
  *
- * X or Y - Select which axis will move, other is untouched. \n
- * Lefts, Rights, \n
- * Tops, Bottoms, \n
- * Centers, Marks - Pick alignment point within each element. \n
- * First, Last, \n
- * pcb_crosshair, \n
- * Average - Alignment reference, First=Topmost/Leftmost, \n
- * Last=Bottommost/Rightmost, Average or pcb_crosshair point \n
- * Gridless - Do not force results to align to prevailing grid. \n
+ * X or Y - Select which axis will move, other is untouched.
+ * Lefts, Rights,
+ * Tops, Bottoms,
+ * Centers, Marks - Pick alignment point within each element.
+ * First, Last,
+ * pcb_crosshair,
+ * Average - Alignment reference, First=Topmost/Leftmost,
+ * Last=Bottommost/Rightmost, Average or pcb_crosshair point
+ * Gridless - Do not force results to align to prevailing grid.
  *
  * Defaults are Marks, First.
  */
@@ -363,21 +361,21 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-/*!
- * Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
- * Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
- * \n
- * As with align, plus: \n
- * \n
- * Gaps - Make gaps even rather than spreading points evenly. \n
- * First, Last, \n
+/*
+ * Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])
+ * Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])
+ *
+ * As with align, plus:
+ *
+ * Gaps - Make gaps even rather than spreading points evenly.
+ * First, Last,
  * pcb_crosshair - Two arguments specifying both ends of the distribution,
- * they can't both be the same. \n
- * \n
- * Defaults are Marks, First, Last \n
- * \n
+ * they can't both be the same.
+ *
+ * Defaults are Marks, First, Last
+ *
  * Distributed elements always retain the same relative order they had
- * before they were distributed. \n
+ * before they were distributed.
  */
 static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
