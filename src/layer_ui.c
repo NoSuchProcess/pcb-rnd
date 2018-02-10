@@ -30,9 +30,10 @@
 
 /* Virtual layers for UI and debug */
 #include "config.h"
+#include "layer.h"
+#include "event.h"
 #define GVT_DONT_UNDEF
 #include "layer_ui.h"
-#include "event.h"
 #include <genvector/genvector_impl.c>
 
 vtlayer_t pcb_uilayer;
