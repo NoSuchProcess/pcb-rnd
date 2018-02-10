@@ -414,6 +414,54 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	gds_append_str(term_shapes, "\n        )\n");
 }
 
+static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
+{
+	char tmp[512];
+	int fld;
+	pcb_coord_t x[4], y[4];
+	int n;
+	pcb_line_t ltmp;
+
+	pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%s\" 0", layer_name);
+	gds_append_str(term_shapes, tmp);
+
+	memset(&ltmp, 0, sizeof(ltmp));
+	ltmp.Point1.X = lin->x1;
+	ltmp.Point1.Y = lin->y1;
+	ltmp.Point2.X = lin->x2;
+	ltmp.Point2.Y = lin->y2;
+	ltmp.Thickness = lin->thickness;
+	pcb_sqline_to_rect(&ltmp, x, y);
+
+#warning padstack TODO: this ignores round cap
+
+	fld = 0;
+	for(n = 0; n < 4; n++) {
+		if ((fld % 3) == 0)
+			gds_append_str(term_shapes, "\n       ");
+		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x[n] - ox), -(y[n] - oy));
+		gds_append_str(term_shapes, tmp);
+		fld++;
+	}
+
+	gds_append_str(term_shapes, "\n        )\n");
+}
+
+static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
+{
+	char tmp[512];
+
+	pcb_snprintf(tmp, sizeof(tmp), "(circle \"%s\"", layer_name);
+	gds_append_str(term_shapes, tmp);
+
+#warning padstack TODO: this ignores circle center offset
+
+	pcb_snprintf(tmp, sizeof(tmp), " %.6mm", circ->dia/2);
+	gds_append_str(term_shapes, tmp);
+
+	gds_append_str(term_shapes, "\n        )\n");
+}
+
 static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
 {
 	char tmp[512];
@@ -487,10 +535,10 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coo
 			print_polyshape(term_shapes, &shp->data.poly, ox, oy, lay->name, partsidesign);
 			break;
 		case PCB_PSSH_LINE:
-#warning TODO
+			print_lineshape(term_shapes, &shp->data.line, ox, oy, lay->name, partsidesign);
 			break;
 		case PCB_PSSH_CIRC:
-#warning TODO
+			print_circshape(term_shapes, &shp->data.circ, ox, oy, lay->name, partsidesign);
 			break;
 	}
 }
