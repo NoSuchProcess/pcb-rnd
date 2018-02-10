@@ -87,28 +87,13 @@ static char *gui_get_pat(pcb_search_method_t * method)
 static const char pcb_acts_Select[] =
 	"Select(Object|ToggleObject)\n"
 	"Select(All|Block|Connection)\n"
-	"Select(ElementByName|ObjectByName|PadByName|PinByName)\n"
-	"Select(ElementByName|ObjectByName|PadByName|PinByName, Name)\n"
-	"Select(TextByName|ViaByName|NetByName)\n" "Select(TextByName|ViaByName|NetByName, Name)\n" "Select(Convert)";
+	"Select(Convert)";
 
 static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 
 /* %start-doc actions Select
 
 @table @code
-
-@item ElementByName
-@item ObjectByName
-@item PadByName
-@item PinByName
-@item TextByName
-@item ViaByName
-@item NetByName
-
-These all rely on having a regular expression parser built into
-@code{pcb}.  If the name is not specified then the user is prompted
-for a pattern, and all objects that match the pattern and are of the
-type specified are selected.
 
 @item Object
 @item ToggleObject
@@ -138,41 +123,6 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		int type;
 
 		switch (pcb_funchash_get(function, NULL)) { /* select objects by their names */
-		case F_ElementByName:
-			type = PCB_TYPE_ELEMENT;
-			goto commonByName;
-		case F_ObjectByName:
-			type = PCB_TYPEMASK_ALL;
-			goto commonByName;
-		case F_PadByName:
-			type = PCB_TYPE_PAD;
-			goto commonByName;
-		case F_PinByName:
-			type = PCB_TYPE_PIN;
-			goto commonByName;
-		case F_TextByName:
-			type = PCB_TYPE_TEXT;
-			goto commonByName;
-		case F_ViaByName:
-			type = PCB_TYPE_VIA;
-			goto commonByName;
-		case F_NetByName:
-			type = PCB_TYPE_NET;
-			goto commonByName;
-
-		commonByName:
-			{
-				const char *pattern = PCB_ACTION_ARG(1);
-				pcb_search_method_t method = PCB_SM_REGEX;
-
-				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
-					if (pcb_select_object_by_name(PCB, type, pattern, pcb_true, method))
-						pcb_board_set_changed_flag(pcb_true);
-					if (PCB_ACTION_ARG(1) == NULL)
-						free((char*)pattern);
-				}
-				break;
-			}
 
 			/* select a single object */
 		case F_ToggleObject:
@@ -272,10 +222,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_Unselect[] =
-	"Unselect(All|Block|Connection)\n"
-	"Unselect(ElementByName|ObjectByName|PadByName|PinByName)\n"
-	"Unselect(ElementByName|ObjectByName|PadByName|PinByName, Name)\n"
-	"Unselect(TextByName|ViaByName)\n" "Unselect(TextByName|ViaByName, Name)\n";
+	"Unselect(All|Block|Connection)\n";
 
 static const char pcb_acth_Unselect[] = "Unselects the object at the pointer location or the specified objects.";
 
@@ -292,19 +239,6 @@ Unselect all objects in a rectangle given by the cursor.
 @item Connection
 Unselect all connections with the ``found'' flag set.
 
-@item ElementByName
-@item ObjectByName
-@item PadByName
-@item PinByName
-@item TextByName
-@item ViaByName
-
-These all rely on having a regular expression parser built into
-@code{pcb}.  If the name is not specified then the user is prompted
-for a pattern, and all objects that match the pattern and are of the
-type specified are unselected.
-
-
 @end table
 
 %end-doc */
@@ -315,42 +249,6 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (function) {
 		int type;
 		switch (pcb_funchash_get(function, NULL)) {
-			/* select objects by their names */
-		case F_ElementByName:
-			type = PCB_TYPE_ELEMENT;
-			goto commonByName;
-		case F_ObjectByName:
-			type = PCB_TYPEMASK_ALL;
-			goto commonByName;
-		case F_PadByName:
-			type = PCB_TYPE_PAD;
-			goto commonByName;
-		case F_PinByName:
-			type = PCB_TYPE_PIN;
-			goto commonByName;
-		case F_TextByName:
-			type = PCB_TYPE_TEXT;
-			goto commonByName;
-		case F_ViaByName:
-			type = PCB_TYPE_VIA;
-			goto commonByName;
-		case F_NetByName:
-			type = PCB_TYPE_NET;
-			goto commonByName;
-
-		commonByName:
-			{
-				const char *pattern = PCB_ACTION_ARG(1);
-				pcb_search_method_t method = PCB_SM_REGEX;
-
-				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
-					if (pcb_select_object_by_name(PCB, type, pattern, pcb_false, method))
-						pcb_board_set_changed_flag(pcb_true);
-					if (PCB_ACTION_ARG(1) == NULL)
-						free((char*)pattern);
-				}
-				break;
-			}
 
 			/* all objects in block */
 		case F_Block:
