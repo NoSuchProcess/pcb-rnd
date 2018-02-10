@@ -1126,7 +1126,25 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 
 static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
 {
-	if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN) == 0)
+	pcb_layer_type_t lyt = 0;
+
+
+	if ((kicad_name[0] == 'F') && (kicad_name[1] == '.')) lyt |= PCB_LYT_TOP;
+	else if ((kicad_name[0] == 'B') && (kicad_name[1] == '.')) lyt |= PCB_LYT_BOTTOM;
+	else if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) lyt |= PCB_LYT_INTERN;
+
+	if (pcb_strcasecmp(kicad_name, "Edge.Cuts") == 0) lyt |= PCB_LYT_OUTLINE;
+	else if (kicad_name[1] == '.') {
+		char *ln = kicad_name + 2;
+		if (pcb_strcasecmp(ln, "SilkS") == 0) lyt |= PCB_LYT_SILK;
+		else if (pcb_strcasecmp(ln, "Mask") == 0) lyt |= PCB_LYT_MASK;
+		else if (pcb_strcasecmp(ln, "Paste") == 0) lyt |= PCB_LYT_PASTE;
+		else if (pcb_strcasecmp(ln, "Cu") == 0) lyt |= PCB_LYT_COPPER;
+		else lyt |= PCB_LYT_VIRTUAL;
+	}
+	else lyt |= PCB_LYT_VIRTUAL;
+
+	if (kicad_reg_layer(st, kicad_name, lyt) == 0)
 		return kicad_get_layeridx(st, kicad_name);
 	return -1;
 }
