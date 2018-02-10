@@ -1432,6 +1432,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 #warning TODO: this should be coming from the s-expr file preferences part
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
+	if (st->pcb == NULL) {
+		/* loading a module as a footprint - always create the subc in advance */
+		subc = pcb_subc_new();
+		pcb_subc_create_aux(subc, 0, 0, 0.0, 0);
+		pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+	}
+
 	if (subtree->str != NULL) {
 		/*pcb_trace("Name of module element being parsed: '%s'\n", subtree->str); */
 		moduleName = subtree->str;
@@ -1526,9 +1533,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (moduleName != NULL && moduleDefined == 0) {
 					moduleDefined = 1; /* but might be empty, wait and see */
 					/*pcb_trace("Have new module name and location, defining module/element %s\n", moduleName); */
-					subc = pcb_subc_new();
-					pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
-					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+					if (subc == NULL) {
+						subc = pcb_subc_new();
+						pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
+						pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+					}
 					if (st->pcb != NULL) {
 						pcb_add_subc_to_data(st->pcb->Data, subc);
 						pcb_subc_bind_globals(st->pcb, subc);
