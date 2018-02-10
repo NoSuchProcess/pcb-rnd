@@ -1390,7 +1390,10 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 		lnm = default_layer_name;
 	}
 
-	lyt = pcb_layer_flags(st->pcb, pcb_idx);
+	if (st->pcb == NULL)
+		lyt = st->fp_data->Layer[pcb_idx].meta.bound.type;
+	else
+		lyt = pcb_layer_flags(st->pcb, pcb_idx);
 	comb = 0;
 	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
 }
