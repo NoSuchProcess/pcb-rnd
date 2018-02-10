@@ -1,12 +1,8 @@
-/*!
- * \file distalign.c
+/* Functions to distribute (evenly spread out) and align PCB elements.
  *
- * \brief distalign plug-in for PCB.
- * Functions to distribute (evenly spread out) and align PCB elements.
+ * Copyright (C) 2007 Ben Jackson <ben@ben.com>
  *
- * \author Copyright (C) 2007 Ben Jackson <ben@ben.com>
- *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
@@ -27,57 +23,54 @@
  * Both functions always work on all selected elements[*].
  *
  * Some examples:
- * <table noborder>
- * <tr><td>
+ *
  * :Align(X)
- * </td><td>
+ *
  * Objects are moved left/right to align their Marks with the Mark of
  * the topmost selected object. All objects remain on or move to the
  * current grid.
- * </td></tr><tr><td>
+ *
  * :Align(Y,Centers)
- * </td><td>
+ *
  * Now objects are aligned up/down to their geometric centers rather
  * than their marks. The reference point is the center of the leftmost
  * object.
- * </td></tr><tr><td>
+ *
  * :Align(Y,Tops,Average,Gridless)
- * </td><td>
+ *
  * Feeling bold, you align the tops all selected objects to the average
  * of their top edges and let them wander off the grid to exactly the
  * average of their tops.
- * </td></tr><tr><td>
+ *
  * :Align(X,Marks,pcb_crosshair)
- * </td><td>
+ *
  * None of the objects are where you want them, so you move the
  * crosshair to a likely spot and cause them all to move their X
  * coordinates to your new X location.
- * </td></tr><tr><td>
+ *
  * :Align(X,Marks,Last)
- * </td><td>
+ *
  * As above, but instead of the crosshair you just override the default
  * "First" to "Last" so the reference object is bottommost instead of
  * topmost.
- * </table>
+ *
  *
  * Now you have them in a neat line, but they're all clumped!
  *
- * <table noborder>
- * <tr><td>
  * :Distribute(Y)
- * </td><td>
+ *
  * Objects are spread out evenly from the first (uppermost) to last
  * using their marks as the reference point.
- * </td></tr><tr><td>
+ *
  * :Distribute(X,Lefts,pcb_crosshair,Last)
- * </td><td>
+ *
  * You move your crosshair to the left edge of the target area, which
  * will be the leftmost edge of the leftmost object. The objects are
  * spread between your crosshair and the original location of the Last
  * (rightmost) object.
- * </td></tr><tr><td>
+ *
  * :Distribute(Y,Gaps)
- * </td><td>
+ *
  * You have chosen to select many oddly sized objects, and instead of
  * their centers being spread out evenly, you want the space (or "gaps")
  * to be even.
