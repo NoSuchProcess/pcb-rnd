@@ -37,7 +37,6 @@
 
 #include "action_helper.h"
 #include "board.h"
-#include "brave.h"
 #include "change.h"
 #include "compat_nls.h"
 #include "data.h"
@@ -60,7 +59,8 @@ void pcb_tool_via_notify_mode(void)
 		return;
 	}
 
-	if (pcb_brave & PCB_BRAVE_PSTK_VIA) {
+#warning padstack TODO: do not work in compatibility mode, use a padstack proto
+	{
 		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, pcb_tool_note.X, pcb_tool_note.Y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, pcb_true);
@@ -76,20 +76,6 @@ void pcb_tool_via_notify_mode(void)
 		pcb_undo_inc_serial();
 		pcb_pstk_invalidate_draw(ps);
 		pcb_draw();
-	}
-	else {
-		pcb_pin_t *via;
-		if ((via = pcb_via_new(PCB->Data, pcb_tool_note.X, pcb_tool_note.Y,
-													conf_core.design.via_thickness, 2 * conf_core.design.clearance,
-													0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
-			pcb_obj_add_attribs(via, PCB->pen_attr);
-			pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-			if (pcb_gui->shift_is_pressed())
-				pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle, INDEXOFCURRENT);
-			pcb_undo_inc_serial();
-			pcb_via_invalidate_draw(via);
-			pcb_draw();
-		}
 	}
 }
 

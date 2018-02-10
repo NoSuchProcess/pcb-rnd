@@ -49,8 +49,6 @@ typedef struct {
 } desc_t;
 
 static desc_t desc[] = {
-	{PCB_BRAVE_PSTK_VIA, "pstk_via", "use padstack for vias",
-		"placing new vias will place padstacks instsad of old via objects", 0 },
 	{0, NULL, NULL, NULL}
 };
 
