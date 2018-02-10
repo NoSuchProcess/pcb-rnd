@@ -320,10 +320,6 @@ ha:{
 				-
 				ha:Route radius +0.5 = { a=Alt<Key>c; action=conf(delta, editor/route_radius, +0.5, design); }
 				ha:Route radius -0.5 = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
-				-
-				ha:Change square-flag of selected objects = { foreground=grey50; sensitive=false }
-				ha:Elements = { action=ChangeSquare(SelectedElements) }
-				ha:Pins = { action=ChangeSquare(SelectedPins) }
 			}
 		} # Select
 
@@ -432,10 +428,8 @@ ha:{
 						ha:MarkCrosshair = { a=Ctrl<Key>m; action=MarkCrosshair() }
 						ha:Select shortest rat = { a=Shift<Key>n; action=AddRats(Close) }
 						ha:AddRats to selected pins = { a=Shift<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
-						ha:ChangeOctagon Object = { a=Ctrl<Key>o; action=ChangeOctagon(Object) }
 						ha:Polygon PreviousPoint = { a=<Key>p; action=Polygon(PreviousPoint) }
 						ha:Polygon Close = { a=Shift<Key>p; action=Polygon(Close) }
-						ha:ChangeSquare Object = { a=<Key>q; action=ChangeSquare(Object) }
 						ha:ChangeSize +5 mil = { a=<Key>s; action=ChangeSize(Object,+5,mil) }
 						ha:ChangeSize -5 mil = { a=Shift<Key>s; action=ChangeSize(Object,-5,mil) }
 						ha:ChangeDrill +5 mil = { a=Alt<Key>s; action=ChangeDrillSize(Object,+5,mil) }

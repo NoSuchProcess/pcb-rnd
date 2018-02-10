@@ -350,12 +350,6 @@ ha:{
 					}
 				}
 				-
-				ha:Change square-flag of selected objects {
-					li:submenu {
-						ha:Elements  = { action=ChangeSquare(SelectedElements) }
-						ha:Pins      = { action=ChangeSquare(SelectedPins) }
-					}
-				}
 				ha:Cycle object being dragged = { a=<Key>x; action=CycleDrag() }
 			}
 		} # Select
@@ -476,10 +470,8 @@ ha:{
 						ha:MarkCrosshair                = { a=Ctrl<Key>m; action=MarkCrosshair() }
 						ha:Select shortest rat          = { a=Shift<Key>n; action=AddRats(Close) }
 						ha:AddRats to selected pins     = { a=Shift<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
-						ha:ChangeOctagon Object         = { a=Ctrl<Key>o; action=ChangeOctagon(Object) }
 						ha:Polygon PreviousPoint        = { a=<Key>p; action=Polygon(PreviousPoint) }
 						ha:Polygon Close                = { a=Shift<Key>p; action=Polygon(Close) }
-						ha:ChangeSquare Object          = { a=<Key>q; action=ChangeSquare(ToggleObject) }
 						ha:ChangeSizes to Route style   = { a=Shift<Key>y; action=ChangeSizes(Object,style,mil) }
 						ha:ChangeSize +5 mil            = { a=<Key>s; action=ChangeSize(Object,+5,mil) }
 						ha:ChangeSize -5 mil            = { a=Shift<Key>s; action=ChangeSize(Object,-5,mil) }
