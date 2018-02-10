@@ -1638,22 +1638,49 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
 	if (subc->refdes != NULL) {
-		pcb_coord_t x0, y0;
+		pcb_coord_t x0, y0, dx, dy;
+		pcb_font_t *font = &PCB->fontkit.dflt;
 
-		if (conf_core.editor.view.flip_x)
+		dx = font->MaxWidth/2;
+		dy = font->MaxHeight/2;
+
+		if (conf_core.editor.view.flip_x) {
 			x0 = bb->X2;
+			dx = -dx;
+		}
 		else
 			x0 = bb->X1;
-		if (conf_core.editor.view.flip_y)
+
+		if (conf_core.editor.view.flip_y) {
 			y0 = bb->Y2;
+			dy = -dy;
+		}
 		else
 			y0 = bb->Y1;
 
 		if ((conf_core.editor.subc_id != NULL) && (*conf_core.editor.subc_id != '\0')) {
 			static gds_t s;
 			s.used = 0;
-			if (pcb_append_dyntext(&s, subc, conf_core.editor.subc_id) == 0) {
-				pcb_term_label_draw(x0, y0, 50.0, 0, 0, s.array, subc->intconn);
+			if (pcb_append_dyntext(&s, (pcb_any_obj_t *)subc, conf_core.editor.subc_id) == 0) {
+				char *curr, *next;
+				pcb_coord_t x = x0, y = y0;
+
+				for(curr = s.array; curr != NULL; curr = next) {
+					int ctrl = 0;
+					next = strchr(curr, '\\');
+					if (next != NULL) {
+						*next = '\0';
+						next++;
+						ctrl = 1;
+					}
+					pcb_term_label_draw(x, y, 50.0, 0, 0, curr, subc->intconn);
+					if (ctrl) {
+						switch(*next) {
+							case 'n': y += dy; x = x0; break;
+						}
+						next++;
+					}
+				}
 			}
 			else
 				pcb_term_label_draw(x0, y0, 50.0, 0, 0, "<err>", subc->intconn);
