@@ -456,7 +456,7 @@ static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord
 
 #warning padstack TODO: this ignores circle center offset
 
-	pcb_snprintf(tmp, sizeof(tmp), " %.6mm)\n", circ->dia/2);
+	pcb_snprintf(tmp, sizeof(tmp), " %.6mm)\n", circ->dia);
 	gds_append_str(term_shapes, tmp);
 }
 
