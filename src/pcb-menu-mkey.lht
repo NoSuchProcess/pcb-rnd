@@ -59,7 +59,7 @@ ha:{
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
 						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
-						ha:Load element/subcircuit data to paste-buffer = {                             li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
+						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
 						ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
@@ -272,7 +272,7 @@ ha:{
 				-
 				ha:Rubber band mode                 = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 				ha:Rubber band keeps middle line dir= { checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
-				ha:Require unique element names     = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
+				ha:Require unique refdes            = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
 				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:New lines, arcs clear polygons   = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
 				ha:New polygons are full ones       = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
@@ -318,14 +318,13 @@ ha:{
 					}
 				}
 				-
-				ha:Auto-place selected elements          = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
-				ha:Disperse all elements/subcircuits     = { action=DisperseElements(All) }
-				ha:Disperse selected elements/subcircuits= { action=DisperseElements(Selected) }
+				ha:Auto-place selected subcircuits       = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
+				ha:Disperse all subcircuits              = { action=DisperseElements(All) }
+				ha:Disperse selected subcircuits         = { action=DisperseElements(Selected) }
 				-
-				ha:Move selected elements to other side  = { a=Shift<Key>b; action=Flip(SelectedElements) }
+				ha:Move selected subcircuits to other side= { a=Shift<Key>b; action=Flip(SelectedElements) }
 				ha:Move selected to current layer        = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
 				ha:Remove selected objects               = { a=Shift<Key>Delete; action=RemoveSelected() }
-				ha:Convert selection to element          = { action=Select(Convert) }
 				ha:Convert selection to subcircuit       = { action=Select(ConvertSubc) }
 				ha:Convert selection to padstack         = { li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
 				-
@@ -380,11 +379,10 @@ ha:{
 				ha:Mirror buffer (left/right) = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				-
 				ha:Clear buffer                    = { action=PasteBuffer(Clear) }
-				ha:Convert buffer to element       = { action=PasteBuffer(Convert) }
 				ha:Convert buffer to subcircuit    = { action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
-				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
-				ha:Save buffer elements/subcircuits to file    = { action=Save(PasteBuffer) }
+				ha:Break buffer subcircuits to pieces = { action=PasteBuffer(Restore) }
+				ha:Save buffer subcircuits to file = { action=Save(PasteBuffer) }
 				ha:Layer bindings...               = { action=LayerBinding(buffer) }
 				-
 				ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1); update_on={editor/buffer_number} }
@@ -593,10 +591,11 @@ ha:{
 						ha:Remove selected objects            = { action=RemoveSelected() }
 						ha:Copy selection to buffer           = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Mode(PasteBuffer)} }
 						ha:Cut selection to buffer            = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
-						ha:Convert selection to element       = { action=Select(Convert) }
-						ha:Auto place selected elements       = { action=AutoPlaceSelected() }
-						ha:Autoroute selected elements        = { action=AutoRoute(SelectedRats) }
+						ha:Convert selection to subcircuit    = { action=Select(ConvertSubc) }
+						ha:Auto place selected subcircuits    = { action=AutoPlaceSelected() }
+						ha:Autoroute selected subcircuits     = { action=AutoRoute(SelectedRats) }
 						ha:Rip up selected auto-routed tracks = { action=RipUp(Selected) }
+						ha:Rotate selected                    = { action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) FreeRotateBuffer(); Mode(PasteBuffer); PasteBuffer(Tolayout, crosshair); } }
 					}
 				}
 				ha:Operations on this location {

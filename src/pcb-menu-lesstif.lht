@@ -43,7 +43,7 @@ ha:{
 						ha:Import tEDAx schematics           = { action=LoadTedaxFrom(netlist) }
 						ha:Import KiCad/eeschema schematics  = { action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = { action=LoadMentorFrom() }
-						ha:Load element/subcircuit data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
+						ha:Load subcircuit data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = { li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load netlist file                 = { action=Load(Netlist) }
 						ha:Load vendor resource file         = { action=LoadVendor() }
@@ -250,7 +250,7 @@ ha:{
 				-
 				ha:Rubber band mode = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 				ha:Rubber band keeps middle line dir= { checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
-				ha:Require unique element names = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
+				ha:Require unique refdes = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
 				ha:Auto-zero delta measurements = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:New lines, arcs clear polygons = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
 				ha:New polygons are full ones = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
@@ -267,7 +267,7 @@ ha:{
 				ha:Enable vendor drill mapping = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
 				ha:Import Settings {
 					li:submenu {
-						ha:New elements added at... = { foreground=grey50; sensitive=false }
+						ha:New subcircuits added at... = { foreground=grey50; sensitive=false }
 						ha: Center = { action=Import(setnewpoint,center) }
 						ha: Mark = { action=Import(setnewpoint,mark) }
 						ha: Crosshair = { action=Import(setnewpoint) }
@@ -294,12 +294,11 @@ ha:{
 				ha:Text Objects = { active=rc/have_regex; action=Select(TextByName) }
 				ha:Vias = { active=rc/have_regex; action=Select(ViaByName) }
 				-
-				ha:Auto-place selected elements = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
-				ha:Disperse all elements/subcircuits = { action=DisperseElements(All) }
-				ha:Move selected elements to other side = { a=Shift<Key>b; action=Flip(SelectedElements) }
+				ha:Auto-place selected subcircuits = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
+				ha:Disperse all subcircuits = { action=DisperseElements(All) }
+				ha:Move selected subcircuits to other side = { a=Shift<Key>b; action=Flip(SelectedElements) }
 				ha:Move selected to current layer = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
 				ha:Delete selected objects = { a=<Key>Delete; action=Delete(Selected) }
-				ha:Convert selection to element = { action=Select(Convert) }
 				ha:Convert selection to subcircuit = { action=Select(ConvertSubc) }
 				ha:Convert selection to padstack         = { li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
 				-
@@ -349,11 +348,10 @@ ha:{
 				ha:Mirror buffer (left/right) = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				-
 				ha:Clear buffer = { action=PasteBuffer(Clear) }
-				ha:Convert buffer to element = { action=PasteBuffer(Convert) }
 				ha:Convert buffer to subcircuit    = { action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
-				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
-				ha:Save buffer elements/subcircuits to file = { action=Save(PasteBuffer) }
+				ha:Break buffer subcircuits to pieces = { action=PasteBuffer(Restore) }
+				ha:Save buffer subcircuits to file = { action=Save(PasteBuffer) }
 				ha:Layer bindings...               = { action=LayerBinding(buffer) }
 				-
 				ha:Select current buffer = { foreground=grey50; sensitive=false }
