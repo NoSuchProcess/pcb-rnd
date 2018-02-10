@@ -4,6 +4,7 @@
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
+- BUG: require unique refdes: doesn't work; do we need it?
 + BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
 - Replacing an existing element with a subc in the buffer using shift-click doesn't pick-up the refdes from the existing element. [report: Ade]
 - BUG: Far-side silk text can be selected and moved when the mouse is over front-side objects. [report: Ade]
@@ -65,6 +66,7 @@
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- unify thermal format for all objects
 	- remove elements, pins, pads
+	- warn for saving attribute intnoconn in v4
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
@@ -218,6 +220,9 @@ SUBC: element removal:
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
+	- change square and octagon (flag based)
+	- hidename
+	
 
 GTK2:
 	- next_gui: keep them open, hide
