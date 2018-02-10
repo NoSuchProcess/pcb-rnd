@@ -69,7 +69,8 @@
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
 static const char pcb_acts_Display[] =
-	"Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName)\n"
+	"Display(SubcID, template)\n"
+	"Display(Grid|Redraw|Pinout|PinOrPadName)\n"
 	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
 	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
 	"Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)\n"
@@ -83,10 +84,10 @@ static const char pcb_acth_Display[] = "Several display-related actions.";
 
 @table @code
 
-@item NameOnPCB
+@item SubcID
 @item Description
 @item Value
-Specify whether all elements show their name, description, or value.
+Specify the subcircuit ID template to be printed on the subcircuit layer
 
 @item Redraw
 Redraw the whole board.
@@ -234,56 +235,25 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 	function = PCB_ACTION_ARG(0);
 	str_dir = PCB_ACTION_ARG(1);
 
+	id = pcb_funchash_get(function, NULL);
+	if (id == F_SubcID) { /* change the displayed name of elements */
+		if (argc > 0)
+			conf_set(CFR_DESIGN, "editor/subc_id", -1, str_dir, POL_OVERWRITE);
+		else
+			conf_set(CFR_DESIGN, "editor/subc_id", -1, "", POL_OVERWRITE);
+
+		pcb_gui->invalidate_all(); /* doesn't change too often, isn't worth anything more complicated */
+		pcb_draw();
+		return 0;
+	}
+
 	if (function && (!str_dir || !*str_dir)) {
-		switch (id = pcb_funchash_get(function, NULL)) {
+		switch (id) {
 
 			/* redraw layout */
 		case F_ClearAndRedraw:
 		case F_Redraw:
 			pcb_redraw();
-			break;
-
-			/* change the displayed name of elements */
-		case F_Value:
-		case F_NameOnPCB:
-		case F_Description:
-			PCB_ELEMENT_LOOP(PCB->Data);
-			{
-				pcb_elem_name_invalidate_erase(element);
-			}
-			PCB_END_LOOP;
-			switch (id) {
-			case F_Value:
-				if (conf_core.editor.description || conf_core.editor.name_on_pcb) {
-					conf_set_editor(description, 0);
-					conf_set_editor(name_on_pcb, 0);
-				}
-				else
-					conf_set_editor(name_on_pcb, 0); /* need to write once so the event is triggered */
-				break;
-			case F_NameOnPCB:
-				if (conf_core.editor.description || !conf_core.editor.name_on_pcb) {
-					conf_set_editor(description, 0);
-					conf_set_editor(name_on_pcb, 1);
-				}
-				else
-					conf_set_editor(name_on_pcb, 1); /* need to write once so the event is triggered */
-				break;
-			case F_Description:
-				if (!conf_core.editor.description || conf_core.editor.name_on_pcb) {
-					conf_set_editor(description, 1);
-					conf_set_editor(name_on_pcb, 0);
-				}
-				else
-					conf_set_editor(name_on_pcb, 0); /* need to write once so the event is triggered */
-				break;
-			}
-			PCB_ELEMENT_LOOP(PCB->Data);
-			{
-				pcb_elem_name_invalidate_draw(element);
-			}
-			PCB_END_LOOP;
-			pcb_draw();
 			break;
 
 			/* toggle line-adjust flag */

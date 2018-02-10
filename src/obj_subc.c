@@ -1649,7 +1649,17 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 		else
 			y0 = bb->Y1;
 
-		pcb_term_label_draw(x0, y0, 50.0, 0, 0, subc->refdes, subc->intconn);
+		if ((conf_core.editor.subc_id != NULL) && (*conf_core.editor.subc_id != '\0')) {
+			static gds_t s;
+			s.used = 0;
+			if (pcb_append_dyntext(&s, subc, conf_core.editor.subc_id) == 0) {
+				pcb_term_label_draw(x0, y0, 50.0, 0, 0, s.array, subc->intconn);
+			}
+			else
+				pcb_term_label_draw(x0, y0, 50.0, 0, 0, "<err>", subc->intconn);
+		}
+		else
+			pcb_term_label_draw(x0, y0, 50.0, 0, 0, subc->refdes, subc->intconn);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;

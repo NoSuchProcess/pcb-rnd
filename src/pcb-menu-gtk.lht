@@ -202,9 +202,9 @@ ha:{
 				-
 				ha:Displayed element name {
 					li:submenu {
-						ha:Description            = { checked=ChkElementName(1); action=Display(Description); update_on={editor/description} }
-						ha:Reference Designator   = { checked=ChkElementName(2); action=Display(NameOnPCB); update_on={editor/name_on_pcb} }
-						ha:Value                  = { checked=ChkElementName(3); action=Display(Value); update_on={editor/name_on_pcb} }
+						ha:refdes                 = { checked=ChkElementName(5); action=Display(SubcID); update_on={editor/name_on_pcb} }
+						ha:footprint              = { checked=ChkElementName(5); action=Display(SubcID,"%a.footprint%"); update_on={editor/description} }
+						ha:Value                  = { checked=ChkElementName(5); action=Display(SubcID,"%a.value%"); update_on={editor/name_on_pcb} }
 					}
 				}
 				ha:Enable Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
