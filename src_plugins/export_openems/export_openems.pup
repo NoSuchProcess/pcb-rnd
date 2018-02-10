@@ -1,0 +1,8 @@
+$class export
+$short openems exporter
+$long Export copper to OpenEMS simulation
+$state WIP
+$fmt-native no
+$fmt-feature-w export a matlab file suitable for OpenEMS simulation
+default disable
+autoload 1
