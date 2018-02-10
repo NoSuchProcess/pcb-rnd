@@ -455,8 +455,6 @@ ha:{
 						ha:Set Same                     = { a=<Key>a; action=SetSame() }
 						ha:Flip Object                  = { a=<Key>b; action=Flip(Object) }
 						ha:Find Connections             = { a=<Key>f; li:action={Connection(Reset); Connection(Find)} }
-						ha:ToggleHideName Object        = { a=<Key>h; action=ToggleHideName(Object) }
-						ha:ToggleHideName SelectedElement = { a=Shift<Key>h; action=ToggleHideName(SelectedElements) }
 						ha:ChangeHole Object            = { a=Ctrl<Key>h; action=ChangeHole(Object) }
 						ha:ChangeJoin Object            = { a=<Key>j; action=ChangeJoin(Object) }
 						ha:ChangeJoin SelectedObject    = { a=Shift<Key>j; action=ChangeJoin(SelectedObjects) }
