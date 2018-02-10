@@ -399,7 +399,7 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	pcb_coord_t x, y;
 	int n;
 
-	pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%s\" 0", layer_name);
+	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%s\" 0", layer_name);
 	gds_append_str(term_shapes, tmp);
 
 	fld = 0;
@@ -422,7 +422,7 @@ static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_
 	int n;
 	pcb_line_t ltmp;
 
-	pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%s\" 0", layer_name);
+	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%s\" 0", layer_name);
 	gds_append_str(term_shapes, tmp);
 
 	memset(&ltmp, 0, sizeof(ltmp));
@@ -451,15 +451,13 @@ static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord
 {
 	char tmp[512];
 
-	pcb_snprintf(tmp, sizeof(tmp), "(circle \"%s\"", layer_name);
+	pcb_snprintf(tmp, sizeof(tmp), "        (circle \"%s\"", layer_name);
 	gds_append_str(term_shapes, tmp);
 
 #warning padstack TODO: this ignores circle center offset
 
-	pcb_snprintf(tmp, sizeof(tmp), " %.6mm", circ->dia/2);
+	pcb_snprintf(tmp, sizeof(tmp), " %.6mm)\n", circ->dia/2);
 	gds_append_str(term_shapes, tmp);
-
-	gds_append_str(term_shapes, "\n        )\n");
 }
 
 static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
@@ -609,7 +607,7 @@ static void print_library(FILE * fp)
 			gds_append_str(&term_shapes, pid);
 			gds_append_str(&term_shapes, "\n");
 
-			gds_append_str(&term_shapes, "      (shape ");
+			gds_append_str(&term_shapes, "      (shape\n");
 			for(n = 0; n < g_list_length(layerlist); n++)
 				print_pstk_shape(&term_shapes, padstack, n, 0, 0, partsidesign);
 			gds_append_str(&term_shapes, "      )\n");
