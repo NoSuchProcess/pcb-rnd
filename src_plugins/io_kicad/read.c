@@ -1418,7 +1418,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	unsigned int moduleRotation = 0; /* for rotating modules */
 	unsigned int padRotation = 0; /* for rotating pads */
 	unsigned long tally = 0, featureTally = 0, required;
-	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
+	pcb_coord_t moduleX = 0, moduleY = 0, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t endAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
@@ -1545,8 +1545,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						pcb_add_subc_to_data(st->pcb->Data, subc);
 						pcb_subc_bind_globals(st->pcb, subc);
 					}
-					else
-						pcb_add_subc_to_data(st->fp_data, subc);
+					
 				}
 			}
 			else if (n->str != NULL && strcmp("model", n->str) == 0) {
@@ -2344,10 +2343,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 
 			pcb_subc_bbox(subc);
-			if (st->pcb->Data->subc_tree == NULL)
-				st->pcb->Data->subc_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
-			pcb_subc_rebind(st->pcb, subc);
+			if (st->pcb != NULL) {
+				if (st->pcb->Data->subc_tree == NULL)
+					st->pcb->Data->subc_tree = pcb_r_create_tree();
+				pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
+				pcb_subc_rebind(st->pcb, subc);
+			}
+			else
+				pcb_add_subc_to_data(st->fp_data, subc);
 
 			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
 				/* lossles module rotation for round steps */
