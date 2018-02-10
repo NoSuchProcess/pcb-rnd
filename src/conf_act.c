@@ -279,22 +279,17 @@ static int pcb_act_ChkGridSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 	return (PCB->Grid == pcb_get_value_ex(argv[0], NULL, NULL, NULL, NULL, NULL));
 }
 
-static const char ChkElementName_syntax[] =
-	"ChkElementName(1) - expect description\n"
-	"ChkElementName(2) - expect refdes\n"
-	"ChkElementName(3) - expect value\n"
-	;
-static const char ChkElementName_help[] = "Return 1 if currently shown element label (name) type matches the expected";
-static int pcb_act_ChkElementName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char ChkSubcID_syntax[] = "ChkSubcID(pattern)\n";
+static const char ChkSubcID_help[] = "Return 1 if currently shown subc ID matches the requested pattern";
+static int pcb_act_ChkSubcID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int have, expected = argv[0][0] - '0';
+	const char *have = conf_core.editor.subc_id, *expected;
 
-	assert(argc == 1);
-	if (conf_core.editor.description) have = 1;
-	else if (conf_core.editor.name_on_pcb) have = 2;
-	else have = 3;
+	if (have == NULL) have = "";
+	if (argc > 0) expected = argv[0];
+	else expected = "";
 
-	return expected == have;
+	return strcmp(expected, have) == 0;
 }
 
 static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
@@ -328,8 +323,8 @@ pcb_hid_action_t conf_action_list[] = {
 	{"ChkGridSize", 0, pcb_act_ChkGridSize,
 	 ChkGridSize_help, ChkGridSize_syntax}
 	,
-	{"ChkElementName", 0, pcb_act_ChkElementName,
-	 ChkElementName_help, ChkElementName_syntax}
+	{"ChkSubcID", 0, pcb_act_ChkSubcID,
+	 ChkSubcID_help, ChkSubcID_syntax}
 	,
 	{"ChkGridUnits", 0, pcb_act_ChkGridUnits,
 	 ChkGridUnits_help, ChkGridUnits_syntax}

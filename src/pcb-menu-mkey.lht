@@ -200,11 +200,12 @@ ha:{
 				}
 				ha:Realign grid               = { action={ GetXY(Click to set the grid origin); Display(ToggleGrid) } }
 				-
-				ha:Displayed element name {
+				ha:Displayed subcircuit ID {
 					li:submenu {
-						ha:Description            = { checked=ChkElementName(1); action=Display(Description); update_on={editor/description} }
-						ha:Reference Designator   = { checked=ChkElementName(2); action=Display(NameOnPCB); update_on={editor/name_on_pcb} }
-						ha:Value                  = { checked=ChkElementName(3); action=Display(Value); update_on={editor/name_on_pcb} }
+						ha:refdes                 = { checked=ChkSubcID(); action=Display(SubcID); update_on={editor/name_on_pcb} }
+						ha:footprint              = { checked=ChkSubcID(%a.footprint%); action=Display(SubcID,"%a.footprint%"); update_on={editor/subc_id} }
+						ha:value                  = { checked=ChkSubcID(%a.value%); action=Display(SubcID,"%a.value%"); update_on={editor/subc_id} }
+						ha:refdes+value           = { checked=ChkSubcID(%a.refdes%\\n%a.value%); action=Display(SubcID,"%a.refdes%\\\\n%a.value%"); update_on={editor/subc_id} }
 					}
 				}
 				ha:Enable Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }

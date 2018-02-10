@@ -89,9 +89,10 @@ ha:{
 				ha:Show soldermask = { checked=editor/show_mask; action=Display(ToggleMask) }
 				-
 				ha:Displayed element-name... = { foreground=grey50; sensitive=false }
-				ha:Description = { checked=ChkElementName(1); action=Display(Description) }
-				ha:Reference Designator = { checked=ChkElementName(2); action=Display(NameOnPCB) }
-				ha:Value = { checked=ChkElementName(3); action=Display(Value) }
+				ha:refdes                 = { checked=ChkSubcID(); action=Display(SubcID) }
+				ha:footprint              = { checked=ChkSubcID(%a.footprint%); action=Display(SubcID,"%a.footprint%") }
+				ha:value                  = { checked=ChkSubcID(%a.value%); action=Display(SubcID,"%a.value%") }
+				ha:refdes+value           = { checked=ChkSubcID(%a.refdes%\\n%a.value%); action=Display(SubcID,"%a.refdes%\\\\n%a.value%") }
 				ha:Lock floaters = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
 				ha:Only floaters = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
 				ha:Hide floaters = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
