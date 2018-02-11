@@ -35,8 +35,10 @@
 
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "plugins.h"
 #include "safe_fs.h"
+#include "obj_subc_parent.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -71,6 +73,7 @@ typedef struct {
 	int clayer; /* current layer (lg index really) */
 	long oid; /* unique object ID - we need some unique variable names, keep on counting them */
 	pcb_coord_t ox, oy;
+	unsigned warn_subc_term:1;
 } wctx_t;
 
 static FILE *f = NULL;
@@ -327,6 +330,87 @@ static void openems_write_outline(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
+static void openems_write_testpoint_(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, int layer, const char *refdes, const char *term)
+{
+	long oid = ctx->oid++;
+	pcb_coord_t sx = PCB_MM_TO_COORD(0.1), sy = PCB_MM_TO_COORD(0.1);
+
+	pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x-sx, -(y-sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x+sx, -(y-sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 3) = %mm; points%ld(2, 3) = %mm;\n", oid, x+sx, -(y+sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 4) = %mm; points%ld(2, 4) = %mm;\n", oid, x-sx, -(y+sy));
+	fprintf(ctx->f, "refdes = '%s';\n", refdes);
+	fprintf(ctx->f, "pad.number = '%s';\n", term);
+	fprintf(ctx->f, "pad.id = '%s';\n", term);
+	fprintf(ctx->f, "PCBRND = RegPcbrndPad(PCBRND, %d, points%ld, refdes, pad);\n", layer, oid);
+	fprintf(ctx->f, "[pad_points layer_number] = LookupPcbrndPort(PCBRND, refdes, pad);\n");
+	fprintf(ctx->f, "[ start stop] = CalcPcbrndPoly2Port(PCBRND, points%ld, layer_number);\n", oid);
+}
+
+
+static void openems_write_testpoint(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layergrp_id_t gid;
+	int layer;
+	const char *refdes = NULL;
+	pcb_subc_t *sc;
+
+	if (o->type == PCB_OBJ_PSTK) {
+#warning TODO: figure what to do with padstacks
+		pcb_message(PCB_MSG_ERROR, "Can't determine pad layer on padstacks yet (%$mm;%$mm)\n", x, y);
+		return;
+	}
+
+	assert(o->parent_type == PCB_PARENT_LAYER);
+	gid = pcb_layer_get_group_(o->parent.layer);
+	if (gid < 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't determine pad layer (%$mm;%$mm)\n", x, y);
+		return;
+	}
+
+	layer = ctx->lg_pcb2ems[gid];
+	if (layer <= 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't determine EMS layer for pad (%$mm;%$mm)\n", x, y);
+		return;
+	}
+
+	sc = pcb_obj_parent_subc(o);
+	if (sc != NULL)
+		refdes = sc->refdes;
+
+	if (refdes == NULL)
+		refdes = "none";
+
+	openems_write_testpoint_(ctx, x, y, layer, refdes, o->term);
+}
+
+#define TPMASK (PCB_OBJ_LINE | PCB_OBJ_PSTK | PCB_OBJ_SUBC)
+static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	
+	for(o = pcb_data_first(&it, data, TPMASK); o != NULL; o = pcb_data_next(&it)) {
+		if (o->type == PCB_OBJ_SUBC)
+			openems_write_testpoints(ctx, ((pcb_subc_t *)o)->data);
+		if (o->term == NULL)
+			continue;
+		if (o->type == PCB_OBJ_SUBC) {
+			if (!ctx->warn_subc_term)
+				pcb_message(PCB_MSG_ERROR, "Subcircuit being a terminal is not supported.\n");
+			ctx->warn_subc_term = 1;
+			continue;
+		}
+
+		/* place the test pad */
+		switch(o->type) {
+			case PCB_OBJ_PSTK: openems_write_testpoint(ctx, o, ((pcb_pstk_t *)o)->x, ((pcb_pstk_t *)o)->y); break;
+			default: openems_write_testpoint(ctx, o, (o->BoundingBox.X1+o->BoundingBox.X2)/2, (o->BoundingBox.Y1+o->BoundingBox.Y2)/2);
+		}
+	}
+}
+
+
 void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 {
 	pcb_hid_expose_ctx_t ctx;
@@ -358,6 +442,9 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 
 	fprintf(wctx.f, "%%%%%% Copper objects\n");
 	pcb_hid_expose_all(&openems_hid, &ctx);
+
+	fprintf(wctx.f, "%%%%%% Testpoints on terminals\n");
+	openems_write_testpoints(&wctx, wctx.pcb->Data);
 
 	conf_update(NULL, -1); /* restore forced sets */
 }
