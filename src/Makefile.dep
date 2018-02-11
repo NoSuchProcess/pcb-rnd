@@ -767,12 +767,17 @@
  polyarea.h obj_poly_list.h box.h math_helper.h move.h misc_util.h \
  ht_element.h ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
  obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h library.h \
- rats_patch.h board.h plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h safe_fs.h hid.h error.h drc.h hid_nogui.h \
- hid_helper.h hid_flags.h hid_attrib.h hid.h hid_draw_helpers.h \
- ../src_plugins/lib_polyhelp/topoly.h obj_common.h dolists.h
+ rats_patch.h board.h data.h crosshair.h vtonpoint.h hid.h error.h drc.h \
+ route.h buffer.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h rtree.h rtree2.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h hid.h \
+ hid_nogui.h hid_helper.h hid_flags.h hid_attrib.h hid_init.h \
+ hid_draw_helpers.h ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
+ dolists.h
 ../src_plugins/export_openscad/export_openscad.o: \
  ../src_plugins/export_openscad/export_openscad.c ../config.h conf_core.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
