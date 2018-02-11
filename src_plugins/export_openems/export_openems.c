@@ -106,6 +106,26 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
 #define HA_def_subst_sigma 7
 
+	{"void-name", "Name of the void (sorrunding material)",
+	 PCB_HATT_STRING, 0, 0, {0, "AIR", 0}, 0, 0},
+#define HA_void_name 8
+
+	{"void-epsilon", "epsilon value for the void (sorrunding material)",
+	 PCB_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
+#define HA_void_epsilon 9
+
+	{"void-mue", "mue value for the void (sorrunding material)",
+	 PCB_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
+#define HA_void_mue 10
+
+	{"segments", "kludge: number of segments used to approximate round cap trace ends",
+	 PCB_HATT_INTEGER, 0, 100, {10, 0, 0}, 0, 0},
+#define HA_segments 11
+
+	{"base-prio", "base priority: if the board displaces the chassis",
+	 PCB_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
+#define HA_base_prio 12
+
 };
 
 #define NUM_OPTIONS (sizeof(openems_attribute_list)/sizeof(openems_attribute_list[0]))
@@ -136,7 +156,7 @@ static void openems_write_tunables(wctx_t *ctx)
 
 	fprintf(ctx->f, "%%%% base_priority and offset: chassis for the board to sit in.\n");
 	fprintf(ctx->f, "%% base priority: if the board displaces the model of the chassis or the other way around.\n");
-	fprintf(ctx->f, "base_priority=0;\n");
+	fprintf(ctx->f, "base_priority=%d;\n", ctx->options[HA_base_prio].int_value);
 	fprintf(ctx->f, "\n");
 	fprintf(ctx->f, "%% offset on the whole layout to locate it relative to the simulation origin\n");
 	fprintf(ctx->f, "offset.x = -20;\n");
@@ -145,15 +165,15 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 
 	fprintf(ctx->f, "%% void is the material used for: fill holes, cutouts in substrate, etc\n");
-	fprintf(ctx->f, "void.name = 'AIR';\n");
-	fprintf(ctx->f, "void.epsilon = 1;\n");
-	fprintf(ctx->f, "void.mue = 1;\n");
+	fprintf(ctx->f, "void.name = '%s';\n", ctx->options[HA_void_name].str_value);
+	fprintf(ctx->f, "void.epsilon = %f;\n", ctx->options[HA_void_epsilon].real_value);
+	fprintf(ctx->f, "void.mue = %f;\n", ctx->options[HA_void_mue].real_value);
 	fprintf(ctx->f, "%% void.kappa = kappa;\n");
 	fprintf(ctx->f, "%% void.sigma = sigma;\n");
 	fprintf(ctx->f, "\n");
 
 	fprintf(ctx->f, "%% how many points should be used to describe the round end of traces.\n");
-	fprintf(ctx->f, "kludge.segments = 10;\n");
+	fprintf(ctx->f, "kludge.segments = %d;\n", ctx->options[HA_segments].int_value);
 	fprintf(ctx->f, "\n");
 
 	fprintf(ctx->f, "\n");
