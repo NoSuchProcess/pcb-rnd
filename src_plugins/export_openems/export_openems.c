@@ -72,6 +72,7 @@ typedef struct {
 	int lg_next;
 	int clayer; /* current layer (lg index really) */
 	long oid; /* unique object ID - we need some unique variable names, keep on counting them */
+	long pad_id; /* unique pad ID for the same reason (a single padstack object may make multiple pads) */
 	pcb_coord_t ox, oy;
 	unsigned warn_subc_term:1;
 } wctx_t;
@@ -341,7 +342,7 @@ static void openems_write_testpoint_(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, 
 	pcb_fprintf(ctx->f, "points%ld(1, 4) = %mm; points%ld(2, 4) = %mm;\n", oid, x-sx, -(y+sy));
 	fprintf(ctx->f, "refdes = '%s';\n", refdes);
 	fprintf(ctx->f, "pad.number = '%s';\n", term);
-	fprintf(ctx->f, "pad.id = '%s';\n", term);
+	fprintf(ctx->f, "pad.id = '%ld';\n", ++ctx->pad_id);
 	fprintf(ctx->f, "PCBRND = RegPcbrndPad(PCBRND, %d, points%ld, refdes, pad);\n", layer, oid);
 	fprintf(ctx->f, "[pad_points layer_number] = LookupPcbrndPort(PCBRND, refdes, pad);\n");
 	fprintf(ctx->f, "[ start stop] = CalcPcbrndPoly2Port(PCBRND, points%ld, layer_number);\n", oid);
