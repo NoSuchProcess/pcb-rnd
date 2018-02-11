@@ -268,7 +268,7 @@ static void openems_write_outline(wctx_t *ctx)
 		long n;
 		pcb_poly_t *p = pcb_topoly_conn(ctx->pcb, out1, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
 		for(n = 0; n < p->PointN; n++)
-			pcb_fprintf(ctx->f, "outline_xy(1, %ld) = %mm; outline_xy(2, %ld) = %mm;\n", n, p->Points[n].X, n, -p->Points[n].Y);
+			pcb_fprintf(ctx->f, "outline_xy(1, %ld) = %mm; outline_xy(2, %ld) = %mm;\n", n+1, p->Points[n].X, n+1, -p->Points[n].Y);
 		pcb_poly_free(p);
 	}
 	else {
