@@ -152,8 +152,6 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "%%%%%% User tunables\n");
 	fprintf(ctx->f, "\n");
 
-#warning TODO: make these come from exporter options
-
 	fprintf(ctx->f, "%%%% base_priority and offset: chassis for the board to sit in.\n");
 	fprintf(ctx->f, "%% base priority: if the board displaces the model of the chassis or the other way around.\n");
 	fprintf(ctx->f, "base_priority=%d;\n", ctx->options[HA_base_prio].int_value);
