@@ -56,8 +56,12 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 typedef struct {
+	/* input/output */
 	FILE *f;
 	pcb_board_t *pcb;
+	pcb_hid_attr_val_t *options;
+
+	/* local cache */
 	int lg_pcb2ems[PCB_MAX_LAYERGRP]; /* indexed by gid, gives 0 or the ems-side layer ID */
 	int lg_ems2pcb[PCB_MAX_LAYERGRP]; /* indexed by the ems-side layer ID, gives -1 or a gid */
 	int lg_next;
@@ -72,6 +76,14 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openemsfile 0
+
+	{"def-copper-thick", "Default copper thickness",
+	 PCB_HATT_COORD, 0, 0, {0, 0, 0, PCB_MM_TO_COORD(0.035)}, 0, 0},
+#define HA_def_copper_thick 1
+
+	{"def-substrate-thick", "Default substrate thickness",
+	 PCB_HATT_COORD, 0, 0, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
+#define HA_def_substrate_thick 2
 
 };
 
@@ -126,6 +138,24 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
+static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int cop_opt, int subs_opt)
+{
+	int opt;
+
+#warning TODO: this needs layer group attributes in core (planned for lihata v5)
+#if 0
+	const char *val = pcb_attribute_get(&grp->Attributes, attr);
+
+	if (val != NULL) {
+		/* specified by a layer group attribute: overrides anything else */
+		fprintf(ctx->f, "%s", val);
+		return;
+	}
+#endif
+
+	opt = (grp->type & PCB_LYT_COPPER) ? cop_opt : subs_opt;
+	pcb_fprintf(ctx->f, "%mm", ctx->options[opt].coord_value);
+}
 
 static void openems_write_layers(wctx_t *ctx)
 {
@@ -152,6 +182,10 @@ static void openems_write_layers(wctx_t *ctx)
 		fprintf(ctx->f, "layers(%d).clearn = 0;\n", next);
 		fprintf(ctx->f, "layer_types(%d).name = '%s_%d';\n", next, iscop ? "COPPER" : "SUBSTRATE", next);
 		fprintf(ctx->f, "layer_types(%d).subtype = %d;\n", next, iscop ? 2 : 3);
+
+		fprintf(ctx->f, "layer_types(%d).thickness = ", next);
+		print_lparm(ctx, grp, "thickness", HA_def_copper_thick, HA_def_substrate_thick);
+		fprintf(ctx->f, ";\n");
 
 #warning TODO: get layer properties from attributes or global exporter options
 /*
@@ -209,6 +243,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.f = the_file;
 	wctx.pcb = PCB;
+	wctx.options = options;
 	ems_ctx = &wctx;
 
 	ctx.view.X1 = 0;
