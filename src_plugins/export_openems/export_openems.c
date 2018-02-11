@@ -61,9 +61,11 @@ typedef struct {
 	int lg_pcb2ems[PCB_MAX_LAYERGRP]; /* indexed by gid, gives 0 or the ems-side layer ID */
 	int lg_ems2pcb[PCB_MAX_LAYERGRP]; /* indexed by the ems-side layer ID, gives -1 or a gid */
 	int lg_next;
+	long oid; /* unique object ID - we need some unique variable names, keep on counting them */
 } wctx_t;
 
 static FILE *f = NULL;
+static wctx_t *ems_ctx;
 
 pcb_hid_attribute_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
@@ -190,6 +192,8 @@ static void openems_write_outline(wctx_t *ctx)
 
 	for(n = 1; n < ctx->lg_next; n++)
 		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, outline_xy, 1);\n", n);
+
+	fprintf(ctx->f, "\n");
 }
 
 void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
@@ -200,6 +204,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.f = the_file;
 	wctx.pcb = PCB;
+	ems_ctx = &wctx;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -218,6 +223,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	openems_write_init(&wctx);
 	openems_write_outline(&wctx);
 
+	fprintf(wctx.f, "%%%%%% Copper objects\n");
 	pcb_hid_expose_all(&openems_hid, &ctx);
 
 	conf_update(NULL, -1); /* restore forced sets */
@@ -340,6 +346,14 @@ static void openems_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 
 static void openems_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
+	wctx_t *ctx = ems_ctx;
+	int n;
+	long oid = ctx->oid++;
+
+	for(n = 0; n < n_coords; n++)
+		pcb_fprintf(ctx->f, "poly%ld_xy(1, 1) = %mm; poly%ld_xy(2, 1) = %mm;\n", oid, x[n], oid, y[n]);
+
+	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, ??layer??, poly%ld_xy, 1);\n", oid);
 }
 
 static void openems_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
