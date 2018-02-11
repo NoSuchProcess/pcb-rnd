@@ -4,5 +4,6 @@ $long Export copper to OpenEMS simulation
 $state WIP
 $fmt-native no
 $fmt-feature-w export a matlab file suitable for OpenEMS simulation
+dep lib_polyhelp
 default disable
 autoload 1

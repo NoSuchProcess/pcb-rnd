@@ -43,6 +43,7 @@
 #include "hid_flags.h"
 #include "hid_attrib.h"
 #include "hid_draw_helpers.h"
+#include "../src_plugins/lib_polyhelp/topoly.h"
 
 static pcb_hid_t openems_hid;
 
@@ -258,16 +259,27 @@ static void openems_write_init(wctx_t *ctx)
 static void openems_write_outline(wctx_t *ctx)
 {
 	int n;
+	pcb_any_obj_t *out1;
+
 	fprintf(ctx->f, "%%%%%% Board outline\n");
 
-#warning TODO: check for a real outline layer and generate a poly from that
+	out1 = pcb_topoly_find_1st_outline(ctx->pcb);
+	if (out1 != NULL) {
+		long n;
+		pcb_poly_t *p = pcb_topoly_conn(ctx->pcb, out1, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
+		for(n = 0; n < p->PointN; n++)
+			pcb_fprintf(ctx->f, "outline_xy(1, %ld) = %mm; outline_xy(2, %ld) = %mm;\n", n, p->Points[n].X, n, -p->Points[n].Y);
+		pcb_poly_free(p);
+	}
+	else {
+		/* rectangular board size */
+		pcb_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
+		pcb_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->MaxWidth);
+		pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
+		pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
+	}
 
-	/* rectangular board size */
-	pcb_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
-	pcb_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->MaxWidth);
-	pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
-	pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
-
+	/* create all substrate layers using this polygon*/
 	for(n = 1; n < ctx->lg_next; n++) {
 		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[ctx->lg_ems2pcb[n]];
 		if (grp->type & PCB_LYT_SUBSTRATE)
