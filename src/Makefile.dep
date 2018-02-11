@@ -771,7 +771,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h hid.h error.h drc.h hid_nogui.h \
- hid_helper.h hid_flags.h hid_attrib.h hid.h hid_draw_helpers.h dolists.h
+ hid_helper.h hid_flags.h hid_attrib.h hid.h hid_draw_helpers.h \
+ ../src_plugins/lib_polyhelp/topoly.h obj_common.h dolists.h
 ../src_plugins/export_openscad/export_openscad.o: \
  ../src_plugins/export_openscad/export_openscad.c ../config.h conf_core.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
