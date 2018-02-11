@@ -190,8 +190,11 @@ static void openems_write_outline(wctx_t *ctx)
 	pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
 	pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
 
-	for(n = 1; n < ctx->lg_next; n++)
-		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, outline_xy, 1);\n", n);
+	for(n = 1; n < ctx->lg_next; n++) {
+		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[ctx->lg_ems2pcb[n]];
+		if (grp->type & PCB_LYT_SUBSTRATE)
+			fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, outline_xy, 1);\n", n);
+	}
 
 	fprintf(ctx->f, "\n");
 }
