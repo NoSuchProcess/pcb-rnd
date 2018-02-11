@@ -460,7 +460,7 @@ static void openems_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t
 	long oid = ctx->oid++;
 
 	for(n = 0; n < n_coords; n++)
-		pcb_fprintf(ctx->f, "poly%ld_xy(1, 1) = %mm; poly%ld_xy(2, 1) = %mm;\n", oid, x[n]+dx, oid, -(y[n]+dy));
+		pcb_fprintf(ctx->f, "poly%ld_xy(1, %ld) = %mm; poly%ld_xy(2, %ld) = %mm;\n", oid, n+1, x[n]+dx, oid, n+1, -(y[n]+dy));
 
 	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
 }
