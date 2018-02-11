@@ -61,6 +61,7 @@ typedef struct {
 	int lg_pcb2ems[PCB_MAX_LAYERGRP]; /* indexed by gid, gives 0 or the ems-side layer ID */
 	int lg_ems2pcb[PCB_MAX_LAYERGRP]; /* indexed by the ems-side layer ID, gives -1 or a gid */
 	int lg_next;
+	int clayer; /* current layer (lg index really) */
 	long oid; /* unique object ID - we need some unique variable names, keep on counting them */
 } wctx_t;
 
@@ -144,7 +145,8 @@ static void openems_write_layers(wctx_t *ctx)
 		if (!(iscop) && !(grp->type & PCB_LYT_SUBSTRATE))
 			continue;
 		ctx->lg_ems2pcb[next] = gid;
-		ctx->lg_ems2pcb[gid] = next;
+		ctx->lg_pcb2ems[gid] = next;
+
 		fprintf(ctx->f, "layers(%d).number = %d;\n", next, next); /* type index really */
 		fprintf(ctx->f, "layers(%d).name = '%s';\n", next, (grp->name == NULL ? "anon" : grp->name));
 		fprintf(ctx->f, "layers(%d).clearn = 0;\n", next);
@@ -274,6 +276,7 @@ static void openems_parse_arguments(int *argc, char ***argv)
 static int openems_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	if (flags & PCB_LYT_COPPER) { /* export copper layers only */
+		ems_ctx->clayer = ems_ctx->lg_pcb2ems[group];
 		return 1;
 	}
 	return 0;
@@ -356,7 +359,7 @@ static void openems_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t
 	for(n = 0; n < n_coords; n++)
 		pcb_fprintf(ctx->f, "poly%ld_xy(1, 1) = %mm; poly%ld_xy(2, 1) = %mm;\n", oid, x[n], oid, y[n]);
 
-	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, ??layer??, poly%ld_xy, 1);\n", oid);
+	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
 }
 
 static void openems_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
