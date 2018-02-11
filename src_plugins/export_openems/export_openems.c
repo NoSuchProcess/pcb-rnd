@@ -183,13 +183,13 @@ static void openems_write_outline(wctx_t *ctx)
 #warning TODO: check for a real outline layer and generate a poly from that
 
 	/* rectangular board size */
-	pcb_fprintf(ctx->f, "substrate_xy(1, 1) = 0; substrate_xy(2, 1) = 0;\n");
-	pcb_fprintf(ctx->f, "substrate_xy(1, 2) = %mm; substrate_xy(2, 2) = 0;\n", ctx->pcb->MaxWidth);
-	pcb_fprintf(ctx->f, "substrate_xy(1, 3) = %mm; substrate_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
-	pcb_fprintf(ctx->f, "substrate_xy(1, 4) = 0; substrate_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
+	pcb_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
+	pcb_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->MaxWidth);
+	pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
+	pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
 
 	for(n = 1; n < ctx->lg_next; n++)
-		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, substrate_xy, 1);\n", n);
+		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, outline_xy, 1);\n", n);
 }
 
 void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
