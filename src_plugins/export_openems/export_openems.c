@@ -177,7 +177,7 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 	fprintf(ctx->f, "%% offset on the whole layout to locate it relative to the simulation origin\n");
 	pcb_fprintf(ctx->f, "offset.x = %mm;\n", -ctx->ox);
-	pcb_fprintf(ctx->f, "offset.y = %mm;\n", -ctx->oy);
+	pcb_fprintf(ctx->f, "offset.y = %mm;\n", ctx->oy);
 	fprintf(ctx->f, "offset.z = 0;\n");
 	fprintf(ctx->f, "\n");
 
