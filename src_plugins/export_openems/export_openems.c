@@ -34,6 +34,7 @@
 #include <assert.h>
 
 #include "board.h"
+#include "data.h"
 #include "plugins.h"
 #include "safe_fs.h"
 
@@ -68,6 +69,7 @@ typedef struct {
 	int lg_next;
 	int clayer; /* current layer (lg index really) */
 	long oid; /* unique object ID - we need some unique variable names, keep on counting them */
+	pcb_coord_t ox, oy;
 } wctx_t;
 
 static FILE *f = NULL;
@@ -149,6 +151,21 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	return openems_attribute_list;
 }
 
+/* Find the openems 0;0 mark, if there is any */
+static void find_origin_bump(void *ctx_, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
+{
+	wctx_t *ctx = ctx_;
+	if (pcb_attribute_get(&line->Attributes, "openems-origin") != NULL) {
+		ctx->ox = (line->BoundingBox.X1 + line->BoundingBox.X2) / 2;
+		ctx->oy = (line->BoundingBox.Y1 + line->BoundingBox.Y2) / 2;
+	}
+}
+
+static void find_origin(wctx_t *ctx)
+{
+	pcb_loop_layers(ctx->pcb, ctx, NULL, find_origin_bump, NULL, NULL, NULL);
+}
+
 static void openems_write_tunables(wctx_t *ctx)
 {
 	fprintf(ctx->f, "%%%%%% User tunables\n");
@@ -159,8 +176,8 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "base_priority=%d;\n", ctx->options[HA_base_prio].int_value);
 	fprintf(ctx->f, "\n");
 	fprintf(ctx->f, "%% offset on the whole layout to locate it relative to the simulation origin\n");
-	fprintf(ctx->f, "offset.x = -20;\n");
-	fprintf(ctx->f, "offset.y = 20;\n");
+	pcb_fprintf(ctx->f, "offset.x = %mm;\n", -ctx->ox);
+	pcb_fprintf(ctx->f, "offset.y = %mm;\n", -ctx->oy);
 	fprintf(ctx->f, "offset.z = 0;\n");
 	fprintf(ctx->f, "\n");
 
@@ -332,6 +349,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
+	find_origin(&wctx);
 	openems_write_tunables(&wctx);
 	openems_write_layers(&wctx);
 	openems_write_init(&wctx);
