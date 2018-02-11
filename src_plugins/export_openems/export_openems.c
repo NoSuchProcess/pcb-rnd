@@ -410,7 +410,6 @@ static int openems_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 	return 0;
 }
 
-
 static pcb_hid_gc_t openems_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
@@ -462,28 +461,6 @@ static void openems_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 {
 }
 
-static void openems_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	wctx_t *ctx = ems_ctx;
-
-	if (gc->cap == Square_Cap) {
-		pcb_coord_t x[4], y[4];
-		pcb_line_t tmp;
-		tmp.Point1.X = x1;
-		tmp.Point1.Y = y1;
-		tmp.Point2.X = x2;
-		tmp.Point2.Y = y2;
-		pcb_sqline_to_rect(&tmp, x, y);
-/*		openems_fill_polygon_offs(gc, 4, x, y, 0, 0);*/
-	}
-	else {
-		long oid = ctx->oid++;
-		pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x1, oid, -y1);
-		pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x2, oid, -y2);
-		pcb_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, gc->width);
-	}
-}
-
 static void openems_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 }
@@ -518,6 +495,29 @@ static void openems_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, 
 {
 	openems_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
+
+static void openems_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	wctx_t *ctx = ems_ctx;
+
+	if (gc->cap == Square_Cap) {
+		pcb_coord_t x[4], y[4];
+		pcb_line_t tmp;
+		tmp.Point1.X = x1;
+		tmp.Point1.Y = y1;
+		tmp.Point2.X = x2;
+		tmp.Point2.Y = y2;
+		pcb_sqline_to_rect(&tmp, x, y);
+		openems_fill_polygon_offs(gc, 4, x, y, 0, 0);
+	}
+	else {
+		long oid = ctx->oid++;
+		pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x1, oid, -y1);
+		pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x2, oid, -y2);
+		pcb_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, gc->width);
+	}
+}
+
 
 static void openems_calibrate(double xval, double yval)
 {
