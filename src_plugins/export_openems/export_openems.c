@@ -73,17 +73,19 @@ typedef struct {
 static FILE *f = NULL;
 static wctx_t *ems_ctx;
 
+#define THMAX PCB_MM_TO_COORD(100)
+
 pcb_hid_attribute_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openemsfile 0
 
 	{"def-copper-thick", "Default copper thickness",
-	 PCB_HATT_COORD, 0, 0, {0, 0, 0, PCB_MM_TO_COORD(0.035)}, 0, 0},
+	 PCB_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.035)}, 0, 0},
 #define HA_def_copper_thick 1
 
 	{"def-substrate-thick", "Default substrate thickness",
-	 PCB_HATT_COORD, 0, 0, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
+	 PCB_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
 #define HA_def_substrate_thick 2
 
 	{"def-copper-cond", "Default copper conductivity",
