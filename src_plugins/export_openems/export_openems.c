@@ -85,6 +85,26 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	 PCB_HATT_COORD, 0, 0, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
 #define HA_def_substrate_thick 2
 
+	{"def-copper-cond", "Default copper conductivity",
+	 PCB_HATT_STRING, 0, 0, {0, "56*10^6", 0}, 0, 0},
+#define HA_def_copper_cond 3
+
+	{"def-subst-epsilon", "Default substrate epsilon",
+	 PCB_HATT_STRING, 0, 0, {0, "3.66", 0}, 0, 0},
+#define HA_def_subst_epsilon 4
+
+	{"def-subst-mue", "Default substrate mue",
+	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+#define HA_def_subst_mue 5
+
+	{"def-subst-kappa", "Default substrate kappa",
+	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+#define HA_def_subst_kappa 6
+
+	{"def-subst-sigma", "Default substrate sigma",
+	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+#define HA_def_subst_sigma 7
+
 };
 
 #define NUM_OPTIONS (sizeof(openems_attribute_list)/sizeof(openems_attribute_list[0]))
@@ -138,7 +158,7 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int cop_opt, int subs_opt)
+static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int cop_opt, int subs_opt, int is_str)
 {
 	int opt;
 
@@ -148,13 +168,20 @@ static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int 
 
 	if (val != NULL) {
 		/* specified by a layer group attribute: overrides anything else */
-		fprintf(ctx->f, "%s", val);
+		if (is_str)
+			fprintf(ctx->f, "%s", val);
+		else
+			TODO: getvalue, print as coord
 		return;
 	}
 #endif
 
 	opt = (grp->type & PCB_LYT_COPPER) ? cop_opt : subs_opt;
-	pcb_fprintf(ctx->f, "%mm", ctx->options[opt].coord_value);
+	assert(opt >= 0);
+	if (is_str)
+		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str_value);
+	else
+		pcb_fprintf(ctx->f, "%mm", ctx->options[opt].coord_value);
 }
 
 static void openems_write_layers(wctx_t *ctx)
@@ -184,18 +211,32 @@ static void openems_write_layers(wctx_t *ctx)
 		fprintf(ctx->f, "layer_types(%d).subtype = %d;\n", next, iscop ? 2 : 3);
 
 		fprintf(ctx->f, "layer_types(%d).thickness = ", next);
-		print_lparm(ctx, grp, "thickness", HA_def_copper_thick, HA_def_substrate_thick);
+		print_lparm(ctx, grp, "thickness", HA_def_copper_thick, HA_def_substrate_thick, 0);
 		fprintf(ctx->f, ";\n");
 
-#warning TODO: get layer properties from attributes or global exporter options
-/*
-layer_types(1).thickness = 1.03556;
-layer_types(1).conductivity = 56*10^6; 
-layer_types(1).epsilon;
-layer_types(1).mue;
-layer_types(1).kappa;
-layer_types(1).sigma;
-*/
+		if (iscop) {
+			fprintf(ctx->f, "layer_types(%d).conductivity = ", next);
+			print_lparm(ctx, grp, "conductivity", HA_def_copper_cond, -1, 1);
+			fprintf(ctx->f, ";\n");
+		}
+		else { /* substrate */
+			fprintf(ctx->f, "layer_types(%d).epsilon = ", next);
+			print_lparm(ctx, grp, "epsilon", -1, HA_def_subst_epsilon, 1);
+			fprintf(ctx->f, ";\n");
+
+			fprintf(ctx->f, "layer_types(%d).mue = ", next);
+			print_lparm(ctx, grp, "mue", -1, HA_def_subst_mue, 1);
+			fprintf(ctx->f, ";\n");
+
+			fprintf(ctx->f, "layer_types(%d).kappa = ", next);
+			print_lparm(ctx, grp, "kappa", -1, HA_def_subst_kappa, 1);
+			fprintf(ctx->f, ";\n");
+
+			fprintf(ctx->f, "layer_types(%d).sigma = ", next);
+			print_lparm(ctx, grp, "sigma", -1, HA_def_subst_sigma, 1);
+			fprintf(ctx->f, ";\n");
+
+		}
 
 		next++;
 		fprintf(ctx->f, "\n");
