@@ -60,6 +60,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	int lg_pcb2ems[PCB_MAX_LAYERGRP]; /* indexed by gid, gives 0 or the ems-side layer ID */
 	int lg_ems2pcb[PCB_MAX_LAYERGRP]; /* indexed by the ems-side layer ID, gives -1 or a gid */
+	int lg_next;
 } wctx_t;
 
 static FILE *f = NULL;
@@ -162,6 +163,8 @@ layer_types(1).sigma;
 		fprintf(ctx->f, "\n");
 	}
 	fprintf(ctx->f, "\n");
+
+	ctx->lg_next = next;
 }
 
 static void openems_write_init(wctx_t *ctx)
@@ -170,6 +173,23 @@ static void openems_write_init(wctx_t *ctx)
 	fprintf(ctx->f, "PCBRND = InitPCBRND(layers, layer_types, void, base_priority, offset, kludge);\n");
 	fprintf(ctx->f, "CSX = InitPcbrndLayers(CSX, PCBRND);\n");
 	fprintf(ctx->f, "\n");
+}
+
+static void openems_write_outline(wctx_t *ctx)
+{
+	int n;
+	fprintf(ctx->f, "%%%%%% Board outline\n");
+
+#warning TODO: check for a real outline layer and generate a poly from that
+
+	/* rectangular board size */
+	pcb_fprintf(ctx->f, "substrate_xy(1, 1) = 0; substrate_xy(2, 1) = 0;\n");
+	pcb_fprintf(ctx->f, "substrate_xy(1, 2) = %mm; substrate_xy(2, 2) = 0;\n", ctx->pcb->MaxWidth);
+	pcb_fprintf(ctx->f, "substrate_xy(1, 3) = %mm; substrate_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
+	pcb_fprintf(ctx->f, "substrate_xy(1, 4) = 0; substrate_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
+
+	for(n = 1; n < ctx->lg_next; n++)
+		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, substrate_xy, 1);\n", n);
 }
 
 void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
@@ -196,6 +216,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	openems_write_tunables(&wctx);
 	openems_write_layers(&wctx);
 	openems_write_init(&wctx);
+	openems_write_outline(&wctx);
 
 	pcb_hid_expose_all(&openems_hid, &ctx);
 
