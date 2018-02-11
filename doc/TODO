@@ -63,6 +63,7 @@
 
 2. For later releases ===============================================================================
 - lihata v5:
+	- add attributes to layer groups
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- unify thermal format for all objects
 	- remove elements, pins, pads
@@ -222,7 +223,7 @@ SUBC: element removal:
 		- revise the value attribute - should be empty by default
 	- change square and octagon (flag based)
 	- hidename
-	
+	- after removing pads, remove fillrect from hid - only pads used that; revise the rest of the drawing calls
 
 GTK2:
 	- next_gui: keep them open, hide
