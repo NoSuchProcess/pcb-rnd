@@ -90,6 +90,39 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	return openems_attribute_list;
 }
 
+static void openems_write_tunables(wctx_t *ctx)
+{
+	fprintf(ctx->f, "%%%%%% User tunables\n");
+	fprintf(ctx->f, "\n");
+
+#warning TODO: make these come from exporter options
+
+	fprintf(ctx->f, "%%%% base_priority and offset: chassis for the board to sit in.\n");
+	fprintf(ctx->f, "%% base priority: if the board displaces the model of the chassis or the other way around.\n");
+	fprintf(ctx->f, "base_priority=0;\n");
+	fprintf(ctx->f, "\n");
+	fprintf(ctx->f, "%% offset on the whole layout to locate it relative to the simulation origin\n");
+	fprintf(ctx->f, "offset.x = -20;\n");
+	fprintf(ctx->f, "offset.y = 20;\n");
+	fprintf(ctx->f, "offset.z = 0;\n");
+	fprintf(ctx->f, "\n");
+
+	fprintf(ctx->f, "%% void is the material used for: fill holes, cutouts in substrate, etc\n");
+	fprintf(ctx->f, "void.name = 'AIR';\n");
+	fprintf(ctx->f, "void.epsilon = 1;\n");
+	fprintf(ctx->f, "void.mue = 1;\n");
+	fprintf(ctx->f, "%% void.kappa = kappa;\n");
+	fprintf(ctx->f, "%% void.sigma = sigma;\n");
+	fprintf(ctx->f, "\n");
+
+	fprintf(ctx->f, "%% how many points should be used to describe the round end of traces.\n");
+	fprintf(ctx->f, "kludge.segments = 10;\n");
+	fprintf(ctx->f, "\n");
+
+	fprintf(ctx->f, "\n");
+}
+
+
 static void openems_write_layers(wctx_t *ctx)
 {
 	pcb_layergrp_id_t gid;
@@ -152,6 +185,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
+	openems_write_tunables(&wctx);
 	openems_write_layers(&wctx);
 
 	pcb_hid_expose_all(&openems_hid, &ctx);
