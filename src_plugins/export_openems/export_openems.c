@@ -164,6 +164,14 @@ layer_types(1).sigma;
 	fprintf(ctx->f, "\n");
 }
 
+static void openems_write_init(wctx_t *ctx)
+{
+	fprintf(ctx->f, "%%%%%% Initialize pcb2csx\n");
+	fprintf(ctx->f, "PCBRND = InitPCBRND(layers, layer_types, void, base_priority, offset, kludge);\n");
+	fprintf(ctx->f, "CSX = InitPcbrndLayers(CSX, PCBRND);\n");
+	fprintf(ctx->f, "\n");
+}
+
 void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 {
 	pcb_hid_expose_ctx_t ctx;
@@ -187,6 +195,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 
 	openems_write_tunables(&wctx);
 	openems_write_layers(&wctx);
+	openems_write_init(&wctx);
 
 	pcb_hid_expose_all(&openems_hid, &ctx);
 
