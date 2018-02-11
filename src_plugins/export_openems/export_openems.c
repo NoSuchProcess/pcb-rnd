@@ -164,6 +164,7 @@ static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int 
 
 #warning TODO: this needs layer group attributes in core (planned for lihata v5)
 #if 0
+#warning TODO: try openems::attr first - make a new core call for prefixed get, this will be a real common pattern
 	const char *val = pcb_attribute_get(&grp->Attributes, attr);
 
 	if (val != NULL) {
