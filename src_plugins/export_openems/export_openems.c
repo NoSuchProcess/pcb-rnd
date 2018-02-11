@@ -55,6 +55,13 @@ typedef struct hid_gc_s {
 	int width;
 } hid_gc_s;
 
+typedef struct {
+	FILE *f;
+	pcb_board_t *pcb;
+	int lg_pcb2ems[PCB_MAX_LAYERGRP]; /* indexed by gid, gives 0 or the ems-side layer ID */
+	int lg_ems2pcb[PCB_MAX_LAYERGRP]; /* indexed by the ems-side layer ID, gives -1 or a gid */
+} wctx_t;
+
 static FILE *f = NULL;
 
 pcb_hid_attribute_t openems_attribute_list[] = {
@@ -83,10 +90,55 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	return openems_attribute_list;
 }
 
-void openems_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+static void openems_write_layers(wctx_t *ctx)
 {
-	static int saved_layer_stack[PCB_MAX_LAYER];
+	pcb_layergrp_id_t gid;
+	int next = 1;
+
+	for(gid = 0; gid < PCB_MAX_LAYERGRP; gid++)
+		ctx->lg_ems2pcb[gid] = -1;
+
+	fprintf(ctx->f, "%%%%%% Layer mapping\n");
+
+	/* linear map of copper and substrate layers */
+	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
+		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[gid];
+		int iscop = (grp->type & PCB_LYT_COPPER);
+
+		if (!(iscop) && !(grp->type & PCB_LYT_SUBSTRATE))
+			continue;
+		ctx->lg_ems2pcb[next] = gid;
+		ctx->lg_ems2pcb[gid] = next;
+		fprintf(ctx->f, "layers(%d).number = %d;\n", next, next); /* type index really */
+		fprintf(ctx->f, "layers(%d).name = '%s';\n", next, (grp->name == NULL ? "anon" : grp->name));
+		fprintf(ctx->f, "layers(%d).clearn = 0;\n", next);
+		fprintf(ctx->f, "layer_types(%d).name = '%s_%d';\n", next, iscop ? "COPPER" : "SUBSTRATE", next);
+		fprintf(ctx->f, "layer_types(%d).subtype = %d;\n", next, iscop ? 2 : 3);
+
+#warning TODO: get layer properties from attributes or global exporter options
+/*
+layer_types(1).thickness = 1.03556;
+layer_types(1).conductivity = 56*10^6; 
+layer_types(1).epsilon;
+layer_types(1).mue;
+layer_types(1).kappa;
+layer_types(1).sigma;
+*/
+
+		next++;
+		fprintf(ctx->f, "\n");
+	}
+	fprintf(ctx->f, "\n");
+}
+
+void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
+{
 	pcb_hid_expose_ctx_t ctx;
+	wctx_t wctx;
+
+	memset(&wctx, 0, sizeof(wctx));
+	wctx.f = the_file;
+	wctx.pcb = PCB;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -99,6 +151,8 @@ void openems_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+
+	openems_write_layers(&wctx);
 
 	pcb_hid_expose_all(&openems_hid, &ctx);
 
