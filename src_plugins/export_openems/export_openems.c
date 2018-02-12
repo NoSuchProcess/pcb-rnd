@@ -337,10 +337,10 @@ static void openems_write_testpoint_(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, 
 	long oid = ctx->oid++;
 	pcb_coord_t sx = PCB_MM_TO_COORD(0.1), sy = PCB_MM_TO_COORD(0.1);
 
-	pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x-sx, -(y-sy));
-	pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x+sx, -(y-sy));
-	pcb_fprintf(ctx->f, "points%ld(1, 3) = %mm; points%ld(2, 3) = %mm;\n", oid, x+sx, -(y+sy));
-	pcb_fprintf(ctx->f, "points%ld(1, 4) = %mm; points%ld(2, 4) = %mm;\n", oid, x-sx, -(y+sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x-sx, oid, -(y-sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x+sx, oid, -(y-sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 3) = %mm; points%ld(2, 3) = %mm;\n", oid, x+sx, oid, -(y+sy));
+	pcb_fprintf(ctx->f, "points%ld(1, 4) = %mm; points%ld(2, 4) = %mm;\n", oid, x-sx, oid, -(y+sy));
 	fprintf(ctx->f, "refdes = '%s';\n", refdes);
 	fprintf(ctx->f, "pad.number = '%s';\n", term);
 	fprintf(ctx->f, "pad.id = '%ld';\n", ++ctx->pad_id);
