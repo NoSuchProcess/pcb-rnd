@@ -1697,21 +1697,31 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 			return -1;
 	}
 
+	pcb_data_clip_inhibit_inc(pcb->Data);
+
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, pcb->Data, sub, NULL)) == NULL))
+	if ((sub != NULL) && ((parse_data(pcb, pcb->Data, sub, NULL)) == NULL)) {
+		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
+	}
 
 	sub = lht_dom_hash_get(nd, "styles");
-	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0))
+	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0)) {
+		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
+	}
 
 	sub = lht_dom_hash_get(nd, "netlists");
-	if ((sub != NULL) && (parse_netlists(pcb, sub) != 0))
+	if ((sub != NULL) && (parse_netlists(pcb, sub) != 0)) {
+		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
+	}
 
 	post_ids_assign(&post_ids);
-	if (post_thermal_assign(pcb, &post_thermal) != 0)
+	if (post_thermal_assign(pcb, &post_thermal) != 0) {
+		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
+	}
 
 	/* Run poly clipping at the end so we have all IDs and we can
 	   announce the clipping (it's slow, we may need a progress bar) */
@@ -1733,6 +1743,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if (sub != NULL)
 		parse_conf(pcb, sub);
 
+	pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 
 	pcb->Data->loader = loader; /* set this manually so the version is remembered */
 	return 0;
