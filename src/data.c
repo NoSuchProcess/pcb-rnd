@@ -716,4 +716,36 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 }
 
 
+/*** poly clip inhibit mechanism ***/
+void pcb_data_clip_inhibit_inc(pcb_data_t *data)
+{
+	int old = data->clip_inhibit;
+	data->clip_inhibit++;
 
+	if (old > data->clip_inhibit) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
+		abort();
+	}
+}
+
+void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar)
+{
+	if (data->clip_inhibit == 0) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
+		assert(!"clip_inhibit underflow");
+		return;
+	}
+	data->clip_inhibit--;
+
+	pcb_data_clip_dirty(data, enable_progbar);
+}
+
+void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
+{
+	if (data->clip_inhibit != 0)
+		return;
+
+	PCB_POLY_ALL_LOOP(data); {
+#warning TODO: do the clipping here
+	} PCB_ENDALL_LOOP;
+}

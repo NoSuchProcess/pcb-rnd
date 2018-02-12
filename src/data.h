@@ -63,6 +63,9 @@ struct pcb_data_s {
 /**/
 	pcb_parenttype_t parent_type;
 	pcb_parent_t parent;
+
+/* poly clip inhibit */
+	int clip_inhibit; /* counter: >0 means we are in inhibit mode */
 };
 
 #define pcb_max_group(pcb) ((pcb)->LayerGroups.len)
@@ -183,5 +186,21 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 /* Either pcb->data or the subcircuit's data if PCB is a subc (footprint edit mode) */
 #define PCB_REAL_DATA(pcb) \
 	((pcb)->is_footprint ? (pcb_subclist_first(&(pcb)->Data->subc)->data) : ((pcb)->Data))
+
+
+/*** Polygon clipping inhibit ***/
+
+/* increase the inhibit counter (stop clipping polygons) */
+void pcb_data_clip_inhibit_inc(pcb_data_t *data);
+
+/* decrease the inhibit counter - if it's zero, reclip all dirty polygons;
+   enable_progbar controls whether a progress bar is drawn for reclips
+   that take longer than a few seconds. */
+void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar);
+
+/* attempt to reclip all dirty polygons; normally called by
+   pcb_data_clip_inhibit_dec(). */
+void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar);
+
 
 #endif
