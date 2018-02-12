@@ -605,6 +605,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	printf("Entering CopyPastebufferToLayout.....\n");
 #endif
 
+	pcb_data_clip_inhibit_inc(pcb->Data);
+
 	/* set movement vector */
 	ctx.copy.pcb = pcb;
 	ctx.copy.DeltaX = X - PCB_PASTEBUFFER->X;
@@ -722,6 +724,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 #ifdef DEBUG
 	printf("  .... Leaving CopyPastebufferToLayout.\n");
 #endif
+
+	pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 
 	return changed;
 }
