@@ -46,6 +46,7 @@ struct pcb_poly_s  {           /* holds information about a polygon */
 	pcb_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
 	pcb_cardinal_t HoleIndexN;   /* number of holes in polygon */
 	pcb_cardinal_t HoleIndexMax; /* max number from malloc() */
+	unsigned clip_dirty:1;       /* 1 if polygon should be reclipped after clipping inhibit is over */
 	gdl_elem_t link;             /* a poly is in a list of a layer */
 };
 

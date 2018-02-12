@@ -1878,6 +1878,14 @@ static pcb_r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+/* poly plows while clipping inhibit is on: mark any potentail polygon dirty */
+static pcb_r_dir_t poly_plows_inhibited_cb(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2)
+{
+	poly->clip_dirty = 1;
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+
 int
 pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 						 pcb_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2))
@@ -1885,6 +1893,9 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	pcb_box_t sb = ((pcb_pin_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
+
+	if (Data->clip_inhibit > 0)
+		call_back = poly_plows_inhibited_cb;
 
 	info.type = type;
 	info.ptr1 = ptr1;

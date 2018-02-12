@@ -746,6 +746,7 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 		return;
 
 	PCB_POLY_ALL_LOOP(data); {
-#warning TODO: do the clipping here
+		if (polygon->clip_dirty)
+			pcb_poly_init_clip(data, layer, polygon);
 	} PCB_ENDALL_LOOP;
 }
