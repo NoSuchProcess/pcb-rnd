@@ -820,8 +820,13 @@ static int use_gc(pcb_hid_gc_t gc)
 
 	//ghid_cairo_set_color(gc, gc->colorname);
 	gdk_cairo_set_source_rgba(cr, &gc->color);
-	//ghid_cairo_set_line_width(gc, gc->width);
-	cairo_set_line_width(cr, Vz(gc->width));
+
+	/* negative line width means "unit is pixels", so -1 is "1 pixel", -5 is "5 pixels", regardless of the zoom. */
+	if (gc->width <= 0)
+		cairo_set_line_width(cr, 1.0 - gc->width);
+	else
+		cairo_set_line_width(cr, Vz(gc->width));
+
 	//ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
 	cairo_set_line_cap(cr, gc->cap);
 	cairo_set_line_join(cr, gc->join);
