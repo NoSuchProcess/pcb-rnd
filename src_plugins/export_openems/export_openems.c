@@ -39,6 +39,7 @@
 #include "plugins.h"
 #include "safe_fs.h"
 #include "obj_subc_parent.h"
+#include "obj_pstk_inlines.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -349,31 +350,24 @@ static void openems_write_testpoint_(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, 
 }
 
 
-static void openems_write_testpoint(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pcb_coord_t y)
+static void openems_write_testpoint_on(wctx_t *ctx, const char *refdes, const char *termid, pcb_layergrp_id_t gid, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_layergrp_id_t gid;
 	int layer;
-	const char *refdes = NULL;
-	pcb_subc_t *sc;
-
-	if (o->type == PCB_OBJ_PSTK) {
-#warning TODO: figure what to do with padstacks
-		pcb_message(PCB_MSG_ERROR, "Can't determine pad layer on padstacks yet (%$mm;%$mm)\n", x, y);
-		return;
-	}
-
-	assert(o->parent_type == PCB_PARENT_LAYER);
-	gid = pcb_layer_get_group_(o->parent.layer);
-	if (gid < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't determine pad layer (%$mm;%$mm)\n", x, y);
-		return;
-	}
 
 	layer = ctx->lg_pcb2ems[gid];
 	if (layer <= 0) {
 		pcb_message(PCB_MSG_ERROR, "Can't determine EMS layer for pad (%$mm;%$mm)\n", x, y);
 		return;
 	}
+
+	openems_write_testpoint_(ctx, x, y, layer, refdes, termid);
+}
+
+static void openems_write_testpoint(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layergrp_id_t gid;
+	const char *refdes = NULL;
+	pcb_subc_t *sc;
 
 	sc = pcb_obj_parent_subc(o);
 	if (sc != NULL)
@@ -382,8 +376,45 @@ static void openems_write_testpoint(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x
 	if (refdes == NULL)
 		refdes = "none";
 
-	openems_write_testpoint_(ctx, x, y, layer, refdes, o->term);
+	if (o->type == PCB_OBJ_PSTK) { /* light terminal: padstack */
+		for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) { /* put testpoint on all interesting layers */
+			pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[gid];
+			pcb_layer_id_t lid;
+			pcb_pstk_shape_t *sh;
+
+			if (grp->len <= 0) /* group has no layers -> probably substrate */
+				continue;
+
+			if (!(grp->type & PCB_LYT_COPPER)) /* testpoint goes on copper only */
+				continue;
+
+			if (!(grp->type & PCB_LYT_TOP) && !(grp->type & PCB_LYT_BOTTOM)) /* do not put testpoints on inner layers */
+				continue;
+
+			lid = grp->lid[0];
+			if (lid < 0) /* invalid layer in group, what?! */
+				continue;
+
+			sh = pcb_pstk_shape_at(ctx->pcb, (pcb_pstk_t *)o, &ctx->pcb->Data->Layer[lid]);
+			if (sh == NULL) /* padstack has no shape on layer */
+				continue;
+
+			openems_write_testpoint_on(ctx, refdes, o->term, gid, x, y);
+		}
+	}
+	else { /* heavy terminal: plain layer object */
+		assert(o->parent_type == PCB_PARENT_LAYER);
+
+		gid = pcb_layer_get_group_(o->parent.layer);
+		if (gid < 0) {
+			pcb_message(PCB_MSG_ERROR, "Can't determine pad layer (%$mm;%$mm)\n", x, y);
+			return;
+		}
+
+		openems_write_testpoint_on(ctx, refdes, o->term, gid, x, y);
+	}
 }
+
 
 #define TPMASK (PCB_OBJ_LINE | PCB_OBJ_PSTK | PCB_OBJ_SUBC)
 static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
