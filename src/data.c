@@ -742,11 +742,20 @@ void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar)
 
 void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 {
+	pcb_cardinal_t sum = 0, n = 0;
+
 	if (data->clip_inhibit != 0)
 		return;
 
 	PCB_POLY_ALL_LOOP(data); {
+		sum++;
+	} PCB_ENDALL_LOOP;
+
+	PCB_POLY_ALL_LOOP(data); {
 		if (polygon->clip_dirty)
 			pcb_poly_init_clip(data, layer, polygon);
+#warning TODO: progbar
+/*		if ((n % 10) == 0) */
+		n++;
 	} PCB_ENDALL_LOOP;
 }
