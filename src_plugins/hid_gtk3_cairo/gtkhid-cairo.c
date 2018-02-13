@@ -1054,9 +1054,9 @@ static void ghid_cairo_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coor
 		_x = Vx(x[i]);
 		_y = Vy(y[i]);
 		if (i == 0)
-			cairo_move_to(cr, _x + dx, _y + dy);
+			cairo_move_to(cr, _x + Vz(dx), _y + Vz(dy));
 		else
-			cairo_line_to(cr, _x + dx, _y + dy);
+			cairo_line_to(cr, _x + Vz(dx), _y + Vz(dy));
 	}
 	cairo_fill(cr);
 }
