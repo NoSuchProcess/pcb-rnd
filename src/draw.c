@@ -642,6 +642,10 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 void pcb_erase_obj(int type, void *lptr, void *ptr)
 {
 	switch (type) {
+	case PCB_TYPE_PSTK:
+		pcb_pstk_invalidate_erase((pcb_pstk_t *) ptr);
+		break;
+
 	case PCB_TYPE_VIA:
 	case PCB_TYPE_PIN:
 		pcb_pin_invalidate_erase((pcb_pin_t *) ptr);
