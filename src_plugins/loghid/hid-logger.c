@@ -173,12 +173,12 @@ static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 static void log_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
-	pcb_fprintf(out_, "fill_polygon(gc, %d", n_coords);
+	pcb_fprintf(out_, "fill_polygon_offs(gc, %d", n_coords);
 	for (i = 0; i < n_coords; ++i) {
 		pcb_fprintf(out_, ", (%mm, %mm)", x[i], y[i]);
 	}
 	pcb_fprintf(out_, ", {%mm,%mm})\n", dx, dy);
-	delegatee_->fill_polygon(gc, n_coords, x, y);
+	delegatee_->fill_polygon_offs(gc, n_coords, x, y, dx, dy);
 }
 
 static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
