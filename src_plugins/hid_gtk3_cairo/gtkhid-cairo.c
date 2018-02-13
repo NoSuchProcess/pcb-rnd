@@ -567,19 +567,13 @@ static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 }
 
+/** Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. direct and screen are not used in this HID. */
 static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = gport->render_priv;
 
 	if (!priv->cr) {
 		//abort();
-		return;
-	}
-
-	if (direct) {
-		//priv->out_pixel = priv->base_pixel;
-		//priv->out_clip = NULL;
-		curr_drawing_mode = PCB_HID_COMP_POSITIVE;
 		return;
 	}
 
