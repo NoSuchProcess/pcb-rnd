@@ -50,6 +50,7 @@ static void help1(void)
 	printf("options are:\n");
 	printf(" --prefix=path              change installation prefix from /usr to path\n");
 	printf(" --debug                    build full debug version (-g -O0, extra asserts)\n");
+	printf(" --profile                  build prifiling version if availabel (-pg)\n");
 	printf(" --symbols                  include symbols (add -g, but no -O0 or extra asserts)\n");
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
@@ -95,6 +96,10 @@ int hook_custom_arg(const char *key, const char *value)
 	if (strcmp(key, "debug") == 0) {
 		put("/local/pcb/debug", strue);
 		pup_set_debug(strue);
+		return 1;
+	}
+	if (strcmp(key, "profile") == 0) {
+		put("/local/pcb/profile", strue);
 		return 1;
 	}
 	if (strcmp(key, "symbols") == 0) {
@@ -244,6 +249,7 @@ int hook_postinit()
 
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/debug", sfalse);
+	put("/local/pcb/profile", sfalse);
 	put("/local/pcb/symbols", sfalse);
 	put("/local/pcb/coord_bits", "32");
 	want_coord_bits = 32;
@@ -322,7 +328,7 @@ int safe_atoi(const char *s)
 int hook_detect_target()
 {
 	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl;
-	const char *host_ansi, *host_ped, *target_ansi, *target_ped;
+	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk3   = plug_is_enabled("hid_gtk3_cairo") || plug_is_enabled("hid_gtk3_gl");
@@ -337,6 +343,8 @@ int hook_detect_target()
 	host_ped = get("/host/cc/argstd/pedantic");
 	target_ansi = get("/target/cc/argstd/ansi");
 	target_ped = get("/target/cc/argstd/pedantic");
+	target_pg = get("/target/cc/argstd/pg");
+	target_no_pie = get("/target/cc/argstd/no-pie");
 
 	{ /* need to set debug flags here to make sure libs are detected with the modified cflags; -ansi matters in what #defines we need for some #includes */
 		const char *tmp, *fpic, *debug;
@@ -354,7 +362,12 @@ int hook_detect_target()
 			append("/target/cc/cflags", target_ansi);
 			append("/target/cc/cflags", " ");
 			append("/target/cc/cflags", target_ped);
-			printf("DEBUG='%s'\n", get("/target/cc/cflags"));
+		}
+		if (istrue(get("/local/pcb/profile"))) {
+			append("/target/cc/cflags", " ");
+			append("/target/cc/cflags", target_pg);
+			append("/target/cc/cflags", " ");
+			append("/target/cc/cflags", target_no_pie);
 		}
 	}
 
@@ -717,6 +730,13 @@ int hook_detect_target()
 			append("/local/pcb/c89flags", target_ped);
 			need_inl = 1;
 		}
+	}
+
+	if (istrue(get("/local/pcb/profile"))) {
+		append("/local/pcb/cflags_profile", " ");
+		append("/local/pcb/cflags_profile", target_pg);
+		append("/local/pcb/cflags_profile", " ");
+		append("/local/pcb/cflags_profile", target_no_pie);
 	}
 
 	if (!istrue(get("cc/inline")))
