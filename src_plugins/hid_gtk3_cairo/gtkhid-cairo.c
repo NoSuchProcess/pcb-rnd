@@ -563,7 +563,7 @@ static void ghid_cairo_draw_bg_image(void)
 	}
 }
 
-void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 }
 
