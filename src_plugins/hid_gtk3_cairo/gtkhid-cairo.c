@@ -1013,7 +1013,7 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 	//gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
-/* Intentaional code duplication for performance */
+/** Intentional code duplication from  ghid_cairo_fill_polygon_offs(), for performance */
 static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
@@ -1037,7 +1037,7 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	cairo_fill(cr);
 }
 
-/* Intentaional code duplication for performance */
+/** Fills an N-points (x, y) poly, translated to (dx, dy) */
 static void ghid_cairo_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
