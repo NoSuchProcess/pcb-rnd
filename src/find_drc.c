@@ -977,7 +977,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	}
 	drc = pcb_false;
 	DumpList();
-	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
+	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_DRC;
 	pcb_reset_conns(pcb_false);
 	return pcb_false;
 }
