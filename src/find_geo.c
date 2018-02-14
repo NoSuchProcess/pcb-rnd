@@ -780,8 +780,11 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
    boxes do touch */
 PCB_INLINE pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
 {
-	pcb_coord_t ox, oy;
-	double dx, dy, h;
+	pcb_coord_t ox, oy, vx, vy;
+	double dx, dy, h, l;
+
+	thick += Bloat*2;
+	if (thick < 0) thick = 0;
 
 	/* single-point line - check only one circle*/
 	if ((x1 == x2) && (y1 == y2))
@@ -793,13 +796,16 @@ PCB_INLINE pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x
 
 	dx = x2 - x1;
 	dy = y2 - y1;
-	h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+	l = sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+	h = 0.5 * thick / l;
 	ox = dy * h + 0.5 * SGN(dy);
 	oy = -(dx * h + 0.5 * SGN(dx));
+	vx = (double)dx / -l * ((double)Bloat/2.0);
+	vy = (double)dy / -l * ((double)Bloat/2.0);
 
 	/* long line - consider edge intersection */
-	if (pcb_pline_isect_line(pl, x1 + ox, y1 + oy, x2 + ox, y2 + oy)) return pcb_true;
-	if (pcb_pline_isect_line(pl, x1 - ox, y1 - oy, x2 - ox, y2 - oy)) return pcb_true;
+	if (pcb_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy)) return pcb_true;
+	if (pcb_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy)) return pcb_true;
 
 	/* A corner case is when the polyline is fully within the line. By now we
 	   are sure there's no contour intersection, so if any of the polyline points
