@@ -30,6 +30,7 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "flag_str.h"
 #include "layer.h"
 #include "diag_conf.h"
@@ -242,6 +243,62 @@ static int pcb_act_DumpUndo(int argc, const char **argv, pcb_coord_t x, pcb_coor
 }
 #endif
 
+typedef enum { /* bitfield */
+	DD_DRC = 1,
+	DD_COPPER_ONLY = 2
+} dd_flags;
+
+static void dump_data(pcb_data_t *data, dd_flags what, int ind, const char *parent)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	ind++;
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		const char *type = pcb_obj_type_name(o->type);
+		pcb_coord_t cx, cy;
+
+		if ((what & DD_COPPER_ONLY) && (o->type == PCB_OBJ_SUBC))
+			goto skip;
+
+		if ((what & DD_COPPER_ONLY) && (o->parent_type == PCB_PARENT_LAYER)) {
+			pcb_layer_type_t lyt = pcb_layer_flags_(o->parent.layer);
+			if (!(lyt & PCB_LYT_COPPER))
+				goto skip;
+		}
+
+		cx = (o->BoundingBox.X1+o->BoundingBox.X2)/2;
+		cy = (o->BoundingBox.Y1+o->BoundingBox.Y2)/2;
+		printf("%*s %s", ind, "", type);
+		pcb_printf(" #%ld %mm;%mm ", o->ID, cx, cy);
+
+		if (parent != NULL)
+			printf("%s", parent);
+		printf("-");
+		if (o->term != NULL)
+			printf("%s", o->term);
+
+		if (what & DD_DRC)
+			printf(" DRC=%c%c", PCB_FLAG_TEST(PCB_FLAG_FOUND, o) ? 'f':'.', PCB_FLAG_TEST(PCB_FLAG_SELECTED, o) ? 's':'.');
+
+		printf("\n");
+		
+		skip:;
+		if (o->type == PCB_OBJ_SUBC)
+			dump_data(((pcb_subc_t *)o)->data, what, ind, ((pcb_subc_t *)o)->refdes);
+	}
+}
+
+static const char dump_data_syntax[] = "dumpdata()\n";
+static const char dump_data_help[] = "Dump an aspect of the data";
+static int pcb_act_DumpData(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	dd_flags what = DD_DRC | DD_COPPER_ONLY;
+	printf("DumpData:\n");
+	dump_data(PCB->Data, what, 0, NULL);
+	printf("\n");
+	return 0;
+}
+
 static const char integrity_syntax[] = "integrity()\n";
 static const char integrity_help[] = "perform integrirty check on the current board and generate errors if needed";
 static int pcb_act_integrity(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -335,6 +392,8 @@ pcb_hid_action_t diag_action_list[] = {
 	 dump_layers_help, dump_layers_syntax},
 	{"dumpfonts", 0, pcb_act_DumpFonts,
 	 dump_fonts_help, dump_fonts_syntax},
+	{"dumpdata", 0, pcb_act_DumpData,
+	 dump_data_help, dump_data_syntax},
 #ifndef NDEBUG
 	{"dumpundo", 0, pcb_act_DumpUndo,
 	 dump_undo_help, dump_undo_syntax},
