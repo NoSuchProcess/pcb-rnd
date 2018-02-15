@@ -1061,7 +1061,7 @@ static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
 pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
-	return pcb_line_new_merge(ly, X1, Y1, X2, Y2, Thickness, 0, pcb_no_flags());
+	return pcb_line_new(ly, X1, Y1, X2, Y2, Thickness, 0, pcb_no_flags());
 }
 
 pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y,
