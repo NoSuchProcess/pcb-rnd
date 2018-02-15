@@ -386,7 +386,7 @@ static void *ghid_attr_dlg_new_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid
 
 static void ghid_show_item(void *item)
 {
-	ghid_pinout_window_show(&ghidgui->common, (pcb_element_t *)item);
+	ghid_pinout_window_show(&ghidgui->common, (pcb_subc_t *)item);
 }
 
 static void ghid_beep()

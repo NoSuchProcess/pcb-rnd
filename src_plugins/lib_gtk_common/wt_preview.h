@@ -66,7 +66,7 @@ typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, pcb_hid_mouse_ev_t k
 /** Selects the kind of preview. */
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
-	PCB_GTK_PREVIEW_PINOUT,	/**<- render a single element     */
+	PCB_GTK_PREVIEW_PINOUT,	/**<- render a single subcircuit  */
 	PCB_GTK_PREVIEW_LAYER,	/**<- render a specific layer     */
 	PCB_GTK_PREVIEW_BOARD,	/**<- render the board (whole stack) */
 

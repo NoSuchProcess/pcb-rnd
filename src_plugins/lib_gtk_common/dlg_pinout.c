@@ -49,16 +49,17 @@ static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 	gtk_widget_destroy(top_window);
 }
 
-void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
+void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_subc_t *subc)
 {
 	GtkWidget *button, *vbox, *hbox, *preview, *top_window;
 	gchar *title;
 	int width, height;
 
-	if (!element)
+	if (!subc)
 		return;
+
 	title = g_strdup_printf("%s [%s,%s]",
-													PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
+		PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")), PCB_UNKNOWN(subc->refdes), PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
 
 	top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(top_window), title);
@@ -70,7 +71,7 @@ void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
 	gtk_container_add(GTK_CONTAINER(top_window), vbox);
 
 
-	preview = pcb_gtk_preview_pinout_new(com, com->init_drawing_widget, com->preview_expose, (pcb_any_obj_t *)element);
+	preview = pcb_gtk_preview_pinout_new(com, com->init_drawing_widget, com->preview_expose, (pcb_any_obj_t *)subc);
 
 	gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 

@@ -415,14 +415,14 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			/* display the pinout of an element */
 		case F_Pinout:
 			{
-				pcb_element_t *element;
+				pcb_subc_t *subc;
 				void *ptrtmp;
 				pcb_coord_t x, y;
 
 				pcb_gui->get_coords(_("Click on an element"), &x, &y);
-				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
-					element = (pcb_element_t *) ptrtmp;
-					pcb_gui->show_item(element);
+				if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+					subc = (pcb_subc_t *) ptrtmp;
+					pcb_gui->show_item(subc);
 				}
 				break;
 			}

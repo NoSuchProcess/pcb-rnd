@@ -125,7 +125,7 @@ static void ghid_preview_finalize(GObject * object)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
 
-	/* Passing NULL for element data will clear the preview */
+	/* Passing NULL for subcircuit data will clear the preview */
 	preview_set_data(preview, NULL);
 
 	G_OBJECT_CLASS(ghid_preview_parent_class)->finalize(object);
