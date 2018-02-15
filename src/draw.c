@@ -52,6 +52,7 @@
 #include "obj_rat_draw.h"
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"
+#include "obj_subc_parent.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -585,6 +586,85 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 		pcb_gui->set_color(pcb_draw_out.fgGC, Layer->meta.real.color);
 		pcb_gui->set_line_width(pcb_draw_out.fgGC, PCB->minWid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	}
+
+	out:;
+		pcb_draw_out.active_padGC = NULL;
+}
+
+/* This version is about 1% slower and used rarely, thus it's all dupped
+   from pcb_draw_layer() to keep the original speed there */
+void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data)
+{
+	pcb_draw_info_t info;
+	pcb_box_t scr2;
+	unsigned int lflg = 0;
+	pcb_rtree_it_t it;
+	pcb_any_obj_t *o;
+
+	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
+		scr2 = *screen;
+		screen = &scr2;
+		if (scr2.X2 <= scr2.X1)
+			scr2.X2 = scr2.X1+1;
+		if (scr2.Y2 <= scr2.Y1)
+			scr2.Y2 = scr2.Y1+1;
+	}
+
+	info.drawn_area = screen;
+	info.layer = Layer;
+
+	lflg = pcb_layer_flags_(Layer);
+	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
+		pcb_draw_out.active_padGC = pcb_draw_out.padGC;
+	else
+		pcb_draw_out.active_padGC = pcb_draw_out.backpadGC;
+
+		/* print the non-clearing polys */
+	if (Layer->polygon_tree != NULL) {
+		if (lflg & PCB_LYT_COPPER) {
+			for(o = pcb_rtree_first(&it, Layer->polygon_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_poly_draw_term_callback((pcb_box_t *)o, &info);
+		}
+		else {
+			for(o = pcb_rtree_first(&it, Layer->polygon_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_poly_draw_callback((pcb_box_t *)o, &info);
+		}
+	}
+
+	if (conf_core.editor.check_planes)
+		goto out;
+
+	/* draw all visible layer objects (with terminal gfx on copper) */
+	if (lflg & PCB_LYT_COPPER) {
+		if (Layer->line_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->line_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_line_draw_term_callback((pcb_box_t *)o, Layer);
+		if (Layer->arc_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_arc_draw_term_callback((pcb_box_t *)o, Layer);
+		if (Layer->text_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->text_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_text_draw_term_callback((pcb_box_t *)o, Layer);
+	}
+	else {
+		if (Layer->line_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->line_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_line_draw_callback((pcb_box_t *)o, Layer);
+		if (Layer->arc_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_arc_draw_callback((pcb_box_t *)o, Layer);
+		if (Layer->text_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->text_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_text_draw_callback((pcb_box_t *)o, Layer);
 	}
 
 	out:;

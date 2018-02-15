@@ -80,6 +80,12 @@ void pcb_draw(void);
 void pcb_redraw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
 void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
+
+/* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
+   objects that are not in the subtree of data - useful for drawing a subtree,
+   e.g. a subc only */
+void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data);
+
 void pcb_erase_obj(int, void *, void *);
 void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
