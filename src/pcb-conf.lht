@@ -229,6 +229,10 @@ li:pcb-rnd-conf-v1 {
 				text_offset_x = 0.1 mm
 				text_offset_y = 0.1 mm
 			}
+			ha:padstack {
+				cross_thick = 1
+				cross_size = 0.1 mm
+			}
 			ha:messages {
 #				char_per_line = 0
 			}

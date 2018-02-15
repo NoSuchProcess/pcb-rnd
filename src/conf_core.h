@@ -216,6 +216,10 @@ typedef struct {
 			CFT_COORD text_offset_x;      /* X offset of text from pin center */
 			CFT_COORD text_offset_y;      /* Y offset of text from pin center */
 		} pinout;
+		struct padstack {
+			CFT_INTEGER cross_thick;      /* cross thickness in pixels - 0 means disable crosses */
+			CFT_COORD cross_size;         /* cross size in word coords - size of one arm of the cross (minus the hole radius) */
+		} padstack;
 		struct messages {
 			CFT_INTEGER char_per_line;   /* width of an output line in characters (used by separator drawing in find.c) */		
 		} messages;

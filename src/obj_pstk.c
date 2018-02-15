@@ -46,8 +46,6 @@
 #include "undo.h"
 #include "vtpadstack.h"
 
-#define PS_CROSS_SIZE PCB_MM_TO_COORD(1)
-
 #define SQR(o) ((o)*(o))
 
 static const char core_pstk_cookie[] = "padstack";
@@ -394,18 +392,20 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 
 	/* mark is a cross in the middle, right on the hole;
 	   cross size should extend beyond the hole */
-	mark = PS_CROSS_SIZE/2;
+	mark = conf_core.appearance.padstack.cross_size;
 	proto = pcb_pstk_get_proto(ps);
 	if (proto != NULL)
 		mark += proto->hdia/2;
 
 	/* draw the cross using xor */
-	set_ps_annot_color(pcb_draw_out.fgGC, ps);
-	pcb_gui->set_line_width(pcb_draw_out.fgGC, -3);
-	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
-	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
+	if (conf_core.appearance.padstack.cross_thick > 0) {
+		set_ps_annot_color(pcb_draw_out.fgGC, ps);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
+		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
+		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
+	}
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
