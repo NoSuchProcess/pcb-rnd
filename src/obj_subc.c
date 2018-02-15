@@ -1717,6 +1717,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_callback((pcb_box_t *)o, &ctx);
 			pcb_pstk_draw_hole_callback((pcb_box_t *)o, &ctx);
+			pcb_pstk_draw_mark_callback((pcb_box_t *)o, &ctx);
 		}
 	}
 }
