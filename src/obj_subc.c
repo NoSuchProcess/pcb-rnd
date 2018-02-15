@@ -35,6 +35,7 @@
 #include "error.h"
 #include "obj_subc.h"
 #include "obj_subc_op.h"
+#include "obj_subc_parent.h"
 #include "obj_poly_op.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
@@ -1696,11 +1697,13 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 {
 	int n;
 	pcb_pstk_draw_t ctx;
+	pcb_rtree_it_t it;
+	pcb_any_obj_t *o;
 
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
 		if (layer->meta.bound.type & (PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_OUTLINE))
-			pcb_draw_layer(layer, drawn_area);
+			pcb_draw_layer_under(layer, drawn_area, sc->data);
 	}
 
 	ctx.pcb = NULL;
@@ -1709,8 +1712,13 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	ctx.comb = 0;
 	ctx.shape_mask = PCB_LYT_COPPER | PCB_LYT_TOP;
 	ctx.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
-	pcb_r_search(sc->data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
-	pcb_r_search(sc->data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_hole_callback, &ctx, NULL);
+
+	for(o = pcb_rtree_first(&it, sc->data->padstack_tree, (pcb_rtree_box_t *)drawn_area); o != NULL; o = pcb_rtree_next(&it)) {
+		if (pcb_obj_is_under(o, sc->data)) {
+			pcb_pstk_draw_callback((pcb_box_t *)o, &ctx);
+			pcb_pstk_draw_hole_callback((pcb_box_t *)o, &ctx);
+		}
+	}
 }
 
 
