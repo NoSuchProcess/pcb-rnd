@@ -1700,12 +1700,14 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	pcb_rtree_it_t it;
 	pcb_any_obj_t *o;
 
+	/* draw copper only first - order doesn't matter */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
-		if (layer->meta.bound.type & (PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_OUTLINE))
+		if (layer->meta.bound.type & PCB_LYT_COPPER)
 			pcb_draw_layer_under(layer, drawn_area, sc->data);
 	}
 
+	/* draw padstacks */
 	ctx.pcb = NULL;
 	ctx.gid = -1;
 	ctx.is_current = 1;
@@ -1717,9 +1719,20 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_callback((pcb_box_t *)o, &ctx);
 			pcb_pstk_draw_hole_callback((pcb_box_t *)o, &ctx);
-			pcb_pstk_draw_mark_callback((pcb_box_t *)o, &ctx);
 		}
 	}
+
+	/* draw silk and outline, above padstacks */
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *layer = &sc->data->Layer[n];
+		if (layer->meta.bound.type & (PCB_LYT_SILK | PCB_LYT_OUTLINE))
+			pcb_draw_layer_under(layer, drawn_area, sc->data);
+	}
+
+	/* padstack mark goes on top */
+	for(o = pcb_rtree_first(&it, sc->data->padstack_tree, (pcb_rtree_box_t *)drawn_area); o != NULL; o = pcb_rtree_next(&it))
+		if (pcb_obj_is_under(o, sc->data))
+			pcb_pstk_draw_mark_callback((pcb_box_t *)o, &ctx);
 }
 
 
