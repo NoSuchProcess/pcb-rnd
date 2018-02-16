@@ -636,6 +636,14 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 	assert(P1->Clipped->contours);
 	assert(P2->Clipped->contours);
 
+
+	/* first check if both bounding boxes intersect. If not, return quickly */
+	if (P1->Clipped->contours->xmin - Bloat > P2->Clipped->contours->xmax ||
+			P1->Clipped->contours->xmax + Bloat < P2->Clipped->contours->xmin ||
+			P1->Clipped->contours->ymin - Bloat > P2->Clipped->contours->ymax ||
+			P1->Clipped->contours->ymax + Bloat < P2->Clipped->contours->ymin)
+		return pcb_false;
+
 	/* cheat: poly-clear-poly means we did generate the clearance; this
 	   shall happen only if there's exactly one poly that is clearing the other */
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P1)) {
@@ -651,13 +659,6 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 			return pcb_false;
 		return pcb_true;
 	}
-
-	/* first check if both bounding boxes intersect. If not, return quickly */
-	if (P1->Clipped->contours->xmin - Bloat > P2->Clipped->contours->xmax ||
-			P1->Clipped->contours->xmax + Bloat < P2->Clipped->contours->xmin ||
-			P1->Clipped->contours->ymin - Bloat > P2->Clipped->contours->ymax ||
-			P1->Clipped->contours->ymax + Bloat < P2->Clipped->contours->ymin)
-		return pcb_false;
 
 	/* first check un-bloated case */
 	if (pcb_poly_isects_poly(P1->Clipped, P2, pcb_false))
