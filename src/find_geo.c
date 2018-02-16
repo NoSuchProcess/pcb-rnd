@@ -628,10 +628,29 @@ pcb_bool pcb_is_pad_in_poly(pcb_pad_t *pad, pcb_poly_t *polygon)
  */
 pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 {
+	int pcp_cnt = 0;
+	pcb_coord_t pcp_gap;
+
 	if (!P1->Clipped || !P2->Clipped)
 		return pcb_false;
 	assert(P1->Clipped->contours);
 	assert(P2->Clipped->contours);
+
+	/* cheat: poly-clear-poly means we did generate the clearance; this
+	   shall happen only if there's exactly one poly that is clearing the other */
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P1)) {
+		pcp_cnt++;
+		pcp_gap = P1->Clearance / 2.0;
+	}
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P2)) {
+		pcp_cnt++;
+		pcp_gap = P2->Clearance / 2.0;
+	}
+	if (pcp_cnt == 1) {
+		if (pcp_gap >= Bloat)
+			return pcb_false;
+		return pcb_true;
+	}
 
 	/* first check if both bounding boxes intersect. If not, return quickly */
 	if (P1->Clipped->contours->xmin - Bloat > P2->Clipped->contours->xmax ||
