@@ -56,10 +56,11 @@
 	-> please supply minimal (single padstack) test files
 - BUG: hackvana gerber export with "copy silk outline", only exports to sides of the outline rectangle [report: erich]
 	-> please supply minimal (single padstack) test files
-- BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers.
+- BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers [erich].
 - BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
+- BUG: menu select->change drilling hole->+/- size   does not woek for padstacks, but alt+s still does [report: erich] 
 - pool: import work/format_dev_chest
 
 2. For later releases ===============================================================================
