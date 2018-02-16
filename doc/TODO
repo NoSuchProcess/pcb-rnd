@@ -16,6 +16,7 @@
 	+> it's okay if the io plugin keeps non-ASCII as long as it's really what the user had in the text and not just memory garbage - but in the latter case we need to fix the bug, not work it around by some sanitizer
 - BUG: bug_files/delete-undo-crash-erich.lht mouse over via element, hit delete key until deleted, undo, hover over diode element, hit delete/undo, await crash. Backtrace added for crash, now involving pcb_pstk_proto_insert_try / obj_pstk_proto.c:514
 	+> it was subc delete undo bug: undo doesn't properly restore parents; happened on save after undo a subc deletion
+- BUG: double free/crash. Reproduce: start pcb-rnd, with cursor over layout, CTRL-x, convert buffer to subc, place subc, move subc text out of the way with mouse, use 'n' to rename subc refdes to 'test', select subc, copy, place copy on layout. select subc copy, delete it, open new layout, agree to lose layout data, crash ensues. [erich]. 
 - BUG: dyntext refdes text with no refdes attribute results in an invisible object that can be deleted (confusing) [report: Igor2]
 - BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
