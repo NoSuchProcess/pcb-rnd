@@ -281,13 +281,15 @@ int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 }
 
 
-unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l)
+unsigned int pcb_subc_line_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_line_t *l)
 {
-	return
-		pcb_hash_coord(l->Thickness) ^ pcb_hash_coord(l->Clearance) ^
-		pcb_hash_element_ox(e, l->Point1.X) ^ pcb_hash_element_oy(e, l->Point1.Y) ^
-		pcb_hash_element_ox(e, l->Point2.X) ^ pcb_hash_element_oy(e, l->Point2.Y) ^
-		pcb_hash_str(l->Number);
+	unsigned int crd = 0;
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l))
+		crd = pcb_hash_coord(l->Point1.X-ox) ^ pcb_hash_coord(l->Point1.Y-oy) ^
+			pcb_hash_coord(l->Point2.X-ox) ^ pcb_hash_coord(l->Point2.Y-oy);
+
+	return pcb_hash_coord(l->Thickness) ^ pcb_hash_coord(l->Clearance) ^
+		pcb_hash_str(l->term) ^ crd;
 }
 
 
@@ -295,6 +297,7 @@ pcb_coord_t pcb_line_length(const pcb_line_t *line)
 {
 	pcb_coord_t dx = line->Point1.X - line->Point2.X;
 	pcb_coord_t dy = line->Point1.Y - line->Point2.Y;
+#warning TODO: use the distance func instead
 	return pcb_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
 }
 

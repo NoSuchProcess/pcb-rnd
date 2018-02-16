@@ -75,7 +75,7 @@ void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y);
 
 /* hash */
 int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2);
-unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l);
+unsigned int pcb_subc_line_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_line_t *l);
 
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
