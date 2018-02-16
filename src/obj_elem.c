@@ -1191,6 +1191,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
+#if 0
 unsigned int pcb_element_hash(const pcb_element_t *e)
 {
 	unsigned int val = 0;
@@ -1289,7 +1290,7 @@ int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2)
 
 	return 1;
 }
-
+#endif
 
 
 /*** ops ***/
