@@ -119,7 +119,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 
 	pcb_bool changed = pcb_true;
 
-	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC | PCB_TYPE_SUBC_FLOATER, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 		return pcb_false;
 	switch (type) {

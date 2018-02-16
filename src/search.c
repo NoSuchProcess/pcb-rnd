@@ -721,10 +721,10 @@ static pcb_bool SearchSubcFloaterByLocation(unsigned long objst, unsigned long r
 		my_side_lyt = conf_core.editor.show_solder_side ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 
 	for(n = 0; n < PCB->Data->LayerN; n++)  {
-		pcb_layer_t *ly = pcb_get_layer(PCB->Data, pcb_layer_stack[n]);
+		pcb_layer_t *ly = &PCB->Data->Layer[n];
 		pcb_layer_type_t lyt;
 
-		if ((ly == NULL) || (ly->text_tree == NULL) || (!ly->meta.real.vis))
+		if ((ly->text_tree == NULL) || (!ly->meta.real.vis))
 			continue;
 
 		lyt = pcb_layer_flags_(ly);
@@ -1325,11 +1325,12 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
 
-	if (!HigherAvail && Type & PCB_TYPE_SUBC_FLOATER &&
+	if (!HigherAvail && (Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
 			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_false)) {
-		pcb_box_t *box = &((pcb_text_t *) r2)->BoundingBox;
-		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
-		HigherAvail = PCB_TYPE_SUBC_FLOATER;
+		*Result1 = ((pcb_text_t *)r2)->parent.layer;
+		*Result2 = r2;
+		*Result3 = r3;
+		return PCB_TYPE_TEXT;
 	}
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
@@ -1450,9 +1451,13 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			SearchElementNameByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3, pcb_true))
 		return PCB_TYPE_ELEMENT_NAME;
 
-	if (Type & PCB_TYPE_SUBC_FLOATER &&
-			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_true))
-		return PCB_TYPE_SUBC_FLOATER;
+	if ((Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_true)) {
+		*Result1 = ((pcb_text_t *)r2)->parent.layer;
+		*Result2 = r2;
+		*Result3 = r3;
+		return PCB_TYPE_TEXT;
+	}
 
 	if (Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))
