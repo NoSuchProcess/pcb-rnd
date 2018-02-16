@@ -7,9 +7,9 @@
 #include "buffer.h"
 #include "data.h"
 #include "error.h"
-#include "obj_elem.h"
-#include "obj_elem_list.h"
-#include "obj_elem_op.h"
+#include "obj_subc.h"
+#include "obj_subc_list.h"
+#include "obj_subc_op.h"
 #include "compat_misc.h"
 #include "pcb-printf.h"
 #include "operation.h"
@@ -45,14 +45,17 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	/* add unique elements */
 	id = 0;
-	PCB_ELEMENT_LOOP(buff.Data) {
+	PCB_SUBC_LOOP(buff.Data) {
 		const char *ename;
 		pcb_fplibrary_t *e;
 
 		id++;
-		elementlist_dedup_skip(dedup, element);
+#warning subc TODO:
+/*		elementlist_dedup_skip(dedup, subc);*/
 
-		ename = element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString;
+		ename = pcb_attribute_get(&subc->Attributes, "footprint");
+		if (ename == NULL)
+			ename = subc->refdes;
 		if (ename == NULL)
 			ename = "anonymous";
 		e = pcb_fp_append_entry(l, ename, PCB_FP_FILE, NULL);
@@ -106,7 +109,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 
 	/* find the reuqested footprint in the file */
 	id = 0;
-	PCB_ELEMENT_LOOP(buff.Data) {
+	PCB_SUBC_LOOP(buff.Data) {
 		id++;
 		if (id == req_id) {
 /*			if (strcmp(element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString, l->name)) */
@@ -118,7 +121,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 			memset(&op, 0, sizeof(op));
 			op.buffer.dst = calloc(sizeof(pcb_data_t), 1);
 			pcb_data_set_layer_parents(op.buffer.dst);
-			pcb_elemop_add_to_buffer(&op, element);
+			pcb_subcop_add_to_buffer(&op, subc);
 
 			f = pcb_fopen(tmp_name, "w");
 			memset(&buff2, 0, sizeof(buff2));
