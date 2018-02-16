@@ -37,7 +37,6 @@
 - BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
 	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
 		- Igor2 can't reproduce this
-- BUG: (related to above?) open design that includes padstacks (i used step6502.lht), select a padstack, run :padstackedit, cancel out of padstackedit dialog, run :padstackedit, cancel, repeat. I get 'Need a padstack' log message after 1st or 2nd iteration.[report: miloh]
 	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
