@@ -38,6 +38,7 @@
 #include "obj_all.h"
 #include "layer_it.h"
 #include "operation.h"
+#include "flag.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
@@ -751,8 +752,20 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 		sum++;
 	} PCB_ENDALL_LOOP;
 
+	/* have to go in two passes, to make sure that clearing polygons are done
+	   before the polygons that are potentially being cleared - this way we
+	   guarantee that by the time the poly-vs-poly clearance needs to be
+	   calculated, the clearing poly has a contour */
 	PCB_POLY_ALL_LOOP(data); {
-		if (polygon->clip_dirty)
+		if ((polygon->clip_dirty) && (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
+			pcb_poly_init_clip(data, layer, polygon);
+#warning TODO: progbar
+/*		if ((n % 10) == 0) */
+		n++;
+	} PCB_ENDALL_LOOP;
+
+	PCB_POLY_ALL_LOOP(data); {
+		if ((polygon->clip_dirty) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
 			pcb_poly_init_clip(data, layer, polygon);
 #warning TODO: progbar
 /*		if ((n % 10) == 0) */
