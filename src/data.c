@@ -749,7 +749,8 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 		return;
 
 	PCB_POLY_ALL_LOOP(data); {
-		sum++;
+		if (polygon->clip_dirty)
+			sum++;
 	} PCB_ENDALL_LOOP;
 
 	/* have to go in two passes, to make sure that clearing polygons are done
