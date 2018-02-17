@@ -62,6 +62,7 @@
 - BUG: menu select->change drilling hole->+/- size   does not woek for padstacks, but alt+s still does [report: erich] 
 - BUG: padstack editor: broken values in the proto/hole size gets converted and do a round trip, ruining vlaues being edited, e.g. when the unit is to be replaced [report: Alain]
 - pool: import work/format_dev_chest
+- BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
 
 2. For later releases ===============================================================================
 - lihata v5:
