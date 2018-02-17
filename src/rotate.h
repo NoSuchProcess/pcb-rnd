@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include "global_typedefs.h"
+#include "compat_misc.h"
 
 /*** Transformation macros ***/
 #define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\
@@ -71,8 +72,8 @@ PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb
 	pcb_coord_t px = *x - cx;
 	pcb_coord_t py = *y - cy;
 
-	nx = px * cosa + py * sina;
-	ny = py * cosa - px * sina;
+	nx = pcb_round(px * cosa + py * sina);
+	ny = pcb_round(py * cosa - px * sina);
 
 	*x = nx + cx;
 	*y = ny + cy;
