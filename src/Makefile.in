@@ -111,6 +111,7 @@ put /local/pcb/OBJS [@
 	obj_rat.o
 	obj_rat_list.o
 	obj_subc.o
+	obj_subc_hash.o
 	obj_subc_list.o
 	obj_term.o
 	obj_text.o
