@@ -742,6 +742,14 @@ unsigned int pcb_layer_hash_bound(pcb_layer_t *ly)
 	return hash;
 }
 
+pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt)
+{
+	if (lyt & PCB_LYT_TOP)
+		return (lyt & ~PCB_LYT_TOP) | PCB_LYT_BOTTOM;
+	else if (lyt & PCB_LYT_BOTTOM)
+		return (lyt & ~PCB_LYT_BOTTOM) | PCB_LYT_TOP;
+	return lyt;
+}
 
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
 {

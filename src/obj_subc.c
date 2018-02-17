@@ -1621,10 +1621,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	pcb_subc_mirror(NULL, newsc, yoff, pcb_true);
 	for(n = 0; n < newsc->data->LayerN; n++) {
 		pcb_layer_t *ly = newsc->data->Layer + n;
-		if (ly->meta.bound.type & PCB_LYT_TOP)
-			ly->meta.bound.type = (ly->meta.bound.type & ~PCB_LYT_TOP) | PCB_LYT_BOTTOM;
-		else if (ly->meta.bound.type & PCB_LYT_BOTTOM)
-			ly->meta.bound.type = (ly->meta.bound.type & ~PCB_LYT_BOTTOM) | PCB_LYT_TOP;
+		ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
 	}
 
 	/* place the new subc */
