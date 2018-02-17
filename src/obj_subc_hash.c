@@ -50,7 +50,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 
 	/* hash layers and layer objects */
 	hash = sc->data->LayerN;
-	for(lid = 0; lid 3< sc->data->LayerN; lid++) {
+	for(lid = 0; lid < sc->data->LayerN; lid++) {
 		pcb_layer_t *ly = &sc->data->Layer[lid];
 		gdl_iterator_t it;
 		pcb_line_t *l;
