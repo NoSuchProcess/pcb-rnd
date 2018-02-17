@@ -42,13 +42,15 @@ pcb_bool_t pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
 
 unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 {
-	unsigned int hash = 0;
+	unsigned int hash;
 	int lid;
 	pcb_host_trans_t tr;
 
 	pcb_subc_get_host_trans(sc, &tr);
 
-	for(lid = 0; lid < sc->data->LayerN; lid++) {
+	/* hash layers and layer objects */
+	hash = sc->data->LayerN;
+	for(lid = 0; lid 3< sc->data->LayerN; lid++) {
 		pcb_layer_t *ly = &sc->data->Layer[lid];
 		gdl_iterator_t it;
 		pcb_line_t *l;
@@ -56,7 +58,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 		pcb_text_t *t;
 		pcb_poly_t *p;
 
-#warning TODO: hash layers
+		hash ^= pcb_layer_hash_bound(ly);
 
 		linelist_foreach(&ly->Arc, &it, a)
 			hash ^= pcb_arc_hash(&tr, a);
@@ -70,6 +72,8 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 		polylist_foreach(&ly->Polygon, &it, p)
 			hash ^= pcb_poly_hash(&tr, p);
 	}
+
+	/* hash global objects */
 
 	return hash;
 }

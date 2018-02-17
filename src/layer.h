@@ -263,6 +263,10 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src);
 /* Allocate a new bound layer within data, set it up, but do not do the binding */
 pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name);
 
+/* Calculate a hash of a bound layer (ingoring its name) */
+unsigned long pcb_layer_hash_bound(pcb_layer_t *ly);
+
+
 /* Modify tree pointers in dst to point to src's; allocates trees for src if they are not yet allocated */
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src);
 

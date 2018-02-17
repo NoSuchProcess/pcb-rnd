@@ -724,6 +724,25 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	return lay;
 }
 
+unsigned long pcb_layer_hash_bound(pcb_layer_t *ly)
+{
+	unsigned long hash;
+
+	assert(ly->is_bound);
+
+	hash  = (unsigned long)arclist_length(&ly->Arc);
+	hash ^= (unsigned long)linelist_length(&ly->Line);
+	hash ^= (unsigned long)textlist_length(&ly->Text);
+	hash ^= (unsigned long)polylist_length(&ly->Polygon);
+	hash ^= (unsigned long)ly->comb ^ (unsigned long)ly->meta.bound.type;
+
+	if (ly->meta.bound.type & PCB_LYT_INTERN)
+		hash ^= ly->meta.bound.stack_offs;
+
+	return hash;
+}
+
+
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
 {
 	const pcb_layer_type_name_t *n;
