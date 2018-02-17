@@ -209,7 +209,7 @@ int pcb_poly_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 }
 #endif
 
-unsigned int pcb_subc_poly_hash(const pcb_host_trans_t *tr, const pcb_poly_t *p)
+unsigned int pcb_poly_hash(const pcb_host_trans_t *tr, const pcb_poly_t *p)
 {
 	unsigned int crd = 0;
 	pcb_cardinal_t n;
