@@ -179,8 +179,13 @@ void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps)
 unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p)
 {
 	unsigned int crd = 0;
-	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p))
-		crd = pcb_hash_cx(tr, p->x) ^ pcb_hash_cy(tr, p->y);
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p)) {
+		pcb_coord_t x, y;
+		
+		pcb_hash_tr_coords(tr, &x, &y, p->x, p->y);
+		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y);
+	}
 
 	return pcb_hash_angle(tr, p->rot) ^ pcb_hash_coord(p->Clearance) ^
 		pcb_hash_str(p->term) ^ crd ^

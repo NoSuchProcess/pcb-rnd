@@ -347,8 +347,13 @@ int pcb_text_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 {
 	unsigned int crd = 0;
-	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t))
-		crd = pcb_hash_cx(tr, t->X) ^ pcb_hash_cy(tr, t->Y) ^ pcb_hash_coord(t->Scale);
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t)) {
+		pcb_coord_t x, y;
+
+		pcb_hash_tr_coords(tr, &x, &y, t->X, t->Y);
+		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(t->Scale);
+	}
 
 	return pcb_hash_str(t->TextString) ^ pcb_hash_str(t->term) ^ crd;
 }

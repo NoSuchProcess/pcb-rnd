@@ -216,8 +216,12 @@ unsigned int pcb_poly_hash(const pcb_host_trans_t *tr, const pcb_poly_t *p)
 	pcb_cardinal_t n;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p))
-		for(n = 0; n < p->PointN; n++)
-			crd ^= pcb_hash_cx(tr, p->Points[n].X) ^ pcb_hash_cy(tr, p->Points[n].Y);
+		for(n = 0; n < p->PointN; n++) {
+			pcb_coord_t x, y;
+
+			pcb_hash_tr_coords(tr, &x, &y, p->Points[n].X, p->Points[n].Y);
+			crd ^= pcb_hash_coord(x) ^ pcb_hash_coord(y);
+		}
 
 	return pcb_hash_coord(p->Clearance) ^ pcb_hash_str(p->term) ^ crd;
 }

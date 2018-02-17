@@ -285,9 +285,13 @@ int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l)
 {
 	unsigned int crd = 0;
-	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l))
-		crd = pcb_hash_cx(tr, l->Point1.X) ^ pcb_hash_cy(tr, l->Point1.Y) ^
-			pcb_hash_cx(tr, l->Point2.X) ^ pcb_hash_cy(tr, l->Point2.Y);
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) {
+		pcb_coord_t x1, y1, x2, y2;
+		pcb_hash_tr_coords(tr, &x1, &y1, l->Point1.X, l->Point1.Y);
+		pcb_hash_tr_coords(tr, &x2, &y2, l->Point2.X, l->Point2.Y);
+		crd = pcb_hash_coord(x1) ^ pcb_hash_coord(y1) ^ pcb_hash_coord(x2) ^ pcb_hash_coord(y2);
+	}
 
 	return pcb_hash_coord(l->Thickness) ^ pcb_hash_coord(l->Clearance) ^
 		pcb_hash_str(l->term) ^ crd;
