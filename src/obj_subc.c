@@ -251,7 +251,7 @@ int pcb_subc_get_host_trans(const pcb_subc_t *sc, pcb_host_trans_t *tr)
 	int res = 0;
 	double rr;
 
-	if (pcb_subc_get_origin(sc, &tr->ox, &tr->ox) != 0) {
+	if (pcb_subc_get_origin(sc, &tr->ox, &tr->oy) != 0) {
 		tr->ox = tr->oy = 0;
 		res = -1;
 	}
