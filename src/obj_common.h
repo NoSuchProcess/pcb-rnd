@@ -29,6 +29,7 @@
 #ifndef PCB_OBJ_COMMON_H
 #define PCB_OBJ_COMMON_H
 
+#include <math.h>
 #include <genht/hash.h>
 #include <genlist/gendlist.h>
 #include <string.h>
@@ -188,6 +189,15 @@ PCB_INLINE unsigned pcb_hash_cy(const pcb_host_trans_t *tr, pcb_coord_t c)
 {
 	c -= tr->oy;
 	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
+
+PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
+{
+	long l;
+	ang -= tr->rot;
+	ang *= 10000;
+	l = floor(ang);
+	return murmurhash(&l, sizeof(l));
 }
 
 /* Return the geometric center of an object, as shown (center of bbox usually,

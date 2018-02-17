@@ -174,6 +174,18 @@ void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps)
 	pcb_pstk_bbox_(dst, ps, pcb_true);
 }
 
+/* hash */
+unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p)
+{
+	unsigned int crd = 0;
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p))
+		crd = pcb_hash_cx(tr, p->x) ^ pcb_hash_cy(tr, p->y);
+
+	return pcb_hash_angle(tr, p->rot) ^ pcb_hash_coord(p->Clearance) ^
+		pcb_hash_str(p->term) ^ crd ^
+		murmurhash(&p->smirror, sizeof(p->smirror)) ^
+		murmurhash(&p->xmirror, sizeof(p->xmirror));
+}
 
 /*** utils ***/
 

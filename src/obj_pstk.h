@@ -86,6 +86,10 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
 void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps);
 
+/* hash */
+unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p);
+
+
 void pcb_pstk_set_thermal(pcb_pstk_t *ps, unsigned long lid, unsigned char shape);
 unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_t alloc);
 
