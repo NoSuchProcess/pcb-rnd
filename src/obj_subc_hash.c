@@ -45,6 +45,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 	unsigned int hash;
 	int lid;
 	pcb_host_trans_t tr;
+	gdl_iterator_t it;
 
 	pcb_subc_get_host_trans(sc, &tr);
 
@@ -52,7 +53,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 	hash = sc->data->LayerN;
 	for(lid = 0; lid < sc->data->LayerN; lid++) {
 		pcb_layer_t *ly = &sc->data->Layer[lid];
-		gdl_iterator_t it;
+
 		pcb_line_t *l;
 		pcb_arc_t *a;
 		pcb_text_t *t;
@@ -74,7 +75,17 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 	}
 
 	/* hash global objects */
-
+	{
+		pcb_pstk_t *ps;
+#warning subc TODO: subc in subc: trans in trans
+#if 0
+		pcb_subc_t *s;
+		polylist_foreach(&sc->data->subc, &it, s)
+			hash ^= pcb_subc_hash_(&tr, p);
+#endif
+		padstacklist_foreach(&sc->data->padstack, &it, ps)
+			hash ^= pcb_pstk_hash(&tr, ps);
+	}
 	return hash;
 }
 
