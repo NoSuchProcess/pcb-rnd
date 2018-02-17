@@ -60,6 +60,7 @@
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
 - BUG: menu select->change drilling hole->+/- size   does not woek for padstacks, but alt+s still does [report: erich] 
+- BUG: padstack editor: broken values in the proto/hole size gets converted and do a round trip, ruining vlaues being edited, e.g. when the unit is to be replaced [report: Alain]
 - pool: import work/format_dev_chest
 
 2. For later releases ===============================================================================
