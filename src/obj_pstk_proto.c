@@ -309,7 +309,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	}
 
 	/* all went fine */
-	dst->hash = pcb_pstk_hash(dst);
+	dst->hash = pcb_pstk_proto_hash(dst);
 	ret = 0;
 
 	quit:;
@@ -512,7 +512,7 @@ static pcb_cardinal_t pcb_pstk_proto_insert_try(pcb_data_t *data, const pcb_pstk
 				first_free = n;
 		}
 		else if (data->ps_protos.array[n].hash == proto->hash) {
-			if (pcb_pstk_eq(&data->ps_protos.array[n], proto))
+			if (pcb_pstk_proto_eq(&data->ps_protos.array[n], proto))
 				return n;
 		}
 	}
@@ -901,7 +901,7 @@ static unsigned int pcb_pstk_shape_hash(const pcb_pstk_shape_t *sh)
 	return ret;
 }
 
-unsigned int pcb_pstk_hash(const pcb_pstk_proto_t *p)
+unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p)
 {
 	pcb_pstk_tshape_t *ts = &p->tr.array[0];
 	unsigned int n, ret = pcb_hash_coord(p->hdia) ^ pcb_hash_coord(p->htop) ^ pcb_hash_coord(p->hbottom) ^ pcb_hash_coord(p->hplated) ^ pcb_hash_coord(ts->len);
@@ -945,7 +945,7 @@ static int pcb_pstk_shape_eq(const pcb_pstk_shape_t *sh1, const pcb_pstk_shape_t
 	return 1;
 }
 
-int pcb_pstk_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2)
+int pcb_pstk_proto_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2)
 {
 	pcb_pstk_tshape_t *ts1 = &p1->tr.array[0], *ts2 = &p2->tr.array[0];
 	int n1, n2;

@@ -196,8 +196,8 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 
 
 /*** hash ***/
-unsigned int pcb_pstk_hash(const pcb_pstk_proto_t *p);
-int pcb_pstk_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2);
+unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p);
+int pcb_pstk_proto_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2);
 
 /*** loops ***/
 #define PCB_PADSTACK_LOOP(top) do {                                \
