@@ -246,6 +246,33 @@ int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom)
 	return 0;
 }
 
+int pcb_subc_get_host_trans(const pcb_subc_t *sc, pcb_host_trans_t *tr)
+{
+	int res = 0;
+	double rr;
+
+	if (pcb_subc_get_origin(sc, &tr->ox, &tr->ox) != 0) {
+		tr->ox = tr->oy = 0;
+		res = -1;
+	}
+
+	if (pcb_subc_get_rotation(sc, &tr->rot) != 0) {
+		tr->rot = 0;
+		res = -1;
+	}
+	
+	if (pcb_subc_get_side(sc, &tr->on_bottom) != 0) {
+		tr->on_bottom = 0;
+		res = -1;
+	}
+
+	rr = tr->rot / PCB_RAD_TO_DEG;
+	tr->cosa = cos(rr);
+	tr->sina = sin(rr);
+
+	return res;
+}
+
 static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 {
 	sc->aux_cache[0] = NULL;
