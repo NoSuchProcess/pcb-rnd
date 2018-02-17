@@ -1622,6 +1622,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	for(n = 0; n < newsc->data->LayerN; n++) {
 		pcb_layer_t *ly = newsc->data->Layer + n;
 		ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
+		ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
 	}
 
 	/* place the new subc */
