@@ -296,7 +296,7 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 	return 
 		pcb_hash_coord(a->Thickness) ^ pcb_hash_coord(a->Clearance) ^
 		pcb_hash_coord(a->Width) ^ pcb_hash_coord(a->Height) ^
-		pcb_hash_coord(a->StartAngle) ^ pcb_hash_coord(a->Delta) ^ crd;
+		pcb_hash_coord(pcb_normalize_angle(a->StartAngle + tr->rot)) ^ pcb_hash_coord(a->Delta) ^ crd;
 }
 
 pcb_coord_t pcb_arc_length(const pcb_arc_t *arc)
