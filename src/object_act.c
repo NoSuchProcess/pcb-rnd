@@ -1349,6 +1349,33 @@ static int pcb_act_CreateText(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return 0;
 }
 
+static const char pcb_acts_subc[] = "subc(hash, [board|selected])\n";
+static const char pcb_acth_subc[] = "Various operations on subc";
+static int pcb_act_subc(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	if (argc == 0)
+		PCB_ACT_FAIL(subc);
+	switch (pcb_funchash_get(argv[0], NULL)) {
+		case F_Hash:
+			{
+				int selected_only = 0;
+				gdl_iterator_t it;
+				pcb_subc_t *sc;
+
+				if (argc < 1) {
+				
+				}
+				else if (strcmp(argv[1], "selected") == 0)
+					selected_only = 1;
+				polylist_foreach(&PCB->Data->subc, &it, sc) {
+					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
+						continue;
+					pcb_message(PCB_MSG_INFO, "subc #%ld (%s): %u\n", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_hash(sc));
+				}
+			}
+			break;
+	}
+}
 
 pcb_hid_action_t object_action_list[] = {
 	{"Attributes", 0, pcb_act_Attributes,
@@ -1386,6 +1413,9 @@ pcb_hid_action_t object_action_list[] = {
 	,
 	{"MoveLayer", 0, pcb_act_MoveLayer,
 	 movelayer_help, movelayer_syntax}
+	,
+	{"subc", 0, pcb_act_subc,
+	 pcb_acth_subc, pcb_acts_subc}
 	,
 	{"CreateText", 0, pcb_act_CreateText,
 	 pcb_acth_CreateText, pcb_acts_CreateText}
