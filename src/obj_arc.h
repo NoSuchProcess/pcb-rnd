@@ -67,7 +67,7 @@ pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc);
 
 /*** hash ***/
 int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2);
-unsigned int pcb_subc_arc_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_arc_t *a);
+unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a);
 
 
 /* Return the x;y coordinate of the endpoint of an arc; if which is 0, return

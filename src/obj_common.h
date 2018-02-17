@@ -93,6 +93,15 @@ pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype);
 
 int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 
+/* Host transformations: typically the transformations an object of a subc
+   inherits from the subc */
+typedef struct pcb_host_trans_s {
+	pcb_coord_t ox, oy;
+	int on_bottom;
+	double rot;
+	double cosa, sina; /* rot angle cache */
+} pcb_host_trans_t;
+
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \
 do { \
@@ -166,6 +175,18 @@ PCB_INLINE int pcb_neqs(const char *s1, const char *s2)
 
 PCB_INLINE unsigned pcb_hash_coord(pcb_coord_t c)
 {
+	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
+
+PCB_INLINE unsigned pcb_hash_cx(const pcb_host_trans_t *tr, pcb_coord_t c)
+{
+	c -= tr->ox;
+	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
+
+PCB_INLINE unsigned pcb_hash_cy(const pcb_host_trans_t *tr, pcb_coord_t c)
+{
+	c -= tr->oy;
 	return murmurhash(&(c), sizeof(pcb_coord_t));
 }
 

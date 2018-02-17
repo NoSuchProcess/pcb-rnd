@@ -281,12 +281,12 @@ int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 }
 
 
-unsigned int pcb_subc_line_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_line_t *l)
+unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l)
 {
 	unsigned int crd = 0;
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l))
-		crd = pcb_hash_coord(l->Point1.X-ox) ^ pcb_hash_coord(l->Point1.Y-oy) ^
-			pcb_hash_coord(l->Point2.X-ox) ^ pcb_hash_coord(l->Point2.Y-oy);
+		crd = pcb_hash_cx(tr, l->Point1.X) ^ pcb_hash_cy(tr, l->Point1.Y) ^
+			pcb_hash_cx(tr, l->Point2.X) ^ pcb_hash_cy(tr, l->Point2.Y);
 
 	return pcb_hash_coord(l->Thickness) ^ pcb_hash_coord(l->Clearance) ^
 		pcb_hash_str(l->term) ^ crd;

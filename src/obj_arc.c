@@ -282,11 +282,11 @@ int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t
 	return 1;
 }
 
-unsigned int pcb_subc_arc_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_arc_t *a)
+unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 {
 	unsigned int crd = 0;
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a))
-		crd = pcb_hash_coord(a->X-ox) ^ pcb_hash_coord(a->Y-oy);
+		crd = pcb_hash_cx(tr, a->X) ^ pcb_hash_cy(tr, a->Y);
 
 	return 
 		pcb_hash_coord(a->Thickness) ^ pcb_hash_coord(a->Clearance) ^

@@ -209,14 +209,14 @@ int pcb_poly_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 }
 #endif
 
-unsigned int pcb_subc_poly_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_poly_t *p)
+unsigned int pcb_subc_poly_hash(const pcb_host_trans_t *tr, const pcb_poly_t *p)
 {
 	unsigned int crd = 0;
 	pcb_cardinal_t n;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p))
 		for(n = 0; n < p->PointN; n++)
-			crd ^= pcb_hash_coord(p->Points[n].X-ox) ^ pcb_hash_coord(p->Points[n].Y-oy);
+			crd ^= pcb_hash_cx(tr, p->Points[n].X) ^ pcb_hash_cy(tr, p->Points[n].Y);
 
 	return pcb_hash_coord(p->Clearance) ^ pcb_hash_str(p->term) ^ crd;
 }
