@@ -724,9 +724,9 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	return lay;
 }
 
-unsigned long pcb_layer_hash_bound(pcb_layer_t *ly)
+unsigned int pcb_layer_hash_bound(pcb_layer_t *ly)
 {
-	unsigned long hash;
+	unsigned int hash;
 
 	assert(ly->is_bound);
 
