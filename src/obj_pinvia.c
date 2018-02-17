@@ -42,6 +42,7 @@
 #include "obj_pinvia.h"
 #include "obj_pinvia_op.h"
 #include "obj_subc_parent.h"
+#include "obj_hash.h"
 
 /* TODO: consider removing this by moving pin/via functions here: */
 #include "draw.h"

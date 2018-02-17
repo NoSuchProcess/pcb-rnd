@@ -41,6 +41,7 @@
 #include "obj_pstk_inlines.h"
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
+#include "obj_hash.h"
 #include "operation.h"
 #include "search.h"
 #include "undo.h"

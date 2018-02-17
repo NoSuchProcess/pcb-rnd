@@ -43,6 +43,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <assert.h>
 #include <setjmp.h>
 

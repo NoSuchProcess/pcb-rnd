@@ -45,6 +45,7 @@
 #include "obj_line_op.h"
 
 #include "obj_subc_parent.h"
+#include "obj_hash.h"
 
 /* TODO: maybe remove this and move lines from draw here? */
 #include "draw.h"

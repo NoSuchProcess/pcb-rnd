@@ -31,6 +31,7 @@
 #ifndef PCB_OBJ_ARC_H
 #define PCB_OBJ_ARC_H
 
+#include <genlist/gendlist.h>
 #include "obj_common.h"
 
 struct pcb_arc_s {       /* holds information about arcs */

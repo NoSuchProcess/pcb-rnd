@@ -30,8 +30,6 @@
 #define PCB_OBJ_COMMON_H
 
 #include <math.h>
-#include <genht/hash.h>
-#include <genlist/gendlist.h>
 #include <string.h>
 #include "flag.h"
 #include "attrib.h"
@@ -163,42 +161,6 @@ struct pcb_any_obj_s {
 struct pcb_any_line_s {
 	PCB_ANYLINEFIELDS;
 };
-
-/*** Functions and macros used for hashing ***/
-
-/* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
-PCB_INLINE int pcb_neqs(const char *s1, const char *s2)
-{
-	if ((s1 == NULL) && (s2 == NULL)) return 0;
-	if ((s1 == NULL) || (s2 == NULL)) return 1;
-	return strcmp(s1, s2) != 0;
-}
-
-PCB_INLINE unsigned pcb_hash_coord(pcb_coord_t c)
-{
-	return murmurhash(&(c), sizeof(pcb_coord_t));
-}
-
-PCB_INLINE unsigned pcb_hash_cx(const pcb_host_trans_t *tr, pcb_coord_t c)
-{
-	c -= tr->ox;
-	return murmurhash(&(c), sizeof(pcb_coord_t));
-}
-
-PCB_INLINE unsigned pcb_hash_cy(const pcb_host_trans_t *tr, pcb_coord_t c)
-{
-	c -= tr->oy;
-	return murmurhash(&(c), sizeof(pcb_coord_t));
-}
-
-PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
-{
-	long l;
-	ang -= tr->rot;
-	ang *= 10000;
-	l = floor(ang);
-	return murmurhash(&l, sizeof(l));
-}
 
 /* Return the geometric center of an object, as shown (center of bbox usually,
    but not for an arc) */

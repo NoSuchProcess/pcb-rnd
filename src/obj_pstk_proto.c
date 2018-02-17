@@ -39,6 +39,7 @@
 #include "rotate.h"
 #include "undo.h"
 #include "vtpadstack_t.h"
+#include "obj_hash.h"
 
 static const char core_proto_cookie[] = "padstack prototypes";
 

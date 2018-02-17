@@ -2,8 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2017, 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,28 +22,41 @@
  *    Project page: http://repo.hu/projects/pcb-rnd
  *    lead developer: email to pcb-rnd (at) igor2.repo.hu
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
- *
  */
 
-/* Drawing primitive: rats */
-
-#ifndef PCB_OBJ_RAT_H
-#define PCB_OBJ_RAT_H
-
+#include <genht/hash.h>
 #include <genlist/gendlist.h>
-#include "obj_common.h"
 
-struct pcb_rat_line_s {          /* a rat-line */
-	PCB_ANYLINEFIELDS;
-	pcb_cardinal_t group1, group2; /* the layer group each point is on */
-	gdl_elem_t link;               /* an arc is in a list on a design */
-};
+/* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
+PCB_INLINE int pcb_neqs(const char *s1, const char *s2)
+{
+	if ((s1 == NULL) && (s2 == NULL)) return 0;
+	if ((s1 == NULL) || (s2 == NULL)) return 1;
+	return strcmp(s1, s2) != 0;
+}
 
+PCB_INLINE unsigned pcb_hash_coord(pcb_coord_t c)
+{
+	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
 
-pcb_rat_t *pcb_rat_alloc(pcb_data_t *data);
-void pcb_rat_free(pcb_rat_t *data);
+PCB_INLINE unsigned pcb_hash_cx(const pcb_host_trans_t *tr, pcb_coord_t c)
+{
+	c -= tr->ox;
+	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
 
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags);
-pcb_bool pcb_rats_destroy(pcb_bool selected);
+PCB_INLINE unsigned pcb_hash_cy(const pcb_host_trans_t *tr, pcb_coord_t c)
+{
+	c -= tr->oy;
+	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
 
-#endif
+PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
+{
+	long l;
+	ang -= tr->rot;
+	ang *= 10000;
+	l = floor(ang);
+	return murmurhash(&l, sizeof(l));
+}

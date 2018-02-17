@@ -48,6 +48,7 @@
 #include "obj_poly_draw.h"
 
 #include "obj_subc_parent.h"
+#include "obj_hash.h"
 
 /* TODO: get rid of these: */
 #include "draw.h"

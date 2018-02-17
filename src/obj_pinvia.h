@@ -31,6 +31,7 @@
 #ifndef PCB_OBJ_PINVIA_H
 #define PCB_OBJ_PINVIA_H
 
+#include <genlist/gendlist.h>
 #include "obj_common.h"
 
 struct pcb_pin_s {

@@ -27,6 +27,7 @@
 #ifndef PCB_OBJ_PSTK_STRUCT_DECLARED
 #define PCB_OBJ_PSTK_STRUCT_DECLARED
 
+#include <genlist/gendlist.h>
 #include <genvector/vtp0.h>
 #include "obj_common.h"
 

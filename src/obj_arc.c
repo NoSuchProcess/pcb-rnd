@@ -45,6 +45,7 @@
 #include "obj_arc_op.h"
 
 #include "obj_subc_parent.h"
+#include "obj_hash.h"
 
 /* TODO: could be removed if draw.c could be split up */
 #include "draw.h"

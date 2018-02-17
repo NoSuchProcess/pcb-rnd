@@ -27,6 +27,7 @@
 #ifndef PCB_OBJ_SUBC_H
 #define PCB_OBJ_SUBC_H
 
+#include <genlist/gendlist.h>
 #include <libminuid/libminuid.h>
 #include <genht/htsp.h>
 #include "obj_common.h"

@@ -31,6 +31,7 @@
 #ifndef PCB_OBJ_PAD_H
 #define PCB_OBJ_PAD_H
 
+#include <genlist/gendlist.h>
 #include "obj_common.h"
 
 struct pcb_pad_s {                  /* a SMD pad */
