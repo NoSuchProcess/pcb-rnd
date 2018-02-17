@@ -72,6 +72,9 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text);
    directly under data - useful e.g. on parent attr change */
 void pcb_text_dyn_bbox_update(pcb_data_t *data);
 
+/* hash */
+unsigned int pcb_subc_text_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_text_t *t);
+
 /* Append dyntext fmt rendered from the perspective of obj */
 int pcb_append_dyntext(gds_t *dst, pcb_any_obj_t *obj, const char *fmt);
 

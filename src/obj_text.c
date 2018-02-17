@@ -332,6 +332,25 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_text_free_str(Text, rendered);
 }
 
+#if 0
+int pcb_text_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2)
+{
+	if (pcb_field_neq(l1, l2, Thickness) || pcb_field_neq(l1, l2, Clearance)) return 0;
+	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point1.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point1.Y)) return 0;
+	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point2.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point2.Y)) return 0;
+	if (pcb_neqs(l1->Number, l2->Number)) return 0;
+	return 1;
+}
+#endif
+
+unsigned int pcb_subc_text_hash(pcb_coord_t ox, pcb_coord_t oy, const pcb_text_t *t)
+{
+	unsigned int crd = 0;
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t))
+		crd = pcb_hash_coord(t->X-ox) ^ pcb_hash_coord(t->Y-oy) ^ pcb_hash_coord(t->Scale);
+
+	return pcb_hash_str(t->TextString) ^ pcb_hash_str(t->term) ^ crd;
+}
 
 
 /*** ops ***/
