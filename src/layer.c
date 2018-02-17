@@ -724,20 +724,30 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	return lay;
 }
 
-unsigned int pcb_layer_hash_bound(pcb_layer_t *ly)
+unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, pcb_bool smirror)
 {
 	unsigned int hash;
+	pcb_layer_type_t lyt;
+	int offs;
 
 	assert(ly->is_bound);
+
+	lyt = ly->meta.bound.type;
+	offs = ly->meta.bound.stack_offs;
+
+	if (smirror) {
+		lyt = pcb_layer_mirror_type(lyt);
+		offs = -offs;
+	}
 
 	hash  = (unsigned long)arclist_length(&ly->Arc);
 	hash ^= (unsigned long)linelist_length(&ly->Line);
 	hash ^= (unsigned long)textlist_length(&ly->Text);
 	hash ^= (unsigned long)polylist_length(&ly->Polygon);
-	hash ^= (unsigned long)ly->comb ^ (unsigned long)ly->meta.bound.type;
+	hash ^= (unsigned long)ly->comb ^ (unsigned long)lyt;
 
 	if (ly->meta.bound.type & PCB_LYT_INTERN)
-		hash ^= ly->meta.bound.stack_offs;
+		hash ^= (unsigned int)offs;
 
 	return hash;
 }

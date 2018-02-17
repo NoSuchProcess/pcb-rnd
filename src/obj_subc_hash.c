@@ -59,7 +59,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 		pcb_text_t *t;
 		pcb_poly_t *p;
 
-		hash ^= pcb_layer_hash_bound(ly);
+		hash ^= pcb_layer_hash_bound(ly, tr.on_bottom);
 
 		linelist_foreach(&ly->Arc, &it, a)
 			hash ^= pcb_arc_hash(&tr, a);

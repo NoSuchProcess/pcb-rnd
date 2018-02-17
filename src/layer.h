@@ -264,7 +264,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src);
 pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name);
 
 /* Calculate a hash of a bound layer (ingoring its name) */
-unsigned int pcb_layer_hash_bound(pcb_layer_t *ly);
+unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, pcb_bool smirror);
 
 /* Calculate mirrored version of some (bound) layer properties */
 pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt);
