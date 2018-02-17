@@ -54,7 +54,9 @@ PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, pcb_coord_t *dstx
 	}
 	else {
 		*dstx = pcb_round((double)px * tr->cosa + (double)py * tr->sina);
-		*dsty = pcb_round((double)py * tr->cosa - (double)px * tr->sina);
+		py = pcb_round((double)py * tr->cosa - (double)px * tr->sina);
+		if (tr->on_bottom) py = -(py);
+		*dsty = py;
 	}
 }
 
