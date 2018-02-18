@@ -47,8 +47,9 @@
    represents the actual content of an subc */
 unsigned int pcb_subc_hash(const pcb_subc_t *e);
 
-/* Compare two subcs and return 1 if they contain the same objects. */
-pcb_bool_t pcb_subc_eq(const pcb_subc_t *e1, const pcb_subc_t *e2);
+/* Compare two subcs and return 1 if they are qeual
+   (their uids match and they contain the same objects). */
+int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2);
 
 /* Create a new local variable to be used for deduplication */
 #define pcb_subclist_dedup_initializer(state) htep_t *state = NULL;

@@ -35,8 +35,75 @@
 #include "obj_poly.h"
 #include "obj_pstk.h"
 
-pcb_bool_t pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
+int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
 {
+	pcb_host_trans_t tr1, tr2;
+	int lid;
+	gdl_iterator_t it;
+
+	/* optimization: cheap tests first */
+	if (memcmp(&sc1->uid, &sc2->uid, sizeof(sc1->uid)) != 0) return 0;
+	if (sc1->data->LayerN != sc2->data->LayerN) return 0;
+	if (padstacklist_length(&sc1->data->padstack) != padstacklist_length(&sc2->data->padstack)) return 0;
+	if (pcb_subclist_length(&sc1->data->subc) != pcb_subclist_length(&sc2->data->subc)) return 0;
+
+	for(lid = 0; lid < sc1->data->LayerN; lid++) {
+		pcb_layer_t *ly1 = &sc1->data->Layer[lid];
+		pcb_layer_t *ly2 = &sc2->data->Layer[lid];
+#warning TODO:
+/*		if (!pcb_layer_eq_bound(ly1, tr1.on_bottom, ly2, tr2.on_bottom)) return 0;*/
+		if (arclist_length(&ly1->Arc) != arclist_length(&ly2->Arc)) return 0;
+	}
+
+	pcb_subc_get_host_trans(sc1, &tr1);
+	pcb_subc_get_host_trans(sc2, &tr2);
+
+	for(lid = 0; lid < sc1->data->LayerN; lid++) {
+		pcb_line_t *l1, *l2;
+		pcb_arc_t *a1, *a2;
+		pcb_text_t *t1, *t2;
+		pcb_poly_t *p1, *p2;
+		pcb_layer_t *ly1 = &sc1->data->Layer[lid];
+		pcb_layer_t *ly2 = &sc2->data->Layer[lid];
+
+
+		/* assume order of children objects are the same */
+		a2 = arclist_first(&ly2->Arc);
+		arclist_foreach(&ly1->Arc, &it, a1) {
+			if (!pcb_arc_eq(&tr1, a1, &tr2, a2)) return 0;
+			a2 = arclist_next(a2);
+		}
+
+		l2 = linelist_first(&ly2->Line);
+		linelist_foreach(&ly1->Line, &it, l1) {
+			if (!pcb_line_eq(&tr1, l1, &tr2, l2)) return 0;
+			l2 = linelist_next(l2);
+		}
+
+		t2 = textlist_first(&ly2->Text);
+		textlist_foreach(&ly1->Text, &it, t1) {
+			if (!pcb_text_eq(&tr1, t1, &tr2, t2)) return 0;
+			t2 = textlist_next(t2);
+		}
+
+		p2 = polylist_first(&ly2->Polygon);
+		polylist_foreach(&ly1->Polygon, &it, p1) {
+			if (!pcb_poly_eq(&tr1, p1, &tr2, p2)) return 0;
+			p2 = polylist_next(p2);
+		}
+	}
+
+	/* compare global objects */
+	{
+		pcb_pstk_t *p1, *p2;
+
+		p2 = padstacklist_first(&sc2->data->padstack);
+		padstacklist_foreach(&sc1->data->padstack, &it, p1) {
+			if (!pcb_pstk_eq(&tr1, p1, &tr2, p2)) return 0;
+			p2 = padstacklist_next(p2);
+		}
+#warning subc TODO: subc-in-subc eq check
+	}
 	return pcb_false;
 }
 
@@ -63,7 +130,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 
 		hash ^= pcb_layer_hash_bound(ly, tr.on_bottom);
 
-		linelist_foreach(&ly->Arc, &it, a)
+		arclist_foreach(&ly->Arc, &it, a)
 			hash ^= pcb_arc_hash(&tr, a);
 
 		linelist_foreach(&ly->Line, &it, l)
@@ -82,7 +149,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 #warning subc TODO: subc in subc: trans in trans
 #if 0
 		pcb_subc_t *s;
-		polylist_foreach(&sc->data->subc, &it, s)
+		subclist_foreach(&sc->data->subc, &it, s)
 			hash ^= pcb_subc_hash_(&tr, p);
 #endif
 		padstacklist_foreach(&sc->data->padstack, &it, ps)
