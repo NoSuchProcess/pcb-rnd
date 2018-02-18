@@ -1367,6 +1367,7 @@ static int pcb_act_subc(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				}
 				else if (strcmp(argv[1], "selected") == 0)
 					selected_only = 1;
+
 				polylist_foreach(&PCB->Data->subc, &it, sc) {
 					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
 						continue;
@@ -1374,7 +1375,58 @@ static int pcb_act_subc(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				}
 			}
 			break;
+		case F_Eq:
+			{
+				int selected_only = 0;
+				gdl_iterator_t it;
+				pcb_subc_t *sc;
+				vtp0_t *vt;
+				htip_t hash2scs; /* hash to subcircuit vector */
+				htip_entry_t *e;
+				gds_t str;
+
+				gds_init(&str);
+				htip_init(&hash2scs, longhash, longkeyeq);
+				if (argc < 1) {
+				
+				}
+				else if (strcmp(argv[1], "selected") == 0)
+					selected_only = 1;
+
+				polylist_foreach(&PCB->Data->subc, &it, sc) {
+					unsigned int hash;
+					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
+						continue;
+					hash = pcb_subc_hash(sc);
+					vt = htip_get(&hash2scs, hash);
+					if (vt == 0) {
+						vt = calloc(sizeof(vtp0_t), 1);
+						htip_set(&hash2scs, hash, vt);
+					}
+					vtp0_append(vt, sc);
+				}
+
+				/* print the result */
+				for (e = htip_first(&hash2scs); e; e = htip_next(&hash2scs, e)) {
+					int n;
+
+					vt = e->value;
+					str.used = 0;
+					pcb_append_printf(&str, "subc eq %u:", e->key);
+					for(n = 0; n < vt->used; n++) {
+						sc = (pcb_subc_t *)vt->array[n];
+						pcb_append_printf(&str, " #%ld(%s):%d", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_eq(sc, (pcb_subc_t*)vt->array[0]));
+					}
+					pcb_message(PCB_MSG_INFO, "%s\n", str.array);
+					vtp0_uninit(vt);
+					free(vt);
+				}
+				gds_uninit(&str);
+				htip_uninit(&hash2scs);
+			}
+			break;
 	}
+	return 0;
 }
 
 pcb_hid_action_t object_action_list[] = {
