@@ -41,6 +41,13 @@ PCB_INLINE unsigned pcb_hash_coord(pcb_coord_t c)
 	return murmurhash(&(c), sizeof(pcb_coord_t));
 }
 
+/* cheat: round with a tolerance of a few nanometers to overcome the usual
+   +-1 nanometer rounding error */
+PCB_INLINE pcb_coord_t pcb_round_tol(double v, int tol)
+{
+	return pcb_round(v/(double)tol)*tol;
+}
+
 PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, pcb_coord_t *dstx, pcb_coord_t *dsty, pcb_coord_t srcx, pcb_coord_t srcy)
 {
 	pcb_coord_t px, py;
@@ -53,10 +60,13 @@ PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, pcb_coord_t *dstx
 		*dsty = py;
 	}
 	else {
-		*dstx = pcb_round((double)px * tr->cosa + (double)py * tr->sina);
-		py = pcb_round((double)py * tr->cosa - (double)px * tr->sina);
-		if (tr->on_bottom) py = -(py);
-		*dsty = py;
+		double x, y;
+		x = (double)px * tr->cosa + (double)py * tr->sina;
+		y = (double)py * tr->cosa - (double)px * tr->sina;
+		if (tr->on_bottom) y = -(y);
+
+		*dstx = pcb_round_tol(x, 4);
+		*dsty = pcb_round_tol(y, 4);
 	}
 }
 
