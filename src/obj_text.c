@@ -333,16 +333,18 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_text_free_str(Text, rendered);
 }
 
-#if 0
-int pcb_text_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2)
+int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_host_trans_t *tr2, const pcb_text_t *t2)
 {
-	if (pcb_field_neq(l1, l2, Thickness) || pcb_field_neq(l1, l2, Clearance)) return 0;
-	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point1.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point1.Y)) return 0;
-	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point2.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point2.Y)) return 0;
-	if (pcb_neqs(l1->Number, l2->Number)) return 0;
+	if (pcb_neqs(t1->TextString, t2->TextString)) return 0;
+	if (pcb_neqs(t1->term, t2->term)) return 0;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, t2)) {
+		if (pcb_field_neq(t1, t2, Scale)) return 0;
+		if (pcb_neq_tr_coords(tr1, t1->X, t1->Y, tr2, t2->X, t2->Y)) return 0;
+	}
+
 	return 1;
 }
-#endif
 
 unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 {
