@@ -275,11 +275,16 @@ void pcb_line_bbox(pcb_line_t *Line)
 int pcb_line_eq(const pcb_host_trans_t *tr1, const pcb_line_t *l1, const pcb_host_trans_t *tr2, const pcb_line_t *l2)
 {
 	if (pcb_field_neq(l1, l2, Thickness) || pcb_field_neq(l1, l2, Clearance)) return 0;
+	if (pcb_neqs(l1->term, l2->term)) return 0;
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, l2)) {
-		if (pcb_neq_tr_coords(tr1, l1->Point1.X, l1->Point1.Y, tr2, l2->Point1.X, l2->Point1.Y)) return 0;
+		if (pcb_neq_tr_coords(tr1, l1->Point1.X, l1->Point1.Y, tr2, l2->Point1.X, l2->Point1.Y)) goto swap;
 		if (pcb_neq_tr_coords(tr1, l1->Point2.X, l1->Point2.Y, tr2, l2->Point2.X, l2->Point2.Y)) return 0;
 	}
-	if (pcb_neqs(l1->term, l2->term)) return 0;
+	return 1;
+
+	swap:; /* check the line with swapped endpoints */
+	if (pcb_neq_tr_coords(tr1, l1->Point2.X, l1->Point2.Y, tr2, l2->Point1.X, l2->Point1.Y)) return 0;
+	if (pcb_neq_tr_coords(tr1, l1->Point1.X, l1->Point1.Y, tr2, l2->Point2.X, l2->Point2.Y)) return 0;
 	return 1;
 }
 
