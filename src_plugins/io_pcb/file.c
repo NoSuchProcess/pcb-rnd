@@ -512,7 +512,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "refdes")));
 		fputc(' ', FP);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "value")));
-		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, F2S(trefdes, PCB_TYPE_ELEMENT_NAME));
+		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_TYPE_ELEMENT_NAME) : "\"\"");
 		WriteAttributeList(FP, &sc->Attributes, "\t");
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
