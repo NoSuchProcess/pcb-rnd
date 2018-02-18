@@ -129,7 +129,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 			f = pcb_fopen(tmp_name, "w");
 			memset(&buff2, 0, sizeof(buff2));
 			buff2.Data = op.buffer.dst;
-			pcb_write_buffer(f, &buff2, "pcb", pcb_true);
+			pcb_write_buffer(f, &buff2, NULL, pcb_true);
 			fclose(f);
 
 			pcb_data_free(op.buffer.dst);
