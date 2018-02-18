@@ -272,12 +272,12 @@ void pcb_line_bbox(pcb_line_t *Line)
 	pcb_set_point_bounding_box(&Line->Point2);
 }
 
-int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2)
+int pcb_line_eq(const pcb_host_trans_t *tr1, const pcb_line_t *l1, const pcb_host_trans_t *tr2, const pcb_line_t *l2)
 {
 	if (pcb_field_neq(l1, l2, Thickness) || pcb_field_neq(l1, l2, Clearance)) return 0;
-	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point1.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point1.Y)) return 0;
-	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point2.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point2.Y)) return 0;
-	if (pcb_neqs(l1->Number, l2->Number)) return 0;
+	if (pcb_neq_tr_coords(tr1, l1->Point1.X, l1->Point1.Y, tr2, l2->Point1.X, l2->Point1.Y)) return 0;
+	if (pcb_neq_tr_coords(tr1, l1->Point2.X, l1->Point2.Y, tr2, l2->Point2.X, l2->Point2.Y)) return 0;
+	if (pcb_neqs(l1->term, l2->term)) return 0;
 	return 1;
 }
 
