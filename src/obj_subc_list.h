@@ -43,6 +43,11 @@
 #include "ht_subc.h"
 #include <genht/hash.h>
 
+/* When turned on, temporarily ignore the uid in hash()/eq() - useful for
+   imported subcircuits that may have random UIDs */
+extern int pcb_subc_hash_ignore_uid;
+
+
 /* Calculate a hash value using the content of the subc. The hash value
    represents the actual content of an subc */
 unsigned int pcb_subc_hash(const pcb_subc_t *e);
