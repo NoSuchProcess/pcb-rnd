@@ -176,6 +176,24 @@ void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps)
 }
 
 /* hash */
+int pcb_pstk_eq(const pcb_host_trans_t *tr1, const pcb_pstk_t *p1, const pcb_host_trans_t *tr2, const pcb_pstk_t *p2)
+{
+
+	if (pcb_field_neq(p1, p2, smirror) || pcb_field_neq(p1, p2, xmirror)) return 0;
+	if (pcb_field_neq(p1, p2, rot)) return 0;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, p2)) {
+		pcb_coord_t x1, y1, x2, y2;
+		
+		pcb_hash_tr_coords(tr1, &x1, &y1, p1->x, p1->y);
+		pcb_hash_tr_coords(tr2, &x2, &y2, p2->x, p2->y);
+		if ((x1 != x2) || (y1 != y2)) return 0;
+	}
+
+	if (pcb_neqs(p1->term, p2->term)) return 0;
+	return 1;
+}
+
 unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p)
 {
 	unsigned int crd = 0;
