@@ -52,7 +52,7 @@ unsigned int pcb_subc_hash(const pcb_subc_t *e);
 int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2);
 
 /* Create a new local variable to be used for deduplication */
-#define pcb_subclist_dedup_initializer(state) htep_t *state = NULL;
+#define pcb_subclist_dedup_initializer(state) htscp_t *state = NULL;
 
 /* Do a "continue" if an subc matching loop_elem has been seen already;
    Typically this is invoked as the first statement of an subclist_foreach()
@@ -61,10 +61,10 @@ int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2);
 switch(1) { \
 	case 1: { \
 		if (state == NULL) \
-			state = htep_alloc(pcb_subc_hash, pcb_subc_eq); \
-		if (htep_has(state, loop_elem)) \
+			state = htscp_alloc(pcb_subc_hash, pcb_subc_eq); \
+		if (htscp_has(state, loop_elem)) \
 			continue; \
-		htep_set(state, loop_elem, 1); \
+		htscp_set(state, loop_elem, 1); \
 	} \
 }
 
@@ -72,7 +72,7 @@ switch(1) { \
 #define pcb_subclist_dedup_free(state) \
 	do { \
 		if (state != NULL) { \
-			htep_free(state); \
+			htscp_free(state); \
 			state = NULL; \
 		} \
 	} while(0)
