@@ -25,6 +25,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	pcb_buffer_t buff;
 	unsigned long int id;
 	pcb_subclist_dedup_initializer(dedup);
+	int old_dedup;
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
@@ -44,6 +45,8 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		l = pcb_fp_mkdir_len(&pcb_library, path, -1);
 
 	/* add unique elements */
+	old_dedup = pcb_subc_hash_ignore_uid;
+	pcb_subc_hash_ignore_uid = 1;
 	id = 0;
 	PCB_SUBC_LOOP(buff.Data) {
 		const char *ename;
@@ -65,6 +68,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	} PCB_END_LOOP;
 
+	pcb_subc_hash_ignore_uid = old_dedup;
 	pcb_subclist_dedup_free(dedup);
 
 	/* clean up buffer */
