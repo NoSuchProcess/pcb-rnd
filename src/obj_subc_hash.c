@@ -35,6 +35,8 @@
 #include "obj_poly.h"
 #include "obj_pstk.h"
 
+int pcb_subc_hash_ignore_uid = 0;
+
 int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
 {
 	pcb_host_trans_t tr1, tr2;
@@ -42,7 +44,7 @@ int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
 	gdl_iterator_t it;
 
 	/* optimization: cheap tests first */
-	if (memcmp(&sc1->uid, &sc2->uid, sizeof(sc1->uid)) != 0) return 0;
+	if (!pcb_subc_hash_ignore_uid && memcmp(&sc1->uid, &sc2->uid, sizeof(sc1->uid)) != 0) return 0;
 	if (sc1->data->LayerN != sc2->data->LayerN) return 0;
 	if (padstacklist_length(&sc1->data->padstack) != padstacklist_length(&sc2->data->padstack)) return 0;
 	if (pcb_subclist_length(&sc1->data->subc) != pcb_subclist_length(&sc2->data->subc)) return 0;
@@ -117,10 +119,13 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 
 	pcb_subc_get_host_trans(sc, &tr);
 
-	hash = murmurhash(&sc->uid, sizeof(sc->uid));
+	hash = sc->data->LayerN;
+
+	if (!pcb_subc_hash_ignore_uid)
+		hash ^= murmurhash(&sc->uid, sizeof(sc->uid));
 
 	/* hash layers and layer objects */
-	hash ^= sc->data->LayerN;
+
 	for(lid = 0; lid < sc->data->LayerN; lid++) {
 		pcb_layer_t *ly = &sc->data->Layer[lid];
 
