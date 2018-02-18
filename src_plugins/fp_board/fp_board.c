@@ -24,7 +24,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	pcb_fplibrary_t *l;
 	pcb_buffer_t buff;
 	unsigned long int id;
-	elementlist_dedup_initializer(dedup);
+	pcb_subclist_dedup_initializer(dedup);
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
@@ -50,8 +50,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		pcb_fplibrary_t *e;
 
 		id++;
-#warning subc TODO:
-/*		elementlist_dedup_skip(dedup, subc);*/
+		pcb_subclist_dedup_skip(dedup, subc);
 
 		ename = pcb_attribute_get(&subc->Attributes, "footprint");
 		if (ename == NULL)
@@ -66,7 +65,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	} PCB_END_LOOP;
 
-	elementlist_dedup_free(dedup);
+	pcb_subclist_dedup_free(dedup);
 
 	/* clean up buffer */
 	pcb_buffer_clear(PCB, &buff);
