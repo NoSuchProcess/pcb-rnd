@@ -104,7 +104,8 @@ int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
 		}
 #warning subc TODO: subc-in-subc eq check
 	}
-	return pcb_false;
+
+	return 1;
 }
 
 unsigned int pcb_subc_hash(const pcb_subc_t *sc)
