@@ -1069,6 +1069,7 @@ int bin_rot2degrees(const char *rot, char *tmp, int mirrored)
 		deg = strtol(rot, &end, 10);
 		/*printf("Calculated deg == %ld pre bin_rot2degree conversion\n", deg);*/
 		if (*end != '\0') {
+#warning TODO: convert this to proper error reporting
 			printf("unexpected binary field 'rot' value suffix\n");
 			return -1;
 		}
@@ -1105,17 +1106,15 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 		return -1;
 	}
 
-	if (load_long(block, 0, 1) == 0x13
-		&& load_long(block, 1, 1) == 0x12) {
-		pcb_trace("Start of pre-DRC free text section found.\n");
-	} else {
+	if (load_long(block, 0, 1) == 0x13 && load_long(block, 1, 1) == 0x12) {
+	}
+	else {
 		pcb_message(PCB_MSG_ERROR, "Failed to find 0x1312 start of pre-DRC free text section.\n");
 		return -1;
 	}
 
 	text_remaining = egb_ctx->free_text_len = (int)load_long(block, 4, 2);
 	text_remaining += 4; /* there seems to be a 4 byte checksum or something at the end */
-	pcb_trace("Pre-DRC free text section length remaining: %d\n", egb_ctx->free_text_len);
 
 #warning TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it
 	while (text_remaining > 400) {
@@ -1128,8 +1127,6 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
 		pcb_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 		return -1;
-	} else {
-		pcb_trace("Pre-DRC free text block has been read.\n");
 	}
 	return 0;
 }
@@ -1150,6 +1147,7 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	drc_ctx->rvPadBottom = 0.25;
 
 	if (fread(block, 1, 4, f) != 4) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
 		return -1;
 	}
@@ -1159,23 +1157,24 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 		&& load_long(block, 1, 1) == 0x04
 		&& load_long(block, 2, 1) == 0x00
 		&& load_long(block, 3, 1) == 0x20)) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("E: start of DRC preamble not found where it was expected.\n");
 		pcb_trace("E: drc byte 0 : %d\n", (int)load_long(block, 0, 1) );
 		pcb_trace("E: drc byte 1 : %d\n", (int)load_long(block, 1, 1) );
 		pcb_trace("E: drc byte 2 : %d\n", (int)load_long(block, 2, 1) );
 		pcb_trace("E: drc byte 3 : %d\n", (int)load_long(block, 3, 1) );
 		return -1;
-	} else {
-		pcb_trace("start of DRC preamble section 0x10 0x04 0x00 0x20 found.\n");
 	}
 
 	while (!DRC_preamble_end_found) {
 		if (fread(&c, 1, 1, f) != 1) { /* the text preamble is not necessarily n * 4 bytes */
+#warning TODO: convert this to proper error reporting
 			pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
 			return -1;
 		} else {
 			if (c == '\0') { /* so we step through, looking for each 0x00 */
 				if (fread(block, 1, 4, f) != 4) { /* the text preamble seems to n * 24 bytes */
+#warning TODO: convert this to proper error reporting
 					pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
 					return -1;
 				}
@@ -1189,9 +1188,8 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 		}
 	}
 
-	printf("found end of DRC preamble text x78x56x34x12. About to load DRC rules.\n");
-
 	if (fread(DRC_block, 1, DRC_length_used, f) != DRC_length_used) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("E: short DRC value block read. DRC section incomplete. Truncated file?\n");
 		return -1;
 	}
@@ -1279,6 +1277,7 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 
 	/* load the current block */
 	if (fread(block, 1, 24, f) != 24) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("E: short read\n");
 		return -1;
 	}
@@ -1286,7 +1285,6 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 
 	if (*numblocks < 0 && load_long(block, 0, 1) == 0x10) {
 		*numblocks = load_long(block, 4, 4);
-		pcb_trace("numblocks found in start block: %ld\n", *numblocks);
 	}
 
 	for(sc = pcb_eagle_script; sc->cmd != 0; sc++) {
@@ -1310,19 +1308,16 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 			goto found;
 	}
 
+#warning TODO: convert this to proper error reporting
 	pcb_trace("E: unknown block ID 0x%02x%02x at offset %ld\n", block[0], block[1], ftell(f));
 	return -1;
 
 	found:;
 
-	if (sc->name != NULL) {
-		pcb_trace("%s[%s (%x)]\n", ind, sc->name, sc->cmd);
+	if (sc->name != NULL)
 		parent = egb_node_append(parent, egb_node_alloc(sc->cmd, sc->name));
-	}
-	else {
-		pcb_trace("%s[UNKNOWN (%x)]\n", ind, sc->cmd);
+	else
 		parent = egb_node_append(parent, egb_node_alloc(sc->cmd, "UNKNOWN"));
-	}
 
 	for(at = sc->attrs; at->name != NULL; at++) {
 		char buff[128];
@@ -1344,7 +1339,6 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 				load_str(block, buff, at->offs, at->len);
 				break;
 		}
-		printf("%s %s=%s\n", ind, at->name, buff);
 		egb_node_prop_set(parent, at->name, buff);
 	}
 
@@ -1355,7 +1349,6 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 
 		if (ss->ss_type == SS_DIRECT) {
 			long lp = 0;
-			printf("%s #About to parse %ld direct sub-blocks for %s {\n", ind, numch, ss->tree_name);
 			if (ss->tree_name != NULL)
 				lpar = egb_node_append(parent, egb_node_alloc(0, ss->tree_name));
 			else
@@ -1367,11 +1360,9 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 				processed += res;
 				lp += res;
 			}
-			printf("%s # fin, processed=%d lp=%ld }\n", ind, processed, lp);
 		}
 		else {
 			long rem, lp = 0;
-			printf("%s #About to parse %ld recursive sub-blocks for %s {\n", ind, numch, ss->tree_name);
 			if (ss->tree_name != NULL)
 				lpar = egb_node_append(parent, egb_node_alloc(0, ss->tree_name));
 			else
@@ -1387,11 +1378,8 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 				processed += res;
 				lp += res;
 			}
-			printf("%s # fin, processed=%d lp=%ld }\n", ind, processed, lp);
 		}
 	}
-
-	printf("%s (blocks remaining at end of read_block routine = %ld (processed=%d))\n", ind, *numblocks, processed);
 
 	return processed;
 }
@@ -1435,36 +1423,26 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
 			if (strcmp(e->key, "arc_x1") == 0) {
 				x1 = atoi(e->value);
-				pcb_trace("arc x1: %s, %ld\n", e->value, x1);
 				egb_node_prop_set(elem, "x1", e->value);
 			} else if (strcmp(e->key, "arc_y1") == 0) {
 				y1 = atoi(e->value);
-				pcb_trace("arc y1: %s, %ld\n", e->value, y1);
 				egb_node_prop_set(elem, "y1", e->value);
 			} else if (strcmp(e->key, "arc_x2") == 0) {
 				x2 = atoi(e->value);
-				pcb_trace("arc x2: %s, %ld\n", e->value, x2);
 				egb_node_prop_set(elem, "x2", e->value);
 			} else if (strcmp(e->key, "arc_y2") == 0) {
 				y2 = atoi(e->value);
-				pcb_trace("arc y2: %s, %ld\n", e->value, y2);
 				egb_node_prop_set(elem, "y2", e->value);
 			} else if (strcmp(e->key, "arc_c1") == 0) {
 				c += atoi(e->value);
-				pcb_trace("c1: %s, %ld\n", e->value, c);
 			} else if (strcmp(e->key, "arc_c2") == 0) {
 				c += 256*atoi(e->value);
-				pcb_trace("c2: %s, %ld\n", e->value, c);
 			} else if (strcmp(e->key, "arc_c3") == 0) {
 				c += 256*256*atoi(e->value);
-				pcb_trace("c3: %s, %ld\n", e->value, c);
-				pcb_trace("c: %ld\n", c);
 			} else if (strcmp(e->key, "arc_negflags") == 0) {
 				arc_flags = atoi(e->value);
-				pcb_trace("arc neg flags: %ld\n", arc_flags);
 			} else if (strcmp(e->key, "clockwise") == 0) {
 				clockwise = atoi(e->value);
-				pcb_trace("arc clockwise flag: %ld\n", clockwise);
 			}
 			/* add width doubling routine here */
 		}
@@ -1538,35 +1516,27 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			if (strcmp(e->key, "arctype_other_x1") == 0) {
 				x1 = atoi(e->value);
 				x1_ok = 1;
-				pcb_trace("arc x1: %s, %ld\n", e->value, x1);
 			} else if (strcmp(e->key, "arctype_other_y1") == 0) {
 				y1 = atoi(e->value);
 				y1_ok = 1;
-				pcb_trace("arc y1: %s, %ld\n", e->value, y1);
 			} else if (strcmp(e->key, "arctype_other_x2") == 0) {
 				x2 = atoi(e->value);
 				x2_ok = 1;
-				pcb_trace("arc x2: %s, %ld\n", e->value, x2);
 			} else if (strcmp(e->key, "arctype_other_y2") == 0) {
 				y2 = atoi(e->value);
 				y2_ok = 1;
-				pcb_trace("arc y2: %s, %ld\n", e->value, y2);
 			} else if (strcmp(e->key, "linetype_0_x1") == 0) {
 				x1 = atoi(e->value);
 				x1_ok = 1;
-				pcb_trace("arc x1: %s, %ld\n", e->value, x1);
 			} else if (strcmp(e->key, "linetype_0_y1") == 0) {
 				y1 = atoi(e->value);
 				y1_ok = 1;
-				pcb_trace("arc y1: %s, %ld\n", e->value, y1);
 			} else if (strcmp(e->key, "linetype_0_x2") == 0) {
 				x2 = atoi(e->value);
 				x2_ok = 1;
-				pcb_trace("arc x2: %s, %ld\n", e->value, x2);
 			} else if (strcmp(e->key, "linetype_0_y2") == 0) {
 				y2 = atoi(e->value);
 				y2_ok = 1;
-				pcb_trace("arc y2: %s, %ld\n", e->value, y2);
 			}
 			
 		}
@@ -1627,7 +1597,6 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			pcb_message(PCB_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
 		}
 		radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
-		pcb_trace("Using radius for post-processed arc: %ld\n", radius);
 		sprintf(itoa_buffer, "%ld", radius);
 		egb_node_prop_set(elem, "radius", itoa_buffer);
 
@@ -1693,39 +1662,30 @@ static int cr_pin_name_by_elem_idx(egb_node_t *cr, egb_ctx_t *egb_ctx, long elem
 	pin_num = pin_idx;
 	if (e == NULL)
 		return 1;
-	pcb_trace("found element, now looking for pin number %d.\n", pin_idx);
 
-	pcb_trace("  looking for lib: %d\n", atoi(egb_node_prop_get(e, "library")));
 	lib = library_ref_by_idx(libraries, atoi(egb_node_prop_get(e, "library")));
 	if (lib == NULL)
 		return 1;
 
-	pcb_trace("  looking for pkg: %d\n", atoi(egb_node_prop_get(e, "package")));
 	pkg = package_ref_by_idx(lib, atoi(egb_node_prop_get(e, "package")));
 	if (pkg == NULL)
 		return 1;
 
-	pcb_trace("About to find pin %d in pkg with pkg->id: %d\n", pin_num, pkg->id);  
 	for (p = pkg->first_child; (p != NULL) && (pin_num > 1) ; p = p->next) {
-		pcb_trace("Now testing (p->id == 0x2a00 || p->id == 0x2b00) for pin_num %d\n", pin_num);
 		if ((p->id & 0xFF00) == 0x2a00 || (p->id & 0xFF00) == 0x2b00 || (p->id & 0xFF00) == 0x2c00 ) { /* we found a pad _or_ pin _or_ SMD */
 			pin_num--;
-			pcb_trace("Found a pad/pin/smd during netlist pin name lookup.\n");
 		}
 	}
-	pcb_trace("pin index now %d.\n", pin_num);
+
 	if (p == NULL || pin_num > 1) {
-		pcb_trace("-> node pin not found, allocating pin name \"PIN_NOT_FOUND\"\n");
 		egb_node_prop_set(cr, "pad", "PIN_NOT_FOUND");
 		return 0;
 	}
 	
 	if (egb_node_prop_get(p, "name")) {
-		pcb_trace("-> about to allocate node pin name: %s\n", egb_node_prop_get(p, "name"));
 		egb_node_prop_set(cr, "pad", egb_node_prop_get(p, "name"));
 		return 0;
 	} else {
-		pcb_trace("-> about to allocate default node pin name ( = pin number): %d\n", pin_idx);
 		egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin"));
 		return 0;
 	}
@@ -1777,32 +1737,25 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 	char tmp[32];
 
 	if (root->id == PCB_EGKW_SECT_LINE) {
-		pcb_trace("######## found a line ######\n");
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e))
 			if (strcmp(e->key, "linetype") == 0 && strcmp(e->value, "0") == 0) {
 				line_type = 0;
-				pcb_trace("Found linetype 0\n");
 			} else if (strcmp(e->key, "linetype") == 0) {
-				pcb_trace("Found linetype: %s\n", e->value);
 				line_type = atoi(e->value);
 			}
 	}
 
 	switch(line_type) {
-		case 0:		/*pcb_trace("Process linetype 0\n");*/
+		case 0:
 				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 					if (strcmp(e->key, "linetype_0_x1") == 0) {
 						egb_node_prop_set(root, "x1", e->value);
-						/*pcb_trace("Created x1: %s\n", e->value); */
 					} else if (strcmp(e->key, "linetype_0_y1") == 0) {
 						egb_node_prop_set(root, "y1", e->value);
-						/*pcb_trace("Created y1: %s\n", e->value);*/
 					} else if (strcmp(e->key, "linetype_0_x2") == 0) {
 						egb_node_prop_set(root, "x2", e->value);
-						/*pcb_trace("Created x2: %s\n", e->value);*/
 					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
-						/*pcb_trace("Created y2: %s\n", e->value);*/
 					} else if (strcmp(e->key, "half_width") == 0) {
 						half_width = atoi(e->value);
 						sprintf(tmp, "%ld", half_width*2);
@@ -1810,14 +1763,14 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 					} /* <- added width doubling routine here */
 				}
 				break;
-		case 129:	pcb_trace("Process linetype 129\n");
+		case 129:
+#warning TODO: convert this to proper error reporting
+				pcb_trace("Process linetype 129\n");
 				break;
 	}
 
-	if (line_type > 0 || line_type == -127) {
-		pcb_trace("Treating linetype %d as arc########################\n", line_type);
+	if (line_type > 0 || line_type == -127)
 		arc_decode(ctx, root, -1, line_type);
-	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
 		postprocess_wires(ctx, n);
@@ -1833,32 +1786,25 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 	char tmp[32];
 
 	if (root->id == PCB_EGKW_SECT_ARC) {
-		pcb_trace("######## found an arc ######\n");
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e))
 			if (strcmp(e->key, "arctype") == 0 && strcmp(e->value, "0") == 0) {
 				arc_type = 0;
-				pcb_trace("Found arctype 0\n");
 			} else if (strcmp(e->key, "arctype") == 0) { /* found types 5, 3, 2 so far */
 				arc_type = atoi(e->value);
-				pcb_trace("Found arctype: %s, %d\n", e->value, arc_type);
 			}
 	}
 
 	switch(arc_type) {
-		case 0:		pcb_trace("Post-processing arctype 0\n");
+		case 0:
 				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 					if (strcmp(e->key, "arctype_0_x1") == 0) {
 						egb_node_prop_set(root, "x1", e->value);
-						pcb_trace("Created arc x1: %s\n", e->value);
 					} else if (strcmp(e->key, "arctype_0_y1") == 0) {
 						egb_node_prop_set(root, "y1", e->value);
-						pcb_trace("Created arc y1: %s\n", e->value);
 					} else if (strcmp(e->key, "arctype_0_x2") == 0) {
 						egb_node_prop_set(root, "x2", e->value);
-						pcb_trace("Created arc x2: %s\n", e->value);
 					} else if (strcmp(e->key, "arctype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
-						pcb_trace("Created arc y2: %s\n", e->value);
 					} else if (strcmp(e->key, "half_width") == 0) {
 						half_width = atoi(e->value);
 						sprintf(tmp, "%ld", half_width*2);
@@ -1867,20 +1813,16 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 				}
 				break;
 /*		case -1:	break;*/
-		default:	pcb_trace("Post-processing arctype %d\n", arc_type);
+		default:
 				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 					if (strcmp(e->key, "arctype_other_x1") == 0) {
 						egb_node_prop_set(root, "x1", e->value);
-						pcb_trace("Created arc x1: %s\n", e->value);
 					} else if (strcmp(e->key, "arctype_other_y1") == 0) {
 						egb_node_prop_set(root, "y1", e->value);
-						pcb_trace("Created arc y1: %s\n", e->value);
 					} else if (strcmp(e->key, "arctype_other_x2") == 0) {
 						egb_node_prop_set(root, "x2", e->value);
-						pcb_trace("Created arc x2: %s\n", e->value);
 					} else if (strcmp(e->key, "arctype_other_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
-						pcb_trace("Created arc y2: %s\n", e->value);
 					} else if (strcmp(e->key, "half_width") == 0) {
 						half_width = atoi(e->value);
 						sprintf(tmp, "%ld", half_width*2);
@@ -1888,10 +1830,8 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 					} /* <- added width doubling routine here */
 				}
 	}
-	if (arc_type >= 0) {
-		pcb_trace("Proceeding with arc decode call\n");
+	if (arc_type >= 0)
 		arc_decode(ctx, root, arc_type, -1);
-	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
 		postprocess_arcs(ctx, n);
@@ -2019,17 +1959,13 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 	for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
 		next = n->next;
 		if (n->first_child != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
-			pcb_trace("Found PCB_EKGW_SECT_CONTACTREF\n");
 			for (cr = n->first_child; cr != NULL; cr = next2) {
 				next2 = cr->next;
 				for (e = htss_first(&cr->props); e; e = htss_next(&cr->props, e)) {
 					if (strcmp(e->key, "partnumber") == 0) {
 						int element_num = atoi(e->value);
 						egb_node_prop_set(cr, "element", elem_refdes_by_idx(egb_ctx->elements, (long) element_num));
-						pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
-						pcb_trace("About to call cr_pin_name_by_elem_idx...\n");
 						cr_pin_name_by_elem_idx(cr, egb_ctx, (long) element_num);
-						pcb_trace("Allocated pin name by index: %s\n", egb_node_prop_get(cr, "pad")); 
 					}
 				}
 			}
@@ -2050,9 +1986,7 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 
 	for(n = egb_ctx->firstel; n != NULL; n = next) {
 		next = n->next;
-		pcb_trace("inspecting el1 subnode: %d\n", n->id);
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT2) {
-			pcb_trace("Found PCB_EKGW_SECT_ELEMENT2\n");
 			el2 = n;
 			for(q = el2->first_child; q != NULL; q = next2) {
 				next2 = q->next;
@@ -2064,11 +1998,9 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 						} else {
 							egb_node_prop_set(n, "name", e->value);
 						}
-						pcb_trace("Copied name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
 					}
 					else if (strcmp(e->key, "value") == 0) {
 						egb_node_prop_set(n, "value", e->value);
-						pcb_trace("Copied value %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
 					}
 				}
 			}
@@ -2077,11 +2009,9 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 		for (e = htss_first(&n->props); e; e = htss_next(&n->props, e)) {
 			if (strcmp(e->key, "x") == 0) {
 				egb_node_prop_set(el2, "x", e->value);
-				pcb_trace("Added element x %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
 			}
 			else if (strcmp(e->key, "y") == 0) {
 				egb_node_prop_set(el2, "y", e->value);
-				pcb_trace("Added element y %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
 			}
 		}
 		/* could potentially add default size, rot to text somewhere around here
@@ -2110,7 +2040,6 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 			for(p = n->first_child, prev2 = NULL; p != NULL; p = next2) {
 				next2 = p->next;
 				if (p->id == PCB_EGKW_SECT_SIGNAL) {
-					pcb_trace("about to unlink PCB_EGKW_SECT_SIGNAL/PCB_EGKW_SECT_SIGNAL...\n");
 					egb_node_unlink(n, prev2, p);
 					egb_node_append(egb_ctx->signals, p);
 				}
@@ -2135,31 +2064,26 @@ static int postproc_drc(void *ctx, egb_ctx_t *egb_ctx)
 	sprintf(tmp, "%ldmil", egb_ctx->mdWireWire);
 	egb_node_prop_set(current, "name", "mdWireWire");
 	egb_node_prop_set(current, "value", tmp);
-	pcb_trace("Added mdWireWire to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
 	sprintf(tmp, "%ldmil", egb_ctx->msWidth);
 	egb_node_prop_set(current, "name", "msWidth");
 	egb_node_prop_set(current, "value", tmp);
-	pcb_trace("Added msWidth to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
 	sprintf(tmp, "%f", egb_ctx->rvPadTop);
 	egb_node_prop_set(current, "name", "rvPadTop");
 	egb_node_prop_set(current, "value", tmp);
-	pcb_trace("Added rvPadTop to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
 	sprintf(tmp, "%f", egb_ctx->rvPadInner);
 	egb_node_prop_set(current, "name", "rvPadInner");
 	egb_node_prop_set(current, "value", tmp);
-	pcb_trace("Added rvPadInner to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
 	sprintf(tmp, "%f", egb_ctx->rvPadBottom);
 	egb_node_prop_set(current, "name", "rvPadBottom");
 	egb_node_prop_set(current, "value", tmp);
-	pcb_trace("Added rvPadBottom to DRC node\n");
 
 	return 0;
 }
@@ -2233,6 +2157,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 
 	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
 	if (eagle_bin_ctx.board == NULL) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("No board node found, this may be a library file.\n");
 	} else {
 		/* the following code relies on the board node being present, i.e. a layout */
@@ -2240,6 +2165,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 		eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
 		eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
 		if (eagle_bin_ctx.libraries == NULL) { /* layouts have a libraries node it seems */
+#warning TODO: convert this to proper error reporting
 			pcb_trace("Eagle binary layout is missing a board/libraries node.\n");
 			return -1;
 		}
@@ -2292,23 +2218,23 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 
 	egb_ctx_t eagle_bin_ctx;
 
-	pcb_trace("blocks remaining prior to function call = %ld\n", *numblocks);
+/*	pcb_trace("blocks remaining prior to function call = %ld\n", *numblocks);*/
 
 	*root = egb_node_alloc(0, "eagle");
 
 	res = read_block(numblocks, 1, ctx, f, fn, *root);
 	if (res < 0) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("Problem with remaining blocks... is this a library file?\n");
 		return res;
 	}
-	pcb_trace("blocks remaining after outer function call = %ld (after reading %d blocks)\n\n", *numblocks, res);
-
-	pcb_trace("Section blocks have been parsed. Next job is finding DRC.\n\n");
+/*	pcb_trace("blocks remaining after outer function call = %ld (after reading %d blocks)\n\n", *numblocks, res);*/
 
 	/* could test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text end blocks */
 	read_notes(ctx, f, fn, &eagle_bin_ctx);
 	/* read_drc will determine sane defaults if no DRC block found */
 	if (read_drc(ctx, f, fn, &eagle_bin_ctx) != 0) {
+#warning TODO: convert this to proper error reporting
 		pcb_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
 	} /* we now use the eagle_bin_ctx results for post_proc */
 

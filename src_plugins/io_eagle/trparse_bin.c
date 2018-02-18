@@ -53,9 +53,10 @@ static int eagle_bin_load(trparse_t *pst, const char *fn)
 
 	fclose(f);
 
-
+/*
 	printf("@@@ eagle_bin_tree @@@\n");
 	egb_dump(stdout, root);
+*/
 
 	if (res != 0) {
 		printf("FAILED TO LOAD: %d\n", res);
