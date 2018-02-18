@@ -286,6 +286,7 @@ int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t
 unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 {
 	unsigned int crd = 0;
+	double sgn = tr->on_bottom ? -1 : +1;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a)) {
 		pcb_coord_t x, y;
@@ -293,10 +294,10 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y);
 	}
 
-	return 
+	return
 		pcb_hash_coord(a->Thickness) ^ pcb_hash_coord(a->Clearance) ^
 		pcb_hash_coord(a->Width) ^ pcb_hash_coord(a->Height) ^
-		pcb_hash_coord(pcb_normalize_angle(a->StartAngle + tr->rot)) ^ pcb_hash_coord(a->Delta) ^ crd;
+		pcb_hash_coord(pcb_normalize_angle(pcb_round(a->StartAngle + tr->rot))) ^ pcb_hash_coord(pcb_round(a->Delta * sgn)) ^ crd;
 }
 
 pcb_coord_t pcb_arc_length(const pcb_arc_t *arc)
