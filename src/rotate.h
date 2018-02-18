@@ -72,11 +72,11 @@ PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb
 	pcb_coord_t px = *x - cx;
 	pcb_coord_t py = *y - cy;
 
-	nx = pcb_round(px * cosa + py * sina);
-	ny = pcb_round(py * cosa - px * sina);
+	nx = pcb_round(px * cosa + py * sina + cx);
+	ny = pcb_round(py * cosa - px * sina + cy);
 
-	*x = nx + cx;
-	*y = ny + cy;
+	*x = nx;
+	*y = ny;
 }
 
 #endif
