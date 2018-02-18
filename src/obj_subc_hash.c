@@ -49,8 +49,10 @@ unsigned int pcb_subc_hash(const pcb_subc_t *sc)
 
 	pcb_subc_get_host_trans(sc, &tr);
 
+	hash = murmurhash(&sc->uid, sizeof(sc->uid));
+
 	/* hash layers and layer objects */
-	hash = sc->data->LayerN;
+	hash ^= sc->data->LayerN;
 	for(lid = 0; lid < sc->data->LayerN; lid++) {
 		pcb_layer_t *ly = &sc->data->Layer[lid];
 
