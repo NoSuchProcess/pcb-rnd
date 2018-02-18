@@ -90,7 +90,7 @@ PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 
 /* retruns if two sets of tr;x;y mismatches */
-static inline pcb_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, pcb_coord_t x1, pcb_coord_t y1, const pcb_host_trans_t *tr2, pcb_coord_t x2, pcb_coord_t y2)
+PCB_INLINE pcb_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, pcb_coord_t x1, pcb_coord_t y1, const pcb_host_trans_t *tr2, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_hash_tr_coords(tr1, &x1, &y1, x1, y1);
 	pcb_hash_tr_coords(tr2, &x2, &y2, x2, y2);
