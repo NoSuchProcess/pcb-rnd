@@ -66,8 +66,8 @@ void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc);
 pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc);
 
 
-/*** hash ***/
-int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2);
+/*** hash and eq ***/
+int pcb_arc_eq(const pcb_host_trans_t *tr1, const pcb_arc_t *a1, const pcb_host_trans_t *tr2, const pcb_arc_t *a2);
 unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a);
 
 

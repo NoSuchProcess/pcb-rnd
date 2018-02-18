@@ -273,12 +273,17 @@ void pcb_arc_free(pcb_arc_t * data)
 }
 
 
-int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2)
+int pcb_arc_eq(const pcb_host_trans_t *tr1, const pcb_arc_t *a1, const pcb_host_trans_t *tr2, const pcb_arc_t *a2)
 {
+	double sgn1 = tr1->on_bottom ? -1 : +1;
+	double sgn2 = tr2->on_bottom ? -1 : +1;
+
 	if (pcb_field_neq(a1, a2, Thickness) || pcb_field_neq(a1, a2, Clearance)) return 0;
 	if (pcb_field_neq(a1, a2, Width) || pcb_field_neq(a1, a2, Height)) return 0;
-	if (pcb_element_neq_offsx(e1, a1, e2, a2, X) || pcb_element_neq_offsy(e1, a1, e2, a2, Y)) return 0;
-	if (pcb_field_neq(a1, a2, StartAngle) || pcb_field_neq(a1, a2, Delta)) return 0;
+	if (pcb_neq_tr_coords(tr1, a1->X, a1->Y, tr2, a2->X, a2->Y)) return 0;
+
+	if (pcb_normalize_angle(pcb_round(a1->StartAngle + tr1->rot)) != pcb_normalize_angle(pcb_round(a2->StartAngle + tr2->rot))) return 0;
+	if (pcb_round(a1->Delta * sgn1) != pcb_round(a2->Delta * sgn2)) return 0;
 
 	return 1;
 }
