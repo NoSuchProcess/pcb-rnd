@@ -43,6 +43,15 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	ghid_sync_with_new_layout(&ghidgui->topwin);
 }
 
+static void ev_pcb_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if ((!ghidgui) || (!ghidgui->hid_active))
+		return;
+
+	if (PCB != NULL)
+		ghidgui->common.window_set_name_label(PCB->Name);
+}
+
 
 static void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -75,6 +84,7 @@ void glue_event_init(const char *cookie)
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, ev_pcb_meta_changed, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, GhidNetlistChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, cookie);
