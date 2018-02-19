@@ -40,6 +40,7 @@
 #include "config.h"
 
 #include <assert.h>
+#include <stdlib.h>
 
 #include "intersect.h"
 #include "box.h"
