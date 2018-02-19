@@ -34,10 +34,6 @@
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
-	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
-		- Igor2 can't reproduce this
-	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
 	- Lesstif HID does not have this dialog => implement it, using DAD
@@ -73,6 +69,10 @@
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
+- BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
+	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
+		- Igor2 can't reproduce this
+	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
