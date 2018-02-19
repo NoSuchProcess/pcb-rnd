@@ -57,7 +57,7 @@
 - BUG: padstack editor: broken values in the proto/hole size gets converted and do a round trip, ruining vlaues being edited, e.g. when the unit is to be replaced [report: Alain]
 - pool: import work/format_dev_chest
 - BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
-- BUG: altering a feature on a layout with the 's' key or 'shift+s' key or the "alt+s" or the "alt-shift-s" keys does not flag a change to the layout since last save [erich].
++ BUG: altering a feature on a layout with the 's' key or 'shift+s' key or the "alt+s" or the "alt-shift-s" keys does not flag a change to the layout since last save [erich].
 
 2. For later releases ===============================================================================
 - lihata v5:
