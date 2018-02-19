@@ -44,7 +44,6 @@
 - BUG: Rubberband Arcs:
 	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
-- BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG: padstack check box in gtk-hid does not hide the padstacks; this may be due to my failure to specify soldermask openings for the padstacks  [report: erich]
 - BUG: hackvana gerber export exports .g5, .g7, rather than soldermask file-endings, .gts, .gbs, when there are no soldermask openings defined for padstacks in use. When padstackss have defined soldermask openings, the .gts and .gbs file are generated, but the .g5 and .g7 are still generated as well along with the .gts and .gbs files. Also, in another layout, .gbs and .bts looked more like drill files, and .g4 and .g5 seemed to be the top and bottom solder mask gerbers, see bug_files/hackvana-gerber-export.lht  [report: erich]
 	-> please supply minimal (single padstack) test files
@@ -68,6 +67,7 @@
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
+- BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
 	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
 		- Igor2 can't reproduce this
