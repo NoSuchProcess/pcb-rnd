@@ -42,7 +42,6 @@
 - BUG: segf: Open an empty pcb, open Library window. Select ../pcblib > parametric > alf() . This will open a parametric dialog. Cancel it -> crash. [report: Alain] problem: pcb_rtree_search_any_nd()
 - BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
 - BUG: Rubberband Arcs:
-	- BUG: Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Fixing:Ade]
 	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
