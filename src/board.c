@@ -334,7 +334,12 @@ void pcb_board_set_text_scale(int Scale)
 /* sets or resets changed flag and redraws status */
 void pcb_board_set_changed_flag(pcb_bool New)
 {
+	pcb_bool old = PCB->Changed;
+
 	PCB->Changed = New;
+
+	if (old != New)
+		pcb_event(PCB_EVENT_BOARD_META_CHANGED, NULL);
 }
 
 
