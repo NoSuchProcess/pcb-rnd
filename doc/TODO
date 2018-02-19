@@ -29,7 +29,7 @@
 - BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
-- BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
+- BUG: DRC preview windows don't show all padstacks after a shift-tab flip - bug_files/drc1.lht
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
