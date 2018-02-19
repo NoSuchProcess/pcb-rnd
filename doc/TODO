@@ -34,7 +34,6 @@
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
 	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
 		- Igor2 can't reproduce this
@@ -73,6 +72,7 @@
 	- unify thermal format for all objects
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
+- BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
