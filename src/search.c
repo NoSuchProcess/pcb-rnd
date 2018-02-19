@@ -1326,7 +1326,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	}
 
 	if (!HigherAvail && (Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
-			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_false)) {
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_false)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
 		*Result2 = r2;
 		*Result3 = r3;
@@ -1452,7 +1452,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		return PCB_TYPE_ELEMENT_NAME;
 
 	if ((Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
-			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_true)) {
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_true)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
 		*Result2 = r2;
 		*Result3 = r3;
