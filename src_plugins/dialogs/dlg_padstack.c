@@ -26,6 +26,7 @@
 
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "operation.h"
 
 typedef struct pse_proto_layer_s {
 	const char *name;
@@ -60,6 +61,7 @@ typedef struct pse_s {
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
 	int proto_change[pse_num_layers];
+	pcb_coord_t proto_clr[pse_num_layers];
 	int hole_header;
 	int hdia, hplated;
 	int htop_val, htop_text, htop_layer;
@@ -157,10 +159,12 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 					strcpy(tmp, "<unknown>");
 			}
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, tmp);
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, shape->clearance);
 		}
 		else {
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "");
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, "");
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, 0);
 		}
 	}
 
@@ -246,6 +250,52 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			&pse->attrs[pse->hdia].default_val.coord_value,
 			&pse->attrs[pse->htop_val].default_val.int_value,
 			&pse->attrs[pse->hbot_val].default_val.int_value);
+	}
+
+	lock++;
+	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
+	lock--;
+
+	pcb_gui->invalidate_all();
+}
+
+static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	static int lock = 0;
+
+	if (lock != 0)
+		return;
+
+	if (proto != NULL) {
+		int n, idx = -1, sidx;
+		pcb_opctx_t ctx;
+
+		for(n = 0; n < pse_num_layers; n++)
+			if (pse->proto_clr[n] == (attr - pse->attrs))
+				idx = n;
+		if (idx < 0) {
+			pcb_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (a)\n");
+			return;
+		}
+
+		sidx = pcb_pstk_get_shape_idx(&proto->tr.array[0], pse_layer[idx].mask, pse_layer[idx].comb);
+		if (sidx < 0) {
+			pcb_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (b)\n");
+			return;
+		}
+
+		ctx.clip.clear = 0;
+		ctx.clip.restore = 1;
+		pcb_pstkop_clip(&ctx, pse->ps);
+
+		for(n = 0; n < proto->tr.used; n++)
+			pcb_pstk_shape_clr_grow(&proto->tr.array[n].shape[sidx], pcb_true, pse->attrs[pse->proto_clr[idx]].default_val.coord_value);
+
+		ctx.clip.clear = 1;
+		ctx.clip.restore = 0;
+		pcb_pstkop_clip(&ctx, pse->ps);
 	}
 
 	lock++;
@@ -515,7 +565,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 				PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
-				PCB_DAD_BEGIN_TABLE(dlg, 4);
+				PCB_DAD_BEGIN_TABLE(dlg, 5);
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 					for(n = 0; n < pse_num_layers; n++) {
 						PCB_DAD_LABEL(dlg, pse_layer[n].name);
@@ -527,6 +577,11 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 							pse.proto_change[n] = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
 							PCB_DAD_HELP(dlg, "Change the shape on this layer type");
+						PCB_DAD_COORD(dlg, "");
+							pse.proto_clr[n] = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_MINVAL(dlg, 1);
+							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
 					}
 				PCB_DAD_END(dlg);
 			
