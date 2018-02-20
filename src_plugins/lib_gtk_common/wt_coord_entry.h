@@ -44,4 +44,7 @@ int pcb_gtk_coord_entry_get_value_str(pcb_gtk_coord_entry_t * ce, char *out, int
 /** Sets a pcb_gtk_coord_entry_t's value, in pcb coords */
 void pcb_gtk_coord_entry_set_value(pcb_gtk_coord_entry_t * ce, pcb_coord_t val);
 
+/** Change the unit only if it differs from what's set currently; returns whether changed */
+int pcb_gtk_coord_entry_set_unit(pcb_gtk_coord_entry_t *ce, const pcb_unit_t *unit);
+
 #endif

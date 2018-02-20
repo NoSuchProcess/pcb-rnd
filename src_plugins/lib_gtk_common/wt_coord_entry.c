@@ -241,47 +241,53 @@ GType pcb_gtk_coord_entry_get_type(void)
 	return ce_type;
 }
 
-GtkWidget *pcb_gtk_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit,
-																	 enum ce_step_size step_size)
+static void coord_cfg(pcb_gtk_coord_entry_t *ce)
 {
 	/* Setup spinbox min/max values */
 	double small_step, big_step;
 	GtkAdjustment *adj;
-	pcb_gtk_coord_entry_t *ce = g_object_new(GHID_COORD_ENTRY_TYPE, NULL);
 
-	ce->unit = unit;
-	ce->min_value = min_val;
-	ce->max_value = max_val;
-	ce->value = value;
-
-	ce->step_size = step_size;
-	switch (step_size) {
+	switch (ce->step_size) {
 	case CE_TINY:
-		small_step = unit->step_tiny;
-		big_step = unit->step_small;
+		small_step = ce->unit->step_tiny;
+		big_step = ce->unit->step_small;
 		break;
 	case CE_SMALL:
-		small_step = unit->step_small;
-		big_step = unit->step_medium;
+		small_step = ce->unit->step_small;
+		big_step = ce->unit->step_medium;
 		break;
 	case CE_MEDIUM:
-		small_step = unit->step_medium;
-		big_step = unit->step_large;
+		small_step = ce->unit->step_medium;
+		big_step = ce->unit->step_large;
 		break;
 	case CE_LARGE:
-		small_step = unit->step_large;
-		big_step = unit->step_huge;
+		small_step = ce->unit->step_large;
+		big_step = ce->unit->step_huge;
 		break;
 	default:
 		small_step = big_step = 0;
 		break;
 	}
 
-	adj = GTK_ADJUSTMENT(gtk_adjustment_new(pcb_coord_to_unit(unit, value),
-																					pcb_coord_to_unit(unit, min_val),
-																					pcb_coord_to_unit(unit, max_val), small_step, big_step, 0.0));
-	gtk_spin_button_configure(GTK_SPIN_BUTTON(ce), adj, small_step, unit->default_prec + strlen(unit->suffix));
+	adj = GTK_ADJUSTMENT(gtk_adjustment_new(pcb_coord_to_unit(ce->unit, ce->value),
+																					pcb_coord_to_unit(ce->unit, ce->min_value),
+																					pcb_coord_to_unit(ce->unit, ce->max_value), small_step, big_step, 0.0));
+	gtk_spin_button_configure(GTK_SPIN_BUTTON(ce), adj, small_step, ce->unit->default_prec + strlen(ce->unit->suffix));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(ce), FALSE);
+}
+
+GtkWidget *pcb_gtk_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit,
+																	 enum ce_step_size step_size)
+{
+	pcb_gtk_coord_entry_t *ce = g_object_new(GHID_COORD_ENTRY_TYPE, NULL);
+
+	ce->unit = unit;
+	ce->min_value = min_val;
+	ce->max_value = max_val;
+	ce->value = value;
+	ce->step_size = step_size;
+
+	coord_cfg(ce);
 
 	return GTK_WIDGET(ce);
 }
@@ -301,4 +307,13 @@ int pcb_gtk_coord_entry_get_value_str(pcb_gtk_coord_entry_t * ce, char *out, int
 void pcb_gtk_coord_entry_set_value(pcb_gtk_coord_entry_t * ce, pcb_coord_t val)
 {
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ce), pcb_coord_to_unit(ce->unit, val));
+}
+
+int pcb_gtk_coord_entry_set_unit(pcb_gtk_coord_entry_t *ce, const pcb_unit_t *unit)
+{
+	if (ce->unit == unit)
+		return 0;
+	ce->unit = unit;
+	coord_cfg(ce);
+	return 1;
 }
