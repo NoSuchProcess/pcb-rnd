@@ -141,14 +141,17 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 			switch(shape->shape) {
 				case PCB_PSSH_CIRC:
 					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "circle");
-					pcb_snprintf(tmp, sizeof(tmp), "dia=$%mm at $%mm;$%mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
+					if ((shape->data.circ.x != 0) || (shape->data.circ.y != 0))
+						pcb_snprintf(tmp, sizeof(tmp), "dia=%.06$mm\nat %.06$mm;%.06$mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
+					else
+						pcb_snprintf(tmp, sizeof(tmp), "dia=%.06$mm", shape->data.circ.dia);
 					break;
 				case PCB_PSSH_LINE:
 					if (shape->data.line.square)
 						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "square line");
 					else
 						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "round line");
-					pcb_snprintf(tmp, sizeof(tmp), "thickness=%mm", shape->data.line.thickness);
+					pcb_snprintf(tmp, sizeof(tmp), "thickness=%.06$mm", shape->data.line.thickness);
 					break;
 				case PCB_PSSH_POLY:
 					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "polygon");
