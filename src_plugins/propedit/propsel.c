@@ -136,6 +136,7 @@ static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 	map_chk_skip(ctx, poly);
 	map_attr(ctx, &poly->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)poly);
+	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, poly->Clearance/2);
 }
 
 static void map_eline_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_line_t *line)
@@ -379,10 +380,14 @@ static void set_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_tex
 static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 8;
 
 	set_chk_skip(st, poly);
 
 	if (set_common(st, (pcb_any_obj_t *)poly)) return;
+
+	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
+	    pcb_chg_obj_clear_size(PCB_TYPE_POLY, layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
 
 	if (st->is_attr) {
 		set_attr(st, &poly->Attributes);
@@ -606,7 +611,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(ctx.is_trace, "p/line/", set_line_cb),
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
 		MAYBE_PROP(0, "p/text/", set_text_cb),
-		MAYBE_ATTR(set_poly_cb),
+		MAYBE_PROP(ctx.is_trace, "p/poly/", set_poly_cb),
 		NULL,
 		MAYBE_ATTR(set_eline_cb),
 		MAYBE_ATTR(set_earc_cb),
