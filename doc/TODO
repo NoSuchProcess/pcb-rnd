@@ -6,8 +6,7 @@
 	+ subc centroid/origin snap [report: jg]
 - BUG: require unique refdes: doesn't work; do we need it?
 + BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
-? Replacing an existing element with a subc in the buffer using shift-click doesn't pick-up the refdes from the existing element. [report: Ade]
-	-> please check again - we don't have elements any more, does it happen with subcircuits?
+- Replacing an existing board subc from the buffer using shift-click doesn't replace but just pasete, and doesn't pick-up the refdes from the existing subc. [report: Ade]
 - BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 - BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
 + BUG: ground/bottom copper thermal flags are being saved in subc pin but not displayed on reload. Open bug_files/thermal-save-erich.lht, switch to bottom copper, add thermal to pin on switch subc, save, reopen.. no thermal spokes seen. Seems to be aresult of absent soldermask layers. If the layout with themrals is imported into a default empty layout, they seem to appear [erich]
