@@ -311,6 +311,7 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 		typ[1] = '\0';
 		p = pe->value;
 		switch(p->type) {
+			case PCB_PROPT_max:
 			case PCB_PROPT_invalid: return NULL;
 			case PCB_PROPT_STRING: typ[0] = 's'; return typ;
 			case PCB_PROPT_COORD:  typ[0] = 'c'; return typ;
