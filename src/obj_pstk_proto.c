@@ -770,6 +770,8 @@ void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_
 	pcb_coord_t cx, cy;
 	int n;
 
+#warning padstack TODO: undo
+
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
 			if (is_absolute)
@@ -809,6 +811,15 @@ void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_
 			pcb_pstk_shape_update_pa(&shp->data.poly);
 			break;
 	}
+}
+
+void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
+{
+#warning padstack TODO: undo
+	if (is_absolute)
+		shp->clearance = val;
+	else
+		shp->clearance += val;
 }
 
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val)
