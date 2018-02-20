@@ -102,7 +102,11 @@ void pcb_tool_buffer_notify_mode(void)
 	if (orig_subc != NULL) {
 		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type == PCB_TYPE_SUBC && (ptr1 != NULL)) {
-			pcb_attribute_copy_all(&(((pcb_subc_t *)ptr1)->Attributes), &orig_subc->Attributes);
+			int n;
+			pcb_attribute_list_t *dst = &(((pcb_subc_t *)ptr1)->Attributes), *src = &orig_subc->Attributes;
+			for (n = 0; n < src->Number; n++)
+				if (strcmp(src->List[n].name, "footprint") != 0)
+					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
 		}
 	}
 }
