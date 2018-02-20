@@ -54,6 +54,7 @@ void pcb_tool_buffer_notify_mode(void)
 	void *ptr1, *ptr2, *ptr3;
 	pcb_text_t estr[PCB_MAX_ELEMENTNAMES];
 	pcb_element_t *e = 0;
+	pcb_subc_t *orig_subc = NULL;
 
 	if (pcb_gui->shift_is_pressed()) {
 		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_ELEMENT | PCB_TYPE_SUBC, &ptr1, &ptr2,
@@ -69,12 +70,15 @@ void pcb_tool_buffer_notify_mode(void)
 				pcb_element_remove(e);
 			}
 		}
+		if (type == PCB_TYPE_SUBC) {
+			orig_subc = (pcb_subc_t *) ptr1;
+			pcb_subc_remove(orig_subc);
+		}
 	}
 	if (pcb_buffer_copy_to_layout(PCB, pcb_tool_note.X, pcb_tool_note.Y))
 		pcb_board_set_changed_flag(pcb_true);
 	if (e) {
-		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_ELEMENT | PCB_TYPE_SUBC, &ptr1, &ptr2,
-														&ptr3);
+		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_ELEMENT | PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type == PCB_TYPE_ELEMENT && ptr1) {
 			int i, save_n;
 			e = (pcb_element_t *) ptr1;
@@ -92,6 +96,13 @@ void pcb_tool_buffer_notify_mode(void)
 				if (i == save_n)
 					pcb_elem_name_invalidate_draw(e);
 			}
+		}
+	}
+
+	if (orig_subc != NULL) {
+		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
+		if (type == PCB_TYPE_SUBC && (ptr1 != NULL)) {
+			pcb_attribute_copy_all(&(((pcb_subc_t *)ptr1)->Attributes), &orig_subc->Attributes);
 		}
 	}
 }
