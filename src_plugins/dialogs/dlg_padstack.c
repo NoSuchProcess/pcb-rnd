@@ -585,6 +585,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 							PCB_DAD_MINVAL(dlg, 1);
 							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
+							PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
 					}
 				PCB_DAD_END(dlg);
 			
