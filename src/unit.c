@@ -157,7 +157,7 @@ pcb_increments_t pcb_increments[] = {
 
 #define N_INCREMENTS (sizeof pcb_increments / sizeof pcb_increments[0])
 
-const pcb_unit_t *get_unit_struct(const char *suffix)
+const pcb_unit_t *get_unit_struct_(const char *suffix, int strict)
 {
 	int i;
 	int s_len = 0;
@@ -177,13 +177,28 @@ const pcb_unit_t *get_unit_struct(const char *suffix)
 	}
 
 	/* Do lookup */
-	if (s_len > 0)
+	if (s_len <= 0)
+		return NULL;
+
+	if (strict) {
+		for (i = 0; i < N_UNITS; ++i)
+			if (strcmp(suffix, pcb_units[i].suffix) == 0)
+				return &pcb_units[i];
+	}
+	else {
 		for (i = 0; i < N_UNITS; ++i)
 			if (strncmp(suffix, pcb_units[i].suffix, s_len) == 0 || strncmp(suffix, pcb_units[i].alias[0], s_len) == 0)
 				return &pcb_units[i];
+	}
 
 	return NULL;
 }
+
+const pcb_unit_t *get_unit_struct(const char *suffix)
+{
+	return get_unit_struct_(suffix, 0);
+}
+
 
 const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
 {
