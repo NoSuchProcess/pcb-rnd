@@ -1067,7 +1067,7 @@ static void use_gc(pcb_hid_gc_t gc)
 #define CBLEND(gc) (((gc->r)<<24)|((gc->g)<<16)|((gc->b)<<8)|(gc->faded))
 	if (lastcolor != CBLEND(gc)) {
 		if (global.is_drill || global.is_mask) {
-			fprintf(global.f, "%d gray\n", gc->erase ? 0 : 1);
+			fprintf(global.f, "%d gray\n", (gc->erase || global.is_mask) ? 0 : 1);
 			lastcolor = 0;
 		}
 		else {
