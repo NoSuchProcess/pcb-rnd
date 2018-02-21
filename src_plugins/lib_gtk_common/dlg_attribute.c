@@ -96,35 +96,27 @@ static void intspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data
 static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
-	const char *s, *unit = NULL;
-	int ul;
-	pcb_bool succ = pcb_false;
+	const char *s;
 	pcb_coord_t crd;
+	double crdd;
+	const pcb_unit_t *u;
+	pcb_bool succ;
 
 	s = gtk_entry_get_text(entry);
-	ul = strspn(s, "0123456789.");
-	if ((ul > 0) && (s[ul] != '\0')) {
-		unit = s+ul;
-		while(isspace(*unit)) unit++;
-		if ((unit[0] == 'm') && (unit[1] == '\0')) {
-			/* corner case: mil and mm starts with m, and we rarely want to specify anything in meter, so ignore it */
-		}
-		else if (*unit != '\0') {
-			const pcb_unit_t *u = get_unit_struct_(unit, 1);
-			if (u != NULL) {
-				crd = pcb_get_value(s, unit, NULL, &succ);
-				if (succ)
-					pcb_gtk_coord_entry_set_unit(entry, u);
-			}
-		}
-	}
+	succ = pcb_get_value_unit(s, NULL, 1, &crdd, &u);
 
-	if (succ)
-		dst->changed = 1;
+	if (!succ)
+		return;
+
+	dst->changed = 1;
+
 	if (ctx->inhibit_valchg)
 		return;
 
-	if ((succ) && (dst->default_val.coord_value != crd) && (crd >= dst->min_val) && (crd <= dst->max_val)) {
+	crd = crdd;
+	pcb_gtk_coord_entry_set_unit(entry, u);
+
+	if ((dst->default_val.coord_value != crd) && (crd >= dst->min_val) && (crd <= dst->max_val)) {
 		dst->default_val.coord_value = crd;
 		change_cb(ctx, dst);
 	}
