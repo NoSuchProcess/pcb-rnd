@@ -110,7 +110,7 @@ static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 			/* corner case: mil and mm starts with m, and we rarely want to specify anything in meter, so ignore it */
 		}
 		else if (*unit != '\0') {
-			const pcb_unit_t *u = get_unit_struct(unit);
+			const pcb_unit_t *u = get_unit_struct_(unit, 1);
 			if (u != NULL) {
 				crd = pcb_get_value(s, unit, NULL, &succ);
 				if (succ)
