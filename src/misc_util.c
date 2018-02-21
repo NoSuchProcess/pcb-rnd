@@ -65,6 +65,42 @@ double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pc
 	return pcb_get_value_ex(val, units, absolute, NULL, "cmil", success);
 }
 
+pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out)
+{
+	int ul = strspn(val, "0123456789.");
+	if ((ul > 0) && (val[ul] != '\0')) {
+		const char *unit = val+ul;
+		const pcb_unit_t *u;
+
+		while(isspace(*unit)) unit++;
+		if (*unit == '\0')
+			goto err;
+		else if ((unit[0] == 'm') && (unit[1] == '\0')) {
+			/* corner case: mil and mm starts with m, and we rarely want to specify anything in meter, so ignore it */
+			goto err;
+		}
+
+		u = get_unit_struct_(unit, unit_strict);
+		if (u != NULL) {
+			pcb_bool succ;
+			double crd;
+
+			crd = pcb_get_value(val, unit, NULL, &succ);
+			if (succ) {
+				*val_out = crd;
+				*unit_out = u;
+				return pcb_true;
+			}
+		}
+	}
+
+	err:;
+		*val_out = 0;
+		*unit_out = NULL;
+		return pcb_false;
+}
+
+
 double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success)
 {
 	double value;

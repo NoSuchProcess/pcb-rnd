@@ -51,6 +51,11 @@ typedef struct {
 double pcb_get_value(const char *val, const char *units, pcb_bool *absolute, pcb_bool *success);
 double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success);
 
+/* Convert a string of value+unit to coords and unit struct. Absolute is the same
+   as above; if unit_strict is non-zero, require full unit name. Returns whether
+   the conversion is succesful. */
+pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out);
+
 char *pcb_concat(const char *first, ...); /* end with NULL */
 int pcb_mem_any_set(unsigned char *ptr, int bytes);
 
