@@ -348,12 +348,10 @@ ha:{
 					}
 				}
 				-
-				ha:Change drilling hole of selected objects {
+				ha:Change drilling hole of selected padstacks {
 					li:submenu {
-						ha:Vias -10 mil = { action=ChangeDrillSize(SelectedVias,-10,mil) }
-						ha:Vias +10 mil = { action=ChangeDrillSize(SelectedVias,+10,mil) }
-						ha:Pins -10 mil = { action=ChangeDrillSize(SelectedPins,-10,mil) }
-						ha:Pins +10 mil = { action=ChangeDrillSize(SelectedPins,+10,mil) }
+						ha:Vias -10 mil = { action=ChangeDrillSize(SelectedPadstacks,-10,mil) }
+						ha:Vias +10 mil = { action=ChangeDrillSize(SelectedPadstacks,+10,mil) }
 					}
 				}
 				-
