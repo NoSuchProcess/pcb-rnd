@@ -122,8 +122,6 @@ static void list_cursor_changed_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dl
 
 	gtk_tree_model_get(tm, &iter, 0, &prop, 1, &comm, -1);
 
-	printf("prop: %s!\n", prop);
-
 	val_combo_reset(dlg);
 
 	val = dlg->propedit_query(dlg->propedit_pe, "v1st", prop, NULL, 0);
