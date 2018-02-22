@@ -56,7 +56,7 @@
 - BUG: reclip polygons after autocrop(); else poly clear poly breaks (use delayed clipping!) test case: pool/poly_dev_ex [report: Igor2]
 - pool: user tutorial index
 + BUG: property editor does not work on a selected rectangle/polygon [report: barjac/erich]
-- BUG: thermal tool use on co-incident padstacks with the same net causes segfault. Reproduce: load bu gfiles/thermal-o-crash-erich.lht , select thermal tool, look at upper LED pads, apply thermal to LED1 u pper pin, hit 'o', apply thermal to LED2 upper pin, hit 'o', apply themal to LED1 upper pad, hit 'o', a pply thermal to LED2 upper pad, hit 'o', and crash should ensue [report: erich] 
+- BUG: thermal tool use on co-incident padstacks with the same net causes segfault. Reproduce: load bug_files/thermal-o-crash-erich.lht, select thermal tool, look at upper LED pads, apply thermal to LED1 u pper pin, hit 'o', apply thermal to LED2 upper pin, hit 'o', apply themal to LED1 upper pad, hit 'o', a pply thermal to LED2 upper pad, hit 'o', and crash should ensue [report: erich]
 - BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd fil e causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 - BUG: 633.10 mil fixed negative x-offset for vias, seen on OSHW_binary_examples/80mAllTransistorSSBTX CVR.brd [erich]
 - BUG: copper annulus retained around hole features loaded in Eagle binary format. See lower left hole on tvbgone.brd http://tronixstuff.com/wp-content/uploads/2010/08/3s1.jpg vs tvbgone load [erich]
