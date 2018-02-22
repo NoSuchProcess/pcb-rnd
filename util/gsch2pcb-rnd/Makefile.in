@@ -1,5 +1,5 @@
 put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR)\\""}
+append /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 include {../scconfig/template/debug.tmpasm}
 
