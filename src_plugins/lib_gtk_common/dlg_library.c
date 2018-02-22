@@ -642,7 +642,7 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	if (arrow_key) {
 		GtkWidgetClass *class = GTK_WIDGET_GET_CLASS(tree_view);
 
-		class->key_press_event(tree_view, event);
+		class->key_press_event(GTK_WIDGET(tree_view), event);
 	}
 
 	selection = gtk_tree_view_get_selection(tree_view);
