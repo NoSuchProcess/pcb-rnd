@@ -114,7 +114,7 @@ static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 		return;
 
 	crd = crdd;
-	pcb_gtk_coord_entry_set_unit(entry, u);
+	pcb_gtk_coord_entry_set_unit(GHID_COORD_ENTRY(entry), u);
 
 	if ((dst->default_val.coord_value != crd) && (crd >= dst->min_val) && (crd <= dst->max_val)) {
 		dst->default_val.coord_value = crd;
