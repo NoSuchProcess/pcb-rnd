@@ -68,6 +68,8 @@
 	- unify thermal format for all objects
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
+- find.c rewrite:
+	- a new "report(NetLength)" should not care about netlists but depend on find.c only
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
