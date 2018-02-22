@@ -79,13 +79,13 @@ static void preview_set_view(pcb_gtk_preview_t * preview)
 
 static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)
 {
+	preview->obj = obj;
 	if (obj == NULL) {
 		preview->w_pixels = 0;
 		preview->h_pixels = 0;
 		return;
 	}
 
-	preview->obj = obj;
 	preview_set_view(preview);
 }
 
