@@ -448,7 +448,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 		}
 		else {
 			/* Loaded a file that did not have any information about preferred format */
-			switch(pcb_io_pcb_usty_seen) {
+			switch((int)pcb_io_pcb_usty_seen) {
 				case PCB_USTY_CMIL:
 					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from consistent unitless centimil input)\n", Filename, pcb_centimil_io_pcb->description);
 					PCB->Data->loader = pcb_centimil_io_pcb;
