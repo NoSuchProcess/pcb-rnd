@@ -50,7 +50,6 @@
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
 + BUG: menu select->change drilling hole->+/- size   does not work for padstacks, but alt+s still does [report: erich] 
-- BUG: padstack editor: broken values in the proto/hole size gets converted and do a round trip, ruining vlaues being edited, e.g. when the unit is to be replaced [report: Alain]
 - BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
 + BUG: altering a feature on a layout with the 's' key or 'shift+s' key or the "alt+s" or the "alt-shift-s" keys does not flag a change to the layout since last save [erich].
 - BUG: reclip polygons after autocrop(); else poly clear poly breaks (use delayed clipping!) test case: pool/poly_dev_ex [report: Igor2]
