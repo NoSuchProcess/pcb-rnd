@@ -549,32 +549,67 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			goto error;
 
 		case PCB_HATT_LABEL:
-			gtk_label_set_text(GTK_LABEL(ctx->wl[idx]), val->str_value);
+			{
+				const char *txt = gtk_label_get_text(GTK_LABEL(ctx->wl[idx]));
+				if (strcmp(txt, val->str_value) == 0)
+					goto nochg;
+				gtk_label_set_text(GTK_LABEL(ctx->wl[idx]), val->str_value);
+			}
 			break;
 
 		case PCB_HATT_INTEGER:
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->int_value);
+			{
+				double d = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ctx->wl[idx]));
+				if (val->int_value == (int)d)
+					goto nochg;
+				gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->int_value);
+			}
 			break;
 
 		case PCB_HATT_COORD:
-			pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(ctx->wl[idx]), val->coord_value);
+			{
+				pcb_coord_t crd = pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(ctx->wl[idx]));
+				if (crd == val->coord_value)
+					goto nochg;
+				pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(ctx->wl[idx]), val->coord_value);
+			}
 			break;
 
 		case PCB_HATT_REAL:
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->real_value);
+			{
+				double d = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ctx->wl[idx]));
+				if (val->real_value == d)
+					goto nochg;
+				gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->real_value);
+			}
 			break;
 
 		case PCB_HATT_STRING:
 		case PCB_HATT_PATH:
-			gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
+			{
+				const char *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
+				if (strcmp(s, val->str_value) == 0)
+					goto nochg;
+				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
+			}
 			break;
 
 		case PCB_HATT_BOOL:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), val->int_value);
+			{
+				int chk = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]));
+				if (chk == val->int_value)
+					goto nochg;
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), val->int_value);
+			}
 			break;
 
 		case PCB_HATT_ENUM:
-			gtk_combo_box_set_active(GTK_COMBO_BOX(ctx->wl[idx]), val->int_value);
+			{
+				int en = gtk_combo_box_get_active(GTK_COMBO_BOX(ctx->wl[idx]));
+				if (en == val->int_value)
+					goto nochg;
+				gtk_combo_box_set_active(GTK_COMBO_BOX(ctx->wl[idx]), val->int_value);
+			}
 			break;
 
 		case PCB_HATT_UNIT:
@@ -582,7 +617,12 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_BUTTON:
-			gtk_button_set_label(GTK_BUTTON(ctx->wl[idx]), val->str_value);
+			{
+				const char *s = gtk_button_get_label(GTK_BUTTON(ctx->wl[idx]));
+				if (strcmp(s, val->str_value) == 0)
+					goto nochg;
+				gtk_button_set_label(GTK_BUTTON(ctx->wl[idx]), val->str_value);
+			}
 			break;
 
 		case PCB_HATT_BEGIN_TABBED:
@@ -596,6 +636,10 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	error:;
 	ctx->inhibit_valchg = save;
 	return -1;
+
+	nochg:;
+	ctx->inhibit_valchg = save;
+	return 1;
 }
 
 void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
@@ -723,14 +767,19 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
+	int res;
 
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	if (ghid_attr_dlg_set(ctx, idx, val) == 0) {
+	res = ghid_attr_dlg_set(ctx, idx, val);
+
+	if (res == 0) {
 		ctx->attrs[idx].default_val = *val;
 		return 0;
 	}
+	else if (res == 1)
+		return 0; /* no change */
 
 	return -1;
 }
