@@ -1,8 +1,13 @@
-TRUNK=../..
-BUILD=$(TRUNK)/util/build_ps.sh
+ROOT=../..
+BUILD=$(ROOT)/util/build_ps.sh
+USERDIR=$(DOCDIR)/user
 
 export HTML2PS_OPTS=-f default.css
 export HTML2PS_SED="s^<[hH]1>.*</[hH]1>^^g"
+
+
+INSTD = 02_model 03_data 04_invoc 05_ui 06_feature 07_io \
+        08_util 09_appendix
 
 all: user.pdf
 
@@ -16,3 +21,19 @@ ps.lst: */*.html */*.png
 	echo "title.html" > ps.lst
 	echo "index.html" >> ps.lst
 	ls */*.html | sort >> ps.lst
+
+include Makefile.inst
+
+regen: instgen
+	./instgen
+
+install:
+	make install_all HOW="install -f"
+
+linstall:
+	make install_all HOW="install -f -l"
+
+uninstall:
+	make install_all HOW="install -u"
+
+include $(ROOT)/Makefile.conf
