@@ -31,7 +31,7 @@ install:
 	make install_all HOW="install -f"
 
 linstall:
-	make install_all HOW="install -f -l"
+	make install_all HOW="install -f -l --absolute "
 
 uninstall:
 	make install_all HOW="install -u"

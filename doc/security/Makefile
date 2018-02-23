@@ -18,4 +18,9 @@ linstall:
 uninstall:
 	$(MAKE) install_all HOW="install -u"
 
+clean:
+
+distclean:
+
+
 include $(ROOT)/Makefile.conf

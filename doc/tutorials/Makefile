@@ -12,3 +12,7 @@ linstall:
 
 uninstall:
 	$(MAKE) all_ CMD=uninstall
+
+clean:
+
+distclean:
