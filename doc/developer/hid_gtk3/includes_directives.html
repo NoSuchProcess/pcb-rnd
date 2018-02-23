@@ -1,251 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>#include directives</title>
-</head>
-<body class="article toc2 toc-left">
-<div id="header">
-<h1><code>#include</code> directives</h1>
-<div class="details">
-<span id="author" class="author">Alain, Igor2</span><br>
-</div>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_in_code_h_code_files">In <code>.h</code> files</a>
-<ul class="sectlevel2">
-<li><a href="#h_inc_all">Rule 1</a></li>
-<li><a href="#_rule_2">Rule 2</a></li>
-<li><a href="#_rule_3">Rule 3</a></li>
-<li><a href="#_rule_4">Rule 4</a></li>
-<li><a href="#_rule_5">Rule 5</a></li>
-</ul>
-</li>
-<li><a href="#_in_code_c_code_files">In <code>.c</code> files</a>
-<ul class="sectlevel2">
-<li><a href="#_rule_1">Rule 1</a></li>
-<li><a href="#_rule_2_2">Rule 2</a></li>
-<li><a href="#_rule_3_2">Rule 3</a></li>
-<li><a href="#_rule_4_2">Rule 4</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>Rules applied to <code>pcb-rnd</code>, especially in directories:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">src_plugins
-├── hid_gtk
-├── hid_gtk3
-├── lib_gtk_common
-├── lib_gtk_config</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_in_code_h_code_files">In <code>.h</code> files</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="h_inc_all">Rule 1</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Look at the <code>.h</code> file only ; <code>#include</code> everything you need in that given file,
-     directly, to let the compiler understands the structures and function
-     protoypes used there.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_2">Rule 2</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Don&#8217;t be afraid to have indirect <code>#include`s (`fileA</code> is including
-<code>fileB</code> and <code>fileC</code>, but <code>fileB</code> already includes <code>fileC</code>)
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Here, do both includes, not only <code>fileB</code>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_3">Rule 3</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Circular <code>#include</code> ? : <code>fileA</code> includes <code>fileB</code> which itself includes <code>fileA</code>&#8230;&#8203;
-It&#8217;s perfectly fine ;)
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_4">Rule 4</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Frame your <code>.h</code> code with a <code>#define</code> allowing single definition if multiple calls.
-Example:
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>#ifdef  PCB_FILEA_H
+<html>
+<body>
+
+<h1> Some coding rule-of-thumbs in pcb-rnd </h1>
+
+<h2> When writing .h files </h2>
+
+<p><b>Rule 1</b>
+
+ Look at the .h file only; #include everything you need in that given file,
+ directly, to let the compiler understands the structures and function
+ protoypes used there.
+
+<p><b>Rule 2</b>
+
+ Don?t be afraid to have indirect #include`s (`fileA is including fileB and
+ fileC, but fileB already includes fileC)
+
+Here, do both includes, not only fileB.
+
+<p><b>Rule 3</b>
+
+ Circular #include ? : fileA includes fileB which itself includes fileA?? It?s
+ perfectly fine ;)
+
+<p><b>Rule 4</b>
+
+ Frame your .h code with a #define allowing single definition if multiple
+ calls. Example:
+
+<pre>
+#ifdef  PCB_FILEA_H
 #define PCB_FILEA_H
 
 the code
 
-#endif  /* PCB_FILEA_H */</pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_5">Rule 5</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Name those define <code>PCB_GTK&#8230;&#8203;</code> according to following table:
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Directory</th>
-<th class="tableblock halign-left valign-top">Prefix</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lib_gtk_common</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PCB_GTK_</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lib_gtk_config</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PCB_GTK_</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PCB_GTK2_</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk3</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PCB_GTK3_</code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_in_code_c_code_files">In <code>.c</code> files</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_rule_1">Rule 1</h3>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<code>#include "config.h"</code> first&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>This is an essential mechanism for porting.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_2_2">Rule 2</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-If the file is <code>fileA.c</code>, then <code>#include "fileA.h"</code>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_3_2">Rule 3</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-refer to <code>.h</code> <a href="#h_inc_all">rules</a> that can be applied to <code>.c</code> files.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_rule_4_2">Rule 4</h3>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-please do <em>not</em> remove <code>obj_elem.h</code> in favor of <code>obj_all.h</code> - <code>obj_all.h</code> is
-a temporary construct that will be gone&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
+#endif  /* PCB_FILEA_H */
+</pre>
+
+<p><b>Rule 6</b>
+
+
+ Name those define PCB_GTK?? according to following table:
+
+   Directory     Prefix
+lib_gtk_common  PCB_GTK_
+
+lib_gtk_config  PCB_GTK_
+
+hid_gtk         PCB_GTK2_
+
+hid_gtk3        PCB_GTK3_
+
+<h2> In .c files </h2>
+
+<p><b>Rule 1</b>
+
+ #include "config.h" first??
+
+This is an essential mechanism for porting.
+
+<p><b>Rule 2</b>
+
+
+ If the file is fileA.c, then #include "fileA.h"
+
+<p><b>Rule 3</b>
+
+
+ refer to .h rules that can be applied to .c files.
+
+<p><b>Rule 4</b>
+
+
+ please do not remove obj_elem.h in favor of obj_all.h - obj_all.h is a
+ temporary construct that will be gone??
+
 </body>
 </html>
