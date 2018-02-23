@@ -1251,6 +1251,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 
 	padstacklist_foreach(&sc->data->padstack, &it, ps) {
 		const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		assert(proto != NULL); /* the prototype must be accessible at the source else we can't add it in the dest */
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		if (sc->data->padstack_tree != NULL)
 			pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
