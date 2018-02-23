@@ -5,3 +5,4 @@
 - remove pcb board Zoom/x/y, move the drc stuff to config
 - remove obsolete APIs:
    get_unit_list()
+- remove 'require unique refdes'
