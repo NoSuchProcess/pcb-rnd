@@ -117,7 +117,6 @@ static void button_ins_cb(GtkButton * button, gtk_conf_list_t *cl)
 	nd = NULL;
 
 	fill_misc_cols(cl, idx, &iter, nd);
-	printf("ins %d!\n", idx);
 }
 
 static void button_del_cb(GtkButton * button, gtk_conf_list_t *cl)
@@ -128,7 +127,6 @@ static void button_del_cb(GtkButton * button, gtk_conf_list_t *cl)
 	if (idx < 0)
 		return;
 
-	printf("del %d!\n", idx);
 	gtk_list_store_remove(cl->l, &iter);
 	rebuild(cl);
 #warning TODO: remove list item idx
@@ -161,7 +159,6 @@ static void button_sel_cb(GtkButton * button, gtk_conf_list_t *cl)
 		if (cl->file_chooser_postproc != NULL)
 			fn = cl->file_chooser_postproc(fno);
 
-		printf("sel %d '%s'\n", idx, fn);
 		gtk_list_store_set(cl->l, &iter, cl->col_data, fn, -1);
 #warning TODO: replace list item idx
 		rebuild(cl);
@@ -178,7 +175,6 @@ static void cell_edited_cb(GtkCellRendererText *cell, gchar *path, gchar *new_te
 
 	cl->editing = 0;
 
-	printf("edit %d to %s!\n", idx, new_text);
 	gtk_list_store_set(cl->l, &iter, cl->col_data, new_text, -1);
 #warning TODO: replace list item idx
 	rebuild(cl);
