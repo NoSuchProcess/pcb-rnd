@@ -1259,7 +1259,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 		if ((dst != NULL) && (dst->padstack_tree != NULL))
 			pcb_r_insert_entry(dst->padstack_tree, (pcb_box_t *)ps);
 		if (dst != NULL)
-			ps->proto = pcb_pstk_proto_insert_dup(dst, proto, 1);
+			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1);
 		ps->protoi = -1;
 		ps->parent.data = new_parent;
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
