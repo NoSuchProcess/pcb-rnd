@@ -1,4 +1,3 @@
-/* dot -Tpng -oinit_sequence.png init_sequence.dot */
 digraph G
 {
   node [shape=rect];
