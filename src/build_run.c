@@ -228,7 +228,7 @@ char *pcb_get_info_license(void)
 
 		gds_append_str(&info, "pcb-rnd is licensed under the terms of the GNU\n");
 		gds_append_str(&info, "General Public License version 2\n");
-		gds_append_str(&info, "See the LICENSE file for more information\n\n");
+		gds_append_str(&info, "See the COPYING file for more information\n\n");
 	}
 	return info.array;
 }
