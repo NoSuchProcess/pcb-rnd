@@ -4,7 +4,6 @@ install_all:
 	$(SCCBOX) $(HOW) 01_intro/history.html $(USERDIR)/01_intro/history.html
 	$(SCCBOX) $(HOW) 01_intro/index.html $(USERDIR)/01_intro/index.html
 	$(SCCBOX) $(HOW) 01_intro/Makefile $(USERDIR)/01_intro/Makefile
-	$(SCCBOX) $(HOW) 01_intro/index.ps $(USERDIR)/01_intro/index.ps
 	$(SCCBOX) $(HOW) 01_intro/flow.svg $(USERDIR)/01_intro/flow.svg
 	$(SCCBOX) $(HOW) 01_intro/Inst.tmpasm $(USERDIR)/01_intro/Inst.tmpasm
 	$(SCCBOX) mkdir -p $(USERDIR)/02_model/via_therm_solid.png
