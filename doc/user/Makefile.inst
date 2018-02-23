@@ -4,8 +4,6 @@ install_all:
 	$(SCCBOX) $(HOW) 01_intro/history.html $(USERDIR)/01_intro/history.html
 	$(SCCBOX) $(HOW) 01_intro/index.html $(USERDIR)/01_intro/index.html
 	$(SCCBOX) $(HOW) 01_intro/Makefile $(USERDIR)/01_intro/Makefile
-	$(SCCBOX) mkdir -p $(USERDIR)/01_intro/src/flow.dot
-	$(SCCBOX) $(HOW) 01_intro/src/flow.dot $(USERDIR)/01_intro/src/flow.dot
 	$(SCCBOX) $(HOW) 01_intro/index.ps $(USERDIR)/01_intro/index.ps
 	$(SCCBOX) $(HOW) 01_intro/flow.svg $(USERDIR)/01_intro/flow.svg
 	$(SCCBOX) $(HOW) 01_intro/Inst.tmpasm $(USERDIR)/01_intro/Inst.tmpasm
@@ -19,22 +17,6 @@ install_all:
 	$(SCCBOX) $(HOW) 02_model/via_ring_shape.png $(USERDIR)/02_model/via_ring_shape.png
 	$(SCCBOX) $(HOW) 02_model/via_square_shape.png $(USERDIR)/02_model/via_square_shape.png
 	$(SCCBOX) $(HOW) 02_model/obj_arc.png $(USERDIR)/02_model/obj_arc.png
-	$(SCCBOX) mkdir -p $(USERDIR)/02_model/src/via_square_shape.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_square_shape.lht $(USERDIR)/02_model/src/via_square_shape.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_therm_sharp_x45.lht $(USERDIR)/02_model/src/via_therm_sharp_x45.lht
-	$(SCCBOX) $(HOW) 02_model/src/Makefile $(USERDIR)/02_model/src/Makefile
-	$(SCCBOX) $(HOW) 02_model/src/objects_complex.lht $(USERDIR)/02_model/src/objects_complex.lht
-	$(SCCBOX) $(HOW) 02_model/src/obj_arc.lht $(USERDIR)/02_model/src/obj_arc.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_octagon_shape.lht $(USERDIR)/02_model/src/via_octagon_shape.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_therm_round_x90.lht $(USERDIR)/02_model/src/via_therm_round_x90.lht
-	$(SCCBOX) $(HOW) 02_model/src/objects_basic.lht $(USERDIR)/02_model/src/objects_basic.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_asym_shape.lht $(USERDIR)/02_model/src/via_asym_shape.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_therm_sharp_x90.lht $(USERDIR)/02_model/src/via_therm_sharp_x90.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_therm_noconn.lht $(USERDIR)/02_model/src/via_therm_noconn.lht
-	$(SCCBOX) $(HOW) 02_model/src/obj_line.lht $(USERDIR)/02_model/src/obj_line.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_ring_shape.lht $(USERDIR)/02_model/src/via_ring_shape.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_therm_solid.lht $(USERDIR)/02_model/src/via_therm_solid.lht
-	$(SCCBOX) $(HOW) 02_model/src/via_therm_round_x45.lht $(USERDIR)/02_model/src/via_therm_round_x45.lht
 	$(SCCBOX) $(HOW) 02_model/objects_complex.png $(USERDIR)/02_model/objects_complex.png
 	$(SCCBOX) $(HOW) 02_model/via_asym_shape.png $(USERDIR)/02_model/via_asym_shape.png
 	$(SCCBOX) $(HOW) 02_model/via_therm_round_x45.png $(USERDIR)/02_model/via_therm_round_x45.png
@@ -304,15 +286,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/dialogtable.html $(USERDIR)/09_appendix/dialogtable.html
 	$(SCCBOX) $(HOW) 09_appendix/index.html $(USERDIR)/09_appendix/index.html
 	$(SCCBOX) $(HOW) 09_appendix/action_reference.html $(USERDIR)/09_appendix/action_reference.html
-	$(SCCBOX) mkdir -p $(USERDIR)/09_appendix/src/pcb-rnd-dialogs
-	$(SCCBOX) $(HOW) 09_appendix/src/pcb-rnd-dialogs $(USERDIR)/09_appendix/src/pcb-rnd-dialogs
-	$(SCCBOX) $(HOW) 09_appendix/src/process_dialogtable.sh $(USERDIR)/09_appendix/src/process_dialogtable.sh
-	$(SCCBOX) $(HOW) 09_appendix/src/gen_formats.sh $(USERDIR)/09_appendix/src/gen_formats.sh
-	$(SCCBOX) $(HOW) 09_appendix/src/A $(USERDIR)/09_appendix/src/A
-	$(SCCBOX) $(HOW) 09_appendix/src/bridges.txt $(USERDIR)/09_appendix/src/bridges.txt
-	$(SCCBOX) $(HOW) 09_appendix/src/dump_actions_to_html.sh $(USERDIR)/09_appendix/src/dump_actions_to_html.sh
-	$(SCCBOX) $(HOW) 09_appendix/src/Makefile $(USERDIR)/09_appendix/src/Makefile
-	$(SCCBOX) $(HOW) 09_appendix/src/A.html $(USERDIR)/09_appendix/src/A.html
 	$(SCCBOX) $(HOW) 09_appendix/combined_glossary.html $(USERDIR)/09_appendix/combined_glossary.html
 	$(SCCBOX) $(HOW) 09_appendix/bridges.svg $(USERDIR)/09_appendix/bridges.svg
 	$(SCCBOX) $(HOW) 09_appendix/external_resources.html $(USERDIR)/09_appendix/external_resources.html

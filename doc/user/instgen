@@ -5,6 +5,7 @@ BEGIN {
 	print "install_all:"
 }
 ($0 ~ "[/][.]") { next }
+($0 ~ "[/]src[/]") { next }
 /[.]bak$/ { next }
 /[.]backup$/ { next }
 /~$/ { next }
