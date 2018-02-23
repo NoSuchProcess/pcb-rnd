@@ -70,6 +70,7 @@
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_compat_help/subc_help.h"
+#include "src_plugins/lib_compat_help/elem_rot.h"
 
 pcb_unit_style_t pcb_io_pcb_usty_seen;
 
