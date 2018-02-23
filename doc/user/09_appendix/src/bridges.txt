@@ -250,7 +250,7 @@
 <-> kica.s-0.4 pcbrnd
 	label board\ns-expr
 
--> kica.s pcbrnd
+<- kica.s pcbrnd
 	label board\nlegacy
 
 <-> kica.s+0.4 pcbrnd
