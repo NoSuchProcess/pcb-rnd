@@ -2,25 +2,25 @@
 install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/01_intro
 	$(SCCBOX) $(HOW) 01_intro/history.html $(USERDIR)/01_intro/history.html
-	$(SCCBOX) $(HOW) 01_intro/index.html $(USERDIR)/01_intro/index.html
 	$(SCCBOX) $(HOW) 01_intro/Makefile $(USERDIR)/01_intro/Makefile
+	$(SCCBOX) $(HOW) 01_intro/index.html $(USERDIR)/01_intro/index.html
 	$(SCCBOX) $(HOW) 01_intro/flow.svg $(USERDIR)/01_intro/flow.svg
 	$(SCCBOX) mkdir -p $(USERDIR)/02_model
 	$(SCCBOX) $(HOW) 02_model/via_therm_solid.png $(USERDIR)/02_model/via_therm_solid.png
-	$(SCCBOX) $(HOW) 02_model/index.html $(USERDIR)/02_model/index.html
-	$(SCCBOX) $(HOW) 02_model/objects_basic.png $(USERDIR)/02_model/objects_basic.png
-	$(SCCBOX) $(HOW) 02_model/obj_line.png $(USERDIR)/02_model/obj_line.png
-	$(SCCBOX) $(HOW) 02_model/via_octagon_shape.png $(USERDIR)/02_model/via_octagon_shape.png
-	$(SCCBOX) $(HOW) 02_model/via_therm_round_x90.png $(USERDIR)/02_model/via_therm_round_x90.png
-	$(SCCBOX) $(HOW) 02_model/via_ring_shape.png $(USERDIR)/02_model/via_ring_shape.png
-	$(SCCBOX) $(HOW) 02_model/via_square_shape.png $(USERDIR)/02_model/via_square_shape.png
-	$(SCCBOX) $(HOW) 02_model/obj_arc.png $(USERDIR)/02_model/obj_arc.png
-	$(SCCBOX) $(HOW) 02_model/objects_complex.png $(USERDIR)/02_model/objects_complex.png
-	$(SCCBOX) $(HOW) 02_model/via_asym_shape.png $(USERDIR)/02_model/via_asym_shape.png
 	$(SCCBOX) $(HOW) 02_model/via_therm_round_x45.png $(USERDIR)/02_model/via_therm_round_x45.png
-	$(SCCBOX) $(HOW) 02_model/via_therm_sharp_x90.png $(USERDIR)/02_model/via_therm_sharp_x90.png
-	$(SCCBOX) $(HOW) 02_model/via_therm_sharp_x45.png $(USERDIR)/02_model/via_therm_sharp_x45.png
+	$(SCCBOX) $(HOW) 02_model/via_ring_shape.png $(USERDIR)/02_model/via_ring_shape.png
 	$(SCCBOX) $(HOW) 02_model/via_therm_noconn.png $(USERDIR)/02_model/via_therm_noconn.png
+	$(SCCBOX) $(HOW) 02_model/objects_basic.png $(USERDIR)/02_model/objects_basic.png
+	$(SCCBOX) $(HOW) 02_model/objects_complex.png $(USERDIR)/02_model/objects_complex.png
+	$(SCCBOX) $(HOW) 02_model/via_therm_sharp_x45.png $(USERDIR)/02_model/via_therm_sharp_x45.png
+	$(SCCBOX) $(HOW) 02_model/via_therm_round_x90.png $(USERDIR)/02_model/via_therm_round_x90.png
+	$(SCCBOX) $(HOW) 02_model/index.html $(USERDIR)/02_model/index.html
+	$(SCCBOX) $(HOW) 02_model/obj_line.png $(USERDIR)/02_model/obj_line.png
+	$(SCCBOX) $(HOW) 02_model/obj_arc.png $(USERDIR)/02_model/obj_arc.png
+	$(SCCBOX) $(HOW) 02_model/via_octagon_shape.png $(USERDIR)/02_model/via_octagon_shape.png
+	$(SCCBOX) $(HOW) 02_model/via_therm_sharp_x90.png $(USERDIR)/02_model/via_therm_sharp_x90.png
+	$(SCCBOX) $(HOW) 02_model/via_square_shape.png $(USERDIR)/02_model/via_square_shape.png
+	$(SCCBOX) $(HOW) 02_model/via_asym_shape.png $(USERDIR)/02_model/via_asym_shape.png
 	$(SCCBOX) mkdir -p $(USERDIR)/03_data
 	$(SCCBOX) $(HOW) 03_data/index.html $(USERDIR)/03_data/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/04_invoc
@@ -28,231 +28,199 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/05_batch
 	$(SCCBOX) $(HOW) 05_ui/05_batch/index.html $(USERDIR)/05_ui/05_batch/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/01_gtk
-	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_coordsreadout.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_coordsreadout.png
-	$(SCCBOX) $(HOW) 05_ui/01_gtk/index.html $(USERDIR)/05_ui/01_gtk/index.html
+	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_workops.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_workops.png
+	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_menus.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_menus.png
+	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_layerops.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_layerops.png
 	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_routestyle.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_routestyle.png
 	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_opsreadout.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_opsreadout.png
-	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_workops.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_workops.png
+	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_coordsreadout.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_coordsreadout.png
+	$(SCCBOX) $(HOW) 05_ui/01_gtk/index.html $(USERDIR)/05_ui/01_gtk/index.html
 	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_main.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_main.png
-	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_layerops.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_layerops.png
-	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_menus.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_menus.png
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui
 	$(SCCBOX) $(HOW) 05_ui/index.html $(USERDIR)/05_ui/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/02_cli
 	$(SCCBOX) $(HOW) 05_ui/02_cli/index.html $(USERDIR)/05_ui/02_cli/index.html
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/acompnet
+	$(SCCBOX) $(HOW) 06_feature/acompnet/index.html $(USERDIR)/06_feature/acompnet/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/autocrop
 	$(SCCBOX) $(HOW) 06_feature/autocrop/index.html $(USERDIR)/06_feature/autocrop/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature
-	$(SCCBOX) $(HOW) 06_feature/index.html $(USERDIR)/06_feature/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/packages
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/layout.html $(USERDIR)/06_feature/gpmi/packages/layout.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/REF.actions $(USERDIR)/06_feature/gpmi/packages/REF.actions
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/REF.dialogs $(USERDIR)/06_feature/gpmi/packages/REF.dialogs
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/hid_ref.html $(USERDIR)/06_feature/gpmi/packages/hid_ref.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/layout_ref.html $(USERDIR)/06_feature/gpmi/packages/layout_ref.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/dialogs_ref.html $(USERDIR)/06_feature/gpmi/packages/dialogs_ref.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/dialogs.html $(USERDIR)/06_feature/gpmi/packages/dialogs.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/Makefile $(USERDIR)/06_feature/gpmi/packages/Makefile
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/REF.layout $(USERDIR)/06_feature/gpmi/packages/REF.layout
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/actions_ref.html $(USERDIR)/06_feature/gpmi/packages/actions_ref.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/hid.html $(USERDIR)/06_feature/gpmi/packages/hid.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/dialogs.ref $(USERDIR)/06_feature/gpmi/packages/dialogs.ref
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/actions.html $(USERDIR)/06_feature/gpmi/packages/actions.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/event_id.html $(USERDIR)/06_feature/gpmi/packages/event_id.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/XREF.old $(USERDIR)/06_feature/gpmi/packages/XREF.old
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/XREF.new $(USERDIR)/06_feature/gpmi/packages/XREF.new
-	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/REF.hid $(USERDIR)/06_feature/gpmi/packages/REF.hid
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/distalign
+	$(SCCBOX) $(HOW) 06_feature/distalign/align_parts_y.png $(USERDIR)/06_feature/distalign/align_parts_y.png
+	$(SCCBOX) $(HOW) 06_feature/distalign/result.png $(USERDIR)/06_feature/distalign/result.png
+	$(SCCBOX) $(HOW) 06_feature/distalign/distribute_parts_x.png $(USERDIR)/06_feature/distalign/distribute_parts_x.png
+	$(SCCBOX) $(HOW) 06_feature/distalign/import_parts.png $(USERDIR)/06_feature/distalign/import_parts.png
+	$(SCCBOX) $(HOW) 06_feature/distalign/index.html $(USERDIR)/06_feature/distalign/index.html
+	$(SCCBOX) $(HOW) 06_feature/distalign/distalign.txt $(USERDIR)/06_feature/distalign/distalign.txt
+	$(SCCBOX) $(HOW) 06_feature/distalign/distribute_y_gaps.png $(USERDIR)/06_feature/distalign/distribute_y_gaps.png
+	$(SCCBOX) $(HOW) 06_feature/distalign/align_mixed_parts_x.png $(USERDIR)/06_feature/distalign/align_mixed_parts_x.png
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/vendordrill
+	$(SCCBOX) $(HOW) 06_feature/vendordrill/index.html $(USERDIR)/06_feature/vendordrill/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_load.png $(USERDIR)/06_feature/gpmi/gpmi_flow_load.png
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_exp.png $(USERDIR)/06_feature/gpmi/gpmi_flow_exp.png
-	$(SCCBOX) $(HOW) 06_feature/gpmi/index.html $(USERDIR)/06_feature/gpmi/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_reg.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_reg.dot
-	$(SCCBOX) $(HOW) 06_feature/gpmi/Makefile $(USERDIR)/06_feature/gpmi/Makefile
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_temp_inst.txt $(USERDIR)/06_feature/gpmi/gpmi_temp_inst.txt
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/90_clock
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/index.html $(USERDIR)/06_feature/gpmi/rosetta/90_clock/index.html
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/ex.html $(USERDIR)/06_feature/gpmi/rosetta/90_clock/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/ID.name $(USERDIR)/06_feature/gpmi/rosetta/90_clock/ID.name
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/90_clock/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/90_clock/ID.desc
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.pyc $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.pyc
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.tcl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/run $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/run
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/index.html $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.stt
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.html $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.bash
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ID.name $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ID.name
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.lua
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.pl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.py $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.py
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.awk
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ID.desc
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.rb $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.rb
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.scm $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.scm
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/index.html $(USERDIR)/06_feature/gpmi/rosetta/90_clock/index.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/90_clock/ID.name $(USERDIR)/06_feature/gpmi/rosetta/90_clock/ID.name
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/index.html $(USERDIR)/06_feature/gpmi/rosetta/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.tcl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/run $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/run
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/index.html $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.html $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ID.name $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ID.name
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.lua
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.awk
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ID.desc
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.tcl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/run $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/run
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/index.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.stt
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.bash
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ID.name $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ID.name
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.lua
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.pl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.py $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.py
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.awk
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ID.desc
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.rb $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.rb
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.scm $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.scm
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/Makefile $(USERDIR)/06_feature/gpmi/rosetta/Makefile
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/index.templ.html $(USERDIR)/06_feature/gpmi/rosetta/index.templ.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/10_hello
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.pyc $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.pyc
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.tcl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/run $(USERDIR)/06_feature/gpmi/rosetta/10_hello/run
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/index.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.stt
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.bash
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ID.name $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ID.name
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.lua
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.pl
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.py $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.py
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.tcl
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.rb $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.rb
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.scm $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.scm
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/index.templ.html $(USERDIR)/06_feature/gpmi/rosetta/index.templ.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/index.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello/index.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.lua
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.bash
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ID.name $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ID.name
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.pl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/10_hello/ex.stt
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/Makefile $(USERDIR)/06_feature/gpmi/rosetta/Makefile
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.html $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.tcl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.awk
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ID.desc
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/index.html $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/index.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ex.lua
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/35_export_drill/ID.name $(USERDIR)/06_feature/gpmi/rosetta/35_export_drill/ID.name
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.html $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.py $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.py
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.tcl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.awk
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ID.desc
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.rb $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.rb
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.scm $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.scm
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/index.html $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/index.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.lua
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.bash
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ID.name $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ID.name
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.pl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/12_hello_menu/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/12_hello_menu/ex.stt
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/index.html $(USERDIR)/06_feature/gpmi/rosetta/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/30_move
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.pyc $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.pyc
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.tcl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/run $(USERDIR)/06_feature/gpmi/rosetta/30_move/run
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/index.html $(USERDIR)/06_feature/gpmi/rosetta/30_move/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.stt
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.html $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.bash
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ID.name $(USERDIR)/06_feature/gpmi/rosetta/30_move/ID.name
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.lua
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.pl
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.py $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.py
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.tcl
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/30_move/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.rb $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.rb
 	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.scm $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.scm
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow.png $(USERDIR)/06_feature/gpmi/gpmi_flow.png
-	$(SCCBOX) $(HOW) 06_feature/gpmi/Porting $(USERDIR)/06_feature/gpmi/Porting
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/index.html $(USERDIR)/06_feature/gpmi/rosetta/30_move/index.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.lua
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.bash
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ID.name $(USERDIR)/06_feature/gpmi/rosetta/30_move/ID.name
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.pl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/30_move/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/30_move/ex.stt
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.py $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.py
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.tcl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.awk $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.awk
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ID.desc $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ID.desc
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.rb $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.rb
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.scm $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.scm
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/index.html $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/index.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.lua $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.lua
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.bash $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.bash
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ID.name $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ID.name
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.pl $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.pl
+	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta/10_hello_gui/ex.stt $(USERDIR)/06_feature/gpmi/rosetta/10_hello_gui/ex.stt
 	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow.dot $(USERDIR)/06_feature/gpmi/gpmi_flow.dot
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_temp_inst.txt $(USERDIR)/06_feature/gpmi/gpmi_temp_inst.txt
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_load.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_load.dot
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_exp.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_exp.dot
+	$(SCCBOX) $(HOW) 06_feature/gpmi/Porting $(USERDIR)/06_feature/gpmi/Porting
 	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_reg.png $(USERDIR)/06_feature/gpmi/gpmi_flow_reg.png
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/packages
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/actions.html $(USERDIR)/06_feature/gpmi/packages/actions.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/dialogs.html $(USERDIR)/06_feature/gpmi/packages/dialogs.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/hid_ref.html $(USERDIR)/06_feature/gpmi/packages/hid_ref.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/layout_ref.html $(USERDIR)/06_feature/gpmi/packages/layout_ref.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/dialogs_ref.html $(USERDIR)/06_feature/gpmi/packages/dialogs_ref.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/Makefile $(USERDIR)/06_feature/gpmi/packages/Makefile
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/actions_ref.html $(USERDIR)/06_feature/gpmi/packages/actions_ref.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/event_id.html $(USERDIR)/06_feature/gpmi/packages/event_id.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/XREF $(USERDIR)/06_feature/gpmi/packages/XREF
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/hid.html $(USERDIR)/06_feature/gpmi/packages/hid.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/packages/layout.html $(USERDIR)/06_feature/gpmi/packages/layout.html
+	$(SCCBOX) $(HOW) 06_feature/gpmi/Makefile $(USERDIR)/06_feature/gpmi/Makefile
 	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_menu.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_menu.dot
-	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_menu.png $(USERDIR)/06_feature/gpmi/gpmi_flow_menu.png
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_load.png $(USERDIR)/06_feature/gpmi/gpmi_flow_load.png
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/util
-	$(SCCBOX) $(HOW) 06_feature/gpmi/util/tags $(USERDIR)/06_feature/gpmi/util/tags
 	$(SCCBOX) $(HOW) 06_feature/gpmi/util/rosetta_genpages.sh $(USERDIR)/06_feature/gpmi/util/rosetta_genpages.sh
 	$(SCCBOX) $(HOW) 06_feature/gpmi/util/Makefile $(USERDIR)/06_feature/gpmi/util/Makefile
-	$(SCCBOX) $(HOW) 06_feature/gpmi/History $(USERDIR)/06_feature/gpmi/History
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta.1
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/index.html $(USERDIR)/06_feature/gpmi/rosetta.1/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.tcl $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.tcl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/run $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/run
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/index.html $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/index.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.stt $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.stt
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.html $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.html
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.bash $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.bash
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ID.name $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ID.name
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.lua $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.lua
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.pl $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.pl
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.py $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.py
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.awk $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.awk
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ID.desc $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ID.desc
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.rb $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.rb
-	$(SCCBOX) $(HOW) 06_feature/gpmi/rosetta.1/10_hello_gui/ex.scm $(USERDIR)/06_feature/gpmi/rosetta.1/10_hello_gui/ex.scm
-	$(SCCBOX) $(HOW) 06_feature/gpmi/Credits $(USERDIR)/06_feature/gpmi/Credits
+	$(SCCBOX) $(HOW) 06_feature/gpmi/util/tags $(USERDIR)/06_feature/gpmi/util/tags
+	$(SCCBOX) $(HOW) 06_feature/gpmi/index.html $(USERDIR)/06_feature/gpmi/index.html
 	$(SCCBOX) $(HOW) 06_feature/gpmi/scripting_intro.html $(USERDIR)/06_feature/gpmi/scripting_intro.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/distaligntext
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_2.png $(USERDIR)/06_feature/distaligntext/distaligntext_2.png
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/index.html $(USERDIR)/06_feature/distaligntext/index.html
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_1.png $(USERDIR)/06_feature/distaligntext/distaligntext_1.png
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_3.png $(USERDIR)/06_feature/distaligntext/distaligntext_3.png
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_load.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_load.dot
+	$(SCCBOX) $(HOW) 06_feature/gpmi/Credits $(USERDIR)/06_feature/gpmi/Credits
+	$(SCCBOX) $(HOW) 06_feature/gpmi/History $(USERDIR)/06_feature/gpmi/History
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_reg.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_reg.dot
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_menu.png $(USERDIR)/06_feature/gpmi/gpmi_flow_menu.png
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_exp.dot $(USERDIR)/06_feature/gpmi/gpmi_flow_exp.dot
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow.png $(USERDIR)/06_feature/gpmi/gpmi_flow.png
+	$(SCCBOX) $(HOW) 06_feature/gpmi/gpmi_flow_exp.png $(USERDIR)/06_feature/gpmi/gpmi_flow_exp.png
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature
+	$(SCCBOX) $(HOW) 06_feature/index.html $(USERDIR)/06_feature/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/query
 	$(SCCBOX) $(HOW) 06_feature/query/tutor_cli.html $(USERDIR)/06_feature/query/tutor_cli.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/vendordrill
-	$(SCCBOX) $(HOW) 06_feature/vendordrill/index.html $(USERDIR)/06_feature/vendordrill/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/acompnet
-	$(SCCBOX) $(HOW) 06_feature/acompnet/index.html $(USERDIR)/06_feature/acompnet/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/distalign
-	$(SCCBOX) $(HOW) 06_feature/distalign/align_parts_y.png $(USERDIR)/06_feature/distalign/align_parts_y.png
-	$(SCCBOX) $(HOW) 06_feature/distalign/distalign.txt $(USERDIR)/06_feature/distalign/distalign.txt
-	$(SCCBOX) $(HOW) 06_feature/distalign/align_mixed_parts_x.png $(USERDIR)/06_feature/distalign/align_mixed_parts_x.png
-	$(SCCBOX) $(HOW) 06_feature/distalign/index.html $(USERDIR)/06_feature/distalign/index.html
-	$(SCCBOX) $(HOW) 06_feature/distalign/result.png $(USERDIR)/06_feature/distalign/result.png
-	$(SCCBOX) $(HOW) 06_feature/distalign/distribute_y_gaps.png $(USERDIR)/06_feature/distalign/distribute_y_gaps.png
-	$(SCCBOX) $(HOW) 06_feature/distalign/distribute_parts_x.png $(USERDIR)/06_feature/distalign/distribute_parts_x.png
-	$(SCCBOX) $(HOW) 06_feature/distalign/import_parts.png $(USERDIR)/06_feature/distalign/import_parts.png
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/djopt
-	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.png $(USERDIR)/06_feature/djopt/debumpify.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.out.pcb $(USERDIR)/06_feature/djopt/orthopull.out.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.out.png $(USERDIR)/06_feature/djopt/viatrim.out.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.out.png $(USERDIR)/06_feature/djopt/debumpify.out.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.out.pcb $(USERDIR)/06_feature/djopt/debumpify.out.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.out.pcb $(USERDIR)/06_feature/djopt/viatrim.out.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.out.pcb $(USERDIR)/06_feature/djopt/vianudge.out.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.out.pcb $(USERDIR)/06_feature/djopt/unjaggy.out.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.txt $(USERDIR)/06_feature/djopt/debumpify.txt
-	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.out.png $(USERDIR)/06_feature/djopt/vianudge.out.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.pcb $(USERDIR)/06_feature/djopt/unjaggy.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.pcb $(USERDIR)/06_feature/djopt/orthopull.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/index.html $(USERDIR)/06_feature/djopt/index.html
-	$(SCCBOX) $(HOW) 06_feature/djopt/miter.txt $(USERDIR)/06_feature/djopt/miter.txt
-	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.txt $(USERDIR)/06_feature/djopt/viatrim.txt
-	$(SCCBOX) $(HOW) 06_feature/djopt/Makefile $(USERDIR)/06_feature/djopt/Makefile
-	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.txt $(USERDIR)/06_feature/djopt/orthopull.txt
-	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.png $(USERDIR)/06_feature/djopt/unjaggy.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.out.png $(USERDIR)/06_feature/djopt/orthopull.out.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.pcb $(USERDIR)/06_feature/djopt/vianudge.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/miter.png $(USERDIR)/06_feature/djopt/miter.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/miter.out.pcb $(USERDIR)/06_feature/djopt/miter.out.pcb
-	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.txt $(USERDIR)/06_feature/djopt/vianudge.txt
-	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.out.png $(USERDIR)/06_feature/djopt/unjaggy.out.png
 	$(SCCBOX) $(HOW) 06_feature/djopt/Pre.html $(USERDIR)/06_feature/djopt/Pre.html
-	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.pcb $(USERDIR)/06_feature/djopt/debumpify.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.png $(USERDIR)/06_feature/djopt/vianudge.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.out.png $(USERDIR)/06_feature/djopt/viatrim.out.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.txt $(USERDIR)/06_feature/djopt/unjaggy.txt
+	$(SCCBOX) $(HOW) 06_feature/djopt/miter.out.png $(USERDIR)/06_feature/djopt/miter.out.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.out.png $(USERDIR)/06_feature/djopt/vianudge.out.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.txt $(USERDIR)/06_feature/djopt/viatrim.txt
+	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.pcb $(USERDIR)/06_feature/djopt/vianudge.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/miter.out.pcb $(USERDIR)/06_feature/djopt/miter.out.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.txt $(USERDIR)/06_feature/djopt/debumpify.txt
+	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.png $(USERDIR)/06_feature/djopt/orthopull.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/Makefile $(USERDIR)/06_feature/djopt/Makefile
+	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.out.pcb $(USERDIR)/06_feature/djopt/orthopull.out.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/miter.png $(USERDIR)/06_feature/djopt/miter.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.png $(USERDIR)/06_feature/djopt/debumpify.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.out.png $(USERDIR)/06_feature/djopt/orthopull.out.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.pcb $(USERDIR)/06_feature/djopt/unjaggy.pcb
 	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.pcb $(USERDIR)/06_feature/djopt/viatrim.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.pcb $(USERDIR)/06_feature/djopt/orthopull.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.pcb $(USERDIR)/06_feature/djopt/debumpify.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.out.png $(USERDIR)/06_feature/djopt/unjaggy.out.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.txt $(USERDIR)/06_feature/djopt/vianudge.txt
+	$(SCCBOX) $(HOW) 06_feature/djopt/index.html $(USERDIR)/06_feature/djopt/index.html
+	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.png $(USERDIR)/06_feature/djopt/unjaggy.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.out.pcb $(USERDIR)/06_feature/djopt/unjaggy.out.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.out.pcb $(USERDIR)/06_feature/djopt/vianudge.out.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.out.png $(USERDIR)/06_feature/djopt/debumpify.out.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.txt $(USERDIR)/06_feature/djopt/orthopull.txt
+	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.out.pcb $(USERDIR)/06_feature/djopt/viatrim.out.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/debumpify.out.pcb $(USERDIR)/06_feature/djopt/debumpify.out.pcb
+	$(SCCBOX) $(HOW) 06_feature/djopt/Post.html $(USERDIR)/06_feature/djopt/Post.html
 	$(SCCBOX) $(HOW) 06_feature/djopt/miter.pcb $(USERDIR)/06_feature/djopt/miter.pcb
 	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.png $(USERDIR)/06_feature/djopt/viatrim.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/unjaggy.txt $(USERDIR)/06_feature/djopt/unjaggy.txt
-	$(SCCBOX) $(HOW) 06_feature/djopt/Post.html $(USERDIR)/06_feature/djopt/Post.html
-	$(SCCBOX) $(HOW) 06_feature/djopt/vianudge.png $(USERDIR)/06_feature/djopt/vianudge.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/miter.out.png $(USERDIR)/06_feature/djopt/miter.out.png
-	$(SCCBOX) $(HOW) 06_feature/djopt/orthopull.png $(USERDIR)/06_feature/djopt/orthopull.png
+	$(SCCBOX) $(HOW) 06_feature/djopt/miter.txt $(USERDIR)/06_feature/djopt/miter.txt
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/distaligntext
+	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_2.png $(USERDIR)/06_feature/distaligntext/distaligntext_2.png
+	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_3.png $(USERDIR)/06_feature/distaligntext/distaligntext_3.png
+	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_1.png $(USERDIR)/06_feature/distaligntext/distaligntext_1.png
+	$(SCCBOX) $(HOW) 06_feature/distaligntext/index.html $(USERDIR)/06_feature/distaligntext/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/07_io/export_openscad
-	$(SCCBOX) $(HOW) 07_io/export_openscad/1206.scad $(USERDIR)/07_io/export_openscad/1206.scad
 	$(SCCBOX) $(HOW) 07_io/export_openscad/preliminary.txt $(USERDIR)/07_io/export_openscad/preliminary.txt
+	$(SCCBOX) $(HOW) 07_io/export_openscad/1206.scad $(USERDIR)/07_io/export_openscad/1206.scad
 	$(SCCBOX) mkdir -p $(USERDIR)/08_util
-	$(SCCBOX) $(HOW) 08_util/install_cgi.html $(USERDIR)/08_util/install_cgi.html
 	$(SCCBOX) $(HOW) 08_util/01_gsch2pcb-rnd.htm $(USERDIR)/08_util/01_gsch2pcb-rnd.htm
+	$(SCCBOX) $(HOW) 08_util/install_cgi.html $(USERDIR)/08_util/install_cgi.html
 	$(SCCBOX) mkdir -p $(USERDIR)/09_appendix
-	$(SCCBOX) $(HOW) 09_appendix/formats.html $(USERDIR)/09_appendix/formats.html
-	$(SCCBOX) $(HOW) 09_appendix/A $(USERDIR)/09_appendix/A
 	$(SCCBOX) $(HOW) 09_appendix/dialogtable.html $(USERDIR)/09_appendix/dialogtable.html
-	$(SCCBOX) $(HOW) 09_appendix/index.html $(USERDIR)/09_appendix/index.html
+	$(SCCBOX) $(HOW) 09_appendix/bridges.svg $(USERDIR)/09_appendix/bridges.svg
 	$(SCCBOX) $(HOW) 09_appendix/action_reference.html $(USERDIR)/09_appendix/action_reference.html
 	$(SCCBOX) $(HOW) 09_appendix/combined_glossary.html $(USERDIR)/09_appendix/combined_glossary.html
-	$(SCCBOX) $(HOW) 09_appendix/bridges.svg $(USERDIR)/09_appendix/bridges.svg
+	$(SCCBOX) $(HOW) 09_appendix/index.html $(USERDIR)/09_appendix/index.html
 	$(SCCBOX) $(HOW) 09_appendix/external_resources.html $(USERDIR)/09_appendix/external_resources.html
+	$(SCCBOX) $(HOW) 09_appendix/formats.html $(USERDIR)/09_appendix/formats.html
 	$(SCCBOX) $(HOW) index.html $(USERDIR)/index.html
 	$(SCCBOX) $(HOW) title.html $(USERDIR)/title.html
 	$(SCCBOX) $(HOW) default.css $(USERDIR)/default.css
