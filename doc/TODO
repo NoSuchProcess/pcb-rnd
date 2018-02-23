@@ -43,7 +43,8 @@
 	+> invalid: g4 and g5 are internal copper layers, have nothing to do with mask layers. Mask layer is not exported if it doesn't contain anything. The .gts file appears as soon as you add a mask opening to the padstack or  draw something on the mask layer.
 - BUG: hackvana gerber export with "copy silk outline", only exports to sides of the outline rectangle [report: erich]
 	-> please supply minimal (single padstack) test files
-- BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers [erich].
+? BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers [erich].
+	?> can not reproduce. Please try again and write down the exact steps (there must have been some other setting change or other operations between the two exports)
 - BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
