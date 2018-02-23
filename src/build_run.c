@@ -214,6 +214,25 @@ char *pcb_get_info_compile_options(void)
 	return info.array;
 }
 
+/** pcb_get_info_license:
+ *  Returns a string about how the program is licensed.
+ */
+char *pcb_get_info_license(void)
+{
+	static gds_t info;
+	static int first_time = 1;
+
+	if (first_time) {
+		first_time = 0;
+		gds_init(&info);
+
+		gds_append_str(&info, "pcb-rnd is licensed under the terms of the GNU\n");
+		gds_append_str(&info, "General Public License version 2\n");
+		gds_append_str(&info, "See the LICENSE file for more information\n\n");
+	}
+	return info.array;
+}
+
 /** pcb_get_infostr:
  *  Returns a string that has a bunch of information about this copy of pcb.
  *  Can be used for things like "about" dialog boxes.
@@ -233,9 +252,8 @@ char *pcb_get_infostr(void)
 		tmp = pcb_get_info_copyright();
 		gds_append_str(&info, tmp);
 		gds_append_str(&info, "\n\n");
-		gds_append_str(&info, "pcb-rnd is licensed under the terms of the GNU\n");
-		gds_append_str(&info, "General Public License version 2\n");
-		gds_append_str(&info, "See the LICENSE file for more information\n\n");
+		tmp = pcb_get_info_license();
+		gds_append_str(&info, tmp);
 		tmp = pcb_get_info_websites(NULL);
 		gds_append_str(&info, tmp);
 
