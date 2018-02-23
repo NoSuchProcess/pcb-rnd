@@ -47,6 +47,8 @@
 - BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd fil e causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 - BUG: 633.10 mil fixed negative x-offset for vias, seen on OSHW_binary_examples/80mAllTransistorSSBTX CVR.brd [erich]
 - BUG: copper annulus retained around hole features loaded in Eagle binary format. See lower left hole on tvbgone.brd http://tronixstuff.com/wp-content/uploads/2010/08/3s1.jpg vs tvbgone load [erich]
+- BUG: hackvana gerber export with "copy silk outline" of a layout lacking outline elements fails to export a .gm1 gerber file. See bug_files/outline-bug-erich.lht [report: erich]
+
 
 2. For later releases ===============================================================================
 SUBC: element removal:
