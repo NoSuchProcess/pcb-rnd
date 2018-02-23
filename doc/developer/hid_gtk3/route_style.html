@@ -28,11 +28,11 @@ linked to the <a href="#img-gtk2_gui">Route Style</a> GUI part, as presented to 
 <div >
 <h3 id="_what_is_a_route_style">1.1. What is a Route Style</h3>
 <div >
-<p>The <code><span ><span >Edit</span>&#160;&#9656; <span >Route Styles</span></span></code> menu allows you to select a style which is a group
+<p>The <code><span ><span >Edit</span> / <span >Route Styles</span></span></code> menu allows you to select a style which is a group
 of line thickness, via diameter, via drill size, and clearance (keepaway)
 (collectively called a <em>routing style</em>) to be copied to the <em>active</em> sizes.
 You can also change the names given to the routing styles and adjust their
-values from <code><span ><span >Edit</span>&#160;&#9656; <span >Route Styles</span>&#160;&#9656; <span >Edit</span></span></code> menu.</p>
+values from <code><span ><span >Edit</span> / <span >Route Styles</span> / <span >Edit</span></span></code> menu.</p>
 </div>
 <div >
 <p>The active sizes are also adjustable from this menu (How ?).
@@ -107,7 +107,7 @@ when you close the dialog.</p>
 </div>
 <div >
 <p>Igor2 thinks the idea was that the dialogs are modal and if the user says
-cancel, you just don&#8217;t do the copy-back. It&#8217;s a lot of extra code and complication.
+cancel, you just don't do the copy-back. It's a lot of extra code and complication.
 The strange &lt;new style&gt; mechanism might be a result of this: the dialog-cache
 is probably not smart enough to hold multiple new styles, but with
 the current mechanism you can add only one new style until you close the dialog.</p>
@@ -126,7 +126,7 @@ the pen with hotkeys, which means you can easily end up drawing with a pen
 that does not match any of the currently existing styles.</p>
 </div>
 <div >
-<p>Mainline has this too, it&#8217;s all inherited.</p>
+<p>Mainline has this too, it's all inherited.</p>
 </div>
 <div >
 <p>Using such a custom pen is useful when you want to draw a
@@ -134,9 +134,9 @@ single net of some special geometry - it is not worth adding a
 new style, but you may still want to set the temporary pen up properly.</p>
 </div>
 <div >
-<p>The problem was that when you used such a custom pen, you didn&#8217;t really
+<p>The problem was that when you used such a custom pen, you didn't really
 have a way to see your current setting and besides the <code>add +5 mils</code> kind of
-hotkeys, you couldn&#8217;t really set it up, e.g.
+hotkeys, you couldn't really set it up, e.g.
 "I want 80 mil wide traces temporarily"
 was hard to do. So I introduced the <code>&lt;current&gt;</code> style, which shows the current
 settings of the pen so it is not hidden anymore.</p>
@@ -165,7 +165,7 @@ lesstif hid and wants all new GUI hids to support it the same way.</p>
 <p><code>&lt;current&gt;</code> mode is indicated by not selecting any style (no radio button selected).
 As long as your pen matches any of the existing style, you are drawing with
 that style and the style is marked in the radio button.
-When you change your pen to something that doesn&#8217;t match any existing style,
+When you change your pen to something that doesn't match any existing style,
 the radio button turns off.</p>
 </div>
 <div >
@@ -178,11 +178,11 @@ Please do not change this.</p>
 <div >
 <ul>
 <li>
-<p>you can&#8217;t see or modify the numeric fields of the <code>&lt;custom&gt;</code> style
+<p>you can't see or modify the numeric fields of the <code>&lt;custom&gt;</code> style
 directly (only modification possible is via hotkeys)</p>
 </li>
 <li>
-<p>you can&#8217;t explicitly switch to the <code>&lt;custom&gt;</code> style (you need to make a
+<p>you can't explicitly switch to the <code>&lt;custom&gt;</code> style (you need to make a
 hotkey-modification of the pen)</p>
 </li>
 </ul>
@@ -190,7 +190,7 @@ hotkey-modification of the pen)</p>
 <div >
 <p>But the pen concept exists there too: press <span ><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></span>, it will change
 the via drill size of the pen. This will result in a pen not matching
-any existing style &#8594; radio button selection disappears.</p>
+any existing style - radio button selection disappears.</p>
 </div>
 </div>
 </div>
@@ -207,8 +207,8 @@ any existing style &#8594; radio button selection disappears.</p>
 <div >
 <h3 id="_user_manual">3.1. User manual</h3>
 <div >
-<p>Document this part&#8230;&#8203; Most of the info are above. Select and create a section
-&#8594; See FIXME.</p>
+<p>Document this part. Most of the info are above. Select and create a section.
+See FIXME.</p>
 </div>
 <div >
 <p>Especially, document <code>Attributes</code></p>
@@ -248,7 +248,7 @@ Where is <code>saved "as default"</code> ? Documentation here ?
 <div >
 <h3 id="_short_term_improvements">3.2. Short-term improvements ?</h3>
 <div >
-<p>This seems to be low priority w.r.t. cairo and GTK3&#8230;&#8203; Am I right ?</p>
+<p>This seems to be low priority w.r.t. cairo and GTK3... Am I right ?</p>
 </div>
 </div>
 </div>
@@ -267,10 +267,10 @@ and drop the styles to change order.</p>
 <p>Can be selected (highlighted) to show the active route style.</p>
 </div>
 <div >
-<p><code>GtkButtonBox</code> with usual buttons : Add, Delete, Raise, Down &#8230;&#8203;</p>
+<p><code>GtkButtonBox</code> with usual buttons : Add, Delete, Raise, Down</p>
 </div>
 <div >
-<p>Still another dialog is needed for other infos&#8230;&#8203;</p>
+<p>Still another dialog is needed for other infos</p>
 </div>
 </div>
 </div>

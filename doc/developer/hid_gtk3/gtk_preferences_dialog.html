@@ -43,7 +43,7 @@ different data types are created, but then, only displayed</p>
 <div >
 <p>GTK realizes all those widgets, which is taking a lot of Y space, while
 during real user interaction, only a few widgets are displayed, minimising the
-required Y space&#8230;&#8203; I tried to connect a <code>realize</code> signal to recalculate
+required Y space. I tried to connect a <code>realize</code> signal to recalculate
 the widget size, but does not seem to work :(</p>
 </div>
 </div>
@@ -55,7 +55,7 @@ the widget size, but does not seem to work :(</p>
 <div >
 <p>The whole preferences dialog was designed to be built up once, with all
 values copied from core to GTK then copied back from GTK to core on dialog close.
-This means if any value is updated on the fly, it&#8217;s not trivial to make sure the
+This means if any value is updated on the fly, it's not trivial to make sure the
 gtk mirror is updated.</p>
 </div>
 <div >
@@ -65,8 +65,8 @@ gtk mirror is updated.</p>
 <p>This is not nice, but the real fix would be very expensive. The config system
 is strong on this, it supports calling back functions on config value changes,
 so it would be easy to get the conf system to notify the gtk code when the
-change happens. But on the GTK side we don&#8217;t have any infra or code for this.
-And a partial solution wouldn&#8217;t help - if we wanted to do this, we&#8217;d need to
+change happens. But on the GTK side we don't have any infra or code for this.
+And a partial solution wouldn't help - if we wanted to do this, we'd need to
 do this for all values, including the tricky ones (prio lists even in the config pov section).
 Would take weeks or even months to get it right. Not sure it is worth the effort.</p>
 </div>

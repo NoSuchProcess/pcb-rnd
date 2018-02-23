@@ -168,7 +168,7 @@ GHidPort ghid_port, *gport;</code></pre>
 <div >
 <h3 id="_gdk2">GDK2</h3>
 <div >
-<p><code>pcb-rnd</code> v1.2.1 is using <code>gdk_draw&#8230;&#8203;</code> functions, on an already abstracted
+<p><code>pcb-rnd</code> v1.2.1 is using <code>gdk_draw</code> functions, on an already abstracted
 <code>pcb_hid_t</code> intance of <code>hid_gc_s</code> structure.</p>
 </div>
 <table >
@@ -254,7 +254,7 @@ But I guess, it is also the case with late GDK2 !</p>
 <h3 id="_very_modern_gdk3">Very modern GDK3</h3>
 <div >
 <p><code>GdkDrawingContext</code> is an object that represents the current drawing state of a <code>GdkWindow</code>.
-It&#8217;s possible to use a <code>GdkDrawingContext</code> to draw on a <code>GdkWindow</code> via
+It's possible to use a <code>GdkDrawingContext</code> to draw on a <code>GdkWindow</code> via
 rendering API like Cairo or OpenGL.</p>
 </div>
 <div >
@@ -274,12 +274,12 @@ rendering API like Cairo or OpenGL.</p>
 <ol  type="a">
 <li>
 <p>the old gtk2 HID, with pixmaps and all the existing obsolete code - for
-existing/old systems. We won&#8217;t remove or change this, there&#8217;s absolutely
-no reason to risk running on older systems. We probably won&#8217;t remove
+existing/old systems. We won't remove or change this, there's absolutely
+no reason to risk running on older systems. We probably won't remove
 it in any time soon, because some people love to run real OLD systems.</p>
 </li>
 <li>
-<p>whichever gtk HID with <strong>gl</strong> rendering; let&#8217;s say <em>gtk2+gl</em>, because gtk2 is
+<p>whichever gtk HID with <strong>gl</strong> rendering; let's say <em>gtk2+gl</em>, because gtk2 is
 what we have working today. This seems to be real appealing for many users.</p>
 </li>
 </ol>
@@ -291,7 +291,7 @@ what we have working today. This seems to be real appealing for many users.</p>
 <ol  type="a">
 <li>
 <p>the new, gtk3 HID, with Cairo for sw rendering, because as far as
-I understand there&#8217;s no other option for sw rendering in gtk3</p>
+I understand there's no other option for sw rendering in gtk3</p>
 </li>
 <li>
 <p>the new, gtk3 HID with <strong>gl</strong> rendering</p>
@@ -305,7 +305,7 @@ I understand there&#8217;s no other option for sw rendering in gtk3</p>
 <ol  type="a">
 <li>
 <p>a temporary, hidden, development <em>gtk2+cairo</em> implementation so
-that cairo can be done in something that&#8217;s already there before
+that cairo can be done in something that's already there before
 gtk3 happens. This must not interfere with the gdk/pixmap implementation.
 This must not remain for long in the repo, and must be converted into
 the <em>gtk3+cairo</em> hid ASAP.</p>
@@ -314,16 +314,16 @@ the <em>gtk3+cairo</em> hid ASAP.</p>
 </div>
 </li>
 <li>
-<p>What we shouldn&#8217;t have because it doesn&#8217;t make much sense but increases the
+<p>What we shouldn't have because it doesn't make much sense but increases the
 confusion and development/maintainance costs:</p>
 <div >
 <ol  type="a">
 <li>
 <p>a permanent, advertised gtk2+cairo HID. gtk2 works perfectly fine with
 existing installation and the existing code. Cairo can only add slowdown
-to this and introduces new build risks. Old systems don&#8217;t need cairo to work.
+to this and introduces new build risks. Old systems don't need cairo to work.
 New systems will have gtk3 sooner or layer anyway. Other than a few "obsolete"
-marks in the manual, there&#8217;s absolutely no issue with a <em>gtk2+pixmap</em>.</p>
+marks in the manual, there's absolutely no issue with a <em>gtk2+pixmap</em>.</p>
 </li>
 </ol>
 </div>
