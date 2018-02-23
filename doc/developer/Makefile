@@ -8,7 +8,7 @@ install_all:
 	$(SCCBOX) $(HOW) alien_formats/*.txt $(DEVDIR)/alien_formats/
 	$(SCCBOX) $(HOW) ddrc/*.txt $(DEVDIR)/ddrc/
 	$(SCCBOX) $(HOW) hid_gtk3/*.html hid_gtk3/*.png $(DEVDIR)/hid_gtk3/
-	$(SCCBOX) $(HOW) hid_remote/*.html hid_remote/*.png hid_remote/*.svg $(DEVDIR)/hid_remote/
+	$(SCCBOX) $(HOW) hid_remote/*.html hid_remote/*.svg $(DEVDIR)/hid_remote/
 	$(SCCBOX) $(HOW) mods3/*.html mods3/*.png $(DEVDIR)/mods3/
 
 install:
