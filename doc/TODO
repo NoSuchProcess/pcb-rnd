@@ -44,7 +44,6 @@
 - BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
-+ BUG: menu select->change drilling hole->+/- size   does not work for padstacks, but alt+s still does [report: erich] 
 - BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
 - BUG: reclip polygons after autocrop(); else poly clear poly breaks (use delayed clipping!) test case: pool/poly_dev_ex [report: Igor2]
 - pool: user tutorial index
