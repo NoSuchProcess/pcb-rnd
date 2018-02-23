@@ -39,8 +39,6 @@
 	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
 - BUG: padstack check box in gtk-hid does not hide the padstacks; this may be due to my failure to specify soldermask openings for the padstacks  [report: erich]
-+ BUG: hackvana gerber export exports .g5, .g7, rather than soldermask file-endings, .gts, .gbs, when there are no soldermask openings defined for padstacks in use. When padstackss have defined soldermask openings, the .gts and .gbs file are generated, but the .g5 and .g7 are still generated as well along with the .gts and .gbs files. Also, in another layout, .gbs and .bts looked more like drill files, and .g4 and .g5 seemed to be the top and bottom solder mask gerbers, see bug_files/hackvana-gerber-export.lht  [report: erich]
-	+> invalid: g4 and g5 are internal copper layers, have nothing to do with mask layers. Mask layer is not exported if it doesn't contain anything. The .gts file appears as soon as you add a mask opening to the padstack or  draw something on the mask layer.
 - BUG: hackvana gerber export with "copy silk outline", only exports to sides of the outline rectangle [report: erich]
 	-> please supply minimal (single padstack) test files
 ? BUG: gtk gerber export dialog - after exporting foo.g** gerbers, then changing name of file stem to bar.g** still exports foo.g** gerbers [erich].
