@@ -5,7 +5,6 @@
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
 + BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
-+ BUG: Replacing an existing board subc from the buffer using shift-click doesn't replace but just pasete, and doesn't pick-up the refdes from the existing subc. [report: Ade]
 - BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 + BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
 + BUG: non-ASCII in a text object crashes if selected and then ctrl-x, or if mouse-click-dragged, see text-cut-or-drag-crash-erich.lht, with non-ASCII text that was created on importing an eagle binary layout. ? perhaps it is more of an io_module sanitising of inputs issue.
