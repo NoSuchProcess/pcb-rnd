@@ -14,7 +14,7 @@ BEGIN {
 	path = $0
 	sub("/[^/]*$", "", path)
 	if (!(path in PATHS)) {
-		print "	$(SCCBOX) mkdir -p $(USERDIR)/" $0
+		print "	$(SCCBOX) mkdir -p $(USERDIR)/" path
 		PATHS[path]=1
 	}
 }
