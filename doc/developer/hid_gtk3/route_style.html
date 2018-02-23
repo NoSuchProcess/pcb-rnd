@@ -9,35 +9,6 @@
 <div class="details">
 <span id="author" class="author">Alain</span><br>
 </div>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_abstract">Abstract</a></li>
-<li><a href="#_introduction">1. Introduction</a>
-<ul class="sectlevel2">
-<li><a href="#_what_is_a_route_style">1.1. What is a Route Style</a></li>
-<li><a href="#_using_the_autorouter">1.2. Using the autorouter</a></li>
-</ul>
-</li>
-<li><a href="#_design_intentions">2. Design intentions</a>
-<ul class="sectlevel2">
-<li><a href="#__code_pcb_rnd_code_goals">2.1. <code>pcb-rnd</code> goals</a></li>
-<li><a href="#__code_pcb_rnd_code_implementation_prior_1_2_1">2.2. <code>pcb-rnd</code> implementation prior 1.2.1</a></li>
-<li><a href="#_pcb">2.3. PCB</a></li>
-<li><a href="#__code_pcb_rnd_code_next">2.4. <code>pcb-rnd</code> Next</a></li>
-</ul>
-</li>
-<li><a href="#_gtk2_situation">3. GTK2 situation</a>
-<ul class="sectlevel2">
-<li><a href="#_user_manual">3.1. User manual</a></li>
-<li><a href="#_short_term_improvements">3.2. Short-term improvements ?</a></li>
-</ul>
-</li>
-<li><a href="#_gtk3_design_proposal">4. GTK3 design proposal</a></li>
-<li><a href="#_gtk2_retro_fit">5. GTK2 retro-fit ?</a></li>
-</ul>
-</div>
-</div>
 <div id="content">
 <div class="sect1">
 <h2 id="_abstract">Abstract</h2>
@@ -230,30 +201,6 @@ any existing style &#8594; radio button selection disappears.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="__code_pcb_rnd_code_next">2.4. <code>pcb-rnd</code> Next</h3>
-<div class="paragraph">
-<p>Honestly, I don&#8217;t like it and want to change it (in all dialog boxes,even in gtk2):</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>I want the dialog boxes non-modal: you should be able to edit the layout while
-the route style dialog is open</p>
-</li>
-<li>
-<p>I want changes to happen immediately - so if you change the line
-width for a style and draw with it, it should have immediate effect</p>
-</li>
-<li>
-<p>I want to add undo code for the route style changes; I think the original
-idea behind. Combining non-modal dialog and immediate effect makes cancel
-meaningless, but if the user has the usual, central undo, that&#8217;s fine.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
 <div class="sect1">
 <h2 id="_gtk2_situation">3. GTK2 situation</h2>
 <div class="sectionbody">
