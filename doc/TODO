@@ -35,7 +35,6 @@
 	- Lesstif HID does not have this dialog => implement it, using DAD
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: GTK-GL: adding new mask layer by right clicking on existing mask layer, add after existing layer, select "subtraction" drawing checkbox, and set name of new layer in dialog to test. Once done, new layer is called "New Layer", not the provided name. Subtraction checkbox use directly affects manifestion of bug. [report: erich]
-- BUG: segf: Open an empty pcb, open Library window. Select ../pcblib > parametric > alf() . This will open a parametric dialog. Cancel it -> crash. [report: Alain] problem: pcb_rtree_search_any_nd()
 - BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
 - BUG: Rubberband Arcs:
 	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
