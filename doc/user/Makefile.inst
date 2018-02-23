@@ -42,8 +42,6 @@ install_all:
 	$(SCCBOX) $(HOW) 05_ui/02_cli/index.html $(USERDIR)/05_ui/02_cli/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/autocrop
 	$(SCCBOX) $(HOW) 06_feature/autocrop/index.html $(USERDIR)/06_feature/autocrop/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/vd1
-	$(SCCBOX) $(HOW) 06_feature/vd1/index.html $(USERDIR)/06_feature/vd1/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature
 	$(SCCBOX) $(HOW) 06_feature/index.html $(USERDIR)/06_feature/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/gpmi/packages
