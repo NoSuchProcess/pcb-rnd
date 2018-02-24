@@ -8,7 +8,7 @@ $fmt-feature-w gEDA/PCB .pcb board (various version up to 2017 )
 $fmt-feature-r gEDA/PCB .fp footprints
 $fmt-feature-w gEDA/PCB .fp footprints
 $fmt-feature-r gEDA/PCB font
-$package io
+$package io-standard
 dep lib_compat_help
 default buildin
 autoload 1
