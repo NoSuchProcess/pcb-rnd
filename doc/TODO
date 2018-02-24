@@ -5,47 +5,40 @@
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
 + BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
-- BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 + BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
 + BUG: non-ASCII in a text object crashes if selected and then ctrl-x, or if mouse-click-dragged, see text-cut-or-drag-crash-erich.lht, with non-ASCII text that was created on importing an eagle binary layout. ? perhaps it is more of an io_module sanitising of inputs issue.
 	+> it's okay if the io plugin keeps non-ASCII as long as it's really what the user had in the text and not just memory garbage - but in the latter case we need to fix the bug, not work it around by some sanitizer
 + BUG: bug_files/delete-undo-crash-erich.lht mouse over via element, hit delete key until deleted, undo, hover over diode element, hit delete/undo, await crash. Backtrace added for crash, now involving pcb_pstk_proto_insert_try / obj_pstk_proto.c:514
++ BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
++ BUG: can't rotate polygon [report: sam]
+- BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 - BUG: double free/crash. Reproduce: start pcb-rnd, with cursor over layout, CTRL-x, convert buffer to subc, place subc, move subc text out of the way with mouse, use 'n' to rename subc refdes to 'test', select subc, copy, place copy on layout. select subc copy, delete it, open new layout, agree to lose layout data, crash ensues. [erich]. 
 - BUG: dyntext refdes text with no refdes attribute results in an invisible object that can be deleted (confusing) [report: Igor2]
-+ BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade]
-- BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
-- BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - doc: explain the library path in 03_data [report: karl]
-+ BUG: can't rotate polygon [report: sam]
 - BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
-- BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
 - BUG: DRC preview windows don't show all padstacks after a shift-tab flip - bug_files/drc1.lht
-- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
-	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
-	- Lesstif HID does not have this dialog => implement it, using DAD
-	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
-- BUG: Rubberband Arcs:
-	- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: padstack check box in gtk-hid does not hide the padstacks; this may be due to my failure to specify soldermask openings for the padstacks  [report: erich]
 - BUG: hpgl import fails on protel autotrax generated demo.pcb single pen hpgl plot output due to non ascii chars in preamble and also pen speed instruction, see bug_files/import_hpgl/demoplot.ptl [report: erich]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-- BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
 - BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
 - BUG: reclip polygons after autocrop(); else poly clear poly breaks (use delayed clipping!) test case: pool/poly_dev_ex [report: Igor2]
 - BUG: thermal tool use on co-incident padstacks with the same net causes segfault. Reproduce: load bug_files/thermal-o-crash-erich.lht, select thermal tool, look at upper LED pads, apply thermal to LED1 u pper pin, hit 'o', apply thermal to LED2 upper pin, hit 'o', apply themal to LED1 upper pad, hit 'o', a pply thermal to LED2 upper pad, hit 'o', and crash should ensue [report: erich]
 - BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd fil e causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 - BUG: 633.10 mil fixed negative x-offset for vias, seen on OSHW_binary_examples/80mAllTransistorSSBTX CVR.brd, seems to relate to 'pcb_board_normalize(pcb);' not shifting the via/padstack objects on the board [erich]
-- BUG: copper annulus retained around hole features loaded in Eagle binary format. See lower left hole on tvbgone.brd http://tronixstuff.com/wp-content/uploads/2010/08/3s1.jpg vs tvbgone load [erich]
 - BUG: hackvana gerber export with "copy silk outline" of a layout lacking outline elements fails to export a .gm1 gerber file. See bug_files/outline-bug-erich.lht [report: erich]
+Low prio:
+- BUG: copper annulus retained around hole features loaded in Eagle binary format. See lower left hole on tvbgone.brd http://tronixstuff.com/wp-content/uploads/2010/08/3s1.jpg vs tvbgone load [erich]
+- BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
+- BUG: subc terminals should be drawn at the end [report: Ade]
+- BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
+- BUG: lesstif: invalidate_all() on config change colors [report: karl]
 
 
 2. For later releases ===============================================================================
@@ -67,6 +60,13 @@ SUBC: element removal:
 	- warn for saving attribute intnoconn in v4
 - find.c rewrite:
 	- a new "report(NetLength)" should not care about netlists but depend on find.c only
+	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
+- BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
+	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
+	- Lesstif HID does not have this dialog => implement it, using DAD
+	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
+- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
+	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
