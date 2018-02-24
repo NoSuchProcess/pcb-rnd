@@ -387,6 +387,7 @@ struct rinfo {
 	pcb_layergrp_id_t group;
 	pcb_pin_t *pin;
 	pcb_pad_t *pad;
+	pcb_pstk_t *pstk;
 	pcb_point_t *point;
 	rubber_ctx_t *rbnd;
 	int delta_index;
@@ -421,6 +422,12 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 		else
 			if (rat->Point2.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
 					rat->Point2.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group2 == i->group)
+			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
+		break;
+	case PCB_TYPE_PSTK:
+		if (rat->Point1.X == i->pstk->x && rat->Point1.Y == i->pstk->y)
+			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
+		else if (rat->Point2.X == i->pstk->x && rat->Point2.Y == i->pstk->y)
 			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
 		break;
 	case PCB_TYPE_LINE_POINT:
@@ -462,6 +469,17 @@ static void CheckPinForRat(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
 	info.rbnd = rbnd;
 	info.delta_index = 0;
 	pcb_r_search(PCB->Data->rat_tree, &Pin->BoundingBox, NULL, rat_callback, &info, NULL);
+}
+
+static void CheckPadstackForRat(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
+{
+	struct rinfo info;
+
+	info.type = PCB_TYPE_PSTK;
+	info.pstk = pstk;
+	info.rbnd = rbnd;
+	info.delta_index = 0;
+	pcb_r_search(PCB->Data->rat_tree, &pstk->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_point_t *Point)
@@ -1080,6 +1098,18 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 			PCB_PAD_LOOP(element);
 			{
 				CheckPadForRat(rbnd, pad);
+			}
+			PCB_END_LOOP;
+			break;
+		}
+
+	case PCB_TYPE_SUBC:
+		{
+			pcb_subc_t *subc = (pcb_subc_t *) Ptr1;
+
+			PCB_PADSTACK_LOOP(subc->data);
+			{
+				CheckPadstackForRat(rbnd, padstack);
 			}
 			PCB_END_LOOP;
 			break;

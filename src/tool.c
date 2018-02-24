@@ -247,6 +247,7 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (do_rubberband &&
 			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
+			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_SUBC ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE || pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
