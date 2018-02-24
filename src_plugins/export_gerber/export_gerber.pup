@@ -4,5 +4,6 @@ $long Export to gerber
 $state works
 $fmt-native no
 $fmt-feature-w export gerber for PCB fabbing, multiple files (configurable)
+$package export
 default buildin
 autoload 1

@@ -6,5 +6,6 @@ $fmt-native no
 $fmt-feature-w render the on-screen version or emulated photo mode version in .png
 $fmt-feature-w render the on-screen version or emulated photo mode version in .gif
 $fmt-feature-w render the on-screen version or emulated photo mode version in .jpeg
+$package export
 default buildin
 autoload 1

@@ -2,5 +2,6 @@ $class feature
 $short report actions
 $long Report() and ReportObject() actions - print a report about design objects.
 $state works
+$package (core)
 default buildin
 autoload 1

@@ -5,7 +5,7 @@ $state works
 $fmt-native no
 $fmt-feature-w kicad pcbnew-board, version 1 (legacy plain text format)
 $fmt-feature-w kicad pcbnew-module (legacy plain text format)
-
+$package io-alien
 default buildin
 dep io_kicad
 autoload 1

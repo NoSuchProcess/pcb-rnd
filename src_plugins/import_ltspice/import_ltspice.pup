@@ -4,5 +4,6 @@ $long Import the netlist and footprints from an ltspice .asc and .net pair of fi
 $state works
 $fmt-native no
 $fmt-feature-r import netlist and footprint names from ltspice .net and .asc file pairs
+$package import-net
 default buildin
 autoload 1

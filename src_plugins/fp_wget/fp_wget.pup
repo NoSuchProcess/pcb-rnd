@@ -2,6 +2,7 @@ $class fp
 $short web footprints
 $long Footprint: get static (file) footprints from the web, e.g. from http://gedasymbols.org
 $state works
+$package cloud
 default buildin
 dep fp_fs
 autoload 1

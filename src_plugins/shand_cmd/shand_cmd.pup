@@ -2,5 +2,6 @@ $class feature
 $short command shorthands
 $long vi-like command shorthands (1..3 character long commands)
 $state works
+$package extra
 default buildin
 autoload 1

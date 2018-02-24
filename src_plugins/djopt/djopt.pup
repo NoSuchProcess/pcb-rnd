@@ -1,6 +1,7 @@
 $class feature
 $short djopt board optimization
 $long Various board optimization algorithms.
+$package extra
 $state works
 default buildin
 autoload 1

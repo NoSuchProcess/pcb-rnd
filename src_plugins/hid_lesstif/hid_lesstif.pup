@@ -2,6 +2,7 @@ $class hid
 $short the lesstif gui
 $long GUI: the lesstif HID.
 $state works
+$package hid-lesstif
 default buildin
 dep draw_csect
 dep draw_fontsel

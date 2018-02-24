@@ -4,6 +4,7 @@ $long Export to lpr (using export_ps to generate postscript)
 $state works
 $fmt-native no
 $fmt-feature-w use export_ps and lpr to print a board directly
+$package export-extra
 default buildin
 dep export_ps
 autoload 1

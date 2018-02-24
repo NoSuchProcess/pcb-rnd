@@ -4,5 +4,6 @@ $long Export various board statistics in lihata format
 $state works
 $fmt-native no
 $fmt-feature-w export a lihata file with anonimized statistics of the board
+$package export
 default buildin
 autoload 1

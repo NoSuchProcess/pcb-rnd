@@ -4,5 +4,6 @@ $long Export to nelma (Numerical capacitance calculator)
 $state works
 $fmt-native no
 $fmt-feature-w export a board in the nelma format for Numerical capacitance calculation
+$package export-sim
 default buildin
 autoload 1

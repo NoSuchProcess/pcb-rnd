@@ -4,6 +4,7 @@ $long Import Mentor Graphics Design Capture from flattened .edf netlist, using a
 $state works
 $fmt-native no
 $fmt-feature-r import netlist and footprint names from a flat .edf produced by Mentor Graphics Design Capture
+$package import-net
 default buildin
 dep lib_gensexpr
 autoload 1

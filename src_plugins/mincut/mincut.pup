@@ -2,5 +2,6 @@ $class feature
 $short minimal cut shorts
 $long Use the minimal cut algorithm to indicate shorts: instead of highlighting two random pins/pads, try to highlight the least number of objects that connect the two networks.
 $state works
+$package (core)
 default buildin
 autoload 1

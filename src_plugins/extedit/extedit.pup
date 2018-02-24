@@ -2,6 +2,7 @@ $class feature
 $short edit with external program
 $long invoke external program to edit parts of the current board
 $state works
+$package (core)
 dep io_lihata
 default buildin
 autoload 1

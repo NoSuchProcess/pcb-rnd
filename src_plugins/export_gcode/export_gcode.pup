@@ -4,5 +4,6 @@ $long Export to gcode
 $state works
 $fmt-native no
 $fmt-feature-w export gcode (for milling)
+$package export
 default buildin
 autoload 1

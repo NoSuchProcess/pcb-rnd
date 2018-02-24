@@ -1,6 +1,7 @@
 $class feature
 $short fab layer in some exports
 $long Draw the fab layer (for various exporters).
+$package (core)
 $state works
 default buildin
 

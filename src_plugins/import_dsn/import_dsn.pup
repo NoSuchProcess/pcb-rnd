@@ -4,5 +4,6 @@ $long Import specctra .dsn files
 $state works
 $fmt-native no
 $fmt-feature-r import wires and vias from specctra .dsn
+$package auto
 default buildin
 autoload 1

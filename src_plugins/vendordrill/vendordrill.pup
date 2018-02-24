@@ -2,5 +2,6 @@ $class feature
 $short vendor drill mapping
 $long Vendor drill mapping.
 $state works
+$package extra
 default buildin
 autoload 1

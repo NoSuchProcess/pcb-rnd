@@ -4,5 +4,6 @@ $long Export specctra .dsn files
 $state works
 $fmt-native no
 $fmt-feature-w export specctra .dsn files with padstacks and elements (usable for freerouting)
+$package auto
 default buildin
 autoload 1

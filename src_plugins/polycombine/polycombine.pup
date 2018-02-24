@@ -2,5 +2,6 @@ $class feature
 $short combine selected polygons
 $long The selected polygons are combined together according to the ordering of their points.
 $state works
+$package extra
 default buildin
 autoload 1

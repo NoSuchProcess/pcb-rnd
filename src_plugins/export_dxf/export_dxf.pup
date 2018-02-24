@@ -4,5 +4,6 @@ $long Export dxf
 $state works
 $fmt-native no
 $fmt-feature-w export to 2D .dxf (for mech CADs)
+$package export
 default buildin
 autoload 1

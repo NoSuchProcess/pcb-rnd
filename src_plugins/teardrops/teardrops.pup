@@ -2,5 +2,6 @@ $class feature
 $short draw teardrops on pins
 $long Draw teardrops on pins.
 $state works
+$package extra
 default buildin
 autoload 1

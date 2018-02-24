@@ -2,5 +2,6 @@ $class feature
 $short the original rubberband
 $long The original rubberband code.
 $state works
+$package (core)
 default buildin
 autoload 1

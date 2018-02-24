@@ -4,5 +4,6 @@ $long IPC-D-356 Netlist export.
 $state requires-full-rewrite
 $fmt-native no
 $fmt-feature-w export IPC-D-356 Netlist (for automated testing)
+$package export-extra
 default disable-all
 autoload 1

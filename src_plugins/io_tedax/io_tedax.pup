@@ -6,6 +6,7 @@ $fmt-native no
 $fmt-feature-r tEDAx netlist (any version)
 $fmt-feature-r tEDAx footprint (any version)
 $fmt-feature-w tEDAx footprint (any version)
+$package io
 dep lib_compat_help
 default buildin
 autoload 1

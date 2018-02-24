@@ -4,5 +4,6 @@ $long Import lines and vias from MUCS unixplot .pl files
 $state works
 $fmt-native no
 $fmt-feature-r import lines and vias from MUCS unixplot .pl files
+$package auto
 default buildin
 autoload 1

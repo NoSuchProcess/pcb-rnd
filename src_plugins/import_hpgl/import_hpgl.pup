@@ -4,5 +4,6 @@ $long Emulate a plotter and import the plot as lines, arcs and polygons.
 $state works
 $fmt-native no
 $fmt-feature-r import lines, arcs and polygons from HPGL plot files
+$package import-geo
 default buildin
 autoload 1

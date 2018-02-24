@@ -2,5 +2,6 @@ $class feature
 $short push lines out of the way
 $long Pushes lines out of the way.
 $state works
+$package extra
 default buildin
 autoload 1
