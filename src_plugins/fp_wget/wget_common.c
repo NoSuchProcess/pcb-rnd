@@ -68,8 +68,11 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		}
 
 		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
+			int res;
 			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-			if (pcb_system(cmd) != 0) {
+			res = pcb_system(cmd);
+/*			pcb_trace("------res=%d\n", res); */
+			if ((res != 0) && (res != 768)) { /* some versions of wget will return error on -c if the file doesn't need update; try to guess whether it's really an error */
 				/* when wget fails, a 0-long file might be left there - remove it so it won't block new downloads */
 				sprintf(cmd, "%s/%s", cache_path, cdir);
 				pcb_remove(cmd);
