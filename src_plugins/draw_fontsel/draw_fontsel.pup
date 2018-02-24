@@ -1,6 +1,6 @@
 $class feature
 $short font selection GUI
 $long Draw the font selector GUI
-$package (core)
+$package lib-gui
 $state WIP
 default disable
