@@ -681,9 +681,24 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 #endif
 
 
-	if (!all_layers)
-		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && !(flags & PCB_LYT_SILK))
-			return 0;
+	if (!all_layers) {
+		int stay = 0;
+		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && !(flags & PCB_LYT_SILK)) {
+			/* layer is empty and the user didn't want to have empty layers; however;
+			   if the user wants to copy the outline to specific layers, those
+			   layers will become non-empty: even an empty outline would bring
+			   the implicit outline rectangle at board extents! */
+
+			if (copy_outline_mode == COPY_OUTLINE_MASK && (flags & PCB_LYT_MASK)) stay = 1;
+			if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK)) stay = 1;
+			if (copy_outline_mode == COPY_OUTLINE_ALL && \
+				((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) ||
+				(flags & PCB_LYT_FAB) || (flags & PCB_LYT_ASSY) || 
+				(flags & PCB_LYT_OUTLINE))) stay = 1;
+
+			if (!stay) return 0;
+		}
+	}
 
 	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY)) {
 /*		printf("  nope: invis %d or assy %d\n", (flags & PCB_LYT_INVIS), (flags & PCB_LYT_ASSY));*/
