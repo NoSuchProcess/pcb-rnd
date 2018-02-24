@@ -1,6 +1,13 @@
 #!/bin/sh
 proot=../../../src_plugins
 
+(echo '
+<html>
+<body>
+<table border=1>
+<tr><th> package <th> depends on (packages) <th> consists of (plugins)
+'
+
 for n in $proot/*/*.pup
 do
 	pkg=`basename $n`
@@ -40,7 +47,16 @@ done | awk '
 
 		
 		for(pkg in PKG) {
-			print pkg "     depends_on    " PKG_DEP[pkg]
+			print pkg "|" PKG_DEP[pkg] "|" PKG[pkg]
 		}
 	}
+' | sort | awk -F "[|]" '
+	{ print "<tr><th>" $1 "<td>" $2 "<td>" $3 }
 '
+
+echo '
+</table>
+</body>
+</html>
+') > packages.html
+
