@@ -146,6 +146,10 @@ void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 			*x = ((const pcb_pin_t *)(obj))->X;
 			*y = ((const pcb_pin_t *)(obj))->Y;
 			break;
+		case PCB_OBJ_PSTK:
+			*x = ((const pcb_pstk_t *)(obj))->x;
+			*y = ((const pcb_pstk_t *)(obj))->y;
+			break;
 		case PCB_OBJ_ARC:
 			pcb_arc_middle((const pcb_arc_t *)obj, x, y);
 			break;
