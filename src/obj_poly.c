@@ -1069,8 +1069,12 @@ static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = conf_core.appearance.color.warn;
-	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
-		color = layer->meta.real.selected_color;
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
+		if (layer->is_bound)
+			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
+		else
+			color = layer->meta.real.selected_color;
+	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
 		color = conf_core.appearance.color.connected;
 	else if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
@@ -1082,7 +1086,7 @@ static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box
 		color = (polygon->override_color);
 	}
 	else if (layer->is_bound)
-		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
+		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
 		color = layer->meta.real.color;
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);

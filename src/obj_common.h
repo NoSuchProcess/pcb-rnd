@@ -174,15 +174,19 @@ const char *pcb_obj_id_invalid(const char *id);
 
 /* set const char *dst to a color, depending on the bound layer type:
    top silk and copper get the color of the first crresponding layer
-   from current PCB, the rest get the far-side color */
-#define PCB_OBJ_COLOR_ON_BOUND_LAYER(dst, layer) \
+   from current PCB, the rest get the far-side color;
+   set the selected color if sel is true */
+#define PCB_OBJ_COLOR_ON_BOUND_LAYER(dst, layer, sel) \
 do { \
 	if (layer->meta.bound.type & PCB_LYT_TOP) { \
 		pcb_layer_id_t lid = -1; \
 		pcb_layergrp_t *g; \
 		pcb_layergrp_id_t grp = -1; \
 		if (layer->meta.bound.type & PCB_LYT_SILK) { \
-			dst = conf_core.appearance.color.element; \
+			if (sel) \
+				dst = conf_core.appearance.color.element_selected; \
+			else \
+				dst = conf_core.appearance.color.element; \
 			break; \
 		} \
 		else if (layer->meta.bound.type & PCB_LYT_COPPER) \
@@ -191,11 +195,17 @@ do { \
 		if ((g != NULL) && (g->len > 0)) \
 			lid = g->lid[0]; \
 		if ((lid >= 0) && (lid <= PCB_MAX_LAYER)) { \
-			dst = conf_core.appearance.color.layer[lid]; \
+			if (sel) \
+				dst = conf_core.appearance.color.layer_selected[lid]; \
+			else \
+				dst = conf_core.appearance.color.layer[lid]; \
 			break; \
 		} \
 	} \
-	dst = conf_core.appearance.color.invisible_objects; \
+	if (sel) \
+		dst = conf_core.appearance.color.element_selected; \
+	else \
+		dst = conf_core.appearance.color.invisible_objects; \
 } while(0)
 
 /* check if an object has clearance to polygon */

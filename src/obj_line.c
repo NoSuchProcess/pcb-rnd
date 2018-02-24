@@ -1033,8 +1033,12 @@ static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_g
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
 		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
-			color = layer->meta.real.selected_color;
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
+			if (layer->is_bound)
+				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
+			else
+				color = layer->meta.real.selected_color;
+		}
 		else
 			color = conf_core.appearance.color.connected;
 	}
@@ -1042,7 +1046,7 @@ static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_g
 		color = (line->override_color);
 	}
 	else if (layer->is_bound)
-		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
+		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
 		color = layer->meta.real.color;
 

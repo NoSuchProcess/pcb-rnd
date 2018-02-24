@@ -890,8 +890,12 @@ static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gf
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
 		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
-			color = layer->meta.real.selected_color;
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
+			if (layer->is_bound)
+				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
+			else
+				color = layer->meta.real.selected_color;
+		}
 		else
 			color = conf_core.appearance.color.connected;
 	}
@@ -899,7 +903,7 @@ static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gf
 		color = (arc->override_color);
 	}
 	else if (layer->is_bound)
-		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
+		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
 		color = layer->meta.real.color;
 

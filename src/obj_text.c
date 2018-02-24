@@ -934,14 +934,21 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 	int min_silk_line;
 	unsigned int flg = 0;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
-		pcb_gui->set_color(pcb_draw_out.fgGC, layer->meta.real.selected_color);
+	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
+		if (layer->is_bound) {
+			const char *color;
+			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
+			pcb_gui->set_color(pcb_draw_out.fgGC, color);
+		}
+		else
+			pcb_gui->set_color(pcb_draw_out.fgGC, layer->meta.real.selected_color);
+	}
 	else if (PCB_HAS_COLOROVERRIDE(text)) {
 		pcb_gui->set_color(pcb_draw_out.fgGC, text->override_color);
 	}
 	else if (layer->is_bound) {
 		const char *color;
-		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
+		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 		pcb_gui->set_color(pcb_draw_out.fgGC, color);
 	}
 	else
