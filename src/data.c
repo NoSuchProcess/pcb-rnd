@@ -749,6 +749,10 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 	if (data->clip_inhibit != 0)
 		return;
 
+	PCB_SUBC_LOOP(data); {
+		pcb_data_clip_dirty(subc->data, enable_progbar);
+	} PCB_END_LOOP;
+
 	PCB_POLY_ALL_LOOP(data); {
 		if (polygon->clip_dirty)
 			sum++;
