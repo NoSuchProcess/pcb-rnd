@@ -34,7 +34,8 @@ typedef enum state_e {
 	ST_INST,
 	ST_INST_END,
 	ST_NUMBERS_OR_END,
-	ST_NUMBERS
+	ST_NUMBERS,
+	ST_ESCAPED
 } state_t;
 
 typedef struct {
@@ -390,6 +391,10 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 
 	switch(p->state) {
 		case ST_IDLE:
+			if (c == 0x1B) { /* starting at ESC, spans till the first ':' - ignore it */
+				p->state = ST_ESCAPED;
+				return 0;
+			}
 			if (c == ';') /* be liberal: accept multiple terminators or empty instructions */
 				return 0;
 			p->state = ST_INST;
@@ -439,6 +444,10 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 				return 0;
 			}
 			return error(ctx, "Expected digit or separator in number");
+		case ST_ESCAPED:
+			if (c == ':')
+				p->state = ST_IDLE;
+			return 0;
 	}
 	return error(ctx, "Internal error: broken state machine");
 }
