@@ -34,6 +34,7 @@ typedef enum state_e {
 	ST_INST,
 	ST_INST_END,
 	ST_NUMBERS_OR_END,
+	ST_SPC_NUMBERS_OR_END,
 	ST_NUMBERS,
 	ST_ESCAPED
 } state_t;
@@ -260,6 +261,9 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 			/* prepare to read coords */
 			p->state = ST_NUMBERS;
 			return 0;
+		case inst2num('V','S'):
+			p->state = ST_SPC_NUMBERS_OR_END;
+			return 0;
 	}
 	return error(ctx, "unimplemented instruction");
 }
@@ -356,6 +360,13 @@ static int parse_coord(uhpgl_ctx_t *ctx, double coord, int is_last)
 				return 0;
 			}
 			return error(ctx, "PT needs 1 argument");
+		case inst2num('V','S'):
+			if ((p->argc == 1) && (is_last)) {
+				ctx->state.pen_speed = p->argv[0];
+				p->state = ST_INST_END;
+				return 0;
+			}
+			return error(ctx, "VS needs 1 argument");
 	}
 	return error(ctx, "unimplemented coord instruction");
 }
@@ -417,6 +428,11 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 				return error(ctx, "Expected semicolon to terminate instruction");
 			p->state = ST_IDLE;
 			return 0;
+		case ST_SPC_NUMBERS_OR_END:
+			if (c == ' ')
+				return 0;
+			p->state = ST_NUMBERS;
+			/* fall thru: number */
 		case ST_NUMBERS_OR_END:
 			if (c == ';')
 				goto got_end;
