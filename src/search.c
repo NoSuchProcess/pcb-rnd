@@ -1210,19 +1210,38 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 	if (!angle_in_range(ang1, ang2, p_ang) && !angle_in_range(ang1, ang2, p_ang+360)) {
 		pcb_coord_t ArcX, ArcY;
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
-		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
+		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
-		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
+		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
 		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 		return pcb_false;
 	}
 
-	/* If point is inside the arc range, just compare it to the arc */
-	return fabs(pcb_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
+	if ((Arc->Width == Arc->Height) || (fabs(Arc->Width - Arc->Height) < PCB_MM_TO_COORD(0.1))) {
+		/* Simple circular case: if point is inside the arc range, just compare it to the arc */
+		return fabs(pcb_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
+	}
+	else {
+		/* elliptical case: guess where the arc would be in that point, by angle */
+		double ang, dx, dy;
+		pcb_coord_t ax, ay, d;
+
+#warning TODO: elliptical arc: rewrite this as it doesn't work properly on extreme cases
+		dy = (double)(Y - Arc->Y) / (double)Arc->Height;
+		dx = (double)(X - Arc->X) / (double)Arc->Width;
+		ang = -atan2(dy, dx);
+
+		ax = Arc->X + cos(ang) * Arc->Width;
+		ay = Arc->Y - sin(ang) * Arc->Height;
+
+		d = fabs(pcb_distance(X, Y, ax, ay));
+
+		return d < Arc->Thickness / 2;
+	}
 #undef angle_in_range
 }
 
