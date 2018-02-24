@@ -10,6 +10,7 @@
 + BUG: can't rotate polygon [report: sam]
 - BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
 - BUG: dyntext refdes text with no refdes attribute results in an invisible object that can be deleted (confusing) [report: Igor2]
+- BUG: autorouter assert: bug_files/autorouter.lht [report: barjac]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - doc: explain the library path in 03_data [report: karl]
 - BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
