@@ -11,7 +11,6 @@
 + BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
 + BUG: can't rotate polygon [report: sam]
 - BUG: arbitrary rotate padstacks within subc on the backside; reproduce: place a 1206 on top side, arbitrary rotate 22 deg, press 'b' to send to back side: pads are rotated in the opposite dir [report: igor2]
-+ BUG: double free/crash. Reproduce: bug_files/rename_new_board.lht ; rename the subc, start new board -> crash [erich].
 - BUG: dyntext refdes text with no refdes attribute results in an invisible object that can be deleted (confusing) [report: Igor2]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - doc: explain the library path in 03_data [report: karl]
