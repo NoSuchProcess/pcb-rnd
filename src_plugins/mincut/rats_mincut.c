@@ -152,7 +152,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 		char *s;
 		const char *typ;
 		pcb_subc_t *parent;
-		pcb_any_obj_t *o = (pcb_any_obj_t *)n;
+		pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
 
 		n->gid = gids;
 		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, (void *)n->to, n->type, n->from_id);
