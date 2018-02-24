@@ -265,6 +265,10 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 		}
 	}
 
+	/* remove selected/found flag when loading reusable footprints */
+	if (res == 0)
+		pcb_data_flag_change(Ptr, PCB_OBJ_CLASS_REAL, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND | PCB_FLAG_SELECTED);
+
 	plug_io_err(res, "load footprint", Filename);
 	return res;
 }
