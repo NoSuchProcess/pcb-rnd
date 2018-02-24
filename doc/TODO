@@ -15,7 +15,6 @@
 - BUG: double free/crash. Reproduce: start pcb-rnd, with cursor over layout, CTRL-x, convert buffer to subc, place subc, move subc text out of the way with mouse, use 'n' to rename subc refdes to 'test', select subc, copy, place copy on layout. select subc copy, delete it, open new layout, agree to lose layout data, crash ensues. [erich]. 
 - BUG: dyntext refdes text with no refdes attribute results in an invisible object that can be deleted (confusing) [report: Igor2]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
-- BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade]
 - doc: explain the library path in 03_data [report: karl]
 - BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
@@ -39,6 +38,7 @@ Low prio:
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
+- BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 
 
 2. For later releases ===============================================================================
