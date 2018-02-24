@@ -202,5 +202,7 @@ void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar);
    pcb_data_clip_inhibit_dec(). */
 void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar);
 
+/* Recursively change flags of data; how is one of pcb_change_flag_t */
+void pcb_data_flag_change(pcb_data_t *data, pcb_obj_type_t mask, int how, unsigned long flags);
 
 #endif

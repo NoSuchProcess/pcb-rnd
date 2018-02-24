@@ -33,6 +33,7 @@
 #include "board.h"
 #include "data.h"
 #include "data_list.h"
+#include "data_it.h"
 #include "rtree.h"
 #include "list_common.h"
 #include "obj_all.h"
@@ -772,4 +773,16 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 /*		if ((n % 10) == 0) */
 		n++;
 	} PCB_ENDALL_LOOP;
+}
+
+void pcb_data_flag_change(pcb_data_t *data, pcb_obj_type_t mask, int how, unsigned long flags)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+
+	for(o = pcb_data_first(&it, data, mask); o != NULL; o = pcb_data_next(&it)) {
+		PCB_FLAG_CHANGE(how, flags, o);
+		if (o->type == PCB_OBJ_SUBC)
+			pcb_data_flag_change(((pcb_subc_t *)o)->data, mask, how, flags);
+	}
 }
