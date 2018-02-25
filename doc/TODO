@@ -46,6 +46,7 @@ SUBC: element removal:
 	- after removing pads, remove fillrect from hid - only pads used that; revise the rest of the drawing calls
 	- BUG: require unique refdes: remove feauture
 - lihata v5:
+	- throw out meta/cursor and friends
 	- add attributes to layer groups
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- unify thermal format for all objects
@@ -63,10 +64,6 @@ SUBC: element removal:
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
-- BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
-	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
-		- Igor2 can't reproduce this
-	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - key rewrite: (base key swap bug (q<->a, y<->z))
