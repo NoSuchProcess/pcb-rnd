@@ -134,6 +134,16 @@ This is a shortcut for @code{Report(Object)}.
 	(((obj)->term != NULL) ? (obj)->term : ""), \
 	(((obj)->term != NULL) ? "\n" : "")
 
+static const char *grpname(pcb_layergrp_id_t gid)
+{
+	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
+	if (grp == NULL)
+		return "<invalid>";
+	if ((grp->name == NULL) || (*grp->name == '\0'))
+		return "<anonymous>";
+	return grp->name;
+}
+
 static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -302,12 +312,12 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			line = (pcb_rat_t *) ptr2;
 			report = pcb_strdup_printf("%m+RAT-LINE ID# %ld;  Flags:%s\n"
 									"FirstPoint(X,Y)  = %$mD; ID = %ld; "
-									"connects to layer group %d.\n"
+									"connects to layer group #%d (%s).\n"
 									"SecondPoint(X,Y) = %$mD; ID = %ld; "
-									"connects to layer group %d.\n",
+									"connects to layer group #%d (%s).\n",
 									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_TYPE_LINE, NULL),
-									line->Point1.X, line->Point1.Y,
-									line->Point1.ID, line->group1, line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2);
+									line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
+									line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
 			break;
 		}
 	case PCB_TYPE_ARC:
