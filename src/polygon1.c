@@ -115,7 +115,7 @@ int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_
 
 #ifndef NDEBUG
 #include <stdarg.h>
-static void DEBUGP(const char *fmt, ...)
+PCB_INLINE void DEBUGP(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -123,7 +123,7 @@ static void DEBUGP(const char *fmt, ...)
 	va_end(ap);
 }
 #else
-static void DEBUGP(const char *fmt, ...) { }
+PCB_INLINE void DEBUGP(const char *fmt, ...) { }
 #endif
 
 /* ///////////////////////////////////////////////////////////////////////////// * /
@@ -2945,10 +2945,9 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl)
 	if (val > max) max = val;
 
 	if (c->Flags.orient == PCB_PLF_INV)
-		DEBUGP("failed orient\n");
+		pcb_fprintf(stderr, "failed orient\n");
 	if (pcb_polyarea_contour_check(c))
-		DEBUGP("failed self-intersection\n");
-
+		pcb_fprintf(stderr, "failed self-intersection\n");
 
 	pcb_fprintf(stderr, "!!!animator start\n");
 	v = pl;
@@ -2984,7 +2983,7 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 
 	if (p->contours->Flags.orient == PCB_PLF_INV || pcb_polyarea_contour_check(p->contours)) {
 #ifndef NDEBUG
-		DEBUGP("Invalid Outer pcb_pline_t\n");
+		pcb_fprintf(stderr, "Invalid Outer pcb_pline_t\n");
 		pcb_poly_valid_report(p->contours, &p->contours->head);
 #endif
 		return pcb_false;
@@ -2992,7 +2991,7 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 	for (c = p->contours->next; c != NULL; c = c->next) {
 		if (c->Flags.orient == PCB_PLF_DIR || pcb_polyarea_contour_check(c) || !pcb_poly_contour_in_contour(p->contours, c)) {
 #ifndef NDEBUG
-			DEBUGP("Invalid Inner pcb_pline_t orient = %d\n", c->Flags.orient);
+			pcb_fprintf(stderr, "Invalid Inner pcb_pline_t orient = %d\n", c->Flags.orient);
 			pcb_poly_valid_report(c, &c->head);
 #endif
 			return pcb_false;
