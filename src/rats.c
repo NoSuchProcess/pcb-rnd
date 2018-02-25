@@ -54,6 +54,7 @@
 #include "obj_rat_draw.h"
 #include "obj_term.h"
 #include "obj_subc_parent.h"
+#include "obj_pstk_inlines.h"
 
 #define STEP_POINT 100
 
@@ -73,6 +74,22 @@ static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
 
 static pcb_bool badnet = pcb_false;
 static pcb_layergrp_id_t Sgrp = -1, Cgrp = -1; /* layer group holding solder/component side */
+
+static pcb_layergrp_id_t rat_padstack_side(pcb_pstk_t *padstack)
+{
+	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(padstack);
+	if (ts != NULL) { /* if there are copper shapes, decide side by where the padstack has copper */
+		int n;
+		for(n = 0; n < ts->len; n++) {
+			if (!(ts->shape[n].layer_mask & PCB_LYT_COPPER)) continue;
+			if (ts->shape[n].layer_mask & PCB_LYT_TOP)
+				return Cgrp;
+			else if (ts->shape[n].layer_mask & PCB_LYT_BOTTOM)
+				return Sgrp;
+		}
+	}
+	return Sgrp; /* ultimate fallback */
+}
 
 /* ---------------------------------------------------------------------------
  * parse a connection description from a string
@@ -121,6 +138,9 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 	if (obj != NULL) {
 		conn->obj = obj;
 		pcb_obj_center(obj, &conn->X, &conn->Y);
+		if (obj->type == PCB_OBJ_PSTK)
+			conn->group = rat_padstack_side((pcb_pstk_t *)obj);
+#warning subc TODO: heavy terminals: calculate side
 		return pcb_true;
 	}
 
@@ -575,12 +595,13 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 	PCB_PADSTACK_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)) {
+
 			conn = pcb_rat_connection_alloc(a);
 			conn->X = padstack->x;
 			conn->Y = padstack->y;
 			conn->ptr1 = padstack;
 			conn->obj = (pcb_any_obj_t *)padstack;
-			conn->group = Sgrp;
+			conn->group = rat_padstack_side(padstack);
 			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, padstack)
 				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, padstack);
 		}
