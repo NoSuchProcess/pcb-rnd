@@ -1,0 +1,100 @@
+@pcb-rnd
+	Standard installation of pcb-rnd
+
+	Install pcb-rnd core and the most commonly used plugins.
+
+@pcb-rnd-core
+	pcb-rnd executable with the core functionality
+
+	Includes the data model, the most common action commands, the native file
+	format and the CLI (batch HID). Does not contain GUI. Can be used in
+	headless mode or batch/scripted mode for automated processing.
+
+@pcb-rnd-auto
+	Autoroute and autoplace.
+
+	Feature plugins for automated component placing and track routing
+
+@pcb-rnd-cloud
+	Networking plugins.
+
+	'Cloud' footprint access plugin that integrates edakrill and gedasymbols.org.
+
+@pcb-rnd-debug
+	Debug and diagnostics.
+
+	Extra action commands to help debugging and diagnostize problems and bugs.
+
+@pcb-rnd-export-extra
+	Export formats: special/extra
+
+	Less commonly used export formats: fidocadj, ipc-356-d, direct printing with lpr.
+
+@pcb-rnd-export-sim
+	Export plugins to simulators
+
+	Export the board in formats that can be used for simulation: openems and nelma.
+
+@pcb-rnd-export
+	Common export plugins.
+
+	Export the board in vector graphics (svg, ps, eps), raster graphics
+	(png, jpeg, etc.), gerber, 3d model in openscad, xy for pick and place,
+	BoM, etc.
+
+@pcb-rnd-extra
+	Extra action commands and optional functionality.
+
+	Align objects in grid, optimize tracks, font editor, combine polygons,
+	renumber subcircuits, apply vendor drill mapping.
+
+@pcb-rnd-hid-gtk2-gdk
+	GUI: gtk2, software render
+
+	Software rendering on gtk2, using the gdk API.
+
+@pcb-rnd-hid-gtk2-gl
+	GUI: gtk2, opengl
+
+	Hardware accelerated (opengl) rendering on gtk2.
+
+@pcb-rnd-hid-lesstif
+	GUI: motif/lesstif, software render
+
+	Lightweight GUI and software rendering using the motif (lesstif) toolkit.
+
+@pcb-rnd-import-geo
+	Geometry import plugins.
+
+	Import geometry from HPGL plots. HPGL can be produced (plotted) with
+	most mechanical cads.
+
+@pcb-rnd-import-net
+	Netlist/schematics import plugins.
+
+	Import netlist and footprint information from edif, ltspice, mentor graphics,
+	gschem and tinycad.
+
+@pcb-rnd-io-alien
+	File format compatibility with other PCB board designers.
+
+	Load and/or save boards in file formats supported by other
+	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.
+
+@pcb-rnd-io-standard
+	Commonly used non-native board and footprint file formats
+
+	Plugins for tEDAx footprint format and the gEDA/PCB file formats
+	(footprint and board).
+
+@pcb-rnd-lib-gl
+	Support library for rendering with opengl.
+
+@pcb-rnd-lib-gtk
+	Support library for building the GUI with gtk.
+
+@pcb-rnd-lib-gui
+	Support library for building the GUI.
+
+@pcb-rnd-lib-io
+	Support library for alien file formats.

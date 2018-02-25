@@ -1,30 +1,56 @@
 
 <html>
 <body>
+
+<h3> Package summary and dependencies </h3>
 <table border=1>
 <tr><th> package <th> depends on (packages) <th> consists of (plugins)
-
-<tr><th>(core)<td><td> autocrop boardflip draw_csect draw_fab extedit fp_board fp_fs hid_batch io_lihata lib_compat_help lib_polyhelp mincut propedit query report rubberband_orig shape
-<tr><th>auto<td> (core)<td> autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
-<tr><th>cloud<td> (core)<td> fp_wget
-<tr><th>debug<td> (core)<td> diag
-<tr><th>export-extra<td> (core) export<td> export_fidocadj export_ipcd356 export_lpr
-<tr><th>export-sim<td> (core)<td> export_nelma export_openems
-<tr><th>export<td> (core)<td> export_bom export_dxf export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy
-<tr><th>extra<td> (core)<td> distalign distaligntext djopt fontmode jostle polycombine polystitch puller renumber shand_cmd teardrops vendordrill
-<tr><th>hid-gtk2-gdk<td> (core) lib-gtk lib-gui<td> hid_gtk2_gdk
-<tr><th>hid-gtk2-gl<td> (core) lib-gtk lib-gl lib-gui<td> hid_gtk2_gl
-<tr><th>hid-lesstif<td> (core) lib-gui<td> hid_lesstif
-<tr><th>import-geo<td> (core)<td> import_hpgl
-<tr><th>import-net<td> (core) lib-io<td> import_edif import_ltspice import_mentor_sch import_netlist import_sch import_tinycad
-<tr><th>io-alien<td> (core) lib-io<td> io_autotrax io_eagle io_hyp io_kicad io_kicad_legacy lib_padstack_hash
-<tr><th>io-standard<td> (core)<td> io_pcb io_tedax
-<tr><th>lib-gl<td> (core)<td> lib_hid_gl
-<tr><th>lib-gtk<td> (core) lib-gui<td> lib_gtk_common lib_gtk_config lib_gtk_hid
-<tr><th>lib-gui<td> (core)<td> dialogs draw_fontsel lib_hid_common
-<tr><th>lib-io<td> (core)<td> lib_gensexpr lib_netmap
-
+<tr><th>pcb-rnd-export<td> pcb-rnd-core<td> pcb-rnd-export_bom pcb-rnd-export_dxf pcb-rnd-export_gcode pcb-rnd-export_gerber pcb-rnd-export_openscad pcb-rnd-export_png pcb-rnd-export_ps pcb-rnd-export_stat pcb-rnd-export_svg pcb-rnd-export_xy
+<tr><th>pcb-rnd-debug<td> pcb-rnd-core<td> pcb-rnd-diag
+<tr><th>pcb-rnd-export-sim<td> pcb-rnd-core<td> pcb-rnd-export_nelma pcb-rnd-export_openems
+<tr><th>pcb-rnd-lib-gl<td> pcb-rnd-core<td> pcb-rnd-lib_hid_gl
+<tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> pcb-rnd-import_hpgl
+<tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-core pcb-rnd-lib-gtk pcb-rnd-lib-gl pcb-rnd-lib-gui<td> pcb-rnd-hid_gtk2_gl
+<tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib-io<td> pcb-rnd-import_edif pcb-rnd-import_ltspice pcb-rnd-import_mentor_sch pcb-rnd-import_netlist pcb-rnd-import_sch pcb-rnd-import_tinycad
+<tr><th>pcb-rnd<td>core io-standard io-alien hid-gtk2-dl hid-gtk2-gdk export export-sim export-extra auto extra cloud<td>&lt;metapackage&gt;
+<tr><th>pcb-rnd-auto<td> pcb-rnd-core<td> pcb-rnd-autoplace pcb-rnd-autoroute pcb-rnd-export_dsn pcb-rnd-import_dsn pcb-rnd-import_mucs pcb-rnd-smartdisperse
+<tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> pcb-rnd-lib_gensexpr pcb-rnd-lib_netmap
+<tr><th>pcb-rnd-io-standard<td> pcb-rnd-core<td> pcb-rnd-io_pcb pcb-rnd-io_tedax
+<tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core<td> pcb-rnd-dialogs pcb-rnd-draw_fontsel pcb-rnd-lib_hid_common
+<tr><th>pcb-rnd-core<td><td> pcb-rnd-autocrop pcb-rnd-boardflip pcb-rnd-draw_csect pcb-rnd-draw_fab pcb-rnd-extedit pcb-rnd-fp_board pcb-rnd-fp_fs pcb-rnd-hid_batch pcb-rnd-io_lihata pcb-rnd-lib_compat_help pcb-rnd-lib_polyhelp pcb-rnd-mincut pcb-rnd-propedit pcb-rnd-query pcb-rnd-report pcb-rnd-rubberband_orig pcb-rnd-shape
+<tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-core pcb-rnd-lib-gui<td> pcb-rnd-lib_gtk_common pcb-rnd-lib_gtk_config pcb-rnd-lib_gtk_hid
+<tr><th>pcb-rnd-hid-lesstif<td> pcb-rnd-core pcb-rnd-lib-gui<td> pcb-rnd-hid_lesstif
+<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io<td> pcb-rnd-io_autotrax pcb-rnd-io_eagle pcb-rnd-io_hyp pcb-rnd-io_kicad pcb-rnd-io_kicad_legacy pcb-rnd-lib_padstack_hash
+<tr><th>pcb-rnd-cloud<td> pcb-rnd-core<td> pcb-rnd-fp_wget
+<tr><th>pcb-rnd-export-extra<td> pcb-rnd-core pcb-rnd-export<td> pcb-rnd-export_fidocadj pcb-rnd-export_ipcd356 pcb-rnd-export_lpr
+<tr><th>pcb-rnd-hid-gtk2-gdk<td> pcb-rnd-core pcb-rnd-lib-gtk pcb-rnd-lib-gui<td> pcb-rnd-hid_gtk2_gdk
+<tr><th>pcb-rnd-extra<td> pcb-rnd-core<td> pcb-rnd-distalign pcb-rnd-distaligntext pcb-rnd-djopt pcb-rnd-fontmode pcb-rnd-jostle pcb-rnd-polycombine pcb-rnd-polystitch pcb-rnd-puller pcb-rnd-renumber pcb-rnd-shand_cmd pcb-rnd-teardrops pcb-rnd-vendordrill
 </table>
+<h3> Package description and files </h3>
+<table border=1>
+<tr><th> package <th> files <th> short <th> long
+<tr><th>pcb-rnd-export<td> pcb-rnd-export_bom.pup pcb-rnd-export_bom.so pcb-rnd-export_dxf.pup pcb-rnd-export_dxf.so pcb-rnd-export_gcode.pup pcb-rnd-export_gcode.so pcb-rnd-export_gerber.pup pcb-rnd-export_gerber.so pcb-rnd-export_openscad.pup pcb-rnd-export_openscad.so pcb-rnd-export_png.pup pcb-rnd-export_png.so pcb-rnd-export_ps.pup pcb-rnd-export_ps.so pcb-rnd-export_stat.pup pcb-rnd-export_stat.so pcb-rnd-export_svg.pup pcb-rnd-export_svg.so pcb-rnd-export_xy.pup pcb-rnd-export_xy.so<td>	Common export plugins.<td> 	Export the board in vector graphics (svg, ps, eps), raster graphics 	(png, jpeg, etc.), gerber, 3d model in openscad, xy for pick and place, 	BoM, etc.  
+<tr><th>pcb-rnd-debug<td> pcb-rnd-diag.pup pcb-rnd-diag.so<td>	Debug and diagnostics.<td> 	Extra action commands to help debugging and diagnostize problems and bugs.  
+<tr><th>pcb-rnd-export-sim<td> pcb-rnd-export_nelma.pup pcb-rnd-export_nelma.so pcb-rnd-export_openems.pup pcb-rnd-export_openems.so<td>	Export plugins to simulators<td> 	Export the board in formats that can be used for simulation: openems and nelma.  
+<tr><th>pcb-rnd-lib-gl<td> pcb-rnd-lib_hid_gl.pup pcb-rnd-lib_hid_gl.so<td>	Support library for rendering with opengl.<td> 
+<tr><th>pcb-rnd-import-geo<td> pcb-rnd-import_hpgl.pup pcb-rnd-import_hpgl.so<td>	Geometry import plugins.<td> 	Import geometry from HPGL plots. HPGL can be produced (plotted) with 	most mechanical cads.  
+<tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-hid_gtk2_gl.pup pcb-rnd-hid_gtk2_gl.so<td>	GUI: gtk2, opengl<td> 	Hardware accelerated (opengl) rendering on gtk2.  
+<tr><th>pcb-rnd-import-net<td> pcb-rnd-import_edif.pup pcb-rnd-import_edif.so pcb-rnd-import_ltspice.pup pcb-rnd-import_ltspice.so pcb-rnd-import_mentor_sch.pup pcb-rnd-import_mentor_sch.so pcb-rnd-import_netlist.pup pcb-rnd-import_netlist.so pcb-rnd-import_sch.pup pcb-rnd-import_sch.so pcb-rnd-import_tinycad.pup pcb-rnd-import_tinycad.so<td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
+<tr><th>pcb-rnd<td><td>	Standard installation of pcb-rnd<td> 	Install pcb-rnd core and the most commonly used plugins.  
+<tr><th>pcb-rnd-auto<td> pcb-rnd-autoplace.pup pcb-rnd-autoplace.so pcb-rnd-autoroute.pup pcb-rnd-autoroute.so pcb-rnd-export_dsn.pup pcb-rnd-export_dsn.so pcb-rnd-import_dsn.pup pcb-rnd-import_dsn.so pcb-rnd-import_mucs.pup pcb-rnd-import_mucs.so pcb-rnd-smartdisperse.pup pcb-rnd-smartdisperse.so<td>	Autoroute and autoplace.<td> 	Feature plugins for automated component placing and track routing  
+<tr><th>pcb-rnd-lib-io<td> pcb-rnd-lib_gensexpr.pup pcb-rnd-lib_gensexpr.so pcb-rnd-lib_netmap.pup pcb-rnd-lib_netmap.so<td>	Support library for alien file formats.<td>&nbsp;
+<tr><th>pcb-rnd-io-standard<td> pcb-rnd-io_pcb.pup pcb-rnd-io_pcb.so pcb-rnd-io_tedax.pup pcb-rnd-io_tedax.so<td>	Commonly used non-native board and footprint file formats<td> 	Plugins for tEDAx footprint format and the gEDA/PCB file formats 	(footprint and board).  
+<tr><th>pcb-rnd-lib-gui<td> pcb-rnd-dialogs.pup pcb-rnd-dialogs.so pcb-rnd-draw_fontsel.pup pcb-rnd-draw_fontsel.so pcb-rnd-lib_hid_common.pup pcb-rnd-lib_hid_common.so<td>	Support library for building the GUI.<td> 
+<tr><th>pcb-rnd-core<td> pcb-rnd-autocrop.pup pcb-rnd-autocrop.so pcb-rnd-boardflip.pup pcb-rnd-boardflip.so pcb-rnd-draw_csect.pup pcb-rnd-draw_csect.so pcb-rnd-draw_fab.pup pcb-rnd-draw_fab.so pcb-rnd-extedit.pup pcb-rnd-extedit.so pcb-rnd-fp_board.pup pcb-rnd-fp_board.so pcb-rnd-fp_fs.pup pcb-rnd-fp_fs.so pcb-rnd-hid_batch.pup pcb-rnd-hid_batch.so pcb-rnd-io_lihata.pup pcb-rnd-io_lihata.so pcb-rnd-lib_compat_help.pup pcb-rnd-lib_compat_help.so pcb-rnd-lib_polyhelp.pup pcb-rnd-lib_polyhelp.so pcb-rnd-mincut.pup pcb-rnd-mincut.so pcb-rnd-propedit.pup pcb-rnd-propedit.so pcb-rnd-query.pup pcb-rnd-query.so pcb-rnd-report.pup pcb-rnd-report.so pcb-rnd-rubberband_orig.pup pcb-rnd-rubberband_orig.so pcb-rnd-shape.pup pcb-rnd-shape.so<td>	pcb-rnd executable with the core functionality<td> 	Includes the data model, the most common action commands, the native file 	format and the CLI (batch HID). Does not contain GUI. Can be used in 	headless mode or batch/scripted mode for automated processing.  
+<tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-lib_gtk_common.pup pcb-rnd-lib_gtk_common.so pcb-rnd-lib_gtk_config.pup pcb-rnd-lib_gtk_config.so pcb-rnd-lib_gtk_hid.pup pcb-rnd-lib_gtk_hid.so<td>	Support library for building the GUI with gtk.<td> 
+<tr><th>pcb-rnd-hid-lesstif<td> pcb-rnd-hid_lesstif.pup pcb-rnd-hid_lesstif.so<td>	GUI: motif/lesstif, software render<td> 	Lightweight GUI and software rendering using the motif (lesstif) toolkit.  
+<tr><th>pcb-rnd-io-alien<td> pcb-rnd-io_autotrax.pup pcb-rnd-io_autotrax.so pcb-rnd-io_eagle.pup pcb-rnd-io_eagle.so pcb-rnd-io_hyp.pup pcb-rnd-io_hyp.so pcb-rnd-io_kicad.pup pcb-rnd-io_kicad.so pcb-rnd-io_kicad_legacy.pup pcb-rnd-io_kicad_legacy.so pcb-rnd-lib_padstack_hash.pup pcb-rnd-lib_padstack_hash.so<td>	File format compatibility with other PCB board designers.<td> 	Load and/or save boards in file formats supported by other 	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.  
+<tr><th>pcb-rnd-cloud<td> pcb-rnd-fp_wget.pup pcb-rnd-fp_wget.so<td>	Networking plugins.<td> 	'Cloud' footprint access plugin that integrates edakrill and gedasymbols.org.  
+<tr><th>pcb-rnd-export-extra<td> pcb-rnd-export_fidocadj.pup pcb-rnd-export_fidocadj.so pcb-rnd-export_ipcd356.pup pcb-rnd-export_ipcd356.so pcb-rnd-export_lpr.pup pcb-rnd-export_lpr.so<td>	Export formats: special/extra<td> 	Less commonly used export formats: fidocadj, ipc-356-d, direct printing with lpr.  
+<tr><th>pcb-rnd-hid-gtk2-gdk<td> pcb-rnd-hid_gtk2_gdk.pup pcb-rnd-hid_gtk2_gdk.so<td>	GUI: gtk2, software render<td> 	Software rendering on gtk2, using the gdk API.  
+<tr><th>pcb-rnd-extra<td> pcb-rnd-distalign.pup pcb-rnd-distalign.so pcb-rnd-distaligntext.pup pcb-rnd-distaligntext.so pcb-rnd-djopt.pup pcb-rnd-djopt.so pcb-rnd-fontmode.pup pcb-rnd-fontmode.so pcb-rnd-jostle.pup pcb-rnd-jostle.so pcb-rnd-polycombine.pup pcb-rnd-polycombine.so pcb-rnd-polystitch.pup pcb-rnd-polystitch.so pcb-rnd-puller.pup pcb-rnd-puller.so pcb-rnd-renumber.pup pcb-rnd-renumber.so pcb-rnd-shand_cmd.pup pcb-rnd-shand_cmd.so pcb-rnd-teardrops.pup pcb-rnd-teardrops.so pcb-rnd-vendordrill.pup pcb-rnd-vendordrill.so<td>	Extra action commands and optional functionality.<td> 	Align objects in grid, optimize tracks, font editor, combine polygons, 	renumber subcircuits, apply vendor drill mapping.  
+</table>
+
 </body>
 </html>
 
