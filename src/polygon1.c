@@ -2882,7 +2882,7 @@ do { \
 } while(0)
 #else
 #define PA_CHK_MARK(x, y)
-#define PA_CHK_LINE(x, y)
+#define PA_CHK_LINE(x1, y1, x2, y2)
 #endif
 
 
@@ -2903,7 +2903,9 @@ pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 	pcb_vector_t i1, i2;
 	int icnt;
 
+#ifndef NDEBUG
 	*res->msg = '\0';
+#endif
 	res->marks = res->lines = 0;
 
 	assert(a != NULL);
@@ -2918,16 +2920,22 @@ pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 					return PA_CHK_ERROR(res, "icnt > 1 (%d) at %mm;%mm or  %mm;%mm", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
 				}
 
-				if (pcb_vect_dist2(i1, a1->point) < EPSILON)
+#warning TODO: ugly workaround: test where exactly the intersection happens and tune the endpoint of the line
+				/* EPSILON^2 for endpoint matching; the bool algebra code is not
+				   perfect and causes tiny self intersections at the end of sharp
+				   spikes. Accept at most 10 nanometer of such intersection */
+#				define ENDP_EPSILON 100
+
+				if (pcb_vect_dist2(i1, a1->point) < ENDP_EPSILON)
 					hit1 = a1;
-				else if (pcb_vect_dist2(i1, a1->next->point) < EPSILON)
+				else if (pcb_vect_dist2(i1, a1->next->point) < ENDP_EPSILON)
 					hit1 = a1->next;
 				else
 					hit1 = NULL;
 
-				if (pcb_vect_dist2(i1, a2->point) < EPSILON)
+				if (pcb_vect_dist2(i1, a2->point) < ENDP_EPSILON)
 					hit2 = a2;
-				else if (pcb_vect_dist2(i1, a2->next->point) < EPSILON)
+				else if (pcb_vect_dist2(i1, a2->next->point) < ENDP_EPSILON)
 					hit2 = a2->next;
 				else
 					hit2 = NULL;
