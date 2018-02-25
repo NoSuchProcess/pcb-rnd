@@ -641,6 +641,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.subc = subc;
 		ctx.front = !bott;
 
+#warning padstack TODO: do not depend on this, just use the normal bbox and rotate that back
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
 		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
