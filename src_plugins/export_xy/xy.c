@@ -286,15 +286,15 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coo
 {
 	if (prerot) {
 		/* this is what we would do if we wanted to return the pre-rotation state */
-		if ((ctx->theta == 0) || (ctx->theta == 180)) {
+		if ((ctx->theta == 0) || (ctx->theta == 180) || (ctx->theta == -180)) {
 			calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
 			return;
 		}
-		if ((ctx->theta == 90) || (ctx->theta == 270)) {
+		if ((ctx->theta == 90) || (ctx->theta == 270) || (ctx->theta == -90) || (ctx->theta == -270)) {
 			calc_pad_bbox_(ctx, ph, pw, pcx, pcy);
 			return;
 		}
-		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
+		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet (angle=%f)\n", ctx->theta);
 	}
 
 	calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
