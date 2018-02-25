@@ -2852,9 +2852,10 @@ static pcb_bool inside_sector(pcb_vnode_t * pn, pcb_vector_t p2)
 
 /* returns pcb_true if bad contour */
 typedef struct {
-	int marks;
+	int marks, lines;
 #ifndef NDEBUG
 	pcb_coord_t x[8], y[8];
+	pcb_coord_t x1[8], y1[8], x2[8], y2[8];
 	char msg[256];
 #endif
 } pa_chk_res_t;
@@ -2869,8 +2870,19 @@ do { \
 		res->marks++; \
 	} \
 } while(0)
+#define PA_CHK_LINE(x1_, y1_, x2_, y2_) \
+do { \
+	if (res->lines < sizeof(res->x1) / sizeof(res->x1[0])) { \
+		res->x1[res->lines] = x1_; \
+		res->y1[res->lines] = y1_; \
+		res->x2[res->lines] = x2_; \
+		res->y2[res->lines] = y2_; \
+		res->lines++; \
+	} \
+} while(0)
 #else
 #define PA_CHK_MARK(x, y)
+#define PA_CHK_LINE(x, y)
 #endif
 
 
@@ -2892,7 +2904,7 @@ pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 	int icnt;
 
 	*res->msg = '\0';
-	res->marks = 0;
+	res->marks = res->lines = 0;
 
 	assert(a != NULL);
 	a1 = &a->head;
@@ -2924,8 +2936,8 @@ pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 					/* If the intersection didn't land on an end-point of either
 					 * line, we know the lines cross and we return pcb_true.
 					 */
-					PA_CHK_MARK(a1->point[0], a1->point[1]);
-					PA_CHK_MARK(a2->point[0], a2->point[1]);
+					PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+					PA_CHK_LINE(a2->point[0], a2->point[1], a2->next->point[0], a2->next->point[1]);
 					return PA_CHK_ERROR(res, "lines cross between %mm;%mm and %mm;%mm", a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
 				}
 				else if (hit1 == NULL) {
@@ -3012,6 +3024,7 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 		update_minmax(miny, maxy, n->point[1]);
 	}
 	while ((v = v->next) != pl);
+	pcb_fprintf(stderr, "scale 1 -1\n");
 	pcb_fprintf(stderr, "viewport %mm %mm - %mm %mm\n", minx, miny, maxx, maxy);
 	pcb_fprintf(stderr, "frame\n");
 	v = pl;
@@ -3028,6 +3041,13 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);
 			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]+MR, chk->x[n]+MR, chk->y[n]-MR);
 		}
+	}
+
+	if ((chk != NULL) && (chk->lines > 0)) {
+		int n;
+		fprintf(stderr, "color #990000\n");
+		for(n = 0; n < chk->lines; n++)
+			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x1[n], chk->y1[n], chk->x2[n], chk->y2[n]);
 	}
 
 	fprintf(stderr, "flush\n");
