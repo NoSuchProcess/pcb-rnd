@@ -4652,8 +4652,8 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					total_via_count++;
 					assert(pp->type == VIA);
 					if (pp->parent.via == NULL) {
-						assert(b.X1 + radius == b.X2 - radius);
-						assert(b.Y1 + radius == b.Y2 - radius);
+						assert(labs((b.X1 + radius) - (b.X2 - radius)) < 2);
+						assert(labs((b.Y1 + radius) - (b.Y2 - radius)) < 2);
 						pp->parent.via =
 							pcb_via_new(PCB->Data, b.X1 + radius,
 													 b.Y1 + radius,
