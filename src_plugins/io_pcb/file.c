@@ -304,8 +304,10 @@ static void WritePCBDataHeader(FILE * FP)
 								PCB->RouteStyle.array[group].Thick,
 								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
 	}
-	else
+	else {
+		pcb_io_incompat_save(PCB->Data, NULL, "There are no routing styles - many versions of gEDA/PCB will segfault on loading the file", "Create exactly 4 routing styles.");
 		fprintf(FP, "\"]\n\n");
+	}
 }
 
 /* writes font data of non empty symbols */
