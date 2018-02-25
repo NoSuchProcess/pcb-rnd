@@ -2851,11 +2851,48 @@ static pcb_bool inside_sector(pcb_vnode_t * pn, pcb_vector_t p2)
 }																/* inside_sector */
 
 /* returns pcb_true if bad contour */
-pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a)
+typedef struct {
+	int marks;
+#ifndef NDEBUG
+	pcb_coord_t x[8], y[8];
+	char msg[256];
+#endif
+} pa_chk_res_t;
+
+
+#ifndef NDEBUG
+#define PA_CHK_MARK(x_, y_) \
+do { \
+	if (res->marks < sizeof(res->x) / sizeof(res->x[0])) { \
+		res->x[res->marks] = x_; \
+		res->y[res->marks] = y_; \
+		res->marks++; \
+	} \
+} while(0)
+#else
+#define PA_CHK_MARK(x, y)
+#endif
+
+
+PCB_INLINE pcb_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
+{
+#ifndef NDEBUG
+	va_list ap;
+	va_start(ap, fmt);
+	pcb_vsnprintf(res->msg, sizeof(res->msg), fmt, ap);
+	va_end(ap);
+#endif
+	return pcb_true;
+}
+
+pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 {
 	pcb_vnode_t *a1, *a2, *hit1, *hit2;
 	pcb_vector_t i1, i2;
 	int icnt;
+
+	*res->msg = '\0';
+	res->marks = 0;
 
 	assert(a != NULL);
 	a1 = &a->head;
@@ -2863,8 +2900,11 @@ pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a)
 		a2 = a1;
 		do {
 			if (!node_neighbours(a1, a2) && (icnt = pcb_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
-				if (icnt > 1)
-					return pcb_true;
+				if (icnt > 1) {
+					PA_CHK_MARK(a1->point[0], a1->point[1]);
+					PA_CHK_MARK(a2->point[0], a2->point[1]);
+					return PA_CHK_ERROR(res, "icnt > 1 (%d) at %mm;%mm or  %mm;%mm", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
+				}
 
 				if (pcb_vect_dist2(i1, a1->point) < EPSILON)
 					hit1 = a1;
@@ -2884,24 +2924,35 @@ pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a)
 					/* If the intersection didn't land on an end-point of either
 					 * line, we know the lines cross and we return pcb_true.
 					 */
-					return pcb_true;
+					PA_CHK_MARK(a1->point[0], a1->point[1]);
+					PA_CHK_MARK(a2->point[0], a2->point[1]);
+					return PA_CHK_ERROR(res, "lines cross between %mm;%mm and %mm;%mm", a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
 				}
 				else if (hit1 == NULL) {
 					/* An end-point of the second line touched somewhere along the
 					   length of the first line. Check where the second line leads. */
-					if (inside_sector(hit2, a1->point) != inside_sector(hit2, a1->next->point))
-						return pcb_true;
+					if (inside_sector(hit2, a1->point) != inside_sector(hit2, a1->next->point)) {
+						PA_CHK_MARK(a1->point[0], a1->point[1]);
+						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
+						return PA_CHK_ERROR(res, "lines is inside sector (1) at %mm;%mm", a1->point[0], a1->point[1]);
+					}
 				}
 				else if (hit2 == NULL) {
 					/* An end-point of the first line touched somewhere along the
 					   length of the second line. Check where the first line leads. */
-					if (inside_sector(hit1, a2->point) != inside_sector(hit1, a2->next->point))
-						return pcb_true;
+					if (inside_sector(hit1, a2->point) != inside_sector(hit1, a2->next->point)) {
+						PA_CHK_MARK(a2->point[0], a2->point[1]);
+						PA_CHK_MARK(hit1->point[0], hit1->point[1]);
+						return PA_CHK_ERROR(res, "lines is inside sector (2) at %mm;%mm", a2->point[0], a2->point[1]);
+					}
 				}
 				else {
 					/* Both lines intersect at an end-point. Check where they lead. */
-					if (inside_sector(hit1, hit2->prev->point) != inside_sector(hit1, hit2->next->point))
-						return pcb_true;
+					if (inside_sector(hit1, hit2->prev->point) != inside_sector(hit1, hit2->next->point)) {
+						PA_CHK_MARK(hit1->point[0], hit2->point[1]);
+						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
+						return PA_CHK_ERROR(res, "lines is inside sector (3) at %mm;%mm or %mm;%mm", hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1]);
+					}
 				}
 			}
 		}
@@ -2909,6 +2960,12 @@ pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a)
 	}
 	while ((a1 = a1->next) != &a->head);
 	return pcb_false;
+}
+
+pcb_bool pcb_polyarea_contour_check(pcb_pline_t *a)
+{
+	pa_chk_res_t res;
+	return pcb_polyarea_contour_check_(a, &res);
 }
 
 void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b)
@@ -2935,7 +2992,7 @@ void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b)
 }
 
 #ifndef NDEBUG
-static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl)
+static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t *chk)
 {
 	pcb_vnode_t *v, *n;
 	pcb_coord_t minx = COORD_MAX, miny = COORD_MAX, maxx = -COORD_MAX, maxy = -COORD_MAX;
@@ -2943,12 +3000,8 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl)
 #define update_minmax(min, max, val) \
 	if (val < min) min = val; \
 	if (val > max) max = val;
-
-	if (c->Flags.orient == PCB_PLF_INV)
-		pcb_fprintf(stderr, "failed orient\n");
-	if (pcb_polyarea_contour_check(c))
-		pcb_fprintf(stderr, "failed self-intersection\n");
-
+	if (chk != NULL)
+		pcb_fprintf(stderr, "Details: %s\n", chk->msg);
 	pcb_fprintf(stderr, "!!!animator start\n");
 	v = pl;
 	do {
@@ -2967,8 +3020,19 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl)
 		pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
 	}
 	while ((v = v->next) != pl);
-	pcb_fprintf(stderr, "flush\n");
-	pcb_fprintf(stderr, "!!!animator end\n");
+
+	if ((chk != NULL) && (chk->marks > 0)) {
+		int n, MR=PCB_MM_TO_COORD(0.05);
+		fprintf(stderr, "color #770000\n");
+		for(n = 0; n < chk->marks; n++) {
+			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);
+			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]+MR, chk->x[n]+MR, chk->y[n]-MR);
+		}
+	}
+
+	fprintf(stderr, "flush\n");
+	fprintf(stderr, "!!!animator end\n");
+
 #undef update_minmax
 }
 #endif
@@ -2977,22 +3041,46 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl)
 pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 {
 	pcb_pline_t *c;
+	pa_chk_res_t chk;
 
 	if ((p == NULL) || (p->contours == NULL))
 		return pcb_false;
 
-	if (p->contours->Flags.orient == PCB_PLF_INV || pcb_polyarea_contour_check(p->contours)) {
+	if (p->contours->Flags.orient == PCB_PLF_INV) {
 #ifndef NDEBUG
-		pcb_fprintf(stderr, "Invalid Outer pcb_pline_t\n");
-		pcb_poly_valid_report(p->contours, &p->contours->head);
+		pcb_fprintf(stderr, "Invalid Outer pcb_pline_t: failed orient\n");
+		pcb_poly_valid_report(p->contours, &p->contours->head, NULL);
 #endif
 		return pcb_false;
 	}
-	for (c = p->contours->next; c != NULL; c = c->next) {
-		if (c->Flags.orient == PCB_PLF_DIR || pcb_polyarea_contour_check(c) || !pcb_poly_contour_in_contour(p->contours, c)) {
+
+	if (pcb_polyarea_contour_check_(p->contours, &chk)) {
 #ifndef NDEBUG
-			pcb_fprintf(stderr, "Invalid Inner pcb_pline_t orient = %d\n", c->Flags.orient);
-			pcb_poly_valid_report(c, &c->head);
+		pcb_fprintf(stderr, "Invalid Outer pcb_pline_t: failed contour check\n");
+		pcb_poly_valid_report(p->contours, &p->contours->head, &chk);
+#endif
+		return pcb_false;
+	}
+
+	for (c = p->contours->next; c != NULL; c = c->next) {
+		if (c->Flags.orient == PCB_PLF_DIR) {
+#ifndef NDEBUG
+			pcb_fprintf(stderr, "Invalid Inner: pcb_pline_t orient = %d\n", c->Flags.orient);
+			pcb_poly_valid_report(c, &c->head, NULL);
+#endif
+			return pcb_false;
+		}
+		if (pcb_polyarea_contour_check_(c, &chk)) {
+#ifndef NDEBUG
+			pcb_fprintf(stderr, "Invalid Inner: failed contour check\n");
+			pcb_poly_valid_report(c, &c->head, &chk);
+#endif
+			return pcb_false;
+		}
+		if (!pcb_poly_contour_in_contour(p->contours, c)) {
+#ifndef NDEBUG
+			pcb_fprintf(stderr, "Invalid Inner: overlap with outer\n");
+			pcb_poly_valid_report(c, &c->head, NULL);
 #endif
 			return pcb_false;
 		}
