@@ -24,6 +24,9 @@
 - BUG: reclip polygons after autocrop(); else poly clear poly breaks (use delayed clipping!) test case: pool/poly_dev_ex [report: Igor2]
 - BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd file causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 - BUG: 633.10 mil fixed negative x-offset for vias, seen on OSHW_binary_examples/80mAllTransistorSSBTX CVR.brd, seems to relate to 'pcb_board_normalize(pcb);' not shifting the via/padstack objects on the board [erich]
+- BUG: pcb-rnd: polygon1.c:2397: pcb_poly_contour_inv: Assertion `r == c->Count' failed core dump example: work/bug_files/via-poly-segfault-erich.brd. May spring from a bogus drill size being read and processed [erich]
+- BUG: pcb_board_normalize(pcb) does not seem to move hole features properly. See 250mil hole in work/bug_files/250mil-hole-test.brd which ends up on left hand side board edge [erich]
+
 Low prio:
 - BUG: delete on a subcircuit text label/refdes cannot be undone. [erich]
 - BUG: copper annulus retained around hole features loaded in Eagle binary format. See 250mil hole in work/bug_files/250mil-hole-test.brd [erich]
