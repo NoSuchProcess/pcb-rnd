@@ -514,7 +514,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_HOLE, 0xFF5F, "hole",
+	{ PCB_EGKW_SECT_HOLE, 0xFF53, "hole",
 		{ /* field match */
 			TERM
 		},
