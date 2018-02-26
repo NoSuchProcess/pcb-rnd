@@ -693,7 +693,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"layer", T_INT, 3, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"size",  T_INT, 12, 2},
+			{"half_size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
 			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
@@ -1919,17 +1919,21 @@ static int postprocess_smd(void *ctx, egb_node_t *root)
 	return 0;
 }
 
-/* we post process the PCB_EGKW_SECT_PAD and PCB_EGKW_SECT_HOLE nodes to double the drill, diameter dimensions pre XML parsing */
-static int postprocess_diameters(void *ctx, egb_node_t *root)
+/* we post process the
+PCB_EGKW_SECT_PAD and PCB_EGKW_SECT_HOLE and PCB_EGKW_SECT_VIA and PCB_EGKW_SECT_TEXT
+nodes to double the drill, diameter, text height dimensions pre XML parsing */
+static int postprocess_dimensions(void *ctx, egb_node_t *root)
 {
 	htss_entry_t *e;
 	egb_node_t *n;
 	long half_drill = 0;
 	long half_diameter = 0;
+	long half_size = 0;
 	char tmp[32];
 #warning TODO padstacks - need to convert obround pins to appropriate padstack types
 	if (root != NULL && (root->id == PCB_EGKW_SECT_PAD
-		|| root->id == PCB_EGKW_SECT_HOLE || root->id == PCB_EGKW_SECT_VIA)) {
+		|| root->id == PCB_EGKW_SECT_HOLE || root->id == PCB_EGKW_SECT_VIA
+		|| root->id == PCB_EGKW_SECT_TEXT)) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (strcmp(e->key, "half_drill") == 0) {
 				half_drill = atoi(e->value);
@@ -1939,12 +1943,16 @@ static int postprocess_diameters(void *ctx, egb_node_t *root)
 				half_diameter = atoi(e->value);
 				sprintf(tmp, "%ld", half_diameter*2);
 				egb_node_prop_set(root, "diameter", tmp);
+			} else if (strcmp(e->key, "half_size") == 0) {
+				half_size = atoi(e->value);
+				sprintf(tmp, "%ld", half_size*2);
+				egb_node_prop_set(root, "size", tmp);
 			}
 		}
 	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
-		postprocess_diameters(ctx, n);
+		postprocess_dimensions(ctx, n);
 	return 0;
 }
 
@@ -2194,7 +2202,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 		|| postproc_signal(ctx, egb_ctx_p) || postproc_contactrefs(ctx, egb_ctx_p)
 		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
 		|| postprocess_circles(ctx, root) || postprocess_smd(ctx, root)
-		|| postprocess_diameters(ctx, root)
+		|| postprocess_dimensions(ctx, root)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMD)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PIN)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_RECTANGLE)
