@@ -30,7 +30,7 @@
 Low prio:
 - BUG: delete on a subcircuit text label/refdes cannot be undone. [erich]
 - BUG: copper annulus retained around hole features loaded in Eagle binary format. See 250mil hole in work/bug_files/250mil-hole-test.brd [erich]
-- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png [erich]
+- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
