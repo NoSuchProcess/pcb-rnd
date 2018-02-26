@@ -26,7 +26,7 @@
 - BUG: 633.10 mil fixed negative x-offset for vias, seen on OSHW_binary_examples/80mAllTransistorSSBTX CVR.brd, seems to relate to 'pcb_board_normalize(pcb);' not shifting the via/padstack objects on the board [erich]
 Low prio:
 - BUG: delete on a subcircuit text label/refdes cannot be undone. [erich]
-- BUG: copper annulus retained around hole features loaded in Eagle binary format. See lower left hole on tvbgone.brd http://tronixstuff.com/wp-content/uploads/2010/08/3s1.jpg vs tvbgone load [erich]
+- BUG: copper annulus retained around hole features loaded in Eagle binary format. See 250mil hole in work/bug_files/250mil-hole-test.brd [erich]
 - BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg [report: Miloh, possible duplicate: 167]   
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
