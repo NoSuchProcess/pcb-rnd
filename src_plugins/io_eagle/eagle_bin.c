@@ -540,8 +540,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"shape", T_INT, 2, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"drill",  T_INT, 12, 2},
-			{"diameter",  T_INT, 14, 2},
+			{"half_drill",  T_INT, 12, 2},
+			{"half_diameter",  T_INT, 14, 2},
 			{"layers",  T_INT, 16, 1}, /*not 1:1 mapping */
 			{"stop",  T_BMB, 17, 0x01},
 			TERM
@@ -1928,7 +1928,8 @@ static int postprocess_diameters(void *ctx, egb_node_t *root)
 	long half_diameter = 0;
 	char tmp[32];
 #warning TODO padstacks - need to convert obround pins to appropriate padstack types
-	if (root != NULL && (root->id == PCB_EGKW_SECT_PAD || root->id == PCB_EGKW_SECT_HOLE)) {
+	if (root != NULL && (root->id == PCB_EGKW_SECT_PAD
+		|| root->id == PCB_EGKW_SECT_HOLE || root->id == PCB_EGKW_SECT_VIA)) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (strcmp(e->key, "half_drill") == 0) {
 				half_drill = atoi(e->value);
