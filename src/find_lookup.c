@@ -1057,7 +1057,7 @@ static pcb_bool LookupPVPSConnectionsToLOList(pcb_bool AndRats)
 	/* loop over all pad-layers */
 	for (layer = 0; layer < 2; layer++) {
 		/* do nothing if there are no PV's */
-		if (TotalP + TotalV == 0) {
+		if (TotalP + TotalV + TotalPs == 0) {
 			PadList[layer].Location = PadList[layer].Number;
 			continue;
 		}
@@ -1081,7 +1081,7 @@ static pcb_bool LookupPVPSConnectionsToLOList(pcb_bool AndRats)
 	}
 
 	/* do nothing if there are no PV's */
-	if (TotalP + TotalV == 0)
+	if (TotalP + TotalV + TotalPs == 0)
 		RatList.Location = RatList.Number;
 
 	/* check all rat-lines */
