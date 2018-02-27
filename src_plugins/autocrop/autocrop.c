@@ -69,57 +69,38 @@ static const char autocrop_syntax[] =
 
 static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, pcb_coord_t dx, pcb_coord_t dy)
 {
-	if (Data) {
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_VIA, Via, Via);
+	if (Data)
 		pcb_r_delete_entry(Data->via_tree, (pcb_box_t *) Via);
-	}
 	pcb_via_move(Via, dx, dy);
-	if (Data) {
+	if (Data)
 		pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via);
-		pcb_poly_clear_from_poly(Data, PCB_TYPE_VIA, Via, Via);
-	}
 	return Via;
 }
 
 static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line_t * Line, pcb_coord_t dx, pcb_coord_t dy)
 {
-	if (Data) {
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_LINE, Layer, Line);
-		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
-	}
 	pcb_line_move(Line, dx, dy);
-	if (Data) {
-		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line);
-		pcb_poly_clear_from_poly(Data, PCB_TYPE_LINE, Layer, Line);
-	}
 	return Line;
 }
 
 static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t * Arc, pcb_coord_t dx, pcb_coord_t dy)
 {
-	if (Data) {
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_ARC, Layer, Arc);
+	if (Data)
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
-	}
 	pcb_arc_move(Arc, dx, dy);
-	if (Data) {
+	if (Data)
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
-		pcb_poly_clear_from_poly(Data, PCB_TYPE_ARC, Layer, Arc);
-	}
 	return Arc;
 }
 
 static void *Mypcb_poly_move(pcb_data_t * Data, pcb_layer_t * Layer, pcb_poly_t * Polygon, pcb_coord_t dx, pcb_coord_t dy)
 {
-	if (Data) {
+	if (Data)
 		pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-	}
 	/* move.c actually only moves points, note no Data/Layer args */
 	pcb_poly_move(Polygon, dx, dy);
-	if (Data) {
+	if (Data)
 		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-		pcb_poly_init_clip(Data, Layer, Polygon);
-	}
 	return Polygon;
 }
 
@@ -238,6 +219,7 @@ static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	PCB->MaxWidth = box->X2;
 	PCB->MaxHeight = box->Y2;
 	MoveAll(dx, dy);
+	pcb_data_clip_all(PCB->Data, pcb_true);
 	pcb_undo_inc_serial();
 	pcb_redraw();
 	pcb_board_set_changed_flag(1);
