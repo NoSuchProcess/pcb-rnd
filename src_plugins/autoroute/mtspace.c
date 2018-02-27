@@ -217,7 +217,17 @@ static pcb_r_dir_t query_one(const pcb_box_t * box, void *cl)
 	struct query_closure *qc = (struct query_closure *) cl;
 	mtspacebox_t *mtsb = (mtspacebox_t *) box;
 	pcb_coord_t shrink;
-	assert(pcb_box_intersect(qc->cbox, &mtsb->box));
+
+#ifndef NDEBUG
+	{
+		/* work around rounding errors: grow both boxes by 2 nm */
+		pcb_box_t b1 = *qc->cbox, b2 = mtsb->box;
+		b1.X1--;b1.Y1--;b1.X2++;b1.Y2++;
+		b2.X1--;b2.Y1--;b2.X2++;b2.Y2++;
+		assert(pcb_box_intersect(&b1, &b2));
+	}
+#endif
+
 	/* we need to satisfy the larger of the two clearances */
 	if (qc->clearance > mtsb->clearance)
 		shrink = mtsb->clearance;

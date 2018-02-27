@@ -1975,8 +1975,16 @@ static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t gr
 	rb->group = group;
 	rb->type = EXPANSION_AREA;
 	/* should always share edge or overlap with parent */
-	assert(relax_edge_requirements ? pcb_box_intersect(&rb->sbox, &parent->sbox)
-				 : share_edge(&rb->sbox, &parent->sbox));
+#ifndef NDEBUG
+	{
+		/* work around rounding errors: grow both boxes by 2 nm */
+		pcb_box_t b1 = rb->sbox, b2 = parent->sbox;
+		b1.X1--;b1.Y1--;b1.X2++;b1.Y2++;
+		b2.X1--;b2.Y1--;b2.X2++;b2.Y2++;
+		assert(relax_edge_requirements ? pcb_box_intersect(&b1, &b2)
+					 : share_edge(&rb->sbox, &parent->sbox));
+	}
+#endif
 	rb->parent.expansion_area = route_parent(parent);
 	rb->cost_point = pcb_closest_pcb_point_in_box(&rb->parent.expansion_area->cost_point, area);
 	rb->cost =
