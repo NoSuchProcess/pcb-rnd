@@ -1,13 +1,11 @@
-/*!
- * \file autocrop.c
- *
- * \brief Autocrop plug-in for PCB.
+/*
+ * Autocrop plug-in for PCB.
  * Reduce the board dimensions to just enclose the elements.
  *
- * \author Copyright (C) 2007 Ben Jackson <ben@ben.com> based on teardrops.c by
+ * Copyright (C) 2007 Ben Jackson <ben@ben.com> based on teardrops.c by
  * Copyright (C) 2006 DJ Delorie <dj@delorie.com>
  *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
@@ -114,8 +112,7 @@ static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, pcb_coor
 	return Text;
 }
 
-/*!
- * \brief Move everything.
+/* Move everything.
  *
  * Call our own 'MyMove*LowLevel' where they don't exist in move.c.
  * This gets very slow if there are large polygons present, since every
