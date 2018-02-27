@@ -43,6 +43,7 @@
 #include "polygon.h"
 #include "search.h"
 #include "obj_subc_parent.h"
+#include "obj_pstk_inlines.h"
 
 static double PosX, PosY;				/* search position for subroutines */
 static pcb_coord_t SearchRadius;
@@ -93,6 +94,7 @@ struct ans_info {
 	pcb_bool BackToo;
 	double area;
 	unsigned long objst, req_flag;
+	int on_current;
 };
 
 static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
@@ -141,11 +143,13 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 
 	if (!pcb_is_point_in_pstk(PosX, PosY, SearchRadius, ps, NULL))
 		return PCB_R_DIR_NOT_FOUND;
+	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, CURRENT) == NULL))
+		return PCB_R_DIR_NOT_FOUND;
 	*i->ptr1 = *i->ptr2 = *i->ptr3 = ps;
 	return PCB_R_DIR_CANCEL; /* found, stop searching */
 }
 
-static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_flag, pcb_pstk_t **ps, pcb_pstk_t **Dummy1, pcb_pstk_t **Dummy2)
+static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_flag, pcb_pstk_t **ps, pcb_pstk_t **Dummy1, pcb_pstk_t **Dummy2, int on_current)
 {
 	struct ans_info info;
 
@@ -158,6 +162,7 @@ static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	info.ptr3 = (void **)Dummy2;
 	info.objst = objst;
 	info.req_flag = req_flag;
+	info.on_current = on_current;
 
 	if (pcb_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
@@ -1327,7 +1332,10 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	if (Type & PCB_TYPE_VIA && SearchViaByLocation(objst, req_flag, (pcb_pin_t **) Result1, (pcb_pin_t **) Result2, (pcb_pin_t **) Result3))
 		return PCB_TYPE_VIA;
 
-	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3))
+	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1))
+		return PCB_TYPE_PSTK;
+
+	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0))
 		return PCB_TYPE_PSTK;
 
 	if (Type & PCB_TYPE_PIN && SearchPinByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
