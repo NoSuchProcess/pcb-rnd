@@ -67,15 +67,21 @@ static void notify_line(void)
 		pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
-		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
+#warning subc TODO: this should work on heavy terminals too!
+		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
 			pcb_gui->beep();
 			break;
 		}
 		if (conf_core.editor.auto_drc) {
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
 			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
-		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
+		if (type == PCB_TYPE_PSTK) {
+			pcb_pstk_t *pstk = (pcb_pstk_t *)ptr2;
+			pcb_crosshair.AttachedLine.Point1.X = pstk->x;
+			pcb_crosshair.AttachedLine.Point1.Y = pstk->y;
+		}
+		else if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
 		}
