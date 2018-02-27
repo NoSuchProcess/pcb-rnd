@@ -138,6 +138,7 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *) box;
+	pcb_data_t *pdata;
 
 	TEST_OBJST(i->objst, i->req_flag, g, ps, ps);
 
@@ -145,7 +146,13 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, CURRENT) == NULL))
 		return PCB_R_DIR_NOT_FOUND;
-	*i->ptr1 = *i->ptr2 = *i->ptr3 = ps;
+	*i->ptr2 = *i->ptr3 = ps;
+	assert(ps->parent_type == PCB_PARENT_DATA);
+	pdata = ps->parent.data;
+	if (pdata->parent_type == PCB_PARENT_SUBC)
+		*i->ptr1 = pdata->parent.subc; /* padstack of a subcircuit */
+	else
+		*i->ptr1 = ps; /* padstack on a board (e.g. via) */
 	return PCB_R_DIR_CANCEL; /* found, stop searching */
 }
 
