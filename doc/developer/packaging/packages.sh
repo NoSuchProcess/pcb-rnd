@@ -33,11 +33,18 @@ done | awk -v "meta_deps=$meta_deps" '
 
 		val=$3
 		if (val == "(core)") val="core"
+		cfg = pkg
 		pkg = "pcb-rnd-" pkg
 		val = "pcb-rnd-" val
 	}
 
-	($2 == "$package") { PKG[val] = PKG[val] " " pkg; PLUGIN[pkg] = val; IFILES[val] = IFILES[val] " " pkg ".pup " pkg ".so" }
+	($2 == "$package") {
+		PKG[val] = PKG[val] " " pkg;
+		PLUGIN[pkg] = val;
+		IFILES[val] = IFILES[val] " " pkg ".pup " pkg ".so"
+		if (val == "pcb-rnd-core") CFG_BUILDIN[cfg]++
+		else CFG_PLUGIN[cfg]++
+	}
 	($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
 
 	function add_dep(pkg, depson,    ds)
@@ -93,6 +100,12 @@ done | awk -v "meta_deps=$meta_deps" '
 		}
 		print "</table>"
 
+		print "<h3> ./configure arguments </h3>"
+		print "--disable-all"
+		for(p in CFG_BUILDIN)
+				print "--buildin-" p
+		for(p in CFG_PLUGIN)
+				print "--plugin-" p
 	}
 '
 
