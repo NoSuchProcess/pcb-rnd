@@ -39,9 +39,9 @@ done | awk -v "meta_deps=$meta_deps" '
 	}
 
 	($2 == "$package") {
-		PKG[val] = PKG[val] " " pkg;
+		PKG[val] = PKG[val] " " cfg;
 		PLUGIN[pkg] = val;
-		IFILES[val] = IFILES[val] " " pkg ".pup " pkg ".so"
+		IFILES[val] = IFILES[val] " " cfg ".pup " cfg ".so"
 		if (val == "pcb-rnd-core") CFG_BUILDIN[cfg]++
 		else CFG_PLUGIN[cfg]++
 	}
