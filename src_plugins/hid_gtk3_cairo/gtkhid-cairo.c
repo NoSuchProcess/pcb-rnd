@@ -567,7 +567,7 @@ static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 }
 
-/** Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. direct and screen are not used in this HID. */
+/** Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. \p screen is not used in this HID. */
 static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = gport->render_priv;
@@ -602,11 +602,13 @@ static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, 
 			break;
 
 		case PCB_HID_COMP_FLUSH:
-			priv->cr = priv->cr_target;
-			//cairo_set_operator(priv->cr, CAIRO_OPERATOR_OVER);
-			//cairo_set_source_surface(priv->cr, priv->surf_layer, 0, 0);
-			cairo_mask_surface(priv->cr, priv->surf_layer, 0, 0);
-			cairo_fill(priv->cr);
+			if (direct)
+				end_subcomposite();
+			else {
+				priv->cr = priv->cr_target;
+				cairo_mask_surface(priv->cr, priv->surf_layer, 0, 0);
+				cairo_fill(priv->cr);
+			}
 			//cairo_paint_with_alpha(priv->cr, conf_core.appearance.layer_alpha);
 			//cairo_paint_with_alpha(priv->cr, 1.0);
 
