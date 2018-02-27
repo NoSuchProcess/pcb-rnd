@@ -28,10 +28,6 @@
 ? BUG: delete subc inside a polygon -> padstack cutouts are only partially flooded; undo -> wrong cutouts remain unchanged (should be reclipped; after loading the layout again, the polygon is reclipped correctly) [wojciechk8]
 	-> bug_files/polygon_cutouts.lht (delete the subc; undo)
 - BUG: polygon/polyhole lines should be drawn only in 45deg directions when all-direction lines are disabled (pcb_tool_poly_adjust_attached_objects, pcb_line_45) [wojciechk8]
-+ BUG: pin names ('d') of subc shouldn't be visible from the other side of board [wojciechk8]
-	-> not a bug: we don't have dedicated padstack or subcircuit sides any more, so it can not be defined when the padstack is on the other side, thus we always display pin numbers
-+ BUG: 'f' doesn't detect connection from ratline to padstack (padstack -> ratline works; ratline <-> line works) [wojciechk8]
-+ BUG: can't draw new ratlines [wojciechk8]
 ? BUG: lihata via/pin -> padstack conversion removes thermal flags (it seems that with .pcb works good) [wojciechk8]
 	-> bug_files/via_thermal.lht (the via has a thermal on top-sig layer which is not displayed after conversion to padstack)
 ? BUG: hide floaters doesn't work [wojciechk8]
