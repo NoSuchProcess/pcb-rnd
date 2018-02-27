@@ -101,7 +101,7 @@ done | awk -v "meta_deps=$meta_deps" '
 		print "</table>"
 
 		print "<h3> ./configure arguments </h3>"
-		print "--disable-all"
+		print "--all=disable"
 		for(p in CFG_BUILDIN)
 				print "--buildin-" p
 		for(p in CFG_PLUGIN)
