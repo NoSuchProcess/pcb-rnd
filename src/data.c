@@ -742,7 +742,7 @@ void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar)
 	pcb_data_clip_dirty(data, enable_progbar);
 }
 
-void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
+void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool force_all)
 {
 	pcb_cardinal_t sum = 0, n = 0;
 
@@ -754,7 +754,7 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 	} PCB_END_LOOP;
 
 	PCB_POLY_ALL_LOOP(data); {
-		if (polygon->clip_dirty)
+		if (force_all || polygon->clip_dirty)
 			sum++;
 	} PCB_ENDALL_LOOP;
 
@@ -763,7 +763,7 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 	   guarantee that by the time the poly-vs-poly clearance needs to be
 	   calculated, the clearing poly has a contour */
 	PCB_POLY_ALL_LOOP(data); {
-		if ((polygon->clip_dirty) && (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
+		if ((force_all || polygon->clip_dirty) && (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
 			pcb_poly_init_clip(data, layer, polygon);
 #warning TODO: progbar
 /*		if ((n % 10) == 0) */
@@ -771,13 +771,24 @@ void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
 	} PCB_ENDALL_LOOP;
 
 	PCB_POLY_ALL_LOOP(data); {
-		if ((polygon->clip_dirty) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
+		if ((force_all || polygon->clip_dirty) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
 			pcb_poly_init_clip(data, layer, polygon);
 #warning TODO: progbar
 /*		if ((n % 10) == 0) */
 		n++;
 	} PCB_ENDALL_LOOP;
 }
+
+void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
+{
+	pcb_data_clip_all_poly(data, enable_progbar, pcb_false);
+}
+
+void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar)
+{
+	pcb_data_clip_all_poly(data, enable_progbar, pcb_true);
+}
+
 
 void pcb_data_flag_change(pcb_data_t *data, pcb_obj_type_t mask, int how, unsigned long flags)
 {
