@@ -32,7 +32,7 @@
 	-> bug_files/via_thermal.lht (the via has a thermal on top-sig layer which is not displayed after conversion to padstack)
 - BUG: hide floaters doesn't work [wojciechk8]
 	-> bug_files/hide_floaters.lht
-- BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
++ BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
 
 
 Low prio:
