@@ -14,6 +14,8 @@ do
 	sed "s/^/$pkg /" < $n
 done | awk -v "meta_deps=$meta_deps" '
 	BEGIN {
+		gsub(" ", " pcb-rnd-", meta_deps)
+		sub("^", "pcb-rnd-", meta_deps)
 		while((getline < "desc") == 1) {
 			if ($0 ~ "^@") {
 				pkg=$0
