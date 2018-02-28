@@ -1083,12 +1083,18 @@ void pcb_pin_draw(pcb_pin_t *pin, pcb_bool draw_hole)
 
 pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t * b, void *cl)
 {
+	if (pcb_hidden_floater((pcb_any_obj_t*)b))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	pcb_pin_draw((pcb_pin_t *) b, pcb_false);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_pin_name(pcb_pin_t *pin)
 {
+	if (pcb_hidden_floater((pcb_any_obj_t*)pin))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pin))
 		_draw_pv_name(pin);
 }
@@ -1112,6 +1118,9 @@ pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t * b, void *cl)
 
 static void draw_via(pcb_pin_t *via, pcb_bool draw_hole)
 {
+	if (pcb_hidden_floater((pcb_any_obj_t*)via))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	SetPVColor(via, PCB_TYPE_VIA);
 	_draw_pv(via, draw_hole);
 }
@@ -1120,6 +1129,8 @@ pcb_r_dir_t pcb_via_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *via = (pcb_pin_t *)b;
 
+	if (pcb_hidden_floater((pcb_any_obj_t*)b))
+		return PCB_R_DIR_FOUND_CONTINUE;
 	if (PCB->SubcPartsOn || !pcb_gobj_parent_subc(via->parent_type, &via->parent))
 		draw_via(via, pcb_false);
 	return PCB_R_DIR_FOUND_CONTINUE;

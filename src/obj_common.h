@@ -172,6 +172,9 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 /* Returns the first invalid character of an ID (terminal, refdes) or NULL */
 const char *pcb_obj_id_invalid(const char *id);
 
+#define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
+
+
 /* set const char *dst to a color, depending on the bound layer type:
    top silk and copper get the color of the first crresponding layer
    from current PCB, the rest get the far-side color;

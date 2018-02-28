@@ -391,6 +391,9 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_shape_t *shape;
 	pcb_layergrp_t *grp = NULL;
 
+	if (pcb_hidden_floater((pcb_any_obj_t*)b))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
 		return PCB_R_DIR_NOT_FOUND;
 

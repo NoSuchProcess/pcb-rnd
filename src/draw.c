@@ -711,6 +711,9 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 
 void pcb_erase_obj(int type, void *lptr, void *ptr)
 {
+	if (pcb_hidden_floater((pcb_any_obj_t *)ptr))
+		return;
+
 	switch (type) {
 	case PCB_TYPE_PSTK:
 		pcb_pstk_invalidate_erase((pcb_pstk_t *) ptr);
@@ -753,6 +756,9 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 
 void pcb_draw_obj(pcb_any_obj_t *obj)
 {
+	if (pcb_hidden_floater(obj))
+		return;
+
 	switch (obj->type) {
 	case PCB_OBJ_VIA:
 		if (PCB->ViaOn)
@@ -811,6 +817,9 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 
 static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
 {
+	if (pcb_hidden_floater(obj))
+		return;
+
 	/* do not show layer-object labels of the other side on non-pinout views */
 	if ((!pcb_draw_doing_pinout) && (obj->parent_type == PCB_PARENT_LAYER)) {
 		pcb_layer_t *ly = pcb_layer_get_real(obj->parent.layer);
