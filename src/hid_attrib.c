@@ -51,6 +51,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 {
 	pcb_hid_attr_node_t *ha;
 	int i, e, ok;
+	char *filename = NULL;
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
@@ -92,7 +93,8 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 			}
 		}
 
-	while (*argc && (*argv)[0][0] == '-' && (*argv)[0][1] == '-') {
+	while(*argc > 0)
+	if (*argc && (*argv)[0][0] == '-' && (*argv)[0][1] == '-') {
 		int bool_val;
 		int arg_ofs;
 
@@ -196,6 +198,25 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 		fprintf(stderr, "unrecognized option: %s\n", (*argv)[0]);
 		exit(1);
 	got_match:;
+	}
+	else {
+		/* Any argument without the "--" is considered a filename. Take only
+		   one filename for now */
+		if (filename == NULL) {
+			filename = (*argv)[0];
+			(*argc)--;
+			(*argv)++;
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename wasy: %s; offending second filename: %s\n", filename, (*argv)[0]);
+			exit(1);
+		}
+	}
+
+	/* restore filename to the first argument */
+	if (filename != NULL) {
+		(*argv)[0] = filename;
+		(*argc) = 1;
 	}
 }
 
