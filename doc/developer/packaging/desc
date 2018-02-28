@@ -3,6 +3,11 @@
 
 	Install pcb-rnd core and the most commonly used plugins.
 
+@pcb-rnd-doc
+	Documentation for pcb-rnd
+	
+	User manual (html) and manual pages.
+
 @pcb-rnd-core
 	pcb-rnd executable with the core functionality
 

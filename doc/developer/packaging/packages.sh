@@ -79,8 +79,11 @@ done | awk -v "meta_deps=$meta_deps" '
 		}
 
 		PKG_DEP["core"] = ""
+		PKG_DEP["doc"] = ""
 		PKG_DEP["pcb-rnd"] = meta_deps
 		PKG["pcb-rnd"] = "&lt;metapackage&gt;"
+		PKG["pcb-rnd-doc"] = "&nbsp;"
+		IFILES["pcb-rnd-doc"] = "/usr/share/doc/*"
 
 		print "<h3> Package summary and dependencies </h3>"
 		print "<table border=1>"
