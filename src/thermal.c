@@ -176,8 +176,8 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 	nx = -vy;
 	ny = vx;
 
-	clr = line->Clearance;
-	clrth = (line->Clearance + line->Thickness) / 2;
+	clr = line->Clearance/2;
+	clrth = (line->Clearance/2 + line->Thickness) / 2;
 
 	assert(line->thermal & PCB_THERMAL_ON); /* caller should have checked this */
 	switch(line->thermal & 3) {
@@ -359,7 +359,7 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 			}
 			return pc;
 		case PCB_THERMAL_SHARP:
-			pa = pcb_poly_from_line(line, line->Thickness + line->Clearance*2);
+			pa = pcb_poly_from_line(line, line->Thickness + line->Clearance);
 			th = line->Thickness/2 < clr ? line->Thickness/2 : clr;
 			clrth *= 2;
 			if (line->thermal & PCB_THERMAL_DIAGONAL) {
@@ -651,7 +651,7 @@ static void pcb_thermal_area_pa_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, 
 pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
 {
 	pcb_polyarea_t *pa, *pres = NULL;
-	pcb_coord_t clr = poly->Clearance;
+	pcb_coord_t clr = poly->Clearance/2;
 	pcb_poly_it_t it;
 
 	assert(poly->thermal & PCB_THERMAL_ON); /* caller should have checked this */
@@ -754,7 +754,7 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 					ltmp.Point2.X = ps->x + shp->data.line.x2;
 					ltmp.Point2.Y = ps->y + shp->data.line.y2;
 					ltmp.Thickness = shp->data.line.thickness;
-					ltmp.Clearance = clearance;
+					ltmp.Clearance = clearance*2;
 					ltmp.thermal = thr;
 					pres = pcb_thermal_area_line(pcb, &ltmp, lid);
 				}
