@@ -906,7 +906,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	parse_text(&Name, lht_dom_hash_get(obj, "name"));
 	parse_text(&Number, lht_dom_hash_get(obj, "number"));
 
-	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance*2, Mask, DrillingHole, Name, flg);
+	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
 	if (ps == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to convert old via to padstack\n");
 		return 0;
