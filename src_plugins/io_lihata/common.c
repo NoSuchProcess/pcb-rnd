@@ -32,6 +32,7 @@
 #include "data.h"
 #include "macro.h"
 #include "common.h"
+#include "thermal.h"
 
 static const char *thermal_style[] = {
 	NULL,
@@ -42,7 +43,16 @@ static const char *thermal_style[] = {
 	"horver-round"
 };
 
-int io_lihata_resolve_thermal_style(const char *name)
+static const int thermal_style_bits[] = {
+	0,
+	PCB_THERMAL_ON | PCB_THERMAL_DIAGONAL | PCB_THERMAL_SHARP,
+	PCB_THERMAL_ON | PCB_THERMAL_SHARP,
+	PCB_THERMAL_ON | PCB_THERMAL_SOLID,
+	PCB_THERMAL_ON | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ROUND,
+	PCB_THERMAL_ON | PCB_THERMAL_ROUND
+};
+
+int io_lihata_resolve_thermal_style_old(const char *name)
 {
 	int n;
 	char *end;
@@ -52,16 +62,18 @@ int io_lihata_resolve_thermal_style(const char *name)
 
 	for(n = 1; n < PCB_ENTRIES(thermal_style); n++)
 		if (strcmp(name, thermal_style[n]) == 0)
-			return n;
+			return thermal_style_bits[n];
 
 	n = strtol(name, &end, 10);
-	if (*end == '\0')
-		return n;
+	if (*end == '\0') {
+		if ((n >= 0) && (n < sizeof(thermal_style_bits) / sizeof(thermal_style_bits[0])))
+			return thermal_style_bits[n];
+	}
 
 	return 0;
 }
 
-const char *io_lihata_thermal_style(int idx)
+const char *io_lihata_thermal_style_old(int idx)
 {
 	if ((idx > 0) && (idx < PCB_ENTRIES(thermal_style)))
 		return thermal_style[idx];

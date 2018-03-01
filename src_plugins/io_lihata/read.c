@@ -62,7 +62,7 @@
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 
 #warning cleanup TODO: put these in a gloal load-context-struct
-vtp0_t post_ids, post_thermal;
+vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 
 static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
@@ -333,77 +333,6 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-/* pt is a list of lihata node pointers to thermal nodes; each has user
-   data set to the flag. Look up layer info and fill in thermal flags. This
-   needs to be done in a separate pass at the end of parsing because
-   vias may precede layers in the lihata input file. */
-static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *pt)
-{
-	int i;
-
-	for(i = 0; i < vtp0_len(pt); i++) {
-		lht_node_t *n;
-		lht_dom_iterator_t it;
-		io_lihata_flag_holder fh;
-		lht_node_t *thr = pt->array[i];
-		pcb_flag_t *f = thr->user_data;
-
-		memset(&fh, 0, sizeof(fh));
-		fh.Flags = *f;
-		for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
-			if (n->type == LHT_TEXT) {
-				int layer = pcb_layer_by_name(pcb->Data, n->name);
-				if (layer < 0) {
-					pcb_message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
-					return -1;
-				}
-				PCB_FLAG_THERM_ASSIGN(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
-			}
-		}
-		*f = fh.Flags;
-	}
-	vtp0_uninit(pt);
-	return 0;
-}
-
-/* NOTE: in case of objects with thermal, f must point to the object's
-   flags because termals will be filled in at the end, in a 2nd pass and
-   we need to store the f pointer. */
-static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned char *intconn)
-{
-	io_lihata_flag_holder fh;
-
-	memset(&fh, 0, sizeof(fh));
-
-	if (fn != NULL) {
-		int n;
-		lht_node_t *thr;
-		for (n = 0; n < pcb_object_flagbits_len; n++) {
-			if (pcb_object_flagbits[n].object_types & object_type) {
-				pcb_bool b;
-				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
-					PCB_FLAG_SET(pcb_object_flagbits[n].mask, &fh);
-			}
-		}
-
-		thr = lht_dom_hash_get(fn, "thermal");
-		if (thr != NULL) {
-			thr->user_data = f;
-			vtp0_append(&post_thermal, thr);
-		}
-
-		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
-			fh.Flags.q = n;
-
-		if ((intconn != NULL) && (rdver < 3))
-			if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
-				*intconn = n;
-	}
-
-	*f = fh.Flags;
-	return 0;
-}
-
 static int parse_thermal(unsigned char *dst, lht_node_t *src)
 {
 	if (src == NULL)
@@ -420,6 +349,125 @@ static int parse_thermal(unsigned char *dst, lht_node_t *src)
 	return 0;
 }
 
+/* pt is a list of lihata node pointers to thermal nodes; each has user
+   data set to the object. Look up layer info and build the thermal. This
+   needs to be done in a separate pass at the end of parsing because
+   vias may precede layers in the lihata input file. */
+static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
+{
+	int i;
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+
+	/* pin/via before lihata v4: thermal is part of the object flag*/
+	for(i = 0; i < vtp0_len(old); i++) {
+		lht_node_t *thr = old->array[i];
+		pcb_pstk_t *ps = thr->user_data;
+
+		assert(ps->type == PCB_OBJ_PSTK);
+
+		ps->thermals.used = 0;
+
+		for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
+			if (n->type == LHT_TEXT) {
+				int layer = pcb_layer_by_name(pcb->Data, n->name) + 1;
+				if (layer > ps->thermals.used)
+					ps->thermals.used = layer;
+			}
+		}
+
+		if (ps->thermals.used > 0) {
+			ps->thermals.shape = calloc(sizeof(ps->thermals.shape[0]), ps->thermals.used);
+			for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
+				if (n->type == LHT_TEXT) {
+					int layer = pcb_layer_by_name(pcb->Data, n->name);
+					if (layer < 0) {
+						pcb_message(PCB_MSG_ERROR, "#LHT10o Invalid layer name in thermal: '%s'\n", n->name);
+						return -1;
+					}
+					ps->thermals.shape[layer] = io_lihata_resolve_thermal_style_old(n->data.text.value);
+				}
+			}
+		}
+		else
+			ps->thermals.shape = NULL;
+	}
+	vtp0_uninit(old);
+
+	/* from lihata v4 up: thermal is an object property (on heavy terminal layer objects) */
+	for(i = 0; i < vtp0_len(heavy); i++) {
+		lht_node_t *thr = heavy->array[i];
+		pcb_any_obj_t *obj = thr->user_data;
+
+		/* single character thermal: only on the layer the object is on */
+		parse_thermal(&obj->thermal, thr);
+	}
+	vtp0_uninit(heavy);
+
+	return 0;
+}
+
+static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned char *intconn, int can_have_thermal)
+{
+	io_lihata_flag_holder fh;
+
+	memset(&fh, 0, sizeof(fh));
+
+	if (fn != NULL) {
+		int n;
+		for (n = 0; n < pcb_object_flagbits_len; n++) {
+			if (pcb_object_flagbits[n].object_types & object_type) {
+				pcb_bool b;
+				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
+					PCB_FLAG_SET(pcb_object_flagbits[n].mask, &fh);
+			}
+		}
+
+		if ((!can_have_thermal) && (lht_dom_hash_get(fn, "thermal") != NULL)) {
+			pcb_message(PCB_MSG_ERROR, "#LHT10o Invalid flag thermal: object type can not have a thermal (ignored)\n");
+		}
+
+		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
+			fh.Flags.q = n;
+
+		if ((intconn != NULL) && (rdver < 3))
+			if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
+				*intconn = n;
+	}
+
+	*f = fh.Flags;
+	return 0;
+}
+
+static void parse_thermal_old(pcb_any_obj_t *obj, lht_node_t *fn)
+{
+	lht_node_t *thr;
+
+	if (fn == NULL)
+		return;
+
+	thr = lht_dom_hash_get(fn, "thermal");
+	if (thr == NULL)
+		return;
+
+	thr->user_data = obj;
+	vtp0_append(&post_thermal_old, thr);
+}
+
+/* heavy terminal thermal: save for later processing */
+static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
+{
+	if (src == NULL)
+		return 0;
+
+	if (src->type != LHT_LIST)
+		return -1;
+
+	src->user_data = obj;
+	vtp0_append(&post_thermal_heavy, src);
+
+	return 0;
+}
 
 static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int no_id, pcb_coord_t dx, pcb_coord_t dy)
 {
@@ -437,12 +485,12 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 		line->ID = 0;
 	else
 		parse_id(&line->ID, obj, 5);
-	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE, &intconn);
+	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 4)
-		parse_thermal(&line->thermal, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy((pcb_any_obj_t *)line, lht_dom_hash_get(obj, "thermal"));
 
 	parse_coord(&line->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&line->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -473,7 +521,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	int tmp;
 
 	parse_id(&rat.ID, obj, 4);
-	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE, NULL);
+	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE, NULL, 0);
 	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_coord(&rat.Point1.X, lht_dom_hash_get(obj, "x1"));
@@ -511,12 +559,12 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 		return -1;
 
 	parse_id(&arc->ID, obj, 4);
-	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ARC, &intconn);
+	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ARC, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&arc->Attributes, intconn);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 4)
-		parse_thermal(&arc->thermal, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy((pcb_any_obj_t *)arc, lht_dom_hash_get(obj, "thermal"));
 
 	parse_coord(&arc->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&arc->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -545,7 +593,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	unsigned char intconn = 0;
 
 	parse_id(&poly->ID, obj, 8);
-	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_POLY, &intconn);
+	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_POLY, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
@@ -553,7 +601,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 		parse_coord(&poly->Clearance, lht_dom_hash_get(obj, "clearance"));
 
 	if (rdver >= 4)
-		parse_thermal(&poly->thermal, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy((pcb_any_obj_t *)poly, lht_dom_hash_get(obj, "thermal"));
 
 	geo = lht_dom_hash_get(obj, "geometry");
 	if ((geo != NULL) && (geo->type == LHT_LIST)) {
@@ -625,7 +673,7 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 
 	parse_id(&text->ID, obj, 5);
 
-	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_TEXT, &intconn);
+	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_TEXT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&text->Attributes, intconn);
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
@@ -777,7 +825,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	ps = pcb_pstk_alloc(dt);
 
 	parse_id(&ps->ID, obj, 13);
-	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PSTK, &intconn);
+	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PSTK, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
@@ -843,11 +891,12 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	pcb_coord_t Thickness, Clearance, Mask, DrillingHole, X, Y;
 	char *Name = NULL, *Number = NULL;
 	pcb_flag_t flg;
+	lht_node_t *fln;
 
 	if (dt == NULL)
 		return -1;
 
-	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA, &intconn);
+	parse_flags(&flg, fln=lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA, &intconn, 1);
 	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&Clearance, lht_dom_hash_get(obj, "clearance"));
 	parse_coord(&Mask, lht_dom_hash_get(obj, "mask"));
@@ -866,6 +915,8 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	parse_id(&ps->ID, obj, 4);
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+	parse_thermal_old((pcb_any_obj_t *)ps, fln);
 
 	if (Number != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", Number);
@@ -886,7 +937,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask;
 	char *Name = NULL, *Number = NULL;
 
-	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD, &intconn);
+	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD, &intconn, 0);
 
 	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -928,7 +979,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	pcb_add_subc_to_data(dt, subc);
 
 	parse_id(&subc->ID, obj, 8);
-	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, NULL);
+	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, NULL, 0);
 	parse_attributes(&subc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_coord(&ox, lht_dom_hash_get(obj, "x"));
 	parse_coord(&oy, lht_dom_hash_get(obj, "y"));
@@ -1001,7 +1052,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	int n;
 
 	parse_id(&sc->ID, obj, 5);
-	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, &intconn);
+	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&sc->Attributes, intconn);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
@@ -1675,7 +1726,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	vtp0_init(&post_ids);
-	vtp0_init(&post_thermal);
+	vtp0_init(&post_thermal_old);
+	vtp0_init(&post_thermal_heavy);
 
 	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
 
@@ -1718,7 +1770,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	post_ids_assign(&post_ids);
-	if (post_thermal_assign(pcb, &post_thermal) != 0) {
+	if (post_thermal_assign(pcb, &post_thermal_old, &post_thermal_heavy) != 0) {
 		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
 	}

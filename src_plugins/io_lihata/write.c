@@ -207,7 +207,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 			if (t != 0) {
 				const char *name;
 				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].name);
-				name = io_lihata_thermal_style(t);
+				name = io_lihata_thermal_style_old(t);
 				if (name != NULL)
 					txt->data.text.value = pcb_strdup(name);
 				else
