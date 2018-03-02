@@ -39,6 +39,7 @@
 #include "error.h"
 #include "obj_common.h"
 #include "obj_arc_ui.h"
+#include "obj_pstk.h"
 
 const char *pcb_obj_type_name(pcb_objtype_t type)
 {
@@ -216,4 +217,28 @@ pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype)
 			res |= pcb_object_flagbits[n].mask;
 
 	return res;
+}
+
+pcb_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at)
+{
+	switch(o->type) {
+		case PCB_OBJ_POLY:
+			if (!(PCB_POLY_HAS_CLEARANCE((pcb_poly_t *)o)))
+				return 0;
+			return ((pcb_poly_t *)o)->Clearance;
+		case PCB_OBJ_LINE:
+			if (!(PCB_NONPOLY_HAS_CLEARANCE((pcb_line_t *)o)))
+				return 0;
+			return ((pcb_line_t *)o)->Clearance;
+		case PCB_OBJ_TEXT:
+			return 0;
+		case PCB_OBJ_ARC:
+			if (!(PCB_NONPOLY_HAS_CLEARANCE((pcb_arc_t *)o)))
+				return 0;
+			return ((pcb_arc_t *)o)->Clearance;
+		case PCB_OBJ_PSTK:
+			return obj_pstk_get_clearance(pcb, (pcb_pstk_t *)o, at);
+		default:
+			return 0;
+	}
 }

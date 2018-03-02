@@ -166,6 +166,11 @@ struct pcb_any_line_s {
    but not for an arc) */
 void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
 
+/* Return the clearance value of object on the specified layer (in
+   case of padstack - in case of other objects layer is ignored) */
+pcb_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at);
+
+
 /* Update cached attributes (->term) */
 void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value);
 

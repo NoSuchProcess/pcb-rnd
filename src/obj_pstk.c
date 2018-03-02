@@ -1065,3 +1065,17 @@ void pcb_pstk_rotate(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, double co
 	ctx.rotate.sina = sina;
 	pcb_pstkop_rotate(&ctx, pstk);
 }
+
+pcb_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layer_t *layer)
+{
+	pcb_pstk_shape_t *shp;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
+		return 0;
+
+	if (ps->Clearance > 0) /* global clarance overrides */
+		return ps->Clearance;
+
+	shp = pcb_pstk_shape_at(pcb, ps, layer);
+	return shp->clearance;
+}
