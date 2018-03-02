@@ -179,10 +179,18 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 /* Render the string of a text, doing substitution if needed - don't allocate if there's no subst */
 static unsigned char *pcb_text_render_str(pcb_text_t *text)
 {
+	unsigned char *res;
+
 	if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text))
 		return (unsigned char *)text->TextString;
 
-	return (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	res = (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	if (*res == '\0') {
+		free(res);
+		res = (unsigned char *)pcb_strdup("<?>");
+	}
+
+	return res;
 }
 
 int pcb_append_dyntext(gds_t *dst, pcb_any_obj_t *obj, const char *fmt)
