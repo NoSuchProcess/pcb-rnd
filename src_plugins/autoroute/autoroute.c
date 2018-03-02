@@ -669,6 +669,7 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	routebox_t **rbpp;
 	pcb_layer_type_t lyt;
 	int layergroup = -1;
+	pcb_coord_t clr;
 
 	lyt = pcb_layer_flags_(layer);
 	if (!(lyt & PCB_LYT_COPPER))
@@ -690,11 +691,13 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	*rbpp = (routebox_t *)calloc(sizeof(**rbpp), 1);
 	assert(*rbpp);
 	(*rbpp)->group = layergroup;
+	clr = pcb_obj_clearance_at(PCB, term, layer);
+pcb_printf("***** CLR=%mm\n", clr);
 	init_const_box(*rbpp,
-								 /*X1 */ term->BoundingBox.X1,
-								 /*Y1 */ term->BoundingBox.Y1,
-								 /*X2 */ term->BoundingBox.X2,
-								 /*Y2 */ term->BoundingBox.Y2,
+								 /*X1 */ term->BoundingBox.X1 + clr,
+								 /*Y1 */ term->BoundingBox.Y1 + clr,
+								 /*X2 */ term->BoundingBox.X2 - clr,
+								 /*Y2 */ term->BoundingBox.Y2 - clr,
 								 style->Clearance);
 	/* kludge for non-manhattan pads (which are not allowed at present) */
 #warning term TODO:
