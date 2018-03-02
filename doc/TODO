@@ -52,6 +52,7 @@ SUBC: element removal:
 	- hidename
 	- after removing pads, remove fillrect from hid - only pads used that; revise the rest of the drawing calls
 	- BUG: require unique refdes: remove feauture
+	- remove ToggleHideName()
 - autocrop:
 	- rewrite to use pcb_data_move
 	- make sure pcb_data_move does one full poly clipping, the way autocrop does
