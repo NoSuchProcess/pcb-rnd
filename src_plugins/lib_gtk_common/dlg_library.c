@@ -81,7 +81,7 @@
 
 /** how often should the parametric footprint redrawn while the parameters are
     changing - in millisec */
-#define PARAM_REFRESH_RATE_MS 100
+#define PARAM_REFRESH_RATE_MS 500
 
 /** \file   dlg_library.c
     \brief  Implementation of \ref pcb_gtk_library_t widget.
