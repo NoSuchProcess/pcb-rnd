@@ -524,8 +524,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"x", T_INT, 4, 4},
 			{"y", T_INT, 8, 4},
-			{"half_diameter", T_INT, 12, 4},
-			{"half_drill", T_INT, 12, 4}, /* try duplicating field */
+			{"half_diameter", T_UBF, 12, BITFIELD(2, 0, 15)},
+			{"half_drill", T_UBF, 12, BITFIELD(2, 0, 15)}, /* try duplicating field */
 			TERM
 		},
 	},
@@ -540,8 +540,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"shape", T_INT, 2, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"half_drill",  T_INT, 12, 2},
-			{"half_diameter",  T_INT, 14, 2},
+			{"half_drill", T_UBF, 12, BITFIELD(2, 0, 15)},
+			{"half_diameter", T_UBF, 14, BITFIELD(2, 0, 15)},
 			{"layers",  T_INT, 16, 1}, /*not 1:1 mapping */
 			{"stop",  T_BMB, 17, 0x01},
 			TERM

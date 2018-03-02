@@ -1545,7 +1545,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (st.parser.calls->load(&st.parser, Filename) != 0)
 		return -1;
 
-	if (eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0)
+	if (1 || eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0)
 		goto err;
 
 	st.pcb = pcb;
@@ -1593,8 +1593,10 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st.parser.calls = &trparse_bin_calls;
 
-	if (st.parser.calls->load(&st.parser, Filename) != 0)
+	if (st.parser.calls->load(&st.parser, Filename) != 0) {
+		printf("parser error\n");
 		return -1;
+	}
 
 	st.pcb = pcb;
 	st.elem_by_name = 0;
