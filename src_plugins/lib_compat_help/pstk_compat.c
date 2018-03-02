@@ -121,6 +121,9 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	pcb_pstk_tshape_t tshp;
 	int n;
 
+	assert(pad_dia > drill_dia);
+	assert(drill_dia > 0);
+
 	memset(&proto, 0, sizeof(proto));
 	memset(&tshp, 0, sizeof(tshp));
 	memset(&copper_master, 0, sizeof(copper_master));
