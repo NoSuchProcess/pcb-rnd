@@ -34,7 +34,6 @@
 	+> bug_files/hide_floaters.lht
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
 - BUG: tests/RTT broke [report: igor2]
-- BUG: poly-clear-poly bounding box ignores clearance bug_files/ppclr.lht [report: igor2]
 - BUG: heavy terminal polygon are lost in 'save as' bug_files/ppclr.lht [report: igor2]
 
 Low prio:
