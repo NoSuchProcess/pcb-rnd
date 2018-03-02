@@ -136,27 +136,27 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	proto.tr.array = &tshp;
 
 	if (plated) {
-	tshp.len = 3 + (mask > 0 ? 2 : 0);
+		tshp.len = 3 + (mask > 0 ? 2 : 0);
 
-/* we need to generate the shape only once as it's the same on all */
-	if (compat_via_shape_gen(&copper_master, cshape, pad_dia) != 0)
-		return NULL;
-
-	for(n = 0; n < 3; n++)
-		memcpy(&shape[n], &copper_master, sizeof(copper_master));
-	shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
-	shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
-	shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
-
-	if (mask > 0) {
-		if (compat_via_shape_gen(&mask_master, cshape, mask) != 0)
+		/* we need to generate the shape only once as it's the same on all */
+		if (compat_via_shape_gen(&copper_master, cshape, pad_dia) != 0)
 			return NULL;
+
+		for(n = 0; n < 3; n++)
+			memcpy(&shape[n], &copper_master, sizeof(copper_master));
+		shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
+		shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
+		shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
+
+		if (mask > 0) {
+			if (compat_via_shape_gen(&mask_master, cshape, mask) != 0)
+				return NULL;
 		
-		memcpy(&shape[3], &mask_master, sizeof(mask_master));
-		memcpy(&shape[4], &mask_master, sizeof(mask_master));
-		shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-		shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-	}
+			memcpy(&shape[3], &mask_master, sizeof(mask_master));
+			memcpy(&shape[4], &mask_master, sizeof(mask_master));
+			shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+		}
 	}
 	else
 		tshp.len = 0;
