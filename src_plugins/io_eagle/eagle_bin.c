@@ -466,7 +466,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_CIRCLE, 0xFF5F, "circle",
+	{ PCB_EGKW_SECT_CIRCLE, 0xFF53, "circle",
 		{ /* field match */
 			TERM
 		},
