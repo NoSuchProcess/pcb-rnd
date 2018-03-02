@@ -11,7 +11,8 @@
 + BUG: autorouter assert: bug_files/autorouter.lht [report: barjac]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - doc: explain the library path in 03_data [report: karl]
-- BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
++ BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
+	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous [report: Igor2]
 - BUG: DRC preview windows don't show all padstacks after a shift-tab flip - bug_files/drc1.lht [report: Igor2]
 + BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
