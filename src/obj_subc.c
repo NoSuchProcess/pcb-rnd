@@ -1262,7 +1262,8 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1);
 		ps->protoi = -1;
 		ps->parent.data = new_parent;
-		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		if (dst_is_pcb)
+			pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		chg++;
 	}
 
@@ -1310,6 +1311,9 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			ctx->buffer.dst->subc_tree = pcb_r_create_tree();
 		pcb_r_insert_entry(ctx->buffer.dst->subc_tree, (pcb_box_t *)sc);
 	}
+
+	if (dst_is_pcb)
+		PCB_SET_PARENT(sc, data, ctx->buffer.dst);  /* have to set sc parent before relocate globals so that poly clearings will work */
 
 	/* move layer local */
 	for(n = 0; n < sc->data->LayerN; n++) {
