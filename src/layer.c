@@ -454,7 +454,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 
 int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
-	pcb_layer_id_t l;
+	pcb_layer_id_t l, at = -1;
 
 	/* sanity checks */
 	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
@@ -477,8 +477,6 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		return 1;
 	}
 
-	pcb_undo_add_layer_move(old_index, new_index);
-	pcb_undo_inc_serial();
 
 	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
 		pcb_layergrp_t *g;
@@ -513,6 +511,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		pcb_layervis_change_group_vis(new_lid, 1, 1);
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		at = new_lid;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
 		pcb_layergrp_id_t gid;
@@ -568,6 +567,9 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		   order. In this system the index of the logical layer on the logical
 		   layer list is insignificant, thus we shouldn't try to change it. */
 	}
+
+	pcb_undo_add_layer_move(old_index, new_index, at);
+	pcb_undo_inc_serial();
 
 	return 0;
 }

@@ -27,6 +27,7 @@ typedef struct {								/* information about moves between layers */
 typedef struct {								/* information about layer changes */
 	int old_index;
 	int new_index;
+	int at;
 } LayerChangeType, *LayerChangeTypePtr;
 
 typedef struct {								/* information about poly clear/restore */

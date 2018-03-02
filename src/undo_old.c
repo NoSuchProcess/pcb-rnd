@@ -744,9 +744,21 @@ static pcb_bool UndoLayerMove(UndoListTypePtr Entry)
 	LayerChangeTypePtr l = &Entry->Data.LayerChange;
 	int tmp;
 
-	tmp = l->new_index;
-	l->new_index = l->old_index;
-	l->old_index = tmp;
+	if (l->old_index == -1) { /* was creating new */
+		l->old_index = l->at;
+		l->at = l->new_index;
+		l->new_index = -1;
+	}
+	else if (l->new_index == -1) { /* was deleting existing */
+		l->new_index = l->at;
+		l->at = l->old_index;
+		l->old_index = -1;
+	}
+	else {
+		tmp = l->new_index;
+		l->new_index = l->old_index;
+		l->old_index = tmp;
+	}
 
 	if (pcb_layer_move(PCB, l->old_index, l->new_index, -1))
 		return pcb_false;
@@ -1295,7 +1307,7 @@ void pcb_undo_add_obj_to_change_radii(int Type, void *Ptr1, void *Ptr2, void *Pt
 /* ---------------------------------------------------------------------------
  * adds a layer change (new, delete, move) to the undo list.
  */
-void pcb_undo_add_layer_move(int old_index, int new_index)
+void pcb_undo_add_layer_move(int old_index, int new_index, int at)
 {
 	UndoListTypePtr undo;
 
@@ -1303,6 +1315,7 @@ void pcb_undo_add_layer_move(int old_index, int new_index)
 		undo = GetUndoSlot(PCB_UNDO_LAYERMOVE, 0, 0);
 		undo->Data.LayerChange.old_index = old_index;
 		undo->Data.LayerChange.new_index = new_index;
+		undo->Data.LayerChange.at = at;
 	}
 }
 

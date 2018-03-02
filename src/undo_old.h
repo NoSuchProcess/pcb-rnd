@@ -60,7 +60,7 @@ void pcb_undo_add_obj_to_mask_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_radii(int, void *, void *, void *);
 void pcb_undo_add_obj_to_clear_poly(int, void *, void *, void *, pcb_bool);
-void pcb_undo_add_layer_move(int, int);
+void pcb_undo_add_layer_move(int, int, int);
 void pcb_undo_add_netlist_lib(pcb_lib_t *);
 
 /* ---------------------------------------------------------------------------
