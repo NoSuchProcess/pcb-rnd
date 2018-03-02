@@ -123,6 +123,8 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 
 	assert(pad_dia > drill_dia);
 	assert(drill_dia > 0);
+	assert(clearance >= 0);
+	assert(mask >= 0);
 
 	memset(&proto, 0, sizeof(proto));
 	memset(&tshp, 0, sizeof(tshp));
@@ -442,6 +444,10 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_
 	pcb_pstk_tshape_t tshp;
 	int n;
 	pcb_coord_t cx, cy;
+
+	assert(thickness >= 0);
+	assert(clearance >= 0);
+	assert(mask >= 0);
 
 	cx = (x1 + x2) / 2;
 	cy = (y1 + y2) / 2;
