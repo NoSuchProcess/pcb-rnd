@@ -568,8 +568,12 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		   layer list is insignificant, thus we shouldn't try to change it. */
 	}
 
-	pcb_undo_add_layer_move(old_index, new_index, at);
-	pcb_undo_inc_serial();
+	if (at >= 0) {
+		pcb_undo_add_layer_move(old_index, new_index, at);
+		pcb_undo_inc_serial();
+	}
+	else
+		pcb_message(PCB_MSG_WARNING, "this operation will not be undoable.\n");
 
 	return 0;
 }
