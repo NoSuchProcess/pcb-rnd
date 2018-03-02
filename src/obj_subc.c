@@ -1223,8 +1223,8 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_r_insert_entry(dl->polygon_tree, (pcb_box_t *)poly);
 			chg++;
 		}
-		if (dst_is_pcb)
-			pcb_poly_ppclear(poly);
+		if (dst_is_pcb && (dl != NULL))
+			pcb_poly_ppclear_at(poly, dl);
 	}
 
 	if (!dst_is_pcb) {

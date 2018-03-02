@@ -206,15 +206,21 @@ PCB_INLINE pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_pol
    it to dst - implemented in polygon.c */
 void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pcb_coord_t clearance);
 
+
+#define pcb_poly_ppclear_at(poly, layer) \
+do { \
+	if (layer->is_bound) layer = layer->meta.bound.real; \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
+		pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLY, layer, poly); \
+} while(0)
+
 /* Let the poly clear sorrunding polys in its layer */
 #define pcb_poly_ppclear(poly) \
 do { \
 	if (poly->parent.layer != NULL) { \
 		pcb_layer_t *layer = pcb_layer_get_real(poly->parent.layer); \
 		if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
-			if (layer->is_bound) layer = layer->meta.bound.real; \
-			if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
-				pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLY, layer, poly); \
+			pcb_poly_ppclear_at(poly, layer); \
 		} \
 	} \
 } while(0)
