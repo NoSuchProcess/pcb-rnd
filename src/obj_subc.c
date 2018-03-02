@@ -1165,6 +1165,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	pcb_arc_t *arc;
 	gdl_iterator_t it;
 	int chg = 0;
+	pcb_data_t *dst_data = dl == NULL ? NULL : dl->parent;
 
 	linelist_foreach(&sl->Line, &it, line) {
 		if (src_has_real_layer) {
@@ -1177,6 +1178,8 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_r_insert_entry(dl->line_tree, (pcb_box_t *)line);
 			chg++;
 		}
+		if (dst_is_pcb && (dl != NULL))
+			pcb_poly_clear_from_poly(dst_data, PCB_TYPE_LINE, dl, line);
 	}
 
 	arclist_foreach(&sl->Arc, &it, arc) {
@@ -1190,6 +1193,8 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_r_insert_entry(dl->arc_tree, (pcb_box_t *)arc);
 			chg++;
 		}
+		if (dst_is_pcb && (dl != NULL))
+			pcb_poly_clear_from_poly(dst_data, PCB_TYPE_ARC, dl, arc);
 	}
 
 	textlist_foreach(&sl->Text, &it, text) {
@@ -1203,6 +1208,8 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_r_insert_entry(dl->text_tree, (pcb_box_t *)text);
 			chg++;
 		}
+		if (dst_is_pcb && (dl != NULL))
+			pcb_poly_clear_from_poly(dst_data, PCB_TYPE_TEXT, dl, text);
 	}
 
 	polylist_foreach(&sl->Polygon, &it, poly) {
