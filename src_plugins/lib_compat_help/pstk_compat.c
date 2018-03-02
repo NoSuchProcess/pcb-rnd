@@ -131,10 +131,12 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	memset(&copper_master, 0, sizeof(copper_master));
 	memset(&mask_master, 0, sizeof(mask_master));
 
-	tshp.len = 3 + (mask > 0 ? 2 : 0);
 	tshp.shape = shape;
 	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
 	proto.tr.array = &tshp;
+
+	if (plated) {
+	tshp.len = 3 + (mask > 0 ? 2 : 0);
 
 /* we need to generate the shape only once as it's the same on all */
 	if (compat_via_shape_gen(&copper_master, cshape, pad_dia) != 0)
@@ -155,6 +157,9 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 		shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 		shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 	}
+	}
+	else
+		tshp.len = 0;
 
 	proto.hdia = drill_dia;
 	proto.hplated = plated;
