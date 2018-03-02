@@ -194,9 +194,19 @@ void pcb_poly_bbox(pcb_poly_t *Polygon)
 		PCB_MAKE_MAX(Polygon->BoundingBox.X2, point->X);
 		PCB_MAKE_MAX(Polygon->BoundingBox.Y2, point->Y);
 	}
+	PCB_END_LOOP;
+
+	/* clearance is generally considered to be part of the bbox for all objects */
+	if (PCB_POLY_HAS_CLEARANCE(Polygon)) {
+		pcb_coord_t clr = Polygon->Clearance/2;
+		Polygon->BoundingBox.X1 -= clr;
+		Polygon->BoundingBox.Y1 -= clr;
+		Polygon->BoundingBox.X2 += clr;
+		Polygon->BoundingBox.Y2 += clr;
+	}
+
 	/* boxes don't include the lower right corner */
 	pcb_close_box(&Polygon->BoundingBox);
-	PCB_END_LOOP;
 }
 
 int pcb_poly_eq(const pcb_host_trans_t *tr1, const pcb_poly_t *p1, const pcb_host_trans_t *tr2, const pcb_poly_t *p2)
