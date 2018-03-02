@@ -151,6 +151,7 @@ void pcb_layervis_reset_stack(void)
 	PCB->SubcPartsOn = pcb_true;
 	PCB->RatOn = pcb_true;
 	PCB->padstack_mark_on = pcb_true;
+	PCB->hole_on = pcb_true;
 
 	/* Bring the top copper group to the front and make it active.  */
 	if (pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)

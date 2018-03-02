@@ -74,7 +74,7 @@ struct pcb_board_s {
 	  ViaOn,											/* visibility flags */
 	  RatOn, InvisibleObjectsOn, PinOn,
 	  RatDraw,										/* we're drawing rats */
-	  SubcOn, SubcPartsOn, padstack_mark_on;
+	  SubcOn, SubcPartsOn, padstack_mark_on, hole_on;
 	pcb_bool loose_subc;          /* when set, subc parts are not locked into the subc */
 	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;

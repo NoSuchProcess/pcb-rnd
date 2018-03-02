@@ -445,6 +445,10 @@ static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area)
 static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype)
 {
 	pcb_pstk_draw_t ctx;
+
+	if (!PCB->hole_on)
+		return;
+
 	ctx.pcb = PCB;
 	ctx.gid = group;
 	ctx.holetype = holetype;

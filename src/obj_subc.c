@@ -1749,7 +1749,8 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	for(o = pcb_rtree_first(&it, sc->data->padstack_tree, (pcb_rtree_box_t *)drawn_area); o != NULL; o = pcb_rtree_next(&it)) {
 		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_callback((pcb_box_t *)o, &ctx);
-			pcb_pstk_draw_hole_callback((pcb_box_t *)o, &ctx);
+			if (PCB->hole_on)
+				pcb_pstk_draw_hole_callback((pcb_box_t *)o, &ctx);
 		}
 	}
 
