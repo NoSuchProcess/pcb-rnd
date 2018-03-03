@@ -223,7 +223,6 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
 		pcb_trace(" %mm", mesh->line[dir].edge.array[n]);
 		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], PCB_MM_TO_COORD(0.1), PCB_MM_TO_COORD(0.5), PCB_MM_TO_COORD(0.1));
-		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], 0, PCB->MaxHeight, PCB_MM_TO_COORD(0.03));
 	}
 	pcb_trace("\n");
 
@@ -237,8 +236,23 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	}
 	pcb_trace("\n");
 
+	pcb_trace("%s result:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	for(n = 0; n < vtc0_len(&mesh->line[dir].result); n++) {
+		pcb_trace(" %mm", mesh->line[dir].result.array[n]);
+		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, PCB->MaxHeight, PCB_MM_TO_COORD(0.03));
+	}
 }
 
+static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+{
+	size_t n;
+	pcb_trace("build:\n");
+	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
+		pcb_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
+		pcb_trace(" %mm..%mm", c1, c2);
+		vtc0_append(&mesh->line[dir].result, c1);
+	}
+}
 
 int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
@@ -247,6 +261,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 	mesh_gen_obj(mesh, dir);
 	mesh_sort(mesh, dir);
+	mesh_auto_build(mesh, dir);
 
 	if (mesh->ui_layer != NULL)
 		mesh_vis(mesh, dir);
