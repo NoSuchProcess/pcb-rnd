@@ -3,15 +3,23 @@
 #include "vtr0.h"
 
 typedef struct {
-	vtc0_t fixed;    /* input: fixed lines that must be in the mesh */
-	vtr0_t ranges;   /* input: density ranges */
-	vtc0_t result;   /* resulting line coordinates */
+	vtc0_t user_line; /* input: lines forced by the user */
+	vtr0_t user_dens; /* input: density forced by the user */
+	vtc0_t edge;      /* input: around object edge - lines that must be in the mesh */
+	vtr0_t dens;      /* input: density ranges; data[0].c is the target density */
+	vtc0_t result;    /* resulting line coordinates */
 } pcb_mesh_lines_t;
+
+typedef enum {
+	PCB_MESH_HORIZONTAL, /* variable y coord (horizontal lines) */
+	PCB_MESH_VERTICAL,   /* variable x coord (vertical lines) */
+	PCB_MESH_max
+} pcb_mesh_dir_t;
 
 typedef struct {
 	pcb_layer_t *layer;
-	pcb_coord_t dens_obj, dens_air; /* target density: distance between mesh lines above objects and above air */
-	pcb_mesh_lines_t hor, ver; /* horizontal (variable y) and vertical (variable x) lines of the mesh */
+	pcb_coord_t dens_obj, dens_gap;        /* target density: distance between mesh lines above objects and above gaps */
+	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
 } pcb_mesh_t;
 
 extern const char pcb_acts_mesh[];
