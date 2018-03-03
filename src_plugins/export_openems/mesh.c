@@ -288,6 +288,7 @@ static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t au
 static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
+	pcb_coord_t end;
 
 	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(0.1), "object edge");
 
@@ -309,9 +310,10 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_trace("\n");
 
 	pcb_trace("%s result:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	end = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxWidth : PCB->MaxHeight;
 	for(n = 0; n < vtc0_len(&mesh->line[dir].result); n++) {
 		pcb_trace(" %mm", mesh->line[dir].result.array[n]);
-		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, PCB->MaxHeight, PCB_MM_TO_COORD(0.03));
+		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, PCB_MM_TO_COORD(0.03));
 	}
 	pcb_trace("\n");
 }
@@ -461,6 +463,6 @@ int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	mesh.smooth = 1;
 	mesh.noimpl = 0;
 
-	mesh_auto(&mesh, PCB_MESH_VERTICAL);
+	mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
 	return 0;
 }
