@@ -166,6 +166,43 @@ static int cmp_range(const void *v1, const void *v2)
 	return c1->begin < c2->begin ? -1 : +1;
 }
 
+
+typedef struct {
+	pcb_coord_t min;
+	pcb_coord_t max;
+	int found;
+} mesh_maybe_t;
+
+static int cmp_maybe_add(const void *k, const void *v)
+{
+	mesh_maybe_t *ctx = k;
+	pcb_coord_t *c = v;
+
+	if ((*c >= ctx->min) && (*c <= ctx->max)) {
+		ctx->found = 1;
+		return 0;
+	}
+	if (*c < ctx->min)
+		return +1;
+	return -1;
+}
+
+static void mesh_maybe_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t dist)
+{
+	mesh_maybe_t ctx;
+	pcb_coord_t *c;
+	ctx.min = at - dist;
+	ctx.max = at + dist;
+	ctx.found = 0;
+
+	c = bsearch(&ctx, mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_maybe_add);
+	if (c == NULL) {
+#warning TODO: optimization: run a second bsearch and insert instead of this; testing: 45 deg line (won't have axis aligned edge for the 2/3 1/3 rule)
+		vtc0_append(&mesh->line[dir].edge, at);
+		qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
+	}
+}
+
 static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
@@ -214,6 +251,14 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		}
 	}
 
+	/* make sure there's a forced mesh line at region transitions */
+	for(n = 0; n < vtr0_len(&mesh->line[dir].dens); n++) {
+		pcb_range_t *r = &mesh->line[dir].dens.array[n];
+		if (n == 0)
+			mesh_maybe_add_edge(mesh, dir, r->begin, mesh->dens_gap);
+		mesh_maybe_add_edge(mesh, dir, r->end, mesh->dens_gap);
+	}
+
 	/* continous ranges: start and end */
 	r = vtr0_alloc_insert(&mesh->line[dir].dens, 0, 1);
 	r->begin = 0;
@@ -224,6 +269,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	r->begin = mesh->line[dir].dens.array[vtr0_len(&mesh->line[dir].dens)-2].end;
 	r->end = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
 	r->data[0].c = mesh->dens_gap;
+
 
 	return 0;
 }
@@ -464,6 +510,6 @@ int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	mesh.smooth = 1;
 	mesh.noimpl = 0;
 
-	mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
+	mesh_auto(&mesh, PCB_MESH_VERTICAL);
 	return 0;
 }
