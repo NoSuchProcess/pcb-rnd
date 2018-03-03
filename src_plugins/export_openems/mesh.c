@@ -68,10 +68,22 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	
 
 	linelist_foreach(&mesh->layer->Line, &it, line) {
-		int aligned = (line->Point1.Y == line->Point2.Y) || (line->Point1.X == line->Point2.X);
+		pcb_coord_t tmp, x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
+		int aligned = (x1 == x2) || (y1 == y2);
+
 		switch(dir) {
-			case PCB_MESH_HORIZONTAL: mesh_add_obj(mesh, dir, line->Point1.Y - line->Thickness/2, line->Point2.Y + line->Thickness/2, aligned); break;
-			case PCB_MESH_VERTICAL: mesh_add_obj(mesh, dir, line->Point1.X - line->Thickness/2, line->Point2.X + line->Thickness/2, aligned); break;
+			case PCB_MESH_HORIZONTAL:
+				if (y1 < y2)
+					mesh_add_obj(mesh, dir, y1 - line->Thickness/2, y2 + line->Thickness/2, aligned);
+				else
+					mesh_add_obj(mesh, dir, y2 - line->Thickness/2, y1 + line->Thickness/2, aligned);
+				break;
+			case PCB_MESH_VERTICAL:
+				if (x1 < x2)
+					mesh_add_obj(mesh, dir, x1 - line->Thickness/2, x2 + line->Thickness/2, aligned);
+				else
+					mesh_add_obj(mesh, dir, x2 - line->Thickness/2, x1 + line->Thickness/2, aligned);
+				break;
 			default: break;
 		}
 	}
