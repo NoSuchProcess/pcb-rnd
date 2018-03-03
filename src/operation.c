@@ -89,7 +89,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 	case PCB_TYPE_SUBC:
 		if (F->subc)
-			return (F->subc(ctx, (pcb_subc_t *) Ptr1));
+			return (F->subc(ctx, (pcb_subc_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_PIN:
