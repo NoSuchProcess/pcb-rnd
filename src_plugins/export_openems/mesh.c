@@ -163,7 +163,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 	/* merge overlapping ranges of the same density */
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens)-1; n++) {
-		pcb_range_t *r1 = &mesh->line[dir].dens.array[n], *r2 = &mesh->line[dir].dens.array[n];
+		pcb_range_t *r1 = &mesh->line[dir].dens.array[n], *r2 = &mesh->line[dir].dens.array[n+1];
 		if (r1->data[0].c != r2->data[0].c) continue;
 		if (r2->begin < r1->end) {
 			if (r2->end > r1->end)
