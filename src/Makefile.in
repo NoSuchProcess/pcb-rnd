@@ -169,9 +169,11 @@ put /local/pcb/OBJS [@
 	undo_old.o
 	unit.o
 	vtlibrary.o
+	vtc0.o
 	vtonpoint.o
 	vtpadstack.o
 	vtpadstack_t.o
+	vtr0.o
 	vtroutestyle.o
 	buildin.o
 	../src_3rd/liblihata/parser.o
