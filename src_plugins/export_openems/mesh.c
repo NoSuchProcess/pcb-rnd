@@ -68,7 +68,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	
 
 	linelist_foreach(&mesh->layer->Line, &it, line) {
-		pcb_coord_t tmp, x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
+		pcb_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
 		int aligned = (x1 == x2) || (y1 == y2);
 
 		switch(dir) {
