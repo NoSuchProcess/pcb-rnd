@@ -56,6 +56,8 @@ void pcb_tool_remove_notify_mode(void)
 			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 			return;
 		}
+
+#warning subc TODO: rewrite this to subc when elements are removed
 		if (type == PCB_TYPE_ELEMENT)
 			pcb_event(PCB_EVENT_RUBBER_REMOVE_ELEMENT, "ppp", ptr1, ptr2, ptr3);
 
