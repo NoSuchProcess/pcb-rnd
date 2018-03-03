@@ -64,6 +64,7 @@ static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, p
 static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	pcb_line_t *line;
+	pcb_line_t *arc;
 	pcb_poly_t *poly;
 	gdl_iterator_t it;
 	
@@ -76,6 +77,17 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 			default: break;
 		}
 	}
+
+	arclist_foreach(&mesh->layer->Arc, &it, arc) {
+		/* no point in encorcinf 1/3 2/3 rule, just set the range */
+		switch(dir) {
+			case PCB_MESH_HORIZONTAL: mesh_add_range(mesh, dir, arc->BoundingBox.Y1 + arc->Clearance/2, arc->BoundingBox.Y2 - arc->Clearance/2, mesh->dens_obj); break;
+			case PCB_MESH_VERTICAL:   mesh_add_range(mesh, dir, arc->BoundingBox.X1 + arc->Clearance/2, arc->BoundingBox.X2 - arc->Clearance/2, mesh->dens_obj); break;
+			default: break;
+		}
+	}
+
+#warning TODO: text and padstacks
 
 	polylist_foreach(&mesh->layer->Polygon, &it, poly) {
 		pcb_poly_it_t it;
