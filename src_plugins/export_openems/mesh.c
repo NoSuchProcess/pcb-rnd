@@ -64,7 +64,9 @@ static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, p
 static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	pcb_line_t *line;
+	pcb_poly_t *poly;
 	gdl_iterator_t it;
+	
 
 	linelist_foreach(&mesh->layer->Line, &it, line) {
 		int aligned = (line->Point1.Y == line->Point2.Y) || (line->Point1.X == line->Point2.X);
@@ -72,6 +74,59 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 			case PCB_MESH_HORIZONTAL: mesh_add_obj(mesh, dir, line->Point1.Y - line->Thickness/2, line->Point2.Y + line->Thickness/2, aligned); break;
 			case PCB_MESH_VERTICAL: mesh_add_obj(mesh, dir, line->Point1.X - line->Thickness/2, line->Point2.X + line->Thickness/2, aligned); break;
 			default: break;
+		}
+	}
+
+	polylist_foreach(&mesh->layer->Polygon, &it, poly) {
+		pcb_poly_it_t it;
+		pcb_polyarea_t *pa;
+
+		for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+			pcb_coord_t x, y;
+			pcb_pline_t *pl;
+			int go;
+
+			pl = pcb_poly_contour(&it);
+			if (pl != NULL) {
+				pcb_coord_t lx, ly, minx, miny, maxx, maxy;
+				
+				pcb_poly_vect_first(&it, &minx, &miny);
+				maxx = minx;
+				maxy = miny;
+				pcb_poly_vect_peek_prev(&it, &lx, &ly);
+				/* find axis aligned contour edges for the 2/3 1/3 rule */
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y)) {
+					switch(dir) {
+						case PCB_MESH_HORIZONTAL:
+							if (y == ly) {
+								int sign = (x < lx) ? +1 : -1;
+								mesh_add_edge(mesh, dir, y - sign * mesh->dens_obj * 2 / 3);
+								mesh_add_edge(mesh, dir, y + sign * mesh->dens_obj * 1 / 3);
+							}
+							break;
+						case PCB_MESH_VERTICAL:
+							if (x == lx) {
+								int sign = (y < ly) ? +1 : -1;
+								mesh_add_edge(mesh, dir, x - sign * mesh->dens_obj * 2 / 3);
+								mesh_add_edge(mesh, dir, x + sign * mesh->dens_obj * 1 / 3);
+							}
+							break;
+						default: break;
+					}
+					lx = x;
+					ly = y;
+					if (x < minx) minx = x;
+					if (y < miny) miny = y;
+					if (x > maxx) maxx = x;
+					if (y > maxy) maxy = y;
+				}
+				switch(dir) {
+					case PCB_MESH_HORIZONTAL: mesh_add_range(mesh, dir, miny, maxy, mesh->dens_obj); break;
+					case PCB_MESH_VERTICAL:   mesh_add_range(mesh, dir, minx, maxx, mesh->dens_obj); break;
+					default: break;
+				}
+				/* Note: holes can be ignored: holes are sorrunded by polygons, the grid is dense over them already */
+			}
 		}
 	}
 	return 0;
