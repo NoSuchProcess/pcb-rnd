@@ -364,7 +364,7 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
-static void mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
+static void mesh_auto_add_even(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
 {
 	long num = (c2 - c1) / d;
 
@@ -376,7 +376,7 @@ static void mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_co
 		vtc0_append(v, c1);
 }
 
-static pcb_coord_t mesh_auto_add_interp(vtr0_t *v, pcb_coord_t c, pcb_coord_t d1, pcb_coord_t d2, pcb_coord_t dd)
+static pcb_coord_t mesh_auto_add_interp(vtc0_t *v, pcb_coord_t c, pcb_coord_t d1, pcb_coord_t d2, pcb_coord_t dd)
 {
 	if (dd > 0) {
 		for(; d1 <= d2; d1 += dd) {
@@ -395,7 +395,7 @@ static pcb_coord_t mesh_auto_add_interp(vtr0_t *v, pcb_coord_t c, pcb_coord_t d1
 
 }
 
-static void mesh_auto_add_smooth(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2)
+static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2)
 {
 	pcb_coord_t len = c2 - c1, begin = c1, end = c2, glen;
 	int lines;
