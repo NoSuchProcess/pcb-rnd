@@ -197,6 +197,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 			if (r2->end > r1->end)
 				r1->end = r2->end;
 			vtr0_remove(&mesh->line[dir].dens, n+1, 1);
+			n--; /* make sure to check the next range against the current one, might be overlapping as well */
 		}
 	}
 
