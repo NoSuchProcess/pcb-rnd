@@ -28,6 +28,7 @@
 
 #include "mesh.h"
 #include "layer.h"
+#include "layer_ui.h"
 #include "board.h"
 #include "data.h"
 
@@ -174,21 +175,56 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
+static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t aux1, pcb_coord_t aux2, pcb_coord_t thick)
+{
+	if (dir == PCB_MESH_HORIZONTAL)
+		pcb_line_new(mesh->ui_layer, aux1, at, aux2, at, thick, 0, pcb_no_flags());
+	else
+		pcb_line_new(mesh->ui_layer, at, aux1, at, aux2, thick, 0, pcb_no_flags());
+}
+
+static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at1, pcb_coord_t at2, pcb_coord_t aux, pcb_coord_t thick)
+{
+	if (dir == PCB_MESH_HORIZONTAL)
+		pcb_line_new(mesh->ui_layer, aux, at1, aux, at2, thick, 0, pcb_no_flags());
+	else
+		pcb_line_new(mesh->ui_layer, at1, aux, at2, aux, thick, 0, pcb_no_flags());
+}
+
+static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t aux, const char *label)
+{
+	aux -= PCB_MM_TO_COORD(0.6);
+	if (dir == PCB_MESH_HORIZONTAL)
+		pcb_text_new(mesh->ui_layer, pcb_font(PCB, 0, 0), aux, 0, 1, 75, label, pcb_no_flags());
+	else
+		pcb_text_new(mesh->ui_layer, pcb_font(PCB, 0, 0), 0, aux, 0, 75, label, pcb_no_flags());
+
+}
+
 static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
+
+	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(0.1), "object edge");
+
 	pcb_trace("%s edges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
 		pcb_trace(" %mm", mesh->line[dir].edge.array[n]);
+		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], PCB_MM_TO_COORD(0.1), PCB_MM_TO_COORD(0.5), PCB_MM_TO_COORD(0.1));
+		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], 0, PCB->MaxHeight, PCB_MM_TO_COORD(0.03));
 	}
 	pcb_trace("\n");
+
+	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(2), "density ranges");
 
 	pcb_trace("%s ranges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens); n++) {
 		pcb_range_t *r = &mesh->line[dir].dens.array[n];
 		pcb_trace(" [%mm..%mm=%mm]", r->begin, r->end, r->data[0].c);
+		mesh_draw_range(mesh, dir, r->begin, r->end, PCB_MM_TO_COORD(2)+r->data[0].c/10, PCB_MM_TO_COORD(0.05));
 	}
 	pcb_trace("\n");
+
 }
 
 
@@ -199,18 +235,25 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 	mesh_gen_obj(mesh, dir);
 	mesh_sort(mesh, dir);
-	mesh_vis(mesh, dir);
+
+	if (mesh->ui_layer != NULL)
+		mesh_vis(mesh, dir);
 
 	return 0;
 }
+
+static const char *mesh_ui_cookie = "mesh ui layer cookie";
 
 const char pcb_acts_mesh[] = "mesh(AllRats|SelectedRats)";
 const char pcb_acth_mesh[] = "generate a mesh for simulation";
 int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	mesh.layer = CURRENT;
+	mesh.ui_layer = pcb_uilayer_alloc(mesh_ui_cookie, "mesh", "#007733");
+
 	mesh.dens_obj = PCB_MM_TO_COORD(0.2);
 	mesh.dens_gap = PCB_MM_TO_COORD(0.8);
+
 	mesh_auto(&mesh, PCB_MESH_VERTICAL);
 	return 0;
 }

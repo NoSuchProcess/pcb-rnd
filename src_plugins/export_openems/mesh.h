@@ -17,7 +17,8 @@ typedef enum {
 } pcb_mesh_dir_t;
 
 typedef struct {
-	pcb_layer_t *layer;
+	pcb_layer_t *layer;                    /* input layer (objects are picked up from this layer) */
+	pcb_layer_t *ui_layer;                 /* optional UI layer to draw the mesh on */
 	pcb_coord_t dens_obj, dens_gap;        /* target density: distance between mesh lines above objects and above gaps */
 	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
 } pcb_mesh_t;
