@@ -175,13 +175,11 @@ typedef struct {
 
 static int cmp_maybe_add(const void *k, const void *v)
 {
-	mesh_maybe_t *ctx = k;
-	pcb_coord_t *c = v;
+	const mesh_maybe_t *ctx = k;
+	const pcb_coord_t *c = v;
 
-	if ((*c >= ctx->min) && (*c <= ctx->max)) {
-		ctx->found = 1;
+	if ((*c >= ctx->min) && (*c <= ctx->max))
 		return 0;
-	}
 	if (*c < ctx->min)
 		return +1;
 	return -1;
