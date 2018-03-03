@@ -202,6 +202,8 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 		case PCB_LYT_PDRILL:
 		case PCB_LYT_UDRILL:
 			return 1;
+		case PCB_LYT_UI:
+			return 1;
 		case PCB_LYT_RAT:
 			return PCB->RatOn;
 		case PCB_LYT_CSECT:
