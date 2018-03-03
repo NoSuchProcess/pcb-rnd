@@ -169,6 +169,12 @@ static int cmp_range(const void *v1, const void *v2)
 static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
+	pcb_range_t *r;
+
+	if (vtr0_len(&mesh->line[dir].dens) < 1) {
+		pcb_message(PCB_MSG_ERROR, "There are not enough objects to do the meshing\n");
+		return -1;
+	}
 
 	qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
 	qsort(mesh->line[dir].dens.array, vtr0_len(&mesh->line[dir].dens), sizeof(pcb_range_t), cmp_range);
@@ -193,6 +199,30 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 			vtr0_remove(&mesh->line[dir].dens, n+1, 1);
 		}
 	}
+
+	/* continous ranges: fill in the gaps */
+	for(n = 0; n < vtr0_len(&mesh->line[dir].dens)-1; n++) {
+		pcb_range_t *r1 = &mesh->line[dir].dens.array[n], *r2 = &mesh->line[dir].dens.array[n+1];
+		if (r1->end < r2->begin) {
+			pcb_coord_t my_end = r2->begin; /* the insert will change r2 pointer */
+			pcb_range_t *r = vtr0_alloc_insert(&mesh->line[dir].dens, n+1, 1);
+			r->begin = r1->end;
+			r->end = my_end;
+			r->data[0].c = mesh->dens_gap;
+			n++; /* no need to check the new block */
+		}
+	}
+
+	/* continous ranges: start and end */
+	r = vtr0_alloc_insert(&mesh->line[dir].dens, 0, 1);
+	r->begin = 0;
+	r->end = mesh->line[dir].dens.array[1].begin;
+	r->data[0].c = mesh->dens_gap;
+
+	r = vtr0_alloc_append(&mesh->line[dir].dens, 1);
+	r->begin = mesh->line[dir].dens.array[vtr0_len(&mesh->line[dir].dens)-2].end;
+	r->end = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
+	r->data[0].c = mesh->dens_gap;
 
 	return 0;
 }
@@ -242,7 +272,7 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens); n++) {
 		pcb_range_t *r = &mesh->line[dir].dens.array[n];
 		pcb_trace(" [%mm..%mm=%mm]", r->begin, r->end, r->data[0].c);
-		mesh_draw_range(mesh, dir, r->begin, r->end, PCB_MM_TO_COORD(2)+r->data[0].c/10, PCB_MM_TO_COORD(0.05));
+		mesh_draw_range(mesh, dir, r->begin, r->end, PCB_MM_TO_COORD(2)+r->data[0].c/2, PCB_MM_TO_COORD(0.05));
 	}
 	pcb_trace("\n");
 
