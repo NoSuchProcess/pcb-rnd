@@ -375,11 +375,26 @@ static void mesh_auto_add_smooth(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_
 static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
+	pcb_coord_t c1, c2;
+	pcb_coord_t d1, d, d2;
+
 	pcb_trace("build:\n");
+
+	/* left edge, before the first known line */
+	c1 = 0;
+	c2 = mesh->line[dir].edge.array[0];
+	mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
+	if (mesh->smooth)
+		mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
+	else
+		mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+
+
+	/* normal, between known lines */
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
-		pcb_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
-		pcb_coord_t d1, d, d2;
-		pcb_range_t *r;
+		c1 = mesh->line[dir].edge.array[n];
+		c2 = mesh->line[dir].edge.array[n+1];
+
 		vtc0_append(&mesh->line[dir].result, c1);
 
 		if (c2 - c1 < mesh->dens_obj / 2)
@@ -397,6 +412,16 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		else
 			mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
 	}
+
+	/* right edge, after the last known line */
+	c1 = mesh->line[dir].edge.array[vtc0_len(&mesh->line[dir].edge)-1];
+	c2 = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
+	mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
+	if (mesh->smooth)
+		mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
+	else
+		mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+
 	pcb_trace("\n");
 }
 
