@@ -448,24 +448,28 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 
 
 /* moves a polygon between board and buffer. Doesn't allocate memory for the points */
-void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_t * polygon)
+void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_poly_t *polygon)
 {
-	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
+	pcb_layer_t *srcly = polygon->parent.layer;
+
+	assert(polygon->parent_type == PCB_PARENT_LAYER);
+	if ((dstly == NULL) || (dstly == srcly)) /* auto layer in dst */
+		dstly = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, srcly)];
 
 	pcb_poly_pprestore(polygon);
 
-	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+	pcb_r_delete_entry(srcly->polygon_tree, (pcb_box_t *)polygon);
 
 	polylist_remove(polygon);
-	polylist_append(&lay->Polygon, polygon);
+	polylist_append(&dstly->Polygon, polygon);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, polygon);
 
-	if (!lay->polygon_tree)
-		lay->polygon_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon);
+	if (!dstly->polygon_tree)
+		dstly->polygon_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(dstly->polygon_tree, (pcb_box_t *)polygon);
 
-	PCB_SET_PARENT(polygon, layer, lay);
+	PCB_SET_PARENT(polygon, layer, dstly);
 
 	pcb_poly_ppclear(polygon);
 	return polygon;

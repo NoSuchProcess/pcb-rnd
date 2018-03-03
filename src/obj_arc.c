@@ -345,24 +345,28 @@ void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 }
 
 /* moves an arc between board and buffer */
-void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
+void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc)
 {
-	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
+	pcb_layer_t *srcly = arc->parent.layer;
 
-	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_ARC, layer, arc);
-	pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+	assert(arc->parent_type == PCB_PARENT_LAYER);
+	if ((dstly == NULL) || (dstly == srcly)) /* auto layer in dst */
+		dstly = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, srcly)];
+
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_ARC, srcly, arc);
+	pcb_r_delete_entry(srcly->arc_tree, (pcb_box_t *) arc);
 
 	arclist_remove(arc);
-	arclist_append(&lay->Arc, arc);
+	arclist_append(&dstly->Arc, arc);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, arc);
 
-	if (!lay->arc_tree)
-		lay->arc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(lay->arc_tree, (pcb_box_t *) arc);
-	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_ARC, lay, arc);
+	if (!dstly->arc_tree)
+		dstly->arc_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(dstly->arc_tree, (pcb_box_t *) arc);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_ARC, dstly, arc);
 
-	PCB_SET_PARENT(arc, layer, lay);
+	PCB_SET_PARENT(arc, layer, dstly);
 
 	return arc;
 }

@@ -368,24 +368,28 @@ void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t 
 }
 
 /* moves a line between board and buffer */
-void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
+void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *line)
 {
-	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
+	pcb_layer_t *srcly = line->parent.layer;
 
-	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, layer, line);
-	pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
+	assert(line->parent_type == PCB_PARENT_LAYER);
+	if ((dstly == NULL) || (dstly == srcly)) /* auto layer in dst */
+		dstly = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, srcly)];
+
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, srcly, line);
+	pcb_r_delete_entry(srcly->line_tree, (pcb_box_t *)line);
 
 	linelist_remove(line);
-	linelist_append(&(lay->Line), line);
+	linelist_append(&(dstly->Line), line);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, line);
 
-	if (!lay->line_tree)
-		lay->line_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(lay->line_tree, (pcb_box_t *) line);
-	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_LINE, lay, line);
+	if (!dstly->line_tree)
+		dstly->line_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(dstly->line_tree, (pcb_box_t *)line);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_LINE, dstly, line);
 
-	PCB_SET_PARENT(line, layer, lay);
+	PCB_SET_PARENT(line, layer, dstly);
 
 	return line;
 }
