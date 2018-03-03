@@ -66,6 +66,7 @@
 
 #include "obj_elem_draw.h"
 #include "obj_poly_draw.h"
+#include "obj_subc_parent.h"
 
 #define STEP_REMOVELIST 500
 #define STEP_UNDOLIST   500
@@ -554,11 +555,23 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
+	Removed *r = &Entry->Data.Removed;
+	pcb_data_t *data = PCB->Data;
 
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		pcb_move_obj_to_buffer(PCB, PCB->Data, pcb_removelist, type, ptr1, ptr2, ptr3);
+		if (r->p_subc_id > 0) { /* need to use a subc layer - putting back a floater */
+			void *p1, *p2, *p3;
+			if (pcb_search_obj_by_id(PCB->Data, &p1, &p2, &p3, r->p_subc_id, PCB_TYPE_SUBC) != 0) {
+				pcb_subc_t *subc = p2;
+				if (r->p_subc_layer < subc->data->LayerN) {
+					data = subc->data;
+					ptr1 = &data->Layer[r->p_subc_layer];
+				}
+			}
+		}
+		pcb_move_obj_to_buffer(PCB, data, pcb_removelist, type, ptr1, ptr2, ptr3);
 		if (pcb_undo_and_draw)
 			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 		Entry->Type = PCB_UNDO_CREATE;
@@ -1007,13 +1020,43 @@ void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
  */
 void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
+	UndoListTypePtr Entry;
+	Removed *r;
+	pcb_any_obj_t *o = Ptr3;
+	pcb_subc_t *subc;
+
 	if (Locked)
 		return;
 
 	if (!pcb_removelist)
 		pcb_removelist = pcb_buffer_new(NULL);
 
-	GetUndoSlot(PCB_UNDO_REMOVE, PCB_OBJECT_ID(Ptr3), Type);
+	Entry = GetUndoSlot(PCB_UNDO_REMOVE, PCB_OBJECT_ID(Ptr3), Type);
+	r = &Entry->Data.Removed;
+	r->p_subc_id = 0;
+
+	switch(o->type) {
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_POLY:
+			subc = pcb_obj_parent_subc(Ptr3);
+			if (subc != NULL) {
+				r->p_subc_id = subc->ID;
+				r->p_subc_layer = o->parent.layer - subc->data->Layer;
+			}
+			break;
+		case PCB_OBJ_PSTK:
+			subc = pcb_obj_parent_subc(Ptr3);
+			if (subc != NULL)
+				r->p_subc_id = subc->ID;
+			break;
+#warning subc TODO: floater subc in subc should remember its subc parent too
+		default:
+			break;
+	}
+
+
 	pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 }
 

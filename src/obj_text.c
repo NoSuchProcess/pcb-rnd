@@ -381,22 +381,26 @@ void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t 
 }
 
 /* moves a text without allocating memory for the name between board and buffer */
-void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
+void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *text)
 {
-	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
+	pcb_layer_t *srcly = text->parent.layer;
 
-	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
-	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_TEXT, layer, text);
+	assert(text->parent_type == PCB_PARENT_LAYER);
+	if ((dstly == NULL) || (dstly == srcly)) /* auto layer in dst */
+		dstly = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, srcly)];
+
+	pcb_r_delete_entry(srcly->text_tree, (pcb_box_t *) text);
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_TEXT, srcly, text);
 
 	textlist_remove(text);
-	textlist_append(&lay->Text, text);
+	textlist_append(&dstly->Text, text);
 
-	if (!lay->text_tree)
-		lay->text_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(lay->text_tree, (pcb_box_t *) text);
-	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_TEXT, lay, text);
+	if (!dstly->text_tree)
+		dstly->text_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(dstly->text_tree, (pcb_box_t *) text);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_TEXT, dstly, text);
 
-	PCB_SET_PARENT(text, layer, lay);
+	PCB_SET_PARENT(text, layer, dstly);
 
 	return text;
 }

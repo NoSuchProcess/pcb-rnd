@@ -48,6 +48,7 @@
 void pcb_tool_remove_notify_mode(void)
 {
 	void *ptr1, *ptr2, *ptr3;
+	pcb_any_obj_t *obj;
 	int type;
 	
 	if ((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_REMOVE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
@@ -57,6 +58,16 @@ void pcb_tool_remove_notify_mode(void)
 		}
 		if (type == PCB_TYPE_ELEMENT)
 			pcb_event(PCB_EVENT_RUBBER_REMOVE_ELEMENT, "ppp", ptr1, ptr2, ptr3);
+
+		/* preserve original parent over the board layer pcb_search_screen operated on -
+		   this is essential for undo: it needs to put back the object to the original
+		   layer (e.g. inside a subc) instead of on the board layer */
+		obj = ptr2;
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			ptr1 = obj->parent.layer;
+		else if (obj->parent_type == PCB_PARENT_DATA)
+			ptr1 = obj->parent.data;
+
 		pcb_remove_object(type, ptr1, ptr2, ptr3);
 		pcb_undo_inc_serial();
 		pcb_board_set_changed_flag(pcb_true);

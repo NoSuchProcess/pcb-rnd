@@ -8,6 +8,11 @@ typedef struct {								/* information about a move command */
 	pcb_coord_t DX, DY;									/* movement vector */
 } MoveType, *MoveTypePtr;
 
+typedef struct {
+	long p_subc_id;             /* parent subc ID (0 if parent is not a subc) */
+	int p_subc_layer;           /* parent subc layer index, for layer objects */
+} Removed;
+
 typedef struct {								/* information about removed polygon points */
 	pcb_coord_t X, Y;										/* data */
 	int ID;
@@ -52,6 +57,7 @@ typedef struct {								/* holds information about an operation */
 	union {												/* some additional information */
 		ChangeNameType ChangeName;
 		MoveType Move;
+		Removed Removed;
 		RemovedPointType RemovedPoint;
 		RotateType Rotate;
 		MoveToLayer MoveToLayer;
