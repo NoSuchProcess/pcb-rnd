@@ -22,6 +22,7 @@ typedef struct {
 	pcb_coord_t dens_obj, dens_gap;        /* target density: distance between mesh lines above objects and above gaps */
 	pcb_coord_t min_space;                 /* make sure there's always at least this much space between two mesh lines */
 	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
+	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance */
 } pcb_mesh_t;
 
 extern const char pcb_acts_mesh[];

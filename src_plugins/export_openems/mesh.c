@@ -316,7 +316,7 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_trace("\n");
 }
 
-static mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
+static void mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
 {
 	long num = (c2 - c1) / d;
 
@@ -324,8 +324,52 @@ static mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t
 		return;
 
 	d = (c2 - c1)/(num+1);
-	for(; c1 < c2; c1 += d)
+	for(c1 += d; c1 < c2; c1 += d)
 		vtc0_append(v, c1);
+}
+
+static pcb_coord_t mesh_auto_add_interp(vtr0_t *v, pcb_coord_t c, pcb_coord_t d1, pcb_coord_t d2, pcb_coord_t dd)
+{
+	if (dd > 0) {
+		for(; d1 <= d2; d1 += dd) {
+			c += d1;
+			vtc0_append(v, c);
+		}
+		return c;
+	}
+	else {
+		for(; d1 <= d2; d1 -= dd) {
+			c -= d1;
+			vtc0_append(v, c);
+		}
+		return c;
+	}
+
+}
+
+static void mesh_auto_add_smooth(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2)
+{
+	pcb_coord_t len = c2 - c1, begin = c1, end = c2, glen;
+	int lines;
+
+	/* ramp up (if there's room) */
+	if (d > d1) {
+		lines = (d / d1) + 0;
+		glen = lines * d;
+		if (glen < len/4)
+			begin = mesh_auto_add_interp(v, c1, d1, d, (d-d1)/lines);
+	}
+
+	/* ramp down (if there's room) */
+	if (d > d2) {
+		lines = (d / d2) + 0;
+		glen = lines * d;
+		if (glen < len/4)
+			end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines);
+	}
+
+	/* middle section: linear */
+	mesh_auto_add_even(v, begin, end, d);
 }
 
 static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
@@ -348,7 +392,10 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		pcb_trace(" %mm..%mm %mm,%mm,%mm\n", c1, c2, d1, d, d2);
 
 		/* place mesh lines between c1 and c2 */
-		mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+		if (mesh->smooth)
+			mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
+		else
+			mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
 	}
 	pcb_trace("\n");
 }
@@ -377,9 +424,10 @@ int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	mesh.layer = CURRENT;
 	mesh.ui_layer = pcb_uilayer_alloc(mesh_ui_cookie, "mesh", "#007733");
 
-	mesh.dens_obj = PCB_MM_TO_COORD(0.2);
-	mesh.dens_gap = PCB_MM_TO_COORD(0.8);
+	mesh.dens_obj = PCB_MM_TO_COORD(0.15);
+	mesh.dens_gap = PCB_MM_TO_COORD(0.5);
 	mesh.min_space = PCB_MM_TO_COORD(0.1);
+	mesh.smooth = 1;
 
 	mesh_auto(&mesh, PCB_MESH_VERTICAL);
 	return 0;
