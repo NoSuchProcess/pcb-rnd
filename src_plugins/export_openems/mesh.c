@@ -361,6 +361,7 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, PCB_MM_TO_COORD(0.03));
 	}
 	pcb_trace("\n");
+	return 0;
 }
 
 static void mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
@@ -476,6 +477,7 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	}
 
 	pcb_trace("\n");
+	return 0;
 }
 
 int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
