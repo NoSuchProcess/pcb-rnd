@@ -35,7 +35,6 @@ static pcb_mesh_t mesh;
 
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 {
-pcb_printf("EDGE: %mm\n", crd);
 	vtc0_append(&mesh->line[dir].edge, crd);
 }
 
@@ -45,8 +44,6 @@ static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1,
 	r->begin = c1;
 	r->end = c2;
 	r->data[0].c = dens;
-
-pcb_printf("range: %mm..%mm\n", c1, c2);
 }
 
 static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, pcb_coord_t c2, int aligned)
@@ -144,11 +141,65 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
+static int cmp_coord(const void *v1, const void *v2)
+{
+	const pcb_coord_t *c1 = v1, *c2 = v2;
+	return *c1 < *c2 ? -1 : +1;
+}
+
+static int cmp_range(const void *v1, const void *v2)
+{
+	const pcb_range_t *c1 = v1, *c2 = v2;
+	return c1->begin < c2->begin ? -1 : +1;
+}
+
+static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+{
+	size_t n;
+
+	qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
+	qsort(mesh->line[dir].dens.array, vtr0_len(&mesh->line[dir].dens), sizeof(pcb_range_t), cmp_range);
+
+	/* merge overlapping ranges of the same density */
+	for(n = 0; n < vtr0_len(&mesh->line[dir].dens)-1; n++) {
+		pcb_range_t *r1 = &mesh->line[dir].dens.array[n], *r2 = &mesh->line[dir].dens.array[n];
+		if (r1->data[0].c != r2->data[0].c) continue;
+		if (r2->begin < r1->end) {
+			if (r2->end > r1->end)
+				r1->end = r2->end;
+			vtr0_remove(&mesh->line[dir].dens, n+1, 1);
+		}
+	}
+
+	return 0;
+}
+
+static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+{
+	size_t n;
+	pcb_trace("%s edges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
+		pcb_trace(" %mm", mesh->line[dir].edge.array[n]);
+	}
+	pcb_trace("\n");
+
+	pcb_trace("%s ranges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	for(n = 0; n < vtr0_len(&mesh->line[dir].dens); n++) {
+		pcb_range_t *r = &mesh->line[dir].dens.array[n];
+		pcb_trace(" [%mm..%mm=%mm]", r->begin, r->end, r->data[0].c);
+	}
+	pcb_trace("\n");
+}
+
+
 int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	vtc0_truncate(&mesh->line[dir].edge, 0);
 	vtr0_truncate(&mesh->line[dir].dens, 0);
+
 	mesh_gen_obj(mesh, dir);
+	mesh_sort(mesh, dir);
+	mesh_vis(mesh, dir);
 
 	return 0;
 }
