@@ -1,6 +1,7 @@
 put /local/pcb/mod {export_openems}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/export_openems/export_openems.o
+	$(PLUGDIR)/export_openems/mesh.o
 @]
 
 switch /local/pcb/export_openems/controls

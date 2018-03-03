@@ -49,6 +49,7 @@
 #include "hid_init.h"
 #include "hid_draw_helpers.h"
 #include "../src_plugins/lib_polyhelp/topoly.h"
+#include "mesh.h"
 
 static pcb_hid_t openems_hid;
 
@@ -656,12 +657,19 @@ static int openems_usage(const char *topic)
 	return 0;
 }
 
+static pcb_hid_action_t openems_action_list[] = {
+	{"mesh", NULL, pcb_act_mesh, pcb_acth_mesh, pcb_acts_mesh}
+};
+
+PCB_REGISTER_ACTIONS(openems_action_list, openems_cookie)
+
 #include "dolists.h"
 
 int pplg_check_ver_export_openems(int ver_needed) { return 0; }
 
 void pplg_uninit_export_openems(void)
 {
+	pcb_hid_remove_actions_by_cookie(openems_cookie);
 	pcb_hid_remove_attributes_by_cookie(openems_cookie);
 }
 
@@ -702,6 +710,8 @@ int pplg_init_export_openems(void)
 	openems_hid.usage = openems_usage;
 
 	pcb_hid_register_hid(&openems_hid);
+
+	PCB_REGISTER_ACTIONS(openems_action_list, openems_cookie);
 
 	return 0;
 }
