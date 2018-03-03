@@ -381,14 +381,15 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_trace("build:\n");
 
 	/* left edge, before the first known line */
-	c1 = 0;
-	c2 = mesh->line[dir].edge.array[0];
-	mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
-	if (mesh->smooth)
-		mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
-	else
-		mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
-
+	if (!mesh->noimpl) {
+		c1 = 0;
+		c2 = mesh->line[dir].edge.array[0];
+		mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
+		if (mesh->smooth)
+			mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
+		else
+			mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+	}
 
 	/* normal, between known lines */
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
@@ -406,6 +407,9 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 		pcb_trace(" %mm..%mm %mm,%mm,%mm\n", c1, c2, d1, d, d2);
 
+		if (mesh->noimpl)
+			continue;
+
 		/* place mesh lines between c1 and c2 */
 		if (mesh->smooth)
 			mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
@@ -414,13 +418,15 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	}
 
 	/* right edge, after the last known line */
-	c1 = mesh->line[dir].edge.array[vtc0_len(&mesh->line[dir].edge)-1];
-	c2 = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
-	mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
-	if (mesh->smooth)
-		mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
-	else
-		mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+	if (!mesh->noimpl) {
+		c1 = mesh->line[dir].edge.array[vtc0_len(&mesh->line[dir].edge)-1];
+		c2 = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
+		mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
+		if (mesh->smooth)
+			mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
+		else
+			mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+	}
 
 	pcb_trace("\n");
 }
@@ -453,6 +459,7 @@ int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	mesh.dens_gap = PCB_MM_TO_COORD(0.5);
 	mesh.min_space = PCB_MM_TO_COORD(0.1);
 	mesh.smooth = 1;
+	mesh.noimpl = 0;
 
 	mesh_auto(&mesh, PCB_MESH_VERTICAL);
 	return 0;

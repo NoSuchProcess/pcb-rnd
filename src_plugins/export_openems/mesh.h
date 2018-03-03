@@ -23,6 +23,7 @@ typedef struct {
 	pcb_coord_t min_space;                 /* make sure there's always at least this much space between two mesh lines */
 	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
 	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance */
+	unsigned noimpl:1;                     /* when set, do not add extra implicit mesh lines, keep the explicit ones only */
 } pcb_mesh_t;
 
 extern const char pcb_acts_mesh[];
