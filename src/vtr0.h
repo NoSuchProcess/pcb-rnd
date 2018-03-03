@@ -16,7 +16,7 @@ typedef struct pcb_range_s {
 } pcb_range_t;
 
 #define GVT(x) vtr0_ ## x
-#define GVT_ELEM_TYPE pcb_coord_t
+#define GVT_ELEM_TYPE pcb_range_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 4096
 #define GVT_START_SIZE 32
