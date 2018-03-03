@@ -448,7 +448,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
 
-const char pcb_acts_mesh[] = "mesh(AllRats|SelectedRats)";
+const char pcb_acts_mesh[] = "mesh()";
 const char pcb_acth_mesh[] = "generate a mesh for simulation";
 int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
