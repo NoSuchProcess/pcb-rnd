@@ -227,6 +227,38 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
+static int cmp_range_at(const void *key_, const void *v_)
+{
+	const pcb_coord_t *key = key_;
+	const pcb_range_t *v = v_;
+
+	if ((*key >= v->begin) && (*key <= v->end))
+		return 0;
+	if (*key < v->begin) return -1;
+	return +1;
+}
+
+static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t *dens, pcb_coord_t *dens_left, pcb_coord_t *dens_right)
+{
+	pcb_range_t *r;
+	r = bsearch(&at, v->array, vtr0_len(v), sizeof(pcb_range_t), cmp_range_at);
+	if (dens != NULL)
+		*dens = r->data[0].c;
+	if (dens_left != NULL) {
+		if (r == v->array)
+			*dens_left = r->data[0].c;
+		else
+			*dens_left = r[-1].data[0].c;
+	}
+	if (dens_right != NULL) {
+		if (r == v->array+v->used-1)
+			*dens_right = r->data[0].c;
+		else
+			*dens_right = r[+1].data[0].c;
+	}
+	return r;
+}
+
 static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t aux1, pcb_coord_t aux2, pcb_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
@@ -281,6 +313,19 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		pcb_trace(" %mm", mesh->line[dir].result.array[n]);
 		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, PCB->MaxHeight, PCB_MM_TO_COORD(0.03));
 	}
+	pcb_trace("\n");
+}
+
+static mesh_auto_add_even(vtr0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
+{
+	long num = (c2 - c1) / d;
+
+	if (num < 1)
+		return;
+
+	d = (c2 - c1)/(num+1);
+	for(; c1 < c2; c1 += d)
+		vtc0_append(v, c1);
 }
 
 static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
@@ -289,9 +334,23 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_trace("build:\n");
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
 		pcb_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
-		pcb_trace(" %mm..%mm", c1, c2);
+		pcb_coord_t d1, d, d2;
+		pcb_range_t *r;
 		vtc0_append(&mesh->line[dir].result, c1);
+
+		if (c2 - c1 < mesh->dens_obj / 2)
+			continue; /* don't attempt to insert lines where it won't fit */
+
+		mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
+		if (c2 - c1 < d * 2)
+			continue; /* don't attempt to insert lines where it won't fit */
+
+		pcb_trace(" %mm..%mm %mm,%mm,%mm\n", c1, c2, d1, d, d2);
+
+		/* place mesh lines between c1 and c2 */
+		mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
 	}
+	pcb_trace("\n");
 }
 
 int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
