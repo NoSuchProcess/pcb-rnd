@@ -785,7 +785,11 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
  obj_subc_parent.h obj_pstk_inlines.h thermal.h hid.h hid_nogui.h \
  hid_helper.h hid_flags.h hid_attrib.h hid_init.h hid_draw_helpers.h \
- ../src_plugins/lib_polyhelp/topoly.h obj_common.h dolists.h
+ ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
+ ../src_plugins/export_openems/mesh.h dolists.h
+../src_plugins/export_openems/mesh.o: \
+ ../src_plugins/export_openems/mesh.c ../config.h \
+ ../src_plugins/export_openems/mesh.h
 ../src_plugins/export_openscad/export_openscad.o: \
  ../src_plugins/export_openscad/export_openscad.c ../config.h conf_core.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -2579,7 +2583,7 @@
  ../src_3rd/genht/htsp.h rtree.h rtree2.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h macro.h \
- ../src_plugins/io_lihata/common.h
+ ../src_plugins/io_lihata/common.h thermal.h
 ../src_plugins/io_lihata/io_lihata.o: \
  ../src_plugins/io_lihata/io_lihata.c ../config.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -6597,7 +6601,8 @@ obj_common.o: obj_common.c ../config.h conf_core.h conf.h \
  obj_poly_list.h box.h math_helper.h macro.h move.h misc_util.h \
  ht_element.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  obj_pstk_list.h obj_pstk.h obj_text_list.h obj_rat_list.h obj_rat.h \
- layer_grp.h route.h
+ layer_grp.h route.h obj_pstk_shape.h polygon.h rtree.h rtree2.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h vtpadstack_t.h
 obj_elem.o: obj_elem.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7971,7 +7976,8 @@ undo_old.o: undo_old.c ../config.h ../src_3rd/libuundo/uundo.h board.h \
  undo.h undo_old.h flag_str.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h \
- compat_nls.h obj_elem_draw.h obj_poly_draw.h undo_old_str.h
+ compat_nls.h obj_elem_draw.h obj_poly_draw.h obj_subc_parent.h \
+ undo_old_str.h
 unit.o: unit.c ../config.h compat_misc.h compat_nls.h unit.h
 vtlibrary.o: vtlibrary.c vtlibrary.h \
  ../src_3rd/genvector/genvector_impl.h \
