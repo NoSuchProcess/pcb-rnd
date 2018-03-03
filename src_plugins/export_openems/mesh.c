@@ -173,6 +173,16 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
 	qsort(mesh->line[dir].dens.array, vtr0_len(&mesh->line[dir].dens), sizeof(pcb_range_t), cmp_range);
 
+	/* merge edges too close */
+	for(n = 0; n < vtc0_len(&mesh->line[dir].edge)-1; n++) {
+		pcb_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
+		if (c2 - c1 < mesh->min_space) {
+			mesh->line[dir].edge.array[n] = (c1 + c2) / 2;
+			vtc0_remove(&mesh->line[dir].edge, n+1, 1);
+		}
+	}
+
+
 	/* merge overlapping ranges of the same density */
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens)-1; n++) {
 		pcb_range_t *r1 = &mesh->line[dir].dens.array[n], *r2 = &mesh->line[dir].dens.array[n+1];
@@ -280,6 +290,7 @@ int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	mesh.dens_obj = PCB_MM_TO_COORD(0.2);
 	mesh.dens_gap = PCB_MM_TO_COORD(0.8);
+	mesh.min_space = PCB_MM_TO_COORD(0.1);
 
 	mesh_auto(&mesh, PCB_MESH_VERTICAL);
 	return 0;
