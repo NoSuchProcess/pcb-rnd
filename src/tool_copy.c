@@ -61,11 +61,17 @@ void pcb_tool_copy_notify_mode(void)
 
 		/* second notify, move or copy object */
 	case PCB_CH_STATE_SECOND:
-		pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
+
+		if ((PCB->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_TYPE_SUBC)) {
+			pcb_message(PCB_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
+		}
+		else {
+			pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
 							 pcb_crosshair.AttachedObject.Ptr1,
 							 pcb_crosshair.AttachedObject.Ptr2,
 							 pcb_crosshair.AttachedObject.Ptr3, pcb_tool_note.X - pcb_crosshair.AttachedObject.X, pcb_tool_note.Y - pcb_crosshair.AttachedObject.Y);
-		pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
+		}
 
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;

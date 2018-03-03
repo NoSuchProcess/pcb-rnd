@@ -678,6 +678,10 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	/* paste subcircuits */
 	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
 	{
+		if (pcb->is_footprint) {
+			pcb_message(PCB_MSG_WARNING, "Can not paste subcircuit in the footprint edit mode\n");
+			break;
+		}
 		pcb_subcop_copy(&ctx, subc);
 		changed = pcb_true;
 	}

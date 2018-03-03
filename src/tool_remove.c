@@ -57,6 +57,11 @@ void pcb_tool_remove_notify_mode(void)
 			return;
 		}
 
+		if ((type == PCB_TYPE_SUBC) && (PCB->is_footprint)) {
+			pcb_message(PCB_MSG_WARNING, "Can not remove the subcircuit being edited in the footprint edit mode\n");
+			return;
+		}
+
 #warning subc TODO: rewrite this to subc when elements are removed
 		if (type == PCB_TYPE_ELEMENT)
 			pcb_event(PCB_EVENT_RUBBER_REMOVE_ELEMENT, "ppp", ptr1, ptr2, ptr3);
