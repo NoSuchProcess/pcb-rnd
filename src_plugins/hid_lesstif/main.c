@@ -2784,6 +2784,8 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		case PCB_LYT_UDRILL:
 		case PCB_LYT_PDRILL:
 			return 1;
+		case PCB_LYT_UI:
+			return 1;
 		case PCB_LYT_RAT:
 			return PCB->RatOn;
 		}
