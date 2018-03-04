@@ -310,6 +310,16 @@ static void append_clean(gds_t *dst, const char *text)
 			gds_append(dst, '_');
 }
 
+static int is_val_true(const char *val)
+{
+	if (val == NULL) return 0;
+	if (strcmp(val, "yes") == 0) return 1;
+	if (strcmp(val, "on") == 0) return 1;
+	if (strcmp(val, "true") == 0) return 1;
+	if (strcmp(val, "1") == 0) return 1;
+	return 0;
+}
+
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
 	int pin_cnt = 0;
@@ -347,6 +357,79 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "elem.", 5) == 0) {
 		*input += 5;
+
+		/* elem attribute print:
+		    elem.a.attribute            - print the attribute if exists, "n/a" if not
+		    elem.a.attribute|unk        - print the attribute if exists, unk if not
+		    elem.a.attribute?yes        - print yes if attribute is true, "n/a" if not
+		    elem.a.attribute?yes:nope   - print yes if attribute is true, nope if not
+		*/
+		if (strncmp(*input, "a.", 2) == 0) {
+			char aname[256], unk_buf[256], *nope;
+			const char *val, *end, *unk = "n/a";
+			long len;
+			
+			*input += 2;
+			end = strpbrk(*input, "?|%");
+			len = end - *input;
+			if (len >= sizeof(aname) - 1) {
+				pcb_message(PCB_MSG_ERROR, "xy tempalte error: attribute name '%s' too long\n", *input);
+				return 1;
+			}
+			memcpy(aname, *input, len);
+			aname[len] = '\0';
+			if (*end == '|') { /* "or unknown" */
+				*input = end+1;
+				end = strchr(*input, '%');
+				len = end - *input;
+				if (len >= sizeof(unk_buf) - 1) {
+					pcb_message(PCB_MSG_ERROR, "xy tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
+					return 1;
+				}
+				memcpy(unk_buf, *input, len);
+				unk_buf[len] = '\0';
+				unk = unk_buf;
+				*input = end;
+			}
+			else if (*end == '?') { /* trenary */
+				*input = end+1;
+				end = strchr(*input, '%');
+				len = end - *input;
+				if (len >= sizeof(unk_buf) - 1) {
+					pcb_message(PCB_MSG_ERROR, "xy tempalte error: elem atribute trenary field '%s' too long\n", *input);
+					return 1;
+				}
+
+				memcpy(unk_buf, *input, len);
+				unk_buf[len] = '\0';
+				*input = end+1;
+
+				nope = strchr(unk_buf, ':');
+				if (nope != NULL) {
+					*nope = '\0';
+					nope++;
+				}
+				else /* only '?' is given, no ':' */
+					nope = "n/a";
+
+				val = pcb_attribute_get(&ctx->subc->Attributes, aname);
+				if (is_val_true(val))
+					gds_append_str(s, unk_buf);
+				else
+					gds_append_str(s, nope);
+
+				return 0;
+			}
+			else
+				*input = end;
+			(*input)++;
+
+			val = pcb_attribute_get(&ctx->subc->Attributes, aname);
+			if (val == NULL)
+				val = unk;
+			gds_append_str(s, val);
+			return 0;
+		}
 		if (strncmp(*input, "name%", 5) == 0) {
 			*input += 5;
 			gds_append_str(s, ctx->name);
