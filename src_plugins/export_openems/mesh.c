@@ -32,6 +32,7 @@
 #include "board.h"
 #include "data.h"
 #include "hid_dad.h"
+#include "event.h"
 
 static pcb_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
@@ -541,6 +542,12 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
 	if (ia.dlg[ia.ver].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_VERTICAL);
+
+	free(mesh.ui_name);
+	mesh.ui_name = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
+	mesh.ui_layer->name = mesh.ui_name;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+
 	pcb_gui->invalidate_all();
 }
 
