@@ -482,6 +482,18 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			}
 			return 0;
 		}
+		if (strncmp(*input, "smdvsthrunum%", 13) == 0) {
+			*input += 13;
+			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
+			if (pin_cnt > 0) {
+				pcb_append_printf(s, "2");
+			} else if (pad_cnt > 0) {
+				pcb_append_printf(s, "1");
+			} else {
+				pcb_append_printf(s, "0");
+			}
+			return 0;
+		}
 		if (strncmp(*input, "pincount%", 9) == 0) {
 			*input += 9;
 			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
