@@ -37,8 +37,8 @@ static pcb_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg);
-	int dens_obj, dens_gap, min_space, smooth, hor, ver;
+	PCB_DAD_DECL_NOINIT(dlg)
+	int dens_obj, dens_gap, min_space, smooth, hor, ver, noimpl;
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
@@ -522,13 +522,16 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 
 	mesh.layer = CURRENT;
 
-	mesh.dens_obj = PCB_MM_TO_COORD(0.15);
-	mesh.dens_gap = PCB_MM_TO_COORD(0.5);
-	mesh.min_space = PCB_MM_TO_COORD(0.1);
-	mesh.smooth = 1;
-	mesh.noimpl = 0;
+	mesh.dens_obj = ia.dlg[ia.dens_obj].default_val.coord_value;
+	mesh.dens_gap = ia.dlg[ia.dens_gap].default_val.coord_value;
+	mesh.min_space = ia.dlg[ia.min_space].default_val.coord_value;
+	mesh.smooth = ia.dlg[ia.smooth].default_val.int_value;
+	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;;
 
-	mesh_auto(&mesh, PCB_MESH_VERTICAL);
+	if (ia.dlg[ia.hor].default_val.int_value)
+		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
+	if (ia.dlg[ia.ver].default_val.int_value)
+		mesh_auto(&mesh, PCB_MESH_VERTICAL);
 	pcb_gui->invalidate_all();
 }
 
@@ -541,7 +544,6 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_COORD(ia.dlg, "");
 				ia.dens_obj = PCB_DAD_CURRENT(ia.dlg);
 				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-				PCB_DAD_DEFAULT(ia.dlg, def);
 			PCB_DAD_LABEL(ia.dlg, "mesh density over copper");
 		PCB_DAD_END(ia.dlg);
 
@@ -549,7 +551,6 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_COORD(ia.dlg, "");
 				ia.dens_gap = PCB_DAD_CURRENT(ia.dlg);
 				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-				PCB_DAD_DEFAULT(ia.dlg, def);
 			PCB_DAD_LABEL(ia.dlg, "mesh density over gaps");
 		PCB_DAD_END(ia.dlg);
 
@@ -557,7 +558,6 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_COORD(ia.dlg, "");
 				ia.min_space = PCB_DAD_CURRENT(ia.dlg);
 				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-				PCB_DAD_DEFAULT(ia.dlg, def);
 			PCB_DAD_LABEL(ia.dlg, "minimum spacing");
 		PCB_DAD_END(ia.dlg);
 
@@ -579,12 +579,26 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_LABEL(ia.dlg, "vertical mesh lines");
 		PCB_DAD_END(ia.dlg);
 
+		PCB_DAD_BEGIN_HBOX(ia.dlg);
+			PCB_DAD_BOOL(ia.dlg, "");
+				ia.noimpl = PCB_DAD_CURRENT(ia.dlg);
+			PCB_DAD_LABEL(ia.dlg, "omit implicit lines");
+		PCB_DAD_END(ia.dlg);
+
 
 		PCB_DAD_BUTTON(ia.dlg, "Generate mesh!");
 			PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
 	PCB_DAD_END(ia.dlg);
 
 	PCB_DAD_NEW(ia.dlg, "mesher", "Generate mesh", &ia, 0, ia_close_cb);
+
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, coord_value, PCB_MM_TO_COORD(0.15));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, coord_value, PCB_MM_TO_COORD(0.5));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.min_space, coord_value, PCB_MM_TO_COORD(0.1));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smooth, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.hor, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.ver, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.noimpl, int_value, 0);
 }
 
 const char pcb_acts_mesh[] = "mesh()";
