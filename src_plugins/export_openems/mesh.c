@@ -33,6 +33,7 @@
 #include "data.h"
 
 static pcb_mesh_t mesh;
+static const char *mesh_ui_cookie = "mesh ui layer cookie";
 
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 {
@@ -495,14 +496,18 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
-static const char *mesh_ui_cookie = "mesh ui layer cookie";
-
-const char pcb_acts_mesh[] = "mesh()";
-const char pcb_acth_mesh[] = "generate a mesh for simulation";
-int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void mesh_layer_reset()
 {
-	mesh.layer = CURRENT;
+	if (mesh.ui_layer != NULL)
+		pcb_uilayer_free(mesh.ui_layer);
 	mesh.ui_layer = pcb_uilayer_alloc(mesh_ui_cookie, "mesh", "#007733");
+}
+
+int pcb_mesh_interactive(void)
+{
+	mesh_layer_reset();
+
+	mesh.layer = CURRENT;
 
 	mesh.dens_obj = PCB_MM_TO_COORD(0.15);
 	mesh.dens_gap = PCB_MM_TO_COORD(0.5);
@@ -511,5 +516,12 @@ int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	mesh.noimpl = 0;
 
 	mesh_auto(&mesh, PCB_MESH_VERTICAL);
+}
+
+const char pcb_acts_mesh[] = "mesh()";
+const char pcb_acth_mesh[] = "generate a mesh for simulation";
+int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_mesh_interactive();
 	return 0;
 }
