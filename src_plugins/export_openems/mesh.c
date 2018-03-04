@@ -43,6 +43,13 @@ typedef struct {
 static mesh_dlg_t ia;
 
 
+#if 1
+	static void mesh_trace(const char *fmt, ...) { }
+#else
+#	define mesh_trace pcb_trace
+#endif
+
+
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 {
 	vtc0_append(&mesh->line[dir].edge, crd);
@@ -346,30 +353,30 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(0.1), "object edge");
 
-	pcb_trace("%s edges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	mesh_trace("%s edges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
-		pcb_trace(" %mm", mesh->line[dir].edge.array[n]);
+		mesh_trace(" %mm", mesh->line[dir].edge.array[n]);
 		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], PCB_MM_TO_COORD(0.1), PCB_MM_TO_COORD(0.5), PCB_MM_TO_COORD(0.1));
 	}
-	pcb_trace("\n");
+	mesh_trace("\n");
 
 	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(2), "density ranges");
 
-	pcb_trace("%s ranges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	mesh_trace("%s ranges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens); n++) {
 		pcb_range_t *r = &mesh->line[dir].dens.array[n];
-		pcb_trace(" [%mm..%mm=%mm]", r->begin, r->end, r->data[0].c);
+		mesh_trace(" [%mm..%mm=%mm]", r->begin, r->end, r->data[0].c);
 		mesh_draw_range(mesh, dir, r->begin, r->end, PCB_MM_TO_COORD(2)+r->data[0].c/2, PCB_MM_TO_COORD(0.05));
 	}
-	pcb_trace("\n");
+	mesh_trace("\n");
 
-	pcb_trace("%s result:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
+	mesh_trace("%s result:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	end = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxWidth : PCB->MaxHeight;
 	for(n = 0; n < vtc0_len(&mesh->line[dir].result); n++) {
-		pcb_trace(" %mm", mesh->line[dir].result.array[n]);
+		mesh_trace(" %mm", mesh->line[dir].result.array[n]);
 		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, PCB_MM_TO_COORD(0.03));
 	}
-	pcb_trace("\n");
+	mesh_trace("\n");
 	return 0;
 }
 
@@ -435,7 +442,7 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_coord_t c1, c2;
 	pcb_coord_t d1, d, d2;
 
-	pcb_trace("build:\n");
+	mesh_trace("build:\n");
 
 	/* left edge, before the first known line */
 	if (!mesh->noimpl) {
@@ -462,7 +469,7 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		if (c2 - c1 < d * 2)
 			continue; /* don't attempt to insert lines where it won't fit */
 
-		pcb_trace(" %mm..%mm %mm,%mm,%mm\n", c1, c2, d1, d, d2);
+		mesh_trace(" %mm..%mm %mm,%mm,%mm\n", c1, c2, d1, d, d2);
 
 		if (mesh->noimpl)
 			continue;
@@ -485,7 +492,7 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 			mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
 	}
 
-	pcb_trace("\n");
+	mesh_trace("\n");
 	return 0;
 }
 
