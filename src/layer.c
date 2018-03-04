@@ -163,6 +163,38 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 		PCB_RTREE_EMPTY(layer->text_tree);
 }
 
+static pcb_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer)
+{
+	/* if any padstack has a shape on this layer, it is not empty */
+	PCB_PADSTACK_LOOP(data);
+	{
+		if (pcb_pstk_shape_at(pcb, padstack, layer) != NULL)
+			return 0;
+	}
+	PCB_END_LOOP;
+
+	/* need to recurse to subc */
+	PCB_SUBC_LOOP(data);
+	{
+		pcb_layer_id_t n;
+		pcb_layer_t *sl;
+
+		for(sl = subc->data->Layer, n = 0; n < subc->data->LayerN; sl++,n++) {
+			if (sl->meta.bound.real == layer) {
+				if (!pcb_layer_is_empty_(pcb, sl))
+					return 0;
+				/* can't break here: multiple bound layers may point to the same real layer! */
+			}
+		}
+
+		if (!pcb_layer_is_empty_glob(pcb, subc->data, layer))
+			return 0;
+	}
+	PCB_END_LOOP;
+
+	return 1;
+}
+
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	pcb_layer_type_t flags;
@@ -194,13 +226,8 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 		PCB_ENDALL_LOOP;
 	}
 
-	/* if any padstack has a shape on this layer, it is not empty */
-	PCB_PADSTACK_LOOP(pcb->Data);
-	{
-		if (pcb_pstk_shape_at(pcb, padstack, layer) != NULL)
-			return 0;
-	}
-	PCB_END_LOOP;
+	if (!pcb_layer_is_empty_glob(pcb, pcb->Data, layer))
+		return 0;
 
 #warning TODO: check top silk and bottom silk for elements
 
