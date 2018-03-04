@@ -66,7 +66,7 @@ found:;
 
 static void pcb_uilayer_free_(pcb_layer_t *l)
 {
-#warning TODO: free all objects
+	pcb_layer_free(l);
 	l->meta.real.cookie = NULL;
 	l->meta.real.color = l->name = NULL;
 	l->meta.real.vis = 0;
