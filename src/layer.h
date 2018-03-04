@@ -178,6 +178,9 @@ pcb_layer_id_t pcb_layer_get_top_silk();
 
 /************ NEW API - new code should use these **************/
 
+/* Free all metadata and objects of a layer; does not free(layer) */
+void pcb_layer_free(pcb_layer_t *layer);
+
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id);
 

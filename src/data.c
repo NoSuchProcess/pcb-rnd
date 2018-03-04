@@ -253,41 +253,8 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
-	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++) {
-		if (!layer->is_bound)
-			pcb_attribute_free(&layer->meta.real.Attributes);
-		PCB_TEXT_LOOP(layer);
-		{
-			free(text->TextString);
-		}
-		PCB_END_LOOP;
-		PCB_LINE_LOOP(layer);
-		{
-			if (line->Number)
-				free(line->Number);
-		}
-		PCB_END_LOOP;
-
-		list_map0(&layer->Line, pcb_line_t, pcb_line_free);
-		list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);
-		list_map0(&layer->Text, pcb_text_t, pcb_text_free);
-		PCB_POLY_LOOP(layer);
-		{
-			pcb_poly_free_fields(polygon);
-		}
-		PCB_END_LOOP;
-		list_map0(&layer->Polygon, pcb_poly_t, pcb_poly_free);
-		if (!layer->is_bound) {
-			if (layer->line_tree)
-				pcb_r_destroy_tree(&layer->line_tree);
-			if (layer->arc_tree)
-				pcb_r_destroy_tree(&layer->arc_tree);
-			if (layer->text_tree)
-				pcb_r_destroy_tree(&layer->text_tree);
-			if (layer->polygon_tree)
-				pcb_r_destroy_tree(&layer->polygon_tree);
-		}
-	}
+	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++)
+		pcb_layer_free(layer);
 
 	if (!subc) {
 		if (data->element_tree)

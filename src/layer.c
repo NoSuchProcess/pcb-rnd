@@ -39,6 +39,7 @@
 #include "layer_vis.h"
 #include "rtree.h"
 #include "obj_pstk_inlines.h"
+#include "list_common.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1, PCB_LYT_VIRTUAL | PCB_LYT_INVIS },
@@ -106,6 +107,44 @@ do { \
 		fail_cmd; \
 	} \
 } while(0)
+
+void pcb_layer_free(pcb_layer_t *layer)
+{
+	if (!layer->is_bound)
+		pcb_attribute_free(&layer->meta.real.Attributes);
+	PCB_TEXT_LOOP(layer);
+	{
+		free(text->TextString);
+	}
+	PCB_END_LOOP;
+	PCB_LINE_LOOP(layer);
+	{
+		if (line->Number)
+			free(line->Number);
+	}
+	PCB_END_LOOP;
+
+	list_map0(&layer->Line, pcb_line_t, pcb_line_free);
+	list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);
+	list_map0(&layer->Text, pcb_text_t, pcb_text_free);
+	PCB_POLY_LOOP(layer);
+	{
+		pcb_poly_free_fields(polygon);
+	}
+	PCB_END_LOOP;
+	list_map0(&layer->Polygon, pcb_poly_t, pcb_poly_free);
+	if (!layer->is_bound) {
+		if (layer->line_tree)
+			pcb_r_destroy_tree(&layer->line_tree);
+		if (layer->arc_tree)
+			pcb_r_destroy_tree(&layer->arc_tree);
+		if (layer->text_tree)
+			pcb_r_destroy_tree(&layer->text_tree);
+		if (layer->polygon_tree)
+			pcb_r_destroy_tree(&layer->polygon_tree);
+	}
+	memset(layer, 0, sizeof(layer));
+}
 
 pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 {
