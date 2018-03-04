@@ -238,6 +238,16 @@ static int PrintBOM(void)
 	}
 	PCB_END_LOOP;
 
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		/* insert this component into the bill of materials list */
+		bom = bom_insert((char *) PCB_UNKNOWN(subc->refdes),
+			(char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "footprint")),
+			(char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")),
+			bom);
+	}
+	PCB_END_LOOP;
+
 	fp = pcb_fopen(bom_filename, "w");
 	if (!fp) {
 		pcb_gui->log("Cannot open file %s for writing\n", bom_filename);
