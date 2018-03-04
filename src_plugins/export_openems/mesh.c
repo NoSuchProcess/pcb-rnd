@@ -514,6 +514,7 @@ static void mesh_layer_reset()
 static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	PCB_DAD_FREE(ia.dlg);
+	memset(&ia, 0, sizeof(ia));
 }
 
 static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
