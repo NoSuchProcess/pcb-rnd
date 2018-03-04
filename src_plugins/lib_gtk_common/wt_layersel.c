@@ -142,7 +142,7 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 		gtk_widget_set_no_show_all(lsg->grp_open, 0);
 		gtk_widget_show_all(lsg->grp_open);
 		gtk_widget_set_no_show_all(lsg->grp_open, 1);
-		for(n = 0; n < MAX(lsg->grp->len, 1); n++)
+		for(n = 0; n < lsg->grp->len; n++)
 			layersel_lyr_vis_sync(&lsg->layer[n]);
 	}
 	else {
@@ -607,20 +607,27 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	if (vtlayer_len(&pcb_uilayer) > 0) { /* UI layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_ui;
+		int g;
 
 		ls->grp_ui.len = vtlayer_len(&pcb_uilayer);
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_ui.len);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "UI", 0, &ls->grp_ui), FALSE, FALSE, 0);
 
-		for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
+		for(g = n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
+			if (pcb_uilayer.array[n].name == NULL)
+				continue;
 			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].name, -1, &pcb_uilayer.array[n].meta.real.color), FALSE, FALSE, 1);
-			lsg->layer[n].ev_selected = ev_lyr_no_select;
-			lsg->layer[n].ev_vis = vis_ui;
-			lsg->layer[n].virt_data = n;
-			lsg->layer[n].lid = -1;
+			lsg->layer[g].ev_selected = ev_lyr_no_select;
+			lsg->layer[g].ev_vis = vis_ui;
+			lsg->layer[g].virt_data = n;
+			lsg->layer[g].lid = -1;
+			g++;
 		}
+		ls->grp_ui.len = g;
 		build_group_finish(lsg);
 	}
+	else
+		ls->grp_ui.len = 0;
 
 
 	spring = gtkc_hbox_new(FALSE, 0);
