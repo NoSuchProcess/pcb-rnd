@@ -493,6 +493,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	vtc0_truncate(&mesh->line[dir].edge, 0);
 	vtr0_truncate(&mesh->line[dir].dens, 0);
+	vtc0_truncate(&mesh->line[dir].result, 0);
 
 	mesh_gen_obj(mesh, dir);
 	mesh_sort(mesh, dir);
