@@ -88,7 +88,21 @@ void pcb_tool_poly_notify_mode(void)
 
 void pcb_tool_poly_adjust_attached_objects(void)
 {
-	pcb_line_adjust_attached();
+	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
+
+	if (pcb_gui->control_is_pressed()) {
+		line->draw = pcb_false;
+		return;
+	}
+	else
+		line->draw = pcb_true;
+	if (conf_core.editor.all_direction_lines) {
+		line->Point2.X = pcb_crosshair.X;
+		line->Point2.Y = pcb_crosshair.Y;
+		return;
+	}
+
+	pcb_line_45(line);
 }
 
 void pcb_tool_poly_draw_attached(void)
