@@ -44,7 +44,7 @@ set_fmt_args()
 		XY) ext=.xy ;;
 		openscad)
 			ext=.scad
-			fmt_args="--silk_layers"
+			fmt_args="--silk"
 			;;
 		png)
 			need_convert
