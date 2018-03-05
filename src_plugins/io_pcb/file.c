@@ -1118,7 +1118,7 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 		}
 	}
 
-	/* have to revind all subcircuits because the layer stack was not ready
+	/* have to rebind all subcircuits because the layer stack was not ready
 	   when they got loaded */
 	subclist_foreach(&pcb->Data->subc, &it, sc)
 		pcb_subc_rebind(pcb, sc);
