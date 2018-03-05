@@ -12,13 +12,13 @@
 </g>
 <g id="layer_3_top">
 <!--normal-->
- <line x1="5.6896" y1="9.2710" x2="5.6896" y2="9.7790" stroke-width="0.3810" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="6.9850" y1="9.2710" x2="6.9850" y2="9.7790" stroke-width="0.3810" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="6.9850" y1="7.4930" x2="6.9850" y2="8.0010" stroke-width="0.3810" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="6.3500" y1="7.4930" x2="6.3500" y2="8.0010" stroke-width="0.3810" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="5.6896" y1="7.4930" x2="5.6896" y2="8.0010" stroke-width="0.3810" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="4.8501" y1="2.2400" x2="4.8501" y2="2.8400" stroke-width="1.3000" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="7.8499" y1="2.2400" x2="7.8499" y2="2.8400" stroke-width="1.3000" stroke="#4d4d4d" stroke-linecap="square"/>
+ <polygon points="5.5001,1.5900 4.2001,1.5900 4.2001,3.4900 5.5001,3.4900 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="8.4999,1.5900 7.1999,1.5900 7.1999,3.4900 8.4999,3.4900 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="5.8801,7.3025 5.4991,7.3025 5.4991,8.1915 5.8801,8.1915 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="5.8801,9.0805 5.4991,9.0805 5.4991,9.9695 5.8801,9.9695 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="7.1755,9.0805 6.7945,9.0805 6.7945,9.9695 7.1755,9.9695 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="7.1755,7.3025 6.7945,7.3025 6.7945,8.1915 7.1755,8.1915 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="6.5405,7.3025 6.1595,7.3025 6.1595,8.1915 6.5405,8.1915 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
 </g>
 <g id="layer_1_topsilk">
 <!--normal-->

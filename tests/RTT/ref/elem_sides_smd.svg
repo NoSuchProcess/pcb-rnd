@@ -10,13 +10,13 @@
 </g>
 <g id="layer_10_bottom">
 <!--normal-->
- <line x1="4.2151" y1="8.5900" x2="4.2151" y2="9.1900" stroke-width="1.3000" stroke="#cccccc" stroke-linecap="square"/>
- <line x1="7.2149" y1="8.5900" x2="7.2149" y2="9.1900" stroke-width="1.3000" stroke="#cccccc" stroke-linecap="square"/>
+ <polygon points="3.5651,7.9400 4.8651,7.9400 4.8651,9.8400 3.5651,9.8400 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
+ <polygon points="6.5649,7.9400 7.8649,7.9400 7.8649,9.8400 6.5649,9.8400 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
 </g>
 <g id="layer_3_top">
 <!--normal-->
- <line x1="4.2151" y1="2.8750" x2="4.2151" y2="3.4750" stroke-width="1.3000" stroke="#4d4d4d" stroke-linecap="square"/>
- <line x1="7.2149" y1="2.8750" x2="7.2149" y2="3.4750" stroke-width="1.3000" stroke="#4d4d4d" stroke-linecap="square"/>
+ <polygon points="4.8651,2.2250 3.5651,2.2250 3.5651,4.1250 4.8651,4.1250 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <polygon points="7.8649,2.2250 6.5649,2.2250 6.5649,4.1250 7.8649,4.1250 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
 </g>
 <g id="layer_1_topsilk">
 <!--normal-->

@@ -33,7 +33,7 @@
 </g>
 <g id="layer_3_top">
 <!--normal-->
- <polygon points="0.6350,1.2700 0.6350,3.8100 3.1750,3.1750 3.1750,1.2700 " stroke-width="0.075" stroke="#7f7f7f" fill="#7f7f7f"/>
+ <polygon points="0.6350,1.2700 0.6350,3.8100 3.1750,3.1750 3.1750,1.2700 " stroke-width="0.010" stroke="#7f7f7f" fill="#7f7f7f"/>
  <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.2540" fill="#7f7f7f" stroke="none"/>
  <circle cx="1.9050" cy="8.2550" r="1.1634" stroke-width="0.2540" fill="#7f7f7f" stroke="none"/>
  <circle cx="1.9050" cy="2.5400" r="0.4001" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
