@@ -1118,6 +1118,8 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 		}
 	}
 
+	pcb_layergrp_create_missing_substrate(pcb);
+
 	/* have to rebind all subcircuits because the layer stack was not ready
 	   when they got loaded */
 	subclist_foreach(&pcb->Data->subc, &it, sc)
