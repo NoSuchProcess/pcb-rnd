@@ -164,13 +164,6 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	if (g->type & PCB_LYT_MASK)
 		return pcb_false;
 
-	if (g->type & PCB_LYT_PASTE) {
-		if (g->type & PCB_LYT_TOP)
-			return pcb_layer_is_paste_auto_empty(pcb, PCB_COMPONENT_SIDE);
-		if (g->type & PCB_LYT_BOTTOM)
-			return pcb_layer_is_paste_auto_empty(pcb, PCB_SOLDER_SIDE);
-	}
-
 	/* copper layers are always non-empty if there are vias or pins because of the rings */
 	if (g->type & PCB_LYT_COPPER) {
 		if ((pcb->Data->via_tree != NULL) && (pcb->Data->via_tree->size > 0))
