@@ -745,7 +745,7 @@ static void svg_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t dx, pcb_coord_t dy, const char *clr)
 {
 	int i;
-	float poly_bloat = 0.075;
+	float poly_bloat = 0.01;
 
 	indent(s);
 	gds_append_str(s, "<polygon points=\"");
