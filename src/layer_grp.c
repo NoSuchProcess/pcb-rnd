@@ -751,6 +751,21 @@ pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int
 	return -1;
 }
 
+void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t g;
+	for(g = 0; g < pcb->LayerGroups.len-2; g++) {
+		pcb_layergrp_t *g0 = &pcb->LayerGroups.grp[g], *g1 = &pcb->LayerGroups.grp[g+1];
+		if ((g < pcb->LayerGroups.len-3) && (g1->type & PCB_LYT_OUTLINE)) g1++;
+		if ((g0->type & PCB_LYT_COPPER) && (g1->type & PCB_LYT_COPPER)) {
+			pcb_layergrp_t *ng = pcb_layergrp_insert_after(pcb, g);
+			ng->type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+			ng->name = pcb_strdup("implicit_subst");
+			ng->valid = 1;
+		}
+	}
+}
+
 int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int num_layer)
 {
 	int n, existing_intern = 0, want_intern = 0;

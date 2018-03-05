@@ -161,6 +161,11 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
    not removing layers or groups) */
 void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb);
 
+/* Compatibility helper: insert a substrate group in between any two adjacent
+   copper groups. */
+void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb);
+
+
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of
    comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1
