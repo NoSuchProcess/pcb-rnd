@@ -143,7 +143,7 @@ void pcb_layer_free(pcb_layer_t *layer)
 		if (layer->polygon_tree)
 			pcb_r_destroy_tree(&layer->polygon_tree);
 	}
-	memset(layer, 0, sizeof(layer));
+	memset(layer, 0, sizeof(pcb_layer_t));
 }
 
 pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
