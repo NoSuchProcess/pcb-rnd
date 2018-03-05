@@ -111,7 +111,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	if (pcb_crosshair.X == line->Point1.X)
 		m1 = 2;											/* 2 signals infinite slope */
 	else {
-		m = (double) (pcb_crosshair.X - line->Point1.X) / (pcb_crosshair.Y - line->Point1.Y);
+		m = (double) (pcb_crosshair.Y - line->Point1.Y) / (pcb_crosshair.X - line->Point1.X);
 		m1 = 0;
 		if (m > PCB_TAN_30_DEGREE)
 			m1 = (m > PCB_TAN_60_DEGREE) ? 2 : 1;
@@ -121,7 +121,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	if (pcb_crosshair.X == line->Point2.X)
 		m2 = 2;											/* 2 signals infinite slope */
 	else {
-		m = (double) (pcb_crosshair.X - line->Point1.X) / (pcb_crosshair.Y - line->Point1.Y);
+		m = (double) (pcb_crosshair.Y - line->Point2.Y) / (pcb_crosshair.X - line->Point2.X);
 		m2 = 0;
 		if (m > PCB_TAN_30_DEGREE)
 			m2 = (m > PCB_TAN_60_DEGREE) ? 2 : 1;
