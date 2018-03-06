@@ -1550,7 +1550,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st.default_unit = "mm";
 	st_init(&st);
 
-	if (1 || eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0) {
+	if (eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0) {
 		pcb_message(PCB_MSG_ERROR, "Eagle XML version parse error\n");
 		goto err;
 	}
