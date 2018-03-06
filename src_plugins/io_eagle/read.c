@@ -1545,14 +1545,13 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (st.parser.calls->load(&st.parser, Filename) != 0)
 		return -1;
 
-	if (1 || eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0)
-		goto err;
-
 	st.pcb = pcb;
 	st.elem_by_name = 1;
 	st.default_unit = "mm";
-
 	st_init(&st);
+
+	if (1 || eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0)
+		goto err;
 
 	eagle_read_design_rules(&st);
 	old_leni = pcb_create_being_lenient;
