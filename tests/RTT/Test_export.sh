@@ -6,7 +6,6 @@
 tester="./Export.sh -t -a"
 
 want='
-nelma
 bom
 dsn
 IPC-D-356
