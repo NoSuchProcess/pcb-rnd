@@ -341,7 +341,7 @@ int pcb_file_loaded_clear(pcb_file_loaded_t *cat)
 {
 	htsp_entry_t *e;
 
-	assert(cat->type = PCB_FLT_CATEGORY);
+	assert(cat->type == PCB_FLT_CATEGORY);
 
 	for (e = htsp_first(&cat->data.category.children); e; e = htsp_next(&cat->data.category.children, e)) {
 		pcb_file_loaded_file_free(e->value);
@@ -363,7 +363,7 @@ int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *pa
 {
 	pcb_file_loaded_t *file;
 
-	assert(cat->type = PCB_FLT_CATEGORY);
+	assert(cat->type == PCB_FLT_CATEGORY);
 	file = htsp_get(&cat->data.category.children, name);
 	if (file != NULL) {
 		free(file->data.file.path);
@@ -396,7 +396,7 @@ int pcb_file_loaded_set_at(const char *catnam, const char *name, const char *pat
 int pcb_file_loaded_del(pcb_file_loaded_t *cat, const char *name)
 {
 	pcb_file_loaded_t *file;
-	assert(cat->type = PCB_FLT_CATEGORY);
+	assert(cat->type == PCB_FLT_CATEGORY);
 	file = htsp_pop(&cat->data.category.children, name);
 	if (file != NULL) {
 		if (file->type != PCB_FLT_FILE)
