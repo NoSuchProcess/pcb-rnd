@@ -41,10 +41,13 @@
 #include "compat_fs.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
+#include "build_run.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
 static const char *conf_user_fn = "~/" DOT_PCB_RND "/pcb-conf.lht";
+static const char *flcat = "conf";
+
 
 lht_doc_t *conf_root[CFR_max_alloc];
 int conf_root_lock[CFR_max_alloc];
@@ -116,16 +119,25 @@ int conf_insert_tree_as(conf_role_t role, lht_node_t *root)
 int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 {
 	lht_doc_t *d;
+	const char *ifn, *role_name = conf_role_name(role);
+
 	if (conf_root_lock[role])
 		return -1;
 	if (conf_root[role] != NULL) {
 		lht_dom_uninit(conf_root[role]);
 		conf_root[role] = NULL;
+		if (role_name != NULL)
+			pcb_file_loaded_del_at(flcat, role_name);
 	}
-	if (fn_is_text)
+	if (fn_is_text) {
 		d = pcb_hid_cfg_load_str(fn);
-	else
+		ifn = "<string>";
+	}
+	else {
 		d = pcb_hid_cfg_load_lht(fn);
+		ifn = fn;
+	}
+
 	if (d == NULL) {
 		FILE *f;
 		char *efn;
@@ -149,17 +161,25 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		confroot->doc = d;
 		d->root = prjroot;
 		conf_root[role] = d;
+		if (role_name != NULL)
+			pcb_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 		return 0;
 	}
 
 	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
 		conf_root[role] = d;
+		if (role_name != NULL)
+			pcb_file_loaded_set_at(flcat, role_name, ifn, "conf");
 		return 0;
 	}
 
 	if ((d->root->type == LHT_HASH) && (strcmp(d->root->name, "geda-project-v1") == 0)) {
 		lht_node_t *confroot;
 		confroot = lht_tree_path_(d, d->root, "pcb-rnd-conf-v1", 1, 0, NULL);
+
+		if (role_name != NULL)
+			pcb_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
+
 		if ((confroot != NULL)  && (confroot->type == LHT_LIST) && (strcmp(confroot->name, "li:pcb-rnd-conf-v1") == 0)) {
 			conf_root[role] = d;
 			return 0;
