@@ -43,6 +43,7 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "build_run.h"
 
 #define STEP_SYMBOLLINE 10
 
@@ -85,6 +86,14 @@ static void pcb_font_load_internal(pcb_font_t *font)
 	pcb_font_set_info(font);
 }
 
+static int pcb_parse_font_default(pcb_font_t *ptr, const char *filename)
+{
+	int res = pcb_parse_font(ptr, filename);
+	if (res == 0)
+		pcb_file_loaded_set_at("font", "default", filename, "original default font");
+	return res;
+}
+
 /* parses a file with font information and installs it into the provided PCB
  * checks directories given as colon separated list by resource fontPath
  * if the fonts filename doesn't contain a directory component */
@@ -92,7 +101,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 {
 	int res = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, pcb_parse_font(&pcb->fontkit.dflt, __path__));
+	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, pcb_parse_font_default(&pcb->fontkit.dflt, __path__));
 	pcb_io_err_inhibit_dec();
 
 	if (res != 0) {
@@ -101,6 +110,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		pcb_message(PCB_MSG_WARNING, _("Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n"), s);
 		pcb_font_load_internal(&pcb->fontkit.dflt);
+		pcb_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);
 	}
 }
