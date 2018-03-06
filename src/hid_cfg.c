@@ -292,8 +292,10 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 				char *end = *p + strlen(*p);
 				sprintf(end, "pcb-menu-%s.lht", fn);
 				doc = pcb_hid_cfg_load_lht(*p);
-				if (doc != NULL)
+				if (doc != NULL) {
 					pcb_message(PCB_MSG_INFO, "Loaded menu file '%s'\n", *p);
+					pcb_file_loaded_set_at("menu", "HID main", *p, "main menu system");
+				}
 			}
 			free(*p);
 		}
@@ -302,8 +304,10 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 	else
 		doc = pcb_hid_cfg_load_lht(fn);
 
-	if (doc == NULL)
+	if (doc == NULL) {
 		doc = pcb_hid_cfg_load_str(embedded_fallback);
+		pcb_file_loaded_set_at("menu", "HID main", "<internal>", "main menu system");
+	}
 	if (doc == NULL)
 		return NULL;
 
