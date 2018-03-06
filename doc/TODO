@@ -21,7 +21,6 @@
 - BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
 - BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd file causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
-- BUG: tests/RTT broke [report: igor2]
 + BUG: segfault on load of XML board bug_files/Pure_VCO_SMD-erich.brd, seems to relate to htsp_isused() in st_uninit(). Trimmed down version of XML_examples/Pure_VCO_SMD_V2_2_7fe46bec-f8a9-4486-8dff-4481dee6517b.brd which also segfaults. 
 Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
