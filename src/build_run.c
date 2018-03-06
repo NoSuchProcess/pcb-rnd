@@ -406,6 +406,12 @@ int pcb_file_loaded_del(pcb_file_loaded_t *cat, const char *name)
 	return 0;
 }
 
+int pcb_file_loaded_del_at(const char *catname, const char *name)
+{
+	pcb_file_loaded_t *cat = pcb_file_loaded_category(catname, 1);
+	return pcb_file_loaded_del(cat, name);
+}
+
 void pcb_file_loaded_init(void)
 {
 	htsp_init(&pcb_file_loaded, strhash, strkeyeq);

@@ -88,6 +88,7 @@ int pcb_file_loaded_set_at(const char *catname, const char *name, const char *pa
 
 /* remove an entry */
 int pcb_file_loaded_del(pcb_file_loaded_t *cat, const char *name);
+int pcb_file_loaded_del_at(const char *catname, const char *name);
 
 
 /* called once, from main */
