@@ -325,6 +325,7 @@ pcb_file_loaded_t *pcb_file_loaded_category(const char *name, int alloc)
 		cat->type = PCB_FLT_CATEGORY;
 		cat->name = pcb_strdup(name);
 		htsp_init(&cat->data.category.children, strhash, strkeyeq);
+		htsp_set(&pcb_file_loaded, cat->name, cat);
 	}
 	return cat;
 }
