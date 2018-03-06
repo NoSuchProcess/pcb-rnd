@@ -273,6 +273,7 @@ void pcb_main_uninit(void)
 	conf_uninit();
 	pcb_io_uninit();
 	pcb_plugin_uninit();
+	pcb_file_loaded_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
@@ -336,6 +337,7 @@ int main(int argc, char *argv[])
 
 
 	/* Minimal conf setup before we do anything else */
+	pcb_file_loaded_init();
 	pcb_minuid_init();
 	conf_init();
 	conf_core_init();
