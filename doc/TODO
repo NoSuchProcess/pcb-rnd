@@ -26,7 +26,6 @@
 Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 + BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg) -> use the PrintFiles action [report: Miloh]
-- BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
@@ -66,6 +65,7 @@ SUBC: element removal:
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	-> this will be handled in the big increments rewrite (with Richard)
+- BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
