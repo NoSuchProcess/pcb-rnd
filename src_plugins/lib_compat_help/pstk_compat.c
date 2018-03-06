@@ -100,6 +100,24 @@ static int compat_via_shape_gen(pcb_pstk_shape_t *dst, pcb_pstk_compshape_t csha
 			dst->shape = PCB_PSSH_POLY;
 			octa_shape(&dst->data.poly, 0, 0, pad_dia, 1);
 			break;
+		case PCB_PSTK_COMPAT_RRECT_H:
+			dst->shape = PCB_PSSH_LINE;
+			dst->data.line.square = 0; /* Round_Cap */
+			dst->data.line.thickness = pad_dia;
+			dst->data.line.x1 = -pad_dia/2;
+			dst->data.line.y1 = 0;
+			dst->data.line.x2 = pad_dia/2;
+			dst->data.line.y2 = 0;
+			break;
+		case PCB_PSTK_COMPAT_RRECT_V:
+			dst->shape = PCB_PSSH_LINE;
+			dst->data.line.square = 0; /* Round_Cap */
+			dst->data.line.thickness = pad_dia;
+			dst->data.line.x1 = 0;
+			dst->data.line.y1 = -pad_dia/2;
+			dst->data.line.x2 = 0;
+			dst->data.line.y2 = pad_dia/2;
+			break;
 		default:
 			return -1;
 	}
