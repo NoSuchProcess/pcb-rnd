@@ -66,6 +66,7 @@
 #include "layer_vis.h"
 #include "safe_fs.h"
 #include "plug_footprint.h"
+#include "build_run.h"
 
 /* for opendir */
 #include "compat_inc.h"
@@ -760,7 +761,11 @@ int pcb_save_pcb(const char *file, const char *fmt)
  */
 int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int how)
 {
-	return real_load_pcb(file, fmt, pcb_false, require_font, how);
+	int res = real_load_pcb(file, fmt, pcb_false, require_font, how);
+	if (res == 0)
+		pcb_file_loaded_set_at("design", "main", file, PCB->is_footprint ? "footprint" : "board");
+
+	return res;
 }
 
 /* ---------------------------------------------------------------------------
