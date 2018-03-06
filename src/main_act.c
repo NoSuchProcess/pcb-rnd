@@ -40,6 +40,7 @@
 #include "hid_init.h"
 #include "conf_core.h"
 #include "plugins.h"
+#include "build_run.h"
 
 
 /* --------------------------------------------------------------------------- */
@@ -251,6 +252,28 @@ int pcb_act_PrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 }
 
 /* --------------------------------------------------------------------------- */
+static const char pcb_acts_PrintFiles[] = "PrintFiles()";
+static const char pcb_acth_PrintFiles[] = "Print files currently loaded.";
+
+static void print_cat(pcb_file_loaded_t *cat)
+{
+	htsp_entry_t *e;
+	printf("%s\n", cat->name);
+	for (e = htsp_first(&cat->data.category.children); e; e = htsp_next(&cat->data.category.children, e)) {
+		pcb_file_loaded_t *file = e->value;
+		printf(" %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
+	}
+}
+
+int pcb_act_PrintFiles(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	htsp_entry_t *e;
+	printf("# Data files loaded\n");
+	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e))
+		print_cat(e->value);
+}
+
+/* --------------------------------------------------------------------------- */
 static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
 
 static const char pcb_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
@@ -310,6 +333,9 @@ pcb_hid_action_t main_action_list[] = {
 	,
 	{"PrintPaths", 0, pcb_act_PrintPaths,
 	 pcb_acth_PrintPaths, pcb_acts_PrintPaths}
+	,
+	{"PrintFiles", 0, pcb_act_PrintFiles,
+	 pcb_acth_PrintFiles, pcb_acts_PrintFiles}
 	,
 	{"DumpPlugins", 0, pcb_act_DumpPlugins,
 	 pcb_acth_DumpPlugins, pcb_acts_DumpPlugins}
