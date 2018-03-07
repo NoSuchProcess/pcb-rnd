@@ -60,6 +60,8 @@ SUBC: element removal:
 - find.c rewrite:
 	- a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
+	- netlist rewrite
+		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
 	- Lesstif HID does not have this dialog => implement it, using DAD
