@@ -1029,6 +1029,8 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	yysubc_bottom = !!(Flags.f & PCB_FLAG_ONSOLDER);
 	Flags.f &= ~PCB_FLAG_ONSOLDER;
 
+	PCB_FLAG_SET(Flags.f, sc);
+
 	if (Description != NULL)
 		pcb_attribute_put(&sc->Attributes, "footprint", Description);
 	if (NameOnPCB != NULL)
