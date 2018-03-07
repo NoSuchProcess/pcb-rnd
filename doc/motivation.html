@@ -54,7 +54,7 @@ do some refactoring:
 	<li> replaced the <a href="http://repo.hu/cgi-bin/pool.cgi?node=parametric">footprint mapping/loading code</a>; instead of a hardwired m4 dependency, parametric (generated-on-the-fly) footprints can be written in any language
 	<li> replaced the default footprint library shipped with the software; the <a href="http://repo.hu/cgi-bin/pool.cgi?node=pcblib"> new library </a> ships a small, well organized collection of essentials, omitting special/rarely used footprints
 	<li> got the code much more modular - <a href="developer/mods3"> a lot of core code got converted into plugins </a>
-	<li> threw out the resource parser and file format (menu.res and friends) <a href="features/res.html"> in favor of lihata;</a> this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
+	<li> threw out the resource parser and file format (menu.res and friends) in favor of lihata; this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
 	<li> <a href="http://repo.hu/cgi-bin/pool.cgi?node=glib">replaced glib</a> with a set of <a href="http://repo.hu/projects/articles/minilibs"> mini libs </a> in core and most of the plugins; at the end only the gtk hid should depend on glib; this made the code easier to maintain and debug; a lot of checks are now compile-time (through the C type system) instead of runtime (glib lists)
 	<li> replaced the settings/rc/preferences system with a central, <a href="conf/"> lihata based configuration system </a> - long term hid attributes will be converted too
 </ul>
@@ -114,7 +114,7 @@ My plans with this fork:
 	<li> My plans for new features were:
 		<ul>
 			<li> pin shapes (a preliminary version was already implemented - as of 2017, it's obsolete because of padstacks)
-			<li> 1206 jumpers without having to add them on the schematics/netlist (done: <a href="features/intconn.html">[intconn]</a> and <a href="features/nonetlist.html"> [nonetlist] </a> are the PCB-side features for this)
+			<li> 1206 jumpers without having to add them on the schematics/netlist (done: [intconn] and [nonetlist] are the pcb-rnd-side features for this)
 			<li> merge pcb-gpmi; GPMI would be an optional addon, it'd probably stay a plugin, but there should not be a separate repo (<a href="user/06_feature/gpmi/index.html"> done </a>)
 		</ul>
 </ul>
