@@ -23,6 +23,7 @@
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 - BUG: macrofab xy: 5 mil offset [report: celem]
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
+- BUG: nonetlist flag broke with subcircuits - also update the pool node [report: Igor2]
 Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 + BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg) -> use the PrintFiles action [report: Miloh]
