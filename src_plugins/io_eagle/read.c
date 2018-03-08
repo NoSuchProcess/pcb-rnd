@@ -289,6 +289,8 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 {
 	trnode_t *n;
 
+	pcb_layergrp_inhibit_inc();
+
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
@@ -355,6 +357,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 	}
 	pcb_layer_group_setup_silks(st->pcb);
 	pcb_layer_auto_fixup(st->pcb);
+	pcb_layergrp_inhibit_dec();
 	return 0;
 }
 
