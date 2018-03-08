@@ -9,26 +9,23 @@
 + BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: JG]
 + BUG: can't rotate polygon [report: sam]
 + BUG: autorouter assert: bug_files/autorouter.lht [report: barjac]
-- BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 + doc: explain the library path -> pool node lib_path_conf [report: karl]
 + BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
++ BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
++ BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
++ BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg) -> use the PrintFiles action [report: Miloh]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous [report: Igor2]
 - BUG: DRC preview windows don't show all padstacks after a shift-tab flip - bug_files/drc1.lht [report: Igor2]
-+ BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [erich]   
 - BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd file causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 - BUG: macrofab xy: 5 mil offset [report: celem]
-+ BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
 Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
-+ BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg) -> use the PrintFiles action [report: Miloh]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
-- BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 
 
 2. For later releases ===============================================================================
@@ -73,7 +70,10 @@ SUBC: element removal:
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
+- BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
+- BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - key rewrite: (base key swap bug (q<->a, y<->z))
