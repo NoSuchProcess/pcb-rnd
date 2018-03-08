@@ -639,7 +639,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		pcb_undo_inc_serial();
 	}
 	else
-		pcb_message(PCB_MSG_WARNING, "this operation will not be undoable.\n");
+		pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
 
 	return 0;
 }
