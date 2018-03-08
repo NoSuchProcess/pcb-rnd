@@ -12,7 +12,6 @@
 + doc: explain the library path -> pool node lib_path_conf [report: karl]
 + BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
-+ BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
 - BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
 + BUG: pcb-rnd doesn't report the conf loaded to stdout (like menu file load string to stdout/msg) -> use the PrintFiles action [report: Miloh]
