@@ -152,7 +152,7 @@ static int pcb_act_EvalConf(int argc, const char **argv, pcb_coord_t x, pcb_coor
 }
 
 static const char dump_layers_syntax[] =
-	"dumplayers()\n"
+	"dumplayers([all])\n"
 	;
 
 static const char dump_layers_help[] = "Print info about each layer";
@@ -164,6 +164,43 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	pcb_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
+	if ((argc > 0) && (strcmp(argv[0], "all") == 0)) {
+		printf("Per group:\n");
+		for(g = 0; g < PCB->LayerGroups.len; g++) {
+			pcb_layergrp_t *grp = &PCB->LayerGroups.grp[g];
+			printf(" Group %d: '%s' %x\n", g, grp->name, grp->type);
+			for(n = 0; n < grp->len; n++) {
+				pcb_layer_t *ly = pcb_get_layer(PCB->Data, grp->lid[n]);
+				if (ly != NULL) {
+					printf("  layer %d: '%s'\n", n, ly->name);
+					if (ly->meta.real.grp != g)
+						printf("   ERROR: invalid back-link to group: %ld should be %d\n", ly->meta.real.grp, g);
+				}
+				else
+					printf("  layer %d: <invalid>\n", g);
+			}
+		}
+
+		printf("Per layer:\n");
+		for(n = 0; n < PCB->Data->LayerN; n++) {
+			pcb_layer_t *ly = &PCB->Data->Layer[n];
+			printf(" layer %d: '%s'\n", n, ly->name);
+			if (ly->meta.real.grp >= 0) {
+				pcb_layergrp_t *grp = &PCB->LayerGroups.grp[ly->meta.real.grp];
+				int i, ok = 0;
+				for(i = 0; i < grp->len; i++) {
+					if (grp->lid[i] == n) {
+						ok = 1;
+						break;
+					}
+				}
+				if (!ok)
+					printf("   ERROR: invalid back-link to group: %ld\n", ly->meta.real.grp);
+			}
+		}
+
+		return 0;
+	}
 
 	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER+2, pcb_max_layer);
 	used = pcb_layer_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
