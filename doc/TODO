@@ -18,8 +18,6 @@
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous [report: Igor2]
 - BUG: DRC preview windows don't show all padstacks after a shift-tab flip - bug_files/drc1.lht [report: Igor2]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-+ BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich]
-	+> not a bug in the code: the input file is invalid: has a self intersecting poly in line 156 - maybe we should handle "width"?
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 - BUG: macrofab xy: 5 mil offset [report: celem]
 Low prio:
@@ -139,6 +137,7 @@ SUBC: element removal:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 	- make the color config dynamic too; invent color for new layers
 - layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
+- eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
 - layer groups from config (e.g. CLI) is ignored
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
