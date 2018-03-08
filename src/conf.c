@@ -891,7 +891,9 @@ void conf_update(const char *path, int arr_idx)
 	conf_rev++;
 }
 
-static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, int create)
+#define POL_ANY 63
+
+static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, conf_policy_t pol, int create)
 {
 	lht_node_t *ov; /* normally the "overwrite" node */
 
@@ -899,12 +901,22 @@ static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, int create)
 	cwd = conf_lht_get_confroot(cwd);
 	if (cwd == NULL)
 		return NULL;
+
+
 	ov = cwd->data.list.first;
+	if (pol != POL_ANY) {
+		for(; ov != NULL; ov = ov->next)
+			if (conf_policy_parse(ov->name) == pol)
+				break;
+	}
+	else
+		pol = POL_OVERWRITE; /* this is what is created by default */
+
 	if (ov == NULL) {
 		lht_node_t *new_ov;
 		if (!create)
 			return NULL;
-		new_ov = lht_dom_node_alloc(LHT_HASH, "overwrite");
+		new_ov = lht_dom_node_alloc(LHT_HASH, conf_policy_name(pol));
 		lht_dom_list_append(cwd, new_ov);
 		ov = new_ov;
 	}
@@ -921,7 +933,17 @@ lht_node_t *conf_lht_get_first(conf_role_t target, int create)
 	assert(target < CFR_max_alloc);
 	if (conf_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(conf_root[target]->root, create);
+	return conf_lht_get_first_(conf_root[target]->root, POL_ANY, create);
+}
+
+lht_node_t *conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int create)
+{
+	assert(target != CFR_invalid);
+	assert(target >= 0);
+	assert(target < CFR_max_alloc);
+	if (conf_root[target] == NULL)
+		return NULL;
+	return conf_lht_get_first_(conf_root[target]->root, pol, create);
 }
 
 static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int create)
@@ -1143,7 +1165,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		return -1;
 	}
 
-	cwd = conf_lht_get_first(target, 0);
+	cwd = conf_lht_get_first_pol(target, pol, 0);
 	if (cwd == NULL) {
 		free(path);
 		return -1;
@@ -1404,6 +1426,7 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 	}
 
 	/* now that we have a clean path (arg) and a value, try to set the config */
+	conf_lht_get_first_pol(CFR_CLI, pol, 1); /* make sure the root for the given policy is created */
 	ret = conf_set(CFR_CLI, arg, -1, val, pol);
 	if (ret != 0)
 		*why = "invalid config path";
