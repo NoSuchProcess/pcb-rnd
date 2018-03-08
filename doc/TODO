@@ -23,7 +23,8 @@ Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
-
+- BUG: lesstif does not allow "save as" in non alien format [report: erich]
+- BUG: disperse selected subc's and disperse all subcs does not seem to space a large number of overlaid subcs sensibly over the board. [report: erich]
 
 2. For later releases ===============================================================================
 SUBC: element removal:
