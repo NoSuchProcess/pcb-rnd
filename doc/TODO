@@ -20,7 +20,7 @@
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 + BUG: eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich]
 	+> not a bug in the code: the input file is invalid: has a self intersecting poly in line 156 - maybe we should handle "width"?
-- BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd file causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
++ BUG: loading OSHW_binary_examples/80mAllTransistorSSBTXCVR.brd, followed by load of tvbgone3.brd file causes layer.c:895: pcb_layer_get_top_silk: Assertion `id >= 0' failed, and core dump. [erich]
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 - BUG: macrofab xy: 5 mil offset [report: celem]
 Low prio:
