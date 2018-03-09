@@ -19,6 +19,7 @@
 #include "data.h"
 #include "action_helper.h"
 #include "crosshair.h"
+#include "conf_hid.h"
 #include "layer.h"
 #include "pcb-printf.h"
 #include "clip.h"
@@ -3746,6 +3747,14 @@ static int lesstif_usage(const char *topic)
 
 #include "dolists.h"
 
+static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
+{
+	if (!lesstif_active)
+		return;
+	if (strncmp(cfg->hash_path, "appearance/color/", 17) == 0)
+		lesstif_invalidate_all();
+}
+
 void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 void lesstif_remove_menu(const char *menu);
 
@@ -3754,10 +3763,16 @@ int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 void pplg_uninit_hid_lesstif(void)
 {
 	pcb_event_unbind_allcookie(lesstif_cookie);
+	conf_hid_unreg(lesstif_cookie);
 }
 
 int pplg_init_hid_lesstif(void)
 {
+	static conf_hid_callbacks_t ccb;
+
+	memset(&ccb, 0, sizeof(ccb));
+	ccb.val_change_post = lesstif_globconf_change_post;
+
 	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&lesstif_hid);
@@ -3846,6 +3861,7 @@ int pplg_init_hid_lesstif(void)
 	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 
 	pcb_hid_register_hid(&lesstif_hid);
+	conf_hid_reg(lesstif_cookie, &ccb);
 
 	return 0;
 }
