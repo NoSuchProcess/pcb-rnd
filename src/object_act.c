@@ -339,7 +339,7 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))) {
 			pcb_coord_t ox, oy;
-			if (pcb_subc_get_origin(subc, &x, &y) != 0) {
+			if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 				ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2)/2;
 				oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2)/2;
 			}
