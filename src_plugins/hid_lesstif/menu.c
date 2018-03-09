@@ -61,12 +61,12 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 #define LB_RATS	(PCB_MAX_LAYER+0)
 #define LB_NUMPICK (LB_RATS+1)
 /* more */
-#define LB_BACK	(PCB_MAX_LAYER+2)
-#define LB_SUBC	(PCB_MAX_LAYER+3)
-#define LB_SUBC_PARTS	(PCB_MAX_LAYER+4)
-#define LB_PSTK_MARKS	(PCB_MAX_LAYER+5)
-#define LB_HOLES	(PCB_MAX_LAYER+6)
-#define LB_NUM  (PCB_MAX_LAYER+7)
+#define LB_BACK	(PCB_MAX_LAYER+1)
+#define LB_SUBC	(PCB_MAX_LAYER+2)
+#define LB_SUBC_PARTS	(PCB_MAX_LAYER+3)
+#define LB_PSTK_MARKS	(PCB_MAX_LAYER+4)
+#define LB_HOLES	(PCB_MAX_LAYER+5)
+#define LB_NUM  (PCB_MAX_LAYER+6)
 
 typedef struct {
 	Widget w[LB_NUM];
