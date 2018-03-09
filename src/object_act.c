@@ -294,8 +294,13 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 
 	/* keep track of how tall this row is */
 	*minx = newx2 + GAP;
-	if (*maxy < newy2)
+	if (*maxy < newy2) {
 		*maxy = newy2;
+		if (*maxy > PCB->MaxHeight - GAP) {
+			*maxy = GAP;
+			pcb_message(PCB_MSG_WARNING, "The board is too small for hosting all elements,\ndiesperse restarted from the top.\nExpect overlapping elements\n");
+		}
+	}
 }
 
 static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
