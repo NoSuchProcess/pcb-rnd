@@ -2755,18 +2755,13 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		autofade = 0;
 #endif
 
-#if 0
-	/* layers that need special visibility rules */
-	switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_MASK:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)
-				return pcb_mask_on(PCB);
+	if (flags & PCB_LYT_SILK) {
+		if (!PCB->Data->Layer[idx].meta.real.vis)
 			return 0;
-		case PCB_LYT_PASTE:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)
-				return pcb_paste_on(PCB);
+		if (flags & PCB_LYT_INVIS)
+			return PCB->InvisibleObjectsOn;
+		return 0;
 	}
-#endif
 
 	if ((flags & PCB_LYT_MASK) || (flags & PCB_LYT_PASTE)) {
 		if (pinout)
@@ -2774,8 +2769,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		return (PCB->Data->Layer[idx].meta.real.vis && PCB_LAYERFLG_ON_VISIBLE_SIDE(flags));
 	}
 
-	/* normal layers */
-	if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_SILK))
+	if (flags & PCB_LYT_COPPER)
 		return pinout ? 1 : PCB->Data->Layer[idx].meta.real.vis;
 
 	/* virtual layers */
