@@ -1318,7 +1318,7 @@ static void ghid_gdk_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
 }
 
-static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkDrawable *save_drawable;
@@ -1327,6 +1327,8 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	int save_width, save_height;
 	double xz, yz, vw, vh;
 	render_priv_t *priv = gport->render_priv;
+	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
+	pcb_coord_t nx1, ny1, nx2, ny2;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1357,9 +1359,32 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	/* clear background */
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
+	/* make sure the context is set to draw the whole widget size, which might
+	   be slightly larger than the original request */
+	nx1 = Px(0); nx2 = Px(allocation.width);
+	ny1 = Py(0); ny2 = Py(allocation.height);
+	if (nx1 < nx2) {
+		ctx->view.X1 = nx1;
+		ctx->view.X2 = nx2;
+	}
+	else {
+		ctx->view.X1 = nx2;
+		ctx->view.X2 = nx1;
+	}
+	if (ny1 < ny2) {
+		ctx->view.Y1 = ny1;
+		ctx->view.Y2 = ny2;
+	}
+	else {
+		ctx->view.Y1 = ny2;
+		ctx->view.Y2 = ny1;
+	}
+
 	/* call the drawing routine */
 	expcall(&gtk2_gdk_hid, ctx);
 
+	/* restore the original context and priv */
+	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
 	priv->out_pixel = priv->base_pixel = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
