@@ -42,6 +42,7 @@
 
 #include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
+#include "../src_plugins/lib_gtk_hid/preview_helper.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
