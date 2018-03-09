@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1300.4800" height="1300.4800" viewBox="-2.0000 -2.0000 10.0800 10.0800">
+<rect x="0.0000" y="0.0000" width="5.0800" height="5.0800" fill="#464646" stroke="none"/>
+<g id="layer_7_outline">
+<!--normal-->
+ <rect x="0.0000" y="0.0000" width="5.0800" height="5.0800" stroke-width="0.2540" stroke="#228b22" stroke-linecap="round" fill="none"/>
+</g>
+<g id="layer_5_group5">
+<!--normal-->
+ <circle cx="2.6200" cy="2.5000" r="1.2700" stroke-width="0.2540" fill="#cccccc" stroke="none"/>
+ <circle cx="2.6200" cy="2.5000" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<g id="layer_8_bottom">
+<!--normal-->
+ <circle cx="2.6200" cy="2.5000" r="1.2700" stroke-width="0.2540" fill="#cccccc" stroke="none"/>
+ <circle cx="2.6200" cy="2.5000" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<g id="layer_3_top">
+<!--normal-->
+ <polygon points="4.1496,0.0000 5.0800,0.0000 5.0800,5.0800 4.1496,5.0800 4.1496,3.4089 4.1677,3.4059 4.2151,3.3901 4.2594,3.3671 4.2997,3.3374 4.3347,3.3018 4.3638,3.2612 4.3853,3.2161 4.4481,3.0436 4.4919,2.8652 4.5184,2.6835 4.5272,2.5000 4.5184,2.3165 4.4919,2.1348 4.4481,1.9564 4.3873,1.7830 4.3651,1.7380 4.3359,1.6972 4.3006,1.6614 4.2602,1.6316 4.2157,1.6085 4.1680,1.5926 4.1496,1.5896 " stroke-width="0.010" stroke="#008800" fill="#008800"/>
+ <polygon points="2.6207,0.0000 4.1496,0.0000 4.1496,1.5896 4.1185,1.5844 4.0683,1.5841 4.0186,1.5916 3.9708,1.6067 3.9259,1.6292 3.8850,1.6584 3.8493,1.6936 3.8195,1.7340 3.7964,1.7786 3.7805,1.8263 3.7723,1.8758 3.7719,1.9260 3.7794,1.9756 3.7955,2.0231 3.8373,2.1380 3.8665,2.2568 3.8841,2.3778 3.8900,2.5000 3.8841,2.6222 3.8665,2.7432 3.8373,2.8620 3.7968,2.9774 3.7808,3.0247 3.7734,3.0741 3.7738,3.1241 3.7819,3.1734 3.7977,3.2208 3.8207,3.2652 3.8504,3.3054 3.8860,3.3405 3.9266,3.3695 3.9713,3.3919 4.0190,3.4070 4.0684,3.4145 4.1184,3.4141 4.1496,3.4089 4.1496,5.0800 2.6207,5.0800 2.6207,4.4072 2.8035,4.3984 2.9852,4.3719 3.1636,4.3281 3.3370,4.2673 3.3820,4.2451 3.4228,4.2159 3.4586,4.1806 3.4884,4.1402 3.5115,4.0957 3.5274,4.0480 3.5356,3.9985 3.5359,3.9483 3.5284,3.8986 3.5133,3.8508 3.4908,3.8059 3.4616,3.7650 3.4264,3.7293 3.3859,3.6995 3.3414,3.6764 3.2937,3.6605 3.2442,3.6523 3.1940,3.6519 3.1444,3.6594 3.0969,3.6755 2.9820,3.7173 2.8632,3.7465 2.7422,3.7641 2.6207,3.7700 2.6207,1.2300 2.7422,1.2359 2.8632,1.2535 2.9820,1.2827 3.0974,1.3232 3.1447,1.3392 3.1941,1.3466 3.2441,1.3462 3.2934,1.3381 3.3408,1.3223 3.3852,1.2993 3.4254,1.2696 3.4605,1.2340 3.4895,1.1934 3.5119,1.1487 3.5270,1.1010 3.5345,1.0516 3.5341,1.0016 3.5259,0.9523 3.5101,0.9049 3.4871,0.8606 3.4574,0.8203 3.4218,0.7853 3.3812,0.7562 3.3361,0.7347 3.1636,0.6719 2.9852,0.6281 2.8035,0.6016 2.6207,0.5928 " stroke-width="0.010" stroke="#008800" fill="#008800"/>
+ <polygon points="1.0904,0.0000 2.6207,0.0000 2.6207,0.5928 2.6200,0.5928 2.4365,0.6016 2.2548,0.6281 2.0764,0.6719 1.9030,0.7327 1.8580,0.7549 1.8172,0.7841 1.7814,0.8194 1.7516,0.8598 1.7285,0.9043 1.7127,0.9520 1.7044,1.0015 1.7041,1.0517 1.7116,1.1014 1.7267,1.1492 1.7492,1.1941 1.7784,1.2350 1.8136,1.2707 1.8540,1.3005 1.8986,1.3236 1.9463,1.3395 1.9958,1.3477 2.0460,1.3481 2.0956,1.3406 2.1431,1.3245 2.2580,1.2827 2.3768,1.2535 2.4978,1.2359 2.6200,1.2300 2.6207,1.2300 2.6207,3.7700 2.6200,3.7700 2.4978,3.7641 2.3768,3.7465 2.2580,3.7173 2.1426,3.6768 2.0953,3.6608 2.0459,3.6534 1.9959,3.6538 1.9466,3.6619 1.8992,3.6777 1.8548,3.7007 1.8146,3.7304 1.7795,3.7660 1.7505,3.8066 1.7281,3.8513 1.7130,3.8990 1.7055,3.9484 1.7059,3.9984 1.7141,4.0477 1.7299,4.0951 1.7529,4.1394 1.7826,4.1797 1.8182,4.2147 1.8588,4.2438 1.9039,4.2653 2.0764,4.3281 2.2548,4.3719 2.4365,4.3984 2.6200,4.4072 2.6207,4.4072 2.6207,5.0800 1.0904,5.0800 1.0904,3.4104 1.1215,3.4156 1.1717,3.4159 1.2214,3.4084 1.2692,3.3933 1.3141,3.3708 1.3550,3.3416 1.3907,3.3064 1.4205,3.2660 1.4436,3.2214 1.4595,3.1737 1.4677,3.1242 1.4681,3.0740 1.4606,3.0244 1.4445,2.9769 1.4027,2.8620 1.3735,2.7432 1.3559,2.6222 1.3500,2.5000 1.3559,2.3778 1.3735,2.2568 1.4027,2.1380 1.4432,2.0226 1.4592,1.9753 1.4666,1.9259 1.4663,1.8759 1.4581,1.8266 1.4423,1.7792 1.4193,1.7348 1.3896,1.6946 1.3540,1.6595 1.3134,1.6305 1.2687,1.6081 1.2210,1.5930 1.1716,1.5855 1.1216,1.5859 1.0904,1.5911 " stroke-width="0.010" stroke="#008800" fill="#008800"/>
+ <polygon points="0.0000,0.0000 1.0904,0.0000 1.0904,1.5911 1.0723,1.5941 1.0249,1.6099 0.9806,1.6329 0.9403,1.6626 0.9053,1.6982 0.8762,1.7388 0.8547,1.7839 0.7919,1.9564 0.7481,2.1348 0.7216,2.3165 0.7128,2.5000 0.7216,2.6835 0.7481,2.8652 0.7919,3.0436 0.8527,3.2170 0.8749,3.2620 0.9041,3.3028 0.9394,3.3386 0.9798,3.3684 1.0243,3.3915 1.0720,3.4073 1.0904,3.4104 1.0904,5.0800 0.0000,5.0800 " stroke-width="0.010" stroke="#008800" fill="#008800"/>
+ <circle cx="2.6200" cy="2.5000" r="1.2700" stroke-width="0.2540" fill="#4d4d4d" stroke="none"/>
+ <circle cx="2.6200" cy="2.5000" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<g id="layer_2_topmask" opacity="0.25">
+<!--normal-->
+<!-- Composite: reset -->
+<defs>
+<g id="comp_pixel_1">
+ <rect x="0.0000" y="0.0000" width="5.0800" height="5.0800" fill="#00ff00" stroke="none"/>
+ <circle cx="2.6200" cy="2.5000" r="1.3462" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
+</g>
+<mask id="comp_clip_1" maskUnits="userSpaceOnUse" x="0" y="0" width="5.0800" height="5.0800">
+<rect x="0.0000" y="0.0000" width="5.0800" height="5.0800" fill="#FFFFFF" stroke="none"/>
+<circle cx="2.6200" cy="2.5000" r="1.3462" stroke-width="0.0000" fill="#000000" stroke="none"/>
+</mask>
+</defs>
+<use xlink:href="#comp_pixel_1" mask="url(#comp_clip_1)"/>
+<!-- Composite: finished -->
+</g>
+<g id="layer_1_topsilk">
+<!--normal-->
+<!-- Composite: reset -->
+<defs>
+<g id="comp_pixel_2">
+ <line x1="1.4961" y1="3.8653" x2="1.4961" y2="4.3034" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="1.4961" y1="3.8653" x2="1.6421" y2="3.7192" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="1.6421" y1="3.7192" x2="1.9342" y2="3.7192" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="1.3500" y1="3.7192" x2="1.4961" y2="3.8653" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="2.4308" y1="3.8653" x2="2.4308" y2="4.3034" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="2.4308" y1="3.8653" x2="2.5768" y2="3.7192" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="2.5768" y1="3.7192" x2="2.7229" y2="3.7192" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="2.7229" y1="3.7192" x2="2.8689" y2="3.8653" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="2.8689" y1="3.8653" x2="2.8689" y2="4.3034" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="2.2847" y1="3.7192" x2="2.4308" y2="3.8653" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.8036" y1="3.1350" x2="3.8036" y2="4.3034" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.6576" y1="4.3034" x2="3.8036" y2="4.1574" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.3655" y1="4.3034" x2="3.6576" y2="4.3034" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.2194" y1="4.1574" x2="3.3655" y2="4.3034" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.2194" y1="3.8653" x2="3.2194" y2="4.1574" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.2194" y1="3.8653" x2="3.3655" y2="3.7192" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.3655" y1="3.7192" x2="3.6576" y2="3.7192" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+ <line x1="3.6576" y1="3.7192" x2="3.8036" y2="3.8653" stroke-width="0.1778" stroke="#ffffff" stroke-linecap="round"/>
+</g>
+<mask id="comp_clip_2" maskUnits="userSpaceOnUse" x="0" y="0" width="5.0800" height="5.0800">
+<line x1="1.4961" y1="3.8653" x2="1.4961" y2="4.3034" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="1.4961" y1="3.8653" x2="1.6421" y2="3.7192" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="1.6421" y1="3.7192" x2="1.9342" y2="3.7192" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="1.3500" y1="3.7192" x2="1.4961" y2="3.8653" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="2.4308" y1="3.8653" x2="2.4308" y2="4.3034" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="2.4308" y1="3.8653" x2="2.5768" y2="3.7192" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="2.5768" y1="3.7192" x2="2.7229" y2="3.7192" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="2.7229" y1="3.7192" x2="2.8689" y2="3.8653" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="2.8689" y1="3.8653" x2="2.8689" y2="4.3034" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="2.2847" y1="3.7192" x2="2.4308" y2="3.8653" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.8036" y1="3.1350" x2="3.8036" y2="4.3034" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.6576" y1="4.3034" x2="3.8036" y2="4.1574" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.3655" y1="4.3034" x2="3.6576" y2="4.3034" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.2194" y1="4.1574" x2="3.3655" y2="4.3034" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.2194" y1="3.8653" x2="3.2194" y2="4.1574" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.2194" y1="3.8653" x2="3.3655" y2="3.7192" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.3655" y1="3.7192" x2="3.6576" y2="3.7192" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+<line x1="3.6576" y1="3.7192" x2="3.8036" y2="3.8653" stroke-width="0.1778" stroke="#FFFFFF" stroke-linecap="round"/>
+</mask>
+</defs>
+<use xlink:href="#comp_pixel_2" mask="url(#comp_clip_2)"/>
+<!-- Composite: finished -->
+<!-- Composite: reset -->
+<defs>
+<g id="comp_pixel_3">
+</g>
+<g id="layer_-1_plated-drill">
+<!--normal-->
+ <circle cx="2.6200" cy="2.5000" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<mask id="comp_clip_3" maskUnits="userSpaceOnUse" x="0" y="0" width="5.0800" height="5.0800">
+<circle cx="2.6200" cy="2.5000" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
+</mask>
+</defs>
+<use xlink:href="#comp_pixel_3" mask="url(#comp_clip_3)"/>
+<!-- Composite: finished -->
+</g>
+</svg>
