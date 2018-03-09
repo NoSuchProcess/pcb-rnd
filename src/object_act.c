@@ -293,7 +293,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	newy2 = obj->BoundingBox.Y2 + *dy;
 
 	/* keep track of how tall this row is */
-	*minx +=  newx2 + GAP;
+	*minx = newx2 + GAP;
 	if (*maxy < newy2)
 		*maxy = newy2;
 }
