@@ -255,6 +255,8 @@ from.
 
 static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
 {
+	pcb_coord_t newx2, newy2;
+
 	/* If we want to disperse selected objects, maybe we need smarter
 	   code here to avoid putting components on top of others which
 	   are not selected.  For now, I'm assuming that this is typically
@@ -286,10 +288,14 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	*dy -= (oy + *dy) % pcb->Grid;
 	*dy += pcb->Grid;
 
+	/* new X2 and Y2 coords with snapping considered */
+	newx2 = obj->BoundingBox.X2 + *dx;
+	newy2 = obj->BoundingBox.Y2 + *dy;
+
 	/* keep track of how tall this row is */
-	*minx += obj->BoundingBox.X2 - obj->BoundingBox.X1 + GAP;
-	if (*maxy < obj->BoundingBox.Y2)
-		*maxy = obj->BoundingBox.Y2;
+	*minx +=  newx2 + GAP;
+	if (*maxy < newy2)
+		*maxy = newy2;
 }
 
 static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
