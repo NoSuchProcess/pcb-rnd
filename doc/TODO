@@ -84,6 +84,7 @@ SUBC: element removal:
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - feature: property editor should deal with flags
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
+- DEL: retire the nelma plugin - nelma is unfinished and not maintained
 - feautres/cleanup: hid:
 	- "erase" color:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
