@@ -94,8 +94,15 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 	if (PCB && PCB->Data) {
 		pcb_data_t *d = PCB->Data;
-		for (i = 0; i < PCB_MAX_LAYER; i++)
-			fg_colors[i] = lesstif_parse_color(d->Layer[i].meta.real.color);
+		for (i = 0; i < PCB_MAX_LAYER; i++) {
+			pcb_layer_type_t lyt = pcb_layer_flags(PCB, i);
+#warning layer TODO: hardwired layer colors
+			if (lyt & PCB_LYT_SILK) fg_colors[i] = lesstif_parse_color(conf_core.appearance.color.element);
+			else if (lyt & PCB_LYT_MASK) fg_colors[i] = lesstif_parse_color(conf_core.appearance.color.mask);
+			else if (lyt & PCB_LYT_PASTE) fg_colors[i] = lesstif_parse_color(conf_core.appearance.color.paste);
+			else fg_colors[i] = lesstif_parse_color(d->Layer[i].meta.real.color);
+		}
+
 		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
 		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
@@ -186,7 +193,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 			XtSetValues(lb->w[i], stdarg_args, stdarg_n);
 
-			if ((i >= pcb_max_layer && i < PCB_MAX_LAYER) || (pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
+			if (i >= pcb_max_layer && i < PCB_MAX_LAYER)
 				XtUnmanageChild(lb->w[i]);
 			else
 				XtManageChild(lb->w[i]);
@@ -277,18 +284,20 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 		break;
 	default:											/* layers */
 		set = PCB->Data->Layer[layer].meta.real.vis = !PCB->Data->Layer[layer].meta.real.vis;
+		printf("vis1 of %ld: %d\n", layer, set);
 		break;
 	}
 
 	show_one_layer_button(layer, set);
-	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(PCB, layer) & PCB_LYT_SILK))) {
+	if (layer < pcb_max_layer) {
 		int i;
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, layer);
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
 			l = PCB->LayerGroups.grp[group].lid[i];
-			if (l != layer && (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK))) {
+			if (l != layer) {
 				show_one_layer_button(l, set);
 				PCB->Data->Layer[l].meta.real.vis = set;
+			printf("vis2 of %ld: %d\n", l, set);
 			}
 		}
 	}
@@ -300,7 +309,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	int l, i;
 	const char *name;
 	PCB->RatDraw = (layer == LB_RATS);
-	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(PCB, layer) & PCB_LYT_SILK)))
+	if (layer < pcb_max_layer)
 		pcb_layervis_change_group_vis(layer, 1, 1);
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;
