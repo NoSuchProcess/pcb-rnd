@@ -14,6 +14,7 @@
 
 #include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
+#include "../src_plugins/lib_gtk_hid/preview_helper.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
@@ -1328,7 +1329,6 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	double xz, yz, vw, vh;
 	render_priv_t *priv = gport->render_priv;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
-	pcb_coord_t nx1, ny1, nx2, ny2;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1359,26 +1359,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	/* clear background */
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
-	/* make sure the context is set to draw the whole widget size, which might
-	   be slightly larger than the original request */
-	nx1 = Px(0); nx2 = Px(allocation.width);
-	ny1 = Py(0); ny2 = Py(allocation.height);
-	if (nx1 < nx2) {
-		ctx->view.X1 = nx1;
-		ctx->view.X2 = nx2;
-	}
-	else {
-		ctx->view.X1 = nx2;
-		ctx->view.X2 = nx1;
-	}
-	if (ny1 < ny2) {
-		ctx->view.Y1 = ny1;
-		ctx->view.Y2 = ny2;
-	}
-	else {
-		ctx->view.Y1 = ny2;
-		ctx->view.Y2 = ny1;
-	}
+	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
 	/* call the drawing routine */
 	expcall(&gtk2_gdk_hid, ctx);
