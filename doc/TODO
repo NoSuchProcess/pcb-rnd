@@ -14,12 +14,12 @@
 	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
 + BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
++ BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
++ BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
-+ BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
-+ BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - BUG: eagle library load fails with assert when pad dimension == 0, drill != zero. pad/2a00 [diameter="0" thermals="0" half_diameter="0" drill="8128" bin_rot="0" shape="3" first="0" half_drill="4064" x="50800" y="0" rot="R0" name="A" stop="0"]. May need to apply a standard increment in read.c [report: Erich]
 
 2. For later releases ===============================================================================
