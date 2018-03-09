@@ -1513,7 +1513,7 @@ static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data
 }
 
 static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * p,
-																					pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx)
+																					pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
 	//GdkWindow *window = gtk_widget_get_window(widget);
 	//GdkDrawable *save_drawable;
@@ -1522,6 +1522,7 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	int save_width, save_height;
 	double xz, yz, vw, vh;
 	render_priv_t *priv = gport->render_priv;
+	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1549,6 +1550,8 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
+	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
+
 	/* Change current pointer to draw in this widget, draws, then come back to pointer to drawing_area. */
 	priv->cr_target = p;
 	priv->cr = p;
@@ -1559,6 +1562,8 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	priv->cr = priv->cr_drawing_area;
 	//gport->drawable = save_drawable;
 
+	/* restore the original context and priv */
+	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
