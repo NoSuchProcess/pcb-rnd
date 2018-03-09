@@ -58,19 +58,15 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /*-----------------------------------------------------------------------------*/
 
-#define LB_SILK	(PCB_MAX_LAYER+0)
-#define LB_RATS	(PCB_MAX_LAYER+1)
+#define LB_RATS	(PCB_MAX_LAYER+0)
 #define LB_NUMPICK (LB_RATS+1)
 /* more */
-#define LB_PINS	(PCB_MAX_LAYER+2)
-#define LB_VIAS	(PCB_MAX_LAYER+3)
-#define LB_BACK	(PCB_MAX_LAYER+4)
-#define LB_MASK	(PCB_MAX_LAYER+5)
-#define LB_PASTE	(PCB_MAX_LAYER+6)
-#define LB_SUBC	(PCB_MAX_LAYER+7)
-#define LB_SUBC_PARTS	(PCB_MAX_LAYER+8)
-
-#define LB_NUM  (PCB_MAX_LAYER+9)
+#define LB_BACK	(PCB_MAX_LAYER+2)
+#define LB_SUBC	(PCB_MAX_LAYER+3)
+#define LB_SUBC_PARTS	(PCB_MAX_LAYER+4)
+#define LB_PSTK_MARKS	(PCB_MAX_LAYER+5)
+#define LB_HOLES	(PCB_MAX_LAYER+6)
+#define LB_NUM  (PCB_MAX_LAYER+7)
 
 typedef struct {
 	Widget w[LB_NUM];
@@ -103,29 +99,23 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			else fg_colors[i] = lesstif_parse_color(d->Layer[i].meta.real.color);
 		}
 
-		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
-		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
 		fg_colors[LB_SUBC] = lesstif_parse_color(conf_core.appearance.color.subc);
 		fg_colors[LB_SUBC_PARTS] = lesstif_parse_color(conf_core.appearance.color.subc);
-		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
+		fg_colors[LB_PSTK_MARKS] = lesstif_parse_color(conf_core.appearance.color.subc);
+		fg_colors[LB_HOLES] = lesstif_parse_color(conf_core.appearance.color.via);
 		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
-		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
-		fg_colors[LB_PASTE] = lesstif_parse_color(conf_core.appearance.color.paste);
 		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 	else {
 		for (i = 0; i < PCB_MAX_LAYER; i++)
 			fg_colors[i] = lesstif_parse_color(conf_core.appearance.color.layer[i]);
-		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
-		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
 		fg_colors[LB_SUBC] = lesstif_parse_color(conf_core.appearance.color.subc);
 		fg_colors[LB_SUBC_PARTS] = lesstif_parse_color(conf_core.appearance.color.subc);
-		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
+		fg_colors[LB_PSTK_MARKS] = lesstif_parse_color(conf_core.appearance.color.subc);
+		fg_colors[LB_HOLES] = lesstif_parse_color(conf_core.appearance.color.via);
 		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
-		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
-		fg_colors[LB_PASTE] = lesstif_parse_color(conf_core.appearance.color.paste);
 		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 
@@ -138,14 +128,8 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		LayerButtons *lb = layer_button_list + l;
 		for (i = 0; i < (lb->is_pick ? LB_NUMPICK : LB_NUM); i++) {
 			switch (i) {
-			case LB_SILK:
-				set = pcb_silk_on(PCB);
-				break;
 			case LB_RATS:
 				set = PCB->RatOn;
-				break;
-			case LB_PINS:
-				set = PCB->PinOn;
 				break;
 			case LB_SUBC:
 				set = PCB->SubcOn;
@@ -153,17 +137,11 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			case LB_SUBC_PARTS:
 				set = PCB->SubcPartsOn;
 				break;
-			case LB_VIAS:
-				set = PCB->ViaOn;
+			case LB_PSTK_MARKS:
+				set = PCB->padstack_mark_on;
 				break;
 			case LB_BACK:
 				set = PCB->InvisibleObjectsOn;
-				break;
-			case LB_MASK:
-				set = pcb_mask_on(PCB);
-				break;
-			case LB_PASTE:
-				set = pcb_paste_on(PCB);
 				break;
 			default:									/* layers */
 				set = PCB->Data->Layer[i].meta.real.vis;
@@ -203,9 +181,6 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		switch (current_layer) {
 		case LB_RATS:
 			name = "Rats";
-			break;
-		case LB_SILK:
-			name = "Silk";
 			break;
 		default:
 			name = PCB->Data->Layer[current_layer].name;
@@ -249,16 +224,8 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 {
 	int l, set;
 	switch (layer) {
-	case LB_SILK:
-		set = !pcb_silk_on(PCB);
-		PCB->Data->SILKLAYER.meta.real.vis = set;
-		PCB->Data->BACKSILKLAYER.meta.real.vis = set;
-		break;
 	case LB_RATS:
 		set = PCB->RatOn = !PCB->RatOn;
-		break;
-	case LB_PINS:
-		set = PCB->PinOn = !PCB->PinOn;
 		break;
 	case LB_SUBC:
 		set = PCB->SubcOn = !PCB->SubcOn;
@@ -266,25 +233,17 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	case LB_SUBC_PARTS:
 		set = PCB->SubcPartsOn = !PCB->SubcPartsOn;
 		break;
-	case LB_VIAS:
-		set = PCB->ViaOn = !PCB->ViaOn;
+	case LB_PSTK_MARKS:
+		set = PCB->padstack_mark_on = !PCB->padstack_mark_on;
+		break;
+	case LB_HOLES:
+		set = PCB->hole_on = !PCB->hole_on;
 		break;
 	case LB_BACK:
 		set = PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
 		break;
-	case LB_MASK:
-#warning layersel TODO
-/*		conf_toggle_editor(show_mask);*/
-		set = pcb_mask_on(PCB);
-		break;
-	case LB_PASTE:
-#warning layersel TODO
-/*		conf_toggle_editor(show_paste);*/
-		set = pcb_paste_on(PCB);
-		break;
 	default:											/* layers */
 		set = PCB->Data->Layer[layer].meta.real.vis = !PCB->Data->Layer[layer].meta.real.vis;
-		printf("vis1 of %ld: %d\n", layer, set);
 		break;
 	}
 
@@ -297,7 +256,6 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 			if (l != layer) {
 				show_one_layer_button(l, set);
 				PCB->Data->Layer[l].meta.real.vis = set;
-			printf("vis2 of %ld: %d\n", l, set);
 			}
 		}
 	}
@@ -321,9 +279,6 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	switch (layer) {
 	case LB_RATS:
 		name = "Rats";
-		break;
-	case LB_SILK:
-		name = "Silk";
 		break;
 	default:
 		name = PCB->Data->Layer[layer].name;
@@ -356,14 +311,8 @@ static void insert_layerview_buttons(Widget menu)
 		Widget btn;
 		namestr[5] = 'A' + i;
 		switch (i) {
-		case LB_SILK:
-			name = "Silk";
-			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			break;
-		case LB_PINS:
-			name = "Pins/Pads";
 			break;
 		case LB_SUBC:
 			name = "Subcircuits";
@@ -371,17 +320,14 @@ static void insert_layerview_buttons(Widget menu)
 		case LB_SUBC_PARTS:
 			name = "Subc. parts";
 			break;
-		case LB_VIAS:
-			name = "Vias";
+		case LB_PSTK_MARKS:
+			name = "Pstk. Marks";
+			break;
+		case LB_HOLES:
+			name = "Holes";
 			break;
 		case LB_BACK:
 			name = "Far Side";
-			break;
-		case LB_MASK:
-			name = "Solder Mask";
-			break;
-		case LB_PASTE:
-			name = "Paste";
 			break;
 		}
 		stdarg_n = 0;
@@ -389,15 +335,6 @@ static void insert_layerview_buttons(Widget menu)
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layer_button_callback, (XtPointer) (size_t) i);
 		lb->w[i] = btn;
-
-		if (i == LB_MASK) {
-#warning layersel TODO
-/*			note_widget_flag(btn, XmNset, "editor/show_mask");*/
-		}
-		else if (i == LB_PASTE) {
-#warning layersel TODO
-/*			note_widget_flag(btn, XmNset, "editor/show_paste");*/
-		}
 	}
 	lb->is_pick = 0;
 	LesstifLayersChanged(0, 0, 0);
@@ -423,10 +360,6 @@ static void insert_layerpick_buttons(Widget menu)
 		Widget btn;
 		namestr[5] = 'A' + i;
 		switch (i) {
-		case LB_SILK:
-			name = "Silk";
-			strcpy(av, "SelectLayer(Silk)");
-			break;
 		case LB_RATS:
 			name = "Rat Lines";
 			strcpy(av, "SelectLayer(Rats)");
