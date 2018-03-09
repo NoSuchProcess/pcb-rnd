@@ -24,7 +24,7 @@ Low prio:
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
 - BUG: lesstif does not allow "save as" in non alien format [report: erich]
-- BUG: disperse selected subc's and disperse all subcs does not seem to space a large number of overlaid subcs sensibly over the board. [report: erich]
+- BUG: disperse selected subc's and disperse all subcs does not seem to space a large number of overlaid subcs sensibly over the board, with some ending up off the layout area; not solved if board resized to accomodate all subc's. See bug_files/diodes-not-dispersing.lbr with dozens of diodes in library (NB may trigger assert wrt drill > pad size. [report: erich]
 
 2. For later releases ===============================================================================
 SUBC: element removal:
