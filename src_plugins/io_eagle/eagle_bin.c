@@ -558,8 +558,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"shape", T_INT, 2, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"half_drill",  T_INT, 12, 2},
-			{"half_diameter",  T_INT, 14, 2},
+			{"half_drill",  T_INT, 12, BITFIELD(2, 0, 15)},
+			{"half_diameter",  T_INT, 14, BITFIELD(2, 0, 15)},
 			{"bin_rot" , T_INT, 16, 2}, /* ? maybe T_UBF, 16, BITFIELD(2, 0, 11)}, */
 			{"stop",  T_BMB, 18, 0x01},
 			{"thermals",  T_BMB, 18, 0x04},
