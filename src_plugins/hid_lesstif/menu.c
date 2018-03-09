@@ -421,6 +421,7 @@ static int del_widget_flag(int idx)
 	wflags[idx].w = NULL;
 	wflags[idx].flagname = NULL;
 	wflags[idx].xres = NULL;
+	return 0;
 }
 
 void lesstif_update_widget_flags()
