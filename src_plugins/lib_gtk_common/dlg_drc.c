@@ -106,6 +106,7 @@ static void unset_found_flags(int AndDraw)
 	int flag = PCB_FLAG_FOUND;
 	int change = 0;
 
+#warning subc TODO: use data.h for this
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, via)) {
