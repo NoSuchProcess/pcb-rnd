@@ -988,7 +988,7 @@ void ghid_gl_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 	return;
 }
 
-gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
+gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
 /*	GdkWindow *window = gtk_widget_get_window(widget);*/
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
@@ -998,6 +998,8 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
+	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
+	pcb_coord_t nx1, ny1, nx2, ny2;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1023,6 +1025,8 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	gport->view.height = allocation.height * gport->view.coord_per_px;
 	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
+
+	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
@@ -1081,6 +1085,8 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
+	/* restore the original context and priv */
+	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
