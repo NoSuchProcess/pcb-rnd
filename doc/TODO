@@ -22,7 +22,6 @@ Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 - BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
 - BUG: lesstif: invalidate_all() on config change colors [report: karl]
-- BUG: lesstif does not allow "save as" in non alien format [report: erich]
 - BUG: disperse selected subc's and disperse all subcs does not seem to space a large number of overlaid subcs sensibly over the board, with some ending up off the layout area; not solved if board resized to accomodate all subc's. See bug_files/diodes-not-dispersing.lbr with dozens of diodes in library (NB may trigger assert wrt drill > pad size. [report: erich]
 
 2. For later releases ===============================================================================
@@ -74,6 +73,7 @@ SUBC: element removal:
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
+- feature: lesstif does not allow "save as" in non alien format [report: erich]
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
