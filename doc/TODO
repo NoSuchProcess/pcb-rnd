@@ -13,7 +13,7 @@
 + BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
-- BUG: DRC preview windows don't show all padstacks after a shift-tab flip - bug_files/drc1.lht [report: Igor2]
+- BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 Low prio:
