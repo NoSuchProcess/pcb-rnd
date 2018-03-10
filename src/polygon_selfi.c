@@ -114,7 +114,7 @@ static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 
 static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_t *start)
 {
-	pcb_vnode_t *v, *next;
+	pcb_vnode_t *v, *next, *tmp;
 	pcb_pline_t *newpl = NULL;
 	pcb_cardinal_t cnt;
 	vhub_t *endh;
@@ -130,9 +130,9 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 			TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
 			next = v->next;
 			pcb_poly_vertex_exclude(v);
-			pcb_poly_vertex_include(newpl->head.prev, v);
+			tmp = pcb_poly_node_create(v->point);
+			pcb_poly_vertex_include(newpl->head.prev, tmp);
 		}
-/*		free(start);*/
 		goto new_pl;
 	}
 
@@ -147,7 +147,8 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 			TRACE("   Append!\n");
 			next = v->prev;
 			pcb_poly_vertex_exclude(v);
-			pcb_poly_vertex_include(start, v);
+			tmp = pcb_poly_node_create(v->point);
+			pcb_poly_vertex_include(start, tmp);
 		}
 		goto new_pl;
 	}
