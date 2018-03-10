@@ -59,6 +59,7 @@ struct pcb_vnode_s {
 	struct {
 		unsigned int status:3;
 		unsigned int mark:1;
+		unsigned int in_hub:1;
 	} Flags;
 	pcb_cvc_list_t *cvc_prev;
 	pcb_cvc_list_t *cvc_next;

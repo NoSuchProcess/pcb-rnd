@@ -1653,12 +1653,12 @@
  buffer.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h rtree2.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- action_helper.h crosshair.h layer.h pcb-printf.h clip.h event.h error.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h hid.h \
- hid_nogui.h hid_draw_helpers.h hid_cfg.h \
- ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
+ action_helper.h crosshair.h conf_hid.h layer.h pcb-printf.h clip.h \
+ event.h error.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
+ hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h compat_nls.h board.h vtroutestyle.h \
  library.h rats_patch.h board.h hid_attrib.h hid_helper.h hid_init.h \
  hid_color.h hid_extents.h hid_flags.h hid_actions.h \
@@ -7220,13 +7220,14 @@ polygon.o: polygon.c ../config.h conf_core.h conf.h global_typedefs.h \
  ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  remove.h search.h rats.h netlist.h route_style.h thermal.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h compat_nls.h obj_all.h \
- obj_poly_draw.h polygon_offs.c
+ obj_poly_draw.h polygon_selfi.h polygon_offs.c
 polygon1.o: polygon1.c ../config.h rtree.h global_typedefs.h pcb_bool.h \
  unit.h rtree2.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  math_helper.h heap.h compat_cc.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h polyarea.h obj_common.h flag.h \
- globalconst.h attrib.h data_parent.h macro.h box.h move.h misc_util.h
+ globalconst.h attrib.h data_parent.h macro.h box.h move.h misc_util.h \
+ polygon_selfi.c polygon_selfi.h ../src_3rd/genvector/vtp0.h
 polygon_act.o: polygon_act.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \

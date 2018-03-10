@@ -3547,6 +3547,7 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 	}
 }
 
+#include "polygon_selfi.c"
 
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the
