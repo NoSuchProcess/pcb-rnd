@@ -216,13 +216,15 @@ pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 }
 
 /* Convert a polygon to an unclipped polyarea */
-static pcb_polyarea_t *original_poly(pcb_poly_t * p)
+static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *need_full)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np1 = NULL, *np = NULL;
 	pcb_cardinal_t n;
 	pcb_vector_t v;
 	int hole = 0;
+
+	*need_full = pcb_false;
 
 	np1 = np = pcb_polyarea_create();
 	if (np == NULL)
@@ -269,6 +271,7 @@ static pcb_polyarea_t *original_poly(pcb_poly_t * p)
 						np->f->b = newpa;
 						np->f = newpa;
 						np = newpa;
+						*need_full = pcb_true;
 					}
 					pcb_poly_contour_pre(pl, pcb_true);
 					if (pl->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
@@ -292,7 +295,8 @@ static pcb_polyarea_t *original_poly(pcb_poly_t * p)
 
 pcb_polyarea_t *pcb_poly_from_poly(pcb_poly_t * p)
 {
-	return original_poly(p);
+	pcb_bool tmp;
+	return original_poly(p, &tmp);
 }
 
 pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2)
@@ -1343,10 +1347,11 @@ static int Unsubtract(pcb_polyarea_t * np1, pcb_poly_t * p)
 	pcb_polyarea_t *merged = NULL, *np = np1;
 	pcb_polyarea_t *orig_poly, *clipped_np;
 	int x;
+	pcb_bool need_full;
 	assert(np);
 	assert(p); /* NOTE: p->clipped might be NULL if a poly is "cleared out of existence" and is now coming back */
 
-	orig_poly = original_poly(p);
+	orig_poly = original_poly(p, &need_full);
 
 	x = pcb_polyarea_boolean_free(np, orig_poly, &clipped_np, PCB_PBO_ISECT);
 	if (x != pcb_err_ok) {
@@ -1481,6 +1486,7 @@ static pcb_bool inhibit = pcb_false;
 int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t * p)
 {
 	pcb_board_t *pcb;
+	pcb_bool need_full;
 
 	if (inhibit)
 		return 0;
@@ -1495,7 +1501,11 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t * p)
 
 	if (p->Clipped)
 		pcb_polyarea_free(&p->Clipped);
-	p->Clipped = original_poly(p);
+	p->Clipped = original_poly(p, &need_full);
+	if (need_full && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
+		pcb_message(PCB_MSG_WARNING, "Polygon #%ld was self intersecting; it had to be split up and\nthe full poly flag set.\n", (long)p->ID);
+		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, p);
+	}
 	pcb_poly_contours_free(&p->NoHoles);
 
 	if (layer == NULL)
