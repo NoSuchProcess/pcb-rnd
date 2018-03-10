@@ -637,10 +637,25 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 		|| (event->keyval == GDK_KEY_Home) || (event->keyval == GDK_KEY_End));
 	key_handled = ((event->keyval == GDK_KEY_Return) || arrow_key);
 
-	/* Handle both lower and uppercase 'c', and handled keys */
-	if ( !(key_handled) &&
-			 ( ((event->state & default_mod_mask) != GDK_CONTROL_MASK)
-				 || ((event->keyval != GDK_KEY_c) && (event->keyval != GDK_KEY_C))) )
+	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
+	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == GDK_KEY_c) || (event->keyval == GDK_KEY_C))) {
+		selection = gtk_tree_view_get_selection(tree_view);
+		g_return_val_if_fail(selection != NULL, TRUE);
+
+		if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+			return TRUE;
+
+		gtk_tree_model_get(model, &iter, MENU_NAME_COLUMN, &compname, -1);
+
+		clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+		g_return_val_if_fail(clipboard != NULL, TRUE);
+
+		gtk_clipboard_set_text(clipboard, compname, -1);
+
+		return FALSE;
+	}
+
+	if (!key_handled)
 		return FALSE;
 
 	/* If arrows (up or down), let GTK process the selection change. Then activate the new selected row. */
@@ -675,15 +690,7 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 			tree_row_activated(tree_view, path, NULL, user_data);
 		}
 		gtk_tree_path_free(path);
-		return TRUE;
 	}
-
-	gtk_tree_model_get(model, &iter, MENU_NAME_COLUMN, &compname, -1);
-
-	clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-	g_return_val_if_fail(clipboard != NULL, TRUE);
-
-	gtk_clipboard_set_text(clipboard, compname, -1);
 
 	return TRUE;
 }
