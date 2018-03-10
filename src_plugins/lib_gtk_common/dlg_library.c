@@ -624,7 +624,7 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	pcb_bool key_handled, arrow_key;
+	pcb_bool key_handled, arrow_key, force_activate = pcb_false;
 	GtkClipboard *clipboard;
 	const gchar *compname;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
@@ -652,8 +652,20 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return TRUE;
 
-	/* Handle 'Enter' key and arrow keys as "activate" */
-	if (event->keyval == GDK_KEY_Return || arrow_key) {
+	/* arrow key should activate the row only if it's a leaf (real footprint), for
+	   display, but shouldn't open/close levels visited or pop up the parametric
+	   footprint dialog */
+	if (arrow_key) {
+		pcb_fplibrary_t *entry = NULL;
+
+		gtk_tree_model_get(model, &iter, MENU_ENTRY_COLUMN, &entry, -1);
+
+		if ((entry != NULL) && (entry->type == LIB_FOOTPRINT) && (entry->data.fp.type != PCB_FP_PARAMETRIC))
+			force_activate = pcb_true;
+	}
+
+	/* Handle 'Enter' key and arrow keys as "activate" on plain footprints */
+	if ((event->keyval == GDK_KEY_Return) || force_activate) {
 		path = gtk_tree_model_get_path(model, &iter);
 		if (path != NULL) {
 			tree_row_activated(tree_view, path, NULL, user_data);
