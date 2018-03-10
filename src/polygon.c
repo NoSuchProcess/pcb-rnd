@@ -219,12 +219,13 @@ pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 static pcb_polyarea_t *original_poly(pcb_poly_t * p)
 {
 	pcb_pline_t *contour = NULL;
-	pcb_polyarea_t *np = NULL;
+	pcb_polyarea_t *np1 = NULL, *np = NULL;
 	pcb_cardinal_t n;
 	pcb_vector_t v;
 	int hole = 0;
 
-	if ((np = pcb_polyarea_create()) == NULL)
+	np1 = np = pcb_polyarea_create();
+	if (np == NULL)
 		return NULL;
 
 	/* first make initial polygon contour */
@@ -256,11 +257,19 @@ static pcb_polyarea_t *original_poly(pcb_poly_t * p)
 				vtp0_t islands;
 				int n;
 
-				/* most probably self intersecting polygon - attempt to fix it */
+				/* self intersecting polygon - attempt to fix it by splitting up into multiple polyareas */
 				vtp0_init(&islands);
 				pcb_pline_split_selfint(contour, &islands);
 				for(n = 0; n < vtp0_len(&islands); n++) {
 					pcb_pline_t *pl = *vtp0_get(&islands, n, 0);
+					if (n > 0) {
+						pcb_polyarea_t *newpa = pcb_polyarea_create();
+						newpa->b = np;
+						newpa->f = np->f;
+						np->f->b = newpa;
+						np->f = newpa;
+						np = newpa;
+					}
 					pcb_poly_contour_pre(pl, pcb_true);
 					if (pl->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
 						pcb_poly_contour_inv(pl);
@@ -278,7 +287,7 @@ static pcb_polyarea_t *original_poly(pcb_poly_t * p)
 			hole++;
 		}
 	}
-	return biggest(np);
+	return biggest(np1);
 }
 
 pcb_polyarea_t *pcb_poly_from_poly(pcb_poly_t * p)
