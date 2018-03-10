@@ -139,10 +139,11 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 	for(v = start->prev, cnt = 0; v->Flags.in_hub == 0; v = v->prev) cnt++;
 	if (h == endh) { /* backward loop */
 		TRACE("  Bwd %ld!\n", (long)cnt);
-		newpl = pcb_poly_contour_new(NULL);
+		newpl = pcb_poly_contour_new(start->point);
+		next = start->prev;
 		newpl->head = *start;
 		pcb_poly_vertex_exclude(start);
-		for(v = start->prev; cnt > 0; v = next, cnt--) {
+		for(v = next; cnt > 0; v = next, cnt--) {
 			TRACE("   Append!\n");
 			next = v->prev;
 			pcb_poly_vertex_exclude(v);
