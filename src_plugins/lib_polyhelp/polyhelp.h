@@ -31,8 +31,8 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl);
 
 /* Add lines on dst tracing pline from the inner side (no line will extend
    outside of the original pline, except when the original polygon has a hair
-   narrower than thickness) */
-void pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
+   narrower than thickness). Returns number of lines created */
+pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
 
 /* Returns whether the clipped polygon is a simple rectangle (single island,
    no-hole rectangle). */

@@ -72,18 +72,21 @@ static void cross(FILE *f, pcb_coord_t x, pcb_coord_t y)
 }
 #endif
 
-void pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
 {
 	const pcb_vnode_t *v, *n;
 	pcb_pline_t *track = pcb_pline_dup_offset(src, -((thickness/2)+1));
+	pcb_cardinal_t cnt = 0;
 
 	v = &track->head;
 	do {
 		n = v->next;
 		pcb_line_new(dst, v->point[0], v->point[1], n->point[0], n->point[1], thickness, clearance, flags);
+		cnt++;
 	}
 	while((v = v->next) != &track->head);
 	pcb_poly_contour_del(&track);
+	return cnt;
 }
 
 pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
