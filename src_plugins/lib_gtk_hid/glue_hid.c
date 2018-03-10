@@ -457,7 +457,11 @@ static int ghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
 	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
-	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
+	fprintf(stderr, "\nInvocation:\n");
+	fprintf(stderr, "  pcb-rnd --gui gtk2_gdk [options]\n");
+	fprintf(stderr, "  pcb-rnd --gui gtk2_gl [options]\n");
+	fprintf(stderr, "  pcb-rnd --gui gtk3_cairo [options]\n");
+	fprintf(stderr, "  (depending on which gtk plugin(s) are compiled and installed)\n");
 	return 0;
 }
 
