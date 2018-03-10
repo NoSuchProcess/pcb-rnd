@@ -62,7 +62,7 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 			line_tmp.Clearance = result->edge_clearance;
 		}
 		else
-			line_tmp.Clearance = 0;
+			line_tmp.Clearance = 1;
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_LINE, &line_tmp);
 	}
 	pcb_r_end(&it);
@@ -75,7 +75,7 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 			arc_tmp.Clearance = result->edge_clearance;
 		}
 		else
-			arc_tmp.Clearance = 0;
+			arc_tmp.Clearance = 1;
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_ARC, &arc_tmp);
 	}
 	pcb_r_end(&it);
