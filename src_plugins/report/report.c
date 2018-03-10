@@ -562,11 +562,11 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		return 1;
 	}
 
-	if (report != NULL) {
-		/* create dialog box */
-		pcb_gui->report_dialog("Report", report);
-		free(report);
-	}
+
+	/* create dialog box */
+	pcb_gui->report_dialog("Report", report);
+	free(report);
+
 	return 0;
 }
 
