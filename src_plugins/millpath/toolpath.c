@@ -101,35 +101,14 @@ static void sub_group_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
-	pcb_pin_t *pin, pin_tmp;
-	pcb_pad_t *pad, pad_tmp;
+	pcb_pstk_t *ps, ps_tmp;
 	pcb_rtree_it_t it;
 
 #warning TODO: thermals: find out if any of our layers has thermal for the pin and if so, use that layer
-	for(pin = (pcb_pin_t *)pcb_r_first(pcb->Data->via_tree, &it); pin != NULL; pin = (pcb_pin_t *)pcb_r_next(&it)) {
-		memcpy(&pin_tmp, pin, sizeof(pin_tmp));
-		pin_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_VIA, &pin_tmp);
-	}
-	pcb_r_end(&it);
-
-	for(pin = (pcb_pin_t *)pcb_r_first(pcb->Data->pin_tree, &it); pin != NULL; pin = (pcb_pin_t *)pcb_r_next(&it)) {
-		memcpy(&pin_tmp, pin, sizeof(pin_tmp));
-		pin_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PIN, &pin_tmp);
-	}
-	pcb_r_end(&it);
-
-	if (result->grp->type & ((PCB_LYT_BOTTOM) | (PCB_LYT_TOP))) {
-		int is_solder = !!(result->grp->type & PCB_LYT_BOTTOM);
-		for(pad = (pcb_pad_t *)pcb_r_first(pcb->Data->pad_tree, &it); pad != NULL; pad = (pcb_pad_t *)pcb_r_next(&it)) {
-			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == is_solder) {
-				memcpy(&pad_tmp, pad, sizeof(pad_tmp));
-#warning TODO: figure why this can not be 1
-				pad_tmp.Clearance = PCB_MM_TO_COORD(0.01);
-				pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PAD, &pad_tmp);
-			}
-		}
+	for(ps = (pcb_pstk_t *)pcb_r_first(pcb->Data->padstack_tree, &it); ps != NULL; ps = (pcb_pstk_t *)pcb_r_next(&it)) {
+		memcpy(&ps_tmp, ps, sizeof(ps_tmp));
+		ps_tmp.Clearance = 1;
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PSTK, &ps_tmp);
 	}
 	pcb_r_end(&it);
 }
