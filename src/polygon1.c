@@ -3321,11 +3321,12 @@ int pcb_vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vect
 
 /*
  * pcb_pline_isect_line()
- * (C) 2017 Tibor 'Igor2' Palinkas
+ * (C) 2017, 2018 Tibor 'Igor2' Palinkas
 */
 
 typedef struct {
 	pcb_vector_t l1, l2;
+	pcb_coord_t cx, cy;
 } pline_isect_line_t;
 
 static pcb_r_dir_t pline_isect_line_cb(const pcb_box_t * b, void *cl)
@@ -3334,13 +3335,16 @@ static pcb_r_dir_t pline_isect_line_cb(const pcb_box_t * b, void *cl)
 	struct seg *s = (struct seg *)b;
 	pcb_vector_t S1, S2;
 
-	if (pcb_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2))
+	if (pcb_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2)) {
+		ctx->cx = S1[0];
+		ctx->cy = S1[1];
 		return PCB_R_DIR_CANCEL; /* found */
+	}
 
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1, pcb_coord_t lx2, pcb_coord_t ly2)
+pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1, pcb_coord_t lx2, pcb_coord_t ly2, pcb_coord_t *cx, pcb_coord_t *cy)
 {
 	pline_isect_line_t ctx;
 	pcb_box_t lbx;
@@ -3354,7 +3358,12 @@ pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1,
 	if (pl->tree == NULL)
 		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
 
-	return pcb_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == PCB_R_DIR_CANCEL;
+	if (pcb_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == PCB_R_DIR_CANCEL) {
+		if (cx != NULL) *cx = ctx.cx;
+		if (cy != NULL) *cy = ctx.cy;
+		return pcb_true;
+	}
+	return pcb_false;
 }
 
 /*

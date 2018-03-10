@@ -824,8 +824,8 @@ PCB_INLINE pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x
 	vy = (double)dy / -l * ((double)Bloat/2.0);
 
 	/* long line - consider edge intersection */
-	if (pcb_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy)) return pcb_true;
-	if (pcb_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy)) return pcb_true;
+	if (pcb_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy, NULL, NULL)) return pcb_true;
+	if (pcb_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy, NULL, NULL)) return pcb_true;
 
 	/* A corner case is when the polyline is fully within the line. By now we
 	   are sure there's no contour intersection, so if any of the polyline points
