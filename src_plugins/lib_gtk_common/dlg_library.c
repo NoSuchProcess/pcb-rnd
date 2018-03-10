@@ -629,9 +629,9 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	const gchar *compname;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	arrow_key =  ( event->keyval == GDK_KEY_Up   || event->keyval == GDK_KEY_KP_Up
-							|| event->keyval == GDK_KEY_Down || event->keyval == GDK_KEY_KP_Down);
-	key_handled = (event->keyval == GDK_KEY_Return || arrow_key);
+	arrow_key = ((event->keyval == GDK_KEY_Up) || (event->keyval == GDK_KEY_KP_Up)
+		|| (event->keyval == GDK_KEY_Down) || (event->keyval == GDK_KEY_KP_Down));
+	key_handled = ((event->keyval == GDK_KEY_Return) || arrow_key);
 
 	/* Handle both lower and uppercase 'c', and handled keys */
 	if ( !(key_handled) &&
