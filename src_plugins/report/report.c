@@ -63,6 +63,7 @@
 #include "obj_all.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "obj_subc_parent.h"
 
 #include <genregex/regex_sei.h>
 
@@ -149,6 +150,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
 	char *report = NULL;
+	pcb_subc_t *subc;
 
 	if ((argv != NULL) && (argv[0] != NULL)) {
 		if (pcb_strncasecmp(argv[0], "Subc", 4) == 0)
@@ -562,8 +564,14 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		return 1;
 	}
 
-
 	/* create dialog box */
+	subc = pcb_obj_parent_subc((pcb_any_obj_t *)ptr2);
+	if (subc != NULL) {
+		int len = strlen(report);
+		report = realloc(report, len + 256);
+		sprintf(report + len, "\nPart of subcircuit #%ld\n", subc->ID);
+	}
+
 	pcb_gui->report_dialog("Report", report);
 	free(report);
 
