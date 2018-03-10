@@ -384,7 +384,7 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 }
 
 /*** Row builder ***/
-
+#warning layer TODO: hardwired layer colors
 #define hardwired_colors(typ) \
 do { \
 	unsigned long __typ__ = (typ); \
