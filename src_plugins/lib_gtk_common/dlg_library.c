@@ -624,7 +624,7 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	pcb_bool key_handled, arrow_key, force_activate = pcb_false;
+	pcb_bool key_handled, arrow_key, enter_key, force_activate = pcb_false;
 	GtkClipboard *clipboard;
 	const gchar *compname;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
@@ -635,7 +635,8 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 		|| (event->keyval == GDK_KEY_Page_Down) || (event->keyval == GDK_KEY_Page_Up)
 		|| (event->keyval == GDK_KEY_KP_Home) || (event->keyval == GDK_KEY_KP_End)
 		|| (event->keyval == GDK_KEY_Home) || (event->keyval == GDK_KEY_End));
-	key_handled = ((event->keyval == GDK_KEY_Return) || arrow_key);
+	enter_key = (event->keyval == GDK_KEY_Return) || (event->keyval == GDK_KEY_KP_Enter);
+	key_handled = (enter_key || arrow_key);
 
 	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
 	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == GDK_KEY_c) || (event->keyval == GDK_KEY_C))) {
@@ -684,7 +685,7 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	}
 
 	/* Handle 'Enter' key and arrow keys as "activate" on plain footprints */
-	if ((event->keyval == GDK_KEY_Return) || force_activate) {
+	if (enter_key || force_activate) {
 		path = gtk_tree_model_get_path(model, &iter);
 		if (path != NULL) {
 			tree_row_activated(tree_view, path, NULL, user_data);
