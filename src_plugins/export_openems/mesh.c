@@ -57,6 +57,11 @@ static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 	vtc0_append(&mesh->line[dir].edge, crd);
 }
 
+static void mesh_add_result(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
+{
+	vtc0_append(&mesh->line[dir].result, crd);
+}
+
 static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t dens)
 {
 	pcb_range_t *r = vtr0_alloc_append(&mesh->line[dir].dens, 1);
@@ -322,6 +327,40 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t
 	return r;
 }
 
+static int mesh_auto_z(pcb_mesh_t *mesh)
+{
+	pcb_layergrp_id_t gid;
+	pcb_coord_t y = 0;
+	int n, lns, first = 1;
+
+	vtc0_truncate(&mesh->line[PCB_MESH_Z].result, 0);
+
+	lns = ia.dlg[ia.subslines].default_val.int_value;
+
+	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
+		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
+		if (grp->type & PCB_LYT_COPPER) {
+			y += mesh->def_copper_thick;
+		}
+		else if (grp->type & PCB_LYT_SUBSTRATE) {
+			pcb_coord_t d, t = mesh->def_subs_thick;
+			for(n = 0; n < lns; n++) {
+				if (n == 0) {
+					if (first) {
+						mesh_add_result(mesh, PCB_MESH_Z, y);
+						first = 0;
+					}
+					else
+						continue;
+				}
+				d = pcb_round((double)y+(double)t/(double)(lns+1)*(double)n);
+				mesh_add_result(mesh, PCB_MESH_Z, d);
+			}
+			y += t;
+		}
+	}
+}
+
 static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t aux1, pcb_coord_t aux2, pcb_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
@@ -387,7 +426,7 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		pcb_coord_t x0 = PCB->MaxWidth/15, y0 = PCB->MaxHeight/3, y = y0, y2;
 		pcb_coord_t xl = PCB->MaxWidth/5; /* board left */
 		pcb_coord_t xr = PCB->MaxWidth/5*3; /* board right */
-		pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2);
+		pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
 		int mag = 2;
 
 		for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
@@ -398,7 +437,7 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 				pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
 				y += mesh->def_copper_thick * mag;
 			}
-			if (grp->type & PCB_LYT_SUBSTRATE) {
+			else if (grp->type & PCB_LYT_SUBSTRATE) {
 				y2 = y + mesh->def_subs_thick * mag;
 				pcb_line_new(mesh->ui_layer_z, xl, y, xr, y, spen, 0, pcb_no_flags());
 				pcb_line_new(mesh->ui_layer_z, xl, y2, xr, y2, spen, 0, pcb_no_flags());
@@ -407,6 +446,15 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 				y = y2;
 			}
 		}
+
+	mesh_trace("Z lines:\n");
+	for(n = 0; n < vtc0_len(&mesh->line[PCB_MESH_Z].result); n++) {
+		pcb_coord_t y = mesh->line[PCB_MESH_Z].result.array[n];
+		mesh_trace(" %mm", y);
+		pcb_line_new(mesh->ui_layer_z, 0, y, PCB->MaxWidth, y, mpen, 0, pcb_no_flags());
+	}
+	mesh_trace("\n");
+
 	}
 	return 0;
 }
@@ -543,11 +591,6 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
-int mesh_z(pcb_mesh_t *mesh)
-{
-	return 0;
-}
-
 static void mesh_layer_reset()
 {
 	if (mesh.ui_layer_xy != NULL)
@@ -583,7 +626,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	if (ia.dlg[ia.ver].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_VERTICAL);
 
-	mesh_z(&mesh);
+	mesh_auto_z(&mesh);
 
 	free(mesh.ui_name_xy);
 	mesh.ui_name_xy = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);

@@ -13,6 +13,7 @@ typedef struct {
 typedef enum {
 	PCB_MESH_HORIZONTAL, /* variable y coord (horizontal lines) */
 	PCB_MESH_VERTICAL,   /* variable x coord (vertical lines) */
+	PCB_MESH_Z,
 	PCB_MESH_max
 } pcb_mesh_dir_t;
 
