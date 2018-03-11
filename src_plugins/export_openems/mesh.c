@@ -342,7 +342,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 
 	lns = num_subslines[ia.dlg[ia.subslines].default_val.int_value];
 	if (lns != 0) lns++;
-printf("lns: %d %d\n", ia.dlg[ia.subslines].default_val.int_value, lns);
+
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
 		if (grp->type & PCB_LYT_COPPER) {
