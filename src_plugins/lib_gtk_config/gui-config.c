@@ -1624,6 +1624,9 @@ void ghid_config_text_scale_update(void)
 
 static void config_close_cb(gpointer data)
 {
+	if (config_window == NULL) /* may get the event from multiple sources */
+		return;
+
 	/* Config pages may need to check for modified entries, use as default
 	   |  options, etc when the config window is closed.
 	 */
@@ -1644,12 +1647,7 @@ static void config_close_cb(gpointer data)
 
 static void config_destroy_cb(gpointer data)
 {
-	config_sizes_vbox = NULL;
-	config_increments_vbox = NULL;
-	config_groups_vbox = config_groups_table = NULL;
-	config_groups_window = NULL;
-	gtk_widget_destroy(config_window);
-	config_window = NULL;
+	config_close_cb(NULL);
 }
 
 static void config_selection_changed_cb(GtkTreeSelection * selection, gpointer data)
