@@ -304,7 +304,7 @@ static int cmp_range_at(const void *key_, const void *v_)
 static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t *dens, pcb_coord_t *dens_left, pcb_coord_t *dens_right)
 {
 	pcb_range_t *r;
-	r = bsearch(&at, v->array, vtr0_len(v), sizeof(pcb_range_t), cmp_range_at);
+	r = bsearch(&at, v->array, vtr0_len((vtr0_t *)v), sizeof(pcb_range_t), cmp_range_at);
 	if (dens != NULL)
 		*dens = r->data[0].c;
 	if (dens_left != NULL) {
@@ -562,9 +562,9 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 int pcb_mesh_interactive(void)
 {
 	int n;
-	char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
-	char *bnd_names[] = { "xmin", "xmax", "ymin", "ymax", "zmin", "zmax" };
-	char *subslines[] = { "0", "1", "3", "5", NULL };
+	const char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
+	const char *bnd_names[] = { "xmin", "xmax", "ymin", "ymax", "zmin", "zmax" };
+	const char *subslines[] = { "0", "1", "3", "5", NULL };
 	pcb_coord_t def = PCB_MM_TO_COORD(0.1);
 
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
