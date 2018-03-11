@@ -2254,13 +2254,12 @@
  polygon.h rtree.h rtree2.h ../src_3rd/genrtree/genrtree_api.h \
  rtree2_compat.h rtree.h hid_actions.h hid.h error.h drc.h compat_misc.h \
  ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h \
- ../src_plugins/io_eagle/trparse_bin.h \
- ../src_plugins/boardflip/boardflip.h data.h crosshair.h vtonpoint.h \
- route.h buffer.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ht_subc.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h unit.h \
- ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
- ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h \
+ ../src_plugins/io_eagle/trparse_bin.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ../src_plugins/boardflip/boardflip.h \
+ data.h crosshair.h vtonpoint.h route.h buffer.h obj_subc_list.h \
+ obj_subc.h ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h unit.h ../src_plugins/lib_compat_help/pstk_compat.h \
+ obj_pstk.h ../src_plugins/lib_compat_help/subc_help.h layer.h \
  ../src_plugins/lib_compat_help/pstk_help.h
 ../src_plugins/io_eagle/read_dru.o: ../src_plugins/io_eagle/read_dru.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
