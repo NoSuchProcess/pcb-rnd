@@ -615,22 +615,6 @@ int pcb_mesh_interactive(void)
 				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
 				PCB_DAD_LABEL(ia.dlg, "Z-mesh");
 
-				PCB_DAD_BEGIN_VBOX(ia.dlg);
-					PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
-					PCB_DAD_LABEL(ia.dlg, "Boundary");
-					for(n = 0; n < 6; n+=2) {
-						char name[64];
-						sprintf(name, "%s %s", bnd_names[n], bnd_names[n+1]);
-						PCB_DAD_BEGIN_HBOX(ia.dlg);
-							PCB_DAD_ENUM(ia.dlg, bnds);
-								ia.bnd[n] = PCB_DAD_CURRENT(ia.dlg);
-							PCB_DAD_LABEL(ia.dlg, name);
-							PCB_DAD_ENUM(ia.dlg, bnds);
-								ia.bnd[n+1] = PCB_DAD_CURRENT(ia.dlg);
-						PCB_DAD_END(ia.dlg);
-					}
-				PCB_DAD_END(ia.dlg);
-
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_ENUM(ia.dlg, subslines);
 						ia.subslines = PCB_DAD_CURRENT(ia.dlg);
@@ -672,8 +656,30 @@ int pcb_mesh_interactive(void)
 
 			PCB_DAD_END(ia.dlg);
 		PCB_DAD_END(ia.dlg);
-		PCB_DAD_BUTTON(ia.dlg, "Generate mesh!");
-			PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
+
+		PCB_DAD_BEGIN_HBOX(ia.dlg);
+			PCB_DAD_BEGIN_VBOX(ia.dlg);
+				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
+				PCB_DAD_LABEL(ia.dlg, "Boundary");
+				for(n = 0; n < 6; n+=2) {
+					char name[64];
+					sprintf(name, "%s %s", bnd_names[n], bnd_names[n+1]);
+					PCB_DAD_BEGIN_HBOX(ia.dlg);
+						PCB_DAD_ENUM(ia.dlg, bnds);
+							ia.bnd[n] = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_LABEL(ia.dlg, name);
+						PCB_DAD_ENUM(ia.dlg, bnds);
+							ia.bnd[n+1] = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_END(ia.dlg);
+				}
+			PCB_DAD_END(ia.dlg);
+
+			PCB_DAD_BEGIN_VBOX(ia.dlg);
+				PCB_DAD_BUTTON(ia.dlg, "Generate mesh!");
+					PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
+			PCB_DAD_END(ia.dlg);
+		PCB_DAD_END(ia.dlg);
+
 	PCB_DAD_END(ia.dlg);
 
 	PCB_DAD_NEW(ia.dlg, "mesher", "Generate mesh", &ia, 0, ia_close_cb);
