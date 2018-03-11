@@ -565,7 +565,6 @@ int pcb_mesh_interactive(void)
 	const char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
 	const char *bnd_names[] = { "xmin", "xmax", "ymin", "ymax", "zmin", "zmax" };
 	const char *subslines[] = { "0", "1", "3", "5", NULL };
-	pcb_coord_t def = PCB_MM_TO_COORD(0.1);
 
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
