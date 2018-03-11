@@ -741,7 +741,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	long roundness = 0;
 	pcb_pstk_shape_t sh[4];
 	pcb_coord_t clr;
-	double rot;
+	int rot;
 
 	assert(type == IN_SUBC);
 
@@ -750,7 +750,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	y = eagle_get_attrc(st, subtree, "y", 0);
 	dx = eagle_get_attrc(st, subtree, "dx", 0);
 	dy = eagle_get_attrc(st, subtree, "dy", 0);
-	rot = eagle_get_attrd(st, subtree, "rot", 0);
+	rot = eagle_rot2degrees(eagle_get_attrs(st, subtree, "rot", 0));
 	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
 #warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
