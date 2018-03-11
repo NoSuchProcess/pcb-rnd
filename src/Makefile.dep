@@ -5223,8 +5223,9 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h action_helper.h \
  hid_actions.h misc_util.h ../src_plugins/report/report_conf.h conf.h \
  compat_misc.h compat_nls.h layer.h obj_all.h obj_pstk.h \
- obj_pstk_inlines.h thermal.h ../src_3rd/genregex/regex_sei.h \
- ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
+ obj_pstk_inlines.h thermal.h obj_subc_parent.h \
+ ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
  ../src_plugins/rubberband_orig/fgeometry.c \
