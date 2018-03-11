@@ -1622,7 +1622,7 @@ void ghid_config_text_scale_update(void)
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(config_text_spin_button), (gdouble) conf_core.design.text_scale);
 }
 
-static void config_close_cb(gpointer data)
+static void config_do_close(int apply)
 {
 	if (config_window == NULL) /* may get the event from multiple sources */
 		return;
@@ -1630,9 +1630,11 @@ static void config_close_cb(gpointer data)
 	/* Config pages may need to check for modified entries, use as default
 	   |  options, etc when the config window is closed.
 	 */
-	config_sizes_apply();
-	config_layers_apply();
-	config_library_apply();
+	if (apply) {
+		config_sizes_apply();
+		config_layers_apply();
+		config_library_apply();
+	}
 
 	config_sizes_vbox = NULL;
 	config_sizes_tab_vbox = NULL;
@@ -1645,9 +1647,14 @@ static void config_close_cb(gpointer data)
 	config_window = NULL;
 }
 
+static void config_close_cb(gpointer data)
+{
+	config_do_close(1);
+}
+
 static void config_destroy_cb(gpointer data)
 {
-	config_close_cb(NULL);
+	config_do_close(0);
 }
 
 static void config_selection_changed_cb(GtkTreeSelection * selection, gpointer data)
