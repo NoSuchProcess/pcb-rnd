@@ -40,7 +40,7 @@ static const char *mesh_ui_cookie = "mesh ui layer cookie";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int dens_obj, dens_gap, min_space, smooth, hor, ver, noimpl;
-	int bnd[6], subslines, air_top, air_bot, dens_air, smoothz, max_air, def_subs_thick;
+	int bnd[6], subslines, air_top, air_bot, dens_air, smoothz, max_air, def_subs_thick, def_copper_thick;
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
@@ -393,8 +393,10 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 			pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
 			if (grp->type & PCB_LYT_COPPER) {
-				pcb_line_new(mesh->ui_layer_z, xr, y, xr+PCB_MM_TO_COORD(2), y, cpen, 0, pcb_no_flags());
-				pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
+				y2 = y + mesh->def_copper_thick * mag / 2;
+				pcb_line_new(mesh->ui_layer_z, xr, y2, xr+PCB_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
+				pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
+				y += mesh->def_copper_thick * mag;
 			}
 			if (grp->type & PCB_LYT_SUBSTRATE) {
 				y2 = y + mesh->def_subs_thick * mag;
@@ -574,6 +576,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	mesh.smooth = ia.dlg[ia.smooth].default_val.int_value;
 	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;;
 	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].default_val.coord_value;
+	mesh.def_copper_thick = ia.dlg[ia.def_copper_thick].default_val.coord_value;
 
 	if (ia.dlg[ia.hor].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
@@ -672,6 +675,14 @@ int pcb_mesh_interactive(void)
 						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
 					PCB_DAD_LABEL(ia.dlg, "def. subst. thick");
 					PCB_DAD_HELP(ia.dlg, "default substrate thickness\n(for substrate layer groups without\nthickness specified in attribute)");
+				PCB_DAD_END(ia.dlg);
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.def_copper_thick = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "def. copper thick");
+					PCB_DAD_HELP(ia.dlg, "default copper thickness\n(for copper layer groups without\nthickness specified in attribute)");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
