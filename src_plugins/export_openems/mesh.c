@@ -37,6 +37,11 @@
 static pcb_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
 
+static const char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
+static const char *bnd_names[] = { "xmin", "xmax", "ymin", "ymax", "zmin", "zmax" };
+static const char *subslines[] =   { "0", "1", "3", "5", NULL };
+static const int num_subslines[] = { 0,    1,   3,   5 };
+
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int dens_obj, dens_gap, min_space, smooth, hor, ver, noimpl;
@@ -45,7 +50,7 @@ typedef struct {
 static mesh_dlg_t ia;
 
 
-#if 0
+#if 1
 	static void mesh_trace(const char *fmt, ...) { }
 #else
 #	define mesh_trace pcb_trace
@@ -335,8 +340,9 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 
 	vtc0_truncate(&mesh->line[PCB_MESH_Z].result, 0);
 
-	lns = ia.dlg[ia.subslines].default_val.int_value;
-
+	lns = num_subslines[ia.dlg[ia.subslines].default_val.int_value];
+	if (lns != 0) lns++;
+printf("lns: %d %d\n", ia.dlg[ia.subslines].default_val.int_value, lns);
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
 		if (grp->type & PCB_LYT_COPPER) {
@@ -344,18 +350,22 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		}
 		else if (grp->type & PCB_LYT_SUBSTRATE) {
 			pcb_coord_t d, t = mesh->def_subs_thick;
-			for(n = 0; n <= lns; n++) {
-				if (n == 0) {
-					if (first) {
-						mesh_add_result(mesh, PCB_MESH_Z, y);
-						first = 0;
+			if (lns != 0) {
+				for(n = 0; n <= lns; n++) {
+					if (n == 0) {
+						if (first) {
+							mesh_add_result(mesh, PCB_MESH_Z, y);
+							first = 0;
+						}
+						else
+							continue;
 					}
-					else
-						continue;
+					d = pcb_round((double)y+(double)t/(double)(lns)*(double)n);
+					mesh_add_result(mesh, PCB_MESH_Z, d);
 				}
-				d = pcb_round((double)y+(double)t/(double)(lns)*(double)n);
-				mesh_add_result(mesh, PCB_MESH_Z, d);
 			}
+			else
+				mesh_add_result(mesh, PCB_MESH_Z, y);
 			y += t;
 		}
 	}
@@ -644,9 +654,6 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 int pcb_mesh_interactive(void)
 {
 	int n;
-	const char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
-	const char *bnd_names[] = { "xmin", "xmax", "ymin", "ymax", "zmin", "zmax" };
-	const char *subslines[] = { "0", "1", "3", "5", NULL };
 
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
