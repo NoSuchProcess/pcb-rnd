@@ -22,6 +22,7 @@ Low prio:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 - BUG: eagle library load fails with assert when pad dimension == 0, drill != zero. pad/2a00 [diameter="0" thermals="0" half_diameter="0" drill="8128" bin_rot="0" shape="3" first="0" half_drill="4064" x="50800" y="0" rot="R0" name="A" stop="0"]. May need to apply a standard increment in read.c [report: Erich]
 - BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
+- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
 
 2. For later releases ===============================================================================
 SUBC: element removal:
