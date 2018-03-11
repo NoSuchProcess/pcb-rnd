@@ -379,6 +379,33 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, PCB_MM_TO_COORD(0.03));
 	}
 	mesh_trace("\n");
+
+
+	/* draw the z mesh */
+	{
+		pcb_layergrp_id_t gid;
+		pcb_coord_t x0 = PCB->MaxWidth/15, y0 = PCB->MaxHeight/3, y = y0, y2;
+		pcb_coord_t xl = PCB->MaxWidth/5; /* board left */
+		pcb_coord_t xr = PCB->MaxWidth/5*3; /* board right */
+		pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2);
+		int mag = 2;
+
+		for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
+			pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
+			if (grp->type & PCB_LYT_COPPER) {
+				pcb_line_new(mesh->ui_layer_z, xr, y, xr+PCB_MM_TO_COORD(2), y, cpen, 0, pcb_no_flags());
+				pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
+			}
+			if (grp->type & PCB_LYT_SUBSTRATE) {
+				y2 = y + mesh->def_subs_thick * mag;
+				pcb_line_new(mesh->ui_layer_z, xl, y, xr, y, spen, 0, pcb_no_flags());
+				pcb_line_new(mesh->ui_layer_z, xl, y2, xr, y2, spen, 0, pcb_no_flags());
+				pcb_line_new(mesh->ui_layer_z, xl, y, xl, y2, spen, 0, pcb_no_flags());
+				pcb_line_new(mesh->ui_layer_z, xr, y, xr, y2, spen, 0, pcb_no_flags());
+				y = y2;
+			}
+		}
+	}
 	return 0;
 }
 
@@ -523,7 +550,10 @@ static void mesh_layer_reset()
 {
 	if (mesh.ui_layer_xy != NULL)
 		pcb_uilayer_free(mesh.ui_layer_xy);
-	mesh.ui_layer_xy = pcb_uilayer_alloc(mesh_ui_cookie, "mesh", "#007733");
+	if (mesh.ui_layer_z != NULL)
+		pcb_uilayer_free(mesh.ui_layer_z);
+	mesh.ui_layer_xy = pcb_uilayer_alloc(mesh_ui_cookie, "mesh xy", "#007733");
+	mesh.ui_layer_z = pcb_uilayer_alloc(mesh_ui_cookie, "mesh z", "#007733");
 }
 
 static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -543,6 +573,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	mesh.min_space = ia.dlg[ia.min_space].default_val.coord_value;
 	mesh.smooth = ia.dlg[ia.smooth].default_val.int_value;
 	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;;
+	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].default_val.coord_value;
 
 	if (ia.dlg[ia.hor].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
