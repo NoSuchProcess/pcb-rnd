@@ -40,7 +40,7 @@ static const char *mesh_ui_cookie = "mesh ui layer cookie";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int dens_obj, dens_gap, min_space, smooth, hor, ver, noimpl;
-	int bnd[6], subslines, air_top, air_bot, dens_air, smoothz, max_air;
+	int bnd[6], subslines, air_top, air_bot, dens_air, smoothz, max_air, def_subs_thick;
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
@@ -636,6 +636,14 @@ int pcb_mesh_interactive(void)
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.def_subs_thick = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "def. subst. thick");
+					PCB_DAD_HELP(ia.dlg, "default substrate thickness\n(for substrate layer groups without\nthickness specified in attribute)");
+				PCB_DAD_END(ia.dlg);
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.air_top = PCB_DAD_CURRENT(ia.dlg);
 					PCB_DAD_LABEL(ia.dlg, "in air top");
@@ -711,6 +719,7 @@ int pcb_mesh_interactive(void)
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.ver, int_value, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.noimpl, int_value, 0);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.subslines, int_value, 3);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, coord_value, PCB_MM_TO_COORD(1.5));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_top, int_value, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_bot, int_value, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.1));

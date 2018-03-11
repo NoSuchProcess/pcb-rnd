@@ -22,6 +22,7 @@ typedef struct {
 	char *ui_name_xy;                      /* name of the UI layer */
 	pcb_coord_t dens_obj, dens_gap;        /* target density: distance between mesh lines above objects and above gaps */
 	pcb_coord_t min_space;                 /* make sure there's always at least this much space between two mesh lines */
+	pcb_coord_t def_subs_thick;            /* default substrate thickness */
 	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
 	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance */
 	unsigned noimpl:1;                     /* when set, do not add extra implicit mesh lines, keep the explicit ones only */
