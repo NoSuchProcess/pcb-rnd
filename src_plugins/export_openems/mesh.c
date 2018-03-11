@@ -56,6 +56,8 @@ static mesh_dlg_t ia;
 #	define mesh_trace pcb_trace
 #endif
 
+#warning reorder to avoid fwd decl
+static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2);
 
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 {
@@ -335,7 +337,7 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t
 static int mesh_auto_z(pcb_mesh_t *mesh)
 {
 	pcb_layergrp_id_t gid;
-	pcb_coord_t y = 0;
+	pcb_coord_t y = 0, ytop = 0, ybottom, top_dens, bottom_dens;
 	int n, lns, first = 1;
 
 	vtc0_truncate(&mesh->line[PCB_MESH_Z].result, 0);
@@ -350,25 +352,60 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		}
 		else if (grp->type & PCB_LYT_SUBSTRATE) {
 			pcb_coord_t d, t = mesh->def_subs_thick;
+			double dens = (double)t/(double)lns;
+			bottom_dens = pcb_round(dens);
 			if (lns != 0) {
 				for(n = 0; n <= lns; n++) {
 					if (n == 0) {
 						if (first) {
+							ytop = y;
+							top_dens = pcb_round(dens);
 							mesh_add_result(mesh, PCB_MESH_Z, y);
 							first = 0;
 						}
 						else
 							continue;
 					}
-					d = pcb_round((double)y+(double)t/(double)(lns)*(double)n);
+					d = pcb_round((double)y+dens*(double)n);
 					mesh_add_result(mesh, PCB_MESH_Z, d);
 				}
 			}
-			else
+			else {
+				if (first) {
+					ytop = y;
+					first = 0;
+					top_dens = mesh->def_subs_thick;
+				}
 				mesh_add_result(mesh, PCB_MESH_Z, y);
+			}
 			y += t;
+			ybottom = y;
 		}
 	}
+
+	if (ia.dlg[ia.air_top].default_val.int_value) {
+		if (ia.dlg[ia.smoothz].default_val.int_value) {
+			mesh_auto_add_smooth(&mesh->line[PCB_MESH_Z].result, ytop - ia.dlg[ia.max_air].default_val.coord_value, ytop,
+				ia.dlg[ia.dens_air].default_val.coord_value, ia.dlg[ia.dens_air].default_val.coord_value, top_dens);
+		}
+		else {
+			for(y = ytop; y > ytop - ia.dlg[ia.max_air].default_val.coord_value ; y -= ia.dlg[ia.dens_air].default_val.coord_value)
+				mesh_add_result(mesh, PCB_MESH_Z, y);
+		}
+	}
+
+	if (ia.dlg[ia.air_bot].default_val.int_value) {
+		if (ia.dlg[ia.smoothz].default_val.int_value) {
+			mesh_auto_add_smooth(&mesh->line[PCB_MESH_Z].result, ybottom, ybottom + ia.dlg[ia.max_air].default_val.coord_value,
+				bottom_dens, ia.dlg[ia.dens_air].default_val.coord_value, ia.dlg[ia.dens_air].default_val.coord_value);
+		}
+		else {
+			for(y = ybottom; y < ybottom + ia.dlg[ia.max_air].default_val.coord_value ; y += ia.dlg[ia.dens_air].default_val.coord_value)
+				mesh_add_result(mesh, PCB_MESH_Z, y);
+		}
+	}
+
+
 	return 0;
 }
 
@@ -819,9 +856,9 @@ int pcb_mesh_interactive(void)
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, coord_value, PCB_MM_TO_COORD(1.5));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_top, int_value, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_bot, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.1));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.7));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smoothz, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, coord_value, PCB_MM_TO_COORD(1));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, coord_value, PCB_MM_TO_COORD(4));
 	return 0;
 }
 
