@@ -717,6 +717,7 @@ int pcb_mesh_interactive(void)
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.1));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smoothz, int_value, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, coord_value, PCB_MM_TO_COORD(1));
+	return 0;
 }
 
 const char pcb_acts_mesh[] = "mesh()";
