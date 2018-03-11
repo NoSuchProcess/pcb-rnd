@@ -325,26 +325,26 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t
 static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t aux1, pcb_coord_t aux2, pcb_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
-		pcb_line_new(mesh->ui_layer, aux1, at, aux2, at, thick, 0, pcb_no_flags());
+		pcb_line_new(mesh->ui_layer_xy, aux1, at, aux2, at, thick, 0, pcb_no_flags());
 	else
-		pcb_line_new(mesh->ui_layer, at, aux1, at, aux2, thick, 0, pcb_no_flags());
+		pcb_line_new(mesh->ui_layer_xy, at, aux1, at, aux2, thick, 0, pcb_no_flags());
 }
 
 static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at1, pcb_coord_t at2, pcb_coord_t aux, pcb_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
-		pcb_line_new(mesh->ui_layer, aux, at1, aux, at2, thick, 0, pcb_no_flags());
+		pcb_line_new(mesh->ui_layer_xy, aux, at1, aux, at2, thick, 0, pcb_no_flags());
 	else
-		pcb_line_new(mesh->ui_layer, at1, aux, at2, aux, thick, 0, pcb_no_flags());
+		pcb_line_new(mesh->ui_layer_xy, at1, aux, at2, aux, thick, 0, pcb_no_flags());
 }
 
 static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t aux, const char *label)
 {
 	aux -= PCB_MM_TO_COORD(0.6);
 	if (dir == PCB_MESH_HORIZONTAL)
-		pcb_text_new(mesh->ui_layer, pcb_font(PCB, 0, 0), aux, 0, 1, 75, label, pcb_no_flags());
+		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), aux, 0, 1, 75, label, pcb_no_flags());
 	else
-		pcb_text_new(mesh->ui_layer, pcb_font(PCB, 0, 0), 0, aux, 0, 75, label, pcb_no_flags());
+		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), 0, aux, 0, 75, label, pcb_no_flags());
 
 }
 
@@ -508,7 +508,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	mesh_sort(mesh, dir);
 	mesh_auto_build(mesh, dir);
 
-	if (mesh->ui_layer != NULL)
+	if (mesh->ui_layer_xy != NULL)
 		mesh_vis(mesh, dir);
 
 	return 0;
@@ -521,9 +521,9 @@ int mesh_z(pcb_mesh_t *mesh)
 
 static void mesh_layer_reset()
 {
-	if (mesh.ui_layer != NULL)
-		pcb_uilayer_free(mesh.ui_layer);
-	mesh.ui_layer = pcb_uilayer_alloc(mesh_ui_cookie, "mesh", "#007733");
+	if (mesh.ui_layer_xy != NULL)
+		pcb_uilayer_free(mesh.ui_layer_xy);
+	mesh.ui_layer_xy = pcb_uilayer_alloc(mesh_ui_cookie, "mesh", "#007733");
 }
 
 static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -551,9 +551,9 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 
 	mesh_z(&mesh);
 
-	free(mesh.ui_name);
-	mesh.ui_name = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
-	mesh.ui_layer->name = mesh.ui_name;
+	free(mesh.ui_name_xy);
+	mesh.ui_name_xy = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
+	mesh.ui_layer_xy->name = mesh.ui_name_xy;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	pcb_gui->invalidate_all();
