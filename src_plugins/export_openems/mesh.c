@@ -514,6 +514,11 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
+int mesh_z(pcb_mesh_t *mesh)
+{
+	return 0;
+}
+
 static void mesh_layer_reset()
 {
 	if (mesh.ui_layer != NULL)
@@ -543,6 +548,8 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
 	if (ia.dlg[ia.ver].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_VERTICAL);
+
+	mesh_z(&mesh);
 
 	free(mesh.ui_name);
 	mesh.ui_name = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
