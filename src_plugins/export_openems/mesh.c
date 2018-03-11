@@ -558,107 +558,113 @@ int pcb_mesh_interactive(void)
 	char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
 	char *bnd_names[] = { "xmin", "xmax", "ymin", "ymax", "zmin", "zmax" };
 	char *subslines[] = { "0", "1", "3", "5", NULL };
-
 	pcb_coord_t def = PCB_MM_TO_COORD(0.1);
+
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
-
-		PCB_DAD_LABEL(ia.dlg, "XY-mesh");
-
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_COORD(ia.dlg, "");
-				ia.dens_obj = PCB_DAD_CURRENT(ia.dlg);
-				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-			PCB_DAD_LABEL(ia.dlg, "mesh density over copper");
-		PCB_DAD_END(ia.dlg);
+			PCB_DAD_BEGIN_VBOX(ia.dlg);
+				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
+				PCB_DAD_LABEL(ia.dlg, "XY-mesh");
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.dens_obj = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "mesh density over copper");
+				PCB_DAD_END(ia.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_COORD(ia.dlg, "");
-				ia.dens_gap = PCB_DAD_CURRENT(ia.dlg);
-				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-			PCB_DAD_LABEL(ia.dlg, "mesh density over gaps");
-		PCB_DAD_END(ia.dlg);
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.dens_gap = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "mesh density over gaps");
+				PCB_DAD_END(ia.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_COORD(ia.dlg, "");
-				ia.min_space = PCB_DAD_CURRENT(ia.dlg);
-				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-			PCB_DAD_LABEL(ia.dlg, "minimum spacing");
-		PCB_DAD_END(ia.dlg);
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.min_space = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "minimum spacing");
+				PCB_DAD_END(ia.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.smooth = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "smooth mesh");
-		PCB_DAD_END(ia.dlg);
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.smooth = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "smooth mesh");
+				PCB_DAD_END(ia.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.hor = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "horizontal mesh lines");
-		PCB_DAD_END(ia.dlg);
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.hor = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "horizontal mesh lines");
+				PCB_DAD_END(ia.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.ver = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "vertical mesh lines");
-		PCB_DAD_END(ia.dlg);
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.ver = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "vertical mesh lines");
+				PCB_DAD_END(ia.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.noimpl = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "omit implicit lines");
-		PCB_DAD_END(ia.dlg);
-
-		PCB_DAD_LABEL(ia.dlg, "Z-mesh");
-		for(n = 0; n < 6; n++) {
-			char name[64];
-			sprintf(name, "%s boundary", bnd_names[n]);
-			PCB_DAD_BEGIN_HBOX(ia.dlg);
-				PCB_DAD_ENUM(ia.dlg, bnds);
-					ia.bnd[n] = PCB_DAD_CURRENT(ia.dlg);
-				PCB_DAD_LABEL(ia.dlg, name);
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.noimpl = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "omit implicit lines");
+				PCB_DAD_END(ia.dlg);
 			PCB_DAD_END(ia.dlg);
-		}
 
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_ENUM(ia.dlg, subslines);
-				ia.subslines = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "number of mesh lines in substrate");
+			PCB_DAD_BEGIN_VBOX(ia.dlg);
+				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
+				PCB_DAD_LABEL(ia.dlg, "Z-mesh");
+				for(n = 0; n < 6; n++) {
+					char name[64];
+					sprintf(name, "%s boundary", bnd_names[n]);
+					PCB_DAD_BEGIN_HBOX(ia.dlg);
+						PCB_DAD_ENUM(ia.dlg, bnds);
+							ia.bnd[n] = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_LABEL(ia.dlg, name);
+					PCB_DAD_END(ia.dlg);
+				}
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_ENUM(ia.dlg, subslines);
+						ia.subslines = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "number of mesh lines in substrate");
+				PCB_DAD_END(ia.dlg);
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.air_top = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "mesh in air above top");
+				PCB_DAD_END(ia.dlg);
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.air_bot = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "mesh in air below bottom");
+				PCB_DAD_END(ia.dlg);
+
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.dens_air = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "mesh density in air");
+				PCB_DAD_END(ia.dlg);
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_COORD(ia.dlg, "");
+						ia.max_air = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+					PCB_DAD_LABEL(ia.dlg, "how far out to mesh in air");
+				PCB_DAD_END(ia.dlg);
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_BOOL(ia.dlg, "");
+						ia.smoothz = PCB_DAD_CURRENT(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "smooth mesh");
+				PCB_DAD_END(ia.dlg);
+
+			PCB_DAD_END(ia.dlg);
 		PCB_DAD_END(ia.dlg);
-
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.air_top = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "mesh in air above top");
-		PCB_DAD_END(ia.dlg);
-
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.air_bot = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "mesh in air below bottom");
-		PCB_DAD_END(ia.dlg);
-
-
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_COORD(ia.dlg, "");
-				ia.dens_air = PCB_DAD_CURRENT(ia.dlg);
-				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-			PCB_DAD_LABEL(ia.dlg, "mesh density in air");
-		PCB_DAD_END(ia.dlg);
-
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_COORD(ia.dlg, "");
-				ia.max_air = PCB_DAD_CURRENT(ia.dlg);
-				PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-			PCB_DAD_LABEL(ia.dlg, "how far out to mesh in air");
-		PCB_DAD_END(ia.dlg);
-
-		PCB_DAD_BEGIN_HBOX(ia.dlg);
-			PCB_DAD_BOOL(ia.dlg, "");
-				ia.smoothz = PCB_DAD_CURRENT(ia.dlg);
-			PCB_DAD_LABEL(ia.dlg, "smooth mesh");
-		PCB_DAD_END(ia.dlg);
-
 		PCB_DAD_BUTTON(ia.dlg, "Generate mesh!");
 			PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
 	PCB_DAD_END(ia.dlg);
