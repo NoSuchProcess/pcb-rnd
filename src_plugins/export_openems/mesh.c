@@ -576,45 +576,52 @@ int pcb_mesh_interactive(void)
 					PCB_DAD_COORD(ia.dlg, "");
 						ia.dens_obj = PCB_DAD_CURRENT(ia.dlg);
 						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-					PCB_DAD_LABEL(ia.dlg, "mesh density over copper");
+					PCB_DAD_LABEL(ia.dlg, "copper dens.");
+					PCB_DAD_HELP(ia.dlg, "mesh density over copper");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_COORD(ia.dlg, "");
 						ia.dens_gap = PCB_DAD_CURRENT(ia.dlg);
 						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-					PCB_DAD_LABEL(ia.dlg, "mesh density over gaps");
+					PCB_DAD_LABEL(ia.dlg, "gap dens.");
+					PCB_DAD_HELP(ia.dlg, "mesh density over gaps");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_COORD(ia.dlg, "");
 						ia.min_space = PCB_DAD_CURRENT(ia.dlg);
 						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-					PCB_DAD_LABEL(ia.dlg, "minimum spacing");
+					PCB_DAD_LABEL(ia.dlg, "min. spacing");
+					PCB_DAD_HELP(ia.dlg, "minimum distance between mesh lines");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.smooth = PCB_DAD_CURRENT(ia.dlg);
 					PCB_DAD_LABEL(ia.dlg, "smooth mesh");
+					PCB_DAD_HELP(ia.dlg, "avoid jumps between different mesh densities,\nuse smooth (gradual) changes");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.hor = PCB_DAD_CURRENT(ia.dlg);
-					PCB_DAD_LABEL(ia.dlg, "horizontal mesh lines");
+					PCB_DAD_LABEL(ia.dlg, "horizontal");
+					PCB_DAD_HELP(ia.dlg, "enable adding horizontal mesh lines");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.ver = PCB_DAD_CURRENT(ia.dlg);
-					PCB_DAD_LABEL(ia.dlg, "vertical mesh lines");
+					PCB_DAD_LABEL(ia.dlg, "vertical");
+					PCB_DAD_HELP(ia.dlg, "enable adding vertical mesh lines");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.noimpl = PCB_DAD_CURRENT(ia.dlg);
-					PCB_DAD_LABEL(ia.dlg, "omit implicit lines");
+					PCB_DAD_LABEL(ia.dlg, "omit implicit");
+					PCB_DAD_HELP(ia.dlg, "add only the mesh lines for boundaries,\nomit in-material meshing");
 				PCB_DAD_END(ia.dlg);
 			PCB_DAD_END(ia.dlg);
 
@@ -625,19 +632,22 @@ int pcb_mesh_interactive(void)
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_ENUM(ia.dlg, subslines);
 						ia.subslines = PCB_DAD_CURRENT(ia.dlg);
-					PCB_DAD_LABEL(ia.dlg, "number of mesh lines in substrate");
+					PCB_DAD_LABEL(ia.dlg, "num in substrate");
+					PCB_DAD_HELP(ia.dlg, "number of mesh lines in substrate");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.air_top = PCB_DAD_CURRENT(ia.dlg);
-					PCB_DAD_LABEL(ia.dlg, "mesh in air above top");
+					PCB_DAD_LABEL(ia.dlg, "in air top");
+					PCB_DAD_HELP(ia.dlg, "add mesh lines in air above the top of the board");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.air_bot = PCB_DAD_CURRENT(ia.dlg);
-					PCB_DAD_LABEL(ia.dlg, "mesh in air below bottom");
+					PCB_DAD_LABEL(ia.dlg, "in air bottom");
+					PCB_DAD_HELP(ia.dlg, "add mesh lines in air below the bottom of the board");
 				PCB_DAD_END(ia.dlg);
 
 
@@ -645,20 +655,23 @@ int pcb_mesh_interactive(void)
 					PCB_DAD_COORD(ia.dlg, "");
 						ia.dens_air = PCB_DAD_CURRENT(ia.dlg);
 						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-					PCB_DAD_LABEL(ia.dlg, "mesh density in air");
+					PCB_DAD_LABEL(ia.dlg, "dens. air");
+					PCB_DAD_HELP(ia.dlg, "mesh line density (spacing) in air");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_COORD(ia.dlg, "");
 						ia.max_air = PCB_DAD_CURRENT(ia.dlg);
 						PCB_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
-					PCB_DAD_LABEL(ia.dlg, "how far out to mesh in air");
+					PCB_DAD_LABEL(ia.dlg, "air thickness");
+					PCB_DAD_HELP(ia.dlg, "how far out to mesh in air");
 				PCB_DAD_END(ia.dlg);
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_BOOL(ia.dlg, "");
 						ia.smoothz = PCB_DAD_CURRENT(ia.dlg);
 					PCB_DAD_LABEL(ia.dlg, "smooth mesh");
+					PCB_DAD_HELP(ia.dlg, "avoid jumps between different mesh densities,\nuse smooth (gradual) changes");
 				PCB_DAD_END(ia.dlg);
 
 			PCB_DAD_END(ia.dlg);
