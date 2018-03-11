@@ -45,6 +45,7 @@ SUBC: element removal:
 		- read.c: parse_thermal_heavy already does this right
 	- throw out meta/cursor and friends
 	- add attributes to layer groups
+	- add attributes to layers
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
