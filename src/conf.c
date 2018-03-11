@@ -145,7 +145,6 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		f = pcb_fopen_fn(fn, "r", &efn);
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
 			pcb_message(PCB_MSG_ERROR, "error: failed to load lht config: %s (%s)\n", fn, efn);
-			free(efn);
 			fclose(f);
 		}
 		free(efn);
