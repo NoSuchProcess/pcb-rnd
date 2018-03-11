@@ -45,7 +45,7 @@ typedef struct {
 static mesh_dlg_t ia;
 
 
-#if 1
+#if 0
 	static void mesh_trace(const char *fmt, ...) { }
 #else
 #	define mesh_trace pcb_trace
@@ -344,7 +344,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		}
 		else if (grp->type & PCB_LYT_SUBSTRATE) {
 			pcb_coord_t d, t = mesh->def_subs_thick;
-			for(n = 0; n < lns; n++) {
+			for(n = 0; n <= lns; n++) {
 				if (n == 0) {
 					if (first) {
 						mesh_add_result(mesh, PCB_MESH_Z, y);
@@ -353,12 +353,13 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 					else
 						continue;
 				}
-				d = pcb_round((double)y+(double)t/(double)(lns+1)*(double)n);
+				d = pcb_round((double)y+(double)t/(double)(lns)*(double)n);
 				mesh_add_result(mesh, PCB_MESH_Z, d);
 			}
 			y += t;
 		}
 	}
+	return 0;
 }
 
 static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t aux1, pcb_coord_t aux2, pcb_coord_t thick)
@@ -387,7 +388,7 @@ static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t au
 
 }
 
-static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
 	pcb_coord_t end;
@@ -419,45 +420,47 @@ static int mesh_vis(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	}
 	mesh_trace("\n");
 
+	return 0;
+}
 
-	/* draw the z mesh */
-	{
-		pcb_layergrp_id_t gid;
-		pcb_coord_t x0 = PCB->MaxWidth/15, y0 = PCB->MaxHeight/3, y = y0, y2;
-		pcb_coord_t xl = PCB->MaxWidth/5; /* board left */
-		pcb_coord_t xr = PCB->MaxWidth/5*3; /* board right */
-		pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
-		int mag = 2;
+static int mesh_vis_z(pcb_mesh_t *mesh)
+{
+	int n;
+	pcb_layergrp_id_t gid;
+	pcb_coord_t x0 = PCB->MaxWidth/15, y0 = PCB->MaxHeight/3, y = y0, y2;
+	pcb_coord_t xl = PCB->MaxWidth/5; /* board left */
+	pcb_coord_t xr = PCB->MaxWidth/5*3; /* board right */
+	pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
+	int mag = 2;
 
-		for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
-			pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
-			if (grp->type & PCB_LYT_COPPER) {
-				y2 = y + mesh->def_copper_thick * mag / 2;
-				pcb_line_new(mesh->ui_layer_z, xr, y2, xr+PCB_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
-				pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
-				y += mesh->def_copper_thick * mag;
-			}
-			else if (grp->type & PCB_LYT_SUBSTRATE) {
-				y2 = y + mesh->def_subs_thick * mag;
-				pcb_line_new(mesh->ui_layer_z, xl, y, xr, y, spen, 0, pcb_no_flags());
-				pcb_line_new(mesh->ui_layer_z, xl, y2, xr, y2, spen, 0, pcb_no_flags());
-				pcb_line_new(mesh->ui_layer_z, xl, y, xl, y2, spen, 0, pcb_no_flags());
-				pcb_line_new(mesh->ui_layer_z, xr, y, xr, y2, spen, 0, pcb_no_flags());
-				y = y2;
-			}
+	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
+		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
+		if (grp->type & PCB_LYT_COPPER) {
+			y2 = y + mesh->def_copper_thick * mag / 2;
+			pcb_line_new(mesh->ui_layer_z, xr, y2, xr+PCB_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
+			pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
+			y += mesh->def_copper_thick * mag;
 		}
+		else if (grp->type & PCB_LYT_SUBSTRATE) {
+			y2 = y + mesh->def_subs_thick * mag;
+			pcb_line_new(mesh->ui_layer_z, xl, y, xr, y, spen, 0, pcb_no_flags());
+			pcb_line_new(mesh->ui_layer_z, xl, y2, xr, y2, spen, 0, pcb_no_flags());
+			pcb_line_new(mesh->ui_layer_z, xl, y, xl, y2, spen, 0, pcb_no_flags());
+			pcb_line_new(mesh->ui_layer_z, xr, y, xr, y2, spen, 0, pcb_no_flags());
+			y = y2;
+		}
+	}
 
 	mesh_trace("Z lines:\n");
 	for(n = 0; n < vtc0_len(&mesh->line[PCB_MESH_Z].result); n++) {
-		pcb_coord_t y = mesh->line[PCB_MESH_Z].result.array[n];
+		pcb_coord_t y = y0+mesh->line[PCB_MESH_Z].result.array[n]*mag;
 		mesh_trace(" %mm", y);
 		pcb_line_new(mesh->ui_layer_z, 0, y, PCB->MaxWidth, y, mpen, 0, pcb_no_flags());
 	}
 	mesh_trace("\n");
-
-	}
 	return 0;
 }
+
 
 static void mesh_auto_add_even(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
 {
@@ -586,7 +589,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	mesh_auto_build(mesh, dir);
 
 	if (mesh->ui_layer_xy != NULL)
-		mesh_vis(mesh, dir);
+		mesh_vis_xy(mesh, dir);
 
 	return 0;
 }
@@ -627,6 +630,8 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 		mesh_auto(&mesh, PCB_MESH_VERTICAL);
 
 	mesh_auto_z(&mesh);
+	if (mesh.ui_layer_z != NULL)
+		mesh_vis_z(&mesh);
 
 	free(mesh.ui_name_xy);
 	mesh.ui_name_xy = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
