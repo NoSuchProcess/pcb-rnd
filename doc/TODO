@@ -51,6 +51,13 @@ SUBC: element removal:
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
+	- save layer color
+- layer color rewrite:
+	- depends on lihata v5 layer color save/load
+	- grep for layer TODO, hardwired layer colors
+	- always use thestored per layer color
+	- use the config color only if a new layer is created or loaded without known color
+	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
 - find.c rewrite:
 	- a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
