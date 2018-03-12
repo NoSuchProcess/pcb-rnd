@@ -144,7 +144,7 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 
 	{"excite", "Excite directive",
 	 PCB_HATT_STRING, 0, 0, {0, "SetGaussExcite(FDTD, f_max/2, f_max/2)", 0}, 0, 0},
-#define HA_def_copper_cond 14
+#define HA_excite 14
 
 };
 
@@ -479,7 +479,7 @@ static void openems_write_mesh(wctx_t *ctx)
 	fprintf(ctx->f, "unit = 1.0e-3;\n");
 	fprintf(ctx->f, "f_max = %s;\n", ctx->options[HA_f_max].str_value);
 	fprintf(ctx->f, "FDTD = InitFDTD();\n");
-	fprintf(ctx->f, "FDTD = %s;\n", ctx->options[HA_f_max].str_value);
+	fprintf(ctx->f, "FDTD = %s;\n", ctx->options[HA_excite].str_value);
 	
 	fprintf(ctx->f, "BC = {");
 
