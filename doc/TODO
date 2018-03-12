@@ -76,6 +76,7 @@ SUBC: element removal:
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	-> this will be handled in the big increments rewrite (with Richard)
+- feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
