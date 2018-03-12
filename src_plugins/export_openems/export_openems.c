@@ -55,6 +55,7 @@ static pcb_hid_t openems_hid;
 
 const char *openems_cookie = "openems HID";
 
+#define MESH_NAME "openems"
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
@@ -149,9 +150,15 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	const char *suffix = ".m";
+	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
 
 	if (PCB)
 		pcb_derive_default_filename(PCB->Filename, &openems_attribute_list[HA_openemsfile], suffix, &last_made_filename);
+
+	if (mesh != NULL) {
+		openems_attribute_list[HA_def_substrate_thick].default_val.coord_value = mesh->def_subs_thick;
+		openems_attribute_list[HA_def_copper_thick].default_val.coord_value = mesh->def_copper_thick;
+	}
 
 	if (n)
 		*n = NUM_OPTIONS;
