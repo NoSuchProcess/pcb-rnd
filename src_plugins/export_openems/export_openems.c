@@ -168,6 +168,16 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 		openems_attribute_list[HA_def_copper_thick].default_val.coord_value = mesh->def_copper_thick;
 	}
 
+#warning TODO: when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore
+	openems_attribute_list[HA_f_max].default_val.str_value = pcb_strdup(openems_attribute_list[HA_f_max].default_val.str_value);
+	openems_attribute_list[HA_excite].default_val.str_value = pcb_strdup(openems_attribute_list[HA_excite].default_val.str_value);
+	openems_attribute_list[HA_def_copper_cond].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str_value);
+	openems_attribute_list[HA_def_subst_epsilon].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str_value);
+	openems_attribute_list[HA_def_subst_mue].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str_value);
+	openems_attribute_list[HA_def_subst_kappa].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str_value);
+	openems_attribute_list[HA_def_subst_sigma].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str_value);
+	openems_attribute_list[HA_void_name].default_val.str_value = pcb_strdup(openems_attribute_list[HA_void_name].default_val.str_value);
+
 	if (n)
 		*n = NUM_OPTIONS;
 	return openems_attribute_list;
