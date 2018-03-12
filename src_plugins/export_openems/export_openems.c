@@ -138,6 +138,14 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	 PCB_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
 #define HA_base_prio 12
 
+	{"f_max", "maximum frequency",
+	 PCB_HATT_STRING, 0, 0, {0, "7e9", 0}, 0, 0},
+#define HA_f_max 13
+
+	{"excite", "Excite directive",
+	 PCB_HATT_STRING, 0, 0, {0, "SetGaussExcite(FDTD, f_max/2, f_max/2)", 0}, 0, 0},
+#define HA_def_copper_cond 14
+
 };
 
 #define NUM_OPTIONS (sizeof(openems_attribute_list)/sizeof(openems_attribute_list[0]))
@@ -469,11 +477,9 @@ static void openems_write_mesh(wctx_t *ctx)
 
 	fprintf(ctx->f, "%%%%%% Board mesh (defined in pcb-rnd)\n");
 	fprintf(ctx->f, "unit = 1.0e-3;\n");
-#warning TODO: ask the user
-	fprintf(ctx->f, "f_max = 7e9;\n");
+	fprintf(ctx->f, "f_max = %s;\n", ctx->options[HA_f_max].str_value);
 	fprintf(ctx->f, "FDTD = InitFDTD();\n");
-#warning TODO: ask the user
-	fprintf(ctx->f, "FDTD = SetGaussExcite(FDTD, f_max/2, f_max/2);\n");
+	fprintf(ctx->f, "FDTD = %s;\n", ctx->options[HA_f_max].str_value);
 	
 	fprintf(ctx->f, "BC = {");
 
