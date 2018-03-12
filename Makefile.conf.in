@@ -21,6 +21,6 @@ EXE=@/target/sys/ext_exe@
 
 # The installation directoried to be used from within binaries (with
 # install_root/DESTDIR removed)
-LIBDIR_INSALLED=@/local/prefix@/lib/pcb-rnd
+LIBDIR_INSTALLED=@/local/prefix@/lib/pcb-rnd
 
 @]
