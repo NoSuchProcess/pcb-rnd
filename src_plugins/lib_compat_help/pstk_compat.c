@@ -121,7 +121,10 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	pcb_pstk_tshape_t tshp;
 	int n;
 
-	assert(pad_dia > drill_dia);
+	/* for plated vias, positive pad is required */
+	if (plated)
+		assert(pad_dia > drill_dia);
+
 	assert(drill_dia > 0);
 	assert(clearance >= 0);
 	assert(mask >= 0);
