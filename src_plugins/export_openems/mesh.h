@@ -26,6 +26,7 @@ typedef struct {
 	pcb_coord_t def_subs_thick;            /* default substrate thickness */
 	pcb_coord_t def_copper_thick;          /* default copper thickness */
 	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
+	const char *bnd[6];                    /* temporary: boundary conditions */
 	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance */
 	unsigned noimpl:1;                     /* when set, do not add extra implicit mesh lines, keep the explicit ones only */
 } pcb_mesh_t;

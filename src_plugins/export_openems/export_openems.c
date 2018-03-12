@@ -450,6 +450,61 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 	}
 }
 
+static void openems_write_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
+{
+	pcb_cardinal_t n;
+	for(n = 0; n < vtc0_len(&l->result); n++)
+		pcb_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : " "), l->result.array[n]);
+}
+
+static void openems_write_mesh(wctx_t *ctx)
+{
+	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
+	int n;
+
+	if (mesh == NULL) {
+		fprintf(ctx->f, "%%%%%% Board mesh (NOT defined in pcb-rnd)\n");
+		return;
+	}
+
+	fprintf(ctx->f, "%%%%%% Board mesh (defined in pcb-rnd)\n");
+	fprintf(ctx->f, "unit = 1.0e-3;\n");
+#warning TODO: ask the user
+	fprintf(ctx->f, "f_max = 7e9;\n");
+	fprintf(ctx->f, "FDTD = InitFDTD();\n");
+#warning TODO: ask the user
+	fprintf(ctx->f, "FDTD = SetGaussExcite(FDTD, f_max/2, f_max/2);\n");
+	
+	fprintf(ctx->f, "BC = {");
+
+	for(n = 0; n < 6; n++)
+		fprintf(ctx->f, "%s'%s'", (n == 0 ? "" : " "), mesh->bnd[n]);
+	fprintf(ctx->f, "};\n");
+
+	fprintf(ctx->f, "FDTD = SetBoundaryCond(FDTD, BC);\n");
+	fprintf(ctx->f, "physical_constants;\n");
+	fprintf(ctx->f, "CSX = InitCSX();\n");
+	fprintf(ctx->f, "\n");
+
+	fprintf(ctx->f, "mesh.x=[");
+	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_HORIZONTAL]);
+	fprintf(ctx->f, "];\n");
+
+	fprintf(ctx->f, "mesh.y=[");
+	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_VERTICAL]);
+	fprintf(ctx->f, "];\n");
+
+	fprintf(ctx->f, "mesh.z=[");
+	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_Z]);
+	fprintf(ctx->f, "];\n");
+
+	fprintf(ctx->f, "mesh.x = mesh.x .+ offset.x;\n");
+	fprintf(ctx->f, "mesh.y = mesh.y .+ offset.y;\n");
+	fprintf(ctx->f, "mesh.z = mesh.z .+ offset.z;\n");
+	fprintf(ctx->f, "CSX = DefineRectGrid(CSX, unit, mesh);\n");
+	fprintf(ctx->f, "\n");
+}
+
 
 void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 {
@@ -478,6 +533,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	openems_write_tunables(&wctx);
 	openems_write_layers(&wctx);
 	openems_write_init(&wctx);
+	openems_write_mesh(&wctx);
 	openems_write_outline(&wctx);
 
 	fprintf(wctx.f, "%%%%%% Copper objects\n");

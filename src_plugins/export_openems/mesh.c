@@ -659,6 +659,7 @@ static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	int n;
 	mesh_layer_reset();
 
 	mesh.layer = CURRENT;
@@ -670,6 +671,8 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;;
 	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].default_val.coord_value;
 	mesh.def_copper_thick = ia.dlg[ia.def_copper_thick].default_val.coord_value;
+	for(n = 0; n < 6; n++)
+		mesh.bnd[n] = bnds[ia.dlg[ia.bnd[n]].default_val.int_value];
 
 	if (ia.dlg[ia.hor].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
