@@ -7,8 +7,8 @@ pins, pads, elements). Conversion forth and back is done automatically,
 on the fly, during load and save.
 
 The local rtree implementation has been replaced with genrtree. This makes
-it much easier to share the rtree code among projects, decerases the
-maintainance burden. Unlike the local rtree implementation, genrtree
+it much easier to share the rtree code among projects, decreases the
+maintenance burden. Unlike the local rtree implementation, genrtree
 has unit tests.
 
 The new rtree API features loop iterators, which allows the caller to
