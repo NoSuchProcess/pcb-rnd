@@ -16,6 +16,7 @@
 + BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
 + BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: Karl]
 + BUG: lesstif: invalidate_all() on config change colors [report: Karl]
+- BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 - BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
