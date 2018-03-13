@@ -27,6 +27,28 @@ Low prio:
 - BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
 - BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
 
+- BUG: ratlines are not updated after subc rotate [wojciechk8]
+- BUG: after autocrop() the board is shrinked, but crosshair can be moved over old board dimensions (sometimes also copper lines become invisible) [wojciechk8]
+	-> bug_files/redrawbug1.lht, run autocrop()
+- BUG: ChangeSize() doesn't work on floaters if only a floater is selected [wojciechk8]
+- BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [wojciechk8]
+	-> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
+- BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [wojciechk8]
+	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
+- BUG: undo 'k' on subc, padstacks are undone separatly [wojciechk8]
+	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
+- BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [wojciechk8]
+	-> bug_files/via_clearance.lht
+- BUG: subc origin marks (diamonds) change color to the current layer color when line/arc tool is selected [wojciechk8]
+	-> bug_files/ps_clearance.lht, select outline layer, select line tool, move mouse to the board area -> diamond mark is green
+- BUG: run DRC multiple times without closing the DRC window - duplicated violations are generated [wojciechk8]
+- BUG: multiple instances of command window (':') are allowed, leading to crash when the following steps are performed: [wojciechk8]
+	- open cmd window ':'
+	- open second cmd window ':'
+	- close the windows
+	- open cmd window again ':' -> crash
+- BUG: no message in the status bar on GetXY() hid action (to reproduce: select in menu View->Realign grid, bottom status bar is empty) [wojciechk8]
+
 2. For later releases ===============================================================================
 SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
