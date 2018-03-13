@@ -1,31 +1,18 @@
-pcb-rnd 1.2.7
+pcb-rnd 1.2.8
 ~~~~~~~~~~~~~
 
-The focus of the release is pad stacks: a new, generic object type that
-can serve as:
- - via
- - pin
- - pad
- - mounting hole
+This release switches over the whole code base to use the new data model
+(padstacks, subcircuits) instead of the old, now obsolete model (vias,
+pins, pads, elements). Conversion forth and back is done automatically,
+on the fly, during load and save.
 
-The second most important effort was fixing most of the remaining
-subcircuit-related issues. By now subcircuits with padstacks or
-with heavy terminals are production-quality alternatives to
-elements/pins/pads.
+The local rtree implementation has been replaced with genrtree. This makes
+it much easier to share the rtree code among projects, decerases the
+maintainance burden. Unlike the local rtree implementation, genrtree
+has unit tests.
 
-The arbitrary shaped pad support and polygon-clear-in-polygon
-features are upgraded with thermals. It is now possible to generate
-a thermal relief for any SMD or through-hole pad:
- - round cap lines
- - square cap lines
- - circle
- - arc
- - arbitrary shaped convex polygon
+The new rtree API features loop iterators, which allows the caller to
+have much simpler and more readable code, without callback functions and
+context structs.
 
-The attribute dialog API got extended by a Dynamic Attribute Dialog (DAD) API;
-all new dialog boxes are implemented using the DAD, which makes the same code
-work with all existing HIDs. Already existing, per-HID dialog implementions
-will be revised and converted to DAD wherever possible.
-
-Plugin io_eagle is now mature enough to load complex boards drawn in
-Eagle, using both the new xml format and the older binary format.
+The rest of the development focused on fixing bugs.
