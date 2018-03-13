@@ -313,6 +313,15 @@ int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 0;
 }
 
+static const char pcb_acts_System[] = "System(shell_cmd)";
+static const char pcb_acth_System[] = "Run shell command";
+int pcb_act_System(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	if (argc < 1)
+		return 1;
+	return pcb_system(argv[0]);
+}
+
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t main_action_list[] = {
@@ -342,6 +351,9 @@ pcb_hid_action_t main_action_list[] = {
 	,
 	{"DumpPluginDirs", 0, pcb_act_DumpPluginDirs,
 	 pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs}
+	,
+	{"System", 0, pcb_act_System,
+	 pcb_acth_System, pcb_acts_System}
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)
