@@ -31,10 +31,7 @@ Low prio:
 - BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
 
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
-- BUG: after autocrop() the board is shrinked, but crosshair can be moved over old board dimensions (sometimes also copper lines become invisible) [wojciechk8]
-	-> bug_files/redrawbug1.lht, run autocrop()
-- autocrop bug: copper lines become invisible [wojciechk8]
-	-> should use central data move instead of local implementation
++ BUG: after autocrop() the board is shrinked, but crosshair can be moved over old board dimensions (sometimes also copper lines become invisible) [report: wojciechk8]
 	-> bug_files/redrawbug1.lht, run autocrop()
 - BUG: ChangeSize() doesn't work on floaters if only a floater is selected [wojciechk8]
 - BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [wojciechk8]
@@ -119,6 +116,9 @@ SUBC: element removal:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
+- autocrop bug: copper lines become invisible [report: wojciechk8]
+	-> should use central data move instead of local implementation
+	-> bug_files/redrawbug1.lht, run autocrop()
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 ? BUG: macrofab xy: 5 mil offset [report: celem]
 	-> pcb-rnd seems to do everything properly, no idea why macrofab distorts the result
