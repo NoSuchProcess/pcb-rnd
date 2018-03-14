@@ -1100,8 +1100,12 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t
 	if (Name != NULL)
 		pcb_attribute_put(&p->Attributes, "name", Name);
 
-	if (yysubc_bottom)
+	if (yysubc_bottom) {
+		pcb_data_t *old_hack = pcb_pstk_data_hack;
+		pcb_pstk_data_hack = subc->parent.data;
 		pcb_pstk_mirror(p, 0, 1);
+		pcb_pstk_data_hack = old_hack;
+	}
 
 	return p;
 }
