@@ -101,8 +101,7 @@ SUBC: element removal:
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
-- BUG: run DRC multiple times without closing the DRC window - duplicated violations are generated [report: wojciechk8]
-	-> how exactly did you run the DRC when this happened?
+- BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
 - autocrop bug: copper lines become invisible [report: wojciechk8]
 	-> should use central data move instead of local implementation
 	-> bug_files/redrawbug1.lht, run autocrop()
