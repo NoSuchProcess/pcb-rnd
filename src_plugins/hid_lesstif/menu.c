@@ -53,6 +53,7 @@ Prompts the user for a coordinate, if one is not already selected.
 
 static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	pcb_gui->get_coords(argv[0], &x, &y);
 	return 0;
 }
 
@@ -451,7 +452,7 @@ void lesstif_update_widget_flags()
 /*-----------------------------------------------------------------------------*/
 
 pcb_hid_action_t lesstif_menu_action_list[] = {
-	{"GetXY", "", GetXY,
+	{"GetXY", 0, GetXY,
 	 getxy_help, getxy_syntax},
 };
 
