@@ -50,7 +50,7 @@ Low prio:
 	- open second cmd window ':'
 	- close the windows
 	- open cmd window again ':' -> crash
-- BUG: no message in the status bar on GetXY() hid action (to reproduce: select in menu View->Realign grid, bottom status bar is empty) [report: wojciechk8]
++ BUG: no message in the status bar on GetXY() hid action (to reproduce: select in menu View->Realign grid, bottom status bar is empty) [report: wojciechk8]
 
 2. For later releases ===============================================================================
 SUBC: element removal:

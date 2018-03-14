@@ -7,3 +7,4 @@
    get_unit_list()
 - remove 'require unique refdes'
 - remove the polygrid feature from the pos exporter - use the poly hatch instead
+- move the GetXY action to central
