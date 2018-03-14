@@ -19,13 +19,6 @@
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 - BUG: make test in tests/conf broke [report: igor2]
 - BUG: make test in tests/pcbflags broke [report: igor2]
-+ BUG: after autocrop() the board is shrinked, but crosshair can be moved over old board dimensions (sometimes also copper lines become invisible) [report: wojciechk8]
-	-> bug_files/redrawbug1.lht, run autocrop()
-+ BUG: subc origin marks (diamonds) change color to the current layer color when line/arc tool is selected [report: wojciechk8]
-	-> bug_files/ps_clearance.lht, select outline layer, select line tool, move mouse to the board area -> diamond mark is green
-+ BUG: multiple instances of command window (':') are allowed, leading to crash when the following steps are performed: [report: wojciechk8]
-	-> open cmd window ':'; open second cmd window ':'; close the windows; open cmd window again ':' -> crash
-+ BUG: no message in the status bar on GetXY() hid action (to reproduce: select in menu View->Realign grid, bottom status bar is empty) [report: wojciechk8]
 
 2. For later releases ===============================================================================
 SUBC: element removal:
