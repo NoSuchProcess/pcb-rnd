@@ -19,33 +19,12 @@
 + BUG: lesstif: invalidate_all() on config change colors [report: Karl]
 + BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
-- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-- BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 - BUG: make test in tests/conf broke [report: igor2]
 - BUG: make test in tests/pcbflags broke [report: igor2]
-Low prio:
-- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
-- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
-- BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
-- BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
-- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
-
-- BUG: ratlines are not updated after subc rotate [wojciechk8]
 + BUG: after autocrop() the board is shrinked, but crosshair can be moved over old board dimensions (sometimes also copper lines become invisible) [report: wojciechk8]
 	-> bug_files/redrawbug1.lht, run autocrop()
-- BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
-- BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
-	-> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
-- BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
-	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
-- BUG: undo 'k' on subc, padstacks are undone separatly [report: wojciechk8]
-	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
-- BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
-	-> bug_files/via_clearance.lht
 + BUG: subc origin marks (diamonds) change color to the current layer color when line/arc tool is selected [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, select outline layer, select line tool, move mouse to the board area -> diamond mark is green
-- BUG: run DRC multiple times without closing the DRC window - duplicated violations are generated [report: wojciechk8]
-	-> how exactly did you run the DRC when this happened?
 + BUG: multiple instances of command window (':') are allowed, leading to crash when the following steps are performed: [report: wojciechk8]
 	-> open cmd window ':'; open second cmd window ':'; close the windows; open cmd window again ':' -> crash
 + BUG: no message in the status bar on GetXY() hid action (to reproduce: select in menu View->Realign grid, bottom status bar is empty) [report: wojciechk8]
@@ -114,6 +93,25 @@ SUBC: element removal:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
+- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
+- BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
+- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
+- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
+- BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
+- BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
+- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
+- BUG: ratlines are not updated after subc rotate [wojciechk8]
+- BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
+- BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
+	-> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
+- BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
+	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
+- BUG: undo 'k' on subc, padstacks are undone separatly [report: wojciechk8]
+	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
+- BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
+	-> bug_files/via_clearance.lht
+- BUG: run DRC multiple times without closing the DRC window - duplicated violations are generated [report: wojciechk8]
+	-> how exactly did you run the DRC when this happened?
 - autocrop bug: copper lines become invisible [report: wojciechk8]
 	-> should use central data move instead of local implementation
 	-> bug_files/redrawbug1.lht, run autocrop()
