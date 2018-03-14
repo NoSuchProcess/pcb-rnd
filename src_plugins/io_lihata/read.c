@@ -1390,6 +1390,8 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 				pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (syntax)\n", sid);
 				return -1;
 			}
+			if (pid >= dst->ps_protos.used)
+				pcb_vtpadstack_proto_enlarge(&dst->ps_protos, pid);
 			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
 		}
 		else {
