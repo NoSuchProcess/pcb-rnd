@@ -634,7 +634,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	return 0;
 }
 
-static void pcb_subc_draw_origin(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
+static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 {
 	pcb_line_t *origin;
 	pcb_subc_cache_update(sc);
@@ -647,10 +647,10 @@ static void pcb_subc_draw_origin(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	DX += (origin->Point1.X + origin->Point2.X) / 2;
 	DY += (origin->Point1.Y + origin->Point2.Y) / 2;
 
-	pcb_gui->draw_line(pcb_crosshair.GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
-	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
-	pcb_gui->draw_line(pcb_crosshair.GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
-	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
+	pcb_gui->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
+	pcb_gui->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
+	pcb_gui->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
+	pcb_gui->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
@@ -763,7 +763,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_si
 		}
 	}
 
-	pcb_subc_draw_origin(sc, DX, DY);
+	pcb_subc_draw_origin(pcb_crosshair.GC, sc, DX, DY);
 }
 
 #define MAYBE_KEEP_ID(dst, src) \
@@ -1668,10 +1668,10 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
 	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
-	pcb_subc_draw_origin(subc, 0, 0);
+	pcb_gui->set_color(pcb_draw_out.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
-	pcb_gui->set_color(pcb_draw_out.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
 	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1);
