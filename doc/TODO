@@ -33,6 +33,9 @@ Low prio:
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
 - BUG: after autocrop() the board is shrinked, but crosshair can be moved over old board dimensions (sometimes also copper lines become invisible) [wojciechk8]
 	-> bug_files/redrawbug1.lht, run autocrop()
+- autocrop bug: copper lines become invisible [wojciechk8]
+	-> should use central data move instead of local implementation
+	-> bug_files/redrawbug1.lht, run autocrop()
 - BUG: ChangeSize() doesn't work on floaters if only a floater is selected [wojciechk8]
 - BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [wojciechk8]
 	-> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
