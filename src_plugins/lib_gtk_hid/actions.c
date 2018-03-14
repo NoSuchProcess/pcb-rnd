@@ -465,6 +465,7 @@ Prompts the user for a coordinate, if one is not already selected.
 
 static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	pcb_gui->get_coords(argv[0], &x, &y);
 	return 0;
 }
 
@@ -491,7 +492,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"ExportGUI", 0, ExportGUI}
 	,
-	{"GetXY", "", GetXY, getxy_help, getxy_syntax}
+	{"GetXY", 0, GetXY, getxy_help, getxy_syntax}
 	,
 	{"ImportGUI", 0, act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
 	,
