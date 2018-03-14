@@ -35,6 +35,16 @@ const char *pcb_board_get_name(void)
 	return "dummy_brd";
 }
 
+int pcb_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc)
+{
+	return 0;
+}
+
+int pcb_file_loaded_del_at(const char *catname, const char *name)
+{
+	return 0;
+}
+
 
 void watch_pre(conf_native_t *cfg, int idx)
 {
