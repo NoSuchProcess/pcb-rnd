@@ -42,7 +42,7 @@ Low prio:
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
-- BUG: subc origin marks (diamonds) change color to the current layer color when line/arc tool is selected [report: wojciechk8]
++ BUG: subc origin marks (diamonds) change color to the current layer color when line/arc tool is selected [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, select outline layer, select line tool, move mouse to the board area -> diamond mark is green
 - BUG: run DRC multiple times without closing the DRC window - duplicated violations are generated [report: wojciechk8]
 	-> how exactly did you run the DRC when this happened?
