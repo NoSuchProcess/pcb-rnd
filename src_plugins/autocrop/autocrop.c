@@ -213,9 +213,8 @@ static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 0;
 	}
 	/* Resize -- XXX cannot be undone */
-	PCB->MaxWidth = box->X2;
-	PCB->MaxHeight = box->Y2;
 	MoveAll(dx, dy);
+	pcb_board_resize(box->X2, box->Y2);
 	pcb_data_clip_all(PCB->Data, pcb_true);
 	pcb_undo_inc_serial();
 	pcb_redraw();
