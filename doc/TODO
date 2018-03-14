@@ -45,6 +45,7 @@ Low prio:
 - BUG: subc origin marks (diamonds) change color to the current layer color when line/arc tool is selected [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, select outline layer, select line tool, move mouse to the board area -> diamond mark is green
 - BUG: run DRC multiple times without closing the DRC window - duplicated violations are generated [report: wojciechk8]
+	-> how exactly did you run the DRC when this happened?
 + BUG: multiple instances of command window (':') are allowed, leading to crash when the following steps are performed: [report: wojciechk8]
 	-> open cmd window ':'; open second cmd window ':'; close the windows; open cmd window again ':' -> crash
 + BUG: no message in the status bar on GetXY() hid action (to reproduce: select in menu View->Realign grid, bottom status bar is empty) [report: wojciechk8]
