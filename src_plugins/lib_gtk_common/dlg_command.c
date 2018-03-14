@@ -282,6 +282,12 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	GtkWidget *vbox, *vbox1, *hbox, *button, *expander, *text;
 	gint i;
 
+	if (command_window != NULL) {
+		if (raise)
+			gtk_window_present(GTK_WINDOW(command_window));
+		return;
+	}
+
 	command_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(command_window), "destroy", G_CALLBACK(command_destroy_cb), ctx);
 	gtk_window_set_title(GTK_WINDOW(command_window), _("pcb-rnd Command Entry"));
