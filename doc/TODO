@@ -90,7 +90,6 @@ SUBC: element removal:
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 - BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 - BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
-- BUG: eagle XML needs to properly handle (curve != 0) wires, i.e. arcs. Can see translate2geda for hints [erich]
 - BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
 - BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
@@ -182,7 +181,7 @@ SUBC: element removal:
 - layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
 - eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
 - eagle rectangle parsing should generate a rectangular feature, not a four line rectangular outline [erich]
-- eagle XML wire elements need to have "curve" attribute processed, if present [report: erich]
+- eagle XML wire elements need to have "curve" attribute processed, if present. i.e. arcs. Can see translate2geda for hints [report: erich]
 - eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
 - eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 - layer groups from config (e.g. CLI) is ignored
