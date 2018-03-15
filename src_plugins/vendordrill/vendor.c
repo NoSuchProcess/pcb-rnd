@@ -64,6 +64,8 @@ static void apply_vendor_map(void);
 static void process_skips(lht_node_t *);
 static pcb_bool rematch(const char *, const char *);
 static void vendor_free_all(void);
+int vendorDrillMap(int in);
+
 
 /* list of vendor drills and a count of them */
 static int *vendor_drills = NULL;
