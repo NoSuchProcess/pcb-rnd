@@ -17,6 +17,10 @@
 			<li> <i>$long</i> long description - used for documantation; no length limitation, but must be a single line
 			<li> <i>$state</i> either <b>works</b> or <b>disabled</b>
 			<li> <i>$lstate</i> [optional] a chance to explain why the value of default is what it is; e.g. why a plugin is disabled
+			<li> <i>$package</i> when pcb-rnd is packaged for a distribution or OS, which package this plugin should end up in (see also: trunk/doc/developer/packaging/)
+			<li> <i>$fmt-native</i> only for io_ plugins: whether this format is considered native (see also: io_lihata's pup)
+			<li> <i>$fmt-feature-r</i> only for io_ plugins: a read/load feature supported by the plugin (multiple entries of this should be added; see also: io_lihata's pup)
+			<li> <i>$fmt-feature-w</i> only for io_ plugins: a write/save feature supported by the plugin (multiple entries of this should be added; see also: io_lihata's pup)
 			<li> <i>default</i> <b>disable-all</b> or <b>disable</b> or <b>buildin</b> or <b>plugin</b>
 			<li> <i>dep</i> [optional] a single plugin name on which <i>plg</i> depends; multiple dep lines can be added
 			<li> <i>conflict</i> [optional] a single plugin name on which <i>plg</i> conflicts with; multiple dep lines can be added
