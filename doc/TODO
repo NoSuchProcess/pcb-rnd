@@ -183,6 +183,7 @@ SUBC: element removal:
 - eagle rectangle parsing should generate a rectangular feature, not a four line rectangular outline [erich]
 - eagle XML wire elements need to have "curve" attribute processed, if present [report: erich]
 - eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
+- eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 - layer groups from config (e.g. CLI) is ignored
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
