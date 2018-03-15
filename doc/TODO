@@ -69,6 +69,7 @@ SUBC: element removal:
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
 	- Lesstif HID does not have this dialog => implement it, using DAD
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
+- BUG: pressing 'b' for back side on a floater refdes text doesn't send it to the back [report: igor2]
 - BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
 - BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	-> this will be handled in the big increments rewrite (with Richard)
