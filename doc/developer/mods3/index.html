@@ -95,12 +95,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
-<td> Reduce the board dimensions to just enclose the elements.
+<td> Reduce the board dimensions to just enclose the objects on the board.
 <tr><th align=left>autoplace<td>835
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
-<td> Automatically place elements.
+<td> Automatically place subcircuits.
 <tr><th align=left>autoroute<td>4504
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -241,7 +241,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
-<td> Template based export of XY centroid element data e.g. for pick & place.
+<td> Template based export of XY centroid subcircuit data e.g. for pick & place.
 <tr><th align=left>extedit<td>305
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -256,7 +256,7 @@ Below is a table with the summary of core plugins.
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> fp
-<td> Footprint: load a board and expose all the unique elements on that board as a footprint library
+<td> Footprint: load a board and expose all the unique subcircuits on that board as a footprint library
 <tr><th align=left>fp_fs<td>423
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -351,7 +351,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
-<td> Imports element and netlist data from the schematics (or some other source).
+<td> Imports footprints and netlist data from the schematics (or some other source).
 <tr><th align=left>import_tinycad<td>150
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -376,17 +376,17 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
-<td> Load and save the design and elements in Kicad's s-expression format - this is the new, currently preferred format in Kicad.
+<td> Load and save the design and footprints in Kicad's s-expression format - this is the new, currently preferred format in Kicad.
 <tr><th align=left>io_kicad_legacy<td>1708
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
-<td> Export the design and elements in Kicad's legacy format.
+<td> Export the design and footprints in Kicad's legacy format.
 <tr><th align=left>io_lihata<td>3551
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
-<td> Load and save the design and elements in the lihata board format.
+<td> Load and save the design and footprints in the lihata board format.
 <tr><th align=left>io_mentor_cell<td>386
 <td  > WIP
 <td bgcolor="red"> disable
@@ -396,7 +396,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
-<td> Load and save the design and elements in the original pcb text format.
+<td> Load and save the design and footprints in the original gEDA/PCB text format.
 <tr><th align=left>io_tedax<td>889
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -516,7 +516,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
-<td> Renumber elements (renaming them) and generate a text file for back annotation.
+<td> Renumber subcircuits (renaming them) and generate a text file for back annotation.
 <tr><th align=left>report<td>1202
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -541,7 +541,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
-<td> Improve the initial dispersion of elements by choosing an order based on the netlist, rather than the arbitrary element order. This isn't the same as a global autoplace, it's more of a linear autoplace. It might make some useful local groupings. For example, you should not have to chase all over the board to find the resistor that goes with a given LED.
+<td> Improve the initial dispersion of subcircuits by choosing an order based on the netlist, rather than the arbitrary subcircuit order. This isn't the same as a global autoplace, it's more of a linear autoplace. It might make some useful local groupings. For example, you should not have to chase all over the board to find the resistor that goes with a given LED.
 <tr><th align=left>stroke<td>141
 <td bgcolor="yellow" > partially works (doesn't work with lesstif, works with the gtk hid, but there's no zoom bindings)
 <td bgcolor="red"> disable
