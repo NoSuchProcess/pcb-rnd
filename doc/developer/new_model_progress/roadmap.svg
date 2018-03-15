@@ -66,8 +66,17 @@
 <!-- 2017_4&#45;&gt;2018_1 -->
 <g id="edge6" class="edge"><title>2017_4&#45;&gt;2018_1</title>
 </g>
+<!-- 2018_2 -->
+<g id="node8" class="node"><title>2018_2</title>
+<text text-anchor="middle" x="27.5" y="-277.383" font-family="Times,serif" font-size="14.00">2018</text>
+<text text-anchor="middle" x="27.5" y="-262.383" font-family="Times,serif" font-size="14.00">2nd</text>
+<text text-anchor="middle" x="27.5" y="-247.383" font-family="Times,serif" font-size="14.00">quarter</text>
+</g>
+<!-- 2018_1&#45;&gt;2018_2 -->
+<g id="edge7" class="edge"><title>2018_1&#45;&gt;2018_2</title>
+</g>
 <!-- lihata -->
-<g id="node8" class="node"><title>lihata</title>
+<g id="node9" class="node"><title>lihata</title>
 <ellipse fill="none" stroke="green" cx="539.5" cy="-1180.64" rx="128.887" ry="58.8803"/>
 <text text-anchor="middle" x="539.5" y="-1206.94" font-family="Times,serif" font-size="14.00">Lihata:</text>
 <text text-anchor="middle" x="539.5" y="-1191.94" font-family="Times,serif" font-size="14.00">New native file format</text>
@@ -76,30 +85,30 @@
 <text text-anchor="middle" x="539.5" y="-1146.94" font-family="Times,serif" font-size="14.00">or having to wait for mainline</text>
 </g>
 <!-- layer -->
-<g id="node9" class="node"><title>layer</title>
+<g id="node10" class="node"><title>layer</title>
 <ellipse fill="none" stroke="green" cx="539.5" cy="-1048.48" rx="126.644" ry="37.4533"/>
 <text text-anchor="middle" x="539.5" y="-1059.78" font-family="Times,serif" font-size="14.00">layer rewrite:</text>
 <text text-anchor="middle" x="539.5" y="-1044.78" font-family="Times,serif" font-size="14.00">much more detailed model of</text>
 <text text-anchor="middle" x="539.5" y="-1029.78" font-family="Times,serif" font-size="14.00">physical and logical layers</text>
 </g>
 <!-- lihata&#45;&gt;layer -->
-<g id="edge7" class="edge"><title>lihata&#45;&gt;layer</title>
+<g id="edge8" class="edge"><title>lihata&#45;&gt;layer</title>
 <path fill="none" stroke="black" d="M539.5,-1121.79C539.5,-1113.29 539.5,-1104.63 539.5,-1096.39"/>
 <polygon fill="black" stroke="black" points="543,-1096.22 539.5,-1086.22 536,-1096.22 543,-1096.22"/>
 </g>
 <!-- subcircuit -->
-<g id="node10" class="node"><title>subcircuit</title>
+<g id="node11" class="node"><title>subcircuit</title>
 <ellipse fill="none" stroke="green" cx="706.5" cy="-837.176" rx="139.1" ry="26.7407"/>
 <text text-anchor="middle" x="706.5" y="-840.976" font-family="Times,serif" font-size="14.00">subcircuit:</text>
 <text text-anchor="middle" x="706.5" y="-825.976" font-family="Times,serif" font-size="14.00">footprints without special objects</text>
 </g>
 <!-- layer&#45;&gt;subcircuit -->
-<g id="edge8" class="edge"><title>layer&#45;&gt;subcircuit</title>
+<g id="edge9" class="edge"><title>layer&#45;&gt;subcircuit</title>
 <path fill="none" stroke="black" d="M568.208,-1011.5C599.42,-972.378 648.92,-910.341 679.461,-872.064"/>
 <polygon fill="black" stroke="black" points="682.548,-873.807 686.049,-863.807 677.076,-869.441 682.548,-873.807"/>
 </g>
 <!-- binding -->
-<g id="node11" class="node"><title>binding</title>
+<g id="node12" class="node"><title>binding</title>
 <ellipse fill="none" stroke="green" cx="706.5" cy="-715.616" rx="114.603" ry="58.8803"/>
 <text text-anchor="middle" x="706.5" y="-741.916" font-family="Times,serif" font-size="14.00">layer binding:</text>
 <text text-anchor="middle" x="706.5" y="-726.916" font-family="Times,serif" font-size="14.00">abstract layer recipes</text>
@@ -108,29 +117,29 @@
 <text text-anchor="middle" x="706.5" y="-681.916" font-family="Times,serif" font-size="14.00">given board&#39;s stackup</text>
 </g>
 <!-- layer&#45;&gt;binding -->
-<g id="edge9" class="edge"><title>layer&#45;&gt;binding</title>
+<g id="edge10" class="edge"><title>layer&#45;&gt;binding</title>
 <path fill="none" stroke="black" d="M532.898,-1010.7C526.034,-961.304 520.923,-872.542 558.5,-810.306 571.071,-789.484 590.234,-772.528 610.641,-759.055"/>
 <polygon fill="black" stroke="black" points="612.553,-761.987 619.134,-753.683 608.811,-756.071 612.553,-761.987"/>
 </g>
 <!-- compositing -->
-<g id="node12" class="node"><title>compositing</title>
+<g id="node13" class="node"><title>compositing</title>
 <ellipse fill="none" stroke="green" cx="261.5" cy="-937.522" rx="188.181" ry="37.4533"/>
 <text text-anchor="middle" x="261.5" y="-948.822" font-family="Times,serif" font-size="14.00">layer compositing:</text>
 <text text-anchor="middle" x="261.5" y="-933.822" font-family="Times,serif" font-size="14.00">positive/nagative drawn layers within a group</text>
 <text text-anchor="middle" x="261.5" y="-918.822" font-family="Times,serif" font-size="14.00">allows drawing paste, mask, inverse silk, etc.</text>
 </g>
 <!-- layer&#45;&gt;compositing -->
-<g id="edge10" class="edge"><title>layer&#45;&gt;compositing</title>
+<g id="edge11" class="edge"><title>layer&#45;&gt;compositing</title>
 <path fill="none" stroke="black" d="M464.635,-1018.13C430.681,-1004.83 390.188,-988.957 354.322,-974.901"/>
 <polygon fill="black" stroke="black" points="355.413,-971.57 344.825,-971.179 352.859,-978.087 355.413,-971.57"/>
 </g>
 <!-- subcircuit&#45;&gt;binding -->
-<g id="edge11" class="edge"><title>subcircuit&#45;&gt;binding</title>
+<g id="edge12" class="edge"><title>subcircuit&#45;&gt;binding</title>
 <path fill="none" stroke="black" d="M706.5,-810.233C706.5,-802.549 706.5,-793.752 706.5,-784.696"/>
 <polygon fill="black" stroke="black" points="710,-784.407 706.5,-774.407 703,-784.407 710,-784.407"/>
 </g>
 <!-- term -->
-<g id="node13" class="node"><title>term</title>
+<g id="node14" class="node"><title>term</title>
 <ellipse fill="none" stroke="green" cx="431.5" cy="-715.616" rx="142.257" ry="48.1667"/>
 <text text-anchor="middle" x="431.5" y="-734.416" font-family="Times,serif" font-size="14.00">subcircuit terminals:</text>
 <text text-anchor="middle" x="431.5" y="-719.416" font-family="Times,serif" font-size="14.00">generalized pin/pad idea</text>
@@ -138,12 +147,12 @@
 <text text-anchor="middle" x="431.5" y="-689.416" font-family="Times,serif" font-size="14.00">to be a pin or pad</text>
 </g>
 <!-- subcircuit&#45;&gt;term -->
-<g id="edge12" class="edge"><title>subcircuit&#45;&gt;term</title>
+<g id="edge13" class="edge"><title>subcircuit&#45;&gt;term</title>
 <path fill="none" stroke="black" d="M651.84,-812.412C616.162,-796.9 568.621,-776.231 526.833,-758.063"/>
 <polygon fill="black" stroke="black" points="528.024,-754.765 517.458,-753.987 525.233,-761.184 528.024,-754.765"/>
 </g>
 <!-- elem_replace -->
-<g id="node14" class="node"><title>elem_replace</title>
+<g id="node15" class="node"><title>elem_replace</title>
 <ellipse fill="none" stroke="green" cx="757.5" cy="-408.856" rx="128.887" ry="58.8803"/>
 <text text-anchor="middle" x="757.5" y="-435.156" font-family="Times,serif" font-size="14.00">element replacement:</text>
 <text text-anchor="middle" x="757.5" y="-420.156" font-family="Times,serif" font-size="14.00">replace the old element model</text>
@@ -152,59 +161,59 @@
 <text text-anchor="middle" x="757.5" y="-375.156" font-family="Times,serif" font-size="14.00">anything an element could do</text>
 </g>
 <!-- subcircuit&#45;&gt;elem_replace -->
-<g id="edge13" class="edge"><title>subcircuit&#45;&gt;elem_replace</title>
+<g id="edge14" class="edge"><title>subcircuit&#45;&gt;elem_replace</title>
 <path fill="none" stroke="black" d="M782.226,-814.474C801.229,-805.248 819.362,-792.311 830.5,-774.306 887.996,-681.362 837.464,-551.882 796.677,-474.89"/>
 <polygon fill="black" stroke="black" points="799.585,-472.908 791.759,-465.766 793.423,-476.23 799.585,-472.908"/>
 </g>
 <!-- binding&#45;&gt;elem_replace -->
-<g id="edge16" class="edge"><title>binding&#45;&gt;elem_replace</title>
+<g id="edge17" class="edge"><title>binding&#45;&gt;elem_replace</title>
 <path fill="none" stroke="black" d="M716.153,-656.935C724.685,-605.949 737.139,-531.529 746.147,-477.7"/>
 <polygon fill="black" stroke="black" points="749.645,-478.001 747.844,-467.56 742.741,-476.846 749.645,-478.001"/>
 </g>
 <!-- fp_nolimit -->
-<g id="node18" class="node"><title>fp_nolimit</title>
+<g id="node19" class="node"><title>fp_nolimit</title>
 <polygon fill="none" stroke="green" points="473.5,-581.236 297.5,-581.236 297.5,-543.236 473.5,-543.236 473.5,-581.236"/>
 <text text-anchor="middle" x="385.5" y="-566.036" font-family="Times,serif" font-size="14.00">goal:</text>
 <text text-anchor="middle" x="385.5" y="-551.036" font-family="Times,serif" font-size="14.00">footprints without limitations</text>
 </g>
 <!-- binding&#45;&gt;fp_nolimit -->
-<g id="edge20" class="edge"><title>binding&#45;&gt;fp_nolimit</title>
+<g id="edge21" class="edge"><title>binding&#45;&gt;fp_nolimit</title>
 <path fill="none" stroke="black" d="M622.999,-675.238C562.616,-646.762 483.179,-609.3 433.218,-585.739"/>
 <polygon fill="black" stroke="black" points="434.476,-582.463 423.939,-581.363 431.49,-588.794 434.476,-582.463"/>
 </g>
 <!-- clean -->
-<g id="node19" class="node"><title>clean</title>
+<g id="node20" class="node"><title>clean</title>
 <polygon fill="none" stroke="red" points="613,-182 428,-182 428,-144 613,-144 613,-182"/>
 <text text-anchor="middle" x="520.5" y="-166.8" font-family="Times,serif" font-size="14.00">goal:</text>
 <text text-anchor="middle" x="520.5" y="-151.8" font-family="Times,serif" font-size="14.00">clean, tree based data structure</text>
 </g>
 <!-- binding&#45;&gt;clean -->
-<g id="edge23" class="edge"><title>binding&#45;&gt;clean</title>
+<g id="edge24" class="edge"><title>binding&#45;&gt;clean</title>
 <path fill="none" stroke="black" d="M683.37,-657.91C652.462,-580.903 597.111,-438.576 558.5,-314.167 545.451,-272.122 533.552,-222.446 526.669,-192.09"/>
 <polygon fill="black" stroke="black" points="530.054,-191.193 524.449,-182.202 523.224,-192.726 530.054,-191.193"/>
 </g>
 <!-- compositing&#45;&gt;fp_nolimit -->
-<g id="edge19" class="edge"><title>compositing&#45;&gt;fp_nolimit</title>
+<g id="edge20" class="edge"><title>compositing&#45;&gt;fp_nolimit</title>
 <path fill="none" stroke="black" d="M255.589,-899.88C248.397,-844.226 241.582,-736.463 280.5,-656.926 294.749,-627.805 322.44,-603.699 345.808,-587.235"/>
 <polygon fill="black" stroke="black" points="347.899,-590.045 354.189,-581.52 343.955,-584.262 347.899,-590.045"/>
 </g>
 <!-- compositing&#45;&gt;clean -->
-<g id="edge22" class="edge"><title>compositing&#45;&gt;clean</title>
+<g id="edge23" class="edge"><title>compositing&#45;&gt;clean</title>
 <path fill="none" stroke="black" d="M251.217,-899.893C239.963,-856.514 223.5,-781.9 223.5,-716.616 223.5,-716.616 223.5,-716.616 223.5,-407.856 223.5,-289.695 365.656,-218.311 453.27,-185.537"/>
 <polygon fill="black" stroke="black" points="454.699,-188.741 462.883,-182.013 452.29,-182.169 454.699,-188.741"/>
 </g>
 <!-- term&#45;&gt;fp_nolimit -->
-<g id="edge21" class="edge"><title>term&#45;&gt;fp_nolimit</title>
+<g id="edge22" class="edge"><title>term&#45;&gt;fp_nolimit</title>
 <path fill="none" stroke="black" d="M417.197,-667.548C409.582,-642.487 400.475,-612.516 393.98,-591.144"/>
 <polygon fill="black" stroke="black" points="397.276,-589.952 391.02,-581.402 390.579,-591.988 397.276,-589.952"/>
 </g>
 <!-- term&#45;&gt;clean -->
-<g id="edge24" class="edge"><title>term&#45;&gt;clean</title>
+<g id="edge25" class="edge"><title>term&#45;&gt;clean</title>
 <path fill="none" stroke="black" d="M461.728,-668.146C469.828,-653.577 477.669,-637.071 482.5,-620.926 529.272,-464.609 525.506,-265.676 522.147,-192.588"/>
 <polygon fill="black" stroke="black" points="525.63,-192.165 521.64,-182.35 518.639,-192.511 525.63,-192.165"/>
 </g>
 <!-- elem_remove -->
-<g id="node15" class="node"><title>elem_remove</title>
+<g id="node16" class="node"><title>elem_remove</title>
 <ellipse fill="none" stroke="red" cx="757.5" cy="-266.083" rx="190.424" ry="48.1667"/>
 <text text-anchor="middle" x="757.5" y="-284.883" font-family="Times,serif" font-size="14.00">element removal:</text>
 <text text-anchor="middle" x="757.5" y="-269.883" font-family="Times,serif" font-size="14.00">remove elements, element&#45;lines, element&#45;arcs</text>
@@ -212,17 +221,17 @@
 <text text-anchor="middle" x="757.5" y="-239.883" font-family="Times,serif" font-size="14.00">in favor of subcircuits and pad stacks</text>
 </g>
 <!-- elem_replace&#45;&gt;elem_remove -->
-<g id="edge17" class="edge"><title>elem_replace&#45;&gt;elem_remove</title>
+<g id="edge18" class="edge"><title>elem_replace&#45;&gt;elem_remove</title>
 <path fill="none" stroke="black" d="M757.5,-349.786C757.5,-341.386 757.5,-332.745 757.5,-324.361"/>
 <polygon fill="black" stroke="black" points="761,-324.295 757.5,-314.295 754,-324.295 761,-324.295"/>
 </g>
 <!-- elem_remove&#45;&gt;clean -->
-<g id="edge18" class="edge"><title>elem_remove&#45;&gt;clean</title>
+<g id="edge19" class="edge"><title>elem_remove&#45;&gt;clean</title>
 <path fill="none" stroke="black" d="M662.127,-224.406C631.426,-211.311 598.57,-197.298 572.241,-186.068"/>
 <polygon fill="black" stroke="black" points="573.423,-182.767 562.852,-182.063 570.677,-189.206 573.423,-182.767"/>
 </g>
 <!-- padstacks -->
-<g id="node16" class="node"><title>padstacks</title>
+<g id="node17" class="node"><title>padstacks</title>
 <ellipse fill="none" stroke="green" cx="1025.5" cy="-562.236" rx="107.46" ry="58.8803"/>
 <text text-anchor="middle" x="1025.5" y="-588.536" font-family="Times,serif" font-size="14.00">pad stacks:</text>
 <text text-anchor="middle" x="1025.5" y="-573.536" font-family="Times,serif" font-size="14.00">a via (or pin or pad)</text>
@@ -231,12 +240,12 @@
 <text text-anchor="middle" x="1025.5" y="-528.536" font-family="Times,serif" font-size="14.00">on different layer groups</text>
 </g>
 <!-- padstacks&#45;&gt;elem_replace -->
-<g id="edge14" class="edge"><title>padstacks&#45;&gt;elem_replace</title>
+<g id="edge15" class="edge"><title>padstacks&#45;&gt;elem_replace</title>
 <path fill="none" stroke="black" d="M951.558,-519.47C918.989,-501.073 880.451,-479.305 846.336,-460.035"/>
 <polygon fill="black" stroke="black" points="847.732,-456.804 837.304,-454.933 844.289,-462.899 847.732,-456.804"/>
 </g>
 <!-- bbvia -->
-<g id="node17" class="node"><title>bbvia</title>
+<g id="node18" class="node"><title>bbvia</title>
 <ellipse fill="none" stroke="green" cx="1066.5" cy="-408.856" rx="162.769" ry="48.1667"/>
 <text text-anchor="middle" x="1066.5" y="-427.656" font-family="Times,serif" font-size="14.00">blind/buried via:</text>
 <text text-anchor="middle" x="1066.5" y="-412.656" font-family="Times,serif" font-size="14.00">a pad stack has per layer info on</text>
@@ -244,27 +253,27 @@
 <text text-anchor="middle" x="1066.5" y="-382.656" font-family="Times,serif" font-size="14.00">also have such info about the drill ends</text>
 </g>
 <!-- padstacks&#45;&gt;bbvia -->
-<g id="edge15" class="edge"><title>padstacks&#45;&gt;bbvia</title>
+<g id="edge16" class="edge"><title>padstacks&#45;&gt;bbvia</title>
 <path fill="none" stroke="black" d="M1041,-504.006C1044.33,-491.718 1047.84,-478.738 1051.17,-466.473"/>
 <polygon fill="black" stroke="black" points="1054.54,-467.385 1053.78,-456.817 1047.79,-465.555 1054.54,-467.385"/>
 </g>
 <!-- recur -->
-<g id="node20" class="node"><title>recur</title>
+<g id="node21" class="node"><title>recur</title>
 <ellipse fill="none" stroke="red" cx="520.5" cy="-90" rx="91.784" ry="18"/>
 <text text-anchor="middle" x="520.5" y="-86.3" font-family="Times,serif" font-size="14.00">subcircuit in subcircuit</text>
 </g>
 <!-- clean&#45;&gt;recur -->
-<g id="edge25" class="edge"><title>clean&#45;&gt;recur</title>
+<g id="edge26" class="edge"><title>clean&#45;&gt;recur</title>
 <path fill="none" stroke="black" d="M520.5,-143.716C520.5,-135.973 520.5,-126.789 520.5,-118.274"/>
 <polygon fill="black" stroke="black" points="524,-118.003 520.5,-108.003 517,-118.003 524,-118.003"/>
 </g>
 <!-- hier -->
-<g id="node21" class="node"><title>hier</title>
+<g id="node22" class="node"><title>hier</title>
 <ellipse fill="none" stroke="red" cx="520.5" cy="-18" rx="79.0865" ry="18"/>
 <text text-anchor="middle" x="520.5" y="-14.3" font-family="Times,serif" font-size="14.00">hierarchical netlists</text>
 </g>
 <!-- recur&#45;&gt;hier -->
-<g id="edge26" class="edge"><title>recur&#45;&gt;hier</title>
+<g id="edge27" class="edge"><title>recur&#45;&gt;hier</title>
 <path fill="none" stroke="black" d="M520.5,-71.6966C520.5,-63.9827 520.5,-54.7125 520.5,-46.1124"/>
 <polygon fill="black" stroke="black" points="524,-46.1043 520.5,-36.1043 517,-46.1044 524,-46.1043"/>
 </g>

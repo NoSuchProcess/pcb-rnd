@@ -6,6 +6,7 @@ digraph roadmap {
 	"2017_3b" [label="" shape=plaintext]
 	"2017_4" [label="2017\n4th\nquarter" shape=plaintext]
 	"2018_1" [label="2018\n1st\nquarter" shape=plaintext]
+	"2018_2" [label="2018\n2nd\nquarter" shape=plaintext]
 
 	"2016_4" -> "2017_1" [style=invisible arrowhead=none]
 	"2017_1" -> "2017_2" [style=invisible arrowhead=none]
@@ -13,6 +14,7 @@ digraph roadmap {
 	"2017_3" -> "2017_3b" [style=invisible arrowhead=none]
 	"2017_3b" -> "2017_4" [style=invisible arrowhead=none]
 	"2017_4" -> "2018_1" [style=invisible arrowhead=none]
+	"2018_1" -> "2018_2" [style=invisible arrowhead=none]
 
 	lihata [color=green label="Lihata:\nNew native file format\nso we can make our changes\nwithout breaking compatibilty\nor having to wait for mainline"]
 	layer [color=green label="layer rewrite:\nmuch more detailed model of\nphysical and logical layers"]
@@ -37,6 +39,8 @@ digraph roadmap {
 	{ rank=same; "2017_3" subcircuit}
 	{ rank=same; "2017_3b" binding term}
 	{ rank=same; "2017_4" padstacks}
+	{ rank=same; "2018_1" elem_replace}
+	{ rank=same; "2018_2" elem_remove}
 
 	lihata -> layer
 	layer -> subcircuit
