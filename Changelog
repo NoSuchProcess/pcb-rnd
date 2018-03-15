@@ -1724,3 +1724,6 @@ pcb-rnd 1.2.0 (r5967)
 		-Add: conf setting to disable negative-box selection
 		-Add: conf setting to make negative-box selection symmetric (ignore Y coord sign)
 		-Add: support route style attributes
+
+
+### NOTE: changelog for previous versions can be found in Changelog.* ###
