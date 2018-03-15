@@ -4,9 +4,7 @@ CLEANFILES= ../*.png
 all: ../objects_basic.png ../objects_complex.png ../obj_line.png \
      ../obj_arc.png ../via_therm_noconn.png ../via_therm_solid.png \
      ../via_therm_round_x90.png ../via_therm_round_x45.png \
-     ../via_therm_sharp_x90.png ../via_therm_sharp_x45.png \
-     via_ring_shape.png via_square_shape.png via_octagon_shape.png \
-     via_asym_shape.png
+     ../via_therm_sharp_x90.png ../via_therm_sharp_x45.png
 
 ../objects_basic.png: objects_basic.lht
 	$(PCBRND) -x png --dpi 450 objects_basic.lht
