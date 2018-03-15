@@ -269,8 +269,8 @@
  ../src_3rd/liblihata/parser.h list_conf.h compat_misc.h obj_subc.h \
  search.h rats.h netlist.h route_style.h \
  ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h \
- ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_inlines.h \
- data.h thermal.h operation.h dolists.h
+ ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
+ operation.h obj_pstk_inlines.h data.h thermal.h operation.h dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -780,11 +780,12 @@
  ../src_3rd/libminuid/libminuid.h rtree.h rtree2.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
- obj_subc_parent.h obj_pstk_inlines.h thermal.h hid.h hid_nogui.h \
- hid_helper.h hid_flags.h hid_attrib.h hid_init.h hid_draw_helpers.h \
+ compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h safe_fs.h obj_subc_parent.h obj_pstk_inlines.h \
+ thermal.h hid.h hid_actions.h hid_nogui.h hid_helper.h hid_flags.h \
+ hid_attrib.h hid_init.h hid_draw_helpers.h \
  ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openems/mesh.h layer.h vtc0.h vtr0.h dolists.h
 ../src_plugins/export_openems/mesh.o: \
@@ -840,7 +841,7 @@
  hid_attrib.h hid_color.h hid_helper.h hid_flags.h \
  ../src_plugins/export_openscad/scad_draw.c \
  ../src_plugins/export_openscad/../lib_polyhelp/topoly.h obj_common.h \
- ../src_plugins/export_openscad/scad_models.c dolists.h
+ plug_io.h ../src_plugins/export_openscad/scad_models.c dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -6125,7 +6126,7 @@ hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h compat_misc.h
+ ../src_3rd/genlist/gendlist.h compat_misc.h build_run.h
 hid_cfg_action.o: hid_cfg_action.c ../config.h hid_cfg_action.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6480,7 +6481,7 @@ main_act.o: main_act.c ../config.h hid_actions.h hid.h error.h drc.h \
  ../src_3rd/genht/htsp.h list_conf.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h build_run.h
+ ../src_3rd/puplug/error.h build_run.h safe_fs.h
 misc_util.o: misc_util.c ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h misc_util.h unit.h pcb_bool.h
@@ -7440,16 +7441,16 @@ rtree.o: rtree.c ../config.h rtree.h global_typedefs.h pcb_bool.h unit.h \
  ../src_3rd/genrtree/genrtree_search.h \
  ../src_3rd/genrtree/genrtree_delete.h \
  ../src_3rd/genrtree/genrtree_debug.h
-safe_fs.o: safe_fs.c ../config.h safe_fs.h conf.h global_typedefs.h \
- pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
+safe_fs.o: safe_fs.c compat_inc.h ../config.h safe_fs.h conf.h \
+ global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h compat_fs.h compat_misc.h error.h \
- globalconst.h paths.h compat_inc.h
+ globalconst.h paths.h
 search.o: search.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
