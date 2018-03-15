@@ -40,6 +40,10 @@ would let the user to install a core pcb-rnd package and then the GTK
 or the lesstif plugin (or both) from separate packages. This also reduces
 package dependencies.
 
+The preferred package splitup is documented in packaging/,
+please follow that as closely as possible so different systems can
+deliver similar pcb-rnd packages.
+
 This is less relevant for source distributions, if the user has full control
 over the configuration.
 
