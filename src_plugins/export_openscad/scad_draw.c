@@ -25,6 +25,7 @@
  */
 
 #include "../lib_polyhelp/topoly.h"
+#include "plug_io.h"
 
 #define TRX_(x) (x)
 #define TRY_(y) (PCB->MaxHeight - (y))
