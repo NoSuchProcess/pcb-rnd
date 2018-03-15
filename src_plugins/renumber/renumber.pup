@@ -1,6 +1,6 @@
 $class feature
 $short renumber action
-$long Renumber elements (renaming them) and generate a text file for back annotation.
+$long Renumber subcircuits (renaming them) and generate a text file for back annotation.
 $state works
 $package extra
 default buildin

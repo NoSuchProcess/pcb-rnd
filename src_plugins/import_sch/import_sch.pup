@@ -1,6 +1,6 @@
 $class import
 $short import sch
-$long Imports element and netlist data from the schematics (or some other source).
+$long Imports footprints and netlist data from the schematics (or some other source).
 $state works
 $fmt-native no
 $fmt-feature-r import netlist and footprint info from gEDA schematics using gnetlist

@@ -1,6 +1,6 @@
 $class io
 $short Kicad's legacy format
-$long Export the design and elements in Kicad's legacy format.
+$long Export the design and footprints in Kicad's legacy format.
 $state works
 $fmt-native no
 $fmt-feature-w kicad pcbnew-board, version 1 (legacy plain text format)

@@ -1,6 +1,6 @@
 $class export
 $short xy (centroid) pcb_exporter
-$long Template based export of XY centroid element data e.g. for pick & place.
+$long Template based export of XY centroid subcircuit data e.g. for pick & place.
 $state works
 $fmt-native no
 $fmt-feature-w geda/PCB xy

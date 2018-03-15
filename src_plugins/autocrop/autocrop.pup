@@ -1,6 +1,6 @@
 $class feature
 $short crop board to fit objects
-$long Reduce the board dimensions to just enclose the elements.
+$long Reduce the board dimensions to just enclose the objects on the board.
 $package (core)
 $state works
 default buildin

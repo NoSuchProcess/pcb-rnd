@@ -1,6 +1,6 @@
 $class io
 $short the original pcb format
-$long Load and save the design and elements in the original pcb text format.
+$long Load and save the design and footprints in the original gEDA/PCB text format.
 $state works
 $fmt-native no
 $fmt-feature-r gEDA/PCB .pcb board (any version up to 2017)

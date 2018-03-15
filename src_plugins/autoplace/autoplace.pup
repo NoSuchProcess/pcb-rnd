@@ -1,6 +1,6 @@
 $class feature
 $short auto place components
-$long Automatically place elements.
+$long Automatically place subcircuits.
 $package auto
 $state works
 default buildin
