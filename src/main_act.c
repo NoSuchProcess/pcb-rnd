@@ -41,6 +41,7 @@
 #include "conf_core.h"
 #include "plugins.h"
 #include "build_run.h"
+#include "safe_fs.h"
 
 
 /* --------------------------------------------------------------------------- */
