@@ -25,6 +25,7 @@
  */
 
 #include "obj_pstk.h"
+#include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
 #include "operation.h"
 
