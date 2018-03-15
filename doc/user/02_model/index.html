@@ -29,7 +29,7 @@ large enough that the outline fits in it.
 <b>Netlist</b> is the list of logical connections to be realized in copper.
 A netlist is a list of named <i>nets</i>. Each net consists of a list of
 <i>terminals</i> (pins or pads) to connect. A terminal is given as
-elementname-pinname, e.g. U4-7 means "pin number 7 in element called U4".
+refdes-pinname, e.g. U4-7 means "pin number 7 in subcircuit called U4".
 <p>
 <b>Fonts</b> are always embedded in the design file in order to guarantee
 that the file can be ported and will look the same on different hosts.
@@ -195,14 +195,18 @@ If the polygon has the "clearpoly" flag set (default), clearance cutouts are
 automatically inserted around objects on the same layer group:
 <ul>
 	<li> lines and arcs, if they have the "clearline" flag set (default)
-	<li> vias and pins, if they are not connected to the polygon by thermals
-	<li> pads
+	<li> padstacks, if they are not connected to the polygon by thermals
 </ul>
 <p>
 Overlapping or touching polygons are not automatically merged. An object
 with the "clearline" flag set will clear all "clearpolys" it is over -
 if there are multiple such polygons overlapping under the objects (on
 the same layer group), all such polygons get the clearance cutout.
+<p>
+If a polygon has the "clearpolypoly" flag set, it clears any other polygon
+that does <b>not</b> have the "clearpolypoly" flag set but has the
+"clearpoly" set. In other words, a "clearpolypoly" polygon behaves the same
+as a line/arc that has the "clearline" flag.
 <p>
 If a polygon is cut into multiple islands, the behavior depends on the
 "fullpoly" flag of the polygon. If it is not set (default), only the largest
@@ -238,50 +242,50 @@ The clearance around text is rendered as a round corner rectangular cutout.
 Bug: copper text can not participate in short circuits, the galvanic connection
 checker code skips texts.
 
-<h4> 2.4.5. Via Objects </h4>
+<h4> 2.4.5. Vias, holes, test points, test pads, fiducials, targets/marks </h4>
 <p>
 A via is an electrically connected hole that connects copper rings to multiple
-layers. Thermal relief styles are available to both pads and pins, and the shape
-styles of a via are available to pins. Since a via hole always punches all layer
-groups and applies the same ring style on any outside layer groups, blind or
-buried vias and individually defined layer pad stacks (e.g. with changing ring
-shape per layer) are not possible using the via object.
+layers. In pcb-rnd, a via is always implemented using a <a href="#padstack">
+padstack.</a>
 <p>
-A thermal relief property is added to the copper rings of a via when it is
-connected to the surrounding polygon of any individual layer. Physical designs
-may use thermal reliefs to enable easy hand soldering, or reduce occurrence of
-tombstoning in automated production.
+A hole is a special case of a <a href="#padstack"> padstack:</a> it has
+an unplated hole and typically does not have copper pad shapes but should
+have mask cutout shape.
 <p>
-The following thermal relief options are available:
-<table border=1>
-	<caption><b>Pad/Pin/Via Thermal Relief</b>
-	<tr><th>Thermal Relief <th> Appearance 
-	<tr><td>no connection<td> <img src="via_therm_noconn.png" alt="unconnected via">
-	<tr><td>solid        <td> <img src="via_therm_solid.png"  alt="solid thermal">
-	<tr><td>round x 90   <td> <img src="via_therm_round_x90.png"  alt="Thermal relief arc style">
-	<tr><td>round x 45   <td> <img src="via_therm_round_x45.png"  alt="Thermal relief arc style, 45deg">
-	<tr><td>crossbar x 90<td> <img src="via_therm_sharp_x90.png"  alt="Thermal relief crossbar style, 90deg">
-	<tr><td>crossbar x 45<td> <img src="via_therm_sharp_x45.png"  alt="Thermal relief crossbar style, 45deg">
-</table>
+A test point or test pad is a <a href="#padstack"> padstack</a> that has
+copper shape only on one of the outer copper layer and a mask cutout shape
+over that layer.
 <p>
-A variety of pin pad shapes are also available to the pcb-rnd user.  The copper
-annulus (ring) on the outside layer groups is selectable from a predefined set
-of shapes that provide solderability or can be used to indicate a special pin.
-Flags in the via object define the shape used. 
-<table border=1>
-	<caption><b>Via Annulus Shape Styles</b>
-	<tr><th>Shape          <th> Appearance
-	<tr><td>ring (default) <td> <img src="via_ring_shape.png" alt="Ring via style">
-	<tr><td>square         <td> <img src="via_square_shape.png" alt="Square via style">
-	<tr><td>octagon        <td> <img src="via_octagon_shape.png" alt="Octagonal via style">
-	<tr><td>asymmetric   <td> <img src="via_asym_shape.png" alt="Asymmetric via style">
-</table>
+A fiducial mark is a special case of a <a href="#padstack"> padstack </a>
+very similar to the test point/pad.
+<p>
+A mark or target (e.g. for layer alignment) is usually realized as a
+<a href="#subcircuit"> subcircuit </a> it has more complex graphics that
+doesn't fit in a padstack.
+<p>
+Holes, test points/pads and fiducials are often realized within a
+<a href="#subcircuit"> subcircuit </a>, especially if they have a refdes
+and present on the schematics.
 
-<h4> 2.4.6. Element Objects and Footprints </h4>
+<h4> 2.4.6. Subcircuits </h4>
+<p id="subcircuit">
+A subc (subcircuit) is a group of objects with its own, local layer
+information. All layers of a subc are <i>bound</i> layers, that is, the user
+is free to choose on which actual board layer it is placed on.
+There is no limitation on what layers or objects a subc can contain.
+<p id="subc">
+The main uses of subc are:
+<ul>
+	<li> footprint
+	<li> copy&amp;paste anonymous repetitive section of a circuit
+</ul>
+
+<h5> 2.4.6.1 Subcircuits as footprints </h5> <a id="footprints">
 
 <p>
-An element is an instance of a footprint that is already placed on the
-board or loaded into a paste buffer.
+A subcircuit may be an instance (copy) of a footprint. The subcircuit is 
+placed on the board or loaded into a paste buffer (the footprint lives in
+the footprint library).
 
 <p>
 In the footprint form the construct is small and flexible. It describes
@@ -290,127 +294,41 @@ footprint leaves many details blank, e.g. it doesn't specify exact layers,
 it doesn't have font and the refdes is random.
 
 <p>
-When the footprint is loaded, it becomes an element. The element inherits all
+When the footprint is loaded, it becomes an subcircuit. The subcircuit inherits all
 the physical properties and the blank details are filled in with the data taken
-from the current board: the layer binding is done, all parts of the element
+from the current board: the layer binding is done, all parts of the subcircuit
 lands on a specific board layer; the refdes is rendered using the font in
 the current board.
 
 <p>
-The footprint -&gt; element instantiation is also a copy. Once the element
-is created from a footprint, the element is a self-containing object and
+The footprint -&gt; subcircuit instantiation is also a copy. Once the subcircuit
+is created from a footprint, the subcircuit is a self-containing object and
 does not have any direct reference to the footprint it was once derived from.
-Changes to the original footprint will <b>not</b> affect the elements.
+Changes to the original footprint will <b>not</b> affect the subcircuits.
 
 <p>
 In other words, a footprint is an abstract recipe, part of a
-library, while an element is a land pattern already embedded in a
+library, while an subcircuit is a land pattern already embedded in a
 specific design and describes actual copper and silk.
 
 <p>
-Currently an element or footprint can contain the following objects:
-<ul>
-	<li> pins - same as vias, but also have a pin number and pin name within the element; they affect all layers
-	<li> pads - short lines, usually with rectangle end cap; pads also have number and name; they affect the top or bottom copper layer only
-	<li> silk lines - on top or bottom silk layer
-	<li> silk arcs - on top or bottom silk layer
-	<li> silk text - limited: only one of refdes, element name and element value is displayed at the time
-</ul>
+Currently a subcircuit or footprint can contain any object on any layer
+that a board can contain. The only notable limitation (that applies to boards too)
+is that there is no good way to represent plated slotting.
 <p>
-An element has the following properties:
+Commonly used subcircuit attributes:
 <p>
 <table border=1>
 	<caption><b>Element Properties</b>
-	<tr><th>element property   <th> description
-	<tr><td> name: refdes      <td> unique identifier, e.g. "C42"
-	<tr><td> name: value       <td> informal value, e.g. "15 pF"
-	<tr><td> name: description <td> informal element or footprint description, e.g. "1206"
+	<tr><th> subcircuit attribute <th> description
+	<tr><td> name: refdes         <td> unique identifier, e.g. "C42" - pcb-rnd code will use this when present
+	<tr><td> name: value          <td> informal value, e.g. "15 pF"
+	<tr><td> name: footprint      <td> informal footprint description, e.g. "1206"
 </table>
 <p>
-Extra object flags:
-<p>
-<table border=1>
-	<caption><b>Element Flags</b>
-	<tr><th>name        <th> description
-	<tr><td>ONSOLDER    <td> when set, the element is on the bottom side, else it's on the top side
-	<tr><td>NONETLIST   <td> when set, the element is not intended to be on the netlist; useful for elements that are not present on the schematics and are placed during the layout design
-	<tr><td>HIDENAME    <td> when set the name of the element is hidden
-	<tr><td>DISPLAYNAME <td> when set the names of pins are shown
-</table>
+If the <i>nonetlist</i> flag is set, the subcircuit is not intended to be
+part of the netlist
 
-<h4> 2.4.7. Pins of Elements </h4>
-
-A pin of an element is really a via, plus some metadata and capabilities:
-<ul>
-	<li> pin name
-	<li> pin number
-	<li> the capability to act as a netlist terminal
-</ul>
-
-Each element has its own list of pins. Pin rings can overlap (which will
-make galvanic connection). There may be duplicate pin numbers and pin names.
-Pin numbers are in the same namespace as pad numbers.
-
-A pin has the following properties:
-<p>
-<table border=1>
-	<caption><b>Pin Properties</b>
-	<tr><th>name        <th> description
-	<tr><td>name        <td> pin name, e.g. "base"
-	<tr><td>number      <td> pin name, e.g. 2
-	<tr><td>intconn     <td> internal element connections (see section TODO)
-</table>
-
-Extra object flags:
-<p>
-<table border=1>
-	<caption><b>Pin Element Flags</b>
-	<tr><th>name        <th> description
-	<tr><td>via flags   <td> (extra flags listed for vias are applicable to pins too)
-	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
-</table>
-
-<h4> 2.4.8. Pads of Elements </h4>
-<p>
-A pad is an smd pad of an element. It is modelled as a line segment, usually
-with square cap - this makes the pad look like a rectangle. A pad has
-the same metadata and capabilities as pins. Overlapping pads are supported.
-A pad is always on either the top or the bottom copper layer group.
-<p>
-A pad has the following properties:
-<p>
-<table border=1>
-	<caption><b>Pad Properties</b>
-	<tr><th>name        <th> description
-	<tr><td>name        <td> pin name, e.g. "base"
-	<tr><td>number      <td> pin name, e.g. 2
-	<tr><td>intconn     <td> internal element connections (see section TODO)
-</table>
-
-Extra object flags:
-<p>
-<table border=1>
-	<caption><b>Pad Object Flags</b>
-	<tr><th>name        <th> description
-	<tr><td>via flags   <td> (extra flags listed for vias are applicable to pins too)
-	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
-	<tr><td>EDGE2       <td> indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)
-</table>
-
-<h4> 2.4.9. Subcircuits </h4> <a id="subcircuit">
-<p>
-A subc (subcircuit) is a group of objects with its own, local layer
-information. All layers of a subc are <i>bound</i> layers, that is, the user
-is free to choose on which actual board layer it is placed on.
-There is no limitation on what layers or objects a subc can contain.
-<p>
-The main uses of subc are:
-<ul>
-	<li> footprint
-	<li> copy&amp;paste anonymous repetitive section of a circuit
-</ul>
-
-<h5> 2.4.9.1 Subcircuits as footprints </h5> <a id="footprints">
 <p>
 When a subcircuit is a footprint, it normally has the <i>refdes</i> attribute set.
 Refdes is the name that identifies the part on the netlist. Some objects
@@ -427,13 +345,17 @@ A connection on the netlist is identified as <i>refdes</i>-<i>term</i>, e.g.
 U5-3 means "the object(s) whose term attribute is 3 within the subcircuit
 whose refdes attribute is 'U5'".
 
-<h5> 2.4.9.2 Subcircuits as repetitive modules </h5>
+<h5> 2.4.6.2 Subcircuits as repetitive modules </h5>
 <p>
-Compared to subcircuits as footprint, a repetitive module will not have
-a refdes attribute and will not have terminals.
+If the repetitive module is specified as a refdes-named device on
+the schematics, it is really just a footprint. Else it is a non-footprint
+subcircuit.
+<p>
+Compared to subcircuits as footprint, a non-footprint subcircuit will not have
+a refdes attribute and will not have terminals. It will also have the
+nonetlist flag set.
 
-
-<h4> 2.4.10. Pad stacks </h4> <a id="padstack">
+<h4> 2.4.7. Pad stacks </h4> <a id="padstack">
 <p>
 A pad stack is a generic pin/pad/via object that may contain any combination
 of:
@@ -540,9 +462,26 @@ When it is zero, the prototype's per shape clearance applies, which makes it
 possible to have different clearance for internal layers, for example.
 <p>
 Each padstack reference has a per board layer list of thermal relief types.
+<p>
+A thermal relief property is added to the copper rings of a via when it is
+connected to the surrounding polygon of any individual layer. Physical designs
+may use thermal reliefs to enable easy hand soldering, or reduce occurrence of
+tombstoning in automated production.
+<p>
+The following thermal relief options are available:
+<table border=1>
+	<caption><b>Pad/Pin/Via Thermal Relief</b>
+	<tr><th>Thermal Relief <th> Appearance 
+	<tr><td>no connection<td> <img src="via_therm_noconn.png" alt="unconnected via">
+	<tr><td>solid        <td> <img src="via_therm_solid.png"  alt="solid thermal">
+	<tr><td>round x 90   <td> <img src="via_therm_round_x90.png"  alt="Thermal relief arc style">
+	<tr><td>round x 45   <td> <img src="via_therm_round_x45.png"  alt="Thermal relief arc style, 45deg">
+	<tr><td>crossbar x 90<td> <img src="via_therm_sharp_x90.png"  alt="Thermal relief crossbar style, 90deg">
+	<tr><td>crossbar x 45<td> <img src="via_therm_sharp_x45.png"  alt="Thermal relief crossbar style, 45deg">
+</table>
 
 
-<h4> 2.4.11. Rat line Objects </h4>
+<h4> 2.4.8. Rat line Objects </h4>
 <p>
 A rat line represents a logical connection that is not yet realized in copper.
 It requires a loaded netlist for generation, and relies on calculations for any
@@ -550,11 +489,11 @@ existing copper layers that connect terminals on the pcb-rnd board.  Rat
 connections are straight line connections between the terminals of any two
 drawing primitives that aren't yet connected  
 
-<h4> 2.4.12. Netlists </h4>
+<h4> 2.4.9 Netlists </h4>
 <p>
 A netlist is a list of named logical networks. Each network is a list of
 netlist terminals that should be connected. A netlist terminal is a pair
-of element-refdes and pin-number (or pad-number). Thus a typical netlist
+of subcircuit-refdes and pin-number (or pad-number). Thus a typical netlist
 looks like the following:
 <ul>
 	<li> net: GND
@@ -578,9 +517,9 @@ looks like the following:
 		</ul>
 </ul>
 <p>
-The netlist assumes element refdes are unique. If an element has multiple
-instances of the same pin (or pad) number, the engine picks one randomly and
-assumes there's an invisible, internal connection within the element.
+The netlist assumes subcircuit refdes are unique. If a subcircuit has multiple
+instances of the same terminal number, the engine picks one randomly and
+assumes there's an invisible, internal connection within the subcircuit.
 <p>
 Rat lines can be regenerated from the current netlist for missing connections.
 Connections that are realized in copper but not present on the netlist, pcb-rnd
@@ -592,14 +531,14 @@ The netlist is typically derived from a schematics by external tools
 process is called "forward annotation".
 <p>
 It is also possible to make changes to the netlist from within pcb-rnd:
-pins can be swapped, element packages replaced using <i>back annotation
-actions</i>. Such actions will keep a list of intended netlist and element
+terminals can be swapped, subcircuit footprint replaced using <i>back annotation
+actions</i>. Such actions will keep a list of intended netlist and subcircuit
 changes, called the netlist patch. Pcb-rnd will keep these changes even
 if a new version of the netlist is imported. It is possible to export the
 netlist patch that can be imported in the schematics editor to change the
 schematics - this process is called "back annotation". A new forward
 annotation from the schematics editor to pcb-rnd will then cancel
-the netlist/element changes as the new netlist import netlist matches
+the netlist/subcircuit changes as the new netlist import netlist matches
 the intended (changed) netlist.
 
 <h3> 2.5. Comparison of Physical world and pcb-rnd world terminology </h3>
