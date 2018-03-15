@@ -26,8 +26,7 @@ digraph pcb_data {
 	pcb_buffer_t -> pcb_data_t
 	pcb_buffer_t [shape=box]
 
-	DataType_lists [label="layer-independent lists:\nrats\npadstacks\nsubcircuits"]
-	DataType_rtrees [label="layer-independent rtrees"]
+	DataType_listrt [label="layer-independent lists and rtrees"]
 	DataType_LayerN [label="LayerN: number of\nlayers in use"]
 	DataType_layers [label="an array of layers"]
 	DataType_misc [label="misc fields"]
@@ -35,20 +34,15 @@ digraph pcb_data {
 	pcb_data_t -> DataType_misc    [tailport=s]
 	pcb_data_t -> DataType_LayerN  [tailport=s]
 	pcb_data_t -> DataType_layers  [tailport=s]
-	pcb_data_t -> DataType_lists   [tailport=s]
+	pcb_data_t -> DataType_listrt  [tailport=s]
 	pcb_data_t -> DataType_rtrees  [tailport=s]
 	pcb_data_t [shape=box]
 
 	DataType_layers -> pcb_layer_t
 
-	DataType_lists -> pcb_subc_t
-	DataType_rtrees -> pcb_subc_t
-
-	DataType_lists -> pcb_rat_line_t
-	DataType_rtrees -> pcb_rat_line_t
-
-	DataType_lists -> pcb_pstk_t
-	DataType_rtrees -> pcb_pstk_t
+	DataType_listrt -> pcb_subc_t
+	DataType_listrt -> pcb_rat_line_t
+	DataType_listrt -> pcb_pstk_t
 
 	pcb_subc_t -> pcb_data_t [color=blue constraint=0 tailport=s]
 
