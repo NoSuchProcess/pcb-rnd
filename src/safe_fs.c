@@ -24,14 +24,15 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
   */
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 /* permit direct access to the libc calls (turn off config.h masking) */
 #define PCB_SAFE_FS
 
+/* opendir, readdir */
+#include "compat_inc.h"
+
 #include "config.h"
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,8 +44,6 @@
 #include "globalconst.h"
 #include "paths.h"
 
-/* opendir, readdir */
-#include "compat_inc.h"
 
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */
 static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
