@@ -33,9 +33,10 @@ Relevant structs, variables and functions are in board.[ch].
 A <i>pcb_data_t</i> contains everything to describe the 2d geometry of
 an existing board:
 <ul>
-	<li> per-layer objects (e.g. lines, arcs, polygons)
-	<li> global objects (e.g. elements, subcircuits, vias)
+	<li> per-layer objects (lines, arcs, polygons, text objects)
+	<li> global objects (subcircuits, padstacks)
 	<li> temporary logical connections (rat lines)
+	<li> padstack prototypes (padstack shapes referenced by padstack references/instances)
 </ul>
 <p>
 Relevant structs, variables and functions are in data.[ch].
@@ -103,17 +104,20 @@ assumptions will be removed.) The outline layer has to be global.
 <p>
 The rest of the layers are virtual layers, often just GUI hacks, e.g.:
 <ul>
-	<li> Subcircuits - no layer struct, calculated on-the-fly from pad data
+	<li> Subcircuit dashed outline, subcricuit parts - no layer struct, calculated on-the-fly from the subc list
 	<li> fab - no layer struct, calculated on-the-fly from drill/hole data
 </ul>
 
 <h3> pcb_data_t: global data </h3>
 <p>
-Global data affect all layers. The most trivial example is <i>via</i> and
+Global data affect all layers. The most trivial example is
 <i>padstack</i>: it has a hole and potentially a copper ring on all
-layers. Another global object pcb_data_t holds is an element. An element
-can have pads on two copper layers and pins that affect all layers the
-same way as vias.
+layers. Another global object pcb_data_t holds is an element. A padstack
+directly under the board's pcb_data_t is considered a "via" (by convention,
+by purpose), a padstack under subcircuit's pcb_data_t is usually a "pin"
+or "pad" (when has a term ID) or a "via". The quoted terms don't exist
+in the code, they are just conventions. Padtsacks are vertical constructions,
+they may affect multiple layers.
 <p>
 The third global object is subcircuit; using its own layer list, it potentially
 can affect all layers of the board. The children objects of a subcircuit is
