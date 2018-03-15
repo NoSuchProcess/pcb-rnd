@@ -242,32 +242,7 @@ The clearance around text is rendered as a round corner rectangular cutout.
 Bug: copper text can not participate in short circuits, the galvanic connection
 checker code skips texts.
 
-<h4> 2.4.5. Vias, holes, test points, test pads, fiducials, targets/marks </h4>
-<p>
-A via is an electrically connected hole that connects copper rings to multiple
-layers. In pcb-rnd, a via is always implemented using a <a href="#padstack">
-padstack.</a>
-<p>
-A hole is a special case of a <a href="#padstack"> padstack:</a> it has
-an unplated hole and typically does not have copper pad shapes but should
-have mask cutout shape.
-<p>
-A test point or test pad is a <a href="#padstack"> padstack</a> that has
-copper shape only on one of the outer copper layer and a mask cutout shape
-over that layer.
-<p>
-A fiducial mark is a special case of a <a href="#padstack"> padstack </a>
-very similar to the test point/pad.
-<p>
-A mark or target (e.g. for layer alignment) is usually realized as a
-<a href="#subcircuit"> subcircuit </a> it has more complex graphics that
-doesn't fit in a padstack.
-<p>
-Holes, test points/pads and fiducials are often realized within a
-<a href="#subcircuit"> subcircuit </a>, especially if they have a refdes
-and present on the schematics.
-
-<h4> 2.4.6. Subcircuits </h4>
+<h4> 2.4.5. Subcircuits </h4>
 <p id="subcircuit">
 A subc (subcircuit) is a group of objects with its own, local layer
 information. All layers of a subc are <i>bound</i> layers, that is, the user
@@ -280,7 +255,7 @@ The main uses of subc are:
 	<li> copy&amp;paste anonymous repetitive section of a circuit
 </ul>
 
-<h5> 2.4.6.1 Subcircuits as footprints </h5> <a id="footprints">
+<h5> 2.4.5.1 Subcircuits as footprints </h5> <a id="footprints">
 
 <p>
 A subcircuit may be an instance (copy) of a footprint. The subcircuit is 
@@ -345,7 +320,7 @@ A connection on the netlist is identified as <i>refdes</i>-<i>term</i>, e.g.
 U5-3 means "the object(s) whose term attribute is 3 within the subcircuit
 whose refdes attribute is 'U5'".
 
-<h5> 2.4.6.2 Subcircuits as repetitive modules </h5>
+<h5> 2.4.5.2 Subcircuits as repetitive modules </h5>
 <p>
 If the repetitive module is specified as a refdes-named device on
 the schematics, it is really just a footprint. Else it is a non-footprint
@@ -355,7 +330,7 @@ Compared to subcircuits as footprint, a non-footprint subcircuit will not have
 a refdes attribute and will not have terminals. It will also have the
 nonetlist flag set.
 
-<h4> 2.4.7. Pad stacks </h4> <a id="padstack">
+<h4> 2.4.6. Pad stacks </h4> <a id="padstack">
 <p>
 A pad stack is a generic pin/pad/via object that may contain any combination
 of:
@@ -481,7 +456,7 @@ The following thermal relief options are available:
 </table>
 
 
-<h4> 2.4.8. Rat line Objects </h4>
+<h4> 2.4.7. Rat line Objects </h4>
 <p>
 A rat line represents a logical connection that is not yet realized in copper.
 It requires a loaded netlist for generation, and relies on calculations for any
@@ -489,7 +464,7 @@ existing copper layers that connect terminals on the pcb-rnd board.  Rat
 connections are straight line connections between the terminals of any two
 drawing primitives that aren't yet connected  
 
-<h4> 2.4.9 Netlists </h4>
+<h4> 2.4.8 Netlists </h4>
 <p>
 A netlist is a list of named logical networks. Each network is a list of
 netlist terminals that should be connected. A netlist terminal is a pair
@@ -541,7 +516,49 @@ annotation from the schematics editor to pcb-rnd will then cancel
 the netlist/subcircuit changes as the new netlist import netlist matches
 the intended (changed) netlist.
 
-<h3> 2.5. Comparison of Physical world and pcb-rnd world terminology </h3>
+<h3> 2.5. Non-objects </h3>
+<p>
+The following objects are commonly used in the industry, but have no
+special implementation in pcb-rnd but are created by using the above
+objects.
+
+<h4> Vias </h4>
+<p>
+A via is an electrically connected hole that connects copper rings to multiple
+layers. In pcb-rnd, a via is always implemented using a <a href="#padstack">
+padstack.</a>
+
+<h4> Holes </h4>
+<p>
+A hole is a special case of a <a href="#padstack"> padstack:</a> it has
+an unplated hole and typically does not have copper pad shapes but should
+have mask cutout shape.
+
+<h4> Test points, test pads</h4>
+<p>
+A test point or test pad is a <a href="#padstack"> padstack</a> that has
+copper shape only on one of the outer copper layer and a mask cutout shape
+over that layer.
+
+<h4> Fiducials </h4>
+<p>
+A fiducial mark is a special case of a <a href="#padstack"> padstack </a>
+very similar to the test point/pad.
+
+<h4> Targets/marks </h4>
+A mark or target (e.g. for layer alignment) is usually realized as a
+<a href="#subcircuit"> subcircuit </a> it has more complex graphics that
+doesn't fit in a padstack.
+
+<h4> Using subcircuit instead of raw padstack </h4>
+<p>
+Holes, test points/pads and fiducials are often realized within a
+<a href="#subcircuit"> subcircuit </a>, especially if they have a refdes
+and present on the schematics. However, the only way to implement a hole
+is using a padstack, so the resulting subcircuit for holes and test pins
+will always have at least one padstack.
+
+<h3> 2.6. Comparison of Physical world and pcb-rnd world terminology </h3>
 <p>
 <table border=1>
 	<caption><b>Pcb-rnd Terminology</b>
@@ -560,3 +577,4 @@ the intended (changed) netlist.
 	<tr><td> Paste (paste stencil)     <td> Layer group with implicit and potential explicit content  <td> design layers available: automatic, additive, subtractive
 	<tr><td> N/A, or poss. net/circuit <td> Rats                                                      <td> assistive layer automatically generated with netlist and copper layer group connection data
 </table>
+
