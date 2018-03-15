@@ -112,14 +112,14 @@ The rest of the layers are virtual layers, often just GUI hacks, e.g.:
 <p>
 Global data affect all layers. The most trivial example is
 <i>padstack</i>: it has a hole and potentially a copper ring on all
-layers. Another global object pcb_data_t holds is an element. A padstack
+layers. A padstack
 directly under the board's pcb_data_t is considered a "via" (by convention,
 by purpose), a padstack under subcircuit's pcb_data_t is usually a "pin"
 or "pad" (when has a term ID) or a "via". The quoted terms don't exist
 in the code, they are just conventions. Padtsacks are vertical constructions,
 they may affect multiple layers.
 <p>
-The third global object is subcircuit; using its own layer list, it potentially
+The other global object is subcircuit; using its own layer list, it potentially
 can affect all layers of the board. The children objects of a subcircuit is
 a pcb_data_t, which allows arbitrary (loop-free) recursion in data.
 
