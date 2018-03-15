@@ -272,6 +272,7 @@ int pcb_act_PrintFiles(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	printf("# Data files loaded\n");
 	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e))
 		print_cat(e->value);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
