@@ -8,7 +8,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/02_model
 	$(SCCBOX) $(HOW) 02_model/via_therm_solid.png $(USERDIR)/02_model/via_therm_solid.png
 	$(SCCBOX) $(HOW) 02_model/via_therm_round_x45.png $(USERDIR)/02_model/via_therm_round_x45.png
-	$(SCCBOX) $(HOW) 02_model/via_ring_shape.png $(USERDIR)/02_model/via_ring_shape.png
 	$(SCCBOX) $(HOW) 02_model/via_therm_noconn.png $(USERDIR)/02_model/via_therm_noconn.png
 	$(SCCBOX) $(HOW) 02_model/objects_basic.png $(USERDIR)/02_model/objects_basic.png
 	$(SCCBOX) $(HOW) 02_model/objects_complex.png $(USERDIR)/02_model/objects_complex.png
@@ -17,10 +16,7 @@ install_all:
 	$(SCCBOX) $(HOW) 02_model/index.html $(USERDIR)/02_model/index.html
 	$(SCCBOX) $(HOW) 02_model/obj_line.png $(USERDIR)/02_model/obj_line.png
 	$(SCCBOX) $(HOW) 02_model/obj_arc.png $(USERDIR)/02_model/obj_arc.png
-	$(SCCBOX) $(HOW) 02_model/via_octagon_shape.png $(USERDIR)/02_model/via_octagon_shape.png
 	$(SCCBOX) $(HOW) 02_model/via_therm_sharp_x90.png $(USERDIR)/02_model/via_therm_sharp_x90.png
-	$(SCCBOX) $(HOW) 02_model/via_square_shape.png $(USERDIR)/02_model/via_square_shape.png
-	$(SCCBOX) $(HOW) 02_model/via_asym_shape.png $(USERDIR)/02_model/via_asym_shape.png
 	$(SCCBOX) mkdir -p $(USERDIR)/03_data
 	$(SCCBOX) $(HOW) 03_data/index.html $(USERDIR)/03_data/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/04_invoc
