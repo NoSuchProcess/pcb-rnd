@@ -258,7 +258,8 @@ SUBC: element removal:
 	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - feature req: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-- BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt [report: miloh flag: erichvk_]
+- BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - gdb bt: #1 pcb_add_subc_to_data (dt=0xc7cfc0, sc=0x5a66e8 <htsi_set+8>)
+    at obj_subc.c:115 [report: miloh flag: erichvk_]
  
 3. Long term ===============================================================================
 
