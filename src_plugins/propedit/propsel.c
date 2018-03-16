@@ -217,7 +217,7 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_add_prop(ctx, "p/padstack/proto", pcb_coord_t, ps->proto);
 
 	proto = pcb_pstk_get_proto(ps);
-	map_add_prop(ctx, "p/padstack/clearance", pcb_coord_t, ps->Clearance/2);
+	map_add_prop(ctx, "p/padstack/clearance", pcb_coord_t, ps->Clearance);
 	map_add_prop(ctx, "p/padstack/hole", pcb_coord_t, proto->hdia);
 	map_add_prop(ctx, "p/padstack/plated", int, proto->hplated);
 	map_add_prop(ctx, "p/padstack/htop", int, proto->htop);
