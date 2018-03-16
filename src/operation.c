@@ -114,7 +114,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 	case PCB_TYPE_RATLINE:
 		if (F->Rat)
-			return (F->Rat(ctx, (pcb_rat_t *) Ptr1));
+			return (F->Rat(ctx, (pcb_rat_t *) Ptr2));
 		break;
 	}
 	return NULL;
