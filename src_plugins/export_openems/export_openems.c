@@ -513,11 +513,11 @@ static void openems_write_mesh2(wctx_t *ctx)
 	}
 	fprintf(ctx->f, "%%%%%% Board mesh, part 2\n");
 
-	fprintf(ctx->f, "mesh.x=[");
+	fprintf(ctx->f, "mesh.y=[");
 	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_HORIZONTAL]);
 	fprintf(ctx->f, "];\n");
 
-	fprintf(ctx->f, "mesh.y=[");
+	fprintf(ctx->f, "mesh.x=[");
 	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_VERTICAL]);
 	fprintf(ctx->f, "];\n");
 
