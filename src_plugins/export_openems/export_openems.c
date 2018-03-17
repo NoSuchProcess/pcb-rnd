@@ -526,7 +526,7 @@ static void openems_write_mesh2(wctx_t *ctx)
 	fprintf(ctx->f, "];\n");
 
 	fprintf(ctx->f, "mesh.x = mesh.x .+ offset.x;\n");
-	fprintf(ctx->f, "mesh.y = mesh.y .+ offset.y;\n");
+	fprintf(ctx->f, "mesh.y = offset.y .- mesh.y;\n");
 	fprintf(ctx->f, "mesh.z = mesh.z .+ offset.z;\n");
 	fprintf(ctx->f, "CSX = DefineRectGrid(CSX, unit, mesh);\n");
 	fprintf(ctx->f, "\n");
