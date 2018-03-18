@@ -9,9 +9,6 @@ run_pcb()
 	if test ! -z "$1"
 	then
 		fn="$pwd/$1"
-	fi
-	if test $# -gt 1
-	then
 		shift 1
 	fi
 	(
