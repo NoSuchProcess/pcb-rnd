@@ -520,8 +520,9 @@ static void mesh_auto_add_even(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_co
 		return;
 
 	d = (c2 - c1)/(num+1);
-	for(c1 += d; c1 < c2; c1 += d)
-		vtc0_append(v, c1);
+	if (d > 0)
+		for(c1 += d; c1 < c2; c1 += d)
+			vtc0_append(v, c1);
 }
 
 static pcb_coord_t mesh_auto_add_interp(vtc0_t *v, pcb_coord_t c, pcb_coord_t d1, pcb_coord_t d2, pcb_coord_t dd)
@@ -551,17 +552,25 @@ static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_
 	/* ramp up (if there's room) */
 	if (d > d1) {
 		lines = (d / d1) + 0;
-		glen = lines * d;
-		if (glen < len/4)
-			begin = mesh_auto_add_interp(v, c1, d1, d, (d-d1)/lines);
+		if (lines > 0) {
+			glen = lines * d;
+			if (glen < len/4)
+				begin = mesh_auto_add_interp(v, c1, d1, d, (d-d1)/lines);
+		}
+		else
+			begin = c1;
 	}
 
 	/* ramp down (if there's room) */
 	if (d > d2) {
 		lines = (d / d2) + 0;
-		glen = lines * d;
-		if (glen < len/4)
-			end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines);
+		if (lines > 0) {
+			glen = lines * d;
+			if (glen < len/4)
+				end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines);
+		}
+		else
+			end = c2;
 	}
 
 	/* middle section: linear */
