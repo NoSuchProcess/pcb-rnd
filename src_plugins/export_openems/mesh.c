@@ -317,8 +317,11 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t
 {
 	pcb_range_t *r;
 	r = bsearch(&at, v->array, vtr0_len((vtr0_t *)v), sizeof(pcb_range_t), cmp_range_at);
-	if (dens != NULL)
+	if (dens != NULL) {
+		if (r == NULL)
+			return NULL;
 		*dens = r->data[0].c;
+	}
 	if (dens_left != NULL) {
 		if (r == v->array)
 			*dens_left = r->data[0].c;
