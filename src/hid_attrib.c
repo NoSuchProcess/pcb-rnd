@@ -208,7 +208,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 			(*argv)++;
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename wasy: %s; offending second filename: %s\n", filename, (*argv)[0]);
+			pcb_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
 			exit(1);
 		}
 	}
