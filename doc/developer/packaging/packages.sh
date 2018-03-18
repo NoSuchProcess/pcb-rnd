@@ -60,6 +60,12 @@ done | awk -v "meta_deps=$meta_deps" '
 		}
 	}
 
+	function strip(s) {
+		sub("^[ \t]*", "", s)
+		sub("[ \t]*$", "", s)
+		return s
+	}
+
 	END {
 	
 		# everything depends on core
@@ -91,8 +97,11 @@ done | awk -v "meta_deps=$meta_deps" '
 		print "<table border=1>"
 		print "<tr><th> package <th> depends on (packages) <th> consists of (plugins)"
 
-		for(pkg in PKG)
+		for(pkg in PKG) {
 			print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>" PKG[pkg]
+			print strip(PKG_DEP[pkg]) >  "auto/" pkg ".deps"
+			print pkg > "auto/List"
+		}
 		print "</table>"
 
 		print "<h3> Package description and files </h3>"
@@ -102,15 +111,24 @@ done | awk -v "meta_deps=$meta_deps" '
 			if (SHORT[pkg] == "") SHORT[pkg] = "&nbsp;"
 			if (LONG[pkg] == "") LONG[pkg] = "&nbsp;"
 			print "<tr><th>" pkg "<td>" IFILES[pkg] "<td>" SHORT[pkg]  "<td>" LONG[pkg]
+			print strip(IFILES[pkg]) > "auto/" pkg ".files"
+			print strip(SHORT[pkg]) > "auto/" pkg ".short"
+			print strip(LONG[pkg]) > "auto/" pkg ".long"
 		}
 		print "</table>"
 
 		print "<h3> ./configure arguments </h3>"
 		print "--all=disable"
-		for(p in CFG_BUILDIN)
-				print "--buildin-" p
-		for(p in CFG_PLUGIN)
-				print "--plugin-" p
+		print "--all=disable" > "auto/Configure.args"
+
+		for(p in CFG_BUILDIN) {
+			print "--buildin-" p
+			print "--buildin-" p > "auto/Configure.args"
+		}
+		for(p in CFG_PLUGIN) {
+			print "--plugin-" p
+			print "--plugin-" p > "auto/Configure.args"
+		}
 	}
 '
 
