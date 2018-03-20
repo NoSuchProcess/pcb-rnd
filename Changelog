@@ -1,4 +1,4 @@
-pcb-rnd 1.2.8 (r1541)
+pcb-rnd 1.2.8 (r15478)
 ~~~~~~~~~~~~~~~~~~~~~~
 	- Change: switch over all plugins and core to the new data model
 
@@ -89,6 +89,8 @@ pcb-rnd 1.2.8 (r1541)
 		-Fix: disperse "elements" typo ruined the grid for subcircuits
 		-Fix: disperse "elements": remove flicker by using the snapped coords for incrementing the cursor
 		-Fix: double free in conf error message
+		-Fix: ratline operation: pass on the main pointer (deleting ratline using the remove tool shouldn't crash)
+		-Fix: typo in multiple file name error message
 		-Add: give a hint if the config dump action fails
 		-Add: --version prints svn revision as well
 		-Add: handle the is_footprint special case in data/layer loops
@@ -143,6 +145,11 @@ pcb-rnd 1.2.8 (r1541)
 		-Del: gtk3 devel docs: adoc, old plans and file listings, css cruft, ToC
 		-Update: rebuild action reference table with latest version of pcb-rnd and more complete buildin config
 		-Update: developer data model for layers and padstacks
+		-Update: data model drawing and data.html with more struct names
+		-Update: importer code docs for the new data model
+		-Update: plugin creation doc lists all new pup fields
+		-Update: obj func naming concentions for element removal
+		-Change: rewrite the model chapter for the new data model
 		-Add: knowledge pool link from the main page
 		-Add: list OpenBSD as supported platform
 		-Add: link in the mailing list archives
@@ -151,6 +158,8 @@ pcb-rnd 1.2.8 (r1541)
 		-Add: indent(1) patch for function decl and comment unalignment
 		-Add: make install handles doc/ properly
 		-Add: generate OS package list; package descriptions and metapackage
+		-Add: plugin naming conventions: lib_ plugins
+		-Add: packaging.txt mentions recommends the default package splitup
 
 	[export_bboard]
 		-Fix: build: explicit dependency on cairo
@@ -317,6 +326,8 @@ pcb-rnd 1.2.8 (r1541)
 
 	[propedit]
 		-Fix: absolute values for padstack rotation
+		-Fix: padstack map: global clearance value halving is not needed
+		-Fix: padstack clearance set doesn't need to *2 the value
 		-Add: edit polygon properties: clearance
 
 	[report]
