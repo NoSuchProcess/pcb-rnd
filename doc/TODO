@@ -47,6 +47,7 @@ SUBC: element removal:
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
 	- save layer color
+	- add a subtree where random plugins can store their stuff - probably in a form of an attribute list
 - layer color rewrite:
 	- depends on lihata v5 layer color save/load
 	- grep for layer TODO, hardwired layer colors
