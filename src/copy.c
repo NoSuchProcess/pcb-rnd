@@ -26,7 +26,7 @@
  *
  */
 
-/* functions used to copy pins, elements ...
+/* functions used to copy objects
  * it's necessary to copy data by calling create... since the base pointer
  * may change cause of dynamic memory allocation
  */
@@ -46,8 +46,8 @@ static pcb_opfunc_t CopyFunctions = {
 	pcb_lineop_copy,
 	pcb_textop_copy,
 	pcb_polyop_copy,
-	pcb_viaop_copy,
-	pcb_elemop_copy,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
