@@ -58,8 +58,8 @@ static pcb_opfunc_t AddBufferFunctions = {
 	pcb_lineop_add_to_buffer,
 	pcb_textop_add_to_buffer,
 	pcb_polyop_add_to_buffer,
-	pcb_viaop_add_to_buffer,
-	pcb_elemop_add_to_buffer,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -77,8 +77,8 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_lineop_move_buffer,
 	pcb_textop_move_buffer,
 	pcb_polyop_move_buffer,
-	pcb_viaop_move_buffer,
-	pcb_elemop_move_buffer,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -185,7 +185,6 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char *name = PCB_ACTION_ARG(0);
 	const char *refdes = PCB_ACTION_ARG(1);
 	const char *value = PCB_ACTION_ARG(2);
-	pcb_element_t *e;
 	pcb_subc_t *s;
 	pcb_cardinal_t len;
 
@@ -195,39 +194,21 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (pcb_element_load_footprint_by_name(PCB_PASTEBUFFER, name))
 		return 1;
 
-	len = elementlist_length(&PCB_PASTEBUFFER->Data->Element) + pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
+	len = pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
 
 	if (len == 0) {
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no elements or subcircuits", name);
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", name);
 		return 1;
 	}
 	if (len > 1) {
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple elements and/or subcircuits", name);
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", name);
 		return 1;
 	}
 
-	e = elementlist_first(&PCB_PASTEBUFFER->Data->Element);
-	if (e != NULL) {
-	if (e->Name[0].TextString)
-		free(e->Name[0].TextString);
-	e->Name[0].TextString = pcb_strdup(name);
-
-	if (e->Name[1].TextString)
-		free(e->Name[1].TextString);
-	e->Name[1].TextString = refdes ? pcb_strdup(refdes) : 0;
-
-	if (e->Name[2].TextString)
-		free(e->Name[2].TextString);
-	e->Name[2].TextString = value ? pcb_strdup(value) : 0;
-	}
-
 	s = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
-#warning element TODO: remove this check when elements are removed: we know len == 1
-	if (s != NULL) {
-		pcb_attribute_put(&s->Attributes, "refdes", refdes);
-		pcb_attribute_put(&s->Attributes, "name", name);
-		pcb_attribute_put(&s->Attributes, "value", value);
-	}
+	pcb_attribute_put(&s->Attributes, "refdes", refdes);
+	pcb_attribute_put(&s->Attributes, "name", name);
+	pcb_attribute_put(&s->Attributes, "value", value);
 
 	return 0;
 }
@@ -265,26 +246,9 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 
 void pcb_buffer_rotate90(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
-	/* rotate vias */
-	PCB_VIA_LOOP(Buffer->Data);
-	{
-		pcb_r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-		PCB_VIA_ROTATE90(via, Buffer->X, Buffer->Y, Number);
-		pcb_pin_bbox(via);
-		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-	}
-	PCB_END_LOOP;
-
 	PCB_PADSTACK_LOOP(Buffer->Data);
 	{
 		pcb_pstk_rotate90(padstack, Buffer->X, Buffer->Y, Number);
-	}
-	PCB_END_LOOP;
-
-	/* elements */
-	PCB_ELEMENT_LOOP(Buffer->Data);
-	{
-		pcb_element_rotate90(Buffer->Data, element, Buffer->X, Buffer->Y, Number);
 	}
 	PCB_END_LOOP;
 
@@ -336,23 +300,9 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	cosa = cos(angle * M_PI / 180.0);
 	sina = sin(angle * M_PI / 180.0);
 
-	/* rotate vias */
-	PCB_VIA_LOOP(Buffer->Data);
-	{
-		pcb_via_rotate(Buffer->Data, via, Buffer->X, Buffer->Y, cosa, sina);
-	}
-	PCB_END_LOOP;
-
 	PCB_PADSTACK_LOOP(Buffer->Data);
 	{
 		pcb_pstk_rotate(padstack, Buffer->X, Buffer->Y, cosa, sina, angle);
-	}
-	PCB_END_LOOP;
-
-	/* elements */
-	PCB_ELEMENT_LOOP(Buffer->Data);
-	{
-		pcb_element_rotate(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
 	PCB_END_LOOP;
 
@@ -443,11 +393,6 @@ void pcb_uninit_buffers(pcb_board_t *pcb)
 void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int i, num_layers;
-
-	if (elementlist_length(&Buffer->Data->Element)) {
-		pcb_message(PCB_MSG_ERROR, _("You can't mirror a buffer that has elements!\n"));
-		return;
-	}
 
 	num_layers = PCB_PASTEBUFFER->Data->LayerN;
 	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
@@ -660,21 +605,6 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		}
 	}
 
-	/* paste elements */
-	if (pcb->PinOn && pcb_silk_on(pcb)) {
-		PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
-		{
-#ifdef DEBUG
-			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);
-#endif
-			if (PCB_FRONT(element) || pcb->InvisibleObjectsOn) {
-				pcb_elemop_copy(&ctx, element);
-				changed = pcb_true;
-			}
-		}
-		PCB_END_LOOP;
-	}
-
 	/* paste subcircuits */
 	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
 	{
@@ -687,16 +617,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	}
 	PCB_END_LOOP;
 
-	/* finally the vias and padstacks */
-	if (pcb->ViaOn) {
-		changed |= (pinlist_length(&(PCB_PASTEBUFFER->Data->Via)) != 0);
-		PCB_VIA_LOOP(PCB_PASTEBUFFER->Data);
-		{
-			pcb_viaop_copy(&ctx, via);
-		}
-		PCB_END_LOOP;
-	}
-
+	/* finally: padstacks */
 	if (pcb->ViaOn) {
 		pcb_board_t dummy;
 		changed |= (padstacklist_length(&(PCB_PASTEBUFFER->Data->padstack)) != 0);
@@ -773,11 +694,10 @@ Copies the selected objects to the current paste buffer.
 Remove all objects from the current paste buffer.
 
 @item Convert
-Convert the current paste buffer to an element.  Vias are converted to
-pins, lines are converted to pads.
+Convert the current paste buffer to an subcircuit.
 
 @item Restore
-Convert any elements in the paste buffer back to vias and lines.
+Convert any subcircuit in the paste buffer back to plain objects.
 
 @item Mirror
 Flip all objects in the paste buffer vertically (up/down flip).  To mirror
@@ -794,7 +714,7 @@ format is specified, try to use that file format, else use the default.
 If force is specified, overwrite target, don't ask.
 
 @item ToLayout
-Pastes any elements in the current buffer to the indicated X, Y
+Pastes objects in the current buffer to the indicated X, Y
 coordinates in the layout.  The @code{X} and @code{Y} are treated like
 @code{delta} is for many other objects.  For each, if it's prefixed by
 @code{+} or @code{-}, then that amount is relative to the last
@@ -839,20 +759,16 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
 			break;
 
-			/* converts buffer contents into an element */
+			/* converts buffer contents into a subcircuit */
 		case F_Convert:
-			pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
-			break;
-
-			/* converts buffer contents into an element */
 		case F_ConvertSubc:
 			pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 			break;
 
-			/* break up element for editing */
+			/* break up subcircuit for editing */
 		case F_Restore:
-			if (!pcb_element_smash_buffer(PCB_PASTEBUFFER) && !pcb_subc_smash_buffer(PCB_PASTEBUFFER))
-				pcb_message(PCB_MSG_ERROR, _("Error!  Buffer doesn't contain a single element or subcircuit\n"));
+			if (!pcb_subc_smash_buffer(PCB_PASTEBUFFER))
+				pcb_message(PCB_MSG_ERROR, _("Error!  Buffer doesn't contain a single subcircuit\n"));
 			break;
 
 			/* Mirror buffer */
@@ -923,6 +839,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 					if (!absolute)
 						y += oldy;
 				}
+
 				else {
 					pcb_notify_crosshair_change(pcb_true);
 					PCB_ACT_FAIL(PasteBuffer);
