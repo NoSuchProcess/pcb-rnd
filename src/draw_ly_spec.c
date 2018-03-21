@@ -69,9 +69,6 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 /******** mask ********/
 static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 {
-	pcb_r_search(PCB->Data->pin_tree, ctx->screen, NULL, pcb_pin_clear_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->via_tree, ctx->screen, NULL, pcb_pin_clear_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->pad_tree, ctx->screen, NULL, pcb_pad_clear_callback, side, NULL);
 	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
 }
 
@@ -109,12 +106,6 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 
 static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 {
-	int side = (*(unsigned long *)lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE);
-
-	/* draw package */
-	pcb_r_search(PCB->Data->element_tree, ctx->screen, NULL, pcb_elem_draw_callback, &side, NULL);
-	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], ctx->screen, NULL, pcb_elem_name_draw_callback, &side, NULL);
-
 	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
 }
 
