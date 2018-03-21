@@ -3,8 +3,8 @@ pcb-rnd 1.2.8
 
 This release switches over the whole code base to use the new data model
 (padstacks, subcircuits) instead of the old, now obsolete model (vias,
-pins, pads, elements). Conversion forth and back is done automatically,
-on the fly, during load and save.
+pins, pads, elements). When using alien file formats, conversion forth and
+back is done automatically, on the fly, during load and save.
 
 The local rtree implementation has been replaced with genrtree. This makes
 it much easier to share the rtree code among projects, decreases the
