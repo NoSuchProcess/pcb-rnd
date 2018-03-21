@@ -209,18 +209,6 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 						case PCB_TYPE_TEXT:
 							pcb_text_set_font(fontsel_layer, fontsel_txt, fid);
 							break;
-						case PCB_TYPE_ELEMENT_NAME:
-							{
-								int which;
-								pcb_element_t *e = (pcb_element_t *)fontsel_layer;
-								for(which = 0; which <= PCB_ELEMNAME_IDX_VALUE; which++) {
-									if (&e->Name[which] == fontsel_txt) {
-										pcb_element_text_set_font(PCB, PCB->Data, e, which, fid);
-										break;
-									}
-								}
-							}
-							break;
 					}
 					pcb_gui->invalidate_all();
 				}
