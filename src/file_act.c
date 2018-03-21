@@ -99,9 +99,9 @@ Loads an entire PCB layout, replacing the current one.
 Loads an entire PCB layout to the paste buffer.
 
 @item ElementToBuffer
-Loads the given element file into the paste buffer.  Element files
-contain only a single @code{Element} definition, such as the
-``newlib'' library uses.
+Loads the given footprint file into the paste buffer. Footprint files
+contain only a single subcircuit definition in one of the various
+supported file formats.
 
 @item Netlist
 Loads a new netlist, replacing any current netlist.
@@ -250,7 +250,7 @@ Save all connections to a file.
 List all unused pins to a file.
 
 @item ElementConnections
-Save connections to the element at the cursor to a file.
+Save connections to the subcircuit at the cursor to a file.
 
 @item PasteBuffer
 Save the content of the active Buffer to a file. This is the graphical way to create a footprint.
@@ -321,7 +321,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		FILE *fp;
 		pcb_bool result;
 		pcb_coord_t x, y;
-
+#warning subc TODO: rewrite this
 		pcb_gui->get_coords("Click on an element", &x, &y);
 		if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 			element = (pcb_element_t *) ptrtmp;
