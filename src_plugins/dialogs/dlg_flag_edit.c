@@ -40,8 +40,8 @@ typedef struct{
 } fe_ctx_t;
 
 #define PCB_FLAGEDIT_TYPES \
-	(PCB_TYPE_PSTK | PCB_TYPE_VIA | PCB_TYPE_ELEMENT | PCB_TYPE_LINE | PCB_TYPE_POLY | \
-	PCB_TYPE_TEXT | PCB_TYPE_SUBC | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_ARC)
+	(PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_POLY | \
+	PCB_TYPE_TEXT | PCB_TYPE_SUBC | PCB_TYPE_ARC)
 
 static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
