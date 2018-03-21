@@ -162,7 +162,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	pcb_board_count_holes(PCB, &hp, &hup, NULL);
 	pcb_print_utc(buff, sizeof(buff), 0);
 
-	fprintf(f, "ha:pcb-rnd-board-stats-v1 {\n");
+	fprintf(f, "ha:pcb-rnd-board-stats-v2 {\n");
 	fprintf(f, "	ha:meta {\n");
 	fprintf(f, "		date=%s\n", buff);
 	fprintf(f, "		built=%d\n", options[HA_built].int_value);
@@ -279,21 +279,6 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	}
 	fprintf(f, "	}\n");
 
-	PCB_ELEMENT_LOOP(PCB->Data) {
-		int pal, pil;
-		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element))
-			num_ebottom++;
-		else
-			num_etop++;
-		pal = padlist_length(&element->Pad);
-		pil = pinlist_length(&element->Pin);
-		if (pal > pil)
-			num_esmd++;
-		num_epads += pal;
-		num_epins += pil;
-	}
-	PCB_END_LOOP;
-
 	PCB_SUBC_LOOP(PCB->Data) {
 		int bott;
 		pcb_cardinal_t hole = 0, all = 0;
@@ -319,8 +304,6 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 					if ((proto != NULL) && (proto->hdia > 0))
 						hole++;
 				}
-				else if (o->type == PCB_OBJ_VIA)
-					hole++;
 			}
 		}
 	
@@ -348,7 +331,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		holes_plated=%d\n", hp);
 	fprintf(f, "		holes_unplated=%d\n", hup);
 	fprintf(f, "		physical_copper_layers=%d\n", phg);
-	fprintf(f, "		ha:elements {\n");
+	fprintf(f, "		ha:subcircuits {\n");
 	fprintf(f, "			total=%ld\n", (long int)num_ebottom + num_etop);
 	fprintf(f, "			top_side=%ld\n", (long int)num_etop);
 	fprintf(f, "			bottom_side=%ld\n", (long int)num_ebottom);
