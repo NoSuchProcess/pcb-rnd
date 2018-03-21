@@ -158,14 +158,6 @@ static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
 	return *fidoly_next;
 }
 
-static void write_custom_element(FILE *f, pcb_element_t *e)
-{
-	char *msg = pcb_strdup_printf("Can't export custom footprint for %s yet\n", e->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
-	pcb_io_incompat_save(e->parent.data, (pcb_any_obj_t *)e, msg, "element omitted - add the footprint type on the footprint list!");
-	free(msg);
-
-}
-
 static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 {
 	char *msg = pcb_strdup_printf("Can't export custom footprint for %s yet\n", sc->refdes);
@@ -294,21 +286,6 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 		PCB_END_LOOP;
 	}
 
-	PCB_VIA_LOOP(PCB->Data) {
-		fprintf(f, "pa %ld %ld", crd(via->X), crd(via->Y));
-		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via)) {
-			if (!((PCB_FLAG_SQUARE_GET(via) == 0) || (PCB_FLAG_SQUARE_GET(via) == 1))) {
-#warning TODO: find out the orientation
-				fprintf(f, "%ld %ld %ld 2\n", crd(via->Thickness), crd(via->Thickness*2), crd(via->DrillingHole)); /* rounded corner rectangle */
-			}
-			else
-				fprintf(f, "%ld %ld %ld 1\n", crd(via->Thickness), crd(via->Thickness), crd(via->DrillingHole)); /* rectangle with sharp corners */
-		}
-		else
-			fprintf(f, "%ld %ld %ld 0\n", crd(via->Thickness), crd(via->Thickness), crd(via->DrillingHole)); /* circular */
-	}
-	PCB_END_LOOP;
-
 	PCB_PADSTACK_LOOP(PCB->Data) {
 		int oshape;
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
@@ -329,15 +306,6 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 				oshape = 0;
 		}
 		fprintf(f, "pa %ld %ld %ld %ld %ld %d\n", crd(x), crd(y), crd(pad_dia), crd(pad_dia), crd(drill_dia), oshape);
-	}
-	PCB_END_LOOP;
-
-	PCB_ELEMENT_LOOP(PCB->Data) {
-		const char *fp = element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString;
-		if (have_lib && (htsi_get(&lib_names, fp)))
-			fprintf(f, "MC %ld %ld %d 0 %s\n", crd(element->MarkX), crd(element->MarkY), 0, fp);
-		else
-			write_custom_element(f, element);
 	}
 	PCB_END_LOOP;
 
