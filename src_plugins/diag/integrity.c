@@ -63,35 +63,6 @@
 
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk);
 
-
-static void chk_element(const char *whose, pcb_element_t *elem)
-{
-	int n;
-	pcb_pin_t *pin;
-	pcb_pad_t *pad;
-	pcb_line_t *lin;
-	pcb_arc_t *arc;
-
-	for(pin = pinlist_first(&elem->Pin); pin != NULL; pin = pinlist_next(pin))
-		check_parent("pin", pin, PCB_PARENT_ELEMENT, elem);
-
-	for(pad = padlist_first(&elem->Pad); pad != NULL; pad = padlist_next(pad))
-		check_parent("pad", pad, PCB_PARENT_ELEMENT, elem);
-
-	for(lin = linelist_first(&elem->Line); lin != NULL; lin = linelist_next(lin))
-		check_parent("line", lin, PCB_PARENT_ELEMENT, elem);
-
-	for(arc = arclist_first(&elem->Arc); arc != NULL; arc = arclist_next(arc))
-		check_parent("arc", arc, PCB_PARENT_ELEMENT, elem);
-
-	for(n = 1; n < PCB_MAX_ELEMENTNAMES; n++) {
-		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], X, "%mm");
-		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], Y, "%mm");
-		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], Direction, "%d");
-		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], fid, "%d");
-	}
-}
-
 static void chk_term(const char *whose, pcb_any_obj_t *obj)
 {
 	const char *aterm = pcb_attribute_get(&obj->Attributes, "term");
@@ -160,15 +131,12 @@ static void chk_subc_cache(pcb_subc_t *subc)
 static void chk_subc(const char *whose, pcb_subc_t *subc)
 {
 	int n;
-	pcb_pin_t *via;
 	pcb_pstk_t *ps;
 
 	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
 	chk_subc_cache(subc);
 
 	/* check term chaches */
-	for(via = pinlist_first(&subc->data->Via); via != NULL; via = pinlist_next(via))
-		chk_term("via", (pcb_any_obj_t *)via);
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps))
 		chk_term("padstack", (pcb_any_obj_t *)ps);
 
@@ -245,26 +213,13 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 	/* check global objects */
 	{
-		pcb_pin_t *via;
-		pcb_element_t *elem;
 		pcb_subc_t *subc;
 		pcb_pstk_t *ps;
-
-		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via)) {
-			check_parent("via", via, PCB_PARENT_DATA, data);
-			chk_attr("via", via);
-		}
 
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 			check_parent("padstack", ps, PCB_PARENT_DATA, data);
 			chk_attr("padstack", ps);
 			chk_term("padstack", (pcb_any_obj_t *)ps);
-		}
-
-		for(elem = elementlist_first(&data->Element); elem != NULL; elem = elementlist_next(elem)) {
-			check_parent("element", elem, PCB_PARENT_DATA, data);
-			chk_element(whose, elem);
-			chk_attr("element", elem);
 		}
 
 		for(subc = pcb_subclist_first(&data->subc); subc != NULL; subc = pcb_subclist_next(subc)) {
