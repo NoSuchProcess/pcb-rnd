@@ -19,8 +19,6 @@
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 - BUG: make test in tests/conf broke [report: igor2]
 - BUG: make test in tests/pcbflags broke [report: igor2]
-
-2. For later releases ===============================================================================
 SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- remove Line->Number and *->Number: we use ->term
@@ -127,6 +125,8 @@ SUBC: element removal:
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouter: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
+
+2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
