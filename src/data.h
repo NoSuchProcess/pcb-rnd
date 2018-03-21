@@ -117,14 +117,8 @@ typedef void (*pcb_pstk_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps);
 /* Loop over all layer objects on each layer. Layer is the outer loop. */
 void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);
 
-/* Loop over all elements and element primitives. Element is the outer loop. */
-void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb);
-
 /* Loop over all subcircuits. */
 void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb);
-
-/* Loop over all vias. */
-void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb);
 
 /* Loop over all design objects. (So all the above three in one call.) */
 void pcb_loop_all(pcb_board_t *pcb, void *ctx,

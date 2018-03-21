@@ -124,75 +124,6 @@ void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb)
 	}
 }
 
-
-void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb)
-{
-	if ((ecb != NULL) || (elcb != NULL) || (eacb != NULL)  || (etcb != NULL) || (epicb != NULL) || (epacb != NULL)) {
-		PCB_ELEMENT_LOOP(PCB_REAL_DATA(pcb));
-		{
-			if (ecb != NULL)
-				if (ecb(ctx, pcb, element, 1))
-					continue;
-
-			if (elcb != NULL) {
-				PCB_ELEMENT_PCB_LINE_LOOP(element);
-				{
-					elcb(ctx, pcb, element, line);
-				}
-				PCB_END_LOOP;
-			}
-
-			if (eacb != NULL) {
-				PCB_ELEMENT_ARC_LOOP(element);
-				{
-					eacb(ctx, pcb, element, arc);
-				}
-				PCB_END_LOOP;
-			}
-
-			if (etcb != NULL) {
-				PCB_ELEMENT_PCB_TEXT_LOOP(element);
-				{
-					etcb(ctx, pcb, element, text);
-				}
-				PCB_END_LOOP;
-			}
-
-			if (epicb != NULL) {
-				PCB_PIN_LOOP(element);
-				{
-					epicb(ctx, pcb, element, pin);
-				}
-				PCB_END_LOOP;
-			}
-
-
-			if (epacb != NULL) {
-				PCB_PAD_LOOP(element);
-				{
-					epacb(ctx, pcb, element, pad);
-				}
-				PCB_END_LOOP;
-			}
-
-			if (ecb != NULL)
-				ecb(ctx, pcb, element, 0);
-		}
-		PCB_END_LOOP;
-	}
-}
-
-void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb)
-{
-	if (vcb != NULL) {
-		PCB_VIA_LOOP(PCB_REAL_DATA(pcb));
-		{
-			vcb(ctx, pcb, via);
-		}
-		PCB_END_LOOP;
-	}
-}
-
 void pcb_loop_pstk(pcb_board_t *pcb, void *ctx, pcb_pstk_cb_t pscb)
 {
 	if (pscb != NULL) {
@@ -212,9 +143,7 @@ void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	)
 {
 	pcb_loop_layers(pcb, ctx, lacb, lcb, acb, tcb, pocb);
-	pcb_loop_elements(pcb, ctx, ecb, elcb, eacb, etcb, epicb, epacb);
 	pcb_loop_subc(pcb, ctx, scb);
-	pcb_loop_vias(pcb, ctx, vcb);
 	pcb_loop_pstk(pcb, ctx, pscb);
 }
 
@@ -231,45 +160,20 @@ void pcb_data_free(pcb_data_t * data)
 
 	subc = (data->parent_type == PCB_PARENT_SUBC);
 
-
-	PCB_VIA_LOOP(data);
-	{
-		free(via->Name);
-	}
-	PCB_END_LOOP;
-	list_map0(&data->Via, pcb_pin_t, pcb_via_free);
-	PCB_ELEMENT_LOOP(data);
-	{
-		pcb_element_destroy(element);
-	}
-	PCB_END_LOOP;
-
 	PCB_SUBC_LOOP(data);
 	{
 		pcb_subc_free(subc);
 	}
 	PCB_END_LOOP;
 
-	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
 	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++)
 		pcb_layer_free(layer);
 
 	if (!subc) {
-		if (data->element_tree)
-			pcb_r_destroy_tree(&data->element_tree);
 		if (data->subc_tree)
 			pcb_r_destroy_tree(&data->subc_tree);
-		for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++)
-			if (data->name_tree[i])
-				pcb_r_destroy_tree(&data->name_tree[i]);
-		if (data->via_tree)
-			pcb_r_destroy_tree(&data->via_tree);
-		if (data->pin_tree)
-			pcb_r_destroy_tree(&data->pin_tree);
-		if (data->pad_tree)
-			pcb_r_destroy_tree(&data->pad_tree);
 		if (data->padstack_tree)
 			pcb_r_destroy_tree(&data->padstack_tree);
 		if (data->rat_tree)
@@ -291,9 +195,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	pcb_bool hasNoObjects;
 	pcb_cardinal_t i;
 
-	if (pinlist_length(&Data->Via) != 0) return pcb_false;
 	if (padstacklist_length(&Data->padstack) != 0) return pcb_false;
-	if (elementlist_length(&Data->Element) != 0) return pcb_false;
 	if (pcb_subclist_length(&Data->subc) != 0) return pcb_false;
 	for (i = 0; i < Data->LayerN; i++)
 		if (!pcb_layer_is_empty_(PCB, &(Data->Layer[i])))
@@ -309,25 +211,11 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_float
 	out->X2 = out->Y2 = -PCB_MAX_COORD;
 
 	/* now scan for the lowest/highest X and Y coordinate */
-	PCB_VIA_LOOP(Data);
-	{
-		pcb_pin_bbox(via);
-		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, via))
-			pcb_box_bump_box(out, &via->BoundingBox);
-	}
-	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(Data);
 	{
 		pcb_pstk_bbox(padstack);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, padstack))
 			pcb_box_bump_box(out, &padstack->BoundingBox);
-	}
-	PCB_END_LOOP;
-	PCB_ELEMENT_LOOP(Data);
-	{
-		pcb_element_bbox(Data, element, pcb_font(PCB, 0, 0));
-		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, element))
-			pcb_box_bump_box(out, &element->BoundingBox);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(Data);
@@ -432,11 +320,6 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 
 void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too, pcb_bool pstk_smirror)
 {
-	PCB_VIA_LOOP(data);
-	{
-		pcb_via_mirror(data, via, y_offs);
-	}
-	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(data);
 	{
 		pcb_pstk_mirror(padstack, y_offs, pstk_smirror);
@@ -503,15 +386,10 @@ int pcb_data_normalize(pcb_data_t *data)
 
 void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent)
 {
-	pcb_pin_t *via;
 	pcb_pstk_t *ps;
 	pcb_subc_t *sc;
 	gdl_iterator_t it;
 
-	pinlist_foreach(&data->Via, &it, via) {
-		via->parent_type = PCB_PARENT_DATA;
-		via->parent.data = new_parent;
-	}
 	padstacklist_foreach(&data->padstack, &it, ps) {
 		ps->parent_type = PCB_PARENT_DATA;
 		ps->parent.data = new_parent;
@@ -532,19 +410,9 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 	ctx.move.dx = dx;
 	ctx.move.dy = dy;
 
-	PCB_VIA_LOOP(data);
-	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_VIA, via, via, via);
-	}
-	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(data);
 	{
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_PSTK, padstack, padstack, padstack);
-	}
-	PCB_END_LOOP;
-	PCB_ELEMENT_LOOP(data);
-	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_ELEMENT, element, element, element);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
@@ -576,14 +444,8 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 
 void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, unsigned long mask)
 {
-	if (type & PCB_OBJ_VIA) PCB_VIA_LOOP(data); {
-		if ((mask == 0) || (PCB_FLAG_TEST(mask, via))) vtp0_append(dst, via);
-	} PCB_END_LOOP;
 	if (type & PCB_OBJ_PSTK) PCB_PADSTACK_LOOP(data); {
 		if ((mask == 0) || (PCB_FLAG_TEST(mask, padstack))) vtp0_append(dst, padstack);
-	} PCB_END_LOOP;
-	if (type & PCB_OBJ_ELEMENT) PCB_ELEMENT_LOOP(data); {
-		if ((mask == 0) || (PCB_FLAG_TEST(mask, element))) vtp0_append(dst, element);
 	} PCB_END_LOOP;
 	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
 		if ((mask == 0) || (PCB_FLAG_TEST(mask, subc))) vtp0_append(dst, subc);
@@ -604,10 +466,7 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 
 void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
 {
-	if (type & PCB_OBJ_VIA) PCB_VIA_LOOP(data); {
-		if (via->term != NULL) vtp0_append(dst, via);
-	} PCB_END_LOOP;
-#warning TODO: subc TODO
+#warning subc TODO: subc in subc
 /*	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
 		if (subc->term != NULL) vtp0_append(dst, subc);
 	} PCB_END_LOOP;*/
@@ -649,16 +508,9 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 	pcb_layer_id_t lid;
 	pcb_r_dir_t res = 0;
 
-	if (!vis_only || PCB->ViaOn)
-		if (types & PCB_OBJ_VIA)  rsearch(data->via_tree);
-
 	if (!vis_only || PCB->RatOn)
 		if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
 
-	if (!vis_only || PCB->PinOn) {
-		if (types & PCB_OBJ_PIN)  rsearch(data->pin_tree);
-		if (types & PCB_OBJ_PAD)  rsearch(data->pad_tree);
-	}
 	if (types & PCB_OBJ_PSTK) rsearch(data->padstack_tree);
 
 	if (!vis_only || PCB->SubcOn)
@@ -676,19 +528,8 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 		if (types & PCB_OBJ_ARC)  rsearch(ly->arc_tree);
 	}
 
-	/* safe to remove this block with elements */
-	{
-		int n;
-
-		if (types & PCB_OBJ_ELEMENT) rsearch(data->element_tree);
-		if (types & PCB_OBJ_ETEXT)
-			for(n = 0; n < 3; n++)
-				rsearch(data->name_tree[n]);
-	}
-
 	return res;
 }
-
 
 /*** poly clip inhibit mechanism ***/
 void pcb_data_clip_inhibit_inc(pcb_data_t *data)
