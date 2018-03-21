@@ -11,8 +11,8 @@
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  * Upgraded to subc by Tibor 'Igor2' Palinkas in 2017.
  *
- * Improve the initial dispersion of elements by choosing an order based
- * on the netlist, rather than the arbitrary element order.  This isn't
+ * Improve the initial dispersion of subcircuits by choosing an order based
+ * on the netlist, rather than the arbitrary subcircuit order.  This isn't
  * the same as a global autoplace, it's more of a linear autoplace.  It
  * might make some useful local groupings.  For example, you should not
  * have to chase all over the board to find the resistor that goes with
@@ -46,51 +46,16 @@ static pcb_coord_t miny;
 static pcb_coord_t maxx;
 static pcb_coord_t maxy;
 
-/* Place one element or subcircuit.
+/* the same for subcircuits
    Must initialize statics above before calling for the first time.
    This was taken almost entirely from pcb_act_DisperseElements, with cleanup */
-static void place_elem(pcb_element_t * element)
-{
-	pcb_coord_t dx, dy;
-
-	/* figure out how much to move the element */
-	dx = minx - element->BoundingBox.X1;
-	dy = miny - element->BoundingBox.Y1;
-
-	/* snap to the grid */
-	dx -= (element->MarkX + dx) % PCB->Grid;
-	dx += PCB->Grid;
-	dy -= (element->MarkY + dy) % PCB->Grid;
-	dy += PCB->Grid;
-
-	/* and add one grid size so we make sure we always space by GAP or more */
-	dx += PCB->Grid;
-
-	/* Figure out if this row has room.  If not, start a new row */
-	if (minx != GAP && GAP + element->BoundingBox.X2 + dx > PCB->MaxWidth) {
-		miny = maxy + GAP;
-		minx = GAP;
-		place_elem(element); /* recurse can't loop, now minx==GAP */
-		return;
-	}
-
-	pcb_element_move(PCB->Data, element, dx, dy);
-	pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
-
-	/* keep track of how tall this row is */
-	minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
-	if (maxy < element->BoundingBox.Y2)
-		maxy = element->BoundingBox.Y2;
-}
-
-/* the same for subcircuits */
 static void place_subc(pcb_subc_t *sc)
 {
 	pcb_coord_t dx, dy, ox = 0, oy = 0;
 
 	pcb_subc_get_origin(sc, &ox, &oy);
 
-	/* figure out how much to move the element */
+	/* figure out how much to move the subcircuit */
 	dx = minx - sc->BoundingBox.X1;
 	dy = miny - sc->BoundingBox.Y1;
 
@@ -119,16 +84,6 @@ static void place_subc(pcb_subc_t *sc)
 	if (maxy < sc->BoundingBox.Y2)
 		maxy = sc->BoundingBox.Y2;
 }
-
-static void place(pcb_any_obj_t *obj)
-{
-	switch(obj->type) {
-		case PCB_OBJ_ELEMENT: place_elem((pcb_element_t *)obj); break;
-		case PCB_OBJ_SUBC:    place_subc((pcb_subc_t *)obj); break;
-		default: break;
-	}
-}
-
 
 /* Return the X location of a connection's pad or pin within its element. */
 static pcb_coord_t padDX(pcb_connection_t * conn)
@@ -187,16 +142,9 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		return 0;
 	}
 
-	/* remember which elements we finish with */
+	/* remember which subcircuits we finish with */
 	htpi_init(&visited, ptrhash, ptrkeyeq);
 
-	/* if we're not doing all, mark the unselected elements and subcs as "visited" */
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)))
-			set_visited(element);
-	}
-	PCB_END_LOOP;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)))
@@ -237,12 +185,12 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 		/* a weak attempt to get the linked pads side-by-side */
 		if (padorder(conna, connb)) {
-			place(ea);
-			place(eb);
+			place_subc(ea);
+			place_subc(eb);
 		}
 		else {
-			place(eb);
-			place(ea);
+			place_subc(eb);
+			place_subc(ea);
 		}
 	}
 	PCB_END_LOOP;
@@ -263,19 +211,13 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			if (is_visited(parent))
 				continue;
 			set_visited(parent);
-			place(parent);
+			place_subc(parent);
 		}
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
 
 	/* Place up anything else */
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		if (!is_visited(element))
-			place_elem(element);
-	}
-	PCB_END_LOOP;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		if (!is_visited(subc))
