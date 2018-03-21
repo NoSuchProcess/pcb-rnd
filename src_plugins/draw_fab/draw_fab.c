@@ -211,13 +211,8 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		for (i = 0; i < drill->PinN; i++) {
 			int unplated = 1;
 			pcb_coord_t x, y;
-			if ((drill->hole[i]->type == PCB_OBJ_PIN) || (drill->hole[i]->type == PCB_OBJ_VIA)) {
-				pcb_pin_t *pin = (pcb_pin_t *)drill->hole[i];
-				unplated = PCB_FLAG_TEST(PCB_FLAG_HOLE, pin);
-				x = pin->X;
-				y = pin->Y;
-			}
-			else if (drill->hole[i]->type == PCB_OBJ_PSTK) {
+			assert(drill->hole[i]->type == PCB_OBJ_PSTK);
+			{
 				pcb_pstk_t *ps = (pcb_pstk_t *)drill->hole[i];
 				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 				unplated = !proto->hplated;
