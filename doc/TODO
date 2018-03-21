@@ -18,6 +18,7 @@
 + BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 SUBC: element removal:
+	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- remove Line->Number and *->Number: we use ->term
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
