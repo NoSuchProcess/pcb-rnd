@@ -57,14 +57,13 @@ void pcb_tool_remove_notify_mode(void)
 			return;
 		}
 
-		if ((type == PCB_TYPE_SUBC) && (PCB->is_footprint)) {
-			pcb_message(PCB_MSG_WARNING, "Can not remove the subcircuit being edited in the footprint edit mode\n");
-			return;
+		if (type == PCB_TYPE_SUBC) {
+			if(PCB->is_footprint) {
+				pcb_message(PCB_MSG_WARNING, "Can not remove the subcircuit being edited in the footprint edit mode\n");
+				return;
+			}
+			pcb_event(PCB_EVENT_RUBBER_REMOVE_SUBC, "ppp", ptr1, ptr2, ptr3);
 		}
-
-#warning subc TODO: rewrite this to subc when elements are removed
-		if (type == PCB_TYPE_ELEMENT)
-			pcb_event(PCB_EVENT_RUBBER_REMOVE_ELEMENT, "ppp", ptr1, ptr2, ptr3);
 
 		/* preserve original parent over the board layer pcb_search_screen operated on -
 		   this is essential for undo: it needs to put back the object to the original
