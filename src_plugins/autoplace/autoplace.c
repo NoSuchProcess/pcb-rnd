@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001 harry eaton
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@
  * Copyright (c) 2001 C. Scott Ananian
  */
 
-/* functions used to autoplace elements.
+/* functions used to autoplace subcircuits.
  */
 
 #include "config.h"
@@ -63,7 +64,6 @@
 #include "rats.h"
 #include "remove.h"
 #include "rotate.h"
-#include "obj_pinvia.h"
 #include "obj_rat.h"
 #include "obj_term.h"
 #include "board.h"
@@ -119,11 +119,6 @@ const struct {
 		PCB_MIL_TO_COORD(10),						/* fine grid is 10 mils */
 };
 
-typedef struct {
-	pcb_element_t **element;
-	pcb_cardinal_t elementN;
-} ElementPtrListType;
-
 enum ewhich { SHIFT, ROTATE, EXCHANGE };
 
 typedef struct {
@@ -164,7 +159,7 @@ static void pcb_box_free(pcb_box_list_t *Boxlist)
 
 /* ---------------------------------------------------------------------------
  * Update the X, Y and group position information stored in the NetList after
- * elements have possibly been moved, rotated, flipped, etc.
+ * subcircuits have possibly been moved, rotated, flipped, etc.
  */
 static void UpdateXY(pcb_netlist_t *Nets)
 {
@@ -180,15 +175,6 @@ static void UpdateXY(pcb_netlist_t *Nets)
 		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
 			pcb_connection_t *c = &(Nets->Net[i].Connection[j]);
 			switch (c->obj->type) {
-			case PCB_OBJ_PAD:
-				c->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_element_t *) c->ptr1)
-					? SLayer : CLayer;
-				pcb_obj_center(c->obj, &c->X, &c->Y);
-				break;
-			case PCB_OBJ_PIN:
-				c->group = SLayer;			/* any layer will do */
-				pcb_obj_center(c->obj, &c->X, &c->Y);
-				break;
 			case PCB_OBJ_PSTK:
 				c->group = SLayer;  /* any layer will do */
 				c->X = ((pcb_pstk_t *) c->obj)->x;
@@ -218,21 +204,13 @@ static void UpdateXY(pcb_netlist_t *Nets)
 }
 
 /* ---------------------------------------------------------------------------
- * Create a list of selected elements.
+ * Create a list of selected subcircuits
  */
-static vtp0_t collectSelectedElements()
+static vtp0_t collectSelectedSubcircuits()
 {
 	vtp0_t list;
 
 	vtp0_init(&list);
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
-			pcb_element_t **epp = (pcb_element_t **)vtp0_alloc_append(&list, 1);
-			*epp = element;
-		}
-	}
-	PCB_END_LOOP;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
@@ -411,85 +389,6 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	pcb_box_free(&bounds);
 	/* now collect module areas (bounding rect of pins/pads) */
 	/* two lists for solder side / component side. */
-
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		pcb_box_list_t *thisside, *otherside;
-		pcb_box_t *box;
-		pcb_box_t *lastbox = NULL;
-		pcb_coord_t thickness, clearance;
-		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element)) {
-			thisside = &solderside;
-			otherside = &componentside;
-		}
-		else {
-			thisside = &componentside;
-			otherside = &solderside;
-		}
-		box = pcb_box_new(thisside);
-		/* protect against elements with no pins/pads */
-		if (pinlist_length(&element->Pin) == 0 && padlist_length(&element->Pad) == 0)
-			continue;
-		/* initialize box so that it will take the dimensions of
-		 * the first pin/pad */
-		box->X1 = PCB_MAX_COORD;
-		box->Y1 = PCB_MAX_COORD;
-		box->X2 = -PCB_MAX_COORD;
-		box->Y2 = -PCB_MAX_COORD;
-		PCB_PIN_LOOP(element);
-		{
-			thickness = pin->Thickness / 2;
-			clearance = pin->Clearance * 2;
-			EXPANDRECTXY(box,
-				pin->X - (thickness + clearance),
-				pin->Y - (thickness + clearance), pin->X + (thickness + clearance), pin->Y + (thickness + clearance));
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			thickness = pad->Thickness / 2;
-			clearance = pad->Clearance * 2;
-			EXPANDRECTXY(box,
-				MIN(pad->Point1.X, pad->Point2.X) - (thickness + clearance),
-				MIN(pad->Point1.Y, pad->Point2.Y) - (thickness + clearance),
-				MAX(pad->Point1.X, pad->Point2.X) + (thickness + clearance),
-				MAX(pad->Point1.Y, pad->Point2.Y) + (thickness + clearance));
-		}
-		PCB_END_LOOP;
-		/* add a box for each pin to the "opposite side":
-		 * surface mount components can't sit on top of pins */
-		if (!CostParameter.fast) {
-			PCB_PIN_LOOP(element);
-			{
-				box = pcb_box_new(otherside);
-				thickness = pin->Thickness / 2;
-				clearance = pin->Clearance * 2;
-				/* we ignore clearance here */
-				/* (otherwise pins don't fit next to each other) */
-				box->X1 = pin->X - thickness;
-				box->Y1 = pin->Y - thickness;
-				box->X2 = pin->X + thickness;
-				box->Y2 = pin->Y + thickness;
-				/* speed hack! coalesce with last box if we can */
-				if (lastbox != NULL &&
-						((lastbox->X1 == box->X1 &&
-							lastbox->X2 == box->X2 &&
-							MIN(labs(lastbox->Y1 - box->Y2), labs(box->Y1 - lastbox->Y2)) < clearance) ||
-							(lastbox->Y1 == box->Y1 && lastbox->Y2 == box->Y2 && MIN(labs(lastbox->X1 - box->X2), labs(box->X1 - lastbox->X2)) < clearance))) {
-					EXPANDRECT(lastbox, box);
-					otherside->BoxN--;
-				}
-				else
-					lastbox = box;
-			}
-			PCB_END_LOOP;
-		}
-		/* assess out of bounds penalty */
-		if (element->VBox.X1 < 0 || element->VBox.Y1 < 0 || element->VBox.X2 > PCB->MaxWidth || element->VBox.Y2 > PCB->MaxHeight)
-			delta3 += CostParameter.out_of_bounds_penalty;
-	}
-	PCB_END_LOOP;
-
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_box_list_t *thisside, *otherside;
@@ -578,22 +477,6 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		vtp0_init(&seboxes);
 		vtp0_init(&ceboxes);
 
-		PCB_ELEMENT_LOOP(PCB->Data);
-		{
-			boxpp = (struct ebox **) vtp0_alloc_append(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes, 1);
-			*boxpp = (struct ebox *) malloc(sizeof(**boxpp));
-			if (*boxpp == NULL) {
-				fprintf(stderr, "malloc() failed in ComputeCost\n");
-				exit(1);
-			}
-
-			(*boxpp)->box = element->VBox;
-			(*boxpp)->comp = (pcb_any_obj_t *)element;
-			(*boxpp)->refdes = element->Name[0].TextString;
-			(*boxpp)->rot90 = element->Name[0].Direction;
-			(*boxpp)->vbox = &element->VBox;
-		}
-		PCB_END_LOOP;
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			int onbtm = 0;
@@ -622,34 +505,9 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		pcb_r_insert_array(rt_c, (const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes));
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
-		/* now, for each element, find its neighbor on all four sides */
+		/* now, for each subcircuit, find its neighbor on all four sides */
 		delta4 = 0;
 		for (i = 0; i < 4; i++) {
-			PCB_ELEMENT_LOOP(PCB->Data);
-			{
-				boxp = (struct ebox *)r_find_neighbor(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? rt_s : rt_c, &element->VBox, dir[i]);
-				/* score bounding box alignments */
-				if (!boxp)
-					continue;
-				factor = 1;
-				if (element->Name[0].TextString && boxp->refdes && 0 == PCB_NSTRCMP(element->Name[0].TextString, boxp->refdes)) {
-					delta4 += CostParameter.matching_neighbor_bonus;
-					factor++;
-				}
-				if (element->Name[0].Direction == boxp->rot90)
-					delta4 += factor * CostParameter.oriented_neighbor_bonus;
-				if (element->VBox.X1 == boxp->vbox->X1 ||
-						element->VBox.X1 == boxp->vbox->X2 ||
-						element->VBox.X2 == boxp->vbox->X1 ||
-						element->VBox.X2 == boxp->vbox->X2 ||
-						element->VBox.Y1 == boxp->vbox->Y1 ||
-						element->VBox.Y1 == boxp->vbox->Y2 ||
-						element->VBox.Y2 == boxp->vbox->Y1 ||
-						element->VBox.Y2 == boxp->vbox->Y2)
-					delta4 += factor * CostParameter.aligned_neighbor_bonus;
-			}
-			PCB_END_LOOP;
-
 			PCB_SUBC_LOOP(PCB->Data);
 			{
 				int onbtm = 0, rot90;
@@ -692,14 +550,6 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	{
 		pcb_coord_t minX = PCB_MAX_COORD, minY = PCB_MAX_COORD;
 		pcb_coord_t maxX = -PCB_MAX_COORD, maxY = -PCB_MAX_COORD;
-		PCB_ELEMENT_LOOP(PCB->Data);
-		{
-			PCB_MAKE_MIN(minX, element->VBox.X1);
-			PCB_MAKE_MIN(minY, element->VBox.Y1);
-			PCB_MAKE_MAX(maxX, element->VBox.X2);
-			PCB_MAKE_MAX(maxY, element->VBox.Y2);
-		}
-		PCB_END_LOOP;
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			PCB_MAKE_MIN(minX, subc->BoundingBox.X1);
@@ -722,18 +572,12 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 
 static pcb_bool is_smd(const pcb_any_obj_t *obj)
 {
-	if (obj->type == PCB_OBJ_ELEMENT)
-		return padlist_length(&(((pcb_element_t *)obj)->Pad)) != 0;
 	return padstacklist_length(&(((pcb_subc_t *)obj)->data->padstack)) != 0;
 }
 
 static pcb_bool on_bottom(const pcb_any_obj_t *obj)
 {
 	int onbtm = 0;
-
-	if (obj->type == PCB_OBJ_ELEMENT)
-		return PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, obj);
-
 	pcb_subc_get_side((pcb_subc_t *)obj, &onbtm);
 	return onbtm;
 }
@@ -744,12 +588,12 @@ static pcb_bool on_bottom(const pcb_any_obj_t *obj)
  *  2) rotate component 90, 180, or 270 degrees.
  *  3) shift component random + or - amount in random direction.
  *     (magnitude of shift decreases over time)
- *  -- Only perturb selected elements (need count/list of selected?) --
+ *  -- Only perturb selected subcircuits (need count/list of selected?) --
  */
 PerturbationType createPerturbation(vtp0_t *selected, double T)
 {
 	PerturbationType pt = { 0 };
-	/* pick element to perturb */
+	/* pick subcircuit to perturb */
 	pt.comp = (pcb_any_obj_t *) selected->array[pcb_rand() % vtp0_len(selected)];
 	/* exchange, flip/rotate or shift? */
 	switch (pcb_rand() % ((vtp0_len(selected) > 1) ? 3 : 2)) {
@@ -767,14 +611,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 			pt.DX = ((pt.DX / grid) + SGN(pt.DX)) * grid;
 			pt.DY = ((pt.DY / grid) + SGN(pt.DY)) * grid;
 			/* limit DX/DY so we don't fall off board */
-			if (pt.comp->type == PCB_OBJ_ELEMENT) {
-				pcb_element_t *e = (pcb_element_t *)pt.comp;
-				pt.DX = MAX(pt.DX, -e->VBox.X1);
-				pt.DX = MIN(pt.DX, PCB->MaxWidth - e->VBox.X2);
-				pt.DY = MAX(pt.DY, -e->VBox.Y1);
-				pt.DY = MIN(pt.DY, PCB->MaxHeight - e->VBox.Y2);
-			}
-			else {
+			{
 				pcb_subc_t *s = (pcb_subc_t *)pt.comp;
 				pt.DX = MAX(pt.DX, -s->BoundingBox.X1);
 				pt.DX = MIN(pt.DX, PCB->MaxWidth - s->BoundingBox.X2);
@@ -817,15 +654,10 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 {
 	pcb_box_t *bb;
 	pcb_coord_t bbcx, bbcy;
-	pcb_element_t *elem = (pcb_element_t *)pt->comp;
 	pcb_subc_t *subc = (pcb_subc_t *)pt->comp;
 	/* compute center of element bounding box */
 
-	if (pt->comp->type == PCB_OBJ_ELEMENT)
-		bb = &elem->VBox;
-	else
-		bb = &subc->BoundingBox;
-
+	bb = &subc->BoundingBox;
 	bbcx = (bb->X1 + bb->X2) / 2;
 	bbcy = (bb->Y1 + bb->Y2) / 2;
 	/* do exchange, shift or flip/rotate */
@@ -837,11 +669,7 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 				DX = -DX;
 				DY = -DY;
 			}
-			
-			if (pt->comp->type == PCB_OBJ_ELEMENT)
-				pcb_element_move(PCB->Data, elem, DX, DY);
-			else
-				pcb_subc_move(subc, DX, DY, 1);
+			pcb_subc_move(subc, DX, DY, 1);
 			return;
 		}
 	case ROTATE:
@@ -851,29 +679,18 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 				b = (4 - b) & 3;
 			/* 0 - flip; 1-3, rotate. */
 			if (b) {
-				if (pt->comp->type == PCB_OBJ_ELEMENT)
-					pcb_element_rotate90(PCB->Data, elem, bbcx, bbcy, b);
-				else
-					pcb_subc_rotate90(subc, bbcx, bbcy, b);
+				pcb_subc_rotate90(subc, bbcx, bbcy, b);
 			}
 			else {
+				pcb_cardinal_t n;
 				pcb_coord_t y = bb->Y1;
-				if (pt->comp->type == PCB_OBJ_ELEMENT) {
-					pcb_element_mirror(PCB->Data, elem, 0);
-					/* mirroring moves the element.  move it back. */
-					pcb_element_move(PCB->Data, elem, 0, y - elem->VBox.Y1);
-				}
-				else {
-					pcb_cardinal_t n;
-					pcb_coord_t y = bb->Y1;
-					pcb_subc_change_side(&subc, (bb->Y1+bb->Y2)/2);
-					/* mirroring moves the subc.  move it back. */
-					pcb_subc_move(subc, 0, y - subc->BoundingBox.Y1, 1);
-					for(n = 0; n < vtp0_len(selected); n++)
-						if (selected->array[n] == pt->comp)
-							selected->array[n] = subc;
-					pt->comp = (pcb_any_obj_t *)subc;
-				}
+				pcb_subc_change_side(&subc, (bb->Y1+bb->Y2)/2);
+				/* mirroring moves the subc.  move it back. */
+				pcb_subc_move(subc, 0, y - subc->BoundingBox.Y1, 1);
+				for(n = 0; n < vtp0_len(selected); n++)
+					if (selected->array[n] == pt->comp)
+						selected->array[n] = subc;
+				pt->comp = (pcb_any_obj_t *)subc;
 			}
 			return;
 		}
@@ -885,16 +702,10 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 			pcb_coord_t x2 = pt->other->BoundingBox.X1;
 			pcb_coord_t y2 = pt->other->BoundingBox.Y1;
 
-			if (pt->comp->type == PCB_OBJ_ELEMENT)
-				pcb_element_move(PCB->Data, elem, x2 - x1, y2 - y1);
-			else
-				pcb_subc_move(subc, x2 - x1, y2 - y1, 1);
+			pcb_subc_move(subc, x2 - x1, y2 - y1, 1);
+			pcb_subc_move((pcb_subc_t *)pt->other, x1 - x2, y1 - y2, 1);
 
-			if (pt->other->type == PCB_OBJ_ELEMENT)
-				pcb_element_move(PCB->Data, (pcb_element_t *)pt->other, x1 - x2, y1 - y2);
-			else
-				pcb_subc_move((pcb_subc_t *)pt->other, x1 - x2, y1 - y2, 1);
-			/* then flip both elements if they are on opposite sides */
+			/* then flip both subcircuits if they are on opposite sides */
 			if (on_bottom(pt->comp) != on_bottom(pt->other)) {
 				PerturbationType mypt;
 				mypt.comp = pt->comp;
@@ -939,9 +750,9 @@ pcb_bool AutoPlaceSelected(void)
 		goto done;
 	}
 
-	Selected = collectSelectedElements();
+	Selected = collectSelectedSubcircuits();
 	if (vtp0_len(&Selected) == 0) {
-		pcb_message(PCB_MSG_ERROR, _("No elements selected to autoplace.\n"));
+		pcb_message(PCB_MSG_ERROR, _("No subcircuits selected to autoplace.\n"));
 		goto done;
 	}
 
