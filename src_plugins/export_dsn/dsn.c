@@ -118,41 +118,6 @@ static pcb_hid_attribute_t *dsn_get_export_options(int *n)
 	return dsn_options;
 }
 
-
-/* this function is mostly ripped from bom.c */
-static pcb_point_t get_centroid(pcb_element_t * element)
-{
-	pcb_point_t centroid;
-	double sumx = 0.0, sumy = 0.0;
-	int pin_cnt = 0;
-
-	PCB_PIN_LOOP(element);
-	{
-		sumx += (double) pin->X;
-		sumy += (double) pin->Y;
-		pin_cnt++;
-	}
-	PCB_END_LOOP;
-
-	PCB_PAD_LOOP(element);
-	{
-		sumx += (pad->Point1.X + pad->Point2.X) / 2.0;
-		sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;
-		pin_cnt++;
-	}
-	PCB_END_LOOP;
-
-	if (pin_cnt > 0) {
-		centroid.X = sumx / (double) pin_cnt;
-		centroid.Y = PCB->MaxHeight - (sumy / (double) pin_cnt);
-	}
-	else {
-		centroid.X = 0;
-		centroid.Y = 0;
-	}
-	return centroid;
-}
-
 static GList *layerlist = NULL;  /* contain routing layers */
 
 static void print_structure(FILE * fp)
@@ -269,22 +234,6 @@ static void print_structure(FILE * fp)
 static void print_placement(FILE * fp)
 {
 	fprintf(fp, "  (placement\n");
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		char *ename;
-		pcb_point_t ecentroid = get_centroid(element);
-		char *side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
-		ename = PCB_ELEM_NAME_REFDES(element);
-		if (ename != NULL)
-			ename = pcb_strdup(ename);
-		else
-			ename = pcb_strdup("null");
-		pcb_fprintf(fp, "    (component %d\n", element->ID);
-		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ecentroid.X, ecentroid.Y, side);
-		pcb_fprintf(fp, "    )\n");
-		g_free(ename);
-	}
-	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
@@ -327,71 +276,6 @@ static void add_padstack(GList **pads, char *padstack)
 		*pads = g_list_append(*pads, padstack);
 	else
 		free(padstack);
-}
-
-static void print_pin(FILE *fp, GList **pads, pcb_pin_t *pin, pcb_point_t centroid, int partsidesign, int partside)
-{
-	char *padstack;
-	pcb_coord_t ty;
-	pcb_coord_t pinthickness;
-	pcb_coord_t lx, ly;  /* hold local pin coordinates */
-	ty = PCB->MaxHeight - pin->Y;
-	pinthickness = pin->Thickness;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
-		padstack = pcb_strdup_printf("Th_square_%mI", pinthickness);
-	else
-		padstack = pcb_strdup_printf("Th_round_%mI", pinthickness);
-	lx = (pin->X - centroid.X) * partsidesign;
-	ly = (centroid.Y - ty) * -1;
-
-	if (!pin->Number) { /* if pin is null just make it a keepout */
-		for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
-			pcb_layer_t *lay = iter->data;
-			pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->name, pinthickness, lx, ly);
-		}
-	}
-	else {
-		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pin->Number, lx, ly);
-	}
-
-	add_padstack(pads, padstack);
-}
-
-static void print_pad(FILE *fp, GList **pads, pcb_pad_t *pad, pcb_point_t centroid, int partsidesign, int partside)
-{
-	gchar *padstack;
-	pcb_coord_t xlen, ylen, xc, yc, p1y, p2y;
-	pcb_coord_t lx, ly;  /* store local coordinates for pins */
-	p1y = PCB->MaxHeight - pad->Point1.Y;
-	p2y = PCB->MaxHeight - pad->Point2.Y;
-	/* pad dimensions are unusual-
-	   the width is thickness and length is point difference plus thickness */
-	xlen = ABS(pad->Point1.X - pad->Point2.X);
-	if (xlen == 0) {
-		xlen = pad->Thickness;
-		ylen = ABS(p1y - p2y) + pad->Thickness;
-	}
-	else {
-		ylen = pad->Thickness;
-		xlen += pad->Thickness;
-	}
-	xc = (pad->Point1.X + pad->Point2.X) / 2;
-	yc = (p1y + p2y) / 2;
-	lx = (xc - centroid.X) * partsidesign;
-	ly = (centroid.Y - yc) * -1;
-	padstack = pcb_strdup_printf("Smd_rect_%mIx%mI", xlen, ylen);
-
-	if (!pad->Number) {				/* if pad is null just make it a keepout */
-		pcb_layer_t *lay;
-		lay = g_list_nth_data(layerlist, partside);
-		pcb_fprintf(fp, "      (keepout \"\" (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-								lay->name, lx - xlen / 2, ly - ylen / 2, lx + xlen / 2, ly + ylen / 2);
-	}
-	else {
-		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pad->Number, lx, ly);
-	}
-
-	add_padstack(pads, padstack);
 }
 
 static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
@@ -552,27 +436,6 @@ static void print_library(FILE * fp)
 	gds_init(&term_shapes);
 
 	fprintf(fp, "  (library\n");
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		int partside = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? g_list_length(layerlist) - 1 : 0;
-		int partsidesign = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? -1 : 1;
-		pcb_point_t centroid = get_centroid(element);
-		fprintf(fp, "    (image %ld\n", element->ID); /* map every element by ID */
-		/* loop thru pins and pads to add to image */
-		PCB_PIN_LOOP(element);
-		{
-			print_pin(fp, &pads, pin, centroid, partsidesign, partside);
-		}
-		PCB_END_LOOP;
-
-		PCB_PAD_LOOP(element);
-		{
-			print_pad(fp, &pads, pad, centroid, partsidesign, partside);
-		}
-		PCB_END_LOOP;
-		fprintf(fp, "    )\n");
-	}
-	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
@@ -615,12 +478,6 @@ static void print_library(FILE * fp)
 			gds_append_str(&term_shapes, "      )\n");
 			gds_append_str(&term_shapes, "      (attach off)\n");
 			gds_append_str(&term_shapes, "    )\n");
-		}
-		PCB_END_LOOP;
-
-		PCB_VIA_LOOP(subc->data);
-		{
-			print_pin(fp, &pads, via, centroid, partsidesign, partside);
 		}
 		PCB_END_LOOP;
 
