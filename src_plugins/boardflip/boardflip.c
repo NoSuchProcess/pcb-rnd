@@ -136,17 +136,6 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-	PCB_VIA_LOOP(data);
-	{
-		pcb_r_delete_entry(data->via_tree, (pcb_box_t *)via);
-		pcb_poly_restore_to_poly(data, PCB_TYPE_VIA, via, via);
-		XFLIP(via->X);
-		YFLIP(via->Y);
-		pcb_pin_bbox(via);
-		pcb_r_insert_entry(data->via_tree, (pcb_box_t *) via);
-		pcb_poly_clear_from_poly(data, PCB_TYPE_VIA, via, via);
-	}
-	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(data);
 	{
 		pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)padstack);
@@ -164,68 +153,6 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		if (et_swap_sides) {
 #warning subc TODO: layer mirror, also test one-sided padstack
 		}
-	}
-	PCB_END_LOOP;
-	PCB_ELEMENT_LOOP(data);
-	{
-		XFLIP(element->MarkX);
-		YFLIP(element->MarkY);
-		if (et_swap_sides && ONLY1)
-			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
-		PCB_ELEMENT_PCB_TEXT_LOOP(element);
-		{
-			pcb_r_delete_entry(data->name_tree[n], (pcb_box_t *)text);
-			XFLIP(text->X);
-			YFLIP(text->Y);
-			if (et_swap_sides)
-				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
-			pcb_r_insert_entry(data->name_tree[n], (pcb_box_t *)text);
-		}
-		PCB_END_LOOP;
-		PCB_ELEMENT_PCB_LINE_LOOP(element);
-		{
-			XFLIP(line->Point1.X);
-			XFLIP(line->Point2.X);
-			YFLIP(line->Point1.Y);
-			YFLIP(line->Point2.Y);
-		}
-		PCB_END_LOOP;
-		PCB_ELEMENT_ARC_LOOP(element);
-		{
-			XFLIP(arc->X);
-			YFLIP(arc->Y);
-			AFLIP(arc->StartAngle);
-			if (ONLY1)
-				NEG(arc->Delta);
-		}
-		PCB_END_LOOP;
-		PCB_PIN_LOOP(element);
-		{
-			pcb_r_delete_entry(data->pin_tree, (pcb_box_t *)pin);
-			pcb_poly_restore_to_poly(data, PCB_TYPE_PIN, element, pin);
-			XFLIP(pin->X);
-			YFLIP(pin->Y);
-			pcb_pin_bbox(pin);
-			pcb_r_insert_entry(data->pin_tree, (pcb_box_t *)pin);
-			pcb_poly_clear_from_poly(data, PCB_TYPE_PIN, element, pin);
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			pcb_r_delete_entry(data->pad_tree, (pcb_box_t *)pad);
-			pcb_poly_restore_to_poly(data, PCB_TYPE_PAD, element, pad);
-			XFLIP(pad->Point1.X);
-			XFLIP(pad->Point2.X);
-			YFLIP(pad->Point1.Y);
-			YFLIP(pad->Point2.Y);
-			if (et_swap_sides && ONLY1)
-				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
-			pcb_pad_bbox(pad);
-			pcb_r_insert_entry(data->pad_tree, (pcb_box_t *)pad);
-			pcb_poly_clear_from_poly(data, PCB_TYPE_PAD, element, pad);
-		}
-		PCB_END_LOOP;
-		pcb_element_bbox(data, element, pcb_font(PCB, 0, 1)); /* also does the rtree administration */
 	}
 	PCB_END_LOOP;
 	PCB_RAT_LOOP(data);
