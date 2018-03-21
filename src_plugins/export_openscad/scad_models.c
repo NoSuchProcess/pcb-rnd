@@ -108,15 +108,6 @@ static void scad_insert_models(void)
 
 	htsp_init(&models, strhash, strkeyeq);
 
-	PCB_ELEMENT_LOOP(PCB->Data); {
-		mod = pcb_attribute_get(&element->Attributes, "openscad");
-		if (mod != NULL) {
-			transf = pcb_attribute_get(&element->Attributes, "openscad-transformation");
-			param = pcb_attribute_get(&element->Attributes, "openscad-param");
-			scad_insert_model(&models, mod, TRX_(element->MarkX), TRY_(element->MarkY), 0, 0, transf, param);
-		}
-	} PCB_END_LOOP;
-
 	PCB_SUBC_LOOP(PCB->Data); {
 		mod = pcb_attribute_get(&subc->Attributes, "openscad");
 		if (mod != NULL) {

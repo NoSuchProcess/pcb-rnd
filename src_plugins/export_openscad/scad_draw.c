@@ -138,18 +138,9 @@ static void scad_draw_drills(void)
 
 	fprintf(f, "module pcb_drill() {\n");
 
-	for(obj = pcb_r_first(PCB->Data->via_tree, &it); obj != NULL; obj = pcb_r_next(&it))
-		scad_draw_drill((pcb_pin_t *)obj);
-	pcb_r_end(&it);
-
 	for(obj = pcb_r_first(PCB->Data->padstack_tree, &it); obj != NULL; obj = pcb_r_next(&it))
 		scad_draw_pstk((pcb_pstk_t *)obj);
 	pcb_r_end(&it);
-
-	PCB_PIN_ALL_LOOP(PCB->Data); {
-		scad_draw_drill(pin);
-	} PCB_ENDALL_LOOP;
-
 
 	fprintf(f, "}\n");
 }
