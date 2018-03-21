@@ -1029,27 +1029,6 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 			break;
 		}
 
-	case PCB_TYPE_ELEMENT:
-		{
-			pcb_element_t *element = (pcb_element_t *) Ptr1;
-
-			/* square pins are handled as if they are round. Speed
-			 * and readability is more important then the few %
-			 * of failures that are immediately recognized
-			 */
-			PCB_PIN_LOOP(element);
-			{
-				CheckPinForRubberbandConnection(rbnd, pin);
-			}
-			PCB_END_LOOP;
-			PCB_PAD_LOOP(element);
-			{
-				CheckPadForRubberbandConnection(rbnd, pad);
-			}
-			PCB_END_LOOP;
-			break;
-		}
-
 	case PCB_TYPE_LINE:
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
@@ -1073,10 +1052,6 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
 		break;
 
-	case PCB_TYPE_VIA:
-		CheckPinForRubberbandConnection(rbnd, (pcb_pin_t *) Ptr1);
-		break;
-
 	case PCB_TYPE_POLY:
 		CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
 		break;
@@ -1086,22 +1061,6 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
-	case PCB_TYPE_ELEMENT:
-		{
-			pcb_element_t *element = (pcb_element_t *) Ptr1;
-
-			PCB_PIN_LOOP(element);
-			{
-				CheckPinForRat(rbnd, pin);
-			}
-			PCB_END_LOOP;
-			PCB_PAD_LOOP(element);
-			{
-				CheckPadForRat(rbnd, pad);
-			}
-			PCB_END_LOOP;
-			break;
-		}
 
 	case PCB_TYPE_SUBC:
 		{
@@ -1129,9 +1088,6 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 		CheckLinePointForRat(rbnd, (pcb_layer_t *) Ptr1, (pcb_point_t *) Ptr3);
 		break;
 
-	case PCB_TYPE_VIA:
-		CheckPinForRat(rbnd, (pcb_pin_t *) Ptr1);
-		break;
 	}
 }
 
@@ -1212,6 +1168,8 @@ static void rbe_reset(void *user_data, int argc, pcb_event_arg_t argv[])
 	rbnd->RubberbandArcN = 0;
 }
 
+#warning TODO: rewrite this for subc
+#if 0
 static void rbe_remove_element(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
@@ -1230,6 +1188,7 @@ static void rbe_remove_element(void *user_data, int argc, pcb_event_arg_t argv[]
 		ptr++;
 	}
 }
+#endif
 
 static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -1475,6 +1434,8 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
 /*	int pinnum = argv[5].d.i;*/
 
+#warning TODO: rewrite this for subc
+#if 0
 	if (type == PCB_TYPE_ELEMENT) {
 		pcb_rubberband_t *ptr;
 		int i;
@@ -1491,6 +1452,7 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 		pcb_undo_inc_serial();
 		pcb_draw();
 	}
+#endif
 }
 
 static void rbe_lookup_lines(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -1602,7 +1564,8 @@ int pplg_init_rubberband_orig(void)
 {
 	void *ctx = &rubber_band_state;
 	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_ELEMENT, rbe_remove_element, ctx, rubber_cookie);
+#warning TODO
+/*	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_ELEMENT, rbe_remove_element, ctx, rubber_cookie);*/
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
