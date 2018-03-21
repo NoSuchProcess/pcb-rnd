@@ -81,12 +81,7 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 		int state_wanted = (sel->how == PCB_CHGFLG_SET);
 		int state_is     = PCB_FLAG_TEST(PCB_FLAG_SELECTED, current->data.anyobj);
 		if (state_wanted != state_is) {
-			if (current->type == PCB_OBJ_ELEMENT)
-				pcb_select_element(PCB, current->data.element, sel->how, 0);
-			else if (current->type == PCB_OBJ_ETEXT)
-				pcb_select_element_name(current->data.element, sel->how, 0);
-			else
-				PCB_FLAG_CHANGE(sel->how, PCB_FLAG_SELECTED, current->data.anyobj);
+			PCB_FLAG_CHANGE(sel->how, PCB_FLAG_SELECTED, current->data.anyobj);
 			sel->cnt++;
 		}
 	}
