@@ -122,7 +122,6 @@ typedef struct {
 	const char *pad_netname;
 	pcb_coord_t x, y;
 	double theta, xray_theta;
-	pcb_element_t *element;
 	pcb_subc_t *subc;
 	pcb_coord_t pad_cx, pad_cy;
 	pcb_coord_t pad_w, pad_h;
@@ -179,7 +178,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
 {
-	pcb_box_t box, tmp;
+	pcb_box_t box;
 	box.X1 = box.Y1 = PCB_MAX_COORD;
 	box.X2 = box.Y2 = -PCB_MAX_COORD;
 
@@ -189,7 +188,7 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, p
 
 		for(o = pcb_data_first(&it, ctx->subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term != NULL) {
-				if ((o->type != PCB_OBJ_PSTK) && (o->type != PCB_OBJ_VIA) && (o->type != PCB_OBJ_SUBC)) { /* layer objects */
+				if ((o->type != PCB_OBJ_PSTK) && (o->type != PCB_OBJ_SUBC)) { /* layer objects */
 					pcb_layer_t *ly = o->parent.layer;
 					assert(o->parent_type == PCB_PARENT_LAYER);
 					if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
@@ -199,23 +198,6 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, p
 				pcb_box_bump_box(&box, &o->BoundingBox);
 			}
 		}
-	}
-	else {
-		pcb_element_t *element = ctx->element;
-
-		PCB_PIN_LOOP(element);
-		{
-			pcb_pin_copper_bbox(&tmp, pin);
-			pcb_box_bump_box(&box, &tmp);
-		}
-		PCB_END_LOOP;
-
-		PCB_PAD_LOOP(element);
-		{
-			pcb_pad_copper_bbox(&tmp, pad);
-			pcb_box_bump_box(&box, &tmp);
-		}
-		PCB_END_LOOP;
 	}
 
 	*pw = box.X2 - box.X1;
@@ -228,19 +210,6 @@ static void count_pins_pads(subst_ctx_t *ctx, int *pins, int *pads)
 {
 	*pins = *pads = 0;
 
-	if (ctx->element != NULL) {
-		PCB_PIN_LOOP(ctx->element);
-		{
-			(*pins)++;
-		}
-		PCB_END_LOOP;
-
-		PCB_PAD_LOOP(ctx->element);
-		{
-			(*pads)++;
-		}
-		PCB_END_LOOP;
-	}
 	if (ctx->subc != NULL) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
@@ -649,65 +618,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 	fprintf_templ(fp, &ctx, templ->hdr);
 
-	/*
-	 * For each element we calculate the centroid of the footprint.
-	 */
-
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		ctx.element_num++;
-
-		ctx.pad_w = ctx.pad_h = 0;
-		ctx.theta = ctx.xray_theta = 0.0;
-		ctx.front = PCB_FRONT(element);
-
-		pcb_elem_xy_rot(element, &ctx.x, &ctx.y, &ctx.theta, &ctx.xray_theta);
-
-		ctx.name = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
-		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
-		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
-
-		xy_translate(&ctx, &ctx.x, &ctx.y);
-
-		ctx.subc = NULL;
-		ctx.element = element;
-		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
-		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
-		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
-
-		fprintf_templ(fp, &ctx, templ->elem);
-
-		PCB_PIN_LOOP(element);
-		{
-			pcb_lib_menu_t *m = pcb_netlist_find_net4pin(PCB, pin);
-			if (m != NULL)
-				ctx.pad_netname = m->Name;
-			else
-				ctx.pad_netname = NULL;
-			fprintf_templ(fp, &ctx, templ->pad);
-		}
-		PCB_END_LOOP;
-
-		PCB_PAD_LOOP(element);
-		{
-			pcb_lib_menu_t *m = pcb_netlist_find_net4pad(PCB, pad);
-			if (m != NULL)
-				ctx.pad_netname = m->Name;
-			else
-				ctx.pad_netname = NULL;
-			fprintf_templ(fp, &ctx, templ->pad);
-		}
-		PCB_END_LOOP;
-
-		ctx.pad_netname = NULL;
-
-		free(ctx.name);
-		free(ctx.descr);
-		free(ctx.value);
-	}
-	PCB_END_LOOP;
-
-
+	/* For each subcircuit we calculate the centroid of the footprint. */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_any_obj_t *o;
@@ -732,7 +643,6 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 		xy_translate(&ctx, &ctx.x, &ctx.y);
 
-		ctx.element = NULL;
 		ctx.subc = subc;
 		ctx.front = !bott;
 
