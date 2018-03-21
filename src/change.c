@@ -50,11 +50,11 @@ pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,
 	pcb_textop_change_size,
 	pcb_polyop_change_clear,
-	pcb_viaop_change_size,
-	pcb_elemop_change_size,						/* changes silk screen line width */
-	pcb_elemop_change_name_size,
-	pcb_pinop_change_size,
-	pcb_padop_change_size,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	pcb_arcop_change_size,
@@ -68,11 +68,11 @@ pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_lineop_change_size,
 	pcb_textop_change_size,
 	pcb_polyop_change_clear,
-	pcb_viaop_change_size,
-	pcb_elemop_change_1st_size,
-	pcb_elemop_change_name_size,
-	pcb_pinop_change_size,
-	pcb_padop_change_size,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	pcb_arcop_change_size,
@@ -86,10 +86,10 @@ pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_change_2nd_size,
-	pcb_elemop_change_2nd_size,
 	NULL,
-	pcb_pinop_change_2nd_size,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -104,10 +104,10 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_change_thermal,
 	NULL,
 	NULL,
-	pcb_pinop_change_thermal,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -122,11 +122,11 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	pcb_lineop_change_clear_size,
 	NULL,
 	pcb_polyop_change_clear_size,				/* just to tell the user not to :-) */
-	pcb_viaop_change_clear_size,
-	pcb_elemop_change_clear_size,
 	NULL,
-	pcb_pinop_change_clear_size,
-	pcb_padop_change_clear_size,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	pcb_arcop_change_clear_size,
@@ -140,11 +140,11 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	pcb_lineop_change_name,
 	pcb_textop_change_name,
 	NULL,
-	pcb_viaop_change_name,
-	pcb_elemop_change_name,
 	NULL,
-	pcb_pinop_change_name,
-	pcb_padop_change_name,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -176,11 +176,11 @@ pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_change_square,
-	pcb_elemop_change_square,
 	NULL,
-	pcb_pinop_change_square,
-	pcb_padop_change_square,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -230,10 +230,10 @@ pcb_opfunc_t ChangeOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_change_octagon,
-	pcb_elemop_change_octagon,
 	NULL,
-	pcb_pinop_change_octagon,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -244,19 +244,16 @@ pcb_opfunc_t ChangeOctagonFunctions = {
 	NULL  /* padstack */
 };
 
+#warning padstack TODO: remove this code
 static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_change_mask_size,
-#if 0
-	ChangeElementMaskSize,
-#else
 	NULL,
-#endif
 	NULL,
-	pcb_pinop_change_mask_size,
-	pcb_padop_change_mask_size,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -271,10 +268,10 @@ pcb_opfunc_t SetSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_elemop_set_square,
 	NULL,
-	pcb_pinop_set_square,
-	pcb_padop_set_square,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -306,10 +303,10 @@ pcb_opfunc_t SetOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_set_octagon,
-	pcb_elemop_set_octagon,
 	NULL,
-	pcb_pinop_set_octagon,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -325,10 +322,10 @@ pcb_opfunc_t ClrSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_elemop_clear_square,
 	NULL,
-	pcb_pinop_clear_square,
-	pcb_padop_clear_square,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -360,10 +357,10 @@ pcb_opfunc_t ClrOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_viaop_clear_octagon,
-	pcb_elemop_clear_octagon,
 	NULL,
-	pcb_pinop_clear_octagon,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -414,11 +411,11 @@ pcb_opfunc_t ChgFlagFunctions = {
 	pcb_lineop_change_flag,
 	pcb_textop_change_flag,
 	pcb_polyop_change_flag,
-	pcb_viaop_change_flag,
 	NULL,
 	NULL,
-	pcb_pinop_change_flag,
-	pcb_padop_change_flag,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	pcb_arcop_change_flag,
@@ -448,8 +445,8 @@ static pcb_opfunc_t InvalLabelFunctions = {
 
 
 /* ----------------------------------------------------------------------
- * changes the thermals on all selected and visible pins
- * and/or vias. Returns pcb_true if anything has changed
+ * changes the thermals on all selected and visible padstacks.
+ * Returns pcb_true if anything has changed
  */
 pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid)
 {
@@ -595,7 +592,7 @@ pcb_bool pcb_clr_selected_join(int types)
 }
 
 /* ----------------------------------------------------------------------
- * changes the nonetlist-flag of all selected and visible elements
+ * changes the nonetlist-flag of all selected and visible subcircuits
  * returns pcb_true if anything has changed
  */
 pcb_bool pcb_chg_selected_nonetlist(int types)
@@ -756,7 +753,7 @@ pcb_bool pcb_clr_selected_square(int types)
 }
 
 /* ----------------------------------------------------------------------
- * changes the octagon-flag of all selected and visible pins and vias
+ * changes the octagon-flag of all selected and visible padstacks
  * returns pcb_true if anything has changed
  */
 pcb_bool pcb_chg_selected_octagon(int types)
@@ -775,7 +772,7 @@ pcb_bool pcb_chg_selected_octagon(int types)
 }
 
 /* ----------------------------------------------------------------------
- * sets the octagon-flag of all selected and visible pins and vias
+ * sets the octagon-flag of all selected and visible padstacks
  * returns pcb_true if anything has changed
  */
 pcb_bool pcb_set_selected_octagon(int types)
@@ -794,7 +791,7 @@ pcb_bool pcb_set_selected_octagon(int types)
 }
 
 /* ----------------------------------------------------------------------
- * clears the octagon-flag of all selected and visible pins and vias
+ * clears the octagon-flag of all selected and visible padstacks
  * returns pcb_true if anything has changed
  */
 pcb_bool pcb_clr_selected_octagon(int types)
@@ -812,6 +809,7 @@ pcb_bool pcb_clr_selected_octagon(int types)
 	return change;
 }
 
+#warning padstack TODO: remove this
 /* ----------------------------------------------------------------------
  * changes the hole-flag of all selected and visible vias
  * returns pcb_true if anything has changed
@@ -855,9 +853,9 @@ pcb_bool pcb_chg_selected_paste(void)
 	return change;
 }
 
-
+#warning subc TODO: check if it is true:
 /* ---------------------------------------------------------------------------
- * changes the size of the passed object; element size is silk size
+ * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
  * Returns pcb_true if anything is changed
  */
 pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
@@ -878,6 +876,7 @@ pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
 	return change;
 }
 
+#warning subc TODO: check if it is true:
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; element size is pin ring sizes
  * Returns pcb_true if anything is changed
@@ -1271,13 +1270,6 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 	pcb_any_obj_t *obj = Ptr2;
 	pcb_subc_t *parent_subc;
 
-	/* if passed an element name, make it an element reference instead */
-	if (Type == PCB_TYPE_ELEMENT_NAME) {
-		Type = PCB_TYPE_ELEMENT;
-		Ptr2 = Ptr1;
-		Ptr3 = Ptr1;
-	}
-
 	parent_subc = pcb_obj_parent_subc(obj);
 	if (parent_subc != NULL) {
 		name = pcb_gui->prompt_for(_("Enter terminal ID:"), PCB_EMPTY(obj->term));
@@ -1293,32 +1285,8 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		name = pcb_gui->prompt_for(_("Linename:"), PCB_EMPTY(((pcb_line_t *) Ptr2)->Number));
 		break;
 
-	case PCB_TYPE_VIA:
-		name = pcb_gui->prompt_for(_("Vianame:"), PCB_EMPTY(((pcb_pin_t *) Ptr2)->Name));
-		break;
-
-	case PCB_TYPE_PIN:
-		if (pinnum)
-			sprintf(msg, _("%s Pin Number:"), PCB_EMPTY(((pcb_pin_t *) Ptr2)->Number));
-		else
-			sprintf(msg, _("%s Pin Name:"), PCB_EMPTY(((pcb_pin_t *) Ptr2)->Number));
-		name = pcb_gui->prompt_for(msg, PCB_EMPTY(((pcb_pin_t *) Ptr2)->Name));
-		break;
-
-	case PCB_TYPE_PAD:
-		if (pinnum)
-			sprintf(msg, _("%s Pad Number:"), PCB_EMPTY(((pcb_pad_t *) Ptr2)->Number));
-		else
-			sprintf(msg, _("%s Pad Name:"), PCB_EMPTY(((pcb_pad_t *) Ptr2)->Number));
-		name = pcb_gui->prompt_for(msg, PCB_EMPTY(((pcb_pad_t *) Ptr2)->Name));
-		break;
-
 	case PCB_TYPE_TEXT:
 		name = pcb_gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *) Ptr2)->TextString));
-		break;
-
-	case PCB_TYPE_ELEMENT:
-		name = pcb_gui->prompt_for(_("Elementname:"), PCB_EMPTY(PCB_ELEM_NAME_VISIBLE(PCB, (pcb_element_t *) Ptr2)));
 		break;
 
 	case PCB_TYPE_SUBC:
