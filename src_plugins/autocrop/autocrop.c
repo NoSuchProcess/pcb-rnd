@@ -1,6 +1,6 @@
 /*
  * Autocrop plug-in for PCB.
- * Reduce the board dimensions to just enclose the elements.
+ * Reduce the board dimensions to just enclose the objects.
  *
  * Copyright (C) 2007 Ben Jackson <ben@ben.com> based on teardrops.c by
  * Copyright (C) 2006 DJ Delorie <dj@delorie.com>
@@ -65,15 +65,6 @@ static const char autocrop_description[] =
 static const char autocrop_syntax[] =
         "autocrop()";
 
-static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, pcb_coord_t dx, pcb_coord_t dy)
-{
-	if (Data)
-		pcb_r_delete_entry(Data->via_tree, (pcb_box_t *) Via);
-	pcb_via_move(Via, dx, dy);
-	if (Data)
-		pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via);
-	return Via;
-}
 
 static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line_t * Line, pcb_coord_t dx, pcb_coord_t dy)
 {
@@ -116,27 +107,15 @@ static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, pcb_coor
  *
  * Call our own 'MyMove*LowLevel' where they don't exist in move.c.
  * This gets very slow if there are large polygons present, since every
- * element move re-clears the poly, followed by the polys moving and
+ * object move re-clears the poly, followed by the polys moving and
  * re-clearing everything again.
  */
 static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 {
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		pcb_element_move(PCB->Data, element, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
-	}
-	PCB_END_LOOP;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_subc_move(subc, dx, dy, pcb_true);
 		pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, subc, dx, dy);
-	}
-	PCB_END_LOOP;
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		MyMoveViaLowLevel(PCB->Data, via, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_VIA, NULL, NULL, via, dx, dy);
 	}
 	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(PCB->Data);
