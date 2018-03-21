@@ -139,7 +139,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 	BomList *newlist, *cur, *prev = NULL;
 
 	if (bom == NULL) {
-		/* this is the first element so automatically create an entry */
+		/* this is the first subcircuit so automatically create an entry */
 		if ((newlist = (BomList *) malloc(sizeof(BomList))) == NULL) {
 			fprintf(stderr, "malloc() failed in bom_insert()\n");
 			exit(1);
@@ -229,14 +229,6 @@ static int PrintBOM(void)
 	BomList *bom = NULL;
 
 	pcb_print_utc(utcTime, sizeof(utcTime), 0);
-
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		/* insert this component into the bill of materials list */
-		bom = bom_insert((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)),
-										 (char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), (char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), bom);
-	}
-	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
