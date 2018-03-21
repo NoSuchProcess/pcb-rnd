@@ -190,91 +190,6 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			break;
 		}
 
-	case PCB_TYPE_VIA:
-		{
-			pcb_pin_t *via;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->via_tree, 0);
-				return 0;
-			}
-#endif
-			via = (pcb_pin_t *) ptr2;
-			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, via))
-				report = pcb_strdup_printf("%m+VIA ID# %ld; Flags:%s\n"
-										"(X,Y) = %$mD.\n"
-										"It is a pure hole of diameter %$mS.\n"
-										"Name = \"%s\"."
-										"%s"
-										"%s%s%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA, NULL),
-										via->X, via->Y, via->DrillingHole, PCB_EMPTY(via->Name), gen_locked(via), gen_term(via));
-			else
-				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
-										"(X,Y) = %$mD.\n"
-										"Copper width = %$mS. Drill width = %$mS.\n"
-										"Clearance = %$mS.\n"
-										"Annulus = %$mS.\n"
-										"Solder mask hole = %$mS (gap = %$mS).\n"
-										"Name = \"%s\"."
-										"%s"
-										"%s%s%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA, NULL),
-										via->X, via->Y,
-										via->Thickness,
-										via->DrillingHole,
-										via->Clearance / 2,
-										(via->Thickness - via->DrillingHole) / 2,
-										via->Mask,
-										(via->Mask - via->Thickness) / 2, PCB_EMPTY(via->Name), gen_locked(via), gen_term(via));
-			break;
-		}
-	case PCB_TYPE_PIN:
-		{
-			pcb_pin_t *Pin;
-			pcb_element_t *element;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->pin_tree, 0);
-				return 0;
-			}
-#endif
-			Pin = (pcb_pin_t *) ptr2;
-			element = (pcb_element_t *) ptr1;
-
-			PCB_PIN_LOOP(element);
-			{
-				if (pin == Pin)
-					break;
-			}
-			PCB_END_LOOP;
-			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin))
-				report = pcb_strdup_printf("%m+PIN ID# %ld; Flags:%s\n"
-										"(X,Y) = %$mD.\n"
-										"It is a mounting hole. Drill width = %$mS.\n"
-										"It is owned by element %$mS.\n"
-										"%s", USER_UNITMASK, Pin->ID, pcb_strflg_f2s(Pin->Flags, PCB_TYPE_PIN, NULL),
-										Pin->X, Pin->Y, Pin->DrillingHole,
-										PCB_EMPTY(element->Name[1].TextString), gen_locked(Pin));
-			else
-				report = pcb_strdup_printf(
-										"%m+PIN ID# %ld;  Flags:%s\n" "(X,Y) = %$mD.\n"
-										"Copper width = %$mS. Drill width = %$mS.\n"
-										"Clearance = %$mS.\n"
-										"Annulus = %$mS.\n"
-										"Solder mask hole = %$mS (gap = %$mS).\n"
-										"Name = \"%s\".\n"
-										"It is owned by element %s\n as pin number %s.\n"
-										"%s", USER_UNITMASK,
-										Pin->ID, pcb_strflg_f2s(Pin->Flags, PCB_TYPE_PIN, NULL),
-										Pin->X, Pin->Y, Pin->Thickness,
-										Pin->DrillingHole,
-										Pin->Clearance / 2,
-										(Pin->Thickness - Pin->DrillingHole) / 2,
-										Pin->Mask,
-										(Pin->Mask - Pin->Thickness) / 2,
-										PCB_EMPTY(Pin->Name),
-										PCB_EMPTY(element->Name[1].TextString), PCB_EMPTY(Pin->Number), gen_locked(Pin));
-			break;
-		}
 	case PCB_TYPE_LINE:
 		{
 			pcb_line_t *line;
@@ -399,87 +314,6 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									gen_locked(Polygon), gen_term(Polygon));
 			break;
 		}
-	case PCB_TYPE_PAD:
-		{
-			pcb_coord_t len;
-			pcb_pad_t *Pad;
-			pcb_element_t *element;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->pad_tree, 0);
-				return 0;
-			}
-#endif
-			Pad = (pcb_pad_t *) ptr2;
-			element = (pcb_element_t *) ptr1;
-
-			PCB_PAD_LOOP(element);
-			{
-				{
-					if (pad == Pad)
-						break;
-				}
-			}
-			PCB_END_LOOP;
-			len = pcb_distance(Pad->Point1.X, Pad->Point1.Y, Pad->Point2.X, Pad->Point2.Y);
-			report = pcb_strdup_printf("%m+PAD ID# %ld;  Flags:%s\n"
-									"FirstPoint(X,Y)  = %$mD; ID = %ld.\n"
-									"SecondPoint(X,Y) = %$mD; ID = %ld.\n"
-									"Width = %$mS.  Length = %$mS.\n"
-									"Clearance = %$mS.\n"
-									"Solder mask = %$mS x %$mS (gap = %$mS).\n"
-									"Name = \"%s\".\n"
-									"It is owned by SMD element %s\n"
-									"  as pin number %s and is on the %s\n"
-									"side of the board.\n"
-									"%s", USER_UNITMASK, Pad->ID,
-									pcb_strflg_f2s(Pad->Flags, PCB_TYPE_PAD, NULL),
-									Pad->Point1.X, Pad->Point1.Y, Pad->Point1.ID,
-									Pad->Point2.X, Pad->Point2.Y, Pad->Point2.ID,
-									Pad->Thickness, len + Pad->Thickness,
-									Pad->Clearance / 2,
-									Pad->Mask, len + Pad->Mask,
-									(Pad->Mask - Pad->Thickness) / 2,
-									PCB_EMPTY(Pad->Name),
-									PCB_EMPTY(element->Name[1].TextString),
-									PCB_EMPTY(Pad->Number),
-									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER,
-														Pad) ? "solder (bottom)" : "component", gen_locked(Pad));
-			break;
-		}
-	case PCB_TYPE_ELEMENT:
-		{
-			pcb_element_t *element;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->element_tree, 0);
-				return 0;
-			}
-#endif
-			element = (pcb_element_t *) ptr2;
-			report = pcb_strdup_printf("%m+ELEMENT ID# %ld;  Flags:%s\n"
-									"BoundingBox %$mD %$mD.\n"
-									"Descriptive Name \"%s\".\n"
-									"Name on board \"%s\".\n"
-									"Part number name \"%s\".\n"
-									"It is %$mS tall and is located at (X,Y) = %$mD %s.\n"
-									"Mark located at point (X,Y) = %$mD.\n"
-									"It is on the %s side of the board.\n"
-									"%s", USER_UNITMASK,
-									element->ID, pcb_strflg_f2s(element->Flags, PCB_TYPE_ELEMENT, NULL),
-									element->BoundingBox.X1, element->BoundingBox.Y1,
-									element->BoundingBox.X2, element->BoundingBox.Y2,
-									PCB_EMPTY(element->Name[0].TextString),
-									PCB_EMPTY(element->Name[1].TextString),
-									PCB_EMPTY(element->Name[2].TextString),
-									PCB_SCALE_TEXT(PCB_FONT_CAPHEIGHT, element->Name[1].Scale),
-									element->Name[1].X, element->Name[1].Y,
-									PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) ? ",\n  but it's hidden" : "",
-									element->MarkX, element->MarkY,
-									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? "solder (bottom)" : "component",
-									gen_locked(element));
-			break;
-		}
 	case PCB_TYPE_SUBC:
 		{
 			pcb_subc_t *subc;
@@ -509,36 +343,6 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			return 0;
 		}
 #endif
-	case PCB_TYPE_ELEMENT_NAME:
-		{
-			char laynum[32];
-			pcb_text_t *text;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], 0);
-				return 0;
-			}
-#endif
-			text = (pcb_text_t *) ptr2;
-
-			if (type == PCB_TYPE_TEXT)
-				sprintf(laynum, "It is on layer %ld.", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
-			report = pcb_strdup_printf("%m+TEXT ID# %ld;  Flags:%s\n"
-									"Located at (X,Y) = %$mD.\n"
-									"Characters are %$mS tall.\n"
-									"Value is \"%s\".\n"
-									"Direction is %d.\n"
-									"The bounding box is %$mD %$mD.\n"
-									"%s\n"
-									"%s"
-									"%s%s%s", USER_UNITMASK, text->ID, pcb_strflg_f2s(text->Flags, PCB_TYPE_TEXT, NULL),
-									text->X, text->Y, PCB_SCALE_TEXT(PCB_FONT_CAPHEIGHT, text->Scale),
-									text->TextString, text->Direction,
-									text->BoundingBox.X1, text->BoundingBox.Y1,
-									text->BoundingBox.X2, text->BoundingBox.Y2,
-									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", gen_locked(text), gen_term(text));
-			break;
-		}
 	case PCB_TYPE_LINE_POINT:
 	case PCB_TYPE_POLY_POINT:
 		{
@@ -586,23 +390,7 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	pcb_subc_t *subc;
 
 	gds_init(&list);
-	gds_append_str(&list, "The following pins/pads are FOUND:\n");
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		PCB_PIN_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin))
-				pcb_append_printf(&list, "%s-%s,%c", PCB_ELEM_NAME_REFDES(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad))
-				pcb_append_printf(&list, "%s-%s,%c", PCB_ELEM_NAME_REFDES(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
-		}
-		PCB_END_LOOP;
-	}
-	PCB_END_LOOP;
+	gds_append_str(&list, "The following terminals are FOUND:\n");
 
 	subclist_foreach(&PCB->Data->subc, &sit, subc) {
 		pcb_any_obj_t *o;
