@@ -779,8 +779,6 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		info.pv = *orig_pin;
 
 		ic = orig_pin->intconn;
-		if ((info.pv.Element != NULL) && (ic > 0))
-			LOC_int_conn_element(info.pv.Element, ic, PCB_TYPE_PIN, orig_pin);
 
 		/* subc intconn jumps */
 		if ((orig_pin->term != NULL) && (orig_pin->intconn > 0))
@@ -1562,8 +1560,6 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
 	ic = Pad->intconn;
-	if ((Pad->Element != NULL) && (ic > 0))
-		LOC_int_conn_element(Pad->Element, ic, PCB_TYPE_PAD, Pad);
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad))
 		return (LookupLOConnectionsToLine((pcb_line_t *) Pad, LayerGroup, pcb_false));
