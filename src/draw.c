@@ -167,15 +167,7 @@ void pcb_redraw(void)
 
 static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_box_t * drawn_area)
 {
-	int plated = -1;
-
-	if (draw_plated && !draw_unplated)
-		plated = 1;
-	if (!draw_plated && draw_unplated)
-		plated = 0;
-
-	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_hole_draw_callback, &plated, NULL);
-	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_hole_draw_callback, &plated, NULL);
+#warning padstack TODO: either remove this or draw padstack holes here
 }
 
 static void DrawEverything_holes(pcb_layergrp_id_t gid, const pcb_box_t *drawn_area)
@@ -282,7 +274,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	if (conf_core.editor.check_planes && pcb_gui->gui)
 		goto finish;
 
-	/* Draw pins, pads, vias below silk */
+	/* Draw padstacks below silk */
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 	if (pcb_gui->gui)
@@ -363,13 +355,10 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (pcb_gui->gui) {
-		/* Draw element Marks */
+		/* Draw subc Marks */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 	
-		if (PCB->PinOn)
-			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, pcb_elem_mark_draw_callback, NULL, NULL);
-
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
 
@@ -456,74 +445,23 @@ static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_
 }
 
 /* ---------------------------------------------------------------------------
- * Draws pins pads and vias - Always draws for non-gui HIDs,
+ * Draws padstacks - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
  */
 void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 {
-	int side;
-	unsigned int gflg = pcb_layergrp_flags(PCB, group);
-
-	if (PCB->PinOn || !pcb_gui->gui) {
-		/* draw element pins */
-		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_pin_draw_callback, NULL, NULL);
-
-		/* draw element pads */
-		if (gflg & PCB_LYT_TOP) {
-			side = PCB_COMPONENT_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
-		}
-
-		if (gflg & PCB_LYT_BOTTOM) {
-			side = PCB_SOLDER_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
-		}
-	}
-
-	/* draw vias */
-	if (PCB->ViaOn || !pcb_gui->gui) {
-		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_via_draw_callback, NULL, NULL);
-		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_hole_draw_callback, NULL, NULL);
-	}
-	if (PCB->PinOn || pcb_draw_doing_assy)
-		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_hole_draw_callback, NULL, NULL);
-
-
 	/* draw padstack holes - copper is drawn with each group */
 	if (PCB->ViaOn || !pcb_gui->gui)
 		pcb_draw_pstk_holes(group, drawn_area, PCB_PHOLE_PLATED | PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
 }
 
 /* ---------------------------------------------------------------------------
- * Draws pins' and pads' names - Always draws for non-gui HIDs,
+ * Draws padstacks' names - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
  */
 void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 {
-	int side;
-	unsigned int gflg = pcb_layergrp_flags(PCB, group);
-
-	if (PCB->PinOn || !pcb_gui->gui) {
-		/* draw element pins' names */
-		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_pin_name_draw_callback, NULL, NULL);
-
-		/* draw element pads' names */
-		if (gflg & PCB_LYT_TOP) {
-			side = PCB_COMPONENT_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_name_draw_callback, &side, NULL);
-		}
-
-		if (gflg & PCB_LYT_BOTTOM) {
-			side = PCB_SOLDER_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_name_draw_callback, &side, NULL);
-		}
-	}
-
-	if (PCB->ViaOn || !pcb_gui->gui) {
-		/* draw element pins' names */
-		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_pin_name_draw_callback, NULL, NULL);
-	}
-
+#warning padstack TODO: check if this is still filled in (used to be pad/pin/via delayed draw)
 	if (PCB->PinOn || !pcb_gui->gui) {
 		size_t n;
 		for(n = 0; n < delayed_labels.used; n++)
@@ -677,7 +615,7 @@ void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_
 
 /* ---------------------------------------------------------------------------
  * draws one layer group.  If the exporter is not a GUI,
- * also draws the pins / pads / vias in this layer group.
+ * also draws the padstacks in this layer group.
  */
 static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_current)
 {
@@ -723,25 +661,16 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		pcb_pstk_invalidate_erase((pcb_pstk_t *) ptr);
 		break;
 
-	case PCB_TYPE_VIA:
-	case PCB_TYPE_PIN:
-		pcb_pin_invalidate_erase((pcb_pin_t *) ptr);
-		break;
 	case PCB_TYPE_TEXT:
-	case PCB_TYPE_ELEMENT_NAME:
 		pcb_text_invalidate_erase((pcb_layer_t *) lptr, (pcb_text_t *) ptr);
 		break;
 	case PCB_TYPE_POLY:
 		pcb_poly_invalidate_erase((pcb_poly_t *) ptr);
 		break;
-	case PCB_TYPE_ELEMENT:
-		pcb_elem_invalidate_erase((pcb_element_t *) ptr);
-		break;
 	case PCB_TYPE_SUBC:
 		EraseSubc((pcb_subc_t *)ptr);
 		break;
 	case PCB_TYPE_LINE:
-	case PCB_TYPE_ELEMENT_LINE:
 	case PCB_TYPE_RATLINE:
 		pcb_line_invalidate_erase((pcb_line_t *) ptr);
 		break;
@@ -749,7 +678,6 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		pcb_pad_invalidate_erase((pcb_pad_t *) ptr);
 		break;
 	case PCB_TYPE_ARC:
-	case PCB_TYPE_ELEMENT_ARC:
 		pcb_arc_invalidate_erase((pcb_arc_t *) ptr);
 		break;
 	default:
@@ -764,10 +692,6 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		return;
 
 	switch (obj->type) {
-	case PCB_OBJ_VIA:
-		if (PCB->ViaOn)
-			pcb_via_invalidate_draw((pcb_pin_t *)obj);
-		break;
 	case PCB_OBJ_PSTK:
 		if (PCB->ViaOn)
 			pcb_pstk_invalidate_draw((pcb_pstk_t *)obj);
@@ -788,32 +712,14 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		if (obj->parent.layer->meta.real.vis)
 			pcb_poly_invalidate_draw(obj->parent.layer, (pcb_poly_t *)obj);
 		break;
-	case PCB_OBJ_ELEMENT:
-		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *)obj) || PCB->InvisibleObjectsOn))
-			pcb_elem_invalidate_draw((pcb_element_t *)obj);
-		break;
 	case PCB_OBJ_RAT:
 		if (PCB->RatOn)
 			pcb_rat_invalidate_draw((pcb_rat_t *)obj);
-		break;
-	case PCB_OBJ_PIN:
-		if (PCB->PinOn)
-			pcb_pin_invalidate_draw((pcb_pin_t *)obj);
-		break;
-	case PCB_OBJ_PAD:
-		if (PCB->PinOn)
-			pcb_pad_invalidate_draw((pcb_pad_t *)obj);
-		break;
-	case PCB_OBJ_ETEXT:
-		if (pcb_silk_on(PCB) && (PCB_FRONT(obj->parent.element) || PCB->InvisibleObjectsOn))
-			pcb_elem_name_invalidate_draw(obj->parent.element);
 		break;
 	case PCB_OBJ_POINT:
 	case PCB_OBJ_SUBC:
 	case PCB_OBJ_NET:
 	case PCB_OBJ_LAYER:
-	case PCB_OBJ_ELINE:
-	case PCB_OBJ_EARC:
 	case PCB_OBJ_VOID:
 		break;
 	}
@@ -917,7 +823,6 @@ void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 	if (ctx->content.obj != NULL) {
 		pcb_draw_doing_pinout = pcb_true;
 		switch(ctx->content.obj->type) {
-			case PCB_OBJ_ELEMENT: pcb_elem_draw((pcb_element_t *)ctx->content.obj); break;
 			case PCB_OBJ_SUBC:    pcb_subc_draw_preview((pcb_subc_t *)ctx->content.obj, &ctx->view); break;
 			default:              pcb_message(PCB_MSG_ERROR, "pcb_hid_expose_pinout: unknown object type %x\n", ctx->content.obj->type);
 		}
