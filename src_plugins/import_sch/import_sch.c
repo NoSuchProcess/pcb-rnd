@@ -71,7 +71,7 @@ static const char pcb_acth_Import[] = "Import schematics.";
 
 /* %start-doc actions Import
 
-Imports element and netlist data from the schematics (or some other
+Imports subcircuits and netlist data from the schematics (or some other
 source).  The first parameter, which is optional, is the mode.  If not
 specified, the @code{import::mode} attribute in the PCB is used.
 @code{gnetlist} means gnetlist is used to obtain the information from
@@ -134,7 +134,7 @@ configured.
 If @pcb{} cannot determine which schematic(s) to import from, the GUI
 is called to let user choose (see @code{ImportGUI()}).
 
-Note that Import() doesn't delete anything - after an Import, elements
+Note that Import() doesn't delete anything - after an Import, subcircuits
 which shouldn't be on the board are selected and may be removed once
 it's determined that the deletion is appropriate.
 
@@ -170,7 +170,7 @@ Note that the X and Y locations are stored in attributes named
 manually if you wished.
 
 Calling @code{Import(setdisperse,D,units)} sets how much the newly
-placed elements are dispersed relative to the set point.  For example,
+placed subcircuits are dispersed relative to the set point.  For example,
 @code{Import(setdisperse,10,mm)} will offset each part randomly up to
 10mm away from the point.  The default dispersion is 1/10th of the
 smallest board dimension.  Dispersion is saved in the
