@@ -1,11 +1,9 @@
-/*!
- * \file polystitch.c
+/*
+ * PolyStitch plug-in for PCB.
  *
- * \brief PolyStitch plug-in for PCB.
+ * Copyright (C) 2010 DJ Delorie <dj@delorie.com>
  *
- * \author Copyright (C) 2010 DJ Delorie <dj@delorie.com>
- *
- * \copyright Licensed under the terms of the GNU General Public 
+ * Licensed under the terms of the GNU General Public 
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
