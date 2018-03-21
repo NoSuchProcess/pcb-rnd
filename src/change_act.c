@@ -111,15 +111,9 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 				break;
 			}
 		case F_SelectedVias:
-			if (pcb_chg_selected_clear_size(PCB_TYPE_VIA, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
 		case F_SelectedPads:
-			if (pcb_chg_selected_clear_size(PCB_TYPE_PAD, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
 		case F_SelectedPins:
-			if (pcb_chg_selected_clear_size(PCB_TYPE_PIN, value, absolute))
+			if (pcb_chg_selected_clear_size(PCB_TYPE_PSTK, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_SelectedLines:
@@ -215,17 +209,9 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		}
 
 	case F_SelectedVias:
-		if (set_selected(PCB_TYPE_VIA))
-			pcb_board_set_changed_flag(pcb_true);
-		break;
-
 	case F_SelectedPins:
-		if (set_selected(PCB_TYPE_PIN))
-			pcb_board_set_changed_flag(pcb_true);
-		break;
-
 	case F_SelectedPads:
-		if (set_selected(PCB_TYPE_PAD))
+		if (set_selected(PCB_TYPE_PSTK))
 			pcb_board_set_changed_flag(pcb_true);
 		break;
 
@@ -240,13 +226,8 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		break;
 
 	case F_SelectedNames:
-		if (set_selected(PCB_TYPE_ELEMENT_NAME))
-			pcb_board_set_changed_flag(pcb_true);
-		break;
-
 	case F_SelectedElements:
-		if (set_selected(PCB_TYPE_ELEMENT))
-			pcb_board_set_changed_flag(pcb_true);
+		pcb_message(PCB_MSG_ERROR, "Feature not supported\n");
 		break;
 
 	case F_Selected:
@@ -257,6 +238,8 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	}
 }
 
+#warning padstack TODO: remove these?
+#if 0
 /* --------------------------------------------------------------------------- */
 
 static const char changehold_syntax[] = "ChangeHole(ToggleObject|Object|SelectedVias|Selected)";
@@ -338,7 +321,7 @@ static int pcb_act_ChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_c
 	}
 	return 0;
 }
-
+#endif
 
 /* --------------------------------------------------------------------------- */
 
@@ -380,12 +363,13 @@ static const char pcb_acts_ChangeSize[] =
 
 static const char pcb_acth_ChangeSize[] = "Changes the size of objects.";
 
+#warning subcircuit TODO: check if it is true:
 /* %start-doc actions ChangeSize
 
-For lines and arcs, this changes the width.  For pins and vias, this
+For lines and arcs, this changes the width.  For padstacks, this
 changes the overall diameter of the copper annulus.  For pads, this
 changes the width and, indirectly, the length.  For texts and names,
-this changes the scaling factor.  For elements, this changes the width
+this changes the scaling factor.  For subcircuits, this changes the width
 of the silk layer lines and arcs for this element.
 
 %end-doc */
@@ -435,17 +419,9 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 				break;
 			}
 		case F_SelectedVias:
-			if (pcb_chg_selected_size(PCB_TYPE_VIA, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
 		case F_SelectedPins:
-			if (pcb_chg_selected_size(PCB_TYPE_PIN, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
 		case F_SelectedPads:
-			if (pcb_chg_selected_size(PCB_TYPE_PAD, value, absolute))
+			if (pcb_chg_selected_size(PCB_TYPE_PSTK, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
@@ -465,13 +441,8 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 			break;
 
 		case F_SelectedNames:
-			if (pcb_chg_selected_size(PCB_TYPE_ELEMENT_NAME, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
 		case F_SelectedElements:
-			if (pcb_chg_selected_size(PCB_TYPE_ELEMENT, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
+			pcb_message(PCB_MSG_ERROR, "Feature not supported.\n");
 			break;
 
 		case F_Selected:
@@ -532,19 +503,13 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 				break;
 			}
 
-		case F_SelectedVias:
-			if (pcb_chg_selected_2nd_size(PCB_TYPE_VIA, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_chg_selected_2nd_size(PCB_TYPE_PIN, value, absolute))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
 		case F_SelectedPadstacks:
+		case F_SelectedVias:
+		case F_SelectedPins:
 			if (pcb_chg_selected_2nd_size(PCB_TYPE_PSTK, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
+
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_2nd_size(PCB_TYPEMASK_PIN, value, absolute))
@@ -559,7 +524,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 
 static const char pcb_acts_ChangePinName[] = "ChangePinName(ElementName,PinNumber,PinName)";
 
-static const char pcb_acth_ChangePinName[] = "Sets the name of a specific pin on a specific element.";
+static const char pcb_acth_ChangePinName[] = "Sets the name of a specific pin on a specific subcircuit.";
 
 /* %start-doc actions ChangePinName
 
@@ -586,6 +551,7 @@ static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb
 	pinnum = argv[1];
 	pinname = argv[2];
 
+#warning subc TODO: rewrite this
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_NSTRCMP(refdes, PCB_ELEM_NAME_REFDES(element)) == 0) {
@@ -772,7 +738,7 @@ static int pcb_act_ChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_co
 static const char pcb_acts_ChangeNonetlist[] =
 	"ChangeNonetlist(ToggleObject)\n" "ChangeNonetlist(SelectedElements)\n" "ChangeNonetlist(Selected|SelectedObjects)";
 
-static const char pcb_acth_ChangeNonetlist[] = "Changes the nonetlist flag of elements.";
+static const char pcb_acth_ChangeNonetlist[] = "Changes the nonetlist flag of subcircuits.";
 
 /* %start-doc actions ChangeNonetlist
 
@@ -789,6 +755,7 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
+#warning subc TODO: rewrite this for subc
 		case F_Element:
 			{
 				int type;
@@ -812,7 +779,7 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 	return 0;
 }
 
-
+#warning padstack TODO: remove the next few?
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_ChangeSquare[] =
@@ -1152,7 +1119,7 @@ static int pcb_act_ClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_
 static const char pcb_acts_SetThermal[] = "SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)";
 
 static const char pcb_acth_SetThermal[] =
-	"Set the thermal (on the current layer) of pins or vias to the given style.\n"
+	"Set the thermal (on the current layer) of padstacks to the given style.\n"
 	"Style = 0 means no thermal.\n"
 	"Style = 1 has diagonal fingers with sharp edges.\n"
 	"Style = 2 has horizontal and vertical fingers with sharp edges.\n"
@@ -1162,9 +1129,9 @@ static const char pcb_acth_SetThermal[] =
 
 /* %start-doc actions SetThermal
 
-This changes how/whether pins or vias connect to any rectangle or polygon
+This changes how/whether padstacks connect to any rectangle or polygon
 on the current layer. The first argument can specify one object, or all
-selected pins, or all selected vias, or all selected pins and vias.
+selected padstacks.
 The second argument specifies the style of connection.
 There are 5 possibilities:
 0 - no connection,
@@ -1174,7 +1141,7 @@ There are 5 possibilities:
 4 - 45 degree fingers with rounded corners,
 5 - horizontal & vertical fingers with rounded corners.
 
-Pins and Vias may have thermals whether or not there is a polygon available
+Padstacks may have thermals whether or not there is a polygon available
 to connect with. However, they will have no effect without the polygon.
 %end-doc */
 
@@ -1202,10 +1169,8 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 				}
 				break;
 			case F_SelectedPins:
-				pcb_chg_selected_thermals(PCB_TYPE_PIN, kind, INDEXOFCURRENT);
-				break;
 			case F_SelectedVias:
-				pcb_chg_selected_thermals(PCB_TYPE_VIA, kind, INDEXOFCURRENT);
+				pcb_chg_selected_thermals(PCB_TYPE_PSTK, kind, INDEXOFCURRENT);
 				break;
 			case F_Selected:
 			case F_SelectedElements:
@@ -1528,18 +1493,18 @@ pcb_hid_action_t change_action_list[] = {
 	{"ChangeDrillSize", 0, pcb_act_Change2ndSize,
 	 changedrillsize_help, changedrillsize_syntax}
 	,
-	{"ChangeHole", 0, pcb_act_ChangeHole,
+/*	{"ChangeHole", 0, pcb_act_ChangeHole,
 	 changehold_help, changehold_syntax}
-	,
+	,*/
 	{"ChangeJoin", 0, pcb_act_ChangeJoin,
 	 pcb_acth_ChangeJoin, pcb_acts_ChangeJoin}
 	,
 	{"ChangeName", 0, pcb_act_ChangeName,
 	 pcb_acth_ChangeName, pcb_acts_ChangeName}
 	,
-	{"ChangePaste", 0, pcb_act_ChangePaste,
+/*	{"ChangePaste", 0, pcb_act_ChangePaste,
 	 pcb_acth_ChangePaste, pcb_acts_ChangePaste}
-	,
+	,*/
 	{"ChangePinName", 0, pcb_act_ChangePinName,
 	 pcb_acth_ChangePinName, pcb_acts_ChangePinName}
 	,
