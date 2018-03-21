@@ -96,7 +96,8 @@ void pcb_tool_via_draw_attached(void)
 	if (conf_core.editor.show_drc) {
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-		XORDrawPinViaDRCOutline(&via,PCB->Bloat);
+#warning padstack TODO: replace this with padstack outline draw:
+/*		XORDrawPinViaDRCOutline(&via,PCB->Bloat);*/
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
 }

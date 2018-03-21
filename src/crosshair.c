@@ -64,28 +64,6 @@ typedef struct {
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 pcb_mark_t pcb_marked;          /* a cross-hair mark */
 
-
-static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
-static void XORDrawPadDRCOutline(pcb_pad_t * pv,pcb_coord_t clearance);
-
-static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
-{
-	/* Make a copy of the pin structure, moved to the correct position */
-	pcb_pin_t moved_pv = *pv;
-	moved_pv.X += x;
-	moved_pv.Y += y;
-
-	pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &moved_pv, pcb_true, pcb_false);
-
-	if (conf_core.editor.show_drc) {
-		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-		moved_pv.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
-		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-		XORDrawPinViaDRCOutline(&moved_pv,PCB->Bloat);
-		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
-	}
-}
-
 static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
 {
 	/* Make a copy of the pin structure, moved to the correct position */
@@ -184,80 +162,6 @@ void XORDrawAttachedArc(pcb_coord_t thick)
 }
 
 /* ---------------------------------------------------------------------------
- * draws the elements of a loaded circuit which is to be merged in
- */
-static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY)
-{
-	/* if no silkscreen, draw the bounding box */
-	if (arclist_length(&Element->Arc) == 0 && linelist_length(&Element->Line) == 0) {
-		pcb_gui->draw_line(pcb_crosshair.GC,
-									 DX + Element->BoundingBox.X1,
-									 DY + Element->BoundingBox.Y1, DX + Element->BoundingBox.X1, DY + Element->BoundingBox.Y2);
-		pcb_gui->draw_line(pcb_crosshair.GC,
-									 DX + Element->BoundingBox.X1,
-									 DY + Element->BoundingBox.Y2, DX + Element->BoundingBox.X2, DY + Element->BoundingBox.Y2);
-		pcb_gui->draw_line(pcb_crosshair.GC,
-									 DX + Element->BoundingBox.X2,
-									 DY + Element->BoundingBox.Y2, DX + Element->BoundingBox.X2, DY + Element->BoundingBox.Y1);
-		pcb_gui->draw_line(pcb_crosshair.GC,
-									 DX + Element->BoundingBox.X2,
-									 DY + Element->BoundingBox.Y1, DX + Element->BoundingBox.X1, DY + Element->BoundingBox.Y1);
-	}
-	else {
-		PCB_ELEMENT_PCB_LINE_LOOP(Element);
-		{
-			pcb_gui->draw_line(pcb_crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
-		}
-		PCB_END_LOOP;
-
-		/* arc coordinates and angles have to be converted to X11 notation */
-		PCB_ARC_LOOP(Element);
-		{
-			pcb_gui->draw_arc(pcb_crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
-		}
-		PCB_END_LOOP;
-	}
-	/* pin coordinates and angles have to be converted to X11 notation */
-	PCB_PIN_LOOP(Element);
-	{
-		thindraw_moved_pv(pin, DX, DY);
-	}
-	PCB_END_LOOP;
-
-	/* pads */
-	PCB_PAD_LOOP(Element);
-	{
-		if (PCB->InvisibleObjectsOn || (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) != 0) == conf_core.editor.show_solder_side) {
-			/* Make a copy of the pad structure, moved to the correct position */
-			pcb_pad_t moved_pad = *pad;
-			moved_pad.Point1.X += DX;
-			moved_pad.Point1.Y += DY;
-			moved_pad.Point2.X += DX;
-			moved_pad.Point2.Y += DY;
-
-			pcb_gui->thindraw_pcb_pad(pcb_crosshair.GC, &moved_pad, pcb_false, pcb_false);
-	
-			/* Draw the DRC outline if it is enabled */
-			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawPadDRCOutline(&moved_pad,PCB->Bloat);
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
-			}
-		}
-	}
-	PCB_END_LOOP;
-	/* mark */
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX - PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - PCB_EMARK_SIZE);
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX + PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - PCB_EMARK_SIZE);
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX - PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + PCB_EMARK_SIZE);
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX + PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + PCB_EMARK_SIZE);
-}
-
-/* ---------------------------------------------------------------------------
  * draws all visible and attached objects of the pastebuffer
  */
 void XORDrawBuffer(pcb_buffer_t *Buffer)
@@ -305,28 +209,10 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 			PCB_END_LOOP;
 		}
 
-	/* draw elements if visible */
-	if (PCB->PinOn && pcb_silk_on(PCB)) {
-		PCB_ELEMENT_LOOP(Buffer->Data);
-		{
-			if (PCB_FRONT(element) || PCB->InvisibleObjectsOn)
-				XORDrawElement(element, x, y);
-		}
-		PCB_END_LOOP;
-	}
-
 	/* draw subcircuit */
 	PCB_SUBC_LOOP(Buffer->Data);
 	{
 		XORDrawSubc(subc, x, y, Buffer->from_outside);
-	}
-	PCB_END_LOOP;
-
-	/* and the vias */
-	if (PCB->ViaOn)
-		PCB_VIA_LOOP(Buffer->Data);
-	{
-		thindraw_moved_pv(via, x, y);
 	}
 	PCB_END_LOOP;
 
@@ -337,7 +223,6 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 		thindraw_moved_ps(padstack, x, y);
 	}
 	PCB_END_LOOP;
-
 }
 
 /* ---------------------------------------------------------------------------
@@ -364,12 +249,6 @@ void XORDrawMoveOrCopy(void)
 	int event_sent = 0;
 	
 	switch (pcb_crosshair.AttachedObject.Type) {
-	case PCB_TYPE_VIA:
-		{
-			pcb_pin_t *via = (pcb_pin_t *) pcb_crosshair.AttachedObject.Ptr1;
-			thindraw_moved_pv(via, dx, dy);
-			break;
-		}
 
 	case PCB_TYPE_PSTK:
 		{
@@ -559,28 +438,6 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_ELEMENT_NAME:
-		{
-			/* locate the element "mark" and draw an association line from crosshair to it */
-			pcb_element_t *element = (pcb_element_t *) pcb_crosshair.AttachedObject.Ptr1;
-
-			pcb_gui->draw_line(pcb_crosshair.GC, element->MarkX, element->MarkY, pcb_crosshair.X, pcb_crosshair.Y);
-			/* fall through to move the text as a box outline */
-		}
-	case PCB_TYPE_TEXT:
-		{
-			pcb_text_t *text = (pcb_text_t *) pcb_crosshair.AttachedObject.Ptr2;
-			pcb_text_draw_xor(text, dx, dy);
-			break;
-		}
-
-		/* pin/pad movements result in moving an element */
-	case PCB_TYPE_PAD:
-	case PCB_TYPE_PIN:
-	case PCB_TYPE_ELEMENT:
-		XORDrawElement((pcb_element_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy);
-		break;
-
 	case PCB_TYPE_SUBC:
 		XORDrawSubc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0);
 		break;
@@ -603,240 +460,6 @@ void XORDrawMoveOrCopy(void)
 
 	if(!event_sent)
 		pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
-}
-
-/* ---------------------------------------------------------------------------
- * draws the DRC Outline of a pad/via shape with the given style and clearance
- */
-static void 
-draw_pinvia_shape_drc_outline( pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t clearance, int style)
-{
-	struct {double X, Y, angle;} p[8] = {	
-		{0.5, -PCB_TAN_22_5_DEGREE_2,	180.0},
-		{PCB_TAN_22_5_DEGREE_2, -0.5,	270.0},
-		{-PCB_TAN_22_5_DEGREE_2, -0.5, 270.0 },
-		{-0.5, -PCB_TAN_22_5_DEGREE_2,	0.0},
-		{-0.5, PCB_TAN_22_5_DEGREE_2,	0.0},
-		{-PCB_TAN_22_5_DEGREE_2, 0.5,	90.0},
-		{PCB_TAN_22_5_DEGREE_2, 0.5,	90.0},
-		{0.5, PCB_TAN_22_5_DEGREE_2,	180.0}
-	};
-
-	pcb_coord_t		polygon_x[9];
-	pcb_coord_t		polygon_y[9];
-	double				xm[8];
-	double				ym[8];
-	double				xn[8];
-	double				yn[8];
-	double				a[8];
-	int						i;
-	const double	factor	= 2.0;
-
-	/* Constants for Normals and Arc Angles */
-	const double N0 = 0.7071067;
-	const double N1 = 0.44721279658;
-	const double N2 = 0.89442759;
-	const double A0 = 45.0;
-	const double A1 = 26.565;
-	const double A2 = 63.435;
-
-	style = (style-1) & 0x0F;
-
-	/* Calculate multipliers*/
-	for (i = 0; i < 8; i++)	{
-		xm[i] = 1;
-		ym[i] = 1;
-	}
-
-	if (style & 1)
-		xm[0] = xm[1] = xm[6] = xm[7] = factor;
-	if (style & 2)
-		xm[2] = xm[3] = xm[4] = xm[5] = factor;
-	if (style & 4)
-		ym[4] = ym[5] = ym[6] = ym[7] = factor;
-	if (style & 8)
-		ym[0] = ym[1] = ym[2] = ym[3] = factor;
-
-	/* Select Edge Normals and Arc Angles */
-	xn[1] = xn[5] = 0.0;
-	yn[3] = yn[7] = 0.0;
-	yn[1] = -1.0;
-	yn[5] = 1.0;
-	xn[3] = -1.0;
-	xn[7] = +1.0;
-
-	switch(style & 9) {
-		case 1 :	xn[0] = N1; yn[0] = -N2; a[0] = A2; a[1] = -A1; break;
-		case 8 :	xn[0] = N2; yn[0] = -N1; a[0] = A1; a[1] = -A2; break;
-		default :	xn[0] = N0; yn[0] = -N0; a[0] = A0; a[1] = -A0; break;
-	}
-
-	switch(style & 10) {	
-		case 2 :	xn[2] = -N1; yn[2] = -N2; a[2] = A1; a[3] = -A2;  break;
-		case 8 :	xn[2] = -N2; yn[2] = -N1; a[2] = A2; a[3] = -A1;  break;
-		default :	xn[2] = -N0; yn[2] = -N0; a[2] = A0; a[3] = -A0;  break;
-	}
-
-	switch(style & 5)	{
-		case 1 :	xn[6] = N1; yn[6] = N2; a[6] = A1; a[7] = -A2; break;
-		case 4 :	xn[6] = N2; yn[6] = N1; a[6] = A2; a[7] = -A1; break;
-		default :	xn[6] = N0; yn[6] = N0; a[6] = A0; a[7] = -A0; break;
-	}
-
-	switch(style & 6)	{
-		case 2 :	xn[4] = -N1; yn[4] = N2; a[4] = A2; a[5] = -A1; break;
-		case 4 :	xn[4] = -N2; yn[4] = N1; a[4] = A1; a[5] = -A2; break;
-		default :	xn[4] = -N0; yn[4] = N0; a[4] = A0; a[5] = -A0; break;
-	}
-
-	/* add line offset */
-	for (i = 0; i < 8; i++) {
-		polygon_x[i] = X + (p[i].X * Thickness) * xm[i];
-		polygon_y[i] = Y + (p[i].Y * Thickness) * ym[i];
-	}
-	polygon_x[8] = polygon_x[0];
-	polygon_y[8] = polygon_y[0];
-
-	pcb_gui->set_line_cap(gc, Round_Cap);
-	pcb_gui->set_line_width(gc, 0);
-
-	/* Draw the outline */
-	for (i = 0; i < 8; i++)	{
-			pcb_gui->draw_line(	gc,
-													polygon_x[i]		+ (xn[i] * clearance), 
-													polygon_y[i]		+ (yn[i] * clearance),  
-													polygon_x[i+1]	+ (xn[i] * clearance),  
-													polygon_y[i+1]	+ (yn[i] * clearance) );
-
-			pcb_gui->draw_arc( gc,polygon_x[i],polygon_y[i],clearance,clearance,p[i].angle,a[i]);
-	}
-}
-
-/* ---------------------------------------------------------------------------
- * draws the DRC Outline of a pin/via with the given clearance
- */
-void 
-XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance)
-{
-	int style = PCB_FLAG_SQUARE_GET(pv);
-
-	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) || (clearance == 0))
-		return;
-	
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv))	{
-		if((style==0) || (style==1)) {
-			pcb_coord_t w = pv->Thickness;
-			pcb_coord_t l = pv->X - (w/2);
-			pcb_coord_t b = pv->Y - (w/2);
-			pcb_coord_t r = l + w;
-			pcb_coord_t t = b + w;
-			pcb_coord_t lc = l - clearance;
-			pcb_coord_t bc = b - clearance;
-			pcb_coord_t rc = r + clearance;
-			pcb_coord_t tc = t + clearance;
-
-			pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
-			pcb_gui->set_line_width(pcb_crosshair.GC, 0); 
-			pcb_gui->draw_line(pcb_crosshair.GC, rc, t, rc, b);
-			pcb_gui->draw_line(pcb_crosshair.GC, lc, t, lc, b);
- 			pcb_gui->draw_line(pcb_crosshair.GC, r, tc, l, tc);
- 			pcb_gui->draw_line(pcb_crosshair.GC, r, bc, l, bc);
-			pcb_gui->draw_arc(pcb_crosshair.GC, r,b,clearance,clearance,180,90);
-			pcb_gui->draw_arc(pcb_crosshair.GC, r,t,clearance,clearance,90,90);
-			pcb_gui->draw_arc(pcb_crosshair.GC, l,b,clearance,clearance,270,90);
-			pcb_gui->draw_arc(pcb_crosshair.GC, l,t,clearance,clearance,0,90);
-		}
-		else
-			draw_pinvia_shape_drc_outline(pcb_crosshair.GC,pv->X,pv->Y,pv->Thickness,clearance,style);
-	}
-	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv))
-			draw_pinvia_shape_drc_outline(pcb_crosshair.GC,pv->X,pv->Y,pv->Thickness,clearance,17);
-	else {
-			pcb_coord_t r = (pv->Thickness/2)+clearance;
-
-			pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
-			pcb_gui->set_line_width(pcb_crosshair.GC, 0); 
-			pcb_gui->draw_arc(pcb_crosshair.GC, pv->X, pv->Y, r, r, 0, 360);
-	}			
-}
-
-/* ---------------------------------------------------------------------------
- * draws the DRC Outline of a pad with the given clearance
- */
-static void 
-XORDrawPadDRCOutline(pcb_pad_t * pad,pcb_coord_t clearance)
-{
-	pcb_coord_t x1, y1, x2, y2;
-	pcb_coord_t t = (pad->Thickness / 2);
-	x1 = pad->Point1.X;
-	y1 = pad->Point1.Y;
-	x2 = pad->Point2.X;
-	y2 = pad->Point2.Y;
-
-	pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
-	pcb_gui->set_line_width(pcb_crosshair.GC, 0);
-
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
-		/* slanted square pad */
-		double tx, ty, nx, ny, theta, angle;
-		pcb_coord_t cx0, cx1, cx2, cx3;
-		pcb_coord_t cy0, cy1, cy2, cy3;
-
-		if ((x1 == x2) && (y1 == y2))
-			theta = 0;
-		else
-			theta = atan2(y2 - y1, x2 - x1);
-
-		angle = (270-(theta * PCB_RAD_TO_DEG));
-
-		/* T is a vector half a thickness long, in the direction of
-		   one of the corners.  */
-		tx = t * cos(theta + M_PI / 4) * PCB_SQRT2;
-		ty = t * sin(theta + M_PI / 4) * PCB_SQRT2;
-
-		/* The normal of one of the edges with length = clearance */
-		nx = cos(theta + M_PI / 2) * clearance;
-		ny = sin(theta + M_PI / 2) * clearance;
-
-		/* Coordinates of the pad corners */
-		cx0 = x1 - tx; cx1 = x2 + ty; cx2 = x2 + tx; cx3 = x1 - ty;
-		cy0 = y1 - ty; cy1 = y2 - tx; cy2 = y2 + ty; cy3 = y1 + tx;
-		
-		/* Draw the DRC outline*/
-		pcb_gui->draw_line(pcb_crosshair.GC, cx0 - nx, cy0 - ny, cx1 - nx, cy1 - ny );
-		pcb_gui->draw_line(pcb_crosshair.GC, cx2 + nx, cy2 + ny, cx3 + nx, cy3 + ny );
-		pcb_gui->draw_line(pcb_crosshair.GC, cx0 - ny, cy0 + nx, cx3 - ny, cy3 + nx );
-		pcb_gui->draw_line(pcb_crosshair.GC, cx1 + ny, cy1 - nx, cx2 + ny, cy2 - nx );
-
-		pcb_gui->draw_arc(pcb_crosshair.GC,cx0,cy0,clearance,clearance,angle,90);
-		pcb_gui->draw_arc(pcb_crosshair.GC,cx1,cy1,clearance,clearance,angle-90,90);
-		pcb_gui->draw_arc(pcb_crosshair.GC,cx2,cy2,clearance,clearance,angle-180,90);
-		pcb_gui->draw_arc(pcb_crosshair.GC,cx3,cy3,clearance,clearance,angle-270,90);
-	}
-	else if (x1 == x2 && y1 == y2) {
-		pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, t + clearance, t + clearance, 0, 360);
-	}
-	else {
-		/* Slanted round-end pads.  */
-		pcb_coord_t dx, dy, ox, oy;
-		double h;
-
-		t += clearance;
-		dx = x2 - x1;
-		dy = y2 - y1;
-		h = t / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
-		ox = dy * h + 0.5 * SGN(dy);
-		oy = -(dx * h + 0.5 * SGN(dx));
-
-		pcb_gui->draw_line(pcb_crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
-
-		if (labs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
-			pcb_angle_t angle = atan2(dx, dy) * 57.295779;
-			pcb_gui->draw_line(pcb_crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
-			pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, t, t, angle - 180, 180);
-			pcb_gui->draw_arc(pcb_crosshair.GC, x2, y2, t, t, angle, 180);
-		}
-	}
 }
 
 /* ---------------------------------------------------------------------------
@@ -1262,16 +885,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	snap_data.y = nearest_grid_y;
 
 	ans = PCB_TYPE_NONE;
-	if (!PCB->RatDraw) {
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
-		if (ans == 0)
-			ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
-	}
-
-	if (ans & PCB_TYPE_ELEMENT) {
-		pcb_element_t *el = (pcb_element_t *) ptr1;
-		check_snap_object(&snap_data, el->MarkX, el->MarkY, pcb_false);
-	}
+	if (!PCB->RatDraw)
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
 
 	if (ans & PCB_TYPE_SUBC) {
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
@@ -1285,10 +900,6 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
-	if (ans != PCB_TYPE_NONE &&
-			conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == pcb_crosshair.AttachedObject.Ptr1)
-		ans = PCB_TYPE_NONE;
-
 	if (ans != PCB_TYPE_NONE &&
 			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
@@ -1331,19 +942,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		pcb_crosshair.snapped_pad = 0;
 	}
 
-	ans = PCB_TYPE_NONE;
-	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3);
-
-	if (ans == PCB_TYPE_NONE)
-		if (PCB->RatDraw || conf_core.editor.snap_pin)
-			ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_VIA | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
-
 	/* Avoid self-snapping when moving */
 	/* SUBC/TERM note: this behavior is wrong, let the user use shift to verride */
-	if (ans != PCB_TYPE_NONE &&
-			conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == pcb_crosshair.AttachedObject.Ptr1)
-		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
 		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
@@ -1353,27 +953,13 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		pcb_crosshair.snapped_pin = 0;
 	}
 
-	ans = PCB_TYPE_NONE;
-	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
-
-	/* Avoid snapping vias to any other vias */
-	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
-		ans = PCB_TYPE_NONE;
-
-	if (ans != PCB_TYPE_NONE) {
-		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
-		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
-		pcb_crosshair.snapped_pin = pin;
-	}
-
 	/*** padstack center ***/
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
-	/* Avoid snapping padstack to any other vias */
-	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
+	/* Avoid snapping padstack to any other padstack */
+	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_PSTK && (ans & PCB_TYPE_PSTK))
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
