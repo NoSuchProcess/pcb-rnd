@@ -187,17 +187,6 @@ typedef struct {
 	int nunplated;
 } HoleCountStruct;
 
-static pcb_r_dir_t hole_counting_old_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_pin_t *pin = (pcb_pin_t *) b;
-	HoleCountStruct *hcs = (HoleCountStruct *) cl;
-	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
-		hcs->nunplated++;
-	else
-		hcs->nplated++;
-	return PCB_R_DIR_FOUND_CONTINUE;
-}
-
 #warning padstack TODO: move this to obj_pstk.c after pinvia removal
 #include "obj_pstk_inlines.h"
 static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
@@ -219,8 +208,6 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const p
 {
 	HoleCountStruct hcs = { 0, 0 };
 
-	pcb_r_search(pcb->Data->pin_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
-	pcb_r_search(pcb->Data->via_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
 	pcb_r_search(pcb->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
 
 	if (plated != NULL)
