@@ -136,7 +136,7 @@ static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 static const char le_syntax[] = "le [name]";
 
-static const char le_help[] = "Loads an element into the current buffer.";
+static const char le_help[] = "Loads an element (subcircuit, footprint) into the current buffer.";
 
 /* %start-doc actions le
 
@@ -159,7 +159,7 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 		break;
 
 	default:											/* usage */
-		pcb_message(PCB_MSG_ERROR, pcb_false, "Usage: le [name]\n  loads element data to buffer\n");
+		pcb_message(PCB_MSG_ERROR, pcb_false, "Usage: le [name]\n  loads element (subcircuit, footprint) data to buffer\n");
 		return 1;
 	}
 	return 0;
