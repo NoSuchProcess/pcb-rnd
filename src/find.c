@@ -30,7 +30,7 @@
 
 /*
  * short description:
- * - lists for pins and vias, lines, arcs, pads and for polygons are created.
+ * - lists for padstacks, lines, arcs, pads and for polygons are created.
  *   Every object that has to be checked is added to its list.
  *   Coarse searching is accomplished with the data rtrees.
  * - there's no 'speed-up' mechanism for polygons because they are not used
@@ -39,20 +39,19 @@
  *   between them. To speed up computation the limit is set to one half
  *   of the thickness of the objects (cause of square pins).
  *
- * PV:  means pin or via (objects that connect layers)
- * LO:  all non PV objects (layer objects like lines, arcs, polygons, pads)
+ * PS:  means padstack
+ * LO:  all non PS objects (layer objects like lines, arcs, polygons, texts)
  *
- * 1. first, the LO or PV at the given coordinates is looked up
- * 2. all LO connections to that PV are looked up next
+ * 1. first, the LO or PS at the given coordinates is looked up
+ * 2. all LO connections to that PS are looked up next
  * 3. lookup of all LOs connected to LOs from (2).
  *    This step is repeated until no more new connections are found.
- * 4. lookup all PVs connected to the LOs from (2) and (3)
- * 5. start again with (1) for all new PVs from (4)
+ * 4. lookup all PSs connected to the LOs from (2) and (3)
+ * 5. start again with (1) for all new PSs from (4)
  *
  */
 
-/* routines to find connections between pins, vias, lines...
- */
+/* routines to find connections between objects */
 #include "config.h"
 
 #include <stdlib.h>
@@ -119,7 +118,7 @@
 
 /* ---------------------------------------------------------------------------
  * the two 'dummy' structs for PVs and Pads are necessary for creating
- * connection lists which include the element's name
+ * connection lists which include the subcircuit's name
  */
 typedef struct {
 	void **Data;									/* pointer to index data */
