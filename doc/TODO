@@ -17,8 +17,6 @@
 + BUG: lesstif: invalidate_all() on config change colors [report: Karl]
 + BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
-- BUG: make test in tests/conf broke [report: igor2]
-- BUG: make test in tests/pcbflags broke [report: igor2]
 SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- remove Line->Number and *->Number: we use ->term
