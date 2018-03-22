@@ -25,9 +25,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-
-/* functions used to create vias, pins ... */
-
 #include "config.h"
 
 #include <stddef.h>
