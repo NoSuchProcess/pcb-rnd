@@ -70,9 +70,7 @@ void pcb_netlist_style(pcb_lib_menu_t *net, const char *style);
    like "U101-5", so element's refdes, dash, pin number */
 pcb_lib_menu_t *pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pinname);
 
-/* Same as pcb_netlist_find_net4pinname but with pin pointer */
-pcb_lib_menu_t *pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin);
-pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad);
+/* Same as pcb_netlist_find_net4pinname but with generic terminal pointer */
 pcb_lib_menu_t *pcb_netlist_find_net4term(pcb_board_t *pcb, const pcb_any_obj_t *term);
 
 

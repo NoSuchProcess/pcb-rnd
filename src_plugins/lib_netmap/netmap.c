@@ -103,34 +103,6 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)ps);
 }
 
-static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
-{
-	pcb_netmap_t *map = ctx;
-
-	if (htpp_get(&map->o2n, pin) != NULL)
-		return;
-
-	map->curr_net = pcb_netlist_find_net4pin(map->pcb, pin);
-	if (map->curr_net == NULL)
-		map->curr_net = alloc_net(map);
-
-	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pin, 0, found);
-}
-
-static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
-{
-	pcb_netmap_t *map = ctx;
-
-	if (htpp_get(&map->o2n, pad) != NULL)
-		return;
-
-	map->curr_net = pcb_netlist_find_net4pad(map->pcb, pad);
-	if (map->curr_net == NULL)
-		map->curr_net = alloc_net(map);
-
-	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pad, 0, found);
-}
-
 int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 {
 	PCB_PADSTACK_LOOP(subc->data) {
@@ -149,7 +121,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 	map->dyn_nets = 0;
 	map->pcb = pcb;
 
-/* step 1: find known nets (from pins and pads) */
+/* step 1: find known nets (from terminals) */
 	pcb_loop_all(PCB, map,
 		NULL, /* layer */
 		NULL, /* line */
@@ -160,8 +132,8 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* eline */
 		NULL, /* earc */
 		NULL, /* etext */
-		list_epin_cb,
-		list_epad_cb,
+		NULL, /* epin */
+		NULL, /* epad */
 		list_subc_cb, /* subc */
 		NULL, /* via */
 		NULL /* pstk */

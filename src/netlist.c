@@ -215,27 +215,6 @@ static pcb_lib_menu_t *pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const char
 	return pcb_netlist_find_net4pinname(pcb, pinname);
 }
 
-pcb_lib_menu_t *pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin)
-{
-	const pcb_element_t *e = pin->Element;
-
-	if (e == NULL)
-		return NULL;
-
-	return pcb_netlist_find_net4pin_any(pcb, e->Name[PCB_ELEMNAME_IDX_REFDES].TextString, pin->Number);
-}
-
-
-pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
-{
-	const pcb_element_t *e = pad->Element;
-
-	if (e == NULL)
-		return NULL;
-
-	return pcb_netlist_find_net4pin_any(pcb, e->Name[PCB_ELEMNAME_IDX_REFDES].TextString, pad->Number);
-}
-
 pcb_lib_menu_t *pcb_netlist_find_net4term(pcb_board_t *pcb, const pcb_any_obj_t *term)
 {
 	pcb_data_t *data;
