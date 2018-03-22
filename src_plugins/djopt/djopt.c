@@ -902,10 +902,13 @@ static int canonicalize_line(line_s * l)
 					&& intersecting_layers(l->layer, c->layer)) {
 				int th = c->pin ? c->pin->Thickness : c->via->Thickness;
 				th /= 2;
+#warning padstack TODO:
+#if 0
 				if (dist(l->s->x, l->s->y, c->x, c->y) > th
 						&& dist(l->e->x, l->e->y, c->x, c->y) > th && pcb_intersect_line_pin(c->pin ? c->pin : c->via, l->line)) {
 					return split_line(l, c);
 				}
+#endif
 			}
 		}
 	}

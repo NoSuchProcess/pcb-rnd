@@ -718,37 +718,6 @@ pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
 	return pcb_true;
 }
 
-pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
-{
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV)) {
-		int shape = PCB_FLAG_SQUARE_GET(PV);
-		if (shape <= 1) {
-			/* the original square case */
-			/* IsLineInRectangle already has Bloat factor */
-			return pcb_is_line_in_rectangle(PV->X - (PIN_SIZE(PV) + 1) / 2,
-															 PV->Y - (PIN_SIZE(PV) + 1) / 2,
-															 PV->X + (PIN_SIZE(PV) + 1) / 2, PV->Y + (PIN_SIZE(PV) + 1) / 2, Line);
-		}
-
-		{
-			/* shaped pin case */
-			pcb_polyarea_t *pl, *lp;
-			int ret;
-
-			pl = pcb_poly_from_pin(PV, PIN_SIZE(PV), 0);
-			lp = pcb_poly_from_line(Line, Line->Thickness + Bloat);
-			ret = pcb_polyarea_touching(lp, pl);
-			pcb_polyarea_free(&pl);
-			pcb_polyarea_free(&lp);
-			return ret;
-		}
-
-	}
-
-	/* the original round pin version */
-	return pcb_is_point_in_pad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (pcb_pad_t *) Line);
-}
-
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
    boxes do touch */
 PCB_INLINE pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
