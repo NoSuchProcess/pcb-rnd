@@ -64,7 +64,7 @@
 #include "obj_pinvia_draw.h"
 #include "obj_pad_draw.h"
 
-#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLY
+#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
@@ -159,7 +159,7 @@ this allows you to check for isolated regions.
 
 @item ToggleOrthoMove
 If set, the crosshair is only allowed to move orthogonally from its
-previous position.  I.e. you can move an element or line up, down,
+previous position.  I.e. you can move a subcircuit or line up, down,
 left, or right, but not up+left or down+right.
 
 @item ToggleName
@@ -194,12 +194,12 @@ coordinate.
 Toggles whether the grid is displayed or not.
 
 @item Pinout
-Causes the pinout of the element indicated by the cursor to be
+Causes the pinout of the subcircuit indicated by the cursor to be
 displayed, usually in a separate window.
 
 @item PinOrPadName
-Toggles whether the names of pins, pads, or (yes) vias will be
-displayed.  If the cursor is over an element, all of its pins and pads
+Toggles whether the names of terminals will be
+displayed.  If the cursor is over an subcircuit, all of its terminals
 are affected.
 
 @end table
@@ -236,7 +236,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 	str_dir = PCB_ACTION_ARG(1);
 
 	id = pcb_funchash_get(function, NULL);
-	if (id == F_SubcID) { /* change the displayed name of elements */
+	if (id == F_SubcID) { /* change the displayed name of subcircuits */
 		if (argc > 0)
 			conf_set(CFR_DESIGN, "editor/subc_id", -1, str_dir, POL_OVERWRITE);
 		else
@@ -412,14 +412,14 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			pcb_redraw();
 			break;
 
-			/* display the pinout of an element */
+			/* display the pinout of a subcircuit */
 		case F_Pinout:
 			{
 				pcb_subc_t *subc;
 				void *ptrtmp;
 				pcb_coord_t x, y;
 
-				pcb_gui->get_coords(_("Click on an element"), &x, &y);
+				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
 				if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 					subc = (pcb_subc_t *) ptrtmp;
 					pcb_gui->show_item(subc);
@@ -427,79 +427,13 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				break;
 			}
 
-			/* toggle displaying of pin/pad/via names */
+			/* toggle displaying of terminal names */
 		case F_PinOrPadName:
 			{
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t x, y;
-				pcb_gui->get_coords(_("Click on an element"), &x, &y);
-
-				/* old code for elements */
-				switch (pcb_search_screen(x, y,
-														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
-														 PCB_TYPE_VIA, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
-				case PCB_TYPE_ELEMENT:
-					PCB_PIN_LOOP((pcb_element_t *) ptr1);
-					{
-						if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pin))
-							pcb_pin_name_invalidate_erase(pin);
-						else
-							pcb_pin_name_invalidate_draw(pin);
-						pcb_undo_add_obj_to_flag(pin);
-						PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, pin);
-					}
-					PCB_END_LOOP;
-					PCB_PAD_LOOP((pcb_element_t *) ptr1);
-					{
-						if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pad))
-							pcb_pad_name_invalidate_erase(pad);
-						else
-							pcb_pad_name_invalidate_draw(pad);
-						pcb_undo_add_obj_to_flag(pad);
-						PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, pad);
-					}
-					PCB_END_LOOP;
-					pcb_board_set_changed_flag(pcb_true);
-					pcb_undo_inc_serial();
-					pcb_draw();
-					break;
-
-				case PCB_TYPE_PIN:
-					if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, (pcb_pin_t *) ptr2))
-						pcb_pin_name_invalidate_erase((pcb_pin_t *) ptr2);
-					else
-						pcb_pin_name_invalidate_draw((pcb_pin_t *) ptr2);
-					pcb_undo_add_obj_to_flag(ptr2);
-					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, (pcb_pin_t *) ptr2);
-					pcb_board_set_changed_flag(pcb_true);
-					pcb_undo_inc_serial();
-					pcb_draw();
-					break;
-
-				case PCB_TYPE_PAD:
-					if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, (pcb_pad_t *) ptr2))
-						pcb_pad_name_invalidate_erase((pcb_pad_t *) ptr2);
-					else
-						pcb_pad_name_invalidate_draw((pcb_pad_t *) ptr2);
-					pcb_undo_add_obj_to_flag(ptr2);
-					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, (pcb_pad_t *) ptr2);
-					pcb_board_set_changed_flag(pcb_true);
-					pcb_undo_inc_serial();
-					pcb_draw();
-					break;
-				case PCB_TYPE_VIA:
-					if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, (pcb_pin_t *) ptr2))
-						pcb_via_name_invalidate_erase((pcb_pin_t *) ptr2);
-					else
-						pcb_via_name_invalidate_draw((pcb_pin_t *) ptr2);
-					pcb_undo_add_obj_to_flag(ptr2);
-					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, (pcb_pin_t *) ptr2);
-					pcb_board_set_changed_flag(pcb_true);
-					pcb_undo_inc_serial();
-					pcb_draw();
-					break;
-				}
+				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
 
 				/* toggle terminal ID print for subcircuit parts */
 				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
@@ -516,7 +450,6 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							pcb_undo_inc_serial();
 							return 0;
 							break;
-						case PCB_TYPE_VIA:
 						case PCB_TYPE_LINE:
 						case PCB_TYPE_ARC:
 						case PCB_TYPE_POLY:
@@ -870,20 +803,6 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				goto switched;
 			}
 		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
-			pcb_crosshair.AttachedObject.Type = PCB_TYPE_VIA;
-			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
-			pcb_crosshair.AttachedObject.Ptr2 = ptr2;
-			pcb_crosshair.AttachedObject.Ptr3 = ptr3;
-			goto switched;
-		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
-			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ELEMENT;
-			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
-			pcb_crosshair.AttachedObject.Ptr2 = ptr1;
-			pcb_crosshair.AttachedObject.Ptr3 = ptr1;
-			goto switched;
-		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
 			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC;
 			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
@@ -937,7 +856,7 @@ static int pcb_act_Message(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 static const char pcb_acts_ToggleHideName[] = "ToggleHideName(Object|SelectedElements)";
 
-static const char pcb_acth_ToggleHideName[] = "Toggles the visibility of element names.";
+static const char pcb_acth_ToggleHideName[] = "Toggles the visibility of subcircuit names.";
 
 /* %start-doc actions ToggleHideName
 
@@ -948,48 +867,7 @@ appear on the silk layer when you print the layout.
 
 static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function && pcb_silk_on(PCB)) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					pcb_undo_add_obj_to_flag(ptr2);
-					pcb_elem_name_invalidate_erase((pcb_element_t *) ptr2);
-					PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
-					pcb_elem_name_invalidate_draw((pcb_element_t *) ptr2);
-					pcb_draw();
-					pcb_undo_inc_serial();
-				}
-				break;
-			}
-		case F_SelectedElements:
-		case F_Selected:
-			{
-				pcb_bool changed = pcb_false;
-				PCB_ELEMENT_LOOP(PCB->Data);
-				{
-					if ((PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_REFDES(element)))
-							&& (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
-						pcb_undo_add_obj_to_flag(element);
-						pcb_elem_name_invalidate_erase(element);
-						PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, element);
-						pcb_elem_name_invalidate_draw(element);
-						changed = pcb_true;
-					}
-				}
-				PCB_END_LOOP;
-				if (changed) {
-					pcb_draw();
-					pcb_undo_inc_serial();
-				}
-			}
-		}
-	}
+	pcb_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
 	return 0;
 }
 
@@ -1210,15 +1088,6 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		layer = (pcb_layer_t *) ptr1;
 		break;
 
-	case PCB_TYPE_VIA:
-		pcb_notify_crosshair_change(pcb_false);
-		set_same_(0, ((pcb_pin_t *) ptr2)->Thickness, ((pcb_pin_t *) ptr2)->DrillingHole, ((pcb_pin_t *) ptr2)->Clearance / 2, NULL);
-		if (conf_core.editor.mode != PCB_MODE_VIA)
-			pcb_crosshair_set_mode(PCB_MODE_VIA);
-		pcb_notify_crosshair_change(pcb_true);
-		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-		break;
-
 	default:
 		return 1;
 	}
@@ -1403,51 +1272,17 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		dy = -dy;
 	
 	/* Allow leaving snapped pin/pad/padstack */
-	if (pcb_crosshair.snapped_pad) {
-		pcb_pad_t *pad = pcb_crosshair.snapped_pad;
-		pcb_coord_t width = pad->Thickness;
-		pcb_coord_t height = pcb_distance(pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y)+width;
-		if (pad->Point1.Y == pad->Point2.Y) {
-			pcb_coord_t tmp = width;
-			width = height;
-			height = tmp;
-		}
-		if (dx < 0) {
-			dx -= width/2;
-		} else if (dx > 0) {
-			dx += width/2;
-		}
-		if (dy < 0) {
-			dy -= height/2;
-		} else if (dy > 0) {
-			dy += height/2;
-		}
-	} else if (pcb_crosshair.snapped_pin) {
-		pcb_pin_t *pin = pcb_crosshair.snapped_pin;
-		pcb_coord_t radius = pin->Thickness/2;
-		if (dx < 0) {
-			dx -= radius;
-		} else if (dx > 0) {
-			dx += radius;
-		}
-		if (dy < 0) {
-			dy -= radius;
-		} else if (dy > 0) {
-			dy += radius;
-		}
-	} else if (pcb_crosshair.snapped_pstk) {
+	if (pcb_crosshair.snapped_pstk) {
 		pcb_pstk_t *ps = pcb_crosshair.snapped_pstk;
 		pcb_coord_t radius = ((ps->BoundingBox.X2 - ps->BoundingBox.X1) + (ps->BoundingBox.Y2 - ps->BoundingBox.Y1))/2;
-		if (dx < 0) {
+		if (dx < 0)
 			dx -= radius;
-		} else if (dx > 0) {
+		else if (dx > 0)
 			dx += radius;
-		}
-		if (dy < 0) {
+		if (dy < 0)
 			dy -= radius;
-		} else if (dy > 0) {
+		else if (dy > 0)
 			dy += radius;
-		}
 	}
 
 	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
