@@ -59,7 +59,7 @@ void pcb_tool_via_notify_mode(void)
 		return;
 	}
 
-#warning padstack TODO: do not work in compatibility mode, use a padstack proto
+#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
 	{
 		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, pcb_tool_note.X, pcb_tool_note.Y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
