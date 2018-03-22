@@ -51,9 +51,9 @@ pcb_opfunc_t Rotate90Functions = {
 	pcb_lineop_rotate90,
 	pcb_textop_rotate90,
 	pcb_polyop_rotate90,
-	pcb_viaop_rotate90,
-	pcb_elemop_rotate90,
-	pcb_elemop_rotate90_name,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	pcb_lineop_rotate90_point,
@@ -69,7 +69,7 @@ pcb_opfunc_t RotateFunctions = {
 	pcb_lineop_rotate,
 	pcb_textop_rotate,
 	pcb_polyop_rotate,
-	pcb_viaop_rotate,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -153,7 +153,7 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
 			pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
-		if (type == PCB_TYPE_ELEMENT)
+		if (type == PCB_TYPE_SUBC)
 			pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate90(type, ptr1, ptr2, ptr3, X, Y, Steps);
 		pcb_board_set_changed_flag(pcb_true);
@@ -172,7 +172,7 @@ void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
 		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
 			pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
-		if (type == PCB_TYPE_ELEMENT)
+		if (type == PCB_TYPE_SUBC)
 			pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate(type, ptr1, ptr2, ptr3, X, Y, angle);
 		pcb_board_set_changed_flag(pcb_true);
