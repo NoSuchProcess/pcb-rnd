@@ -28,6 +28,8 @@
 
 /* Drawing primitive: text */
 
+#warning subc TODO: remove pcb_text_t->Element (just use the parent ptr)
+
 #include "config.h"
 
 #include "rotate.h"
@@ -1033,15 +1035,6 @@ static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
 		PCB_TEXT_LOOP(layer); {
 			if (text->fid == fid) {
 				pcb_text_update(layer, text);
-				need_redraw = 1;
-			}
-		} PCB_END_LOOP;
-	} PCB_END_LOOP;
-
-	PCB_ELEMENT_LOOP(data); {
-		PCB_ELEMENT_PCB_TEXT_LOOP(element); {
-			if (text->fid == fid) {
-				pcb_element_text_update(PCB, data, element, n);
 				need_redraw = 1;
 			}
 		} PCB_END_LOOP;
