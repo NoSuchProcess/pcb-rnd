@@ -206,6 +206,8 @@ struct drc_info {
 	jmp_buf env;
 };
 
+#warning padstack TODO: rewrite this for padstacks
+#if 0
 static pcb_r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *via = (pcb_pin_t *) b;
@@ -215,16 +217,7 @@ static pcb_r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 		longjmp(i->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
-
-static pcb_r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_pad_t *pad = (pcb_pad_t *) b;
-	struct drc_info *i = (struct drc_info *) cl;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == i->solder && !PCB_FLAG_TEST(PCB_FLAG_FOUND, pad) && pcb_intersect_line_pad(i->line, pad))
-		longjmp(i->env, 1);
-	return PCB_R_DIR_FOUND_CONTINUE;
-}
+#endif
 
 static pcb_r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 {
@@ -356,17 +349,14 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 			last2 = length2;
 			if (setjmp(info.env) == 0) {
 				info.line = &line1;
+#warning padstack TODO:
+#if 0
 				pcb_r_search(PCB->Data->via_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
-				pcb_r_search(PCB->Data->pin_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
-				if (info.solder || comp == group)
-					pcb_r_search(PCB->Data->pad_tree, &line1.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				if (two_lines) {
 					info.line = &line2;
 					pcb_r_search(PCB->Data->via_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
-					pcb_r_search(PCB->Data->pin_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
-					if (info.solder || comp == group)
-						pcb_r_search(PCB->Data->pad_tree, &line2.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				}
+#endif
 				PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 				{
 					info.line = &line1;
@@ -453,10 +443,10 @@ static void drc_line(pcb_point_t *end)
 	pcb_line_bbox(&line);
 	if (setjmp(info.env) == 0) {
 		info.line = &line;
+#warning padstack TODO:
+#if 0
 		pcb_r_search(PCB->Data->via_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
-		pcb_r_search(PCB->Data->pin_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
-		if (info.solder || comp == group)
-			pcb_r_search(PCB->Data->pad_tree, &line.BoundingBox, NULL, drcPad_callback, &info, NULL);
+#endif
 		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			info.line = &line;
