@@ -53,60 +53,15 @@
 #include "layer_vis.h"
 #include "operation.h"
 
-/* --------------------------------------------------------------------------- */
-
-static pcb_element_t *element_cache = NULL;
-
-static pcb_element_t *find_element_by_refdes(const char *refdes)
-{
-	if (element_cache && PCB_ELEM_NAME_REFDES(element_cache)
-			&& strcmp(PCB_ELEM_NAME_REFDES(element_cache), refdes) == 0)
-		return element_cache;
-
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		if (PCB_ELEM_NAME_REFDES(element)
-				&& strcmp(PCB_ELEM_NAME_REFDES(element), refdes) == 0) {
-			element_cache = element;
-			return element_cache;
-		}
-	}
-	PCB_END_LOOP;
-	return NULL;
-}
-
-#warning subc TODO: remove this when removing element support
-static pcb_attribute_t *lookup_attr(pcb_attribute_list_t *list, const char *name)
-{
-	int i;
-	for (i = 0; i < list->Number; i++)
-		if (strcmp(list->List[i].name, name) == 0)
-			return &list->List[i];
-	return NULL;
-}
-
-#warning subc TODO: remove this when removing element support
-static void delete_attr(pcb_attribute_list_t *list, pcb_attribute_t * attr)
-{
-	int idx = attr - list->List;
-	if (idx < 0 || idx >= list->Number)
-		return;
-	if (list->Number - idx > 1)
-		memmove(attr, attr + 1, (list->Number - idx - 1) * sizeof(pcb_attribute_t));
-	list->Number--;
-}
-
-/* ------------------------------------------------------------ */
-
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 
 static const char pcb_acth_Attributes[] =
-	"Let the user edit the attributes of the layout, current or given\n" "layer, or selected element or subcircuit.";
+	"Let the user edit the attributes of the layout, current or given\n" "layer, or selected subcircuit.";
 
 /* %start-doc actions Attributes
 
 This just pops up a dialog letting the user edit the attributes of the
-pcb, an element, or a layer.
+pcb, a subcircuit, or a layer.
 
 %end-doc */
 
@@ -153,44 +108,6 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 		}
 
 	case F_Element:
-		{
-			int n_found = 0;
-			pcb_element_t *e = NULL;
-			PCB_ELEMENT_LOOP(PCB->Data);
-			{
-				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
-					e = element;
-					n_found++;
-				}
-			}
-			PCB_END_LOOP;
-			if (n_found > 1) {
-				pcb_message(PCB_MSG_ERROR, _("Too many elements selected\n"));
-				return 1;
-			}
-			if (n_found == 0) {
-				void *ptrtmp;
-				pcb_gui->get_coords(_("Click on an element"), &x, &y);
-				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
-					e = (pcb_element_t *) ptrtmp;
-				else {
-					pcb_message(PCB_MSG_ERROR, _("No element found there\n"));
-					return 1;
-				}
-			}
-
-			if (PCB_ELEM_NAME_REFDES(e)) {
-				buf = (char *) malloc(strlen(PCB_ELEM_NAME_REFDES(e)) + strlen("Element X Attributes"));
-				sprintf(buf, "Element %s Attributes", PCB_ELEM_NAME_REFDES(e));
-			}
-			else {
-				buf = pcb_strdup("Unnamed Element Attributes");
-			}
-			pcb_gui->edit_attributes(buf, &(e->Attributes));
-			free(buf);
-			break;
-		}
-
 	case F_Subc:
 		{
 			int n_found = 0;
@@ -239,14 +156,14 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 static const char pcb_acts_DisperseElements[] = "DisperseElements(All|Selected)";
 
-static const char pcb_acth_DisperseElements[] = "Disperses elements.";
+static const char pcb_acth_DisperseElements[] = "Disperses subcircuits.";
 
 /* %start-doc actions DisperseElements
 
-Normally this is used when starting a board, by selecting all elements
-and then dispersing them.  This scatters the elements around the board
+Normally this is used when starting a board, by selecting all subcircuits
+and then dispersing them.  This scatters the subcircuits around the board
 so that you can pick individual ones, rather than have all the
-elements at the same 0,0 coordinate and thus impossible to choose
+subcircuits at the same 0,0 coordinate and thus impossible to choose
 from.
 
 %end-doc */
@@ -298,7 +215,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 		*maxy = newy2;
 		if (*maxy > PCB->MaxHeight - GAP) {
 			*maxy = GAP;
-			pcb_message(PCB_MSG_WARNING, "The board is too small for hosting all elements,\ndiesperse restarted from the top.\nExpect overlapping elements\n");
+			pcb_message(PCB_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
 		}
 	}
 }
@@ -332,20 +249,6 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 	}
 
 	pcb_draw_inhibit_inc();
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
-			disperse_obj(PCB, (pcb_any_obj_t *)element, element->MarkX, element->MarkY, &dx, &dy, &minx, &miny, &maxy);
-			
-			/* move the element */
-			pcb_element_move(PCB->Data, element, dx, dy);
-
-			/* and add to the undo list so we can undo this operation */
-			pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
-		}
-	}
-	PCB_END_LOOP;
-
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))) {
@@ -376,14 +279,14 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 
 static const char pcb_acts_Flip[] = "Flip(Object|Selected|SelectedElements)";
 
-static const char pcb_acth_Flip[] = "Flip an element to the opposite side of the board.";
+static const char pcb_acth_Flip[] = "Flip a subcircuit to the opposite side of the board.";
 
 /* %start-doc actions Flip
 
-Note that the location of the element will be symmetric about the
+Note that the location of the subcircuit will be symmetric about the
 cursor location; i.e. if the part you are pointing at will still be at
-the same spot once the element is on the other side.  When flipping
-multiple elements, this retains their positions relative to each
+the same spot once the subcircuit is on the other side.  When flipping
+multiple subcircuits, this retains their positions relative to each
 other, not their absolute positions on the board.
 
 %end-doc */
@@ -391,20 +294,12 @@ other, not their absolute positions on the board.
 static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
-	pcb_element_t *element;
 	void *ptrtmp;
 	int err = 0;
 
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
-			if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
-				element = (pcb_element_t *) ptrtmp;
-				pcb_undo_save_serial();
-				pcb_element_change_side(element, 2 * pcb_crosshair.Y - PCB->MaxHeight);
-				pcb_undo_inc_serial();
-				pcb_draw();
-			}
 			if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_save_serial();
@@ -472,7 +367,7 @@ static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_co
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
-	if (type == PCB_TYPE_ELEMENT)
+	if (type == PCB_TYPE_SUBC)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	pcb_board_set_changed_flag(pcb_true);
@@ -487,7 +382,7 @@ static const char pcb_acth_MoveToCurrentLayer[] = "Moves objects to the current 
 
 /* %start-doc actions MoveToCurrentLayer
 
-Note that moving an element from a component layer to a solder layer,
+Note that moving an subcircuit from a component layer to a solder layer,
 or from solder to component, won't automatically flip it.  Use the
 @code{Flip()} action to do that.
 
@@ -530,20 +425,20 @@ static const char pcb_acth_ElementList[] = "Adds the given element if it doesn't
 @table @code
 
 @item Start
-Indicates the start of an element list; call this before any Need
+Indicates the start of an subcircuit list; call this before any Need
 actions.
 
 @item Need
-Searches the board for an element with a matching refdes.
+Searches the board for an subcircuit with a matching refdes.
 
 If found, the value and footprint are updated.
 
-If not found, a new element is created with the given footprint and value.
+If not found, a new subcircuit is created with the given footprint and value.
 
 @item Done
-Compares the list of elements needed since the most recent
-@code{start} with the list of elements actually on the board.  Any
-elements that weren't listed are selected, so that the user may delete
+Compares the list of subcircuits needed since the most recent
+@code{start} with the list of subcircuits actually on the board.  Any
+subcircuits that weren't listed are selected, so that the user may delete
 them.
 
 @end table
@@ -576,7 +471,6 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 
 static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_element_t *e = NULL;
 	pcb_subc_t *sc;
 	const char *refdes, *value, *footprint;
 	const char *args[3];
@@ -588,25 +482,24 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #endif
 
 	if (pcb_strcasecmp(function, "start") == 0) {
-		PCB_ELEMENT_LOOP(PCB->Data);
+		PCB_SUBC_LOOP(PCB->Data);
 		{
-			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
+			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, subc);
 		}
 		PCB_END_LOOP;
-		element_cache = NULL;
 		number_of_footprints_not_found = 0;
 		return 0;
 	}
 
 	if (pcb_strcasecmp(function, "done") == 0) {
-		PCB_ELEMENT_LOOP(PCB->Data);
+		PCB_SUBC_LOOP(PCB->Data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, element)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
+			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, subc)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, subc);
 			}
-			else if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_REFDES(element))) {
+			else if (!PCB_EMPTY_STRING_P(subc->refdes)) {
 				/* Unnamed elements should remain untouched */
-				PCB_FLAG_SET(PCB_FLAG_SELECTED, element);
+				PCB_FLAG_SET(PCB_FLAG_SELECTED, subc);
 			}
 		}
 		PCB_END_LOOP;
@@ -638,10 +531,9 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	printf("  ... value = %s\n", value);
 #endif
 
-	e = find_element_by_refdes(refdes);
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
 
-	if ((e == NULL) && (sc == NULL)) {
+	if (sc == NULL) {
 		pcb_coord_t nx, ny, d;
 
 #ifdef DEBUG
@@ -680,17 +572,12 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		if (pcb_buffer_copy_to_layout(PCB, nx, ny))
 			pcb_board_set_changed_flag(pcb_true);
 	}
-	else if (
-			(e && PCB_ELEM_NAME_DESCRIPTION(e) && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) 
-			|| (sc && subc_differs(sc, footprint))
-		)
-	{
+	else if (sc && subc_differs(sc, footprint)) {
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
 		int orig_on_top, orig_rotstep, paste_ok = 0;
 		pcb_coord_t orig_cx, orig_cy;
-		pcb_element_t *pe;
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
@@ -699,15 +586,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			return 1;
 		}
 
-		/* save the rotation value of the original element/subc */
-		if (e != NULL) {
-			orig_rotstep = pcb_element_get_orientation(e);
-			orig_rot = orig_rotstep * 90.0;
-			orig_cx = e->MarkX;
-			orig_cy = e->MarkY;
-			orig_on_top = PCB_FRONT(e);
-		}
-		else {
+		{
 			orig_rot = 0.0;
 			orig_cx = 0;
 			orig_cy = 0;
@@ -719,29 +598,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			orig_on_top = !orig_on_top;
 		}
 
-		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
-		if (pe != NULL) {
-			/* replace with element */
-			int pr, i;
-
-			if (!orig_on_top)
-				pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
-
-			pr = pcb_element_get_orientation(pe);
-
-			if (orig_rotstep != pr)
-				pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (orig_rotstep - pr + 4) % 4);
-
-			for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
-				pe->Name[i].X = e->Name[i].X - orig_cx + pe->MarkX;
-				pe->Name[i].Y = e->Name[i].Y - orig_cy + pe->MarkY;
-				pe->Name[i].Direction = e->Name[i].Direction;
-				pe->Name[i].Scale = e->Name[i].Scale;
-			}
-
-			paste_ok = 1;
-		}
-		else {
+		{
 			/* replace with subc */
 			pcb_subc_t *psc;
 
@@ -772,8 +629,6 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 
 		if (paste_ok) {
-			if (e != NULL)
-				pcb_element_remove(e);
 			if (sc != NULL)
 				pcb_subc_remove(sc);
 			if (pcb_buffer_copy_to_layout(PCB, orig_cx, orig_cy))
@@ -782,25 +637,12 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	}
 
 	/* Now reload footprint */
-	element_cache = NULL;
-	e = find_element_by_refdes(refdes);
-	if (e != NULL) {
-		old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(refdes));
-		if (old)
-			free(old);
-		old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_VALUE, pcb_strdup(value));
-		if (old)
-			free(old);
-		PCB_FLAG_SET(PCB_FLAG_FOUND, e);
-	}
-
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
 	if (sc != NULL) {
 /*		pcb_attribute_put(&sc->Attributes, "refdes", refdes);*/
 		pcb_attribute_put(&sc->Attributes, "value", value);
 		PCB_FLAG_SET(PCB_FLAG_FOUND, sc);
 	}
-
 
 #ifdef DEBUG
 	printf(" ... Leaving pcb_act_ElementList.\n");
@@ -810,7 +652,6 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 }
 
 /* ---------------------------------------------------------------- */
-#warning subc TODO: remove this when removing element support
 static const char pcb_acts_ElementSetAttr[] = "ElementSetAttr(refdes,name[,value])";
 
 static const char pcb_acth_ElementSetAttr[] = "Sets or clears an element-specific attribute.";
@@ -825,7 +666,6 @@ not specified, the given attribute is removed if present.
 
 static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_element_t *e = NULL;
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
 	pcb_attribute_t *attr;
@@ -840,47 +680,14 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 
 
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
-	if (sc != NULL) {
-		attr = lookup_attr(&sc->Attributes, name);
-
-		if (attr && value) {
-			free(attr->value);
-			attr->value = pcb_strdup(value);
-		}
-		if (attr && !value)
-			delete_attr(&sc->Attributes, attr);
-		if (!attr && value)
-			pcb_attribute_put(&sc->Attributes, name, value);
-		return 0;
+	if (sc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
 	}
 
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		if (PCB_NSTRCMP(refdes, PCB_ELEM_NAME_REFDES(element)) == 0) {
-			e = element;
-			break;
-		}
-	}
-	PCB_END_LOOP;
-
-	if (!e) {
-		pcb_message(PCB_MSG_ERROR, _("Cannot change attribute of %s - element not found\n"), refdes);
-		return 1;
-	}
-
-	attr = lookup_attr(&e->Attributes, name);
-
-	if (attr && value) {
-		free(attr->value);
-		attr->value = pcb_strdup(value);
-	}
-	if (attr && !value) {
-		delete_attr(&e->Attributes, attr);
-	}
-	if (!attr && value) {
-		pcb_attribute_put(&e->Attributes, name, value);
-	}
-
+	if (value != NULL)
+		pcb_attribute_put(&sc->Attributes, name, value);
+	else
+		pcb_attribute_remove(&sc->Attributes, name);
 	return 0;
 }
 
@@ -888,7 +695,7 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 
 static const char pcb_acts_RipUp[] = "RipUp(All|Selected|Element)";
 
-static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks, or convert an element to parts.";
+static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks, or convert a subcircuit to parts.";
 
 /* %start-doc actions RipUp
 
@@ -902,7 +709,7 @@ Removes all selected lines and vias which were created by the
 autorouter.
 
 @item Element
-Converts the element under the cursor to parts (vias and lines).  Note
+Converts the subcircuit under the cursor to parts (vias and lines).  Note
 that this uses the highest numbered paste buffer.
 
 @end table
@@ -933,6 +740,8 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_ENDALL_LOOP;
+#warning padstack TODO: rewrite this
+#if 0
 			PCB_VIA_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
@@ -941,6 +750,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_END_LOOP;
+#endif
 
 			if (changed) {
 				pcb_undo_inc_serial();
@@ -957,6 +767,8 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_ENDALL_LOOP;
+#warning padstack TODO: rewrite this
+#if 0
 			if (PCB->ViaOn)
 				PCB_VIA_LOOP(PCB->Data);
 			{
@@ -967,12 +779,15 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_END_LOOP;
+#endif
 			if (changed) {
 				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
 		case F_Element:
+#warning subc TODO: rewrite this
+#if 0
 			{
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t gx, gy;
@@ -994,6 +809,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 					pcb_board_set_changed_flag(pcb_true);
 				}
 			}
+#endif
 			break;
 		}
 	}
@@ -1034,6 +850,8 @@ static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_co
 	}
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
+#warning subc TODO:
+#if 0
 	pcb_undo_save_serial();
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -1059,7 +877,10 @@ static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_co
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#endif
+
 #warning padstack TODO
+#if 0
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
@@ -1070,6 +891,7 @@ static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_co
 		}
 	}
 	PCB_END_LOOP;
+#endif
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	return 0;
@@ -1110,6 +932,8 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
 	pcb_undo_save_serial();
+#warning subc TODO:
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -1134,7 +958,10 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#endif
+
 #warning padstack TODO
+#if 0
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
@@ -1145,6 +972,8 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 	}
 	PCB_END_LOOP;
+#endif
+
 	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, line))
@@ -1173,13 +1002,15 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 /* ---------------------------------------------------------------------------  */
 int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+#warning cleanup TODO: move this to oldactions maybe?
+#warning subc TODO
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		printf("%d %s\n", pcb_element_get_orientation(element), PCB_ELEM_NAME_REFDES(element));
 	}
 	PCB_END_LOOP;
-#warning subc TODO
-#warning cleanup TODO: move this to oldactions maybe?
+#endif
 	return 0;
 }
 
