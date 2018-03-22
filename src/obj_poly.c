@@ -685,6 +685,7 @@ struct mptlc {
 	pcb_poly_t *polygon;
 } mptlc;
 
+#if 0
 pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 {
 	struct mptlc *d = (struct mptlc *) cl;
@@ -699,6 +700,7 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 	PCB_FLAG_THERM_CLEAR(d->snum, pin);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
+#endif
 
 /* moves a polygon between layers */
 void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t * Polygon)
@@ -719,10 +721,13 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	d.snum = pcb_layer_id(PCB->Data, Layer);
 	d.dnum = pcb_layer_id(PCB->Data, ctx->move.dst_layer);
 	d.polygon = Polygon;
+
+#warning padstack TODO
+#if 0
 	d.type = PCB_TYPE_PIN;
 	pcb_r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
-	d.type = PCB_TYPE_VIA;
-	pcb_r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
+#endif
+
 	newone = (struct pcb_poly_s *) pcb_polyop_move_to_layer_low(ctx, Layer, Polygon, ctx->move.dst_layer);
 	pcb_poly_init_clip(PCB->Data, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis)
