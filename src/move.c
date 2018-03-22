@@ -26,10 +26,6 @@
  *
  */
 
-
-/* functions used to move pins, elements ...
- */
-
 #include "config.h"
 #include "conf_core.h"
 
