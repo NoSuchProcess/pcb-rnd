@@ -164,14 +164,6 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	if (g->type & PCB_LYT_MASK)
 		return pcb_false;
 
-	/* copper layers are always non-empty if there are vias or pins because of the rings */
-	if (g->type & PCB_LYT_COPPER) {
-		if ((pcb->Data->via_tree != NULL) && (pcb->Data->via_tree->size > 0))
-			return pcb_false;
-		if ((pcb->Data->pin_tree != NULL) && (pcb->Data->pin_tree->size > 0))
-			return pcb_false;
-	}
-
 	if (!pcb_pstk_is_group_empty(pcb, num))
 		return pcb_false;
 
