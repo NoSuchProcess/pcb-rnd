@@ -668,77 +668,6 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * L, pcb_coord_t thick)
 	return np;
 }
 
-/* make a rounded-corner rectangle */
-pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, pcb_coord_t clear)
-{
-	pcb_pline_t *contour = NULL;
-	pcb_polyarea_t *np = NULL;
-	pcb_vector_t v;
-	double d;
-	double tx, ty;
-	double cx, cy;
-	pcb_pad_t _t = *pad, *t = &_t;
-	pcb_pad_t _c = *pad, *c = &_c;
-	int halfthick = (pad->Thickness + 1) / 2;
-	int halfclear = (clear + 1) / 2;
-
-	d = sqrt(PCB_SQUARE(pad->Point1.X - pad->Point2.X) + PCB_SQUARE(pad->Point1.Y - pad->Point2.Y));
-	if (d != 0) {
-		double a = halfthick / d;
-		tx = (t->Point1.Y - t->Point2.Y) * a;
-		ty = (t->Point2.X - t->Point1.X) * a;
-		a = halfclear / d;
-		cx = (c->Point1.Y - c->Point2.Y) * a;
-		cy = (c->Point2.X - c->Point1.X) * a;
-
-		t->Point1.X -= ty;
-		t->Point1.Y += tx;
-		t->Point2.X += ty;
-		t->Point2.Y -= tx;
-		c->Point1.X -= cy;
-		c->Point1.Y += cx;
-		c->Point2.X += cy;
-		c->Point2.Y -= cx;
-	}
-	else {
-		tx = halfthick;
-		ty = 0;
-		cx = halfclear;
-		cy = 0;
-
-		t->Point1.Y += tx;
-		t->Point2.Y -= tx;
-		c->Point1.Y += cx;
-		c->Point2.Y -= cx;
-	}
-
-	v[0] = c->Point1.X - tx;
-	v[1] = c->Point1.Y - ty;
-	if ((contour = pcb_poly_contour_new(v)) == NULL)
-		return 0;
-	pcb_poly_frac_circle_end(contour, (t->Point1.X - tx), (t->Point1.Y - ty), v, 4);
-
-	v[0] = t->Point2.X - cx;
-	v[1] = t->Point2.Y - cy;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	pcb_poly_frac_circle_end(contour, (t->Point2.X - tx), (t->Point2.Y - ty), v, 4);
-
-	v[0] = c->Point2.X + tx;
-	v[1] = c->Point2.Y + ty;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	pcb_poly_frac_circle_end(contour, (t->Point2.X + tx), (t->Point2.Y + ty), v, 4);
-
-	v[0] = t->Point1.X + cx;
-	v[1] = t->Point1.Y + cy;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	pcb_poly_frac_circle_end(contour, (t->Point1.X + tx), (t->Point1.Y + ty), v, 4);
-
-	/* now we have the line contour */
-	if (!(np = pcb_poly_from_contour(contour)))
-		return NULL;
-	return np;
-}
-
 /* clear np1 from the polygon - should be inline with -O3 */
 static int Subtract(pcb_polyarea_t * np1, pcb_poly_t * p, pcb_bool fnp)
 {
@@ -843,23 +772,6 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 		return 0;
 	if (!(np = RoundRect(b->X1 + PCB->Bloat, b->X2 - PCB->Bloat, b->Y1 + PCB->Bloat, b->Y2 - PCB->Bloat, PCB->Bloat)))
 		return -1;
-	return Subtract(np, p, pcb_true);
-}
-
-static int SubtractPad(pcb_pad_t * pad, pcb_poly_t * p)
-{
-	pcb_polyarea_t *np = NULL;
-
-	if (pad->Clearance == 0)
-		return 0;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
-		if (!(np = SquarePadPoly(pad, pad->Thickness + pad->Clearance)))
-			return -1;
-	}
-	else {
-		if (!(np = pcb_poly_from_line((pcb_line_t *) pad, pad->Thickness + pad->Clearance)))
-			return -1;
-	}
 	return Subtract(np, p, pcb_true);
 }
 
@@ -1086,26 +998,6 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_pad_t *pad = (pcb_pad_t *) b;
-	struct cpInfo *info = (struct cpInfo *) cl;
-	pcb_poly_t *polygon;
-
-	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return PCB_R_DIR_NOT_FOUND;
-	if (pad->Clearance == 0)
-		return PCB_R_DIR_NOT_FOUND;
-	polygon = info->polygon;
-	if (PCB_XOR(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), !info->solder)) {
-		if (SubtractPad(pad, polygon) < 0)
-			longjmp(info->env, 1);
-		return PCB_R_DIR_FOUND_CONTINUE;
-	}
-	return PCB_R_DIR_NOT_FOUND;
-}
-
 static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
@@ -1188,10 +1080,6 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon,
 		r = 0;
 		info.accumulate = NULL;
 		info.batch_size = 0;
-		if (info.solder || (gflg & PCB_LYT_TOP)) {
-			pcb_r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info, &seen);
-			r += seen;
-		}
 		PCB_COPPER_GROUP_LOOP(Data, group);
 		{
 			pcb_r_search(layer->line_tree, &region, NULL, line_sub_callback, &info, &seen);
@@ -1318,21 +1206,6 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 	if (!Unsubtract(np, p))
 		return 0;
 	clearPoly(PCB->Data, l, p, (const pcb_box_t *) text, 2 * UNSUBTRACT_BLOAT);
-	return 1;
-}
-
-static int UnsubtractPad(pcb_pad_t * pad, pcb_layer_t * l, pcb_poly_t * p)
-{
-	pcb_polyarea_t *np;
-
-	/* overlap a bit to prevent notches from rounding errors */
-	np = pcb_poly_from_box_bloated(&pad->BoundingBox, UNSUBTRACT_BLOAT);
-
-	if (!np)
-		return 0;
-	if (!Unsubtract(np, p))
-		return 0;
-	clearPoly(PCB->Data, l, p, (const pcb_box_t *) pad, 2 * UNSUBTRACT_BLOAT);
 	return 1;
 }
 
@@ -1704,10 +1577,6 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 		break;
-	case PCB_TYPE_PAD:
-		SubtractPad((pcb_pad_t *) ptr2, Polygon);
-		Polygon->NoHolesValid = 0;
-		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
 		SubtractText((pcb_text_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
@@ -1734,9 +1603,6 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Po
 			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 		break;
-	case PCB_TYPE_PAD:
-		UnsubtractPad((pcb_pad_t *) ptr2, Layer, Polygon);
-		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
 		UnsubtractText((pcb_text_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1781,7 +1647,7 @@ int
 pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 						 pcb_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2))
 {
-	pcb_box_t sb = ((pcb_pin_t *) ptr2)->BoundingBox;
+	pcb_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
 
@@ -1794,31 +1660,6 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	info.data = Data;
 	info.callback = call_back;
 	switch (type) {
-	case PCB_TYPE_PIN:
-	case PCB_TYPE_VIA:
-		if (pcb_data_get_top(Data) == NULL) /* don't do it if not on a board */
-			break;
-		if (type == PCB_TYPE_PIN || ptr1 == ptr2 || ptr1 == NULL) {
-			LAYER_LOOP(Data, pcb_max_layer);
-			{
-				if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
-					continue;
-				info.layer = layer;
-				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
-				r += seen;
-			}
-			PCB_END_LOOP;
-		}
-		else {
-			PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
-			{
-				info.layer = layer;
-				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
-				r += seen;
-			}
-			PCB_END_LOOP;
-		}
-		break;
 	case PCB_TYPE_PSTK:
 		if (Data->parent_type != PCB_PARENT_BOARD)
 			return 0;
@@ -1866,38 +1707,6 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			r += seen;
 		}
 		PCB_END_LOOP;
-		break;
-	case PCB_TYPE_PAD:
-		{
-			pcb_layergrp_id_t SLayer, CLayer, group;
-	
-			SLayer = CLayer = -1;
-			pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
-			pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
-			group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? SLayer : CLayer;
-			PCB_COPPER_GROUP_LOOP(Data, group);
-			{
-				info.layer = layer;
-				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
-				r += seen;
-			}
-			PCB_END_LOOP;
-		}
-		break;
-
-	case PCB_TYPE_ELEMENT:
-		{
-			PCB_PIN_LOOP((pcb_element_t *) ptr1);
-			{
-				pcb_poly_plows(Data, PCB_TYPE_PIN, ptr1, pin, call_back);
-			}
-			PCB_END_LOOP;
-			PCB_PAD_LOOP((pcb_element_t *) ptr1);
-			{
-				pcb_poly_plows(Data, PCB_TYPE_PAD, ptr1, pad, call_back);
-			}
-			PCB_END_LOOP;
-		}
 		break;
 	}
 	return r;
