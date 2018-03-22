@@ -93,7 +93,7 @@ static pcb_layergrp_id_t rat_padstack_side(pcb_pstk_t *padstack)
 
 /* ---------------------------------------------------------------------------
  * parse a connection description from a string
- * puts the element name in the string and the pin number in
+ * puts the subcircuit name in the string and the pin number in
  * the number.  If a valid connection is found, it returns the
  * number of characters processed from the string, otherwise
  * it returns 0
@@ -123,13 +123,10 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 /* ---------------------------------------------------------------------------
  * Find a particular terminal from an element/subc name and pin/pad/terminal number
  */
-#warning term TODO: once pins and pads are gone, move this to obj_term.c
+#warning padstack TODO: once pins and pads are gone, move this to obj_term.c
 static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
-	pcb_element_t *element;
 	gdl_iterator_t it;
-	pcb_pad_t *pad;
-	pcb_pin_t *pin;
 	pcb_any_obj_t *obj;
 
 	/* first check for subcircuits; this is the only one thing we'll need to do
@@ -142,38 +139,6 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 			conn->group = rat_padstack_side((pcb_pstk_t *)obj);
 #warning subc TODO: heavy terminals: calculate side
 		return pcb_true;
-	}
-
-	if ((element = pcb_search_elem_by_name(PCB->Data, ElementName)) == NULL)
-		return pcb_false;
-
-	padlist_foreach(&element->Pad, &it, pad) {
-		if (PCB_NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pad))) {
-			conn->ptr1 = element;
-			conn->obj = (pcb_any_obj_t *)pad;
-			conn->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? Sgrp : Cgrp;
-
-			if (PCB_FLAG_TEST(PCB_FLAG_EDGE2, pad)) {
-				conn->X = pad->Point2.X;
-				conn->Y = pad->Point2.Y;
-			}
-			else {
-				conn->X = pad->Point1.X;
-				conn->Y = pad->Point1.Y;
-			}
-			return pcb_true;
-		}
-	}
-
-	padlist_foreach(&element->Pin, &it, pin) {
-		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Number && PCB_NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pin))) {
-			conn->ptr1 = element;
-			conn->obj = (pcb_any_obj_t *)pin;
-			conn->group = Sgrp;			/* any layer will do */
-			conn->X = pin->X;
-			conn->Y = pin->Y;
-			return pcb_true;
-		}
 	}
 
 	return pcb_false;
@@ -210,7 +175,6 @@ static const char *get_refdes(void *ptr1)
 {
 	pcb_any_obj_t *obj = ptr1;
 	switch(obj->type) {
-		case PCB_OBJ_ELEMENT: return PCB_ELEM_NAME_REFDES((pcb_element_t *)ptr1);
 		case PCB_OBJ_SUBC:
 			if (((pcb_subc_t *)ptr1)->refdes != NULL)
 				return ((pcb_subc_t *)ptr1)->refdes;
@@ -221,15 +185,13 @@ static const char *get_refdes(void *ptr1)
 	return "<invalid>";
 }
 
+#warning padstack TODO: remove this bloat
 static const char *get_termid(pcb_any_obj_t *obj)
 {
-	switch(obj->type) {
-		case PCB_OBJ_PIN: return ((pcb_pin_t *)obj)->Number;
-		case PCB_OBJ_PAD: return ((pcb_pad_t *)obj)->Number;
-		default: return obj->term;
-	}
+	return obj->term;
 }
 
+#warning padstack TODO: consider using some data.h call instead of this local implementation
 static void clear_drc_flag(int clear_ratconn)
 {
 	pcb_rtree_it_t it;
@@ -237,26 +199,8 @@ static void clear_drc_flag(int clear_ratconn)
 	int li;
 	pcb_layer_t *l;
 
-	for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-		if (clear_ratconn)
-			((pcb_pin_t *)n)->ratconn = NULL;
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pin_t *)n);
-	}
-	pcb_r_end(&it);
-
-	for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it))
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pin_t *)n);
-	pcb_r_end(&it);
-
 	for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pstk_t *)n);
-	pcb_r_end(&it);
-
-	for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-		if (clear_ratconn)
-			((pcb_pad_t *)n)->ratconn = NULL;
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pad_t *)n);
-	}
 	pcb_r_end(&it);
 
 	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
@@ -316,9 +260,9 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			PCB_ENTRY_LOOP(menu);
 			{
 				if (pcb_rat_seek_pad(entry, &LastPoint, pcb_false)) {
-					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj))
-						pcb_message(PCB_MSG_ERROR, _
-										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
+					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_any_obj_t *)LastPoint.obj))
+						pcb_message(PCB_MSG_ERROR,
+										"Error! Subcircuit %s terminal %s appears multiple times in the netlist file.\n",
 										get_refdes(LastPoint.ptr1), get_termid(LastPoint.obj));
 					else {
 						connection = pcb_rat_connection_alloc(net);
@@ -326,7 +270,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 						/* indicate expect net */
 						connection->menu = menu;
 						/* mark as visited */
-						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
+						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_any_obj_t *)LastPoint.obj);
 						LastPoint.obj->ratconn = (void *)menu;
 					}
 				}
@@ -339,7 +283,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					/* indicate expect net */
 					connection->menu = menu;
 					/* mark as visited */
-					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
+					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_any_obj_t *)LastPoint.obj);
 					LastPoint.obj->ratconn = (void *)menu;
 				}
 			}
@@ -413,17 +357,6 @@ static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtp0_t *generic, pcb_lib_
 	if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc_in))
 		return menu;
 
-	PCB_VIA_LOOP(subc_in->data);
-	{
-		if (via->term == NULL)
-			continue;
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
-			*warn = pcb_true;
-			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)via, generic, theNet, menu);
-		}
-	}
-	PCB_END_LOOP;
-
 	PCB_PADSTACK_LOOP(subc_in->data);
 	{
 		if (padstack->term == NULL)
@@ -493,33 +426,12 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	pcb_bool warn = pcb_false;
 	vtp0_t generic;
 	/* the first connection was starting point so
-	 * the menu is always non-null
-	 */
+	 * the menu is always non-null */
 	void **menu;
 
 	vtp0_init(&generic);
 	menu = vtp0_alloc_append(&generic, 1);
 	*menu = theNet;
-	PCB_PIN_ALL_LOOP(PCB->Data);
-	{
-		pcb_element_t *e = pin->Element;
-/* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pin->Element)*/
-		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
-			warn = pcb_true;
-			menu = found_short((pcb_any_obj_t *)element, (pcb_any_obj_t *)pin, &generic, theNet, menu);
-		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		pcb_element_t *e = pad->Element;
-/* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pad->Element)*/
-		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
-			warn = pcb_true;
-			menu = found_short((pcb_any_obj_t *)element, (pcb_any_obj_t *)pad, &generic, theNet, menu);
-		}
-	}
-	PCB_ENDALL_LOOP;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		menu = find_shorts_in_subc(subc, &generic, theNet, menu, &warn);
@@ -578,20 +490,6 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 		}
 	}
 	PCB_ENDALL_LOOP;
-	PCB_VIA_LOOP(data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
-			conn = pcb_rat_connection_alloc(a);
-			conn->X = via->X;
-			conn->Y = via->Y;
-			conn->ptr1 = via;
-			conn->obj = (pcb_any_obj_t *)via;
-			conn->group = Sgrp;
-			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, via)
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, via);
-		}
-	}
-	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)) {
@@ -634,12 +532,12 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_any_obj_t *)a->Connection[0].obj);
 		for (n = m + 1; n < Netl->NetN; n++) {
 			b = &Netl->Net[n];
 			/* There can be only one connection in net b */
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj);
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_any_obj_t *)b->Connection[0].obj)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_any_obj_t *)b->Connection[0].obj);
 				TransferNet(Netl, b, a);
 				/* back up since new subnet is now at old index */
 				n--;
@@ -742,6 +640,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					 * not a daisy chain).  Further prefer to pick an existing
 					 * via in the Net to make that connection.
 					 */
+#warning padstack TODO: rewrite this for padstacks
 					if (conn1->obj->type == PCB_OBJ_POLY &&
 							(polygon = (pcb_poly_t *) conn1->obj) &&
 							!(distance == 0 &&
@@ -852,7 +751,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	{
 		PCB_CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->obj)) {
+			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *)connection->obj)) {
 				lonesome = pcb_net_new(Nets);
 				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
@@ -937,7 +836,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 		Nets = pcb_netlist_new(&result);
 		PCB_CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->obj)) {
+			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *)connection->obj)) {
 				lonesome = pcb_net_new(Nets);
 				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
@@ -989,7 +888,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 			&& pcb_crosshair.AttachedLine.Point1.Y == pcb_crosshair.AttachedLine.Point2.Y)
 		return NULL;
 
-	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3,
+	found = pcb_search_obj_by_location(PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
@@ -997,7 +896,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	}
 	rd = get_refdes(ptr1);
 	if ((rd == NULL) || (*rd == 0) || (*rd == '<')) {
-		pcb_message(PCB_MSG_ERROR, _("You must name the starting element first\n"));
+		pcb_message(PCB_MSG_ERROR, _("You must name the starting subcricuit first\n"));
 		return NULL;
 	}
 
@@ -1006,7 +905,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
 
 	/* will work for pins to since the FLAG is common */
-	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
+	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_any_obj_t *) ptr2) ? Sgrp : Cgrp);
 	strcpy(name1, pcb_connection_name(ptr2));
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
@@ -1016,10 +915,10 @@ pcb_rat_t *pcb_rat_add_net(void)
 	}
 	rd = get_refdes(ptr1);
 	if ((rd == NULL) || (*rd == 0) || (*rd == '<')) {
-		pcb_message(PCB_MSG_ERROR, _("You must name the ending element first\n"));
+		pcb_message(PCB_MSG_ERROR, _("You must name the ending subcircuit first\n"));
 		return NULL;
 	}
-	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
+	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_any_obj_t *) ptr2) ? Sgrp : Cgrp);
 	name2 = pcb_connection_name(ptr2);
 
 	menu = pcb_netnode_to_netname(name1);
@@ -1081,23 +980,13 @@ char *pcb_connection_name(pcb_any_obj_t *obj)
 	const char *num, *parent = NULL;
 	pcb_subc_t *subc;
 
-	switch (obj->type) {
-	case PCB_OBJ_PIN:
-		num = ((pcb_pin_t *)obj)->Number;
-		parent = PCB_ELEM_NAME_REFDES((pcb_element_t*)((pcb_pin_t *)obj)->Element);
-		break;
-	case PCB_OBJ_PAD:
-		num = ((pcb_pad_t *)obj)->Number;
-		parent = PCB_ELEM_NAME_REFDES((pcb_element_t*)((pcb_pad_t *)obj)->Element);
-		break;
-	default:
-		if (obj->term == NULL)
-			return NULL;
-		num = obj->term;
-		subc = pcb_obj_parent_subc(obj);
-		if (subc != NULL)
-			parent = subc->refdes;
-	}
+	if (obj->term == NULL)
+		return NULL;
+	num = obj->term;
+	subc = pcb_obj_parent_subc(obj);
+	if (subc != NULL)
+		parent = subc->refdes;
+
 	strcpy(name, PCB_UNKNOWN(parent));
 	strcat(name, "-");
 	strcat(name, PCB_UNKNOWN(num));
