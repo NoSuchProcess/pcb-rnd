@@ -48,17 +48,10 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_POLY:    return "polygon";
 		case PCB_OBJ_ARC:     return "arc";
 		case PCB_OBJ_RAT:     return "ratline";
-		case PCB_OBJ_PAD:     return "pad";
-		case PCB_OBJ_PIN:     return "pin";
-		case PCB_OBJ_VIA:     return "via";
 		case PCB_OBJ_PSTK:    return "padstack";
-		case PCB_OBJ_ELEMENT: return "element";
 		case PCB_OBJ_SUBC:    return "subcircuit";
 		case PCB_OBJ_NET:     return "net";
 		case PCB_OBJ_LAYER:   return "layer";
-		case PCB_OBJ_ELINE:
-		case PCB_OBJ_EARC:
-		case PCB_OBJ_ETEXT:
 			break;
 	}
 	return "<unknown/composite>";
@@ -74,14 +67,9 @@ int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *re
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_POLY:
-	case PCB_TYPE_PAD:
-	case PCB_TYPE_PIN:
 	case PCB_TYPE_PSTK:
-	case PCB_TYPE_ELEMENT_NAME:
 		*res = *(pcb_box_t *)Ptr2;
 		return 0;
-	case PCB_TYPE_VIA:
-	case PCB_TYPE_ELEMENT:
 	case PCB_TYPE_SUBC:
 		*res = *(pcb_box_t *)Ptr1;
 		return 0;
@@ -140,10 +128,6 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src)
 void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 {
 	switch (obj->type) {
-		case PCB_OBJ_PIN:
-			*x = ((const pcb_pin_t *)(obj))->X;
-			*y = ((const pcb_pin_t *)(obj))->Y;
-			break;
 		case PCB_OBJ_PSTK:
 			*x = ((const pcb_pstk_t *)(obj))->x;
 			*y = ((const pcb_pstk_t *)(obj))->y;
