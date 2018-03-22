@@ -25,9 +25,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-
-/* Drawing primitive: pins and vias */
-
 #include "config.h"
 
 #include "board.h"
