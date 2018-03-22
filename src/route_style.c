@@ -207,12 +207,6 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 	switch (funcid) {
 	case F_Object:
 		switch (type) {
-		case PCB_TYPE_ELEMENT:					/* we'd set pin/pad properties, so fall thru */
-		case PCB_TYPE_VIA:
-		case PCB_TYPE_PIN:
-			return pcb_get_style_size(F_SelectedVias, out, 0, size_id);
-		case PCB_TYPE_PAD:
-			return pcb_get_style_size(F_SelectedPads, out, 0, size_id);
 		case PCB_TYPE_LINE:
 			return pcb_get_style_size(F_SelectedLines, out, 0, size_id);
 		case PCB_TYPE_ARC:
