@@ -43,6 +43,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 #warning padstack TODO: term TODO: this does not handle padstacks or terminals
 
+#if 0
 	PCB_PIN_LOOP(Element);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
@@ -122,6 +123,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 		}
 	}
 	PCB_END_LOOP;
+#endif
 
 	/* print separator if element has unused pins or pads */
 	if (!first) {
@@ -145,14 +147,6 @@ static pcb_bool PrepareNextLoop(FILE * FP)
 		PolygonList[layer].Location = PolygonList[layer].Number = 0;
 	}
 
-	/* reset found pads */
-	for (layer = 0; layer < 2; layer++)
-		PadList[layer].Location = PadList[layer].Number = 0;
-
-	/* reset PVs */
-	PVList.Number = PVList.Location = 0;
-	RatList.Number = RatList.Location = 0;
-
 	/* reset Padstacks */
 	PadstackList.Number = PadstackList.Location = 0;
 
@@ -168,6 +162,8 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 {
 	PrintConnectionElementName(Element, FP);
 
+#warning padstack TODO:
+#if 0
 	/* check all pins in element */
 	PCB_PIN_LOOP(Element);
 	{
@@ -213,6 +209,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 			return pcb_true;
 	}
 	PCB_END_LOOP;
+#endif
 	fputs("}\n\n", FP);
 	return pcb_false;
 }

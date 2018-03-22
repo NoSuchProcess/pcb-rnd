@@ -39,7 +39,7 @@ static pcb_bool ListsEmpty(pcb_bool AndRats)
 	pcb_bool empty;
 	int i;
 
-	empty = (PVList.Location >= PVList.Number) && (PadstackList.Location >= PadstackList.Number);
+	empty = (PadstackList.Location >= PadstackList.Number);
 	if (AndRats)
 		empty = empty && (RatList.Location >= RatList.Number);
 	for (i = 0; i < pcb_max_layer && empty; i++)
@@ -70,11 +70,10 @@ static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 		/* lookup connections; these are the steps (2) to (4)
 		 * from the description */
 		newone =
-			LookupPVConnectionsToPVList() ||
-			LookupLOConnectionsToPVList(AndRats) ||
-			LookupLOConnectionsToPSList(AndRats) ||
-			LookupLOConnectionsToLOList(AndRats) ||
-			LookupPVPSConnectionsToLOList(AndRats);
+			LookupLOConnectionsToPSList(AndRats)
+			|| LookupLOConnectionsToLOList(AndRats)
+			|| LookupPSConnectionsToLOList(AndRats);
+
 		if (AndDraw)
 			DrawNewConnections();
 	}
@@ -118,31 +117,6 @@ static void DrawNewConnections(void)
 		}
 	}
 
-	/* draw all new pads */
-	if (PCB->PinOn)
-		for (i = 0; i < 2; i++) {
-			position = PadList[i].DrawLocation;
-
-			for (; position < PadList[i].Number; position++)
-				pcb_pad_invalidate_draw(PADLIST_ENTRY(i, position));
-			PadList[i].DrawLocation = PadList[i].Number;
-		}
-
-	/* draw all new PVs; 'PVList' holds a list of pointers to the
-	 * sorted array pointers to PV data
-	 */
-	while (PVList.DrawLocation < PVList.Number) {
-		pcb_pin_t *pv = PVLIST_ENTRY(PVList.DrawLocation);
-
-		if (PCB_FLAG_TEST(PCB_FLAG_PIN, pv)) {
-			if (PCB->PinOn)
-				pcb_pin_invalidate_draw(pv);
-		}
-		else if (PCB->ViaOn)
-			pcb_via_invalidate_draw(pv);
-		PVList.DrawLocation++;
-	}
-
 	/* draw all new Padstacks; 'PadstackList' holds a list of pointers to the
 	 * sorted array pointers to padstack data
 	 */
@@ -174,13 +148,6 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 {
 	DumpList();
 	switch (obj->type) {
-	case PCB_OBJ_PIN:
-	case PCB_OBJ_VIA:
-		{
-			if (ADD_PV_TO_LIST((pcb_pin_t *)obj, 0, NULL, PCB_FCT_START))
-				return pcb_true;
-			break;
-		}
 
 	case PCB_OBJ_PSTK:
 		{
@@ -220,13 +187,6 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 			break;
 		}
 
-	case PCB_OBJ_PAD:
-		{
-			pcb_pad_t *pad = (pcb_pad_t *)obj;
-			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, 0, NULL, PCB_FCT_START))
-				return pcb_true;
-			break;
-		}
 	default:
 		assert(!"unhandled object type: can't start a find list from this\n");
 	}
@@ -344,12 +304,6 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 			cnt += cb(ctx, (pcb_any_obj_t *)PolygonList[i].Data[n]);
 	}
 
-	for (i = 0; i < 2; i++)
-		for(n = 0; n < PadList[i].Number; n++)
-			cnt += cb(ctx, (pcb_any_obj_t *)PadList[i].Data[n]);
-
-	for(n = 0; n < PVList.Number; n++)
-		cnt += cb(ctx, (pcb_any_obj_t *)PVList.Data[n]);
 	for(n = 0; n < PadstackList.Number; n++)
 		cnt += cb(ctx, (pcb_any_obj_t *)PadstackList.Data[n]);
 	for(n = 0; n < RatList.Number; n++)
@@ -564,15 +518,6 @@ pcb_bool pcb_reset_conns(pcb_bool AndDraw)
 static void DumpList(void)
 {
 	pcb_cardinal_t i;
-
-	for (i = 0; i < 2; i++) {
-		PadList[i].Number = 0;
-		PadList[i].Location = 0;
-		PadList[i].DrawLocation = 0;
-	}
-
-	PVList.Number = 0;
-	PVList.Location = 0;
 
 	PadstackList.Number = 0;
 	PadstackList.Location = 0;

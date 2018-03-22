@@ -75,39 +75,8 @@ static void PrintConnectionListEntry(char *ObjName, pcb_element_t *Element, pcb_
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * prints all found connections of a pads to file FP
- * the connections are stacked in 'PadList'
- */
-static void PrintPadConnections(pcb_cardinal_t Layer, FILE * FP, pcb_bool IsFirst)
-{
-	pcb_cardinal_t i;
-	pcb_pad_t *ptr;
-
-	if (!PadList[Layer].Number)
-		return;
-
-	/* the starting pad */
-	if (IsFirst) {
-		ptr = PADLIST_ENTRY(Layer, 0);
-		if (ptr != NULL)
-			PrintConnectionListEntry((char *) PCB_UNKNOWN(ptr->Name), NULL, pcb_true, FP);
-		else
-			printf("Skipping NULL ptr in 1st part of PrintPadConnections\n");
-	}
-
-	/* we maybe have to start with i=1 if we are handling the
-	 * starting-pad itself
-	 */
-	for (i = IsFirst ? 1 : 0; i < PadList[Layer].Number; i++) {
-		ptr = PADLIST_ENTRY(Layer, i);
-		if (ptr != NULL)
-			PrintConnectionListEntry((char *) PCB_EMPTY(ptr->Name), (pcb_element_t *) ptr->Element, pcb_false, FP);
-		else
-			printf("Skipping NULL ptr in 2nd part of PrintPadConnections\n");
-	}
-}
-
+#warning padstack TODO: print connections
+#if 0
 /* ---------------------------------------------------------------------------
  * prints all found connections of a pin to file FP
  * the connections are stacked in 'PVList'
@@ -149,3 +118,4 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 		PrintConnectionListEntry("TODO#termname", (pcb_element_t *)sc, pcb_false, FP);
 	}
 }
+#endif

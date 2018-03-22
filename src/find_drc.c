@@ -220,8 +220,6 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 
 	pcb_line_t *line = (pcb_line_t *) ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *) ptr2;
-	pcb_pin_t *pin = (pcb_pin_t *) ptr2;
-	pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 	pcb_pstk_t *ps = (pcb_pstk_t *) ptr2;
 
 	thing_type = type;
@@ -248,7 +246,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	case PCB_TYPE_PSTK:
 		if (pcb_pstk_drc_check_clearance(ps, polygon, 2 * PCB->Bloat) != 0) {
 			pcb_undo_add_obj_to_flag(ptr2);
-			PCB_FLAG_SET(TheFlag, pin);
+			PCB_FLAG_SET(TheFlag, ps);
 			message = _("Padstack with insufficient clearance inside polygon\n");
 			goto doIsBad;
 		}
@@ -297,7 +295,6 @@ int pcb_drc_all(void)
 	long int *object_id_list;
 	int *object_type_list;
 	pcb_drc_violation_t *violation;
-	int tmpcnt;
 	int nopastecnt = 0;
 
 	reset_drc_dialog_message();

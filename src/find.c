@@ -143,18 +143,14 @@ static pcb_bool User = pcb_false;				/* user action causing this */
 static pcb_bool drc = pcb_false;				/* whether to stop if finding something not found */
 static pcb_bool IsBad = pcb_false;
 static pcb_cardinal_t drcerr_count;		/* count of drc errors */
-static pcb_cardinal_t TotalP, TotalV, NumberOfPads[2], TotalPs;
+static pcb_cardinal_t NumberOfPads[2], TotalPs;
 static ListType LineList[PCB_MAX_LAYER+2],	/* list of objects to */
-  PolygonList[PCB_MAX_LAYER+2], ArcList[PCB_MAX_LAYER+2], PadList[2],
-  RatList, PVList, PadstackList;
+  PolygonList[PCB_MAX_LAYER+2], ArcList[PCB_MAX_LAYER+2],
+  RatList, PadstackList;
 
-static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
 static pcb_bool LookupLOConnectionsToPSList(pcb_bool);
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
-static pcb_bool LookupPVPSConnectionsToLOList(pcb_bool);
-static pcb_bool LookupPVConnectionsToPVList(void);
 static pcb_bool LookupLOConnectionsToLine(pcb_line_t *, pcb_cardinal_t, pcb_bool);
-static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *, pcb_cardinal_t);
@@ -168,8 +164,6 @@ static pcb_bool DoIt(pcb_bool, pcb_bool);
 static void PrintElementNameList(pcb_element_t *, FILE *);
 static void PrintConnectionElementName(pcb_element_t *, FILE *);
 static void PrintConnectionListEntry(char *, pcb_element_t *, pcb_bool, FILE *);
-static void PrintPadConnections(pcb_cardinal_t, FILE *, pcb_bool);
-static void PrintPinConnections(FILE *, pcb_bool);
 static void DumpList(void);
 static pcb_bool ListStart(pcb_any_obj_t *obj);
 static pcb_bool SetThing(int, void *, void *, void *);

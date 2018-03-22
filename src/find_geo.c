@@ -718,53 +718,6 @@ pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
 	return pcb_true;
 }
 
-static pcb_bool PadPadIntersect(pcb_pad_t *p1, pcb_pad_t *p2)
-{
-	return pcb_intersect_line_pad((pcb_line_t *) p1, p2);
-}
-
-static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
-{
-	double t1, t2;
-	pcb_box_t b1, b2;
-	int shape1, shape2;
-
-	shape1 = PCB_FLAG_SQUARE_GET(PV1);
-	shape2 = PCB_FLAG_SQUARE_GET(PV2);
-
-	if ((shape1 > 1) || (shape2 > 1)) {
-		pcb_polyarea_t *pl1, *pl2;
-		int ret;
-
-		pl1 = pcb_poly_from_pin(PV1, PIN_SIZE(PV1) + Bloat, 0);
-		pl2 = pcb_poly_from_pin(PV2, PIN_SIZE(PV2) + Bloat, 0);
-		ret = pcb_polyarea_touching(pl1, pl2);
-		pcb_polyarea_free(&pl1);
-		pcb_polyarea_free(&pl2);
-		return ret;
-	}
-
-
-	t1 = MAX(PV1->Thickness / 2.0 + Bloat, 0);
-	t2 = MAX(PV2->Thickness / 2.0 + Bloat, 0);
-	if (pcb_is_point_in_pin(PV1->X, PV1->Y, t1, PV2)
-			|| pcb_is_point_in_pin(PV2->X, PV2->Y, t2, PV1))
-		return pcb_true;
-	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV1) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV2))
-		return pcb_false;
-	/* check for square/square overlap */
-	b1.X1 = PV1->X - t1;
-	b1.X2 = PV1->X + t1;
-	b1.Y1 = PV1->Y - t1;
-	b1.Y2 = PV1->Y + t1;
-	t2 = PV2->Thickness / 2.0;
-	b2.X1 = PV2->X - t2;
-	b2.X2 = PV2->X + t2;
-	b2.Y1 = PV2->Y - t2;
-	b2.Y2 = PV2->Y + t2;
-	return BoxBoxIntersection(&b1, &b2);
-}
-
 pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV)) {
