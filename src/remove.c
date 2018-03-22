@@ -25,9 +25,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-
-/* functions used to remove vias, pins ... */
-
 #include "config.h"
 #include "conf_core.h"
 
