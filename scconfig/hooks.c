@@ -338,6 +338,9 @@ int hook_detect_target()
 	want_cairo  = plug_is_enabled("export_bboard") | plug_is_enabled("hid_gtk3_cairo");
 	want_xml2   = plug_is_enabled("io_eagle");
 
+/****** TODO #21: core depends on this plugin (yes, this is a bug) ******/
+	hook_custom_arg("buildin-lib_compat_help", NULL);
+
 	require("cc/fpic",  0, 0);
 	host_ansi = get("/host/cc/argstd/ansi");
 	host_ped = get("/host/cc/argstd/pedantic");
