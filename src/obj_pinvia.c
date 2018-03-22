@@ -246,11 +246,8 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 {
 	pcb_coord_t width;
 
-	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
-		pcb_polyarea_t *p = pcb_poly_from_pin(Pin, PIN_SIZE(Pin), Pin->Clearance);
-		pcb_polyarea_bbox(p, &Pin->BoundingBox);
-		pcb_polyarea_free(&p);
-	}
+	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin)))
+		abort();
 
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too
@@ -271,12 +268,8 @@ void pcb_pin_copper_bbox(pcb_box_t *out, pcb_pin_t *Pin)
 {
 	pcb_coord_t width;
 
-	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
-		pcb_polyarea_t *p = pcb_poly_from_pin(Pin, PIN_SIZE(Pin), 0);
-		pcb_polyarea_bbox(p, out);
-		pcb_polyarea_free(&p);
-		return;
-	}
+	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin)))
+		abort();
 
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too

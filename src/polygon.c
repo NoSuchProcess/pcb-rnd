@@ -324,31 +324,6 @@ pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y
 	return pcb_poly_from_contour(contour);
 }
 
-/* set up x and y multiplier for an octa poly, depending on square pin style */
-#warning padstack TODO: move this out to lib_compat_helper when removing pinvias
-void pcb_poly_square_pin_factors(int style, double *xm, double *ym)
-{
-	int i;
-	const double factor = 2.0;
-
-	/* reset multipliers */
-	for (i = 0; i < 8; i++) {
-		xm[i] = 1;
-		ym[i] = 1;
-	}
-
-	style--;
-	if (style & 1)
-		xm[0] = xm[1] = xm[6] = xm[7] = factor;
-	if (style & 2)
-		xm[2] = xm[3] = xm[4] = xm[5] = factor;
-	if (style & 4)
-		ym[4] = ym[5] = ym[6] = ym[7] = factor;
-	if (style & 8)
-		ym[0] = ym[1] = ym[2] = ym[3] = factor;
-}
-
-
 pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, int style)
 {
 	pcb_pline_t *contour = NULL;
@@ -807,70 +782,9 @@ int pcb_poly_subtract(pcb_polyarea_t *np1, pcb_poly_t *p, pcb_bool fnp)
 	return Subtract(np1, p, fnp);
 }
 
-/* create a polygon of the pin clearance */
-pcb_polyarea_t *pcb_poly_from_pin(pcb_pin_t * pin, pcb_coord_t thick, pcb_coord_t clear)
-{
-	int size;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
-		if (PCB_FLAG_SQUARE_GET(pin) <= 1) {
-			size = (thick + 1) / 2;
-			return RoundRect(pin->X - size, pin->X + size, pin->Y - size, pin->Y + size, (clear + 1) / 2);
-		}
-		else {
-			size = (thick + clear + 1) / 2;
-			return pcb_poly_from_octagon(pin->X, pin->Y, size + size, PCB_FLAG_SQUARE_GET(pin));
-		}
-
-	}
-	else {
-		size = (thick + clear + 1) / 2;
-		if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin)) {
-			if (PCB_FLAG_SQUARE_GET(pin) <= 1)
-				size /= 2;
-			return pcb_poly_from_octagon(pin->X, pin->Y, size + size, PCB_FLAG_SQUARE_GET(pin));
-		}
-	}
-	return pcb_poly_from_circle(pin->X, pin->Y, size);
-}
-
 pcb_polyarea_t *pcb_poly_from_box_bloated(pcb_box_t * box, pcb_coord_t bloat)
 {
 	return pcb_poly_from_rect(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
-}
-
-/* return the clearance polygon for a pin */
-static pcb_polyarea_t *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_pin_t * pin)
-{
-	pcb_polyarea_t *np;
-	if (PCB_FLAG_THERM_TEST(layernum, pin))
-		np = pcb_thermal_area_pin(pcb, pin, layernum);
-	else
-		np = pcb_poly_from_pin(pin, PIN_SIZE(pin), pin->Clearance);
-	return np;
-}
-
-/* remove the pin clearance from the polygon */
-static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_poly_t * p)
-{
-	pcb_polyarea_t *np;
-	pcb_layer_id_t i;
-
-	if (pin->Clearance == 0)
-		return 0;
-	i = pcb_layer_id(d, l);
-	np = pin_clearance_poly(i, pcb_data_get_top(d), pin);
-
-	if (PCB_FLAG_THERM_TEST(i, pin)) {
-		if (!np)
-			return 0;
-	}
-	else {
-		if (!np)
-			return -1;
-	}
-
-	return Subtract(np, p, pcb_true);
 }
 
 /* remove the padstack clearance from the polygon */
@@ -967,45 +881,6 @@ static void subtract_accumulated(struct cpInfo *info, pcb_poly_t *polygon)
 	Subtract(info->accumulate, polygon, pcb_true);
 	info->accumulate = NULL;
 	info->batch_size = 0;
-}
-
-static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_pin_t *pin = (pcb_pin_t *) b;
-	struct cpInfo *info = (struct cpInfo *) cl;
-	pcb_poly_t *polygon;
-	pcb_polyarea_t *np;
-	pcb_polyarea_t *merged;
-	pcb_layer_id_t i;
-
-	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return PCB_R_DIR_NOT_FOUND;
-	polygon = info->polygon;
-
-	if (pin->Clearance == 0)
-		return PCB_R_DIR_NOT_FOUND;
-	i = pcb_layer_id(info->data, info->layer);
-	if (PCB_FLAG_THERM_TEST(i, pin)) {
-		np = pcb_thermal_area_pin(pcb_data_get_top(info->data), pin, i);
-		if (!np)
-			return PCB_R_DIR_FOUND_CONTINUE;
-	}
-	else {
-		np = pcb_poly_from_pin(pin, PIN_SIZE(pin), pin->Clearance);
-		if (!np)
-			longjmp(info->env, 1);
-	}
-
-	pcb_polyarea_boolean_free(info->accumulate, np, &merged, PCB_PBO_UNITE);
-	info->accumulate = merged;
-
-	info->batch_size++;
-
-	if (info->batch_size == SUBTRACT_PIN_VIA_BATCH_SIZE)
-		subtract_accumulated(info, polygon);
-
-	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
@@ -1330,10 +1205,6 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon,
 			r += seen;
 		}
 		PCB_END_LOOP;
-		pcb_r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info, &seen);
-		r += seen;
-		pcb_r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info, &seen);
-		r += seen;
 		pcb_r_search(Data->padstack_tree, &region, NULL, padstack_sub_callback, &info, &seen);
 		r += seen;
 		subtract_accumulated(&info, polygon);
@@ -1376,22 +1247,6 @@ fail:
 		printf("Just leaked in Unsubtract\n");
 	p->NoHoles = NULL;
 	return 0;
-}
-
-static int UnsubtractPin(pcb_pin_t * pin, pcb_layer_t * l, pcb_poly_t * p)
-{
-	pcb_polyarea_t *np;
-
-	/* overlap a bit to prevent gaps from rounding errors */
-	np = pcb_poly_from_box_bloated(&pin->BoundingBox, UNSUBTRACT_BLOAT * 400000);
-
-	if (!np)
-		return 0;
-	if (!Unsubtract(np, p))
-		return 0;
-
-	clearPoly(PCB->Data, l, p, (const pcb_box_t *) pin, 2 * UNSUBTRACT_BLOAT * 400000);
-	return 1;
 }
 
 static int UnsubtractPadstack(pcb_data_t *data, pcb_pstk_t *ps, pcb_layer_t *l, pcb_poly_t *p)
@@ -1830,11 +1685,6 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 	if (!Polygon->Clipped)
 		return 0;
 	switch (type) {
-	case PCB_TYPE_PIN:
-	case PCB_TYPE_VIA:
-		SubtractPin(Data, (pcb_pin_t *) ptr2, Layer, Polygon);
-		Polygon->NoHolesValid = 0;
-		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PSTK:
 		SubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
@@ -1869,10 +1719,6 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
-	case PCB_TYPE_PIN:
-	case PCB_TYPE_VIA:
-		UnsubtractPin((pcb_pin_t *) ptr2, Layer, Polygon);
-		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PSTK:
 		UnsubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
