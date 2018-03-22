@@ -197,10 +197,7 @@ static pcb_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_
 
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
-	pcb_layer_type_t flags;
-
-	flags = pcb_layer_flags_(layer);
-
+	pcb_layer_type_t flags = pcb_layer_flags_(layer);
 	if (flags == 0)
 		return 1;
 
@@ -208,28 +205,8 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 	if (!pcb_layer_is_pure_empty(layer))
 		return 0;
 
-	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
-		PCB_PAD_ALL_LOOP(pcb->Data);
-		{
-			if (!PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
-				return 0;
-		}
-		PCB_ENDALL_LOOP;
-	}
-
-	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_BOTTOM)) { /* if our layer is the bottom copper layer and we have an element pad on it, it's non-empty */
-		PCB_PAD_ALL_LOOP(pcb->Data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
-				return 0;
-		}
-		PCB_ENDALL_LOOP;
-	}
-
 	if (!pcb_layer_is_empty_glob(pcb, pcb->Data, layer))
 		return 0;
-
-#warning TODO: check top silk and bottom silk for elements
 
 	/* found nothing: layer is empty */
 	return 1;
