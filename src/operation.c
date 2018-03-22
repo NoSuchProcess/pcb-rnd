@@ -77,39 +77,14 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
-	case PCB_TYPE_VIA:
-		if (F->Via)
-			return (F->Via(ctx, (pcb_pin_t *) Ptr1));
-		break;
-
-	case PCB_TYPE_ELEMENT:
-		if (F->Element)
-			return (F->Element(ctx, (pcb_element_t *) Ptr1));
-		break;
-
 	case PCB_TYPE_SUBC:
 		if (F->subc)
 			return (F->subc(ctx, (pcb_subc_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_PIN:
-		if (F->Pin)
-			return (F->Pin(ctx, (pcb_element_t *) Ptr1, (pcb_pin_t *) Ptr2));
-		break;
-
-	case PCB_TYPE_PAD:
-		if (F->Pad)
-			return (F->Pad(ctx, (pcb_element_t *) Ptr1, (pcb_pad_t *) Ptr2));
-		break;
-
 	case PCB_TYPE_PSTK:
 		if (F->padstack)
 			return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
-		break;
-
-	case PCB_TYPE_ELEMENT_NAME:
-		if (F->ElementName)
-			return (F->ElementName(ctx, (pcb_element_t *) Ptr1));
 		break;
 
 	case PCB_TYPE_RATLINE:
@@ -214,91 +189,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	}
 
 
-	/* elements silkscreen */
-	if (type & PCB_TYPE_ELEMENT && pcb_silk_on(pcb) && F->Element) {
-		PCB_ELEMENT_LOOP(data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(element);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, element);
-				}
-				F->Element(ctx, element);
-				changed = pcb_true;
-			}
-		}
-		PCB_END_LOOP;
-	}
-
-	if (type & PCB_TYPE_ELEMENT_NAME && pcb_silk_on(pcb) && F->ElementName) {
-		PCB_ELEMENT_LOOP(data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element))) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(&PCB_ELEM_TEXT_VISIBLE(PCB, element));
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element));
-				}
-				F->ElementName(ctx, element);
-				changed = pcb_true;
-			}
-		}
-		PCB_END_LOOP;
-	}
-
-	if (type & PCB_TYPE_PIN && pcb->PinOn && F->Pin) {
-		PCB_ELEMENT_LOOP(data);
-		{
-			PCB_PIN_LOOP(element);
-			{
-				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin)) {
-					if (Reset) {
-						pcb_undo_add_obj_to_flag(pin);
-						PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pin);
-					}
-					F->Pin(ctx, element, pin);
-					changed = pcb_true;
-				}
-			}
-			PCB_END_LOOP;
-		}
-		PCB_END_LOOP;
-	}
-
-	if (type & PCB_TYPE_PAD && pcb->PinOn && F->Pad) {
-		PCB_ELEMENT_LOOP(data);
-		{
-			PCB_PAD_LOOP(element);
-			{
-				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad)) {
-					if (Reset) {
-						pcb_undo_add_obj_to_flag(pad);
-						PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pad);
-					}
-					F->Pad(ctx, element, pad);
-					changed = pcb_true;
-				}
-			}
-			PCB_END_LOOP;
-		}
-		PCB_END_LOOP;
-	}
-
-	/* process vias and padstacks */
-	if (type & PCB_TYPE_VIA && pcb->ViaOn && F->Via) {
-		PCB_VIA_LOOP(data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(via);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, via);
-				}
-				F->Via(ctx, via);
-				changed = pcb_true;
-			}
-		}
-		PCB_END_LOOP;
-	}
-
+	/* process padstacks */
 	if (type & PCB_TYPE_PSTK && pcb->ViaOn && F->padstack) {
 		PCB_PADSTACK_LOOP(data);
 		{
