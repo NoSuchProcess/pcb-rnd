@@ -25,11 +25,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-
-
-/* functions used to rotate pins, elements ...
- */
-
 #include "config.h"
 
 #include <stdlib.h>
