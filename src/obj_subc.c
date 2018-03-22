@@ -521,18 +521,6 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 	}
 
-	{ /* check if we have pins - they need mask */
-		pcb_pin_t *via;
-
-		for(via = pinlist_first(&buffer->Data->Via); via != NULL; via = pinlist_next(via)) {
-			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
-				top_pads++;
-				bottom_pads++;
-				break;
-			}
-		}
-	}
-
 	/* create paste and mask side effects - needed when importing from footprint */
 	{
 		if (top_pads > 0) {
@@ -554,49 +542,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	}
 
 	{ /* convert globals */
-		pcb_pin_t *via;
 		pcb_pstk_t *ps;
-
-		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
-			const char *term;
-			pinlist_remove(via);
-			pinlist_append(&sc->data->Via, via);
-			PCB_SET_PARENT(via, data, sc->data);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
-			term = pcb_attribute_get(&via->Attributes, "term");
-			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
-				pcb_coord_t mask = read_mask((pcb_any_obj_t *)via);
-				
-				if (mask == 0)
-					mask = via->Mask;
-
-				if (mask > 0) {
-					if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via)) {
-						pcb_line_t line;
-						pcb_poly_t *poly;
-						memset(&line, 0, sizeof(line));
-						line.Point1.X = line.Point2.X = via->X;
-						line.Point1.Y = line.Point2.Y = via->Y;
-						line.Thickness = mask;
-						poly = sqline2term(dst_top_mask, &line);
-						if (term != NULL)
-							pcb_attribute_put(&poly->Attributes, "term", term);
-						poly = sqline2term(dst_bottom_mask, &line);
-						if (term != NULL)
-							pcb_attribute_put(&poly->Attributes, "term", term);
-					}
-					else {
-						pcb_line_t *line;
-						line = pcb_line_new(dst_top_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
-						if (term != NULL)
-							pcb_attribute_put(&line->Attributes, "term", term);
-						line = pcb_line_new(dst_bottom_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
-						if (term != NULL)
-							pcb_attribute_put(&line->Attributes, "term", term);
-					}
-				}
-			}
-		}
 
 		while((ps = padstacklist_first(&buffer->Data->padstack)) != NULL) {
 			const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
@@ -608,11 +554,6 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			ps->protoi = -1;
 		}
 	}
-
-	for(n = 0; n < vtp0_len(&paste_pads); n++)
-		move_pad_side_effect(paste_pads.array[n], dst_top_paste, dst_bottom_paste);
-	for(n = 0; n < vtp0_len(&mask_pads); n++)
-		move_pad_side_effect(mask_pads.array[n], dst_top_mask, dst_bottom_mask);
 
 	vtp0_uninit(&mask_pads);
 	vtp0_uninit(&paste_pads);
@@ -724,22 +665,9 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_si
 
 	/* draw global objects */
 	{
-		pcb_pin_t *via;
 		pcb_pstk_t *ps;
 		gdl_iterator_t it;
 
-		pinlist_foreach(&sc->data->Via, &it, via) {
-			pcb_coord_t ox, oy;
-			ox = via->X;
-			oy = via->Y;
-			via->X = PCB_CSWAP_X(via->X, w, mirr);
-			via->Y = PCB_CSWAP_Y(via->Y, h, mirr);
-			via->X += DX;
-			via->Y += DY;
-			pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, via, pcb_true, pcb_false);
-			via->X = ox;
-			via->Y = oy;
-		}
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
 			pcb_coord_t ox, oy;
 			int oxm, pri;
@@ -882,25 +810,14 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	/* bind the via rtree so that vias added in this subc show up on the board */
 	if (pcb != NULL) {
-		if (pcb->Data->via_tree == NULL)
-			pcb->Data->via_tree = pcb_r_create_tree();
-		sc->data->via_tree = pcb->Data->via_tree;
 		if (pcb->Data->padstack_tree == NULL)
 			pcb->Data->padstack_tree = pcb_r_create_tree();
 		sc->data->padstack_tree = pcb->Data->padstack_tree;
 	}
 
 	{ /* make a copy of global data */
-		pcb_pin_t *via, *nvia;
 		pcb_pstk_t *ps, *nps;
 		gdl_iterator_t it;
-
-		pinlist_foreach(&src->data->Via, &it, via) {
-			nvia = pcb_via_dup_at(sc->data, via, dx, dy);
-			MAYBE_KEEP_ID(nvia, via);
-			if (nvia != NULL)
-				pcb_box_bump_box_noflt(&sc->BoundingBox, &nvia->BoundingBox);
-		}
 
 		padstacklist_foreach(&src->data->padstack, &it, ps) {
 			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1);
@@ -1019,14 +936,8 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	/* execute on globals */
 	{
-		pcb_pin_t *via;
 		pcb_pstk_t *ps;
 		gdl_iterator_t it;
-
-		pinlist_foreach(&sc->data->Via, &it, via) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, via, via, via);
-			pcb_box_bump_box_noflt(&sc->BoundingBox, &via->BoundingBox);
-		}
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_PSTK, ps, ps, ps);
@@ -1242,19 +1153,9 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 
 static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_subc_t *sc, int dst_is_pcb)
 {
-	pcb_pin_t *via;
 	pcb_pstk_t *ps;
 	gdl_iterator_t it;
 	int chg = 0;
-
-	pinlist_foreach(&sc->data->Via, &it, via) {
-		if (sc->data->via_tree != NULL)
-			pcb_r_delete_entry(sc->data->via_tree, (pcb_box_t *)via);
-		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
-		if ((dst != NULL) && (dst->via_tree != NULL))
-			pcb_r_insert_entry(dst->via_tree, (pcb_box_t *)via);
-		chg++;
-	}
 
 	padstacklist_foreach(&sc->data->padstack, &it, ps) {
 		const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
@@ -1276,19 +1177,13 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 
 	/* bind globals */
 	if ((dst != NULL) && (dst_is_pcb)) {
-		if (dst->via_tree == NULL)
-			dst->via_tree = pcb_r_create_tree();
-		sc->data->via_tree = dst->via_tree;
-
 		if (dst->padstack_tree == NULL)
 			dst->padstack_tree = pcb_r_create_tree();
 		sc->data->padstack_tree = dst->padstack_tree;
 		chg++;
 	}
-	else {
-		sc->data->via_tree = NULL;
+	else
 		sc->data->padstack_tree = NULL;
-	}
 	return chg;
 }
 
@@ -1436,9 +1331,6 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 
 void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 {
-	if (pcb->Data->via_tree == NULL)
-		pcb->Data->via_tree = pcb_r_create_tree();
-	subc->data->via_tree = pcb->Data->via_tree;
 	if (pcb->Data->padstack_tree == NULL)
 		pcb->Data->padstack_tree = pcb_r_create_tree();
 	subc->data->padstack_tree = pcb->Data->padstack_tree;
