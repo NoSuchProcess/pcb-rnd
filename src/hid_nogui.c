@@ -130,26 +130,6 @@ static void nogui_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb
 	CRASH("fill_pcb_polygon");
 }
 
-static void nogui_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
-{
-	CRASH("fill_pcb_pad");
-}
-
-static void nogui_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
-{
-	CRASH("thindraw_pcb_pad");
-}
-
-static void nogui_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
-{
-	CRASH("fill_pcb_pv");
-}
-
-static void nogui_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
-{
-	CRASH("thindraw_pcb_pv");
-}
-
 static void nogui_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	CRASH("fill_rect");
@@ -446,10 +426,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->fill_circle = nogui_fill_circle;
 	hid->fill_polygon = nogui_fill_polygon;
 	hid->fill_pcb_polygon = nogui_fill_pcb_polygon;
-	hid->fill_pcb_pad = nogui_fill_pcb_pad;
-	hid->thindraw_pcb_pad = nogui_thindraw_pcb_pad;
-	hid->fill_pcb_pv = nogui_fill_pcb_pv;
-	hid->thindraw_pcb_pv = nogui_thindraw_pcb_pv;
 	hid->fill_rect = nogui_fill_rect;
 	hid->calibrate = nogui_calibrate;
 	hid->shift_is_pressed = nogui_shift_is_pressed;
