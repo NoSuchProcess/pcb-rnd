@@ -1093,7 +1093,7 @@ pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t * b, void *cl)
 static void draw_pin_name(pcb_pin_t *pin)
 {
 	if (pcb_hidden_floater((pcb_any_obj_t*)pin))
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pin))
 		_draw_pv_name(pin);
@@ -1119,7 +1119,7 @@ pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t * b, void *cl)
 static void draw_via(pcb_pin_t *via, pcb_bool draw_hole)
 {
 	if (pcb_hidden_floater((pcb_any_obj_t*)via))
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return;
 
 	SetPVColor(via, PCB_TYPE_VIA);
 	_draw_pv(via, draw_hole);
