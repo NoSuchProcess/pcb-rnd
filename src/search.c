@@ -60,14 +60,9 @@ static pcb_bool SearchArcByLocation(unsigned long, unsigned long, pcb_layer_t **
 static pcb_bool SearchRatLineByLocation(unsigned long, unsigned long, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
 static pcb_bool SearchTextByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_text_t **, pcb_text_t **);
 static pcb_bool SearchPolygonByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_poly_t **, pcb_poly_t **);
-static pcb_bool SearchPinByLocation(unsigned long, unsigned long, pcb_element_t **, pcb_pin_t **, pcb_pin_t **);
-static pcb_bool SearchPadByLocation(unsigned long, unsigned long, pcb_element_t **, pcb_pad_t **, pcb_pad_t **, pcb_bool);
-static pcb_bool SearchViaByLocation(unsigned long, unsigned long, pcb_pin_t **, pcb_pin_t **, pcb_pin_t **);
-static pcb_bool SearchElementNameByLocation(unsigned long, unsigned long, pcb_element_t **, pcb_text_t **, pcb_text_t **, pcb_bool);
 static pcb_bool SearchLinePointByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
 static pcb_bool SearchArcPointByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_arc_t **, int **);
 static pcb_bool SearchPointByLocation(unsigned long, unsigned long, unsigned long, pcb_layer_t **, pcb_poly_t **, pcb_point_t **);
-static pcb_bool SearchElementByLocation(unsigned long, unsigned long, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
 static pcb_bool SearchSubcByLocation(unsigned long, unsigned long, pcb_subc_t **, pcb_subc_t **, pcb_subc_t **, pcb_bool);
 
 /* Return not-found for subc parts and locked items unless objst says otherwise
@@ -86,9 +81,6 @@ do { \
 #define TEST_OBJST(objst, req_flag, locality, obj, locked_obj) \
 	TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, return PCB_R_DIR_NOT_FOUND)
 
-/* ---------------------------------------------------------------------------
- * searches a via
- */
 struct ans_info {
 	void **ptr1, **ptr2, **ptr3;
 	pcb_bool BackToo;
@@ -96,40 +88,6 @@ struct ans_info {
 	unsigned long objst, req_flag;
 	int on_current;
 };
-
-static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
-{
-	struct ans_info *i = (struct ans_info *) cl;
-	pcb_pin_t *pin = (pcb_pin_t *) box;
-	pcb_any_obj_t *ptr1 = pin->Element ? pin->Element : pin;
-
-	TEST_OBJST(i->objst, i->req_flag, g, pin, ptr1);
-
-	if (!pcb_is_point_in_pin(PosX, PosY, SearchRadius, pin))
-		return PCB_R_DIR_NOT_FOUND;
-	*i->ptr1 = ptr1;
-	*i->ptr2 = *i->ptr3 = pin;
-	return PCB_R_DIR_CANCEL; /* found, stop searching */
-}
-
-static pcb_bool SearchViaByLocation(unsigned long objst, unsigned long req_flag, pcb_pin_t ** Via, pcb_pin_t ** Dummy1, pcb_pin_t ** Dummy2)
-{
-	struct ans_info info;
-
-	/* search only if via-layer is visible */
-	if (!PCB->ViaOn)
-		return pcb_false;
-
-	info.ptr1 = (void **) Via;
-	info.ptr2 = (void **) Dummy1;
-	info.ptr3 = (void **) Dummy2;
-	info.objst = objst;
-	info.req_flag = req_flag;
-
-	if (pcb_r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
-}
 
 /* ---------------------------------------------------------------------------
  * searches a padstack
@@ -172,68 +130,6 @@ static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	info.on_current = on_current;
 
 	if (pcb_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * searches a pin
- * starts with the newest element
- */
-static pcb_bool SearchPinByLocation(unsigned long objst, unsigned long req_flag, pcb_element_t ** Element, pcb_pin_t ** Pin, pcb_pin_t ** Dummy)
-{
-	struct ans_info info;
-
-	/* search only if pin-layer is visible */
-	if (!PCB->PinOn)
-		return pcb_false;
-	info.ptr1 = (void **) Element;
-	info.ptr2 = (void **) Pin;
-	info.ptr3 = (void **) Dummy;
-	info.objst = objst;
-	info.req_flag = req_flag;
-
-	if (pcb_r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
-}
-
-static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_pad_t *pad = (pcb_pad_t *) b;
-	struct ans_info *i = (struct ans_info *) cl;
-	pcb_any_obj_t *ptr1 = pad->Element;
-
-	TEST_OBJST(i->objst, i->req_flag, g, pad, ptr1);
-
-	if (PCB_FRONT(pad) || i->BackToo) {
-		if (pcb_is_point_in_pad(PosX, PosY, SearchRadius, pad)) {
-			*i->ptr1 = ptr1;
-			*i->ptr2 = *i->ptr3 = pad;
-			return PCB_R_DIR_CANCEL; /* found */
-		}
-	}
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-/* ---------------------------------------------------------------------------
- * searches a pad
- * starts with the newest element
- */
-static pcb_bool SearchPadByLocation(unsigned long objst, unsigned long req_flag, pcb_element_t ** Element, pcb_pad_t ** Pad, pcb_pad_t ** Dummy, pcb_bool BackToo)
-{
-	struct ans_info info;
-
-	/* search only if pin-layer is visible */
-	if (!PCB->PinOn)
-		return pcb_false;
-	info.ptr1 = (void **) Element;
-	info.ptr2 = (void **) Pad;
-	info.ptr3 = (void **) Dummy;
-	info.objst = objst;
-	info.req_flag = req_flag;
-	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-	if (pcb_r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -584,97 +480,6 @@ static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	return pcb_false;
 }
 
-static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
-{
-	pcb_text_t *text = (pcb_text_t *) box;
-	struct ans_info *i = (struct ans_info *) cl;
-	pcb_element_t *element = (pcb_element_t *) text->Element;
-	double newarea;
-
-	TEST_OBJST(i->objst, i->req_flag, l, text, text);
-
-	if ((PCB_FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
-		/* use the text with the smallest bounding box */
-		newarea = (text->BoundingBox.X2 - text->BoundingBox.X1) * (double) (text->BoundingBox.Y2 - text->BoundingBox.Y1);
-		if (newarea < i->area) {
-			i->area = newarea;
-			*i->ptr1 = element;
-			*i->ptr2 = *i->ptr3 = text;
-		}
-		return PCB_R_DIR_FOUND_CONTINUE;
-	}
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-/* ---------------------------------------------------------------------------
- * searches the name of an element
- */
-static pcb_bool
-SearchElementNameByLocation(unsigned long objst, unsigned long req_flag, pcb_element_t ** Element, pcb_text_t ** Text, pcb_text_t ** Dummy, pcb_bool BackToo)
-{
-	struct ans_info info;
-
-	/* package layer have to be switched on */
-	if (pcb_silk_on(PCB)) {
-		info.ptr1 = (void **) Element;
-		info.ptr2 = (void **) Text;
-		info.ptr3 = (void **) Dummy;
-		info.area = PCB_SQUARE(PCB_MAX_COORD);
-		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-		info.objst = objst;
-		info.req_flag = req_flag;
-
-		if (pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], &SearchBox, NULL, name_callback, &info, NULL))
-			return pcb_true;
-	}
-	return pcb_false;
-}
-
-static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
-{
-	pcb_element_t *element = (pcb_element_t *) box;
-	struct ans_info *i = (struct ans_info *) cl;
-	double newarea;
-
-	TEST_OBJST(i->objst, i->req_flag, g, element, element);
-
-	if ((PCB_FRONT(element) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &element->VBox) && pcb_element_silk_vis(element)) {
-		/* use the element with the smallest bounding box */
-		newarea = (element->VBox.X2 - element->VBox.X1) * (double) (element->VBox.Y2 - element->VBox.Y1);
-		if (newarea < i->area) {
-			i->area = newarea;
-			*i->ptr1 = *i->ptr2 = *i->ptr3 = element;
-			return PCB_R_DIR_FOUND_CONTINUE;
-		}
-	}
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-/* ---------------------------------------------------------------------------
- * searches an element
- * if more than one element matches, the smallest one is taken
- */
-static pcb_bool
-SearchElementByLocation(unsigned long objst, unsigned long req_flag, pcb_element_t ** Element, pcb_element_t ** Dummy1, pcb_element_t ** Dummy2, pcb_bool BackToo)
-{
-	struct ans_info info;
-
-	/* Both package layers have to be switched on */
-	if (pcb_silk_on(PCB) && PCB->PinOn) {
-		info.ptr1 = (void **) Element;
-		info.ptr2 = (void **) Dummy1;
-		info.ptr3 = (void **) Dummy2;
-		info.area = PCB_SQUARE(PCB_MAX_COORD);
-		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-		info.objst = objst;
-		info.req_flag = req_flag;
-
-		if (pcb_r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
-			return pcb_true;
-	}
-	return pcb_false;
-}
-
 static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 {
 	pcb_subc_t *subc = (pcb_subc_t *) box;
@@ -763,25 +568,6 @@ static pcb_bool SearchSubcFloaterByLocation(unsigned long objst, unsigned long r
 		}
 	}
 
-	return pcb_false;
-}
-
-
-pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
-{
-	pcb_coord_t t = PIN_SIZE(pin) / 2;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
-		pcb_box_t b;
-
-		b.X1 = pin->X - t;
-		b.X2 = pin->X + t;
-		b.Y1 = pin->Y - t;
-		b.Y2 = pin->Y + t;
-		if (pcb_is_point_in_box(X, Y, &b, Radius))
-			return pcb_true;
-	}
-	else if (pcb_distance(pin->X, pin->Y, X, Y) <= Radius + t)
-		return pcb_true;
 	return pcb_false;
 }
 
@@ -1288,7 +1074,7 @@ pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_c
  * The object is located by it's position.
  *
  * The layout is checked in the following order:
- *   polygon-point, pin, via, line, text, elementname, polygon, element
+ *   polygon-point, padstack, line, text, polygon, subcircuit
  *
  * Note that if Type includes PCB_TYPE_LOCKED, then the search includes
  * locked items.  Otherwise, locked items are ignored.
@@ -1319,15 +1105,20 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		SearchBox = pcb_point_box(X, Y);
 	}
 
+#warning subc TODO: rewrite this for floaters
+#if 0
 	if (conf_core.editor.lock_names) {
 		Type &= ~(PCB_TYPE_ELEMENT_NAME | PCB_TYPE_TEXT);
 	}
 	if (conf_core.editor.hide_names) {
 		Type &= ~PCB_TYPE_ELEMENT_NAME;
 	}
+#endif
+
 	if (conf_core.editor.only_names) {
-		Type &= (PCB_TYPE_ELEMENT_NAME | PCB_TYPE_TEXT);
+		Type &= (/*PCB_TYPE_ELEMENT_NAME |*/ PCB_TYPE_TEXT);
 	}
+
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) {
 		Type &= ~PCB_TYPE_POLY;
 	}
@@ -1336,28 +1127,11 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			SearchRatLineByLocation(objst, req_flag, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
 		return PCB_TYPE_RATLINE;
 
-	if (Type & PCB_TYPE_VIA && SearchViaByLocation(objst, req_flag, (pcb_pin_t **) Result1, (pcb_pin_t **) Result2, (pcb_pin_t **) Result3))
-		return PCB_TYPE_VIA;
-
 	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1))
 		return PCB_TYPE_PSTK;
 
 	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0))
 		return PCB_TYPE_PSTK;
-
-	if (Type & PCB_TYPE_PIN && SearchPinByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
-		HigherAvail = PCB_TYPE_PIN;
-
-	if (!HigherAvail && Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_pad_t **) pr2, (pcb_pad_t **) pr3, pcb_false))
-		HigherAvail = PCB_TYPE_PAD;
-
-	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_false)) {
-		pcb_box_t *box = &((pcb_text_t *) r2)->BoundingBox;
-		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
-		HigherAvail = PCB_TYPE_ELEMENT_NAME;
-	}
 
 	if (!HigherAvail && (Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
 			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_false)) {
@@ -1365,13 +1139,6 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		*Result2 = r2;
 		*Result3 = r3;
 		return PCB_TYPE_TEXT;
-	}
-
-	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
-			SearchElementByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_element_t **) pr2, (pcb_element_t **) pr3, pcb_false)) {
-		pcb_box_t *box = &((pcb_element_t *) r1)->BoundingBox;
-		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
-		HigherAvail = PCB_TYPE_ELEMENT;
 	}
 
 	if (!HigherAvail && Type & PCB_TYPE_SUBC && PCB->SubcOn &&
@@ -1452,20 +1219,6 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		return PCB_TYPE_PAD;
 	}
 
-	if (HigherAvail & PCB_TYPE_ELEMENT_NAME) {
-		*Result1 = r1;
-		*Result2 = r2;
-		*Result3 = r3;
-		return PCB_TYPE_ELEMENT_NAME;
-	}
-
-	if (HigherAvail & PCB_TYPE_ELEMENT) {
-		*Result1 = r1;
-		*Result2 = r2;
-		*Result3 = r3;
-		return PCB_TYPE_ELEMENT;
-	}
-
 	if (HigherAvail & PCB_TYPE_SUBC) {
 		*Result1 = r1;
 		*Result2 = r2;
@@ -1477,14 +1230,6 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	if (!PCB->InvisibleObjectsOn)
 		return PCB_TYPE_NONE;
 
-	if (Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_pad_t **) Result2, (pcb_pad_t **) Result3, pcb_true))
-		return PCB_TYPE_PAD;
-
-	if (Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3, pcb_true))
-		return PCB_TYPE_ELEMENT_NAME;
-
 	if ((Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
 			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_true)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
@@ -1492,10 +1237,6 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		*Result3 = r3;
 		return PCB_TYPE_TEXT;
 	}
-
-	if (Type & PCB_TYPE_ELEMENT &&
-			SearchElementByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))
-		return PCB_TYPE_ELEMENT;
 
 	if (Type & PCB_TYPE_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, pcb_true))
@@ -1611,17 +1352,6 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type == PCB_TYPE_VIA) {
-		PCB_VIA_LOOP(Base);
-		{
-			if (via->ID == ID) {
-				*Result1 = *Result2 = *Result3 = (void *) via;
-				return PCB_TYPE_VIA;
-			}
-		}
-		PCB_END_LOOP;
-	}
-
 	if (type == PCB_TYPE_PSTK) {
 		PCB_PADSTACK_LOOP(Base);
 		{
@@ -1673,68 +1403,6 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 	}
 	PCB_END_LOOP;
 
-	if (type == PCB_TYPE_ELEMENT || type == PCB_TYPE_PAD || type == PCB_TYPE_PIN
-			|| type == PCB_TYPE_ELEMENT_LINE || type == PCB_TYPE_ELEMENT_NAME || type == PCB_TYPE_ELEMENT_ARC)
-		/* check pins and elementnames too */
-		PCB_ELEMENT_LOOP(Base);
-	{
-		if (element->ID == ID) {
-			*Result1 = *Result2 = *Result3 = (void *) element;
-			return PCB_TYPE_ELEMENT;
-		}
-		if (type == PCB_TYPE_ELEMENT_LINE)
-			PCB_ELEMENT_PCB_LINE_LOOP(element);
-		{
-			if (line->ID == ID) {
-				*Result1 = (void *) element;
-				*Result2 = *Result3 = (void *) line;
-				return PCB_TYPE_ELEMENT_LINE;
-			}
-		}
-		PCB_END_LOOP;
-		if (type == PCB_TYPE_ELEMENT_ARC)
-			PCB_ARC_LOOP(element);
-		{
-			if (arc->ID == ID) {
-				*Result1 = (void *) element;
-				*Result2 = *Result3 = (void *) arc;
-				return PCB_TYPE_ELEMENT_ARC;
-			}
-		}
-		PCB_END_LOOP;
-		if (type == PCB_TYPE_ELEMENT_NAME)
-			PCB_ELEMENT_PCB_TEXT_LOOP(element);
-		{
-			if (text->ID == ID) {
-				*Result1 = (void *) element;
-				*Result2 = *Result3 = (void *) text;
-				return PCB_TYPE_ELEMENT_NAME;
-			}
-		}
-		PCB_END_LOOP;
-		if (type == PCB_TYPE_PIN)
-			PCB_PIN_LOOP(element);
-		{
-			if (pin->ID == ID) {
-				*Result1 = (void *) element;
-				*Result2 = *Result3 = (void *) pin;
-				return PCB_TYPE_PIN;
-			}
-		}
-		PCB_END_LOOP;
-		if (type == PCB_TYPE_PAD)
-			PCB_PAD_LOOP(element);
-		{
-			if (pad->ID == ID) {
-				*Result1 = (void *) element;
-				*Result2 = *Result3 = (void *) pad;
-				return PCB_TYPE_PAD;
-			}
-		}
-		PCB_END_LOOP;
-	}
-	PCB_END_LOOP;
-
 	return PCB_TYPE_NONE;
 }
 
@@ -1744,26 +1412,6 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 	if (res == PCB_TYPE_NONE)
 		pcb_message(PCB_MSG_ERROR, "hace: Internal error, search for ID %d failed\n", ID);
 	return res;
-}
-
-
-/* ---------------------------------------------------------------------------
- * searches for an element by its refdes.
- * Return the element or NULL if not found
- */
-pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name)
-{
-	pcb_element_t *result = NULL;
-
-	PCB_ELEMENT_LOOP(Base);
-	{
-		if (element->Name[1].TextString && PCB_NSTRCMP(element->Name[1].TextString, Name) == 0) {
-			result = element;
-			return result;
-		}
-	}
-	PCB_END_LOOP;
-	return result;
 }
 
 /* ---------------------------------------------------------------------------
