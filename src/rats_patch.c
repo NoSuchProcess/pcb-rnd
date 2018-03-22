@@ -383,6 +383,7 @@ static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
 
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
+#warning subc TODO: reimplement this with subcircuits
 static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a[4];
