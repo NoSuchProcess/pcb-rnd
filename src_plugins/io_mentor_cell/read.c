@@ -136,7 +136,10 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_
 				hs++;
 				w = pcb_get_value(curr, ctx->unit, NULL, NULL);
 				h = pcb_get_value(hs, ctx->unit, NULL, NULL);
+#warning padstack TODO: rewrite
+#if 0
 				pcb_element_pad_new_rect(elem, px+w/2, py+h/2, px-w/2, py-h/2, cl, ms, name, name, flags);
+#endif
 			}
 			else if (strncmp(curr, "Round", 5) == 0) {
 				curr += 5;
@@ -164,9 +167,11 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_
 		sqpad_pending = 0;
 	}
 
+#warning padstack TODO: rewrite
+#if 0
 	if (sqpad_pending)
 		pcb_element_pad_new_rect(elem, px, py, px+thickness, py+thickness, cl, ms, name, name, flags);
-
+#endif
 }
 
 static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)

@@ -42,42 +42,12 @@ struct pcb_pad_s {                  /* a SMD pad */
 	gdl_elem_t link;               /* a pad is in a list (element) */
 };
 
-
-pcb_pad_t *pcb_pad_alloc(pcb_element_t * element);
-void pcb_pad_free(pcb_pad_t * data);
-
-pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags);
-pcb_pad_t *pcb_element_pad_new_rect(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags);
-
-void pcb_pad_bbox(pcb_pad_t *Pad);
-
-/* Calculate the net copper bbox and return it in out */
-void pcb_pad_copper_bbox(pcb_box_t *out, pcb_pad_t *Pad);
-
-
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 
 /* hash */
-int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t *e2, const pcb_pad_t *p2);
 int pcb_pad_eq_padstack(const pcb_pad_t *p1, const pcb_pad_t *p2);
-unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p);
 unsigned int pcb_pad_hash_padstack(const pcb_pad_t *p);
 
-
-/* Rather than move the line bounding box, we set it so the point bounding
- * boxes are updated too.
- */
-#define pcb_pad_move(p,dx,dy) \
-	do { \
-		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
-		pcb_pad_t *__p__ = (p); \
-		PCB_MOVE((__p__)->Point1.X,(__p__)->Point1.Y,(__dx__),(__dy__)) \
-		PCB_MOVE((__p__)->Point2.X,(__p__)->Point2.Y,(__dx__),(__dy__)) \
-		pcb_pad_bbox((__p__)); \
-	} while(0)
-
-#define	PCB_PAD_ROTATE90(p,x0,y0,n)	\
-	pcb_line_rotate90(((pcb_line_t *) (p)),(x0),(y0),(n))
 
 #define PCB_PAD_LOOP(element) do {                                      \
 	pcb_pad_t *pad;                                                     \
