@@ -763,134 +763,6 @@ void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /*** draw ***/
-void pcb_elem_name_draw(pcb_element_t * element)
-{
-	if ((conf_core.editor.hide_names && pcb_gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
-		return;
-	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
-	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element)))
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element_selected);
-	else if (PCB_FRONT(element)) {
-#warning TODO: why do we test for Names flag here instead of elements flag?
-		if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, element))
-			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element_nonetlist);
-		else
-			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
-	}
-	else
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.invisible_objects);
-
-	pcb_text_draw_(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk, 0);
-
-}
-
-pcb_r_dir_t pcb_elem_name_draw_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_text_t *text = (pcb_text_t *) b;
-	pcb_element_t *element = (pcb_element_t *) text->Element;
-	int *side = cl;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
-		return PCB_R_DIR_NOT_FOUND;
-
-	if (PCB_ON_SIDE(element, *side))
-		pcb_elem_name_draw(element);
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-void pcb_elem_pp_draw(pcb_element_t * element)
-{
-}
-
-
-void pcb_elem_package_draw(pcb_element_t * element)
-{
-	/* set color and draw lines, arcs, text and pins */
-	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
-	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element_selected);
-	else if (PCB_FRONT(element))
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
-	else
-		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.invisible_objects);
-
-	/* draw lines, arcs, text and pins */
-	PCB_ELEMENT_PCB_LINE_LOOP(element);
-	{
-		pcb_line_draw_(line, 0);
-	}
-	PCB_END_LOOP;
-	PCB_ARC_LOOP(element);
-	{
-		pcb_arc_draw_(arc, 0);
-	}
-	PCB_END_LOOP;
-}
-
-void pcb_elem_draw(pcb_element_t *element)
-{
-	pcb_elem_package_draw(element);
-	pcb_elem_name_draw(element);
-	pcb_elem_pp_draw(element);
-}
-
-pcb_r_dir_t pcb_elem_draw_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_element_t *element = (pcb_element_t *) b;
-	int *side = cl;
-
-	if (PCB_ON_SIDE(element, *side))
-		pcb_elem_package_draw(element);
-	return PCB_R_DIR_FOUND_CONTINUE;
-}
-
-static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool invisible)
-{
-	pcb_coord_t mark_size = PCB_EMARK_SIZE;
-	if (!PCB->InvisibleObjectsOn && invisible)
-		return;
-
-	if (pinlist_length(&e->Pin) != 0) {
-		pcb_pin_t *pin0 = pinlist_first(&e->Pin);
-		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin0))
-			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
-		else
-			mark_size = MIN(mark_size, pin0->Thickness / 2);
-	}
-
-	if (padlist_length(&e->Pad) != 0) {
-		pcb_pad_t *pad0 = padlist_first(&e->Pad);
-		mark_size = MIN(mark_size, pad0->Thickness / 2);
-	}
-
-	pcb_gui->set_color(pcb_draw_out.fgGC, invisible ? conf_core.appearance.color.invisible_mark : conf_core.appearance.color.element);
-	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
-	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, X - mark_size, Y, X, Y - mark_size);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, X + mark_size, Y, X, Y - mark_size);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, X - mark_size, Y, X, Y + mark_size);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, X + mark_size, Y, X, Y + mark_size);
-
-	/*
-	 * If an element is locked, place a "L" on top of the "diamond".
-	 * This provides a nice visual indication that it is locked that
-	 * works even for color blind users.
-	 */
-	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, e)) {
-		pcb_gui->draw_line(pcb_draw_out.fgGC, X, Y, X + 2 * mark_size, Y);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, X, Y, X, Y - 4 * mark_size);
-	}
-}
-
-pcb_r_dir_t pcb_elem_mark_draw_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_element_t *element = (pcb_element_t *) b;
-
-	DrawEMark(element, element->MarkX, element->MarkY, !PCB_FRONT(element));
-	return PCB_R_DIR_FOUND_CONTINUE;
-}
 
 void pcb_elem_invalidate_erase(pcb_element_t *Element)
 {
@@ -905,22 +777,7 @@ void pcb_elem_invalidate_erase(pcb_element_t *Element)
 	}
 	PCB_END_LOOP;
 	pcb_elem_name_invalidate_erase(Element);
-	pcb_elem_pp_invalidate_erase(Element);
 	pcb_flag_erase(&Element->Flags);
-}
-
-void pcb_elem_pp_invalidate_erase(pcb_element_t *Element)
-{
-	PCB_PIN_LOOP(Element);
-	{
-		pcb_pin_invalidate_erase(pin);
-	}
-	PCB_END_LOOP;
-	PCB_PAD_LOOP(Element);
-	{
-		pcb_pad_invalidate_erase(pad);
-	}
-	PCB_END_LOOP;
 }
 
 void pcb_elem_name_invalidate_erase(pcb_element_t *Element)
@@ -933,9 +790,7 @@ void pcb_elem_name_invalidate_erase(pcb_element_t *Element)
 
 void pcb_elem_invalidate_draw(pcb_element_t *Element)
 {
-	pcb_elem_package_invalidate_draw(Element);
 	pcb_elem_name_invalidate_draw(Element);
-	pcb_elem_pp_invalidate_draw(Element);
 }
 
 void pcb_elem_name_invalidate_draw(pcb_element_t *Element)
@@ -943,35 +798,6 @@ void pcb_elem_name_invalidate_draw(pcb_element_t *Element)
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element))
 		return;
 	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
-}
-
-void pcb_elem_package_invalidate_draw(pcb_element_t *Element)
-{
-	PCB_ELEMENT_PCB_LINE_LOOP(Element);
-	{
-		pcb_line_invalidate_draw(NULL, line);
-	}
-	PCB_END_LOOP;
-	PCB_ARC_LOOP(Element);
-	{
-		pcb_arc_invalidate_draw(NULL, arc);
-	}
-	PCB_END_LOOP;
-}
-
-void pcb_elem_pp_invalidate_draw(pcb_element_t *Element)
-{
-	PCB_PAD_LOOP(Element);
-	{
-		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
-			pcb_pad_invalidate_draw(pad);
-	}
-	PCB_END_LOOP;
-	PCB_PIN_LOOP(Element);
-	{
-		pcb_pin_invalidate_draw(pin);
-	}
-	PCB_END_LOOP;
 }
 
 pcb_bool pcb_layer_is_paste_auto_empty(pcb_board_t *pcb, pcb_side_t side)
