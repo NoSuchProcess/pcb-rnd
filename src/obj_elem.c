@@ -86,13 +86,6 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name, cons
 	return pcb_false;
 }
 
-#warning subc TODO: is this function needed?
-/* Searches for the given element by "footprint" name, and loads it
-   into the buffer. Returns zero on success, non-zero on error.  */
-int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint)
-{
-	return !pcb_element_load_to_buffer(Buffer, Footprint, NULL);
-}
 
 void *pcb_element_remove(pcb_element_t *Element)
 {

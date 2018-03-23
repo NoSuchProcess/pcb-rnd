@@ -182,7 +182,7 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (!name)
 		PCB_ACT_FAIL(LoadFootprint);
 
-	if (pcb_element_load_footprint_by_name(PCB_PASTEBUFFER, name))
+	if (!pcb_element_load_to_buffer(PCB_PASTEBUFFER, name, NULL))
 		return 1;
 
 	len = pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
