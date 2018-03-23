@@ -39,16 +39,12 @@
 #include "compat_misc.h"
 
 extern void pcb_main_uninit(void);
-/** pcb_quit_app:
- *  Quits application
- */
+
 void pcb_quit_app(void)
 {
-	/*
-	 * save data if necessary.  It not needed, then don't trigger EmergencySave
+	/* save data if necessary.  It not needed, then don't trigger EmergencySave
 	 * via our atexit() registering of pcb_emergency_save().  We presumably wanted to
-	 * exit here and thus it is not an emergency.
-	 */
+	 * exit here and thus it is not an emergency. */
 	if (PCB->Changed && conf_core.editor.save_in_tmp)
 		pcb_emergency_save();
 	else
@@ -62,9 +58,6 @@ void pcb_quit_app(void)
 		pcb_gui->do_exit(pcb_gui);
 }
 
-/** pcb_get_info_program:
- *  Returns a string that has a bunch of information about this program.
- */
 char *pcb_get_info_program(void)
 {
 	static gds_t info;
@@ -79,9 +72,6 @@ char *pcb_get_info_program(void)
 	return info.array;
 }
 
-/** pcb_get_info_copyright:
- *  Returns a string that has a bunch of information about the copyrights.
- */
 char *pcb_get_info_copyright(void)
 {
 	static gds_t info;
@@ -106,9 +96,6 @@ char *pcb_get_info_copyright(void)
 	return info.array;
 }
 
-/** pcb_get_info_websites:
- *  Returns a string that has a bunch of information about the websites.
- */
 char *pcb_get_info_websites(const char **url_out)
 {
 	static gds_t info;
@@ -129,9 +116,6 @@ char *pcb_get_info_websites(const char **url_out)
 	return info.array;
 }
 
-/** pcb_get_info_comments:
- *  Returns a string as the concatenation of pcb_get_info_program() and pcb_get_info_websites()
- */
 char *pcb_get_info_comments(void)
 {
 	static gds_t info;
@@ -151,9 +135,6 @@ char *pcb_get_info_comments(void)
 }
 
 
-/** pcb_get_info_compile_options:
- *  Returns a string that has a bunch of information about the options selected at compile time.
- */
 char *pcb_get_info_compile_options(void)
 {
 	pcb_hid_t **hids;
@@ -215,9 +196,6 @@ char *pcb_get_info_compile_options(void)
 	return info.array;
 }
 
-/** pcb_get_info_license:
- *  Returns a string about how the program is licensed.
- */
 char *pcb_get_info_license(void)
 {
 	static gds_t info;
@@ -234,10 +212,6 @@ char *pcb_get_info_license(void)
 	return info.array;
 }
 
-/** pcb_get_infostr:
- *  Returns a string that has a bunch of information about this copy of pcb.
- *  Can be used for things like "about" dialog boxes.
- */
 char *pcb_get_infostr(void)
 {
 	static gds_t info;
@@ -272,9 +246,7 @@ const char *pcb_author(void)
 		return pcb_get_user_name();
 }
 
-/** pcb_catch_signal:
- *  Catches signals which abort the program.
- */
+/* Catches signals which abort the program. */
 void pcb_catch_signal(int Signal)
 {
 	const char *s;
@@ -360,7 +332,6 @@ int pcb_file_loaded_clear_at(const char *catname)
 	return 0;
 }
 
-/* clear the subtree of a category, keeping the category; return 0 on success */
 int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *path, const char *desc)
 {
 	pcb_file_loaded_t *file;

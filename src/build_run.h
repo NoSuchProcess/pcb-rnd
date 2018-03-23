@@ -30,13 +30,26 @@
 
 void pcb_quit_app(void);
 
+/* Returns a string that has a bunch of information about this program. */
 char *pcb_get_info_program(void);
+
+/* Returns a string that has a bunch of information about the copyrights. */
 char *pcb_get_info_copyright(void);
+
+/* Returns a string about how the program is licensed. */
 char *pcb_get_info_license(void);
+
+/* Returns a string that has a bunch of information about the websites. */
 char *pcb_get_info_websites(const char **url_out);
+
+/* Returns a string as the concatenation of pcb_get_info_program() and pcb_get_info_websites() */
 char *pcb_get_info_comments(void);
+
+/* Returns a string that has a bunch of information about the options selected at compile time. */
 char *pcb_get_info_compile_options(void);
 
+/* Returns a string that has a bunch of information about this copy of pcb.
+   Can be used for things like "about" dialog boxes. */
 char *pcb_get_infostr(void);
 
 /* Author's name: either from the config system (typically from the design) or
