@@ -98,7 +98,6 @@ static int rounding_method = ROUND_UP;
 #define FREE(x) if((x) != NULL) { free (x) ; (x) = NULL; }
 
 static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc);
-static pcb_bool vendorIsElementMappable(pcb_element_t *element);
 
 /* ************************************************************ */
 
@@ -615,54 +614,6 @@ static void process_skips(lht_node_t *res)
 	}
 }
 
-static pcb_bool vendorIsElementMappable(pcb_element_t *element)
-{
-	int i;
-	int noskip;
-
-	if (!conf_vendor.plugins.vendor.enable)
-		return pcb_false;
-
-	noskip = 1;
-	for (i = 0; i < n_refdes; i++) {
-		if ((PCB_NSTRCMP(PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ignore_refdes[i]) == 0)
-				|| rematch(ignore_refdes[i], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)))) {
-			pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because refdes = %s matches %s\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ignore_refdes[i]);
-			noskip = 0;
-		}
-	}
-	if (noskip)
-		for (i = 0; i < n_value; i++) {
-			if ((PCB_NSTRCMP(PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), ignore_value[i]) == 0)
-					|| rematch(ignore_value[i], PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)))) {
-				pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because value = %s matches %s\n"), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), ignore_value[i]);
-				noskip = 0;
-			}
-		}
-
-	if (noskip)
-		for (i = 0; i < n_descr; i++) {
-			if ((PCB_NSTRCMP(PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), ignore_descr[i])
-					 == 0)
-					|| rematch(ignore_descr[i], PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)))) {
-				pcb_message(PCB_MSG_INFO, _
-								("Vendor mapping skipped because descr = %s matches %s\n"),
-								PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), ignore_descr[i]);
-				noskip = 0;
-			}
-		}
-
-	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
-		pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because element %s is locked\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
-		noskip = 0;
-	}
-
-	if (noskip)
-		return pcb_true;
-	else
-		return pcb_false;
-}
-
 static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc)
 {
 	int i;
@@ -795,7 +746,10 @@ int pplg_init_vendordrill(void)
 #include "vendor_conf_fields.h"
 
 	pcb_stub_vendor_drill_map = vendorDrillMap;
+#warning subc TODO: rewrite this
+#if 0
 	pcb_stub_vendor_is_element_mappable = vendorIsElementMappable;
+#endif
 
 	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return 0;
