@@ -1,11 +1,9 @@
-/*!
- * \file jostle.c
+/*
+ * jostle plug-in for PCB.
  *
- * \brief jostle plug-in for PCB.
+ * Copyright (C) 2007 Ben Jackson <ben@ben.com>
  *
- * \author Copyright (C) 2007 Ben Jackson <ben@ben.com>
- *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
@@ -121,13 +119,11 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 	ddraw->finish_debug_draw();
 }
 
-/*!
- * \brief Find the bounding box of a pcb_polyarea_t.
+/* Find the bounding box of a pcb_polyarea_t.
  *
  * pcb_polyarea_ts linked by ->f/b are outlines.\n
  * n->contours->next would be the start of the inner holes (irrelevant
- * for bounding box).
- */
+ * for bounding box). */
 static pcb_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
 {
 	pcb_polyarea_t *n;
