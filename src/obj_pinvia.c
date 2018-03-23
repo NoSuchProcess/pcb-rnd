@@ -535,7 +535,6 @@ abort();
 		Pin->Mask += value - Pin->Thickness;
 		Pin->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
-		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		pcb_pin_invalidate_draw(Pin);
 		return Pin;
@@ -565,7 +564,6 @@ void *pcb_pinop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 	pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 	Pin->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
-	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	pcb_pin_invalidate_draw(Pin);
 	return Pin;
@@ -779,7 +777,6 @@ abort();
 		pcb_pin_invalidate_erase(Pin);
 		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		Pin->Mask = value;
-		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_pin_invalidate_draw(Pin);
 		return Pin;
 	}

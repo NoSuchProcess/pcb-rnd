@@ -409,12 +409,14 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_layergrp_id_t sgroup, cgroup;
 	pcb_layer_t swap;
 
+#if 0
 	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
 		r_delete_element(Buffer->Data, element);
 		pcb_element_mirror(Buffer->Data, element, 0);
 	}
 	PCB_END_LOOP;
+#endif
 
 #warning subc TODO
 

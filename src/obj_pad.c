@@ -280,7 +280,6 @@ abort();
 		Pad->Mask += value - Pad->Thickness;
 		Pad->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
-		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		pcb_pad_invalidate_draw(Pad);
 		return Pad;
@@ -311,7 +310,6 @@ void *pcb_padop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 	pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 	Pad->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
-	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	pcb_pad_invalidate_draw(Pad);
 	return Pad;

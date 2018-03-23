@@ -52,52 +52,7 @@ struct pcb_element_s {
 	gdl_elem_t link;
 };
 
-/* returns non-zero if the element has no objects in it */
-int pcb_element_is_empty(pcb_element_t *Element);
-
-void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font);
-void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
-void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle);
-
-pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff);
-pcb_bool pcb_selected_element_change_side(void);
-/* Return a relative rotation for an element, useful only for
-   comparing two similar footprints.  */
-int pcb_element_get_orientation(pcb_element_t * e);
-
-#if 0
-/* hash */
-unsigned int pcb_element_hash(const pcb_element_t *e);
-int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2);
-#endif
-
-pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name, const char *fmt);
-int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint);
-pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer);
-pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer);
-pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy);
-char *pcb_element_uniq_name(pcb_data_t *Data, char *Name);
-
-void r_delete_element(pcb_data_t * data, pcb_element_t * element);
-
-void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY);
 void *pcb_element_remove(pcb_element_t *Element);
-void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff);
-
-pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
-
-void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
-	unsigned Direction, const char *TextString, int Scale, pcb_flag_t Flags);
-
-
-/* Change the specified text on an element, either on the board (give
-   PCB, PCB->Data) or in a buffer (give NULL, Buffer->Data).  The old
-   string is returned, and must be properly freed by the caller.  */
-char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name);
-
-void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which, pcb_font_id_t fid);
-void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which);
-
 /* returns whether the silk group of the element's is visible */
 #define pcb_element_silk_vis(elem) \
 	(PCB->LayerGroups.grp[((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (elem))) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk())].vis)
