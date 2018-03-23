@@ -45,6 +45,8 @@
 #include "hid.h"
 #include "plugins.h"
 
+#include "src_plugins/lib_compat_help/pstk_compat.h"
+
 static const char *dsn_cookie = "dsn importer";
 
 typedef enum {
@@ -162,7 +164,10 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 		return;
 	}
 
-	pcb_via_new(PCB->Data, x, PCB->MaxHeight - y, dia, clear, 0, drill, 0, pcb_flag_make(PCB_FLAG_AUTO));
+	{
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, x, PCB->MaxHeight - y, drill, dia, clear, 0, PCB_PSTK_COMPAT_ROUND, 1);
+		PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
+	}
 }
 
 static const char load_dsn_syntax[] = "LoadDsnFrom(filename)";

@@ -6,4 +6,5 @@ $fmt-native no
 $fmt-feature-r import wires and vias from specctra .dsn
 $package auto
 default buildin
+dep lib_compat_help
 autoload 1
