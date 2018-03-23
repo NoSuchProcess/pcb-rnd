@@ -112,8 +112,6 @@ static pcb_rubberband_t *pcb_rubber_band_alloc(rubber_ctx_t *rbnd);
 static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd);
 static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number,int delta_index);
 static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end);
-static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *);
-static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *,int delta_index);
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, pcb_bool);
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, pcb_bool);
@@ -346,47 +344,9 @@ static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same layergroup as the
- * passed pad. If one of the endpoints of the line lays inside the pad,
- * the line is added to the 'rubberband' list
- */
-static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
-{
-	pcb_coord_t half = Pad->Thickness / 2;
-	pcb_layergrp_id_t group;
-	struct rubber_info info;
-	unsigned int flg;
-
-	info.box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - half;
-	info.box.Y1 = MIN(Pad->Point1.Y, Pad->Point2.Y) - half;
-	info.box.X2 = MAX(Pad->Point1.X, Pad->Point2.X) + half;
-	info.box.Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + half;
-	info.radius = 0;
-	info.line = NULL;
-	info.rbnd = rbnd;
-	info.delta_index = 0;
-	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-	if (pcb_layergrp_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
-		return;
-
-	/* check all visible layers in the same group */
-	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
-	{
-		/* check all visible lines of the group member */
-		info.layer = layer;
-		if (info.layer->meta.real.vis) {
-			pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
-		}
-	}
-	PCB_END_LOOP;
-}
-
 struct rinfo {
 	int type;
 	pcb_layergrp_id_t group;
-	pcb_pin_t *pin;
-	pcb_pad_t *pad;
 	pcb_pstk_t *pstk;
 	pcb_point_t *point;
 	rubber_ctx_t *rbnd;
@@ -400,30 +360,6 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	rubber_ctx_t *rbnd = i->rbnd;
 
 	switch (i->type) {
-	case PCB_TYPE_PIN:
-		if (rat->Point1.X == i->pin->X && rat->Point1.Y == i->pin->Y)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
-		else if (rat->Point2.X == i->pin->X && rat->Point2.Y == i->pin->Y)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
-		break;
-	case PCB_TYPE_PAD:
-		if (rat->Point1.X == i->pad->Point1.X && rat->Point1.Y == i->pad->Point1.Y && rat->group1 == i->group)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
-		else if (rat->Point2.X == i->pad->Point1.X && rat->Point2.Y == i->pad->Point1.Y && rat->group2 == i->group)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
-		else if (rat->Point1.X == i->pad->Point2.X && rat->Point1.Y == i->pad->Point2.Y && rat->group1 == i->group)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
-		else if (rat->Point2.X == i->pad->Point2.X && rat->Point2.Y == i->pad->Point2.Y && rat->group2 == i->group)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
-		else
-			if (rat->Point1.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
-					rat->Point1.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group1 == i->group)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
-		else
-			if (rat->Point2.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
-					rat->Point2.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group2 == i->group)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
-		break;
 	case PCB_TYPE_PSTK:
 		if (rat->Point1.X == i->pstk->x && rat->Point1.Y == i->pstk->y)
 			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
@@ -440,35 +376,6 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 		pcb_message(PCB_MSG_ERROR, "hace: bad rubber-rat lookup callback\n");
 	}
 	return PCB_R_DIR_NOT_FOUND;
-}
-
-static void CheckPadForRat(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
-{
-	struct rinfo info;
-	unsigned int flg;
-	pcb_layergrp_id_t group;
-
-	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-	if (pcb_layergrp_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
-		return;
-
-	info.group = group;
-	info.pad = Pad;
-	info.type = PCB_TYPE_PAD;
-	info.rbnd = rbnd;
-	info.delta_index = 0;
-	pcb_r_search(PCB->Data->rat_tree, &Pad->BoundingBox, NULL, rat_callback, &info, NULL);
-}
-
-static void CheckPinForRat(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
-{
-	struct rinfo info;
-
-	info.type = PCB_TYPE_PIN;
-	info.pin = Pin;
-	info.rbnd = rbnd;
-	info.delta_index = 0;
-	pcb_r_search(PCB->Data->rat_tree, &Pin->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
 static void CheckPadstackForRat(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
@@ -492,44 +399,6 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poi
 	info.delta_index = 0;
 
 	pcb_r_search(PCB->Data->rat_tree, (pcb_box_t *) Point, NULL, rat_callback, &info, NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * checks all visible lines. If one of the endpoints of the line lays
- * inside the pin, the line is added to the 'rubberband' list
- *
- * Square pins are handled as if they were round. Speed
- * and readability is more important then the few %
- * of failures that are immediately recognized
- */
-static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
-{
-	struct rubber_info info;
-	pcb_cardinal_t n;
-	pcb_coord_t t = Pin->Thickness / 2;
-
-	info.box.X1 = Pin->X - t;
-	info.box.X2 = Pin->X + t;
-	info.box.Y1 = Pin->Y - t;
-	info.box.Y2 = Pin->Y + t;
-	info.line = NULL;
-	info.rbnd = rbnd;
-	info.delta_index = 0;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))
-		info.radius = 0;
-	else {
-		info.radius = t;
-		info.X = Pin->X;
-		info.Y = Pin->Y;
-	}
-
-	for (n = 0; n < pcb_max_layer; n++) {
-		if (pcb_layer_flags(PCB, n) & PCB_LYT_COPPER) {
-			info.layer = LAYER_PTR(n);
-			pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
-		}
-	}
 }
 
 /* ---------------------------------------------------------------------------
