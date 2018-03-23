@@ -38,7 +38,6 @@
 #include "conf_core.h"
 
 #include "obj_pad.h"
-#include "obj_pad_op.h"
 #include "obj_hash.h"
 
 /* TODO: remove this if draw.[ch] pads are moved */
