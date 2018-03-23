@@ -54,7 +54,7 @@
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
-static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
+static void print_sqpad_coords(FILE *f, pcb_any_line_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
 	pcb_coord_t x[4], y[4];
 
@@ -239,7 +239,7 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 						break;
 					case PCB_PSSH_LINE:
 						if (shp->data.line.square) {
-							pcb_pad_t tmp;
+							pcb_any_line_t tmp;
 							tmp.Point1.X = shp->data.line.x1 + padstack->x;
 							tmp.Point1.Y = shp->data.line.y1 + padstack->y;
 							tmp.Point2.X = shp->data.line.x2 + padstack->x;
