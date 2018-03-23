@@ -980,6 +980,8 @@ static void find_pairs()
 	}
 	PCB_END_LOOP;
 
+#warning padstack TODO: rewrite for padstacks
+#if 0
 	PCB_PIN_ALL_LOOP(PCB->Data); {
 		pcb_box_t box;
 		box.X1 = pin->X - pin->Thickness / 2;
@@ -1013,6 +1015,7 @@ static void find_pairs()
 
 	}
 	PCB_ENDALL_LOOP;
+#endif
 
 	g_hash_table_foreach(lines, (GHFunc) null_multi_next_ends, NULL);
 	g_hash_table_foreach(arcs, (GHFunc) null_multi_next_ends, NULL);

@@ -2371,6 +2371,8 @@ static int pad_orient(pcb_pad_t * p)
 
 static void padcleaner()
 {
+#warning padstack TODO: rewrite
+#if 0
 	line_s *l, *nextl;
 	int close;
 	rect_s r;
@@ -2416,6 +2418,7 @@ static void padcleaner()
 		PCB_ENDALL_LOOP;
 	next_line:;
 	}
+#endif
 }
 
 static void grok_layer_groups()

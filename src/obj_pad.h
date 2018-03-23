@@ -47,10 +47,6 @@ struct pcb_pad_s {                  /* a SMD pad */
 	gdl_iterator_t __it__;                                            \
 	{
 
-#define PCB_PAD_ALL_LOOP(top)    \
-	PCB_ELEMENT_LOOP(top);        \
-		PCB_PAD_LOOP(element)
-
 
 #endif
 

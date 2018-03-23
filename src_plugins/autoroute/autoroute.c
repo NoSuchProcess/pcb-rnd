@@ -960,14 +960,6 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 			AddPstk(layergroupboxes, padstack, rd->styles[rd->max_styles]);
 	}
 	PCB_END_LOOP;
-	PCB_PAD_ALL_LOOP(data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pad))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
-		else
-			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
-	}
-	PCB_ENDALL_LOOP;
 	/* add all vias */
 	PCB_VIA_LOOP(data);
 	{

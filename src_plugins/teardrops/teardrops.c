@@ -344,7 +344,8 @@ static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		check_pstk((pcb_pstk_t *)b);
 	pcb_r_end(&it);
 
-
+#warning padstack TODO: rewrite
+#if 0
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		check_via(via);
@@ -362,6 +363,7 @@ static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		check_pad(pad);
 	}
 	PCB_ENDALL_LOOP;
+#endif
 
 	pcb_gui->invalidate_all();
 
