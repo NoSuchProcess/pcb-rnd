@@ -27,18 +27,6 @@
  */
 
 /*** Standard draw on pins and vias ***/
-
-/* Include rtree.h for these */
-#ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_pin_name_draw_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_via_draw_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl);
-#endif
-
-
-void pcb_pin_draw(pcb_pin_t *pin, pcb_bool draw_hole);
 void pcb_via_invalidate_erase(pcb_pin_t *Via);
 void pcb_via_name_invalidate_erase(pcb_pin_t *Via);
 void pcb_pin_invalidate_erase(pcb_pin_t *Pin);
