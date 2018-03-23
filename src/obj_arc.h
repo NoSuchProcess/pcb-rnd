@@ -45,7 +45,6 @@ struct pcb_arc_s {       /* holds information about arcs */
 
 /*** Memory ***/
 pcb_arc_t *pcb_arc_alloc(pcb_layer_t *);
-pcb_arc_t *pcb_element_arc_alloc(pcb_element_t *Element);
 void pcb_arc_free(pcb_arc_t *data);
 
 pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t center_x, pcb_coord_t center_y, pcb_coord_t width_r, pcb_coord_t height_r, pcb_angle_t start_angle, pcb_angle_t delta_angle, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
