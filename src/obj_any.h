@@ -39,12 +39,12 @@ typedef struct pcb_obj_s pcb_obj_t;
 struct pcb_obj_s {
 	pcb_objtype_t type;
 	union {
-		void         *any;
-		pcb_any_obj_t *anyobj;
+		void           *any;
+		pcb_any_obj_t  *anyobj;
 		pcb_point_t    *point;
 		pcb_line_t     *line;
 		pcb_text_t     *text;
-		pcb_poly_t  *polygon;
+		pcb_poly_t     *polygon;
 		pcb_arc_t      *arc;
 		pcb_rat_t      *rat;
 		pcb_pstk_t     *pstk;
