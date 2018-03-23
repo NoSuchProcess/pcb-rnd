@@ -192,30 +192,6 @@ void pcb_layout_lookup_uninit(void)
 	RatList.Data = NULL;
 }
 
-void pcb_component_lookup_uninit(void)
-{
-/*fprintf(stderr, "PadList free both\n");*/
-}
-
-/* ---------------------------------------------------------------------------
- * allocates memory for component related stacks ...
- * initializes index and sorts it by X1 and X2
- */
-void pcb_component_lookup_init(void)
-{
-	/* initialize pad data; start by counting the total number
-	 * on each of the two possible layers */
-	NumberOfPads[PCB_COMPONENT_SIDE] = NumberOfPads[PCB_SOLDER_SIDE] = 0;
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
-			NumberOfPads[PCB_SOLDER_SIDE]++;
-		else
-			NumberOfPads[PCB_COMPONENT_SIDE]++;
-	}
-	PCB_ENDALL_LOOP;
-}
-
 /* ---------------------------------------------------------------------------
  * allocates memory for component related stacks ...
  * initializes index and sorts it by X1 and X2

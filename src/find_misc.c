@@ -516,12 +516,10 @@ void pcb_restore_find_flag(void)
 
 void pcb_conn_lookup_init(void)
 {
-	pcb_component_lookup_init();
 	pcb_layout_lookup_init();
 }
 
 void pcb_conn_lookup_uninit(void)
 {
-	pcb_component_lookup_uninit();
 	pcb_layout_lookup_uninit();
 }

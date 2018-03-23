@@ -143,7 +143,7 @@ static pcb_bool User = pcb_false;				/* user action causing this */
 static pcb_bool drc = pcb_false;				/* whether to stop if finding something not found */
 static pcb_bool IsBad = pcb_false;
 static pcb_cardinal_t drcerr_count;		/* count of drc errors */
-static pcb_cardinal_t NumberOfPads[2], TotalPs;
+static pcb_cardinal_t TotalPs;
 static ListType LineList[PCB_MAX_LAYER+2],	/* list of objects to */
   PolygonList[PCB_MAX_LAYER+2], ArcList[PCB_MAX_LAYER+2],
   RatList, PadstackList;
