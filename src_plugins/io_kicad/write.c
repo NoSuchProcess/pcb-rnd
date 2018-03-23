@@ -487,33 +487,6 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 	pcb_pstk_t *ps;
 	int is_subc = Data->parent_type == PCB_PARENT_SUBC;
 
-	/* write information about vias */
-	pinlist_foreach(&Data->Via, &it, via) {
-		fprintf(ctx->f, "%*s", ind, "");
-		if (is_subc && (via->term == NULL)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)via, "can't export non-terminal via in subcircuit, omitting the object", NULL);
-			continue;
-		}
-		if (!is_subc && (via->term != NULL)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)via, "can't export terminal info for a via outside of a subcircuit (omitting terminal info)", NULL);
-			continue;
-		}
-		if (is_subc) {
-			pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
-				via->term, (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via) ? "rect" : "oval"),
-				via->X + dx, via->Y + dy,
-				via->Thickness, via->Thickness,
-				via->DrillingHole,
-				kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
-		}
-		else {
-			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
-				via->X + dx, via->Y + dy,
-				via->Thickness,
-				kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
-		}
-	}
-
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		int klayer_from = 0, klayer_to = 15;
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
