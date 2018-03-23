@@ -152,20 +152,6 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	NULL  /* padstack */
 };
 
-#warning padstack TODO: remove this code
-static pcb_opfunc_t ChangeMaskSizeFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL, /* subc */
-	NULL  /* padstack */
-};
-
 static pcb_opfunc_t SetJoinFunctions = {
 	pcb_lineop_set_join,
 	pcb_textop_set_join,
@@ -302,10 +288,7 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	if (pcb_mask_on(PCB))
-		change = pcb_selected_operation(PCB, PCB->Data, &ChangeMaskSizeFunctions, &ctx, pcb_false, types);
-	else
-		change = pcb_selected_operation(PCB, PCB->Data, &ChangeClearSizeFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeClearSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -645,10 +628,7 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	if (pcb_mask_on(PCB))
-		change = (pcb_object_operation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
-	else
-		change = (pcb_object_operation(&ChangeClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (pcb_object_operation(&ChangeClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -697,28 +677,6 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 		pcb_draw();
 		if (incundo)
 			pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ---------------------------------------------------------------------------
- * changes the mask size of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_chg_obj_mask_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
-{
-	pcb_bool change;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.is_absolute = fixIt;
-	ctx.chgsize.value = Difference;
-
-	change = (pcb_object_operation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
 	}
 	return change;
 }

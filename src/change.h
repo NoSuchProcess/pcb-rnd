@@ -66,9 +66,6 @@
 #define PCB_CHANGETHERMAL_TYPES	\
 	(PCB_TYPE_PIN | PCB_TYPE_VIA | PCB_TYPE_SUBC_PART)
 
-#define PCB_CHANGEMASKSIZE_TYPES    \
-        (PCB_TYPE_PIN | PCB_TYPE_VIA | PCB_TYPE_PAD | PCB_TYPE_SUBC_PART)
-
 pcb_bool pcb_chg_selected_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_clear_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_2nd_size(int, pcb_coord_t, pcb_bool);

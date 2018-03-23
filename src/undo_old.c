@@ -94,7 +94,6 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr);
 static pcb_bool UndoChangeAngles(UndoListTypePtr);
 static pcb_bool UndoChangeRadii(UndoListTypePtr);
 static pcb_bool UndoChangeClearSize(UndoListTypePtr);
-static pcb_bool UndoChangeMaskSize(UndoListTypePtr);
 static pcb_bool UndoClearPoly(UndoListTypePtr);
 
 
