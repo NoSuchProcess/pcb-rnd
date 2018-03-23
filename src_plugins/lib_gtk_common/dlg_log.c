@@ -26,8 +26,7 @@
  *
  */
 
-/* This file written by Bill Wilson for the PCB Gtk port
-*/
+/* This file written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
 
@@ -50,19 +49,10 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-/** \file   dlg_log.c
-    \brief  Manages the *log* non-modal dialog.
- */
-
-/** \todo What is \p log_window value when program starts ? NULL ?
-    see ghid_log_window_create() for first time creation
- */
 static GtkWidget *log_window, *log_text;
 static pcb_bool log_show_on_append = FALSE;
 
-/** A _log_ message object. Used as a chained list. */
 typedef struct log_pending_s log_pending_t;
-/** Data for a single _log_ message. */
 struct log_pending_s {
 	log_pending_t *next;
 	enum pcb_message_level level;
@@ -71,7 +61,6 @@ struct log_pending_s {
 
 log_pending_t *log_pending_first = NULL, *log_pending_last = NULL;
 
-/** Remember user window resizes. */
 static gint log_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
 	wplc_config_event(widget, &hid_gtk_wgeo.log_x, &hid_gtk_wgeo.log_y, &hid_gtk_wgeo.log_width, &hid_gtk_wgeo.log_height);

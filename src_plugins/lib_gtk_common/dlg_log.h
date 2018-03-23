@@ -4,16 +4,10 @@
 #include "pcb_bool.h"
 #include "error.h"
 
-/** Creates or raises the _log_ window dialog.
-    \param raise    if `TRUE`, presents the window.
- */
+/* Creates or raises the _log_ window dialog. */
 void pcb_gtk_dlg_log_show(pcb_bool raise);
 
-/** Logs a new message.
-    \param level    The message level (warning, etc...)
-    \param fmt      A PCB format used to format \p args.
-    \param args     A variable list of arguments.
- */
+/* Logs a new message. */
 void pcb_gtk_logv(int hid_active, enum pcb_message_level level, const char *fmt, va_list args);
 
 
