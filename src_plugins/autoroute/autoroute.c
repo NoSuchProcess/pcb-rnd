@@ -4251,11 +4251,14 @@ static void ripout_livedraw_obj(routebox_t * rb)
 		pcb_destroy_object(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
 	}
+#warning padstack TODO: rewrite
+#if 0
 	if (rb->type == VIA && rb->livedraw_obj.via) {
 		pcb_via_invalidate_erase(rb->livedraw_obj.via);
 		pcb_destroy_object(PCB->Data, PCB_TYPE_PSTK, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}
+#endif
 }
 
 static pcb_r_dir_t ripout_livedraw_obj_cb(const pcb_box_t * b, void *cl)

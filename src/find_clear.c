@@ -49,6 +49,8 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
+#warning padstack TODO: rewrite
+#if 0
 		PCB_VIA_LOOP(subc->data);
 		{
 			if (via->term == NULL)
@@ -63,6 +65,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 			}
 		}
 		PCB_END_LOOP;
+#endif
 
 		PCB_LINE_ALL_LOOP(subc->data);
 		{

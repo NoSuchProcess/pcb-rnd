@@ -644,7 +644,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 #warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
 	if ((ps = pcb_pstk_new_compat_via(PCB->Data, i->X, i->Y, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL) {
 		pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
-		pcb_via_invalidate_draw(ps);
+		pcb_pstk_invalidate_draw(ps);
 	}
 	longjmp(i->env, 1);
 }
