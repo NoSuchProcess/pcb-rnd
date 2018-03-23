@@ -209,7 +209,10 @@ static void parse_silk(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
 		parse_xy(ctx, tmp->argv[1], &px, &py);
 		for(n = 2; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y);
+#warning subc TODO: rewrite this for subcircuits
+#if 0
 			pcb_element_line_new(elem, px, py, x, y, th);
+#endif
 			px = x;
 			py = y;
 		}
@@ -245,6 +248,8 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 		}
 	}
 
+#warning subc TODO: rewrite for subc
+#if 0
 	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
 		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
 
@@ -255,6 +260,7 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0)
 			parse_silk(ctx, elem, n);
 	}
+#endif
 
 #if 0
 	/* extract tags */

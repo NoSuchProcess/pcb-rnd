@@ -52,19 +52,6 @@ struct pcb_element_s {
 	gdl_elem_t link;
 };
 
-pcb_element_t *pcb_element_alloc(pcb_data_t * data);
-void pcb_element_free(pcb_element_t * data);
-
-pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
-	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
-	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
-	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
-
-void pcb_element_destroy(pcb_element_t * element);
-
-pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element);
-
-
 /* returns non-zero if the element has no objects in it */
 int pcb_element_is_empty(pcb_element_t *Element);
 
@@ -96,9 +83,6 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element);
 void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY);
 void *pcb_element_remove(pcb_element_t *Element);
 void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff);
-
-pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
-	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness);
 
 pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 

@@ -476,8 +476,6 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 
 	if (ly != NULL)
 		line = pcb_line_alloc(ly);
-	else if (el != NULL)
-		line = pcb_element_line_alloc(el);
 	else
 		return -1;
 
