@@ -803,7 +803,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
 	wctx_t wctx;
 
-	if (elementlist_length(&Data->Element) > 1) {
+	if (pcb_subclist_length(&Data->subc) > 1) {
 		pcb_message(PCB_MSG_ERROR, "Can't save multiple modules (footprints) in a single s-experssion mod file\n");
 		return -1;
 	}
