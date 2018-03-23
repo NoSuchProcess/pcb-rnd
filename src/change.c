@@ -34,6 +34,7 @@
 
 #include "conf_core.h"
 
+#include "change.h"
 #include "board.h"
 #include "data.h"
 #include "draw.h"
@@ -45,6 +46,7 @@
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"
+
 
 pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,
