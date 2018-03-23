@@ -289,9 +289,7 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 
 	/* update the preview with new symbol data */
 	if (PCB_PASTEBUFFER->Data != NULL) {
-		if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) != 0)
-			g_object_set(library_window->preview, "element-data", elementlist_first(&PCB_PASTEBUFFER->Data->Element), NULL);
-		else if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
+		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 			g_object_set(library_window->preview, "element-data", pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
 		else
 			g_object_set(library_window->preview, "element-data", NULL, NULL);
