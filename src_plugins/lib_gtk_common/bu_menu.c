@@ -217,12 +217,8 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 	return action;
 }
 
-/*! \brief Translate a resource tree into a menu structure
- *
- *  \param [in] menu    The GHidMainMenu widget to be acted on
- *  \param [in] shall   The base menu shell (a menu bar or popup menu)
- *  \param [in] base    The base of the menu item subtree
- * */
+/* Translate a resource tree into a menu structure; shell is the base menu
+   shell (a menu bar or popup menu) */
 void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *base)
 {
 	switch (base->type) {
@@ -374,16 +370,11 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 	gtk_widget_show_all(new_menu);
 }
 
-/*! \brief Updates the toggle/active state of all items
- *  \par Function Description
- *  Loops through all actions, passing the action, its toggle
- *  flag (maybe NULL), and its active flag (maybe NULL), to a
- *  callback function. It is the responsibility of the function
- *  to actually change the state of the action.
- *
- *  \param [in] menu    The menu to be acted on.
- *  \param [in] cb      The callback that toggles the actions
- */
+/* Updates the toggle/active state of all items:
+ * Loops through all actions, passing the action, its toggle
+ * flag (maybe NULL), and its active flag (maybe NULL), to a
+ * callback function. It is the responsibility of the function
+ * to actually change the state of the action. */
 void
 ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 																	 void (*cb) (GtkAction *, const char *toggle_flag, const char *active_flag))
@@ -528,16 +519,10 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 	}
 }
 
-/*! \brief Menu action callback function
- *  \par Function Description
- *  This is the main menu callback function.  The callback receives
- *  the original lihata action node pointer HID actions to be
- *  executed.
- *
- *  \param [in]   The action that was activated
- *  \param [in]   The related menu lht action node
- */
-
+/* Menu action callback function
+ * This is the main menu callback function.  The callback receives
+ * the original lihata action node pointer HID actions to be
+ * executed. */
 static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 {
 	if (action == NULL || node == NULL)

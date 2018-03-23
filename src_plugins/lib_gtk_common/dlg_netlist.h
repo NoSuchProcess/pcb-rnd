@@ -6,15 +6,10 @@
 #include "event.h"
 #include "glue.h"
 
-/** Creates or raises the _Netlist_ window dialog.
-    \param raise    if `TRUE`, presents the window.
- */
+/* Creates or raises the _Netlist_ window dialog. */
 void pcb_gtk_dlg_netlist_show(pcb_gtk_common_t *com, pcb_bool raise);
 
-/** If code in PCB should change the netlist, call this to update
-    what's in the netlist window.
-    \param init_nodes    ?
-*/
+/* Called on netlist changes to keep the gui in sync */
 void pcb_gtk_dlg_netlist_update(pcb_gtk_common_t *com, pcb_bool init_nodes);
 
 void pcb_gtk_netlist_changed(pcb_gtk_common_t *com, void *user_data, int argc, pcb_event_arg_t argv[]);
