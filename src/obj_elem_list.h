@@ -40,9 +40,6 @@
 #define elementlist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
-#include "ht_element.h"
-#include <genht/hash.h>
-
 /* Calculate a hash value using the content of the element. The hash value
    represents the actual content of an element */
 unsigned int pcb_element_hash(const pcb_element_t *e);
@@ -50,31 +47,6 @@ unsigned int pcb_element_hash(const pcb_element_t *e);
 /* Compare two elements and return 1 if they contain the same objects. */
 int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2);
 
-/* Create a new local variable to be used for deduplication */
-#define elementlist_dedup_initializer(state) htep_t *state = NULL;
-
-/* Do a "continue" if an element matching loop_elem has been seen already;
-   Typically this is invoked as the first statement of an elementlist_foreach()
-   loop. */
-#define elementlist_dedup_skip(state, loop_elem) \
-switch(1) { \
-	case 1: { \
-		if (state == NULL) \
-			state = htep_alloc(pcb_element_hash, pcb_element_eq); \
-		if (htep_has(state, loop_elem)) \
-			continue; \
-		htep_set(state, loop_elem, 1); \
-	} \
-}
-
-/* use this after the loop to free all memory used by state */
-#define elementlist_dedup_free(state) \
-	do { \
-		if (state != NULL) { \
-			htep_free(state); \
-			state = NULL; \
-		} \
-	} while(0)
 
 
 #ifndef LIST_ELEMENT_NOINSTANT
