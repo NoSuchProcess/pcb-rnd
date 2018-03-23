@@ -98,7 +98,6 @@ put /local/pcb/OBJS [@
 	obj_pstk_act.o
 	obj_pstk_list.o
 	obj_pstk_proto.o
-	obj_pinvia.o
 	obj_pinvia_therm.o
 	obj_pinvia_list.o
 	obj_poly.o
