@@ -94,35 +94,6 @@ int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footpri
 	return !pcb_element_load_to_buffer(Buffer, Footprint, NULL);
 }
 
-/* see if a polygon is a rectangle.  If so, canonicalize it. */
-static int polygon_is_rectangle(pcb_poly_t *poly)
-{
-	int i, best;
-	pcb_point_t temp[4];
-	if (poly->PointN != 4 || poly->HoleIndexN != 0)
-		return 0;
-	best = 0;
-	for (i = 1; i < 4; i++)
-		if (poly->Points[i].X < poly->Points[best].X || poly->Points[i].Y < poly->Points[best].Y)
-			best = i;
-	for (i = 0; i < 4; i++)
-		temp[i] = poly->Points[(i + best) % 4];
-	if (temp[0].X == temp[1].X)
-		memcpy(poly->Points, temp, sizeof(temp));
-	else {
-		/* reverse them */
-		poly->Points[0] = temp[0];
-		poly->Points[1] = temp[3];
-		poly->Points[2] = temp[2];
-		poly->Points[3] = temp[1];
-	}
-	if (poly->Points[0].X == poly->Points[1].X
-			&& poly->Points[1].Y == poly->Points[2].Y
-			&& poly->Points[2].X == poly->Points[3].X && poly->Points[3].Y == poly->Points[0].Y)
-		return 1;
-	return 0;
-}
-
 void *pcb_element_remove(pcb_element_t *Element)
 {
 	void *res;
