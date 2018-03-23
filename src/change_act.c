@@ -230,51 +230,14 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	}
 }
 
-#warning padstack TODO: remove these?
-#if 0
 /* --------------------------------------------------------------------------- */
-
 static const char changehold_syntax[] = "ChangeHole(ToggleObject|Object|SelectedVias|Selected)";
-
-static const char changehold_help[] = "Changes the hole flag of objects.";
-
-/* %start-doc actions ChangeHole
-
-The "hole flag" of a via determines whether the via is a
-plated-through hole (not set), or an unplated hole (set).
-
-%end-doc */
-
+static const char changehold_help[] = "Changes the hole flag of objects. Not supported anymore; use the propery editor.";
 static int pcb_act_ChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pin_change_hole((pcb_pin_t *) ptr3))
-					pcb_undo_inc_serial();
-				break;
-			}
-
-		case F_SelectedVias:
-		case F_Selected:
-			if (pcb_chg_selected_hole())
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
+	return 1;
 }
-#endif
-
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_ChangePaste[] = "ChangePaste(ToggleObject|Object|SelectedPads|Selected)";
 static const char pcb_acth_ChangePaste[] = "Changes the no paste flag of objects. Not supported anymore.";
 static int pcb_act_ChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)

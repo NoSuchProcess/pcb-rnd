@@ -75,8 +75,6 @@ pcb_bool pcb_set_selected_join(int);
 pcb_bool pcb_clr_selected_join(int);
 pcb_bool pcb_chg_selected_nonetlist(int);
 pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid);
-pcb_bool pcb_chg_selected_hole(void);
-pcb_bool pcb_chg_selected_paste(void);
 pcb_bool pcb_chg_obj_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_obj_1st_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid);

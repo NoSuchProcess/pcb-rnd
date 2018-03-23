@@ -479,30 +479,6 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 	return change;
 }
 
-
-#warning padstack TODO: remove this
-/* ----------------------------------------------------------------------
- * changes the hole-flag of all selected and visible vias
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_chg_selected_hole(void)
-{
-	pcb_bool change = pcb_false;
-
-	if (PCB->ViaOn)
-		PCB_VIA_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via))
-			change |= pcb_pin_change_hole(via);
-	}
-	PCB_END_LOOP;
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
 #warning subc TODO: check if it is true:
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
