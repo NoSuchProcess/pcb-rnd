@@ -17,31 +17,13 @@
 typedef struct pcb_gtk_coord_entry_s pcb_gtk_coord_entry_t;
 typedef struct pcb_gtk_coord_entry_class_s pcb_gtk_coord_entry_class_t;
 
-/* Step sizes */
 enum ce_step_size { CE_TINY, CE_SMALL, CE_MEDIUM, CE_LARGE };
 
 GType pcb_gtk_coord_entry_get_type(void);
 
-/** Creates a new pcb_gtk_coord_entry_t
- *
- *  \param [in] min_val    The minimum allowed value, in pcb coords
- *  \param [in] max_val    The maximum allowed value, in pcb coords
- *  \param [in] value      The default value, in pcb coords
- *  \param [in] unit       The default unit
- *  \param [in] step_size  How large the default increments should be
- *
- *  \return a freshly-allocated pcb_gtk_coord_entry_t
- */
-GtkWidget *pcb_gtk_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit,
-																	 enum ce_step_size step_size);
-
-/** Gets a pcb_gtk_coord_entry_t's value, in pcb coords */
+GtkWidget *pcb_gtk_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t default_value, const pcb_unit_t *default_unit, enum ce_step_size default_step_size);
 pcb_coord_t pcb_gtk_coord_entry_get_value(pcb_gtk_coord_entry_t * ce);
-
-/** Gets a pcb_gtk_coord_entry_t's value as text */
 int pcb_gtk_coord_entry_get_value_str(pcb_gtk_coord_entry_t * ce, char *out, int out_len);
-
-/** Sets a pcb_gtk_coord_entry_t's value, in pcb coords */
 void pcb_gtk_coord_entry_set_value(pcb_gtk_coord_entry_t * ce, pcb_coord_t val);
 
 /** Change the unit only if it differs from what's set currently; returns whether changed */
