@@ -531,6 +531,7 @@ static void netlist_find_cb(GtkWidget * widget, gpointer data)
 	pcb_hid_actionl("netlist", "find", name, NULL);
 }
 
+#warning padstack TODO: this seems to be duplicate in lesstif
 static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 {
 
@@ -552,6 +553,8 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	}
 	PCB_ENDALL_LOOP;
 
+#warning padstack TODO: rewrite
+#if 0
 	if (PCB->ViaOn)
 		PCB_VIA_LOOP(PCB->Data);
 	{
@@ -559,7 +562,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 			pcb_remove_object(PCB_TYPE_VIA, via, via, via);
 	}
 	PCB_END_LOOP;
-
+#endif
 }
 
 /** ? */
