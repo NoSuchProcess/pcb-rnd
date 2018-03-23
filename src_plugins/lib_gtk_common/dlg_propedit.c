@@ -330,9 +330,12 @@ static void prop_preview_init(void)
 
 #warning TODO: preview_pcb is never freed
 
+#warning padstack TODO: create a padstack
+#if 0
 	pcb_via_new(preview_pcb.Data,
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(40), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
+#endif
 
 	pcb_line_new(preview_pcb.Data->Layer + 0,
 							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
