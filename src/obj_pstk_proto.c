@@ -117,7 +117,6 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	int ret = -1, n, m, i, extra_obj = 0;
 	pcb_any_obj_t **o;
 	pcb_pstk_tshape_t *ts, *ts_src;
-	pcb_pin_t *via = NULL;
 	pcb_pstk_t *pstk = NULL;
 	pcb_pstk_proto_t *prt;
 
@@ -139,7 +138,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				ts->len++;
 				break;
 			case PCB_OBJ_PSTK:
-				if ((via != NULL) || (pstk != NULL)) {
+				if (pstk != NULL) {
 					if (!quiet)
 						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
 					goto quit;
@@ -173,7 +172,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		goto quit;
 	}
 
-	if ((ts->len == 0) && (via == NULL) && (pstk == NULL)) {
+	if ((ts->len == 0) && (pstk == NULL)) {
 		if (!quiet)
 			pcb_message(PCB_MSG_ERROR, "Padstack conversion: there are no shapes and there is no via/padstack participating in the conversion; can not create empty padstack\n");
 		goto quit;
@@ -251,7 +250,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				goto quit;
 			}
 		}
-		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (via == NULL) && (pstk == NULL)) {
+		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (pstk == NULL)) {
 			if (!quiet)
 				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
 			goto quit;
