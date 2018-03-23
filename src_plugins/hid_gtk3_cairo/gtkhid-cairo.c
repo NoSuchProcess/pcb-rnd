@@ -143,7 +143,7 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2
 	cairo_move_to(cr, x1, y1);
 	cairo_line_to(cr, x2, y2);
 	if (fill)
-		/*FIXME: What means "fill a line" ? cairo_fill is not appropriate if path is only a line. */
+#warning gtk3 TODO: What means "fill a line" ? cairo_fill is not appropriate if path is only a line.
 		cairo_fill(cr);
 	else
 		cairo_stroke(cr);
@@ -280,7 +280,7 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 	return rv;
 }
 
-/*TODO: check if clipping is not necessary */
+#warning gtk3 TODO: check if clipping is not necessary
 //static void set_clip(render_priv_t * priv, cairo_t * cr)
 //{
 //	if (cr == NULL)
@@ -487,7 +487,7 @@ static void ghid_cairo_draw_grid(void)
 	//}
 
 	cairo_save(cr);
-	/*FIXME: deal with gc */
+#warning gtk3 TODO: deal with gc
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
 	cairo_set_line_width(cr, 1.0);
 	gdk_cairo_set_source_rgba(cr, &priv->grid_color);
@@ -911,7 +911,7 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	angle1 *= (M_PI / 180.0);
 	angle2 *= (M_PI / 180.0);
 	cairo_save(priv->cr);
-	/*FIXME: this will draw an arc of a circle, not an ellipse ! Explore matrix transformation here. */
+#warning gtk3 TODO: this will draw an arc of a circle, not an ellipse! Explore matrix transformation here.
 	cairo_arc(priv->cr, pcb_round(Vxd(cx)), pcb_round(Vyd(cy)), Vzd(radius), angle1, angle2);
 	cairo_stroke(priv->cr);
 	cairo_restore(priv->cr);
@@ -1363,7 +1363,7 @@ static void show_crosshair(gboolean paint_new_location)
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
 		return;
 
-	/* FIXME: when CrossColor changed from config */
+#warning gtk3 TODO: when CrossColor changed from config
 	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
 	//cr = priv->cr_drawing_area;
 	cr = priv->cr;
@@ -1376,7 +1376,7 @@ static void show_crosshair(gboolean paint_new_location)
 	//  gdk_gc_set_function(xor_gc, GDK_XOR);
 	//  gdk_gc_set_clip_origin(xor_gc, 0, 0);
 	//  set_clip(priv, xor_gc);
-	//  /* FIXME: when CrossColor changed from config */
+#warning gtk3 TODO:FIXME: when CrossColor changed from config
 	//  map_color_string(conf_core.appearance.color.cross, &cross_color);
 	//}
 	x = DRAW_X(&gport->view, gport->view.crosshair_x);
