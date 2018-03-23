@@ -617,6 +617,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
+#if 0
 			const char* name = PCB_ELEM_NAME_VISIBLE(PCB, element);
 			if (name && REGEXEC(name)) {
 				pcb_undo_add_obj_to_flag(element);
@@ -633,7 +634,6 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				}
 				PCB_END_LOOP;
-#if 0
 				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
 					pcb_undo_add_obj_to_flag(text);
@@ -642,9 +642,9 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 				PCB_END_LOOP;
 				pcb_elem_name_invalidate_draw(element);
 				pcb_elem_invalidate_draw(element);
-#endif
 				changed = pcb_true;
 			}
+#endif
 		}
 	}
 	PCB_END_LOOP;

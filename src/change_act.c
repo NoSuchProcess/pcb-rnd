@@ -544,6 +544,7 @@ static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb
 	pinname = argv[2];
 
 #warning subc TODO: rewrite this
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_NSTRCMP(refdes, PCB_ELEM_NAME_REFDES(element)) == 0) {
@@ -579,6 +580,7 @@ static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb
 		}
 	}
 	PCB_END_LOOP;
+#endif
 	/*
 	 * done with our action so increment the undo # if we actually
 	 * changed anything

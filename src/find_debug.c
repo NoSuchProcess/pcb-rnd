@@ -35,11 +35,14 @@
 static void PrintElementNameList(pcb_element_t *Element, FILE * FP)
 {
 	fputc('(', FP);
+#warning subc TODO: rewrite this
+#if 0
 	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(Element)));
 	fputc(' ', FP);
 	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_REFDES(Element)));
 	fputc(' ', FP);
 	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_VALUE(Element)));
+#endif
 	fputc(')', FP);
 	fputc('\n', FP);
 }
