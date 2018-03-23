@@ -182,7 +182,7 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (!name)
 		PCB_ACT_FAIL(LoadFootprint);
 
-	if (!pcb_element_load_to_buffer(PCB_PASTEBUFFER, name, NULL))
+	if (!pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, NULL))
 		return 1;
 
 	len = pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
@@ -656,6 +656,33 @@ void pcb_buffer_set_number(int Number)
 		/* do an update on the crosshair range */
 		pcb_crosshair_range_to_buffer();
 	}
+}
+
+/* loads footprint data from file/library into buffer (as subcircuit)
+ * returns pcb_false on error
+ * if successful, update some other stuff and reposition the pastebuffer */
+pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt)
+{
+	pcb_buffer_clear(PCB, Buffer);
+	if (!pcb_parse_element(Buffer->Data, Name, fmt)) {
+		if (conf_core.editor.show_solder_side)
+			pcb_buffer_flip_side(PCB, Buffer);
+		pcb_set_buffer_bbox(Buffer);
+
+		Buffer->X = 0;
+		Buffer->Y = 0;
+		Buffer->from_outside = 1;
+
+		if (pcb_subclist_length(&Buffer->Data->subc)) {
+			pcb_subc_t *subc = pcb_subclist_first(&Buffer->Data->subc);
+			pcb_subc_get_origin(subc, &Buffer->X, &Buffer->Y);
+		}
+		return pcb_true;
+	}
+
+	/* release memory which might have been acquired */
+	pcb_buffer_clear(PCB, Buffer);
+	return pcb_false;
 }
 
 

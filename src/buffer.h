@@ -93,6 +93,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 /* change the side of all objects in the buffer */
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 
+/* Load a footprint by name into a buffer; fmt is optional (may be NULL). */
+pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt);
 
 /* sets currently active buffer */
 void pcb_buffer_set_number(int Number);

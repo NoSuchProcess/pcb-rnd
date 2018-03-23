@@ -36,6 +36,7 @@
 #include "build_run.h"
 #include "conf_core.h"
 #include "data.h"
+#include "buffer.h"
 #include "action_helper.h"
 
 #include "plug_io.h"
@@ -128,7 +129,7 @@ static int pcb_act_LoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
-		if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name, format))
+		if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
