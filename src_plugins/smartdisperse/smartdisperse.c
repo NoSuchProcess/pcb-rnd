@@ -1,4 +1,4 @@
-/*!
+/*
  * Smartdisperse plug-in for PCB.
  *
  * Copyright (C) 2007 Ben Jackson <ben@ben.com> based on
