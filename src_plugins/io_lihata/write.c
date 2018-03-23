@@ -342,27 +342,6 @@ static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
 	return obj;
 }
 
-static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, pcb_coord_t dx, pcb_coord_t dy)
-{
-	char buff[128];
-	lht_node_t *obj;
-
-	sprintf(buff, "%s.%ld", is_via ? "via" : "pin", pin->ID);
-	obj = lht_dom_node_alloc(LHT_HASH, buff);
-
-	lht_dom_hash_put(obj, build_attributes(&pin->Attributes));
-	lht_dom_hash_put(obj, build_flags(&pin->Flags, PCB_TYPE_VIA, pin->intconn));
-	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pin->Thickness));
-	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pin->Clearance));
-	lht_dom_hash_put(obj, build_textf("mask", CFMT, pin->Mask));
-	lht_dom_hash_put(obj, build_textf("hole", CFMT, pin->DrillingHole));
-	lht_dom_hash_put(obj, build_textf("x", CFMT, pin->X+dx));
-	lht_dom_hash_put(obj, build_textf("y", CFMT, pin->Y+dy));
-	lht_dom_hash_put(obj, build_text("name", pin->Name));
-	lht_dom_hash_put(obj, build_text("number", pin->Number));
-	return obj;
-}
-
 /* attempt to convert a padstack to an old-style via for v1, v2 and v3 */
 static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool is_via, pcb_coord_t dx, pcb_coord_t dy)
 {
@@ -942,9 +921,6 @@ static lht_node_t *build_data(pcb_data_t *data)
 				lht_dom_list_append(grp, p);
 		}
 	}
-
-	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_list_append(grp, build_pin(pi, 1, 0, 0));
 
 	for(sc = pcb_subclist_first(&data->subc); sc != NULL; sc = pcb_subclist_next(sc))
 		lht_dom_list_append_safe(grp, build_subc(sc));
