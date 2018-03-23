@@ -608,16 +608,6 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 }
 
 /* ---------------------------------------------------------------------------
- * checks if a pad connects to a non-clearing polygon
- *
- * The polygon is assumed to already have been proven non-clearing
- */
-pcb_bool pcb_is_pad_in_poly(pcb_pad_t *pad, pcb_poly_t *polygon)
-{
-	return pcb_is_line_in_poly((pcb_line_t *) pad, polygon);
-}
-
-/* ---------------------------------------------------------------------------
  * checks if a polygon has a connection to a second one
  *
  * First check all points out of P1 against P2 and vice versa.
@@ -690,20 +680,6 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 	}
 
 	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * some of the 'pad' routines are the same as for lines because the 'pad'
- * struct starts with a line struct. See global.h for details
- */
-pcb_bool pcb_intersect_line_pad(pcb_line_t *Line, pcb_pad_t *Pad)
-{
-	return pcb_intersect_line_line((Line), (pcb_line_t *) Pad);
-}
-
-pcb_bool pcb_intersect_arc_pad(pcb_arc_t *Arc, pcb_pad_t *Pad)
-{
-	return pcb_intersect_line_arc((pcb_line_t *) (Pad), (Arc));
 }
 
 pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
