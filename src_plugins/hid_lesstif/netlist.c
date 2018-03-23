@@ -186,6 +186,8 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 	}
 	PCB_ENDALL_LOOP;
 
+#warning padstack TODO: rewrite
+#if 0
 	if (PCB->ViaOn)
 		PCB_VIA_LOOP(PCB->Data);
 	{
@@ -193,6 +195,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 			pcb_remove_object(PCB_TYPE_VIA, via, via, via);
 	}
 	PCB_END_LOOP;
+#endif
 }
 
 static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
