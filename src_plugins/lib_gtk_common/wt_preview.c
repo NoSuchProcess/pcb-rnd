@@ -49,11 +49,6 @@
 #include "obj_all.h"
 #include "macro.h"
 
-
-/** \file   wt_preview.c
-    \brief  Implementation of \ref pcb_gtk_preview_t widget.
- */
-
 static void preview_set_view(pcb_gtk_preview_t * preview)
 {
 	float scale = 100.0 / PCB_MIL_TO_COORD (150.); /* arbitrary zoom factor: 100 pixel per 150 mil */
@@ -102,25 +97,16 @@ enum {
 
 static GObjectClass *ghid_preview_parent_class = NULL;
 
-/** GObject constructed
-    Initialises the preview object once it is constructed.
-    Chains up in case the parent class wants to do anything too.
-
-    \param object   The preview object
- */
+/* Initialises the preview object once it is constructed. Chains up in case
+   the parent class wants to do anything too. object is the preview object. */
 static void ghid_preview_constructed(GObject * object)
 {
-	/* chain up to the parent class */
 	if (G_OBJECT_CLASS(ghid_preview_parent_class)->constructed != NULL)
 		G_OBJECT_CLASS(ghid_preview_parent_class)->constructed(object);
 }
 
-/** GObject finalise handler
-    Just before the pcb_gtk_preview_t GObject is finalized, free our
-    allocated data, and then chain up to the parent's finalize handler.
-
-    \param widget   The GObject being finalized.
- */
+/* Just before the pcb_gtk_preview_t GObject is finalized, free our
+   allocated data, and then chain up to the parent's finalize handler. */
 static void ghid_preview_finalize(GObject * object)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
@@ -131,17 +117,6 @@ static void ghid_preview_finalize(GObject * object)
 	G_OBJECT_CLASS(ghid_preview_parent_class)->finalize(object);
 }
 
-/** GObject property setter function
-
-    Setter function for pcb_gtk_preview_t's GObject properties,
-    "settings-name" and "toplevel".
-
-    \param object        The GObject whose properties we are setting
-    \param property_id   The numeric id. under which the property was
-                         registered with g_object_class_install_property()
-    \param value         The GValue the property is being set from
-    \param pspec         A GParamSpec describing the property being set
- */
 static void ghid_preview_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
@@ -185,16 +160,6 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	}
 }
 
-/** GObject property getter function
-    Getter function for pcb_gtk_preview_t's GObject properties,
-    "settings-name" and "toplevel".
-
-    \param       object       The GObject whose properties we are getting
-    \param       property_id  The numeric id. under which the property was
-                              registered with g_object_class_install_property()
-    \param [out] value        The GValue in which to return the value of the property
-    \param       pspec        A GParamSpec describing the property being got
- */
 static void ghid_preview_get_property(GObject * object, guint property_id, GValue * value, GParamSpec * pspec)
 {
 	switch (property_id) {
@@ -203,7 +168,7 @@ static void ghid_preview_get_property(GObject * object, guint property_id, GValu
 	}
 }
 
-/** Converter: set up a pinout expose and use the generic preview expose call */
+/* Converter: set up a pinout expose and use the generic preview expose call */
 static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(widget);
@@ -230,12 +195,7 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 	return FALSE;
 }
 
-/** GType class initialiser for pcb_gtk_preview_t
-    We override our parent virtual class methods as needed and register
-    our GObject properties.
-
-    \param klass    The pcb_gtk_preview_class_t we are initialising
- */
+/* Override parent virtual class methods as needed and register GObject properties. */
 static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);

@@ -49,12 +49,9 @@
 #define PCB_GTK_IS_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PCB_GTK_TYPE_PREVIEW))
 #define PCB_GTK_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
 
-/** The _preview_ widget Class. */
 typedef struct pcb_gtk_preview_class_s pcb_gtk_preview_class_t;
-/** A _preview_ widget. */
 typedef struct pcb_gtk_preview_s pcb_gtk_preview_t;
 
-/** The _preview_ widget Class data. */
 struct pcb_gtk_preview_class_s {
 	GtkDrawingAreaClass parent_class;
 };
@@ -63,17 +60,15 @@ typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
 typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget * widget, pcb_gtk_expose_t * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx);
 typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 
-/** Selects the kind of preview. */
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
-	PCB_GTK_PREVIEW_PINOUT,	/**<- render a single subcircuit  */
-	PCB_GTK_PREVIEW_LAYER,	/**<- render a specific layer     */
-	PCB_GTK_PREVIEW_BOARD,	/**<- render the board (whole stack) */
+	PCB_GTK_PREVIEW_PINOUT, /* single subcircuit */
+	PCB_GTK_PREVIEW_LAYER,  /* specific (oftne virtual) layer */
+	PCB_GTK_PREVIEW_BOARD,  /* render the board (whole layer stack) */
 
 	PCB_GTK_PREVIEW_kind_max
 } pcb_gtk_preview_kind_t;
 
-/** The _preview_ widget data. */
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
@@ -99,42 +94,26 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_common_t *com;
 };
 
-/** Retrieves \ref pcb_gtk_preview_t 's GType identifier.
-    Upon first call, this registers the pcb_gtk_preview_t in the GType system.
-    Subsequently it returns the saved value from its first execution.
-
-    \return     the GType identifier associated with \ref pcb_gtk_preview_t.
- */
 GType pcb_gtk_preview_get_type(void);
 
-/** Queries the natural size of a preview widget */
+/* Queries the natural size of a preview widget */
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height);
 
-/** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget.
-    \param  init_widget       virtual function called at initialization
-    \param  expose            drawing event call-back function
- */
+/* Generic, callback based API */
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com,
 															 pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
 
-/** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget for pinout.
-    \param  init_widget       virtual function called at initialization
-    \param  expose            drawing event call-back function
-    \param  obj               object to draw
- */
+/* Application-specific shorthands */
 GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com,
 																			pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_any_obj_t *obj);
 
-/** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget,
-    using \p layer... for What ?
- */
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
 
-/** preview widget for a board location (full stack) */
 GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose);
+
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height);
 
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
