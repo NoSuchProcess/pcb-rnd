@@ -42,11 +42,5 @@ struct pcb_pad_s {                  /* a SMD pad */
 	gdl_elem_t link;               /* a pad is in a list (element) */
 };
 
-#define PCB_PAD_LOOP(element) do {                                      \
-	pcb_pad_t *pad = NULL;                                                \
-	gdl_iterator_t __it__;                                            \
-	{
-
-
 #endif
 
