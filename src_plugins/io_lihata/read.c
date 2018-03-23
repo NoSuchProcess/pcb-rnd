@@ -645,7 +645,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
+static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_text_t *text;
 	lht_node_t *role;
@@ -658,15 +658,6 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 		if (role != NULL)
 			return -1;
 		text = pcb_text_alloc(ly);
-	}
-	else if (el != NULL) {
-		if (role == NULL)
-			return -1;
-		if (strcmp(role->data.text.value, "desc") == 0) text = &PCB_ELEM_TEXT_DESCRIPTION(el);
-		else if (strcmp(role->data.text.value, "name") == 0) text = &PCB_ELEM_TEXT_REFDES(el);
-		else if (strcmp(role->data.text.value, "value") == 0) text = &PCB_ELEM_TEXT_VALUE(el);
-		else
-			return -1;
 	}
 
 	parse_id(&text->ID, obj, 5);
@@ -686,8 +677,6 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 #warning TODO: get the font
 	if (ly != NULL)
 		pcb_add_text_on_layer(ly, text, pcb_font(PCB, text->fid, 1));
-	if (el != NULL)
-		text->Element = el;
 
 	return 0;
 }
@@ -792,7 +781,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			if (strncmp(n->name, "polygon.", 8) == 0)
 				parse_polygon(ly, NULL, n);
 			if (strncmp(n->name, "text.", 5) == 0)
-				parse_pcb_text(ly, NULL, n);
+				parse_pcb_text(ly, n);
 		}
 	}
 
