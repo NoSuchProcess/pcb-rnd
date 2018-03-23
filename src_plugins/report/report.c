@@ -481,6 +481,8 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 		*pname++ = 0;
 
+#warning subc TODO: rewrite
+#if 0
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			char *es = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
@@ -508,6 +510,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 			}
 		}
 		PCB_END_LOOP;
+#endif
 
 		if (got_one) {
 			char buf[50];
@@ -558,6 +561,8 @@ static int ReportNetLength_(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 1;
 	}
 
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -604,6 +609,7 @@ static int ReportNetLength_(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#endif
 
 	goto noelem;
 
