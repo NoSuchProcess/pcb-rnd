@@ -397,11 +397,14 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 			*s2 = 0;
 			offset_in_model = bboard_parse_offset(s2 + 1, &ox, &oy);
 		}
+#warning subc TODO: rewrite
+#if 0
 		if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_VALUE(element))) {
 			fname = bboard_get_model_filename(s, PCB_ELEM_NAME_VALUE(element), pcb_true);
 			if (!fname)
 				fname = bboard_get_model_filename(s, PCB_ELEM_NAME_VALUE(element), pcb_false);
 		}
+#endif
 		if (!fname)
 			fname = bboard_get_model_filename(s, NULL, pcb_false);
 
@@ -414,16 +417,21 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 		s = pcb_attribute_get(&(element->Attributes), "Footprint::File");
 		if (s) {
+#warning subc TODO: rewrite
+#if 0
 			if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_VALUE(element))) {
 				fname = bboard_get_model_filename(s, PCB_ELEM_NAME_VALUE(element), pcb_true);
 				if (!fname)
 					fname = bboard_get_model_filename(s, PCB_ELEM_NAME_VALUE(element), pcb_false);
 			}
+#endif
 			if (!fname)
 				fname = bboard_get_model_filename(s, NULL, pcb_false);
 		}
 	}
 	if (!fname) {
+#warning subc TODO: rewrite
+#if 0
 		s = PCB_ELEM_NAME_DESCRIPTION(element);
 		if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_DESCRIPTION(element))) {
 			if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_VALUE(element))) {
@@ -435,6 +443,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 			if (!fname)
 				fname = bboard_get_model_filename(PCB_ELEM_NAME_DESCRIPTION(element), NULL, pcb_false);
 		}
+#endif
 	}
 
 	if (!fname)

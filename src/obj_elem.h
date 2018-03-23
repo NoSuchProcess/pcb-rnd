@@ -61,15 +61,5 @@ void *pcb_element_remove(pcb_element_t *Element);
 #define PCB_ELEMNAME_IDX_VISIBLE()   (conf_core.editor.name_on_pcb ? PCB_ELEMNAME_IDX_REFDES :\
 	(conf_core.editor.description ? PCB_ELEMNAME_IDX_DESCRIPTION : PCB_ELEMNAME_IDX_VALUE))
 
-#define PCB_ELEM_NAME_VISIBLE(p,e)   ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()].TextString)
-#define PCB_ELEM_NAME_DESCRIPTION(e) ((e)->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString)
-#define PCB_ELEM_NAME_REFDES(e)      ((e)->Name[PCB_ELEMNAME_IDX_REFDES].TextString)
-#define PCB_ELEM_NAME_VALUE(e)       ((e)->Name[PCB_ELEMNAME_IDX_VALUE].TextString)
-
-#define PCB_ELEM_TEXT_VISIBLE(p,e)   ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()])
-#define PCB_ELEM_TEXT_DESCRIPTION(e) ((e)->Name[PCB_ELEMNAME_IDX_DESCRIPTION])
-#define PCB_ELEM_TEXT_REFDES(e)      ((e)->Name[PCB_ELEMNAME_IDX_REFDES])
-#define PCB_ELEM_TEXT_VALUE(e)       ((e)->Name[PCB_ELEMNAME_IDX_VALUE])
-
 #endif
 

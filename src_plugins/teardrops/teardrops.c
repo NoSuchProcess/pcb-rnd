@@ -255,6 +255,8 @@ static void check_pstk(pcb_pstk_t *ps)
 
 static void check_pin(pcb_pin_t * _pin)
 {
+#warning padstack TODO: rewrite
+#if 0
 	pcb_box_t spot;
 
 	pin = _pin;
@@ -281,10 +283,13 @@ static void check_pin(pcb_pin_t * _pin)
 			continue;
 		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
+#endif
 }
 
 static void check_via(pcb_pin_t * _pin)
 {
+#warning padstack TODO: rewrite
+#if 0
 	pcb_box_t spot;
 
 	pin = _pin;
@@ -305,6 +310,7 @@ static void check_via(pcb_pin_t * _pin)
 			continue;
 		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
+#endif
 }
 
 /*!
@@ -312,6 +318,8 @@ static void check_via(pcb_pin_t * _pin)
  */
 static void check_pad(pcb_pad_t * _pad)
 {
+#warning padstack TODO: rewrite
+#if 0
 	pad = _pad;
 
 	px = (pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2;
@@ -332,6 +340,7 @@ static void check_pad(pcb_pad_t * _pad)
 			continue;
 		pcb_r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l, NULL);
 	}
+#endif
 }
 
 static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
