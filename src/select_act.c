@@ -50,6 +50,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
+#warning subc TODO: move this to dialogs
 /* --------------------------------------------------------------------------- */
 /* Ask the user for a search pattern */
 static char *gui_get_pat(pcb_search_method_t * method)
@@ -72,7 +73,7 @@ static char *gui_get_pat(pcb_search_method_t * method)
 	attrs[1].enumerations = methods;
 	attrs[1].default_val.int_value = results[1].int_value;
 
-	pcb_gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name", NULL);
+	pcb_gui->attribute_dialog(attrs, nattr, results, "Find subcircuit", "Find subcircuit by refdes", NULL);
 
 	*method = results[1].int_value;
 	if (results[0].str_value == NULL)
@@ -109,7 +110,7 @@ Selects all objects on the board.
 Selects all connections with the ``found'' flag set.
 
 @item Convert
-Converts the selected objects to an element.  This uses the highest
+Converts the selected objects to a subcircuit.  This uses the highest
 numbered paste buffer.
 
 @end table
@@ -174,24 +175,6 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			break;
 
 		case F_Convert:
-			{
-				pcb_coord_t x, y;
-				pcb_tool_note.Buffer = conf_core.editor.buffer_number;
-				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-				pcb_gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
-				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
-				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
-				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true);
-				pcb_undo_save_serial();
-				pcb_remove_selected();
-				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
-				pcb_undo_restore_serial();
-				pcb_buffer_copy_to_layout(PCB, x, y);
-				pcb_buffer_set_number(pcb_tool_note.Buffer);
-			}
-			break;
-
 		case F_ConvertSubc:
 			{
 				pcb_coord_t x, y;
