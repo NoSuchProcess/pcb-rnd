@@ -36,8 +36,6 @@
 #include "compat_nls.h"
 #include "safe_fs.h"
 
-#include "obj_elem.h"
-
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
 const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
@@ -385,13 +383,14 @@ static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
 
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
-#warning subc TODO: reimplement this with subcircuits
 static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a[4];
 	const char *fpname;
 	int found = 0;
 
+#warning subc TODO: rewrite for subcs
+#if 0
 	/* check if we have elements selected and quit if not */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -401,6 +400,7 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 		}
 	}
 	PCB_END_LOOP;
+#endif
 
 	if (!(found)) {
 		pcb_message(PCB_MSG_ERROR, "ReplaceFootprint works on selected elements, please select elements first!\n");
@@ -426,7 +426,8 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 		return 1;
 	}
 
-
+#warning subc TODO: rewrite for subcs
+#if 0
 	/* action: replace selected elements */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -442,6 +443,7 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 		}
 	}
 	PCB_END_LOOP;
+#endif
 	return 0;
 }
 
