@@ -481,6 +481,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 	}
 	PCB_ENDALL_LOOP;
 #warning padstack TODO: rewrite this to pstk
+#if 0
 	if (pcb->PinOn && pcb_silk_on(pcb)) {
 		PCB_PIN_ALL_LOOP(pcb->Data);
 		{
@@ -503,7 +504,6 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		}
 		PCB_ENDALL_LOOP;
 	}
-
 	if (pcb->ViaOn)
 		PCB_VIA_LOOP(pcb->Data);
 	{
@@ -515,6 +515,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		}
 	}
 	PCB_END_LOOP;
+#endif
 	return changed;
 }
 
@@ -650,6 +651,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 	PCB_END_LOOP;
 
 #warning padstack TODO: rewrite
+#if 0
 	if (pcb->PinOn && (Type & PCB_TYPE_PIN))
 		PCB_PIN_ALL_LOOP(pcb->Data);
 	{
@@ -689,6 +691,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 		}
 	}
 	PCB_END_LOOP;
+#endif
 	if (Type & PCB_TYPE_NET) {
 		pcb_conn_lookup_init();
 		changed = pcb_reset_conns(pcb_true) || changed;

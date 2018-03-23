@@ -59,10 +59,8 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return pcb_false;
-	pcb_pad_invalidate_erase(Pad);
 	pcb_undo_add_obj_to_flag(Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
-	pcb_pad_invalidate_draw(Pad);
 	return pcb_true;
 }
 
@@ -84,57 +82,3 @@ unsigned int pcb_pad_hash_padstack(const pcb_pad_t *p)
 		pcb_hash_coord(p->Mask);
 }
 
-/*** draw ***/
-static void GatherPadName(pcb_pad_t *Pad)
-{
-	pcb_box_t box;
-	pcb_bool vert;
-
-	/* should text be vertical ? */
-	vert = (Pad->Point1.X == Pad->Point2.X);
-
-	if (vert) {
-		box.X1 = Pad->Point1.X - Pad->Thickness / 2;
-		box.Y1 = MAX(Pad->Point1.Y, Pad->Point2.Y) + Pad->Thickness / 2;
-		box.X1 += conf_core.appearance.pinout.text_offset_y;
-		box.Y1 -= conf_core.appearance.pinout.text_offset_x;
-		box.X2 = box.X1;
-		box.Y2 = box.Y1;
-	}
-	else {
-		box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - Pad->Thickness / 2;
-		box.Y1 = Pad->Point1.Y - Pad->Thickness / 2;
-		box.X1 += conf_core.appearance.pinout.text_offset_x;
-		box.Y1 += conf_core.appearance.pinout.text_offset_y;
-		box.X2 = box.X1;
-		box.Y2 = box.Y1;
-	}
-
-	pcb_draw_invalidate(&box);
-	return;
-}
-
-void pcb_pad_invalidate_erase(pcb_pad_t *Pad)
-{
-	pcb_draw_invalidate(Pad);
-	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pad))
-		pcb_pad_name_invalidate_erase(Pad);
-	pcb_flag_erase(&Pad->Flags);
-}
-
-void pcb_pad_name_invalidate_erase(pcb_pad_t *Pad)
-{
-	GatherPadName(Pad);
-}
-
-void pcb_pad_invalidate_draw(pcb_pad_t *Pad)
-{
-	pcb_draw_invalidate(Pad);
-	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pad))
-		pcb_pad_name_invalidate_draw(Pad);
-}
-
-void pcb_pad_name_invalidate_draw(pcb_pad_t *Pad)
-{
-	GatherPadName(Pad);
-}
