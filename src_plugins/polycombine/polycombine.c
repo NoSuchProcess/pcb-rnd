@@ -99,8 +99,7 @@ struct poly_tree {
 	poly_tree *next;
 };
 
-/*!
- * <pre>
+/*
  *                      ______
  *  ___________________|_  P6 |             +P1 ____ +P6
  * | P1                | |    |              |
@@ -116,7 +115,6 @@ struct poly_tree {
  * |                     |
  * |_____________________|
  *
- * </pre>
  * As we encounter each polygon, it gets a record. We need to check
  * whether it contains any of the polygons existing in our tree. If
  * it does, it will become the parent of them. (Check breadth first).
