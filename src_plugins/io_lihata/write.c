@@ -436,28 +436,6 @@ static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, pcb_coord_t 
 	return obj;
 }
 
-static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
-{
-	char buff[128];
-	lht_node_t *obj;
-
-	sprintf(buff, "pad.%ld", pad->ID);
-	obj = lht_dom_node_alloc(LHT_HASH, buff);
-
-	lht_dom_hash_put(obj, build_attributes(&pad->Attributes));
-	lht_dom_hash_put(obj, build_flags(&pad->Flags, PCB_TYPE_PAD, pad->intconn));
-	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad->Thickness));
-	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pad->Clearance));
-	lht_dom_hash_put(obj, build_textf("mask", CFMT, pad->Mask));
-	lht_dom_hash_put(obj, build_textf("x1", CFMT, pad->Point1.X+dx));
-	lht_dom_hash_put(obj, build_textf("y1", CFMT, pad->Point1.Y+dy));
-	lht_dom_hash_put(obj, build_textf("x2", CFMT, pad->Point2.X+dx));
-	lht_dom_hash_put(obj, build_textf("y2", CFMT, pad->Point2.Y+dy));
-	lht_dom_hash_put(obj, build_text("name", pad->Name));
-	lht_dom_hash_put(obj, build_text("number", pad->Number));
-	return obj;
-}
-
 static lht_node_t *build_polygon(pcb_poly_t *poly)
 {
 	char buff[128];
