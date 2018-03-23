@@ -28,12 +28,8 @@
  *
  */
 
-/*!
- * \brief Resets all used flags of pins and vias.
- */
-
+/* Resets all used flags of pins and vias. */
 #warning TODO: this file could be removed if ipcd356 used the operation API
-
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
@@ -135,9 +131,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 	return change;
 }
 
-/*!
- * \brief Resets all used flags of LOs.
- */
+/* Resets all used flags of LOs. */
 pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
