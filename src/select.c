@@ -46,7 +46,6 @@
 #include "compat_nls.h"
 
 #include "obj_arc_draw.h"
-#include "obj_pinvia_draw.h"
 #include "obj_line_draw.h"
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"

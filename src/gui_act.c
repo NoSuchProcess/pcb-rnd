@@ -60,8 +60,6 @@
 #include "operation.h"
 #include "obj_subc_op.h"
 
-#include "obj_pinvia_draw.h"
-
 #define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY
 
 /* --------------------------------------------------------------------------- */

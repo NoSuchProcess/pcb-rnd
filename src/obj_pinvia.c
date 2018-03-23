@@ -47,7 +47,6 @@
 /* TODO: consider removing this by moving pin/via functions here: */
 #include "draw.h"
 #include "obj_text_draw.h"
-#include "obj_pinvia_draw.h"
 
 #include "obj_elem.h"
 

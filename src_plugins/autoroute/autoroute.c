@@ -90,7 +90,7 @@
 #include "obj_all.h"
 
 #include "obj_line_draw.h"
-#include "obj_pinvia_draw.h"
+#include "obj_pstk_draw.h"
 #include "obj_pstk_inlines.h"
 
 #warning padstack TODO: when style contains proto, remove this

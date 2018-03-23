@@ -43,7 +43,6 @@
 #include "obj_all.h"
 #include "layer_ui.h"
 
-#include "obj_pinvia_draw.h"
 #include "obj_pstk_draw.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"

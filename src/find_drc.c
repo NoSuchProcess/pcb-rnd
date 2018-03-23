@@ -35,7 +35,6 @@
 #include "obj_rat_draw.h"
 #include "obj_line_draw.h"
 #include "obj_poly_draw.h"
-#include "obj_pinvia_draw.h"
 #include "obj_pstk_draw.h"
 
 /* DRC related functions */

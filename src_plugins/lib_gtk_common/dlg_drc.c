@@ -42,7 +42,7 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_all.h"
-#include "obj_pinvia_draw.h"
+#include "obj_pstk_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"

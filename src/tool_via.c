@@ -45,7 +45,6 @@
 #include "tool_thermal.h"
 #include "undo.h"
 
-#include "obj_pinvia_draw.h"
 #include "obj_pstk_draw.h"
 
 #warning padstack TODO: remove this when via is removed and the padstack is created from style directly
