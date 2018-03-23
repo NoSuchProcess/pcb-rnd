@@ -42,8 +42,6 @@ struct pcb_pad_s {                  /* a SMD pad */
 	gdl_elem_t link;               /* a pad is in a list (element) */
 };
 
-pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
-
 #define PCB_PAD_LOOP(element) do {                                      \
 	pcb_pad_t *pad;                                                     \
 	gdl_iterator_t __it__;                                            \

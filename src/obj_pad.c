@@ -49,12 +49,3 @@
 
 #include "obj_elem.h"
 
-/* changes the nopaste flag of a pad */
-pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
-{
-	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
-		return pcb_false;
-	pcb_undo_add_obj_to_flag(Pad);
-	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
-	return pcb_true;
-}

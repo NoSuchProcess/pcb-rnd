@@ -503,27 +503,6 @@ pcb_bool pcb_chg_selected_hole(void)
 	return change;
 }
 
-/* ----------------------------------------------------------------------
- * changes the no paste-flag of all selected and visible pads
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_chg_selected_paste(void)
-{
-	pcb_bool change = pcb_false;
-
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad))
-			change |= pcb_pad_change_paste(pad);
-	}
-	PCB_ENDALL_LOOP;
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
 #warning subc TODO: check if it is true:
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
