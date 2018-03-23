@@ -209,15 +209,6 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 			PCB_END_LOOP;
 		}
 
-		PCB_VIA_LOOP(subc->data)
-		{
-			if (via->term != NULL) print_terma(via->term, via);
-
-			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->Thickness/2, via->Clearance);
-			pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->DrillingHole, PIN_PLATED(via));
-		}
-		PCB_END_LOOP;
-
 		PCB_PADSTACK_LOOP(subc->data)
 		{
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
