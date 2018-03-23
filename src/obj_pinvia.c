@@ -40,7 +40,6 @@
 #include "rotate.h"
 
 #include "obj_pinvia.h"
-#include "obj_pinvia_op.h"
 #include "obj_subc_parent.h"
 #include "obj_hash.h"
 
