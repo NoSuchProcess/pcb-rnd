@@ -44,11 +44,6 @@ struct pcb_pad_s {                  /* a SMD pad */
 
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 
-/* hash */
-int pcb_pad_eq_padstack(const pcb_pad_t *p1, const pcb_pad_t *p2);
-unsigned int pcb_pad_hash_padstack(const pcb_pad_t *p);
-
-
 #define PCB_PAD_LOOP(element) do {                                      \
 	pcb_pad_t *pad;                                                     \
 	gdl_iterator_t __it__;                                            \
