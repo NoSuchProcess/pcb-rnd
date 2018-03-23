@@ -59,19 +59,19 @@ static void ghid_cairo_screen_update(void);
 static pcb_composite_op_t curr_drawing_mode;
 
 typedef struct render_priv_s {
-	GdkRGBA bg_color;											/**< cached back-ground color           */
-	GdkRGBA offlimits_color;							/**< cached external board color        */
-	GdkRGBA grid_color;										/**< cached grid color                  */
-	GdkRGBA crosshair_color;							/**< cached crosshair color             */
+	GdkRGBA bg_color;											/* cached back-ground color           */
+	GdkRGBA offlimits_color;							/* cached external board color        */
+	GdkRGBA grid_color;										/* cached grid color                  */
+	GdkRGBA crosshair_color;							/* cached crosshair color             */
 
-	cairo_t *cr;													/**< pointer to current drawing context             */
-	cairo_t *cr_target;										/**< pointer to destination widget drawing context  */
+	cairo_t *cr;													/* pointer to current drawing context             */
+	cairo_t *cr_target;										/* pointer to destination widget drawing context  */
 
-	cairo_surface_t *surf_da;							/**< cairo surface connected to gport->drawing_area */
-	cairo_t *cr_drawing_area;							/**< cairo context created from surf_da             */
+	cairo_surface_t *surf_da;							/* cairo surface connected to gport->drawing_area */
+	cairo_t *cr_drawing_area;							/* cairo context created from surf_da             */
 
-	cairo_surface_t *surf_layer;					/**< cairo surface for temporary layer composition  */
-	cairo_t *cr_layer;										/**< cairo context created from surf_layer          */
+	cairo_surface_t *surf_layer;					/* cairo surface for temporary layer composition  */
+	cairo_t *cr_layer;										/* cairo context created from surf_layer          */
 
 	//GdkPixmap *pixmap, *mask;
 
@@ -82,7 +82,7 @@ typedef struct render_priv_s {
 	//GdkGC *grid_gc;
 	pcb_bool clip;
 	GdkRectangle clip_rect;
-	int xor_mode;													/**< 1 if drawn in XOR mode, 0 otherwise*/
+	int xor_mode;													/* 1 if drawn in XOR mode, 0 otherwise*/
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
 } render_priv_t;
@@ -90,8 +90,8 @@ typedef struct render_priv_s {
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 
-	const char *colorname;								/**< current color name for this GC.    */
-	GdkRGBA color;												/**< current color      for this GC.    */
+	const char *colorname;								/* current color name for this GC.    */
+	GdkRGBA color;												/* current color      for this GC.    */
 
 	pcb_coord_t width;
 	cairo_line_cap_t cap;
@@ -102,7 +102,6 @@ typedef struct hid_gc_s {
 
 static void draw_lead_user(render_priv_t * priv_);
 
-/** Duplicates the source fields to destination. */
 static void copy_color(GdkRGBA * dest, GdkRGBA * source)
 {
 	dest->red = source->red;
@@ -123,7 +122,7 @@ static const gchar *get_color_name(pcb_gtk_color_t * color)
 	return tmp;
 }
 
-/** Returns TRUE if \p color_string has been successfully parsed to \p color. */
+/* Returns TRUE if color_string has been successfully parsed to color. */
 static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * color)
 {
 	pcb_bool parsed;
@@ -150,7 +149,6 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2
 		cairo_stroke(cr);
 }
 
-/** Destroys surface and context. */
 static void cr_destroy_surf_and_context(cairo_surface_t ** psurf, cairo_t ** pcr)
 {
 	if (*psurf)
@@ -162,7 +160,7 @@ static void cr_destroy_surf_and_context(cairo_surface_t ** psurf, cairo_t ** pcr
 	*pcr = NULL;
 }
 
-/** First, frees previous surface and context, then creates new ones, similar to drawing_area. */
+/* First, frees previous surface and context, then creates new ones, similar to drawing_area. */
 static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cairo_t ** pcr, void *vport)
 {
 	GHidPort *port = vport;
@@ -180,7 +178,7 @@ static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cair
 	*pcr = cr;
 }
 
-/** Creates or reuses a context to render a single layer group with "union" type of shape rendering. */
+/* Creates or reuses a context to render a single layer group with "union" type of shape rendering. */
 static void start_subcomposite(void)
 {
 	render_priv_t *priv = gport->render_priv;
@@ -197,7 +195,7 @@ static void start_subcomposite(void)
 	priv->cr = priv->cr_layer;
 }
 
-/** Applies the layer composited so far, to the target, using translucency. */
+/* Applies the layer composited so far, to the target, using translucency. */
 static void end_subcomposite(void)
 {
 	render_priv_t *priv = gport->render_priv;
@@ -208,7 +206,6 @@ static void end_subcomposite(void)
 	priv->cr = priv->cr_target;
 }
 
-/** Called once per layer group. */
 static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int idx = group;
@@ -258,22 +255,21 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 	return 0;
 }
 
-/** Called when all primitives of the current group have been created. */
 static void ghid_cairo_end_layer_group(void)
 {
 	end_subcomposite();
 }
 
-/** Do not clean up internal structures, as they will be used probably elsewhere. */
+#warning TODO: misleading comment or broken code
+/* Do not clean up internal structures, as they will be used probably elsewhere. */
 static void ghid_cairo_destroy_gc(pcb_hid_gc_t gc)
 {
 	g_free(gc);
 }
 
-/** called from pcb_hid_t->make_gc() . Use only this to hold pointers, do not
-    own references, avoid costly memory allocation that needs to be destroyed with
-    ghid_cairo_destroy_gc().
- */
+/* called from pcb_hid_t->make_gc() . Use only this to hold pointers, do not
+   own references, avoid costly memory allocation that needs to be destroyed with
+   ghid_cairo_destroy_gc(). */
 static pcb_hid_gc_t ghid_cairo_make_gc(void)
 {
 	pcb_hid_gc_t rv;
@@ -568,7 +564,7 @@ static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 }
 
-/** Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. \p screen is not used in this HID. */
+/* Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. screen is not used in this HID. */
 static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = gport->render_priv;
@@ -867,12 +863,11 @@ static void ghid_cairo_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 	//gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
 }
 
-/** Draws an arc from center (cx, cy), cx>0 to the right, cy>0 to the bottom, using
-    xradius on X axis, and yradius on Y axis, sweeping a delta_angle from start_angle.
+/* Draws an arc from center (cx, cy), cx>0 to the right, cy>0 to the bottom, using
+   xradius on X axis, and yradius on Y axis, sweeping a delta_angle from start_angle.
 
-    Angles (in degres) originate at 9 o'clock and are positive CCW (counter clock wise).
-    delta_angle sweeps the angle from start_angle, CW if negative.
- */
+   Angles (in degres) originate at 9 o'clock and are positive CCW (counter clock wise).
+   delta_angle sweeps the angle from start_angle, CW if negative. */
 static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 																pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
@@ -925,7 +920,6 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	//             pcb_round(vrx2), pcb_round(vry2), (start_angle + 180) * 64, delta_angle * 64);
 }
 
-/** Draws a rectangle */
 static void cr_draw_rect(pcb_hid_gc_t gc, int fill, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw;
@@ -970,7 +964,6 @@ static void cr_draw_rect(pcb_hid_gc_t gc, int fill, pcb_coord_t x1, pcb_coord_t 
 		cairo_stroke(priv->cr);
 }
 
-/** Paints the \p surface onto the \p cr cairo context */
 static void cr_paint_from_surface(cairo_t * cr, cairo_surface_t * surface)
 {
 	cairo_set_source_surface(cr, surface, 0, 0);
@@ -1010,7 +1003,7 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 	//gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
-/** Intentional code duplication from  ghid_cairo_fill_polygon_offs(), for performance */
+/* Intentional code duplication from  ghid_cairo_fill_polygon_offs(), for performance */
 static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
@@ -1034,7 +1027,6 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	cairo_fill(cr);
 }
 
-/** Fills an N-points (x, y) poly, translated to (dx, dy) */
 static void ghid_cairo_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
@@ -1058,7 +1050,7 @@ static void ghid_cairo_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coor
 	cairo_fill(cr);
 }
 
-/** Fills the drawing with only \p bg_color */
+/* Fills the drawing with only bg_color */
 static void erase_with_background_color(cairo_t * cr, GdkRGBA * bg_color)
 {
 	gdk_cairo_set_source_rgba(cr, bg_color);
@@ -1434,7 +1426,7 @@ static void ghid_cairo_init_drawing_widget(GtkWidget * widget, void *vport)
 {
 }
 
-/** Call-back function only applied to drawing_area, after some resizing or initialisation. */
+/* Callback function only applied to drawing_area, after some resizing or initialisation. */
 static void ghid_cairo_drawing_area_configure_hook(void *vport)
 {
 	GHidPort *port = vport;

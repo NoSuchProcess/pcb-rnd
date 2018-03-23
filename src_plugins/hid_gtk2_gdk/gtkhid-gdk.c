@@ -76,7 +76,7 @@ static const gchar *get_color_name(pcb_gtk_color_t * color)
 	return tmp;
 }
 
-/** Returns TRUE only if \p color_string has been allocated to \p color. */
+/* Returns TRUE only if color_string has been allocated to color. */
 static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * color)
 {
 	static GdkColormap *colormap = NULL;
