@@ -35,6 +35,8 @@
 #include "board.h"
 #include "data.h"
 
+#warning padstack TODO: rewrite this for padstack, if needed
+#if 0
 static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 {
 	int was_on_l1 = !!PCB_FLAG_THERM_GET(lid1, pin);
@@ -43,6 +45,7 @@ static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 	PCB_FLAG_THERM_ASSIGN(lid2, was_on_l1, pin);
 	PCB_FLAG_THERM_ASSIGN(lid1, was_on_l2, pin);
 }
+#endif
 
 int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 {

@@ -136,12 +136,6 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 
 		/* find holes */
 		switch(h->type) {
-			case PCB_OBJ_VIA:
-				cx = ((pcb_pin_t *)h)->X;
-				cy = ((pcb_pin_t *)h)->Y;
-				d = ((pcb_pin_t *)d)->DrillingHole;
-				plated = !PCB_FLAG_TEST(PCB_FLAG_HOLE, h);
-				break;
 			case PCB_OBJ_PSTK:
 				p = pcb_pstk_get_proto((pcb_pstk_t *)h);
 				if ((p == NULL) || (p->hdia <= 0))
