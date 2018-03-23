@@ -54,7 +54,6 @@ void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
 void pcb_undo_add_obj_to_flag(void *obj);
 void pcb_undo_add_obj_to_size(int, void *, void *, void *);
-void pcb_undo_add_obj_to_2nd_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_clear_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_mask_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
@@ -80,7 +79,6 @@ typedef enum {
 	PCB_UNDO_MOVETOLAYER       = 0x000200, /* moving objects to */
 	PCB_UNDO_FLAG              = 0x000400, /* toggling SELECTED flag */
 	PCB_UNDO_CHANGESIZE        = 0x000800, /* change size of object */
-	PCB_UNDO_CHANGE2NDSIZE     = 0x001000, /* change 2ndSize of object */
 	PCB_UNDO_MIRROR            = 0x002000, /* change side of board */
 	PCB_UNDO_CHANGECLEARSIZE   = 0x004000, /* change clearance size */
 	PCB_UNDO_CHANGEMASKSIZE    = 0x008000, /* change mask size */

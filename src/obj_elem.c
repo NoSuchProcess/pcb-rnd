@@ -1382,7 +1382,8 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 				value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - PCB_MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
 			changed = pcb_true;
-			pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, pin, pin);
+abort();
+/*			pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, pin, pin);*/
 			pcb_pin_invalidate_erase(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;

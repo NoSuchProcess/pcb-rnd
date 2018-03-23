@@ -238,29 +238,6 @@ static pcb_bool UndoChangePinnum(UndoListTypePtr Entry)
 }
 
 /* ---------------------------------------------------------------------------
- * recovers an object from a 2ndSize change operation
- */
-static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
-{
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-	pcb_coord_t swap;
-
-	/* lookup entry by ID */
-	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != PCB_TYPE_NONE) {
-		swap = ((pcb_pin_t *) ptr2)->DrillingHole;
-		if (pcb_undo_and_draw)
-			pcb_erase_obj(type, ptr1, ptr2);
-		((pcb_pin_t *) ptr2)->DrillingHole = Entry->Data.Size;
-		Entry->Data.Size = swap;
-		pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
  * recovers an object from a ChangeAngles change operation
  */
 static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
@@ -906,11 +883,6 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
-	case PCB_UNDO_CHANGE2NDSIZE:
-		if (UndoChange2ndSize(ptr))
-			return 0;
-		break;
-
 	case PCB_UNDO_CHANGEANGLES:
 		if (UndoChangeAngles(ptr))
 			return 0;
@@ -1302,20 +1274,6 @@ void pcb_undo_add_obj_to_mask_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 }
 
 /* ---------------------------------------------------------------------------
- * adds an object to the list of objects with 2ndSize changes
- */
-void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
-{
-	UndoListTypePtr undo;
-
-	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGE2NDSIZE, PCB_OBJECT_ID(ptr2), Type);
-		if (Type == PCB_TYPE_PIN || Type == PCB_TYPE_VIA)
-			undo->Data.Size = ((pcb_pin_t *) ptr2)->DrillingHole;
-	}
-}
-
-/* ---------------------------------------------------------------------------
  * adds an object to the list of changed angles.  Note that you must
  * call this before changing the angles, passing the new start/delta.
  */
@@ -1443,7 +1401,6 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_MOVETOLAYER: return "movetolayer";
 		case PCB_UNDO_FLAG: return "flag";
 		case PCB_UNDO_CHANGESIZE: return "changesize";
-		case PCB_UNDO_CHANGE2NDSIZE: return "change2ndsize";
 		case PCB_UNDO_MIRROR: return "mirror";
 		case PCB_UNDO_OTHERSIDE: return "otherside";
 		case PCB_UNDO_CHANGECLEARSIZE: return "chngeclearsize";

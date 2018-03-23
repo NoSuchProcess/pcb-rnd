@@ -443,7 +443,8 @@ void *pcb_viaop_change_2nd_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - PCB_MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
-		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_VIA, Via, Via, Via);
+abort();
+/*		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_VIA, Via, Via, Via);*/
 		pcb_via_invalidate_erase(Via);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		Via->DrillingHole = value;
@@ -468,7 +469,8 @@ void *pcb_pinop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pi
 	if (value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - PCB_MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
-		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, Pin, Pin);
+abort();
+/*		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, Pin, Pin);*/
 		pcb_pin_invalidate_erase(Pin);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->DrillingHole = value;
