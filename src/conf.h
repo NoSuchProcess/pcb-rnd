@@ -364,7 +364,7 @@ int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio);
    fields depending on type */
 int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node);
 
-/** Returns the user configuration file name */
+/* Returns the user configuration file name */
 const char *conf_get_user_conf_name();
 
 /* Determine the file name of the project file - project_fn and pcb_fn can be NULL */
