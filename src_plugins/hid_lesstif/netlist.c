@@ -209,6 +209,8 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 	}
 	*pname++ = 0;
 
+#warning subc TODO
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		char *es = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
@@ -236,6 +238,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 		}
 	}
 	PCB_END_LOOP;
+#endif
 	free(ename);
 }
 

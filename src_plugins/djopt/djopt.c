@@ -126,6 +126,8 @@ static char layer_type[PCB_MAX_LAYER];
 
 static const char *element_name_for(corner_s * c)
 {
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -142,6 +144,7 @@ static const char *element_name_for(corner_s * c)
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#endif
 	return "unknown";
 }
 
@@ -2525,6 +2528,8 @@ static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 	grok_layer_groups();
 
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	PCB_PIN_LOOP(element);
 	{
@@ -2561,6 +2566,8 @@ static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		c->via = via;
 	}
 	PCB_END_LOOP;
+#endif
+
 	check(0, 0);
 
 	if (PCB_NSTRCMP(arg, "splitlines") == 0) {

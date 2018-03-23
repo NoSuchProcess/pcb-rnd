@@ -175,6 +175,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 {
 	int padx, pady, tmp;
 
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	PCB_PAD_LOOP(element);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
@@ -378,6 +380,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 	}
 
 	PCB_END_LOOP;											/* Via. */
+#endif
 }
 
 
@@ -420,7 +423,8 @@ int IPCD356_Netlist(void)
 		return 1;
 	}
 
-
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	PCB_PIN_LOOP(element);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pin)) {
@@ -470,6 +474,7 @@ int IPCD356_Netlist(void)
 		IPCD356_WriteNet(fp, net);
 	}
 	PCB_END_LOOP;											/* Via. */
+#endif
 
 	IPCD356_End(fp);
 	fclose(fp);
@@ -487,6 +492,8 @@ void IPCD356_End(FILE * fd)
 
 void ResetVisitPinsViasAndPads()
 {
+#warning subc TODO: rewrite
+#if 0
 	PCB_VIA_LOOP(PCB->Data);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, via);
 	PCB_END_LOOP;											/* Via. */
@@ -498,6 +505,7 @@ void ResetVisitPinsViasAndPads()
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pad);
 	PCB_END_LOOP;											/* Pad. */
 	PCB_END_LOOP;											/* Element. */
+#endif
 }
 
 int IPCD356_WriteAliases(FILE * fd, IPCD356_AliasList * aliaslist)
