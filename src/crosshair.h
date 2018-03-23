@@ -82,8 +82,6 @@ typedef struct {								/* holds cursor information */
 	enum pcb_crosshair_shape_e shape;			/* shape of crosshair */
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
-	pcb_pad_t *snapped_pad;
-	pcb_pin_t *snapped_pin;
 	pcb_pstk_t *snapped_pstk;
 
 
