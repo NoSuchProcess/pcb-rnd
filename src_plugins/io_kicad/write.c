@@ -692,7 +692,9 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 	const char *currentElementRef;
 	const char *currentElementVal;
 
-	elementlist_dedup_initializer(ededup);
+#warning TODO: revise this for subc
+/*	elementlist_dedup_initializer(ededup);*/
+
 	/* Now initialize the group with defaults */
 	unm_init(&group1);
 
@@ -780,8 +782,10 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
+
+#warning TODO: revise this for subc
 	/* free the state used for deduplication */
-	elementlist_dedup_free(ededup);
+/*	elementlist_dedup_free(ededup);*/
 
 	return 0;
 }
