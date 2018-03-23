@@ -413,74 +413,6 @@ static void WritePCBNetlistPatchData(FILE * FP)
 	}
 }
 
-int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
-{
-	gdl_iterator_t eit;
-	pcb_line_t *line;
-	pcb_arc_t *arc;
-	pcb_element_t *element;
-
-	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
-	elementlist_foreach(&Data->Element, &eit, element) {
-		gdl_iterator_t it;
-		pcb_pin_t *pin;
-		pcb_pad_t *pad;
-
-		/* only non empty elements */
-		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
-			continue;
-		/* the coordinates and text-flags are the same for
-		 * both names of an element
-		 */
-		fprintf(FP, "\nElement[%s ", F2S(element, PCB_TYPE_ELEMENT));
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
-		fputc(' ', FP);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)));
-		fputc(' ', FP);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)));
-		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n",
-								element->MarkX, element->MarkY,
-								PCB_ELEM_TEXT_DESCRIPTION(element).X - element->MarkX,
-								PCB_ELEM_TEXT_DESCRIPTION(element).Y - element->MarkY,
-								PCB_ELEM_TEXT_DESCRIPTION(element).Direction,
-								PCB_ELEM_TEXT_DESCRIPTION(element).Scale, F2S(&(PCB_ELEM_TEXT_DESCRIPTION(element)), PCB_TYPE_ELEMENT_NAME));
-		WriteAttributeList(FP, &element->Attributes, "\t");
-		pinlist_foreach(&element->Pin, &it, pin) {
-			pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ",
-									pin->X - element->MarkX,
-									pin->Y - element->MarkY, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole);
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
-			fprintf(FP, " ");
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Number));
-			fprintf(FP, " %s]\n", F2S(pin, PCB_TYPE_PIN));
-		}
-		pinlist_foreach(&element->Pad, &it, pad) {
-			pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
-									pad->Point1.X - element->MarkX,
-									pad->Point1.Y - element->MarkY,
-									pad->Point2.X - element->MarkX, pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance, pad->Mask);
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Name));
-			fprintf(FP, " ");
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
-			fprintf(FP, " %s]\n", F2S(pad, PCB_TYPE_PAD));
-		}
-		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "\tElementLine [%[0] %[0] %[0] %[0] %[0]]\n",
-									line->Point1.X - element->MarkX,
-									line->Point1.Y - element->MarkY,
-									line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness);
-		}
-		arclist_foreach(&element->Arc, &it, arc) {
-			pcb_fprintf(FP, "\tElementArc [%[0] %[0] %[0] %[0] %ma %ma %[0]]\n",
-									arc->X - element->MarkX,
-									arc->Y - element->MarkY, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
-		}
-		fputs("\n\t)\n", FP);
-	}
-	return 0;
-}
-
-
 int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
 	gdl_iterator_t sit, it;
@@ -721,7 +653,6 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bo
 		WriteViaData(FP, buff->Data);
 	}
 
-	io_pcb_WriteElementData(ctx, FP, buff->Data);
 	io_pcb_WriteSubcData(ctx, FP, buff->Data);
 
 	if (!elem_only)
@@ -742,7 +673,6 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WritePCBFontData(FP);
 	WriteAttributeList(FP, &PCB->Attributes, "");
 	WriteViaData(FP, PCB->Data);
-	io_pcb_WriteElementData(ctx, FP, PCB->Data);
 	io_pcb_WriteSubcData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
 	WriteLayers(FP, PCB->Data);
