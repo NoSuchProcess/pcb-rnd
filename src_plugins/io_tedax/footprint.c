@@ -123,64 +123,6 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 
 	fprintf(f, "tEDAx v1\n");
 
-	/* This block shall be removed with elements */
-	PCB_ELEMENT_LOOP(data)
-	{
-		fprintf(f, "\nbegin footprint v1 %s\n", element->Name->TextString);
-		PCB_PAD_LOOP(element)
-		{
-			char *lloc, *pnum;
-			lloc = elem_layer(element, pad);
-			safe_term_num(pnum, pad, buff);
-			print_term(pnum, pad);
-			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) { /* sqaure cap pad -> poly */
-				pcb_fprintf(f, "	polygon %s copper %s %mm 4", lloc, pnum, pad->Clearance);
-				print_sqpad_coords(f, pad,  element->MarkX, element->MarkY);
-				pcb_fprintf(f, "\n");
-			}
-			else { /* round cap pad -> line */
-				pcb_fprintf(f, "	line %s copper %s %mm %mm %mm %mm %mm %mm\n", lloc, pnum, pad->Point1.X - element->MarkX, pad->Point1.Y - element->MarkY, pad->Point2.X - element->MarkX, pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance);
-			}
-		}
-		PCB_END_LOOP;
-
-		PCB_PIN_LOOP(element)
-		{
-			char *pnum;
-			safe_term_num(pnum, pin, buff);
-			print_term(pnum, pin);
-			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->Thickness/2, pin->Clearance);
-			pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole, PIN_PLATED(pin));
-		}
-		PCB_END_LOOP;
-
-		PCB_ELEMENT_PCB_LINE_LOOP(element)
-		{
-			char *lloc = /*elem_layer(element, line)*/ "primary";
-			pcb_fprintf(f, "	line %s silk - %mm %mm %mm %mm %mm %mm\n", lloc,
-				line->Point1.X - element->MarkX, line->Point1.Y - element->MarkY, line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness, line->Clearance);
-		}
-		PCB_END_LOOP;
-
-		PCB_ELEMENT_ARC_LOOP(element)
-		{
-			char *lloc = /*elem_layer(element, arc)*/ "primary";
-			pcb_fprintf(f, "	arc %s silk - %mm %mm %mm %f %f %mm %mm\n", lloc,
-				arc->X - element->MarkX, arc->Y - element->MarkY, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
-				arc->Thickness, arc->Clearance);
-		}
-		PCB_END_LOOP;
-
-		fprintf(f, "end footprint\n");
-
-		for (e = htsp_first(&terms); e; e = htsp_next(&terms, e)) {
-			free(e->key);
-			htsp_delentry(&terms, e);
-		}
-
-	}
-	PCB_END_LOOP;
-
 	PCB_SUBC_LOOP(data)
 	{
 		pcb_coord_t ox = 0, oy = 0;
