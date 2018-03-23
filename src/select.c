@@ -639,8 +639,10 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
 				}
 				PCB_END_LOOP;
+#if 0
 				pcb_elem_name_invalidate_draw(element);
 				pcb_elem_invalidate_draw(element);
+#endif
 				changed = pcb_true;
 			}
 		}

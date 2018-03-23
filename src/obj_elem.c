@@ -144,47 +144,6 @@ void *pcb_element_remove(pcb_element_t *Element)
 /* removes an element */
 void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	/* erase from screen */
-	if ((pcb_silk_on(PCB) || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn))
-		pcb_elem_invalidate_erase(Element);
 	pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, Element, Element, Element);
 	return NULL;
-}
-
-/*** draw ***/
-
-void pcb_elem_invalidate_erase(pcb_element_t *Element)
-{
-	PCB_ELEMENT_PCB_LINE_LOOP(Element);
-	{
-		pcb_line_invalidate_erase(line);
-	}
-	PCB_END_LOOP;
-	PCB_ARC_LOOP(Element);
-	{
-		pcb_arc_invalidate_erase(arc);
-	}
-	PCB_END_LOOP;
-	pcb_elem_name_invalidate_erase(Element);
-	pcb_flag_erase(&Element->Flags);
-}
-
-void pcb_elem_name_invalidate_erase(pcb_element_t *Element)
-{
-	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element)) {
-		return;
-	}
-	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
-}
-
-void pcb_elem_invalidate_draw(pcb_element_t *Element)
-{
-	pcb_elem_name_invalidate_draw(Element);
-}
-
-void pcb_elem_name_invalidate_draw(pcb_element_t *Element)
-{
-	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element))
-		return;
-	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
