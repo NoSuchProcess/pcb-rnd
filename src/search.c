@@ -154,7 +154,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 
 	TEST_OBJST(i->objst, i->req_flag, l, l, l);
 
-	if (!pcb_is_point_in_line(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
+	if (!pcb_is_point_in_line(PosX, PosY, SearchRadius, (pcb_any_line_t *)l))
 		return PCB_R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (pcb_point_t *) l;
