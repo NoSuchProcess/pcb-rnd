@@ -37,7 +37,6 @@
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
-#include "rotate.h"
 #include "remove.h"
 #include "polygon.h"
 #include "undo.h"
@@ -438,53 +437,6 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	pcb_move_obj_to_buffer(PCB, Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	pcb_set_buffer_bbox(Buffer);
 	return pcb_true;
-}
-
-void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
-{
-	/* solder side objects need a different orientation */
-
-	/* the text subroutine decides by itself if the direction
-	 * is to be corrected
-	 */
-	PCB_ELEMENT_PCB_LINE_LOOP(Element);
-	{
-		pcb_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
-		pcb_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
-		pcb_line_bbox(line);
-	}
-	PCB_END_LOOP;
-	PCB_PIN_LOOP(Element);
-	{
-		/* pre-delete the pins from the pin-tree before their coordinates change */
-		if (Data)
-			pcb_r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
-		pcb_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
-		pcb_pin_bbox(pin);
-	}
-	PCB_END_LOOP;
-	PCB_PAD_LOOP(Element);
-	{
-		/* pre-delete the pads before their coordinates change */
-		if (Data)
-			pcb_r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
-		pcb_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
-		pcb_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
-		pcb_line_bbox((pcb_line_t *) pad);
-	}
-	PCB_END_LOOP;
-	PCB_ARC_LOOP(Element);
-	{
-		pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
-		arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
-	}
-	PCB_END_LOOP;
-
-	pcb_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
-	pcb_element_bbox(Data, Element, pcb_font(PCB, 0, 1));
-	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 /* changes the side of the board an element is on; returns pcb_true if done */
@@ -1143,54 +1095,6 @@ void *pcb_element_remove(pcb_element_t *Element)
 	return res;
 }
 
-/* rotate an element in 90 degree steps */
-void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
-{
-	/* solder side objects need a different orientation */
-
-	/* the text subroutine decides by itself if the direction
-	 * is to be corrected
-	 */
-	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
-	{
-		if (Data && Data->name_tree[n])
-			pcb_r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
-		pcb_text_rotate90(text, X, Y, Number);
-	}
-	PCB_END_LOOP;
-	PCB_ELEMENT_PCB_LINE_LOOP(Element);
-	{
-		pcb_line_rotate90(line, X, Y, Number);
-	}
-	PCB_END_LOOP;
-	PCB_PIN_LOOP(Element);
-	{
-		/* pre-delete the pins from the pin-tree before their coordinates change */
-		if (Data)
-			pcb_r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
-		PCB_PIN_ROTATE90(pin, X, Y, Number);
-	}
-	PCB_END_LOOP;
-	PCB_PAD_LOOP(Element);
-	{
-		/* pre-delete the pads before their coordinates change */
-		if (Data)
-			pcb_r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
-		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
-		PCB_PAD_ROTATE90(pad, X, Y, Number);
-	}
-	PCB_END_LOOP;
-	PCB_ARC_LOOP(Element);
-	{
-		pcb_arc_rotate90(arc, X, Y, Number);
-	}
-	PCB_END_LOOP;
-	PCB_COORD_ROTATE90(Element->MarkX, Element->MarkY, X, Y, Number);
-	/* SetElementBoundingBox reenters the rtree data */
-	pcb_element_bbox(Data, Element, pcb_font(PCB, 0, 1));
-	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
-}
 
 #if 0
 unsigned int pcb_element_hash(const pcb_element_t *e)
@@ -1806,32 +1710,6 @@ void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_elem_invalidate_erase(Element);
 	pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, Element, Element, Element);
 	return NULL;
-}
-
-/* rotates an element */
-void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element)
-{
-	pcb_elem_invalidate_erase(Element);
-	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	pcb_elem_invalidate_draw(Element);
-	return Element;
-}
-
-/* ----------------------------------------------------------------------
- * rotates the name of an element
- */
-void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
-{
-	pcb_elem_name_invalidate_erase(Element);
-	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
-	{
-		pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
-		pcb_text_rotate90(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-		pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
-	}
-	PCB_END_LOOP;
-	pcb_elem_name_invalidate_draw(Element);
-	return Element;
 }
 
 /*** draw ***/
