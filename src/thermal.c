@@ -102,11 +102,6 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bit)
 }
 
 
-pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer_id_t lid)
-{
-	return ThermPoly(pcb, pin, lid);
-}
-
 /* generate a round-cap line polygon */
 static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr, pcb_bool square)
 {
@@ -787,9 +782,6 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
 {
 	switch(obj->type) {
-		case PCB_OBJ_PIN:
-		case PCB_OBJ_VIA:
-			return pcb_thermal_area_pin(pcb, (pcb_pin_t *)obj, lid);
 
 		case PCB_OBJ_LINE:
 			return pcb_thermal_area_line(pcb, (pcb_line_t *)obj, lid);
