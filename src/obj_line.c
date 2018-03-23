@@ -54,6 +54,9 @@
 #include "obj_rat_draw.h"
 #include "obj_pinvia_draw.h"
 
+#warning padstack TODO: remove this when via is removed and the padstack is created from style directly
+#include "src_plugins/lib_compat_help/pstk_compat.h"
+
 
 /**** allocation ****/
 
@@ -636,13 +639,12 @@ struct via_info {
 static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 {
 	struct via_info *i = (struct via_info *) cl;
-	pcb_pin_t *via;
+	pcb_pstk_t *ps;
 
-	if ((via =
-			 pcb_via_new(PCB->Data, i->X, i->Y,
-										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-		pcb_via_invalidate_draw(via);
+#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
+	if ((ps = pcb_pstk_new_compat_via(PCB->Data, i->X, i->Y, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL) {
+		pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
+		pcb_via_invalidate_draw(ps);
 	}
 	longjmp(i->env, 1);
 }
