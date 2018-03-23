@@ -26,8 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/** Implementation of pcb_gtk_route_style_t widget.
-    This widget is calling another Dialog, upon "Edit" clicked button */
+/* Implementation of pcb_gtk_route_style_t widget. Opens a dialog upon "Edit" */
 
 #include "config.h"
 #include "conf_core.h"
@@ -43,7 +42,6 @@
 #include "bu_status_line.h"
 
 
-/** Global action creation counter */
 static gint action_count;
 
 static GtkVBox *pcb_gtk_route_style_parent_class;
@@ -64,14 +62,14 @@ void pcb_gtk_route_style_copy(int idx)
 	pcb_custom_route_style.Hole = drst->Hole;
 }
 
-/** Launches the Edit dialog */
+/* Opens the Edit dialog */
 static void edit_button_cb(GtkButton * btn, gpointer rss_)
 {
 	pcb_gtk_route_style_t *rss = rss_;
 	pcb_gtk_route_style_edit_dialog(rss->com, rss);
 }
 
-/** Callback for user selection of a route style */
+/* user selection of a route style */
 static void radio_select_cb(GtkToggleAction * action, gpointer data)
 {
 	pcb_gtk_route_style_t *rss = (pcb_gtk_route_style_t *) data;
@@ -86,7 +84,7 @@ static void ghid_route_style_init(pcb_gtk_route_style_t * rss)
 {
 }
 
-/** Clean up object before garbage collection */
+/* Clean up object before garbage collection */
 static void ghid_route_style_finalize(GObject * object)
 {
 	pcb_gtk_route_style_t *rss = (pcb_gtk_route_style_t *) object;
@@ -213,13 +211,8 @@ pcb_gtk_obj_route_style_t *pcb_gtk_route_style_add_route_style(pcb_gtk_route_sty
 	return new_style;
 }
 
-/** Adds a PCB route style to a \ref pcb_gtk_route_style_t object.
-    Note that the route style object passed to this function will be
-    updated directly.
-
-    \param rss     The widget to be acted on
-    \param data    PCB's route style object describing the style
- */
+/* Adds a PCB route style to the widget. The route style object passed
+   will be updated directly. */
 static void add_route_style_with_hidden_check(pcb_gtk_route_style_t * rss, pcb_route_style_t * data)
 {
 	if (!rss->hidden_button) {
@@ -361,7 +354,7 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss)
 	rss->hidden_button = 0;
 }
 
-/** Called when a route style is selected. */
+/* Called when a route style is selected. */
 static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst, gpointer data)
 {
 	pcb_use_route_style(rst);
