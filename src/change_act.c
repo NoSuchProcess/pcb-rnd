@@ -140,14 +140,14 @@ static const char pcb_acts_ChangeFlag[] =
 	"ChangeFlag(Object|Selected|SelectedObjects, flag, value)\n"
 	"ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)\n"
 	"ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)\n"
-	"ChangeFlag(SelectedElements, flag, value)\n" "flag = square | octagon | thermal | join\n" "value = 0 | 1";
+	"ChangeFlag(SelectedElements, flag, value)\n" "flag = thermal | join\n" "value = 0 | 1";
 
 static const char pcb_acth_ChangeFlag[] = "Sets or clears flags on objects.";
 
 /* %start-doc actions ChangeFlag
 
 Toggles the given flag on the indicated object(s).  The flag may be
-one of the flags listed above (square, octagon, thermal, join).  The
+one of the flags listed above (thermal, join).  The
 value may be the number 0 or 1.  If the value is 0, the flag is
 cleared.  If the value is 1, the flag is set.
 
@@ -172,15 +172,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	pcb_bool(*set_object) (int, void *, void *, void *);
 	pcb_bool(*set_selected) (int);
 
-	if (PCB_NSTRCMP(flag_name, "square") == 0) {
-		set_object = value ? pcb_set_obj_square : pcb_clr_obj_square;
-		set_selected = value ? pcb_set_selected_square : pcb_clr_selected_square;
-	}
-	else if (PCB_NSTRCMP(flag_name, "octagon") == 0) {
-		set_object = value ? pcb_set_obj_octagon : pcb_clr_obj_octagon;
-		set_selected = value ? pcb_set_selected_octagon : pcb_clr_selected_octagon;
-	}
-	else if (PCB_NSTRCMP(flag_name, "join") == 0) {
+	if (PCB_NSTRCMP(flag_name, "join") == 0) {
 		/* Note: these are backwards, because the flag is "clear" but
 		   the command is "join".  */
 		set_object = value ? pcb_clr_obj_join : pcb_set_obj_join;
@@ -741,8 +733,6 @@ static const char pcb_acth_ChangeNonetlist[] = "Changes the nonetlist flag of su
 
 Note that @code{Pins} means both pins and pads.
 
-@pinshapes
-
 %end-doc */
 
 static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -779,335 +769,47 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 #warning padstack TODO: remove the next few?
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_ChangeSquare[] =
-	"ChangeSquare(ToggleObject)\n" "ChangeSquare(SelectedElements|SelectedPins)\n" "ChangeSquare(Selected|SelectedObjects)";
-
-static const char pcb_acth_ChangeSquare[] = "Changes the square flag of pins and pads.";
-
-/* %start-doc actions ChangeSquare
-
-Note that @code{Pins} means both pins and pads.
-
-@pinshapes
-
-%end-doc */
-
+static const char pcb_acts_ChangeSquare[] = "ChangeSquare(ToggleObject)\n" "ChangeSquare(SelectedElements|SelectedPins)\n" "ChangeSquare(Selected|SelectedObjects)";
+static const char pcb_acth_ChangeSquare[] = "Changes the square flag of pins and pads. Not supported anymore.";
 static int pcb_act_ChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-
-				ptr3 = NULL;
-				type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
-
-				if (ptr3 != NULL) {
-					int qstyle = PCB_FLAG_SQUARE_GET((pcb_pin_t *) ptr3);
-					qstyle++;
-					if (qstyle > 17)
-						qstyle = 0;
-					if (type != PCB_TYPE_NONE)
-						if (pcb_chg_obj_square(type, ptr1, ptr2, ptr3, qstyle))
-							pcb_board_set_changed_flag(pcb_true);
-				}
-				break;
-			}
-
-		case F_SelectedElements:
-			if (pcb_chg_selected_square(PCB_TYPE_ELEMENT))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_chg_selected_square(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_Selected:
-		case F_SelectedObjects:
-			if (pcb_chg_selected_square(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
+	return 1;
 }
-
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_SetSquare[] = "SetSquare(ToggleObject|SelectedElements|SelectedPins)";
-
-static const char pcb_acth_SetSquare[] = "sets the square-flag of objects.";
-
-/* %start-doc actions SetSquare
-
-Note that @code{Pins} means pins and pads.
-
-@pinshapes
-
-%end-doc */
-
+static const char pcb_acth_SetSquare[] = "sets the square-flag of objects. Not supported anymore.";
 static int pcb_act_SetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function && *function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (pcb_set_obj_square(type, ptr1, ptr2, ptr3))
-						pcb_board_set_changed_flag(pcb_true);
-				break;
-			}
-
-		case F_SelectedElements:
-			if (pcb_set_selected_square(PCB_TYPE_ELEMENT))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_set_selected_square(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_Selected:
-		case F_SelectedObjects:
-			if (pcb_set_selected_square(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
+	return 1;
 }
-
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_ClearSquare[] = "ClearSquare(ToggleObject|SelectedElements|SelectedPins)";
-
-static const char pcb_acth_ClearSquare[] = "Clears the square-flag of pins and pads.";
-
-/* %start-doc actions ClearSquare
-
-Note that @code{Pins} means pins and pads.
-
-@pinshapes
-
-%end-doc */
-
+static const char pcb_acth_ClearSquare[] = "Clears the square-flag of pins and pads. Not supported anymore.";
 static int pcb_act_ClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function && *function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (pcb_clr_obj_square(type, ptr1, ptr2, ptr3))
-						pcb_board_set_changed_flag(pcb_true);
-				break;
-			}
-
-		case F_SelectedElements:
-			if (pcb_clr_selected_square(PCB_TYPE_ELEMENT))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_clr_selected_square(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_Selected:
-		case F_SelectedObjects:
-			if (pcb_clr_selected_square(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
+	return 1;
 }
-
-/* --------------------------------------------------------------------------- */
-
-static const char pcb_acts_ChangeOctagon[] =
-	"ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)\n" "ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)";
-
-static const char pcb_acth_ChangeOctagon[] = "Changes the octagon-flag of pins and vias.";
-
-/* %start-doc actions ChangeOctagon
-
-@pinshapes
-
-%end-doc */
-
+static const char pcb_acts_ChangeOctagon[] = "ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)\n" "ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)";
+static const char pcb_acth_ChangeOctagon[] = "Changes the octagon-flag of pins and vias. Not supported anymore.";
 static int pcb_act_ChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (pcb_chg_obj_octagon(type, ptr1, ptr2, ptr3))
-						pcb_board_set_changed_flag(pcb_true);
-				break;
-			}
-
-		case F_SelectedElements:
-			if (pcb_chg_selected_octagon(PCB_TYPE_ELEMENT))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_chg_selected_octagon(PCB_TYPE_PIN))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedVias:
-			if (pcb_chg_selected_octagon(PCB_TYPE_VIA))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_Selected:
-		case F_SelectedObjects:
-			if (pcb_chg_selected_octagon(PCB_TYPEMASK_PIN))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
+	return 1;
 }
-
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_SetOctagon[] = "SetOctagon(Object|ToggleObject|SelectedElements|Selected)";
-
-static const char pcb_acth_SetOctagon[] = "Sets the octagon-flag of objects.";
-
-/* %start-doc actions SetOctagon
-
-@pinshapes
-
-%end-doc */
-
+static const char pcb_acth_SetOctagon[] = "Sets the octagon-flag of objects. Not supported anymore.";
 static int pcb_act_SetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (pcb_set_obj_octagon(type, ptr1, ptr2, ptr3))
-						pcb_board_set_changed_flag(pcb_true);
-				break;
-			}
-
-		case F_SelectedElements:
-			if (pcb_set_selected_octagon(PCB_TYPE_ELEMENT))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_set_selected_octagon(PCB_TYPE_PIN))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedVias:
-			if (pcb_set_selected_octagon(PCB_TYPE_VIA))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_Selected:
-		case F_SelectedObjects:
-			if (pcb_set_selected_octagon(PCB_TYPEMASK_PIN))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
+	return 1;
 }
-
-/* --------------------------------------------------------------------------- */
-
-static const char pcb_acts_ClearOctagon[] =
-	"ClearOctagon(ToggleObject|Object|SelectedObjects|Selected)\n" "ClearOctagon(SelectedElements|SelectedPins|SelectedVias)";
-
-static const char pcb_acth_ClearOctagon[] = "Clears the octagon-flag of pins and vias.";
-
-/* %start-doc actions ClearOctagon
-
-@pinshapes
-
-%end-doc */
-
+static const char pcb_acts_ClearOctagon[] = "ClearOctagon(ToggleObject|Object|SelectedObjects|Selected)\n" "ClearOctagon(SelectedElements|SelectedPins|SelectedVias)";
+static const char pcb_acth_ClearOctagon[] = "Clears the octagon-flag of pins and vias. Not supported anymore.";
 static int pcb_act_ClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
-		case F_ToggleObject:
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (pcb_clr_obj_octagon(type, ptr1, ptr2, ptr3))
-						pcb_board_set_changed_flag(pcb_true);
-				break;
-			}
-
-		case F_SelectedElements:
-			if (pcb_clr_selected_octagon(PCB_TYPE_ELEMENT))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedPins:
-			if (pcb_clr_selected_octagon(PCB_TYPE_PIN))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_SelectedVias:
-			if (pcb_clr_selected_octagon(PCB_TYPE_VIA))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-
-		case F_Selected:
-		case F_SelectedObjects:
-			if (pcb_clr_selected_octagon(PCB_TYPEMASK_PIN))
-				pcb_board_set_changed_flag(pcb_true);
-			break;
-		}
-	}
+	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 0;
 }
 
@@ -1193,7 +895,7 @@ static const char pcb_acts_SetFlag[] =
 	"SetFlag(Object|Selected|SelectedObjects, flag)\n"
 	"SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)\n"
 	"SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)\n"
-	"SetFlag(SelectedElements, flag)\n" "flag = square | octagon | thermal | join";
+	"SetFlag(SelectedElements, flag)\n" "flag = thermal | join";
 
 static const char pcb_acth_SetFlag[] = "Sets flags on objects.";
 
@@ -1222,7 +924,7 @@ static const char pcb_acts_ClrFlag[] =
 	"ClrFlag(Object|Selected|SelectedObjects, flag)\n"
 	"ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)\n"
 	"ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)\n"
-	"ClrFlag(SelectedElements, flag)\n" "flag = square | octagon | thermal | join";
+	"ClrFlag(SelectedElements, flag)\n" "flag = thermal | join";
 
 static const char pcb_acth_ClrFlag[] = "Clears flags on objects.";
 

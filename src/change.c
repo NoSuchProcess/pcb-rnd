@@ -126,19 +126,6 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL  /* padstack */
 };
 
-pcb_opfunc_t ChangeSquareFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	pcb_subcop_change_square,
-	NULL  /* padstack */
-};
-
 static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
@@ -165,19 +152,6 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	NULL  /* padstack */
 };
 
-pcb_opfunc_t ChangeOctagonFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	pcb_subcop_change_octagon,
-	NULL  /* padstack */
-};
-
 #warning padstack TODO: remove this code
 static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL,
@@ -189,19 +163,6 @@ static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	NULL  /* padstack */
-};
-
-pcb_opfunc_t SetSquareFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	pcb_subcop_set_square,
 	NULL  /* padstack */
 };
 
@@ -218,32 +179,6 @@ static pcb_opfunc_t SetJoinFunctions = {
 	NULL  /* padstack */
 };
 
-pcb_opfunc_t SetOctagonFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	pcb_subcop_set_octagon,
-	NULL  /* padstack */
-};
-
-pcb_opfunc_t ClrSquareFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	pcb_subcop_clear_square,
-	NULL  /* padstack */
-};
-
 static pcb_opfunc_t ClrJoinFunctions = {
 	pcb_lineop_clear_join,
 	pcb_textop_clear_join,
@@ -254,19 +189,6 @@ static pcb_opfunc_t ClrJoinFunctions = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	NULL  /* padstack */
-};
-
-pcb_opfunc_t ClrOctagonFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	pcb_subcop_clear_octagon, /* subc */
 	NULL  /* padstack */
 };
 
@@ -530,25 +452,6 @@ pcb_bool ClrSelectedNonetlist(int types)
 #endif
 
 /* ----------------------------------------------------------------------
- * changes the square-flag of all selected and visible pins or pads
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_chg_selected_square(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeSquareFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ----------------------------------------------------------------------
  * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
  */
@@ -592,101 +495,6 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 	return change;
 }
 
-
-/* ----------------------------------------------------------------------
- * sets the square-flag of all selected and visible pins or pads
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_set_selected_square(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &SetSquareFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ----------------------------------------------------------------------
- * clears the square-flag of all selected and visible pins or pads
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_clr_selected_square(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &ClrSquareFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ----------------------------------------------------------------------
- * changes the octagon-flag of all selected and visible padstacks
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_chg_selected_octagon(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeOctagonFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ----------------------------------------------------------------------
- * sets the octagon-flag of all selected and visible padstacks
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_set_selected_octagon(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &SetOctagonFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ----------------------------------------------------------------------
- * clears the octagon-flag of all selected and visible padstacks
- * returns pcb_true if anything has changed
- */
-pcb_bool pcb_clr_selected_octagon(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &ClrOctagonFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
 
 #warning padstack TODO: remove this
 /* ----------------------------------------------------------------------
@@ -1000,115 +808,6 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (pcb_object_operation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * changes the square-flag of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_chg_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int style)
-{
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-	ctx.chgsize.value = style;
-
-	if (pcb_object_operation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * sets the square-flag of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_set_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
-{
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	if (pcb_object_operation(&SetSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * clears the square-flag of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_clr_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
-{
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	if (pcb_object_operation(&ClrSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * changes the octagon-flag of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_chg_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
-{
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	if (pcb_object_operation(&ChangeOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * sets the octagon-flag of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_set_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
-{
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	if (pcb_object_operation(&SetOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * clears the octagon-flag of the passed object
- * Returns pcb_true if anything is changed
- */
-pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
-{
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	if (pcb_object_operation(&ClrOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
 		return pcb_true;

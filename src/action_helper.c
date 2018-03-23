@@ -126,25 +126,6 @@ Affects all objects which are both selected and of the @var{Type} specified.
 
 %end-doc */
 
-/*  %start-doc actions 00macros
-
-@macro pinshapes
-
-Pins, pads, and vias can have various shapes.  All may be round.  Pins
-and pads may be square (obviously "square" pads are usually
-rectangular).  Pins and vias may be octagonal.  When you change a
-shape flag of an element, you actually change all of its pins and
-pads.
-
-Note that the square flag takes precedence over the octagon flag,
-thus, if both the square and octagon flags are set, the object is
-square.  When the square flag is cleared, the pins and pads will be
-either round or, if the octagon flag is set, octagonal.
-
-@end macro
-
-%end-doc */
-
 int defer_updates = 0;
 int defer_needs_update = 0;
 
