@@ -943,6 +943,8 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 {
 	int i;
 
+#warning padstack TODO: check if the subc loop below does this
+#if 0
 	/* add pins and pads of elements */
 	PCB_PIN_ALL_LOOP(data);
 	{
@@ -952,21 +954,14 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
 	}
 	PCB_ENDALL_LOOP;
+#endif
+
 	PCB_PADSTACK_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, padstack))
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, padstack);
 		else
 			AddPstk(layergroupboxes, padstack, rd->styles[rd->max_styles]);
-	}
-	PCB_END_LOOP;
-	/* add all vias */
-	PCB_VIA_LOOP(data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);
-		else
-			AddPin(layergroupboxes, via, pcb_true, rd->styles[rd->max_styles]);
 	}
 	PCB_END_LOOP;
 

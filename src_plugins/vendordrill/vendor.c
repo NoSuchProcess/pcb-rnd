@@ -382,7 +382,8 @@ static void apply_vendor_map(void)
 		}
 		PCB_END_LOOP;
 
-#warning subc TODO
+#warning subc TODO: rewrite
+#if 0
 		/* and now the pins */
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
@@ -419,6 +420,7 @@ static void apply_vendor_map(void)
 			}
 		}
 		PCB_END_LOOP;
+#endif
 
 		pcb_message(PCB_MSG_INFO, _("Updated %ld drill sizes out of %ld total\n"), (long)changed, (long)tot);
 

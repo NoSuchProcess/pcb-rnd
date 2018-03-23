@@ -611,13 +611,13 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 	PCB_ENDALL_LOOP;
 
 #warning subc TODO: rewrite
+#if 0
 	if (pcb_silk_on(pcb) && (Type & PCB_TYPE_ELEMENT))
 		PCB_ELEMENT_LOOP(pcb->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
-#if 0
 			const char* name = PCB_ELEM_NAME_VISIBLE(PCB, element);
 			if (name && REGEXEC(name)) {
 				pcb_undo_add_obj_to_flag(element);
@@ -644,10 +644,10 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 				pcb_elem_invalidate_draw(element);
 				changed = pcb_true;
 			}
-#endif
 		}
 	}
 	PCB_END_LOOP;
+#endif
 
 #warning padstack TODO: rewrite
 #if 0

@@ -571,12 +571,15 @@ void CheckNetLength(char *net, IPCD356_AliasList * aliaslist)
 
 int IPCD356_SanityCheck()
 {
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	if (element->Name[1].TextString == '\0') {
 		pcb_message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
 		return 1;
 	}
 	PCB_END_LOOP;											/* Element. */
+#endif
 	return 0;
 }
 

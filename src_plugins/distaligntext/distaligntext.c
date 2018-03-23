@@ -168,6 +168,9 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		return ntexts_by_pos;
 	if (op == K_aligntext)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
+
+#warning subc TODO: subc floaters?
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
@@ -177,6 +180,8 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		nsel++;
 	}
 	PCB_END_LOOP;
+#endif
+
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
@@ -189,6 +194,8 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	texts_by_pos = malloc(nsel * sizeof(*texts_by_pos));
 	ntexts_by_pos = nsel;
 	nsel = 0;
+#warning subc TODO: check for floaters
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
@@ -200,6 +207,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
 	PCB_END_LOOP;
+#endif
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
@@ -360,6 +368,8 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	q = reference_coord(K_aligntext, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
 	/* selected text part of an element */
+#warning subc TODO: check if subc floaters are handled
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
@@ -388,6 +398,8 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 	PCB_END_LOOP;
+#endif
+
 	/* Selected bare text objects */
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{

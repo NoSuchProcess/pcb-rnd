@@ -410,6 +410,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_layergrp_id_t sgroup, cgroup;
 	pcb_layer_t swap;
 
+#warning subc TODO: rewrite
 #if 0
 	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
@@ -419,16 +420,19 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 #endif
 
-#warning subc TODO
 
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
+
+#warning padstack TODO: rewrite
+#if 0
 	PCB_VIA_LOOP(Buffer->Data);
 	{
 		pcb_via_flip_side(Buffer->Data, via);
 	}
 	PCB_END_LOOP;
+#endif
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		pcb_line_flip_side(layer, line);
@@ -481,6 +485,8 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 			Buffer->Data->Layer[cnumber] = swap;
 			k++;
 			/* move the thermal flags with the layers */
+#warning padstack TODO: rewrite
+#if 0
 			PCB_PIN_ALL_LOOP(Buffer->Data);
 			{
 				t1 = PCB_FLAG_THERM_TEST(snumber, pin);
@@ -497,6 +503,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 				PCB_FLAG_THERM_ASSIGN(cnumber, t1, via);
 			}
 			PCB_END_LOOP;
+#endif
 		}
 	}
 	pcb_set_buffer_bbox(Buffer);

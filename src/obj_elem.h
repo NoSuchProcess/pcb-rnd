@@ -71,12 +71,5 @@ void *pcb_element_remove(pcb_element_t *Element);
 #define PCB_ELEM_TEXT_REFDES(e)      ((e)->Name[PCB_ELEMNAME_IDX_REFDES])
 #define PCB_ELEM_TEXT_VALUE(e)       ((e)->Name[PCB_ELEMNAME_IDX_VALUE])
 
-/*** loops ***/
-
-#define PCB_ELEMENT_LOOP(top) do {                                  \
-	pcb_element_t *element = NULL;                                    \
-	{
-
-
 #endif
 

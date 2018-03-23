@@ -54,6 +54,8 @@ static int pcb_netlist_swap()
 	int ret = -1;
 	pcb_lib_menu_t *nets[2];
 
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -76,6 +78,7 @@ static int pcb_netlist_swap()
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#endif
 
 	if (next < 2) {
 		pcb_message(PCB_MSG_ERROR, "Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");

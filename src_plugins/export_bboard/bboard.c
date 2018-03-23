@@ -519,6 +519,8 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	bboard_init_board_cairo(PCB->MaxWidth, PCB->MaxHeight, bboard_bgcolor, options[HA_antialias].int_value);
 
+#warning subc TODO: rewrite
+#if 0
 	/* write out components on solder side */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
@@ -532,6 +534,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 		bboard_export_element_cairo(element, 0);
 	}
 	PCB_END_LOOP;
+#endif
 
 	/* draw all wires from all valid layers */
 	for (i = pcb_max_layer; i >= 0; i--) {
