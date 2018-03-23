@@ -1,11 +1,9 @@
-/*!
- * \file renumberblock.c
+/*
+ * RenumberBlock plug-in for PCB.
  *
- * \brief RenumberBlock plug-in for PCB.
+ * Copyright (C) 2006 DJ Delorie <dj@delorie.com>
  *
- * \author Copyright (C) 2006 DJ Delorie <dj@delorie.com>
- *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Original source: http://www.delorie.com/pcb/renumberblock.c
