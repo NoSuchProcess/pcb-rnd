@@ -2,7 +2,6 @@
 
 #include "wt_coord_entry.h"
 
-/** TODO: Rename these API ?  */
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
 											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
 											const pcb_unit_t * u, gint width,

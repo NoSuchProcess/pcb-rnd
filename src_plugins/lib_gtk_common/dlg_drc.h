@@ -41,12 +41,10 @@
 typedef struct _GhidDrcViolationClass GhidDrcViolationClass;
 typedef struct _GhidDrcViolation GhidDrcViolation;
 
-/** */
 struct _GhidDrcViolationClass {
 	GObjectClass parent_class;
 };
 
-/** A _DRC violation_ object encapsulates data needed to describe a DRC error. */
 struct _GhidDrcViolation {
 	GObject parent_instance;
 
@@ -63,7 +61,6 @@ struct _GhidDrcViolation {
 	int *object_type_list;
 };
 
-/** Holds data needed to render a DRC window displaying DRC violations. */
 typedef struct pcb_gtk_drcwin_s {
 	GtkWidget *drc_window;
 	GtkWidget *drc_vbox;
@@ -71,7 +68,6 @@ typedef struct pcb_gtk_drcwin_s {
 	
 } pcb_gtk_drcwin_t;
 
-/** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_drc_violation_get_type(void);
 
 GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation);
@@ -86,7 +82,6 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation);
 typedef struct _GhidViolationRendererClass GhidViolationRendererClass;
 typedef struct _GhidViolationRenderer GhidViolationRenderer;
 
-/** */
 struct _GhidViolationRendererClass {
 	GtkCellRendererTextClass parent_class;
 };
@@ -98,12 +93,10 @@ struct _GhidViolationRenderer {
 	pcb_gtk_common_t *common;
 };
 
-/** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_violation_renderer_get_type(void);
 
 GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common);
 
-/** Initializes the \p drcwin structure. Use only once at start-up. */
 void pcb_gtk_drcwin_init(pcb_gtk_drcwin_t *drcwin);
 void ghid_drc_window_show(pcb_gtk_drcwin_t *drcwin, gboolean raise);
 void ghid_drc_window_reset_message(pcb_gtk_drcwin_t *drcwin);

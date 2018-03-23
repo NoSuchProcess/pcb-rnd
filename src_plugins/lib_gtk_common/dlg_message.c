@@ -32,11 +32,6 @@
 #include "dlg_message.h"
 #include "compat_nls.h"
 
-/** pcb_gtk_dlg_message:
- *  Display a new GtkMessageDialog ...
- *  FIXME. : A generic dialog + a specific to "confirm close, save, ..."
- *  FIXME: find a way to get rid of _("Close _without saving")
- */
 gint pcb_gtk_dlg_message(const char *message, GtkWindow * parent)
 {
 	GtkWidget *dialog;

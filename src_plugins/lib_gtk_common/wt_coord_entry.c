@@ -26,11 +26,7 @@
  *
  */
 
-
-/*! \file <wt_coord_entry.c>
- *  \brief Implementation of pcb_gtk_coord_entry_t widget
- *  \par Description
- *  This widget is a modified spinbox for the user to enter
+/*  This widget is a modified spinbox for the user to enter
  *  pcb coords. It is assigned a default unit (for display),
  *  but this can be changed by the user by typing a new one
  *  or right-clicking on the box.

@@ -68,7 +68,6 @@ static void update_attrib(pcb_gtk_dlg_route_style_t * dialog, pcb_gtk_obj_route_
 	gtk_list_store_set(dialog->attr_model, &iter, 1, "<new>", -1);
 }
 
-/** attr table ? */
 static int get_sel(pcb_gtk_dlg_route_style_t * dlg)
 {
 	GtkTreeIter iter;

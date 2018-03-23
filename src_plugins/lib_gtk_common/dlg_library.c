@@ -79,8 +79,8 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "dlg_library_param.h"
 
-/** how often should the parametric footprint redrawn while the parameters are
-    changing - in millisec */
+/* how often should the parametric footprint redrawn while the parameters are
+   changing - in millisec */
 #define PARAM_REFRESH_RATE_MS 500
 
 static GtkWidget *library_window;
@@ -291,7 +291,7 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 	gtk_label_set_text(GTK_LABEL(library_window->preview_text), g_string_free(pt, FALSE));
 }
 
-/** Update the preview and filter text from the parametric attribute dialog */
+/* Update the preview and filter text from the parametric attribute dialog */
 static gboolean lib_param_chg_delayed(pcb_gtk_library_param_cb_ctx_t *ctx)
 {
 	char *cmd = pcb_gtk_library_param_snapshot(ctx);
@@ -860,7 +860,6 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	return object;
 }
 
-/** */
 static void library_window_finalize(GObject * object)
 {
 	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(object);
@@ -875,7 +874,6 @@ static void library_window_finalize(GObject * object)
 	G_OBJECT_CLASS(library_window_parent_class)->finalize(object);
 }
 
-/** */
 static void library_window_class_init(pcb_gtk_library_class_t * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);

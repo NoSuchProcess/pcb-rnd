@@ -82,8 +82,8 @@ void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v);
 void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor);
 void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 
-/** Updates width and heigth using the new zoom level; call after a call
-    to pcb_gtk_zoom_*() */
+/* Updates width and heigth using the new zoom level; call after a call
+   to pcb_gtk_zoom_*() */
 void pcb_gtk_zoom_post(pcb_gtk_view_t *v);
 
 pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
@@ -112,7 +112,7 @@ int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t
 
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 
-/** Update adj limits to match the current zoom level */
+/* Update adj limits to match the current zoom level */
 static inline void pcb_gtk_zoom_adjustment(GtkAdjustment *adj, pcb_coord_t view_size, pcb_coord_t board_size)
 {
 	gdouble page_size;

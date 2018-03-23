@@ -69,7 +69,7 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "win_place.h"
 
-/*! \brief sync the menu checkboxes with actual pcb state */
+/* sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)
 {
 	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
@@ -181,14 +181,12 @@ void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 	tw->com->window_set_name_label(PCB->Name);
 }
 
-/*! \brief Install menu bar and accelerator groups */
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
 	gtk_window_add_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
-/*! \brief Remove menu bar and accelerator groups */
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
@@ -234,7 +232,7 @@ void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw)
 	pcb_gtk_layersel_vis_update(&tw->layersel);
 }
 
-/*! \brief Called when user clicks OK on route style dialog */
+/* Called when user clicks OK on route style dialog */
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
 {
 	ghid_main_menu_install_route_style_selector(GHID_MAIN_MENU(tw->menu.menu_bar), GHID_ROUTE_STYLE(tw->route_style_selector));

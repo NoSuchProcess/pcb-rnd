@@ -21,10 +21,13 @@ pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button);
 
 void ghid_hand_cursor(pcb_gtk_mouse_t *ctx);
 void ghid_point_cursor(pcb_gtk_mouse_t *ctx, pcb_bool grabbed);
-/** Changes the cursor appearance to signifies a wait state */
+
+/* Changes the cursor appearance to signifies a wait state */
 void ghid_watch_cursor(pcb_gtk_mouse_t *ctx);
-/** Changes the cursor appearance according to @mode */
+
+/* Changes the cursor appearance according to mode */
 void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, gint mode);
+
 void ghid_corner_cursor(pcb_gtk_mouse_t *ctx);
 void ghid_restore_cursor(pcb_gtk_mouse_t *ctx);
 

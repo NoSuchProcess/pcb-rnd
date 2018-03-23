@@ -373,7 +373,7 @@ static gboolean group_open_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_
 	return group_any_press_cb(widget, event, lsg, 1);
 }
 
-/** Wrap w so that clicks on it are triggering a callback */
+/* Wrap w so that clicks on it are triggering a callback */
 static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 {
 	GtkWidget *event_box = gtk_event_box_new();

@@ -1758,13 +1758,13 @@ static void config_auto_remove_cb(GtkButton * btn, void *data);
 static void config_auto_create_cb(GtkButton * btn, void *data);
 static void config_page_update_auto(void *data);
 
-/** Let the widget resize itself. */
+/* Let the widget resize itself. */
 static void widget_set_size_automatic_cb(GtkWidget *w, void *data)
 {
 	gtk_widget_set_size_request(w, -1, -1);
 }
 
-/** Wraps the \p child in a "packed" scrolled window. */
+/* Wraps the child in a "packed" scrolled window. */
 static GtkWidget *bu_scrolled_window_packed(GtkWidget * child, GtkOrientation orientation)
 {
 	GtkWidget *scrolled, *viewport, *b1, *b2;

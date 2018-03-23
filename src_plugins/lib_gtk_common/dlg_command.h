@@ -11,7 +11,7 @@ typedef struct pcb_gtk_command_s {
 	GtkEntry *command_entry;
 	gboolean command_entry_status_line_active;
 
-	void (*pack_in_status_line)(void); /** embed the command combo box in top window's status line */
+	void (*pack_in_status_line)(void); /* embed the command combo box in top window's status line */
 	void (*post_entry)(void);
 	void (*pre_entry)(void);
 

@@ -13,7 +13,7 @@ void pcb_gtk_config_window_show(pcb_gtk_common_t *com, gboolean raise);
 
 void ghid_config_handle_units_changed(pcb_gtk_common_t *com);
 
-/** Parses \p string_path to expand and select the corresponding path in tree view. */
+/* Parses string_path to expand and select the corresponding path in tree view. */
 void pcb_gtk_config_set_cursor(const char *string_path);
 
 void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int idx);

@@ -34,9 +34,6 @@
 #include "dlg_input.h"
 #include "compat.h"
 
-/** ghid_dialog_input:
- *  Display a new GtkDialog to let user enter some data.
- */
 gchar *pcb_gtk_dlg_input(const char *prompt, const char *initial, GtkWindow * parent)
 {
 	GtkWidget *dialog;

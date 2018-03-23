@@ -32,7 +32,6 @@
 
 typedef GdkRGBA pcb_gtk_color_t;
 
-/** hbox/vbox creation, similar to gtk2's */
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
 	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, spacing);
@@ -47,7 +46,6 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 	return box;
 }
 
-/** hpaned/vpaned creation */
 static inline GtkWidget *gtkc_hpaned_new()
 {
 	return gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
@@ -120,13 +118,13 @@ static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y
 	return gdk_window_get_device_position(window, device, x, y, mask);
 }
 
-/** Retrieves a widget's initial minimum and natural height. */
+/* Retrieves a widget's initial minimum and natural height. */
 static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
 {
 	gtk_widget_get_preferred_height(w, min_size, natural_size);
 }
 
-/** Adds a CSS class to the widget, applying CSS properties from \p css_descr */
+/* Adds a CSS class to the widget, applying CSS properties from css_descr */
 static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
 {
 	GtkStyleContext *style_ctxt;
@@ -169,7 +167,6 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 		g_object_unref(provider); \
 	} while(0)
 
-/** Add \p button to a GtkAboutDialog .*/
 static inline void pcb_gtk_dlg_about_add_button(GtkDialog *about, GtkWidget *button)
 {
 	GtkWidget *action_area = gtk_dialog_get_header_bar(about);
@@ -279,7 +276,6 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 
 #define gtkc_widget_selectable(widget, name_space)
 
-/** Add \p button to a GtkAboutDialog .*/
 static inline void pcb_gtk_dlg_about_add_button(GtkDialog *about, GtkWidget *button)
 {
 	GtkWidget *action_area = gtk_dialog_get_action_area(about);

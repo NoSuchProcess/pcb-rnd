@@ -1,9 +1,3 @@
-/*! \file <ghid-main-menu.c>
- *  \brief Implementation of GHidMainMenu widget
- *  \par Description
- *  This widget is the main pcb menu.
- */
-
 #include "config.h"
 
 #include <glib.h>
@@ -309,10 +303,6 @@ GType ghid_main_menu_get_type(void)
 	return mm_type;
 }
 
-/*! \brief Create a new GHidMainMenu
- *
- *  \return a freshly-allocated GHidMainMenu
- */
 GtkWidget *ghid_main_menu_new(GCallback action_cb)
 {
 	GHidMainMenu *mm = g_object_new(GHID_MAIN_MENU_TYPE, NULL);
@@ -335,7 +325,6 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 	return GTK_WIDGET(mm);
 }
 
-/*! \brief Turn a lht node into the main menu */
 void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base)
 {
 	lht_node_t *n;
@@ -348,7 +337,6 @@ void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const 
 	}
 }
 
-/*! \brief Turn a lihata node into a popup menu */
 void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
@@ -393,7 +381,6 @@ ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 	}
 }
 
-/*! \brief Installs or updates layer selector items */
 void ghid_main_menu_install_layer_selector(GHidMainMenu * mm)
 {
 	GList *children, *iter;
@@ -427,7 +414,6 @@ void ghid_main_menu_install_layer_selector(GHidMainMenu * mm)
 	}
 }
 
-/*! \brief Installs or updates route style selector items */
 void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss)
 {
 	GList *children, *iter;
@@ -444,7 +430,6 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_rout
 	}
 }
 
-/*! \brief Returns the menu bar's accelerator group */
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 {
 	if (menu == NULL) {
@@ -501,7 +486,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 	return 0;
 }
 
-/*! \brief callback for ghid_main_menu_update_toggle_state () */
+/* callback for ghid_main_menu_update_toggle_state() */
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {

@@ -52,9 +52,8 @@ typedef struct {
 	pcb_gtk_common_t *com;
 } pcb_gtk_dlg_propedit_t;
 
-/** Creates and runs a dialog to edit selected object properties */
+/* Creates and runs a dialog to edit selected object properties */
 GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_common_t *com);
 
-/** */
 void pcb_gtk_dlg_propedit_prop_add(pcb_gtk_dlg_propedit_t * dlg, const char *name, const char *common,
 																	 const char *min, const char *max, const char *avg);

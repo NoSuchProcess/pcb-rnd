@@ -7,10 +7,10 @@
 
 #include "compat.h"
 
-/** The HID using pcb_gtk_common needs to fill in this struct and pass it
-    on to most of the calls. This is the only legal way pcb_gtk_common can
-    back reference to the HID. This lets multiple HIDs use gtk_common code
-    without linker errors. */
+/* The HID using pcb_gtk_common needs to fill in this struct and pass it
+   on to most of the calls. This is the only legal way pcb_gtk_common can
+   back reference to the HID. This lets multiple HIDs use gtk_common code
+   without linker errors. */
 typedef struct pcb_gtk_common_s {
 	void *gport;      /* Opaque pointer back to the HID's internal struct - used when common calls a HID function */
 	GtkWidget *top_window;

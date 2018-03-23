@@ -56,10 +56,6 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-/** \file   dlg_drc.c
-    \brief  Implementation of \ref pcb_gtk_drcwin_t DRC dialog.
- */
-
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
 #define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
@@ -78,7 +74,6 @@ static void drc_close_cb(GtkButton *button, gpointer data)
 	gtk_widget_hide(p->drc_window);
 }
 
-/** A (*GtkCallback) function */
 static void destroy_widget(GtkWidget * widget, gpointer data)
 {
 	gtk_widget_destroy(widget);
@@ -191,7 +186,6 @@ static void unset_found_flags(int AndDraw)
 	}
 }
 
-/** A (*GtkCallback) function */
 static void unselect_widget(GtkWidget * widget, gpointer data)
 {
 	gtk_widget_set_state(widget, GTK_STATE_NORMAL);
