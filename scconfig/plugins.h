@@ -14,7 +14,6 @@ plugin_def("lib_hid_common",   "all-hid common code",             sdisable, 0)
 plugin_def("lib_hid_gl",       "openGL rendering",                sdisable, 0)
 plugin_def("lib_legacy_func",  "legacy functions",                sbuildin, 1)
 plugin_def("lib_netmap",       "map nets and objects",            sdisable, 0)
-plugin_def("lib_padstack_hash","abstract and hash 'padstacks'",   sdisable, 0)
 plugin_def("lib_polyhelp",     "polygon helpers",                 sbuildin, 1)
 
 plugin_header("\nFeature plugins:\n")
