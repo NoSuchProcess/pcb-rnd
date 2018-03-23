@@ -114,38 +114,6 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 
 	AllDrills = (DrillInfoTypePtr) calloc(1, sizeof(DrillInfoType));
 
-#warning subc TODO: do this using rtree because of subc recursion
-	PCB_VIA_LOOP(top);
-	{
-		if (!DrillFound) {
-			DrillFound = pcb_true;
-			Drill = GetDrillInfoDrillMemory(AllDrills);
-			Drill->DrillSize = via->DrillingHole;
-			FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
-		}
-		else {
-			if (Drill->DrillSize != via->DrillingHole) {
-				DRILL_LOOP(AllDrills);
-				{
-					if (drill->DrillSize == via->DrillingHole) {
-						Drill = drill;
-						FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
-						break;
-					}
-				}
-				PCB_END_LOOP;
-				if (Drill->DrillSize != via->DrillingHole) {
-					Drill = GetDrillInfoDrillMemory(AllDrills);
-					Drill->DrillSize = via->DrillingHole;
-					FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
-				}
-			}
-			else
-				FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
-		}
-	}
-	PCB_END_LOOP;
-
 	for(pb = pcb_r_first(top->padstack_tree, &it); pb != NULL; pb = pcb_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)pb;
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
