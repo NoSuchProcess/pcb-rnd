@@ -187,7 +187,6 @@ int pcb_search_screen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, vo
 int pcb_search_grid_slop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
 int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius);
 int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type);
-pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name);
 
 #endif
 

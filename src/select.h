@@ -50,10 +50,4 @@ typedef enum {
 
 pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int, const char *, pcb_bool, pcb_search_method_t);
 
-/* New API */
-
-/* Change the selection of an element or element name (these have side effects) */
-void pcb_select_element(pcb_board_t *pcb, pcb_element_t *element, pcb_change_flag_t how, int redraw);
-void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int redraw);
-
 #endif
