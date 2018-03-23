@@ -55,7 +55,6 @@ void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
 void pcb_undo_add_obj_to_flag(void *obj);
 void pcb_undo_add_obj_to_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_clear_size(int, void *, void *, void *);
-void pcb_undo_add_obj_to_mask_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_radii(int, void *, void *, void *);
 void pcb_undo_add_obj_to_clear_poly(int, void *, void *, void *, pcb_bool);
@@ -81,7 +80,6 @@ typedef enum {
 	PCB_UNDO_CHANGESIZE        = 0x000800, /* change size of object */
 	PCB_UNDO_MIRROR            = 0x002000, /* change side of board */
 	PCB_UNDO_CHANGECLEARSIZE   = 0x004000, /* change clearance size */
-	PCB_UNDO_CHANGEMASKSIZE    = 0x008000, /* change mask size */
 	PCB_UNDO_CHANGEANGLES      = 0x010000, /* change arc angles */
 	PCB_UNDO_LAYERMOVE         = 0x020000, /* layer new/delete/move */
 	PCB_UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */

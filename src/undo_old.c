@@ -326,34 +326,6 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 }
 
 /* ---------------------------------------------------------------------------
- * recovers an object from a mask size change operation
- */
-static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
-{
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-	pcb_coord_t swap;
-
-	/* lookup entry by ID */
-	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type & (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD)) {
-		swap = (type == PCB_TYPE_PAD ? ((pcb_pad_t *) ptr2)->Mask : ((pcb_pin_t *) ptr2)->Mask);
-		if (pcb_undo_and_draw)
-			pcb_erase_obj(type, ptr1, ptr2);
-		if (type == PCB_TYPE_PAD)
-			((pcb_pad_t *) ptr2)->Mask = Entry->Data.Size;
-		else
-			((pcb_pin_t *) ptr2)->Mask = Entry->Data.Size;
-		Entry->Data.Size = swap;
-		if (pcb_undo_and_draw)
-			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-
-/* ---------------------------------------------------------------------------
  * recovers an object from a Size change operation
  */
 static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
@@ -364,19 +336,15 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-		if (type == PCB_TYPE_ELEMENT_NAME)
-			ptr1e = NULL;
-		else
-			ptr1e = ptr1;
+	ptr1e = ptr1;
 
 	if (type != PCB_TYPE_NONE) {
-		/* Wow! can any object be treated as a pin type for size change?? */
-		/* pins, vias, lines, and arcs can. Text can't but it has it's own mechanism */
-		swap = ((pcb_pin_t *) ptr2)->Thickness;
+		/* Size change for lines and arcs can. Text has it's own mechanism */
+		swap = ((pcb_line_t *) ptr2)->Thickness;
 		pcb_poly_restore_to_poly(PCB->Data, type, ptr1, ptr2);
 		if ((pcb_undo_and_draw) && (ptr1e != NULL))
 			pcb_erase_obj(type, ptr1e, ptr2);
-		((pcb_pin_t *) ptr2)->Thickness = Entry->Data.Size;
+		((pcb_line_t *) ptr2)->Thickness = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		if (pcb_undo_and_draw)
@@ -400,17 +368,13 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		pcb_flag_t f1, f2;
-		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
+		pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 
-		if ((type == PCB_TYPE_ELEMENT) || (type == PCB_TYPE_ELEMENT_NAME))
-			ptr1e = NULL;
-		else
-			ptr1e = ptr1;
-
-		swap = pin->Flags;
+		ptr1e = ptr1;
+		swap = obj->Flags;
 
 		must_redraw = 0;
-		f1 = pcb_flag_mask(pin->Flags, ~DRAW_FLAGS);
+		f1 = pcb_flag_mask(obj->Flags, ~DRAW_FLAGS);
 		f2 = pcb_flag_mask(Entry->Data.Flags, ~DRAW_FLAGS);
 
 		if (!PCB_FLAG_EQ(f1, f2))
@@ -419,7 +383,7 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 		if (pcb_undo_and_draw && must_redraw && (ptr1e != NULL))
 			pcb_erase_obj(type, ptr1e, ptr2);
 
-		pin->Flags = Entry->Data.Flags;
+		obj->Flags = Entry->Data.Flags;
 
 		Entry->Data.Flags = swap;
 
@@ -878,11 +842,6 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
-	case PCB_UNDO_CHANGEMASKSIZE:
-		if (UndoChangeMaskSize(ptr))
-			return 0;
-		break;
-
 	case PCB_UNDO_CHANGEANGLES:
 		if (UndoChangeAngles(ptr))
 			return 0;
@@ -1249,27 +1208,6 @@ void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3
 }
 
 /* ---------------------------------------------------------------------------
- * adds an object to the list of objects with Size changes
- */
-void pcb_undo_add_obj_to_mask_size(int Type, void *ptr1, void *ptr2, void *ptr3)
-{
-	UndoListTypePtr undo;
-
-	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGEMASKSIZE, PCB_OBJECT_ID(ptr2), Type);
-		switch (Type) {
-		case PCB_TYPE_PIN:
-		case PCB_TYPE_VIA:
-			undo->Data.Size = ((pcb_pin_t *) ptr2)->Mask;
-			break;
-		case PCB_TYPE_PAD:
-			undo->Data.Size = ((pcb_pad_t *) ptr2)->Mask;
-			break;
-		}
-	}
-}
-
-/* ---------------------------------------------------------------------------
  * adds an object to the list of changed angles.  Note that you must
  * call this before changing the angles, passing the new start/delta.
  */
@@ -1400,7 +1338,6 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_MIRROR: return "mirror";
 		case PCB_UNDO_OTHERSIDE: return "otherside";
 		case PCB_UNDO_CHANGECLEARSIZE: return "chngeclearsize";
-		case PCB_UNDO_CHANGEMASKSIZE: return "changemasksize";
 		case PCB_UNDO_CHANGEANGLES: return "changeangles";
 		case PCB_UNDO_CHANGERADII: return "changeradii";
 		case PCB_UNDO_LAYERMOVE: return "layermove";

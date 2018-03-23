@@ -272,7 +272,8 @@ void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 		return NULL;
 	if (value <= PCB_MAX_PADSIZE && value >= PCB_MIN_PADSIZE && value != Pad->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_PAD, Element, Pad, Pad);
-		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
+abort();
+/*		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);*/
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		pcb_pad_invalidate_erase(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
@@ -394,7 +395,8 @@ void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 	if (value == Pad->Mask && ctx->chgsize.value == 0)
 		value = Pad->Thickness;
 	if (value != Pad->Mask) {
-		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
+abort();
+/*		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);*/
 		pcb_pad_invalidate_erase(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask = value;

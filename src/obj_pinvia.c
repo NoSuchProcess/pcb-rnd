@@ -420,7 +420,8 @@ void *pcb_viaop_change_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Via, Via);
 		if (Via->Mask) {
-			pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
+abort();
+/*			pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);*/
 			Via->Mask += value - Via->Thickness;
 		}
 		Via->Thickness = value;
@@ -526,7 +527,8 @@ void *pcb_pinop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIASIZE && value >= Pin->DrillingHole + PCB_MIN_PINORVIACOPPER && value != Pin->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, Pin, Pin);
-		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);
+abort();
+/*		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);*/
 		pcb_pin_invalidate_erase(Pin);
 		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -752,7 +754,8 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 		return pcb_false;
 	pcb_via_invalidate_erase(Via);
 	pcb_undo_add_obj_to_flag(Via);
-	pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
+abort();
+/*	pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);*/
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	PCB_FLAG_TOGGLE(PCB_FLAG_HOLE, Via);
@@ -788,7 +791,8 @@ void *pcb_pinop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 	if (value == Pin->Mask && ctx->chgsize.value == 0)
 		value = Pin->Thickness;
 	if (value != Pin->Mask) {
-		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);
+abort();
+/*		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);*/
 		pcb_pin_invalidate_erase(Pin);
 		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		Pin->Mask = value;
@@ -807,7 +811,8 @@ void *pcb_viaop_change_mask_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Via->Mask + ctx->chgsize.value;
 	value = MAX(value, 0);
 	if (value != Via->Mask) {
-		pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
+abort();
+/*		pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);*/
 		pcb_via_invalidate_erase(Via);
 		pcb_r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		Via->Mask = value;
