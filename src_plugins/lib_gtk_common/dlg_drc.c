@@ -261,14 +261,8 @@ enum {
 static GObjectClass *ghid_drc_violation_parent_class = NULL;
 
 
-/*! \brief GObject finalise handler
- *
- *  \par Function Description
- *  Just before the GhidDrcViolation GObject is finalized, free our
- *  allocated data, and then chain up to the parent's finalize handler.
- *
- *  \param [in] widget  The GObject being finalized.
- */
+/* Just before the GhidDrcViolation GObject is finalized, free our
+   allocated data, and then chain up to the parent's finalize handler. */
 static void ghid_drc_violation_finalize(GObject * object)
 {
 	GhidDrcViolation *violation = GHID_DRC_VIOLATION(object);
@@ -287,18 +281,6 @@ typedef struct object_list {
 	int *type_list;
 } object_list;
 
-/*! \brief GObject property setter function
- *
- *  \par Function Description
- *  Setter function for GhidDrcViolation's GObject properties,
- *  "settings-name" and "toplevel"
- *
- *  \param [in]  object       The GObject whose properties we are setting
- *  \param [in]  property_id  The numeric id. under which the property was
- *                            registered with g_object_class_install_property()
- *  \param [in]  value        The GValue the property is being set from
- *  \param [in]  pspec        A GParamSpec describing the property being set
- */
 static void ghid_drc_violation_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
 {
 	GhidDrcViolation *violation = GHID_DRC_VIOLATION(object);
@@ -348,19 +330,6 @@ static void ghid_drc_violation_set_property(GObject * object, guint property_id,
 	}
 }
 
-
-/*! \brief GObject property getter function
- *
- *  \par Function Description
- *  Getter function for GhidDrcViolation's GObject properties,
- *  "settings-name" and "toplevel".
- *
- *  \param [in]  object       The GObject whose properties we are getting
- *  \param [in]  property_id  The numeric id. under which the property was
- *                            registered with g_object_class_install_property()
- *  \param [out] value        The GValue in which to return the value of the property
- *  \param [in]  pspec        A GParamSpec describing the property being got
- */
 static void ghid_drc_violation_get_property(GObject * object, guint property_id, GValue * value, GParamSpec * pspec)
 {
 	switch (property_id) {
@@ -370,15 +339,6 @@ static void ghid_drc_violation_get_property(GObject * object, guint property_id,
 
 }
 
-
-/*! \brief GType class initialiser for GhidDrcViolation
- *
- *  \par Function Description
- *  GType class initialiser for GhidDrcViolation. We override our parent
- *  virtual class methods as needed and register our GObject properties.
- *
- *  \param [in]  klass       The GhidDrcViolationClass we are initialising
- */
 static void ghid_drc_violation_class_init(GhidViolationRendererClass * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
@@ -408,15 +368,8 @@ static void ghid_drc_violation_class_init(GhidViolationRendererClass * klass)
 																	g_param_spec_pointer("object-list", "", "", G_PARAM_WRITABLE));
 }
 
-/*! \brief Function to retrieve GhidViolationRenderer's GType identifier.
- *
- *  \par Function Description
- *  Function to retrieve GhidViolationRenderer's GType identifier.
- *  Upon first call, this registers the GhidViolationRenderer in the GType system.
- *  Subsequently it returns the saved value from its first execution.
- *
- *  \return the GType identifier associated with GhidViolationRenderer.
- */
+/* Upon first call, register the GhidViolationRenderer in the GType system
+ * and cache. Subsequently return the cached value. */
 GType ghid_drc_violation_get_type()
 {
 	static GType ghid_drc_violation_type = 0;
@@ -463,7 +416,7 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation)
 																					 "object-list", &obj_list, NULL);
 }
 
-/** Returns the DRC text string using markup feature. Should be freed with free() */
+/* Returns the DRC text string using markup feature. Should be freed with free() */
 static char *get_drc_violation_markup(GhidDrcViolation * violation)
 {
 	char *markup;

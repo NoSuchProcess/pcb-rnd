@@ -40,13 +40,9 @@ static int inited = 0;
 
 GdkPixbuf *XC_clock_source, *XC_hand_source, *XC_lock_source;
 
-/** Returns an RGBA 24x24 GdkPixbuf from \p data, using \p mask.
-
-    \param width  should be smaller than 24
-    \param height should be smaller than 24
-
-    \returns A newly-created GdkPixbuf with a reference count of 1. Use g_object_unref() to free the structure.
- */
+/* Allocates (with refco=1) an RGBA 24x24 GdkPixbuf from data, using mask;
+   width and height should be smaller than 24. Use g_object_unref() to free
+   the structure. */
 static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned char *mask,
 																							 unsigned int width, unsigned int height)
 {
