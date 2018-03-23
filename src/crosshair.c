@@ -902,7 +902,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
 			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
-		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
+		pcb_line_t *pad = (pcb_line_t *)ptr2;
 		pcb_layer_t *desired_layer;
 		pcb_layergrp_id_t desired_group;
 		pcb_layergrp_id_t SLayer, CLayer;

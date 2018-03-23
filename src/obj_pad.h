@@ -43,9 +43,9 @@ struct pcb_pad_s {                  /* a SMD pad */
 };
 
 #define PCB_PAD_LOOP(element) do {                                      \
-	pcb_pad_t *pad;                                                     \
+	pcb_pad_t *pad = NULL;                                                \
 	gdl_iterator_t __it__;                                            \
-	padlist_foreach(&(element)->Pad, &__it__, pad) {
+	{
 
 #define PCB_PAD_ALL_LOOP(top)    \
 	PCB_ELEMENT_LOOP(top);        \

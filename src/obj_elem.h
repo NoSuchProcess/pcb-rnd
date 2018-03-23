@@ -34,7 +34,6 @@
 #include "obj_common.h"
 #include "obj_arc_list.h"
 #include "obj_line_list.h"
-#include "obj_pad_list.h"
 #include "obj_pinvia_list.h"
 #include "obj_text.h"
 #include "font.h"
@@ -45,7 +44,6 @@ struct pcb_element_s {
 	pcb_text_t Name[PCB_MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see PCB_ELEMNAME_IDX_VISIBLE() below */
 	pcb_coord_t MarkX, MarkY;               /* position mark */
 	pinlist_t Pin;
-	padlist_t Pad;
 	linelist_t Line;
 	arclist_t Arc;
 	pcb_box_t VBox;
