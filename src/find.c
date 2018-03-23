@@ -95,9 +95,6 @@
 		fputc('\n', (FP));						\
 	}
 
-#define	PADLIST_ENTRY(L,I)	\
-	(((pcb_pad_t **)PadList[(L)].Data)[(I)])
-
 #define	LINELIST_ENTRY(L,I)	\
 	(((pcb_line_t **)LineList[(L)].Data)[(I)])
 
@@ -109,9 +106,6 @@
 
 #define	POLYGONLIST_ENTRY(L,I)	\
 	(((pcb_poly_t **)PolygonList[(L)].Data)[(I)])
-
-#define	PVLIST_ENTRY(I)	\
-	(((pcb_pin_t **)PVList.Data)[(I)])
 
 #define	PADSTACKLIST_ENTRY(I)	\
 	(((pcb_pstk_t **)PadstackList.Data)[(I)])
