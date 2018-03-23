@@ -50,9 +50,11 @@
 #include "undo.h"
 
 #include "obj_line_draw.h"
-#include "obj_pinvia_draw.h"
+#include "obj_pstk_draw.h"
 #include "obj_rat_draw.h"
 
+#warning padstack TODO: remove this when via is removed and the padstack is created from style directly
+#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 static pcb_layer_t *last_layer;
 
@@ -131,7 +133,7 @@ void pcb_tool_line_notify_mode(void)
 	}
 	else if(pcb_crosshair.Route.size > 0)
 	{
-		pcb_pin_t *via = NULL;
+		pcb_pstk_t *ps = NULL;
 
 		/* place a via if vias are visible, the layer is
 			 in a new group since the last line and there
@@ -146,16 +148,14 @@ void pcb_tool_line_notify_mode(void)
 				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (!PCB->is_footprint)
-#warning padstack TODO: rewrite this to pstk
-				&& (via =	pcb_via_new(PCB->Data,
+#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
+				&& ((ps = pcb_pstk_new_compat_via(PCB->Data,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
-															conf_core.design.via_thickness,
-															2 * conf_core.design.clearance, 0, 
-															conf_core.design.via_drilling_hole, NULL, 
-															pcb_no_flags())) != NULL) {
-					pcb_obj_add_attribs(via, PCB->pen_attr);
-					pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
+				conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
+			0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
+					pcb_obj_add_attribs(ps, PCB->pen_attr);
+					pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
 		}
 
 		/* Add the route to the design */
@@ -176,8 +176,8 @@ void pcb_tool_line_notify_mode(void)
 			pcb_marked.Y = pcb_crosshair.Route.end_point.Y;
 		}
 
-		if(via)
-			pcb_via_invalidate_draw(via);
+		if (ps)
+			pcb_pstk_invalidate_draw(ps);
 
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -220,7 +220,7 @@ void pcb_tool_line_notify_mode(void)
 																	 2 * conf_core.design.clearance,
 																	 pcb_flag_make(maybe_found_flag |
 																						 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
-			pcb_pin_t *via;
+			pcb_pstk_t *ps = NULL;
 
 			pcb_added_lines++;
 			pcb_obj_add_attribs(line, PCB->pen_attr);
@@ -238,16 +238,15 @@ void pcb_tool_line_notify_mode(void)
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_TYPE_NONE
-#warning padstack TODO: replace this with pstk
-					&& (via =
-							pcb_via_new(PCB->Data,
-													 pcb_crosshair.AttachedLine.Point1.X,
-													 pcb_crosshair.AttachedLine.Point1.Y,
-													 conf_core.design.via_thickness,
-													 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
-				pcb_obj_add_attribs(via, PCB->pen_attr);
-				pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-				pcb_via_invalidate_draw(via);
+#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
+				&& ((ps = pcb_pstk_new_compat_via(PCB->Data,
+															pcb_crosshair.AttachedLine.Point1.X,
+															pcb_crosshair.AttachedLine.Point1.Y,
+															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
+															0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
+				pcb_obj_add_attribs(ps, PCB->pen_attr);
+				pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
+				pcb_pstk_invalidate_draw(ps);
 			}
 			/* copy the coordinates */
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
