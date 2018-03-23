@@ -260,6 +260,8 @@ static void print_placement(FILE * fp)
 	}
 	PCB_END_LOOP;
 
+#warning padstack TODO: rewrite
+#if 0
 	PCB_VIA_LOOP(PCB->Data);
 	{ /* add mounting holes */
 		pcb_fprintf(fp, "    (component %d\n", via->ID);
@@ -267,6 +269,7 @@ static void print_placement(FILE * fp)
 		pcb_fprintf(fp, "    )\n");
 	}
 	PCB_END_LOOP;
+#endif
 	fprintf(fp, "  )\n");
 }
 
@@ -482,18 +485,6 @@ static void print_library(FILE * fp)
 		PCB_END_LOOP;
 
 		fprintf(fp, "    )\n");
-	}
-	PCB_END_LOOP;
-
-	PCB_VIA_LOOP(PCB->Data);
-	{ /* add mounting holes and vias */
-		fprintf(fp, "    (image %ld\n", via->ID); /* map every via by ID */
-		/* for mounting holes, clearance is added to thickness for higher total clearance */
-		padstack = pcb_strdup_printf("Th_round_%mI", via->Thickness + via->Clearance);
-		fprintf(fp, "      (pin %s 1 0 0)\n", padstack);	/* only 1 pin, 0,0 puts it right on component placement spot */
-		fprintf(fp, "    )\n");
-
-		add_padstack(&pads, padstack);
 	}
 	PCB_END_LOOP;
 
