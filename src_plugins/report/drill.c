@@ -113,47 +113,6 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 	pcb_box_t *pb;
 
 	AllDrills = (DrillInfoTypePtr) calloc(1, sizeof(DrillInfoType));
-	PCB_PIN_ALL_LOOP(top);
-	{
-		if (!DrillFound) {
-			DrillFound = pcb_true;
-			Drill = GetDrillInfoDrillMemory(AllDrills);
-			InitializeDrill(Drill, pin, element);
-		}
-		else {
-			if (Drill->DrillSize == pin->DrillingHole)
-				FillDrill(Drill, (pcb_any_obj_t *)pin, PCB_FLAG_TEST(PCB_FLAG_HOLE, pin));
-			else {
-				NewDrill = pcb_false;
-				DRILL_LOOP(AllDrills);
-				{
-					if (drill->DrillSize == pin->DrillingHole) {
-						Drill = drill;
-						FillDrill(Drill, (pcb_any_obj_t *)pin, PCB_FLAG_TEST(PCB_FLAG_HOLE, pin));
-						break;
-					}
-					else if (drill->DrillSize > pin->DrillingHole) {
-						if (!NewDrill) {
-							NewDrill = pcb_true;
-							InitializeDrill(&swapdrill, pin, element);
-							Drill = GetDrillInfoDrillMemory(AllDrills);
-							Drill->DrillSize = pin->DrillingHole + 1;
-							Drill = drill;
-						}
-						savedrill = *drill;
-						*drill = swapdrill;
-						swapdrill = savedrill;
-					}
-				}
-				PCB_END_LOOP;
-				if (AllDrills->Drill[AllDrills->DrillN - 1].DrillSize < pin->DrillingHole) {
-					Drill = GetDrillInfoDrillMemory(AllDrills);
-					InitializeDrill(Drill, pin, element);
-				}
-			}
-		}
-	}
-	PCB_ENDALL_LOOP;
 
 #warning subc TODO: do this using rtree because of subc recursion
 	PCB_VIA_LOOP(top);
