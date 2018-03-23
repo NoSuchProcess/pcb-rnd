@@ -894,7 +894,6 @@ static lht_node_t *build_data(pcb_data_t *data)
 {
 	lht_node_t *grp, *ndt;
 	pcb_pstk_t *ps;
-	pcb_pin_t *pi;
 	pcb_element_t *el;
 	pcb_subc_t *sc;
 	gdl_iterator_t it;

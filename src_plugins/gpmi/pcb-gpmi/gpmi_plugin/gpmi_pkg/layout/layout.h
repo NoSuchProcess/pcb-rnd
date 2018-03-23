@@ -112,8 +112,6 @@ typedef struct layout_object_s {
 		pcb_text_t    *t;
 		pcb_poly_t *p;
 		pcb_arc_t     *a;
-		pcb_pin_t     *v;
-		pcb_pin_t     *pin;
 	} obj;
 	pcb_layer_id_t layer;
 } layout_object_t;

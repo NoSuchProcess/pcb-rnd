@@ -2673,7 +2673,7 @@ yyreduce:
   case 153:
 #line 1594 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pin_t *pin = io_pcb_element_pin_new(yysubc, NU ((yyvsp[-9].measure)) + yysubc_ox,
+				pcb_pstk_t *pin = io_pcb_element_pin_new(yysubc, NU ((yyvsp[-9].measure)) + yysubc_ox,
 					NU ((yyvsp[-8].measure)) + yysubc_oy, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].string),
 					(yyvsp[-2].string), (yyvsp[-1].flagtype));
 				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);

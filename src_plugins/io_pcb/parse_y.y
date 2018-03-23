@@ -1592,7 +1592,7 @@ pin_hi_format
 			   number, flags */
 		: T_PIN '[' measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_pin_t *pin = io_pcb_element_pin_new(yysubc, NU ($3) + yysubc_ox,
+				pcb_pstk_t *pin = io_pcb_element_pin_new(yysubc, NU ($3) + yysubc_ox,
 					NU ($4) + yysubc_oy, NU ($5), NU ($6), NU ($7), NU ($8), $9,
 					$10, $11);
 				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);

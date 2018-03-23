@@ -483,7 +483,6 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	gdl_iterator_t it;
-	pcb_pin_t *via;
 	pcb_pstk_t *ps;
 	int is_subc = Data->parent_type == PCB_PARENT_SUBC;
 
