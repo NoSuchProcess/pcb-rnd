@@ -57,56 +57,6 @@
 
 #include <genregex/regex_sei.h>
 
-void pcb_select_element(pcb_board_t *pcb, pcb_element_t *element, pcb_change_flag_t how, int redraw)
-{
-	/* select all pins and names of the element */
-	PCB_PIN_LOOP(element);
-	{
-		pcb_undo_add_obj_to_flag(pin);
-		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pin);
-	}
-	PCB_END_LOOP;
-	PCB_PAD_LOOP(element);
-	{
-		pcb_undo_add_obj_to_flag(pad);
-		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pad);
-	}
-	PCB_END_LOOP;
-	PCB_ELEMENT_PCB_TEXT_LOOP(element);
-	{
-		pcb_undo_add_obj_to_flag(text);
-		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
-	}
-	PCB_END_LOOP;
-	pcb_undo_add_obj_to_flag(element);
-	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, element);
-
-	if (redraw) {
-		if (pcb_silk_on(pcb) && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn))
-			if (pcb_silk_on(pcb)) {
-				pcb_elem_name_invalidate_draw(element);
-				pcb_elem_package_invalidate_draw(element);
-			}
-		if (pcb->PinOn)
-			pcb_elem_pp_invalidate_draw(element);
-	}
-}
-
-void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int redraw)
-{
-	/* select all names of the element */
-	PCB_ELEMENT_PCB_TEXT_LOOP(element);
-	{
-		pcb_undo_add_obj_to_flag(text);
-		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
-	}
-	PCB_END_LOOP;
-
-	if (redraw)
-		pcb_elem_name_invalidate_draw(element);
-}
-
-
 /* ---------------------------------------------------------------------------
  * toggles the selection of any kind of object
  * the different types are defined by search.h
@@ -120,14 +70,9 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	pcb_bool changed = pcb_true;
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC | PCB_TYPE_SUBC_FLOATER, &ptr1, &ptr2, &ptr3);
-	if (type == PCB_TYPE_NONE || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
+	if (type == PCB_TYPE_NONE || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 		return pcb_false;
 	switch (type) {
-	case PCB_TYPE_VIA:
-		pcb_undo_add_obj_to_flag(ptr1);
-		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr1);
-		pcb_via_invalidate_draw((pcb_pin_t *) ptr1);
-		break;
 
 	case PCB_TYPE_PSTK:
 		pcb_undo_add_obj_to_flag(ptr1);
@@ -189,26 +134,6 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			/* changing memory order no longer effects draw order */
 			break;
 		}
-
-	case PCB_TYPE_PIN:
-		pcb_undo_add_obj_to_flag(ptr2);
-		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2);
-		pcb_pin_invalidate_draw((pcb_pin_t *) ptr2);
-		break;
-
-	case PCB_TYPE_PAD:
-		pcb_undo_add_obj_to_flag(ptr2);
-		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pad_t *) ptr2);
-		pcb_pad_invalidate_draw((pcb_pad_t *) ptr2);
-		break;
-
-	case PCB_TYPE_ELEMENT_NAME:
-		pcb_select_element_name((pcb_element_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
-		break;
-
-	case PCB_TYPE_ELEMENT:
-		pcb_select_element(pcb, (pcb_element_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
-		break;
 
 	case PCB_TYPE_SUBC:
 		pcb_subc_select(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
@@ -405,93 +330,8 @@ do { \
 		PCB_END_LOOP;
 	}
 
-	/* elements */
-	PCB_ELEMENT_LOOP(pcb->Data);
-	{
-		{
-			pcb_bool gotElement = pcb_false;
-			if ((pcb_silk_on(pcb) || !Flag)
-					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
-					&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn)) {
-				if (PCB_BOX_NEAR_BOX(&PCB_ELEM_TEXT_VISIBLE(PCB, element).BoundingBox, Box)
-						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &PCB_ELEM_TEXT_VISIBLE(PCB, element))
-						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element)) != Flag) {
-					/* select all names of element */
-					PCB_ELEMENT_PCB_TEXT_LOOP(element);
-					{
-						append(PCB_TYPE_ELEMENT_NAME, element, text);
-					}
-					PCB_END_LOOP;
-					if (pcb_silk_on(pcb))
-						pcb_elem_name_invalidate_draw(element);
-				}
-				if ((pcb->PinOn || !Flag) && PCB_ELEMENT_NEAR_BOX(element, Box))
-					if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
-						append(PCB_TYPE_ELEMENT, element, element);
-						PCB_PIN_LOOP(element);
-						{
-							if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag) {
-								append(PCB_TYPE_PIN, element, pin);
-								if (pcb->PinOn)
-									pcb_pin_invalidate_draw(pin);
-							}
-						}
-						PCB_END_LOOP;
-						PCB_PAD_LOOP(element);
-						{
-							if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag) {
-								append(PCB_TYPE_PAD, element, pad);
-								if (pcb->PinOn)
-									pcb_pad_invalidate_draw(pad);
-							}
-						}
-						PCB_END_LOOP;
-						if (pcb->PinOn)
-							pcb_elem_invalidate_draw(element);
-						gotElement = pcb_true;
-					}
-			}
-			if ((pcb->PinOn || !Flag) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && !gotElement) {
-				PCB_PIN_LOOP(element);
-				{
-					if ((PCB_VIA_OR_PIN_NEAR_BOX(pin, Box)
-							 && PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag)) {
-						append(PCB_TYPE_PIN, element, pin);
-						if (pcb->PinOn)
-							pcb_pin_invalidate_draw(pin);
-					}
-				}
-				PCB_END_LOOP;
-				PCB_PAD_LOOP(element);
-				{
-					if (PCB_PAD_NEAR_BOX(pad, Box)
-							&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag
-							&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn || !Flag)) {
-						append(PCB_TYPE_PAD, element, pad);
-						if (pcb->PinOn)
-							pcb_pad_invalidate_draw(pad);
-					}
-				}
-				PCB_END_LOOP;
-			}
-		}
-	}
-	PCB_END_LOOP;
-
 	/* end with vias */
 	if (pcb->ViaOn || !Flag) {
-		PCB_VIA_LOOP(pcb->Data);
-		{
-			if (PCB_VIA_OR_PIN_NEAR_BOX(via, Box)
-					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)
-					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
-				append(PCB_TYPE_VIA, via, via);
-				if (pcb->ViaOn)
-					pcb_via_invalidate_draw(via);
-			}
-		}
-		PCB_END_LOOP;
-
 		PCB_PADSTACK_LOOP(pcb->Data);
 		{
 			if (pcb_pstk_near_box(padstack, Box, NULL)
@@ -503,7 +343,6 @@ do { \
 			}
 		}
 		PCB_END_LOOP;
-
 	}
 
 	if (changed) {
@@ -528,15 +367,10 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 	switch(obj->type) {
 		case PCB_OBJ_RAT:
 		case PCB_OBJ_LINE: return PCB_LINE_NEAR_BOX((pcb_line_t *)obj, box);
-		case PCB_OBJ_ETEXT:
 		case PCB_OBJ_TEXT: return PCB_TEXT_NEAR_BOX((pcb_text_t *)obj, box);
 		case PCB_OBJ_POLY: return PCB_POLYGON_NEAR_BOX((pcb_poly_t *)obj, box);
 		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
-		case PCB_OBJ_PAD:  return PCB_PAD_NEAR_BOX((pcb_pad_t *)obj, box);
 		case PCB_OBJ_PSTK: return pcb_pstk_near_box((pcb_pstk_t *)obj, box, NULL);
-		case PCB_OBJ_PIN:
-		case PCB_OBJ_VIA:  return PCB_VIA_OR_PIN_NEAR_BOX((pcb_pin_t *)obj, box);
-		case PCB_OBJ_ELEMENT: return PCB_ELEMENT_NEAR_BOX((pcb_element_t *)obj, box);
 		case PCB_OBJ_SUBC: return PCB_SUBC_NEAR_BOX((pcb_subc_t *)obj, box);
 		default: return 0;
 	}
@@ -598,7 +432,7 @@ long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len)
  * Flag determines if they are to be selected or unselected
  * returns pcb_true if the state of any object has changed
  *
- * text objects and elements cannot be selected by this routine
+ * text objects and subcircuits cannot be selected by this routine
  */
 pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 {
@@ -646,7 +480,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		}
 	}
 	PCB_ENDALL_LOOP;
-
+#warning padstack TODO: rewrite this to pstk
 	if (pcb->PinOn && pcb_silk_on(pcb)) {
 		PCB_PIN_ALL_LOOP(pcb->Data);
 		{
@@ -697,7 +531,7 @@ static int regexec_match_all(re_sei_t *preg, const char *string)
 	return !!re_sei_exec(preg, string);
 }
 
-/* case insensitive match of each element in the array pat against name
+/* case insensitive match of each item in the array pat against name
    returns 1 if any of them matched */
 static int strlst_match(const char **pat, const char *name)
 {
@@ -776,6 +610,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 	}
 	PCB_ENDALL_LOOP;
 
+#warning subc TODO: rewrite
 	if (pcb_silk_on(pcb) && (Type & PCB_TYPE_ELEMENT))
 		PCB_ELEMENT_LOOP(pcb->Data);
 	{
@@ -811,6 +646,8 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 		}
 	}
 	PCB_END_LOOP;
+
+#warning padstack TODO: rewrite
 	if (pcb->PinOn && (Type & PCB_TYPE_PIN))
 		PCB_PIN_ALL_LOOP(pcb->Data);
 	{
