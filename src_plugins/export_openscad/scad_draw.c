@@ -109,12 +109,6 @@ static int scad_draw_outline(void)
 	return 0;
 }
 
-static void scad_draw_drill(const pcb_pin_t *pin)
-{
-	pcb_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(pin->X), TRY_(pin->Y));
-	pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", pin->DrillingHole/2);
-}
-
 static void scad_draw_pstk(const pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
