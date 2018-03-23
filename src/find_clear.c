@@ -38,19 +38,6 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
 
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(flag, via)) {
-			if (AndDraw)
-				pcb_undo_add_obj_to_flag(via);
-			PCB_FLAG_CLEAR(flag, via);
-			if (AndDraw)
-				pcb_via_invalidate_draw(via);
-			change = pcb_true;
-		}
-	}
-	PCB_END_LOOP;
-
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, padstack)) {
@@ -61,36 +48,6 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 				pcb_pstk_invalidate_draw(padstack);
 			change = pcb_true;
 		}
-	}
-	PCB_END_LOOP;
-
-
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		PCB_PIN_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(flag, pin)) {
-				if (AndDraw)
-					pcb_undo_add_obj_to_flag(pin);
-				PCB_FLAG_CLEAR(flag, pin);
-				if (AndDraw)
-					pcb_pin_invalidate_draw(pin);
-				change = pcb_true;
-			}
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(flag, pad)) {
-				if (AndDraw)
-					pcb_undo_add_obj_to_flag(pad);
-				PCB_FLAG_CLEAR(flag, pad);
-				if (AndDraw)
-					pcb_pad_invalidate_draw(pad);
-				change = pcb_true;
-			}
-		}
-		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
 
