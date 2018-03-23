@@ -130,7 +130,6 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
 void XORPolygon_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr);
-void XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance);
 void XORDrawAttachedArc(pcb_coord_t thick);
 void XORDrawBuffer(pcb_buffer_t *Buffer);
 void XORDrawMoveOrCopy(void);

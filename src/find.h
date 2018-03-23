@@ -62,7 +62,6 @@ extern pcb_find_callback_t pcb_find_callback;
 
 pcb_bool pcb_intersect_line_line(pcb_line_t *, pcb_line_t *);
 pcb_bool pcb_intersect_line_arc(pcb_line_t *, pcb_arc_t *);
-pcb_bool pcb_intersect_line_pin(pcb_pin_t *, pcb_line_t *);
 pcb_bool pcb_is_poly_in_poly(pcb_poly_t *, pcb_poly_t *);
 void pcb_lookup_element_conns(pcb_element_t *, FILE *);
 void pcb_lookup_conns_to_all_elements(FILE *);
