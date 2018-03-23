@@ -53,12 +53,7 @@ static pcb_coord_t pcb_get_num(char **s, const char *default_unit)
 }
 
 
-/*! \brief Serializes the route style list 
- *  \par Function Description
- *  Right now n_styles should always be set to NUM_STYLES,
- *  since that is the number of route styles pcb_route_string_parse()
- *  expects to parse.
- */
+/* Serializes the route style list */
 char *pcb_route_string_make(vtroutestyle_t *styles)
 {
 	gds_t str;

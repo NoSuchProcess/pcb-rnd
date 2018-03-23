@@ -32,12 +32,9 @@
  *
  */
 
-/*! \file <pcb-printf.c>
- *  \brief Implementation of printf wrapper to output pcb coords and angles
- *  \par Description
- *  For details of all supported specifiers, see the comment at the
- *  top of pcb-printf.h
- */
+/* Implementation of printf wrapper to output pcb coords and angles
+ * For details of all supported specifiers, see the comment at the
+ * top of pcb-printf.h */
 
 #include <locale.h>
 #include <ctype.h>
@@ -134,21 +131,20 @@ static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, cons
 }
 
 
-/* \brief Internal coord-to-string converter for pcb-printf
- * \par Function Description
+/* Internal coord-to-string converter for pcb-printf
  * Converts a (group of) measurement(s) to a comma-delimited
  * string, with appropriate units. If more than one coord is
  * given, the list is enclosed in parens to make the scope of
  * the unit suffix clear.
  *
- * \param [in] dest         Append the output to this dynamic string
- * \param [in] coord        Array of coords to convert
- * \param [in] n_coords     Number of coords in array
- * \param [in] printf_spec  printf sub-specifier to use with %f
- * \param [in] e_allow      Bitmap of units the function may use
- * \param [in] suffix_type  Whether to add a suffix
+ * dest         Append the output to this dynamic string
+ * coord        Array of coords to convert
+ * n_coords     Number of coords in array
+ * printf_spec  printf sub-specifier to use with %f
+ * e_allow      Bitmap of units the function may use
+ * suffix_type  Whether to add a suffix
  *
- * \return 0 on success, -1 on error
+ * return 0 on success, -1 on error
  */
 static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum pcb_allow_e allow,
 														 enum pcb_suffix_e suffix_type)
@@ -417,18 +413,16 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
 	return 0;
 }
 
-/* \brief Main low level pcb-printf function
- * \par Function Description
+/* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
  * output pcb coords as various units. See the comment at the top
  * of pcb-printf.h for full details.
  *
- * \param [in] string Append anything new at the end of this dynamic string (must be initialized before the call)
- * \param [in] fmt    Format specifier
- * \param [in] args   Arguments to specifier
+ * [in] string Append anything new at the end of this dynamic string (must be initialized before the call)
+ * [in] fmt    Format specifier
+ * [in] args   Arguments to specifier
  *
- * \return 0 on success
- */
+ * return 0 on success */
 int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 {
 	gds_t spec;
@@ -727,13 +721,6 @@ err:;
 	return retval;
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to a string
- *
- * \param [in] string  Pointer to string to output into
- * \param [in] fmt     Format specifier
- *
- * \return The length of the written string
- */
 int pcb_sprintf(char *string, const char *fmt, ...)
 {
 	gds_t str;
@@ -754,14 +741,6 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 	return str.used;
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to a string with a size limit
- *
- * \param [in] string  Pointer to string to output into
- * \param [in] len     Maximum length
- * \param [in] fmt     Format specifier
- *
- * \return The length of the written string
- */
 int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 {
 	gds_t str;
@@ -795,13 +774,6 @@ int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
 	return str.used;
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to a file
- *
- * \param [in] fh   File to output to
- * \param [in] fmt  Format specifier
- *
- * \return The length of the written string
- */
 int pcb_fprintf(FILE * fh, const char *fmt, ...)
 {
 	int rv;
@@ -814,14 +786,6 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 	return rv;
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to a file
- *
- * \param [in] fh   File to output to
- * \param [in] fmt  Format specifier
- * \param [in] args   Arguments to specifier
- *
- * \return The length of the written string
- */
 int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
 {
 	int rv;
@@ -839,12 +803,6 @@ int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
 	return rv;
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to stdout
- *
- * \param [in] fmt  Format specifier
- *
- * \return The length of the written string
- */
 int pcb_printf(const char *fmt, ...)
 {
 	int rv;
@@ -862,12 +820,6 @@ int pcb_printf(const char *fmt, ...)
 	return rv;
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to a newly allocated string
- *
- * \param [in] fmt  Format specifier
- *
- * \return The newly allocated string. Must be freed with free.
- */
 char *pcb_strdup_printf(const char *fmt, ...)
 {
 	gds_t str;
@@ -882,13 +834,6 @@ char *pcb_strdup_printf(const char *fmt, ...)
 	return str.array; /* no other allocation has been made */
 }
 
-/* \brief Wrapper for pcb_append_vprintf that outputs to a string
- *
- * \param [in] string  Pointer to string to output into
- * \param [in] fmt     Format specifier
- *
- * \return return the new string; must be free()'d later
- */
 char *pcb_strdup_vprintf(const char *fmt, va_list args)
 {
 	gds_t str;
@@ -900,13 +845,7 @@ char *pcb_strdup_vprintf(const char *fmt, va_list args)
 }
 
 
-/* \brief Wrapper for pcb_append_vprintf that appends to a string using vararg API
- *
- * \param [in] str  Existing dynamic string
- * \param [in] fmt  Format specifier
- *
- * \return 0 on success
- */
+/* Wrapper for pcb_append_vprintf that appends to a string using vararg API */
 int pcb_append_printf(gds_t *str, const char *fmt, ...)
 {
 	int retval;
