@@ -562,7 +562,7 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps)
 
 static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *shape)
 {
-	pcb_pad_t pad;
+	pcb_any_line_t pad;
 	pcb_vector_t v;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	int isneg = PCB_IS_BOX_NEGATIVE(box), is_in, n;
@@ -692,7 +692,7 @@ int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 
 static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_shape_t *shape)
 {
-	pcb_pad_t pad;
+	pcb_any_line_t pad;
 	pcb_vector_t v;
 
 	switch(shape->shape) {
