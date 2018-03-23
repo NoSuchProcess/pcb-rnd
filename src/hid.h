@@ -298,10 +298,6 @@ struct pcb_hid_s {
 	void (*fill_polygon_offs) (pcb_hid_gc_t gc_, int n_coords_, pcb_coord_t * x_, pcb_coord_t * y_, pcb_coord_t dx, pcb_coord_t dy);
 	void (*fill_pcb_polygon) (pcb_hid_gc_t gc_, pcb_poly_t * poly, const pcb_box_t * clip_box);
 	void (*thindraw_pcb_polygon) (pcb_hid_gc_t gc_, pcb_poly_t * poly, const pcb_box_t * clip_box);
-	void (*fill_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
-	void (*thindraw_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
-	void (*fill_pcb_pv) (pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
-	void (*thindraw_pcb_pv) (pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
 	void (*fill_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
 
 

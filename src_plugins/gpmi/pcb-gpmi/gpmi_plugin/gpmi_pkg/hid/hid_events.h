@@ -56,8 +56,3 @@ gpmi_define_event(HIDE_make_gc)(void *hid, void *gc);
 /* PCB callback events for drawing: destroy a graphical context */
 gpmi_define_event(HIDE_destroy_gc)(void *hid, void *gc);
 
-/* PCB callback events for drawing: TODO */
-gpmi_define_event(HIDE_fill_pcb_pv)(void *hid, void *fg_gc, void *bg_gc, void *pad, int drawHole, int mask);
-
-/* PCB callback events for drawing: TODO */
-gpmi_define_event(HIDE_fill_pcb_pad)(void *hid, void *pad, int clear, int mask);

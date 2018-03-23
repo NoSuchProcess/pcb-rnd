@@ -194,30 +194,6 @@ static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pc
 	delegatee_->thindraw_pcb_polygon(gc, poly, clip_box);
 }
 
-static void log_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask)
-{
-	pcb_fprintf(out_, "fill_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
-		pad->Name, clip ? "true" : "false", mask ? "true" : "false");
-	delegatee_->fill_pcb_pad(gc, pad, clip, mask);
-}
-
-static void log_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask)
-{
-	pcb_fprintf(out_, "thindraw_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
-		pad->Name, clip ? "true" : "false", mask ? "true" : "false");
-	delegatee_->thindraw_pcb_pad(gc, pad, clip, mask);
-}
-
-static void log_fill_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask)
-{
-	delegatee_->fill_pcb_pv(fg, bg, pv, drawHole, mask);
-}
-
-static void log_thindraw_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask)
-{
-	delegatee_->thindraw_pcb_pv(fg, bg, pv, drawHole, mask);
-}
-
 static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_fprintf(out_, "fill_rect(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
@@ -280,10 +256,6 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(fill_polygon_offs);
 	REGISTER_IF_NOT_NULL(fill_pcb_polygon);
 	REGISTER_IF_NOT_NULL(thindraw_pcb_polygon);
-	REGISTER_IF_NOT_NULL(fill_pcb_pad);
-	REGISTER_IF_NOT_NULL(thindraw_pcb_pad);
-	REGISTER_IF_NOT_NULL(fill_pcb_pv);
-	REGISTER_IF_NOT_NULL(thindraw_pcb_pv);
 	REGISTER_IF_NOT_NULL(fill_rect);
 	REGISTER_IF_NOT_NULL(report_dialog);
 	REGISTER_IF_NOT_NULL(beep);
