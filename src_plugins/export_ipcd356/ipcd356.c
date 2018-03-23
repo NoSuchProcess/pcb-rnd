@@ -91,7 +91,7 @@ typedef struct {
 } IPCD356_Alias;
 
 typedef struct {
-	int AliasN;										/*!< Number of entries. */
+	int AliasN;										/* Number of entries. */
 	IPCD356_Alias *Alias;
 } IPCD356_AliasList;
 
@@ -183,10 +183,12 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		fprintf(fd, "327%-17.14s", net);	/* Net Name. */
 		fprintf(fd, "%-6.6s", element->Name[1].TextString);	/* Refdes. */
 		fprintf(fd, "-%-4.4s", pad->Number);	/* pin number. */
-		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
+#warning TODO: Midpoint indicator (M)
+		fprintf(fd, " ");						
 		fprintf(fd, "      ");			/* Drilled hole Id (blank for pads). */
 		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
-			fprintf(fd, "A02");				/*! \todo Put actual layer # for bottom side. */
+#warning TODO:  Put actual layer # for bottom side.
+			fprintf(fd, "A02");	
 		}
 		else {
 			fprintf(fd, "A01");				/* Top side. */
@@ -248,7 +250,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 		fprintf(fd, "%-6.6s", element->Name[1].TextString);	/* Refdes. */
 		fprintf(fd, "-%-4.4s", pin->Number);	/* Pin number. */
-		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
+#warning TODO: Midpoint indicator (M)
+		fprintf(fd, " ");						
 		tmp = pin->DrillingHole;
 		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			tmp = tmp / 2540;					/* 0.0001". */
@@ -324,7 +327,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 		fprintf(fd, "VIA   ");			/* Refdes. */
 		fprintf(fd, "-    ");				/* Pin number. */
-		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
+#warning TODO: Midpoint indicator (M)
+		fprintf(fd, " ");						
 		tmp = via->DrillingHole;
 		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			tmp = tmp / 2540;					/* 0.0001". */
