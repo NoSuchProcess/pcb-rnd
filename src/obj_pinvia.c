@@ -602,23 +602,6 @@ void *pcb_pinop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 	return old;
 }
 
-/* changes the number of a pin */
-void *pcb_pinop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
-{
-	char *old = Pin->Number;
-
-	Element = Element;						/* get rid of 'unused...' warnings */
-	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pin)) {
-		pcb_pin_name_invalidate_erase(Pin);
-		Pin->Number = ctx->chgname.new_name;
-		pcb_pin_name_invalidate_draw(Pin);
-	}
-	else
-		Pin->Number = ctx->chgname.new_name;
-	return old;
-}
-
-
 /* changes the square flag of a via */
 void *pcb_viaop_change_square(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {

@@ -220,24 +220,6 @@ static pcb_bool UndoChangeName(UndoListTypePtr Entry)
 }
 
 /* ---------------------------------------------------------------------------
- * recovers an object from a 'change oinnum' operation
- * returns pcb_true if anything has been recovered
- */
-static pcb_bool UndoChangePinnum(UndoListTypePtr Entry)
-{
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-
-	/* lookup entry by it's ID */
-	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != PCB_TYPE_NONE) {
-		Entry->Data.ChangeName.Name = (char *) (pcb_chg_obj_pinnum(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
-		return pcb_true;
-	}
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
  * recovers an object from a ChangeAngles change operation
  */
 static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
@@ -743,11 +725,6 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
-	case PCB_UNDO_CHANGEPINNUM:
-		if (UndoChangePinnum(ptr))
-			return 0;
-		break;
-
 	case PCB_UNDO_CREATE:
 		if (UndoCopyOrCreate(ptr))
 			return 0;
@@ -1059,19 +1036,6 @@ void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr
 }
 
 /* ---------------------------------------------------------------------------
- * adds an object to the list of objects with changed pinnums
- */
-void pcb_undo_add_obj_to_change_pinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
-{
-	UndoListTypePtr undo;
-
-	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGEPINNUM, PCB_OBJECT_ID(Ptr3), Type);
-		undo->Data.ChangeName.Name = OldName;
-	}
-}
-
-/* ---------------------------------------------------------------------------
  * adds an object to the list of objects moved to another layer
  */
 void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
@@ -1287,7 +1251,6 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_LAYERMOVE: return "layermove";
 		case PCB_UNDO_CLEAR: return "clear";
 		case PCB_UNDO_NETLISTCHANGE: return "netlistchange";
-		case PCB_UNDO_CHANGEPINNUM: return "changepinnum";
 	}
 	sprintf(buff, "Unknown %d", type);
 	return buff;
@@ -1303,7 +1266,6 @@ static void pcb_undo_old_free(void *ptr_)
 
 	switch (ptr->Type) {
 		case PCB_UNDO_CHANGENAME:
-		case PCB_UNDO_CHANGEPINNUM:
 			free(ptr->Data.ChangeName.Name);
 			break;
 		case PCB_UNDO_REMOVE:

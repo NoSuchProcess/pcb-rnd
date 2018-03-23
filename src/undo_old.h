@@ -82,7 +82,6 @@ typedef enum {
 	PCB_UNDO_LAYERMOVE         = 0x020000, /* layer new/delete/move */
 	PCB_UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */
 	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
-	PCB_UNDO_CHANGEPINNUM      = 0x100000, /* change of pin number */
 	PCB_UNDO_CHANGERADII       = 0x200000, /* change arc radii */
 	PCB_UNDO_OTHERSIDE         = 0x400000, /* change side of board (subcircuit) */
 	PCB_UNDO_ROTATE            = 0x800000  /* rotations at arbitrary angle */

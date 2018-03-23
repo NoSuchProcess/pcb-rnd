@@ -42,7 +42,6 @@ void *pcb_pinop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 void *pcb_pinop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
 void *pcb_viaop_change_name(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_pinop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
-void *pcb_pinop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
 void *pcb_viaop_change_square(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_pinop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
 void *pcb_pinop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);

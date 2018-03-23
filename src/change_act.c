@@ -644,11 +644,8 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_undo_save_serial();
-					if ((pinnums != NULL) && (pcb_strcasecmp(pinnums, "Number") == 0))
-						pinnum = 1;
-					else
-						pinnum = 0;
-					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3, pinnum)) {
+					pinnum = 0;
+					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3)) {
 						pcb_redraw();
 						pcb_board_set_changed_flag(pcb_true);
 						pcb_event(PCB_EVENT_RUBBER_RENAME, "ipppi", type, ptr1, ptr2, ptr3, pinnum);

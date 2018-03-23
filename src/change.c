@@ -124,19 +124,6 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL  /* padstack */
 };
 
-static pcb_opfunc_t ChangePinnumFunctions = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL  /* padstack */
-};
-
 pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
@@ -947,26 +934,6 @@ void *pcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the pin number of the passed object
- * returns the old name
- *
- * The allocated memory isn't freed because the old string is used
- * by the undo module.
- */
-void *pcb_chg_obj_pinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
-{
-	void *result;
-	pcb_opctx_t ctx;
-
-	ctx.chgname.pcb = PCB;
-	ctx.chgname.new_name = Name;
-
-	result = pcb_object_operation(&ChangePinnumFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	pcb_draw();
-	return result;
-}
-
-/* ---------------------------------------------------------------------------
  * changes the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
@@ -1153,7 +1120,7 @@ pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * The allocated memory isn't freed because the old string is used
  * by the undo module.
  */
-void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int pinnum)
+void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	char *name = NULL;
 	char msg[513];
@@ -1186,16 +1153,10 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 	if (name) {
 		/* NB: ChangeObjectName takes ownership of the passed memory */
 		char *old;
-		if (pinnum)
-			old = (char *) pcb_chg_obj_pinnum(Type, Ptr1, Ptr2, Ptr3, name);
-		else
-			old = (char *) pcb_chg_obj_name(Type, Ptr1, Ptr2, Ptr3, name);
+		old = (char *) pcb_chg_obj_name(Type, Ptr1, Ptr2, Ptr3, name);
 
 		if (old != (char *) -1) {
-			if (pinnum)
-				pcb_undo_add_obj_to_change_pinnum(Type, Ptr1, Ptr2, Ptr3, old);
-			else
-				pcb_undo_add_obj_to_change_name(Type, Ptr1, Ptr2, Ptr3, old);
+			pcb_undo_add_obj_to_change_name(Type, Ptr1, Ptr2, Ptr3, old);
 			pcb_undo_inc_serial();
 		}
 		pcb_draw();
