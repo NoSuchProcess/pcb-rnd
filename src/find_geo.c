@@ -64,7 +64,7 @@
 		pcb_is_point_on_arc((PV)->X,(PV)->Y,MAX((PV)->Thickness/2.0 + Bloat,0.0), (Arc)))
 
 #define	IS_PV_ON_PAD(PV,Pad) \
-	( pcb_is_point_in_pad((PV)->X, (PV)->Y, MAX((PV)->Thickness/2 +Bloat,0), (Pad)))
+	( pcb_is_point_in_line((PV)->X, (PV)->Y, MAX((PV)->Thickness/2 +Bloat,0), (Pad)))
 
 /* reduce arc start angle and delta to 0..360 */
 static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
@@ -399,10 +399,10 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 	 *  cases where the "real" lines don't intersect but the
 	 *  thick lines touch, and ensures that the dx/dy business
 	 *  below does not cause a divide-by-zero. */
-	if (pcb_is_point_in_pad(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
-			|| pcb_is_point_in_pad(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
-			|| pcb_is_point_in_pad(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2)
-			|| pcb_is_point_in_pad(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2))
+	if (pcb_is_point_in_line(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
+			|| pcb_is_point_in_line(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
+			|| pcb_is_point_in_line(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2)
+			|| pcb_is_point_in_line(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2))
 		return pcb_true;
 
 	/* setup some constants */
@@ -428,7 +428,7 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 
 	/* No cross product means parallel lines, or maybe Line2 is
 	 *  zero-length. In either case, since we did a bounding-box
-	 *  check before getting here, the above pcb_is_point_in_pad() checks
+	 *  check before getting here, the above pcb_is_point_in_line() checks
 	 *  will have caught any intersections. */
 	if (r == 0.0)
 		return pcb_false;
@@ -515,11 +515,11 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 
 	/* check arc end points */
 	pcb_arc_get_end(Arc, 0, &ex, &ey);
-	if (pcb_is_point_in_pad(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
 
 	pcb_arc_get_end(Arc, 1, &ex, &ey);
-	if (pcb_is_point_in_pad(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
 	return pcb_false;
 }
@@ -799,7 +799,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 			tmp.Point2.Y = line->Point2.Y;
 			tmp.Thickness = line->Thickness;
 			tmp.Flags = pcb_no_flags();
-			return pcb_is_point_in_pad(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, &tmp);
+			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, &tmp);
 		}
 	}
 	return pcb_false;
@@ -921,7 +921,7 @@ PCB_INLINE pcb_bool_t pstk_shape_int_circ_line(pcb_pstk_t *l, pcb_pstk_shape_t *
 	tmp.Point2.Y = sl->data.line.y2 + l->y;
 	tmp.Thickness = sl->data.line.thickness;
 	tmp.Flags = pcb_no_flags();
-	return pcb_is_point_in_pad(sc->data.circ.x + c->x, sc->data.circ.y + c->y, sc->data.circ.dia/2, &tmp);
+	return pcb_is_point_in_line(sc->data.circ.x + c->x, sc->data.circ.y + c->y, sc->data.circ.dia/2, &tmp);
 }
 
 PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)

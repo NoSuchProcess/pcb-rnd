@@ -159,7 +159,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, c)) continue; /* already used */
 			switch(c->type) {
 				case PCB_OBJ_LINE:
-					if (!pcb_is_point_in_pad(cx, cy, r, (pcb_pad_t *)c)) continue;
+					if (!pcb_is_point_in_line(cx, cy, r, (pcb_pad_t *)c)) continue;
 					break;
 				case PCB_OBJ_POLY:
 					if (!pcb_poly_is_point_in_p(cx, cy, r, (pcb_poly_t *)c)) continue;

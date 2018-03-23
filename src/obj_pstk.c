@@ -706,7 +706,7 @@ static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, p
 			pad.Thickness = shape->data.line.thickness;
 			pad.Clearance = 0;
 			pad.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
-			return pcb_is_point_in_pad(x, y, radius, &pad);
+			return pcb_is_point_in_line(x, y, radius, &pad);
 		case PCB_PSSH_POLY:
 			if (shape->data.poly.pa == NULL)
 				pcb_pstk_shape_update_pa(&shape->data.poly);

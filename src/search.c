@@ -154,7 +154,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 
 	TEST_OBJST(i->objst, i->req_flag, l, l, l);
 
-	if (!pcb_is_point_in_pad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
+	if (!pcb_is_point_in_line(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
 		return PCB_R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (pcb_point_t *) l;
@@ -847,10 +847,10 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
 }
 
 /* ---------------------------------------------------------------------------
- * Check if a circle of Radius with center at (X, Y) intersects a Pad.
- * Written to enable arbitrary pad directions; for rounded pads, too.
+ * Check if a circle of Radius with center at (X, Y) intersects a line.
+ * Written to enable arbitrary line directions; for rounded/square lines, too.
  */
-pcb_bool pcb_is_point_in_pad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_t *Pad)
+pcb_bool pcb_is_point_in_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_any_line_t *Pad)
 {
 	double r, Sin, Cos;
 	pcb_coord_t x;
@@ -858,7 +858,7 @@ pcb_bool pcb_is_point_in_pad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 	/* Also used from line_callback with line type smaller than pad type;
 	   use the smallest common subset; ->Thickness is still ok. */
 	pcb_coord_t t2 = (Pad->Thickness + 1) / 2, range;
-	pcb_any_line_t pad = *(pcb_any_line_t *) Pad;
+	pcb_any_line_t pad = *Pad;
 
 
 	/* series of transforms saving range */
