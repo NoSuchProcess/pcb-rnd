@@ -121,10 +121,8 @@ coord ## DIR(pcb_text_t *text, int point)		        	\
 COORD(X)
 	COORD(Y)
 
-/*!
- * Return the text coordinate associated with the given internal point.
- */
-		 static pcb_coord_t coord(pcb_text_t * text, int dir, int point)
+/* Return the text coordinate associated with the given internal point. */
+static pcb_coord_t coord(pcb_text_t * text, int dir, int point)
 {
 	if (dir == K_X)
 		return coordX(text, point);
@@ -149,8 +147,7 @@ static int cmp_tbp(const void *a, const void *b)
 	return ta->pos - tb->pos;
 }
 
-/*!
- * Find all selected text objects, then order them in order by coordinate in
+/* Find all selected text objects, then order them in order by coordinate in
  * the 'dir' axis.  This is used to find the "First" and "Last" elements
  * and also to choose the distribution order.
  *
@@ -158,8 +155,7 @@ static int cmp_tbp(const void *a, const void *b)
  * you were lining up letters in a sentence, aligning *vertically* to the
  * first letter means selecting the first letter *horizontally*).
  *
- * For distribution, first and last are in the distribution axis.
- */
+ * For distribution, first and last are in the distribution axis. */
 static int sort_texts_by_pos(int op, int dir, int point)
 {
 	int nsel = 0;
@@ -231,10 +227,7 @@ static void free_texts_by_pos(void)
 }
 
 
-/*!
- * Find the reference coordinate from the specified points of all
- * selected text.
- */
+/* Find the reference coordinate from the specified points of all selected text. */
 static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
 	pcb_coord_t q;
@@ -274,7 +267,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 }
 
 
-/*!
+/*
  * AlignText(X, [Lefts/Rights/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])\n
  * AlignText(Y, [Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])
  *
@@ -289,8 +282,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  * Last=Bottommost/Rightmost, Average or pcb_crosshair point \n
  * Gridless - Do not force results to align to prevailing grid. \n
  *
- * Defaults are Lefts/Tops, First
- */
+ * Defaults are Lefts/Tops, First */
 static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
@@ -437,22 +429,18 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-/*!
- * DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
- * DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
- * \n
- * As with align, plus: \n
- * \n
- * Gaps - Make gaps even rather than spreading points evenly. \n
- * First, Last, \n
- * pcb_crosshair - Two arguments specifying both ends of the distribution,
- * they can't both be the same. \n
- * \n
- * Defaults are Lefts/Tops, First, Last \n
- * \n
- * Distributed texts always retain the same relative order they had
- * before they were distributed. \n
- */
+/* DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
+   DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
+
+   As with align, plus:
+
+   Gaps - Make gaps even rather than spreading points evenly.
+   First, Last, pcb_crosshair - Two arguments specifying both ends of the distribution, they can't both be the same.
+
+   Defaults are Lefts/Tops, First, Last 
+
+   Distributed texts always retain the same relative order they had
+   before they were distributed. */
 static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
