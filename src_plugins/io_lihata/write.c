@@ -524,48 +524,6 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	return obj;
 }
 
-static lht_node_t *build_element(pcb_element_t *elem)
-{
-	char buff[128];
-	pcb_line_t *li;
-	pcb_arc_t *ar;
-	pcb_pin_t *pi;
-	pcb_pad_t *pa;
-	lht_node_t *obj, *lst;
-
-	sprintf(buff, "element.%ld", elem->ID);
-	obj = lht_dom_node_alloc(LHT_HASH, buff);
-
-	lht_dom_hash_put(obj, build_attributes(&elem->Attributes));
-	lht_dom_hash_put(obj, build_flags(&elem->Flags, PCB_TYPE_ELEMENT, 0));
-
-
-	/* build drawing primitives */
-	lst = lht_dom_node_alloc(LHT_LIST, "objects");
-	lht_dom_hash_put(obj, lst);
-
-	lht_dom_list_append(lst, build_pcb_text("desc", &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION]));
-	lht_dom_list_append(lst, build_pcb_text("name", &elem->Name[PCB_ELEMNAME_IDX_REFDES]));
-	lht_dom_list_append(lst, build_pcb_text("value", &elem->Name[PCB_ELEMNAME_IDX_VALUE]));
-	lht_dom_hash_put(obj, build_textf("x", CFMT, elem->MarkX));
-	lht_dom_hash_put(obj, build_textf("y", CFMT, elem->MarkY));
-
-
-	for(li = linelist_first(&elem->Line); li != NULL; li = linelist_next(li))
-		lht_dom_list_append(lst, build_line(li, -1, -elem->MarkX, -elem->MarkY, 0));
-
-	for(ar = arclist_first(&elem->Arc); ar != NULL; ar = arclist_next(ar))
-		lht_dom_list_append(lst, build_arc(ar, -elem->MarkX, -elem->MarkY));
-
-	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_list_append(lst, build_pin(pi, 0, -elem->MarkX, -elem->MarkY));
-
-	for(pa = padlist_first(&elem->Pad); pa != NULL; pa = padlist_next(pa))
-		lht_dom_list_append(lst, build_pad(pa, -elem->MarkX, -elem->MarkY));
-
-	return obj;
-}
-
 static lht_node_t *build_subc_element(pcb_subc_t *subc)
 {
 	char buff[128];
@@ -1009,9 +967,6 @@ static lht_node_t *build_data(pcb_data_t *data)
 
 	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))
 		lht_dom_list_append(grp, build_pin(pi, 1, 0, 0));
-
-	for(el = elementlist_first(&data->Element); el != NULL; el = elementlist_next(el))
-		lht_dom_list_append(grp, build_element(el));
 
 	for(sc = pcb_subclist_first(&data->subc); sc != NULL; sc = pcb_subclist_next(sc))
 		lht_dom_list_append_safe(grp, build_subc(sc));
