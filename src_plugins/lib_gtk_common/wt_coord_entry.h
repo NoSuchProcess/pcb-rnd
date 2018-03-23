@@ -1,7 +1,6 @@
 /* This is the modified GtkSpinbox used for entering Coords.
  * Hopefully it can be used as a template whenever we migrate the
- * rest of the Gtk HID to use GObjects and GtkWidget subclassing.
- */
+ * rest of the Gtk HID to use GObjects and GtkWidget subclassing. */
 #ifndef GHID_COORD_ENTRY_H__
 #define GHID_COORD_ENTRY_H__
 
@@ -26,7 +25,7 @@ pcb_coord_t pcb_gtk_coord_entry_get_value(pcb_gtk_coord_entry_t * ce);
 int pcb_gtk_coord_entry_get_value_str(pcb_gtk_coord_entry_t * ce, char *out, int out_len);
 void pcb_gtk_coord_entry_set_value(pcb_gtk_coord_entry_t * ce, pcb_coord_t val);
 
-/** Change the unit only if it differs from what's set currently; returns whether changed */
+/* Change the unit only if it differs from what's set currently; returns whether changed */
 int pcb_gtk_coord_entry_set_unit(pcb_gtk_coord_entry_t *ce, const pcb_unit_t *unit);
 
 #endif

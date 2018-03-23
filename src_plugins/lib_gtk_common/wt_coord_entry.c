@@ -72,7 +72,7 @@ struct pcb_gtk_coord_entry_class_s {
 };
 
 /* SIGNAL HANDLERS */
-/*! \brief Callback for "Change Unit" menu click */
+/* Callback for "Change Unit" menu click */
 static void menu_item_activate_cb(GtkMenuItem * item, pcb_gtk_coord_entry_t * ce)
 {
 	const char *text = gtk_menu_item_get_label(item);
@@ -81,7 +81,7 @@ static void menu_item_activate_cb(GtkMenuItem * item, pcb_gtk_coord_entry_t * ce
 	g_signal_emit(ce, ghid_coord_entry_signals[UNIT_CHANGE_SIGNAL], 0, unit);
 }
 
-/*! \brief Callback for context menu creation */
+/* Callback for context menu creation */
 static void ghid_coord_entry_popup_cb(pcb_gtk_coord_entry_t * ce, GtkMenu * menu, gpointer data)
 {
 	int i, n;
@@ -111,7 +111,7 @@ static void ghid_coord_entry_popup_cb(pcb_gtk_coord_entry_t * ce, GtkMenu * menu
 	gtk_widget_show(menu_item);
 }
 
-/*! \brief Callback for user output */
+/* Callback for user output */
 static gboolean ghid_coord_entry_output_cb(pcb_gtk_coord_entry_t * ce, gpointer data)
 {
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
@@ -125,7 +125,7 @@ static gboolean ghid_coord_entry_output_cb(pcb_gtk_coord_entry_t * ce, gpointer 
 	return TRUE;
 }
 
-/*! \brief Callback for user input */
+/* Callback for user input */
 static gboolean ghid_coord_text_changed_cb(pcb_gtk_coord_entry_t * entry, gpointer data)
 {
 	const char *text;
@@ -145,7 +145,7 @@ static gboolean ghid_coord_text_changed_cb(pcb_gtk_coord_entry_t * entry, gpoint
 	return FALSE;
 }
 
-/*! \brief Callback for change in value (input or ^v clicks) */
+/* Callback for change in value (input or ^v clicks) */
 static gboolean ghid_coord_value_changed_cb(pcb_gtk_coord_entry_t * ce, gpointer data)
 {
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
@@ -159,11 +159,6 @@ static gboolean ghid_coord_value_changed_cb(pcb_gtk_coord_entry_t * ce, gpointer
 	return FALSE;
 }
 
-/*! \brief Change the unit used by a coord entry
- *
- *  \param [in] ce         The entry to be acted on
- *  \parin [in] new_unit   The new unit to be used
- */
 static void ghid_coord_entry_change_unit(pcb_gtk_coord_entry_t * ce, const pcb_unit_t * new_unit)
 {
 	double climb_rate = 0.0;
