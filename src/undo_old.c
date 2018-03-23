@@ -397,30 +397,6 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 }
 
 /* ---------------------------------------------------------------------------
- * recovers an object from a mirror operation
- * returns pcb_true if anything has been recovered
- */
-static pcb_bool UndoMirror(UndoListTypePtr Entry)
-{
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-
-	/* lookup entry by ID */
-	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type == PCB_TYPE_ELEMENT) {
-		pcb_element_t *element = (pcb_element_t *) ptr3;
-		if (pcb_undo_and_draw)
-			pcb_elem_invalidate_erase(element);
-		pcb_element_mirror(PCB->Data, element, Entry->Data.Move.DY);
-		if (pcb_undo_and_draw)
-			pcb_elem_invalidate_draw(element);
-		return pcb_true;
-	}
-	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoMirror on object type %d\n", type);
-	return pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
  * recovers a subc from an other-side  operation
  * returns pcb_true if anything has been recovered
  */
