@@ -137,9 +137,8 @@ void pcb_loop_pstk(pcb_board_t *pcb, void *ctx, pcb_pstk_cb_t pscb)
 
 void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb,
-	pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb,
 	pcb_subc_cb_t scb,
-	pcb_via_cb_t vcb, pcb_pstk_cb_t pscb
+	pcb_pstk_cb_t pscb
 	)
 {
 	pcb_loop_layers(pcb, ctx, lacb, lcb, acb, tcb, pocb);

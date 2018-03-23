@@ -97,19 +97,10 @@ typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pc
 typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text);
 typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly);
 
-/* element callbacks */
-typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, int enter);
-typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_line_t *line);
-typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_arc_t *arc);
-typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text);
-typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin);
-typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad);
-
 /* subc callbacks */
 typedef int (*pcb_subc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter);
 
 /* via and padstack callbacks */
-typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pin_t *via);
 typedef void (*pcb_pstk_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps);
 
 /* Loop over all layer objects on each layer. Layer is the outer loop. */
@@ -121,9 +112,8 @@ void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb);
 /* Loop over all design objects. (So all the above three in one call.) */
 void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb,
-	pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb,
 	pcb_subc_cb_t scb,
-	pcb_via_cb_t vcb, pcb_pstk_cb_t pscb
+	pcb_pstk_cb_t pscb
 );
 
 pcb_data_t *pcb_data_new(pcb_board_t *parent);

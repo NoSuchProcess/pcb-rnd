@@ -95,14 +95,7 @@ void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 		(mask & PCB_OBJ_ARC) ? list_arc_cb : NULL,
 		(mask & PCB_OBJ_TEXT) ? list_text_cb : NULL,
 		(mask & PCB_OBJ_POLY) ? list_poly_cb : NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
 		(mask & PCB_OBJ_SUBC) ? list_subc_cb : NULL,
-		NULL,
 		(mask & PCB_OBJ_PSTK) ? list_pstk_cb : NULL
 	);
 }

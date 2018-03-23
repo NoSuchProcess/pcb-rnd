@@ -93,11 +93,6 @@ static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_po
 	list_obj(ctx, pcb, layer, (pcb_any_obj_t *)poly);
 }
 
-static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
-{
-	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)via);
-}
-
 static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)ps);
@@ -128,14 +123,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* arc */
 		NULL, /* text */
 		NULL, /* poly */
-		NULL, /* element */
-		NULL, /* eline */
-		NULL, /* earc */
-		NULL, /* etext */
-		NULL, /* epin */
-		NULL, /* epad */
 		list_subc_cb, /* subc */
-		NULL, /* via */
 		NULL /* pstk */
 	);
 
@@ -146,14 +134,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		list_arc_cb,
 		NULL, /* text */
 		list_poly_cb,
-		NULL, /* element */
-		NULL, /* eline */
-		NULL, /* earc */
-		NULL, /* etext */
-		NULL, /* pin */
-		NULL, /* pad */
 		NULL, /* subc */
-		list_via_cb,
 		list_pstk_cb
 	);
 	return 0;

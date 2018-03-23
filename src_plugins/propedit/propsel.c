@@ -181,9 +181,8 @@ void pcb_propsel_map_core(htsp_t *props)
 	
 	pcb_loop_all(PCB, &ctx,
 		NULL, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
-		NULL, NULL, NULL, NULL, NULL, NULL,
 		map_subc_cb,
-		NULL, map_pstk_cb
+		map_pstk_cb
 	);
 }
 
@@ -452,9 +451,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
 		MAYBE_PROP(0, "p/text/", set_text_cb),
 		MAYBE_PROP(ctx.is_trace, "p/poly/", set_poly_cb),
-		NULL, NULL, NULL, NULL, NULL, NULL,
 		MAYBE_PROP(0, "p/subc/", set_subc_cb),
-		NULL,
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
 	pcb_undo_inc_serial();
@@ -532,9 +529,8 @@ int pcb_propsel_del(const char *key)
 
 	pcb_loop_all(PCB, &st,
 		NULL, del_line_cb, del_arc_cb, del_text_cb, del_poly_cb,
-		NULL, NULL, NULL, NULL, NULL, NULL,
 		del_subc_cb,
-		NULL, del_pstk_cb
+		del_pstk_cb
 	);
 	return st.del_cnt;
 }
