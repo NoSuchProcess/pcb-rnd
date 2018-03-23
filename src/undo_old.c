@@ -311,11 +311,11 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		swap = ((pcb_pin_t *) ptr2)->Clearance;
+		swap = ((pcb_line_t *) ptr2)->Clearance;
 		pcb_poly_restore_to_poly(PCB->Data, type, ptr1, ptr2);
 		if (pcb_undo_and_draw)
 			pcb_erase_obj(type, ptr1, ptr2);
-		((pcb_pin_t *) ptr2)->Clearance = Entry->Data.Size;
+		((pcb_line_t *) ptr2)->Clearance = Entry->Data.Size;
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		Entry->Data.Size = swap;
 		if (pcb_undo_and_draw)
@@ -1235,10 +1235,6 @@ void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3
 	if (!Locked) {
 		undo = GetUndoSlot(PCB_UNDO_CHANGECLEARSIZE, PCB_OBJECT_ID(ptr2), Type);
 		switch (Type) {
-		case PCB_TYPE_PIN:
-		case PCB_TYPE_VIA:
-			undo->Data.Size = ((pcb_pin_t *) ptr2)->Clearance;
-			break;
 		case PCB_TYPE_LINE:
 			undo->Data.Size = ((pcb_line_t *) ptr2)->Clearance;
 			break;
