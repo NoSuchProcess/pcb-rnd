@@ -651,11 +651,12 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 
 int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
-	if (elementlist_length(&buff->Data->Element) == 0) {
-		pcb_message(PCB_MSG_ERROR, "Buffer has no elements!\n");
+	if (pcb_subclist_length(&buff->Data->subc) == 0) {
+		pcb_message(PCB_MSG_ERROR, "Buffer has no subcircuits!\n");
 		return -1;
 	}
 
+#warning TODO: don't hardwire dates
 	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", FP);
 	fputs("Units mm\n", FP);
 	fputs("$INDEX\n", FP);
