@@ -210,15 +210,11 @@ static void log_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip,
 
 static void log_fill_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask)
 {
-	pcb_fprintf(out_, "fill_pcb_pv(fg, bg, (%mm, %mm), draw_hole=%s, mask=%s)\n",
-		pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
 	delegatee_->fill_pcb_pv(fg, bg, pv, drawHole, mask);
 }
 
 static void log_thindraw_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask)
 {
-	pcb_fprintf(out_, "thindraw_pcb_pv(fg, bg, (%mm, %mm), draw_hole=%s, mask=%s)\n",
-		pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
 	delegatee_->thindraw_pcb_pv(fg, bg, pv, drawHole, mask);
 }
 
