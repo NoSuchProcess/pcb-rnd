@@ -50,16 +50,5 @@ struct pcb_element_s {
 	gdl_elem_t link;
 };
 
-void *pcb_element_remove(pcb_element_t *Element);
-
-/* ---------------------------------------------------------------------------
- * access macros for elements name structure
- */
-#define PCB_ELEMNAME_IDX_DESCRIPTION 0
-#define PCB_ELEMNAME_IDX_REFDES      1
-#define PCB_ELEMNAME_IDX_VALUE       2
-#define PCB_ELEMNAME_IDX_VISIBLE()   (conf_core.editor.name_on_pcb ? PCB_ELEMNAME_IDX_REFDES :\
-	(conf_core.editor.description ? PCB_ELEMNAME_IDX_DESCRIPTION : PCB_ELEMNAME_IDX_VALUE))
-
 #endif
 
