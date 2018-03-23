@@ -31,17 +31,13 @@
 #define GHID_IS_LIBRARY_WINDOW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_TYPE_LIBRARY_WINDOW))
 #define GHID_GET_LIBRARY_WINDOW_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_LIBRARY, pcb_gtk_library_class_t))
 
-/** The _library_ widget Class. A subclass of GtkDialogClass. */
-typedef struct pcb_gtk_library_class_s pcb_gtk_library_class_t;
-/** The _library_ widget. */
+typedef struct pcb_gtk_library_class_s pcb_gtk_library_class_t; /* A subclass of GtkDialogClass. */
 typedef struct pcb_gtk_library_s pcb_gtk_library_t;
 
-/** The widget Class data. */
 struct pcb_gtk_library_class_s {
 	GtkDialogClass parent_class;
 };
 
-/** The widget data. */
 struct pcb_gtk_library_s {
 	GtkDialog parent_instance;
 
@@ -58,19 +54,14 @@ struct pcb_gtk_library_s {
 	void *gport;
 };
 
-/** \return     the GType identifier associated with \ref pcb_gtk_library_t. */
 GType pcb_gtk_library_get_type(void);
 
-/** Creates the _library_ dialog if it is not already created.
-    It does not show the dialog ; use \ref pcb_gtk_library_show () for that. */
+/* Creates the _library_ dialog if it is not already created. It does not
+   show the dialog; use pcb_gtk_library_show() for that.*/
 void pcb_gtk_library_create(pcb_gtk_common_t *com);
 
-/** Shows the _library_ dialog, creating it if not already created, and
-    presents it to the user (brings it to the front with focus), depending on 
-    \p raise.
-    \param com      The GTK common HID structure
-    \param raise    if `TRUE`, presents the window.
- */
+/* Shows the _library_ dialog, creating it if not already created, and
+   presents it to the user if raise is true. */
 void pcb_gtk_library_show(pcb_gtk_common_t *com, gboolean raise);
 
 #endif /* PCB_GTK_LIBRARY_WINDOW_H */
