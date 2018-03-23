@@ -93,6 +93,9 @@
 #include "obj_pinvia_draw.h"
 #include "obj_pstk_inlines.h"
 
+#warning padstack TODO: when style contains proto, remove this
+#include "src_plugins/lib_compat_help/pstk_compat.h"
+
 
 /* #defines to enable some debugging output */
 /*
@@ -233,7 +236,7 @@ struct routebox_s {
 	union {
 		pcb_pad_t *pad;
 		pcb_pin_t *pin;
-		pcb_pin_t *via;
+		pcb_pstk_t *via;
 		pcb_any_obj_t *term;
 		routebox_t *via_shadow;	/* points to the via in r-tree which
 																	 * points to the pcb_pin_t in the PCB. */
@@ -2945,7 +2948,7 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 		break;
 	case VIA:
 		if (rbox->flags.fixed) {
-			sq = pcb_shrink_box(&ti->query, rbox->parent.via->Thickness);
+			sq = pcb_shrink_box(&ti->query, rbox->parent.via->BoundingBox.X2 - rbox->parent.via->BoundingBox.X1);
 			sb.X1 = rbox->parent.pin->X;
 			sb.Y1 = rbox->parent.pin->Y;
 		}
@@ -3018,13 +3021,13 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	routebox_t *rb, *first_via = NULL;
 	int i;
 	int ka = AutoRouteParameters.style->Clearance;
-	pcb_pin_t *live_via = NULL;
+	pcb_pstk_t *live_via = NULL;
 
 	if (conf_core.editor.live_routing) {
-		live_via = pcb_via_new(PCB->Data, X, Y, radius * 2,
-														2 * AutoRouteParameters.style->Clearance, 0, AutoRouteParameters.style->Hole, NULL, pcb_flag_make(0));
+#warning padstack TODO: when style contains proto, remove this
+		live_via = pcb_pstk_new_compat_via(PCB->Data, X, Y, AutoRouteParameters.style->Hole, radius * 2, 2 * AutoRouteParameters.style->Clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
 		if (live_via != NULL)
-			pcb_via_invalidate_draw(live_via);
+			pcb_pstk_invalidate_draw(live_via);
 	}
 
 	/* a via cuts through every layer group */
@@ -4250,7 +4253,7 @@ static void ripout_livedraw_obj(routebox_t * rb)
 	}
 	if (rb->type == VIA && rb->livedraw_obj.via) {
 		pcb_via_invalidate_erase(rb->livedraw_obj.via);
-		pcb_destroy_object(PCB->Data, PCB_TYPE_VIA, rb->livedraw_obj.via, NULL, NULL);
+		pcb_destroy_object(PCB->Data, PCB_TYPE_PSTK, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}
 }
@@ -4569,7 +4572,8 @@ static pcb_r_dir_t fpin_rect(const pcb_box_t * b, void *cl)
 static int FindPin(const pcb_box_t * box, pcb_pin_t ** pin)
 {
 	struct fpin_info info;
-
+#warning padstack TODO: rewrite this
+#if 0
 	info.pin = NULL;
 	info.X = box->X1;
 	info.Y = box->Y1;
@@ -4583,8 +4587,9 @@ static int FindPin(const pcb_box_t * box, pcb_pin_t ** pin)
 		pcb_r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
-		return PCB_TYPE_VIA;
+		return PCB_TYPE_PIN;
 	}
+#endif
 	*pin = NULL;
 	return PCB_TYPE_NONE;
 }
@@ -4652,13 +4657,14 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					if (pp->parent.via == NULL) {
 						assert(labs((b.X1 + radius) - (b.X2 - radius)) < 2);
 						assert(labs((b.Y1 + radius) - (b.Y2 - radius)) < 2);
-						pp->parent.via =
-							pcb_via_new(PCB->Data, b.X1 + radius,
-													 b.Y1 + radius,
-													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, pcb_flag_make(PCB_FLAG_AUTO));
+#warning padstack TODO: when style contains proto, remove this
+						pp->parent.via = pcb_pstk_new_compat_via(PCB->Data,
+							b.X1 + radius, b.Y1 + radius, 
+							pp->style->Hole, pp->style->Diameter, 2 * pp->style->Clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
 						assert(pp->parent.via);
+						PCB_FLAG_SET(PCB_FLAG_AUTO, pp->parent.via);
 						if (pp->parent.via) {
-							pcb_undo_add_obj_to_create(PCB_TYPE_VIA, pp->parent.via, pp->parent.via, pp->parent.via);
+							pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, pp->parent.via, pp->parent.via, pp->parent.via);
 							changed = pcb_true;
 						}
 					}
@@ -4683,13 +4689,16 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				/* thermals are alread a single point search, no need to shrink */
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
+#warning padstack TODO: rewrite this
+#if 0
 					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
-					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
+					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PSTK, LAYER_PTR(p->layer), pin);
 					pcb_undo_add_obj_to_flag(pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
 					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
-					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
+					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PSTK, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;
+#endif
 				}
 			}
 		}
