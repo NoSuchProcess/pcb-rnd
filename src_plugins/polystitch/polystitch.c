@@ -69,10 +69,7 @@ static double poly_winding(pcb_poly_t * poly)
 	return winding;
 }
 
-/*!
- * \brief Given the X,Y, find the polygon and set inner_poly and
- * poly_layer.
- */
+/* Given the X,Y, find the polygon and set inner_poly and poly_layer. */
 static void find_crosshair_poly(int x, int y)
 {
 	double best = 0, dist;
@@ -104,10 +101,7 @@ static void find_crosshair_poly(int x, int y)
 	}
 }
 
-/*!
- * \brief Set outer_poly to the enclosing poly. We assume there's only
- * one.
- */
+/* Set outer_poly to the enclosing poly. We assume there's only one. */
 static void find_enclosing_poly()
 {
 	outer_poly = NULL;
@@ -144,10 +138,7 @@ static void check_windings()
 	}
 }
 
-/*!
- * \brief Rotate the polygon point list around so that point N is the
- * first one in the list.
- */
+/* Rotate the polygon point list around so that point N is the first one in the list. */
 static void rotate_points(pcb_poly_t * poly, int n)
 {
 	pcb_point_t *np;
@@ -160,10 +151,8 @@ static void rotate_points(pcb_poly_t * poly, int n)
 	free(np);
 }
 
-/*!
- * \brief Make sure the first and last point of the polygon are the same
- * point, so we can stitch them properly.
- */
+/* Make sure the first and last point of the polygon are the same
+ * point, so we can stitch them properly. */
 static void dup_endpoints(pcb_poly_t * poly)
 {
 	int n = poly->PointN;
@@ -172,11 +161,8 @@ static void dup_endpoints(pcb_poly_t * poly)
 	pcb_poly_point_new(poly, poly->Points[0].X, poly->Points[0].Y);
 }
 
-/*!
- * \brief Find the two closest points between those polygons, and
- * connect them. We assume pstoedit winds the two polygons in opposite
- * directions.
- */
+/* Find the two closest points between those polygons, and connect them.
+   We assume pstoedit winds the two polygons in opposite directions. */
 static void stitch_them()
 {
 	int i, o;

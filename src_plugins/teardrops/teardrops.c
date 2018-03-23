@@ -313,9 +313,7 @@ static void check_via(pcb_pin_t * _pin)
 #endif
 }
 
-/*!
- * \brief Draw teardrops for pads.
- */
+/* Draw teardrops for pads. */
 static void check_pad(pcb_pad_t * _pad)
 {
 #warning padstack TODO: rewrite

@@ -1,11 +1,9 @@
-/*!
- * \file polycombine.c
+/*
+ * PolyCombine plug-in for PCB.
  *
- * \brief PolyCombine plug-in for PCB.
+ * Copyright (C) 2010 Peter Clifton <pcjc2@cam.ac.uk>
  *
- * \author Copyright (C) 2010 Peter Clifton <pcjc2@cam.ac.uk>
- *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
