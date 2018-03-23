@@ -63,9 +63,6 @@
 			(Arc)) : \
 		pcb_is_point_on_arc((PV)->X,(PV)->Y,MAX((PV)->Thickness/2.0 + Bloat,0.0), (Arc)))
 
-#define	IS_PV_ON_PAD(PV,Pad) \
-	( pcb_is_point_in_line((PV)->X, (PV)->Y, MAX((PV)->Thickness/2 +Bloat,0), (Pad)))
-
 /* reduce arc start angle and delta to 0..360 */
 static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
 {
