@@ -53,11 +53,6 @@ struct pcb_element_s {
 };
 
 void *pcb_element_remove(pcb_element_t *Element);
-/* returns whether the silk group of the element's is visible */
-#define pcb_element_silk_vis(elem) \
-	(PCB->LayerGroups.grp[((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (elem))) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk())].vis)
-
-
 
 /* ---------------------------------------------------------------------------
  * access macros for elements name structure
