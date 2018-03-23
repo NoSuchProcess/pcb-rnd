@@ -138,22 +138,6 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			case PCB_OBJ_POLY:
 				ts->len++;
 				break;
-			case PCB_OBJ_VIA:
-				if ((via != NULL) || (pstk != NULL)) {
-					if (!quiet)
-						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
-					goto quit;
-				}
-				via = *(pcb_pin_t **)o;
-				dst->hdia = via->DrillingHole;
-				dst->hplated = !PCB_FLAG_TEST(PCB_FLAG_HOLE, *o);
-				if ((ox != via->X) || (oy != via->Y)) {
-					pcb_message(PCB_MSG_INFO, "Padstack conversion: adjusting origin to via hole\n");
-					ox = via->X;
-					oy = via->Y;
-				}
-				extra_obj++;
-				break;
 			case PCB_OBJ_PSTK:
 				if ((via != NULL) || (pstk != NULL)) {
 					if (!quiet)
@@ -271,22 +255,6 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			if (!quiet)
 				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
 			goto quit;
-		}
-	}
-
-	/* if there was a via, use the via's shape on layers that are not specified */
-	if (via != NULL) {
-		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_TOP, 0) == -1)
-			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_TOP, 0, via->Thickness);
-		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, 0) == -1)
-			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_INTERN, 0, via->Thickness);
-		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) == -1)
-			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, via->Thickness);
-		if (via->Mask > 0) {
-			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB | PCB_LYC_AUTO) == -1)
-				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB | PCB_LYC_AUTO, via->Mask);
-			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB | PCB_LYC_AUTO) == -1)
-				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB | PCB_LYC_AUTO, via->Mask);
 		}
 	}
 
