@@ -1873,17 +1873,6 @@ pcb_r_dir_t pcb_elem_name_draw_callback(const pcb_box_t * b, void *cl)
 
 void pcb_elem_pp_draw(pcb_element_t * element)
 {
-	PCB_PAD_LOOP(element);
-	{
-		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
-			pcb_pad_draw(pad);
-	}
-	PCB_END_LOOP;
-	PCB_PIN_LOOP(element);
-	{
-		pcb_pin_draw(pin, pcb_true);
-	}
-	PCB_END_LOOP;
 }
 
 

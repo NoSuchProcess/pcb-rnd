@@ -30,14 +30,6 @@
 
 
 /* Include rtree.h for these */
-#ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_pad_draw_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_pad_name_draw_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_pad_clear_callback(const pcb_box_t * b, void *cl);
-#endif
-
-void pcb_pad_draw(pcb_pad_t * pad);
-void pcb_pad_paste_draw(int side, const pcb_box_t * drawn_area);
 void pcb_pad_invalidate_erase(pcb_pad_t *Pad);
 void pcb_pad_name_invalidate_erase(pcb_pad_t *Pad);
 void pcb_pad_invalidate_draw(pcb_pad_t *Pad);

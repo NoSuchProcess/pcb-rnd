@@ -34,7 +34,6 @@
 
 static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
 {
-	pcb_pad_paste_draw(*(int *)side, ctx->screen);
 	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
 }
 
@@ -57,7 +56,6 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-add */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
-		pcb_pad_paste_draw(side, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 	}
 	else {

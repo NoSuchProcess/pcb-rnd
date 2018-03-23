@@ -241,7 +241,6 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 
 		pcb_gui->end_layer();
@@ -673,9 +672,6 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_RATLINE:
 		pcb_line_invalidate_erase((pcb_line_t *) ptr);
-		break;
-	case PCB_TYPE_PAD:
-		pcb_pad_invalidate_erase((pcb_pad_t *) ptr);
 		break;
 	case PCB_TYPE_ARC:
 		pcb_arc_invalidate_erase((pcb_arc_t *) ptr);
