@@ -1119,23 +1119,13 @@ void pcb_undo_add_obj_to_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	if (!Locked) {
 		undo = GetUndoSlot(PCB_UNDO_CHANGESIZE, PCB_OBJECT_ID(ptr2), Type);
 		switch (Type) {
-		case PCB_TYPE_PIN:
-		case PCB_TYPE_VIA:
-			undo->Data.Size = ((pcb_pin_t *) ptr2)->Thickness;
-			break;
 		case PCB_TYPE_LINE:
-		case PCB_TYPE_ELEMENT_LINE:
 			undo->Data.Size = ((pcb_line_t *) ptr2)->Thickness;
 			break;
 		case PCB_TYPE_TEXT:
-		case PCB_TYPE_ELEMENT_NAME:
 			undo->Data.Size = ((pcb_text_t *) ptr2)->Scale;
 			break;
-		case PCB_TYPE_PAD:
-			undo->Data.Size = ((pcb_pad_t *) ptr2)->Thickness;
-			break;
 		case PCB_TYPE_ARC:
-		case PCB_TYPE_ELEMENT_ARC:
 			undo->Data.Size = ((pcb_arc_t *) ptr2)->Thickness;
 			break;
 		}
@@ -1154,9 +1144,6 @@ void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3
 		switch (Type) {
 		case PCB_TYPE_LINE:
 			undo->Data.Size = ((pcb_line_t *) ptr2)->Clearance;
-			break;
-		case PCB_TYPE_PAD:
-			undo->Data.Size = ((pcb_pad_t *) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_ARC:
 			undo->Data.Size = ((pcb_arc_t *) ptr2)->Clearance;
