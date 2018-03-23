@@ -56,6 +56,7 @@
 #include "event.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
+#include "obj_elem.h"
 
 conf_vendor_t conf_vendor;
 

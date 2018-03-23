@@ -46,7 +46,6 @@
 #include "obj_pad_draw.h"
 #include "obj_pinvia_draw.h"
 #include "obj_pstk_draw.h"
-#include "obj_elem_draw.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
 #include "obj_rat_draw.h"

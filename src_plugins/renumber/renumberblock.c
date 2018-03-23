@@ -47,6 +47,8 @@ int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	conf_set_editor(name_on_pcb, 1);
 
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		char *refdes_split, *cp;
@@ -73,6 +75,7 @@ int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		pcb_chg_obj_name(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
 	}
 	PCB_END_LOOP;
+#endif
 	pcb_undo_inc_serial();
 	return 0;
 }
@@ -92,6 +95,8 @@ int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	conf_set_editor(name_on_pcb, 1);
 
+#warning subc TODO: rewrite
+#if 0
 	PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
 	{
 		char *refdes_split, *cp;
@@ -113,5 +118,6 @@ int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_chg_obj_name(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
 	}
 	PCB_END_LOOP;
+#endif
 	return 0;
 }

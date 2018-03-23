@@ -56,6 +56,7 @@
 #include "obj_line.h"
 #include "obj_pinvia.h"
 #include "event.h"
+#include "obj_elem.h"
 
 conf_djopt_t conf_djopt;
 

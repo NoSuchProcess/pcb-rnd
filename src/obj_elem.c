@@ -49,14 +49,12 @@
 #include "obj_arc_draw.h"
 
 #include "obj_elem.h"
-#include "obj_elem_list.h"
 #include "obj_elem_op.h"
 #include "obj_subc_list.h"
 
 /* TODO: remove this: */
 #include "draw.h"
 #include "obj_text_draw.h"
-#include "obj_elem_draw.h"
 
 /*** utility ***/
 

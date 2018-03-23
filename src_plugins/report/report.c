@@ -319,7 +319,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_subc_t *subc;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->element_tree, 0);
+				pcb_r_dump_tree(PCB->Data->subc_tree, 0);
 				return 0;
 			}
 #endif

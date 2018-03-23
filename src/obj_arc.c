@@ -51,6 +51,8 @@
 #include "draw.h"
 #include "obj_arc_draw.h"
 
+#include "obj_elem.h"
+
 static int pcb_arc_end_addr = 1;
 int *pcb_arc_start_ptr = NULL, *pcb_arc_end_ptr = &pcb_arc_end_addr;
 

@@ -60,7 +60,6 @@
 #include "operation.h"
 #include "obj_subc_op.h"
 
-#include "obj_elem_draw.h"
 #include "obj_pinvia_draw.h"
 #include "obj_pad_draw.h"
 

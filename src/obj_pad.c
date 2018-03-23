@@ -47,6 +47,8 @@
 #include "obj_text_draw.h"
 #include "obj_pad_draw.h"
 
+#include "obj_elem.h"
+
 #undef max
 #define max(x, y) ((x) > (y) ? (x) : (y))
 

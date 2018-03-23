@@ -44,6 +44,7 @@
 #include "trparse_xml.h"
 #include "trparse_bin.h"
 #include "obj_subc.h"
+#include "obj_elem.h"
 
 #include "../src_plugins/boardflip/boardflip.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"

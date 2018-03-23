@@ -274,6 +274,8 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 	pcb_reset_conns(pcb_false);
 	pcb_conn_lookup_init();
 
+#warning subc TODO: rewrite for subcs
+#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/* break if abort dialog returned pcb_true */
@@ -284,6 +286,7 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 			pcb_reset_conns(pcb_false);
 	}
 	PCB_END_LOOP;
+#endif
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
 	pcb_reset_conns(pcb_false);

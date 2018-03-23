@@ -36,6 +36,7 @@
 #include "macro.h"
 #include "obj_pinvia.h"
 #include "obj_pstk_inlines.h"
+#include "obj_elem.h"
 
 #define STEP_ELEMENT 50
 #define STEP_DRILL   30

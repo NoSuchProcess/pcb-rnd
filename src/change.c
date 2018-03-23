@@ -46,6 +46,7 @@
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"
+#include "obj_elem.h"
 
 
 pcb_opfunc_t ChangeSizeFunctions = {

@@ -50,6 +50,7 @@
 #include "obj_subc_op.h"
 #include "obj_pstk_op.h"
 #include "obj_pstk.h"
+#include "obj_elem.h"
 #include "layer_grp.h"
 #include "event.h"
 #include "safe_fs.h"

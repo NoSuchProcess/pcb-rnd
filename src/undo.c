@@ -64,7 +64,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-#include "obj_elem_draw.h"
 #include "obj_poly_draw.h"
 
 static pcb_bool between_increment_and_restore = pcb_false;

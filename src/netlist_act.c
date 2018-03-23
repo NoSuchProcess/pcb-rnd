@@ -45,6 +45,7 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "netlist.h"
+#include "obj_elem.h"
 
 static int pcb_netlist_swap()
 {

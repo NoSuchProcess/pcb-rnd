@@ -64,7 +64,7 @@ static int io_kicad_legacy_write_subc_index(FILE *FP, pcb_data_t *Data)
 
 	unm_init(&group1);
 
-	subclist_foreach(&Data->Element, &eit, subc) {
+	subclist_foreach(&Data->subc, &eit, subc) {
 		if (pcb_data_is_empty(subc->data))
 			continue;
 

@@ -46,9 +46,6 @@
 #include "tool.h"
 #include "undo.h"
 
-#include "obj_elem_draw.h"
-
-
 void pcb_tool_buffer_notify_mode(void)
 {
 	void *ptr1, *ptr2, *ptr3;

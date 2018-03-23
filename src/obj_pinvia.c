@@ -49,6 +49,8 @@
 #include "obj_text_draw.h"
 #include "obj_pinvia_draw.h"
 
+#include "obj_elem.h"
+
 /*** allocation ***/
 
 /* get next slot for a via, allocates memory if necessary */

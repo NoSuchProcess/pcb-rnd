@@ -76,9 +76,8 @@ void *pcb_element_remove(pcb_element_t *Element);
 /*** loops ***/
 
 #define PCB_ELEMENT_LOOP(top) do {                                  \
-	pcb_element_t *element;                                           \
-	gdl_iterator_t __it__;                                            \
-	pinlist_foreach(&(top)->Element, &__it__, element) {
+	pcb_element_t *element = NULL;                                    \
+	{
 
 
 #endif

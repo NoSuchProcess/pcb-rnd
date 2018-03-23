@@ -36,6 +36,8 @@
 #include "compat_nls.h"
 #include "safe_fs.h"
 
+#include "obj_elem.h"
+
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
 const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
