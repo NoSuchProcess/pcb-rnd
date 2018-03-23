@@ -19,8 +19,6 @@ struct pcb_gtk_dlg_route_style_s {
 	int attr_editing;							/* set to 1 when an attribute key or value text is being edited   */
 };
 
-/** Builds and runs the "edit route style" dialog.
-    \param  rss the route style selector widget linked to this dialog.
- */
+/* Builds and runs the "edit route style" dialog. */
 void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_t *rss);
 
