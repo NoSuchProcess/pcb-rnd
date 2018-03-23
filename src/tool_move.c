@@ -55,7 +55,7 @@ void pcb_tool_move_notify_mode(void)
 				pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) pcb_crosshair.AttachedObject.Ptr2)) {
+				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) pcb_crosshair.AttachedObject.Ptr2)) {
 					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 				}

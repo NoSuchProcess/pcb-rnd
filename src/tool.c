@@ -176,22 +176,13 @@ pcb_bool pcb_tool_is_saved = pcb_false;
 static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
 	switch (type) {
-	case PCB_TYPE_VIA:
-		*x = ((pcb_pin_t *) ptr2)->X;
-		*y = ((pcb_pin_t *) ptr2)->Y;
-		break;
 	case PCB_TYPE_LINE:
 		*x = ((pcb_line_t *) ptr2)->Point1.X;
 		*y = ((pcb_line_t *) ptr2)->Point1.Y;
 		break;
 	case PCB_TYPE_TEXT:
-	case PCB_TYPE_ELEMENT_NAME:
 		*x = ((pcb_text_t *) ptr2)->X;
 		*y = ((pcb_text_t *) ptr2)->Y;
-		break;
-	case PCB_TYPE_ELEMENT:
-		*x = ((pcb_element_t *) ptr2)->MarkX;
-		*y = ((pcb_element_t *) ptr2)->MarkY;
 		break;
 	case PCB_TYPE_POLY:
 		*x = ((pcb_poly_t *) ptr2)->Points[0].X;
@@ -246,9 +237,8 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 	if (do_rubberband && conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (do_rubberband &&
-			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
-			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_SUBC ||
-			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
+			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_SUBC ||
+			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_PSTK ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE || pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }

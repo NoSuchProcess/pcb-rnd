@@ -73,33 +73,13 @@ static void notify_line(void)
 			break;
 		}
 		if (conf_core.editor.auto_drc) {
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
 			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
 		if (type == PCB_TYPE_PSTK) {
 			pcb_pstk_t *pstk = (pcb_pstk_t *)ptr2;
 			pcb_crosshair.AttachedLine.Point1.X = pstk->x;
 			pcb_crosshair.AttachedLine.Point1.Y = pstk->y;
-		}
-		else if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
-			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
-			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
-		}
-		else if (type == PCB_TYPE_PAD) {
-			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			double d1 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point1.X, pad->Point1.Y);
-			double d2 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point2.X, pad->Point2.Y);
-			double dm = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
-			if ((dm <= d1) && (dm <= d2)) { /* prefer to snap to the middle of a pin if that's the closest */
-				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
-				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
-			}
-			else if (d2 < d1) { /* else select the closest endpoint */
-				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point2;
-			}
-			else {
-				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point1;
-			}
 		}
 		else {
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
@@ -166,6 +146,7 @@ void pcb_tool_line_notify_mode(void)
 				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (!PCB->is_footprint)
+#warning padstack TODO: rewrite this to pstk
 				&& (via =	pcb_via_new(PCB->Data,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
@@ -257,6 +238,7 @@ void pcb_tool_line_notify_mode(void)
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_TYPE_NONE
+#warning padstack TODO: replace this with pstk
 					&& (via =
 							pcb_via_new(PCB->Data,
 													 pcb_crosshair.AttachedLine.Point1.X,
