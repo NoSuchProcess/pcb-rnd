@@ -396,10 +396,10 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 	 *  cases where the "real" lines don't intersect but the
 	 *  thick lines touch, and ensures that the dx/dy business
 	 *  below does not cause a divide-by-zero. */
-	if (pcb_is_point_in_line(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
-			|| pcb_is_point_in_line(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
-			|| pcb_is_point_in_line(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2)
-			|| pcb_is_point_in_line(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2))
+	if (pcb_is_point_in_line(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
+			|| pcb_is_point_in_line(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
+			|| pcb_is_point_in_line(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2)
+			|| pcb_is_point_in_line(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2))
 		return pcb_true;
 
 	/* setup some constants */
@@ -512,11 +512,11 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 
 	/* check arc end points */
 	pcb_arc_get_end(Arc, 0, &ex, &ey);
-	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_any_line_t *) Line))
 		return pcb_true;
 
 	pcb_arc_get_end(Arc, 1, &ex, &ey);
-	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_any_line_t *) Line))
 		return pcb_true;
 	return pcb_false;
 }
@@ -789,7 +789,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 		}
 		case PCB_PSSH_CIRC:
 		{
-			pcb_pad_t tmp;
+			pcb_any_line_t tmp;
 			tmp.Point1.X = line->Point1.X;
 			tmp.Point1.Y = line->Point1.Y;
 			tmp.Point2.X = line->Point2.X;
@@ -911,7 +911,7 @@ PCB_INLINE pcb_bool_t pstk_shape_int_circ_poly(pcb_pstk_t *p, pcb_pstk_shape_t *
 
 PCB_INLINE pcb_bool_t pstk_shape_int_circ_line(pcb_pstk_t *l, pcb_pstk_shape_t *sl, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
 {
-	pcb_pad_t tmp;
+	pcb_any_line_t tmp;
 	tmp.Point1.X = sl->data.line.x1 + l->x;
 	tmp.Point1.Y = sl->data.line.y1 + l->y;
 	tmp.Point2.X = sl->data.line.x2 + l->x;
