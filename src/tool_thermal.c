@@ -95,7 +95,7 @@ void pcb_tool_thermal_notify_mode(void)
 	int type;
 
 	if (((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
+			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
 		if (type == PCB_TYPE_PSTK)
 			pcb_tool_thermal_on_pstk((pcb_pstk_t *)ptr2, INDEXOFCURRENT);
 	}

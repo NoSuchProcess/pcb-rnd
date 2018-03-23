@@ -38,6 +38,7 @@
 
 #include "board.h"
 #include "polygon.h"
+#include "obj_pinvia.h"
 #include "obj_pinvia_therm.h"
 
 #warning cleanup TODO: remove this, pass on pcb as arg instead

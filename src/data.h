@@ -50,7 +50,6 @@ struct pcb_data_s {
 	pcb_vtpadstack_proto_t ps_protos;
 
 	padstacklist_t padstack;
-	pinlist_t Via;
 	pcb_subclist_t subc;
 /**/
 	pcb_rtree_t *via_tree, *padstack_tree, *subc_tree, *rat_tree;

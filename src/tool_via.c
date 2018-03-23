@@ -81,6 +81,8 @@ void pcb_tool_via_notify_mode(void)
 void pcb_tool_via_draw_attached(void)
 {
 	/* Make a dummy via structure to draw from */
+#warning padstack TODO: replace this with padstack outline draw:
+#if 0
 	pcb_pin_t via;
 	via.X = pcb_crosshair.X;
 	via.Y = pcb_crosshair.Y;
@@ -99,6 +101,7 @@ void pcb_tool_via_draw_attached(void)
 /*		XORDrawPinViaDRCOutline(&via,PCB->Bloat);*/
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
+#endif
 }
 
 pcb_tool_t pcb_tool_via = {

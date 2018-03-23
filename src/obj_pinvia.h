@@ -96,18 +96,4 @@ do { \
 } while(0)
 
 
-#define PCB_VIA_LOOP(top) do {                                          \
-  pcb_pin_t *via;                                                     \
-  gdl_iterator_t __it__;                                            \
-  pinlist_foreach(&(top)->Via, &__it__, via) {
-
-#define PCB_PIN_LOOP(element) do {                                      \
-  pcb_pin_t *pin;                                                     \
-  gdl_iterator_t __it__;                                            \
-  pinlist_foreach(&(element)->Pin, &__it__, pin) {
-
-#define PCB_PIN_ALL_LOOP(top)   \
-        PCB_ELEMENT_LOOP(top); \
-        PCB_PIN_LOOP(element)  \
-
 #endif
