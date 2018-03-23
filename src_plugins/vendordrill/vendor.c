@@ -350,7 +350,9 @@ static void apply_vendor_map(void)
 	if (n_vendor_drills > 0) {
 
 		changed += apply_vendor_pstk(PCB->Data);
-		
+
+#warning padstack TODO: rewrite for padstacks
+#if 0
 		/* first all the vias */
 		PCB_VIA_LOOP(PCB->Data);
 		{
@@ -373,6 +375,7 @@ static void apply_vendor_map(void)
 			}
 		}
 		PCB_END_LOOP;
+#endif
 
 		PCB_SUBC_LOOP(PCB->Data);
 		{
