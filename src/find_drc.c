@@ -32,7 +32,6 @@
 #include "data_it.h"
 
 #include "obj_arc_draw.h"
-#include "obj_pad_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_line_draw.h"
 #include "obj_poly_draw.h"

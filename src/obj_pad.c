@@ -44,7 +44,6 @@
 /* TODO: remove this if draw.[ch] pads are moved */
 #include "draw.h"
 #include "obj_text_draw.h"
-#include "obj_pad_draw.h"
 
 #include "obj_elem.h"
 
