@@ -1698,7 +1698,7 @@ pad_hi_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '[' measure measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_pad_t *pad = io_pcb_element_pad_new(yysubc, NU ($3) + yysubc_ox,
+				pcb_pstk_t *pad = io_pcb_element_pad_new(yysubc, NU ($3) + yysubc_ox,
 					NU ($4) + yysubc_oy,
 					NU ($5) + yysubc_ox,
 					NU ($6) + yysubc_oy, NU ($7), NU ($8), NU ($9),

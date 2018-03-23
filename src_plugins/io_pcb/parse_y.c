@@ -2742,7 +2742,7 @@ yyreduce:
   case 158:
 #line 1700 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pad_t *pad = io_pcb_element_pad_new(yysubc, NU ((yyvsp[-10].measure)) + yysubc_ox,
+				pcb_pstk_t *pad = io_pcb_element_pad_new(yysubc, NU ((yyvsp[-10].measure)) + yysubc_ox,
 					NU ((yyvsp[-9].measure)) + yysubc_oy,
 					NU ((yyvsp[-8].measure)) + yysubc_ox,
 					NU ((yyvsp[-7].measure)) + yysubc_oy, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
