@@ -51,41 +51,6 @@
 
 #include "obj_elem.h"
 
-/*** utility ***/
-
-int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2)
-{
-	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;
-	if (pcb_field_neq(p1, p2, Mask) || pcb_field_neq(p1, p2, DrillingHole)) return 0;
-	if (pcb_element_neq_offsx(e1, p1, e2, p2, X) || pcb_element_neq_offsy(e1, p1, e2, p2, Y)) return 0;
-	if (pcb_neqs(p1->Name, p2->Name)) return 0;
-	if (pcb_neqs(p1->Number, p2->Number)) return 0;
-	return 1;
-}
-
-int pcb_pin_eq_padstack(const pcb_pin_t *p1, const pcb_pin_t *p2)
-{
-	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;
-	if (pcb_field_neq(p1, p2, Mask) || pcb_field_neq(p1, p2, DrillingHole)) return 0;
-	return 1;
-}
-
-unsigned int pcb_pin_hash(const pcb_element_t *e, const pcb_pin_t *p)
-{
-	return
-		pcb_hash_coord(p->Thickness) ^ pcb_hash_coord(p->Clearance) ^
-		pcb_hash_coord(p->Mask) ^ pcb_hash_coord(p->DrillingHole) ^
-		pcb_hash_element_ox(e, p->X) ^ pcb_hash_element_oy(e, p->Y) ^
-		pcb_hash_str(p->Name) ^ pcb_hash_str(p->Number);
-}
-
-unsigned int pcb_pin_hash_padstack(const pcb_pin_t *p)
-{
-	return
-		pcb_hash_coord(p->Thickness) ^ pcb_hash_coord(p->Clearance) ^
-		pcb_hash_coord(p->Mask) ^ pcb_hash_coord(p->DrillingHole);
-}
-
 /*** draw ***/
 static void GatherPVName(pcb_pin_t *Ptr)
 {
