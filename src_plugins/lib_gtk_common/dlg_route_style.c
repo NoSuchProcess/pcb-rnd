@@ -96,16 +96,7 @@ static int get_sel(pcb_gtk_dlg_route_style_t * dlg)
 	return -1;
 }
 
-/** Callback for dialog box's combobox being changed
-    \par Function Description
-    When a different layer is selected, this function loads
-    that layer's data into the dialog. Alternately, if the
-    "New layer" option is selected, this loads a new name
-    but no other data.
-
-    \param [in] combo   The combobox
-    \param [in] dialog  The rest of the widgets to be updated
- */
+/* When a different style is selected, load that style's data into the dialog. */
 static void dialog_style_changed_cb(GtkComboBox * combo, pcb_gtk_dlg_route_style_t * dialog)
 {
 	pcb_gtk_route_style_t *rss;
@@ -260,7 +251,6 @@ static void delete_button_cb(GtkButton * button, pcb_gtk_dlg_route_style_t * dia
 	gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->select_box), 0);
 }
 
-/** Helper for edit_button_cb */
 static void _table_attach_(GtkWidget * table, gint row, const gchar * label, GtkWidget * entry)
 {
 	GtkWidget *label_w = gtk_label_new(label);
@@ -269,7 +259,6 @@ static void _table_attach_(GtkWidget * table, gint row, const gchar * label, Gtk
 	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 }
 
-/** Helper for edit_button_cb */
 static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min,
 													pcb_coord_t max)
 {
