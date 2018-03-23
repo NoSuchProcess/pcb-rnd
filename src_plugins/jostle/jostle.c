@@ -151,12 +151,9 @@ static pcb_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
 	return box;
 }
 
-/*!
- * Given a polygon and a side of it (a direction north/northeast/etc),
- * find a line tangent to that side, offset by clearance, and return it
- * as a pair of vectors PQ.\n
- * Make it long so it will intersect everything in the area.
- */
+/* Given a polygon and a side of it (a direction north/northeast/etc), find a
+   line tangent to that side, offset by clearance, and return it as a pair of
+   vectors PQ. Make it long so it will intersect everything in the area. */
 static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
 {
 	int extra;
@@ -254,17 +251,13 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 	}
 }
 
-/*!
- * Given a 'side' from the JNORTH/JSOUTH/etc enum, rotate it by n.
- */
+/* Given a 'side' from the JNORTH/JSOUTH/etc enum, rotate it by n. */
 static int rotateSide(int side, int n)
 {
 	return (side + n + 8) % 8;
 }
 
-/*!
- * Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo
- */
+/* Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo */
 static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, int thickness, int clearance, pcb_flag_t flags)
 {
 	pcb_line_t *line;
@@ -288,25 +281,21 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vecto
 	return line;
 }
 
-/*!
- * Given a 'brush' that's pushing things out of the way (possibly already
+/* Given a 'brush' that's pushing things out of the way (possibly already
  * cut down to just the part relevant to our line) and a line that
  * intersects it on some layer, find the 45/90 lines required to go around
  * the brush on the named side.  Create them and remove the original.
  *
  * Imagine side = north:
- * <pre>
                  /      \
             ----b##FLAT##c----
                Q          P
    lA-ORIG####a            d####ORIG-lB
              /              \
- * </pre>
  * First find the extended three lines that go around the brush.
  * Then intersect them with each other and the original to find
  * points a, b, c, d.  Finally connect the dots and remove the
- * old straight line.
- */
+ * old straight line. */
 static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_line_t * line, int side, pcb_polyarea_t ** expandp)
 {
 	pcb_vector_t pA, pB, flatA, flatB, qA, qB;
@@ -346,22 +335,13 @@ struct info {
 	pcb_box_t box;
 	pcb_polyarea_t *brush;
 	pcb_layer_t *layer;
-	pcb_polyarea_t *smallest;
-	/*!< after cutting brush with line, the smallest chunk, which we
-	 * will go around on 'side'.
-	 */
+	pcb_polyarea_t *smallest; /* after cutting brush with line, the smallest chunk, which we will go around on 'side'. */
 	pcb_line_t *line;
 	int side;
-	double centroid;
-	/*!< smallest difference between slices of brush after cutting with
-	 * line, trying to find the line closest to the centroid to process
-	 * first
-	 */
+	double centroid; /* smallest difference between slices of brush after cutting with line, trying to find the line closest to the centroid to process first */
 };
 
-/*!
- * Process lines that intersect our 'brush'.
- */
+/* Process lines that intersect our 'brush'. */
 static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 {
 	pcb_line_t *line = (pcb_line_t *) targ;
