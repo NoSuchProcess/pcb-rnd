@@ -51,197 +51,7 @@
 
 #include "obj_elem.h"
 
-/*** allocation ***/
-
-/* get next slot for a via, allocates memory if necessary */
-pcb_pin_t *pcb_via_alloc(pcb_data_t * data)
-{
-	pcb_pin_t *new_obj;
-
-	new_obj = calloc(sizeof(pcb_pin_t), 1);
-	new_obj->type = PCB_OBJ_VIA;
-	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(new_obj, data, data);
-
-	pinlist_append(&data->Via, new_obj);
-
-	return new_obj;
-}
-
-void pcb_via_free(pcb_pin_t * data)
-{
-	pinlist_remove(data);
-	free(data);
-}
-
-/* get next slot for a pin, allocates memory if necessary */
-pcb_pin_t *pcb_pin_alloc(pcb_element_t * element)
-{
-	pcb_pin_t *new_obj;
-
-	new_obj = calloc(sizeof(pcb_pin_t), 1);
-	new_obj->type = PCB_OBJ_PIN;
-	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(new_obj, element, element);
-
-	pinlist_append(&element->Pin, new_obj);
-
-	return new_obj;
-}
-
-void pcb_pin_free(pcb_pin_t * data)
-{
-	pinlist_remove(data);
-	free(data);
-}
-
-
-
 /*** utility ***/
-
-/* creates a new via */
-pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
-{
-	pcb_pin_t *Via;
-
-	if (!pcb_create_being_lenient) {
-		PCB_VIA_LOOP(Data);
-		{
-			if (pcb_distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
-				pcb_message(PCB_MSG_WARNING, _("%m+Dropping via at %$mD because its hole would overlap with the via "
-									"at %$mD\n"), conf_core.editor.grid_unit->allow, X, Y, via->X, via->Y);
-				return NULL;					/* don't allow via stacking */
-			}
-		}
-		PCB_END_LOOP;
-	}
-
-	Via = pcb_via_alloc(Data);
-
-	if (!Via)
-		return Via;
-	/* copy values */
-	Via->X = X;
-	Via->Y = Y;
-	Via->Thickness = Thickness;
-	Via->Clearance = Clearance;
-	Via->Mask = Mask;
-	Via->DrillingHole = pcb_stub_vendor_drill_map(DrillingHole);
-	if (Via->DrillingHole != DrillingHole) {
-		pcb_message(PCB_MSG_INFO, _("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
-						conf_core.editor.grid_unit->allow, Via->DrillingHole, DrillingHole);
-	}
-
-	Via->Name = pcb_strdup_null(Name);
-	Via->Flags = Flags;
-	PCB_FLAG_CLEAR(PCB_FLAG_WARN, Via);
-	PCB_FLAG_SET(PCB_FLAG_VIA, Via);
-	Via->ID = pcb_create_ID_get();
-
-	/*
-	 * don't complain about PCB_MIN_PINORVIACOPPER on a mounting hole (pure
-	 * hole)
-	 */
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + PCB_MIN_PINORVIACOPPER)) {
-		Via->Thickness = Via->DrillingHole + PCB_MIN_PINORVIACOPPER;
-		pcb_message(PCB_MSG_WARNING, _("%m+Increased via thickness to %$mS to allow enough copper"
-							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
-	}
-
-	pcb_add_via(Data, Via);
-	return Via;
-}
-
-static pcb_pin_t *pcb_via_copy_meta(pcb_pin_t *dst, pcb_pin_t *src)
-{
-	if (dst == NULL)
-		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
-	if (src->Number != NULL)
-		dst->Number = pcb_strdup(src->Number);
-	if (src->Name != NULL)
-		dst->Name = pcb_strdup(src->Name);
-	return dst;
-}
-
-pcb_pin_t *pcb_via_dup(pcb_data_t *data, pcb_pin_t *src)
-{
-	pcb_pin_t *p = pcb_via_new(data, src->X, src->Y, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
-	return pcb_via_copy_meta(p, src);
-}
-
-pcb_pin_t *pcb_via_dup_at(pcb_data_t *data, pcb_pin_t *src, pcb_coord_t dx, pcb_coord_t dy)
-{
-	pcb_pin_t *p = pcb_via_new(data, src->X+dx, src->Y+dy, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
-	return pcb_via_copy_meta(p, src);
-}
-
-/* creates a new pin in an element */
-pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
-{
-	pcb_pin_t *pin = pcb_pin_alloc(Element);
-
-	/* copy values */
-	pin->X = X;
-	pin->Y = Y;
-	pin->Thickness = Thickness;
-	pin->Clearance = Clearance;
-	pin->Mask = Mask;
-	pin->Name = pcb_strdup_null(Name);
-	pin->Number = pcb_strdup_null(Number);
-	pin->Flags = Flags;
-	PCB_FLAG_CLEAR(PCB_FLAG_WARN, pin);
-	PCB_FLAG_SET(PCB_FLAG_PIN, pin);
-	pin->ID = pcb_create_ID_get();
-	pin->Element = Element;
-
-	/*
-	 * If there is no vendor drill map installed, this will simply
-	 * return DrillingHole.
-	 */
-	pin->DrillingHole = pcb_stub_vendor_drill_map(DrillingHole);
-
-	/* Unless we should not map drills on this element, map them! */
-	if (pcb_stub_vendor_is_element_mappable(Element)) {
-		if (pin->DrillingHole < PCB_MIN_PINORVIASIZE) {
-			pcb_message(PCB_MSG_WARNING, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
-							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
-			pin->DrillingHole = DrillingHole;
-		}
-		else if (pin->DrillingHole > PCB_MAX_PINORVIASIZE) {
-			pcb_message(PCB_MSG_WARNING, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
-							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
-			pin->DrillingHole = DrillingHole;
-		}
-		else if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)
-						 && (pin->DrillingHole > pin->Thickness - PCB_MIN_PINORVIACOPPER)) {
-			pcb_message(PCB_MSG_WARNING, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
-							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
-			pin->DrillingHole = DrillingHole;
-		}
-	}
-	else {
-		pin->DrillingHole = DrillingHole;
-	}
-
-	if (pin->DrillingHole != DrillingHole) {
-		pcb_message(PCB_MSG_INFO, _("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
-						conf_core.editor.grid_unit->allow, pin->DrillingHole, DrillingHole);
-	}
-
-	return pin;
-}
-
-
-
-void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
-{
-	pcb_pin_bbox(Via);
-	if (!Data->via_tree)
-		Data->via_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via);
-	PCB_SET_PARENT(Via, data, Data);
-}
 
 /* sets the bounding box of a pin or via */
 void pcb_pin_bbox(pcb_pin_t *Pin)
@@ -350,12 +160,6 @@ unsigned int pcb_pin_hash_padstack(const pcb_pin_t *p)
 }
 
 /*** ops ***/
-/* copies a via to paste buffer */
-void *pcb_viaop_add_to_buffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
-{
-	pcb_pin_t *v = pcb_via_new(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
-	return pcb_via_copy_meta(v, Via);
-}
 
 /* moves a via beteen board and buffer without allocating memory for the name */
 void *pcb_viaop_move_buffer(pcb_opctx_t *ctx, pcb_pin_t * via)
@@ -806,20 +610,6 @@ abort();
 	return NULL;
 }
 
-/* copies a via */
-void *pcb_viaop_copy(pcb_opctx_t *ctx, pcb_pin_t *Via)
-{
-	pcb_pin_t *via;
-
-	via = pcb_via_new(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
-										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND));
-	if (!via)
-		return via;
-	pcb_via_invalidate_draw(via);
-	pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-	return via;
-}
-
 /* moves a via */
 void *pcb_viaop_move_noclip(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
@@ -856,14 +646,6 @@ void *pcb_viaop_clip(pcb_opctx_t *ctx, pcb_pin_t *Via)
 
 
 /* destroys a via */
-void *pcb_viaop_destroy(pcb_opctx_t *ctx, pcb_pin_t *Via)
-{
-	pcb_r_delete_entry(ctx->remove.destroy_target->via_tree, (pcb_box_t *) Via);
-	free(Via->Name);
-
-	pcb_via_free(Via);
-	return NULL;
-}
 
 /* removes a via */
 void *pcb_viaop_remove(pcb_opctx_t *ctx, pcb_pin_t *Via)

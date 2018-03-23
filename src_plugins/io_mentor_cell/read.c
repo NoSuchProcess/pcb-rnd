@@ -162,13 +162,13 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_
 		}
 	}
 
+#warning padstack TODO: rewrite
+#if 0
 	if (hole > 0) {
 		pcb_element_pin_new(elem, px, py, thickness, cl, ms, hole, name, name, flags);
 		sqpad_pending = 0;
 	}
 
-#warning padstack TODO: rewrite
-#if 0
 	if (sqpad_pending)
 		pcb_element_pad_new_rect(elem, px, py, px+thickness, py+thickness, cl, ms, name, name, flags);
 #endif
