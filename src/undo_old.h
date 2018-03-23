@@ -49,7 +49,6 @@ void pcb_undo_add_obj_to_change_pinnum(int, void *, void *, void *, char *);
 void pcb_undo_add_obj_to_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, pcb_uint8_t);
 void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_angle_t angle);
 void pcb_undo_add_obj_to_create(int, void *, void *, void *);
-void pcb_undo_add_obj_to_mirror(int, void *, void *, void *, pcb_coord_t);
 void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff);
 void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
 void pcb_undo_add_obj_to_flag(void *obj);
@@ -78,7 +77,6 @@ typedef enum {
 	PCB_UNDO_MOVETOLAYER       = 0x000200, /* moving objects to */
 	PCB_UNDO_FLAG              = 0x000400, /* toggling SELECTED flag */
 	PCB_UNDO_CHANGESIZE        = 0x000800, /* change size of object */
-	PCB_UNDO_MIRROR            = 0x002000, /* change side of board */
 	PCB_UNDO_CHANGECLEARSIZE   = 0x004000, /* change clearance size */
 	PCB_UNDO_CHANGEANGLES      = 0x010000, /* change arc angles */
 	PCB_UNDO_LAYERMOVE         = 0x020000, /* layer new/delete/move */

@@ -493,8 +493,9 @@ pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return pcb_false;
 	pcb_elem_invalidate_erase(Element);
-	pcb_undo_add_obj_to_mirror(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
-	pcb_element_mirror(PCB->Data, Element, yoff);
+abort();
+/*	pcb_undo_add_obj_to_mirror(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);*/
+/*	pcb_element_mirror(PCB->Data, Element, yoff);*/
 	pcb_elem_invalidate_draw(Element);
 	return pcb_true;
 }

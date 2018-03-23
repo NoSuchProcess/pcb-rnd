@@ -862,11 +862,6 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
-	case PCB_UNDO_MIRROR:
-		if (UndoMirror(ptr))
-			return 0;
-		break;
-
 	case PCB_UNDO_OTHERSIDE:
 		if (UndoOtherSide(ptr))
 			return 0;
@@ -886,19 +881,6 @@ void pcb_undo_add_obj_to_clear_poly(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		undo = GetUndoSlot(PCB_UNDO_CLEAR, PCB_OBJECT_ID(Ptr3), Type);
 		undo->Data.ClearPoly.Clear = clear;
 		undo->Data.ClearPoly.Layer = (pcb_layer_t *) Ptr1;
-	}
-}
-
-/* ---------------------------------------------------------------------------
- * adds an object to the list of mirrored objects
- */
-void pcb_undo_add_obj_to_mirror(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff)
-{
-	UndoListTypePtr undo;
-
-	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_MIRROR, PCB_OBJECT_ID(Ptr3), Type);
-		undo->Data.Move.DY = yoff;
 	}
 }
 
@@ -1335,7 +1317,6 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_MOVETOLAYER: return "movetolayer";
 		case PCB_UNDO_FLAG: return "flag";
 		case PCB_UNDO_CHANGESIZE: return "changesize";
-		case PCB_UNDO_MIRROR: return "mirror";
 		case PCB_UNDO_OTHERSIDE: return "otherside";
 		case PCB_UNDO_CHANGECLEARSIZE: return "chngeclearsize";
 		case PCB_UNDO_CHANGEANGLES: return "changeangles";
