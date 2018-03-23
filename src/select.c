@@ -633,13 +633,13 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				}
 				PCB_END_LOOP;
+#if 0
 				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
 					pcb_undo_add_obj_to_flag(text);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
 				}
 				PCB_END_LOOP;
-#if 0
 				pcb_elem_name_invalidate_draw(element);
 				pcb_elem_invalidate_draw(element);
 #endif

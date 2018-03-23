@@ -85,29 +85,6 @@ void *pcb_element_remove(pcb_element_t *Element);
 	gdl_iterator_t __it__;                                            \
 	pinlist_foreach(&(top)->Element, &__it__, element) {
 
-#define	PCB_ELEMENT_PCB_TEXT_LOOP(element) do { \
-	pcb_cardinal_t n; \
-	pcb_text_t *text; \
-	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--) \
-	{	\
-		text = &(element)->Name[n]
-
-#define	PCB_ELEMENT_NAME_LOOP(element) do	{ \
-	pcb_cardinal_t n; \
-	char *textstring; \
-	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--) \
-	{ \
-		textstring = (element)->Name[n].TextString
-
-#define PCB_ELEMENT_PCB_LINE_LOOP(element) do {                     \
-	pcb_line_t *line;                                                 \
-	gdl_iterator_t __it__;                                            \
-	linelist_foreach(&(element)->Line, &__it__, line) {
-
-#define PCB_ELEMENT_ARC_LOOP(element) do {                          \
-	pcb_arc_t *arc;                                                   \
-	gdl_iterator_t __it__;                                            \
-	linelist_foreach(&(element)->Arc, &__it__, arc) {
 
 #endif
 
