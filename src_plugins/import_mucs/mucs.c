@@ -50,6 +50,7 @@
 #include "plugins.h"
 #include "layer.h"
 #include "conf_core.h"
+#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 static const char *mucs_cookie = "mucs importer";
 
@@ -63,6 +64,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	int c, c2;
 	pcb_coord_t x1, y1, x2, y2, r;
 	fname = argc ? argv[0] : 0;
+	pcb_pstk_t *ps;
 
 	if (!(pcb_layer_flags(PCB, INDEXOFCURRENT) & PCB_LYT_COPPER)) {
 		pcb_message(PCB_MSG_ERROR, "The currently active layer is not a copper layer.\n");
@@ -115,7 +117,8 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				y1 = (getc(fi) + (getc(fi) * 256));
 				r = (getc(fi) + (getc(fi) * 256));
 				pcb_trace("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
-				pcb_via_new(PCB->Data, PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), PCB_MIL_TO_COORD(60), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(30), 0, pcb_flag_make(PCB_FLAG_AUTO));
+				ps = pcb_pstk_new_compat_via(PCB->Data, PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
+				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 				break;
 			case 'n':
 				x1 = (getc(fi) + (getc(fi) * 256));

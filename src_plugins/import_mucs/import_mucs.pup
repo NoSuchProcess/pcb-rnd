@@ -6,4 +6,5 @@ $fmt-native no
 $fmt-feature-r import lines and vias from MUCS unixplot .pl files
 $package auto
 default buildin
+dep lib_compat_help
 autoload 1
