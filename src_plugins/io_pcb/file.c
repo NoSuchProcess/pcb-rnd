@@ -341,12 +341,6 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 	pcb_pstk_t *ps;
 
 	/* write information about vias */
-	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", via->X, via->Y,
-								via->Thickness, via->Clearance, via->Mask, via->DrillingHole);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(via->Name));
-		fprintf(FP, " %s]\n", F2S(via, PCB_TYPE_VIA));
-	}
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
