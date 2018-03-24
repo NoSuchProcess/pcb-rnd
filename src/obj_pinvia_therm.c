@@ -436,17 +436,3 @@ pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, pcb_coord_t cx, pcb_coord_t cy, pcb
 		return pa;
 	}
 }
-
-pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
-{
-	pcb_cardinal_t style = PCB_FLAG_THERM_GET(laynum, pin);
-	if (style == 3)
-		return NULL;								/* solid connection no clearance */
-	pcb = p;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
-		return square_therm(pin, style);
-	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
-		return oct_therm(pin, style);
-
-	return ThermPoly_(p, pin->X, pin->Y, pin->Thickness, pin->Clearance, style);
-}

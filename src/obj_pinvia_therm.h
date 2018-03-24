@@ -41,9 +41,6 @@
 #include <stdlib.h>
 #include "config.h"
 
-pcb_polyarea_t *ThermPoly(pcb_board_t *, pcb_pin_t *, pcb_cardinal_t);
 pcb_polyarea_t *ThermPoly_(pcb_board_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t thickness, pcb_coord_t clearance, pcb_cardinal_t style);
-
-
 
 #endif
