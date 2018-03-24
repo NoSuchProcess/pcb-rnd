@@ -536,16 +536,13 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	}
 	PCB_ENDALL_LOOP;
 
-#warning padstack TODO: rewrite
-#if 0
 	if (PCB->ViaOn)
-		PCB_VIA_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via))
-			pcb_remove_object(PCB_TYPE_VIA, via, via, via);
-	}
-	PCB_END_LOOP;
-#endif
+		PCB_PADSTACK_LOOP(PCB->Data);
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))
+				pcb_remove_object(PCB_TYPE_PSTK, padstack, padstack, padstack);
+		}
+		PCB_END_LOOP;
 }
 
 typedef struct {
