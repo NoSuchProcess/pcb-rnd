@@ -167,7 +167,7 @@ static int count_drill_lines(DrillInfoTypePtr AllDrills)
 
 static int DrawFab_overhang(void)
 {
-	DrillInfoTypePtr AllDrills = GetDrillInfo(PCB->Data);
+	DrillInfoTypePtr AllDrills = drill_get_info(PCB->Data);
 	int ds = count_drill_lines(AllDrills);
 	if (ds < 4)
 		ds = 4;
@@ -179,11 +179,11 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	DrillInfoTypePtr AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0, found;
 	char utcTime[64];
-	AllDrills = GetDrillInfo(PCB->Data);
+	AllDrills = drill_get_info(PCB->Data);
 	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
-		RoundDrillInfo(AllDrills, PCB_MIL_TO_COORD(1));
+		drill_round_info(AllDrills, PCB_MIL_TO_COORD(1));
 	else
-		RoundDrillInfo(AllDrills, PCB_MM_TO_COORD(0.01));
+		drill_round_info(AllDrills, PCB_MM_TO_COORD(0.01));
 	yoff = -TEXT_LINE;
 
 	/* count how many drill description lines will be needed */

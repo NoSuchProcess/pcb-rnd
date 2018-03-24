@@ -80,8 +80,8 @@ static int report_drills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	char *stringlist, *thestring;
 	int total_drills = 0;
 
-	AllDrills = GetDrillInfo(PCB->Data);
-	RoundDrillInfo(AllDrills, 100);
+	AllDrills = drill_get_info(PCB->Data);
+	drill_round_info(AllDrills, 100);
 
 	for (n = 0; n < AllDrills->DrillN; n++) {
 		total_drills += AllDrills->Drill[n].PinCount;
@@ -111,7 +111,7 @@ static int report_drills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		while (*thestring != '\0')
 			thestring++;
 	}
-	FreeDrillInfo(AllDrills);
+	drill_info_free(AllDrills);
 	/* create dialog box */
 	pcb_gui->report_dialog("Drill Report", stringlist);
 

@@ -49,12 +49,12 @@ typedef struct {								/* holds a range of Drill Infos */
 	DrillTypePtr Drill;						/* plated holes */
 } DrillInfoType, *DrillInfoTypePtr;
 
-DrillInfoTypePtr GetDrillInfo(pcb_data_t *);
-void FreeDrillInfo(DrillInfoTypePtr);
-void RoundDrillInfo(DrillInfoTypePtr, int);
-DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr);
-pcb_any_obj_t **GetDrillPinMemory(DrillTypePtr);
-pcb_any_obj_t **GetDrillElementMemory(DrillTypePtr);
+DrillInfoTypePtr drill_get_info(pcb_data_t *);
+void drill_info_free(DrillInfoTypePtr);
+void drill_round_info(DrillInfoTypePtr, int);
+DrillTypePtr drill_info_alloc(DrillInfoTypePtr);
+pcb_any_obj_t **drill_pin_alloc(DrillTypePtr);
+pcb_any_obj_t **drill_element_alloc(DrillTypePtr);
 
 #define DRILL_LOOP(top) do             {                           \
         pcb_cardinal_t        n;                                   \
