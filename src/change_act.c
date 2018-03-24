@@ -656,7 +656,6 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
-#warning subc TODO: rewrite this for subc
 		case F_Element:
 			{
 				int type;
