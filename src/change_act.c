@@ -52,6 +52,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_rat_draw.h"
+#include "data_it.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
@@ -445,7 +446,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 
 /* ---------------------------------------------------------------------------  */
 
-static const char pcb_acts_ChangePinName[] = "ChangePinName(ElementName,PinNumber,PinName)";
+static const char pcb_acts_ChangePinName[] = "ChangePinName(Refdes,PinNumber,PinName)";
 
 static const char pcb_acth_ChangePinName[] = "Sets the name of a specific pin on a specific subcircuit.";
 
@@ -463,7 +464,7 @@ ChangePinName(U3, 7, VCC)
 
 static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int changed = 0;
+	pcb_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
 
 	if (argc != 3) {
@@ -474,44 +475,24 @@ static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb
 	pinnum = argv[1];
 	pinname = argv[2];
 
-#warning subc TODO: rewrite this
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		if (PCB_NSTRCMP(refdes, PCB_ELEM_NAME_REFDES(element)) == 0) {
-			PCB_PIN_LOOP(element);
-			{
-				if (PCB_NSTRCMP(pinnum, pin->Number) == 0) {
-					pcb_undo_add_obj_to_change_name(PCB_TYPE_PIN, NULL, NULL, pin, pin->Name);
-					/*
-					 * Note:  we can't free() pin->Name first because
-					 * it is used in the undo list
-					 */
-					pin->Name = pcb_strdup(pinname);
-					pcb_board_set_changed_flag(pcb_true);
-					changed = 1;
-				}
-			}
-			PCB_END_LOOP;
+		if ((subc->refdes != NULL) && (PCB_NSTRCMP(refdes, subc->refdes) == 0)) {
+			pcb_any_obj_t *o;
+			pcb_data_it_t it;
 
-			PCB_PAD_LOOP(element);
-			{
-				if (PCB_NSTRCMP(pinnum, pad->Number) == 0) {
-					pcb_undo_add_obj_to_change_name(PCB_TYPE_PAD, NULL, NULL, pad, pad->Name);
-					/*
-					 * Note:  we can't free() pad->Name first because
-					 * it is used in the undo list
-					 */
-					pad->Name = pcb_strdup(pinname);
+			for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+				if ((o->term != NULL) && (PCB_NSTRCMP(pinnum, o->term) == 0)) {
+#warning TODO: make this undoable
+					pcb_attribute_put(&o->Attributes, "name", pinname);
 					pcb_board_set_changed_flag(pcb_true);
-					changed = 1;
+					changed++;
 				}
 			}
-			PCB_END_LOOP;
 		}
 	}
 	PCB_END_LOOP;
-#endif
+
 	/*
 	 * done with our action so increment the undo # if we actually
 	 * changed anything
@@ -520,7 +501,7 @@ static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb
 		if (defer_updates)
 			defer_needs_update = 1;
 		else {
-			pcb_undo_inc_serial();
+			/* pcb_undo_inc_serial(); */
 			pcb_gui->invalidate_all();
 		}
 	}
