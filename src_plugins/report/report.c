@@ -499,7 +499,7 @@ static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pc
 			pcb_reset_conns(pcb_false);
 
 			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
-			pcb_gui->log("Net %s length %s\n", netname, buf);
+			pcb_message(PCB_MSG_INFO, "Net %s length %s\n", netname, buf);
 		}
 	}
 
