@@ -679,34 +679,10 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 	return polygon;
 }
 
-struct mptlc {
-	pcb_layer_id_t snum, dnum;
-	int type;
-	pcb_poly_t *polygon;
-} mptlc;
-
-#if 0
-pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
-{
-	struct mptlc *d = (struct mptlc *) cl;
-	pcb_pin_t *pin = (pcb_pin_t *) b;
-	if (!PCB_FLAG_THERM_TEST(d->snum, pin) || !pcb_poly_is_point_in_p(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
-		return PCB_R_DIR_NOT_FOUND;
-	if (d->type == PCB_TYPE_PIN)
-		pcb_undo_add_obj_to_flag(pin);
-	else
-		pcb_undo_add_obj_to_flag(pin);
-	PCB_FLAG_THERM_ASSIGN(d->dnum, PCB_FLAG_THERM_GET(d->snum, pin), pin);
-	PCB_FLAG_THERM_CLEAR(d->snum, pin);
-	return PCB_R_DIR_FOUND_CONTINUE;
-}
-#endif
-
 /* moves a polygon between layers */
 void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t * Polygon)
 {
 	pcb_poly_t *newone;
-	struct mptlc d;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
@@ -717,16 +693,6 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_POLY, Layer, Polygon, Polygon);
 	if (Layer->meta.real.vis)
 		pcb_poly_invalidate_erase(Polygon);
-	/* Move all of the thermals with the polygon */
-	d.snum = pcb_layer_id(PCB->Data, Layer);
-	d.dnum = pcb_layer_id(PCB->Data, ctx->move.dst_layer);
-	d.polygon = Polygon;
-
-#warning padstack TODO
-#if 0
-	d.type = PCB_TYPE_PIN;
-	pcb_r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
-#endif
 
 	newone = (struct pcb_poly_s *) pcb_polyop_move_to_layer_low(ctx, Layer, Polygon, ctx->move.dst_layer);
 	pcb_poly_init_clip(PCB->Data, ctx->move.dst_layer, newone);
