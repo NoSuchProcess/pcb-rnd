@@ -49,23 +49,20 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-#warning padstack TODO: rewrite
-#if 0
-		PCB_VIA_LOOP(subc->data);
+		PCB_PADSTACK_LOOP(subc->data);
 		{
-			if (via->term == NULL)
+			if (padstack->term == NULL)
 				continue;
-			if (PCB_FLAG_TEST(flag, via)) {
+			if (PCB_FLAG_TEST(flag, padstack)) {
 				if (AndDraw)
-					pcb_undo_add_obj_to_flag(via);
-				PCB_FLAG_CLEAR(flag, via);
+					pcb_undo_add_obj_to_flag(padstack);
+				PCB_FLAG_CLEAR(flag, padstack);
 				if (AndDraw)
-					pcb_via_invalidate_draw(via);
+					pcb_pstk_invalidate_draw(padstack);
 				change = pcb_true;
 			}
 		}
 		PCB_END_LOOP;
-#endif
 
 		PCB_LINE_ALL_LOOP(subc->data);
 		{
