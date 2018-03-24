@@ -317,17 +317,16 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	}
 
 	if (pcb_strcasecmp(function, "ElementConnections") == 0) {
-		pcb_element_t *element;
 		void *ptrtmp;
 		FILE *fp;
 		pcb_bool result;
 		pcb_coord_t x, y;
-#warning subc TODO: rewrite this
+
 		pcb_gui->get_coords("Click on an element", &x, &y);
-		if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
-			element = (pcb_element_t *) ptrtmp;
+		if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+			pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
 			if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-				pcb_lookup_element_conns(element, fp);
+				pcb_lookup_subc_conns(subc, fp);
 				fclose(fp);
 				pcb_board_set_changed_flag(pcb_true);
 			}
