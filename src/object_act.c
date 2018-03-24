@@ -887,15 +887,16 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 /* ---------------------------------------------------------------------------  */
 int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-#warning cleanup TODO: move this to oldactions maybe?
-#warning subc TODO
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		printf("%d %s\n", pcb_element_get_orientation(element), PCB_ELEM_NAME_REFDES(element));
+		double rot;
+		const char *refdes = PCB_UNKNOWN(subc->refdes);
+		if (pcb_subc_get_rotation(subc, &rot) == 0)
+			pcb_message(PCB_MSG_INFO, "%f %s\n", rot, refdes);
+		else
+			pcb_message(PCB_MSG_INFO, "<unknown> %s\n", refdes);
 	}
 	PCB_END_LOOP;
-#endif
 	return 0;
 }
 
