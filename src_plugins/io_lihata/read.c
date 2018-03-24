@@ -469,7 +469,7 @@ static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
 	return 0;
 }
 
-static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int no_id, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_line_t *line;
 	unsigned char intconn = 0;
@@ -544,7 +544,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_arc_t *arc;
 	unsigned char intconn = 0;
@@ -581,7 +581,7 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 
 }
 
-static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
+static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_poly_t *poly = pcb_poly_alloc(ly);
 	lht_node_t *geo;
@@ -773,11 +773,11 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(ly, NULL, n, 0, 0, 0);
+				parse_line(ly, n, 0, 0, 0);
 			if (strncmp(n->name, "arc.", 4) == 0)
-				parse_arc(ly, NULL, n, 0, 0);
+				parse_arc(ly, n, 0, 0);
 			if (strncmp(n->name, "polygon.", 8) == 0)
-				parse_polygon(ly, NULL, n);
+				parse_polygon(ly, n);
 			if (strncmp(n->name, "text.", 5) == 0)
 				parse_pcb_text(ly, n);
 		}
@@ -989,9 +989,9 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(silk, NULL, n, 0, ox, oy);
+				parse_line(silk, n, 0, ox, oy);
 			if (strncmp(n->name, "arc.", 4) == 0)
-				parse_arc(silk, NULL, n, ox, oy);
+				parse_arc(silk, n, ox, oy);
 			if (strncmp(n->name, "text.", 5) == 0) {
 				lht_node_t *role   = lht_dom_hash_get(n, "role");
 				lht_node_t *string = lht_dom_hash_get(n, "string");
