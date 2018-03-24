@@ -884,22 +884,6 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 	pcb_undo_inc_serial();
 	return 0;
 }
-/* ---------------------------------------------------------------------------  */
-int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	PCB_SUBC_LOOP(PCB->Data);
-	{
-		double rot;
-		const char *refdes = PCB_UNKNOWN(subc->refdes);
-		if (pcb_subc_get_rotation(subc, &rot) == 0)
-			pcb_message(PCB_MSG_INFO, "%f %s\n", rot, refdes);
-		else
-			pcb_message(PCB_MSG_INFO, "<unknown> %s\n", refdes);
-	}
-	PCB_END_LOOP;
-	return 0;
-}
-
 
 /* --------------------------------------------------------------------------- */
 
@@ -1166,9 +1150,6 @@ pcb_hid_action_t object_action_list[] = {
 	,
 	{"Flip", N_("Click on Object or Flip Point"), pcb_act_Flip,
 	 pcb_acth_Flip, pcb_acts_Flip}
-	,
-	{"ListRotations", 0, pcb_act_ListRotations,
-	 0, 0}
 	,
 	{"MoveObject", N_("Select an Object"), pcb_act_MoveObject,
 	 pcb_acth_MoveObject, pcb_acts_MoveObject}

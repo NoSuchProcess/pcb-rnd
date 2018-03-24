@@ -41,6 +41,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "plug_footprint.h"
+#include "obj_subc.h"
 
 
 static void conf_toggle(conf_role_t role, const char *path)
@@ -287,6 +288,21 @@ int pcb_act_DisableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
+int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		double rot;
+		const char *refdes = PCB_UNKNOWN(subc->refdes);
+		if (pcb_subc_get_rotation(subc, &rot) == 0)
+			pcb_message(PCB_MSG_INFO, "%f %s\n", rot, refdes);
+		else
+			pcb_message(PCB_MSG_INFO, "<unknown> %s\n", refdes);
+	}
+	PCB_END_LOOP;
+	return 0;
+}
+
 
 pcb_hid_action_t oldactions_action_list[] = {
 	{"DumpLibrary", 0, pcb_act_DumpLibrary,
@@ -306,7 +322,9 @@ pcb_hid_action_t oldactions_action_list[] = {
 	{"EnableVendor", 0, pcb_act_EnableVendor,
 	 pcb_acth_enable_vendor, pcb_acts_enable_vendor},
 	{"DisableVendor", 0, pcb_act_DisableVendor,
-	 pcb_acth_disable_vendor, pcb_acts_disable_vendor}
+	 pcb_acth_disable_vendor, pcb_acts_disable_vendor},
+	{"ListRotations", 0, pcb_act_ListRotations,
+	 0, 0}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";
