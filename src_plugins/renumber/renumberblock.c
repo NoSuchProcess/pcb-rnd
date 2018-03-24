@@ -47,18 +47,16 @@ int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	conf_set_editor(name_on_pcb, 1);
 
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
 		char *refdes_split, *cp;
 		char *old_ref, *new_ref;
 		int num;
 
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 			continue;
 
-		old_ref = element->Name[1].TextString;
+		old_ref = subc->refdes;
 		for (refdes_split = cp = old_ref; *cp; cp++)
 			if (!isdigit(*cp))
 				refdes_split = cp + 1;
@@ -70,12 +68,11 @@ int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		memcpy(new_ref, old_ref, refdes_split - old_ref);
 		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-		pcb_undo_add_obj_to_change_name(PCB_TYPE_ELEMENT, NULL, NULL, element, PCB_ELEM_NAME_REFDES(element));
+		pcb_undo_add_obj_to_change_name(PCB_TYPE_SUBC, NULL, NULL, subc, subc->refdes);
 
-		pcb_chg_obj_name(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
+		pcb_chg_obj_name(PCB_TYPE_SUBC, subc, subc, subc, new_ref);
 	}
 	PCB_END_LOOP;
-#endif
 	pcb_undo_inc_serial();
 	return 0;
 }
@@ -95,15 +92,16 @@ int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	conf_set_editor(name_on_pcb, 1);
 
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
+	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
 	{
 		char *refdes_split, *cp;
 		char *old_ref, *new_ref;
 		int num;
 
-		old_ref = element->Name[1].TextString;
+		if (subc->refdes == NULL)
+			continue;
+
+		old_ref = subc->refdes;
 		for (refdes_split = cp = old_ref; *cp; cp++)
 			if (!isdigit(*cp))
 				refdes_split = cp + 1;
@@ -115,9 +113,9 @@ int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		memcpy(new_ref, old_ref, refdes_split - old_ref);
 		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-		pcb_chg_obj_name(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
+		pcb_chg_obj_name(PCB_TYPE_SUBC, subc, subc, subc, new_ref);
 	}
 	PCB_END_LOOP;
-#endif
+
 	return 0;
 }
