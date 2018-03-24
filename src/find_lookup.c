@@ -62,10 +62,8 @@ static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pc
 	if (PadstackList.Number > PadstackList.Size)
 		printf("ADD_PS_TO_LIST overflow! num=%d size=%d\n", PadstackList.Number, PadstackList.Size);
 #endif
-	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps)) {
-#warning padstack TODO: this NULL should have been ps->Element
-		return (SetThing(PCB_TYPE_PSTK, NULL, ps, ps));
-	}
+	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
+		return (SetThing(PCB_TYPE_PSTK, pcb_obj_parent_subc(ps), ps, ps));
 	return pcb_false;
 }
 
