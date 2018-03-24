@@ -695,7 +695,7 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 
 static const char pcb_acts_RipUp[] = "RipUp(All|Selected|Element)";
 
-static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks, or convert a subcircuit to parts.";
+static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks";
 
 /* %start-doc actions RipUp
 
@@ -707,10 +707,6 @@ Removes all lines and vias which were created by the autorouter.
 @item Selected
 Removes all selected lines and vias which were created by the
 autorouter.
-
-@item Element
-Converts the subcircuit under the cursor to parts (vias and lines).  Note
-that this uses the highest numbered paste buffer.
 
 @end table
 
@@ -779,32 +775,6 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
 			}
-			break;
-		case F_Element:
-#warning subc TODO: rewrite this
-#if 0
-			{
-				void *ptr1, *ptr2, *ptr3;
-				pcb_coord_t gx, gy;
-				pcb_gui->get_coords("Click on an element", &gx, &gy);
-				if (pcb_search_screen(gx, gy, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
-					pcb_tool_note.Buffer = conf_core.editor.buffer_number;
-					pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-					pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-					pcb_copy_obj_to_buffer(PCB, PCB_PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
-					pcb_element_smash_buffer(PCB_PASTEBUFFER);
-					PCB_PASTEBUFFER->X = 0;
-					PCB_PASTEBUFFER->Y = 0;
-					pcb_undo_save_serial();
-					pcb_erase_obj(PCB_TYPE_ELEMENT, ptr1, ptr1);
-					pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
-					pcb_undo_restore_serial();
-					pcb_buffer_copy_to_layout(PCB, 0, 0);
-					pcb_buffer_set_number(pcb_tool_note.Buffer);
-					pcb_board_set_changed_flag(pcb_true);
-				}
-			}
-#endif
 			break;
 		}
 	}
