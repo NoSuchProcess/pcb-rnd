@@ -337,7 +337,6 @@ static void WritePCBFontData(FILE * FP)
 static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
-	pcb_pin_t *via;
 	pcb_pstk_t *ps;
 
 	/* write information about vias */
