@@ -329,7 +329,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"BoundingBox %$mD %$mD.\n"
 									"Refdes \"%s\".\n"
 									"%s", USER_UNITMASK,
-									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_TYPE_ELEMENT, NULL),
+									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_TYPE_SUBC, NULL),
 									subc->BoundingBox.X1, subc->BoundingBox.Y1,
 									subc->BoundingBox.X2, subc->BoundingBox.Y2,
 									PCB_EMPTY(subc->refdes),
@@ -696,7 +696,7 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 
 		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
 			pcb_obj_center(conn.obj, &x, &y);
-			if ((conn.obj->type == PCB_OBJ_PIN) || (conn.obj->type == PCB_OBJ_PAD) || (conn.obj->term != NULL)) {
+			if (conn.obj->term != NULL) {
 				net_found = 1;
 				break;
 			}

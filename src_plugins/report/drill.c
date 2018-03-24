@@ -52,7 +52,7 @@ static void drill_fill(pcb_drill_t * Drill, pcb_any_obj_t *hole, int unplated)
 
 	hnew = drill_pin_alloc(Drill);
 	*hnew = hole;
-	if ((hole->parent_type == PCB_PARENT_ELEMENT) || (hole->parent_type == PCB_PARENT_SUBC)) {
+	if (hole->parent_type == PCB_PARENT_SUBC) {
 		Drill->PinCount++;
 		for (n = Drill->ElementN - 1; n != -1; n--)
 			if (Drill->parent[n] == hole->parent.any)
