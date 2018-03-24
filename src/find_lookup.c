@@ -293,7 +293,7 @@ static pcb_r_dir_t LOCtoPSrat_callback(const pcb_box_t * b, void *cl)
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_pstk_intersect_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_TYPE_PIN, &i->ps, PCB_FCT_RAT))
+	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_pstk_intersect_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_TYPE_PSTK, &i->ps, PCB_FCT_RAT))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
