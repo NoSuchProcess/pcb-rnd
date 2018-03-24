@@ -92,7 +92,7 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
-static void parse_pstk(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
+static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
 {
 	pcb_flag_t flags = pcb_no_flags();
 	pcb_coord_t thickness, hole, ms, cl;
@@ -174,7 +174,7 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_
 #endif
 }
 
-static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
+static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 {
 	node_t *tmp;
 	pcb_coord_t px, py, ms, cl;
@@ -188,17 +188,17 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp != NULL)
-		parse_pstk(ctx, elem, tmp->argv[1], px, py, nd->argv[1]);
+		parse_pstk(ctx, subc, tmp->argv[1], px, py, nd->argv[1]);
 }
 
-static void parse_silk(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
+static void parse_silk(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 {
 	node_t *tmp, *pp;
 
 	tmp = find_nth(nd->first_child, "SIDE", 0);
 	if (tmp != NULL) {
 		if (strcmp(tmp->argv[1], "MNT_SIDE") != 0) {
-			pcb_message(PCB_MSG_ERROR, "Ignoring element silk line not on mount-side\n");
+			pcb_message(PCB_MSG_ERROR, "Ignoring subcircuit silk line not on mount-side\n");
 			return;
 		}
 	}
@@ -230,7 +230,7 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 	static const char *tagnames[] = { "PACKAGE_GROUP", "MOUNT_TYPE", "NUMBER_LAYERS", "TIMESTAMP", NULL };
 	const char **t;
 #endif
-	pcb_element_t *elem;
+	pcb_subc_t *subc;
 	pcb_flag_t flags = pcb_no_flags();
 	char *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
