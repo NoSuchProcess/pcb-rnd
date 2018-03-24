@@ -895,45 +895,6 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 			check_snap_object(&snap_data, ox, oy, pcb_false);
 	}
 
-	ans = PCB_TYPE_NONE;
-	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
-
-	/* Avoid self-snapping when moving */
-	if (ans != PCB_TYPE_NONE &&
-			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
-		pcb_line_t *pad = (pcb_line_t *)ptr2;
-		pcb_layer_t *desired_layer;
-		pcb_layergrp_id_t desired_group;
-		pcb_layergrp_id_t SLayer, CLayer;
-		int found_our_layer = pcb_false;
-
-		desired_layer = CURRENT;
-		if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
-			desired_layer = (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1;
-		}
-
-		/* find layer groups of the component side and solder side */
-		SLayer = CLayer = -1;
-		pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
-		pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
-		desired_group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
-
-		if (desired_group >= 0) {
-			PCB_COPPER_GROUP_LOOP(PCB->Data, desired_group);
-			{
-				if (layer == desired_layer) {
-					found_our_layer = pcb_true;
-					break;
-				}
-			}
-			PCB_END_LOOP;
-		}
-
-		if (found_our_layer == pcb_false)
-			ans = PCB_TYPE_NONE;
-	}
-
 	/*** padstack center ***/
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
