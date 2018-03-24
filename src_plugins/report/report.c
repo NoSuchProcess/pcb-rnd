@@ -61,6 +61,7 @@
 #include "compat_nls.h"
 #include "layer.h"
 #include "obj_all.h"
+#include "obj_term.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
@@ -537,56 +538,39 @@ static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_co
 		return 1;
 	}
 
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	/* find any found object with a terminal ID so the net name can be determined */
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		PCB_PIN_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
-				int ni, nei;
-				char *ename = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
-				char *pname = pin->Number;
-				char *n;
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
 
-				if (ename && pname) {
-					n = pcb_concat(ename, "-", pname, NULL);
-					for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++)
-						for (nei = 0; nei < PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].EntryN; nei++) {
-							if (strcmp(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, n) == 0) {
-								netname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-								goto got_net_name;	/* four for loops deep */
-							}
-						}
+		if (subc->refdes == NULL)
+			continue;
+
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			char *netn;
+			int ni, nei;
+
+			if (o->term == NULL)
+				continue;
+			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, o))
+				continue;
+
+			netn = pcb_concat(subc->refdes, "-", o->term, NULL);
+
+			for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
+				for (nei = 0; nei < PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].EntryN; nei++) {
+					if (strcmp(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, netn) == 0) {
+						netname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
+						free(netn);
+						goto got_net_name; /* four for loops deep */
+					}
 				}
 			}
+			free(netn);
 		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
-				int ni, nei;
-				char *ename = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
-				char *pname = pad->Number;
-				char *n;
-
-				if (ename && pname) {
-					n = pcb_concat(ename, "-", pname, NULL);
-					for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++)
-						for (nei = 0; nei < PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].EntryN; nei++) {
-							if (strcmp(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, n) == 0) {
-								netname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-								goto got_net_name;	/* four for loops deep */
-							}
-						}
-				}
-			}
-		}
-		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-#endif
-
 	goto noelem;
 
 got_net_name:
