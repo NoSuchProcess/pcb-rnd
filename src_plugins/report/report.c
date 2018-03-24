@@ -530,7 +530,7 @@ static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_co
 	if (!found) {
 		pcb_reset_conns(pcb_false);
 		pcb_undo(pcb_true);
-		pcb_gui->log("No net under cursor.\n");
+		pcb_message(PCB_MSG_ERROR, "No net under cursor.\n");
 		return 1;
 	}
 
@@ -595,9 +595,9 @@ noelem:;
 		char buf[50];
 		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
 		if (netname)
-			pcb_gui->log("Net \"%s\" length: %s\n", netname, buf);
+			pcb_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
-			pcb_gui->log("Net length: %s\n", buf);
+			pcb_message(PCB_MSG_INFO, "Net length: %s\n", buf);
 	}
 
 	return 0;
@@ -635,7 +635,7 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		}
 #undef MINDIST2
 
-		pcb_gui->log("The two arms of the net are:\n");
+		pcb_message(PCB_MSG_INFO, "The two arms of the net are:\n");
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
@@ -718,7 +718,7 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 	}
 
 	if (!net_found) {
-		pcb_gui->log("No net named %s\n", tofind);
+		pcb_message(PCB_MSG_ERROR, "No net named %s\n", tofind);
 		return 1;
 	}
 
@@ -744,9 +744,9 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 
 	if (!found) {
 		if (net_found)
-			pcb_gui->log("Net found, but no lines or arcs were flagged.\n");
+			pcb_message(PCB_MSG_INFO, "Net found, but no lines or arcs were flagged.\n");
 		else
-			pcb_gui->log("Net not found.\n");
+			pcb_message(PCB_MSG_ERROR, "Net not found.\n");
 
 		return 1;
 	}
@@ -755,9 +755,9 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 		char buf[50];
 		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
 		if (netname)
-			pcb_gui->log("Net \"%s\" length: %s\n", netname, buf);
+			pcb_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
-			pcb_gui->log("Net length: %s\n", buf);
+			pcb_message(PCB_MSG_INFO, "Net length: %s\n", buf);
 	}
 
 	return 0;
