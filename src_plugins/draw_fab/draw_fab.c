@@ -151,7 +151,7 @@ static void drill_sym(pcb_hid_gc_t gc, int idx, int x, int y)
 	}
 }
 
-static int count_drill_lines(DrillInfoTypePtr AllDrills)
+static int count_drill_lines(DrillInfoType *AllDrills)
 {
 	int n, ds = 0;
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
@@ -167,7 +167,7 @@ static int count_drill_lines(DrillInfoTypePtr AllDrills)
 
 static int DrawFab_overhang(void)
 {
-	DrillInfoTypePtr AllDrills = drill_get_info(PCB->Data);
+	DrillInfoType *AllDrills = drill_get_info(PCB->Data);
 	int ds = count_drill_lines(AllDrills);
 	if (ds < 4)
 		ds = 4;
@@ -176,7 +176,7 @@ static int DrawFab_overhang(void)
 
 static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	DrillInfoTypePtr AllDrills;
+	DrillInfoType *AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0, found;
 	char utcTime[64];
 	AllDrills = drill_get_info(PCB->Data);

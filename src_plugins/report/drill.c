@@ -102,9 +102,9 @@ static int drill_qsort_cmp(const void *va, const void *vb)
 	return a->DrillSize - b->DrillSize;
 }
 
-DrillInfoTypePtr drill_get_info(pcb_data_t *top)
+DrillInfoType *drill_get_info(pcb_data_t *top)
 {
-	DrillInfoTypePtr AllDrills;
+	DrillInfoType *AllDrills;
 	DrillTypePtr Drill = NULL;
 	DrillType savedrill, swapdrill;
 	pcb_bool DrillFound = pcb_false;
@@ -112,7 +112,7 @@ DrillInfoTypePtr drill_get_info(pcb_data_t *top)
 	pcb_rtree_it_t it;
 	pcb_box_t *pb;
 
-	AllDrills = (DrillInfoTypePtr) calloc(1, sizeof(DrillInfoType));
+	AllDrills = (DrillInfoType *)calloc(1, sizeof(DrillInfoType));
 
 	for(pb = pcb_r_first(top->padstack_tree, &it); pb != NULL; pb = pcb_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)pb;
@@ -154,7 +154,7 @@ DrillInfoTypePtr drill_get_info(pcb_data_t *top)
 
 #define ROUND(x,n) ((int)(((x)+(n)/2)/(n))*(n))
 
-void drill_round_info(DrillInfoTypePtr d, int roundto)
+void drill_round_info(DrillInfoType *d, int roundto)
 {
 	unsigned int i = 0;
 
@@ -204,7 +204,7 @@ void drill_round_info(DrillInfoTypePtr d, int roundto)
 	}
 }
 
-void drill_info_free(DrillInfoTypePtr Drills)
+void drill_info_free(DrillInfoType *Drills)
 {
 	DRILL_LOOP(Drills);
 	{
@@ -219,7 +219,7 @@ void drill_info_free(DrillInfoTypePtr Drills)
 /* ---------------------------------------------------------------------------
  * get next slot for a Drill, allocates memory if necessary
  */
-DrillTypePtr drill_info_alloc(DrillInfoTypePtr DrillInfo)
+DrillTypePtr drill_info_alloc(DrillInfoType *DrillInfo)
 {
 	DrillTypePtr drill = DrillInfo->Drill;
 
