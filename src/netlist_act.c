@@ -46,6 +46,7 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "obj_elem.h"
+#include "data_it.h"
 
 static int pcb_netlist_swap()
 {
@@ -54,34 +55,32 @@ static int pcb_netlist_swap()
 	int ret = -1;
 	pcb_lib_menu_t *nets[2];
 
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		PCB_PIN_LOOP(element);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin)) {
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o) && (o->term != NULL)) {
 				int le, lp;
 
 				if (next > 2) {
-					pcb_message(PCB_MSG_ERROR, "Exactly two pins should be selected for swap (more than 2 selected at the moment)\n");
+					pcb_message(PCB_MSG_ERROR, "Exactly two terminals should be selected for swap (more than 2 selected at the moment)\n");
 					goto quit;
 				}
 
-				le = strlen(element->Name[1].TextString);
-				lp = strlen(pin->Number);
+				le = strlen(subc->refdes);
+				lp = strlen(o->term);
 				pins[next] = malloc(le + lp + 2);
-				sprintf(pins[next], "%s-%s", element->Name[1].TextString, pin->Number);
+				sprintf(pins[next], "%s-%s", subc->refdes, o->term);
 				next++;
 			}
 		}
-		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-#endif
 
 	if (next < 2) {
-		pcb_message(PCB_MSG_ERROR, "Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");
+		pcb_message(PCB_MSG_ERROR, "Exactly two terminals should be selected for swap (less than 2 selected at the moment)\n");
 		goto quit;
 	}
 
@@ -89,11 +88,11 @@ static int pcb_netlist_swap()
 	nets[0] = pcb_netlist_find_net4pinname(PCB, pins[0]);
 	nets[1] = pcb_netlist_find_net4pinname(PCB, pins[1]);
 	if ((nets[0] == NULL) || (nets[1] == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "That pin is not on a net.\n");
+		pcb_message(PCB_MSG_ERROR, "That terminal is not on a net.\n");
 		goto quit;
 	}
 	if (nets[0] == nets[1]) {
-		pcb_message(PCB_MSG_ERROR, "Those two pins are on the same net, can't swap them.\n");
+		pcb_message(PCB_MSG_ERROR, "Those two terminals are on the same net, can't swap them.\n");
 		goto quit;
 	}
 
