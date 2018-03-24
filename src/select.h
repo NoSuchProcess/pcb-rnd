@@ -33,8 +33,8 @@
 #include "operation.h"
 
 #define PCB_SELECT_TYPES	\
-	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLY | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | \
-	 PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_PSTK | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
+	(PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLY | PCB_TYPE_SUBC | \
+	 PCB_TYPE_PSTK | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
 pcb_bool pcb_select_object(pcb_board_t *pcb);
 pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only);
