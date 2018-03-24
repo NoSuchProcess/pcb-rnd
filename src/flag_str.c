@@ -433,11 +433,9 @@ pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg)
  * string be parseable by string_to_flags.
  *
  * Note that this function knows a little about what kinds of flags
- * will be automatically set by parsing, so it won't (for example)
- * include the "via" flag for PCB_TYPE_VIAs because it knows those get
- * forcibly set when vias are parsed.
- */
-
+ * will be automatically set by parsing, so it won't (for example in
+ * the old data model) include the "via" flag for PCB_TYPE_VIAs because
+ * it knows those get forcibly set when vias are parsed. */
 char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn)
 {
 	int len;
