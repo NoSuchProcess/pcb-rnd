@@ -906,7 +906,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	/* will work for pins to since the FLAG is common */
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_any_obj_t *) ptr2) ? Sgrp : Cgrp);
 	strcpy(name1, pcb_connection_name(ptr2));
-	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3,
+	found = pcb_search_obj_by_location(PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
