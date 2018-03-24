@@ -375,7 +375,7 @@ static int bboard_parse_offset(char *s, pcb_coord_t * ox, pcb_coord_t * oy)
 }
 
 
-static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsolder)
+static void bboard_export_element_cairo(pcb_subc_t *subc, pcb_bool onsolder)
 {
 	cairo_surface_t *sfc;
 	pcb_coord_t ex, ey;
@@ -387,7 +387,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 	ASSERT_CAIRO;
 
-	s1 = pcb_attribute_get(&(element->Attributes), "BBoard::Model");
+	s1 = pcb_attribute_get(&(subc->Attributes), "BBoard::Model");
 	if (s1) {
 		s = pcb_strdup(s1);
 		if (!s)
@@ -415,7 +415,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 		/* invalidate offset from BBoard::Model, if such model does not exist */
 		offset_in_model = pcb_false;
 
-		s = pcb_attribute_get(&(element->Attributes), "Footprint::File");
+		s = pcb_attribute_get(&(subc->Attributes), "Footprint::File");
 		if (s) {
 #warning subc TODO: rewrite
 #if 0
@@ -459,25 +459,30 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 		/* read offest from attribute */
 		if (!offset_in_model) {
-			s = pcb_attribute_get(&(element->Attributes), "BBoard::Offset");
+			s = pcb_attribute_get(&(subc->Attributes), "BBoard::Offset");
 
 			/* Parse values with units... */
 			if (s) {
 				bboard_parse_offset(s, &ox, &oy);
 			}
 		}
-		ex = bboard_scale_coord(element->MarkX);
-		ey = bboard_scale_coord(element->MarkY);
+
+		{
+			pcb_coord_t ox = 0, oy = 0;
+			pcb_subc_get_origin(subc, &ox, &oy);
+			ex = bboard_scale_coord(ox);
+			ey = bboard_scale_coord(oy);
+		}
 
 		cairo_save(bboard_cairo_ctx);
 
-		if ((model_angle = pcb_attribute_get(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
+		if ((model_angle = pcb_attribute_get(&(subc->Attributes), "Footprint::RotationTracking")) != NULL) {
 			sscanf(model_angle, "%lf", &tmp_angle);
 		}
 
 
 		cairo_translate(bboard_cairo_ctx, ex, ey);
-		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (subc))) {
 			cairo_scale(bboard_cairo_ctx, 1, -1);
 		}
 		cairo_rotate(bboard_cairo_ctx, -tmp_angle * M_PI / 180.);
