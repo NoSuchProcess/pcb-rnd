@@ -671,7 +671,7 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 		case F_SelectedElements:
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_nonetlist(PCB_TYPE_ELEMENT))
+			if (pcb_chg_selected_nonetlist(PCB_TYPE_SUBC))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
