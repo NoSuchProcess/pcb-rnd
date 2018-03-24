@@ -42,8 +42,6 @@
 #define STEP_DRILL   30
 #define STEP_POINT   100
 
-static void drill_init(pcb_drill_t *, pcb_pin_t *, pcb_element_t *);
-
 static void drill_fill(pcb_drill_t * Drill, pcb_any_obj_t *hole, int unplated)
 {
 	pcb_cardinal_t n;
@@ -66,33 +64,6 @@ static void drill_fill(pcb_drill_t * Drill, pcb_any_obj_t *hole, int unplated)
 		Drill->ViaCount++;
 	if (unplated)
 		Drill->UnplatedCount++;
-}
-
-static void drill_init(pcb_drill_t *drill, pcb_pin_t *pin, pcb_element_t *element)
-{
-	void *ptr;
-
-	drill->DrillSize = pin->DrillingHole;
-	drill->ElementN = 0;
-	drill->ViaCount = 0;
-	drill->PinCount = 0;
-	drill->UnplatedCount = 0;
-	drill->ElementMax = 0;
-	drill->parent = NULL;
-	drill->PinN = 0;
-	drill->hole = NULL;
-	drill->PinMax = 0;
-	ptr = (void *) drill_pin_alloc(drill);
-	*((pcb_pin_t **) ptr) = pin;
-	if (element) {
-		ptr = (void *) drill_element_alloc(drill);
-		*((pcb_element_t **) ptr) = element;
-		drill->PinCount = 1;
-	}
-	else
-		drill->ViaCount = 1;
-	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
-		drill->UnplatedCount = 1;
 }
 
 static int drill_qsort_cmp(const void *va, const void *vb)
@@ -266,7 +237,7 @@ pcb_any_obj_t **drill_element_alloc(pcb_drill_t *Drill)
 		Drill->ElementMax += STEP_ELEMENT;
 		element = realloc(element, Drill->ElementMax * sizeof(pcb_any_obj_t **));
 		Drill->parent = element;
-		memset(element + Drill->ElementN, 0, STEP_ELEMENT * sizeof(pcb_element_t **));
+		memset(element + Drill->ElementN, 0, STEP_ELEMENT * sizeof(pcb_subc_t **));
 	}
 	return (element + Drill->ElementN++);
 }
