@@ -371,7 +371,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw pins' and pads' names */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_draw_ppv_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
+		pcb_draw_pstk_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 	}
 
@@ -451,9 +451,8 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
  * Draws padstacks' names - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
  */
-void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
+void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
 {
-#warning padstack TODO: check if this is still filled in (used to be pad/pin/via delayed draw)
 	if (PCB->PinOn || !pcb_gui->gui) {
 		size_t n;
 		for(n = 0; n < delayed_labels.used; n++)
