@@ -52,6 +52,7 @@
 #include "compat_nls.h"
 #include "layer_vis.h"
 #include "operation.h"
+#include "obj_pstk.h"
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 
@@ -739,17 +740,15 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_ENDALL_LOOP;
-#warning padstack TODO: rewrite this
-#if 0
-			PCB_VIA_LOOP(PCB->Data);
+
+			PCB_PADSTACK_LOOP(PCB->Data);
 			{
-				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-					pcb_remove_object(PCB_TYPE_VIA, via, via, via);
+				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)) {
+					pcb_remove_object(PCB_TYPE_PSTK, padstack, padstack, padstack);
 					changed = pcb_true;
 				}
 			}
 			PCB_END_LOOP;
-#endif
 
 			if (changed) {
 				pcb_undo_inc_serial();
@@ -766,19 +765,16 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_ENDALL_LOOP;
-#warning padstack TODO: rewrite this
-#if 0
 			if (PCB->ViaOn)
-				PCB_VIA_LOOP(PCB->Data);
+			PCB_PADSTACK_LOOP(PCB->Data);
 			{
-				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
-						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-					pcb_remove_object(PCB_TYPE_VIA, via, via, via);
+				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, padstack)
+						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)) {
+					pcb_remove_object(PCB_TYPE_PSTK, padstack, padstack, padstack);
 					changed = pcb_true;
 				}
 			}
 			PCB_END_LOOP;
-#endif
 			if (changed) {
 				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
