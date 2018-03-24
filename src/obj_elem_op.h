@@ -30,5 +30,4 @@
 
 #include "operation.h"
 
-void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element);
 
