@@ -6261,8 +6261,7 @@ obj_pinvia_therm.o: obj_pinvia_therm.c ../config.h board.h const.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h box.h math_helper.h move.h \
  misc_util.h ../src_3rd/genvector/gds_char.h obj_rat_list.h obj_rat.h \
  layer_grp.h library.h rats_patch.h polygon.h rtree.h \
- ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h obj_pinvia.h \
- obj_pinvia_therm.h
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h obj_pinvia_therm.h
 obj_poly.o: obj_poly.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
