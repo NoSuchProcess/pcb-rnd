@@ -1,6 +1,4 @@
 /*
- * distaligntext.c
- *
  * distaligntext plug-in for PCB.
  *
  * Copyright (C) 2012 Dan White <dan@whiteaudio.com>
