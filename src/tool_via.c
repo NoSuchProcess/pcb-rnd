@@ -78,30 +78,25 @@ void pcb_tool_via_notify_mode(void)
 	}
 }
 
+static void xor_draw_fake_via(pcb_coord_t x, pcb_coord_t y, pcb_coord_t dia, pcb_coord_t clearance)
+{
+	pcb_coord_t r = (dia/2)+clearance;
+	pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
+	pcb_gui->set_line_width(pcb_crosshair.GC, 0);
+	pcb_gui->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
+}
+
+
 void pcb_tool_via_draw_attached(void)
 {
-	/* Make a dummy via structure to draw from */
-#warning padstack TODO: replace this with padstack outline draw:
-#if 0
-	pcb_pin_t via;
-	via.X = pcb_crosshair.X;
-	via.Y = pcb_crosshair.Y;
-	via.Thickness = conf_core.design.via_thickness;
-	via.Clearance = 2 * conf_core.design.clearance;
-	via.DrillingHole = conf_core.design.via_drilling_hole;
-	via.Mask = 0;
-	via.Flags = pcb_no_flags();
-
-	pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &via, pcb_true, pcb_false);
-
+#warning padstack TODO: replace this when route style has a prototype
+	xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
 	if (conf_core.editor.show_drc) {
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-#warning padstack TODO: replace this with padstack outline draw:
-/*		XORDrawPinViaDRCOutline(&via,PCB->Bloat);*/
+		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
-#endif
 }
 
 pcb_tool_t pcb_tool_via = {
