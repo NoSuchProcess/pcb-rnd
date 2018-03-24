@@ -50,41 +50,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-#warning subc TODO: move this to dialogs
-/* --------------------------------------------------------------------------- */
-/* Ask the user for a search pattern */
-static char *gui_get_pat(pcb_search_method_t * method)
-{
-	const char *methods[] = { "regexp", "list of names", NULL };
-	pcb_hid_attribute_t attrs[2];
-#define nattr sizeof(attrs)/sizeof(attrs[0])
-	static pcb_hid_attr_val_t results[nattr] = { 0 };
-
-	memset(attrs, 0, sizeof(attrs));
-
-	attrs[0].name = "Pattern";
-	attrs[0].help_text = "Name/refdes pattern";
-	attrs[0].type = PCB_HATT_STRING;
-	attrs[0].default_val.str_value = results[0].str_value;
-
-	attrs[1].name = "Method";
-	attrs[1].help_text = "method of search: either regular expression or a list of full names separated by |";
-	attrs[1].type = PCB_HATT_ENUM;
-	attrs[1].enumerations = methods;
-	attrs[1].default_val.int_value = results[1].int_value;
-
-	pcb_gui->attribute_dialog(attrs, nattr, results, "Find subcircuit", "Find subcircuit by refdes", NULL);
-
-	*method = results[1].int_value;
-	if (results[0].str_value == NULL)
-		return NULL;
-	return pcb_strdup(results[0].str_value);
-#undef nattr
-}
-
-
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Select[] =
 	"Select(Object|ToggleObject)\n"
 	"Select(All|Block|Connection)\n"

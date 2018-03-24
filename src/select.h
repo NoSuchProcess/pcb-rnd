@@ -42,12 +42,4 @@ long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len);
 
 pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool);
 
-
-typedef enum {
-	PCB_SM_REGEX = 0,
-	PCB_SM_LIST = 1
-} pcb_search_method_t;
-
-pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int, const char *, pcb_bool, pcb_search_method_t);
-
 #endif
