@@ -842,6 +842,16 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 		}
 	}
 	PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(data);
+	{
+		if (!PCB_FLAGS_TEST(flags, polygon))
+			continue;
+		if ((polygon->Clearance != 0) && (polygon->Clearance < value)) {
+			pcb_chg_obj_clear_size(PCB_TYPE_POLY, layer, polygon, 0, value, 1);
+			pcb_undo_restore_serial();
+		}
+	}
+	PCB_ENDALL_LOOP;
 }
 
 static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
