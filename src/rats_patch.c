@@ -385,25 +385,22 @@ static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the se
 
 static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *a[4];
 	const char *fpname;
-	int found = 0;
+	int found = 0, len;
+	pcb_subc_t *news, *placed;
 
-#warning subc TODO: rewrite for subcs
-#if 0
 	/* check if we have elements selected and quit if not */
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) && (subc->refdes != NULL)) {
 			found = 1;
 			break;
 		}
 	}
 	PCB_END_LOOP;
-#endif
 
 	if (!(found)) {
-		pcb_message(PCB_MSG_ERROR, "ReplaceFootprint works on selected elements, please select elements first!\n");
+		pcb_message(PCB_MSG_ERROR, "ReplaceFootprint works on selected subcircuits with refdes, please select subcircuits first!\n");
 		return 1;
 	}
 
@@ -419,31 +416,50 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 		fpname = argv[0];
 
 	/* check if the footprint is available */
-	a[0] = fpname;
-	a[1] = NULL;
-	if (pcb_act_LoadFootprint(1, a, x, y) != 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't load footprint %s\n", fpname);
+	pcb_buffer_load_footprint(&pcb_buffers[PCB_MAX_BUFFER-1], fpname, NULL);
+	len = pcb_subclist_length(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
+	if (len == 0) {
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", fpname);
 		return 1;
 	}
+	if (len > 1) {
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", fpname);
+		return 1;
+	}
+	news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 
-#warning subc TODO: rewrite for subcs
-#if 0
 	/* action: replace selected elements */
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
-			a[0] = fpname;
-			a[1] = element->Name[1].TextString;
-			a[2] = element->Name[2].TextString;
-			a[3] = NULL;
-			pcb_act_LoadFootprint(3, a, element->MarkX, element->MarkY);
-			pcb_buffer_copy_to_layout(PCB, element->MarkX, element->MarkY);
-			pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
-			pcb_element_remove(element);
+		pcb_coord_t ox, oy;
+		double rot = 0;
+
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
+			continue;
+
+		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
+			ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2) / 2;
+			oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2) / 2;
 		}
+		pcb_subc_get_rotation(subc, &rot);
+
+
+		placed = pcb_subc_dup_at(PCB, PCB->Data, news, ox, oy, 0);
+		placed->ID = subc->ID;
+		if (rot != 0)
+			pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+
+		pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, subc->refdes, "footprint", fpname);
+		{ /* copy attributes */
+			int n;
+			pcb_attribute_list_t *dst = &news->Attributes, *src = &subc->Attributes;
+			for (n = 0; n < src->Number; n++)
+				if (strcmp(src->List[n].name, "footprint") != 0)
+					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
+		}
+		pcb_subc_remove(subc);
 	}
 	PCB_END_LOOP;
-#endif
 	return 0;
 }
 
