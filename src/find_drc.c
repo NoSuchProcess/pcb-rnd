@@ -424,7 +424,7 @@ int pcb_drc_all(void)
 				pcb_pstk_invalidate_draw(padstack);
 				if (ring) {
 					drcerr_count++;
-					SetThing(PCB_TYPE_VIA, padstack, padstack, padstack);
+					SetThing(PCB_TYPE_PSTK, padstack, padstack, padstack);
 					LocateError(&x, &y);
 					BuildObjectList(&object_count, &object_id_list, &object_type_list);
 					violation = pcb_drc_violation_new(_("padstack annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -436,7 +436,7 @@ int pcb_drc_all(void)
 				}
 				if (hole > 0) {
 					drcerr_count++;
-					SetThing(PCB_TYPE_VIA, padstack, padstack, padstack);
+					SetThing(PCB_TYPE_PSTK, padstack, padstack, padstack);
 					LocateError(&x, &y);
 					BuildObjectList(&object_count, &object_id_list, &object_type_list);
 					violation = pcb_drc_violation_new(_("Padstack drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
