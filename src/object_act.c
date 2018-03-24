@@ -805,6 +805,45 @@ polygon edges.
 
 %end-doc */
 
+static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
+{
+	PCB_SUBC_LOOP(data);
+	{
+		minclr(subc->data, value, flags);
+	}
+	PCB_END_LOOP;
+
+	PCB_PADSTACK_LOOP(data);
+	{
+		if (padstack->Clearance < value) {
+			pcb_chg_obj_clear_size(PCB_TYPE_PSTK, padstack, 0, 0, value, 1);
+			pcb_undo_restore_serial();
+		}
+	}
+	PCB_END_LOOP;
+
+	PCB_LINE_ALL_LOOP(data);
+	{
+		if (!PCB_FLAGS_TEST(flags, line))
+			continue;
+		if ((line->Clearance != 0) && (line->Clearance < value)) {
+			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
+			pcb_undo_restore_serial();
+		}
+	}
+	PCB_ENDALL_LOOP;
+	PCB_ARC_ALL_LOOP(data);
+	{
+		if (!PCB_FLAGS_TEST(flags, arc))
+			continue;
+		if ((arc->Clearance != 0) && (arc->Clearance < value)) {
+			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);
+			pcb_undo_restore_serial();
+		}
+	}
+	PCB_ENDALL_LOOP;
+}
+
 static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
@@ -826,73 +865,11 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
 	pcb_undo_save_serial();
-#warning subc TODO:
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		PCB_PIN_LOOP(element);
-		{
-			if (!PCB_FLAGS_TEST(flags, pin))
-				continue;
-			if (pin->Clearance < value) {
-				pcb_chg_obj_clear_size(PCB_TYPE_PIN, element, pin, 0, value, 1);
-				pcb_undo_restore_serial();
-			}
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			if (!PCB_FLAGS_TEST(flags, pad))
-				continue;
-			if (pad->Clearance < value) {
-				pcb_chg_obj_clear_size(PCB_TYPE_PAD, element, pad, 0, value, 1);
-				pcb_undo_restore_serial();
-			}
-		}
-		PCB_END_LOOP;
-	}
-	PCB_END_LOOP;
-#endif
-
-#warning padstack TODO
-#if 0
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		if (!PCB_FLAGS_TEST(flags, via))
-			continue;
-		if (via->Clearance < value) {
-			pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, 0, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_END_LOOP;
-#endif
-
-	PCB_LINE_ALL_LOOP(PCB->Data);
-	{
-		if (!PCB_FLAGS_TEST(flags, line))
-			continue;
-		if ((line->Clearance != 0) && (line->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_ARC_ALL_LOOP(PCB->Data);
-	{
-		if (!PCB_FLAGS_TEST(flags, arc))
-			continue;
-		if ((arc->Clearance != 0) && (arc->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_ENDALL_LOOP;
+	minclr(PCB->Data, value, flags);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	return 0;
 }
-
 /* ---------------------------------------------------------------------------  */
 int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
