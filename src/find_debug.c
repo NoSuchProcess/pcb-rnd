@@ -29,38 +29,29 @@
 
 /* find-related debug functions */
 
-/* ---------------------------------------------------------------------------
- * writes the several names of an element to a file
- */
-static void PrintElementNameList(pcb_element_t *Element, FILE * FP)
+/* writes the several names of a subcircuit to a file */
+static void PrintElementNameList(pcb_subc_t *subc, FILE * FP)
 {
 	fputc('(', FP);
-#warning subc TODO: rewrite this
-#if 0
-	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(Element)));
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")));
 	fputc(' ', FP);
-	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_REFDES(Element)));
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(subc->refdes));
 	fputc(' ', FP);
-	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_VALUE(Element)));
-#endif
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&subc->Attributes, "value")));
 	fputc(')', FP);
 	fputc('\n', FP);
 }
-
-/* ---------------------------------------------------------------------------
- * writes the several names of an element to a file
- */
-static void PrintConnectionElementName(pcb_element_t *Element, FILE * FP)
+static void pcb_print_conn_subc_name(pcb_subc_t *subc, FILE * FP)
 {
 	fputs("Element", FP);
-	PrintElementNameList(Element, FP);
+	PrintElementNameList(subc, FP);
 	fputs("{\n", FP);
 }
 
 /* ---------------------------------------------------------------------------
  * prints one {pin,pad,via}/element entry of connection lists
  */
-static void PrintConnectionListEntry(char *ObjName, pcb_element_t *Element, pcb_bool FirstOne, FILE * FP)
+static void pcb_print_conn_list_entry(char *ObjName, pcb_subc_t *subc, pcb_bool FirstOne, FILE * FP)
 {
 	if (FirstOne) {
 		fputc('\t', FP);
@@ -71,8 +62,8 @@ static void PrintConnectionListEntry(char *ObjName, pcb_element_t *Element, pcb_
 		fprintf(FP, "\t\t");
 		pcb_print_quoted_string(FP, ObjName);
 		fputc(' ', FP);
-		if (Element)
-			PrintElementNameList(Element, FP);
+		if (subc)
+			PrintElementNameList(subc, FP);
 		else
 			fputs("(__VIA__)\n", FP);
 	}
@@ -96,7 +87,7 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 	if (IsFirst) {
 		/* the starting pin */
 		pv = PVLIST_ENTRY(0);
-		PrintConnectionListEntry((char *) PCB_EMPTY(pv->Name), NULL, pcb_true, FP);
+		pcb_print_conn_list_entry((char *) PCB_EMPTY(pv->Name), NULL, pcb_true, FP);
 	}
 
 	/* we maybe have to start with i=1 if we are handling the
@@ -105,7 +96,7 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 	for (i = IsFirst ? 1 : 0; i < PVList.Number; i++) {
 		/* get the elements name or assume that its a via */
 		pv = PVLIST_ENTRY(i);
-		PrintConnectionListEntry((char *) PCB_EMPTY(pv->Name), (pcb_element_t *) pv->Element, pcb_false, FP);
+		pcb_print_conn_list_entry((char *) PCB_EMPTY(pv->Name), (pcb_element_t *) pv->Element, pcb_false, FP);
 	}
 
 	for (i = IsFirst ? 1 : 0; i < PadstackList.Number; i++) {
@@ -116,9 +107,9 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 			sc = ps->parent.data->parent.subc;
 		else
 			sc = NULL;
-#warning padstack TODO: get terminal name? PrintConnectionListEntry does not handle element!
+#warning padstack TODO: get terminal name? pcb_print_conn_list_entry does not handle element!
 		sc = NULL;
-		PrintConnectionListEntry("TODO#termname", (pcb_element_t *)sc, pcb_false, FP);
+		pcb_print_conn_list_entry("TODO#termname", (pcb_element_t *)sc, pcb_false, FP);
 	}
 }
 #endif

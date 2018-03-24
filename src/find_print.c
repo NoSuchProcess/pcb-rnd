@@ -27,103 +27,69 @@
  *
  */
 
+#include "data_it.h"
+
 /* Connection export/output functions */
 
-static pcb_bool PrepareNextLoop(FILE * FP);
+static void PrepareNextLoop(void);
 
-/* ---------------------------------------------------------------------------
- * prints all unused pins of an element to file FP
- */
-static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element, FILE * FP)
+/* Count terminals that are found, up to maxt */
+static void count_terms(pcb_data_t *data, pcb_cardinal_t maxt, pcb_cardinal_t *cnt)
 {
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		if ((o->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_FOUND, o)) {
+char *rf = "<none>";
+if (data->parent_type == PCB_PARENT_SUBC) rf = data->parent.subc->refdes;
+printf("  %s-%s\n", rf, o->term);
+			(*cnt)++;
+		}
+		if (o->type == PCB_OBJ_SUBC)
+			count_terms(((pcb_subc_t *)o)->data, maxt, cnt);
+		if (*cnt >= maxt)
+			return *cnt;
+	}
+	return *cnt;
+}
+
+/* prints all unused pins of an element to file FP */
+static pcb_bool print_select_unused_subc_terms(pcb_subc_t *subc, FILE * FP)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
 	pcb_bool first = pcb_true;
-	pcb_cardinal_t number;
 
-	/* check all pins in element */
+	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		pcb_cardinal_t number = 0;
+		if (o->term == NULL) /* consider named terminals only */
+			continue;
 
-#warning padstack TODO: term TODO: this does not handle padstacks or terminals
+		/* reset found objects for the next pin */
+		PrepareNextLoop();
 
-#if 0
-	PCB_PIN_LOOP(Element);
-	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
-			/* pin might have bee checked before, add to list if not */
-			if (!PCB_FLAG_TEST(TheFlag, pin) && FP) {
-				int i;
-				if (ADD_PV_TO_LIST(pin, 0, NULL, 0))
-					return pcb_true;
-				DoIt(pcb_true, pcb_true);
-				number = PadList[PCB_COMPONENT_SIDE].Number + PadList[PCB_SOLDER_SIDE].Number + PVList.Number;
-				/* the pin has no connection if it's the only
-				 * list entry; don't count vias
-				 */
-				for (i = 0; i < PVList.Number; i++)
-					if (!PVLIST_ENTRY(i)->Element)
-						number--;
-				if (number == 1) {
-					/* output of element name if not already done */
-					if (first) {
-						PrintConnectionElementName(Element, FP);
-						first = pcb_false;
-					}
+		ListStart(o);
+		DoIt(pcb_true, pcb_true);
 
-					/* write name to list and draw selected object */
-					fputc('\t', FP);
-					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
-					fputc('\n', FP);
-					PCB_FLAG_SET(PCB_FLAG_SELECTED, pin);
-					pcb_pin_invalidate_draw(pin);
-				}
-
-				/* reset found objects for the next pin */
-				if (PrepareNextLoop(FP))
-					return pcb_true;
-			}
-		}
-	}
-	PCB_END_LOOP;
-
-	/* check all pads in element */
-	PCB_PAD_LOOP(Element);
-	{
-		/* lookup pad in list */
-		/* pad might has bee checked before, add to list if not */
-		if (!PCB_FLAG_TEST(TheFlag, pad) && FP) {
-			int i;
-			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)
-													? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, 0, NULL, 0))
-				return pcb_true;
-			DoIt(pcb_true, pcb_true);
-			number = PadList[PCB_COMPONENT_SIDE].Number + PadList[PCB_SOLDER_SIDE].Number + PVList.Number;
-			/* the pin has no connection if it's the only
-			 * list entry; don't count vias
-			 */
-			for (i = 0; i < PVList.Number; i++)
-				if (!PVLIST_ENTRY(i)->Element)
-					number--;
-			if (number == 1) {
-				/* output of element name if not already done */
-				if (first) {
-					PrintConnectionElementName(Element, FP);
-					first = pcb_false;
-				}
-
-				/* write name to list and draw selected object */
-				fputc('\t', FP);
-				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Name));
-				fputc('\n', FP);
-
-				PCB_FLAG_SET(PCB_FLAG_SELECTED, pad);
-				pcb_pad_invalidate_draw(pad);
+		printf("%s-%s:\n", subc->refdes, o->term);
+		count_terms(PCB->Data, 2, &number);
+		printf(" number=%d\n", number);
+		if (number <= 1) {
+			/* output of element name if not already done */
+			if (first) {
+				pcb_print_conn_subc_name(subc, FP);
+				first = pcb_false;
 			}
 
-			/* reset found objects for the next pin */
-			if (PrepareNextLoop(FP))
-				return pcb_true;
+			/* write name to list */
+			fputc('\t', FP);
+			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(o->term));
+			fputc('\n', FP);
+			PCB_FLAG_SET(PCB_FLAG_SELECTED, o);
+			pcb_draw_obj(o);
 		}
 	}
-	PCB_END_LOOP;
-#endif
 
 	/* print separator if element has unused pins or pads */
 	if (!first) {
@@ -136,7 +102,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 /* ---------------------------------------------------------------------------
  * resets some flags for looking up the next pin/pad
  */
-static pcb_bool PrepareNextLoop(FILE * FP)
+static void PrepareNextLoop(void)
 {
 	pcb_cardinal_t layer;
 
@@ -149,8 +115,7 @@ static pcb_bool PrepareNextLoop(FILE * FP)
 
 	/* reset Padstacks */
 	PadstackList.Number = PadstackList.Location = 0;
-
-	return pcb_false;
+	pcb_reset_conns(pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
@@ -158,9 +123,9 @@ static pcb_bool PrepareNextLoop(FILE * FP)
  * The result is written to file FP
  * Returns pcb_true if operation was aborted
  */
-static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_bool AndDraw)
+static pcb_bool pcb_print_subc_conns(pcb_subc_t *subc, FILE * FP, pcb_bool AndDraw)
 {
-	PrintConnectionElementName(Element, FP);
+	pcb_print_conn_subc_name(subc, FP);
 
 #warning padstack TODO:
 #if 0
@@ -181,8 +146,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		PrintPadConnections(PCB_COMPONENT_SIDE, FP, pcb_false);
 		PrintPadConnections(PCB_SOLDER_SIDE, FP, pcb_false);
 		fputs("\t}\n", FP);
-		if (PrepareNextLoop(FP))
-			return pcb_true;
+		PrepareNextLoop();
 	}
 	PCB_END_LOOP;
 
@@ -205,8 +169,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		PrintPadConnections(layer == (PCB_COMPONENT_SIDE ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE), FP, pcb_false);
 		PrintPinConnections(FP, pcb_false);
 		fputs("\t}\n", FP);
-		if (PrepareNextLoop(FP))
-			return pcb_true;
+		PrepareNextLoop(FP);
 	}
 	PCB_END_LOOP;
 #endif
@@ -224,18 +187,14 @@ void pcb_lookup_unused_pins(FILE * FP)
 	pcb_reset_conns(pcb_true);
 	pcb_conn_lookup_init();
 
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
 		/* break if abort dialog returned pcb_true;
-		 * passing NULL as filedescriptor discards the normal output
-		 */
-		if (PrintAndSelectUnusedPinsAndPadsOfElement(element, FP))
+		 * passing NULL as filedescriptor discards the normal output */
+		if (print_select_unused_subc_terms(subc, FP))
 			break;
 	}
 	PCB_END_LOOP;
-#endif
 
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
@@ -255,7 +214,7 @@ void pcb_lookup_element_conns(pcb_element_t *Element, FILE * FP)
 	TheFlag = PCB_FLAG_FOUND;
 	pcb_reset_conns(pcb_true);
 	pcb_conn_lookup_init();
-	PrintElementConnections(Element, FP, pcb_true);
+	pcb_print_subc_conns(Element, FP, pcb_true);
 	pcb_board_set_changed_flag(pcb_true);
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
@@ -282,7 +241,7 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/* break if abort dialog returned pcb_true */
-		if (PrintElementConnections(element, FP, pcb_false))
+		if (pcb_print_subc_conns(element, FP, pcb_false))
 			break;
 		SEPARATE(FP);
 		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
