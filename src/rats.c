@@ -640,11 +640,10 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					 * not a daisy chain).  Further prefer to pick an existing
 					 * via in the Net to make that connection.
 					 */
-#warning padstack TODO: rewrite this for padstacks
 					if (conn1->obj->type == PCB_OBJ_POLY &&
 							(polygon = (pcb_poly_t *) conn1->obj) &&
 							!(distance == 0 &&
-								firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
+								firstpoint && firstpoint->obj->type == PCB_OBJ_PSTK) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn2;
 						secondpoint = conn1;
@@ -654,7 +653,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					else if (conn2->obj->type == PCB_OBJ_POLY &&
 									 (polygon = (pcb_poly_t *) conn2->obj) &&
 									 !(distance == 0 &&
-										 firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {
+										 firstpoint && firstpoint->obj->type == PCB_OBJ_PSTK) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn1;
 						secondpoint = conn2;
