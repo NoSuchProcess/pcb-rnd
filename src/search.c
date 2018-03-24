@@ -1106,18 +1106,8 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		SearchBox = pcb_point_box(X, Y);
 	}
 
-#warning subc TODO: rewrite this for floaters
-#if 0
-	if (conf_core.editor.lock_names) {
-		Type &= ~(PCB_TYPE_ELEMENT_NAME | PCB_TYPE_TEXT);
-	}
-	if (conf_core.editor.hide_names) {
-		Type &= ~PCB_TYPE_ELEMENT_NAME;
-	}
-#endif
-
 	if (conf_core.editor.only_names) {
-		Type &= (/*PCB_TYPE_ELEMENT_NAME |*/ PCB_TYPE_TEXT);
+		Type &= PCB_TYPE_TEXT;
 	}
 
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) {
