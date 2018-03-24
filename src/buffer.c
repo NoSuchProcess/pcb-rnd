@@ -410,29 +410,24 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_layergrp_id_t sgroup, cgroup;
 	pcb_layer_t swap;
 
-#warning subc TODO: rewrite
 #if 0
-	PCB_ELEMENT_LOOP(Buffer->Data);
+/* this results in saving flipped (bottom-side) footprints whenlooking at the board from the bottom */
+	PCB_SUBC_LOOP(Buffer->Data);
 	{
-		r_delete_element(Buffer->Data, element);
-		pcb_element_mirror(Buffer->Data, element, 0);
+		pcb_subc_change_side(&subc, /*2 * pcb_crosshair.Y - PCB->MaxHeight*/0);
 	}
 	PCB_END_LOOP;
 #endif
-
 
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 
-#warning padstack TODO: rewrite
-#if 0
-	PCB_VIA_LOOP(Buffer->Data);
+	PCB_PADSTACK_LOOP(Buffer->Data);
 	{
-		pcb_via_flip_side(Buffer->Data, via);
+		pcb_pstk_mirror(padstack, 0, 1);
 	}
 	PCB_END_LOOP;
-#endif
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		pcb_line_flip_side(layer, line);
