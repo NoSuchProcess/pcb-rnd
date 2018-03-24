@@ -86,13 +86,13 @@ static void place_subc(pcb_subc_t *sc)
 		maxy = sc->BoundingBox.Y2;
 }
 
-/* Return the X location of a connection's pad or pin within its element. */
+/* Return the X location of a connection's terminal within its subcircuit. */
 static pcb_coord_t padDX(pcb_connection_t * conn)
 {
-	pcb_element_t *element = (pcb_element_t *) conn->ptr1;
-	pcb_any_line_t *line = (pcb_any_line_t *) conn->obj;
+	pcb_subc_t *subc = (pcb_subc_t *)conn->ptr1;
+	pcb_any_obj_t *line = (pcb_any_obj_t *)conn->obj;
 
-	return line->BoundingBox.X1 - (element->BoundingBox.X1 + element->BoundingBox.X2) / 2;
+	return line->BoundingBox.X1 - (subc->BoundingBox.X1 + subc->BoundingBox.X2) / 2;
 }
 
 /* Return true if ea,eb would be the best order, else eb,ea, based on pad loc. */
