@@ -28,8 +28,6 @@
 
 /* Drawing primitive: text */
 
-#warning subc TODO: remove pcb_text_t->Element (just use the parent ptr)
-
 #include "config.h"
 
 #include "rotate.h"
