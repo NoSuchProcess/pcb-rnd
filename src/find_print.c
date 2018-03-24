@@ -40,12 +40,8 @@ static void count_terms(pcb_data_t *data, pcb_cardinal_t maxt, pcb_cardinal_t *c
 	pcb_data_it_t it;
 
 	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-		if ((o->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_FOUND, o)) {
-char *rf = "<none>";
-if (data->parent_type == PCB_PARENT_SUBC) rf = data->parent.subc->refdes;
-printf("  %s-%s\n", rf, o->term);
+		if ((o->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_FOUND, o))
 			(*cnt)++;
-		}
 		if (o->type == PCB_OBJ_SUBC)
 			count_terms(((pcb_subc_t *)o)->data, maxt, cnt);
 		if (*cnt >= maxt)
@@ -72,9 +68,7 @@ static pcb_bool print_select_unused_subc_terms(pcb_subc_t *subc, FILE * FP)
 		ListStart(o);
 		DoIt(pcb_true, pcb_true);
 
-		printf("%s-%s:\n", subc->refdes, o->term);
 		count_terms(PCB->Data, 2, &number);
-		printf(" number=%d\n", number);
 		if (number <= 1) {
 			/* output of element name if not already done */
 			if (first) {
