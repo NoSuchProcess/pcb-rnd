@@ -72,7 +72,7 @@ conf_report_t conf_report;
 #define AUSAGE(x) pcb_message(PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
-static int ReportDrills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_drills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	DrillInfoTypePtr AllDrills;
 	pcb_cardinal_t n;
@@ -145,7 +145,7 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
@@ -382,7 +382,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	return 0;
 }
 
-static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_found_pins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	gds_t list;
 	int col = 0;
@@ -409,7 +409,7 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
  * e.g. pcb_reset_conns() has been run.
  * Does not add its own changes to the undo system
  */
-static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
+static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
 {
 	double length;
 
@@ -450,7 +450,7 @@ static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 	return length;
 }
 
-static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int ni;
 	int found;
@@ -493,7 +493,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 			if (argc < 1)
 				units_name = conf_core.editor.grid_unit->suffix;
 
-			length = XYtoNetLength(x, y, &found);
+			length = xy_to_net_length(x, y, &found);
 
 			/* Reset connectors for the next lookup */
 			pcb_reset_conns(pcb_false);
@@ -508,7 +508,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 	return 0;
 }
 
-static int ReportNetLength_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_coord_t length = 0;
 	char *netname = 0;
@@ -525,7 +525,7 @@ static int ReportNetLength_(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	pcb_reset_conns(pcb_true);
 	pcb_undo_inc_serial();
 
-	length = XYtoNetLength(x, y, &found);
+	length = xy_to_net_length(x, y, &found);
 
 	if (!found) {
 		pcb_reset_conns(pcb_false);
@@ -603,7 +603,7 @@ noelem:;
 	return 0;
 }
 
-static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y, int split)
+static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y, int split)
 {
 
 	if (split) {
@@ -639,7 +639,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
-		ReportNetLength_(argc, argv, x, y);
+		report_net_length_(argc, argv, x, y);
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		l->Point1.X = ox; l->Point1.Y = oy;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
@@ -647,7 +647,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		ox = l->Point2.X; oy = l->Point2.Y; l->Point2.X = x; l->Point2.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
-		ReportNetLength_(argc, argv, x, y);
+		report_net_length_(argc, argv, x, y);
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		l->Point2.X = ox; l->Point2.Y = oy;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
@@ -658,12 +658,12 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	}
 	else {
 /*		pcb_gui->get_coords("Click on a connection", &x, &y);*/
-		return ReportNetLength_(argc, argv, x, y);
+		return report_net_length_(argc, argv, x, y);
 	}
 }
 
 
-static int ReportNetLengthByName(const char *tofind, pcb_coord_t x, pcb_coord_t y)
+static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coord_t y)
 {
 	char *netname = 0;
 	pcb_coord_t length = 0;
@@ -736,7 +736,7 @@ static int ReportNetLengthByName(const char *tofind, pcb_coord_t x, pcb_coord_t 
 	pcb_reset_conns(pcb_true);
 	pcb_undo_inc_serial();
 
-	length = XYtoNetLength(x, y, &found);
+	length = xy_to_net_length(x, y, &found);
 	netname = net->Name + 2;
 
 	pcb_reset_conns(pcb_false);
@@ -801,30 +801,30 @@ units
 
 %end-doc */
 
-static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_gui->get_coords("Click on an object", &x, &y);
-		return ReportDialog(argc, argv, x, y);
+		return report_dialog(argc, argv, x, y);
 	}
 	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
 		pcb_gui->get_coords("Click on a subcircuit", &x, &y);
-		return ReportDialog(argc, argv, x, y);
+		return report_dialog(argc, argv, x, y);
 	}
 	else if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
-		return ReportDrills(argc - 1, argv + 1, x, y);
+		return report_drills(argc - 1, argv + 1, x, y);
 	else if (pcb_strcasecmp(argv[0], "FoundPins") == 0)
-		return ReportFoundPins(argc - 1, argv + 1, x, y);
+		return report_found_pins(argc - 1, argv + 1, x, y);
 	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 1))
-		return ReportNetLength(argc - 1, argv + 1, x, y, 0);
+		return report_net_length(argc - 1, argv + 1, x, y, 0);
 	else if ((pcb_strcasecmp(argv[0], "NetLengthTo") == 0) && (argc == 1))
-		return ReportNetLength(argc - 1, argv + 1, x, y, 1);
+		return report_net_length(argc - 1, argv + 1, x, y, 1);
 	else if (pcb_strcasecmp(argv[0], "AllNetLengths") == 0)
-		return ReportAllNetLengths(argc - 1, argv + 1, x, y);
+		return report_all_net_lengths(argc - 1, argv + 1, x, y);
 	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 2))
-		return ReportNetLengthByName(argv[1], x, y);
+		return report_net_length_by_name(argv[1], x, y);
 	else if (argc == 2)
 		AUSAGE(report);
 	else
@@ -833,10 +833,10 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t report_action_list[] = {
-	{"ReportObject", "Click on an object", ReportDialog,
+	{"ReportObject", "Click on an object", report_dialog,
 	 reportdialog_help, reportdialog_syntax}
 	,
-	{"Report", 0, Report,
+	{"Report", 0, pcb_act_report,
 	 report_help, report_syntax}
 };
 
