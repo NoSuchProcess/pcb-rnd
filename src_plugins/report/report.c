@@ -471,7 +471,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 		const char *list_entry = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[0].ListEntry;
 		char *ename;
 		char *pname;
-		pcb_bool got_one = 0;
+		pcb_any_obj_t *term;
 
 		ename = pcb_strdup(list_entry);
 		pname = strchr(ename, '-');
@@ -481,41 +481,14 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 		*pname++ = 0;
 
-#warning subc TODO: rewrite
-#if 0
-		PCB_ELEMENT_LOOP(PCB->Data);
-		{
-			char *es = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
-			if (es && strcmp(es, ename) == 0) {
-				PCB_PIN_LOOP(element);
-				{
-					if (strcmp(pin->Number, pname) == 0) {
-						x = pin->X;
-						y = pin->Y;
-						got_one = 1;
-						break;
-					}
-				}
-				PCB_END_LOOP;
-				PCB_PAD_LOOP(element);
-				{
-					if (strcmp(pad->Number, pname) == 0) {
-						x = (pad->Point1.X + pad->Point2.X) / 2;
-						y = (pad->Point1.Y + pad->Point2.Y) / 2;
-						got_one = 1;
-						break;
-					}
-				}
-				PCB_END_LOOP;
-			}
-		}
-		PCB_END_LOOP;
-#endif
-
-		if (got_one) {
+		term = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, ename, pname, 0, NULL, NULL);
+		free(ename);
+		if (term != NULL) {
 			char buf[50];
 			const char *units_name = argv[0];
 			pcb_coord_t length;
+
+			pcb_obj_center(term, &x, &y);
 
 			if (argc < 1)
 				units_name = conf_core.editor.grid_unit->suffix;
