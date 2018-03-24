@@ -1,5 +1,4 @@
 #include "obj_arc_op.h"
-#include "obj_elem_op.h"
 #include "obj_line_op.h"
 #include "obj_poly_op.h"
 #include "obj_text_op.h"

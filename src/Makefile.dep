@@ -4526,7 +4526,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_actions.h \
- plug_footprint.h vtlibrary.h dolists.h
+ plug_footprint.h vtlibrary.h obj_subc.h dolists.h
 ../src_plugins/polycombine/polycombine.o: \
  ../src_plugins/polycombine/polycombine.c ../config.h board.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -4901,9 +4901,9 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h action_helper.h \
  hid_actions.h misc_util.h ../src_plugins/report/report_conf.h conf.h \
  compat_misc.h compat_nls.h layer.h obj_all.h obj_elem.h obj_pad.h \
- obj_pinvia.h obj_pstk.h obj_pstk_inlines.h thermal.h obj_subc_parent.h \
- ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h dolists.h \
+ obj_pinvia.h obj_term.h obj_pstk.h obj_pstk_inlines.h thermal.h \
+ obj_subc_parent.h ../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
  ../src_plugins/rubberband_orig/fgeometry.c \
@@ -5329,8 +5329,8 @@ buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  compat_misc.h remove.h select.h operation.h draw.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h funchash.h \
  funchash_core_list.h compat_nls.h obj_all_op.h obj_arc_op.h \
- obj_elem_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
- obj_subc_op.h obj_pstk_op.h obj_elem.h event.h safe_fs.h
+ obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h \
+ obj_pstk_op.h obj_elem.h event.h safe_fs.h
 build_run.o: build_run.c ../config.h ../src_3rd/genht/hash.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h conf_core.h conf.h \
@@ -5372,9 +5372,9 @@ change.o: change.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h select.h operation.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h hid_actions.h compat_nls.h \
- obj_all_op.h obj_arc_op.h obj_elem_op.h obj_line_op.h obj_poly_op.h \
- obj_text_op.h obj_rat_op.h obj_subc_op.h obj_pstk_op.h obj_subc_parent.h \
- obj_term.h obj_elem.h
+ obj_all_op.h obj_arc_op.h obj_line_op.h obj_poly_op.h obj_text_op.h \
+ obj_rat_op.h obj_subc_op.h obj_pstk_op.h obj_subc_parent.h obj_term.h \
+ obj_elem.h
 change_act.o: change_act.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -5397,7 +5397,7 @@ change_act.o: change_act.c ../config.h conf_core.h conf.h \
  funchash_core_list.h board.h vtroutestyle.h library.h rats_patch.h \
  action_helper.h hid_actions.h change.h draw.h search.h rats.h netlist.h \
  route_style.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h \
- compat_misc.h compat_nls.h obj_rat_draw.h
+ compat_misc.h compat_nls.h obj_rat_draw.h data_it.h
 clip.o: clip.c ../config.h clip.h global_typedefs.h pcb_bool.h unit.h
 compat_fs.o: compat_fs.c ../config.h compat_inc.h compat_fs.h \
  compat_misc.h compat_nls.h globalconst.h safe_fs.h conf.h \
@@ -5482,8 +5482,8 @@ copy.o: copy.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h select.h operation.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h obj_all_op.h obj_arc_op.h \
- obj_elem_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
- obj_subc_op.h obj_pstk_op.h
+ obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h \
+ obj_pstk_op.h
 crosshair.o: crosshair.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -5508,8 +5508,8 @@ crosshair.o: crosshair.c ../config.h conf_core.h conf.h global_typedefs.h \
  compat_nls.h find.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  event.h action_helper.h obj_line_draw.h obj_arc_draw.h obj_text_draw.h \
  obj_pstk_draw.h obj_arc_ui.h obj_all_op.h obj_arc_op.h operation.h \
- obj_elem_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
- obj_subc_op.h tool.h
+ obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h \
+ tool.h
 data.o: data.c ../config.h board.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -5649,8 +5649,7 @@ find_act.o: find_act.c ../config.h board.h const.h macro.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h find.h compat_nls.h
 flag.o: flag.c ../config.h flag.h globalconst.h operation.h \
  global_typedefs.h pcb_bool.h unit.h obj_all_op.h obj_arc_op.h \
- obj_elem_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
- obj_subc_op.h
+ obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h
 flag_str.o: flag_str.c ../config.h const.h flag_str.h flag.h \
  globalconst.h compat_misc.h macro.h
 font.o: font.c ../config.h ../src_3rd/genht/hash.h font.h \
@@ -6089,8 +6088,8 @@ move.o: move.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h select.h operation.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h hid_actions.h \
- compat_misc.h obj_all_op.h obj_arc_op.h obj_elem_op.h obj_line_op.h \
- obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h obj_pstk_op.h
+ compat_misc.h obj_all_op.h obj_arc_op.h obj_line_op.h obj_poly_op.h \
+ obj_text_op.h obj_rat_op.h obj_subc_op.h obj_pstk_op.h
 netlist.o: netlist.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6135,7 +6134,7 @@ netlist_act.o: netlist_act.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h \
  hid_actions.h compat_nls.h compat_misc.h netlist.h route_style.h \
- obj_elem.h
+ obj_elem.h data_it.h
 obj_any.o: obj_any.c ../config.h obj_any.h ../src_3rd/genlist/gendlist.h \
  obj_common.h flag.h globalconst.h attrib.h global_typedefs.h pcb_bool.h \
  unit.h data_parent.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -6779,8 +6778,8 @@ remove.o: remove.c ../config.h conf_core.h conf.h global_typedefs.h \
  misc_util.h obj_rat_list.h obj_rat.h layer_grp.h library.h rats_patch.h \
  draw.h hid.h error.h drc.h remove.h select.h operation.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_all_op.h obj_arc_op.h \
- obj_elem_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
- obj_subc_op.h obj_pstk_op.h
+ obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h \
+ obj_pstk_op.h
 remove_act.o: remove_act.c const.h ../config.h data.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h layer.h attrib.h obj_all_list.h \
  obj_arc_list.h obj_common.h flag.h data_parent.h obj_arc.h \
@@ -6821,9 +6820,9 @@ rotate.o: rotate.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/libuundo/uundo.h undo_old.h event.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h \
- compat_nls.h obj_all_op.h obj_arc_op.h obj_elem_op.h obj_line_op.h \
- obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h obj_pstk_op.h \
- obj_line_draw.h obj_rat_draw.h
+ compat_nls.h obj_all_op.h obj_arc_op.h obj_line_op.h obj_poly_op.h \
+ obj_text_op.h obj_rat_op.h obj_subc_op.h obj_pstk_op.h obj_line_draw.h \
+ obj_rat_draw.h
 route.o: route.c ../config.h compat_misc.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -6920,8 +6919,8 @@ select.o: select.c ../config.h conf_core.h conf.h global_typedefs.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h search.h rats.h \
- netlist.h route_style.h select.h operation.h undo.h \
+ obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h draw.h search.h \
+ rats.h netlist.h route_style.h select.h operation.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h find.h compat_misc.h compat_nls.h \
  obj_arc_draw.h obj_line_draw.h obj_poly_draw.h obj_text_draw.h \
  obj_rat_draw.h obj_pstk_draw.h obj_elem.h \
