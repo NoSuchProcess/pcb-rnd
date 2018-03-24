@@ -41,24 +41,24 @@ typedef struct {								/* holds drill information */
 	  PinMax;											/* max number of coordinates from malloc() */
 	pcb_any_obj_t **hole;					/* the objects that had the drill */
 	pcb_any_obj_t **parent;				/* all parents referenced by any hole above */
-} DrillType;
+} pcb_drill_t;
 
 typedef struct {								/* holds a range of Drill Infos */
 	pcb_cardinal_t DrillN,							/* number of drill sizes */
 	  DrillMax;										/* max number from malloc() */
-	DrillType *Drill;						/* plated holes */
-} DrillInfoType;
+	pcb_drill_t *Drill;						/* plated holes */
+} pcb_drill_info_t;
 
-DrillInfoType *drill_get_info(pcb_data_t *);
-void drill_info_free(DrillInfoType *);
-void drill_round_info(DrillInfoType *, int);
-DrillType *drill_info_alloc(DrillInfoType *);
-pcb_any_obj_t **drill_pin_alloc(DrillType *);
-pcb_any_obj_t **drill_element_alloc(DrillType *);
+pcb_drill_info_t *drill_get_info(pcb_data_t *);
+void drill_info_free(pcb_drill_info_t *);
+void drill_round_info(pcb_drill_info_t *, int);
+pcb_drill_t *drill_info_alloc(pcb_drill_info_t *);
+pcb_any_obj_t **drill_pin_alloc(pcb_drill_t *);
+pcb_any_obj_t **drill_element_alloc(pcb_drill_t *);
 
 #define DRILL_LOOP(top) do             {                           \
         pcb_cardinal_t        n;                                   \
-        DrillType   *drill;                                     \
+        pcb_drill_t   *drill;                                     \
         for (n = 0; (top)->DrillN > 0 && n < (top)->DrillN; n++)   \
         {                                                          \
                 drill = &(top)->Drill[n]

@@ -42,9 +42,9 @@
 #define STEP_DRILL   30
 #define STEP_POINT   100
 
-static void drill_init(DrillType *, pcb_pin_t *, pcb_element_t *);
+static void drill_init(pcb_drill_t *, pcb_pin_t *, pcb_element_t *);
 
-static void drill_fill(DrillType * Drill, pcb_any_obj_t *hole, int unplated)
+static void drill_fill(pcb_drill_t * Drill, pcb_any_obj_t *hole, int unplated)
 {
 	pcb_cardinal_t n;
 	pcb_any_obj_t **pnew;
@@ -68,7 +68,7 @@ static void drill_fill(DrillType * Drill, pcb_any_obj_t *hole, int unplated)
 		Drill->UnplatedCount++;
 }
 
-static void drill_init(DrillType *drill, pcb_pin_t *pin, pcb_element_t *element)
+static void drill_init(pcb_drill_t *drill, pcb_pin_t *pin, pcb_element_t *element)
 {
 	void *ptr;
 
@@ -97,22 +97,22 @@ static void drill_init(DrillType *drill, pcb_pin_t *pin, pcb_element_t *element)
 
 static int drill_qsort_cmp(const void *va, const void *vb)
 {
-	DrillType *a = (DrillType *) va;
-	DrillType *b = (DrillType *) vb;
+	pcb_drill_t *a = (pcb_drill_t *) va;
+	pcb_drill_t *b = (pcb_drill_t *) vb;
 	return a->DrillSize - b->DrillSize;
 }
 
-DrillInfoType *drill_get_info(pcb_data_t *top)
+pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 {
-	DrillInfoType *AllDrills;
-	DrillType *Drill = NULL;
-	DrillType savedrill, swapdrill;
+	pcb_drill_info_t *AllDrills;
+	pcb_drill_t *Drill = NULL;
+	pcb_drill_t savedrill, swapdrill;
 	pcb_bool DrillFound = pcb_false;
 	pcb_bool NewDrill;
 	pcb_rtree_it_t it;
 	pcb_box_t *pb;
 
-	AllDrills = (DrillInfoType *)calloc(1, sizeof(DrillInfoType));
+	AllDrills = (pcb_drill_info_t *)calloc(1, sizeof(pcb_drill_info_t));
 
 	for(pb = pcb_r_first(top->padstack_tree, &it); pb != NULL; pb = pcb_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)pb;
@@ -148,13 +148,13 @@ DrillInfoType *drill_get_info(pcb_data_t *top)
 	}
 	pcb_r_end(&it);
 
-	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(DrillType), drill_qsort_cmp);
+	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(pcb_drill_t), drill_qsort_cmp);
 	return AllDrills;
 }
 
 #define ROUND(x,n) ((int)(((x)+(n)/2)/(n))*(n))
 
-void drill_round_info(DrillInfoType *d, int roundto)
+void drill_round_info(pcb_drill_info_t *d, int roundto)
 {
 	unsigned int i = 0;
 
@@ -194,7 +194,7 @@ void drill_round_info(DrillInfoType *d, int roundto)
 
 			d->Drill[i].DrillSize = diam1;
 
-			memmove(d->Drill + i + 1, d->Drill + i + 2, (d->DrillN - i - 2) * sizeof(DrillType));
+			memmove(d->Drill + i + 1, d->Drill + i + 2, (d->DrillN - i - 2) * sizeof(pcb_drill_t));
 			d->DrillN--;
 		}
 		else {
@@ -204,7 +204,7 @@ void drill_round_info(DrillInfoType *d, int roundto)
 	}
 }
 
-void drill_info_free(DrillInfoType *Drills)
+void drill_info_free(pcb_drill_info_t *Drills)
 {
 	DRILL_LOOP(Drills);
 	{
@@ -219,16 +219,16 @@ void drill_info_free(DrillInfoType *Drills)
 /* ---------------------------------------------------------------------------
  * get next slot for a Drill, allocates memory if necessary
  */
-DrillType *drill_info_alloc(DrillInfoType *DrillInfo)
+pcb_drill_t *drill_info_alloc(pcb_drill_info_t *DrillInfo)
 {
-	DrillType *drill = DrillInfo->Drill;
+	pcb_drill_t *drill = DrillInfo->Drill;
 
 	/* realloc new memory if necessary and clear it */
 	if (DrillInfo->DrillN >= DrillInfo->DrillMax) {
 		DrillInfo->DrillMax += STEP_DRILL;
-		drill = (DrillType *) realloc(drill, DrillInfo->DrillMax * sizeof(DrillType));
+		drill = (pcb_drill_t *) realloc(drill, DrillInfo->DrillMax * sizeof(pcb_drill_t));
 		DrillInfo->Drill = drill;
-		memset(drill + DrillInfo->DrillN, 0, STEP_DRILL * sizeof(DrillType));
+		memset(drill + DrillInfo->DrillN, 0, STEP_DRILL * sizeof(pcb_drill_t));
 	}
 	return (drill + DrillInfo->DrillN++);
 }
@@ -236,7 +236,7 @@ DrillType *drill_info_alloc(DrillInfoType *DrillInfo)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillPoint, allocates memory if necessary
  */
-pcb_any_obj_t **drill_pin_alloc(DrillType *Drill)
+pcb_any_obj_t **drill_pin_alloc(pcb_drill_t *Drill)
 {
 	pcb_any_obj_t **pin;
 
@@ -255,7 +255,7 @@ pcb_any_obj_t **drill_pin_alloc(DrillType *Drill)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillElement, allocates memory if necessary
  */
-pcb_any_obj_t **drill_element_alloc(DrillType *Drill)
+pcb_any_obj_t **drill_element_alloc(pcb_drill_t *Drill)
 {
 	pcb_any_obj_t **element;
 

@@ -151,11 +151,11 @@ static void drill_sym(pcb_hid_gc_t gc, int idx, int x, int y)
 	}
 }
 
-static int count_drill_lines(DrillInfoType *AllDrills)
+static int count_drill_lines(pcb_drill_info_t *AllDrills)
 {
 	int n, ds = 0;
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
-		DrillType *drill = &(AllDrills->Drill[n]);
+		pcb_drill_t *drill = &(AllDrills->Drill[n]);
 		if (drill->PinCount + drill->ViaCount > drill->UnplatedCount)
 			ds++;
 		if (drill->UnplatedCount)
@@ -167,7 +167,7 @@ static int count_drill_lines(DrillInfoType *AllDrills)
 
 static int DrawFab_overhang(void)
 {
-	DrillInfoType *AllDrills = drill_get_info(PCB->Data);
+	pcb_drill_info_t *AllDrills = drill_get_info(PCB->Data);
 	int ds = count_drill_lines(AllDrills);
 	if (ds < 4)
 		ds = 4;
@@ -176,7 +176,7 @@ static int DrawFab_overhang(void)
 
 static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	DrillInfoType *AllDrills;
+	pcb_drill_info_t *AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0, found;
 	char utcTime[64];
 	AllDrills = drill_get_info(PCB->Data);
@@ -202,7 +202,7 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
 		int plated_sym = -1, unplated_sym = -1;
-		DrillType *drill = &(AllDrills->Drill[n]);
+		pcb_drill_t *drill = &(AllDrills->Drill[n]);
 		if (drill->PinCount + drill->ViaCount > drill->UnplatedCount)
 			plated_sym = --ds;
 		if (drill->UnplatedCount)

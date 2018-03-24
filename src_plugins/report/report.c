@@ -75,7 +75,7 @@ conf_report_t conf_report;
 
 static int report_drills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	DrillInfoType *AllDrills;
+	pcb_drill_info_t *AllDrills;
 	pcb_cardinal_t n;
 	char *stringlist, *thestring;
 	int total_drills = 0;
