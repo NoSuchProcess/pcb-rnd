@@ -809,12 +809,16 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 {
 	PCB_SUBC_LOOP(data);
 	{
-		minclr(subc->data, value, flags);
+		if (!PCB_FLAGS_TEST(flags, subc))
+			continue;
+		minclr(subc->data, value, 0);
 	}
 	PCB_END_LOOP;
 
 	PCB_PADSTACK_LOOP(data);
 	{
+		if (!PCB_FLAGS_TEST(flags, padstack))
+			continue;
 		if (padstack->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_PSTK, padstack, 0, 0, value, 1);
 			pcb_undo_restore_serial();
