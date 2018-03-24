@@ -452,8 +452,7 @@ static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
 
 static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int ni;
-	int found;
+	int ni, found, want_undo;
 
 	/* Reset all connection flags and save an undo-state to get back
 	 * to the state the board was in when we started this function.
@@ -463,8 +462,9 @@ static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pc
 	 * by resetting the connections with pcb_reset_conns() before
 	 * calling pcb_undo() at the end of the procedure.
 	 */
-	pcb_reset_conns(pcb_true);
-	pcb_undo_inc_serial();
+	want_undo = pcb_reset_conns(pcb_true);
+	if (want_undo)
+		pcb_undo_inc_serial();
 
 	for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
 		const char *netname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
@@ -504,7 +504,8 @@ static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pc
 	}
 
 	pcb_reset_conns(pcb_false);
-	pcb_undo(pcb_true);
+	if (want_undo)
+		pcb_undo(pcb_true);
 	return 0;
 }
 
@@ -512,7 +513,7 @@ static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	pcb_coord_t length = 0;
 	char *netname = 0;
-	int found = 0;
+	int found = 0, want_undo;
 
 	/* Reset all connection flags and save an undo-state to get back
 	 * to the state the board was in when we started this function.
@@ -522,14 +523,16 @@ static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_co
 	 * by resetting the connections with pcb_reset_conns() before
 	 * calling pcb_undo() at the end of the procedure.
 	 */
-	pcb_reset_conns(pcb_true);
-	pcb_undo_inc_serial();
+	want_undo = pcb_reset_conns(pcb_true);
+	if (want_undo)
+		pcb_undo_inc_serial();
 
 	length = xy_to_net_length(x, y, &found);
 
 	if (!found) {
 		pcb_reset_conns(pcb_false);
-		pcb_undo(pcb_true);
+		if (want_undo)
+			pcb_undo(pcb_true);
 		pcb_message(PCB_MSG_ERROR, "No net under cursor.\n");
 		return 1;
 	}
@@ -588,7 +591,8 @@ static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 got_net_name:
 	pcb_reset_conns(pcb_false);
-	pcb_undo(pcb_true);
+	if (want_undo)
+		pcb_undo(pcb_true);
 
 noelem:;
 	{
@@ -667,8 +671,7 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 {
 	char *netname = 0;
 	pcb_coord_t length = 0;
-	int found = 0;
-	int i;
+	int found = 0, i, want_undo;
 	pcb_lib_menu_t *net;
 	pcb_connection_t conn;
 	int net_found = 0;
@@ -733,14 +736,16 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 	 * by resetting the connections with pcb_reset_conns() before
 	 * calling pcb_undo() when we are finished.
 	 */
-	pcb_reset_conns(pcb_true);
-	pcb_undo_inc_serial();
+	want_undo = pcb_reset_conns(pcb_true);
+	if (want_undo)
+		pcb_undo_inc_serial();
 
 	length = xy_to_net_length(x, y, &found);
 	netname = net->Name + 2;
 
 	pcb_reset_conns(pcb_false);
-	pcb_undo(pcb_true);
+	if (want_undo)
+		pcb_undo(pcb_true);
 
 	if (!found) {
 		if (net_found)
