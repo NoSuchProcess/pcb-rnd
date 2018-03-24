@@ -69,7 +69,6 @@
 pcb_bool pcb_chg_selected_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_clear_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_2nd_size(int, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_selected_mask_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_join(int);
 pcb_bool pcb_set_selected_join(int);
 pcb_bool pcb_clr_selected_join(int);
@@ -80,7 +79,6 @@ pcb_bool pcb_chg_obj_1st_size(int, void *, void *, void *, pcb_coord_t, pcb_bool
 pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid);
 pcb_bool pcb_chg_obj_clear_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_obj_2nd_size(int, void *, void *, void *, pcb_coord_t, pcb_bool, pcb_bool);
-pcb_bool pcb_chg_obj_mask_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_obj_join(int, void *, void *, void *);
 pcb_bool pcb_set_obj_join(int, void *, void *, void *);
 pcb_bool pcb_clr_obj_join(int, void *, void *, void *);

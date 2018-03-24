@@ -784,82 +784,11 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 /* ---------------------------------------------------------------------------  */
 
 static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
-
-static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads.";
-
-/* %start-doc actions MinMaskGap
-
-Checks all specified pins and/or pads, and increases the mask if
-needed to ensure a minimum distance between the pin or pad edge and
-the mask edge.
-
-%end-doc */
-
+static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
 static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = PCB_ACTION_ARG(0);
-	const char *delta = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
-	pcb_bool absolute;
-	pcb_coord_t value;
-	int flags;
-
-	if (!function)
-		return 1;
-	if (pcb_strcasecmp(function, "Selected") == 0)
-		flags = PCB_FLAG_SELECTED;
-	else {
-		units = delta;
-		delta = function;
-		flags = 0;
-	}
-	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
-
-#warning subc TODO:
-#if 0
-	pcb_undo_save_serial();
-	PCB_ELEMENT_LOOP(PCB->Data);
-	{
-		PCB_PIN_LOOP(element);
-		{
-			if (!PCB_FLAGS_TEST(flags, pin))
-				continue;
-			if (pin->Mask < pin->Thickness + value) {
-				pcb_chg_obj_mask_size(PCB_TYPE_PIN, element, pin, 0, pin->Thickness + value, 1);
-				pcb_undo_restore_serial();
-			}
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			if (!PCB_FLAGS_TEST(flags, pad))
-				continue;
-			if (pad->Mask < pad->Thickness + value) {
-				pcb_chg_obj_mask_size(PCB_TYPE_PAD, element, pad, 0, pad->Thickness + value, 1);
-				pcb_undo_restore_serial();
-			}
-		}
-		PCB_END_LOOP;
-	}
-	PCB_END_LOOP;
-#endif
-
-#warning padstack TODO
-#if 0
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		if (!PCB_FLAGS_TEST(flags, via))
-			continue;
-		if (via->Mask && via->Mask < via->Thickness + value) {
-			pcb_chg_obj_mask_size(PCB_TYPE_VIA, via, 0, 0, via->Thickness + value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_END_LOOP;
-#endif
-	pcb_undo_restore_serial();
-	pcb_undo_inc_serial();
-	return 0;
+	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
+	return 1;
 }
 
 /* ---------------------------------------------------------------------------  */
