@@ -748,7 +748,7 @@ PCB_INLINE pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x
 		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
 	} while(0)
 
-PCB_INLINE pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
+pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 {
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
 	if (shape == NULL) return pcb_false;

@@ -206,18 +206,15 @@ struct drc_info {
 	jmp_buf env;
 };
 
-#warning padstack TODO: rewrite this for padstacks
-#if 0
-static pcb_r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t drcPstk_callback(const pcb_box_t *b, void *cl)
 {
-	pcb_pin_t *via = (pcb_pin_t *) b;
-	struct drc_info *i = (struct drc_info *) cl;
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	struct drc_info *i = (struct drc_info *)cl;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && pcb_intersect_line_pin(via, i->line))
+	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, ps) && pcb_pstk_intersect_line(ps, i->line))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
-#endif
 
 static pcb_r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 {
@@ -262,7 +259,10 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	f = 1.0;
 	s = 0.5;
 	last = -1;
+	line1.type = line2.type = PCB_OBJ_LINE;
 	line1.Flags = line2.Flags = pcb_no_flags();
+	line1.parent_type = line2.parent_type = PCB_PARENT_LAYER;
+	line1.parent.layer = line2.parent.layer = CURRENT;
 	line1.Thickness = conf_core.design.line_thickness + 2 * (PCB->Bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
@@ -349,14 +349,11 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 			last2 = length2;
 			if (setjmp(info.env) == 0) {
 				info.line = &line1;
-#warning padstack TODO:
-#if 0
-				pcb_r_search(PCB->Data->via_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
+				pcb_r_search(PCB->Data->padstack_tree, &line1.BoundingBox, NULL, drcPstk_callback, &info, NULL);
 				if (two_lines) {
 					info.line = &line2;
-					pcb_r_search(PCB->Data->via_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
+					pcb_r_search(PCB->Data->padstack_tree, &line2.BoundingBox, NULL, drcPstk_callback, &info, NULL);
 				}
-#endif
 				PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 				{
 					info.line = &line1;
