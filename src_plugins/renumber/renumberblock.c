@@ -2,6 +2,7 @@
  * RenumberBlock plug-in for PCB.
  *
  * Copyright (C) 2006 DJ Delorie <dj@delorie.com>
+ * Copyright (C) 2018 Tibor 'Igor2' Palinkas for pcb-rnd data model
  *
  * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
