@@ -35,6 +35,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "draw.h"
 #include "error.h"
 #include "polygon.h"
@@ -432,89 +433,29 @@ long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len)
  *
  * text objects and subcircuits cannot be selected by this routine
  */
-pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
+static pcb_bool pcb_select_connection_(pcb_data_t *data, pcb_bool Flag)
 {
 	pcb_bool changed = pcb_false;
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
 
-	if (pcb->RatOn)
-		PCB_RAT_LOOP(pcb->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
-			pcb_undo_add_obj_to_flag(line);
-			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, line);
-			pcb_rat_invalidate_draw(line);
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, o)) {
+			pcb_undo_add_obj_to_flag(o);
+			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, o);
+			pcb_draw_obj(o);
 			changed = pcb_true;
 		}
+		if ((o->type == PCB_OBJ_SUBC) && (pcb_select_connection_(((pcb_subc_t *)o)->data, Flag)))
+			changed = pcb_true;
 	}
-	PCB_END_LOOP;
 
-	PCB_LINE_VISIBLE_LOOP(pcb->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
-			pcb_undo_add_obj_to_flag(line);
-			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, line);
-			pcb_line_invalidate_draw(layer, line);
-			changed = pcb_true;
-		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_ARC_VISIBLE_LOOP(pcb->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
-			pcb_undo_add_obj_to_flag(arc);
-			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, arc);
-			pcb_arc_invalidate_draw(layer, arc);
-			changed = pcb_true;
-		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_POLY_VISIBLE_LOOP(pcb->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)) {
-			pcb_undo_add_obj_to_flag(polygon);
-			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, polygon);
-			pcb_poly_invalidate_draw(layer, polygon);
-			changed = pcb_true;
-		}
-	}
-	PCB_ENDALL_LOOP;
-#warning padstack TODO: rewrite this to pstk
-#if 0
-	if (pcb->PinOn && pcb_silk_on(pcb)) {
-		PCB_PIN_ALL_LOOP(pcb->Data);
-		{
-			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
-				pcb_undo_add_obj_to_flag(pin);
-				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
-				pcb_pin_invalidate_draw(pin);
-				changed = pcb_true;
-			}
-		}
-		PCB_ENDALL_LOOP;
-		PCB_PAD_ALL_LOOP(pcb->Data);
-		{
-			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
-				pcb_undo_add_obj_to_flag(pad);
-				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
-				pcb_pad_invalidate_draw(pad);
-				changed = pcb_true;
-			}
-		}
-		PCB_ENDALL_LOOP;
-	}
-	if (pcb->ViaOn)
-		PCB_VIA_LOOP(pcb->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-			pcb_undo_add_obj_to_flag(via);
-			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, via);
-			pcb_via_invalidate_draw(via);
-			changed = pcb_true;
-		}
-	}
-	PCB_END_LOOP;
-#endif
 	return changed;
+}
+
+pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
+{
+	return pcb_select_connection_(pcb->Data, Flag);
 }
 
 /* ---------------------------------------------------------------------------
