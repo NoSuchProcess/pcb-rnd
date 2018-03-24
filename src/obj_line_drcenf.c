@@ -423,6 +423,9 @@ static void drc_line(pcb_point_t *end)
 	aline.Point1.X = pcb_crosshair.AttachedLine.Point1.X;
 	aline.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
 	pcb_line_45(&aline);
+	line.parent_type = PCB_PARENT_LAYER;
+	line.parent.layer = CURRENT;
+	line.type = PCB_OBJ_LINE;
 	line.Point1 = aline.Point1;
 	line.Point2 = aline.Point2;
 
@@ -440,10 +443,7 @@ static void drc_line(pcb_point_t *end)
 	pcb_line_bbox(&line);
 	if (setjmp(info.env) == 0) {
 		info.line = &line;
-#warning padstack TODO:
-#if 0
-		pcb_r_search(PCB->Data->via_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
-#endif
+		pcb_r_search(PCB->Data->padstack_tree, &line.BoundingBox, NULL, drcPstk_callback, &info, NULL);
 		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			info.line = &line;
