@@ -1153,30 +1153,30 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 				continue;
 		}
 		if (SearchLayer->meta.real.vis) {
-			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
+			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 &&
 					Type & PCB_TYPE_POLY_POINT &&
 					SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
 				return PCB_TYPE_POLY_POINT;
 
-			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
+			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 &&
 					Type & PCB_TYPE_LINE_POINT &&
 					SearchLinePointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_point_t **) Result3))
 				return PCB_TYPE_LINE_POINT;
 
-			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
+			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 &&
 					Type & PCB_TYPE_ARC_POINT &&
 					SearchArcPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int **) Result3))
 				return PCB_TYPE_ARC_POINT;
 
-			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_LINE
+			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 && Type & PCB_TYPE_LINE
 					&& SearchLineByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
 				return PCB_TYPE_LINE;
 
-			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_ARC &&
+			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 && Type & PCB_TYPE_ARC &&
 					SearchArcByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (pcb_arc_t **) Result3))
 				return PCB_TYPE_ARC;
 
-			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_TEXT
+			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 && Type & PCB_TYPE_TEXT
 					&& SearchTextByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
 				return PCB_TYPE_TEXT;
 
@@ -1196,18 +1196,11 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		}
 	}
 	/* return any previously found objects */
-	if (HigherAvail & PCB_TYPE_PIN) {
+	if (HigherAvail & PCB_TYPE_PSTK) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return PCB_TYPE_PIN;
-	}
-
-	if (HigherAvail & PCB_TYPE_PAD) {
-		*Result1 = r1;
-		*Result2 = r2;
-		*Result3 = r3;
-		return PCB_TYPE_PAD;
+		return PCB_TYPE_PSTK;
 	}
 
 	if (HigherAvail & PCB_TYPE_SUBC) {
