@@ -42,9 +42,9 @@
 #define STEP_DRILL   30
 #define STEP_POINT   100
 
-static void drill_init(DrillTypePtr, pcb_pin_t *, pcb_element_t *);
+static void drill_init(DrillType *, pcb_pin_t *, pcb_element_t *);
 
-static void drill_fill(DrillTypePtr Drill, pcb_any_obj_t *hole, int unplated)
+static void drill_fill(DrillType * Drill, pcb_any_obj_t *hole, int unplated)
 {
 	pcb_cardinal_t n;
 	pcb_any_obj_t **pnew;
@@ -68,7 +68,7 @@ static void drill_fill(DrillTypePtr Drill, pcb_any_obj_t *hole, int unplated)
 		Drill->UnplatedCount++;
 }
 
-static void drill_init(DrillTypePtr drill, pcb_pin_t *pin, pcb_element_t *element)
+static void drill_init(DrillType *drill, pcb_pin_t *pin, pcb_element_t *element)
 {
 	void *ptr;
 
@@ -105,7 +105,7 @@ static int drill_qsort_cmp(const void *va, const void *vb)
 DrillInfoType *drill_get_info(pcb_data_t *top)
 {
 	DrillInfoType *AllDrills;
-	DrillTypePtr Drill = NULL;
+	DrillType *Drill = NULL;
 	DrillType savedrill, swapdrill;
 	pcb_bool DrillFound = pcb_false;
 	pcb_bool NewDrill;
@@ -219,14 +219,14 @@ void drill_info_free(DrillInfoType *Drills)
 /* ---------------------------------------------------------------------------
  * get next slot for a Drill, allocates memory if necessary
  */
-DrillTypePtr drill_info_alloc(DrillInfoType *DrillInfo)
+DrillType *drill_info_alloc(DrillInfoType *DrillInfo)
 {
-	DrillTypePtr drill = DrillInfo->Drill;
+	DrillType *drill = DrillInfo->Drill;
 
 	/* realloc new memory if necessary and clear it */
 	if (DrillInfo->DrillN >= DrillInfo->DrillMax) {
 		DrillInfo->DrillMax += STEP_DRILL;
-		drill = (DrillTypePtr) realloc(drill, DrillInfo->DrillMax * sizeof(DrillType));
+		drill = (DrillType *) realloc(drill, DrillInfo->DrillMax * sizeof(DrillType));
 		DrillInfo->Drill = drill;
 		memset(drill + DrillInfo->DrillN, 0, STEP_DRILL * sizeof(DrillType));
 	}
@@ -236,7 +236,7 @@ DrillTypePtr drill_info_alloc(DrillInfoType *DrillInfo)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillPoint, allocates memory if necessary
  */
-pcb_any_obj_t **drill_pin_alloc(DrillTypePtr Drill)
+pcb_any_obj_t **drill_pin_alloc(DrillType *Drill)
 {
 	pcb_any_obj_t **pin;
 
@@ -255,7 +255,7 @@ pcb_any_obj_t **drill_pin_alloc(DrillTypePtr Drill)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillElement, allocates memory if necessary
  */
-pcb_any_obj_t **drill_element_alloc(DrillTypePtr Drill)
+pcb_any_obj_t **drill_element_alloc(DrillType *Drill)
 {
 	pcb_any_obj_t **element;
 

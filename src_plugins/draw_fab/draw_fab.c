@@ -155,7 +155,7 @@ static int count_drill_lines(DrillInfoType *AllDrills)
 {
 	int n, ds = 0;
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
-		DrillTypePtr drill = &(AllDrills->Drill[n]);
+		DrillType *drill = &(AllDrills->Drill[n]);
 		if (drill->PinCount + drill->ViaCount > drill->UnplatedCount)
 			ds++;
 		if (drill->UnplatedCount)
@@ -202,7 +202,7 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
 		int plated_sym = -1, unplated_sym = -1;
-		DrillTypePtr drill = &(AllDrills->Drill[n]);
+		DrillType *drill = &(AllDrills->Drill[n]);
 		if (drill->PinCount + drill->ViaCount > drill->UnplatedCount)
 			plated_sym = --ds;
 		if (drill->UnplatedCount)
