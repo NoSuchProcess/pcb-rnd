@@ -267,16 +267,8 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 		case PCB_OBJ_POLY:    return PCB_TYPE_POLY;
 		case PCB_OBJ_ARC:     return PCB_TYPE_ARC;
 		case PCB_OBJ_RAT:     return PCB_TYPE_RATLINE;
-		case PCB_OBJ_PAD:     return PCB_TYPE_PAD;
-		case PCB_OBJ_PIN:     return PCB_TYPE_PIN;
-		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
 		case PCB_OBJ_PSTK:    return PCB_TYPE_PSTK;
-		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
 		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
-
-		case PCB_OBJ_ELINE:   return PCB_TYPE_ELEMENT_LINE;
-		case PCB_OBJ_ETEXT:   return PCB_TYPE_ELEMENT_NAME;
-		case PCB_OBJ_EARC:    return PCB_TYPE_ELEMENT_ARC;
 
 		default: return 0;
 	}
