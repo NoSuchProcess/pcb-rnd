@@ -70,7 +70,7 @@ static void notify_line(void)
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
 #warning subc TODO: this should work on heavy terminals too!
-		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN | PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
+		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
 			pcb_gui->beep();
 			break;
 		}
