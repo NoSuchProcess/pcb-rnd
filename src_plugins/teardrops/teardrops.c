@@ -40,13 +40,10 @@
 #define MIN_LINE_LENGTH2 ((double)MIN_LINE_LENGTH*(double)MIN_LINE_LENGTH)
 #define MAX_DISTANCE2 ((double)MAX_DISTANCE*(double)MAX_DISTANCE)
 
-static pcb_pin_t *pin;
-static pcb_pad_t *pad;
 static pcb_pstk_t *pstk;
 static int layer;
 static pcb_coord_t px, py;
 static pcb_coord_t thickness;
-static pcb_element_t *element;
 
 static int new_arcs = 0;
 
