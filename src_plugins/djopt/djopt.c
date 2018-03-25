@@ -2510,45 +2510,31 @@ static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 	grok_layer_groups();
 
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
-	PCB_PIN_LOOP(element);
-	{
-		c = find_corner(pin->X, pin->Y, -1);
-		c->pin = pin;
-	}
-	PCB_END_LOOP;
-	PCB_PAD_LOOP(element);
-	{
-		int layern = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? solder_layer : component_layer;
-		line_s *ls = (line_s *) malloc(sizeof(line_s));
-		ls->next = lines;
-		lines = ls;
-		ls->is_pad = 1;
-		ls->s = find_corner(pad->Point1.X, pad->Point1.Y, layern);
-		ls->s->pad = pad;
-		ls->e = find_corner(pad->Point2.X, pad->Point2.Y, layern);
-		ls->e->pad = pad;
-		ls->layer = layern;
-		ls->line = (pcb_line_t *) pad;
-		add_line_to_corner(ls, ls->s);
-		add_line_to_corner(ls, ls->e);
+	PCB_SUBC_LOOP(PCB->Data);
+		PCB_PADSTACK_LOOP(subc->data);
+		{
+			pcb_pstk_proto_t *proto;
+			proto = pcb_pstk_get_proto(padstack);
+			if (proto == NULL)
+				continue;
 
-	}
+			c = find_corner(padstack->x, padstack->y, -1);
+			if (proto->hdia <= 0)
+				c->pad = padstack;
+			else
+				c->pin = padstack;
+		}
+		PCB_END_LOOP;
 	PCB_END_LOOP;
-	PCB_END_LOOP;
-	PCB_VIA_LOOP(PCB->Data);
+
+	PCB_PADSTACK_LOOP(PCB->Data);
 	/* hace don't mess with vias that have thermals */
-	/* but then again don't bump into them
-	   if (!PCB_FLAG_TEST(ALLTHERMFLAGS, via))
-	 */
+	/* but then again don't bump into them if (!PCB_FLAG_TEST(ALLTHERMFLAGS, via)) */
 	{
-		c = find_corner(via->X, via->Y, -1);
-		c->via = via;
+		c = find_corner(padstack->x, padstack->y, -1);
+		c->via = padstack;
 	}
 	PCB_END_LOOP;
-#endif
 
 	check(0, 0);
 
