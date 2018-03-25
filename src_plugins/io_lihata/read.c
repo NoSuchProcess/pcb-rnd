@@ -750,7 +750,6 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 				pcb_layer_link_trees(&dt->Layer[layer_id], dt->Layer[layer_id].meta.bound.real);
 			else if (!(dt->Layer[layer_id].meta.bound.type & PCB_LYT_VIRTUAL))
 				pcb_message(PCB_MSG_WARNING, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
-			dt->via_tree = subc_parent->via_tree;
 			dt->padstack_tree = subc_parent->padstack_tree;
 		}
 	}
@@ -1041,10 +1040,6 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	pcb_attrib_compat_set_intconn(&sc->Attributes, intconn);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
-
-	if (!dt->via_tree)
-		dt->via_tree = pcb_r_create_tree();
-	sc->data->via_tree = dt->via_tree;
 
 	if (!dt->padstack_tree)
 		dt->padstack_tree = pcb_r_create_tree();
