@@ -132,7 +132,6 @@ static struct text_by_pos {
 	pcb_text_t *text;
 	pcb_coord_t pos;
 	pcb_coord_t width;
-	int type;
 } *texts_by_pos;
 
 static int ntexts_by_pos;
@@ -195,7 +194,6 @@ static int sort_texts_by_pos(int op, int dir, int point)
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
 				continue;
 			texts_by_pos[nsel].text = text;
-			texts_by_pos[nsel].type = PCB_TYPE_TEXT;
 			texts_by_pos[nsel++].pos = coord(text, dir, point);
 		}
 		PCB_ENDALL_LOOP;
@@ -207,7 +205,6 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		texts_by_pos[nsel].text = text;
-		texts_by_pos[nsel].type = PCB_TYPE_TEXT;
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
 	PCB_ENDALL_LOOP;
@@ -559,7 +556,6 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	/* move all selected texts to the new coordinate */
 	for (i = 0; i < ntexts_by_pos; ++i) {
 		pcb_text_t *text = texts_by_pos[i].text;
-		int type = texts_by_pos[i].type;
 		pcb_coord_t p, q, dp, dx, dy;
 
 		/* find reference point for this text */
@@ -590,7 +586,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			 * didn't keep the element reference when sorting.
 			 */
 			pcb_text_move(text, dx, dy);
-			pcb_undo_add_obj_to_move(type, NULL, NULL, text, dx, dy);
+			pcb_undo_add_obj_to_move(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */
