@@ -237,7 +237,7 @@ struct routebox_s {
 		pcb_pstk_t *via;
 		pcb_any_obj_t *term;
 		routebox_t *via_shadow;	/* points to the via in r-tree which
-																	 * points to the pcb_pin_t in the PCB. */
+																	 * points to the pcb_pstk_t in the PCB. */
 		pcb_line_t *line;
 		void *generic;							/* 'other' is polygon, arc, text */
 		routebox_t *expansion_area;	/* previous expansion area in search */
@@ -303,7 +303,7 @@ struct routebox_s {
 	/* circular lists with connectivity information. */
 	routebox_list_t same_net, same_subnet, original_subnet, different_net;
 	union {
-		pcb_pin_t *via;
+		pcb_pstk_t *via;
 		pcb_line_t *line;
 	} livedraw_obj;
 };
@@ -1049,7 +1049,7 @@ static routedata_t *CreateRouteData()
 				PCB_CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
-					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) connection->obj);
+					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pstk_t *) connection->obj);
 
 					if ((connection->obj->type == PCB_OBJ_LINE) && (connection->obj->term != NULL)) {
 						rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
