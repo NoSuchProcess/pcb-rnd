@@ -1052,7 +1052,10 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	pcb_add_subc_to_data(dt, sc);
 
-	parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt);
+	if (parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt) == 0) {
+		pcb_message(PCB_MSG_ERROR, "Invalid subc: no data\n");
+		return -1;
+	}
 
 	for(n = 0; n < sc->data->LayerN; n++)
 		sc->data->Layer[n].is_bound = 1;
@@ -1088,7 +1091,8 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(pcb_for_font, dt, n);
 		else if (strncmp(n->name, "subc.", 5) == 0)
-			parse_subc(pcb_for_font, dt, n, NULL);
+			if (parse_subc(pcb_for_font, dt, n, NULL) != 0)
+				return -1;
 	}
 
 	return 0;
@@ -1394,7 +1398,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 	lht_node_t *grp;
 	int bound_layers = (subc_parent != NULL);
 
-	if (nd->type != LHT_HASH)
+	if ((nd == NULL) || (nd->type != LHT_HASH))
 		return NULL;
 
 	if (dst == NULL)
@@ -1420,7 +1424,8 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
-		parse_data_objects(pcb, dt, grp);
+		if (parse_data_objects(pcb, dt, grp) != 0)
+			return NULL;
 
 	return dt;
 }
