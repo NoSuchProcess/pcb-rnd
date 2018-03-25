@@ -286,7 +286,10 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 			g->vis = pcb_false;
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
-				l->meta.real.vis = 0;
+				if (l == NULL)
+					pcb_message(PCB_MSG_ERROR, "broken layer groups; layer group references to non-existing layer\n");
+				else
+					l->meta.real.vis = 0;
 			}
 		}
 	}
