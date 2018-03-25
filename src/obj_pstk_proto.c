@@ -574,6 +574,7 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly)
 	pcb_polyarea_contour_include(poly->pa, pl);
 
 	if (!pcb_poly_valid(poly->pa)) {
+		poly->pa->contours = NULL; /* keep pl safe from pcb_polyarea_free() */
 		pcb_polyarea_free(&poly->pa);
 		
 		poly->pa = pcb_polyarea_create();
