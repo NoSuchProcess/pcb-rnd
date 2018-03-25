@@ -58,6 +58,7 @@
 #include "event.h"
 #include "obj_elem.h"
 #include "obj_pad.h"
+#include "obj_pstk_inlines.h"
 
 conf_djopt_t conf_djopt;
 
@@ -93,9 +94,7 @@ typedef struct corner_s {
 	struct corner_s *next;
 	int x, y;
 	int net;
-	pcb_pin_t *via;
-	pcb_pad_t *pad;
-	pcb_pin_t *pin;
+	pcb_pstk_t *via, *pad, *pin;
 	int miter;
 	int n_lines;
 	struct line_s **lines;
@@ -164,13 +163,13 @@ static const char *corner_name(corner_s * c)
 	bp = buf[bn] + strlen(buf[bn]);
 
 	if (c->pin)
-		pcb_sprintf(bp, "pin %s:%s at %#mD", element_name_for(c), c->pin->Number, c->x, c->y);
+		pcb_sprintf(bp, "pin %s:%s at %#mD", element_name_for(c), c->pin->term, c->x, c->y);
 	else if (c->via)
 		pcb_sprintf(bp, "via at %#mD", c->x, c->y);
 	else if (c->pad) {
 		pcb_sprintf(bp, "pad %s:%s at %#mD %#mD-%#mD",
-								element_name_for(c), c->pad->Number, c->x, c->y,
-								c->pad->Point1.X, c->pad->Point1.Y, c->pad->Point2.X, c->pad->Point2.Y);
+								element_name_for(c), c->pad->term, c->x, c->y,
+								c->pad->BoundingBox.X1, c->pad->BoundingBox.Y1, c->pad->BoundingBox.X2, c->pad->BoundingBox.Y2);
 	}
 	else
 		pcb_sprintf(bp, "at %#mD", c->x, c->y);
@@ -584,12 +583,16 @@ static int line_in_rect(rect_s * r, line_s * l)
 
 static int corner_radius(corner_s * c)
 {
+	pcb_pstk_t *p = NULL;
 	int diam = 0;
 	int i;
-	if (c->pin)
-		diam = djmax(c->pin->Thickness, diam);
-	if (c->via)
-		diam = djmax(c->via->Thickness, diam);
+
+	if (c->pin) p = c->pin;
+	if (c->via) p = c->via;
+	if (c->pad) p = c->pad;
+	if (p != NULL)
+		diam = djmax(p->BoundingBox.X2 - p->BoundingBox.X1, p->BoundingBox.Y2 - p->BoundingBox.Y1);
+
 	for (i = 0; i < c->n_lines; i++)
 		if (c->lines[i]->line)
 			diam = djmax(c->lines[i]->line->Thickness, diam);
@@ -704,7 +707,7 @@ static void merge_corners(corner_s * c1, corner_s * c2)
 
 static void move_corner(corner_s * c, int x, int y)
 {
-	pcb_pin_t *via;
+	pcb_pstk_t *via;
 	int i;
 	corner_s *pad;
 
@@ -717,8 +720,8 @@ static void move_corner(corner_s * c, int x, int y)
 	c->y = y;
 	via = c->via;
 	if (via) {
-		pcb_move_obj(PCB_TYPE_VIA, via, via, via, x - via->X, y - via->Y);
-		dprintf("via move %#mD to %#mD\n", via->X, via->Y, x, y);
+		pcb_move_obj(PCB_TYPE_PSTK, via, via, via, x - via->x, y - via->y);
+		dprintf("via move %#mD to %#mD\n", via->x, via->y, x, y);
 	}
 	for (i = 0; i < c->n_lines; i++) {
 		pcb_line_t *tl = c->lines[i]->line;
@@ -905,15 +908,13 @@ static int canonicalize_line(line_s * l)
 			if ((x1 < c->x && c->x < x2)
 					&& (y1 < c->y && c->y < y2)
 					&& intersecting_layers(l->layer, c->layer)) {
-				int th = c->pin ? c->pin->Thickness : c->via->Thickness;
+				pcb_pstk_t *p = c->pin ? c->pin : c->via;
+				int th = djmax(p->BoundingBox.X2 - p->BoundingBox.X1, p->BoundingBox.Y2 - p->BoundingBox.Y1);
 				th /= 2;
-#warning padstack TODO:
-#if 0
 				if (dist(l->s->x, l->s->y, c->x, c->y) > th
-						&& dist(l->e->x, l->e->y, c->x, c->y) > th && pcb_intersect_line_pin(c->pin ? c->pin : c->via, l->line)) {
+						&& dist(l->e->x, l->e->y, c->x, c->y) > th && pcb_pstk_intersect_line(p, l->line)) {
 					return split_line(l, c);
 				}
-#endif
 			}
 		}
 	}
@@ -951,9 +952,8 @@ static int simple_optimize_corner(corner_s * c)
 		if (selected(c->via))
 			dprintf("via check: line[0] layer %d at %#mD nl %d\n", c->lines[0]->layer, c->x, c->y, c->n_lines);
 		/* We can't delete vias that connect to power planes, or vias
-		   that aren't tented (assume they're test points).  */
-		if (!PCB_FLAG_THERM_TEST_ANY(c->via)
-				&& c->via->Mask == 0) {
+		   have terminal name (assume they're test points).  */
+		if (!PCB_FLAG_THERM_TEST_ANY(c->via) && (c->via->term == NULL)) {
 			for (i = 1; i < c->n_lines; i++) {
 				if (selected(c->via))
 					dprintf("           line[%d] layer %d %#mD to %#mD\n",
@@ -1752,7 +1752,8 @@ static int vianudge()
 			continue;
 
 		/* Now look for clearance in the new position */
-		vr = c->via->Thickness / 2 + SB + 1;
+		vr = djmax(c->via->BoundingBox.X2 - c->via->BoundingBox.X1, c->via->BoundingBox.Y2 - c->via->BoundingBox.Y1);
+		vr = vr / 2 + SB + 1;
 		for (c3 = corners; c3; c3 = c3->next) {
 			if (DELETED(c3))
 				continue;
@@ -2193,7 +2194,7 @@ static void pinsnap()
 	corner_s *best_c[PCB_MAX_LAYER + 1];
 	int l, got_one;
 	int left = 0, right = 0, top = 0, bottom = 0;
-	pcb_pin_t *pin;
+	pcb_pstk_t *pin;
 	int again = 1;
 
 	int close = 0;
@@ -2213,40 +2214,16 @@ static void pinsnap()
 			if (!(c->pin || c->via || c->pad))
 				continue;
 
-			pin = 0;
+			pin = NULL;
 
 			dprintf("\ncorner %s\n", corner_name(c));
-			if (c->pin || c->via) {
-				pin = c->pin ? c->pin : c->via;
-				close = pin->Thickness / 2;
-				left = c->x - close;
-				right = c->x + close;
-				bottom = c->y - close;
-				top = c->y + close;
-			}
-			else if (c->pad) {
-				close = c->pad->Thickness / 2 + 1;
-				left = djmin(c->pad->Point1.X, c->pad->Point2.X) - close;
-				right = djmax(c->pad->Point1.X, c->pad->Point2.X) + close;
-				bottom = djmin(c->pad->Point1.Y, c->pad->Point2.Y) - close;
-				top = djmax(c->pad->Point1.Y, c->pad->Point2.Y) + close;
-				if (c->pad->Point1.X == c->pad->Point2.X) {
-					int hy = (c->pad->Point1.Y + c->pad->Point2.Y) / 2;
-					dprintf("pad y %#mS %#mS hy %#mS c %#mS\n", c->pad->Point1.Y, c->pad->Point2.Y, hy, c->y);
-					if (c->y < hy)
-						top = hy;
-					else
-						bottom = hy + 1;
-				}
-				else {
-					int hx = (c->pad->Point1.X + c->pad->Point2.X) / 2;
-					dprintf("pad x %#mS %#mS hx %#mS c %#mS\n", c->pad->Point1.X, c->pad->Point2.X, hx, c->x);
-					if (c->x < hx)
-						right = hx;
-					else
-						left = hx + 1;
-				}
-			}
+			if (c->pin) pin = c->pin;
+			if (c->via) pin = c->via;
+			if (c->pad) pin = c->pad;
+			left = pin->BoundingBox.X1;
+			right = pin->BoundingBox.X2;
+			top = pin->BoundingBox.Y1;
+			bottom = pin->BoundingBox.Y2;
 
 			dprintf("%s x %#mS-%#mS y %#mS-%#mS\n", corner_name(c), left, right, bottom, top);
 			for (l = 0; l <= pcb_max_layer; l++) {
@@ -2258,15 +2235,17 @@ static void pinsnap()
 			got_one = 0;
 			for (c2 = corners; c2; c2 = c2->next) {
 				int lt;
+				pcb_coord_t thick;
 
 				if (DELETED(c2))
 					continue;
+				thick = djmax(pin->BoundingBox.X2 - pin->BoundingBox.X1, pin->BoundingBox.Y2 - pin->BoundingBox.Y1);
 				lt = corner_radius(c2);
 				if (c2->n_lines && c2 != c && !(c2->pin || c2->pad || c2->via)
 						&& intersecting_layers(c->layer, c2->layer)
 						&& c2->x >= left - lt && c2->x <= right + lt && c2->y >= bottom - lt && c2->y <= top + lt) {
 					int d = dist(c->x, c->y, c2->x, c2->y);
-					if (pin && d > pin->Thickness / 2 + lt)
+					if (pin && d > thick / 2 + lt)
 						continue;
 					if (c2->n_lines == 1) {
 						got_one++;
@@ -2363,19 +2342,19 @@ static void pinsnap()
 	}
 }
 
-static int pad_orient(pcb_pad_t * p)
+static int pstk_orient(pcb_pstk_t *p)
 {
-	if (p->Point1.X == p->Point2.X)
+	pcb_coord_t dx = p->BoundingBox.X2 - p->BoundingBox.X1;
+	pcb_coord_t dy = p->BoundingBox.Y2 - p->BoundingBox.Y1;
+	if (dx < dy * 3)
 		return O_VERT;
-	if (p->Point1.Y == p->Point2.Y)
+	if (dx > dy * 3)
 		return O_HORIZ;
 	return DIAGONAL;
 }
 
-static void padcleaner()
+static void padcleaner_(pcb_data_t *data)
 {
-#warning padstack TODO: rewrite
-#if 0
 	line_s *l, *nextl;
 	int close;
 	rect_s r;
@@ -2396,33 +2375,46 @@ static void padcleaner()
 		if (l->s->pad && l->s->pad == l->e->pad)
 			continue;
 
-		PCB_PAD_ALL_LOOP(PCB->Data);
+		PCB_PADSTACK_LOOP(data);
 		{
-			int layerflag = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? LT_SOLDER : LT_COMPONENT;
+			pcb_pstk_shape_t *shape = NULL;
 
-			if (layer_type[l->layer] != layerflag)
+			/* check if the padstack has copper on the given side */
+			switch(layer_type[l->layer]) {
+				case LT_SOLDER:     shape = pcb_pstk_shape(padstack, PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0); break;
+				case LT_COMPONENT:  shape = pcb_pstk_shape(padstack, PCB_LYT_TOP | PCB_LYT_COPPER, 0); break;
+			}
+			if (shape == NULL)
 				continue;
 
 			empty_rect(&r);
-			close = pad->Thickness / 2 + 1;
-			add_point_to_rect(&r, pad->Point1.X, pad->Point1.Y, close - SB / 2);
-			add_point_to_rect(&r, pad->Point2.X, pad->Point2.Y, close - SB / 2);
+			close = 0;
+			add_point_to_rect(&r, padstack->BoundingBox.X1, padstack->BoundingBox.Y1, 0);
+			add_point_to_rect(&r, padstack->BoundingBox.X2, padstack->BoundingBox.Y2, 0);
 			if (pin_in_rect(&r, l->s->x, l->s->y, 0)
 					&& pin_in_rect(&r, l->e->x, l->e->y, 0)
-					&& ORIENT(line_orient(l, 0)) == pad_orient(pad)) {
+					&& ORIENT(line_orient(l, 0)) == pstk_orient(padstack)) {
 				dprintf
-					("padcleaner %#mD-%#mD %#mS vs line %#mD-%#mD %#mS\n",
-					 pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y,
-					 pad->Thickness, l->s->x, l->s->y, l->e->x, l->e->y, l->line->Thickness);
+					("padcleaner %#mD-%#mD vs line %#mD-%#mD %#mS\n",
+					 padstack->BoundingBox.X1, padstack->BoundingBox.Y1, padstack->BoundingBox.X2, padstack->BoundingBox.Y2,
+					 l->s->x, l->s->y, l->e->x, l->e->y, l->line->Thickness);
 				remove_line(l);
 				goto next_line;
 			}
 		}
-		PCB_ENDALL_LOOP;
+		PCB_END_LOOP;
 	next_line:;
 	}
-#endif
 }
+
+static void padcleaner(void)
+{
+	padcleaner_(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data); {
+		padcleaner_(subc->data);
+	} PCB_END_LOOP;
+}
+
 
 static void grok_layer_groups()
 {
