@@ -191,7 +191,6 @@ void pcb_data_free(pcb_data_t * data)
  */
 pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 {
-	pcb_bool hasNoObjects;
 	pcb_cardinal_t i;
 
 	if (padstacklist_length(&Data->padstack) != 0) return pcb_false;
