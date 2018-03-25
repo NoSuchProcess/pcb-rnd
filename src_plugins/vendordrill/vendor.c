@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2004, 2007 Dan McMahill
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -315,7 +316,7 @@ static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data)
 	pcb_pstk_t *pstk;
 	pcb_cardinal_t changed = 0;
 
-	padstacklist_foreach(&data->subc, &it, pstk) {
+	padstacklist_foreach(&data->padstack, &it, pstk) {
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pstk);
 		pcb_coord_t target;
 
@@ -323,11 +324,11 @@ static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data)
 
 		target = vendorDrillMap(proto->hdia);
 		if (proto->hdia != target) {
-			if (pcb_chg_obj_2nd_size(PCB_TYPE_PSTK, pstk, NULL, NULL, target, pcb_true, pcb_false))
+			if (pcb_chg_obj_2nd_size(PCB_TYPE_PSTK, pstk, pstk, pstk, target, pcb_true, pcb_false))
 				changed++;
 			else {
 				pcb_message(PCB_MSG_WARNING, _
-					("Via at %ml, %ml not changed.  Possible reasons:\n"
+					("Padstack at %ml, %ml not changed.  Possible reasons:\n"
 					 "\t- pad size too small\n"
 					 "\t- new size would be too large or too small\n"), pstk->x, pstk->y);
 			}
@@ -349,33 +350,8 @@ static void apply_vendor_map(void)
 	/* If we have loaded vendor drills, then apply them to the design */
 	if (n_vendor_drills > 0) {
 
+		/* global padsatcks (e.g. vias) */
 		changed += apply_vendor_pstk(PCB->Data);
-
-#warning padstack TODO: rewrite for padstacks
-#if 0
-		/* first all the vias */
-		PCB_VIA_LOOP(PCB->Data);
-		{
-			tot++;
-			if (via->DrillingHole != vendorDrillMap(via->DrillingHole)) {
-				/* only change unlocked vias */
-				if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-					if (pcb_chg_obj_2nd_size(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), pcb_true, pcb_false))
-						changed++;
-					else {
-						pcb_message(PCB_MSG_WARNING, _
-										("Via at %ml, %ml not changed.  Possible reasons:\n"
-										 "\t- pad size too small\n"
-										 "\t- new size would be too large or too small\n"), via->X, via->Y);
-					}
-				}
-				else {
-					pcb_message(PCB_MSG_WARNING, _("Locked via at %ml, %ml not changed.\n"), via->X, via->Y);
-				}
-			}
-		}
-		PCB_END_LOOP;
-#endif
 
 		PCB_SUBC_LOOP(PCB->Data);
 		{
@@ -383,46 +359,6 @@ static void apply_vendor_map(void)
 				changed += apply_vendor_pstk(subc->data);
 		}
 		PCB_END_LOOP;
-
-#warning subc TODO: rewrite
-#if 0
-		/* and now the pins */
-		PCB_ELEMENT_LOOP(PCB->Data);
-		{
-			/*
-			 * first figure out if this element should be skipped for some
-			 * reason
-			 */
-			if (vendorIsElementMappable(element)) {
-				/* the element is ok to modify, so iterate over its pins */
-				PCB_PIN_LOOP(element);
-				{
-					tot++;
-					if (pin->DrillingHole != vendorDrillMap(pin->DrillingHole)) {
-						if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, pin)) {
-							if (pcb_chg_obj_2nd_size(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), pcb_true, pcb_false))
-								changed++;
-							else {
-								pcb_message(PCB_MSG_WARNING, _
-												("Pin %s (%s) at %ml, %ml (element %s, %s, %s) not changed.\n"
-												 "\tPossible reasons:\n"
-												 "\t- pad size too small\n"
-												 "\t- new size would be too large or too small\n"),
-												PCB_UNKNOWN(pin->Number), PCB_UNKNOWN(pin->Name),
-												pin->X, pin->Y,
-												PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
-							}
-						}
-						else {
-							pcb_message(PCB_MSG_WARNING, _("Locked pin at %ml, %ml not changed.\n"), pin->X, pin->Y);
-						}
-					}
-				}
-				PCB_END_LOOP;
-			}
-		}
-		PCB_END_LOOP;
-#endif
 
 		pcb_message(PCB_MSG_INFO, _("Updated %ld drill sizes out of %ld total\n"), (long)changed, (long)tot);
 
