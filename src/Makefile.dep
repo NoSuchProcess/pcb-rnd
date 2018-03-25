@@ -2498,7 +2498,8 @@
  ../src_plugins/io_lihata/common.h polygon.h conf_core.h obj_all.h \
  obj_subc.h pcb_minuid.h thermal.h ../src_plugins/io_lihata/io_lihata.h \
  conf.h ../src_plugins/io_lihata/lht_conf.h safe_fs.h plug_footprint.h \
- vtlibrary.h vtpadstack.h ../src_plugins/lib_compat_help/subc_help.h \
+ vtlibrary.h vtpadstack.h obj_pstk_inlines.h data.h thermal.h \
+ ../src_plugins/lib_compat_help/subc_help.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/elem_rot.h
 ../src_plugins/io_lihata/write.o: ../src_plugins/io_lihata/write.c \
