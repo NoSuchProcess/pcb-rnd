@@ -90,4 +90,6 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag);
 pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
 
+void pcb_lookup_subc_conns(pcb_subc_t *subc, FILE * FP);
+
 #endif
