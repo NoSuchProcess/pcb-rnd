@@ -31,7 +31,6 @@
 #include "config.h"
 #include "flag.h"
 #include "operation.h"
-#include "obj_all_op.h"
 
 /* This just fills in a pcb_flag_t with current flags.  */
 pcb_flag_t pcb_flag_make(unsigned int flags)

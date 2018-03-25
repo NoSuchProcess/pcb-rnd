@@ -42,10 +42,14 @@
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
-#include "obj_all_op.h"
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"
+#include "obj_arc_op.h"
+#include "obj_line_op.h"
+#include "obj_poly_op.h"
+#include "obj_text_op.h"
+#include "obj_subc_op.h"
 
 
 pcb_opfunc_t ChangeSizeFunctions = {

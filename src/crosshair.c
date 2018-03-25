@@ -53,7 +53,6 @@
 #include "obj_text_draw.h"
 #include "obj_pstk_draw.h"
 #include "obj_arc_ui.h"
-#include "obj_all_op.h"
 
 #include "tool.h"
 

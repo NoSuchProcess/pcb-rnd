@@ -41,8 +41,13 @@
 #include "event.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
-#include "obj_all_op.h"
+#include "obj_arc_op.h"
+#include "obj_line_op.h"
+#include "obj_text_op.h"
+#include "obj_subc_op.h"
+#include "obj_poly_op.h"
 #include "obj_pstk_op.h"
+#include "obj_rat_op.h"
 
 pcb_opfunc_t MoveFunctions = {
 	pcb_lineop_move,
