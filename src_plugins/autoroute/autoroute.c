@@ -590,83 +590,6 @@ static inline pcb_bool point_in_shrunk_box(const routebox_t * box, pcb_coord_t X
 /*---------------------------------------------------------------------
  * routedata initialization functions.
  */
-
-static routebox_t *AddPin(vtp0_t layergroupboxes[], pcb_pin_t *pin, pcb_bool is_via, pcb_route_style_t * style)
-{
-	routebox_t **rbpp, *lastrb = NULL;
-	int i, ht;
-	/* a pin cuts through every layer group */
-	for (i = 0; i < pcb_max_group(PCB); i++) {
-		rbpp = (routebox_t **)vtp0_alloc_append(&layergroupboxes[i], 1);
-		*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
-		memset((void *) *rbpp, 0, sizeof(**rbpp));
-		(*rbpp)->group = i;
-		ht = HALF_THICK(MAX(pin->Thickness, pin->DrillingHole));
-		init_const_box(*rbpp,
-									 /*X1 */ pin->X - ht,
-									 /*Y1 */ pin->Y - ht,
-									 /*X2 */ pin->X + ht,
-									 /*Y2 */ pin->Y + ht, style->Clearance);
-		/* set aux. properties */
-		if (is_via) {
-			(*rbpp)->type = VIA;
-			(*rbpp)->parent.via = pin;
-		}
-		else {
-			(*rbpp)->type = PIN;
-			(*rbpp)->parent.pin = pin;
-		}
-		(*rbpp)->flags.fixed = 1;
-		(*rbpp)->came_from = PCB_ANY_DIR;
-		(*rbpp)->style = style;
-		(*rbpp)->flags.circular = !PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin);
-		/* circular lists */
-		InitLists(*rbpp);
-		/* link together */
-		if (lastrb) {
-			MergeNets(*rbpp, lastrb, NET);
-			MergeNets(*rbpp, lastrb, SUBNET);
-			MergeNets(*rbpp, lastrb, ORIGINAL);
-		}
-		lastrb = *rbpp;
-	}
-	return lastrb;
-}
-
-static routebox_t *AddPad(vtp0_t layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, pcb_route_style_t * style)
-{
-	pcb_coord_t halfthick;
-	routebox_t **rbpp;
-	int layergroup = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? back : front);
-	assert(0 <= layergroup && layergroup < pcb_max_group(PCB));
-	assert(PCB->LayerGroups.grp[layergroup].len > 0);
-	rbpp = (routebox_t **) vtp0_alloc_append(&layergroupboxes[layergroup], 1);
-	assert(rbpp);
-	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
-	assert(*rbpp);
-	memset(*rbpp, 0, sizeof(**rbpp));
-	(*rbpp)->group = layergroup;
-	halfthick = HALF_THICK(pad->Thickness);
-	init_const_box(*rbpp,
-								 /*X1 */ MIN(pad->Point1.X, pad->Point2.X) - halfthick,
-								 /*Y1 */ MIN(pad->Point1.Y, pad->Point2.Y) - halfthick,
-								 /*X2 */ MAX(pad->Point1.X, pad->Point2.X) + halfthick,
-								 /*Y2 */ MAX(pad->Point1.Y, pad->Point2.Y) + halfthick,
-								 style->Clearance);
-	/* kludge for non-manhattan pads (which are not allowed at present) */
-	if (pad->Point1.X != pad->Point2.X && pad->Point1.Y != pad->Point2.Y)
-		(*rbpp)->flags.nonstraight = 1;
-	/* set aux. properties */
-	(*rbpp)->type = PAD;
-	(*rbpp)->parent.pad = pad;
-	(*rbpp)->flags.fixed = 1;
-	(*rbpp)->came_from = PCB_ANY_DIR;
-	(*rbpp)->style = style;
-	/* circular lists */
-	InitLists(*rbpp);
-	return *rbpp;
-}
-
 static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_route_style_t *style, pcb_layer_t *layer)
 {
 	routebox_t **rbpp;
@@ -1188,15 +1111,6 @@ static routedata_t *CreateRouteData()
 						case PCB_OBJ_VOID: break;
 						case PCB_OBJ_PSTK:
 							rb = AddPstk(layergroupboxes, (pcb_pstk_t *)connection->obj, rd->styles[j]);
-							break;
-						case PCB_OBJ_PAD:
-							rb = AddPad(layergroupboxes, (pcb_element_t *) connection->ptr1, (pcb_pad_t *) connection->obj, rd->styles[j]);
-							break;
-						case PCB_OBJ_PIN:
-							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_false, rd->styles[j]);
-							break;
-						case PCB_OBJ_VIA:
-							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_true, rd->styles[j]);
 							break;
 						case PCB_OBJ_POLY:
 							{
