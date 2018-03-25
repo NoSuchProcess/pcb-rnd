@@ -1409,16 +1409,25 @@ static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 {
 	const pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_layer_t *layer = CURRENT;
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer);
 
 	if (ps == start_pinpad || ps == end_pinpad)
 		return PCB_R_DIR_NOT_FOUND;
 
-#warning TODO: we lump padstacks in with square; safe, but not optimal; rather use the real shape
-	gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y1, 0, 0);
-	gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y2, 0, 0);
-	gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y1, 0, 0);
-	gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y2, 0, 0);
-
+	if (shape == NULL) return 0;
+	switch(shape->shape) {
+		case PCB_PSSH_CIRC:
+			gp_point(ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, 0);
+			break;
+		case PCB_PSSH_POLY:
+#warning TODO: we lump poly padstacks in with square; safe, but not optimal; rather use the real shape
+		case PCB_PSSH_LINE:
+			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y1, 0, 0);
+			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y2, 0, 0);
+			gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y1, 0, 0);
+			gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y2, 0, 0);
+			break;
+	}
 	return PCB_R_DIR_NOT_FOUND;
 }
 
