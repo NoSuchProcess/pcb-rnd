@@ -309,32 +309,39 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 0;
 }
 
+static int apply_vendor_pstk1(pcb_pstk_t *pstk, pcb_cardinal_t *tot)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pstk);
+	pcb_coord_t target;
+	int res = 0;
+
+	if ((proto == NULL) || (proto->hdia == 0)) return 0;
+	(*tot)++;
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, pstk)) return 0;
+
+	target = vendorDrillMap(proto->hdia);
+	if (proto->hdia != target) {
+		if (pcb_chg_obj_2nd_size(PCB_TYPE_PSTK, pstk, pstk, pstk, target, pcb_true, pcb_false))
+			res = 1;
+		else {
+			pcb_message(PCB_MSG_WARNING, _
+				("Padstack at %ml, %ml not changed.  Possible reasons:\n"
+				 "\t- pad size too small\n"
+				 "\t- new size would be too large or too small\n"), pstk->x, pstk->y);
+		}
+	}
+	return res;
+}
+
 static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data, pcb_cardinal_t *tot)
 {
 	gdl_iterator_t it;
 	pcb_pstk_t *pstk;
 	pcb_cardinal_t changed = 0;
 
-	padstacklist_foreach(&data->padstack, &it, pstk) {
-		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pstk);
-		pcb_coord_t target;
-
-		if ((proto == NULL) || (proto->hdia == 0)) continue;
-		(*tot)++;
-		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, pstk)) continue;
-
-		target = vendorDrillMap(proto->hdia);
-		if (proto->hdia != target) {
-			if (pcb_chg_obj_2nd_size(PCB_TYPE_PSTK, pstk, pstk, pstk, target, pcb_true, pcb_false))
-				changed++;
-			else {
-				pcb_message(PCB_MSG_WARNING, _
-					("Padstack at %ml, %ml not changed.  Possible reasons:\n"
-					 "\t- pad size too small\n"
-					 "\t- new size would be too large or too small\n"), pstk->x, pstk->y);
-			}
-		}
-	}
+	padstacklist_foreach(&data->padstack, &it, pstk)
+		if (apply_vendor_pstk1(pstk, tot))
+			changed++;
 	return changed;
 }
 
@@ -668,10 +675,24 @@ static void vendor_free_all(void)
 	cached_drill = -1;
 }
 
+/* Tune newly placed padstacks */
+static void vendor_new_pstk(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_pstk_t *ps;
+	pcb_cardinal_t dummy;
+
+	if ((argc < 2) || (argv[1].type != PCB_EVARG_PTR))
+		return;
+
+	ps = argv[1].d.p;
+	apply_vendor_pstk1(ps, &dummy);
+}
+
 int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
 
 void pplg_uninit_vendordrill(void)
 {
+	pcb_event_unbind_allcookie(vendor_cookie);
 	pcb_hid_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
 	conf_unreg_fields("plugins/vendor/");
@@ -684,6 +705,7 @@ int pplg_init_vendordrill(void)
 	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"
 
+	pcb_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);
 	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return 0;
 }
