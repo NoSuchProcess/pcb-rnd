@@ -2348,7 +2348,6 @@ static int pstk_orient(pcb_pstk_t *p)
 static void padcleaner_(pcb_data_t *data)
 {
 	line_s *l, *nextl;
-	int close;
 	rect_s r;
 
 	dprintf("\ndj: padcleaner\n");
@@ -2380,7 +2379,6 @@ static void padcleaner_(pcb_data_t *data)
 				continue;
 
 			empty_rect(&r);
-			close = 0;
 			add_point_to_rect(&r, padstack->BoundingBox.X1, padstack->BoundingBox.Y1, 0);
 			add_point_to_rect(&r, padstack->BoundingBox.X2, padstack->BoundingBox.Y2, 0);
 			if (pin_in_rect(&r, l->s->x, l->s->y, 0)
