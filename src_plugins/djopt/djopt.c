@@ -125,25 +125,17 @@ static char layer_type[PCB_MAX_LAYER];
 
 static const char *element_name_for(corner_s * c)
 {
-#warning subc TODO: rewrite
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		PCB_PIN_LOOP(element);
+		PCB_PADSTACK_LOOP(subc->data);
 		{
-			if (pin == c->pin)
-				return element->Name[1].TextString;
-		}
-		PCB_END_LOOP;
-		PCB_PAD_LOOP(element);
-		{
-			if (pad == c->pad)
-				return element->Name[1].TextString;
+			if ((padstack == c->pin) || (padstack == c->pad))
+				return subc->refdes;
 		}
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-#endif
+
 	return "unknown";
 }
 
