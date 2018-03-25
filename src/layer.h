@@ -94,7 +94,10 @@ typedef enum { /* bitfield */
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "attrib.h"
-#include "obj_all_list.h"
+#include "obj_arc_list.h"
+#include "obj_line_list.h"
+#include "obj_poly_list.h"
+#include "obj_text_list.h"
 
 struct pcb_layer_s {              /* holds information about one layer */
 	linelist_t Line;

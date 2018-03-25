@@ -37,10 +37,11 @@
 #include "crosshair.h"
 #include "buffer.h"
 #include "data_parent.h"
+#include "obj_rat_list.h"
 #include "obj_subc_list.h"
+#include "obj_pstk_list.h"
 #include "vtpadstack.h"
 
-#include "obj_all_list.h"
 
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */
