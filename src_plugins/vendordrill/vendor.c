@@ -310,7 +310,7 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 0;
 }
 
-static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data)
+static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data, pcb_cardinal_t *tot)
 {
 	gdl_iterator_t it;
 	pcb_pstk_t *pstk;
@@ -320,7 +320,9 @@ static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data)
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pstk);
 		pcb_coord_t target;
 
-		if ((proto == NULL) || (proto->hdia == 0) || PCB_FLAG_TEST(PCB_FLAG_LOCK, pstk)) continue;
+		if ((proto == NULL) || (proto->hdia == 0)) continue;
+		(*tot)++;
+		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, pstk)) continue;
 
 		target = vendorDrillMap(proto->hdia);
 		if (proto->hdia != target) {
@@ -351,12 +353,12 @@ static void apply_vendor_map(void)
 	if (n_vendor_drills > 0) {
 
 		/* global padsatcks (e.g. vias) */
-		changed += apply_vendor_pstk(PCB->Data);
+		changed += apply_vendor_pstk(PCB->Data, &tot);
 
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (vendorIsSubcMappable(subc))
-				changed += apply_vendor_pstk(subc->data);
+				changed += apply_vendor_pstk(subc->data, &tot);
 		}
 		PCB_END_LOOP;
 
