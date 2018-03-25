@@ -252,95 +252,6 @@ static void check_pstk(pcb_pstk_t *ps)
 	}
 }
 
-
-static void check_pin(pcb_pin_t * _pin)
-{
-#warning padstack TODO: rewrite
-#if 0
-	pcb_box_t spot;
-
-	pin = _pin;
-
-	px = pin->X;
-	py = pin->Y;
-	thickness = pin->Thickness;
-
-	spot.X1 = px - 10;
-	spot.Y1 = py - 10;
-	spot.X2 = px + 10;
-	spot.Y2 = py + 10;
-
-	element = (pcb_element_t *) pin->Element;
-
-	fprintf(stderr, "Pin %s (%s) at %.6f, %.6f (element %s, %s, %s)\n", PCB_EMPTY(pin->Number), PCB_EMPTY(pin->Name),
-					/* 0.01 * pin->X, 0.01 * pin->Y, */
-					PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y),
-					PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
-
-	for (layer = 0; layer < pcb_max_layer; layer++) {
-		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
-			continue;
-		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
-	}
-#endif
-}
-
-static void check_via(pcb_pin_t * _pin)
-{
-#warning padstack TODO: rewrite
-#if 0
-	pcb_box_t spot;
-
-	pin = _pin;
-
-	px = pin->X;
-	py = pin->Y;
-
-	spot.X1 = px - 10;
-	spot.Y1 = py - 10;
-	spot.X2 = px + 10;
-	spot.Y2 = py + 10;
-
-	fprintf(stderr, "Via at %.6f, %.6f\n", PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y));
-
-	for (layer = 0; layer < pcb_max_layer; layer++) {
-		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
-			continue;
-		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
-	}
-#endif
-}
-
-/* Draw teardrops for pads. */
-static void check_pad(pcb_pad_t * _pad)
-{
-#warning padstack TODO: rewrite
-#if 0
-	pad = _pad;
-
-	px = (pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2;
-	py = (pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2;
-	thickness = pad->Thickness;
-	element = (pcb_element_t *) pad->Element;
-
-	fprintf(stderr,
-					"Pad %s (%s) at %.6f, %.6f (element %s, %s, %s) \n",
-					PCB_EMPTY(pad->Number), PCB_EMPTY(pad->Name),
-					PCB_COORD_TO_MM((pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2),
-					PCB_COORD_TO_MM((pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2),
-					PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
-
-	for (layer = 0; layer < pcb_max_layer; layer++) {
-		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
-			continue;
-		pcb_r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l, NULL);
-	}
-#endif
-}
-
 static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	new_arcs = 0;
@@ -350,27 +261,6 @@ static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	for(b = pcb_r_first(PCB->Data->padstack_tree, &it); b != NULL; b = pcb_r_next(&it))
 		check_pstk((pcb_pstk_t *)b);
 	pcb_r_end(&it);
-
-#warning padstack TODO: rewrite
-#if 0
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		check_via(via);
-	}
-	PCB_END_LOOP;
-
-	PCB_PIN_ALL_LOOP(PCB->Data);
-	{
-		check_pin(pin);
-	}
-	PCB_ENDALL_LOOP;
-
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		check_pad(pad);
-	}
-	PCB_ENDALL_LOOP;
-#endif
 
 	pcb_gui->invalidate_all();
 
