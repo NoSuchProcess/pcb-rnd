@@ -2,3 +2,7 @@ with old model: 1.2.8
 SLOC=200842
 #warnings: 326
 c and h files in src/ and src_plugins/: 817
+
+after removal:
+SLOC=189893 (removed 10949 sloc, 5.4515% of the code in 1.2.8)
+
