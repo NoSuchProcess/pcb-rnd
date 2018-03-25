@@ -75,6 +75,9 @@
 #include "misc_util.h"
 #include "obj_all.h"
 #include "compat_misc.h"
+#include "obj_pstk_inlines.h"
+#include "search.h"
+#include "find.h"
 
 #define abort1() fprintf(stderr, "abort at line %d\n", __LINE__), abort()
 
@@ -226,29 +229,6 @@ static int intersection_of_lines(int x1, int y1, int x2, int y2, int x3, int y3,
 	return 1;
 }
 
-/* Same, for line segments.  Returns pcb_true if they intersect.  For this
-   function, xr and yr may be NULL if you don't need the values.  */
-static int intersection_of_linesegs(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int *xr, int *yr)
-{
-	double x, y, d;
-	d = det(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
-	if (!d)
-		return 0;
-	x = (det(det(x1, y1, x2, y2), x1 - x2, det(x3, y3, x4, y4), x3 - x4) / d);
-	y = (det(det(x1, y1, x2, y2), y1 - y2, det(x3, y3, x4, y4), y3 - y4) / d);
-	if (MIN(x1, x2) > x || x > MAX(x1, x2)
-			|| MIN(y1, y2) > y || y > MAX(y1, y2))
-		return 0;
-	if (MIN(x3, x4) > x || x > MAX(x3, x4)
-			|| MIN(y3, y4) > y || y > MAX(y3, y4))
-		return 0;
-	if (xr)
-		*xr = (int) (x + 0.5);
-	if (yr)
-		*yr = (int) (y + 0.5);
-	return 1;
-}
-
 /* distance between a line and a point */
 static double dist_lp(int x1, int y1, int x2, int y2, int px, int py)
 {
@@ -260,20 +240,6 @@ static double dist_lp(int x1, int y1, int x2, int y2, int px, int py)
 	pcb_printf("dist %#mD-%#mD to %#mD is %f\n", x1, y1, x2, y2, px, py, rv);
 #endif
 	return rv;
-}
-
-/* distance between a line segment and a point */
-static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
-{
-	double d;
-	if (dot2d(x1, y1, x2, y2, px, py) < 0)
-		return pcb_distance(x1, y1, px, py);
-	if (dot2d(x2, y2, x1, y1, px, py) < 0)
-		return pcb_distance(x2, y2, px, py);
-	d = (fabs(((double) x2 - x1) * ((double) y1 - py)
-						- ((double) x1 - px) * ((double) y2 - y1))
-			 / pcb_distance(x1, y1, x2, y2));
-	return d;
 }
 
 /*****************************************************************************/
@@ -738,29 +704,42 @@ static void find_pairs_1(void *me, Extra ** e, int x, int y)
 	pcb_r_search(CURRENT->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
 }
 
-static int check_point_in_pin(pcb_pin_t *pin, int x, int y, End * e)
+static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y, End *e)
 {
-	int inside_p;
-	int t = (pin->Thickness + 1) / 2;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
-		inside_p = (x >= pin->X - t && x <= pin->X + t && y >= pin->Y - t && y <= pin->Y + t);
-	else
-		inside_p = (pcb_distance(pin->X, pin->Y, x, y) <= t);
-
-	if (inside_p) {
-		e->in_pin = 1;
-		if (pin->X == x && pin->Y == y)
-			e->at_pin = 1;
-		e->pin = pin;
-		return 1;
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer);
+	if (shape == NULL) return 0;
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+			if (shape->data.poly.pa == NULL)
+				pcb_pstk_shape_update_pa(&shape->data.poly);
+			return pcb_pline_embraces_circ(shape->data.poly.pa->contours, x - ps->x, y - ps->y, 1);
+		case PCB_PSSH_LINE:
+		{
+			pcb_any_line_t tmp;
+			tmp.Point1.X = shape->data.line.x1 + ps->x;
+			tmp.Point1.Y = shape->data.line.y1 + ps->y;
+			tmp.Point2.X = shape->data.line.x2 + ps->x;
+			tmp.Point2.Y = shape->data.line.y2 + ps->y;
+			tmp.Clearance = 0;
+			tmp.Thickness = shape->data.line.thickness;
+			tmp.Flags = shape->data.line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags();
+			return pcb_is_point_in_line(x, y, 1, &tmp);
+		}
+		case PCB_PSSH_CIRC:
+		{
+			pcb_coord_t cx = shape->data.circ.x + ps->x, cy = shape->data.circ.y + ps->y;
+			double max_dist2 = ((double)shape->data.circ.dia/2.0) * ((double)shape->data.circ.dia/2.0);
+			double dist2 = pcb_distance2(cx, cy, x, y);
+			return (dist2 <= max_dist2);
+		}
 	}
 	return 0;
 }
 
-static pcb_r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_pstkline_callback(const pcb_box_t *b, void *cl)
 {
-	pcb_line_t *line = (pcb_line_t *) b;
-	pcb_pin_t *pin = (pcb_pin_t *) cl;
+	pcb_line_t *line = (pcb_line_t *)b;
+	pcb_pstk_t *pin = (pcb_pstk_t *)cl;
 	Extra *e = LINE2EXTRA(line);
 	int hits;
 
@@ -769,19 +748,19 @@ static pcb_r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 		abort1();
 #endif
 
-	hits = check_point_in_pin(pin, line->Point1.X, line->Point1.Y, &(e->start));
-	hits += check_point_in_pin(pin, line->Point2.X, line->Point2.Y, &(e->end));
+	assert(line->parent_type == PCB_PARENT_LAYER);
+	hits = check_point_in_pstk(pin, line->parent.layer, line->Point1.X, line->Point1.Y, &(e->start));
+	hits += check_point_in_pstk(pin, line->parent.layer, line->Point2.X, line->Point2.Y, &(e->end));
 
 	if (hits)
 		return PCB_R_DIR_NOT_FOUND;
 
-	/* See if the line passes through this pin.  */
-	/* FIXME: this assumes round pads, but it's good enough for square
-	   ones for now.  */
-	if (dist_lsp(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->X, pin->Y) <= pin->Thickness / 2) {
+	/* See if the line passes through this pin - if so, split it into two
+	   lines so they can be pulled independently. */
+	if (pcb_pstk_intersect_line(pin, line)) {
 #if TRACE1
 		pcb_printf("splitting line %#mD-%#mD because it passes through pin %#mD r%d\n",
-							 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->X, pin->Y, pin->Thickness / 2);
+							 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->x, pin->y, pin->Thickness / 2);
 #endif
 		unlink_end(e, &e->start.next);
 		unlink_end(e, &e->end.next);
@@ -789,138 +768,16 @@ static pcb_r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_pstkarc_callback(const pcb_box_t *b, void *cl)
 {
-	pcb_arc_t *arc = (pcb_arc_t *) b;
-	pcb_pin_t *pin = (pcb_pin_t *) cl;
+	pcb_arc_t *arc = (pcb_arc_t *)b;
+	pcb_pstk_t *pin = (pcb_pstk_t *)cl;
 	Extra *e = ARC2EXTRA(arc);
 	int hits;
 
-	hits = check_point_in_pin(pin, e->start.x, e->start.y, &(e->start));
-	hits += check_point_in_pin(pin, e->end.x, e->end.y, &(e->end));
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-static pcb_r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
-{
-	int inside_p;
-	int t;
-
-	pcb_printf("pad %#mD - %#mD t %#mS  vs  %#mD\n", pad->Point1.X, pad->Point1.Y,
-						 pad->Point2.X, pad->Point2.Y, pad->Thickness, x, y);
-	t = (pad->Thickness + 1) / 2;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
-		inside_p = (x >= MIN(pad->Point1.X - t, pad->Point2.X - t)
-								&& x <= MAX(pad->Point1.X + t, pad->Point2.X + t)
-								&& y >= MIN(pad->Point1.Y - t, pad->Point2.Y - t)
-								&& y <= MAX(pad->Point1.Y + t, pad->Point2.Y + t));
-		printf(" - inside_p = %d\n", inside_p);
-	}
-	else {
-		if (pad->Point1.X == pad->Point2.X) {
-			inside_p = (x >= pad->Point1.X - t && x <= pad->Point1.X + t && y >= MIN(pad->Point1.Y, pad->Point2.Y)
-									&& y <= MAX(pad->Point1.Y, pad->Point2.Y));
-		}
-		else {
-			inside_p = (x >= MIN(pad->Point1.X, pad->Point2.X)
-									&& x <= MAX(pad->Point1.X, pad->Point2.X)
-									&& y >= pad->Point1.Y - t && y <= pad->Point1.Y + t);
-		}
-		if (!inside_p) {
-			if (pcb_distance(pad->Point1.X, pad->Point1.Y, x, y) <= t || pcb_distance(pad->Point2.X, pad->Point2.Y, x, y) <= t)
-				inside_p = 1;
-		}
-	}
-
-	if (inside_p) {
-		e->in_pin = 1;
-		if (pad->Point1.X == x && pad->Point1.Y == y)
-			e->at_pin = 1;
-		if (pad->Point2.X == x && pad->Point2.Y == y)
-			e->at_pin = 1;
-		e->pin = pad;
-		e->is_pad = 1;
-		return PCB_R_DIR_FOUND_CONTINUE;
-	}
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_line_t *line = (pcb_line_t *) b;
-	pcb_pad_t *pad = (pcb_pad_t *) cl;
-	Extra *e = LINE2EXTRA(line);
-	int hits;
-	double t;
-	int intersect;
-	double p1_d, p2_d;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
-		if (!current_is_solder)
-			return PCB_R_DIR_NOT_FOUND;
-	}
-	else {
-		if (!current_is_component)
-			return PCB_R_DIR_NOT_FOUND;
-	}
-
-#ifdef CHECK_LINE_PT_NEG
-	if (line->Point1.X < 0)
-		abort1();
-#endif
-
-	hits = check_point_in_pad(pad, line->Point1.X, line->Point1.Y, &(e->start));
-	hits += check_point_in_pad(pad, line->Point2.X, line->Point2.Y, &(e->end));
-
-	if (hits)
-		return PCB_R_DIR_NOT_FOUND;
-
-	/* Ok, something strange.  The line intersects our space, but
-	   doesn't end in our space.  See if it just passes through us, and
-	   mark it anyway.  */
-
-	t = (pad->Thickness + 1) / 2;
-	/* FIXME: this is for round pads.  Good enough for now, but add
-	   square pad support later.  */
-	intersect = intersection_of_linesegs(pad->Point1.X, pad->Point1.Y,
-																			 pad->Point2.X, pad->Point2.Y,
-																			 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, NULL, NULL);
-	p1_d = dist_lsp(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pad->Point1.X, pad->Point1.Y);
-	p2_d = dist_lsp(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pad->Point2.X, pad->Point2.Y);
-
-	if (intersect || p1_d < t || p2_d < t) {
-		/* It does.  */
-		/* FIXME: we should split the line.  */
-#if TRACE1
-		pcb_printf("splitting line %#mD-%#mD because it passes through pad %#mD-%#mD r %#mS\n",
-							 line->Point1.X, line->Point1.Y,
-							 line->Point2.X, line->Point2.Y, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y, pad->Thickness / 2);
-#endif
-		unlink_end(e, &e->start.next);
-		unlink_end(e, &e->end.next);
-	}
-
-	return PCB_R_DIR_NOT_FOUND;
-}
-
-static pcb_r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
-{
-	pcb_arc_t *arc = (pcb_arc_t *) b;
-	pcb_pad_t *pad = (pcb_pad_t *) cl;
-	Extra *e = ARC2EXTRA(arc);
-	int hits;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
-		if (!current_is_solder)
-			return PCB_R_DIR_NOT_FOUND;
-	}
-	else {
-		if (!current_is_component)
-			return PCB_R_DIR_NOT_FOUND;
-	}
-
-	hits = check_point_in_pad(pad, e->start.x, e->start.y, &(e->start));
-	hits += check_point_in_pad(pad, e->end.x, e->end.y, &(e->end));
+	assert(arc->parent_type == PCB_PARENT_LAYER);
+	hits = check_point_in_pstk(pin, arc->parent.layer, e->start.x, e->start.y, &(e->start));
+	hits += check_point_in_pstk(pin, arc->parent.layer, e->end.x, e->end.y, &(e->end));
 	return PCB_R_DIR_NOT_FOUND;
 }
 
@@ -949,6 +806,26 @@ static Extra *new_arc_extra(pcb_arc_t * arc)
 	extra->parent.arc = arc;
 	extra->type = PCB_TYPE_ARC;
 	return extra;
+}
+
+static void find_pairs_pstk(pcb_data_t *data)
+{
+	PCB_PADSTACK_LOOP(PCB->Data); {
+		pcb_box_t box;
+		box = padstack->BoundingBox;
+		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pstkline_callback, padstack, NULL);
+		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pstkarc_callback, padstack, NULL);
+	}
+	PCB_END_LOOP;
+}
+
+static void find_pairs_subc_pstk(pcb_data_t *data)
+{
+	PCB_SUBC_LOOP(data) {
+		find_pairs_pstk(subc->data);
+		find_pairs_subc_pstk(subc->data);
+	}
+	PCB_END_LOOP;
 }
 
 static void find_pairs()
@@ -980,42 +857,8 @@ static void find_pairs()
 	}
 	PCB_END_LOOP;
 
-#warning padstack TODO: rewrite for padstacks
-#if 0
-	PCB_PIN_ALL_LOOP(PCB->Data); {
-		pcb_box_t box;
-		box.X1 = pin->X - pin->Thickness / 2;
-		box.Y1 = pin->Y - pin->Thickness / 2;
-		box.X2 = pin->X + pin->Thickness / 2;
-		box.Y2 = pin->Y + pin->Thickness / 2;
-		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, pin, NULL);
-		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, pin, NULL);
-	}
-	PCB_ENDALL_LOOP;
-
-	PCB_VIA_LOOP(PCB->Data); {
-		pcb_box_t box;
-		box.X1 = via->X - via->Thickness / 2;
-		box.Y1 = via->Y - via->Thickness / 2;
-		box.X2 = via->X + via->Thickness / 2;
-		box.Y2 = via->Y + via->Thickness / 2;
-		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, via, NULL);
-		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, via, NULL);
-	}
-	PCB_END_LOOP;
-
-	PCB_PAD_ALL_LOOP(PCB->Data); {
-		pcb_box_t box;
-		box.X1 = MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2;
-		box.Y1 = MIN(pad->Point1.Y, pad->Point2.Y) - pad->Thickness / 2;
-		box.X2 = MAX(pad->Point1.X, pad->Point2.X) + pad->Thickness / 2;
-		box.Y2 = MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2;
-		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_padline_callback, pad, NULL);
-		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_padarc_callback, pad, NULL);
-
-	}
-	PCB_ENDALL_LOOP;
-#endif
+	find_pairs_pstk(PCB->Data);
+	find_pairs_subc_pstk(PCB->Data);
 
 	g_hash_table_foreach(lines, (GHFunc) null_multi_next_ends, NULL);
 	g_hash_table_foreach(arcs, (GHFunc) null_multi_next_ends, NULL);
