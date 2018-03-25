@@ -260,16 +260,15 @@ static void print_placement(FILE * fp)
 	}
 	PCB_END_LOOP;
 
-#warning padstack TODO: rewrite
-#if 0
-	PCB_VIA_LOOP(PCB->Data);
+#warning padstack TODO: check if real shapes are exported
+	PCB_PADSTACK_LOOP(PCB->Data);
 	{ /* add mounting holes */
-		pcb_fprintf(fp, "    (component %d\n", via->ID);
-		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", via->ID, via->X, (PCB->MaxHeight - via->Y), "front");
+		pcb_fprintf(fp, "    (component %d\n", padstack->ID);
+		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", padstack->ID, padstack->x, (PCB->MaxHeight - padstack->y), "front");
 		pcb_fprintf(fp, "    )\n");
 	}
 	PCB_END_LOOP;
-#endif
+
 	fprintf(fp, "  )\n");
 }
 
