@@ -1569,6 +1569,11 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		pcb_route_style_t *s = vtroutestyle_alloc_append(styles, 1);
 		int name_len = strlen(stn->name);
 
+		if (stn->type != LHT_HASH) {
+			pcb_message(PCB_MSG_ERROR, "route style entry must be a hash\n");
+			return -1;
+		}
+		
 		/* safe copy the name */
 		if (name_len > sizeof(s->name)-1) {
 			pcb_message(PCB_MSG_WARNING, "Route style name too long: '%s' (should be less than %d characters)\n", stn->name, sizeof(s->name)-1);
