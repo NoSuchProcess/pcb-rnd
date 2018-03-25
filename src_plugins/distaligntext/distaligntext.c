@@ -577,14 +577,6 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				dy = 0;
 			else
 				dx = 0;
-			/* need to know if the text is part of an element,
-			 * all are PCB_TYPE_TEXT, but text associated with an
-			 * element is also PCB_TYPE_ELEMENT_NAME.  For undo, this is
-			 * significant in search.c: SearchObjectByID.
-			 *
-			 * pcb_move_obj() is better as in aligntext(), but we
-			 * didn't keep the element reference when sorting.
-			 */
 			pcb_text_move(text, dx, dy);
 			pcb_undo_add_obj_to_move(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
 			changed = 1;
