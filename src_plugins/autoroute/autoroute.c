@@ -946,19 +946,6 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 {
 	int i;
 
-#warning padstack TODO: check if the subc loop below does this
-#if 0
-	/* add pins and pads of elements */
-	PCB_PIN_ALL_LOOP(data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pin))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
-		else
-			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
-	}
-	PCB_ENDALL_LOOP;
-#endif
-
 	PCB_PADSTACK_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, padstack))
@@ -4251,14 +4238,12 @@ static void ripout_livedraw_obj(routebox_t * rb)
 		pcb_destroy_object(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
 	}
-#warning padstack TODO: rewrite
-#if 0
+
 	if (rb->type == VIA && rb->livedraw_obj.via) {
-		pcb_via_invalidate_erase(rb->livedraw_obj.via);
+		pcb_pstk_invalidate_erase(rb->livedraw_obj.via);
 		pcb_destroy_object(PCB->Data, PCB_TYPE_PSTK, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}
-#endif
 }
 
 static pcb_r_dir_t ripout_livedraw_obj_cb(const pcb_box_t * b, void *cl)
@@ -4556,44 +4541,38 @@ out:
 }
 
 struct fpin_info {
-	pcb_pin_t *pin;
-	pcb_coord_t X, Y;
+	pcb_pstk_t *ps;
+	pcb_coord_t x, y;
 	jmp_buf env;
 };
 
-static pcb_r_dir_t fpin_rect(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t fpstk_rect(const pcb_box_t * b, void *cl)
 {
-	pcb_pin_t *pin = (pcb_pin_t *) b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct fpin_info *info = (struct fpin_info *) cl;
-	if (pin->X == info->X && pin->Y == info->Y) {
-		info->pin = (pcb_pin_t *) b;
+	if (ps->x == info->x && ps->y == info->y) {
+		info->ps = ps;
 		longjmp(info->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static int FindPin(const pcb_box_t * box, pcb_pin_t ** pin)
+static int FindPin(const pcb_box_t *box, pcb_pstk_t **ps_out)
 {
 	struct fpin_info info;
-#warning padstack TODO: rewrite this
-#if 0
-	info.pin = NULL;
-	info.X = box->X1;
-	info.Y = box->Y1;
-	if (setjmp(info.env) == 0)
-		pcb_r_search(PCB->Data->pin_tree, box, NULL, fpin_rect, &info, NULL);
-	else {
-		*pin = info.pin;
-		return PCB_TYPE_PIN;
+
+	info.ps = NULL;
+	info.x = box->X1;
+	info.y = box->Y1;
+	if (setjmp(info.env) == 0) {
+		pcb_r_search(PCB->Data->padstack_tree, box, NULL, fpstk_rect, &info, NULL);
 	}
-	if (setjmp(info.env) == 0)
-		pcb_r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
-		*pin = info.pin;
-		return PCB_TYPE_PIN;
+		*ps_out = info.ps;
+		return PCB_TYPE_PSTK;
 	}
-#endif
-	*pin = NULL;
+
+	*ps_out = NULL;
 	return PCB_TYPE_NONE;
 }
 
@@ -4688,20 +4667,17 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 		LIST_LOOP(net, same_net, p);
 		{
 			if (p->type == THERMAL) {
-				pcb_pin_t *pin = NULL;
+				pcb_pstk_t *pin = NULL;
 				/* thermals are alread a single point search, no need to shrink */
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
-#warning padstack TODO: rewrite this
-#if 0
-					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
+					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_false);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PSTK, LAYER_PTR(p->layer), pin);
 					pcb_undo_add_obj_to_flag(pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
-					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
+					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_true);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PSTK, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;
-#endif
 				}
 			}
 		}
