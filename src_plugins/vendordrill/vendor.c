@@ -341,6 +341,7 @@ static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data, pcb_cardinal_t *tot)
 
 static void apply_vendor_map(void)
 {
+	int i;
 	pcb_cardinal_t changed = 0, tot = 0;
 	pcb_bool state;
 
@@ -372,24 +373,25 @@ static void apply_vendor_map(void)
 			Settings.ViaDrillingHole = vendorDrillMap(Settings.ViaDrillingHole);
 			pcb_message(PCB_MSG_INFO, _("Adjusted active via hole size to be %ml mils\n"), Settings.ViaDrillingHole);
 		}
+#endif
 
 		/* and update the vias for the various routing styles */
-		for (i = 0; i < NUM_STYLES; i++) {
-			if (PCB->RouteStyle[i].Hole != vendorDrillMap(PCB->RouteStyle[i].Hole)) {
+		for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
+			if (PCB->RouteStyle.array[i].Hole != vendorDrillMap(PCB->RouteStyle.array[i].Hole)) {
 				changed++;
-				PCB->RouteStyle[i].Hole = vendorDrillMap(PCB->RouteStyle[i].Hole);
+				PCB->RouteStyle.array[i].Hole = vendorDrillMap(PCB->RouteStyle.array[i].Hole);
 				pcb_message(PCB_MSG_INFO, _
-								("Adjusted %s routing style via hole size to be %ml mils\n"),
-								PCB->RouteStyle[i].Name, PCB->RouteStyle[i].Hole);
-				if (PCB->RouteStyle[i].Diameter < PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER) {
-					PCB->RouteStyle[i].Diameter = PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER;
+								("Adjusted %s routing style hole size to be %ml mils\n"),
+								PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Hole);
+				if (PCB->RouteStyle.array[i].Diameter < PCB->RouteStyle.array[i].Hole + PCB_MIN_PINORVIACOPPER) {
+					PCB->RouteStyle.array[i].Diameter = PCB->RouteStyle.array[i].Hole + PCB_MIN_PINORVIACOPPER;
 					pcb_message(PCB_MSG_INFO, _
 									("Increased %s routing style via diameter to %ml mils\n"),
-									PCB->RouteStyle[i].Name, PCB->RouteStyle[i].Diameter);
+									PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Diameter);
 				}
 			}
 		}
-#endif
+
 		/*
 		 * if we've changed anything, indicate that we need to save the
 		 * file, redraw things, and make sure we can undo.
