@@ -10,7 +10,7 @@
  * Substantially from distalign.c
  * Copyright (C) 2007 Ben Jackson <ben@ben.com>
  *
- * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016, 2018.
  *
  *
  * Modifications and internal differences are significant enough warrant
@@ -163,18 +163,17 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	if (op == K_aligntext)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
 
-#warning subc TODO: subc floaters?
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_text_t *text;
-		text = &(element)->Name[PCB_ELEMNAME_IDX_VISIBLE()];
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
-			continue;
-		nsel++;
+		PCB_TEXT_ALL_LOOP(subc->data);
+		{
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
+				continue;
+			nsel++;
+		}
+		PCB_ENDALL_LOOP;
 	}
 	PCB_END_LOOP;
-#endif
 
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
@@ -188,20 +187,21 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	texts_by_pos = malloc(nsel * sizeof(*texts_by_pos));
 	ntexts_by_pos = nsel;
 	nsel = 0;
-#warning subc TODO: check for floaters
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_text_t *text;
-		text = &(element)->Name[PCB_ELEMNAME_IDX_VISIBLE()];
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
-			continue;
-		texts_by_pos[nsel].text = text;
-		texts_by_pos[nsel].type = PCB_TYPE_ELEMENT_NAME;
-		texts_by_pos[nsel++].pos = coord(text, dir, point);
+		PCB_TEXT_ALL_LOOP(subc->data);
+		{
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
+				continue;
+			texts_by_pos[nsel].text = text;
+			texts_by_pos[nsel].type = PCB_TYPE_TEXT;
+			texts_by_pos[nsel++].pos = coord(text, dir, point);
+		}
+		PCB_ENDALL_LOOP;
 	}
 	PCB_END_LOOP;
-#endif
+
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
@@ -358,13 +358,11 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	q = reference_coord(K_aligntext, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
 	/* selected text part of an element */
-#warning subc TODO: check if subc floaters are handled
-#if 0
-	PCB_ELEMENT_LOOP(PCB->Data);
+
+	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_text_t *text;
-		text = &(element)->Name[PCB_ELEMNAME_IDX_VISIBLE()];
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
+		PCB_TEXT_ALL_LOOP(subc->data) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
 			continue;
 		/* find delta from reference point to reference point */
 		p = coord(text, dir, point);
@@ -383,12 +381,12 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				dy = 0;
 			else
 				dx = 0;
-			pcb_move_obj(PCB_TYPE_ELEMENT_NAME, element, text, text, dx, dy);
+			pcb_move_obj(PCB_TYPE_TEXT, text->parent.layer, text, text, dx, dy);
 			changed = 1;
 		}
+		} PCB_ENDALL_LOOP;
 	}
 	PCB_END_LOOP;
-#endif
 
 	/* Selected bare text objects */
 	PCB_TEXT_ALL_LOOP(PCB->Data);
