@@ -66,11 +66,11 @@ static void apply_vendor_map(void);
 static void process_skips(lht_node_t *);
 static pcb_bool rematch(const char *, const char *);
 static void vendor_free_all(void);
-int vendorDrillMap(int in);
+pcb_coord_t vendorDrillMap(pcb_coord_t in);
 
 
 /* list of vendor drills and a count of them */
-static int *vendor_drills = NULL;
+static pcb_coord_t *vendor_drills = NULL;
 static int n_vendor_drills = 0;
 
 static int cached_drill = -1;
@@ -365,15 +365,12 @@ static void apply_vendor_map(void)
 
 		pcb_message(PCB_MSG_INFO, _("Updated %ld drill sizes out of %ld total\n"), (long)changed, (long)tot);
 
-#warning TODO: this should not happen; modify some local setting?
-#if 0
 		/* Update the current Via */
-		if (conf_core.design.via_drilling_hole != vendorDrillMap(Settings.ViaDrillingHole)) {
+		if (conf_core.design.via_drilling_hole != vendorDrillMap(conf_core.design.via_drilling_hole)) {
 			changed++;
-			Settings.ViaDrillingHole = vendorDrillMap(Settings.ViaDrillingHole);
-			pcb_message(PCB_MSG_INFO, _("Adjusted active via hole size to be %ml mils\n"), Settings.ViaDrillingHole);
+			conf_setf(CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", vendorDrillMap(conf_core.design.via_drilling_hole));
+			pcb_message(PCB_MSG_INFO, _("Adjusted active via hole size to be %ml mils\n"), conf_core.design.via_drilling_hole);
 		}
-#endif
 
 		/* and update the vias for the various routing styles */
 		for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
@@ -408,7 +405,7 @@ static void apply_vendor_map(void)
 }
 
 /* for a given drill size, find the closest vendor drill size */
-int vendorDrillMap(int in)
+pcb_coord_t vendorDrillMap(pcb_coord_t in)
 {
 	int i, min, max;
 
