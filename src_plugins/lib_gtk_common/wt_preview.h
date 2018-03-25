@@ -36,7 +36,6 @@
 #define PCB_GTK_WT_REVIEW_H
 
 #include <gtk/gtk.h>
-#include "obj_elem.h"
 #include "hid.h"
 #include "layer.h"
 #include "ui_zoompan.h"

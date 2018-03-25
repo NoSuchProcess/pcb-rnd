@@ -39,7 +39,6 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_subc.h"
-#include "obj_elem.h"
 
 #define GAP 10000
 static pcb_coord_t minx;

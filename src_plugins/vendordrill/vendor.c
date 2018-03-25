@@ -51,12 +51,10 @@
 #include "vendor_conf.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "obj_pinvia.h"
 #include "obj_pstk_inlines.h"
 #include "event.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
-#include "obj_elem.h"
 
 conf_vendor_t conf_vendor;
 

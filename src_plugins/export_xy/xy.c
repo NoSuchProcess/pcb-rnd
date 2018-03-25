@@ -16,7 +16,6 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
-#include "obj_pinvia.h"
 #include "obj_pstk_inlines.h"
 #include "layer.h"
 #include "netlist.h"

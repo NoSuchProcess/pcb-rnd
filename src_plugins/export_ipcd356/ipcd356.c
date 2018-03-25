@@ -48,11 +48,8 @@
 #include "pcb-printf.h"
 #include "netlist.h"
 #include "conf_core.h"
-#include "obj_pinvia.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
-#include "obj_elem.h"
-#include "obj_pad.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

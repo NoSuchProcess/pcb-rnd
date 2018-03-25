@@ -42,7 +42,6 @@
 #include "find.h"
 #include "polygon.h"
 #include "search.h"
-#include "obj_pad.h"
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
 

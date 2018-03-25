@@ -35,7 +35,6 @@
 #include "draw.h"
 #include "draw_wireframe.h"
 #include "flag.h"
-#include "obj_pad.h"
 #include "obj_pstk.h"
 #include "obj_pstk_draw.h"
 #include "obj_pstk_list.h"

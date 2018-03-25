@@ -36,7 +36,6 @@
 #include "conf_core.h"
 #include "box.h"
 #include "compat_misc.h"
-#include "obj_elem.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 

@@ -52,7 +52,6 @@
 #include "obj_text_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_pstk_draw.h"
-#include "obj_elem.h"
 
 #include <genregex/regex_sei.h>
 

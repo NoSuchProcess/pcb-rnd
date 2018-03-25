@@ -54,10 +54,7 @@
 #include "hid_actions.h"
 #include "djopt_conf.h"
 #include "obj_line.h"
-#include "obj_pinvia.h"
 #include "event.h"
-#include "obj_elem.h"
-#include "obj_pad.h"
 #include "obj_pstk_inlines.h"
 
 conf_djopt_t conf_djopt;
