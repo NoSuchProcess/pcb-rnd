@@ -43,7 +43,6 @@
 #include "draw.h"
 #include "error.h"
 #include "undo.h"
-#include "stub_vendor.h"
 #include "plugins.h"
 #include "action_helper.h"
 #include "hid_flags.h"
@@ -684,12 +683,6 @@ int pplg_init_vendordrill(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"
-
-	pcb_stub_vendor_drill_map = vendorDrillMap;
-#warning subc TODO: rewrite this
-#if 0
-	pcb_stub_vendor_is_element_mappable = vendorIsElementMappable;
-#endif
 
 	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return 0;
