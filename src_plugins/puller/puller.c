@@ -1405,71 +1405,20 @@ static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 {
-	const pcb_pin_t *p = (pcb_pin_t *) b;
-	int t2 = (p->Thickness + 1) / 2;
+	const pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_layer_t *layer = CURRENT;
 
-	if (p == start_pinpad || p == end_pinpad)
+	if (ps == start_pinpad || ps == end_pinpad)
 		return PCB_R_DIR_NOT_FOUND;
 
-	/* FIXME: we lump octagonal pins in with square; safe, but not
-	   optimal.  */
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, p) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, p)) {
-		gp_point(p->X - t2, p->Y - t2, 0, 0);
-		gp_point(p->X - t2, p->Y + t2, 0, 0);
-		gp_point(p->X + t2, p->Y + t2, 0, 0);
-		gp_point(p->X + t2, p->Y - t2, 0, 0);
-	}
-	else {
-		gp_point(p->X, p->Y, t2, 0);
-	}
-	return PCB_R_DIR_NOT_FOUND;
-}
+#warning TODO: we lump padstacks in with square; safe, but not optimal; rather use the real shape
+	gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y1, 0, 0);
+	gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y2, 0, 0);
+	gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y1, 0, 0);
+	gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y2, 0, 0);
 
-static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
-{
-	const pcb_pad_t *p = (pcb_pad_t *) b;
-	int t2 = (p->Thickness + 1) / 2;
-
-	if (p == start_pinpad || p == end_pinpad)
-		return PCB_R_DIR_NOT_FOUND;
-
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p)) {
-		if (!current_is_solder)
-			return PCB_R_DIR_NOT_FOUND;
-	}
-	else {
-		if (!current_is_component)
-			return PCB_R_DIR_NOT_FOUND;
-	}
-
-	/* FIXME: we lump octagonal pads in with square; safe, but not
-	   optimal.  I don't think we even support octagonal pads.  */
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, p) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, p)) {
-		if (p->Point1.X == p->Point2.X) {
-			int y1 = MIN(p->Point1.Y, p->Point2.Y) - t2;
-			int y2 = MAX(p->Point1.Y, p->Point2.Y) + t2;
-
-			gp_point(p->Point1.X - t2, y1, 0, 0);
-			gp_point(p->Point1.X - t2, y2, 0, 0);
-			gp_point(p->Point1.X + t2, y1, 0, 0);
-			gp_point(p->Point1.X + t2, y2, 0, 0);
-		}
-		else {
-			int x1 = MIN(p->Point1.X, p->Point2.X) - t2;
-			int x2 = MAX(p->Point1.X, p->Point2.X) + t2;
-
-			gp_point(x1, p->Point1.Y - t2, 0, 0);
-			gp_point(x2, p->Point1.Y - t2, 0, 0);
-			gp_point(x1, p->Point1.Y + t2, 0, 0);
-			gp_point(x2, p->Point1.Y + t2, 0, 0);
-		}
-	}
-	else {
-		gp_point(p->Point1.X, p->Point1.Y, t2, 0);
-		gp_point(p->Point2.X, p->Point2.Y, t2, 0);
-	}
 	return PCB_R_DIR_NOT_FOUND;
 }
 
@@ -1785,9 +1734,7 @@ static void maybe_pull_1(pcb_line_t *line)
 	pcb_r_search(CURRENT->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
 	pcb_r_search(CURRENT->text_tree, &box, NULL, gp_text_cb, 0, NULL);
 	pcb_r_search(CURRENT->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
-	pcb_r_search(PCB->Data->pin_tree, &box, NULL, gp_pin_cb, 0, NULL);
-	pcb_r_search(PCB->Data->via_tree, &box, NULL, gp_pin_cb, 0, NULL);
-	pcb_r_search(PCB->Data->pad_tree, &box, NULL, gp_pad_cb, 0, NULL);
+	pcb_r_search(PCB->Data->padstack_tree, &box, NULL, gp_pstk_cb, 0, NULL);
 
 	/* radians, absolute angle of (at the moment) the start_line */
 	abs_angle = fa + start_angle;
