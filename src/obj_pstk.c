@@ -47,6 +47,7 @@
 #include "search.h"
 #include "undo.h"
 #include "vtpadstack.h"
+#include "event.h"
 
 #define SQR(o) ((o)*(o))
 
@@ -94,6 +95,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t 
 	ps->xmirror = xmirror;
 	ps->smirror = smirror;
 	pcb_pstk_add(data, ps);
+	pcb_event(PCB_EVENT_NEW_PSTK, "p", ps);
 	pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
 	return ps;
 }

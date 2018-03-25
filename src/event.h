@@ -46,6 +46,8 @@ typedef enum {
 	PCB_EVENT_LIBRARY_CHANGED,        /* called after a change in the footprint lib (used to be the LibraryChanged action) */
 	PCB_EVENT_FONT_CHANGED,           /* called when a font has changed; argument is the font ID */
 
+	PCB_EVENT_NEW_PSTK,               /* called when a new padstack is created */
+
 	PCB_EVENT_BUSY,                   /* called before CPU-intensive task begins */
 
 	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */

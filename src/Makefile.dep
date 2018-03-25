@@ -6316,7 +6316,7 @@ obj_pstk.o: obj_pstk.c ../config.h board.h const.h macro.h \
  draw_wireframe.h obj_pad.h obj_pstk_draw.h obj_pstk_inlines.h thermal.h \
  obj_pstk_op.h operation.h obj_subc_parent.h obj_hash.h compat_misc.h \
  search.h rats.h netlist.h route_style.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h obj_pstk_op.c rotate.h
+ ../src_3rd/libuundo/uundo.h undo_old.h event.h obj_pstk_op.c rotate.h
 obj_pstk_act.o: obj_pstk_act.c ../config.h obj_pstk.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
