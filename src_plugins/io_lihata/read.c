@@ -56,6 +56,7 @@
 #include "safe_fs.h"
 #include "plug_footprint.h"
 #include "vtpadstack.h"
+#include "obj_pstk_inlines.h"
 
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
@@ -803,8 +804,14 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	pcb_pstk_t *ps;
 	lht_node_t *thl, *t;
 	unsigned char intconn = 0;
-	unsigned long int ul;
+	unsigned long int pid;
 	int tmp;
+
+	parse_ulong(&pid, lht_dom_hash_get(obj, "proto"));
+	if (pcb_pstk_get_proto_(dt, pid) == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Padstack references to non-existent prototype\n");
+		return -1;
+	}
 
 	ps = pcb_pstk_alloc(dt);
 
@@ -823,9 +830,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	parse_int(&tmp, lht_dom_hash_get(obj, "smirror"));
 	ps->smirror = tmp;
 	parse_coord(&ps->Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_ulong(&ul, lht_dom_hash_get(obj, "proto"));
-	ps->proto = ul;
-
+	ps->proto = pid;
 
 	thl = lht_dom_hash_get(obj, "thermal");
 	if ((thl != NULL) && (thl->type == LHT_LIST)) {
