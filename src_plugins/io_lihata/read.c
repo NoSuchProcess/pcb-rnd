@@ -1339,9 +1339,14 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	for(n = nshape->data.list.first, i = 0; n != NULL; n = n->next, i++)
 		if ((n->type == LHT_HASH) && (strcmp(n->name, "ps_shape_v4") == 0))
 			if (parse_data_pstk_shape_v4(pcb, ts->shape+i, n, subc_parent) != 0)
-				return -1;
+				goto error;
 
 	return 0;
+	error:;
+	free(ts->shape);
+	ts->shape = NULL;
+	ts->len = 0;
+	return -1;
 }
 
 static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
@@ -1382,6 +1387,10 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 			if (pid >= dst->ps_protos.used)
 				pcb_vtpadstack_proto_enlarge(&dst->ps_protos, pid);
 			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+			if (res != 0) {
+				pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n");
+				return -1;
+			}
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n", pp->name);
