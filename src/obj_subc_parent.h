@@ -103,7 +103,6 @@ PCB_INLINE pcb_bool_t pcb_obj_is_under(pcb_any_obj_t *obj, pcb_data_t *data)
 {
 	for(;;) {
 		switch(obj->parent_type) {
-			case PCB_PARENT_ELEMENT: return pcb_false; /* remove this */
 			case PCB_PARENT_INVALID: return pcb_false;
 			case PCB_PARENT_BOARD:   return pcb_false;
 			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent == data) return pcb_true; break;

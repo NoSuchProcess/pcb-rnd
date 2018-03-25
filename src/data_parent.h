@@ -33,7 +33,6 @@
 typedef enum pcb_parenttype_e {
 	PCB_PARENT_INVALID = 0,  /* invalid or unknown */
 	PCB_PARENT_LAYER,        /* object is on a layer */
-	PCB_PARENT_ELEMENT,      /* object is part of an element */
 	PCB_PARENT_SUBC,         /* object is part of a subcircuit */
 	PCB_PARENT_DATA,         /* global objects like via */
 	PCB_PARENT_BOARD         /* directly under a board (typical for pcb_data_t of a board) */
@@ -46,14 +45,12 @@ union pcb_parent_s {
 	void           *any;
 	pcb_layer_t    *layer;
 	pcb_data_t     *data;
-	pcb_element_t  *element;
 	pcb_subc_t     *subc;
 	pcb_board_t    *board;
 };
 
 #define PCB_PARENT_TYPENAME_layer    PCB_PARENT_LAYER
 #define PCB_PARENT_TYPENAME_data     PCB_PARENT_DATA
-#define PCB_PARENT_TYPENAME_element  PCB_PARENT_ELEMENT
 #define PCB_PARENT_TYPENAME_subc     PCB_PARENT_SUBC
 #define PCB_PARENT_TYPENAME_board    PCB_PARENT_BOARD
 
