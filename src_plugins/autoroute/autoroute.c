@@ -229,13 +229,11 @@ typedef struct routebox_list_s {
 	routebox_t *next, *prev;
 } routebox_list_t;
 
-typedef enum etype { TERM, PAD, PIN, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, THERMAL } etype;
+typedef enum etype { TERM, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, THERMAL } etype;
 
 struct routebox_s {
 	pcb_box_t box, sbox;
 	union {
-		pcb_pad_t *pad;
-		pcb_pin_t *pin;
 		pcb_pstk_t *via;
 		pcb_any_obj_t *term;
 		routebox_t *via_shadow;	/* points to the via in r-tree which
@@ -826,17 +824,6 @@ static void DumpRouteBox(routebox_t * rb)
 	case TERM:
 		printf("TERM[%s] ", rb->parent.term->term);
 		break;
-	case PAD:
-		printf("PAD[%s %s] ", rb->parent.pad->Name, rb->parent.pad->Number);
-		break;
-	case PIN:
-		printf("PIN[%s %s] ", rb->parent.pin->Name, rb->parent.pin->Number);
-		break;
-	case VIA:
-		if (!rb->parent.via)
-			break;
-		printf("VIA[%s %s] ", rb->parent.via->Name, rb->parent.via->Number);
-		break;
 	case LINE:
 		printf("LINE ");
 		break;
@@ -1299,27 +1286,13 @@ static pcb_cost_t pcb_cost_to_layerless_box(const pcb_cheap_point_t * p, pcb_car
 /* get to actual pins/pad target coordinates */
 pcb_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
 {
-	if (target->type == PIN) {
+/*	if (target->type == PIN) {
 		nextpoint->X = target->parent.pin->X;
 		nextpoint->Y = target->parent.pin->Y;
 		return pcb_true;
-	}
-	else if (target->type == PAD) {
-#warning term TODO: extend this for generic term
-		if (labs(target->parent.pad->Point1.X - nextpoint->X) < labs(target->parent.pad->Point2.X - nextpoint->X))
-			nextpoint->X = target->parent.pad->Point1.X;
-		else
-			nextpoint->X = target->parent.pad->Point2.X;
-		if (labs(target->parent.pad->Point1.Y - nextpoint->Y) < labs(target->parent.pad->Point2.Y - nextpoint->Y))
-			nextpoint->Y = target->parent.pad->Point1.Y;
-		else
-			nextpoint->Y = target->parent.pad->Point2.Y;
-		return pcb_true;
-	}
-	else {
-		nextpoint->X = PCB_BOX_CENTER_X(target->sbox);
-		nextpoint->Y = PCB_BOX_CENTER_Y(target->sbox);
-	}
+	}*/
+	nextpoint->X = PCB_BOX_CENTER_X(target->sbox);
+	nextpoint->Y = PCB_BOX_CENTER_Y(target->sbox);
 	return pcb_false;
 }
 
@@ -2833,34 +2806,14 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 	struct therm_info *ti = (struct therm_info *) cl;
 	pcb_box_t sq, sb;
 
-	if (rbox->type != PIN && rbox->type != VIA && rbox->type != VIA_SHADOW)
+	if (rbox->type != TERM)
 		return PCB_R_DIR_NOT_FOUND;
 	if (rbox->group != ti->plane->group)
 		return PCB_R_DIR_NOT_FOUND;
 
 	sb = shrink_routebox(rbox);
 	switch (rbox->type) {
-	case PIN:
-		sq = pcb_shrink_box(&ti->query, rbox->parent.pin->Thickness);
-		if (!pcb_box_intersect(&sb, &sq))
-			return PCB_R_DIR_NOT_FOUND;
-		sb.X1 = rbox->parent.pin->X;
-		sb.Y1 = rbox->parent.pin->Y;
-		break;
-	case VIA:
-		if (rbox->flags.fixed) {
-			sq = pcb_shrink_box(&ti->query, rbox->parent.via->BoundingBox.X2 - rbox->parent.via->BoundingBox.X1);
-			sb.X1 = rbox->parent.pin->X;
-			sb.Y1 = rbox->parent.pin->Y;
-		}
-		else {
-			sq = pcb_shrink_box(&ti->query, rbox->style->Diameter);
-			sb.X1 = PCB_BOX_CENTER_X(sb);
-			sb.Y1 = PCB_BOX_CENTER_Y(sb);
-		}
-		if (!pcb_box_intersect(&sb, &sq))
-			return PCB_R_DIR_NOT_FOUND;
-		break;
+	case TERM:
 	case VIA_SHADOW:
 		sq = pcb_shrink_box(&ti->query, rbox->style->Diameter);
 		if (!pcb_box_intersect(&sb, &sq))
@@ -3211,7 +3164,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 		}
 		else {											/* no via coming, target must have been a pin */
 
-			assert(target->type == PIN);
+			assert(target->type == TERM);
 			TargetPoint(&nextpoint, target);
 		}
 		assert(pcb_point_in_box(&path->sbox, nextpoint.X, nextpoint.Y));
@@ -4342,7 +4295,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 #if defined(ROUTE_RANDOMIZED)
 										(0.3 + pcb_rand() / (RAND_MAX + 1.0)) *
 #endif
-										(b.Y2 - b.Y1) * (p->type == PLANE ? -1 : ((p->type == PAD || p->type == TERM) ? 1 : 10)), p);
+										(b.Y2 - b.Y1) * (p->type == PLANE ? -1 : ((p->type == TERM) ? 1 : 10)), p);
 			}
 			PCB_END_LOOP;
 			ros.net_completely_routed = 0;
