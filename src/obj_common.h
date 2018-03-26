@@ -36,31 +36,42 @@
 #include "global_typedefs.h"
 #include "data_parent.h"
 
-/* Can be used as a bitfield */
+/* Real objects that have actual struct; can be used as a bitfield */
 typedef enum pcb_objtype_e {
-	PCB_OBJ_VOID       = 0x000000,
+	PCB_OBJ_VOID       = 0x0000000,
 
-	PCB_OBJ_LINE_POINT = 0x000001,
-	PCB_OBJ_LINE       = 0x000002,
-	PCB_OBJ_TEXT       = 0x000004,
-	PCB_OBJ_POLY       = 0x000008,
-	PCB_OBJ_POLY_POINT = 0x000010,
-	PCB_OBJ_ARC        = 0x000020,
-	PCB_OBJ_RAT        = 0x000040,
-	PCB_OBJ_SUBC       = 0x000080,
-	PCB_OBJ_PSTK       = 0x000100,
+	PCB_OBJ_ARC        = 0x0000001,
+	PCB_OBJ_LINE       = 0x0000002,
+	PCB_OBJ_POLY       = 0x0000004,
+	PCB_OBJ_TEXT       = 0x0000008,
+	PCB_OBJ_SUBC       = 0x0000010,
+	PCB_OBJ_PSTK       = 0x0000020,
+	PCB_OBJ_RAT        = 0x0000040,
+
 
 	/* more abstract objects */
-	PCB_OBJ_NET        = 0x001001,
-	PCB_OBJ_LAYER      = 0x001002
+	PCB_OBJ_NET        = 0x0001000,
+	PCB_OBJ_LAYER      = 0x0002000
 } pcb_objtype_t;
+
+/* Virtual objects for configuring searches; can be used as a bitfield with the above */
+typedef enum pcb_vobjtype_e {
+	PCB_OBJ_ARC_POINT  = 0x0100000,
+	PCB_OBJ_LINE_POINT = 0x0200000,
+	PCB_OBJ_POLY_POINT = 0x0400000,
+	PCB_OBJ_SUBC_PART  = 0x0800000,
+	PCB_OBJ_LOCKED     = 0x1000000,
+	PCB_OBJ_FLOATER    = 0x2000000
+} pcb_vobjtype_t;
+
 
 /* combinations, groups, masks of pcb_objtype_t */
 typedef enum pcb_objmask_e {
-	PCB_OBJ_CLASS_MASK = 0x00F000,
-	PCB_OBJ_CLASS_OBJ  = 0x000000, /* anything with common object fields (pcb_any_obj_t) */
-	PCB_OBJ_CLASS_REAL = 0x000FFF, /* global and on-layer objects (but not abstract things like layers) */
-	PCB_OBJ_ANY        = 0x00FFFF
+	PCB_OBJ_CLASS_REAL = 0x0000FFF, /* global and on-layer objects (but not abstract things like layers) */
+	PCB_OBJ_CLASS_HOST = 0x00FF000, /* host types: layers, boards, nets */
+	PCB_OBJ_CLASS_MASK = 0xFF00000, /* for virtual searches */
+	PCB_OBJ_CLASS_OBJ  = 0x0000000, /* anything with common object fields (pcb_any_obj_t) */
+	PCB_OBJ_ANY        = 0xFFFFFFF
 } pcb_objmask_t;
 
 
