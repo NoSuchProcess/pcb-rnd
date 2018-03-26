@@ -49,7 +49,8 @@ invalid         { return T_INVALID; }
 p[.]            { return T_FLD_P; }
 a[.]            { return T_FLD_A; }
 
-"POINT"         { qry_lval.n = make_constant(yytext, PCB_OBJ_POINT); return T_CONST; }
+"LINE_POINT"    { qry_lval.n = make_constant(yytext, PCB_OBJ_LINE_POINT); return T_CONST; }
+"POLY_POINT"    { qry_lval.n = make_constant(yytext, PCB_OBJ_POLY_POINT); return T_CONST; }
 "LINE"          { qry_lval.n = make_constant(yytext, PCB_OBJ_LINE); return T_CONST; }
 "TEXT"          { qry_lval.n = make_constant(yytext, PCB_OBJ_TEXT); return T_CONST; }
 "POLYGON"       { qry_lval.n = make_constant(yytext, PCB_OBJ_POLY); return T_CONST; }

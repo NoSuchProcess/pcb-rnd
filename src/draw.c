@@ -703,7 +703,8 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		if (PCB->RatOn)
 			pcb_rat_invalidate_draw((pcb_rat_t *)obj);
 		break;
-	case PCB_OBJ_POINT:
+	case PCB_OBJ_LINE_POINT:
+	case PCB_OBJ_POLY_POINT:
 	case PCB_OBJ_SUBC:
 	case PCB_OBJ_NET:
 	case PCB_OBJ_LAYER:

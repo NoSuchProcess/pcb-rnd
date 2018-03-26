@@ -40,14 +40,15 @@
 typedef enum pcb_objtype_e {
 	PCB_OBJ_VOID      = 0x000000,
 
-	PCB_OBJ_POINT     = 0x000001,
+	PCB_OBJ_LINE_POINT= 0x000001,
 	PCB_OBJ_LINE      = 0x000002,
 	PCB_OBJ_TEXT      = 0x000004,
 	PCB_OBJ_POLY      = 0x000008,
-	PCB_OBJ_ARC       = 0x000010,
-	PCB_OBJ_RAT       = 0x000020,
-	PCB_OBJ_SUBC      = 0x000040,
-	PCB_OBJ_PSTK      = 0x000080,
+	PCB_OBJ_POLY_POINT= 0x000010,
+	PCB_OBJ_ARC       = 0x000020,
+	PCB_OBJ_RAT       = 0x000040,
+	PCB_OBJ_SUBC      = 0x000080,
+	PCB_OBJ_PSTK      = 0x000100,
 
 	/* more abstract objects */
 	PCB_OBJ_NET       = 0x001001,
