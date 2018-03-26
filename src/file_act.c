@@ -51,6 +51,7 @@
 #include "hid_init.h"
 #include "layer_vis.h"
 #include "safe_fs.h"
+#include "tool.h"
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ExecCommand[] = "ExecCommand(command)";

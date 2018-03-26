@@ -18,6 +18,7 @@
 #include "lesstif.h"
 #include "stdarg.h"
 #include "event.h"
+#include "tool.h"
 
 static Widget library_dialog = 0;
 static Widget library_list, libnode_list;

@@ -47,6 +47,7 @@
 #include "error.h"
 #include "plugins.h"
 #include "compat_nls.h"
+#include "tool.h"
 
 void FinishStroke(void);
 

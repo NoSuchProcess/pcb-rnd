@@ -44,6 +44,7 @@
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
 #include "rotate.h"
+#include "tool.h"
 
 const char *pcb_shape_cookie = "shape plugin";
 static pcb_layer_t pcb_shape_current_layer_;

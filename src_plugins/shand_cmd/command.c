@@ -49,6 +49,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "misc_util.h"
+#include "tool.h"
 
 /* ---------------------------------------------------------------------- */
 

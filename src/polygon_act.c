@@ -45,6 +45,7 @@
 #include "search.h"
 #include "crosshair.h"
 #include "compat_nls.h"
+#include "tool.h"
 
 #include "obj_poly.h"
 

@@ -36,6 +36,7 @@
 #include "const.h"
 #include "crosshair.h"
 #include "conf_core.h"
+#include "tool.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 

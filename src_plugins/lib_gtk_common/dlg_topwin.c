@@ -65,6 +65,7 @@
 #include "in_mouse.h"
 #include "in_keyboard.h"
 #include "wt_layersel.h"
+#include "tool.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "win_place.h"

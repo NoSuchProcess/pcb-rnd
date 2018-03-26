@@ -59,6 +59,7 @@
 #include "compat_nls.h"
 #include "fptr_cast.h"
 #include "safe_fs.h"
+#include "tool.h"
 #include <liblihata/tree.h>
 
 #include "gtk_conf_list.h"

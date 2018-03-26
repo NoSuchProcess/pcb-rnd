@@ -38,6 +38,7 @@
 #include "draw.h"
 #include "event.h"
 #include "safe_fs.h"
+#include "tool.h"
 
 
 pcb_board_t *PCB;

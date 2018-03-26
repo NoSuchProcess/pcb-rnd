@@ -75,6 +75,7 @@
 #include "compat.h"
 #include "wt_preview.h"
 #include "win_place.h"
+#include "tool.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "dlg_library_param.h"
