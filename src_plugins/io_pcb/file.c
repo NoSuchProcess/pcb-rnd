@@ -72,6 +72,13 @@
 #include "src_plugins/lib_compat_help/subc_help.h"
 #include "src_plugins/lib_compat_help/elem_rot.h"
 
+#warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
+#define PCB_TYPE_VIA PCB_TYPE_PSTK
+#define PCB_TYPE_PIN PCB_TYPE_PSTK
+#define PCB_TYPE_PAD PCB_TYPE_PSTK
+#define PCB_TYPE_ELEMENT PCB_TYPE_SUBC
+#define PCB_TYPE_ELEMENT_NAME PCB_TYPE_TEXT
+
 pcb_unit_style_t pcb_io_pcb_usty_seen;
 
 static void WritePCBInfoHeader(FILE *);

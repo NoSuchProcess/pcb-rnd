@@ -65,6 +65,12 @@
 vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 
+#warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
+#define PCB_TYPE_VIA PCB_TYPE_PSTK
+#define PCB_TYPE_PIN PCB_TYPE_PSTK
+#define PCB_TYPE_PAD PCB_TYPE_PSTK
+#define PCB_TYPE_ELEMENT PCB_TYPE_SUBC
+
 static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
 
 

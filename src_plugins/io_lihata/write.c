@@ -58,6 +58,12 @@
 #define CFMT "%.08$$mH"
 /*#define CFMT "%$$mn"*/
 
+#warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
+#define PCB_TYPE_VIA PCB_TYPE_PSTK
+#define PCB_TYPE_PIN PCB_TYPE_PSTK
+#define PCB_TYPE_PAD PCB_TYPE_PSTK
+#define PCB_TYPE_ELEMENT PCB_TYPE_SUBC
+
 static int io_lihata_full_tree = 0;
 static int wrver;
 
