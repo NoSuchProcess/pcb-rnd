@@ -66,6 +66,7 @@
 #include "rotate.h"
 #include "obj_rat.h"
 #include "obj_term.h"
+#include "obj_pstk_inlines.h"
 #include "board.h"
 #include "data_it.h"
 #include <genvector/vtp0.h>
@@ -317,6 +318,12 @@ static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * b
 	return ni.neighbor;
 }
 
+static int pstk_ispad(pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	return (proto->hdia <= 0);
+}
+
 /* ---------------------------------------------------------------------------
  * Compute cost function.
  *  note that area overlap cost is correct for SMD devices: SMD devices on
@@ -354,7 +361,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		minx = maxx = n->Connection[0].X;
 		miny = maxy = n->Connection[0].Y;
 		thegroup = n->Connection[0].group;
-		allpads = (n->Connection[0].obj->type == PCB_OBJ_PAD);
+		allpads = pstk_ispad(n->Connection[0].obj);
 		allsameside = pcb_true;
 		for (j = 1; j < n->ConnectionN; j++) {
 			pcb_connection_t *c = &(n->Connection[j]);
@@ -362,7 +369,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_MAKE_MAX(maxx, c->X);
 			PCB_MAKE_MIN(miny, c->Y);
 			PCB_MAKE_MAX(maxy, c->Y);
-			if (c->obj->type != PCB_OBJ_PAD)
+			if (!pst_ispad(c->obj))
 				allpads = pcb_false;
 			if (c->group != thegroup)
 				allsameside = pcb_false;
