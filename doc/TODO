@@ -21,6 +21,7 @@
 SUBC: element removal:
 	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
+		- remove pcb_obj_type_t from const.h - use obj_common.h; delete const.h
 	- remove Line->Number and *->Number: we use ->term
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- convert pcblib to subcircuits:
@@ -30,6 +31,8 @@ SUBC: element removal:
 	- remove ToggleHideName()
 	- advanced search GUI: new type names?
 	- BUG: put a 1206 on an empty board, save it in old .pcb -> pads become round; probably the same happens with old lihata? [report: igor2]
+		- see also: padstack TODO #22
+	- remove obj_any.h instead - use obj_common.h
 - autocrop:
 	- rewrite to use pcb_data_move
 	- make sure pcb_data_move does one full poly clipping, the way autocrop does
@@ -293,8 +296,6 @@ Eagle binary:
 	- need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 	- layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
 
-CLEANUP #7: the big object split
-- remove pcb_obj_type_t from const.h - use obj_any.h instead
 
 
 FEATURES
