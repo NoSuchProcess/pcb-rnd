@@ -60,29 +60,25 @@ typedef enum {
  */
 typedef enum {
 	PCB_TYPE_NONE          = 0x00000, /* special: no object */
-	PCB_TYPE_VIA           = 0x00001,
-	PCB_TYPE_ELEMENT       = 0x00002,
+
+
+	PCB_TYPE_ARC           = 0x04000,
+	PCB_TYPE_ARC_POINT     = 0x80000,
 	PCB_TYPE_LINE          = 0x00004,
+	PCB_TYPE_LINE_POINT    = 0x01000,
 	PCB_TYPE_POLY          = 0x00008,
+	PCB_TYPE_POLY_POINT    = 0x00800,
 	PCB_TYPE_TEXT          = 0x00010,
 	PCB_TYPE_RATLINE       = 0x00020,
 	PCB_TYPE_SUBC          = 0x00040, /* TODO: should be 0x00002 once PCB_TYPE_ELEMENT is removed */
+	PCB_TYPE_PSTK          = 0x100000,
 
-	PCB_TYPE_PIN           = 0x00100, /* objects that are part */
-	PCB_TYPE_PAD           = 0x00200, /* 'pin' of SMD element */
-	PCB_TYPE_ELEMENT_NAME  = 0x00400, /* of others */
-	PCB_TYPE_POLY_POINT    = 0x00800,
-	PCB_TYPE_LINE_POINT    = 0x01000,
-	PCB_TYPE_ELEMENT_LINE  = 0x02000,
-	PCB_TYPE_ARC           = 0x04000,
-	PCB_TYPE_ELEMENT_ARC   = 0x08000,
+
 
 	PCB_TYPE_LOCKED        = 0x10000, /* used to tell search to include locked items. */
 	PCB_TYPE_SUBC_PART     = 0x20000, /* used to tell search to include objects that are part of a subcircuit */
 	PCB_TYPE_NET           = 0x40000, /* used to select whole net. */
 
-	PCB_TYPE_ARC_POINT     = 0x80000,
-	PCB_TYPE_PSTK          = 0x100000,
 	PCB_TYPE_SUBC_FLOATER  = 0x200000, /* prefer subc floaters in search by location; TODO: should be 2 slots up */
 
 	/* groups/properties */
