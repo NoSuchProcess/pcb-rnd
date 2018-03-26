@@ -81,7 +81,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	short_conn_t *s;
 
 #warning find.c TODO: will not be needed after the big rewrite
-	if (from_type == 32) /* rat line is often rat point and has no ID */
+	if (from_type == PCB_TYPE_RATLINE) /* rat line is often rat point and has no ID */
 		from = NULL;
 
 	s = malloc(sizeof(short_conn_t));
@@ -242,7 +242,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 				/* connection to a pin/pad is slightly stronger than the
 				   strongest obj-obj conn; obj-obj conns are weaker at junctions where many
 				   objects connect */
-				if ((n->from_type == PCB_TYPE_PIN) || (n->from_type == PCB_TYPE_PAD) || (n->to_type == PCB_TYPE_PIN) || (n->to_type == PCB_TYPE_PAD))
+				if ((n->from_type == PCB_TYPE_PSTK) || (n->to_type == PCB_TYPE_PSTK))
 					weight = maxedges * 2 + 2;
 				else
 					weight = maxedges * 2 - n->edges - from->edges + 1;
