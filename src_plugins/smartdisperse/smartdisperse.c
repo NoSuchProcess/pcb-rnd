@@ -39,6 +39,7 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_subc.h"
+#include "obj_subc_parent.h"
 
 #define GAP 10000
 static pcb_coord_t minx;
@@ -107,7 +108,7 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 	return 0;
 }
 
-#define IS_IN_SUBC(CONN)  (pcb_objc_subc_parent((CONN)->obj) != NULL)
+#define IS_IN_SUBC(CONN)  (pcb_obj_parent_subc((CONN)->obj) != NULL)
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
