@@ -66,7 +66,6 @@ PCB_INLINE pcb_subc_t *pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p
 PCB_INLINE pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
-		case PCB_OBJ_VIA:
 		case PCB_OBJ_PSTK:
 		case PCB_OBJ_SUBC:
 			return pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
@@ -80,15 +79,6 @@ PCB_INLINE pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj)
 #if 0
 		case PCB_OBJ_RATLINE:
 			/* easy case: can not be in a subc at all */
-			return 0;
-
-		case PCB_OBJ_PIN:
-		case PCB_OBJ_PAD:
-		case PCB_OBJ_ELEMENT_NAME:
-		case PCB_OBJ_ELEMENT:
-		case PCB_OBJ_ELEMENT_LINE:
-		case PCB_OBJ_ELEMENT_ARC:
-			/* easy case: these obsolete constructs can not be in a subc at all */
 			return 0;
 #endif
 
