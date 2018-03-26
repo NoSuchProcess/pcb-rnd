@@ -107,7 +107,7 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 	return 0;
 }
 
-#define IS_ELEMENT(CONN)	((CONN)->obj->type == PCB_OBJ_PAD || (CONN)->obj->type == PCB_OBJ_PIN)
+#define IS_IN_SUBC(CONN)  (pcb_objc_subc_parent((CONN)->obj) != NULL)
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
@@ -171,7 +171,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 		conna = &net->Connection[0];
 		connb = &net->Connection[1];
-		if (!IS_ELEMENT(conna) || !IS_ELEMENT(conna))
+		if (!IS_IN_SUBC(conna) || !IS_IN_SUBC(conna))
 			continue;
 
 		ea = (pcb_any_obj_t *) conna->ptr1;
@@ -202,7 +202,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		{
 			pcb_any_obj_t *parent;
 
-			if (!IS_ELEMENT(connection))
+			if (!IS_IN_SUBC(connection))
 				continue;
 
 			parent = connection->ptr1;
