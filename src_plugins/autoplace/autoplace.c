@@ -369,7 +369,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_MAKE_MAX(maxx, c->X);
 			PCB_MAKE_MIN(miny, c->Y);
 			PCB_MAKE_MAX(maxy, c->Y);
-			if (!pst_ispad(c->obj))
+			if (!pstk_ispad(c->obj))
 				allpads = pcb_false;
 			if (c->group != thegroup)
 				allsameside = pcb_false;
