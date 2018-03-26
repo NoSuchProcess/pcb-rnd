@@ -36,10 +36,15 @@
 #include "data_it.h"
 #include "rtree.h"
 #include "list_common.h"
-#include "obj_all.h"
 #include "layer_it.h"
 #include "operation.h"
 #include "flag.h"
+#include "obj_arc.h"
+#include "obj_line.h"
+#include "obj_poly.h"
+#include "obj_text.h"
+#include "obj_pstk.h"
+#include "obj_subc.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers

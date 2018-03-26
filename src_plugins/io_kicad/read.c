@@ -46,7 +46,6 @@
 #include "conf_core.h"
 #include "move.h"
 #include "macro.h"
-#include "obj_all.h"
 #include "rotate.h"
 #include "safe_fs.h"
 #include "attrib.h"

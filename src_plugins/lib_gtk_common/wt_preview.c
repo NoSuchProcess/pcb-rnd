@@ -46,7 +46,6 @@
 #include "draw.h"
 #include "move.h"
 #include "rotate.h"
-#include "obj_all.h"
 #include "macro.h"
 
 static void preview_set_view(pcb_gtk_preview_t * preview)

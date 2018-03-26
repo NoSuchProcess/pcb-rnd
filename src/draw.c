@@ -40,7 +40,6 @@
 #include "rotate.h"
 #include "rtree.h"
 #include "stub_draw.h"
-#include "obj_all.h"
 #include "layer_ui.h"
 
 #include "obj_pstk_draw.h"

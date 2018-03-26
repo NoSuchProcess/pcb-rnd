@@ -37,7 +37,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "polygon.h"
-#include "obj_all.h"
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"

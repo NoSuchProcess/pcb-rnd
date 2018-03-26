@@ -47,7 +47,6 @@
 #include "conf_core.h"
 #include "move.h"
 #include "macro.h"
-#include "obj_all.h"
 #include "safe_fs.h"
 #include "rotate.h"
 #include "../src_plugins/boardflip/boardflip.h"

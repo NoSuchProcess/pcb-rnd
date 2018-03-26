@@ -53,7 +53,6 @@
 #include "compat_misc.h"
 #include "compat_fs.h"
 #include "misc_util.h"
-#include "obj_all.h"
 #include "rtree.h"
 
 #include "hid.h"

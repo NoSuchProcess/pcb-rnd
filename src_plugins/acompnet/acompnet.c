@@ -41,9 +41,6 @@
 #include "compat_misc.h"
 #include "error.h"
 
-#include "obj_all.h"
-
-
 static pcb_layer_t *ly;
 
 pcb_flag_t flg_mesh_pt;

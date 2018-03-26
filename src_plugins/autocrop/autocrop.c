@@ -55,7 +55,6 @@
 #include "draw.h"
 #include "polygon.h"
 #include "plugins.h"
-#include "obj_all.h"
 #include "box.h"
 #include "hid_actions.h"
 

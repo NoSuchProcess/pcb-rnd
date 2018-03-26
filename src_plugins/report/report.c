@@ -60,7 +60,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer.h"
-#include "obj_all.h"
 #include "obj_term.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"

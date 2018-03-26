@@ -36,7 +36,6 @@
 #include "layer.h"
 #include "const.h"
 #include "netlist.h"
-#include "obj_all.h"
 #include "obj_pstk_inlines.h"
 
 #include "../io_kicad/uniq_name.h"

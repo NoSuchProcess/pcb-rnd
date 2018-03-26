@@ -37,7 +37,6 @@
 #include "font.h"
 #include "const.h"
 #include "hid_actions.h"
-#include "obj_all.h"
 #include "plugins.h"
 #include "stub_draw.h"
 #include "pcb-printf.h"

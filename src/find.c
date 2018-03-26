@@ -79,9 +79,9 @@
 #include "event.h"
 #include "layer_vis.h"
 
-#include "obj_all.h"
-#include "obj_pstk.h"
 #include "obj_text_draw.h"
+#include "obj_pstk.h"
+#include "obj_subc.h"
 #include "obj_subc_parent.h"
 
 #undef DEBUG

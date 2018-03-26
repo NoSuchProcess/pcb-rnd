@@ -48,7 +48,6 @@
 #include "common.h"
 #include "polygon.h"
 #include "conf_core.h"
-#include "obj_all.h"
 #include "obj_subc.h"
 #include "pcb_minuid.h"
 #include "thermal.h"

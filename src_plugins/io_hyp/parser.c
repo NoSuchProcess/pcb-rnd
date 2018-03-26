@@ -26,7 +26,6 @@
 #include "hyp_y.h"
 #include "error.h"
 #include "pcb-printf.h"
-#include "obj_all.h"
 #include "flag_str.h"
 #include "polygon.h"
 #include "board.h"

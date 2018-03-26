@@ -58,7 +58,6 @@
 #include "rats_patch.h"
 #include "route_style.h"
 #include "compat_misc.h"
-#include "obj_all.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 static	pcb_layer_t *Layer;

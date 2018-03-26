@@ -24,7 +24,6 @@
 #include "undo.h"
 #include "plugins.h"
 #include "hid_actions.h"
-#include "obj_all.h"
 #include "obj_pstk_inlines.h"
 
 #define MIN_LINE_LENGTH 700

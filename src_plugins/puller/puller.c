@@ -73,7 +73,6 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "misc_util.h"
-#include "obj_all.h"
 #include "compat_misc.h"
 #include "obj_pstk_inlines.h"
 #include "search.h"

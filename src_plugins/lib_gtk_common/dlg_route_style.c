@@ -36,7 +36,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "polygon.h"
-#include "obj_all.h"
 
 #include "bu_box.h"
 #include "compat.h"
