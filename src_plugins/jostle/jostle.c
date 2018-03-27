@@ -81,14 +81,15 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 	pcb_pline_t *pl;
 	pcb_vnode_t *v;
 	pcb_polyarea_t *p;
-	pcb_hid_t *ddraw;
-	pcb_hid_gc_t ddgc;
 
 #ifndef DEBUG_pcb_polyarea_t
 	return;
 #endif
+
+/* TODO: rewrite this to UI layers if needed
 	ddraw = pcb_gui->request_debug_draw();
 	ddgc = ddraw->make_gc();
+*/
 
 	p = s;
 	do {
@@ -100,23 +101,23 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 				x[i] = v->point[0];
 				y[i++] = v->point[1];
 			}
-			if (1) {
+/*			if (1) {
 				pcb_gui->set_color(ddgc, color ? color : conf_core.appearance.color.connected);
 				pcb_gui->set_line_width(ddgc, 1);
 				for (i = 0; i < n - 1; i++) {
 					pcb_gui->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
-					/*  pcb_gui->fill_circle (ddgc, x[i], y[i], 30);*/
+					pcb_gui->fill_circle (ddgc, x[i], y[i], 30);
 				}
 				pcb_gui->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
-			}
+			}*/
 			free(x);
 			free(y);
 		}
 	} while ((p = p->f) != s);
-	ddraw->flush_debug_draw();
+/*	ddraw->flush_debug_draw();*/
 	pcb_event(PCB_EVENT_BUSY, NULL);
-	sleep(3);
-	ddraw->finish_debug_draw();
+/*	sleep(3);
+	ddraw->finish_debug_draw();*/
 }
 
 /* Find the bounding box of a pcb_polyarea_t.
