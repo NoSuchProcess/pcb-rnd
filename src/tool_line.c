@@ -140,7 +140,7 @@ void pcb_tool_line_notify_mode(void)
 			 isn't a pin already here */
 		if (conf_core.editor.auto_via && PCB->ViaOn
 				&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer)
-				&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+				&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																			pcb_crosshair.AttachedLine.Point1.X,
 																			pcb_crosshair.AttachedLine.Point1.Y,
 																			conf_core.design.via_thickness / 2) ==
@@ -234,7 +234,7 @@ void pcb_tool_line_notify_mode(void)
 					&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
 					&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 					&& (!PCB->is_footprint)
-					&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+					&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID

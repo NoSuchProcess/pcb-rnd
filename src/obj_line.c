@@ -683,7 +683,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	sb.X2 = newone->Point1.X + newone->Thickness / 2;
 	sb.Y1 = newone->Point1.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point1.Y + newone->Thickness / 2;
-	if ((pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+	if ((pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 															newone->Point1.X, newone->Point1.Y, conf_core.design.via_thickness / 2) == PCB_OBJ_VOID)) {
 		info.X = newone->Point1.X;
 		info.Y = newone->Point1.Y;
@@ -695,7 +695,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	sb.X2 = newone->Point2.X + newone->Thickness / 2;
 	sb.Y1 = newone->Point2.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point2.Y + newone->Thickness / 2;
-	if ((pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+	if ((pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 															newone->Point2.X, newone->Point2.Y, conf_core.design.via_thickness / 2) == PCB_OBJ_VOID)) {
 		info.X = newone->Point2.X;
 		info.Y = newone->Point2.Y;

@@ -91,7 +91,7 @@ int main()
 			PCB_FLAG_SET(pcb_object_flagbits[i].mask, &fh);
 		}
 
-		if (otype & PCB_TYPEMASK_PIN)
+		if (otype & PCB_OBJ_CLASS_PIN)
 			for (i = 0; i < PCB_MAX_LAYER; i++)
 				if (random() & 4)
 					PCB_FLAG_THERM_ASSIGN(i, 3, &fh);

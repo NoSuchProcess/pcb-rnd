@@ -436,7 +436,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_2nd_size(PCB_TYPEMASK_PIN, value, absolute))
+			if (pcb_chg_selected_2nd_size(PCB_OBJ_CLASS_PIN, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}

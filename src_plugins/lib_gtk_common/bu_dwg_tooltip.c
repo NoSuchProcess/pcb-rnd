@@ -57,7 +57,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 
 	/* check if there are any pins or pads at that position */
 
-	type = pcb_search_obj_by_location(PCB_TYPEMASK_TERM, &ptr1, &ptr2, &ptr3, X, Y, Range);
+	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, X, Y, Range);
 	if (type == PCB_OBJ_VOID)
 		return NULL;
 

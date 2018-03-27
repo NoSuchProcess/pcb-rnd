@@ -49,7 +49,7 @@ void pcb_tool_lock_notify_mode(void)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	
-	type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_LOCK, &ptr1, &ptr2, &ptr3);
 
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *subc = (pcb_subc_t *)ptr2;
