@@ -511,7 +511,7 @@ static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_ChangeName[] = "ChangeName(Object)\n" "ChangeName(Object|\"Number\")\n" "ChangeName(Layout|Layer)";
+static const char pcb_acts_ChangeName[] = "ChangeName(Object)\n" "ChangeName(Layout|Layer)";
 
 static const char pcb_acth_ChangeName[] = "Sets the name (or pin number) of objects.";
 
@@ -535,7 +535,6 @@ Changes the name of the currently active layer.
 int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
-	const char *pinnums = PCB_ACTION_ARG(1);
 	char *name;
 	int pinnum;
 
