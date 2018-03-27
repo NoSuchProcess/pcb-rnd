@@ -131,7 +131,7 @@ typedef struct {
 	int log_drc_overview;
 	int log_drc_violations;
 	void (*reset_drc_dialog_message) (void);
-	void (*append_drc_violation) (pcb_drc_violation_t * violation);
+	void (*append_drc_violation) (pcb_drc_violation_t *violation);
 	int (*throw_drc_dialog) (void);
 } pcb_hid_drc_gui_t;
 
@@ -212,31 +212,31 @@ struct pcb_hid_s {
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret_ is non-NULL,
 	   the number of attributes is stored there.  */
-	pcb_hid_attribute_t *(*get_export_options) (int *n_ret_);
+	pcb_hid_attribute_t *(*get_export_options)(int *n_ret);
 
 	/* Exports (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from
 	   get_export_options.  Call with options_ == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
-	void (*do_export) (pcb_hid_attr_val_t * options_);
+	void (*do_export)(pcb_hid_attr_val_t *options);
 
 	/* uninit a GUI hid */
-	void (*uninit) (pcb_hid_t *hid);
+	void (*uninit)(pcb_hid_t *hid);
 
 	/* uninit a GUI hid */
-	void (*do_exit) (pcb_hid_t *hid);
+	void (*do_exit)(pcb_hid_t *hid);
 
 	/* Parses the command line.  Call this early for whatever HID will be
 	   the primary HID, as it will set all the registered attributes.
 	   The HID should remove all arguments, leaving any possible file
 	   names behind.  */
-	void (*parse_arguments) (int *argc_, char ***argv_);
+	void (*parse_arguments)(int *argc, char ***argv);
 
 	/* This may be called to ask the GUI to force a redraw of a given area */
-	void (*invalidate_lr) (pcb_coord_t left_, pcb_coord_t right_, pcb_coord_t top_, pcb_coord_t bottom_);
-	void (*invalidate_all) (void);
-	void (*notify_crosshair_change) (pcb_bool changes_complete);
-	void (*notify_mark_change) (pcb_bool changes_complete);
+	void (*invalidate_lr)(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
+	void (*invalidate_all)(void);
+	void (*notify_crosshair_change)(pcb_bool changes_complete);
+	void (*notify_mark_change)(pcb_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per layer group
 	   (physical layer); layer is the first layer in the group.
@@ -250,7 +250,7 @@ struct pcb_hid_s {
 	int (*set_layer_group)(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 
 	/* Tell the GUI the layer last selected has been finished with. */
-	void (*end_layer) (void);
+	void (*end_layer)(void);
 
 	/* Drawing Functions.  Coordinates and distances are ALWAYS in PCB's
 	   default coordinates (1/100 mil at the time this comment was
@@ -258,8 +258,8 @@ struct pcb_hid_s {
 	   (positive X) and 90 being "up" (positive Y).  */
 
 	/* Make an empty graphics context.  */
-	pcb_hid_gc_t (*make_gc) (void);
-	void (*destroy_gc) (pcb_hid_gc_t gc_);
+	pcb_hid_gc_t (*make_gc)(void);
+	void (*destroy_gc)(pcb_hid_gc_t gc);
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */
@@ -275,30 +275,30 @@ struct pcb_hid_s {
 	   use the "drill" color to draw holes.  You may assume this is
 	   cheap enough to call inside the redraw callback, but not cheap
 	   enough to call for each item drawn. */
-	void (*set_color) (pcb_hid_gc_t gc_, const char *name_);
+	void (*set_color)(pcb_hid_gc_t gc, const char *name);
 
 	/* Sets the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
-	void (*set_line_cap) (pcb_hid_gc_t gc_, pcb_cap_style_t style_);
-	void (*set_line_width) (pcb_hid_gc_t gc_, pcb_coord_t width_);
-	void (*set_draw_xor) (pcb_hid_gc_t gc_, int xor_);
+	void (*set_line_cap)(pcb_hid_gc_t gc, pcb_cap_style_t style);
+	void (*set_line_width)(pcb_hid_gc_t gc, pcb_coord_t width);
+	void (*set_draw_xor)(pcb_hid_gc_t gc, int xor);
 	/* Blends 20% or so color with 80% background.  Only used for
 	   assembly drawings so far. */
-	void (*set_draw_faded) (pcb_hid_gc_t gc_, int faded_);
+	void (*set_draw_faded)(pcb_hid_gc_t gc, int faded);
 
 	/* The usual drawing functions.  "draw" means to use segments of the
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
-	void (*draw_line) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
-	void (*draw_arc) (pcb_hid_gc_t gc_, pcb_coord_t cx_, pcb_coord_t cy_, pcb_coord_t xradius_, pcb_coord_t yradius_, pcb_angle_t start_angle_, pcb_angle_t delta_angle_);
-	void (*draw_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
-	void (*fill_circle) (pcb_hid_gc_t gc_, pcb_coord_t cx_, pcb_coord_t cy_, pcb_coord_t radius_);
-	void (*fill_polygon) (pcb_hid_gc_t gc_, int n_coords_, pcb_coord_t * x_, pcb_coord_t * y_);
-	void (*fill_polygon_offs) (pcb_hid_gc_t gc_, int n_coords_, pcb_coord_t * x_, pcb_coord_t * y_, pcb_coord_t dx, pcb_coord_t dy);
-	void (*fill_pcb_polygon) (pcb_hid_gc_t gc_, pcb_poly_t * poly, const pcb_box_t * clip_box);
-	void (*thindraw_pcb_polygon) (pcb_hid_gc_t gc_, pcb_poly_t * poly, const pcb_box_t * clip_box);
-	void (*fill_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
+	void (*draw_line)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+	void (*draw_arc)(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+	void (*draw_rect)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+	void (*fill_circle)(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+	void (*fill_polygon)(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y);
+	void (*fill_polygon_offs)(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
+	void (*fill_pcb_polygon)(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box);
+	void (*thindraw_pcb_polygon)(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box);
+	void (*fill_rect)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 
 
 	/* This is for the printer.  If you call this for the GUI, xval_ and
@@ -308,18 +308,18 @@ struct pcb_hid_s {
 	   calibrating your printer.  After calibrating, nonzero xval_ and
 	   yval_ are passed according to the instructions.  Metric is nonzero
 	   if the user prefers metric units, else inches are used. */
-	void (*calibrate) (double xval_, double yval_);
+	void (*calibrate)(double xval, double yval);
 
 
 	/* GUI layout functions.  Not used or defined for print/export
 	   HIDs.  */
 
 	/* Temporary */
-	int (*shift_is_pressed) (void);
-	int (*control_is_pressed) (void);
-	int (*mod1_is_pressed) (void);
+	int (*shift_is_pressed)(void);
+	int (*control_is_pressed)(void);
+	int (*mod1_is_pressed)(void);
 
-	void (*get_coords) (const char *msg_, pcb_coord_t * x_, pcb_coord_t * y_);
+	void (*get_coords)(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
 
 	/* Fill in width and height with the sizes of the current view in
 	   pcb coordinates. used by action "Cursor" to determine max cursor pos.
@@ -334,7 +334,7 @@ struct pcb_hid_s {
 	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
-	void (*set_crosshair) (int x_, int y_, int cursor_action_);
+	void (*set_crosshair) (int x, int y, int cursor_action);
 #define HID_SC_DO_NOTHING	0
 #define HID_SC_WARP_POINTER	1
 #define HID_SC_PAN_VIEWPORT	2
@@ -344,39 +344,37 @@ struct pcb_hid_s {
 	   timer during the callback for the first.  user_data_ can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
-	  pcb_hidval_t(*add_timer) (void (*func) (pcb_hidval_t user_data_), unsigned long milliseconds_, pcb_hidval_t user_data_);
+	 pcb_hidval_t (*add_timer) (void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
 	/* Use this to stop a timer that hasn't triggered yet.  */
-	void (*stop_timer) (pcb_hidval_t timer_);
+	void (*stop_timer) (pcb_hidval_t timer);
 
 	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data_ can be anything, it's just passed
 	   to func. If the watch function returns pcb_true, the watch is kept, else
 	   it is removed. */
-	  pcb_hidval_t(*watch_file) (int fd_, unsigned int condition_,
-												 pcb_bool (*func_) (pcb_hidval_t watch_, int fd_, unsigned int condition_, pcb_hidval_t user_data_),
-												 pcb_hidval_t user_data);
+	pcb_hidval_t (*watch_file)(int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
 
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
-	void (*unwatch_file) (pcb_hidval_t watch_);
+	void (*unwatch_file) (pcb_hidval_t watch);
 
 	/* Causes func_ to be called in the mainloop prior to blocking */
-	  pcb_hidval_t(*add_block_hook) (void (*func_) (pcb_hidval_t data_), pcb_hidval_t data_);
+	pcb_hidval_t (*add_block_hook)(void (*func)(pcb_hidval_t data), pcb_hidval_t data);
 	/* Use this to stop a mainloop block hook. */
-	void (*stop_block_hook) (pcb_hidval_t block_hook_);
+	void (*stop_block_hook) (pcb_hidval_t block_hook);
 
 	/* Various dialogs */
 
 	/* Logs a message to the log window.  */
-	void (*log) (const char *fmt_, ...);
-	void (*logv) (enum pcb_message_level, const char *fmt_, va_list args_);
+	void (*log)(const char *fmt, ...);
+	void (*logv)(enum pcb_message_level, const char *fmt, va_list args);
 
 	/* A generic yes/no dialog.  Returns zero if the cancel button is
 	   pressed, one for the OK button.  If you specify alternate labels
 	   for ..., they are used instead of the default OK/Cancel ones, and
 	   the return value is the index of the label chosen.  You MUST pass
 	   NULL as the last parameter to this.  */
-	int (*confirm_dialog) (const char *msg_, ...);
+	int (*confirm_dialog)(const char *msg, ...);
 
 	/* A close confirmation dialog for unsaved pages, for example, with
 	   options "Close without saving", "Cancel" and "Save". Returns zero
@@ -384,17 +382,17 @@ struct pcb_hid_s {
 	   is responsible for any "Save" action the user may wish before
 	   confirming the close.
 	 */
-	int (*close_confirm_dialog) ();
+	int (*close_confirm_dialog)();
 #define HID_CLOSE_CONFIRM_CANCEL 0
 #define HID_CLOSE_CONFIRM_OK     1
 
 	/* Just prints text.  */
-	void (*report_dialog) (const char *title_, const char *msg_);
+	void (*report_dialog)(const char *title, const char *msg);
 
 	/* Prompts the user to enter a string, returns the string.  If
 	   default_string isn't NULL, the form is pre-filled with this
 	   value.  "msg" is like "Enter value:".  Returns NULL on cancel. */
-	char *(*prompt_for) (const char *msg_, const char *default_string_);
+	char *(*prompt_for)(const char *msg, const char *default_string);
 
 	/* Prompts the user for a filename or directory name.  For GUI
 	   HID's this would mean a file select dialog box.  The 'flags'
@@ -430,8 +428,7 @@ struct pcb_hid_s {
 	 * flags_ are the bitwise OR of the HID_FILESELECT defines above
 	 */
 
-	char *(*fileselect) (const char *title_, const char *descr_,
-											 const char *default_file_, const char *default_ext_, const char *history_tag_, int flags_);
+	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags);
 
 	/* A generic dialog to ask for a set of attributes.  If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated.  Returns non-zero if
@@ -442,10 +439,10 @@ struct pcb_hid_s {
 	   may use it for a tooltip or text in a dialog box, or a help
 	   string.
 	 */
-	int (*attribute_dialog)(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data);
+	int (*attribute_dialog)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
 
 	/* The same API in 3 stages: */
-	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev)); /* returns hid_ctx */
+	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev)); /* returns hid_ctx */
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
 
@@ -470,19 +467,19 @@ struct pcb_hid_s {
 	   the extents of the item, and once to draw it.  To pass magic
 	   values, pass the address of a variable created for this
 	   purpose.  */
-	void (*show_item) (void *item_);
+	void (*show_item)(void *item);
 
 	/* Something to alert the user.  */
-	void (*beep) (void);
+	void (*beep)(void);
 
 	/* Used by optimizers and autorouter to show progress to the user.
 	   Pass all zeros to flush display and remove any dialogs.
 	   Returns nonzero if the user wishes to cancel the operation.  */
-	int (*progress) (int so_far_, int total_, const char *message_);
+	int (*progress)(int so_far, int total, const char *message);
 
 	pcb_hid_drc_gui_t *drc_gui;
 
-	void (*edit_attributes) (const char *owner, pcb_attribute_list_t * attrlist_);
+	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
 
 	/* Debug drawing support. These APIs must be implemented (non NULL),
 	 * but they do not have to be functional. request_debug_draw can
@@ -498,20 +495,20 @@ struct pcb_hid_s {
 	 * gui-> for making drawing calls. If the return value is NULL, then
 	 * permission has been denied, and the drawing must not continue.
 	 */
-	pcb_hid_t *(*request_debug_draw) (void);
+	pcb_hid_t *(*request_debug_draw)(void);
 
 	/* Flush pending drawing to the screen
 	 *
 	 * May be implemented as a NOOP if the GUI has chosen to send the
 	 * debug drawing directly to the screen.
 	 */
-	void (*flush_debug_draw) (void);
+	void (*flush_debug_draw)(void);
 
 	/* When finished, the user must inform the GUI to clean up resources
 	 *
 	 * Any remaining rendering will be flushed to the screen.
 	 */
-	void (*finish_debug_draw) (void);
+	void (*finish_debug_draw)(void);
 
 	/* Notification to the GUI around saving the PCB file.
 	 *
@@ -521,10 +518,10 @@ struct pcb_hid_s {
 	 * Allows GUIs which watch for file-changes on disk to ignore
 	 * our deliberate changes.
 	 */
-	void (*notify_save_pcb) (const char *filename, pcb_bool done);
+	void (*notify_save_pcb)(const char *filename, pcb_bool done);
 
 	/* Notification to the GUI that the PCB file has been renamed. */
-	void (*notify_filename_changed) (void);
+	void (*notify_filename_changed)(void);
 
 	/* Creates a new menu and/or submenus
 	 * menu_path is a / separated path to the new menu (parents are silently created).
@@ -534,10 +531,10 @@ struct pcb_hid_s {
 	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu) (const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
+	void (*create_menu)(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 
 	/* Removes a menu recursively */
-	int (*remove_menu) (const char *menu_path);
+	int (*remove_menu)(const char *menu_path);
 
 	/* Optional: print usage string (if accepts command line arguments)
 	   Subtopic:
