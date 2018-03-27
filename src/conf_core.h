@@ -53,7 +53,7 @@ typedef struct {
 		CFT_BOOLEAN wireframe_draw;        /* if set, lines and arcs on the screen are drawn as outlines. */
 		CFT_BOOLEAN local_ref;             /* use local reference for moves, by setting the mark at the beginning of each move. */
 		CFT_BOOLEAN check_planes;          /* when set, only polygons and their clearances are drawn, to see if polygons have isolated regions. */
-		CFT_BOOLEAN hide_names;            /* when set, element names are not drawn. */
+		CFT_BOOLEAN hide_names;            /* when set, subc floater text objects (typical use case: refdes text) are not drawn. */
 		CFT_BOOLEAN description;           /* obsolete - DO NOT USE - kept for compatibility */
 		CFT_BOOLEAN name_on_pcb;           /* obsolete - DO NOT USE - kept for compatibility */
 		CFT_STRING  subc_id;               /* subcircuit ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying the refes, if empty; syntax if the same as for DYNTEXT */
