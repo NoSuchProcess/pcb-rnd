@@ -246,7 +246,7 @@ int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom)
 	return 0;
 }
 
-int pcb_subc_get_host_trans(const pcb_subc_t *sc, pcb_host_trans_t *tr)
+int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr)
 {
 	int res = 0;
 	double rr;

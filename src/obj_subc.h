@@ -100,7 +100,7 @@ void EraseSubc(pcb_subc_t *sc);
 int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y);
 int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
 int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom);
-int pcb_subc_get_host_trans(const pcb_subc_t *sc, pcb_host_trans_t *tr);
+int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr);
 
 /* Search for the named subc; name is relative path in hierarchy. Returns
    NULL if not found */
