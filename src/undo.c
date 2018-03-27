@@ -81,10 +81,7 @@ void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len
 
 int pcb_undo(pcb_bool draw)
 {
-	int res, unique;
-
-	unique = conf_core.editor.unique_names;
-	conf_force_set_bool(conf_core.editor.unique_names, 0);
+	int res;
 
 	pcb_undo_and_draw = draw;
 
@@ -121,9 +118,6 @@ int pcb_undo(pcb_bool draw)
 		pcb_message(PCB_MSG_ERROR, _("ERROR: Failed to undo some operations\n"));
 	else if (pcb_undo_and_draw)
 		pcb_draw();
-
-	/* restore the unique flag setting */
-	conf_force_set_bool(conf_core.editor.unique_names, unique);
 
 	return res;
 }

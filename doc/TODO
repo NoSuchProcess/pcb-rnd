@@ -25,7 +25,6 @@ SUBC: element removal:
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
-	- BUG: require unique refdes: remove feauture
 	- remove ToggleHideName()
 	- advanced search GUI: new type names?
 	- BUG: put a 1206 on an empty board, save it in old .pcb -> pads become round; probably the same happens with old lihata? [report: igor2]

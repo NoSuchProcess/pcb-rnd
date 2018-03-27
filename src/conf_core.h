@@ -26,7 +26,7 @@ typedef struct {
 		CFT_BOOLEAN clear_line;            /* new lines/arc clear polygons. */
 		CFT_BOOLEAN clear_polypoly;        /* new polygons clear polygons. */
 		CFT_BOOLEAN full_poly;             /* new polygons are full polygons. */
-		CFT_BOOLEAN unique_names;          /* force unique names */
+		CFT_BOOLEAN unique_names;          /* OBSOLETE: force unique names */
 		CFT_BOOLEAN snap_pin;              /* snap to pins and pads */
 		CFT_BOOLEAN snap_offgrid_line;     /* Snap to certain off-grid points along a line. */
 		CFT_BOOLEAN marker_snaps;          /* marker snaps to grid or snap points, as any other click */

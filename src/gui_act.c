@@ -292,7 +292,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			break;
 
 		case F_ToggleUniqueNames:
-			conf_toggle_editor(unique_names);
+			pcb_message(PCB_MSG_ERROR, "Unique names/refdes is not supported any more - please use the renumber plugin\n");
 			break;
 
 		case F_ToggleSnapPin:

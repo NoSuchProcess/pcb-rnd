@@ -211,14 +211,6 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	 * and renumber them.
 	 */
 
-	/*
-	 * turn off the flag which requires unique names so it doesn't get
-	 * in our way.  When we're done with the renumber we will have unique
-	 * names.
-	 */
-
-	conf_force_set_bool(conf_core.editor.unique_names, 0);
-
 	cnt_list = (struct _cnt_list *) calloc(cnt_list_sz, sizeof(struct _cnt_list));
 	for (i = 0; i < cnt; i++) {
 		if (subc_list[i]->refdes) {
