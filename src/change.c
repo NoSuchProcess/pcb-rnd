@@ -741,7 +741,6 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	char *name = NULL;
-	char msg[513];
 	pcb_any_obj_t *obj = Ptr2;
 	pcb_subc_t *parent_subc;
 
