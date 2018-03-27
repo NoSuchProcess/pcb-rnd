@@ -86,8 +86,6 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		int type;
-
 		switch (pcb_funchash_get(function, NULL)) { /* select objects by their names */
 
 			/* select a single object */
@@ -195,7 +193,6 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		int type;
 		switch (pcb_funchash_get(function, NULL)) {
 
 			/* all objects in block */
