@@ -1115,8 +1115,6 @@ static routedata_t *CreateRouteData()
 								rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
 							break;
 
-						case PCB_OBJ_LINE_POINT:
-						case PCB_OBJ_POLY_POINT:
 						case PCB_OBJ_RAT:
 						case PCB_OBJ_SUBC:
 						case PCB_OBJ_NET:
