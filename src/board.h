@@ -39,7 +39,6 @@ enum {
 	PCB_NUM_NETLISTS         /* so that we know how many netlists we are dealing with */
 };
 
-#include "const.h"
 #include "macro.h"
 #include <stdio.h>
 #include <stdlib.h>

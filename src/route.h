@@ -30,8 +30,6 @@
 #ifndef GUARD_PCB_RND_ROUTE_H
 #define GUARD_PCB_RND_ROUTE_H
 
-#include "const.h"
-
 #define ROUTE_SMALL_DATA_SIZE 4
 
 typedef struct {
