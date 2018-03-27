@@ -41,17 +41,23 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 {
 	switch(type) {
 		case PCB_OBJ_VOID:        return "void";
-		case PCB_OBJ_LINE_POINT:  return "line_point";
 		case PCB_OBJ_LINE:        return "line";
 		case PCB_OBJ_TEXT:        return "text";
 		case PCB_OBJ_POLY:        return "polygon";
-		case PCB_OBJ_POLY_POINT:  return "poly_point";
 		case PCB_OBJ_ARC:         return "arc";
 		case PCB_OBJ_RAT:         return "ratline";
 		case PCB_OBJ_PSTK:        return "padstack";
 		case PCB_OBJ_SUBC:        return "subcircuit";
 		case PCB_OBJ_NET:         return "net";
 		case PCB_OBJ_LAYER:       return "layer";
+	}
+	switch((pcb_vobjtype_t)type) {
+		case PCB_OBJ_LINE_POINT:  return "line_point";
+		case PCB_OBJ_POLY_POINT:  return "poly_point";
+		case PCB_OBJ_ARC_POINT:   return "arc_point";
+		case PCB_OBJ_SUBC_PART:   return "subc_part";
+		case PCB_OBJ_LOCKED:      return "locked";
+		case PCB_OBJ_FLOATER:     return "floater";
 	}
 	return "<unknown/composite>";
 }
