@@ -27,16 +27,11 @@
  */
 
 /* some commonly used macros not related to a special C-file
- * the file is included by global.h after const.h
- */
+ * the file is included by global.h after const.h */
 
 #ifndef	PCB_MACRO_H
 #define	PCB_MACRO_H
 
-/* ---------------------------------------------------------------------------
- * macros to transform coord systems
- * draw.c uses a different definition of TO_SCREEN
- */
 #ifndef	PCB_SWAP_IDENT
 #define	PCB_SWAP_IDENT			conf_core.editor.show_solder_side
 #endif
@@ -49,17 +44,12 @@
 #define PCB_XOR(a,b)           (((a) && !(b)) || (!(a) && (b)))
 #define PCB_SQUARE(x)          ((float) (x) * (float) (x))
 
-/* ---------------------------------------------------------------------------
- * some loop shortcuts
- *
- * a pointer is created from index addressing because the base pointer
+/* a pointer is created from index addressing because the base pointer
  * may change when new memory is allocated;
  *
  * all data is relative to an objects name 'top' which can be either
- * PCB or PasteBuffer
- */
+ * PCB or PasteBuffer */
 #define PCB_END_LOOP  }} while (0)
-
 #define PCB_ENDALL_LOOP }} while (0); }} while(0)
 
 #endif
