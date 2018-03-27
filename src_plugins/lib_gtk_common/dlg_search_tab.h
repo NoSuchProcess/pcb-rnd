@@ -76,11 +76,7 @@ static expr_wizard_op_t op_tab[] = {
 	{NULL, NULL}
 };
 
-static const char *right_const_objtype[] = {
-	"POINT", "LINE", "TEXT", "POLYGON", "ARC", "RAT", "PAD", "PIN", "VIA",
-	"ELEMENT", "NET", "LAYER", "ELINE", "EARC", "ETEXT",
-	NULL
-};
+static const char *right_const_objtype[] = { "POINT", "LINE", "TEXT", "POLYGON", "ARC", "RAT", "NET", "LAYER", NULL };
 static const char *right_const_yesno[] = {"YES", "NO", NULL};
 static const char *right_const_layerpos[] = {"TOP", "BOTTOM", "INTERNAL", NULL};
 static const char *right_const_layertype[] = {"COPPER", "SILK", "MASK", "PASTE", "OUTLINE" , NULL};
@@ -140,6 +136,8 @@ static const expr_wizard_t expr_tab[] = {
 	{NULL,                "polygon",          NULL,             0, NULL},
 	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT, NULL},
 
+#warning padstack TODO: upgrade
+/*
 	{NULL,                "pin or via",       NULL,             0, NULL},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
@@ -147,7 +145,10 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.mask",            "mask",             &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.number",          "number",           &op_tab[OPS_STR], RIGHT_STR, NULL},
+*/
 
+#warning subc TODO: upgrade
+/*
 	{NULL,                "element",          NULL,             0, NULL},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
@@ -155,6 +156,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.description",     "description",      &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
+*/
 
 	{NULL,                "host layer's",     NULL,             0, NULL},
 	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
@@ -162,6 +164,8 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.layer.position",  "stack position",   &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERPOS]},
 	{"@.layer.type",      "type",             &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERTYPE]},
 
+#warning subc TODO: upgrade
+/*
 	{NULL,                "host element's",   NULL,             0, NULL},
 	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.element.y",       "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
@@ -169,7 +173,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.element.name",    "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.element.description","description",   &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.element.value",   "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
-
+*/
 	{NULL, NULL, NULL, 0, NULL}
 };
 
