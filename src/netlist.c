@@ -200,21 +200,6 @@ pcb_lib_menu_t *pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pin)
 	return NULL;
 }
 
-static pcb_lib_menu_t *pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const char *ename, const char *pname)
-{
-	char pinname[256];
-	int len;
-
-	if ((ename == NULL) || (pname == NULL))
-		return NULL;
-
-	len = pcb_snprintf(pinname, sizeof(pinname), "%s-%s", ename, pname);
-	if (len >= sizeof(pinname))
-		return NULL;
-
-	return pcb_netlist_find_net4pinname(pcb, pinname);
-}
-
 pcb_lib_menu_t *pcb_netlist_find_net4term(pcb_board_t *pcb, const pcb_any_obj_t *term)
 {
 	pcb_data_t *data;
