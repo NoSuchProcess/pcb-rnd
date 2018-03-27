@@ -36,7 +36,6 @@
 #include <gdk/gdkkeysyms.h>
 #include "in_mouse.h"
 
-#include "const.h"
 #include "board.h"
 #include "action_helper.h"
 #include "crosshair.h"

@@ -26,7 +26,6 @@
 
 #include <ctype.h>
 #include "config.h"
-#include "const.h"
 #include "data.h"
 #include "props.h"
 #include "propsel.h"

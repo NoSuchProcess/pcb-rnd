@@ -29,7 +29,6 @@
 #include "config.h"
 
 #include "operation.h"
-#include "const.h"
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"

@@ -33,7 +33,6 @@
 #include "bu_mode_btn.h"
 #include "bu_mode_btn.data"
 
-#include "const.h"
 #include "crosshair.h"
 #include "conf_core.h"
 #include "tool.h"

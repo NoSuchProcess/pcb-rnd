@@ -63,7 +63,6 @@
 
 #include "buffer.h"
 #include "data.h"
-#include "const.h"
 #include "plug_footprint.h"
 #include "compat_nls.h"
 #include "compat_misc.h"

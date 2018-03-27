@@ -33,7 +33,6 @@
 #include "layer.h"
 #include "wt_preview.h"
 #include "stub_draw.h"
-#include "const.h"
 
 typedef struct {
 	GtkDialog *dialog;

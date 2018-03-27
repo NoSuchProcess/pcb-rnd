@@ -32,7 +32,6 @@
 #include "conf_core.h"
 #include "flag_str.h"
 #include "global_typedefs.h"
-#include "const.h"
 #include "error.h"
 #include "obj_common.h"
 #include "obj_arc_ui.h"

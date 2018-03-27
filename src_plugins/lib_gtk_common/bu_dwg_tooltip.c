@@ -38,7 +38,6 @@
 #include "layer.h"
 #include "library.h"
 #include "search.h"
-#include "const.h"
 #include "find.h"
 #include "board.h"
 #include "obj_subc.h"

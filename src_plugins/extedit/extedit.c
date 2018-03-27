@@ -38,7 +38,6 @@
 #include "board.h"
 #include "compat_fs.h"
 #include "compat_misc.h"
-#include "const.h"
 #include "conf_core.h"
 #include "data.h"
 #include "buffer.h"

@@ -38,9 +38,9 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "const.h"
 #include "flag_str.h"
 #include "compat_misc.h"
+#include "obj_common.h"
 #include "macro.h"
 
 /* Because all the macros expect it, that's why.  */

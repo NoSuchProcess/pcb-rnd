@@ -31,7 +31,6 @@
  *  haceaton@aplcomm.jhuapl.edu
  *
  */
-#include "const.h"
 #include "config.h"
 #include "data.h"
 #include "action_helper.h"

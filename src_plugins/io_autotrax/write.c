@@ -34,7 +34,6 @@
 #include "data.h"
 #include "write.h"
 #include "layer.h"
-#include "const.h"
 #include "polygon_offs.h"
 #include "../lib_polyhelp/polyhelp.h"
 

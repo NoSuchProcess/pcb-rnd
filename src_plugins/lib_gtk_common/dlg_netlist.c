@@ -44,7 +44,6 @@
 #include "event.h"
 #include "error.h"
 #include "macro.h"
-#include "const.h"
 #include "find.h"
 #include "rats.h"
 #include "remove.h"

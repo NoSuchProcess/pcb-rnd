@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "const.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
@@ -41,6 +40,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "obj_common.h"
 #include "obj_subc_parent.h"
 
 #include "rats.h"

@@ -38,7 +38,6 @@
 #include "data.h"
 #include "read.h"
 #include "layer.h"
-#include "const.h"
 #include "netlist.h"
 #include "polygon.h"
 #include "plug_footprint.h"
