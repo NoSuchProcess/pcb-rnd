@@ -49,7 +49,7 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 #warning TODO: free the iterator
 }
 
-int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx)
+int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_exec_t ec;
 	pcb_qry_val_t res;
@@ -61,9 +61,9 @@ int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *r
 
 	do {
 		if (pcb_qry_eval(&ec, prg, &res) == 0) {
-			pcb_obj_t *current = NULL;
+			pcb_any_obj_t *current = NULL;
 			if (ec.iter->all_idx >= 0)
-				current = ec.iter->it[ec.iter->all_idx];
+				current = (pcb_any_obj_t *)vtp0_get(ec.iter->vects[ec.iter->all_idx], ec.iter->idx[ec.iter->all_idx], 0);
 			cb(user_ctx, &res, current);
 		}
 		else
@@ -152,8 +152,8 @@ int pcb_qry_is_true(pcb_qry_val_t *val)
 {
 	switch(val->type) {
 		case PCBQ_VT_VOID:     return 0;
-		case PCBQ_VT_OBJ:      return val->data.obj.type != PCB_OBJ_VOID;
-		case PCBQ_VT_LST:      return pcb_objlist_first(&val->data.lst) != NULL;
+		case PCBQ_VT_OBJ:      return val->data.obj->type != PCB_OBJ_VOID;
+		case PCBQ_VT_LST:      return vtp0_len(&val->data.lst) > 0;
 		case PCBQ_VT_COORD:    return val->data.crd;
 		case PCBQ_VT_DOUBLE:   return val->data.dbl;
 		case PCBQ_VT_STRING:   return (val->data.str != NULL) && (*val->data.str != '\0');
@@ -165,7 +165,9 @@ static void setup_iter_list(pcb_qry_exec_t *ctx, int var_id, pcb_qry_val_t *list
 {
 	ctx->iter->lst[var_id] = *listval;
 	assert(listval->type == PCBQ_VT_LST);
-	ctx->iter->it[var_id] = pcb_objlist_first(&listval->data.lst);
+
+	ctx->iter->vects[var_id] = &listval->data.lst;
+	ctx->iter->idx[var_id] = 0;
 }
 
 int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
@@ -192,10 +194,10 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx)
 {
 	int i;
 	for(i = 0; i < ctx->iter->num_vars; i++) {
-		ctx->iter->it[i] = pcb_objlist_next(ctx->iter->it[i]);
-		if (ctx->iter->it[i] != NULL)
+		ctx->iter->idx[i]++;
+		if (ctx->iter->idx[i] < vtp0_len(ctx->iter->vects[i]))
 			return 1;
-		ctx->iter->it[i] = pcb_objlist_first(&ctx->iter->lst[i].data.lst);
+		ctx->iter->idx[i] = 0;
 	}
 	return 0;
 }
@@ -204,6 +206,7 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx)
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 {
 	pcb_qry_val_t o1, o2;
+	pcb_any_obj_t *tmp;
 
 	switch(node->type) {
 		case PCBQ_EXPR:
@@ -249,7 +252,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
-				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj.type) == (o2.data.obj.type)) && ((o1.data.obj.data.any) == (o2.data.obj.data.any)));
+				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj) == (o2.data.obj)));
 				case PCBQ_VT_LST:      PCB_QRY_RET_INT(res, pcb_qry_list_cmp(&o1, &o2));
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd == o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl == o2.data.dbl);
@@ -268,7 +271,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
-				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj.type) != (o2.data.obj.type)) || ((o1.data.obj.data.any) != (o2.data.obj.data.any)));
+				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj) != (o2.data.obj)));
 				case PCBQ_VT_LST:      PCB_QRY_RET_INT(res, !pcb_qry_list_cmp(&o1, &o2));
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd != o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl != o2.data.dbl);
@@ -408,9 +411,10 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_VAR:
 			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
 			res->type = PCBQ_VT_OBJ;
-			if (ctx->iter->it[node->data.crd] == NULL)
+			tmp = (pcb_any_obj_t *)vtp0_get(ctx->iter->vects[node->data.crd], ctx->iter->idx[node->data.crd], 0);
+			if (tmp == NULL)
 				return -1;
-			res->data.obj = *ctx->iter->it[node->data.crd];
+			res->data.obj = tmp;
 			return 0;
 
 		case PCBQ_LISTVAR: {

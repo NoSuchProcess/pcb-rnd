@@ -27,10 +27,11 @@
 #ifndef PCB_QUERY_H
 #define PCB_QUERY_H
 
-#include "obj_any.h"
+#include <genvector/vtp0.h>
 #include <genht/htsi.h>
 #include <genregex/regex_se.h>
 #include "fields_sphash.h"
+#include "obj_common.h"
 
 typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;
@@ -50,8 +51,8 @@ typedef enum pcb_qry_valtype_e {
 struct pcb_qry_val_s {
 	pcb_qry_valtype_t type;
 	union {
-		pcb_obj_t obj;
-		pcb_objlist_t lst;
+		pcb_any_obj_t *obj;
+		vtp0_t lst;
 		pcb_coord_t crd;
 		double dbl;
 		const char *str;
@@ -128,14 +129,16 @@ void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top);
 
 void pcb_qry_set_input(const char *script);
 
-
 struct pcb_query_iter_s {
 	htsi_t names;         /* name->index hash */
 	int num_vars;
 
 	const char **vn;      /* pointers to the hash names so they can be indexed */
 	pcb_qry_val_t *lst;
-	pcb_obj_t **it;       /* iterator state for each variable - point into the correspoinding lst[] */
+
+	/* iterator state for each variable - point into the correspoinding lst[] */
+	vtp0_t **vects;
+	pcb_cardinal_t *idx;
 
 	int all_idx;          /* index of the "@" variable or -1 */
 };

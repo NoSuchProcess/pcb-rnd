@@ -129,7 +129,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 		case PCBQ_VAR:
 			pcb_printf("%s%s ", prefix, ind);
 			if ((it_ctx != NULL) && (nd->data.crd < it_ctx->num_vars)) {
-				if (it_ctx->it == NULL)
+				if (it_ctx->vects == NULL)
 					pcb_qry_iter_init(it_ctx);
 				printf("%s\n", it_ctx->vn[nd->data.crd]);
 			}
@@ -218,7 +218,8 @@ void pcb_qry_iter_init(pcb_query_iter_t *it)
 
 	if (it->vn != NULL)
 		return;
-	it->it  = calloc(sizeof(pcb_obj_t *), it->num_vars);
+	it->vects  = calloc(sizeof(vtp0_t *), it->num_vars);
+	it->idx  = calloc(sizeof(pcb_cardinal_t), it->num_vars);
 	it->lst = calloc(sizeof(pcb_qry_val_t), it->num_vars);
 
 	it->vn = malloc(sizeof(char *) * it->num_vars);

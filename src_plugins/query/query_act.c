@@ -47,7 +47,7 @@ typedef struct {
 	int trues, falses;
 } eval_stat_t;
 
-static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
+static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
 	eval_stat_t *st = (eval_stat_t *)user_ctx;
 	int t = pcb_qry_is_true(res);
@@ -71,22 +71,22 @@ typedef struct {
 	pcb_change_flag_t how;
 } select_t;
 
-static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
+static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
 	select_t *sel = (select_t *)user_ctx;
 	if (!pcb_qry_is_true(res))
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
 		int state_wanted = (sel->how == PCB_CHGFLG_SET);
-		int state_is     = PCB_FLAG_TEST(PCB_FLAG_SELECTED, current->data.anyobj);
+		int state_is     = PCB_FLAG_TEST(PCB_FLAG_SELECTED, current);
 		if (state_wanted != state_is) {
-			PCB_FLAG_CHANGE(sel->how, PCB_FLAG_SELECTED, current->data.anyobj);
+			PCB_FLAG_CHANGE(sel->how, PCB_FLAG_SELECTED, current);
 			sel->cnt++;
 		}
 	}
 }
 
-static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx)
+static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
 

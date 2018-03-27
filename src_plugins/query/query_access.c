@@ -36,54 +36,45 @@
 #include "fields_sphash.h"
 #include "obj_pstk_inlines.h"
 
-#define APPEND(_ctx_, _type_, _obj_, _parenttype_, _parent_) \
-do { \
-	pcb_objlist_t *lst = (pcb_objlist_t *)_ctx_; \
-	pcb_obj_t *o = calloc(sizeof(pcb_obj_t), 1); \
-	o->type = _type_; \
-	o->data.any = _obj_; \
-	o->parent_type = _parenttype_; \
-	o->parent.any = _parent_; \
-	pcb_objlist_append(lst, o); \
-} while(0)
+#define APPEND(_lst_, _obj_) vtp0_append((vtp0_t *)_lst_, _obj_)
 
 static int list_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
 	if (enter)
-		APPEND(ctx, PCB_OBJ_LAYER, layer, PCB_PARENT_DATA, pcb->Data);
+		APPEND(ctx, layer);
 	return 0;
 }
 
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
-	APPEND(ctx, PCB_OBJ_LINE, line, PCB_PARENT_LAYER, layer);
+	APPEND(ctx, line);
 }
 
 static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
-	APPEND(ctx, PCB_OBJ_ARC, arc, PCB_PARENT_LAYER, layer);
+	APPEND(ctx, arc);
 }
 
 static void list_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
-	APPEND(ctx, PCB_OBJ_TEXT, text, PCB_PARENT_LAYER, layer);
+	APPEND(ctx, text);
 }
 
 static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly)
 {
-	APPEND(ctx, PCB_OBJ_POLY, poly, PCB_PARENT_LAYER, layer);
+	APPEND(ctx, poly);
 }
 
 static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 {
 	if (enter)
-		APPEND(ctx, PCB_OBJ_SUBC, subc, PCB_PARENT_DATA, pcb->Data);
+		APPEND(ctx, subc);
 	return 0;
 }
 
 static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
-	APPEND(ctx, PCB_OBJ_PSTK, ps, PCB_PARENT_DATA, pcb->Data);
+	APPEND(ctx, ps);
 }
 
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
@@ -102,17 +93,7 @@ void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 
 void pcb_qry_list_free(pcb_qry_val_t *lst_)
 {
-	pcb_objlist_t *lst = &lst_->data.lst;
-
-	assert(lst_->type == PCBQ_VT_LST);
-
-	for(;;) {
-		pcb_obj_t *n = pcb_objlist_first(lst);
-		if (n == NULL)
-			break;
-		pcb_objlist_remove(n);
-		free(n);
-	}
+	vtp0_uninit(&lst_->data.lst);
 }
 
 int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2)
@@ -197,9 +178,9 @@ do { \
 	(s) = __res__; \
 } while(0)
 
-static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_layer_t *l = obj->data.layer;
+	pcb_layer_t *l = (pcb_layer_t *)obj;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -226,12 +207,7 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_layer_from_ptr(pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_obj_t tmp;
-	tmp.type = PCB_OBJ_LAYER;
-	tmp.data.layer = l;
-	tmp.parent_type = PCB_PARENT_DATA;
-	tmp.parent.data = PCB->Data;
-	return field_layer(&tmp, fld, res);
+	return field_layer((pcb_any_obj_t *)l, fld, res);
 }
 
 /* process from .layer */
@@ -247,8 +223,7 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 
 	if (s1 == NULL) {
 		res->type = PCBQ_VT_OBJ;
-		res->data.obj.type = PCB_OBJ_LAYER;
-		res->data.obj.data.layer = PCB->Data->Layer+id;
+		res->data.obj = (pcb_any_obj_t *)&(PCB->Data->Layer[id]);
 		return 0;
 	}
 
@@ -256,9 +231,9 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 }
 
 
-static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_line_t *l = obj->data.line;
+	pcb_line_t *l = (pcb_line_t *)obj;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -300,9 +275,9 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_arc_t *a = obj->data.arc;
+	pcb_arc_t *a = (pcb_arc_t *)obj;
 	query_fields_keys_t fh1, fh2;
 
 	fld2hash_req(fh1, fld, 0);
@@ -354,9 +329,9 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_text_t *t = obj->data.text;
+	pcb_text_t *t = (pcb_text_t *)obj;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -389,9 +364,9 @@ static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_poly_t *p = obj->data.polygon;
+	pcb_poly_t *p = (pcb_poly_t *)obj;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -420,7 +395,7 @@ static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_rat(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 /*	const char *s1, *s2;
 
@@ -431,9 +406,9 @@ static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 }
 
 
-static int field_pstk(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_pstk_t *p = obj->data.pstk;
+	pcb_pstk_t *p = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(p);
 	query_fields_keys_t fh1;
 
@@ -464,7 +439,7 @@ static int field_pstk(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_net(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 /*	const char *s1, *s2;
 
@@ -474,9 +449,9 @@ static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_subc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_subc_t *p = obj->data.subc;
+	pcb_subc_t *p = (pcb_subc_t *)obj;
 	query_fields_keys_t fh1;
 	pcb_coord_t x, y;
 
@@ -512,15 +487,10 @@ static int field_subc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_subc_from_ptr(pcb_subc_t *s, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_obj_t tmp;
-	tmp.type = PCB_OBJ_SUBC;
-	tmp.data.subc = s;
-	tmp.parent_type = PCB_PARENT_DATA;
-	tmp.parent.data = PCB->Data;
-	return field_subc(&tmp, fld, res);
+	return field_subc((pcb_any_obj_t *)s, fld, res);
 }
 
-static int field_subc_obj(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_subc_obj(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	const char *s1;
 
@@ -532,9 +502,7 @@ static int field_subc_obj(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	fld2str_opt(s1, fld, 0);
 	if (s1 == NULL) {
 		res->type = PCBQ_VT_OBJ;
-		res->data.obj.data.subc = obj->parent.subc;
-		res->data.obj.parent_type = PCB_PARENT_DATA;
-		res->data.obj.parent.data = PCB->Data;
+		res->data.obj = (pcb_any_obj_t *)obj->parent.subc;
 		return 0;
 	}
 
@@ -546,12 +514,12 @@ static int field_subc_obj(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 
 int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_obj_t *obj;
+	pcb_any_obj_t *obj;
 	query_fields_keys_t fh1;
 
 	if (objval->type != PCBQ_VT_OBJ)
 		return -1;
-	obj = &objval->data.obj;
+	obj = objval->data.obj;
 
 	fld2hash_req(fh1, fld, 0);
 
@@ -560,13 +528,13 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 		fld2str_req(s2, fld, 1);
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
-		PCB_QRY_RET_STR(res, pcb_attribute_get(&obj->data.anyobj->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&obj->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_ID) {
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
-		PCB_QRY_RET_INT(res, obj->data.anyobj->ID);
+		PCB_QRY_RET_INT(res, obj->ID);
 	}
 
 	if (fh1 == query_fields_bbox) {
@@ -577,13 +545,13 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 		fld2hash_req(fh2, fld, 1);
 		switch(fh2) {
-			case query_fields_x1:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X1);
-			case query_fields_y1:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y1);
-			case query_fields_x2:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2);
-			case query_fields_y2:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2);
-			case query_fields_width:  PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1);
-			case query_fields_height: PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1);
-			case query_fields_area:   PCB_QRY_RET_DBL(res, (double)(obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1) * (double)(obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1));
+			case query_fields_x1:     PCB_QRY_RET_INT(res, obj->BoundingBox.X1);
+			case query_fields_y1:     PCB_QRY_RET_INT(res, obj->BoundingBox.Y1);
+			case query_fields_x2:     PCB_QRY_RET_INT(res, obj->BoundingBox.X2);
+			case query_fields_y2:     PCB_QRY_RET_INT(res, obj->BoundingBox.Y2);
+			case query_fields_width:  PCB_QRY_RET_INT(res, obj->BoundingBox.X2 - obj->BoundingBox.X1);
+			case query_fields_height: PCB_QRY_RET_INT(res, obj->BoundingBox.Y2 - obj->BoundingBox.Y1);
+			case query_fields_area:   PCB_QRY_RET_DBL(res, (double)(obj->BoundingBox.Y2 - obj->BoundingBox.Y1) * (double)(obj->BoundingBox.X2 - obj->BoundingBox.X1));
 			default:;
 		}
 		PCB_QRY_RET_INV(res);
