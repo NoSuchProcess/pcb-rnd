@@ -287,7 +287,7 @@ static const char pcb_acts_ChangeSize[] =
 
 static const char pcb_acth_ChangeSize[] = "Changes the size of objects.";
 
-#warning subcircuit TODO: check if it is true:
+#warning subc TODO: check if it is true:
 /* %start-doc actions ChangeSize
 
 For lines and arcs, this changes the width.  For padstacks, this
