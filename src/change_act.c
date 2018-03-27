@@ -1104,18 +1104,18 @@ pcb_hid_action_t change_action_list[] = {
 	{"ChangeDrillSize", 0, pcb_act_Change2ndSize,
 	 changedrillsize_help, changedrillsize_syntax}
 	,
-/*	{"ChangeHole", 0, pcb_act_ChangeHole,
+	{"ChangeHole", 0, pcb_act_ChangeHole,
 	 changehold_help, changehold_syntax}
-	,*/
+	,
 	{"ChangeJoin", 0, pcb_act_ChangeJoin,
 	 pcb_acth_ChangeJoin, pcb_acts_ChangeJoin}
 	,
 	{"ChangeName", 0, pcb_act_ChangeName,
 	 pcb_acth_ChangeName, pcb_acts_ChangeName}
 	,
-/*	{"ChangePaste", 0, pcb_act_ChangePaste,
+	{"ChangePaste", 0, pcb_act_ChangePaste,
 	 pcb_acth_ChangePaste, pcb_acts_ChangePaste}
-	,*/
+	,
 	{"ChangePinName", 0, pcb_act_ChangePinName,
 	 pcb_acth_ChangePinName, pcb_acts_ChangePinName}
 	,
