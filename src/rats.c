@@ -126,7 +126,6 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 #warning padstack TODO: once pins and pads are gone, move this to obj_term.c
 static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
-	gdl_iterator_t it;
 	pcb_any_obj_t *obj;
 
 	/* first check for subcircuits; this is the only one thing we'll need to do
