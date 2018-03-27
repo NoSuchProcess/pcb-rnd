@@ -44,6 +44,8 @@
 #include "tool.h"
 #include "tool_lock.h"
 
+#define PCB_OBJ_CLASS_LOCK (PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_LOCKED)
+
 void pcb_tool_lock_notify_mode(void)
 {
 	void *ptr1, *ptr2, *ptr3;
