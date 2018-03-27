@@ -236,7 +236,7 @@ void pcb_hid_usage(pcb_hid_attribute_t * a, int numa)
 	}
 }
 
-int pcb_hid_atrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs)
+int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs)
 {
 	int n, level = 1, cnt = 0;
 

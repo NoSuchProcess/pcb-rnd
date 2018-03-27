@@ -315,7 +315,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 					ts.type = TB_TABLE;
 					ts.val.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
-					ts.val.table.rows = pcb_hid_atrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.val.table.cols;
+					ts.val.table.rows = pcb_hid_attrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.val.table.cols;
 					ts.val.table.col = 0;
 					ts.val.table.row = 0;
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
