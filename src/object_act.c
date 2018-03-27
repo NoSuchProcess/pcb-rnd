@@ -475,7 +475,6 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	const char *refdes, *value, *footprint;
 	const char *args[3];
 	const char *function = argv[0];
-	char *old;
 
 #ifdef DEBUG
 	printf("Entered pcb_act_ElementList, executing function %s\n", function);
@@ -576,7 +575,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
-		int orig_on_top, orig_rotstep, paste_ok = 0;
+		int orig_on_top, paste_ok = 0;
 		pcb_coord_t orig_cx, orig_cy;
 		double orig_rot;
 
@@ -592,7 +591,6 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			orig_cy = 0;
 			orig_on_top = 0;
 			pcb_subc_get_rotation(sc, &orig_rot);
-			orig_rotstep = pcb_round(orig_rot / 90.0);
 			pcb_subc_get_origin(sc, &orig_cx, &orig_cy);
 			pcb_subc_get_side(sc, &orig_on_top);
 			orig_on_top = !orig_on_top;
@@ -668,7 +666,6 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 {
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
-	pcb_attribute_t *attr;
 
 	if (argc < 2) {
 		PCB_ACT_FAIL(ElementSetAttr);
