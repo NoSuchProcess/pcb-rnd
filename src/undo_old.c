@@ -95,6 +95,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr);
 static pcb_bool UndoChangeClearSize(UndoListTypePtr);
 static pcb_bool UndoClearPoly(UndoListTypePtr);
 
+#define PCB_OBJECT_ID(p) (((pcb_any_obj_t *) p)->ID)
 
 static void pcb_undo_old_free(void *udata);
 static int pcb_undo_old_undo(void *udata);

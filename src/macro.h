@@ -50,24 +50,6 @@
 #define PCB_SQUARE(x)          ((float) (x) * (float) (x))
 
 /* ---------------------------------------------------------------------------
- * returns the object ID
- */
-#define PCB_OBJECT_ID(p)  (((pcb_any_obj_t *) p)->ID)
-
-/* ---------------------------------------------------------------------------
- *  Determines if object is on front or back
- */
-#define PCB_FRONT(o)	\
-	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == PCB_SWAP_IDENT)
-
-/* ---------------------------------------------------------------------------
- *  Determines if an object is on the given side. side is either PCB_SOLDER_SIDE
- *  or PCB_COMPONENT_SIDE.
- */
-#define PCB_ON_SIDE(element, side) \
-        (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) == (side == PCB_SOLDER_SIDE))
-
-/* ---------------------------------------------------------------------------
  * some loop shortcuts
  *
  * a pointer is created from index addressing because the base pointer

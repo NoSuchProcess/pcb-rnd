@@ -480,6 +480,9 @@ static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	return pcb_false;
 }
 
+#warning subc TODO: this is not how it is done - PCB_FLAG_ONSOLDER is not used for subc
+#define PCB_FRONT(o) ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == PCB_SWAP_IDENT)
+
 static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 {
 	pcb_subc_t *subc = (pcb_subc_t *) box;
