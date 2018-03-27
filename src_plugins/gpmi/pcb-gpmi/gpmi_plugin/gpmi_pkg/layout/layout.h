@@ -255,19 +255,6 @@ typedef struct dctx_s {
 	void *gc;
 } dctx_t;
 
-/* -- debug draw GC -- */
-/* Initialize debug drawing; returns 1 if worked, 0 if denied */
-int debug_draw_request(void);
-
-/* Flush the drawing */
-void debug_draw_flush(void);
-
-/* Finish (close) drawing */
-void debug_draw_finish(dctx_t *ctx);
-
-/* Get the draw context of debug draw */
-dctx_t *debug_draw_dctx(void);
-
 /* -- draw on a GC -- */
 
 /* Debug draw style: set drawing color */
