@@ -377,7 +377,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				dy = 0;
 			else
 				dx = 0;
-			pcb_move_obj(PCB_TYPE_TEXT, text->parent.layer, text, text, dx, dy);
+			pcb_move_obj(PCB_OBJ_TEXT, text->parent.layer, text, text, dx, dy);
 			changed = 1;
 		}
 		} PCB_ENDALL_LOOP;
@@ -405,7 +405,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					dy = 0;
 				else
 					dx = 0;
-				pcb_move_obj(PCB_TYPE_TEXT, layer, text, text, dx, dy);
+				pcb_move_obj(PCB_OBJ_TEXT, layer, text, text, dx, dy);
 				changed = 1;
 			}
 		}
@@ -577,7 +577,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			else
 				dx = 0;
 			pcb_text_move(text, dx, dy);
-			pcb_undo_add_obj_to_move(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
+			pcb_undo_add_obj_to_move(PCB_OBJ_TEXT, NULL, NULL, text, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */

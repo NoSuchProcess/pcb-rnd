@@ -119,7 +119,7 @@ pcb_route_add_line( pcb_route_t * p_route,pcb_point_t * point1,pcb_point_t * poi
 	p_object->point1	= *point1;
 	p_object->point2	= *point2;
 	p_object->layer		= layer;
-	p_object->type		= PCB_TYPE_LINE;
+	p_object->type		= PCB_OBJ_LINE;
 }
 
 void
@@ -134,7 +134,7 @@ pcb_route_add_arc( pcb_route_t * p_route,pcb_point_t * center,pcb_angle_t start_
 	p_object->delta_angle	= delta;
 	p_object->radius			= radius;
 	p_object->layer				= layer;
-	p_object->type				= PCB_TYPE_ARC;
+	p_object->type				= PCB_OBJ_ARC;
 }
 
 
@@ -450,7 +450,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 
 		switch(p_obj->type)
 		{
-			case PCB_TYPE_LINE :
+			case PCB_OBJ_LINE :
 				/* 	If the route is being applied to an existing line then the existing
 						line will be used as the first line in the route. This maintains the
 						ID of the line and line points. This is especially useful if the 
@@ -459,7 +459,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 				if(apply_to_line)	{
 					/* Move the existing line points to the position of the route line. */
 					if((p_obj->point1.X != apply_to_line->Point1.X) || (p_obj->point1.Y != apply_to_line->Point1.Y))
-						pcb_undo_add_obj_to_move(	PCB_TYPE_LINE_POINT, 
+						pcb_undo_add_obj_to_move(	PCB_OBJ_LINE_POINT, 
 																			apply_to_line_layer, 
 																			apply_to_line, 
 																			&apply_to_line->Point1, 
@@ -467,7 +467,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 																			p_obj->point1.Y - apply_to_line->Point1.Y );
 
 					if((p_obj->point2.X != apply_to_line->Point2.X) || (p_obj->point2.Y != apply_to_line->Point2.Y))
-						pcb_undo_add_obj_to_move(	PCB_TYPE_LINE_POINT, 
+						pcb_undo_add_obj_to_move(	PCB_OBJ_LINE_POINT, 
 																			apply_to_line_layer, 
 																			apply_to_line, 
 																			&apply_to_line->Point2, 
@@ -477,14 +477,14 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 					/* Move the existing line point/s */
 					pcb_line_invalidate_erase(apply_to_line);
 					pcb_r_delete_entry(apply_to_line_layer->line_tree, (pcb_box_t *) apply_to_line);
-					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, apply_to_line_layer, apply_to_line);
+					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, apply_to_line_layer, apply_to_line);
 					apply_to_line->Point1.X = p_obj->point1.X;
 					apply_to_line->Point1.Y = p_obj->point1.Y;
 					apply_to_line->Point2.X = p_obj->point2.X;
 					apply_to_line->Point2.Y = p_obj->point2.Y;
 					pcb_line_bbox(apply_to_line);
 					pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) apply_to_line);
-					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, apply_to_line);
+					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, apply_to_line);
 					pcb_line_invalidate_draw(layer, apply_to_line);
 					apply_to_line_layer = layer;
 
@@ -508,13 +508,13 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 						pcb_added_lines++;
 						pcb_obj_add_attribs(line, PCB->pen_attr);
 						pcb_line_invalidate_draw(layer, line);
-						pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, line, line);
+						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
 					}
 				}
 				break;
 	
-			case PCB_TYPE_ARC :
+			case PCB_OBJ_ARC :
 				{
 					/* Create a new arc */
 					pcb_arc_t * arc =	pcb_arc_new( 	layer,
@@ -530,7 +530,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 					if(arc)	{
 						pcb_added_lines++;
             pcb_obj_add_attribs(arc, PCB->pen_attr);
-            pcb_undo_add_obj_to_create(PCB_TYPE_ARC, layer, arc, arc);
+            pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
             pcb_arc_invalidate_draw(layer, arc);
             applied = 1;
 					}
@@ -604,11 +604,11 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 			pcb_gui->set_color(GC,layer->meta.real.color);
 
 		switch(p_obj->type) {
-			case PCB_TYPE_LINE :	
+			case PCB_OBJ_LINE :	
 				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,p_route->thickness, 0);
 				break;
 
-			case PCB_TYPE_ARC :		
+			case PCB_OBJ_ARC :		
 				pcb_route_draw_arc(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->start_angle,p_obj->delta_angle,p_obj->radius,p_route->thickness); 
 				break;
 
@@ -633,11 +633,11 @@ pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC )
 		const pcb_route_object_t * p_obj = &p_route->objects[i];
 
 		switch(p_obj->type) {
-			case PCB_TYPE_LINE :	
+			case PCB_OBJ_LINE :	
 				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,thickness, 0);
 				break;
 
-			case PCB_TYPE_ARC :		
+			case PCB_OBJ_ARC :		
 				pcb_route_draw_arc(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->start_angle,p_obj->delta_angle,p_obj->radius,thickness); 
 				break;
 

@@ -70,13 +70,13 @@ typedef struct extedit_method_s {
 } extedit_method_t;
 
 static extedit_method_t methods[] = {
-	{"pcb-rnd",         PCB_TYPE_SUBC, EEF_LIHATA, "pcb-rnd \"%f\""},
-	{"editor",          PCB_TYPE_SUBC, EEF_LIHATA, "xterm -e editor \"%f\""},
+	{"pcb-rnd",         PCB_OBJ_SUBC, EEF_LIHATA, "pcb-rnd \"%f\""},
+	{"editor",          PCB_OBJ_SUBC, EEF_LIHATA, "xterm -e editor \"%f\""},
 	{NULL, 0, 0, NULL}
 };
 
 /* accept these objects for external editing */
-#define EXTEDIT_TYPES (PCB_TYPE_SUBC)
+#define EXTEDIT_TYPES (PCB_OBJ_SUBC)
 
 #include "extedit_dad.c"
 

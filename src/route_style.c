@@ -202,9 +202,9 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 	switch (funcid) {
 	case F_Object:
 		switch (type) {
-		case PCB_TYPE_LINE:
+		case PCB_OBJ_LINE:
 			return pcb_get_style_size(F_SelectedLines, out, 0, size_id);
-		case PCB_TYPE_ARC:
+		case PCB_OBJ_ARC:
 			return pcb_get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
 		pcb_message(PCB_MSG_ERROR, _("Sorry, can't fetch the style of that object type (%x)\n"), type);

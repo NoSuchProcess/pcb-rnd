@@ -524,14 +524,14 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
-			pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
+			pcb_remove_object(PCB_OBJ_LINE, layer, line, line);
 	}
 	PCB_ENDALL_LOOP;
 
 	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
-			pcb_remove_object(PCB_TYPE_ARC, layer, arc, arc);
+			pcb_remove_object(PCB_OBJ_ARC, layer, arc, arc);
 	}
 	PCB_ENDALL_LOOP;
 
@@ -539,7 +539,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))
-				pcb_remove_object(PCB_TYPE_PSTK, padstack, padstack, padstack);
+				pcb_remove_object(PCB_OBJ_PSTK, padstack, padstack, padstack);
 		}
 		PCB_END_LOOP;
 }

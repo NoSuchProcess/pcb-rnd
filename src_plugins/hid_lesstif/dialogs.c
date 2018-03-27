@@ -1706,7 +1706,7 @@ static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 			pcb_gui->get_coords(_("Select an Object"), &x, &y);
-			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 /*				pcb_undo_save_serial();*/
 				lesstif_show_fontsel_edit(ptr1, ptr2, type);
 			}

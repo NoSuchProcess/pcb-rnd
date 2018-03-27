@@ -852,7 +852,7 @@ static pcb_polyarea_t *poly_sub_callback_line(pcb_coord_t x1, pcb_coord_t y1, pc
 	static int inited = 0;
 
 	if (!inited) {
-		lin.type = PCB_TYPE_LINE;
+		lin.type = PCB_OBJ_LINE;
 		lin.Flags = pcb_no_flags();
 		PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &lin);
 		lin.Thickness = 0;
@@ -1278,7 +1278,7 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 		line.Point2 = Polygon->Points[next];
 		line.Thickness = 0;
 		if (pcb_is_point_on_line(p->X, p->Y, 0.0, &line)) {
-			pcb_remove_object(PCB_TYPE_POLY_POINT, Layer, Polygon, p);
+			pcb_remove_object(PCB_OBJ_POLY_POINT, Layer, Polygon, p);
 			changed = pcb_true;
 		}
 	}
@@ -1453,7 +1453,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_added_lines = 0;
 
 	/* add to undo list */
-	pcb_undo_add_obj_to_create(PCB_TYPE_POLY, layer, polygon, polygon);
+	pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, polygon, polygon);
 	pcb_undo_inc_serial();
 }
 
@@ -1508,7 +1508,7 @@ void pcb_polygon_hole_create_from_attached(void)
 	pcb_undo_save_serial();
 	Flags = ((pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
 	pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
-	pcb_remove_object(PCB_TYPE_POLY,
+	pcb_remove_object(PCB_OBJ_POLY,
 							 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
@@ -1557,26 +1557,26 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 	if (!Polygon->Clipped)
 		return 0;
 	switch (type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		SubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		SubtractLine((pcb_line_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		SubtractArc((pcb_arc_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		if (ptr2 != Polygon) {
 			SubtractPolyPoly((pcb_poly_t *) ptr2, Polygon);
 			Polygon->NoHolesValid = 0;
 			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 		break;
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		SubtractText((pcb_text_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1587,22 +1587,22 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		UnsubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		UnsubtractArc((pcb_arc_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		if (ptr2 != Polygon) {
 			UnsubtractPolyPoly((pcb_poly_t *) ptr2, Polygon);
 			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 		break;
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		UnsubtractText((pcb_text_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	}
@@ -1659,7 +1659,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	info.data = Data;
 	info.callback = call_back;
 	switch (type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		if (Data->parent_type != PCB_PARENT_BOARD)
 			return 0;
 		if (ptr1 == NULL) { /* no layer specified: run on all layers */
@@ -1678,19 +1678,19 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_pstk_t *)ptr2))
 			return 0;
 		goto doit;
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		if (!PCB_POLY_HAS_CLEARANCE((pcb_poly_t *) ptr2))
 			return 0;
 		goto doit;
 
-	case PCB_TYPE_LINE:
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_LINE:
+	case PCB_OBJ_ARC:
 		/* the cast works equally well for lines and arcs */
 		if (!PCB_NONPOLY_HAS_CLEARANCE((pcb_line_t *) ptr2))
 			return 0;
 		goto doit;
 
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		/* text has no clearance property */
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
@@ -1718,7 +1718,7 @@ void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 		dt = dt->parent.subc->parent.data;
 	if ((dt == NULL) || (dt->parent_type != PCB_PARENT_BOARD)) /* clear/restore only on boards */
 		return;
-	if (type == PCB_TYPE_POLY)
+	if (type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(dt, (pcb_layer_t *) ptr1, (pcb_poly_t *) ptr2);
 	pcb_poly_plows(dt, type, ptr1, ptr2, add_plow);
 }
@@ -1730,7 +1730,7 @@ void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 		dt = dt->parent.subc->parent.data;
 	if ((dt == NULL) || (dt->parent_type != PCB_PARENT_BOARD)) /* clear/restore only on boards */
 		return;
-	if (type == PCB_TYPE_POLY)
+	if (type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(dt, (pcb_layer_t *) ptr1, (pcb_poly_t *) ptr2);
 	pcb_poly_plows(dt, type, ptr1, ptr2, subtract_plow);
 }
@@ -1908,7 +1908,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 			newone->BoundingBox.X2 = p->contours->xmax + 1;
 			newone->BoundingBox.Y1 = p->contours->ymin;
 			newone->BoundingBox.Y2 = p->contours->ymax + 1;
-			pcb_undo_add_obj_to_create(PCB_TYPE_POLY, layer, newone, newone);
+			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, newone, newone);
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
@@ -2017,7 +2017,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		/* add to undo list */
-		pcb_undo_add_obj_to_create(PCB_TYPE_POLY, Layer, Polygon, Polygon);
+		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, Layer, Polygon, Polygon);
 	}
 	while ((pa = pa->f) != Input);
 

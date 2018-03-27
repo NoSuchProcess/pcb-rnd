@@ -67,18 +67,18 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 
 	pcb_bool changed = pcb_true;
 
-	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC | PCB_TYPE_SUBC_FLOATER, &ptr1, &ptr2, &ptr3);
-	if (type == PCB_TYPE_NONE || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
+	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
+	if (type == PCB_OBJ_VOID || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 		return pcb_false;
 	switch (type) {
 
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		pcb_undo_add_obj_to_flag(ptr1);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pstk_t *) ptr1);
 		pcb_pstk_invalidate_draw((pcb_pstk_t *) ptr1);
 		break;
 
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		{
 			pcb_line_t *line = (pcb_line_t *) ptr2;
 
@@ -89,7 +89,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			break;
 		}
 
-	case PCB_TYPE_RATLINE:
+	case PCB_OBJ_RAT:
 		{
 			pcb_rat_t *rat = (pcb_rat_t *) ptr2;
 
@@ -99,7 +99,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			break;
 		}
 
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		{
 			pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 
@@ -110,7 +110,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			break;
 		}
 
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		{
 			pcb_text_t *text = (pcb_text_t *) ptr2;
 
@@ -121,7 +121,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			break;
 		}
 
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		{
 			pcb_poly_t *poly = (pcb_poly_t *) ptr2;
 
@@ -133,7 +133,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			break;
 		}
 
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		pcb_subc_select(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
 		break;
 	}
@@ -231,7 +231,7 @@ do { \
 		PCB_RAT_LOOP(pcb->Data);
 	{
 		if (PCB_LINE_NEAR_BOX((pcb_line_t *) line, Box) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
-			append(PCB_TYPE_RATLINE, line, line);
+			append(PCB_OBJ_RAT, line, line);
 			if (pcb->RatOn)
 				pcb_rat_invalidate_draw(line);
 		}
@@ -259,7 +259,7 @@ do { \
 			if (PCB_LINE_NEAR_BOX(line, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
-				append(PCB_TYPE_LINE, layer, line);
+				append(PCB_OBJ_LINE, layer, line);
 				if (layer->meta.real.vis)
 					pcb_line_invalidate_draw(layer, line);
 			}
@@ -270,7 +270,7 @@ do { \
 			if (PCB_ARC_NEAR_BOX(arc, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc) != Flag) {
-				append(PCB_TYPE_ARC, layer, arc);
+				append(PCB_OBJ_ARC, layer, arc);
 				if (layer->meta.real.vis)
 					pcb_arc_invalidate_draw(layer, arc);
 			}
@@ -282,7 +282,7 @@ do { \
 				if (PCB_TEXT_NEAR_BOX(text, Box)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
-					append(PCB_TYPE_TEXT, layer, text);
+					append(PCB_OBJ_TEXT, layer, text);
 					if (pcb_text_is_visible(PCB, layer, text))
 						pcb_text_invalidate_draw(layer, text);
 				}
@@ -294,7 +294,7 @@ do { \
 			if (PCB_POLYGON_NEAR_BOX(polygon, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) != Flag) {
-				append(PCB_TYPE_POLY, layer, polygon);
+				append(PCB_OBJ_POLY, layer, polygon);
 				if (layer->meta.real.vis)
 					pcb_poly_invalidate_draw(layer, polygon);
 			}
@@ -335,7 +335,7 @@ do { \
 			if (pcb_pstk_near_box(padstack, Box, NULL)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
-				append(PCB_TYPE_PSTK, padstack, padstack);
+				append(PCB_OBJ_PSTK, padstack, padstack);
 				if (pcb->ViaOn)
 					pcb_pstk_invalidate_draw(padstack);
 			}

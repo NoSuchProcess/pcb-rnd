@@ -51,10 +51,10 @@ void pcb_tool_polyhole_notify_mode(void)
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedPolygon_pts = 0;
 		pcb_crosshair.AttachedObject.Type =
-			pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_POLY,
+			pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_POLY,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
-		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
+		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_VOID) {
 			pcb_message(PCB_MSG_WARNING, "The first point of a polygon hole must be on a polygon.\n");
 			break; /* don't start doing anything if clicket out of polys */
 		}
@@ -62,7 +62,7 @@ void pcb_tool_polyhole_notify_mode(void)
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)
 									pcb_crosshair.AttachedObject.Ptr2)) {
 			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-			pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+			pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 			break;
 		}
 		else

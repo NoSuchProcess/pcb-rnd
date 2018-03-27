@@ -403,7 +403,7 @@ static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 #define	PCB_FORCECOLOR_TYPES        \
-	(PCB_TYPE_PSTK | PCB_TYPE_TEXT | PCB_TYPE_SUBC | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_SUBC_PART | PCB_TYPE_SUBC | PCB_TYPE_RATLINE)
+	(PCB_OBJ_PSTK | PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART | PCB_OBJ_SUBC | PCB_OBJ_RAT)
 
 static const char forcecolor_syntax[] = "forcecolor(#RRGGBB)\n";
 static const char forcecolor_help[] = "change selected objects' color to #RRGGBB, reset if does not start with '#'";
@@ -416,7 +416,7 @@ static int pcb_act_forcecolor(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 	pcb_gui->get_coords("Click on object to change", &x, &y);
 
-	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE){
+	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
 		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);
 	}
 	return 0;

@@ -81,7 +81,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	short_conn_t *s;
 
 #warning find.c TODO: will not be needed after the big rewrite
-	if (from_type == PCB_TYPE_RATLINE) /* rat line is often rat point and has no ID */
+	if (from_type == PCB_OBJ_RAT) /* rat line is often rat point and has no ID */
 		from = NULL;
 
 	s = malloc(sizeof(short_conn_t));
@@ -161,12 +161,12 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 
 		parent = NULL;
 		switch (n->to_type) {
-			case PCB_TYPE_LINE: typ = "line";       parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
-			case PCB_TYPE_ARC:  typ = "arc";        parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
-			case PCB_TYPE_POLY: typ = "polygon";    parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
-			case PCB_TYPE_TEXT: typ = "text";       parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
-			case PCB_TYPE_PSTK: typ = "padstack";   parent = pcb_gobj_parent_subc(o->parent_type, &o->parent); break;
-			case PCB_TYPE_SUBC: typ = "subcircuit"; parent = pcb_gobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_OBJ_LINE: typ = "line";       parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_OBJ_ARC:  typ = "arc";        parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_OBJ_POLY: typ = "polygon";    parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_OBJ_TEXT: typ = "text";       parent = pcb_lobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_OBJ_PSTK: typ = "padstack";   parent = pcb_gobj_parent_subc(o->parent_type, &o->parent); break;
+			case PCB_OBJ_SUBC: typ = "subcircuit"; parent = pcb_gobj_parent_subc(o->parent_type, &o->parent); break;
 			default: typ = "<unknown>";             parent = NULL; break;
 		}
 		if (parent != NULL) {
@@ -242,7 +242,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 				/* connection to a pin/pad is slightly stronger than the
 				   strongest obj-obj conn; obj-obj conns are weaker at junctions where many
 				   objects connect */
-				if ((n->from_type == PCB_TYPE_PSTK) || (n->to_type == PCB_TYPE_PSTK))
+				if ((n->from_type == PCB_OBJ_PSTK) || (n->to_type == PCB_OBJ_PSTK))
 					weight = maxedges * 2 + 2;
 				else
 					weight = maxedges * 2 - n->edges - from->edges + 1;

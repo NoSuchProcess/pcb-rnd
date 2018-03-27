@@ -129,7 +129,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	pcb_draw_inhibit_inc();
 
 	switch(Type) {
-		case PCB_TYPE_ARC_POINT:
+		case PCB_OBJ_ARC_POINT:
 			{
 				/* Get the initial arc point positions */
 				pcb_arc_t * p_arc = ((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
@@ -157,18 +157,18 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			}
 			break;
 
-		case PCB_TYPE_ARC:
+		case PCB_OBJ_ARC:
 			pcb_event(PCB_EVENT_RUBBER_MOVE, "icccc", 0, DX, DY, DX, DY);
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 			break;
 
-		case PCB_TYPE_LINE_POINT :
+		case PCB_OBJ_LINE_POINT :
 			pcb_event(PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
 			ptr2 = pcb_lineop_move_point_with_route(&ctx, Ptr1, Ptr2, Ptr3);
 			break;
 
-		case PCB_TYPE_LINE:
+		case PCB_OBJ_LINE:
 			{
 				pcb_coord_t dx1 = DX;
 				pcb_coord_t dy1 = DY;
@@ -187,13 +187,13 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 				/* If the line ends have moved indpendently then move the individual points */
 				if((dx1 != dx2) || (dy1 != dy2)) {
 					/* Move point1 form line */
-					pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT,
+					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT,
 							 Ptr1, line, &line->Point1,
 							 dx1, dy1);
 					pcb_lineop_move_point(&ctx, Ptr1, line, &line->Point1);
 
 					/* Move point2 form line */
-					pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT,
+					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT,
 								 Ptr1, line, &line->Point2,
 								 dx2, dy2);
 					ctx.move.dx = dx2;
@@ -246,7 +246,7 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 	ctx.move.dst_layer = Target;
 	ctx.move.more_to_come = pcb_true;
 
-	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, pcb_true, PCB_TYPEMASK_ALL);
+	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, pcb_true, PCB_OBJ_ANY);
 	/* passing pcb_true to above operation causes Undoserial to auto-increment */
 	return changed;
 }

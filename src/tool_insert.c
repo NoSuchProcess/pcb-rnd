@@ -62,16 +62,16 @@ void pcb_tool_insert_notify_mode(void)
 			pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_INSERT_TYPES,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
-		if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+		if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)
 										pcb_crosshair.AttachedObject.Ptr2)) {
 				pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-				pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+				pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 				break;
 			}
 			else {
 				/* get starting point of nearest segment */
-				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLY) {
+				if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY) {
 					fake.poly = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 					polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, pcb_tool_note.X, pcb_tool_note.Y);
 					fake.line.Point1 = fake.poly->Points[polyIndex];
@@ -87,8 +87,8 @@ void pcb_tool_insert_notify_mode(void)
 
 		/* second notify, insert new point into object */
 	case PCB_CH_STATE_SECOND:
-		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLY)
-			pcb_insert_point_in_object(PCB_TYPE_POLY,
+		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY)
+			pcb_insert_point_in_object(PCB_OBJ_POLY,
 														pcb_crosshair.AttachedObject.Ptr1, fake.poly,
 														&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
 		else
@@ -98,7 +98,7 @@ void pcb_tool_insert_notify_mode(void)
 		pcb_board_set_changed_flag(pcb_true);
 
 		/* reset identifiers */
-		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		break;
 	}

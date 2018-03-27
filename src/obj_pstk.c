@@ -95,7 +95,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t 
 	ps->smirror = smirror;
 	pcb_pstk_add(data, ps);
 	pcb_event(PCB_EVENT_NEW_PSTK, "p", ps);
-	pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, ps);
 	return ps;
 }
 
@@ -858,7 +858,7 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 	/* if mirror center is not 0, also move, to emulate that the mirror took
 	   place around that point */
 	if (y_offs != 0) {
-		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
 		if (ps->parent.data->padstack_tree != NULL)
 			pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
@@ -868,7 +868,7 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 
 		if (ps->parent.data->padstack_tree != NULL)
 			pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
-		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
 }
@@ -946,7 +946,7 @@ static int undo_change_instance_swap(void *udata)
 		return -1;
 	}
 
-	pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstk_invalidate_erase(ps);
 	if (ps->parent.data->padstack_tree != NULL)
 		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
@@ -964,7 +964,7 @@ static int undo_change_instance_swap(void *udata)
 	pcb_pstk_bbox(ps);
 	if (ps->parent.data->padstack_tree != NULL)
 		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
-	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 
 	return 0;

@@ -295,9 +295,9 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				is[c_cnt] = pcb_strdup(tmps);
 				c_cnt++;
 
-				pcb_undo_add_obj_to_change_name(PCB_TYPE_SUBC, NULL, NULL, subc_list[i], or_empty(subc_list[i]->refdes));
+				pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc_list[i], or_empty(subc_list[i]->refdes));
 
-				pcb_chg_obj_name(PCB_TYPE_SUBC, subc_list[i], NULL, NULL, tmps);
+				pcb_chg_obj_name(PCB_OBJ_SUBC, subc_list[i], NULL, NULL, tmps);
 				changed = pcb_true;
 
 				/* we don't free tmps in this case because it is used */

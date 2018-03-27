@@ -73,7 +73,7 @@ static void *layout_create_line_(pcb_layer_t *layer, int x1, int y1, int x2, int
 
 	line = pcb_line_new(layer, x1, y1, x2, y2, thickness, clearance, get_flags(flags));
 	if (line != NULL) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, line, line);
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 		return line;
 	}
 	return NULL;
@@ -96,7 +96,7 @@ static void *layout_create_via_(int x, int y, int thickness, int clearance, int 
 	pin = pcb_via_new(PCB->Data, x, y, thickness, clearance, mask, hole, name, get_flags(flags));
 
 	if (pin != NULL) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_VIA, pin, pin, pin);
+		pcb_undo_add_obj_to_create(PCB_OBJ_VIA, pin, pin, pin);
 		return pin;
 	}
 	return NULL;
@@ -113,7 +113,7 @@ static void *layout_create_arc_(pcb_layer_t *layer, int x, int y, int width, int
 	void *arc;
 	arc = pcb_arc_new(layer, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
 	if (arc != NULL) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_ARC, layer, arc, arc);
+		pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 		return 0;
 	}
 	return NULL;

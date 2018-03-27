@@ -192,7 +192,7 @@ static pcb_poly_t *any_poly_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly
 
 	if (data != PCB->Data) {
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-		pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_TYPE_POLY, CURRENT, p, p);
+		pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_POLY, CURRENT, p, p);
 		pcb_r_delete_entry(CURRENT->polygon_tree, (pcb_box_t *)p);
 		pcb_poly_free_fields(p);
 		pcb_poly_free(p);
@@ -237,11 +237,11 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_
 	l = pcb_line_new(layer, cx, cy, cx, cy, dia, conf_core.design.clearance*2, pcb_flag_make(flags));
 	if (l != NULL) {
 		if ((conf_core.editor.clear_line) && (data == PCB->Data))
-			pcb_poly_clear_from_poly(data, PCB_TYPE_LINE, layer, l);
+			pcb_poly_clear_from_poly(data, PCB_OBJ_LINE, layer, l);
 
 		if (data != PCB->Data) {
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_TYPE_LINE, CURRENT, l, l);
+			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_LINE, CURRENT, l, l);
 			pcb_r_delete_entry(CURRENT->line_tree, (pcb_box_t *)l);
 			pcb_line_free(l);
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);

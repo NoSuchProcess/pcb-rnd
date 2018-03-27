@@ -114,31 +114,31 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_subc_move(subc, dx, dy, pcb_true);
-		pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, subc, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, NULL, NULL, subc, dx, dy);
 	}
 	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
 		pcb_pstk_move(padstack, dx, dy, pcb_true);
-		pcb_undo_add_obj_to_move(PCB_TYPE_PSTK, NULL, NULL, padstack, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_OBJ_PSTK, NULL, NULL, padstack, dx, dy);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		MyMoveLineLowLevel(PCB->Data, layer, line, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_LINE, NULL, NULL, line, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_OBJ_LINE, NULL, NULL, line, dx, dy);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		MyMoveArcLowLevel(PCB->Data, layer, arc, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_ARC, NULL, NULL, arc, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_OBJ_ARC, NULL, NULL, arc, dx, dy);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		MyMoveTextLowLevel(layer, text, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_OBJ_TEXT, NULL, NULL, text, dx, dy);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(PCB->Data);
@@ -149,7 +149,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		 * XXX tree activity.
 		 */
 		Mypcb_poly_move(PCB->Data, layer, polygon, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_POLY, NULL, NULL, polygon, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_OBJ_POLY, NULL, NULL, polygon, dx, dy);
 	}
 	PCB_ENDALL_LOOP;
 }

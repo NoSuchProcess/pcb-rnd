@@ -756,15 +756,15 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	}
 
 	switch (Type) {
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		name = pcb_gui->prompt_for(_("Linename:"), PCB_EMPTY(((pcb_line_t *) Ptr2)->Number));
 		break;
 
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		name = pcb_gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *) Ptr2)->TextString));
 		break;
 
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		name = pcb_gui->prompt_for(_("Subcircuit refdes:"), PCB_EMPTY(((pcb_subc_t *)Ptr2)->refdes));
 		break;
 	}

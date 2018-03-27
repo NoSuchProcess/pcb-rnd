@@ -215,16 +215,16 @@ void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * vio
 			void *ptr1, *ptr2, *ptr3;
 
 			found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
-			if (found_type == PCB_TYPE_NONE) {
+			if (found_type == PCB_OBJ_VOID) {
 				pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
 				continue;
 			}
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
 			switch (violation->object_type_list[i]) {
-			case PCB_TYPE_LINE:
-			case PCB_TYPE_ARC:
-			case PCB_TYPE_POLY:
+			case PCB_OBJ_LINE:
+			case PCB_OBJ_ARC:
+			case PCB_OBJ_POLY:
 				pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
 			}
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);

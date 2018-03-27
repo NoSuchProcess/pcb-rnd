@@ -71,7 +71,7 @@ void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *
 		dlg_fontsel_global_latch = 1;
 	}
 	else {
-		if (type != PCB_TYPE_TEXT)
+		if (type != PCB_OBJ_TEXT)
 			return;
 		if (!modal) {
 			pcb_message(PCB_MSG_ERROR, "text-targeted fontsel dialogs must be modal because of the global-var API on the txt object.\n");

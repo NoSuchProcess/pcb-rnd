@@ -912,22 +912,22 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 
 		linelist_foreach(&sl->Line, &it, line) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_LINE, sl, line, line);
+			pcb_object_operation(opfunc, ctx, PCB_OBJ_LINE, sl, line, line);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &line->BoundingBox);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_ARC, sl, arc, arc);
+			pcb_object_operation(opfunc, ctx, PCB_OBJ_ARC, sl, arc, arc);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &arc->BoundingBox);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_TEXT, sl, text, text);
+			pcb_object_operation(opfunc, ctx, PCB_OBJ_TEXT, sl, text, text);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &text->BoundingBox);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_POLY, sl, poly, poly);
+			pcb_object_operation(opfunc, ctx, PCB_OBJ_POLY, sl, poly, poly);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &poly->BoundingBox);
 		}
 
@@ -940,7 +940,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		gdl_iterator_t it;
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_PSTK, ps, ps, ps);
+			pcb_object_operation(opfunc, ctx, PCB_OBJ_PSTK, ps, ps, ps);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &ps->BoundingBox);
 		}
 	}
@@ -960,7 +960,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY, pcb_false);
 
-	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
+	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, sc, sc, sc);
 
 	if (ctx->copy.from_outside && conf_core.editor.show_solder_side) {
 		uundo_serial_t last;
@@ -1078,7 +1078,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 
 	linelist_foreach(&sl->Line, &it, line) {
 		if (src_has_real_layer) {
-			pcb_poly_restore_to_poly(src_data, PCB_TYPE_LINE, sl, line);
+			pcb_poly_restore_to_poly(src_data, PCB_OBJ_LINE, sl, line);
 			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
 			chg++;
 		}
@@ -1088,12 +1088,12 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
-			pcb_poly_clear_from_poly(dst_data, PCB_TYPE_LINE, dl, line);
+			pcb_poly_clear_from_poly(dst_data, PCB_OBJ_LINE, dl, line);
 	}
 
 	arclist_foreach(&sl->Arc, &it, arc) {
 		if (src_has_real_layer) {
-			pcb_poly_restore_to_poly(src_data, PCB_TYPE_ARC, sl, arc);
+			pcb_poly_restore_to_poly(src_data, PCB_OBJ_ARC, sl, arc);
 			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
 			chg++;
 		}
@@ -1103,12 +1103,12 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
-			pcb_poly_clear_from_poly(dst_data, PCB_TYPE_ARC, dl, arc);
+			pcb_poly_clear_from_poly(dst_data, PCB_OBJ_ARC, dl, arc);
 	}
 
 	textlist_foreach(&sl->Text, &it, text) {
 		if (src_has_real_layer) {
-			pcb_poly_restore_to_poly(src_data, PCB_TYPE_LINE, sl, text);
+			pcb_poly_restore_to_poly(src_data, PCB_OBJ_LINE, sl, text);
 			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
 			chg++;
 		}
@@ -1118,7 +1118,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
-			pcb_poly_clear_from_poly(dst_data, PCB_TYPE_TEXT, dl, text);
+			pcb_poly_clear_from_poly(dst_data, PCB_OBJ_TEXT, dl, text);
 	}
 
 	polylist_foreach(&sl->Polygon, &it, poly) {
@@ -1158,7 +1158,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 	padstacklist_foreach(&sc->data->padstack, &it, ps) {
 		const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 		assert(proto != NULL); /* the prototype must be accessible at the source else we can't add it in the dest */
-		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		if (sc->data->padstack_tree != NULL)
 			pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
@@ -1169,7 +1169,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 		ps->protoi = -1;
 		ps->parent.data = new_parent;
 		if (dst_is_pcb)
-			pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+			pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		chg++;
 	}
 
@@ -1393,7 +1393,7 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	EraseSubc(sc);
-	pcb_undo_move_obj_to_remove(PCB_TYPE_SUBC, sc, sc, sc);
+	pcb_undo_move_obj_to_remove(PCB_OBJ_SUBC, sc, sc, sc);
 	return NULL;
 }
 
@@ -1415,7 +1415,7 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	static pcb_flag_values_t pcb_subc_flags = 0;
 	if (pcb_subc_flags == 0)
-		pcb_subc_flags = pcb_obj_valid_flags(PCB_TYPE_SUBC);
+		pcb_subc_flags = pcb_obj_valid_flags(PCB_OBJ_SUBC);
 
 	if (ctx->chgflag.flag == PCB_FLAG_FLOATER) {
 #warning subc TODO: subc-in-subc: can a whole subc be a floater? - add undo!
@@ -1497,7 +1497,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	newsc2 = pcb_subc_dup_at(pcb, data, newsc, 0, 0, pcb_true);
 	newsc2->ID = newsc->ID;
 	PCB_SET_PARENT(newsc2, data, data);
-	pcb_undo_add_subc_to_otherside(PCB_TYPE_SUBC, newsc2, newsc2, newsc2, yoff);
+	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, newsc2, newsc2, newsc2, yoff);
 
 	*subc = newsc2;
 	pcb_subc_free(newsc);

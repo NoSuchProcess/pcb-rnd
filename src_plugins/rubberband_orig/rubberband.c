@@ -360,13 +360,13 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	rubber_ctx_t *rbnd = i->rbnd;
 
 	switch (i->type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		if (rat->Point1.X == i->pstk->x && rat->Point1.Y == i->pstk->y)
 			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
 		else if (rat->Point2.X == i->pstk->x && rat->Point2.Y == i->pstk->y)
 			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
 		break;
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_LINE_POINT:
 		if (rat->group1 == i->group && rat->Point1.X == i->point->X && rat->Point1.Y == i->point->Y)
 			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
 		else if (rat->group2 == i->group && rat->Point2.X == i->point->X && rat->Point2.Y == i->point->Y)
@@ -382,7 +382,7 @@ static void CheckPadstackForRat(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
 {
 	struct rinfo info;
 
-	info.type = PCB_TYPE_PSTK;
+	info.type = PCB_OBJ_PSTK;
 	info.pstk = pstk;
 	info.rbnd = rbnd;
 	info.delta_index = 0;
@@ -394,7 +394,7 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poi
 	struct rinfo info;
 	info.group = pcb_layer_get_group_(Layer);
 	info.point = Point;
-	info.type = PCB_TYPE_LINE_POINT;
+	info.type = PCB_OBJ_LINE_POINT;
 	info.rbnd = rbnd;
 	info.delta_index = 0;
 
@@ -870,11 +870,11 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 	 * is connected
 	 */
 	switch (Type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		CheckPadStackForRubberbandConnection(rbnd,(pcb_pstk_t *)Ptr1);
 		break;
 
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		{
 			pcb_subc_t * subc = (pcb_subc_t *)Ptr1;
 			pcb_data_it_t	it;
@@ -898,7 +898,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 			break;
 		}
 
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
@@ -907,21 +907,21 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 			break;
 		}
 
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_LINE_POINT:
 		CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3,0);
 		if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
 			CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 		break;
 
-	case PCB_TYPE_ARC_POINT:
+	case PCB_OBJ_ARC_POINT:
 		CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3, pcb_true);
 		break;
 
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
 		break;
 
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
 		break;
 	}
@@ -931,7 +931,7 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 {
 	switch (Type) {
 
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		{
 			pcb_subc_t *subc = (pcb_subc_t *) Ptr1;
 
@@ -943,7 +943,7 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 			break;
 		}
 
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
@@ -953,7 +953,7 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 			break;
 		}
 
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_LINE_POINT:
 		CheckLinePointForRat(rbnd, (pcb_layer_t *) Ptr1, (pcb_point_t *) Ptr3);
 		break;
 
@@ -1042,7 +1042,7 @@ static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rubberband_t *ptr;
 	void *ptr1 = argv[1].d.p, *ptr2 = argv[2].d.p, *ptr3 = argv[3].d.p;
-	int i, type = PCB_TYPE_SUBC;
+	int i, type = PCB_OBJ_SUBC;
 
 	rbnd->RubberbandN = 0;
 	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
@@ -1051,7 +1051,7 @@ static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 		if (PCB->RatOn)
 			pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 
-		pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
+		pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, ptr->Line, ptr->Line, ptr->Line);
 		ptr++;
 	}
 }
@@ -1103,7 +1103,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 				ctx.move.dy = argv[argi+1].d.i;
 	
 				if(direct) {
-					pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, ctx.move.dx, ctx.move.dy);			
+					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, ctx.move.dx, ctx.move.dy);			
 					pcb_lineop_move_point(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point1);
 				}
 				else
@@ -1118,7 +1118,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 				ctx.move.dy = argv[argi+1].d.i;
 	
 				if(direct) {
-					pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, ctx.move.dx, ctx.move.dy);			
+					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, ctx.move.dx, ctx.move.dy);			
 					pcb_lineop_move_point(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point2);
 				}
 				else
@@ -1254,13 +1254,13 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		*changed = 1;
 		
 		if(dindex1 >= 0) 
-			pcb_undo_add_obj_to_rotate90(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, cx, cy, steps);
+			pcb_undo_add_obj_to_rotate90(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, cx, cy, steps);
 		if(dindex2 >= 0) 
-			pcb_undo_add_obj_to_rotate90(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, cx, cy, steps);
+			pcb_undo_add_obj_to_rotate90(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, cx, cy, steps);
 
 		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
-			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
+			pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
 			pcb_r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
 		}
 		else
@@ -1275,7 +1275,7 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
 			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
-			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
 			pcb_line_invalidate_draw(ptr->Layer, ptr->Line);
 		}
 		else {
@@ -1302,7 +1302,7 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 
 #warning TODO: rewrite this for subc
 #if 0
-	if (type == PCB_TYPE_ELEMENT) {
+	if (type == PCB_OBJ_ELEMENT) {
 		pcb_rubberband_t *ptr;
 		int i;
 
@@ -1313,7 +1313,7 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 		for (i = 0; i < rbnd->RubberbandN; i++, ptr++) {
 			if (PCB->RatOn)
 				pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
-			pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
+			pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, ptr->Line, ptr->Line, ptr->Line);
 		}
 		pcb_undo_inc_serial();
 		pcb_draw();

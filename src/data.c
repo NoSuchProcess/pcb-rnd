@@ -415,32 +415,32 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 
 	PCB_PADSTACK_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_PSTK, padstack, padstack, padstack);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_PSTK, padstack, padstack, padstack);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_SUBC, subc, subc, subc);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_SUBC, subc, subc, subc);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_LINE, layer, line, line);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_LINE, layer, line, line);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_ARC, layer, arc, arc);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_ARC, layer, arc, arc);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_TEXT, layer, text, text);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_TEXT, layer, text, text);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_POLY, layer, polygon, polygon);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_POLY, layer, polygon, polygon);
 	}
 	PCB_ENDALL_LOOP;
 }
@@ -606,7 +606,7 @@ void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar)
 }
 
 
-void pcb_data_flag_change(pcb_data_t *data, pcb_obj_type_t mask, int how, unsigned long flags)
+void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigned long flags)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;

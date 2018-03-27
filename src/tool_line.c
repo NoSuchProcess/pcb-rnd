@@ -62,7 +62,7 @@ static pcb_layer_t *last_layer;
 /* creates points of a line (when clicked) */
 static void notify_line(void)
 {
-	int type = PCB_TYPE_NONE;
+	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
 
 	if (!pcb_marked.status || conf_core.editor.local_ref)
@@ -70,15 +70,15 @@ static void notify_line(void)
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
 #warning subc TODO: this should work on heavy terminals too!
-		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
+		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_OBJ_VOID) {
 			pcb_gui->beep();
 			break;
 		}
 		if (conf_core.editor.auto_drc) {
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
-		if (type == PCB_TYPE_PSTK) {
+		if (type == PCB_OBJ_PSTK) {
 			pcb_pstk_t *pstk = (pcb_pstk_t *)ptr2;
 			pcb_crosshair.AttachedLine.Point1.X = pstk->x;
 			pcb_crosshair.AttachedLine.Point1.Y = pstk->y;
@@ -122,7 +122,7 @@ void pcb_tool_line_notify_mode(void)
 		pcb_rat_t *line;
 		if ((line = pcb_rat_add_net())) {
 			pcb_added_lines++;
-			pcb_undo_add_obj_to_create(PCB_TYPE_RATLINE, line, line, line);
+			pcb_undo_add_obj_to_create(PCB_OBJ_RAT, line, line, line);
 			pcb_undo_inc_serial();
 			pcb_rat_invalidate_draw(line);
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
@@ -144,7 +144,7 @@ void pcb_tool_line_notify_mode(void)
 																			pcb_crosshair.AttachedLine.Point1.X,
 																			pcb_crosshair.AttachedLine.Point1.Y,
 																			conf_core.design.via_thickness / 2) ==
-																				PCB_TYPE_NONE
+																				PCB_OBJ_VOID
 				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (!PCB->is_footprint)
@@ -155,7 +155,7 @@ void pcb_tool_line_notify_mode(void)
 				conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
 					pcb_obj_add_attribs(ps, PCB->pen_attr);
-					pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
+					pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		}
 
 		/* Add the route to the design */
@@ -224,7 +224,7 @@ void pcb_tool_line_notify_mode(void)
 
 			pcb_added_lines++;
 			pcb_obj_add_attribs(line, PCB->pen_attr);
-			pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, line, line);
 			pcb_line_invalidate_draw(CURRENT, line);
 			/* place a via if vias are visible, the layer is
 				 in a new group since the last line and there
@@ -237,7 +237,7 @@ void pcb_tool_line_notify_mode(void)
 					&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
-																 conf_core.design.via_thickness / 2) == PCB_TYPE_NONE
+																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID
 #warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
 				&& ((ps = pcb_pstk_new_compat_via(PCB->Data,
 															pcb_crosshair.AttachedLine.Point1.X,
@@ -245,7 +245,7 @@ void pcb_tool_line_notify_mode(void)
 															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 															0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
 				pcb_obj_add_attribs(ps, PCB->pen_attr);
-				pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
+				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 				pcb_pstk_invalidate_draw(ps);
 			}
 			/* copy the coordinates */
@@ -266,7 +266,7 @@ void pcb_tool_line_notify_mode(void)
 																						 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 			pcb_added_lines++;
 			pcb_obj_add_attribs(line, PCB->pen_attr);
-			pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, line, line);
 			pcb_undo_inc_serial();
 			pcb_line_invalidate_draw(CURRENT, line);
 			/* move to new start point */
@@ -354,7 +354,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		pcb_line_t *ptr2;
 		ptrtmp = &pcb_crosshair.AttachedLine; /* a workaround for the line undo bug */
 		/* this search is guaranteed to succeed */
-		pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+		pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1,
 													 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
 		ptr2 = (pcb_line_t *) ptrtmp;
 
@@ -376,7 +376,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		/* check if an intermediate point was removed */
 		if (type & PCB_UNDO_REMOVE) {
 			/* this search should find the restored line */
-			pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+			pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1,
 														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 0);
 			ptr2 = (pcb_line_t *) ptrtmp;
 			if (conf_core.editor.auto_drc) {
@@ -395,7 +395,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		}
 		else {
 			/* this search is guaranteed to succeed too */
-			pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+			pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1,
 														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
 			ptr2 = (pcb_line_t *) ptrtmp;
 			last_layer = (pcb_layer_t *) ptr1;

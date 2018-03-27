@@ -52,8 +52,8 @@ void pcb_tool_buffer_notify_mode(void)
 	pcb_subc_t *orig_subc = NULL;
 
 	if (pcb_gui->shift_is_pressed()) {
-		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
-		if (type == PCB_TYPE_SUBC) {
+		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
+		if (type == PCB_OBJ_SUBC) {
 			orig_subc = (pcb_subc_t *) ptr1;
 			pcb_subc_remove(orig_subc);
 		}
@@ -62,8 +62,8 @@ void pcb_tool_buffer_notify_mode(void)
 		pcb_board_set_changed_flag(pcb_true);
 
 	if (orig_subc != NULL) {
-		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
-		if (type == PCB_TYPE_SUBC && (ptr1 != NULL)) {
+		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
+		if (type == PCB_OBJ_SUBC && (ptr1 != NULL)) {
 			int n;
 			pcb_attribute_list_t *dst = &(((pcb_subc_t *)ptr1)->Attributes), *src = &orig_subc->Attributes;
 			for (n = 0; n < src->Number; n++)

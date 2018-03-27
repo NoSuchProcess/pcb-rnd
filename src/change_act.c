@@ -82,7 +82,7 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 	const char *units = PCB_ACTION_ARG(2);
 	pcb_bool absolute;
 	pcb_coord_t value;
-	int type = PCB_TYPE_NONE;
+	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
 
 	if (function && delta) {
@@ -94,7 +94,7 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
-			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLY))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
+			if ((type == PCB_OBJ_VOID) || (type == PCB_OBJ_POLY))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
 				type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
 				return 1;
@@ -106,7 +106,7 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
-				if (type != PCB_TYPE_NONE)
+				if (type != PCB_OBJ_VOID)
 					if (pcb_chg_obj_clear_size(type, ptr1, ptr2, ptr3, value, absolute))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -114,15 +114,15 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 		case F_SelectedVias:
 		case F_SelectedPads:
 		case F_SelectedPins:
-			if (pcb_chg_selected_clear_size(PCB_TYPE_PSTK, value, absolute))
+			if (pcb_chg_selected_clear_size(PCB_OBJ_PSTK, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_SelectedLines:
-			if (pcb_chg_selected_clear_size(PCB_TYPE_LINE, value, absolute))
+			if (pcb_chg_selected_clear_size(PCB_OBJ_LINE, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_SelectedArcs:
-			if (pcb_chg_selected_clear_size(PCB_TYPE_ARC, value, absolute))
+			if (pcb_chg_selected_clear_size(PCB_OBJ_ARC, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_Selected:
@@ -193,7 +193,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 			pcb_gui->get_coords("Click on object to change", &x, &y);
 
-			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
@@ -204,17 +204,17 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	case F_SelectedVias:
 	case F_SelectedPins:
 	case F_SelectedPads:
-		if (set_selected(PCB_TYPE_PSTK))
+		if (set_selected(PCB_OBJ_PSTK))
 			pcb_board_set_changed_flag(pcb_true);
 		break;
 
 	case F_SelectedLines:
-		if (set_selected(PCB_TYPE_LINE))
+		if (set_selected(PCB_OBJ_LINE))
 			pcb_board_set_changed_flag(pcb_true);
 		break;
 
 	case F_SelectedTexts:
-		if (set_selected(PCB_TYPE_TEXT))
+		if (set_selected(PCB_OBJ_TEXT))
 			pcb_board_set_changed_flag(pcb_true);
 		break;
 
@@ -305,7 +305,7 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 	const char *units = PCB_ACTION_ARG(2);
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	pcb_coord_t value;
-	int type = PCB_TYPE_NONE, tostyle = 0;
+	int type = PCB_OBJ_VOID, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
 
 
@@ -329,7 +329,7 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 		switch (funcid) {
 		case F_Object:
 			{
-				if (type != PCB_TYPE_NONE)
+				if (type != PCB_OBJ_VOID)
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 				if (tostyle) {
@@ -345,22 +345,22 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 		case F_SelectedVias:
 		case F_SelectedPins:
 		case F_SelectedPads:
-			if (pcb_chg_selected_size(PCB_TYPE_PSTK, value, absolute))
+			if (pcb_chg_selected_size(PCB_OBJ_PSTK, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
 		case F_SelectedArcs:
-			if (pcb_chg_selected_size(PCB_TYPE_ARC, value, absolute))
+			if (pcb_chg_selected_size(PCB_OBJ_ARC, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
 		case F_SelectedLines:
-			if (pcb_chg_selected_size(PCB_TYPE_LINE, value, absolute))
+			if (pcb_chg_selected_size(PCB_OBJ_LINE, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
 		case F_SelectedTexts:
-			if (pcb_chg_selected_size(PCB_TYPE_TEXT, value, absolute))
+			if (pcb_chg_selected_size(PCB_OBJ_TEXT, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
@@ -395,7 +395,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
 	const char *units = PCB_ACTION_ARG(2);
-	int type = PCB_TYPE_NONE;
+	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
 
 	pcb_bool absolute;
@@ -421,7 +421,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 		case F_Object:
 			{
 
-				if (type != PCB_TYPE_NONE)
+				if (type != PCB_OBJ_VOID)
 					if (pcb_chg_obj_2nd_size(type, ptr1, ptr2, ptr3, value, absolute, pcb_true))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -430,7 +430,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 		case F_SelectedPadstacks:
 		case F_SelectedVias:
 		case F_SelectedPins:
-			if (pcb_chg_selected_2nd_size(PCB_TYPE_PSTK, value, absolute))
+			if (pcb_chg_selected_2nd_size(PCB_OBJ_PSTK, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
@@ -548,7 +548,7 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
 					pinnum = 0;
 					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3)) {
@@ -610,19 +610,19 @@ static int pcb_act_ChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_co
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 					if (pcb_chg_obj_join(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
 
 		case F_SelectedLines:
-			if (pcb_chg_selected_join(PCB_TYPE_LINE))
+			if (pcb_chg_selected_join(PCB_OBJ_LINE))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
 		case F_SelectedArcs:
-			if (pcb_chg_selected_join(PCB_TYPE_ARC))
+			if (pcb_chg_selected_join(PCB_OBJ_ARC))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
@@ -671,7 +671,7 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 		case F_SelectedElements:
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_nonetlist(PCB_TYPE_SUBC))
+			if (pcb_chg_selected_nonetlist(PCB_OBJ_SUBC))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
@@ -774,7 +774,7 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
 				pcb_gui->get_coords("Click on object for SetThermal", &gx, &gy);
-				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind, INDEXOFCURRENT);
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -782,7 +782,7 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 				break;
 			case F_SelectedPins:
 			case F_SelectedVias:
-				pcb_chg_selected_thermals(PCB_TYPE_PSTK, kind, INDEXOFCURRENT);
+				pcb_chg_selected_thermals(PCB_OBJ_PSTK, kind, INDEXOFCURRENT);
 				break;
 			case F_Selected:
 			case F_SelectedElements:
@@ -966,7 +966,7 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 	const char *delta = PCB_ACTION_ARG(2);
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	double value;
-	int type = PCB_TYPE_NONE, which;
+	int type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
 
 	if (pcb_strcasecmp(prim, "start") == 0) which = 0;
@@ -1000,7 +1000,7 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 		switch (funcid) {
 		case F_Object:
 			{
-				if (type != PCB_TYPE_NONE) {
+				if (type != PCB_OBJ_VOID) {
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					else {
@@ -1012,7 +1012,7 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 			}
 
 		case F_SelectedArcs:
-			if (pcb_chg_selected_angle(PCB_TYPE_ARC, which, value, absolute))
+			if (pcb_chg_selected_angle(PCB_OBJ_ARC, which, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
@@ -1041,7 +1041,7 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 	const char *units = PCB_ACTION_ARG(3);
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	double value;
-	int type = PCB_TYPE_NONE, which;
+	int type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
 
 	if ((pcb_strcasecmp(prim, "width") == 0) || (pcb_strcasecmp(prim, "x") == 0)) which = 0;
@@ -1066,7 +1066,7 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 		switch (funcid) {
 		case F_Object:
 			{
-				if (type != PCB_TYPE_NONE) {
+				if (type != PCB_OBJ_VOID) {
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					else {
@@ -1078,7 +1078,7 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 			}
 
 		case F_SelectedArcs:
-			if (pcb_chg_selected_radius(PCB_TYPE_ARC, which, value, absolute))
+			if (pcb_chg_selected_radius(PCB_OBJ_ARC, which, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 

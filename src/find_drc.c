@@ -103,11 +103,11 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 	*object_type_list = NULL;
 
 	switch (thing_type) {
-	case PCB_TYPE_LINE:
-	case PCB_TYPE_ARC:
-	case PCB_TYPE_POLY:
-	case PCB_TYPE_PSTK:
-	case PCB_TYPE_RATLINE:
+	case PCB_OBJ_LINE:
+	case PCB_OBJ_ARC:
+	case PCB_OBJ_POLY:
+	case PCB_OBJ_PSTK:
+	case PCB_OBJ_RAT:
 		*object_count = 1;
 		*object_id_list = (long int *) malloc(sizeof(long int));
 		*object_type_list = (int *) malloc(sizeof(int));
@@ -128,28 +128,28 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 {
 	switch (thing_type) {
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		{
 			pcb_line_t *line = (pcb_line_t *) thing_ptr3;
 			*x = (line->Point1.X + line->Point2.X) / 2;
 			*y = (line->Point1.Y + line->Point2.Y) / 2;
 			break;
 		}
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		{
 			pcb_arc_t *arc = (pcb_arc_t *) thing_ptr3;
 			*x = arc->X;
 			*y = arc->Y;
 			break;
 		}
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		{
 			pcb_poly_t *polygon = (pcb_poly_t *) thing_ptr3;
 			*x = (polygon->Clipped->contours->xmin + polygon->Clipped->contours->xmax) / 2;
 			*y = (polygon->Clipped->contours->ymin + polygon->Clipped->contours->ymax) / 2;
 			break;
 		}
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		{
 			pcb_pstk_t *ps = (pcb_pstk_t *) thing_ptr3;
 			*x = ps->x;
@@ -224,7 +224,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	thing_ptr2 = ptr2;
 	thing_ptr3 = ptr2;
 	switch (type) {
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		if (line->Clearance < 2 * PCB->Bloat) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, line);
@@ -232,7 +232,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 			goto doIsBad;
 		}
 		break;
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		if (arc->Clearance < 2 * PCB->Bloat) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, arc);
@@ -240,7 +240,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 			goto doIsBad;
 		}
 		break;
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		if (pcb_pstk_drc_check_clearance(ps, polygon, 2 * PCB->Bloat) != 0) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, ps);
@@ -335,7 +335,7 @@ int pcb_drc_all(void)
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)
-				&& DRCFind(PCB_TYPE_PSTK, (void *) padstack, (void *) padstack, (void *) padstack)) {
+				&& DRCFind(PCB_OBJ_PSTK, (void *) padstack, (void *) padstack, (void *) padstack)) {
 			IsBad = pcb_true;
 			break;
 		}
@@ -350,7 +350,7 @@ int pcb_drc_all(void)
 		PCB_LINE_COPPER_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
-			pcb_poly_plows(PCB->Data, PCB_TYPE_LINE, layer, line, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback);
 			if (IsBad)
 				break;
 			if (line->Thickness < PCB->minWid) {
@@ -358,7 +358,7 @@ int pcb_drc_all(void)
 				PCB_FLAG_SET(TheFlag, line);
 				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
-				SetThing(PCB_TYPE_LINE, layer, line, line);
+				SetThing(PCB_OBJ_LINE, layer, line, line);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Line width is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -381,7 +381,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_ARC_COPPER_LOOP(PCB->Data);
 		{
-			pcb_poly_plows(PCB->Data, PCB_TYPE_ARC, layer, arc, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback);
 			if (IsBad)
 				break;
 			if (arc->Thickness < PCB->minWid) {
@@ -389,7 +389,7 @@ int pcb_drc_all(void)
 				PCB_FLAG_SET(TheFlag, arc);
 				pcb_arc_invalidate_draw(layer, arc);
 				drcerr_count++;
-				SetThing(PCB_TYPE_ARC, layer, arc, arc);
+				SetThing(PCB_OBJ_ARC, layer, arc, arc);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Arc width is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -414,7 +414,7 @@ int pcb_drc_all(void)
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
 			pcb_coord_t ring = 0, hole = 0;
-			pcb_poly_plows(PCB->Data, PCB_TYPE_PSTK, padstack, padstack, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback);
 			if (IsBad)
 				break;
 			pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);
@@ -424,7 +424,7 @@ int pcb_drc_all(void)
 				pcb_pstk_invalidate_draw(padstack);
 				if (ring) {
 					drcerr_count++;
-					SetThing(PCB_TYPE_PSTK, padstack, padstack, padstack);
+					SetThing(PCB_OBJ_PSTK, padstack, padstack, padstack);
 					LocateError(&x, &y);
 					BuildObjectList(&object_count, &object_id_list, &object_type_list);
 					violation = pcb_drc_violation_new(_("padstack annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -436,7 +436,7 @@ int pcb_drc_all(void)
 				}
 				if (hole > 0) {
 					drcerr_count++;
-					SetThing(PCB_TYPE_PSTK, padstack, padstack, padstack);
+					SetThing(PCB_OBJ_PSTK, padstack, padstack, padstack);
 					LocateError(&x, &y);
 					BuildObjectList(&object_count, &object_id_list, &object_type_list);
 					violation = pcb_drc_violation_new(_("Padstack drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -470,7 +470,7 @@ int pcb_drc_all(void)
 				PCB_FLAG_SET(TheFlag, line);
 				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
-				SetThing(PCB_TYPE_LINE, layer, line, line);
+				SetThing(PCB_OBJ_LINE, layer, line, line);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Silk line is too thin"), _("Process specifications dictate a minimum silkscreen feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -636,9 +636,9 @@ static void GotoError(void)
 	LocateError(&X, &Y);
 
 	switch (thing_type) {
-	case PCB_TYPE_LINE:
-	case PCB_TYPE_ARC:
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_LINE:
+	case PCB_OBJ_ARC:
+	case PCB_OBJ_POLY:
 		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
 	}
 	pcb_center_display(X, Y);

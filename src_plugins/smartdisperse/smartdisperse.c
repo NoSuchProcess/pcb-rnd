@@ -78,7 +78,7 @@ static void place_subc(pcb_subc_t *sc)
 	}
 
 	pcb_subc_move(sc, dx, dy, 1);
-	pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, sc, dx, dy);
+	pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, NULL, NULL, sc, dx, dy);
 
 	/* keep track of how tall this row is */
 	minx += sc->BoundingBox.X2 - sc->BoundingBox.X1 + GAP;

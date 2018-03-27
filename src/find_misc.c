@@ -211,9 +211,9 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 	reassign_no_drc_flags();
 
 	type = pcb_search_obj_by_location(PCB_LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, X, Y, Range);
-	if (type == PCB_TYPE_NONE) {
+	if (type == PCB_OBJ_VOID) {
 		type = pcb_search_obj_by_location(PCB_LOOKUP_MORE, &ptr1, &ptr2, &ptr3, X, Y, Range);
-		if (type == PCB_TYPE_NONE)
+		if (type == PCB_OBJ_VOID)
 			return;
 		if (type & PCB_SILK_TYPE) {
 			/* don't mess with non-conducting objects! */
@@ -262,13 +262,13 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
 unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 {
 	switch(type) {
-		case PCB_OBJ_LINE:    return PCB_TYPE_LINE;
-		case PCB_OBJ_TEXT:    return PCB_TYPE_TEXT;
-		case PCB_OBJ_POLY:    return PCB_TYPE_POLY;
-		case PCB_OBJ_ARC:     return PCB_TYPE_ARC;
-		case PCB_OBJ_RAT:     return PCB_TYPE_RATLINE;
-		case PCB_OBJ_PSTK:    return PCB_TYPE_PSTK;
-		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
+		case PCB_OBJ_LINE:    return PCB_OBJ_LINE;
+		case PCB_OBJ_TEXT:    return PCB_OBJ_TEXT;
+		case PCB_OBJ_POLY:    return PCB_OBJ_POLY;
+		case PCB_OBJ_ARC:     return PCB_OBJ_ARC;
+		case PCB_OBJ_RAT:     return PCB_OBJ_RAT;
+		case PCB_OBJ_PSTK:    return PCB_OBJ_PSTK;
+		case PCB_OBJ_SUBC:    return PCB_OBJ_SUBC;
 
 		default: return 0;
 	}

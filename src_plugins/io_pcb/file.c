@@ -73,11 +73,11 @@
 #include "src_plugins/lib_compat_help/elem_rot.h"
 
 #warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
-#define PCB_TYPE_VIA PCB_TYPE_PSTK
-#define PCB_TYPE_PIN PCB_TYPE_PSTK
-#define PCB_TYPE_PAD PCB_TYPE_PSTK
-#define PCB_TYPE_ELEMENT PCB_TYPE_SUBC
-#define PCB_TYPE_ELEMENT_NAME PCB_TYPE_TEXT
+#define PCB_OBJ_VIA PCB_OBJ_PSTK
+#define PCB_OBJ_PIN PCB_OBJ_PSTK
+#define PCB_OBJ_PAD PCB_OBJ_PSTK
+#define PCB_OBJ_ELEMENT PCB_OBJ_SUBC
+#define PCB_OBJ_ELEMENT_NAME PCB_OBJ_TEXT
 
 pcb_unit_style_t pcb_io_pcb_usty_seen;
 
@@ -361,7 +361,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
-		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_TYPE_VIA, NULL));
+		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_VIA, NULL));
 	}
 }
 
@@ -374,7 +374,7 @@ static void WritePCBRatData(FILE * FP)
 	ratlist_foreach(&PCB->Data->Rat, &it, line) {
 		pcb_fprintf(FP, "Rat[%[0] %[0] %d %[0] %[0] %d ",
 								line->Point1.X, line->Point1.Y, line->group1, line->Point2.X, line->Point2.Y, line->group2);
-		fprintf(FP, " %s]\n", F2S(line, PCB_TYPE_RATLINE));
+		fprintf(FP, " %s]\n", F2S(line, PCB_OBJ_RAT));
 	}
 }
 
@@ -441,13 +441,13 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 			ry = oy;
 		}
 
-		fprintf(FP, "\nElement[%s ", F2S(sc, PCB_TYPE_ELEMENT));
+		fprintf(FP, "\nElement[%s ", F2S(sc, PCB_OBJ_ELEMENT));
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "footprint")));
 		fputc(' ', FP);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "refdes")));
 		fputc(' ', FP);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "value")));
-		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_TYPE_ELEMENT_NAME) : "\"\"");
+		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_OBJ_ELEMENT_NAME) : "\"\"");
 		WriteAttributeList(FP, &sc->Attributes, "\t");
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
@@ -460,7 +460,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
 				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_TYPE_PIN, &ic));
+				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_PIN, &ic));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0);
@@ -469,7 +469,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 					fprintf(FP, " ");
 					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_TYPE_PAD, &ic));
+					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_OBJ_PAD, &ic));
 			}
 			else
 				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
@@ -554,22 +554,22 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 		linelist_foreach(&layer->Line, &it, line) {
 			pcb_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
 									line->Point1.X, line->Point1.Y,
-									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, PCB_TYPE_LINE));
+									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, PCB_OBJ_LINE));
 		}
 		arclist_foreach(&layer->Arc, &it, arc) {
 			pcb_fprintf(FP, "\tArc[%[0] %[0] %[0] %[0] %[0] %[0] %ma %ma %s]\n",
 									arc->X, arc->Y, arc->Width,
-									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, PCB_TYPE_ARC));
+									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, PCB_OBJ_ARC));
 		}
 		textlist_foreach(&layer->Text, &it, text) {
 			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, text->Direction, text->Scale);
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(text->TextString));
-			fprintf(FP, " %s]\n", F2S(text, PCB_TYPE_TEXT));
+			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
 		}
 		textlist_foreach(&layer->Polygon, &it, polygon) {
 			int p, i = 0;
 			pcb_cardinal_t hole = 0;
-			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_TYPE_POLY));
+			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_OBJ_POLY));
 			for (p = 0; p < polygon->PointN; p++) {
 				pcb_point_t *point = &polygon->Points[p];
 

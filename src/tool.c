@@ -176,28 +176,28 @@ pcb_bool pcb_tool_is_saved = pcb_false;
 static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
 	switch (type) {
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		*x = ((pcb_line_t *) ptr2)->Point1.X;
 		*y = ((pcb_line_t *) ptr2)->Point1.Y;
 		break;
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		*x = ((pcb_text_t *) ptr2)->X;
 		*y = ((pcb_text_t *) ptr2)->Y;
 		break;
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		*x = ((pcb_poly_t *) ptr2)->Points[0].X;
 		*y = ((pcb_poly_t *) ptr2)->Points[0].Y;
 		break;
 
-	case PCB_TYPE_LINE_POINT:
-	case PCB_TYPE_POLY_POINT:
+	case PCB_OBJ_LINE_POINT:
+	case PCB_OBJ_POLY_POINT:
 		*x = ((pcb_point_t *) ptr3)->X;
 		*y = ((pcb_point_t *) ptr3)->Y;
 		break;
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, x, y);
 		break;
-	case PCB_TYPE_ARC_POINT:
+	case PCB_OBJ_ARC_POINT:
 		if (ptr3 != NULL) /* need to check because: if snap off, there's no known endpoint (leave x;y as is, then) */
 			pcb_arc_get_end((pcb_arc_t *) ptr2, ((*(int **)ptr3) != pcb_arc_start_ptr), x, y);
 		break;
@@ -237,9 +237,9 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 	if (do_rubberband && conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (do_rubberband &&
-			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_SUBC ||
-			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_PSTK ||
-			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE || pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
+			(pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC ||
+			 pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK ||
+			 pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE || pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT))
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }
 

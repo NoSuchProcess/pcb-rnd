@@ -60,7 +60,7 @@
 #include "operation.h"
 #include "obj_subc_op.h"
 
-#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY
+#define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
@@ -416,7 +416,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				pcb_coord_t x, y;
 
 				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
-				if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 					subc = (pcb_subc_t *) ptrtmp;
 					pcb_gui->show_item(subc);
 				}
@@ -432,13 +432,13 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
 
 				/* toggle terminal ID print for subcircuit parts */
-				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+				type = pcb_search_screen(x, y, PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART | PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
 				if (type) {
 					pcb_any_obj_t *obj = ptr2;
 					pcb_opctx_t opctx;
 					
 					switch(type) {
-						case PCB_TYPE_SUBC:
+						case PCB_OBJ_SUBC:
 							opctx.chgflag.pcb = PCB;
 							opctx.chgflag.how = PCB_CHGFLG_TOGGLE;
 							opctx.chgflag.flag = PCB_FLAG_TERMNAME;
@@ -446,11 +446,11 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							pcb_undo_inc_serial();
 							return 0;
 							break;
-						case PCB_TYPE_LINE:
-						case PCB_TYPE_ARC:
-						case PCB_TYPE_POLY:
-						case PCB_TYPE_TEXT:
-						case PCB_TYPE_PSTK:
+						case PCB_OBJ_LINE:
+						case PCB_OBJ_ARC:
+						case PCB_OBJ_POLY:
+						case PCB_OBJ_TEXT:
+						case PCB_OBJ_PSTK:
 							pcb_obj_invalidate_label(type, ptr1, ptr2, ptr3);
 							break;
 						default:
@@ -762,29 +762,29 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			over++;
 		}
 
-		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
+		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_LINE) != PCB_OBJ_VOID) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			pcb_line_t *l = ptr2;
 			if (close_enough(pcb_tool_note.X, l->Point1.X) && close_enough(pcb_tool_note.Y, l->Point1.Y)) {
-				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
+				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = &l->Point1;
 				goto switched;
 			}
 			if (close_enough(pcb_tool_note.X, l->Point2.X) && close_enough(pcb_tool_note.Y, l->Point2.Y)) {
-				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
+				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = &l->Point2;
 				goto switched;
 			}
 		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC_POINT) != PCB_TYPE_NONE) {
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_ARC_POINT) != PCB_OBJ_VOID) {
 			pcb_coord_t ex, ey;
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 0, &ex, &ey);
 			if (close_enough(pcb_tool_note.X, ex) && close_enough(pcb_tool_note.Y, ey)) {
-				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
+				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = pcb_arc_start_ptr;
@@ -792,15 +792,15 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			}
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 1, &ex, &ey);
 			if (close_enough(pcb_tool_note.X, ex) && close_enough(pcb_tool_note.Y, ey)) {
-				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
+				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = pcb_arc_end_ptr;
 				goto switched;
 			}
 		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
-			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC;
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_ARC) != PCB_OBJ_VOID) {
+			pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC;
 			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = ptr3;
@@ -1060,7 +1060,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
 	switch (type) {
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		pcb_notify_crosshair_change(pcb_false);
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
@@ -1070,7 +1070,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		pcb_notify_crosshair_change(pcb_false);
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
@@ -1080,7 +1080,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		layer = (pcb_layer_t *) ptr1;
 		break;
 

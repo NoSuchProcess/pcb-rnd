@@ -63,7 +63,7 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 		}
 		else
 			line_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_LINE, &line_tmp);
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_LINE, &line_tmp);
 	}
 	pcb_r_end(&it);
 
@@ -76,13 +76,13 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 		}
 		else
 			arc_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_ARC, &arc_tmp);
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, &arc_tmp);
 	}
 	pcb_r_end(&it);
 
 #warning TODO: centerline
 	for(text = (pcb_text_t *)pcb_r_first(layer->text_tree, &it); text != NULL; text = (pcb_text_t *)pcb_r_next(&it))
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_ARC, text);
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, text);
 	pcb_r_end(&it);
 
 #warning TODO: subs poly: not supported by core
@@ -108,7 +108,7 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 	for(ps = (pcb_pstk_t *)pcb_r_first(pcb->Data->padstack_tree, &it); ps != NULL; ps = (pcb_pstk_t *)pcb_r_next(&it)) {
 		memcpy(&ps_tmp, ps, sizeof(ps_tmp));
 		ps_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PSTK, &ps_tmp);
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_PSTK, &ps_tmp);
 	}
 	pcb_r_end(&it);
 }

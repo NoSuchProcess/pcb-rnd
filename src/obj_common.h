@@ -71,7 +71,13 @@ typedef enum pcb_objmask_e {
 	PCB_OBJ_CLASS_HOST = 0x00FF000, /* host types: layers, boards, nets */
 	PCB_OBJ_CLASS_MASK = 0xFF00000, /* for virtual searches */
 	PCB_OBJ_CLASS_OBJ  = 0x0000000, /* anything with common object fields (pcb_any_obj_t) */
-	PCB_OBJ_ANY        = 0xFFFFFFF
+	PCB_OBJ_ANY        = 0xFFFFFFF,
+
+/* TODO: rename these */
+	PCB_TYPEMASK_PIN       = (PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART),
+	PCB_TYPEMASK_TERM      = (PCB_TYPEMASK_PIN | PCB_OBJ_SUBC_PART | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT),
+	PCB_TYPEMASK_LOCK      = (PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_LOCKED)
+
 } pcb_objmask_t;
 
 

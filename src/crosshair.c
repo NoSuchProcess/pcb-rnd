@@ -232,7 +232,7 @@ void XORDrawInsertPointObject(void)
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 	pcb_point_t *point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 
-	if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 		pcb_gui->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
 		pcb_gui->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
 	}
@@ -249,14 +249,14 @@ void XORDrawMoveOrCopy(void)
 	
 	switch (pcb_crosshair.AttachedObject.Type) {
 
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		{
 			pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr1;
 			thindraw_moved_ps(ps, dx, dy);
 			break;
 		}
 
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		{
 			/* We move a local copy of the line -the real line hasn't moved, 
 			 * only the preview.
@@ -296,7 +296,7 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		{
 			/* Make a temporary arc and move it by dx,dy */
 			pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
@@ -318,7 +318,7 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		{
 			pcb_poly_t *polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 
@@ -329,7 +329,7 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_LINE_POINT:
 		{
 			pcb_line_t *line;
 			pcb_point_t *point,*point1,point2;
@@ -374,7 +374,7 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_ARC_POINT:
+	case PCB_OBJ_ARC_POINT:
 		{
 			pcb_arc_t arc = *((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
 			pcb_coord_t ox1,ox2,oy1,oy2;
@@ -417,7 +417,7 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_POLY_POINT:
+	case PCB_OBJ_POLY_POINT:
 		{
 			pcb_poly_t *polygon;
 			pcb_point_t *point;
@@ -437,7 +437,7 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		XORDrawSubc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0);
 		break;
 	}
@@ -584,7 +584,7 @@ static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
 		pcb_onpoint_t op;
-		op.type = PCB_TYPE_LINE;
+		op.type = PCB_OBJ_LINE;
 		op.obj.line = line;
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
@@ -614,7 +614,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
 		pcb_onpoint_t op;
-		op.type = PCB_TYPE_ARC;
+		op.type = PCB_OBJ_ARC;
 		op.obj.arc = arc;
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
@@ -629,7 +629,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 void DrawLineOrArc(int type, void *obj)
 {
 	switch (type) {
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_LINE_POINT:
 		/* Attention: We can use a NULL pointer here for the layer,
 		 * because it is not used in the pcb_line_invalidate_draw() function anyways.
 		 * ATM pcb_line_invalidate_draw() only calls AddPart() internally, which invalidates
@@ -637,7 +637,7 @@ void DrawLineOrArc(int type, void *obj)
 		 */
 		pcb_line_invalidate_draw(NULL, (pcb_line_t *) obj);
 		break;
-	case PCB_TYPE_ARC_POINT:
+	case PCB_OBJ_ARC_POINT:
 		/* See comment above */
 		pcb_arc_invalidate_draw(NULL, (pcb_arc_t *) obj);
 		break;
@@ -780,9 +780,9 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 	/* Pick the nearest grid-point in the x or y direction
 	 * to align with, then adjust until we hit the line
 	 */
-	ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE, &ptr1, &ptr2, &ptr3);
+	ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE, &ptr1, &ptr2, &ptr3);
 
-	if (ans == PCB_TYPE_NONE)
+	if (ans == PCB_OBJ_VOID)
 		return;
 
 	line = (pcb_line_t *) ptr2;
@@ -794,7 +794,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 	if ((conf_core.editor.mode != PCB_MODE_LINE || CURRENT != ptr1) &&
 			(conf_core.editor.mode != PCB_MODE_MOVE ||
 			 pcb_crosshair.AttachedObject.Ptr1 != ptr1 ||
-			 pcb_crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT
+			 pcb_crosshair.AttachedObject.Type != PCB_OBJ_LINE_POINT
 			 || pcb_crosshair.AttachedObject.Ptr2 == line))
 		return;
 
@@ -883,11 +883,11 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	snap_data.x = nearest_grid_x;
 	snap_data.y = nearest_grid_y;
 
-	ans = PCB_TYPE_NONE;
+	ans = PCB_OBJ_VOID;
 	if (!PCB->RatDraw)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 
-	if (ans & PCB_TYPE_SUBC) {
+	if (ans & PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
 		pcb_coord_t ox, oy;
 		if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
@@ -895,42 +895,42 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	/*** padstack center ***/
-	ans = PCB_TYPE_NONE;
+	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping padstack to any other padstack */
-	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_PSTK && (ans & PCB_TYPE_PSTK))
-		ans = PCB_TYPE_NONE;
+	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
+		ans = PCB_OBJ_VOID;
 
-	if (ans != PCB_TYPE_NONE) {
+	if (ans != PCB_OBJ_VOID) {
 		pcb_pstk_t *ps = (pcb_pstk_t *) ptr2;
 		check_snap_object(&snap_data, ps->x, ps->y, pcb_true);
 		pcb_crosshair.snapped_pstk = ps;
 	}
 
 	/*** arc ***/
-	ans = PCB_TYPE_NONE;
+	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT | PCB_TYPE_ARC_POINT | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT | PCB_OBJ_ARC_POINT | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
-	if (ans == PCB_TYPE_ARC_POINT) {
+	if (ans == PCB_OBJ_ARC_POINT) {
 		/* Arc point needs special handling as it's not a real point but has to be calculated */
 		pcb_coord_t ex, ey;
 		pcb_arc_get_end((pcb_arc_t *)ptr2, (ptr3 != pcb_arc_start_ptr), &ex, &ey);
 		check_snap_object(&snap_data, ex, ey, pcb_true);
 	}
-	else if (ans != PCB_TYPE_NONE) {
+	else if (ans != PCB_OBJ_VOID) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
 
 	/*** polygon terminal: center ***/
-	ans = PCB_TYPE_NONE;
+	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_POLY | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_POLY | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
-	if (ans == PCB_TYPE_POLY) {
+	if (ans == PCB_OBJ_POLY) {
 		pcb_poly_t *p = ptr2;
 		if (p->term != NULL) {
 			pcb_coord_t cx, cy;
@@ -947,11 +947,11 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (conf_core.editor.snap_offgrid_line)
 		check_snap_offgrid_line(&snap_data, nearest_grid_x, nearest_grid_y);
 
-	ans = PCB_TYPE_NONE;
+	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_POLY_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_POLY_POINT, &ptr1, &ptr2, &ptr3);
 
-	if (ans != PCB_TYPE_NONE) {
+	if (ans != PCB_OBJ_VOID) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
@@ -965,8 +965,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 
 	if (conf_core.editor.mode == PCB_MODE_ARROW) {
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
-		if (ans == PCB_TYPE_NONE) {
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		if (ans == PCB_OBJ_VOID) {
 			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
 				pcb_gui->point_cursor(pcb_false);
 		}
@@ -1139,7 +1139,7 @@ void pcb_crosshair_set_mode(int Mode)
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_added_lines = 0;
 	pcb_route_reset(&pcb_crosshair.Route);
-	pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedPolygon.PointN = 0;
 	if (PCB->RatDraw) {

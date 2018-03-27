@@ -431,7 +431,7 @@ int IPCD356_Netlist(void)
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pin)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
-		pcb_lookup_conn_by_pin(PCB_TYPE_PIN, pin);
+		pcb_lookup_conn_by_pin(PCB_OBJ_PIN, pin);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pin->Number);
 		netname = pcb_netnode_to_netname(nodename);
 /*      pcb_message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
@@ -449,7 +449,7 @@ int IPCD356_Netlist(void)
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pad)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
-		pcb_lookup_conn_by_pin(PCB_TYPE_PAD, pad);
+		pcb_lookup_conn_by_pin(PCB_OBJ_PAD, pad);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pad->Number);
 		netname = pcb_netnode_to_netname(nodename);
 /*      pcb_message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
@@ -470,7 +470,7 @@ int IPCD356_Netlist(void)
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, via)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
-		pcb_lookup_conn_by_pin(PCB_TYPE_PIN, via);
+		pcb_lookup_conn_by_pin(PCB_OBJ_PIN, via);
 		strcpy(net, "N/C");
 		IPCD356_WriteNet(fp, net);
 	}

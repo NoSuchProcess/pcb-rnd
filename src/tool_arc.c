@@ -91,7 +91,7 @@ void pcb_tool_arc_notify_mode(void)
 				pcb_arc_get_end(arc, 1, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
 				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
-				pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
+				pcb_undo_add_obj_to_create(PCB_OBJ_ARC, CURRENT, arc, arc);
 				pcb_undo_inc_serial();
 				pcb_added_lines++;
 				pcb_arc_invalidate_draw(CURRENT, arc);
@@ -149,7 +149,7 @@ pcb_bool pcb_tool_arc_undo_act(void)
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
 		void *ptr1, *ptr2, *ptr3;
 		/* guaranteed to succeed */
-		pcb_search_obj_by_location(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
+		pcb_search_obj_by_location(PCB_OBJ_ARC, &ptr1, &ptr2, &ptr3,
 													 pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point1.Y, 0);
 		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;

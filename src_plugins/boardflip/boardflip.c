@@ -69,7 +69,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	{
 		PCB_LINE_LOOP(layer);
 		{
-			pcb_poly_restore_to_poly(data, PCB_TYPE_LINE, layer, line);
+			pcb_poly_restore_to_poly(data, PCB_OBJ_LINE, layer, line);
 			pcb_r_delete_entry(layer->line_tree, (pcb_box_t *)line);
 			XFLIP(line->Point1.X);
 			XFLIP(line->Point2.X);
@@ -77,12 +77,12 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			YFLIP(line->Point2.Y);
 			pcb_line_bbox(line);
 			pcb_r_insert_entry(layer->line_tree, (pcb_box_t *)line);
-			pcb_poly_clear_from_poly(data, PCB_TYPE_LINE, layer, line);
+			pcb_poly_clear_from_poly(data, PCB_OBJ_LINE, layer, line);
 		}
 		PCB_END_LOOP;
 		PCB_TEXT_LOOP(layer);
 		{
-			pcb_poly_restore_to_poly(data, PCB_TYPE_TEXT, layer, text);
+			pcb_poly_restore_to_poly(data, PCB_OBJ_TEXT, layer, text);
 			pcb_r_delete_entry(layer->text_tree, (pcb_box_t *)text);
 			XFLIP(text->X);
 			YFLIP(text->Y);
@@ -90,7 +90,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 			pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 			pcb_r_insert_entry(layer->text_tree, (pcb_box_t *)text);
-			pcb_poly_clear_from_poly(data, PCB_TYPE_TEXT, layer, text);
+			pcb_poly_clear_from_poly(data, PCB_OBJ_TEXT, layer, text);
 		}
 		PCB_END_LOOP;
 		PCB_POLY_LOOP(layer);
@@ -121,7 +121,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		PCB_END_LOOP;
 		PCB_ARC_LOOP(layer);
 		{
-			pcb_poly_restore_to_poly(data, PCB_TYPE_ARC, layer, arc);
+			pcb_poly_restore_to_poly(data, PCB_OBJ_ARC, layer, arc);
 			pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *)arc);
 			XFLIP(arc->X);
 			YFLIP(arc->Y);
@@ -130,7 +130,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 				NEG(arc->Delta);
 			pcb_arc_bbox(arc);
 			pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *)arc);
-			pcb_poly_clear_from_poly(data, PCB_TYPE_ARC, layer, arc);
+			pcb_poly_clear_from_poly(data, PCB_OBJ_ARC, layer, arc);
 		}
 		PCB_END_LOOP;
 	}
@@ -138,12 +138,12 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	PCB_PADSTACK_LOOP(data);
 	{
 		pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)padstack);
-		pcb_poly_restore_to_poly(data, PCB_TYPE_PSTK, padstack, padstack);
+		pcb_poly_restore_to_poly(data, PCB_OBJ_PSTK, padstack, padstack);
 		XFLIP(padstack->x);
 		YFLIP(padstack->y);
 		pcb_pstk_bbox(padstack);
 		pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)padstack);
-		pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, padstack, padstack);
+		pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, padstack, padstack);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);

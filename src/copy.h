@@ -32,8 +32,8 @@
 #include "config.h"
 
 #define	PCB_COPY_TYPES              \
-	(PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_TEXT | \
-	PCB_TYPE_SUBC | PCB_TYPE_POLY | PCB_TYPE_ARC)
+	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | \
+	PCB_OBJ_SUBC | PCB_OBJ_POLY | PCB_OBJ_ARC)
 
 /* Undoably copies (duplicates) an object; the new objects is moved by DX,DY
    (operation wrapper) */

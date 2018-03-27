@@ -50,7 +50,7 @@ void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
 
-	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_PSTK, NULL, ps);
 	pcb_r_delete_entry(ctx->buffer.src->padstack_tree, (pcb_box_t *)ps);
 
 	padstacklist_remove(ps);
@@ -64,7 +64,7 @@ void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		ctx->buffer.dst->padstack_tree = pcb_r_create_tree();
 
 	pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps);
-	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_PSTK, NULL, ps);
 
 	PCB_SET_PARENT(ps, data, ctx->buffer.dst);
 	return ps;
@@ -87,7 +87,7 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 	pcb_pstk_copy_meta(nps, ps);
 	pcb_pstk_invalidate_draw(nps);
-	pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, data, nps, nps);
+	pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, data, nps, nps);
 	return nps;
 }
 
@@ -105,10 +105,10 @@ void *pcb_pstkop_move(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	assert(ps->parent_type = PCB_PARENT_DATA);
 
 	pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)ps);
-	pcb_poly_restore_to_poly(data, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_restore_to_poly(data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstkop_move_noclip(ctx, ps);
 	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps);
-	pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
+	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, ps);
 	return ps;
 }
 
@@ -120,12 +120,12 @@ void *pcb_pstkop_clip(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (ctx->clip.restore) {
 		if (data->padstack_tree != NULL)
 			pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)ps);
-		pcb_poly_restore_to_poly(data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_restore_to_poly(data, PCB_OBJ_PSTK, NULL, ps);
 	}
 	if (ctx->clip.clear) {
 		if (data->padstack_tree != NULL)
 			pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps);
-		pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, ps);
 	}
 
 	return ps;
@@ -134,7 +134,7 @@ void *pcb_pstkop_clip(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 void *pcb_pstkop_remove(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_invalidate_erase(ps);
-	pcb_undo_move_obj_to_remove(PCB_TYPE_PSTK, ps, ps, ps);
+	pcb_undo_move_obj_to_remove(PCB_OBJ_PSTK, ps, ps, ps);
 	return NULL;
 }
 
@@ -156,14 +156,14 @@ void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb = ctx->chgtherm.pcb;
 	layer = pcb_get_layer(pcb->Data, ctx->chgtherm.lid);
 
-	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PSTK, ps, ps, ps, pcb_false);
-	pcb_poly_restore_to_poly(pcb->Data, PCB_TYPE_PSTK, layer, ps);
+	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_PSTK, ps, ps, ps, pcb_false);
+	pcb_poly_restore_to_poly(pcb->Data, PCB_OBJ_PSTK, layer, ps);
 
 #warning TODO: undo
 	pcb_pstk_set_thermal(ps, ctx->chgtherm.lid, ctx->chgtherm.style);
 
-	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PSTK, ps, ps, ps, pcb_true);
-	pcb_poly_clear_from_poly(pcb->Data, PCB_TYPE_PSTK, layer, ps);
+	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_PSTK, ps, ps, ps, pcb_true);
+	pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_PSTK, layer, ps);
 	pcb_pstk_invalidate_draw(ps);
 	return ps;
 }
@@ -176,7 +176,7 @@ void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		return NULL;
 
 	if (pcb_pstk_flags == 0)
-		pcb_pstk_flags = pcb_obj_valid_flags(PCB_TYPE_PSTK);
+		pcb_pstk_flags = pcb_obj_valid_flags(PCB_OBJ_PSTK);
 
 	if ((ctx->chgflag.flag & pcb_pstk_flags) != ctx->chgflag.flag)
 		return NULL;
@@ -207,7 +207,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		pcb_coord_t nx = ps->x, ny = ps->y;
 
 
-		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
 		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
@@ -217,7 +217,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 		pcb_pstk_bbox(ps);
 		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
-		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 
 		return ps;

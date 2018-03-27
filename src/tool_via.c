@@ -67,7 +67,7 @@ void pcb_tool_via_notify_mode(void)
 			return;
 
 		pcb_obj_add_attribs(ps, PCB->pen_attr);
-		pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
+		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
 		if (pcb_gui->shift_is_pressed())
 			pcb_tool_thermal_on_pstk(ps, INDEXOFCURRENT);

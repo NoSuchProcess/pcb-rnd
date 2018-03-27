@@ -54,11 +54,11 @@ typedef void (*pcb_find_callback_t)(int current_type, void *current_ptr, int fro
 extern pcb_find_callback_t pcb_find_callback;
 
 #define PCB_LOOKUP_FIRST	\
-	(PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART)
+	(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART)
 #define PCB_LOOKUP_MORE	\
-	(PCB_TYPE_LINE | PCB_TYPE_RATLINE | PCB_TYPE_POLY | PCB_TYPE_ARC | PCB_TYPE_SUBC_PART)
+	(PCB_OBJ_LINE | PCB_OBJ_RAT | PCB_OBJ_POLY | PCB_OBJ_ARC | PCB_OBJ_SUBC_PART)
 #define PCB_SILK_TYPE	\
-	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY)
+	(PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
 
 pcb_bool pcb_intersect_line_line(pcb_line_t *, pcb_line_t *);
 pcb_bool pcb_intersect_line_arc(pcb_line_t *, pcb_arc_t *);

@@ -35,11 +35,11 @@
 typedef struct pcb_data_it_s {
 	/* config */
 	pcb_data_t *data;
-	pcb_obj_type_t mask; /* caller wants to see these types */
+	pcb_objtype_t mask; /* caller wants to see these types */
 
 	/* current state */
-	pcb_obj_type_t remaining;
-	pcb_obj_type_t type;
+	pcb_objtype_t remaining;
+	pcb_objtype_t type;
 	pcb_cardinal_t ln;
 	pcb_any_obj_t *last;
 } pcb_data_it_t;
@@ -50,7 +50,7 @@ typedef struct pcb_data_it_s {
 
 /* Start an iteration on data, looking for any object type listed in mask;
    returns NULL if nothing is found. The iteration is non-recursive to subcircuits */
-PCB_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_obj_type_t mask);
+PCB_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_objtype_t mask);
 
 /* Return the next object or NULL on end of iteration */
 PCB_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it);
@@ -129,7 +129,7 @@ PCB_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it)
 	goto retry; /* ... on the new layer */
 }
 
-PCB_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_obj_type_t mask)
+PCB_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_objtype_t mask)
 {
 	it->data = data;
 	it->mask = it->remaining = mask & PCB_DATA_IT_TYPES;

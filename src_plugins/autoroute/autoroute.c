@@ -1368,13 +1368,13 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 		pcb_undo_add_obj_to_create(csl, line, line);
 		if (b.Y1 != b.Y2) {
 			line = pcb_line_new(csl, b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-			pcb_undo_add_obj_to_create(PCB_TYPE_LINE, csl, line, line);
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, csl, line, line);
 		}
 		line = pcb_line_new(csl, b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, csl, line, line);
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, csl, line, line);
 		if (b.X1 != b.X2) {
 			line = pcb_line_new(csl, b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-			pcb_undo_add_obj_to_create(PCB_TYPE_LINE, csl, line, line);
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, csl, line, line);
 		}
 	}
 #endif
@@ -4098,13 +4098,13 @@ static void ripout_livedraw_obj(routebox_t * rb)
 	if (rb->type == LINE && rb->livedraw_obj.line) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
 		pcb_line_invalidate_erase(rb->livedraw_obj.line);
-		pcb_destroy_object(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
+		pcb_destroy_object(PCB->Data, PCB_OBJ_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
 	}
 
 	if (rb->type == VIA && rb->livedraw_obj.via) {
 		pcb_pstk_invalidate_erase(rb->livedraw_obj.via);
-		pcb_destroy_object(PCB->Data, PCB_TYPE_PSTK, rb->livedraw_obj.via, NULL, NULL);
+		pcb_destroy_object(PCB->Data, PCB_OBJ_PSTK, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}
 }
@@ -4432,11 +4432,11 @@ static int FindPin(const pcb_box_t *box, pcb_pstk_t **ps_out)
 	}
 	else {
 		*ps_out = info.ps;
-		return PCB_TYPE_PSTK;
+		return PCB_OBJ_PSTK;
 	}
 
 	*ps_out = NULL;
-	return PCB_TYPE_NONE;
+	return PCB_OBJ_VOID;
 }
 
 
@@ -4489,7 +4489,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 						 p->style->Thick, p->style->Clearance * 2, pcb_flag_make(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 
 					if (p->parent.line) {
-						pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, p->parent.line, p->parent.line);
+						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, p->parent.line, p->parent.line);
 						changed = pcb_true;
 					}
 				}
@@ -4509,7 +4509,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 						assert(pp->parent.via);
 						PCB_FLAG_SET(PCB_FLAG_AUTO, pp->parent.via);
 						if (pp->parent.via) {
-							pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, pp->parent.via, pp->parent.via, pp->parent.via);
+							pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, pp->parent.via, pp->parent.via, pp->parent.via);
 							changed = pcb_true;
 						}
 					}
@@ -4535,11 +4535,11 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
 					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_false);
-					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PSTK, LAYER_PTR(p->layer), pin);
+					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_PSTK, LAYER_PTR(p->layer), pin);
 					pcb_undo_add_obj_to_flag(pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
 					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_true);
-					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PSTK, LAYER_PTR(p->layer), pin);
+					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_PSTK, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;
 				}
 			}

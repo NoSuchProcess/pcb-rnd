@@ -158,16 +158,16 @@ void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
-	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, newone, newone);
+	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, newone, newone);
 	pcb_rat_invalidate_erase(Rat);
 	pcb_line_invalidate_draw(CURRENT, newone);
 	newone = pcb_line_new_merge(CURRENT, Rat->Point2.X, Rat->Point2.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, newone, newone);
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, newone, newone);
 		pcb_line_invalidate_draw(CURRENT, newone);
 	}
-	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
+	pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, Rat, Rat, Rat);
 	return newone;
 }
 
@@ -181,10 +181,10 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 		conf_set_editor(clear_line, 1);
 	if (!newone)
 		return NULL;
-	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, ctx->move.dst_layer, newone, newone);
+	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ctx->move.dst_layer, newone, newone);
 	if (PCB->RatOn)
 		pcb_rat_invalidate_erase(Rat);
-	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
+	pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, Rat, Rat, Rat);
 	pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
 	return newone;
 }
@@ -205,7 +205,7 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 	/* erase from screen and memory */
 	if (PCB->RatOn)
 		pcb_rat_invalidate_erase(Rat);
-	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
+	pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, Rat, Rat, Rat);
 	return NULL;
 }
 

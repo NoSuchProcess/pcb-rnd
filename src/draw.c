@@ -647,24 +647,24 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		return;
 
 	switch (type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		pcb_pstk_invalidate_erase((pcb_pstk_t *) ptr);
 		break;
 
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		pcb_text_invalidate_erase((pcb_layer_t *) lptr, (pcb_text_t *) ptr);
 		break;
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		pcb_poly_invalidate_erase((pcb_poly_t *) ptr);
 		break;
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		EraseSubc((pcb_subc_t *)ptr);
 		break;
-	case PCB_TYPE_LINE:
-	case PCB_TYPE_RATLINE:
+	case PCB_OBJ_LINE:
+	case PCB_OBJ_RAT:
 		pcb_line_invalidate_erase((pcb_line_t *) ptr);
 		break;
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		pcb_arc_invalidate_erase((pcb_arc_t *) ptr);
 		break;
 	default:

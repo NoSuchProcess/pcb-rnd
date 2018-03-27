@@ -319,7 +319,7 @@ static int apply_vendor_pstk1(pcb_pstk_t *pstk, pcb_cardinal_t *tot)
 
 	target = vendorDrillMap(proto->hdia);
 	if (proto->hdia != target) {
-		if (pcb_chg_obj_2nd_size(PCB_TYPE_PSTK, pstk, pstk, pstk, target, pcb_true, pcb_false))
+		if (pcb_chg_obj_2nd_size(PCB_OBJ_PSTK, pstk, pstk, pstk, target, pcb_true, pcb_false))
 			res = 1;
 		else {
 			pcb_message(PCB_MSG_WARNING, _

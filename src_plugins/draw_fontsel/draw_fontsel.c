@@ -205,7 +205,7 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 				}
 				else {
 					switch(fontsel_txt_type) {
-						case PCB_TYPE_TEXT:
+						case PCB_OBJ_TEXT:
 							pcb_text_set_font(fontsel_layer, fontsel_txt, fid);
 							break;
 					}

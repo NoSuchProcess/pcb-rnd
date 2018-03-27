@@ -51,8 +51,8 @@ static pcb_box_t SearchBox;
 static pcb_layer_t *SearchLayer;
 
 /* ---------------------------------------------------------------------------
- * The first parameter includes PCB_TYPE_LOCKED if we
- * want to include locked object in the search and PCB_TYPE_SUBC_PART if
+ * The first parameter includes PCB_OBJ_LOCKED if we
+ * want to include locked object in the search and PCB_OBJ_SUBC_PART if
  * objects that are part of a subcircuit should be found.
  */
 static pcb_bool SearchLineByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
@@ -72,9 +72,9 @@ static pcb_bool SearchSubcByLocation(unsigned long, unsigned long, pcb_subc_t **
 do { \
 	if ((req_flag != 0) && (!PCB_FLAG_TEST(req_flag, obj))) \
 		reject; \
-	if (!(objst & PCB_TYPE_SUBC_PART) && (pcb_ ## locality ## obj_parent_subc(obj->parent_type, &obj->parent))) \
+	if (!(objst & PCB_OBJ_SUBC_PART) && (pcb_ ## locality ## obj_parent_subc(obj->parent_type, &obj->parent))) \
 		reject; \
-	if (!(objst & PCB_TYPE_LOCKED) && (PCB_FLAG_TEST(objst & PCB_FLAG_LOCK, locked_obj))) \
+	if (!(objst & PCB_OBJ_LOCKED) && (PCB_FLAG_TEST(objst & PCB_FLAG_LOCK, locked_obj))) \
 		reject; \
 } while(0)
 
@@ -439,7 +439,7 @@ static pcb_r_dir_t polypoint_callback(const pcb_box_t *box, void *cl)
 	dt = polygon->parent.layer->parent; /* polygon -> layer -> data */
 	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
 		/* do not find subc part poly points if not explicitly requested */
-		if (!(ctx->Type & PCB_TYPE_SUBC_PART))
+		if (!(ctx->Type & PCB_OBJ_SUBC_PART))
 			return PCB_R_DIR_NOT_FOUND;
 
 		/* don't find subc poly points even as subc part unless we are editing a subc */
@@ -1069,17 +1069,17 @@ pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_c
  * searches for any kind of object or for a set of object types
  * the calling routine passes two pointers to allocated memory for storing
  * the results.
- * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
+ * A type value is returned too which is PCB_OBJ_VOID if no objects has been found.
  * A set of object types is passed in.
  * The object is located by it's position.
  *
  * The layout is checked in the following order:
  *   polygon-point, padstack, line, text, polygon, subcircuit
  *
- * Note that if Type includes PCB_TYPE_LOCKED, then the search includes
+ * Note that if Type includes PCB_OBJ_LOCKED, then the search includes
  * locked items.  Otherwise, locked items are ignored.
 
- * Note that if Type includes PCB_TYPE_SUBC_PART, then the search includes
+ * Note that if Type includes PCB_OBJ_SUBC_PART, then the search includes
  * objects that are part of subcircuits, else they are ignored.
  */
 static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, unsigned long req_flag)
@@ -1088,8 +1088,8 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	void **pr1 = &r1, **pr2 = &r2, **pr3 = &r3;
 	int i;
 	double HigherBound = 0;
-	int HigherAvail = PCB_TYPE_NONE;
-	int objst = Type & (PCB_TYPE_LOCKED | PCB_TYPE_SUBC_PART);
+	int HigherAvail = PCB_OBJ_VOID;
+	int objst = Type & (PCB_OBJ_LOCKED | PCB_OBJ_SUBC_PART);
 
 	/* setup variables used by local functions */
 	PosX = X;
@@ -1106,36 +1106,36 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	}
 
 	if (conf_core.editor.only_names) {
-		Type &= PCB_TYPE_TEXT;
+		Type &= PCB_OBJ_TEXT;
 	}
 
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) {
-		Type &= ~PCB_TYPE_POLY;
+		Type &= ~PCB_OBJ_POLY;
 	}
 
-	if (Type & PCB_TYPE_RATLINE && PCB->RatOn &&
+	if (Type & PCB_OBJ_RAT && PCB->RatOn &&
 			SearchRatLineByLocation(objst, req_flag, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
-		return PCB_TYPE_RATLINE;
+		return PCB_OBJ_RAT;
 
-	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1))
-		return PCB_TYPE_PSTK;
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1))
+		return PCB_OBJ_PSTK;
 
-	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0))
-		return PCB_TYPE_PSTK;
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0))
+		return PCB_OBJ_PSTK;
 
-	if (!HigherAvail && (Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
+	if (!HigherAvail && (Type & PCB_OBJ_FLOATER) && (Type & PCB_OBJ_TEXT) &&
 			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_false)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
 		*Result2 = r2;
 		*Result3 = r3;
-		return PCB_TYPE_TEXT;
+		return PCB_OBJ_TEXT;
 	}
 
-	if (!HigherAvail && Type & PCB_TYPE_SUBC && PCB->SubcOn &&
+	if (!HigherAvail && Type & PCB_OBJ_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) pr1, (pcb_subc_t **) pr2, (pcb_subc_t **) pr3, pcb_false)) {
 		pcb_box_t *box = &((pcb_subc_t *) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
-		HigherAvail = PCB_TYPE_SUBC;
+		HigherAvail = PCB_OBJ_SUBC;
 	}
 
 	for (i = -1; i < pcb_max_layer + 1; i++) {
@@ -1152,34 +1152,34 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 				continue;
 		}
 		if (SearchLayer->meta.real.vis) {
-			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 &&
-					Type & PCB_TYPE_POLY_POINT &&
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+					Type & PCB_OBJ_POLY_POINT &&
 					SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
-				return PCB_TYPE_POLY_POINT;
+				return PCB_OBJ_POLY_POINT;
 
-			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 &&
-					Type & PCB_TYPE_LINE_POINT &&
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+					Type & PCB_OBJ_LINE_POINT &&
 					SearchLinePointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_point_t **) Result3))
-				return PCB_TYPE_LINE_POINT;
+				return PCB_OBJ_LINE_POINT;
 
-			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 &&
-					Type & PCB_TYPE_ARC_POINT &&
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+					Type & PCB_OBJ_ARC_POINT &&
 					SearchArcPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int **) Result3))
-				return PCB_TYPE_ARC_POINT;
+				return PCB_OBJ_ARC_POINT;
 
-			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 && Type & PCB_TYPE_LINE
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_LINE
 					&& SearchLineByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
-				return PCB_TYPE_LINE;
+				return PCB_OBJ_LINE;
 
-			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 && Type & PCB_TYPE_ARC &&
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_ARC &&
 					SearchArcByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (pcb_arc_t **) Result3))
-				return PCB_TYPE_ARC;
+				return PCB_OBJ_ARC;
 
-			if ((HigherAvail & (PCB_TYPE_PSTK)) == 0 && Type & PCB_TYPE_TEXT
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_TEXT
 					&& SearchTextByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
-				return PCB_TYPE_TEXT;
+				return PCB_OBJ_TEXT;
 
-			if (Type & PCB_TYPE_POLY &&
+			if (Type & PCB_OBJ_POLY &&
 					SearchPolygonByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_poly_t **) Result3)) {
 				if (HigherAvail) {
 					pcb_box_t *box = &(*(pcb_poly_t **) Result2)->BoundingBox;
@@ -1187,51 +1187,51 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 					if (HigherBound < area)
 						break;
 					else
-						return PCB_TYPE_POLY;
+						return PCB_OBJ_POLY;
 				}
 				else
-					return PCB_TYPE_POLY;
+					return PCB_OBJ_POLY;
 			}
 		}
 	}
 	/* return any previously found objects */
-	if (HigherAvail & PCB_TYPE_PSTK) {
+	if (HigherAvail & PCB_OBJ_PSTK) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return PCB_TYPE_PSTK;
+		return PCB_OBJ_PSTK;
 	}
 
-	if (HigherAvail & PCB_TYPE_SUBC) {
+	if (HigherAvail & PCB_OBJ_SUBC) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return PCB_TYPE_SUBC;
+		return PCB_OBJ_SUBC;
 	}
 
 	/* search the 'invisible objects' last */
 	if (!PCB->InvisibleObjectsOn)
-		return PCB_TYPE_NONE;
+		return PCB_OBJ_VOID;
 
-	if ((Type & PCB_TYPE_SUBC_FLOATER) && (Type & PCB_TYPE_TEXT) &&
+	if ((Type & PCB_OBJ_FLOATER) && (Type & PCB_OBJ_TEXT) &&
 			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_true)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
 		*Result2 = r2;
 		*Result3 = r3;
-		return PCB_TYPE_TEXT;
+		return PCB_OBJ_TEXT;
 	}
 
-	if (Type & PCB_TYPE_SUBC && PCB->SubcOn &&
+	if (Type & PCB_OBJ_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, pcb_true))
-		return PCB_TYPE_SUBC;
+		return PCB_OBJ_SUBC;
 
-	return PCB_TYPE_NONE;
+	return PCB_OBJ_VOID;
 }
 
 int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
 {
 	int res = pcb_search_obj_by_location_(Type, Result1, Result2, Result3, X, Y, Radius, 0);
-	if ((res != PCB_TYPE_NONE) && (res != PCB_TYPE_SUBC))
+	if ((res != PCB_OBJ_VOID) && (res != PCB_OBJ_SUBC))
 		return res;
 
 	/* found a subc because it was still the best option over all the plain
@@ -1240,10 +1240,10 @@ int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result
 	if ((!conf_core.editor.lock_names) && (!conf_core.editor.hide_names)) {
 		int fres;
 		void *fr1, *fr2, *fr3;
-		Type &= ~PCB_TYPE_SUBC;
-		Type |= PCB_TYPE_SUBC_PART;
+		Type &= ~PCB_OBJ_SUBC;
+		Type |= PCB_OBJ_SUBC_PART;
 		fres = pcb_search_obj_by_location_(Type, &fr1, &fr2, &fr3, X, Y, Radius, PCB_FLAG_FLOATER);
-		if (fres != PCB_TYPE_NONE) {
+		if (fres != PCB_OBJ_VOID) {
 			*Result1 = fr1;
 			*Result2 = fr2;
 			*Result3 = fr3;
@@ -1261,73 +1261,73 @@ int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result
  * buffer or on the remove list.
  * The calling routine passes two pointers to allocated memory for storing
  * the results.
- * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
+ * A type value is returned too which is PCB_OBJ_VOID if no objects has been found.
  */
 static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
-	if (type == PCB_TYPE_LINE || type == PCB_TYPE_LINE_POINT) {
+	if (type == PCB_OBJ_LINE || type == PCB_OBJ_LINE_POINT) {
 		PCB_LINE_ALL_LOOP(Base);
 		{
 			if (line->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) line;
-				return PCB_TYPE_LINE;
+				return PCB_OBJ_LINE;
 			}
 			if (line->Point1.ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point1;
-				return PCB_TYPE_LINE_POINT;
+				return PCB_OBJ_LINE_POINT;
 			}
 			if (line->Point2.ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point2;
-				return PCB_TYPE_LINE_POINT;
+				return PCB_OBJ_LINE_POINT;
 			}
 		}
 		PCB_ENDALL_LOOP;
 	}
-	if (type == PCB_TYPE_ARC || type == PCB_TYPE_ARC_POINT) {
+	if (type == PCB_OBJ_ARC || type == PCB_OBJ_ARC_POINT) {
 		PCB_ARC_ALL_LOOP(Base);
 		{
 			if (arc->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) arc;
-				return PCB_TYPE_ARC;
+				return PCB_OBJ_ARC;
 			}
 		}
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type == PCB_TYPE_TEXT) {
+	if (type == PCB_OBJ_TEXT) {
 		PCB_TEXT_ALL_LOOP(Base);
 		{
 			if (text->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) text;
-				return PCB_TYPE_TEXT;
+				return PCB_OBJ_TEXT;
 			}
 		}
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type == PCB_TYPE_POLY || type == PCB_TYPE_POLY_POINT) {
+	if (type == PCB_OBJ_POLY || type == PCB_OBJ_POLY_POINT) {
 		PCB_POLY_ALL_LOOP(Base);
 		{
 			if (polygon->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) polygon;
-				return PCB_TYPE_POLY;
+				return PCB_OBJ_POLY;
 			}
-			if (type == PCB_TYPE_POLY_POINT)
+			if (type == PCB_OBJ_POLY_POINT)
 				PCB_POLY_POINT_LOOP(polygon);
 			{
 				if (point->ID == ID) {
 					*Result1 = (void *) layer;
 					*Result2 = (void *) polygon;
 					*Result3 = (void *) point;
-					return PCB_TYPE_POLY_POINT;
+					return PCB_OBJ_POLY_POINT;
 				}
 			}
 			PCB_END_LOOP;
@@ -1335,35 +1335,35 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type == PCB_TYPE_PSTK) {
+	if (type == PCB_OBJ_PSTK) {
 		PCB_PADSTACK_LOOP(Base);
 		{
 			if (padstack->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *)padstack;
-				return PCB_TYPE_PSTK;
+				return PCB_OBJ_PSTK;
 			}
 		}
 		PCB_END_LOOP;
 	}
 
-	if (type == PCB_TYPE_RATLINE || type == PCB_TYPE_LINE_POINT) {
+	if (type == PCB_OBJ_RAT || type == PCB_OBJ_LINE_POINT) {
 		PCB_RAT_LOOP(Base);
 		{
 			if (line->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) line;
-				return PCB_TYPE_RATLINE;
+				return PCB_OBJ_RAT;
 			}
 			if (line->Point1.ID == ID) {
 				*Result1 = (void *) NULL;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point1;
-				return PCB_TYPE_LINE_POINT;
+				return PCB_OBJ_LINE_POINT;
 			}
 			if (line->Point2.ID == ID) {
 				*Result1 = (void *) NULL;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point2;
-				return PCB_TYPE_LINE_POINT;
+				return PCB_OBJ_LINE_POINT;
 			}
 		}
 		PCB_END_LOOP;
@@ -1373,26 +1373,26 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 	PCB_SUBC_LOOP(Base);
 	{
 		int res;
-		if (type == PCB_TYPE_SUBC) {
+		if (type == PCB_OBJ_SUBC) {
 			if (subc->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *)subc;
-				return PCB_TYPE_SUBC;
+				return PCB_OBJ_SUBC;
 			}
 		}
 
 		res = pcb_search_obj_by_id_(subc->data, Result1, Result2, Result3, ID, type);
-		if (res != PCB_TYPE_NONE)
+		if (res != PCB_OBJ_VOID)
 			return res;
 	}
 	PCB_END_LOOP;
 
-	return PCB_TYPE_NONE;
+	return PCB_OBJ_VOID;
 }
 
 int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
 	int res = pcb_search_obj_by_id_(Base, Result1, Result2, Result3, ID, type);
-	if (res == PCB_TYPE_NONE)
+	if (res == PCB_OBJ_VOID)
 		pcb_message(PCB_MSG_ERROR, "hace: Internal error, search for ID %d failed\n", ID);
 	return res;
 }

@@ -42,52 +42,52 @@
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		if (F->Line)
 			return (F->Line(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		if (F->Arc)
 			return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_LINE_POINT:
 		if (F->LinePoint)
 			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
-	case PCB_TYPE_ARC_POINT:
+	case PCB_OBJ_ARC_POINT:
 		if (F->ArcPoint)
 			return (F->ArcPoint(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3));
 		break;
 
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 		if (F->Text)
 			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		if (F->Polygon)
 			return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_POLY_POINT:
+	case PCB_OBJ_POLY_POINT:
 		if (F->Point)
 			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		if (F->subc)
 			return (F->subc(ctx, (pcb_subc_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		if (F->padstack)
 			return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
 		break;
 
-	case PCB_TYPE_RATLINE:
+	case PCB_OBJ_RAT:
 		if (F->Rat)
 			return (F->Rat(ctx, (pcb_rat_t *) Ptr2));
 		break;
@@ -106,7 +106,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	pcb_bool changed = pcb_false;
 
 	/* check lines */
-	if (type & PCB_TYPE_LINE && F->Line) {
+	if (type & PCB_OBJ_LINE && F->Line) {
 		PCB_LINE_VISIBLE_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
@@ -122,7 +122,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	}
 
 	/* check arcs */
-	if (type & PCB_TYPE_ARC && F->Arc) {
+	if (type & PCB_OBJ_ARC && F->Arc) {
 		PCB_ARC_VISIBLE_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
@@ -138,7 +138,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	}
 
 	/* check text */
-	if (type & PCB_TYPE_TEXT && F->Text) {
+	if (type & PCB_OBJ_TEXT && F->Text) {
 		PCB_TEXT_ALL_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
@@ -154,7 +154,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	}
 
 	/* check polygons */
-	if (type & PCB_TYPE_POLY && F->Polygon) {
+	if (type & PCB_OBJ_POLY && F->Polygon) {
 		PCB_POLY_VISIBLE_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
@@ -169,7 +169,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type & PCB_TYPE_SUBC && F->subc) {
+	if (type & PCB_OBJ_SUBC && F->subc) {
 		PCB_SUBC_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
@@ -190,7 +190,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 
 
 	/* process padstacks */
-	if (type & PCB_TYPE_PSTK && pcb->ViaOn && F->padstack) {
+	if (type & PCB_OBJ_PSTK && pcb->ViaOn && F->padstack) {
 		PCB_PADSTACK_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack)) {
@@ -206,7 +206,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	}
 
 	/* and rat-lines */
-	if (type & PCB_TYPE_RATLINE && pcb->RatOn && F->Rat) {
+	if (type & PCB_OBJ_RAT && pcb->RatOn && F->Rat) {
 		PCB_RAT_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {

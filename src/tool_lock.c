@@ -51,15 +51,15 @@ void pcb_tool_lock_notify_mode(void)
 	
 	type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
 
-	if (type == PCB_TYPE_SUBC) {
+	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *subc = (pcb_subc_t *)ptr2;
-		pcb_flag_change(PCB, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_TYPE_SUBC, ptr1, ptr2, ptr3);
+		pcb_flag_change(PCB, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_OBJ_SUBC, ptr1, ptr2, ptr3);
 
 		DrawSubc(subc);
 		pcb_draw();
 		pcb_hid_actionl("Report", "Subc", NULL);
 	}
-	else if (type != PCB_TYPE_NONE) {
+	else if (type != PCB_OBJ_VOID) {
 		pcb_text_t *thing = (pcb_text_t *) ptr3;
 		PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, thing);
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, thing)

@@ -1750,3 +1750,9 @@ pcb_polygon_t -> pcb_poly_t
 pcb_polygon_s -> pcb_poly_s
 pcb_add_polygon_on_layer -> pcb_add_poly_on_layer
 GetObjectBoundingBox -> pcb_obj_get_bbox
+PCB_TYPE_ -> PCB_OBJ_
+PCB_OBJ_NONE -> PCB_OBJ_VOID
+pcb_obj_tpye_t -> pcb_objtype_t
+PCB_TYPEMASK_ALL -> PCB_OBJ_ANY
+PCB_OBJ_RATLINE -> PCB_OBJ_RAT
+PCB_OBJ_SUBC_FLOATER -> PCB_OBJ_FLOATER

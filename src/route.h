@@ -35,7 +35,7 @@
 #define ROUTE_SMALL_DATA_SIZE 4
 
 typedef struct {
-	pcb_obj_type_t	type;
+	pcb_objtype_t	type;
 	pcb_point_t			point1;							/* Line: Start Point, Arc: Center Point */	
 	pcb_point_t			point2;							/* Line: End Point */
 	pcb_coord_t			radius;							/* Arc */	

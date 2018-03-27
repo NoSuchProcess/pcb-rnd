@@ -154,14 +154,14 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 	if ((argv != NULL) && (argv[0] != NULL)) {
 		if (pcb_strncasecmp(argv[0], "Subc", 4) == 0)
-			type = PCB_TYPE_SUBC;
+			type = PCB_OBJ_SUBC;
 	}
 	type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3);
-	if (type == PCB_TYPE_NONE)
-		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_TYPE_LOCKED, &ptr1, &ptr2, &ptr3);
+	if (type == PCB_OBJ_VOID)
+		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_OBJ_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_PSTK:
 		{
 			pcb_pstk_t *ps;
 			pcb_pstk_proto_t *proto;
@@ -178,7 +178,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			gds_init(&tmp);
 
 			pcb_append_printf(&tmp, "%m+PADSTACK ID# %ld; Flags:%s\n"
-				"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_TYPE_PSTK, NULL),
+				"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL),
 				ps->x, ps->y);
 
 			if ((proto != NULL) && (proto->hdia > 0))
@@ -190,7 +190,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			break;
 		}
 
-	case PCB_TYPE_LINE:
+	case PCB_OBJ_LINE:
 		{
 			pcb_line_t *line;
 #ifndef NDEBUG
@@ -209,7 +209,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"and has name \"%s\".\n"
 									"%s"
 									"%s%s%s", USER_UNITMASK,
-									line->ID, pcb_strflg_f2s(line->Flags, PCB_TYPE_LINE, NULL),
+									line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL),
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
@@ -217,7 +217,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									PCB_UNKNOWN(line->Number), gen_locked(line), gen_term(line));
 			break;
 		}
-	case PCB_TYPE_RATLINE:
+	case PCB_OBJ_RAT:
 		{
 			pcb_rat_t *line;
 #ifndef NDEBUG
@@ -232,12 +232,12 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"connects to layer group #%d (%s).\n"
 									"SecondPoint(X,Y) = %$mD; ID = %ld; "
 									"connects to layer group #%d (%s).\n",
-									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_TYPE_LINE, NULL),
+									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL),
 									line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
 									line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
 			break;
 		}
-	case PCB_TYPE_ARC:
+	case PCB_OBJ_ARC:
 		{
 			pcb_arc_t *Arc;
 			pcb_box_t box;
@@ -260,7 +260,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"That makes the end points at %$mD and %$mD.\n"
 									"It is on layer %d.\n"
 									"%s"
-									"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_TYPE_ARC, NULL),
+									"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_OBJ_ARC, NULL),
 									Arc->X, Arc->Y,
 									Arc->Thickness, Arc->Clearance / 2,
 									Arc->Width, Arc->StartAngle, Arc->Delta,
@@ -271,7 +271,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc), gen_term(Arc));
 			break;
 		}
-	case PCB_TYPE_POLY:
+	case PCB_OBJ_POLY:
 		{
 			pcb_poly_t *Polygon;
 			const char *aunit;
@@ -304,7 +304,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"Its unclipped area is %f square %s.\n"
 									"%s"
 									"%s%s%s", USER_UNITMASK, Polygon->ID,
-									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLY, NULL),
+									pcb_strflg_f2s(Polygon->Flags, PCB_OBJ_POLY, NULL),
 									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
@@ -314,7 +314,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									gen_locked(Polygon), gen_term(Polygon));
 			break;
 		}
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		{
 			pcb_subc_t *subc;
 #ifndef NDEBUG
@@ -328,14 +328,14 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"BoundingBox %$mD %$mD.\n"
 									"Refdes \"%s\".\n"
 									"%s", USER_UNITMASK,
-									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_TYPE_SUBC, NULL),
+									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL),
 									subc->BoundingBox.X1, subc->BoundingBox.Y1,
 									subc->BoundingBox.X2, subc->BoundingBox.Y2,
 									PCB_EMPTY(subc->refdes),
 									gen_locked(subc));
 			break;
 		}
-	case PCB_TYPE_TEXT:
+	case PCB_OBJ_TEXT:
 #ifndef NDEBUG
 		if (pcb_gui->shift_is_pressed()) {
 			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
@@ -343,18 +343,18 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			return 0;
 		}
 #endif
-	case PCB_TYPE_LINE_POINT:
-	case PCB_TYPE_POLY_POINT:
+	case PCB_OBJ_LINE_POINT:
+	case PCB_OBJ_POLY_POINT:
 		{
 			pcb_point_t *point = (pcb_point_t *) ptr2;
 			report = pcb_strdup_printf("%m+POINT ID# %ld.\n"
 									"Located at (X,Y) = %$mD.\n"
 									"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
 									point->X, point->Y,
-									(type == PCB_TYPE_LINE_POINT) ? "line" : "polygon", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
+									(type == PCB_OBJ_LINE_POINT) ? "line" : "polygon", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
 			break;
 		}
-	case PCB_TYPE_NONE:
+	case PCB_OBJ_VOID:
 		report = NULL;
 		break;
 
@@ -601,8 +601,8 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		pcb_gui->get_coords("Click on a copper line", &x, &y);
 
-		type = pcb_search_screen(x, y, PCB_TYPE_LINE, &r1, &r2, &r3);
-		if (type != PCB_TYPE_LINE) {
+		type = pcb_search_screen(x, y, PCB_OBJ_LINE, &r1, &r2, &r3);
+		if (type != PCB_OBJ_LINE) {
 			pcb_message(PCB_MSG_ERROR, "can't find a line to split\n");
 			return -1;
 		}

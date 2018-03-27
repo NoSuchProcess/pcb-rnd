@@ -69,9 +69,9 @@ int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		memcpy(new_ref, old_ref, refdes_split - old_ref);
 		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-		pcb_undo_add_obj_to_change_name(PCB_TYPE_SUBC, NULL, NULL, subc, subc->refdes);
+		pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc, subc->refdes);
 
-		pcb_chg_obj_name(PCB_TYPE_SUBC, subc, subc, subc, new_ref);
+		pcb_chg_obj_name(PCB_OBJ_SUBC, subc, subc, subc, new_ref);
 	}
 	PCB_END_LOOP;
 	pcb_undo_inc_serial();
@@ -114,7 +114,7 @@ int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		memcpy(new_ref, old_ref, refdes_split - old_ref);
 		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-		pcb_chg_obj_name(PCB_TYPE_SUBC, subc, subc, subc, new_ref);
+		pcb_chg_obj_name(PCB_OBJ_SUBC, subc, subc, subc, new_ref);
 	}
 	PCB_END_LOOP;
 

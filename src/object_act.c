@@ -128,7 +128,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 			if (n_found == 0) {
 				void *ptrtmp;
 				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
-				if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
+				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
 					pcb_message(PCB_MSG_ERROR, _("No subcircuit found there\n"));
@@ -259,7 +259,7 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 				oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2)/2;
 			}
 			disperse_obj(PCB, (pcb_any_obj_t *)subc, ox, oy, &dx, &dy, &minx, &miny, &maxy);
-			pcb_move_obj(PCB_TYPE_SUBC, subc, subc, subc, dx, dy);
+			pcb_move_obj(PCB_OBJ_SUBC, subc, subc, subc, dx, dy);
 		}
 	}
 	PCB_END_LOOP;
@@ -301,7 +301,7 @@ static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
-			if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+			if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_save_serial();
 				pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
@@ -356,7 +356,7 @@ static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_co
 	nx = pcb_get_value(x_str, units, &absolute2, NULL);
 
 	type = pcb_search_screen(x, y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
-	if (type == PCB_TYPE_NONE) {
+	if (type == PCB_OBJ_VOID) {
 		pcb_message(PCB_MSG_ERROR, _("Nothing found under crosshair\n"));
 		return 1;
 	}
@@ -367,7 +367,7 @@ static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_co
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
-	if (type == PCB_TYPE_SUBC)
+	if (type == PCB_OBJ_SUBC)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	pcb_board_set_changed_flag(pcb_true);
@@ -399,7 +399,7 @@ static int pcb_act_MoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -723,7 +723,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			PCB_LINE_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
-					pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
+					pcb_remove_object(PCB_OBJ_LINE, layer, line, line);
 					changed = pcb_true;
 				}
 			}
@@ -731,7 +731,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			PCB_ARC_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
-					pcb_remove_object(PCB_TYPE_ARC, layer, arc, arc);
+					pcb_remove_object(PCB_OBJ_ARC, layer, arc, arc);
 					changed = pcb_true;
 				}
 			}
@@ -740,7 +740,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			PCB_PADSTACK_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)) {
-					pcb_remove_object(PCB_TYPE_PSTK, padstack, padstack, padstack);
+					pcb_remove_object(PCB_OBJ_PSTK, padstack, padstack, padstack);
 					changed = pcb_true;
 				}
 			}
@@ -756,7 +756,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
-					pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
+					pcb_remove_object(PCB_OBJ_LINE, layer, line, line);
 					changed = pcb_true;
 				}
 			}
@@ -766,7 +766,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, padstack)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)) {
-					pcb_remove_object(PCB_TYPE_PSTK, padstack, padstack, padstack);
+					pcb_remove_object(PCB_OBJ_PSTK, padstack, padstack, padstack);
 					changed = pcb_true;
 				}
 			}
@@ -820,7 +820,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 		if (!PCB_FLAGS_TEST(flags, padstack))
 			continue;
 		if (padstack->Clearance < value) {
-			pcb_chg_obj_clear_size(PCB_TYPE_PSTK, padstack, 0, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_OBJ_PSTK, padstack, 0, 0, value, 1);
 			pcb_undo_restore_serial();
 		}
 	}
@@ -831,7 +831,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 		if (!PCB_FLAGS_TEST(flags, line))
 			continue;
 		if ((line->Clearance != 0) && (line->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_OBJ_LINE, layer, line, 0, value, 1);
 			pcb_undo_restore_serial();
 		}
 	}
@@ -841,7 +841,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 		if (!PCB_FLAGS_TEST(flags, arc))
 			continue;
 		if ((arc->Clearance != 0) && (arc->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_OBJ_ARC, layer, arc, 0, value, 1);
 			pcb_undo_restore_serial();
 		}
 	}
@@ -851,7 +851,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 		if (!PCB_FLAGS_TEST(flags, polygon))
 			continue;
 		if ((polygon->Clearance != 0) && (polygon->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_TYPE_POLY, layer, polygon, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_OBJ_POLY, layer, polygon, 0, value, 1);
 			pcb_undo_restore_serial();
 		}
 	}

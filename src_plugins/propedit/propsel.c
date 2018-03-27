@@ -236,10 +236,10 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 	if (set_common(st, (pcb_any_obj_t *)line)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    pcb_chg_obj_1st_size(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_1st_size(PCB_OBJ_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, NULL, st->c*2, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_OBJ_LINE, layer, line, NULL, st->c*2, st->c_absolute)) DONE;
 }
 
 static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
@@ -257,24 +257,24 @@ static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	if (set_common(st, (pcb_any_obj_t *)arc)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    pcb_chg_obj_1st_size(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_1st_size(PCB_OBJ_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, NULL, st->c*2, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_OBJ_ARC, layer, arc, NULL, st->c*2, st->c_absolute)) DONE;
 
 	pn = st->name + 6;
 
 	if (!st->is_trace && st->c_valid && (strcmp(pn, "width") == 0) &&
-	    pcb_chg_obj_radius(PCB_TYPE_ARC, layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_radius(PCB_OBJ_ARC, layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
 
 	if (!st->is_trace && st->c_valid && (strcmp(pn, "height") == 0) &&
-	    pcb_chg_obj_radius(PCB_TYPE_ARC, layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_radius(PCB_OBJ_ARC, layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
 
 	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/start") == 0) &&
-	    pcb_chg_obj_angle(PCB_TYPE_ARC, layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
+	    pcb_chg_obj_angle(PCB_OBJ_ARC, layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
 
 	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/delta") == 0) &&
-	    pcb_chg_obj_angle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
+	    pcb_chg_obj_angle(PCB_OBJ_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
 static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_or_element, pcb_text_t *text)
@@ -318,7 +318,7 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 
 static void set_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
-	set_text_cb_any(ctx, pcb, PCB_TYPE_TEXT, layer, text);
+	set_text_cb_any(ctx, pcb, PCB_OBJ_TEXT, layer, text);
 }
 
 
@@ -332,7 +332,7 @@ static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 	if (set_common(st, (pcb_any_obj_t *)poly)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_POLY, layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_OBJ_POLY, layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
 
 	if (st->is_attr) {
 		set_attr(st, &poly->Attributes);
@@ -381,13 +381,13 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_PSTK, ps, ps, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c, st->c_absolute)) DONE;
 	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
 		if (st->d_absolute) {
-			if (pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
+			if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
 		}
 		else {
-			if (pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
+			if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
 		}
 		return;
 	}

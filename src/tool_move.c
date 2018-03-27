@@ -54,10 +54,10 @@ void pcb_tool_move_notify_mode(void)
 			pcb_crosshair.AttachedObject.Type =
 				pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
-			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+			if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) pcb_crosshair.AttachedObject.Ptr2)) {
 					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 				}
 				else
 					pcb_tool_attach_for_copy(pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
@@ -76,7 +76,7 @@ void pcb_tool_move_notify_mode(void)
 		pcb_board_set_changed_flag(pcb_true);
 
 		/* reset identifiers */
-		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		break;
 	}

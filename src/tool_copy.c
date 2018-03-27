@@ -53,7 +53,7 @@ void pcb_tool_copy_notify_mode(void)
 			pcb_crosshair.AttachedObject.Type =
 				pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
-			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+			if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 				pcb_tool_attach_for_copy(pcb_tool_note.X, pcb_tool_note.Y, pcb_false);
 			}
 			break;
@@ -62,7 +62,7 @@ void pcb_tool_copy_notify_mode(void)
 		/* second notify, move or copy object */
 	case PCB_CH_STATE_SECOND:
 
-		if ((PCB->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_TYPE_SUBC)) {
+		if ((PCB->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
 			pcb_message(PCB_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
 		}
 		else {
@@ -74,7 +74,7 @@ void pcb_tool_copy_notify_mode(void)
 		}
 
 		/* reset identifiers */
-		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		break;
 	}

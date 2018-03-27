@@ -128,7 +128,7 @@ void pcb_tool_arrow_notify_mode(void)
 	 * (pcb_tool_note.Moving) or clicked on a MOVE_TYPE
 	 * (pcb_tool_note.Hit)
 	 */
-	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_TYPE_SUBC_FLOATER | PCB_LOOSE_SUBC) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
+	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC) & ~PCB_OBJ_RAT; test; test &= ~type) {
 		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, test, &ptr1, &ptr2, &ptr3);
 		if (!pcb_tool_note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Hit = type;
@@ -138,7 +138,7 @@ void pcb_tool_arrow_notify_mode(void)
 		}
 		if (!pcb_tool_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC)) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2))
 			pcb_tool_note.Moving = pcb_true;
-		if ((pcb_tool_note.Hit && pcb_tool_note.Moving) || type == PCB_TYPE_NONE)
+		if ((pcb_tool_note.Hit && pcb_tool_note.Moving) || type == PCB_OBJ_VOID)
 			return;
 	}
 }

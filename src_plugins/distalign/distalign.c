@@ -350,7 +350,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			else
 				dx = 0;
 			pcb_subc_move(subc, dx, dy, 1);
-			pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, subc, dx, dy);
+			pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, NULL, NULL, subc, dx, dy);
 			changed = 1;
 		}
 	}
@@ -515,7 +515,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			else
 				dx = 0;
 			pcb_subc_move(subc, dx, dy, 1);
-			pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, subc, dx, dy);
+			pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, NULL, NULL, subc, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */

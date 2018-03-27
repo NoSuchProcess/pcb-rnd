@@ -97,7 +97,7 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 		case OM_LINE:
 			switch(coord) {
 				case OC_OBJ:
-					pcb_move_obj(PCB_TYPE_LINE_POINT, ly, obj->obj.l, &(obj->obj.l->Point2), dx, dy);
+					pcb_move_obj(PCB_OBJ_LINE_POINT, ly, obj->obj.l, &(obj->obj.l->Point2), dx, dy);
 					/* intended falltrough */
 				case OC_P1X:
 				case OC_P1Y: what = &(obj->obj.l->Point1); break;
@@ -106,21 +106,21 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 				default: /* we do not handle anything else for now */
 					;
 			}
-			pcb_move_obj(PCB_TYPE_LINE_POINT, ly, obj->obj.l, what, dx, dy);
+			pcb_move_obj(PCB_OBJ_LINE_POINT, ly, obj->obj.l, what, dx, dy);
 			return 0;
 		case OM_TEXT:
-			pcb_move_obj(PCB_TYPE_TEXT, ly, obj->obj.t, obj->obj.t, dx, dy);
+			pcb_move_obj(PCB_OBJ_TEXT, ly, obj->obj.t, obj->obj.t, dx, dy);
 			return 0;
 		case OM_VIA:
-			pcb_move_obj(PCB_TYPE_VIA, obj->obj.v, obj->obj.v, obj->obj.v, dx, dy);
+			pcb_move_obj(PCB_OBJ_VIA, obj->obj.v, obj->obj.v, obj->obj.v, dx, dy);
 			return 0;
 		case OM_PIN:
-			pcb_move_obj(PCB_TYPE_PIN, obj->obj.pin, obj->obj.pin, obj->obj.pin, dx, dy);
+			pcb_move_obj(PCB_OBJ_PIN, obj->obj.pin, obj->obj.pin, obj->obj.pin, dx, dy);
 			return 0;
 		case OM_ARC:
 			switch(coord) {
 				case OC_OBJ:
-					pcb_move_obj(PCB_TYPE_ARC, ly, obj->obj.a, obj->obj.a, dx, dy);
+					pcb_move_obj(PCB_OBJ_ARC, ly, obj->obj.a, obj->obj.a, dx, dy);
 					return 0;
 				default: /* we do not handle anything else for now */
 					;
@@ -129,7 +129,7 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 			break;
 		case OM_POLYGON:
 			if (obj->layer != -1) {
-				pcb_move_obj(PCB_TYPE_POLY, PCB->Data->Layer + obj->layer, obj->obj.p, obj->obj.p, dx, dy);
+				pcb_move_obj(PCB_OBJ_POLY, PCB->Data->Layer + obj->layer, obj->obj.p, obj->obj.p, dx, dy);
 				return 0;
 			}
 	}

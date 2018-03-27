@@ -63,21 +63,21 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
 {
 	switch (Type) {
-	case PCB_TYPE_LINE:
-	case PCB_TYPE_ARC:
-	case PCB_TYPE_TEXT:
-	case PCB_TYPE_POLY:
-	case PCB_TYPE_PSTK:
+	case PCB_OBJ_LINE:
+	case PCB_OBJ_ARC:
+	case PCB_OBJ_TEXT:
+	case PCB_OBJ_POLY:
+	case PCB_OBJ_PSTK:
 		*res = *(pcb_box_t *)Ptr2;
 		return 0;
-	case PCB_TYPE_SUBC:
+	case PCB_OBJ_SUBC:
 		*res = *(pcb_box_t *)Ptr1;
 		return 0;
-	case PCB_TYPE_POLY_POINT:
-	case PCB_TYPE_LINE_POINT:
+	case PCB_OBJ_POLY_POINT:
+	case PCB_OBJ_LINE_POINT:
 		*res = *(pcb_box_t *)Ptr3;
 		return 0;
-	case PCB_TYPE_ARC_POINT:
+	case PCB_OBJ_ARC_POINT:
 		return pcb_obj_ui_arc_point_bbox(Type, Ptr1, Ptr2, Ptr3, res);
 	default:
 		pcb_message(PCB_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);

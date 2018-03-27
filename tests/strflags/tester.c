@@ -77,7 +77,7 @@ int main()
 		int otype;
 		unsigned char intconn;
 
-		otype = PCB_TYPEMASK_ALL;
+		otype = PCB_OBJ_ANY;
 		fh.Flags = empty_flags;
 		for (i = 0; i < PCB_ENTRIES(pcb_object_flagbits); i++) {
 			if (PCB_FLAG_TEST(pcb_object_flagbits[i].mask, &fh))
@@ -117,7 +117,7 @@ int main()
 		int i;
 		int otype;
 
-		otype = PCB_TYPEMASK_ALL;
+		otype = PCB_OBJ_ANY;
 		fh.Flags = empty_flags;
 		for (i = 0; i < PCB_ENTRIES(pcb_flagbits); i++) {
 			if (PCB_FLAG_TEST(pcb_flagbits[i].mask, &fh))
