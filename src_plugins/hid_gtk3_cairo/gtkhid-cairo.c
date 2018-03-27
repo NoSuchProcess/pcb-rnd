@@ -1563,26 +1563,6 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	return FALSE;
 }
 
-static pcb_hid_t *ghid_cairo_request_debug_draw(void)
-{
-	/* No special setup requirements, drawing goes into
-	 * the backing pixmap in GTK2. */
-	return &gtk3_cairo_hid;
-}
-
-static void ghid_cairo_flush_debug_draw(void)
-{
-	ghid_cairo_screen_update();
-	gdk_flush();
-}
-
-static void ghid_cairo_finish_debug_draw(void)
-{
-	ghid_cairo_flush_debug_draw();
-	/* No special tear down requirements
-	 */
-}
-
 static void draw_lead_user(render_priv_t * priv)
 {
 	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
@@ -1666,10 +1646,5 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->fill_polygon = ghid_cairo_fill_polygon;
 		hid->fill_polygon_offs = ghid_cairo_fill_polygon_offs;
 		hid->fill_rect = ghid_cairo_fill_rect;
-
-		hid->request_debug_draw = ghid_cairo_request_debug_draw;
-		hid->flush_debug_draw = ghid_cairo_flush_debug_draw;
-		hid->finish_debug_draw = ghid_cairo_finish_debug_draw;
-
 	}
 }

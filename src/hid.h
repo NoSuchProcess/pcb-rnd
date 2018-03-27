@@ -481,35 +481,6 @@ struct pcb_hid_s {
 
 	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
 
-	/* Debug drawing support. These APIs must be implemented (non NULL),
-	 * but they do not have to be functional. request_debug_draw can
-	 * return NULL to indicate debug drawing is not permitted.
-	 *
-	 * Debug drawing is not guaranteed to be re-entrant.
-	 * The caller must not nest requests for debug drawing.
-	 */
-
-	/* Request permission for debug drawing
-	 *
-	 * Returns a HID pointer which should be used rather than the global
-	 * gui-> for making drawing calls. If the return value is NULL, then
-	 * permission has been denied, and the drawing must not continue.
-	 */
-	pcb_hid_t *(*request_debug_draw)(void);
-
-	/* Flush pending drawing to the screen
-	 *
-	 * May be implemented as a NOOP if the GUI has chosen to send the
-	 * debug drawing directly to the screen.
-	 */
-	void (*flush_debug_draw)(void);
-
-	/* When finished, the user must inform the GUI to clean up resources
-	 *
-	 * Any remaining rendering will be flushed to the screen.
-	 */
-	void (*finish_debug_draw)(void);
-
 	/* Notification to the GUI around saving the PCB file.
 	 *
 	 * Called with a false parameter before the save, called again

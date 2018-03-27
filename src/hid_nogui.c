@@ -385,19 +385,6 @@ static int nogui_progress(int so_far, int total, const char *message)
 	return 0;
 }
 
-static pcb_hid_t *nogui_request_debug_draw(void)
-{
-	return NULL;
-}
-
-static void nogui_flush_debug_draw(void)
-{
-}
-
-static void nogui_finish_debug_draw(void)
-{
-}
-
 static void nogui_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
 }
@@ -454,9 +441,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->show_item = nogui_show_item;
 	hid->beep = nogui_beep;
 	hid->progress = nogui_progress;
-	hid->request_debug_draw = nogui_request_debug_draw;
-	hid->flush_debug_draw = nogui_flush_debug_draw;
-	hid->finish_debug_draw = nogui_finish_debug_draw;
 	hid->create_menu = nogui_create_menu;
 }
 

@@ -3701,33 +3701,6 @@ static int lesstif_progress(int so_far, int total, const char *message)
 	return progress_cancelled;
 }
 
-static pcb_hid_t *lesstif_request_debug_draw(void)
-{
-	/* Send drawing to the backing pixmap */
-	pixmap = main_pixmap;
-	return &lesstif_hid;
-}
-
-static void lesstif_flush_debug_draw(void)
-{
-	/* Copy the backing pixmap to the display and redraw any attached objects */
-	XSetFunction(display, my_gc, GXcopy);
-	XCopyArea(display, main_pixmap, window, my_gc, 0, 0, view_width, view_height, 0, 0);
-	pixmap = window;
-	if (crosshair_on) {
-		pcb_draw_attached();
-		pcb_draw_mark();
-	}
-	pixmap = main_pixmap;
-}
-
-static void lesstif_finish_debug_draw(void)
-{
-	lesstif_flush_debug_draw();
-	/* No special tear down requirements
-	 */
-}
-
 static void lesstif_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
 {
 	*width = Pz(view_width);
@@ -3841,10 +3814,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.progress = lesstif_progress;
 	lesstif_hid.edit_attributes = lesstif_attributes_dialog;
 	lesstif_hid.point_cursor = PointCursor;
-
-	lesstif_hid.request_debug_draw = lesstif_request_debug_draw;
-	lesstif_hid.flush_debug_draw = lesstif_flush_debug_draw;
-	lesstif_hid.finish_debug_draw = lesstif_finish_debug_draw;
 
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.remove_menu = lesstif_remove_menu;

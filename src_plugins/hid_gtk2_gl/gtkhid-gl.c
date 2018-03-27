@@ -1094,61 +1094,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	return FALSE;
 }
 
-pcb_hid_t *ghid_gl_request_debug_draw(void)
-{
-	GHidPort *port = gport;
-	GtkWidget *widget = port->drawing_area;
-	GtkAllocation allocation;
-
-	gtk_widget_get_allocation(widget, &allocation);
-
-	ghid_gl_start_drawing(port);
-
-	glViewport(0, 0, allocation.width, allocation.height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, allocation.width, allocation.height, 0, 0, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
-
-/*	hidgl_init_triangle_array(&buffer);*/
-	ghid_gl_invalidate_current_gc();
-
-	/* Setup stenciling */
-	glDisable(GL_STENCIL_TEST);
-
-	glPushMatrix();
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, (conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.);
-	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
-							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
-
-	return &gtk2_gl_hid;
-}
-
-void ghid_gl_flush_debug_draw(void)
-{
-	GtkWidget *widget = gport->drawing_area;
-	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-
-	drawgl_flush();
-
-	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
-		gdk_gl_drawable_swap_buffers(pGlDrawable);
-	else
-		glFlush();
-}
-
-void ghid_gl_finish_debug_draw(void)
-{
-	drawgl_flush();
-	glPopMatrix();
-
-	ghid_gl_end_drawing(gport);
-}
-
 static void draw_lead_user(render_priv_t * priv)
 {
 	int i;
@@ -1224,10 +1169,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 
 	hid->set_drawing_mode = hidgl_set_drawing_mode;
 	hid->render_burst = ghid_gl_render_burst;
-
-	hid->request_debug_draw = ghid_gl_request_debug_draw;
-	hid->flush_debug_draw = ghid_gl_flush_debug_draw;
-	hid->finish_debug_draw = ghid_gl_finish_debug_draw;
 
 	hid->holes_after = 1;
 	}
