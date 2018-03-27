@@ -179,7 +179,7 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 
 void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 {
-	int n, t;
+	int n;
 	vtp0_t hubs;
 	pcb_vnode_t *va, *vb, *iva, *ivb;
 
