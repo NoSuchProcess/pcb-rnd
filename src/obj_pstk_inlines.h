@@ -42,7 +42,7 @@ typedef enum {
 } pcb_bb_type_t;
 
 /* Returns the ID of a proto within its parent's cache */
-PCB_INLINE pcb_cardinal_t pcb_pstk_get_proto_id(pcb_pstk_proto_t *proto)
+PCB_INLINE pcb_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
 {
 	pcb_data_t *data = proto->parent;
 	if ((proto >= data->ps_protos.array) && (proto < data->ps_protos.array + data->ps_protos.used))
@@ -62,7 +62,7 @@ PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, pcb_car
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto(pcb_pstk_t *ps)
+PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto(const pcb_pstk_t *ps)
 {
 	return pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 }
@@ -95,7 +95,7 @@ PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 
 /* return the type of drill and optionally fill in group IDs of drill ends ;
    if proto_out is not NULL, also load it with the proto */
-PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
+PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
 {
 	pcb_bb_type_t res;
 	int topi, boti;
@@ -168,7 +168,7 @@ PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_l
 
 /* return whether a given padstack drills a given group
   (does not consider plating, only drill!) */
-PCB_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
+PCB_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
 {
 	pcb_layergrp_id_t top, bot;
 	pcb_bb_type_t res = pcb_pstk_bbspan(pcb, ps, &top, &bot, proto_out);

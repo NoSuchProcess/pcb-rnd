@@ -110,7 +110,7 @@ pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src);
 pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src);
 
 /* Clearance of the padstack on a given layer */
-pcb_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layer_t *layer);
+pcb_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer);
 
 /*** proto ***/
 
