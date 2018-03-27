@@ -87,7 +87,6 @@ put /local/pcb/OBJS [@
 	netlist_act.o
 	object_act.o
 	obj_common.o
-	obj_any.o
 	obj_arc.o
 	obj_arc_list.o
 	obj_arc_ui.o

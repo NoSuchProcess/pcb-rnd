@@ -30,7 +30,6 @@
 #define PCB_QUERY_ACCESS_H
 
 #include "query.h"
-#include "obj_any.h"
 
 /* Append objects with matching type to lst */
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask);
