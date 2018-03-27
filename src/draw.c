@@ -189,7 +189,7 @@ static void DrawEverything_holes(pcb_layergrp_id_t gid, const pcb_box_t *drawn_a
  */
 static void DrawEverything(const pcb_box_t * drawn_area)
 {
-	int i, ngroups, side, slk_len;
+	int i, ngroups, slk_len;
 	pcb_layergrp_id_t component, solder, slk[16], gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
 	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
@@ -232,7 +232,6 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 * first draw all 'invisible' stuff
 	 */
 	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0)) {
-		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 		pcb_draw_silk(PCB_LYT_INVISIBLE_SIDE(), drawn_area);
 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
