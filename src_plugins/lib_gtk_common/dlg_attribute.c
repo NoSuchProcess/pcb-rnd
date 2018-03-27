@@ -484,7 +484,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_UNIT:
-				unit_list = get_unit_list();
+				unit_list = pcb_units;
 				n = pcb_get_n_units();
 
 				hbox = gtkc_hbox_new(FALSE, 4);

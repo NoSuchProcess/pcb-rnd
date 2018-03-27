@@ -396,7 +396,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 		fprintf(stderr, "ERROR:  dpi may not be < 0\n");
 		return;
 	}
-	unit = &(get_unit_list()[options[HA_unit].int_value]);
+	unit = &(pcb_units[options[HA_unit].int_value]);
 	metric = (unit->family == PCB_UNIT_METRIC);
 	scale = metric ? 1.0 / pcb_coord_to_unit(unit, PCB_MM_TO_COORD(1.0))
 		: 1.0 / pcb_coord_to_unit(unit, PCB_INCH_TO_COORD(1.0));

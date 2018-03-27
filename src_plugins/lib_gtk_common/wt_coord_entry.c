@@ -86,7 +86,7 @@ static void ghid_coord_entry_popup_cb(pcb_gtk_coord_entry_t * ce, GtkMenu * menu
 
 	/* Build submenu */
 	n = pcb_get_n_units();
-	unit_list = get_unit_list();
+	unit_list = pcb_units;
 
 	submenu = gtk_menu_new();
 	for (i = 0; i < n; ++i) {

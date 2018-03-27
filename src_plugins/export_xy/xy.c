@@ -702,7 +702,7 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 		xy_unit = options[HA_xymm].int_value ? get_unit_struct("mm")
 			: get_unit_struct("mil");
 	else
-		xy_unit = &get_unit_list()[options[HA_unit].int_value];
+		xy_unit = &pcb_units[options[HA_unit].int_value];
 
 
 	switch(options[HA_format].int_value) {

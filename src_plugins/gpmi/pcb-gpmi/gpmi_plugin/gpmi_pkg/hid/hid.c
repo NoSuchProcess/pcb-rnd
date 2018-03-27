@@ -252,7 +252,7 @@ int hid_add_attribute(gpmi_hid_t *hid, char *attr_name, char *help, hid_attr_typ
 	hid->attr[current].max_val      = max;
 	if (type == HIDA_Unit) {
 		const pcb_unit_t *u, *all;
-		all = get_unit_list();
+		all = pcb_units;
 		u = get_unit_struct(default_val);
 		if (u != NULL)
 			hid->attr[current].default_val.int_value = u-all;

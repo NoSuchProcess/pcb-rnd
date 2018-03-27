@@ -210,11 +210,6 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
 	return NULL;
 }
 
-const pcb_unit_t *get_unit_list(void)
-{
-	return pcb_units;
-}
-
 const pcb_unit_t *get_unit_by_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))

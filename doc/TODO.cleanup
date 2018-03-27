@@ -3,8 +3,6 @@
 	- conf_*
 - centralize pcb_gui->attribute_dialog()
 - remove pcb board Zoom/x/y, move the drc stuff to config
-- remove obsolete APIs:
-   get_unit_list()
 - remove 'require unique refdes'
 - remove the polygrid feature from the pos exporter - use the poly hatch instead
 - move the GetXY action to central

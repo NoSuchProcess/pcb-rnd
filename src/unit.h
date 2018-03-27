@@ -130,7 +130,6 @@ const pcb_unit_t *get_unit_struct_(const char *suffix, int strict);
 const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
 
 /* Return the list of units and number of units (obsolete, do not use) */
-const pcb_unit_t *get_unit_list(void);
 int pcb_get_n_units(void);
 
 /* Return the idxth unit or NULL (bounds check) */
