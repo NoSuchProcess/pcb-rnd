@@ -411,6 +411,7 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
+		Removed *r = &Entry->Data.Removed;
 		if (!pcb_removelist)
 			pcb_removelist = pcb_buffer_new(NULL);
 		if (pcb_undo_and_draw)
@@ -418,6 +419,7 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 		/* in order to make this re-doable we move it to the pcb_removelist */
 		pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, type, ptr1, ptr2, ptr3);
 		Entry->Type = PCB_UNDO_REMOVE;
+		r->p_subc_id = 0;
 		return pcb_true;
 	}
 	return pcb_false;
