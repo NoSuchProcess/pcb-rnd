@@ -50,6 +50,7 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "compat_nls.h"
+#include "macro.h"
 #include <genvector/vtp0.h>
 #include "obj_rat_draw.h"
 #include "obj_term.h"

@@ -28,6 +28,7 @@
 #include "move.h"
 #include "draw.h"
 #include "plugins.h"
+#include "macro.h"
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "compat_misc.h"

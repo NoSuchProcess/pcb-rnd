@@ -47,6 +47,7 @@
 #include "undo.h"
 #include "event.h"
 #include "action_helper.h"
+#include "macro.h"
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"

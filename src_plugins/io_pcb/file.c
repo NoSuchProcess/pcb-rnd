@@ -66,6 +66,7 @@
 #include "obj_poly.h"
 #include "thermal.h"
 #include "event.h"
+#include "macro.h"
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"

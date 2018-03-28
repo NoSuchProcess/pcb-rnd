@@ -39,6 +39,7 @@
 #include "compat_nls.h"
 #include "paths.h"
 #include "safe_fs.h"
+#include "macro.h"
 
 static pcb_plug_import_t import_netlist;
 

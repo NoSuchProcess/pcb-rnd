@@ -47,7 +47,6 @@
 #include "math_helper.h"
 #include "global_typedefs.h"
 #include "config.h"
-#include "macro.h"
 #include "move.h"
 #include "obj_common.h"
 

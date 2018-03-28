@@ -38,6 +38,7 @@
 #include "obj_subc_parent.h"
 #include "pcb-printf.h"
 #include "undo.h"
+#include "macro.h"
 #include "polygon.h"
 
 static const char core_term_cookie[] = "core-term";

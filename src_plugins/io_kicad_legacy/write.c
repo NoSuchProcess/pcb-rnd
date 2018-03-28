@@ -35,6 +35,7 @@
 #include "write.h"
 #include "layer.h"
 #include "netlist.h"
+#include "macro.h"
 #include "obj_pstk_inlines.h"
 
 #include "../io_kicad/uniq_name.h"

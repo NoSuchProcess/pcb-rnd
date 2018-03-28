@@ -35,6 +35,7 @@
 #include "hid_actions.h"
 #include "conf_core.h"
 #include "box.h"
+#include "macro.h"
 #include "compat_misc.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)

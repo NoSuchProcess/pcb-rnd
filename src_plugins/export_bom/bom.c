@@ -21,6 +21,7 @@
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "hid_init.h"
+#include "macro.h"
 
 const char *bom_cookie = "bom HID";
 

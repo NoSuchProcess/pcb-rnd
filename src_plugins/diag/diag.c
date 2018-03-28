@@ -45,6 +45,7 @@
 #include "hid_attrib.h"
 #include "hid_dad.h"
 #include "search.h"
+#include "macro.h"
 
 conf_diag_t conf_diag;
 

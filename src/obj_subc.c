@@ -50,6 +50,7 @@
 #include "polygon.h"
 #include "operation.h"
 #include "undo.h"
+#include "macro.h"
 #include "compat_misc.h"
 #include "math_helper.h"
 #include "pcb_minuid.h"

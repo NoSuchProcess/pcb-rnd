@@ -46,6 +46,7 @@
 #include "compat_nls.h"
 #include "netlist.h"
 #include "safe_fs.h"
+#include "macro.h"
 
 #include "pcb-printf.h"
 

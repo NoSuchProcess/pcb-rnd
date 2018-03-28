@@ -39,7 +39,6 @@ enum {
 	PCB_NUM_NETLISTS         /* so that we know how many netlists we are dealing with */
 };
 
-#include "macro.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,7 +62,7 @@ enum {
 	   |  This struct is also used for the remove list and for buffer handling
 	 */
 struct pcb_board_s {
-	long ID;											/* see macro.h */
+	long ID;
 	char *Name,										/* name of board */
 	 *Filename,										/* name of file (from load) */
 	 *PrintFilename,							/* from print dialog */

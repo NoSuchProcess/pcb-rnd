@@ -26,6 +26,7 @@
 #include "event.h"
 #include "error.h"
 #include "plugins.h"
+#include "macro.h"
 #include "safe_fs.h"
 
 #include "hid.h"

@@ -32,6 +32,7 @@
 #include "elem_rot.h"
 #include "conf_core.h"
 #include "data_it.h"
+#include "macro.h"
 
 static const int verbose_rot = 0;
 

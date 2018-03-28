@@ -55,6 +55,7 @@
 #include "djopt_conf.h"
 #include "obj_line.h"
 #include "event.h"
+#include "macro.h"
 #include "obj_pstk_inlines.h"
 
 conf_djopt_t conf_djopt;

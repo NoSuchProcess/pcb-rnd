@@ -53,6 +53,7 @@
 #include "compat_nls.h"
 #include "obj_rat_draw.h"
 #include "data_it.h"
+#include "macro.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);

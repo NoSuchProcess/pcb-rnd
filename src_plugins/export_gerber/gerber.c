@@ -23,6 +23,7 @@
 #include "hid_helper.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
+#include "macro.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

@@ -67,6 +67,7 @@
 #include "safe_fs.h"
 #include "plug_footprint.h"
 #include "build_run.h"
+#include "macro.h"
 
 /* for opendir */
 #include "compat_inc.h"

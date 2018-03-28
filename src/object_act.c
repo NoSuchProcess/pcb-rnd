@@ -53,6 +53,7 @@
 #include "layer_vis.h"
 #include "operation.h"
 #include "obj_pstk.h"
+#include "macro.h"
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 

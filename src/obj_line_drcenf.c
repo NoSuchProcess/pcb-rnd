@@ -38,6 +38,7 @@
 #include "data.h"
 #include "find.h"
 #include "rtree.h"
+#include "macro.h"
 
 static double drc_lines(pcb_point_t *end, pcb_bool way);
 

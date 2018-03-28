@@ -42,6 +42,7 @@
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+#include "macro.h"
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"

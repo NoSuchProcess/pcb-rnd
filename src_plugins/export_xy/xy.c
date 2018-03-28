@@ -20,6 +20,7 @@
 #include "layer.h"
 #include "netlist.h"
 #include "safe_fs.h"
+#include "macro.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

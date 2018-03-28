@@ -53,6 +53,7 @@
 #include "compat_nls.h"
 #include "obj_pstk_inlines.h"
 #include "event.h"
+#include "macro.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 

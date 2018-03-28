@@ -42,7 +42,7 @@
 #include "hid_actions.h"
 #include "plug_footprint.h"
 #include "obj_subc.h"
-
+#include "macro.h"
 
 static void conf_toggle(conf_role_t role, const char *path)
 {
