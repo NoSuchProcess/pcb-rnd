@@ -508,6 +508,7 @@ printf("s1='%s' s2='%s'\n", s1, s2);
 		case PCBQ_nodetype_max:
 		case PCBQ_FIELD:
 		case PCBQ_RNAME:
+		case PCBQ_DATA_LYTC:
 		case PCBQ_ITER_CTX:
 			return -1;
 	}

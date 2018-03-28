@@ -32,6 +32,7 @@
 #include <genregex/regex_se.h>
 #include "fields_sphash.h"
 #include "obj_common.h"
+#include "layer.h"
 
 typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;
@@ -96,6 +97,7 @@ typedef enum {
 	PCBQ_DATA_REGEX,   /* leaf */
 	PCBQ_DATA_CONST,   /* leaf */
 	PCBQ_DATA_INVALID, /* leaf */
+	PCBQ_DATA_LYTC,    /* leaf */
 
 	PCBQ_nodetype_max
 } pcb_qry_nodetype_t;
@@ -112,6 +114,10 @@ struct pcb_qry_node_s {
 		pcb_query_iter_t *iter_ctx;
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
 		pcb_qry_fnc_t fnc;
+		struct pcb_qry_lytc_s {
+			pcb_layer_type_t lyt;
+			pcb_layer_combining_t lyc;
+		} lytc;
 	} data;
 	union {                       /* field selection depends on ->type */
 		query_fields_keys_t fld;    /* field_sphash value from str */

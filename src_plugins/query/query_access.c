@@ -217,6 +217,21 @@ do { \
 	(s) = __res__; \
 } while(0)
 
+/* convert a layer type description and cache the result (overwriting the string in the field!) */
+#define fld2lyt_req(lyt, lyc, fld, idx) \
+do { \
+	pcb_qry_node_t *_f_; \
+	fld_nth_req(_f_, fld, idx); \
+	if (_f_->type != PCBQ_DATA_LYTC) { \
+		const char *_s2_; \
+		fld2str_req(_s2_, fld, 1); \
+		_f_->data.lytc = field_pstk_lyt(p, _s2_); \
+		_f_->type = PCBQ_DATA_LYTC; \
+	} \
+	lyt = _f_->data.lytc.lyt; \
+	lyc = _f_->data.lytc.lyc; \
+} while(0)
+
 static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_layer_t *l = (pcb_layer_t *)obj;
@@ -444,6 +459,54 @@ static int field_rat(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
+static struct pcb_qry_lytc_s field_pstk_lyt(pcb_pstk_t *ps, const char *where)
+{
+	struct pcb_qry_lytc_s lytc;
+	const char *start, *next;
+	int got_pol = 0;
+
+	lytc.lyt = 0;
+	lytc.lyc = 0;
+
+	start = next = where;
+	for(;;) {
+		int len;
+		next = strchr(start, '_');
+		if (next == 0)
+			len = strlen(start);
+		else
+			len = next - start;
+
+		if (strncmp(start, "top", len) == 0) lytc.lyt |= PCB_LYT_TOP;
+		else if (strncmp(start, "bottom", len) == 0) lytc.lyt |= PCB_LYT_BOTTOM;
+		else if (strncmp(start, "intern", len) == 0) lytc.lyt |= PCB_LYT_INTERN;
+		else if (strncmp(start, "copper", len) == 0) lytc.lyt |= PCB_LYT_COPPER;
+		else if (strncmp(start, "silk", len) == 0) lytc.lyt |= PCB_LYT_SILK;
+		else if (strncmp(start, "mask", len) == 0) lytc.lyt |= PCB_LYT_MASK;
+		else if (strncmp(start, "paste", len) == 0) lytc.lyt |= PCB_LYT_PASTE;
+		else if (strncmp(start, "outline", len) == 0) lytc.lyt |= PCB_LYT_OUTLINE;
+		else if (strncmp(start, "auto", len) == 0) { lytc.lyc |= PCB_LYC_AUTO; got_pol = 1; }
+		else if (strncmp(start, "sub", len) == 0) { lytc.lyc |= PCB_LYC_SUB; got_pol = 1; }
+		else if (strncmp(start, "neg", len) == 0) { lytc.lyc |= PCB_LYC_SUB; got_pol = 1; }
+		else if (strncmp(start, "add", len) == 0) { got_pol = 1; }
+		else if (strncmp(start, "pos", len) == 0) { got_pol = 1; }
+		else {
+			lytc.lyt = 0;
+			return lytc;
+		};
+
+		if (next == NULL)
+			break;
+		start = next+1;
+	}
+
+	/* implicit polarity (shorthand) */
+	if (!got_pol) {
+		if (lytc.lyt & PCB_LYT_MASK) lytc.lyc = PCB_LYC_SUB | PCB_LYC_AUTO;
+		if (lytc.lyt & PCB_LYT_PASTE) lytc.lyc = PCB_LYC_AUTO;
+	}
+	return lytc;
+}
 
 static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
@@ -457,6 +520,26 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		const char *s2;
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
+	}
+
+	if (fh1 == query_fields_shape) {
+		pcb_layer_type_t lyt;
+		pcb_layer_combining_t lyc = 0;
+		pcb_pstk_shape_t *shp;
+
+		fld2lyt_req(lyt, lyc, fld, 1);
+		if (lyt == 0)
+			PCB_QRY_RET_INV(res);
+
+		shp = pcb_pstk_shape(p, lyt, lyc);
+		if (shp != NULL) {
+			switch(shp->shape) {
+				case PCB_PSSH_POLY: PCB_QRY_RET_STR(res, "polygon");
+				case PCB_PSSH_LINE: PCB_QRY_RET_STR(res, "line");
+				case PCB_PSSH_CIRC: PCB_QRY_RET_STR(res, "circle");
+			}
+		}
+		PCB_QRY_RET_STR(res, "");
 	}
 
 	if (fld->next != NULL)
