@@ -44,12 +44,4 @@
 #define PCB_XOR(a,b)           (((a) && !(b)) || (!(a) && (b)))
 #define PCB_SQUARE(x)          ((float) (x) * (float) (x))
 
-/* a pointer is created from index addressing because the base pointer
- * may change when new memory is allocated;
- *
- * all data is relative to an objects name 'top' which can be either
- * PCB or PasteBuffer */
-#define PCB_END_LOOP  }} while (0)
-#define PCB_ENDALL_LOOP }} while (0); }} while(0)
-
 #endif

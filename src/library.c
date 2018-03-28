@@ -35,6 +35,7 @@
 #include "library.h"
 #include "macro.h"
 #include "compat_misc.h"
+#include "obj_common.h"
 
 #define	STEP_LIBRARYMENU	10
 #define	STEP_LIBRARYENTRY	20
