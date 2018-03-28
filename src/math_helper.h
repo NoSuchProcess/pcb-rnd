@@ -49,6 +49,7 @@
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
+#define PCB_SQUARE(x)          ((float) (x) * (float) (x))
 
 /* ---------------------------------------------------------------------------
  * misc macros, some might already be defined by <limits.h>

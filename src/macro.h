@@ -42,6 +42,5 @@
 #define PCB_EMPTY(a)           ((a) ? (a) : "")
 #define PCB_EMPTY_STRING_P(a)  ((a) ? (a)[0]==0 : 1)
 #define PCB_XOR(a,b)           (((a) && !(b)) || (!(a) && (b)))
-#define PCB_SQUARE(x)          ((float) (x) * (float) (x))
 
 #endif
