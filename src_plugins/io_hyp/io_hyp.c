@@ -158,6 +158,8 @@ int pplg_check_ver_io_hyp(int ver_needed)
 void pplg_uninit_io_hyp(void)
 {
 	pcb_hid_remove_actions_by_cookie(hyp_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
+
 }
 
 #include "dolists.h"

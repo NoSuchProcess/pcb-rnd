@@ -52,6 +52,7 @@ int pplg_check_ver_io_kicad_legacy(int ver_needed) { return 0; }
 void pplg_uninit_io_kicad_legacy(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
+	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad_legacy);
 }
 
 int pplg_init_io_kicad_legacy(void)

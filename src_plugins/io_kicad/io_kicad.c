@@ -63,6 +63,7 @@ void pplg_uninit_io_kicad(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
 	pcb_hid_remove_actions_by_cookie(kicad_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 }
 
 #include "dolists.h"
