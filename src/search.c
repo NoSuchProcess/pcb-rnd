@@ -481,7 +481,7 @@ static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 }
 
 #warning subc TODO: this is not how it is done - PCB_FLAG_ONSOLDER is not used for subc
-#define PCB_FRONT(o) ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == PCB_SWAP_IDENT)
+#define PCB_FRONT(o) ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == conf_core.editor.show_solder_side)
 
 static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 {

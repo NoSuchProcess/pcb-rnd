@@ -43,8 +43,8 @@
 
 void pcb_tool_rotate_notify_mode(void)
 {
-	pcb_screen_obj_rotate90(pcb_tool_note.X, pcb_tool_note.Y, pcb_gui->shift_is_pressed()? (PCB_SWAP_IDENT ? 1 : 3)
-									 : (PCB_SWAP_IDENT ? 3 : 1));
+	pcb_screen_obj_rotate90(pcb_tool_note.X, pcb_tool_note.Y, pcb_gui->shift_is_pressed()? (conf_core.editor.show_solder_side ? 1 : 3)
+									 : (conf_core.editor.show_solder_side ? 3 : 1));
 }
 
 pcb_tool_t pcb_tool_rotate = {

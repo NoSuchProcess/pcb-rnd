@@ -32,10 +32,6 @@
 #ifndef	PCB_MACRO_H
 #define	PCB_MACRO_H
 
-#ifndef	PCB_SWAP_IDENT
-#define	PCB_SWAP_IDENT			conf_core.editor.show_solder_side
-#endif
-
 #define PCB_ENTRIES(x)         (sizeof((x))/sizeof((x)[0]))
 #define PCB_UNKNOWN(a)         ((a) && *(a) ? (a) : "(unknown)")
 #define PCB_NSTRCMP(a, b)      ((a) ? ((b) ? strcmp((a),(b)) : 1) : -1)

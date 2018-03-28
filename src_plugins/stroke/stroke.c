@@ -75,13 +75,13 @@ static void real_stroke_finish(void)
 		case 987412:
 		case 8741236:
 		case 874123:
-			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, PCB_SWAP_IDENT ? 1 : 3);
+			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, conf_core.editor.show_solder_side ? 1 : 3);
 			break;
 		case 7896321:
 		case 786321:
 		case 789632:
 		case 896321:
-			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, PCB_SWAP_IDENT ? 3 : 1);
+			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, conf_core.editor.show_solder_side ? 3 : 1);
 			break;
 		case 258:
 			pcb_crosshair_set_mode(PCB_MODE_LINE);

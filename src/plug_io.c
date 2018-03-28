@@ -731,10 +731,10 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 {
 	int result;
 
-	if (PCB_SWAP_IDENT)
+	if (conf_core.editor.show_solder_side)
 		pcb_buffers_flip_side(PCB);
 	result = pcb_write_pipe(Filename, pcb_false, fmt, pcb_true);
-	if (PCB_SWAP_IDENT)
+	if (conf_core.editor.show_solder_side)
 		pcb_buffers_flip_side(PCB);
 	return result;
 }

@@ -225,7 +225,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	solder = component = -1;
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
-	side_copper_grp = PCB_SWAP_IDENT ? solder : component;
+	side_copper_grp = conf_core.editor.show_solder_side ? solder : component;
 
 
 	/*
@@ -272,7 +272,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 	if (pcb_gui->gui)
-		pcb_draw_ppv(PCB_SWAP_IDENT ? solder : component, drawn_area);
+		pcb_draw_ppv(conf_core.editor.show_solder_side ? solder : component, drawn_area);
 	else if (!pcb_gui->holes_after)
 		DrawEverything_holes(side_copper_grp, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
@@ -369,7 +369,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw pins' and pads' names */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_draw_pstk_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
+		pcb_draw_pstk_names(conf_core.editor.show_solder_side ? solder : component, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 	}
 
