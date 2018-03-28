@@ -1088,6 +1088,8 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 
 void pcb_io_uninit(void)
 {
+	if (pcb_plug_io_chain != NULL)
+		pcb_message(PCB_MSG_ERROR, "pcb_plug_io_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
 	free(last_design_dir);
 	last_design_dir = NULL;
 }

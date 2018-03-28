@@ -55,6 +55,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "flag_str.h"
 #include "plugins.h"
 #include "plug_footprint.h"
+#include "plug_import.h"
 #include "event.h"
 #include "funchash.h"
 #include "conf.h"
@@ -274,6 +275,7 @@ void pcb_main_uninit(void)
 	pcb_io_uninit();
 	pcb_plugin_uninit();
 	pcb_file_loaded_uninit();
+	pcb_import_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)

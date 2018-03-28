@@ -91,6 +91,10 @@ void pcb_fp_init()
 void pcb_fp_uninit()
 {
 	htsp_entry_t *e;
+
+	if (pcb_plug_fp_chain != NULL)
+		pcb_message(PCB_MSG_ERROR, "pcb_plug_fp_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
+
 	pcb_fp_free_children(&pcb_library);
 	if (fp_tags != NULL) {
 		for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))

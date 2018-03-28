@@ -118,3 +118,9 @@ int pcb_import_netlist(char *filename)
 {
 	return pcb_import(filename, IMPORT_ASPECT_NETLIST);
 }
+
+void pcb_import_uninit(void)
+{
+	if (pcb_plug_import_chain != NULL)
+		pcb_message(PCB_MSG_ERROR, "pcb_plug_import_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
+}

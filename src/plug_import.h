@@ -56,6 +56,8 @@ struct pcb_plug_import_s {
 
 extern pcb_plug_import_t *pcb_plug_import_chain;
 
+void pcb_import_uninit(void);
+
 /********** hook wrappers **********/
 int pcb_import(char *filename, unsigned int aspect);
 int pcb_import_netlist(char *);
