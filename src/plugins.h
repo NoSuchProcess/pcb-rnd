@@ -79,13 +79,13 @@ do { \
 #define PCB_HOOK_UNREGISTER(chain_type, chain, hstruct) \
 do { \
 	chain_type *__n__, *__prev__ = NULL, *__h__ = (hstruct); \
+	while (chain == __h__) \
+		chain = chain->next; \
 	for(__n__ = chain; __n__ != NULL; __n__ = __n__->next) { \
 		if ((__n__ == __h__) && (__prev__ != NULL)) \
 			__prev__->next = __n__->next; \
 		__prev__ = __n__; \
 	} \
-	if (chain == __n__) \
-		chain = chain->next; \
 } while(0)
 
 #endif
