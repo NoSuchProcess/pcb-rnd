@@ -65,22 +65,60 @@ static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_po
 	APPEND(ctx, poly);
 }
 
-static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
-{
-	if (enter)
-		APPEND(ctx, subc);
-	return 0;
-}
-
 static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	APPEND(ctx, ps);
 }
 
+static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	
+	if (enter) {
+		pcb_data_t *data = subc->data;
+		APPEND(ctx, subc);
+
+		PCB_SUBC_LOOP(data);
+		{
+			list_subc_cb(ctx, pcb, subc, 1);
+		}
+		PCB_END_LOOP;
+		PCB_PADSTACK_LOOP(data);
+		{
+			list_pstk_cb(ctx, pcb, padstack);
+		}
+		PCB_END_LOOP;
+
+		PCB_ARC_ALL_LOOP(data);
+		{
+			list_arc_cb(ctx, pcb, layer, arc);
+		}
+		PCB_ENDALL_LOOP;
+		PCB_LINE_ALL_LOOP(data);
+		{
+			list_line_cb(ctx, pcb, layer, line);
+		}
+		PCB_ENDALL_LOOP;
+		PCB_TEXT_ALL_LOOP(data);
+		{
+			list_text_cb(ctx, pcb, layer, text);
+		}
+		PCB_ENDALL_LOOP;
+		PCB_POLY_ALL_LOOP(data);
+		{
+			list_poly_cb(ctx, pcb, layer, polygon);
+		}
+		PCB_ENDALL_LOOP;
+	}
+
+	return 0;
+}
+
+
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 {
 	assert(lst->type == PCBQ_VT_LST);
 #warning layer TODO: make layer a real object with the common header
+#warning TODO: rather do rtree search here to avoid recursion
 	pcb_loop_all(PCB, &lst->data.lst,
 		/*(mask & PCB_OBJ_LAYER) ? list_layer_cb :*/ NULL,
 		(mask & PCB_OBJ_LINE) ? list_line_cb : NULL,
