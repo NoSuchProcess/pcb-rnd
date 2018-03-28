@@ -96,6 +96,10 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
 
+	/* do not merge to subc parts or terminals */
+	if ((pcb_obj_parent_subc(line) != NULL) || (line->term != NULL))
+		return PCB_R_DIR_NOT_FOUND;
+
 	if (line->Point1.X == i->X1 && line->Point2.X == i->X2 && line->Point1.Y == i->Y1 && line->Point2.Y == i->Y2) {
 		i->ans = (pcb_line_t *) (-1);
 		longjmp(i->env, 1);
