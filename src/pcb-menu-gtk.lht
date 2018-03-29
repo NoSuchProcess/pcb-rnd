@@ -1,3 +1,6 @@
+# Old, OBSOLETE, somewhat unmaintained menu file for users who got used
+# to the old gtk menus and have not yet switched to the new, unified default
+# menu file, pcb-menu-default.lht
 ha:{
 	li:mouse {
 		li:left {
