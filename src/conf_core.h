@@ -42,7 +42,7 @@ typedef struct {
 		CFT_BOOLEAN swap_start_direction;  /* change starting direction after each click */
 		CFT_BOOLEAN show_drc;              /* show drc region on crosshair */
 		CFT_BOOLEAN auto_drc;              /* when set, PCB doesn't let you place copper that violates DRC. */
-		CFT_BOOLEAN show_number;           /* pinout shows number */
+		CFT_BOOLEAN show_number;           /* OBSOLETE: pinout shows number */
 		CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
 		CFT_BOOLEAN reset_after_element;   /* reset connections after each element while saving all connections */
 		CFT_BOOLEAN auto_place;            /* flag which says we should force placement of the windows on startup */
