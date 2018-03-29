@@ -317,20 +317,56 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	GtkWidget *menu = NULL;
 	char name[256];
+	const char *tn = NULL;
+
+	enum {
+		CTX_NONE,
+		CTX_OBJ_TYPE
+	} ctx_sens = CTX_NONE;
 
 	if (argc != 1 && argc != 2)
 		PCB_AFAIL(popup);
 
+	if (argc == 2) {
+		if (strcmp(argv[1], "obj-type") == 0) ctx_sens = CTX_OBJ_TYPE;
+	}
+
 	if (strlen(argv[0]) < sizeof(name) - 32) {
 		lht_node_t *menu_node;
-		sprintf(name, "/popups/%s", argv[0]);
-		menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
+		switch(ctx_sens) {
+			case CTX_OBJ_TYPE:
+				{
+					pcb_objtype_t type;
+					void *o1, *o2, *o3;
+					pcb_gui->get_coords("context sensitive popup: select object", &x, &y);
+					type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
+
+					if (type == 0)
+						tn = "none";
+					else
+						tn = pcb_obj_type_name(type);
+
+					sprintf(name, "/popups/%s-%s", argv[0], tn);
+					menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
+
+					if (menu_node == NULL) {
+						sprintf(name, "/popups/%s-misc", argv[0]);
+						menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
+					}
+				}
+				break;
+			case CTX_NONE:
+				sprintf(name, "/popups/%s", argv[0]);
+				menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
+				break;
+				
+		}
 		if (menu_node != NULL)
 			menu = pcb_gtk_menu_widget(menu_node);
 	}
 
 	if (!GTK_IS_MENU(menu)) {
-		pcb_message(PCB_MSG_ERROR, _("The specified popup menu \"%s\" has not been defined.\n"), argv[0]);
+		pcb_message(PCB_MSG_ERROR, _("The specified popup menu \"%s\" (context: '%s') has not been defined.\n"), argv[0], (tn == NULL ? "" : tn));
 		return 1;
 	}
 	else {
