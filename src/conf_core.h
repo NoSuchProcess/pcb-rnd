@@ -97,6 +97,7 @@ typedef struct {
 		CFT_STRING file_path;
 		CFT_STRING library_shell;
 		CFT_LIST library_search_paths;
+		CFT_STRING menu_file;              /* where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht */
 
 		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty. */
 		CFT_STRING emergency_format;       /* if set, use this format for the backups; if unset, use the default format */

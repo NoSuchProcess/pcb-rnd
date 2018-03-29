@@ -38,6 +38,7 @@
 #include "safe_fs.h"
 #include "compat_misc.h"
 #include "build_run.h"
+#include "conf_core.h"
 
 char hid_cfg_error_shared[1024];
 
@@ -279,6 +280,12 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 {
 	lht_doc_t *doc;
 	pcb_hid_cfg_t *hr;
+
+	/* override HID defaults with the configured path */
+	if ((conf_core.rc.menu_file != NULL) && (*conf_core.rc.menu_file != '\0')) {
+		fn = conf_core.rc.menu_file;
+		exact_fn = (strchr(conf_core.rc.menu_file, '/') != NULL);
+	}
 
 	if (!exact_fn) {
 		/* try different paths to find the menu file inventing its exact name */
