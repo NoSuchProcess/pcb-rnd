@@ -107,9 +107,6 @@ ha:{
 				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};}  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
 				ha:Paste buffer to layout       = { a=Ctrl<Key>v;       action=Mode(PasteBuffer) }
 				-
-				ha:Unselect all                 = { a=Shift Alt<Key>a;  action=Unselect(All) }
-				ha:Select all visible           = { a=Alt<Key>a;        action=Select(All) }
-				-
 				ha:Edit name of {
 					ha:Change font on layout        = { li:a={{<key>e;<key>f};}   action=FontSel(Object) }
 					li:submenu {
