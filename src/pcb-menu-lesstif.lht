@@ -98,7 +98,6 @@ ha:{
 				ha:Hide floaters = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
 				ha:Mincut on shorts = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
 				-
-				ha:Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
 				ha:Open pinout menu = { action=Display(Pinout) }
 				ha:Zoom {
 					li:submenu {
@@ -251,7 +250,6 @@ ha:{
 				-
 				ha:Rubber band mode = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 				ha:Rubber band keeps middle line dir= { checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
-				ha:Require unique refdes = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
 				ha:Auto-zero delta measurements = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:New lines, arcs clear polygons = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
 				ha:New polygons are full ones = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
