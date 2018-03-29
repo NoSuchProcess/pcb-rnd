@@ -11,11 +11,10 @@ ha:{
 		li:middle {
 			li:press              = { Pan(1) }
 			li:release            = { Pan(0) }
-			li:press-shift        = { Mode(Notify) }
-			li:release-shift      = { Mode(Release) }
 		}
 		li:right {
 			li:release       = { Popup(popup-obj, obj-type) }
+			li:shift-release = { Popup(popup-obj-misc) }
 			li:press-ctrl    = { Display(CycleCrosshair) }
 		}
 		li:scroll-up {
