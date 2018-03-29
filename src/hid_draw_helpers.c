@@ -1,7 +1,6 @@
 #include "config.h"
 #include "hid.h"
 #include "polygon.h"
-#include "macro.h"
 #include "obj_poly.h"
 
 static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)

@@ -5596,7 +5596,7 @@ hid_draw_helpers.o: hid_draw_helpers.c ../config.h hid.h error.h drc.h \
  ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer_grp.h polygon.h rtree.h \
- ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h macro.h
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h
 hid_extents.o: hid_extents.c ../config.h board.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
