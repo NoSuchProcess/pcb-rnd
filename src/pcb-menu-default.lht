@@ -458,59 +458,71 @@ ha:{
 				-
 				ha:Key Bindings {
 					li:submenu {
-						ha:Remove                       = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
-						ha:Remove Selected              = { a=<Key>BackSpace; action=RemoveSelected() }
-						ha:Remove Connected             = { a=Shift<Key>BackSpace; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
-						ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
-						ha:Set Same                     = { action=SetSame() }
-						ha:Flip Object                  = { a=<Key>b; action=Flip(Object) }
-						ha:Find Connections             = { li:action={Connection(Reset); Connection(Find)} }
-						ha:ChangeHole Object            = { a=Ctrl<Key>h; action=ChangeHole(Object) }
-						ha:ChangeJoin Object            = { a=<Key>j; action=ChangeJoin(Object) }
-						ha:ChangeJoin SelectedObject    = { a=Shift<Key>j; action=ChangeJoin(SelectedObjects) }
-						ha:Clear Object +2 mil          = { a=<Key>k; action=ChangeClearSize(Object,+2,mil) }
-						ha:Clear Object -2 mil          = { a=Shift<Key>k; action=ChangeClearSize(Object,-2,mil) }
-						ha:Clear Selected +2 mil        = { a=Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,+2,mil) }
-						ha:Clear Selected -2 mil        = { a=Shift Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,-2,mil) }
-						ha:Line Tool size +5 mil        = { a=<Key>l; action=SetValue(LineSize,+5,mil) }
-						ha:Line Tool size -5 mil        = { a=Shift<Key>l; action=SetValue(LineSize,-5,mil) }
-						ha:Move Object to current layer = { a=<Key>m; action=MoveToCurrentLayer(Object) }
+						ha:Cycle object being dragged   = { a=<Key>x; action=CycleDrag() }
+						ha:Cycle line clip/refraction   = { a=<char>/; action=Display(CycleClip) }
 						ha:MarkCrosshair                = { a=Ctrl<Key>m; action=MarkCrosshair() }
-						ha:Select shortest rat          = { a=Shift<Key>n; action=AddRats(Close) }
-						ha:AddRats to selected pins     = { a=Shift<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
-						ha:Polygon PreviousPoint        = { a=<Key>p; action=Polygon(PreviousPoint) }
-						ha:Polygon Close                = { a=Shift<Key>p; action=Polygon(Close) }
-						ha:ChangeSizes to Route style   = { a=Shift<Key>y; action=ChangeSizes(Object,style,mil) }
-						ha:ChangeSize +5 mil            = { a=<Key>s; action=ChangeSize(Object,+5,mil) }
-						ha:ChangeSize -5 mil            = { a=Shift<Key>s; action=ChangeSize(Object,-5,mil) }
-						ha:ChangeDrill +5 mil           = { a=Alt<Key>s; action=ChangeDrillSize(Object,+5,mil) }
-						ha:ChangeDrill -5 mil           = { a=Alt Shift<Key>s; action=ChangeDrillSize(Object,-5,mil) }
-						ha:Text Tool scale +10 mil      = { a=<Key>t; action=SetValue(TextScale,+10,mil) }
-						ha:Text Tool scale -10 mil      = { a=Shift<Key>t; action=SetValue(TextScale,-10,mil) }
-						ha:Via Tool size +5 mil         = { a=Shift<Key>v; action=SetValue(ViaSize,+5,mil) }
-						ha:Via Tool size -5 mil         = { a=Shift Ctrl<Key>v; action=SetValue(ViaSize,-5,mil) }
-						ha:Via Tool drill +5 mil        = { a=Alt<Key>v; action=SetValue(ViaDrillingHole,+5,mil) }
-						ha:Via Tool drill -5 mil        = { a=Alt Shift<Key>v; action=SetValue(ViaDrillingHole,-5,mil) }
-						ha:Route radius +0.5            = { a=Alt<Key>c; action=conf(delta, editor/route_radius, +0.5, design); }
-						ha:Route radius -0.5            = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
-						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
-						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
-						ha:Cycle Clip                   = { a=<char>/; action=Display(CycleClip) }
-						ha:Arrow Mode                   = { a=<Key>space; checked=ChkMode(arrow); action=Mode(Arrow); update_on={editor/mode} }
-						ha:Temp Arrow ON                = { li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
-						ha:Temp Arrow OFF               = { li:action={Mode(Release); Mode(Restore)} }
-						ha:Cycle object being dragged = { a=<Key>x; action=CycleDrag() }
-						-
-						ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
-						ha:Step Down                    = { a=<Key>Down; action=Cursor(Warp,0,-1,grid) }
-						ha:Step Left                    = { a=<Key>Left; action=Cursor(Warp,-1,0,grid) }
-						ha:Step Right                   = { a=<Key>Right; action=Cursor(Warp,1,0,grid) }
-						ha:Step +Up                     = { a=Shift<Key>Up; action=Cursor(Pan,0,50,view) }
-						ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,-50,view) }
-						ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
-						ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
-						ha:Click                        = { a=<Key>Enter; li:action={Mode(Notify); Mode(Release)} }
-						-
+
+						ha:Change object {
+							li:submenu {
+								ha:Remove                       = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
+								ha:Remove Selected              = { a=<Key>BackSpace; action=RemoveSelected() }
+								ha:Remove Connected             = { a=Shift<Key>BackSpace; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
+								ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
+							}
+						}
+						ha:Change object {
+							li:submenu {
+								ha:Set Same                     = { action=SetSame() }
+								ha:Flip Object                  = { a=<Key>b; action=Flip(Object) }
+								ha:Find Connections             = { li:action={Connection(Reset); Connection(Find)} }
+								ha:ChangeHole Object            = { a=Ctrl<Key>h; action=ChangeHole(Object) }
+								ha:ChangeJoin Object            = { a=<Key>j; action=ChangeJoin(Object) }
+								ha:ChangeJoin SelectedObject    = { a=Shift<Key>j; action=ChangeJoin(SelectedObjects) }
+								ha:Clear Object +2 mil          = { a=<Key>k; action=ChangeClearSize(Object,+2,mil) }
+								ha:Clear Object -2 mil          = { a=Shift<Key>k; action=ChangeClearSize(Object,-2,mil) }
+								ha:Clear Selected +2 mil        = { a=Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,+2,mil) }
+								ha:Clear Selected -2 mil        = { a=Shift Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,-2,mil) }
+								ha:Line Tool size +5 mil        = { a=<Key>l; action=SetValue(LineSize,+5,mil) }
+								ha:Line Tool size -5 mil        = { a=Shift<Key>l; action=SetValue(LineSize,-5,mil) }
+								ha:Move Object to current layer = { a=<Key>m; action=MoveToCurrentLayer(Object) }
+								ha:Polygon PreviousPoint        = { a=<Key>p; action=Polygon(PreviousPoint) }
+								ha:Polygon Close                = { a=Shift<Key>p; action=Polygon(Close) }
+								ha:ChangeSizes to Route style   = { a=Shift<Key>y; action=ChangeSizes(Object,style,mil) }
+								ha:ChangeSize +5 mil            = { a=<Key>s; action=ChangeSize(Object,+5,mil) }
+								ha:ChangeSize -5 mil            = { a=Shift<Key>s; action=ChangeSize(Object,-5,mil) }
+								ha:ChangeDrill +5 mil           = { a=Alt<Key>s; action=ChangeDrillSize(Object,+5,mil) }
+								ha:ChangeDrill -5 mil           = { a=Alt Shift<Key>s; action=ChangeDrillSize(Object,-5,mil) }
+								ha:Text Tool scale +10 mil      = { a=<Key>t; action=SetValue(TextScale,+10,mil) }
+								ha:Text Tool scale -10 mil      = { a=Shift<Key>t; action=SetValue(TextScale,-10,mil) }
+								ha:Via Tool size +5 mil         = { a=Shift<Key>v; action=SetValue(ViaSize,+5,mil) }
+								ha:Via Tool size -5 mil         = { a=Shift Ctrl<Key>v; action=SetValue(ViaSize,-5,mil) }
+								ha:Via Tool drill +5 mil        = { a=Alt<Key>v; action=SetValue(ViaDrillingHole,+5,mil) }
+								ha:Via Tool drill -5 mil        = { a=Alt Shift<Key>v; action=SetValue(ViaDrillingHole,-5,mil) }
+								ha:Route radius +0.5            = { a=Alt<Key>c; action=conf(delta, editor/route_radius, +0.5, design); }
+								ha:Route radius -0.5            = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
+							}
+						}
+						ha:Rats {
+							li:submenu {
+								ha:Select shortest rat          = { a=Shift<Key>n; action=AddRats(Close) }
+								ha:AddRats to selected pins     = { a=Shift<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
+								ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
+								ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
+							}
+						}
+						ha:Step Cursor {
+							li:submenu {
+								ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
+								ha:Step Down                    = { a=<Key>Down; action=Cursor(Warp,0,-1,grid) }
+								ha:Step Left                    = { a=<Key>Left; action=Cursor(Warp,-1,0,grid) }
+								ha:Step Right                   = { a=<Key>Right; action=Cursor(Warp,1,0,grid) }
+								ha:Step +Up                     = { a=Shift<Key>Up; action=Cursor(Pan,0,50,view) }
+								ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,-50,view) }
+								ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
+								ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
+								ha:Click                        = { a=<Key>Enter; li:action={Mode(Notify); Mode(Release)} }
+							}
+						}
 						ha:layer keys {
 							li:submenu {
 								ha:Select Layer 1           = { a=<Key>1; action=SelectLayer(1) }
