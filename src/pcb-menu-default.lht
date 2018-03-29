@@ -1,10 +1,12 @@
 ha:{
 	li:mouse {
 		li:left {
-			li:press               = { Mode(Stroke) }
-			li:release             = { Mode(Release) }
-			li:press-ctrl          = { Mode(Save); Mode(Copy); Mode(Notify) }
-			li:release-ctrl        = { Mode(Notify); Mode(Restore); }
+			li:press            = { Mode(Notify) }
+			li:press-shift      = { Mode(Notify) }
+			li:press-ctrl       = { Mode(Save); Mode(None); Mode(Restore); Mode(Notify) }
+			li:release          = { Mode(Release) }
+			li:release-shift    = { Mode(Release) }
+			li:release-ctrl     = { Mode(Release) }
 		}
 		li:middle {
 			li:press              = { Pan(1) }
