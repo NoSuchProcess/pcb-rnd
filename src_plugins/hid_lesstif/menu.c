@@ -875,7 +875,7 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc ca
 }
 
 extern char *lesstif_pcbmenu_path;
-extern const char *lesstif_menu_default;
+extern const char *pcb_menu_default;
 
 
 Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
@@ -888,7 +888,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
-	lesstif_cfg = pcb_hid_cfg_load("lesstif", 0, lesstif_menu_default);
+	lesstif_cfg = pcb_hid_cfg_load("lesstif", 0, pcb_menu_default);
 	if (lesstif_cfg == NULL) {
 		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();

@@ -1565,8 +1565,6 @@
  ../src_plugins/hid_lesstif/lesstif.h compat_nls.h board.h vtroutestyle.h \
  library.h rats_patch.h board.h paths.h hid_actions.h hid_flags.h \
  ../src_plugins/hid_lesstif/stdarg.h event.h compat_misc.h layer_vis.h
-../src_plugins/hid_lesstif/menu_lht.o: \
- ../src_plugins/hid_lesstif/menu_lht.c
 ../src_plugins/hid_lesstif/netlist.o: \
  ../src_plugins/hid_lesstif/netlist.c ../config.h \
  ../src_plugins/hid_lesstif/xincludes.h compat_misc.h data.h \
@@ -3464,8 +3462,6 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
-../src_plugins/lib_gtk_common/menu_lht.o: \
- ../src_plugins/lib_gtk_common/menu_lht.c
 ../src_plugins/lib_gtk_common/ui_crosshair.o: \
  ../src_plugins/lib_gtk_common/ui_crosshair.c ../config.h \
  ../src_plugins/lib_gtk_common/ui_crosshair.h \
@@ -5552,7 +5548,8 @@ hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h compat_misc.h build_run.h
+ ../src_3rd/genlist/gendlist.h compat_misc.h build_run.h conf_core.h \
+ globalconst.h
 hid_cfg_action.o: hid_cfg_action.c ../config.h hid_cfg_action.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6315,6 +6312,7 @@ pcb-printf.o: pcb-printf.c ../config.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h unit.h compat_nls.h
 pcb_bool.o: pcb_bool.c ../config.h pcb_bool.h compat_misc.h
+pcb_menu_default.o: pcb_menu_default.c
 pcb_minuid.o: pcb_minuid.c ../src_3rd/libminuid/libminuid.h compat_misc.h \
  ../config.h pcb_minuid.h
 plug_footprint.o: plug_footprint.c ../config.h plug_footprint.h \

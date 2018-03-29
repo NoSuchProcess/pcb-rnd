@@ -111,6 +111,7 @@ put /local/pcb/OBJS [@
 	operation.o
 	paths.o
 	pcb_bool.o
+	pcb_menu_default.o
 	pcb_minuid.o
 	pcb-printf.o
 	plugins.o
@@ -362,10 +363,15 @@ print [@
 
 ##### module rules end #####
 
+### default menu embed
+pcb_menu_default.c: pcb-menu-default.lht $(CQUOTE)
+	$(CQUOTE) -n pcb_menu_default <pcb-menu-default.lht > pcb_menu_default.c
+
 pcblib_DATA= \
 	default_font \
 	default2.lht \
 	default4.lht \
+	pcb-menu-default.lht \
 	pcb-menu-lesstif.lht \
 	pcb-menu-gtk.lht \
 	pcb-menu-mkey.lht
@@ -414,6 +420,7 @@ install_all:
 	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
 	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(DATADIR)/pcb-conf.lht"
+	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(DATADIR)/pcb-menu-default.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@

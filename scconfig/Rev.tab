@@ -1,3 +1,4 @@
+15944	configure	new default menu file preparation: embed the new menu, do not embed the old menus
 15910	configure	old data model removal
 15352	configure	typo in LIBDIR_INSTALLED
 15104	configure	openems mesher code
