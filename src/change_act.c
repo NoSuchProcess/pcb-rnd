@@ -862,7 +862,7 @@ static int pcb_act_ClrFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_SetValue[] = "SetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, delta)";
+static const char pcb_acts_SetValue[] = "SetValue(Grid|Line|LineSize|Text|TextScale, delta)";
 
 static const char pcb_acth_SetValue[] = "Change various board-wide values and sizes.";
 
@@ -870,19 +870,12 @@ static const char pcb_acth_SetValue[] = "Change various board-wide values and si
 
 @table @code
 
-@item ViaDrillingHole
-Changes the diameter of the drill for new vias.
-
 @item Grid
 Sets the grid spacing.
 
 @item Line
 @item LineSize
 Changes the thickness of new lines.
-
-@item Via
-@item ViaSize
-Changes the diameter of new vias.
 
 @item Text
 @item TextScale
@@ -904,10 +897,6 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (function && val) {
 		value = pcb_get_value(val, units, &absolute, NULL);
 		switch (pcb_funchash_get(function, NULL)) {
-		case F_ViaDrillingHole:
-			pcb_board_set_via_drilling_hole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
-			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-			break;
 
 		case F_Grid:
 			if (absolute)
@@ -927,12 +916,6 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		case F_LineSize:
 		case F_Line:
 			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
-			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-			break;
-
-		case F_Via:
-		case F_ViaSize:
-			pcb_board_set_via_size(absolute ? value : value + conf_core.design.via_thickness, pcb_false);
 			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 

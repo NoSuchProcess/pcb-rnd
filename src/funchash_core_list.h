@@ -119,7 +119,5 @@ action_entry(ToggleCheckPlanes)
 action_entry(ToggleUniqueNames)
 action_entry(ToggleStroke)
 action_entry(Via)
-action_entry(ViaDrillingHole)
-action_entry(ViaSize)
 action_entry(Zoom)
 
