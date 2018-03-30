@@ -515,7 +515,6 @@ int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), voi
 	return 0;
 }
 
-/* extern char hid_cfg_error_shared[]; */
 void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 {
 	char *end;
