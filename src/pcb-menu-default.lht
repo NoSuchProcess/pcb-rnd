@@ -86,7 +86,7 @@ ha:{
 						ha:Calibrate Printer...           = { a={<key>i;<key>c;<key>c}; action=PrintCalibrate() }
 						ha:Re-scan the footprint library  = { a={<key>i;<key>c;<key>r}; action=fp_rehash() }
 						-
-						ha:Edit current font              = { a={<key>e;<key>f}; action=FontEdit() }
+						ha:Edit current font              = { action=FontEdit() }
 						ha:Edit on-disk font              = { action={ LoadFontFrom("", 126); conf(set, design/text_font_id, 126, design); FontEdit() } }
 						ha:Save font from font editor     = { action=FontSave() }
 					}
@@ -130,7 +130,7 @@ ha:{
 				}
 				ha:Subcircuit {
 					li:submenu {
-						ha:Layer bindings...          = { a={<key>e; <key>c}; action=LayerBinding() }
+						ha:Layer bindings...          = { a={<key>e; <key>l; <key>b}; action=LayerBinding() }
 						ha:External editor...         = { a={<key>e; <key>e}; li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
 					}
 				}
@@ -180,9 +180,9 @@ ha:{
 					}
 					ha:Grid properties = {
 						li:submenu {
-							ha:Enable local grid      = { a={<key>v; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+							ha:Enable local grid      = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 							-
-							ha:local grid radius 4    =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+							ha:local grid radius 4    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 							ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 							ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 							ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
@@ -452,56 +452,56 @@ ha:{
 				-
 				ha:Key Bindings {
 					li:submenu {
-						ha:Cycle object being dragged   = { a=<Key>x; action=CycleDrag() }
+						ha:Cycle object being dragged   = { action=CycleDrag() }
 						ha:Cycle line clip/refraction   = { a=<char>/; action=Display(CycleClip) }
-						ha:MarkCrosshair                = { a=Ctrl<Key>m; action=MarkCrosshair() }
+						ha:MarkCrosshair                = { action=MarkCrosshair() }
 
 						ha:Change object {
 							li:submenu {
 								ha:Remove                       = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
-								ha:Remove Selected              = { a=<Key>BackSpace; action=RemoveSelected() }
-								ha:Remove Connected             = { a=Shift<Key>BackSpace; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
+								ha:Remove Selected              = { action=RemoveSelected() }
+								ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
 								ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
 							}
 						}
 						ha:Change object {
 							li:submenu {
 								ha:Set Same                     = { action=SetSame() }
-								ha:Flip Object                  = { a=<Key>b; action=Flip(Object) }
+								ha:Flip Object                  = { action=Flip(Object) }
 								ha:Find Connections             = { li:action={Connection(Reset); Connection(Find)} }
-								ha:ChangeHole Object            = { a=Ctrl<Key>h; action=ChangeHole(Object) }
-								ha:ChangeJoin Object            = { a=<Key>j; action=ChangeJoin(Object) }
-								ha:ChangeJoin SelectedObject    = { a=Shift<Key>j; action=ChangeJoin(SelectedObjects) }
-								ha:Clear Object +2 mil          = { a=<Key>k; action=ChangeClearSize(Object,+2,mil) }
-								ha:Clear Object -2 mil          = { a=Shift<Key>k; action=ChangeClearSize(Object,-2,mil) }
-								ha:Clear Selected +2 mil        = { a=Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,+2,mil) }
-								ha:Clear Selected -2 mil        = { a=Shift Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,-2,mil) }
-								ha:Line Tool size +5 mil        = { a=<Key>l; action=SetValue(LineSize,+5,mil) }
-								ha:Line Tool size -5 mil        = { a=Shift<Key>l; action=SetValue(LineSize,-5,mil) }
-								ha:Move Object to current layer = { a=<Key>m; action=MoveToCurrentLayer(Object) }
-								ha:Polygon PreviousPoint        = { a=<Key>p; action=Polygon(PreviousPoint) }
-								ha:Polygon Close                = { a=Shift<Key>p; action=Polygon(Close) }
-								ha:ChangeSizes to Route style   = { a=Shift<Key>y; action=ChangeSizes(Object,style,mil) }
-								ha:ChangeSize +5 mil            = { a=<Key>s; action=ChangeSize(Object,+5,mil) }
-								ha:ChangeSize -5 mil            = { a=Shift<Key>s; action=ChangeSize(Object,-5,mil) }
-								ha:ChangeDrill +5 mil           = { a=Alt<Key>s; action=ChangeDrillSize(Object,+5,mil) }
-								ha:ChangeDrill -5 mil           = { a=Alt Shift<Key>s; action=ChangeDrillSize(Object,-5,mil) }
-								ha:Text Tool scale +10 mil      = { a=<Key>t; action=SetValue(TextScale,+10,mil) }
-								ha:Text Tool scale -10 mil      = { a=Shift<Key>t; action=SetValue(TextScale,-10,mil) }
-								ha:Via Tool size +5 mil         = { a=Shift<Key>v; action=SetValue(ViaSize,+5,mil) }
-								ha:Via Tool size -5 mil         = { a=Shift Ctrl<Key>v; action=SetValue(ViaSize,-5,mil) }
-								ha:Via Tool drill +5 mil        = { a=Alt<Key>v; action=SetValue(ViaDrillingHole,+5,mil) }
-								ha:Via Tool drill -5 mil        = { a=Alt Shift<Key>v; action=SetValue(ViaDrillingHole,-5,mil) }
-								ha:Route radius +0.5            = { a=Alt<Key>c; action=conf(delta, editor/route_radius, +0.5, design); }
-								ha:Route radius -0.5            = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
+								ha:ChangeHole Object            = { action=ChangeHole(Object) }
+								ha:ChangeJoin Object            = { action=ChangeJoin(Object) }
+								ha:ChangeJoin SelectedObject    = { action=ChangeJoin(SelectedObjects) }
+								ha:Clear Object +2 mil          = { action=ChangeClearSize(Object,+2,mil) }
+								ha:Clear Object -2 mil          = { action=ChangeClearSize(Object,-2,mil) }
+								ha:Clear Selected +2 mil        = { action=ChangeClearSize(SelectedObjects,+2,mil) }
+								ha:Clear Selected -2 mil        = { action=ChangeClearSize(SelectedObjects,-2,mil) }
+								ha:Line Tool size +5 mil        = { action=SetValue(LineSize,+5,mil) }
+								ha:Line Tool size -5 mil        = { action=SetValue(LineSize,-5,mil) }
+								ha:Move Object to current layer = { action=MoveToCurrentLayer(Object) }
+								ha:Polygon PreviousPoint        = { action=Polygon(PreviousPoint) }
+								ha:Polygon Close                = { action=Polygon(Close) }
+								ha:ChangeSizes to Route style   = { action=ChangeSizes(Object,style,mil) }
+								ha:ChangeSize +5 mil            = { action=ChangeSize(Object,+5,mil) }
+								ha:ChangeSize -5 mil            = { action=ChangeSize(Object,-5,mil) }
+								ha:ChangeDrill +5 mil           = { action=ChangeDrillSize(Object,+5,mil) }
+								ha:ChangeDrill -5 mil           = { action=ChangeDrillSize(Object,-5,mil) }
+								ha:Text Tool scale +10 mil      = { action=SetValue(TextScale,+10,mil) }
+								ha:Text Tool scale -10 mil      = { action=SetValue(TextScale,-10,mil) }
+								ha:Via Tool size +5 mil         = { action=SetValue(ViaSize,+5,mil) }
+								ha:Via Tool size -5 mil         = { action=SetValue(ViaSize,-5,mil) }
+								ha:Via Tool drill +5 mil        = { action=SetValue(ViaDrillingHole,+5,mil) }
+								ha:Via Tool drill -5 mil        = { action=SetValue(ViaDrillingHole,-5,mil) }
+								ha:Route radius +0.5            = { action=conf(delta, editor/route_radius, +0.5, design); }
+								ha:Route radius -0.5            = { action=conf(delta, editor/route_radius, -0.5, design); }
 							}
 						}
 						ha:Rats {
 							li:submenu {
-								ha:Select shortest rat          = { a=Shift<Key>n; action=AddRats(Close) }
-								ha:AddRats to selected pins     = { a=Shift<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
-								ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
-								ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
+								ha:Select shortest rat          = { action=AddRats(Close) }
+								ha:AddRats to selected pins     = { li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
+								ha:AddRats Selected             = { action=AddRats(SelectedRats) }
+								ha:Add All Rats                 = { action=AddRats(AllRats) }
 							}
 						}
 						ha:Step Cursor {
@@ -586,7 +586,7 @@ ha:{
 						}
 					}
 				}
-				ha:About...       = { a={<key>h;<key>a}; action=About() }
+				ha:About...       = { a={<key>i;<key>a}; action=About() }
 			}
 		} # Window
 	} # main menu
