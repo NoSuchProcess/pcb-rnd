@@ -1155,7 +1155,7 @@
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h grid.h \
  hid_draw_helpers.h hid_attrib.h hid_helper.h hid_color.h \
  ../src_plugins/lib_gtk_hid/gui.h hid.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
@@ -1339,7 +1339,7 @@
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h grid.h \
  hid_draw_helpers.h hid_attrib.h hid_helper.h hid_color.h \
  ../src_plugins/lib_gtk_hid/gui.h hid.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
@@ -1537,7 +1537,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h compat_nls.h board.h vtroutestyle.h \
  library.h rats_patch.h board.h hid_attrib.h hid_helper.h hid_init.h \
  hid_color.h hid_extents.h hid_flags.h hid_actions.h \
- ../src_plugins/hid_lesstif/stdarg.h misc_util.h compat_misc.h \
+ ../src_plugins/hid_lesstif/stdarg.h grid.h misc_util.h compat_misc.h \
  layer_vis.h tool.h ../src_plugins/hid_lesstif/dlg_preview.c stub_draw.h \
  dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
@@ -4106,7 +4106,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h board.h \
- vtroutestyle.h library.h rats_patch.h board.h hid.h \
+ vtroutestyle.h library.h rats_patch.h board.h grid.h hid.h \
  ../src_plugins/lib_hid_gl/hidgl.h ../src_plugins/lib_hid_gl/draw_gl.h \
  ../src_plugins/lib_hid_gl/opengl.h \
  ../src_plugins/lib_hid_gl/stencil_gl.h
@@ -5318,7 +5318,7 @@ crosshair.o: crosshair.c ../config.h conf_core.h conf.h global_typedefs.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  draw_wireframe.h search.h rats.h netlist.h route_style.h hid_actions.h \
  compat_misc.h compat_nls.h find.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h event.h action_helper.h macro.h obj_line_draw.h \
+ undo_old.h event.h action_helper.h macro.h grid.h obj_line_draw.h \
  obj_arc_draw.h obj_text_draw.h obj_pstk_draw.h obj_arc_ui.h tool.h
 data.o: data.c ../config.h board.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -5488,6 +5488,7 @@ fptr_cast.o: fptr_cast.c ../config.h fptr_cast.h
 funchash.o: funchash.c ../src_3rd/genht/htpi.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h funchash_core.h funchash.h funchash_core_list.h \
  ../config.h macro.h compat_misc.h
+grid.o: grid.c ../config.h unit.h grid.h compat_misc.h
 gui_act.o: gui_act.c ../config.h board.h global_typedefs.h pcb_bool.h \
  unit.h vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
@@ -6684,7 +6685,7 @@ select_act.o: select_act.c ../config.h conf_core.h conf.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h action_helper.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h funchash.h \
  funchash_core_list.h tool.h select.h operation.h draw.h remove.h copy.h \
- hid_attrib.h compat_misc.h compat_nls.h
+ grid.h hid_attrib.h compat_misc.h compat_nls.h
 stub_draw.o: stub_draw.c ../config.h stub_draw.h hid.h error.h drc.h \
  unit.h global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
  obj_arc_list.h obj_common.h flag.h data_parent.h obj_arc.h \
@@ -6731,10 +6732,11 @@ tool.o: tool.c ../config.h tool.h ../src_3rd/genvector/vtp0.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h list_conf.h \
- error.h event.h crosshair.h vtonpoint.h hid.h drc.h route.h tool_arc.h \
- tool_arrow.h tool_buffer.h tool_copy.h tool_insert.h tool_line.h \
- tool_lock.h tool_move.h tool_poly.h tool_polyhole.h tool_rectangle.h \
- tool_remove.h tool_rotate.h tool_text.h tool_thermal.h tool_via.h
+ error.h event.h grid.h crosshair.h vtonpoint.h hid.h drc.h route.h \
+ tool_arc.h tool_arrow.h tool_buffer.h tool_copy.h tool_insert.h \
+ tool_line.h tool_lock.h tool_move.h tool_poly.h tool_polyhole.h \
+ tool_rectangle.h tool_remove.h tool_rotate.h tool_text.h tool_thermal.h \
+ tool_via.h
 tool_arc.o: tool_arc.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
