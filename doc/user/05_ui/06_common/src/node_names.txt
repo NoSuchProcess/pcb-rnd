@@ -1,3 +1,8 @@
+/b         buffer
+/b/c       convert
+/b/m       mirror
+/b/r       rotate
+/b/s       subcircuit
 /e         edit
 /f         file
 /f/e       export
