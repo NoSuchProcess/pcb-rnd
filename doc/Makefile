@@ -3,7 +3,7 @@ KEYLIST=../util/keylist.sh
 DEBLIST=../util/devhelpers/deblist.sh
 ROOT=..
 
-all: keys.html user/05_ui/06_common/keytree.svg features/debian_list.html
+all: keys.html user/05_ui/06_common/keytree.svg
 	ROOT="" ./Autostyle.sh *.html
 	ROOT="../" ./Autostyle.sh features/*.html
 
