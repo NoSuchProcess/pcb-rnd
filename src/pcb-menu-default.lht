@@ -499,7 +499,6 @@ ha:{
 
 						ha:Change object {
 							li:submenu {
-								ha:ChangeHole Object            = { action=ChangeHole(Object) }
 								ha:ChangeJoin Object            = { action=ChangeJoin(Object) }
 								ha:ChangeJoin SelectedObject    = { action=ChangeJoin(SelectedObjects) }
 								ha:Clear Object +2 mil          = { action=ChangeClearSize(Object,+2,mil) }
