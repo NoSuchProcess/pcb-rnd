@@ -1,8 +1,15 @@
+/a         auto or add
+/a/b       back annotation
+/a/p       auto-place
+/a/d       auto-disperse
+/a/r       auto-route
+/a/o       optimize (djopt)
 /b         buffer
 /b/c       convert
 /b/m       mirror
 /b/r       rotate
 /b/s       subcircuit
+/c         connections & rats
 /e         edit
 /f         file
 /f/e       export
@@ -12,12 +19,15 @@
 /m/c       cursor/crosshair mode
 /m/d       drawing (render) mode
 /m/f       floater mode
-/m/l       line drawing (routing) mode
+/m/l       line drawing (routing) settings
+/m/t       text drawing (routing) settings
 /m/p       polygon drawing mode
 /m/r       rubber band mode
 /s         select
 /s/a       select all...
 /s/u       unselect all...
 /s/c       convert selected
+/r         routing helper
 /t         tool
 /u         undo
+/w         window
