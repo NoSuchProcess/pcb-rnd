@@ -414,10 +414,6 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
-#warning TODO: figure what to do with increments
-#if 0
-		Settings.increments = pcb_get_increments_struct(Settings.grid_unit->suffix);
-#endif
 		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
 	lesstif_sizes_reset();
