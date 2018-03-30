@@ -29,9 +29,18 @@
  */
 
 #include "config.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <genvector/gds_char.h>
+
 #include "unit.h"
 #include "grid.h"
 #include "compat_misc.h"
+#include "misc_util.h"
+#include "pcb_bool.h"
+#include "pcb-printf.h"
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {
@@ -40,3 +49,110 @@ pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t gr
 	x += grid_offset;
 	return x;
 }
+
+pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
+{
+	const char *nsep;
+	char *sep, *tmp, *size, *ox = NULL, *oy = NULL, *unit = NULL;
+	pcb_bool succ;
+
+	nsep = strchr(src, ':');
+	if (nsep != NULL)
+		src = nsep+1;
+	else
+		dst->name = NULL;
+
+	/* remember where size starts */
+	while(isspace(*src)) src++;
+	sep = size = tmp = pcb_strdup(src);
+
+	/* find optional offs */
+	sep = strchr(sep, '@');
+	if (sep != NULL) {
+		*sep = '\0';
+		sep++;
+		ox = sep;
+		sep = strchr(sep, ',');
+		if (sep != NULL) {
+			*sep = '\0';
+			sep++;
+			oy = sep;
+		}
+	}
+
+	/* find optional unit switch */
+	sep = strchr(sep, '!');
+	if (sep != NULL) {
+		*sep = '\0';
+		sep++;
+		unit = sep;
+	}
+
+	/* convert */
+	dst->size = pcb_get_value(size, NULL, NULL, &succ);
+	if ((!succ) || (dst->size < 0))
+		goto error;
+
+	if (ox != NULL) {
+		dst->ox = pcb_get_value(ox, NULL, NULL, &succ);
+		if (!succ)
+			goto error;
+	}
+	else
+		dst->ox = 0;
+
+	if (oy != NULL) {
+		dst->oy = pcb_get_value(oy, NULL, NULL, &succ);
+		if (!succ)
+			goto error;
+	}
+	else
+		dst->oy = 0;
+
+	if (unit != NULL) {
+		dst->unit = get_unit_struct(unit);
+		if (dst->unit == NULL)
+			goto error;
+	}
+	else
+		dst->unit = NULL;
+
+	/* success */
+	free(tmp);
+	dst->name = pcb_strndup(src, nsep-src-1);
+	return pcb_true;
+
+	error:;
+	free(tmp);
+	return pcb_false;
+}
+
+pcb_bool_t pcb_grid_append_print(gds_t *dst, const pcb_grid_t *src)
+{
+	if (src->size <= 0)
+		return pcb_false;
+	if (src->name != NULL) {
+		gds_append_str(dst, src->name);
+		gds_append(dst, ':');
+	}
+	pcb_append_printf(dst, "%$.08mH", src->size);
+	if ((src->ox != 0) || (src->oy != 0))
+		pcb_append_printf(dst, "@%$.08mH,%$.08mH", src->ox, src->oy);
+	if (src->unit != NULL) {
+		gds_append(dst, '!');
+		gds_append_str(dst, src->unit->suffix);
+	}
+	return pcb_true;
+}
+
+char *pcb_grid_print(const pcb_grid_t *src)
+{
+	gds_t tmp;
+	gds_init(&tmp);
+	if (!pcb_grid_append_print(&tmp, src)) {
+		gds_uninit(&tmp);
+		return NULL;
+	}
+	return tmp.array; /* do not uninit tmp */
+}
+

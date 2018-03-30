@@ -27,5 +27,33 @@
  *
  */
 
+#ifndef PCB_GRID_H
+#define PCB_GRID_H
+
+#include <genvector/gds_char.h>
+#include "pcb_bool.h"
+#include "unit.h"
+
+/* String packed syntax (bracket means optional):
+
+     [name:]size[@offs][!unit]
+
+  "!" means to switch the UI to the unit specified. */
+typedef struct {
+	char *name;
+	pcb_coord_t size;
+	pcb_coord_t ox, oy;
+	const pcb_unit_t *unit; /* force switching to unit if not NULL */
+} pcb_grid_t;
+
 /* Returns the nearest grid-point to the given coord x */
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset);
+
+/* Parse packed string format src into dst; allocat dst->name on success */
+pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src);
+
+/* Convert src into packed string format */
+pcb_bool_t pcb_grid_append_print(gds_t *dst, const pcb_grid_t *src);
+char *pcb_grid_print(const pcb_grid_t *src);
+
+#endif
