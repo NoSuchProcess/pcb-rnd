@@ -112,7 +112,7 @@ ha:{
 					li:submenu {
 						ha:Set Same Style           = { a={<key>e; <key>s}; action=SetSame() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
-						ha:Move Object to current layer = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
+						ha:Move to current layer    = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
 						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
 
 						ha:Geometry {
@@ -129,6 +129,11 @@ ha:{
 						}
 					}
 				} # Change object
+				ha:Add/place object {
+					li:submenu {
+						ha:Place mark                       = { a={<key>a;<key>m}; action=MarkCrosshair() }
+					}
+				}
 				-
 				ha:Edit name of {
 					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
@@ -514,7 +519,7 @@ ha:{
 				ha:Key Bindings {
 					li:submenu {
 						ha:Cycle object being dragged   = { li:a={{<char>,};{<key>e;<key>y;};}; action=CycleDrag() }
-						ha:MarkCrosshair                = { action=MarkCrosshair() }
+
 
 						ha:Step Cursor {
 							li:submenu {
