@@ -38,6 +38,7 @@
 #include "data.h"
 #include "action_helper.h"
 #include "tool.h"
+#include "grid.h"
 #include "error.h"
 #include "undo.h"
 #include "funchash_core.h"
@@ -1645,6 +1646,35 @@ static int pcb_act_SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	return 0;
 }
 
+static const char pcb_acts_grid[] =
+	"grid(set, [name:]size[@offs][!unit])\n"
+	"grid(+|up)\n" "grid(-|down)\n";
+static const char pcb_acth_grid[] = "Set the grid.";
+static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const pcb_unit_t *new_unit;
+	if (argc == 0)
+		return 0;
+
+	if (strcmp(argv[0], "set") == 0) {
+		pcb_grid_t dst;
+		if ((argc < 2) || !pcb_grid_parse(&dst, argv[1]))
+			PCB_ACT_FAIL(grid);
+		pcb_grid_set(PCB, &dst);
+		pcb_grid_free(&dst);
+	}
+	else if ((strcmp(argv[0], "up") == 0) || (strcmp(argv[0], "+") == 0)) {
+		
+	}
+	else if ((strcmp(argv[0], "down") == 0) || (strcmp(argv[0], "-") == 0)) {
+		
+	}
+	else
+		PCB_ACT_FAIL(grid);
+
+	return 0;
+}
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
 	 pcb_acth_Display, pcb_acts_Display}
@@ -1707,6 +1737,8 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"EditGroup", 0, pcb_act_EditGroup,
 	 pcb_acth_EditGroup, pcb_acts_EditGroup}
+	,
+	{"Grid", 0, pcb_act_grid, pcb_acth_grid, pcb_acts_grid}
 	,
 	{"SetUnits", 0, pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits}
 };
