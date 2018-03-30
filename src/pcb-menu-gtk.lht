@@ -475,10 +475,6 @@ ha:{
 						ha:ChangeDrill -5 mil           = { a=Alt Shift<Key>s; action=ChangeDrillSize(Object,-5,mil) }
 						ha:Text Tool scale +10 mil      = { a=<Key>t; action=SetValue(TextScale,+10,mil) }
 						ha:Text Tool scale -10 mil      = { a=Shift<Key>t; action=SetValue(TextScale,-10,mil) }
-						ha:Via Tool size +5 mil         = { a=Shift<Key>v; action=SetValue(ViaSize,+5,mil) }
-						ha:Via Tool size -5 mil         = { a=Shift Ctrl<Key>v; action=SetValue(ViaSize,-5,mil) }
-						ha:Via Tool drill +5 mil        = { a=Alt<Key>v; action=SetValue(ViaDrillingHole,+5,mil) }
-						ha:Via Tool drill -5 mil        = { a=Alt Shift<Key>v; action=SetValue(ViaDrillingHole,-5,mil) }
 						ha:Route radius +0.5            = { a=Alt<Key>c; action=conf(delta, editor/route_radius, +0.5, design); }
 						ha:Route radius -0.5            = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
 						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
