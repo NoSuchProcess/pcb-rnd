@@ -34,7 +34,7 @@
 #include "gui.h"
 
 /* Update the status line - should be bound to any config value displayed there */
-void ghid_confchg_status_line(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_status_line(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
@@ -42,7 +42,7 @@ void ghid_confchg_status_line(conf_native_t *cfg, int arr_idx)
 	ghidgui->common.set_status_line_label();
 }
 
-void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
 		ghid_fullscreen_apply(&ghidgui->topwin);
@@ -55,7 +55,7 @@ void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 		ghid_update_toggle_flags(&ghidgui->topwin);
 }
 
-void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || !ghidgui->hid_active)
