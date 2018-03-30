@@ -346,26 +346,26 @@ ha:{
 		ha:Buffer {
 			m=B
 			li:submenu {
-				ha:Rotate buffer 90 deg CCW   = { li:a={{<key>e;<key>r}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
-				ha:Rotate buffer 90 deg CW    = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
-				ha:Arbitrarily Rotate Buffer  = { li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
-				ha:Mirror buffer (up/down)    = { a={<key>e;<key>i}; li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
-				ha:Mirror buffer (left/right) = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
+				ha:Rotate buffer 90 deg CCW   = { li:a={{<key>b;<key>r;<key>r}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
+				ha:Rotate buffer 90 deg CW    = { a={<key>b;<key>r;<key>c}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
+				ha:Arbitrarily Rotate Buffer  = { a={<key>b;<key>r;<key>a}; li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
+				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
+				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				-
-				ha:Clear buffer                    = { action=PasteBuffer(Clear) }
-				ha:Convert buffer to subcircuit    = { action=PasteBuffer(ConvertSubc) }
-				ha:Convert buffer to padstack      = { li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
-				ha:Break buffer subcircuits to pieces = { action=PasteBuffer(Restore) }
-				ha:Save buffer subcircuits to file = { action=Save(PasteBuffer) }
-				ha:Layer bindings...               = { action=LayerBinding(buffer) }
+				ha:Clear buffer                    = { a={<key>b;<key>c;}; action=PasteBuffer(Clear) }
+				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
+				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
+				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
+				ha:Save buffer subcircuits to file = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer) }
+				ha:Layer bindings...               = { a={<key>b;<key>b;}; action=LayerBinding(buffer) }
 
 				ha:Buffer selection {
 					li:submenu {
-						ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1); update_on={editor/buffer_number} }
-						ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a=Shift<Key>2; action=PasteBuffer(2); update_on={editor/buffer_number} }
-						ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a=Shift<Key>3; action=PasteBuffer(3); update_on={editor/buffer_number} }
-						ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a=Shift<Key>4; action=PasteBuffer(4); update_on={editor/buffer_number} }
-						ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a=Shift<Key>5; action=PasteBuffer(5); update_on={editor/buffer_number} }
+						ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a={<key>b;<Key>1;} action=PasteBuffer(1); update_on={editor/buffer_number} }
+						ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a={<key>b;<Key>2;} action=PasteBuffer(2); update_on={editor/buffer_number} }
+						ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a={<key>b;<Key>3;} action=PasteBuffer(3); update_on={editor/buffer_number} }
+						ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a={<key>b;<Key>4;} action=PasteBuffer(4); update_on={editor/buffer_number} }
+						ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a={<key>b;<Key>5;} action=PasteBuffer(5); update_on={editor/buffer_number} }
 					}
 				}
 			}
