@@ -54,7 +54,7 @@ pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t gr
 pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
 {
 	const char *nsep;
-	char *sep, *tmp, *size, *ox = NULL, *oy = NULL, *unit = NULL;
+	char *sep3, *sep2, *sep, *tmp, *size, *ox = NULL, *oy = NULL, *unit = NULL;
 	pcb_bool succ;
 
 	nsep = strchr(src, ':');
@@ -68,22 +68,24 @@ pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
 	sep = size = tmp = pcb_strdup(src);
 
 	/* find optional offs */
-	sep = strchr(sep, '@');
-	if (sep != NULL) {
+	sep2 = strchr(sep, '@');
+	if (sep2 != NULL) {
+		sep = sep2;
 		*sep = '\0';
 		sep++;
 		ox = sep;
-		sep = strchr(sep, ',');
-		if (sep != NULL) {
-			*sep = '\0';
-			sep++;
+		sep3 = strchr(sep, ',');
+		if (sep3 != NULL) {
+			*sep3 = '\0';
+			sep3++;
 			oy = sep;
 		}
 	}
 
 	/* find optional unit switch */
-	sep = strchr(sep, '!');
-	if (sep != NULL) {
+	sep2 = strchr(sep, '!');
+	if (sep2 != NULL) {
+		sep = sep2;
 		*sep = '\0';
 		sep++;
 		unit = sep;
