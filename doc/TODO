@@ -181,7 +181,6 @@ SUBC: element removal:
 	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
-- Menu cleanup: see pool node menu_reorg
 - Mark cleanup
 	- see pool node mark_cleanup
 	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
