@@ -434,20 +434,20 @@ ha:{
 		ha:Plugins {
 			m=P
 			li:submenu {
-				ha:Manage plugins... = { a=Alt<Key>p; action=ManagePlugins() }
+				ha:Manage plugins... = { a={<Key>f;<Key>c;<Key>p;}; action=ManagePlugins() }
 			}
 		} # Plugins
 
 		ha:Window {
 			m=W
 			li:submenu {
-				ha:Library        = { a={<Key>a;<Key>c} action=DoWindows(Library) }
-				ha:Message Log    = { action=DoWindows(Log) }
-				ha:DRC Check      = { action=DoWindows(DRC) }
-				ha:Netlist        = { action=DoWindows(Netlist) }
-				ha:Command Entry  = { a={<char>:}; action=Command() }
-				ha:Pinout         = { a=Shift<Key>d; action=Display(Pinout) }
-				ha:Font selector  = { a=Ctrl Shift<Key>f; action=FontSel() }
+				ha:Library        = { a={<Key>w;<Key>l}; action=DoWindows(Library) }
+				ha:Message Log    = { a={<Key>w;<Key>m}; action=DoWindows(Log) }
+				ha:DRC Check      = { a={<Key>w;<Key>d}; action=DoWindows(DRC) }
+				ha:Netlist        = { a={<Key>w;<Key>n}; action=DoWindows(Netlist) }
+				ha:Command Entry  = { li:a={a={<Key>w;<Key>c}; {<char>:};}  action=Command() }
+				ha:Pinout         = { a={<Key>w;<Key>p}; action=Display(Pinout) }
+				ha:Font selector  = { a={<Key>w;<Key>f};  action=FontSel() }
 				-
 				ha:Key Bindings {
 					li:submenu {
@@ -562,29 +562,29 @@ ha:{
 						} # layer keys
 						ha:Tools {
 							li:submenu {
-								ha:None           = { checked=ChkMode(none); action=Mode(None); update_on={editor/mode} }
-								ha:Via            = { checked=ChkMode(via); a=<Key>F1; action=Mode(Via); update_on={editor/mode} }
-								ha:Line           = { checked=ChkMode(line); a=<Key>F2; action=Mode(Line); update_on={editor/mode} }
-								ha:Arc            = { checked=ChkMode(arc); a=<Key>F3; action=Mode(Arc); update_on={editor/mode} }
-								ha:Text           = { checked=ChkMode(text); a=<Key>F4; action=Mode(Text); update_on={editor/mode} }
-								ha:Rectangle      = { checked=ChkMode(rectangle); a=<Key>F5; action=Mode(Rectangle); update_on={editor/mode} }
-								ha:Polygon        = { checked=ChkMode(polygon); a=<Key>F6; action=Mode(Polygon); update_on={editor/mode} }
-								ha:Polygon Hole   = { checked=ChkMode(polygonhole); action=Mode(PolygonHole); update_on={editor/mode} }
-								ha:Buffer         = { checked=ChkMode(pastebuffer); a=<Key>F7; action=Mode(PasteBuffer); update_on={editor/mode} }
-								ha:Remove         = { checked=ChkMode(remove); a=<Key>F8; action=Mode(Remove); update_on={editor/mode} }
-								ha:Rotate         = { checked=ChkMode(rotate); a=<Key>F9; action=Mode(Rotate); update_on={editor/mode} }
-								ha:Thermal        = { checked=ChkMode(thermal); a=<Key>F10; action=Mode(Thermal); update_on={editor/mode} }
-								ha:Arrow          = { checked=ChkMode(arrow); a=<Key>F11; action=Mode(Arrow); update_on={editor/mode} }
-								ha:Insert Point   = { checked=ChkMode(insertpoint); a=<Key>Insert; action=Mode(InsertPoint); update_on={editor/mode} }
-								ha:Move           = { checked=ChkMode(move); action=Mode(Move); update_on={editor/mode} }
-								ha:Copy           = { checked=ChkMode(copy); action=Mode(Copy); update_on={editor/mode} }
-								ha:Lock           = { checked=ChkMode(lock); a=<Key>F12; action=Mode(Lock); update_on={editor/mode} }
-								ha:Cancel         = { a=<Key>Escape; action=Mode(Escape) }
+								ha:None           = { checked=ChkMode(none);            action=Mode(None); update_on={editor/mode} }
+								ha:Via            = { checked=ChkMode(via);         li:a={{<key>t;<key>v};{<Key>F1};}; action=Mode(Via); update_on={editor/mode} }
+								ha:Line           = { checked=ChkMode(line);        li:a={{<key>t;<key>l};{<Key>F2};}; action=Mode(Line); update_on={editor/mode} }
+								ha:Arc            = { checked=ChkMode(arc);         li:a={{<key>t;<key>a};{<Key>F3};}; action=Mode(Arc); update_on={editor/mode} }
+								ha:Text           = { checked=ChkMode(text);        li:a={{<key>t;<key>t};{<Key>F4};}; action=Mode(Text); update_on={editor/mode} }
+								ha:Rectangle      = { checked=ChkMode(rectangle);   li:a={{<key>t;<key>r};{<Key>F5};}; action=Mode(Rectangle); update_on={editor/mode} }
+								ha:Polygon        = { checked=ChkMode(polygon);     li:a={{<key>t;<key>p};{<Key>F6};}; action=Mode(Polygon); update_on={editor/mode} }
+								ha:Polygon Hole   = { checked=ChkMode(polygonhole); a={<key>t;<key>h}; action=Mode(PolygonHole); update_on={editor/mode} }
+								ha:Buffer         = { checked=ChkMode(pastebuffer); li:a={{<key>t;<key>b};{<Key>F7};}; action=Mode(PasteBuffer); update_on={editor/mode} }
+								ha:Del/Remove     = { checked=ChkMode(remove);      li:a={{<key>t;<key>d};{<Key>F8};}; action=Mode(Remove); update_on={editor/mode} }
+								ha:Rotate         = { checked=ChkMode(rotate);      li:a={{<key>t;<key>o};{<Key>F9};}; action=Mode(Rotate); update_on={editor/mode} }
+								ha:Thermal        = { checked=ChkMode(thermal);     li:a={{<key>t;<key>e};{<Key>F10};}; action=Mode(Thermal); update_on={editor/mode} }
+								ha:Arrow          = { checked=ChkMode(arrow);       li:a={{<key>t;<key>n};{<Key>F11};}; action=Mode(Arrow); update_on={editor/mode} }
+								ha:Insert Point   = { checked=ChkMode(insertpoint); li:a={{<key>t;<key>i};{<Key>Insert};}; action=Mode(InsertPoint); update_on={editor/mode} }
+								ha:Move           = { checked=ChkMode(move);        a={<key>t;<key>m}; action=Mode(Move); update_on={editor/mode} }
+								ha:Copy           = { checked=ChkMode(copy);        a={<key>t;<key>c}; action=Mode(Copy); update_on={editor/mode} }
+								ha:Lock           = { checked=ChkMode(lock);        li:a={{<key>t;<key>k};{<Key>F12};}; action=Mode(Lock); update_on={editor/mode} }
+								ha:Cancel         = {                               a={<Key>Escape}; action=Mode(Escape) }
 							}
 						}
 					}
 				}
-				ha:About...       = { a={<key>i;<key>a}; action=About() }
+				ha:About...       = { li:a={{<Key>w;<Key>a}; {<key>i;<key>a};}; action=About() }
 			}
 		} # Window
 	} # main menu
