@@ -5,7 +5,7 @@ digraph keytree {
 		n2 [label="n\nnew"]
 	t1 [label="t\ntool"]
 		l2 [label="l\nline"]
-		a2 [label="l\narc"]
+		a2 [label="a\narc"]
 
 
 	root->f1
