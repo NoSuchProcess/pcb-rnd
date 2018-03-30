@@ -28,6 +28,9 @@
 /s/u       unselect all...
 /s/c       convert selected
 /r         routing helper
+/r/r       routing radius
 /t         tool
 /u         undo
+/v         view
+/v/s       set view
 /w         window
