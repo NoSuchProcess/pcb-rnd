@@ -307,19 +307,19 @@ ha:{
 		ha:Select {
 			m=l
 			li:submenu {
-				ha:Select all visible objects      = { action=Select(All) }
-				ha:Select all connected objects    = { action=Select(Connection) }
-				ha:Unselect all objects            = { action=Unselect(All) }
-				ha:unselect all connected objects  = { action=Unselect(Connection) }
+				ha:Select all visible objects      = { a={<key>s; <key>a; <key>a;}; action=Select(All) }
+				ha:Select all connected objects    = { a={<key>s; <key>a; <key>c;}; action=Select(Connection) }
+				ha:Unselect all objects            = { a={<key>s; <key>u; <key>a;}; action=Unselect(All) }
+				ha:unselect all connected objects  = { a={<key>s; <key>u; <key>c;}; action=Unselect(Connection) }
 				-
 #TODO: this is gtk-specific
-				ha:Advanced search and select= { action=DoWindows(search) }
+				ha:Advanced search and select      = { a={<key>s; <key>s;} action=DoWindows(search) }
 				-
-				ha:Move selected subcircuits to other side= { a=Shift<Key>b; action=Flip(SelectedElements) }
-				ha:Move selected objects to current layer = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
-				ha:Remove selected objects                = { a=Shift<Key>Delete; action=RemoveSelected() }
-				ha:Convert selection to subcircuit        = { action=Select(ConvertSubc) }
-				ha:Convert selection to padstack          = { li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
+				ha:Move selected subcircuits to other side= { a={<key>s; <key>f;} action=Flip(SelectedElements) }
+				ha:Move selected objects to current layer = { a={<key>s; <key>l;} action=MoveToCurrentLayer(Selected) }
+				ha:Remove selected objects                = { a={<key>s; <key>r;} action=RemoveSelected() }
+				ha:Convert selection to subcircuit        = { a={<key>s; <key>c; <key>s;} action=Select(ConvertSubc) }
+				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
 				ha:Change size of selected objects {
 					li:submenu {
 						ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
