@@ -9,7 +9,7 @@ all: keys.html user/05_ui/06_common/keytree.svg
 include ../Makefile.conf
 
 user/05_ui/06_common/keytree.svg: $(MENU_RES) $(KEYLIST)
-	$(KEYLIST) --dot user/05_ui/06_common/src/node_names $(MENU_RES) > user/05_ui/06_common/keytree.dot
+	$(KEYLIST) --dot user/05_ui/06_common/src/node_names.txt $(MENU_RES) > user/05_ui/06_common/keytree.dot
 	dot -Tsvg < user/05_ui/06_common/keytree.dot >user/05_ui/06_common/keytree.svg
 
 
