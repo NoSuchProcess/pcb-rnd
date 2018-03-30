@@ -113,8 +113,22 @@ ha:{
 						ha:Set Same Style           = { a={<key>e; <key>s}; action=SetSame() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
 						ha:Move Object to current layer = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
+						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
+
+						ha:Geometry {
+							li:submenu {
+								ha:ChangeJoin SelectedObject    = { action=ChangeJoin(SelectedObjects) }
+								ha:Clearance +2 mil             = { action=ChangeClearSize(Object,+2,mil) }
+								ha:Clearance -2 mil             = { action=ChangeClearSize(Object,-2,mil) }
+								ha:ChangeSizes to Route style   = { action=ChangeSizes(Object,style,mil) }
+								ha:ChangeSize +5 mil            = { action=ChangeSize(Object,+5,mil) }
+								ha:ChangeSize -5 mil            = { action=ChangeSize(Object,-5,mil) }
+								ha:ChangeDrill +5 mil           = { action=ChangeDrillSize(Object,+5,mil) }
+								ha:ChangeDrill -5 mil           = { action=ChangeDrillSize(Object,-5,mil) }
+							}
+						}
 					}
-				}
+				} # Change object
 				-
 				ha:Edit name of {
 					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
@@ -277,8 +291,13 @@ ha:{
 						ha:Cycle line clip/refraction       = { li:a={{<key>m; <key>l; <key>f}; {<char>/};}; action=Display(CycleClip) }
 						ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
 						ha:Auto enforce DRC clearance       = { a={<key>m; <key>l; <key>d}; checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
+						-
 						ha:Rubber band mode                 = { a={<key>m; <key>r; <key>r}; checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 						ha:Rubber band keeps middle line dir= { a={<key>m; <key>r; <key>m}; checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
+						-
+						ha:Route radius +0.5                = { li:a={{<key>r; <key>r; <char>+}; {<key>r; <key>r; <char>p};}; action=conf(delta, editor/route_radius, +0.5, design); }
+						ha:Route radius -0.5                = { li:a={{<key>r; <key>r; <char>-}; {<key>r; <key>r; <char>m};}; action=conf(delta, editor/route_radius, -0.5, design); }
+						-
 						ha:New lines, arcs clear polygons   = { a={<key>m; <key>l; <key>c}; checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
 						ha:New polygons are full ones       = { a={<key>m; <key>p; <key>f}; checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
 						ha:New polygons clear polygons      = { a={<key>m; <key>p; <key>c}; checked=editor/clear_polypoly; action=conf(toggle, editor/clear_polypoly, design) }
@@ -306,6 +325,11 @@ ha:{
 						ha:Lock floaters                    = { a={<key>m; <key>f; <key>l}; checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
 						ha:Only floaters                    = { a={<key>m; <key>f; <key>o}; checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
 						ha:Hide floaters                    = { a={<key>m; <key>f; <key>h}; checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
+						-
+						ha:Line Tool size +5 mil            = { a={<key>m; <key>l; <char>+}; action=SetValue(LineSize,+5,mil) }
+						ha:Line Tool size -5 mil            = { a={<key>m; <key>l; <char>-}; action=SetValue(LineSize,-5,mil) }
+						ha:Text Tool scale +10 mil          = { a={<key>m; <key>t; <char>-}; action=SetValue(TextScale,+10,mil) }
+						ha:Text Tool scale -10 mil          = { a={<key>m; <key>t; <char>+}; action=SetValue(TextScale,-10,mil) }
 					}
 				}
 				ha:Mincut on shorts                 = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
@@ -355,22 +379,16 @@ ha:{
 				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
 				ha:Change size of selected objects {
 					li:submenu {
-						ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
-						ha:Lines +10 mil = { li:action={ChangeSize(SelectedLines,+10,mil); ChangeSize(SelectedArcs,+10,mil)} }
-						ha:Pads -10 mil  = { action=ChangeSize(SelectedPads,-10,mil) }
-						ha:Pads +10 mil  = { action=ChangeSize(SelectedPads,+10,mil) }
-						ha:Pins -10 mil  = { action=ChangeSize(SelectedPins,-10,mil) }
-						ha:Pins +10 mil  = { action=ChangeSize(SelectedPins,+10,mil) }
-						ha:Texts -10 mil = { action=ChangeSize(SelectedTexts,-10,mil) }
-						ha:Texts +10 mil = { action=ChangeSize(SelectedTexts,+10,mil) }
-						ha:Vias -10 mil  = { action=ChangeSize(SelectedVias,-10,mil) }
-						ha:Vias +10 mil  = { action=ChangeSize(SelectedVias,+10,mil) }
-					}
-				}
-				ha:Change drilling hole of selected padstacks {
-					li:submenu {
-						ha:Vias -10 mil = { action=ChangeDrillSize(SelectedPadstacks,-10,mil) }
-						ha:Vias +10 mil = { action=ChangeDrillSize(SelectedPadstacks,+10,mil) }
+						ha:Lines -10 mil     = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
+						ha:Lines +10 mil     = { li:action={ChangeSize(SelectedLines,+10,mil); ChangeSize(SelectedArcs,+10,mil)} }
+						ha:Texts -10 mil     = { action=ChangeSize(SelectedTexts,-10,mil) }
+						ha:Texts +10 mil     = { action=ChangeSize(SelectedTexts,+10,mil) }
+						-
+						ha:Clearance +2 mil  = { action=ChangeClearSize(SelectedObjects,+2,mil) }
+						ha:Clearance -2 mil  = { action=ChangeClearSize(SelectedObjects,-2,mil) }
+						-
+						ha:Hole -10 mil      = { action=ChangeDrillSize(SelectedPadstacks,-10,mil) }
+						ha:Hole +10 mil      = { action=ChangeDrillSize(SelectedPadstacks,+10,mil) }
 					}
 				}
 			}
@@ -498,29 +516,6 @@ ha:{
 						ha:Cycle object being dragged   = { li:a={{<char>,};{<key>e;<key>y;};}; action=CycleDrag() }
 						ha:MarkCrosshair                = { action=MarkCrosshair() }
 
-						ha:Change object {
-							li:submenu {
-								ha:ChangeJoin Object            = { action=ChangeJoin(Object) }
-								ha:ChangeJoin SelectedObject    = { action=ChangeJoin(SelectedObjects) }
-								ha:Clear Object +2 mil          = { action=ChangeClearSize(Object,+2,mil) }
-								ha:Clear Object -2 mil          = { action=ChangeClearSize(Object,-2,mil) }
-								ha:Clear Selected +2 mil        = { action=ChangeClearSize(SelectedObjects,+2,mil) }
-								ha:Clear Selected -2 mil        = { action=ChangeClearSize(SelectedObjects,-2,mil) }
-								ha:Line Tool size +5 mil        = { action=SetValue(LineSize,+5,mil) }
-								ha:Line Tool size -5 mil        = { action=SetValue(LineSize,-5,mil) }
-								ha:Polygon PreviousPoint        = { action=Polygon(PreviousPoint) }
-								ha:Polygon Close                = { action=Polygon(Close) }
-								ha:ChangeSizes to Route style   = { action=ChangeSizes(Object,style,mil) }
-								ha:ChangeSize +5 mil            = { action=ChangeSize(Object,+5,mil) }
-								ha:ChangeSize -5 mil            = { action=ChangeSize(Object,-5,mil) }
-								ha:ChangeDrill +5 mil           = { action=ChangeDrillSize(Object,+5,mil) }
-								ha:ChangeDrill -5 mil           = { action=ChangeDrillSize(Object,-5,mil) }
-								ha:Text Tool scale +10 mil      = { action=SetValue(TextScale,+10,mil) }
-								ha:Text Tool scale -10 mil      = { action=SetValue(TextScale,-10,mil) }
-								ha:Route radius +0.5            = { action=conf(delta, editor/route_radius, +0.5, design); }
-								ha:Route radius -0.5            = { action=conf(delta, editor/route_radius, -0.5, design); }
-							}
-						}
 						ha:Step Cursor {
 							li:submenu {
 								ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
