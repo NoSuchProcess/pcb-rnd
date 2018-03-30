@@ -263,7 +263,7 @@ ha:{
 				ha:Routing {
 					m=R
 					li:submenu {
-						ha:'All-direction' lines            = { a={<key>m; <key>l; <key>a}; checked=editor/alldirection_lines; a=<char>.; action=conf(toggle, editor/all_direction_lines, design) }
+						ha:'All-direction' lines            = { li:a={{<key>m; <key>l; <key>a}; {<key>.};}; checked=editor/alldirection_lines; action=conf(toggle, editor/all_direction_lines, design) }
 						ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
 						ha:Auto enforce DRC clearance       = { a={<key>m; <key>l; <key>d}; checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
 						ha:Rubber band mode                 = { a={<key>m; <key>r; <key>r}; checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
