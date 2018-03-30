@@ -76,7 +76,7 @@ ha:{
 					li:submenu {
 						ha:Generate object report  = { a={<key>i;<key>r}; action=ReportObject() }
 						ha:Generate drill summary  = { a={<key>i;<key>d}; action=Report(DrillReport) }
-						ha:Report found pins\/pads = { a={<key>i;<key>f}; action=Report(FoundPins) }
+						ha:Report found padstacks  = { a={<key>i;<key>f}; action=Report(FoundPins) }
 					}
 				}
 				-
