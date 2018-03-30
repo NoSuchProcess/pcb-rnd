@@ -3,11 +3,16 @@ KEYLIST=../util/keylist.sh
 DEBLIST=../util/devhelpers/deblist.sh
 ROOT=..
 
-all: keys.html features/debian_list.html
+all: keys.html user/05_ui/06_common/keytree.svg features/debian_list.html
 	ROOT="" ./Autostyle.sh *.html
 	ROOT="../" ./Autostyle.sh features/*.html
 
 include ../Makefile.conf
+
+user/05_ui/06_common/keytree.svg: $(MENU_RES) $(KEYLIST)
+	$(KEYLIST) --dot user/05_ui/06_common/src/node_names $(MENU_RES) > user/05_ui/06_common/keytree.dot
+	dot -Tsvg < user/05_ui/06_common/keytree.dot >user/05_ui/06_common/keytree.svg
+
 
 keys.html: $(MENU_RES) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES) > keys.html
