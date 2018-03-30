@@ -27,8 +27,6 @@
  *
  */
 
-/* crosshair stuff */
-
 #include "config.h"
 #include "conf_core.h"
 
