@@ -1,10 +1,9 @@
-MENU_RES=../src/pcb-menu-gtk.lht ../src/pcb-menu-lesstif.lht
-MENU_RES_MKEY=../src/pcb-menu-mkey.lht
+MENU_RES=../src/pcb-menu-default.lht
 KEYLIST=../util/keylist.sh
 DEBLIST=../util/devhelpers/deblist.sh
 ROOT=..
 
-all: keys.html keys_mkey.html features/debian_list.html
+all: keys.html features/debian_list.html
 	ROOT="" ./Autostyle.sh *.html
 	ROOT="../" ./Autostyle.sh features/*.html
 
@@ -12,9 +11,6 @@ include ../Makefile.conf
 
 keys.html: $(MENU_RES) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES) > keys.html
-
-keys_mkey.html: $(MENU_RES_MKEY) $(KEYLIST)
-	$(KEYLIST) $(MENU_RES_MKEY) > keys_mkey.html
 
 install_main:
 	$(SCCBOX) $(HOW) *.html *.txt TODO $(DOCDIR)/
