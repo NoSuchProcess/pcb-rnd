@@ -32,6 +32,7 @@
 #include "conf_core.h"
 #include "error.h"
 #include "event.h"
+#include "grid.h"
 
 #warning tool TODO: remove this when pcb_crosshair_set_mode() got moved here
 #include "crosshair.h"

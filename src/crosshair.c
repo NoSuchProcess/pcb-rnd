@@ -46,6 +46,7 @@
 #include "event.h"
 #include "action_helper.h"
 #include "macro.h"
+#include "grid.h"
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
@@ -504,18 +505,6 @@ void pcb_draw_mark(void)
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
 }
-
-/* ---------------------------------------------------------------------------
- * Returns the nearest grid-point to the given Coord
- */
-pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
-{
-	x -= grid_offset;
-	x = grid_spacing * pcb_round((double) x / grid_spacing);
-	x += grid_offset;
-	return x;
-}
-
 
 /* ---------------------------------------------------------------------------
  * notify the GUI that data relating to the crosshair is being changed.

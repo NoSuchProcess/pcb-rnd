@@ -37,6 +37,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "board.h"
+#include "grid.h"
 #include "hid.h"
 #include "hidgl.h"
 

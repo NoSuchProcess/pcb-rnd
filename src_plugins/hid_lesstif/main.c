@@ -43,6 +43,7 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "stdarg.h"
+#include "grid.h"
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

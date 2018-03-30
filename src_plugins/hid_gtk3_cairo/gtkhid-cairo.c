@@ -35,6 +35,7 @@
 #include "clip.h"
 #include "data.h"
 #include "layer.h"
+#include "grid.h"
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_helper.h"

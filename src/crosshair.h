@@ -102,8 +102,6 @@ typedef struct {								/* holds cursor information */
 extern pcb_crosshair_t pcb_crosshair;
 extern pcb_mark_t pcb_marked;
 
-
-pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset);
 void pcb_notify_crosshair_change(pcb_bool changes_complete);
 void pcb_notify_mark_change(pcb_bool changes_complete);
 void pcb_draw_attached(void);

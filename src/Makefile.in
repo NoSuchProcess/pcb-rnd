@@ -56,6 +56,7 @@ put /local/pcb/OBJS [@
 	flag.o
 	flag_str.o
 	funchash.o
+	grid.o
 	gui_act.o
 	heap.o
 	hid_actions.o
