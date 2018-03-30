@@ -802,252 +802,6 @@ static void config_window_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	gtk_widget_show_all(config_window_vbox);
 }
 
-
-	/* -------------- The Increments config page ----------------
-	 */
-	/* Increment/decrement values are kept in mil and mm units and not in
-	   |  PCB units.
-	 */
-GtkWidget *config_increments_tbl[4][4];	/* [col][row] */
-
-static GtkWidget *config_increments_vbox = NULL, *config_increments_tab_vbox = NULL;
-
-static void increment_tbl_update_cell(GtkLabel * lab, pcb_coord_t val, const char *fmt)
-{
-	char s[128];
-	pcb_snprintf(s, sizeof(s), fmt, val);
-	gtk_label_set_text(lab, s);
-}
-
-static void increment_tbl_update_row(int row, pcb_coord_t edit_in_mm, pcb_coord_t edit_in_mil)
-{
-	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[0][row]), edit_in_mm, "%$mm");
-	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[1][row]), edit_in_mil, "%$mm");
-	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[2][row]), edit_in_mm, "%$ml");
-	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[3][row]), edit_in_mil, "%$ml");
-}
-
-static void increment_tbl_update()
-{
-	increment_tbl_update_row(0, conf_core.editor.increments_mm.grid, conf_core.editor.increments_mil.grid);
-	increment_tbl_update_row(1, conf_core.editor.increments_mm.size, conf_core.editor.increments_mil.size);
-	increment_tbl_update_row(2, conf_core.editor.increments_mm.line, conf_core.editor.increments_mil.line);
-	increment_tbl_update_row(3, conf_core.editor.increments_mm.clear, conf_core.editor.increments_mil.clear);
-}
-
-static void increment_spin_button_cb(pcb_gtk_coord_entry_t * ce, void *dst)
-{
-	const char *path = dst;
-	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t) pcb_gtk_coord_entry_get_value(ce));
-	increment_tbl_update();
-}
-
-static void config_increments_sect_create(GtkWidget * vbox)
-{
-	GtkWidget *hbox, *label;
-	const int width = 128;
-	char pathmm[256], *pemm;
-	char pathmil[256], *pemil;
-	const pcb_unit_t *umm = get_unit_struct("mm");
-	const pcb_unit_t *umil = get_unit_struct("mil");
-	const char *base_pathmm = "editor/increments_mm";
-	const char *base_pathmil = "editor/increments_mil";
-	int lmm = strlen(base_pathmm);
-	int lmil = strlen(base_pathmil);
-
-	memcpy(pathmm, base_pathmm, lmm);
-	pemm = pathmm + lmm;
-	*pemm = '/';
-	pemm++;
-
-	memcpy(pathmil, base_pathmil, lmil);
-	pemil = pathmil + lmil;
-	*pemil = '/';
-	pemil++;
-
-#warning leak: pcb_strdup(path) never free()d
-	/* ---- Grid Increment/Decrement ---- */
-	strcpy(pemm, "grid");
-	strcpy(pemil, "grid");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mm.grid,
-									 conf_core.editor.increments_mm.grid_min,
-									 conf_core.editor.increments_mm.grid_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Grid:"), NULL);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mil.grid,
-									 conf_core.editor.increments_mil.grid_min,
-									 conf_core.editor.increments_mil.grid_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
-
-	label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label), _("<small>For 'g' and '&lt;shift&gt;g' grid change actions</small>"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
-
-	/* ---- Size Increment/Decrement ---- */
-	strcpy(pemm, "size");
-	strcpy(pemil, "size");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mm.size,
-									 conf_core.editor.increments_mm.size_min,
-									 conf_core.editor.increments_mm.size_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Size:"), NULL);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mil.size,
-									 conf_core.editor.increments_mil.size_min,
-									 conf_core.editor.increments_mil.size_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
-
-	label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label),
-											 _
-											 ("For <small>'s' and '&lt;shift&gt;s' on lines, pads, text; '&lt;ctrl&gt;s' and '&lt;shift&gt;&lt;ctrl&gt;s' on holes.</small>"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
-
-	/* ---- Line Increment/Decrement ---- */
-	strcpy(pemm, "line");
-	strcpy(pemil, "line");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mm.line,
-									 conf_core.editor.increments_mm.line_min,
-									 conf_core.editor.increments_mm.line_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Line:"), NULL);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mil.line,
-									 conf_core.editor.increments_mil.line_min,
-									 conf_core.editor.increments_mil.line_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
-
-	label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label), _("<small>For 'l' and '&lt;shift&gt;l' routing line width change actions</small>"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
-
-	/* ---- Clear Increment/Decrement ---- */
-	strcpy(pemm, "clear");
-	strcpy(pemil, "clear");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mm.clear,
-									 conf_core.editor.increments_mm.clear_min,
-									 conf_core.editor.increments_mm.clear_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Clear:"), NULL);
-
-	ghid_coord_entry(hbox, NULL,
-									 conf_core.editor.increments_mil.clear,
-									 conf_core.editor.increments_mil.clear_min,
-									 conf_core.editor.increments_mil.clear_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
-
-	label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label),
-											 _("<small>For 'k' and '&lt;shift&gt;k' line clearance inside polygon size change actions</small>"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
-
-
-	gtk_widget_show_all(config_increments_vbox);
-}
-
-static GtkWidget *config_increments_table_attach(GtkWidget * table, int x, int y, int colspan, const char *text)
-{
-	GtkWidget *box, *label;
-
-	box = gtkc_vbox_new(FALSE, 0);
-	label = gtk_label_new(text);
-	gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), box, x, x + colspan, y, y + 1, 0, 0, 10, 2);
-	return label;
-}
-
-void config_increments_save(GtkButton * widget, save_ctx_t * ctx)
-{
-	const char *paths[] = {
-		"editor/increments_mm",
-		"editor/increments_mil",
-		NULL
-	};
-
-	config_any_replace(ctx, paths);
-}
-
-static void config_increments_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
-{
-	GtkWidget *vbox, *catvbox, *content_vbox;
-
-	content_vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
-
-	if (config_increments_vbox != NULL) {
-		gtk_widget_destroy(GTK_WIDGET(config_increments_vbox));
-		config_increments_vbox = NULL;
-	}
-
-	/* the actual content */
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(content_vbox), vbox, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-	config_increments_vbox = vbox;
-	config_increments_tab_vbox = content_vbox;
-
-
-	catvbox = ghid_category_vbox(config_increments_vbox, "Increment Settings", 0, 0, TRUE, TRUE);
-	config_increments_sect_create(catvbox);
-
-	catvbox = ghid_category_vbox(config_increments_vbox, _("Comparison table"), 0, 0, TRUE, FALSE);
-
-	/* increment summary table */
-	{
-		GtkWidget *table;
-		int y, x;
-
-		table = gtk_table_new(7, 3, 0);
-		gtk_box_pack_start(GTK_BOX(catvbox), table, FALSE, FALSE, 0);
-
-		config_increments_table_attach(table, 1, 0, 2, "converter to mm");
-		config_increments_table_attach(table, 1, 1, 1, "metric editing");
-		config_increments_table_attach(table, 2, 1, 1, "imperial editing");
-
-		config_increments_table_attach(table, 3, 0, 2, "converter to mil");
-		config_increments_table_attach(table, 3, 1, 1, "metric editing");
-		config_increments_table_attach(table, 4, 1, 1, "imperial editing");
-
-		config_increments_table_attach(table, 0, 2, 1, "grid");
-		config_increments_table_attach(table, 0, 3, 1, "size");
-		config_increments_table_attach(table, 0, 4, 1, "line");
-		config_increments_table_attach(table, 0, 5, 1, "clear");
-
-		for (y = 0; y < 4; y++)
-			for (x = 0; x < 4; x++)
-				config_increments_tbl[x][y] = config_increments_table_attach(table, x + 1, y + 2, 1, "n/a");
-		increment_tbl_update();
-	}
-
-	vbox = gtkc_vbox_new(TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(com, tab_vbox, config_increments_save, 0);
-}
-
 	/* -------------- The Library config page ----------------
 	 */
 static gtk_conf_list_t library_cl;
@@ -1639,7 +1393,6 @@ static void config_do_close(int apply)
 
 	config_sizes_vbox = NULL;
 	config_sizes_tab_vbox = NULL;
-	config_increments_vbox = NULL;
 
 	config_groups_vbox = config_groups_table = NULL;
 	config_groups_window = NULL;
@@ -2109,8 +1862,6 @@ static void config_auto_src_show(pcb_gtk_common_t *com, lht_node_t *nd)
 	case CFN_LIST:
 		gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
 		gtk_widget_show(auto_tab_widgets.edit_list);
-		break;
-	case CFN_INCREMENTS:
 		break;
 	}
 	gtk_widget_show(auto_tab_widgets.finalize);
@@ -2674,7 +2425,6 @@ void pcb_gtk_config_window_show(pcb_gtk_common_t *com, gboolean raise)
 	config_tree_leaf(model, &user_pov, "General", config_general_tab_create, com);
 	config_tree_leaf(model, &user_pov, "Window", config_window_tab_create, com);
 	config_tree_leaf(model, &user_pov, "Sizes", config_sizes_tab_create, com);
-	config_tree_leaf(model, &user_pov, "Increments", config_increments_tab_create, com);
 	config_tree_leaf(model, &user_pov, "Library", config_library_tab_create, com);
 	config_tree_leaf(model, &user_pov, "Layers", config_layers_tab_create, com);
 	config_tree_leaf(model, &user_pov, "Colors", config_colors_tab_create, com);
@@ -2722,7 +2472,6 @@ static void ghid_config_window_close(void)
 
 	config_sizes_tab_vbox = NULL;
 	config_sizes_vbox = NULL;
-	config_increments_vbox = NULL;
 	config_groups_vbox = config_groups_table = NULL;
 	config_groups_window = NULL;
 	config_window = NULL;
