@@ -263,7 +263,66 @@ gen_list()
 # load node names and generate a dot drawing of the multikey bindings
 gen_dot()
 {
-	echo TODO
+	$AWK -v "names=$nodenames"  '
+		BEGIN {
+			q="\""
+			print "digraph keytree {"
+			print "rankdir=LR"
+			print "ranksep=1.5"
+			while((getline < names) == 1) {
+				path=$1
+				$1=""
+				desc = $0
+				node(path, desc, "shape=box")
+			}
+			close(names)
+			FS="[\t]"
+		}
+
+		function arrow_(curr)
+		{
+			if (!(curr in ARROW_SEEN)) {
+				print curr
+				ARROW_SEEN[curr]=1
+			}
+		}
+
+		function arrow(path   ,n,v,P,last,curr)
+		{
+			sub("^[/;_]", "", path)
+			sub("[/;_]$", "", path)
+			v = split(path, P, "[/;_]")
+
+#			curr = "root -> " q P[1] q
+#			arrow_(curr)
+			last = P[1]
+			for(n = 2; n <= v; n++) {
+				curr = q last q "->"  q last "_" P[n] q
+				arrow_(curr)
+				last = last "_" P[n]
+			}
+		}
+
+		function node(path, desc, shape,    orig)
+		{
+			orig=path
+			gsub("[_;]", "/", orig)
+			sub("^[/;]", "", path)
+			sub("[/;]$", "", path)
+			gsub("[/;]", "_", path)
+			gsub("[\"]", "", desc)
+			print q path q " [label=" q orig "\\n" desc q " " shape "]"
+			arrow(path)
+		}
+
+		(($1 ~ "^[a-z]$") || ($1 ~ "^[a-z];[a-z];")) {
+			node($1, $4, "")
+		}
+
+		END {
+			print "}"
+		}
+	'
 }
 
 case "$cmd" in
