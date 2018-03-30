@@ -31,9 +31,7 @@
 
 static void DrawNewConnections(void);
 
-/* ---------------------------------------------------------------------------
- * checks if all lists of new objects are handled
- */
+/* checks if all lists of new objects are handled */
 static pcb_bool ListsEmpty(pcb_bool AndRats)
 {
 	pcb_bool empty;
@@ -59,9 +57,7 @@ static void reassign_no_drc_flags(void)
 }
 
 
-/* ---------------------------------------------------------------------------
- * loops till no more connections are found
- */
+/* loops till no more connections are found */
 static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 {
 	pcb_bool newone = pcb_false;
@@ -83,10 +79,7 @@ static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 	return newone;
 }
 
-/* ---------------------------------------------------------------------------
- * draws all new connections which have been found since the
- * routine was called the last time
- */
+/* draws all new connections which have been found since the routine was called the last time */
 static void DrawNewConnections(void)
 {
 	int i;
@@ -194,12 +187,10 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 }
 
 
-/* ---------------------------------------------------------------------------
- * looks up all connections from the object at the given coordinates
+/* looks up all connections from the object at the given coordinates
  * the TheFlag (normally 'PCB_FLAG_FOUND') is set for all objects found
  * the objects are re-drawn if AndDraw is pcb_true
- * also the action is marked as undoable if AndDraw is pcb_true
- */
+ * also the action is marked as undoable if AndDraw is pcb_true */
 void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t Range, int which_flag)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -306,10 +297,7 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 }
 
 
-/* ---------------------------------------------------------------------------
- * find connections for rats nesting
- * assumes pcb_conn_lookup_init() has already been done
- */
+/* find connections for rats nesting assumes pcb_conn_lookup_init() has already been done */
 void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats)
 {
 	User = undo;
@@ -321,9 +309,7 @@ void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats)
 
 static pcb_bool pcb_reset_found_subc(pcb_subc_t *subc, pcb_bool AndDraw);
 
-/* ---------------------------------------------------------------------------
- * resets all used flags of pins and vias
- */
+/* resets all used flags of pins and vias */
 static pcb_bool pcb_reset_found_pins_vias_pads_(pcb_data_t *data, pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
@@ -360,9 +346,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 	return change;
 }
 
-/* ---------------------------------------------------------------------------
- * resets all used flags of LOs
- */
+/* resets all used flags of LOs */
 static pcb_bool pcb_reset_found_lines_polys_(pcb_data_t *data, pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
@@ -450,9 +434,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 }
 
 
-/* ---------------------------------------------------------------------------
- * resets all found connections
- */
+/* resets all found connections */
 pcb_bool pcb_reset_conns(pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;

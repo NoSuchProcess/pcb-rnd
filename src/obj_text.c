@@ -780,9 +780,7 @@ static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, i
 }
 
 
-/* ---------------------------------------------------------------------------
- * lowlevel drawing routine for text objects
- */
+/* lowlevel drawing routine for text objects */
 static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
 {
 	pcb_coord_t x = 0;

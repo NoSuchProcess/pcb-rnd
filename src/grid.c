@@ -38,6 +38,8 @@
 #include "unit.h"
 #include "grid.h"
 #include "board.h"
+#include "conf.h"
+#include "conf_core.h"
 #include "compat_misc.h"
 #include "misc_util.h"
 #include "pcb_bool.h"
@@ -170,4 +172,34 @@ void pcb_grid_free(pcb_grid_t *dst)
 {
 	free(dst->name);
 	dst->name = NULL;
+}
+
+pcb_bool_t pcb_grid_list_step(int stp)
+{
+	const conf_listitem_t *li;
+	pcb_grid_t g;
+	int max = conflist_length((conflist_t *)&conf_core.editor.grids);
+	int dst = conf_core.editor.grids_idx + stp;
+
+	if (dst < 0)
+		dst = 0;
+	if (dst >= max)
+		dst = max - 1;
+	if (dst < 0)
+		return;
+
+	conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
+
+	li = conflist_nth((conflist_t *)&conf_core.editor.grids, dst);
+	/* clamp */
+	if (li == NULL)
+		return pcb_false;
+
+	if (!pcb_grid_parse(&g, li->payload))
+		return pcb_false;
+	pcb_grid_set(PCB, &g);
+	pcb_grid_free(&g);
+
+
+		return pcb_true;
 }

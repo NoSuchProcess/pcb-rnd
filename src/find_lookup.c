@@ -171,9 +171,6 @@ pcb_bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
 
 #include "find_intconn.c"
 
-/* ---------------------------------------------------------------------------
- * releases all allocated memory
- */
 void pcb_layout_lookup_uninit(void)
 {
 	pcb_cardinal_t i;
@@ -190,10 +187,8 @@ void pcb_layout_lookup_uninit(void)
 	RatList.Data = NULL;
 }
 
-/* ---------------------------------------------------------------------------
- * allocates memory for component related stacks ...
- * initializes index and sorts it by X1 and X2
- */
+/* allocates memory for component related stacks ...
+ * initializes index and sorts it by X1 and X2 */
 void pcb_layout_lookup_init(void)
 {
 	pcb_layer_id_t i;
@@ -324,10 +319,8 @@ static pcb_r_dir_t PStoPS_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-/* ---------------------------------------------------------------------------
- * checks if a padstack is connected to LOs, if it is, the LO is added to
- * the appropriate list and the 'used' flag is set
- */
+/* checks if a padstack is connected to LOs, if it is, the LO is added to
+ * the appropriate list and the 'used' flag is set */
 static pcb_bool LookupLOConnectionsToPSList(pcb_bool AndRats)
 {
 	pcb_cardinal_t layer;
@@ -387,9 +380,7 @@ static pcb_bool LookupLOConnectionsToPSList(pcb_bool AndRats)
 	return pcb_false;
 }
 
-/* ---------------------------------------------------------------------------
- * find all connections between LO at the current list position and new LOs
- */
+/* find all connections between LO at the current list position and new LOs */
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_bool done;
@@ -516,10 +507,8 @@ static pcb_r_dir_t ps_rat_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-/* ---------------------------------------------------------------------------
- * searches for new PVs and padstacks that are connected to NEW LOs on the list
- * This routine updates the position counter of the lists too.
- */
+/* searches for new PVs and padstacks that are connected to NEW LOs on the list
+ * This routine updates the position counter of the lists too. */
 static pcb_bool LookupPSConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_layer_id_t layer;
@@ -655,13 +644,11 @@ static pcb_r_dir_t LOCtoArcRat_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-/* ---------------------------------------------------------------------------
- * searches all LOs that are connected to the given arc on the given
+/* searches all LOs that are connected to the given arc on the given
  * layergroup. All found connections are added to the list
  *
  * the notation that is used is:
- * Xij means Xj at arc i
- */
+ * Xij means Xj at arc i */
 static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
@@ -761,13 +748,11 @@ static pcb_r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-/* ---------------------------------------------------------------------------
- * searches all LOs that are connected to the given line on the given
+/* searches all LOs that are connected to the given line on the given
  * layergroup. All found connections are added to the list
  *
  * the notation that is used is:
- * Xij means Xj at line i
- */
+ * Xij means Xj at line i */
 static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup, pcb_bool PolysTo)
 {
 	pcb_cardinal_t entry;
@@ -859,13 +844,11 @@ static pcb_r_dir_t LOCtoRatPoly_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-/* ---------------------------------------------------------------------------
- * searches all LOs that are connected to the given rat-line on the given
+/* searches all LOs that are connected to the given rat-line on the given
  * layergroup. All found connections are added to the list
  *
  * the notation that is used is:
- * Xij means Xj at line i
- */
+ * Xij means Xj at line i */
 static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
@@ -935,10 +918,8 @@ static pcb_r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 }
 
 
-/* ---------------------------------------------------------------------------
- * looks up LOs that are connected to the given polygon
- * on the given layergroup. All found connections are added to the list
- */
+/* looks up LOs that are connected to the given polygon
+ * on the given layergroup. All found connections are added to the list */
 static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *Polygon, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;

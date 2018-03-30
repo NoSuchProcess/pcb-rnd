@@ -1663,12 +1663,10 @@ static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		pcb_grid_set(PCB, &dst);
 		pcb_grid_free(&dst);
 	}
-	else if ((strcmp(argv[0], "up") == 0) || (strcmp(argv[0], "+") == 0)) {
-		
-	}
-	else if ((strcmp(argv[0], "down") == 0) || (strcmp(argv[0], "-") == 0)) {
-		
-	}
+	else if ((strcmp(argv[0], "up") == 0) || (strcmp(argv[0], "+") == 0))
+		pcb_grid_list_step(+1);
+	else if ((strcmp(argv[0], "down") == 0) || (strcmp(argv[0], "-") == 0))
+		pcb_grid_list_step(-1);
 	else
 		PCB_ACT_FAIL(grid);
 

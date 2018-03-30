@@ -68,9 +68,6 @@
 
 #include "tool.h"
 
-
-/* --------------------------------------------------------------------------- */
-
 /* %start-doc actions 00delta
 
 Many actions take a @code{delta} parameter as the last parameter,

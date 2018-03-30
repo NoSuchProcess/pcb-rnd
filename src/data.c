@@ -46,9 +46,6 @@
 #include "obj_pstk.h"
 #include "obj_subc.h"
 
-/* ---------------------------------------------------------------------------
- * some shared identifiers
- */
 int pcb_layer_stack[PCB_MAX_LAYER];			/* determines the layer draw order */
 
 pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER]; /* my buffers */
@@ -151,9 +148,6 @@ void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_loop_pstk(pcb, ctx, pscb);
 }
 
-/* ---------------------------------------------------------------------------
- * free memory used by data struct
- */
 void pcb_data_free(pcb_data_t * data)
 {
 	pcb_layer_t *layer;
@@ -191,9 +185,6 @@ void pcb_data_free(pcb_data_t * data)
 	memset(data, 0, sizeof(pcb_data_t));
 }
 
-/* ---------------------------------------------------------------------------
- * returns pcb_true if data area is empty
- */
 pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 {
 	pcb_cardinal_t i;

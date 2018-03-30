@@ -98,9 +98,6 @@ long int ID = 1;
 
 pcb_bool pcb_create_being_lenient = pcb_false;
 
-/* ---------------------------------------------------------------------------
- *  Set the lenience mode.
- */
 void pcb_create_be_lenient(pcb_bool v)
 {
 	pcb_create_being_lenient = v;
