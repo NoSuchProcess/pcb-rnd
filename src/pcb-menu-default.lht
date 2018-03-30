@@ -107,6 +107,8 @@ ha:{
 				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};};  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
 				ha:Paste buffer to layout       = { li:a={{<key>e; <Key>v}; a=Ctrl<Key>v;};   action=Mode(PasteBuffer) }
 				-
+				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
+				-
 				ha:Edit name of {
 					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 					li:submenu {
@@ -263,7 +265,8 @@ ha:{
 				ha:Routing {
 					m=R
 					li:submenu {
-						ha:'All-direction' lines            = { li:a={{<key>m; <key>l; <key>a}; {<key>.};}; checked=editor/alldirection_lines; action=conf(toggle, editor/all_direction_lines, design) }
+						ha:'All-direction' lines            = { li:a={{<key>m; <key>l; <key>a}; {<char>.};}; checked=editor/alldirection_lines; action=conf(toggle, editor/all_direction_lines, design) }
+						ha:Cycle line clip/refraction       = { li:a={{<key>m; <key>l; <key>f}; {<char>/};}; action=Display(CycleClip) }
 						ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
 						ha:Auto enforce DRC clearance       = { a={<key>m; <key>l; <key>d}; checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
 						ha:Rubber band mode                 = { a={<key>m; <key>r; <key>r}; checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
@@ -396,11 +399,22 @@ ha:{
 		ha:Connects = {
 			m=C
 			li:submenu {
-				ha:Optimize rats nest                        = { a={<key>c;<key>r;}; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
-				ha:Erase rats nest                           = { a={<key>c;<key>e;}; action=DeleteRats(AllRats) }
+				ha:Rats nest {
+					li:submenu {
+						ha:Optimize rats nest                    = { a={<key>c;<key>r;}; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
+						ha:Erase rats nest                       = { a={<key>c;<key>e;}; action=DeleteRats(AllRats) }
+						-
+						ha:Select shortest rat                   = { a={<key>c;<key>s;}; action=AddRats(Close) }
+						ha:AddRats to selected pins              = { li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
+						ha:AddRats Selected                      = { action=AddRats(SelectedRats) }
+						ha:Add All Rats                          = { action=AddRats(AllRats) }
+					}
+				}
 				-
 				ha:Find Connections                          = { a={<key>c;<key>f;}; li:action={Connection(Reset); Connection(Find)} }
 				ha:Clear/reset lookup                        = { a={<key>c;<key>c;}; li:action={Connection(Reset); Display(Redraw)} }
+				-
+				ha:Del/Remove Connected                      = { a={<key>c;<key>d;}; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
 				-
 				ha:Subcircuit Placement {
 					li:submenu {
@@ -474,17 +488,8 @@ ha:{
 				ha:Key Bindings {
 					li:submenu {
 						ha:Cycle object being dragged   = { action=CycleDrag() }
-						ha:Cycle line clip/refraction   = { a=<char>/; action=Display(CycleClip) }
 						ha:MarkCrosshair                = { action=MarkCrosshair() }
 
-						ha:Change object {
-							li:submenu {
-								ha:Remove                       = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
-								ha:Remove Selected              = { action=RemoveSelected() }
-								ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
-								ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
-							}
-						}
 						ha:Change object {
 							li:submenu {
 								ha:Set Same                     = { action=SetSame() }
@@ -514,14 +519,6 @@ ha:{
 								ha:Via Tool drill -5 mil        = { action=SetValue(ViaDrillingHole,-5,mil) }
 								ha:Route radius +0.5            = { action=conf(delta, editor/route_radius, +0.5, design); }
 								ha:Route radius -0.5            = { action=conf(delta, editor/route_radius, -0.5, design); }
-							}
-						}
-						ha:Rats {
-							li:submenu {
-								ha:Select shortest rat          = { action=AddRats(Close) }
-								ha:AddRats to selected pins     = { li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
-								ha:AddRats Selected             = { action=AddRats(SelectedRats) }
-								ha:Add All Rats                 = { action=AddRats(AllRats) }
 							}
 						}
 						ha:Step Cursor {
@@ -582,7 +579,6 @@ ha:{
 								ha:Toggle Layer 20          = { a=Ctrl-Alt<Key>0; action=ToggleView(20) }
 							}
 						} # layer keys
-
 					}
 				}
 				ha:About...       = { li:a={{<Key>w;<Key>a}; {<key>i;<key>a};}; action=About() }
