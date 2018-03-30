@@ -109,7 +109,7 @@ ha:{
 				-
 				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Change object {
-					li_submenu {
+					li:submenu {
 						ha:Set Same as style        = { a={<key>e; <key>s}; action=SetSame() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
 						ha:Move Object to current layer = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
