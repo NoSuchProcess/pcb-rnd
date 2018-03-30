@@ -163,7 +163,6 @@ void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src)
 		pcb_board_set_grid(src->size, pcb_true, src->ox, src->oy);
 	else
 		pcb_board_set_grid(src->size, pcb_false, 0, 0);
-	if (src->unit != NULL) {
-#warning TODO
-	}
+	if (src->unit != NULL)
+		pcb_board_set_unit(pcb, src->unit);
 }
