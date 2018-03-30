@@ -68,17 +68,6 @@ const int conf_default_prio[] = {
 
 extern const char *conf_internal;
 
-/*static lht_doc_t *conf_plugin;*/
-
-static int conf_ignore_old_paths(const char *path)
-{
-	static const char *ignores[] = { "editor/show_mask", "editor/show_paste", NULL };
-	const char **i;
-	for(i = ignores; *i != NULL; i++)
-		if (strcmp(path, *i) == 0)
-			return 1;
-	return 0;
-}
 
 static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
 {
@@ -583,18 +572,49 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 
 int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix);
 
+typedef struct conf_ignore_s {
+	const char *name;
+	int len;
+	int warned;
+} conf_ignore_t;
+
+static conf_ignore_t conf_ignores[] = {
+	/* it is normal to have configuration for plugins and utils not loaded - ignore these */
+	{"plugins/", 8, 1},
+	{"utils/", 6, 1},
+
+	/* old config paths - warn once and move on */
+	{"editor/show_mask", 16, 0},
+	{"editor/show_paste", 17, 0},
+	{"editor/increments", 17, 0},
+	{NULL, 0, 0}
+};
+
+static int conf_warn_unknown_paths(const char *path, lht_node_t *n)
+{
+	conf_ignore_t *i;
+
+	for(i = conf_ignores; i->name != NULL; i++) {
+		if (strncmp(path, i->name, i->len) == 0) {
+			if (i->warned)
+				return; /* do not warn again */
+			i->warned = 1;
+			break;
+		}
+	}
+	pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s'\n(it may be an obsolete setting, check your lht)\n", path);
+}
+
 int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, conf_policy_t default_policy)
 {
 	conf_native_t *target = conf_get_field(path);
 	int res = 0;
 	switch(n->type) {
 		case LHT_TEXT:
-			if (target == NULL) {
-				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0) && !conf_ignore_old_paths(path)) /* it is normal to have configuration for plugins and utils not loaded - ignore these */
-					pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
-				break;
-			}
-			conf_merge_patch_text(target, n, default_prio, default_policy);
+			if (target == NULL)
+				conf_warn_unknown_paths(path, n);
+			else
+				conf_merge_patch_text(target, n, default_prio, default_policy);
 			break;
 		case LHT_HASH:
 			if (target == NULL) /* no leaf: another level of structs */
@@ -603,10 +623,8 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 				conf_merge_patch_text(target, n, default_prio, default_policy);
 			break;
 		case LHT_LIST:
-			if (target == NULL) {
-				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0))/* it is normal to have configuration for plugins and utils not loaded - ignore these */
-					pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
-			}
+			if (target == NULL)
+				conf_warn_unknown_paths(path, n);
 			else if (target->type == CFN_LIST)
 				res |= conf_merge_patch_list(target, n, default_prio, default_policy);
 			else if (target->array_size > 1)
