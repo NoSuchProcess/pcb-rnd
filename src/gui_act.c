@@ -1640,10 +1640,7 @@ static int pcb_act_SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 
 	new_unit = get_unit_struct(argv[0]);
-	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
-		conf_set(CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, POL_OVERWRITE);
-		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
-	}
+	pcb_board_set_unit(PCB, new_unit);
 
 	return 0;
 }

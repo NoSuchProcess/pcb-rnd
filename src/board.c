@@ -277,6 +277,14 @@ void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_co
 	}
 }
 
+void pcb_board_set_unit(pcb_board_t *pcb, const pcb_unit_t *new_unit)
+{
+	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
+		conf_set(CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, POL_OVERWRITE);
+		pcb_attrib_put(pcb, "PCB::grid::unit", new_unit->suffix);
+	}
+}
+
 /* sets a new line thickness */
 void pcb_board_set_line_width(pcb_coord_t Size)
 {
