@@ -303,8 +303,8 @@ ha:{
 						ha:Rubber band mode                 = { a={<key>m; <key>r; <key>r}; checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 						ha:Rubber band keeps middle line dir= { a={<key>m; <key>r; <key>m}; checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
 						-
-						ha:Route radius +0.5                = { li:a={{<key>r; <key>r; <char>+}; {<key>r; <key>r; <char>p};}; action=conf(delta, editor/route_radius, +0.5, design); }
-						ha:Route radius -0.5                = { li:a={{<key>r; <key>r; <char>-}; {<key>r; <key>r; <char>m};}; action=conf(delta, editor/route_radius, -0.5, design); }
+						ha:Route radius +0.5                = { li:a={{<key>r; <key>r; <char>+}; {<key>r; <key>r; <key>p};}; action=conf(delta, editor/route_radius, +0.5, design); }
+						ha:Route radius -0.5                = { li:a={{<key>r; <key>r; <char>-}; {<key>r; <key>r; <key>m};}; action=conf(delta, editor/route_radius, -0.5, design); }
 						-
 						ha:New lines, arcs clear polygons   = { a={<key>m; <key>l; <key>c}; checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
 						ha:New polygons are full ones       = { a={<key>m; <key>p; <key>f}; checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
