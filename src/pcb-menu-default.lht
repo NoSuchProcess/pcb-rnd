@@ -110,7 +110,7 @@ ha:{
 				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Change object {
 					li:submenu {
-						ha:Set Same as style        = { a={<key>e; <key>s}; action=SetSame() }
+						ha:Set Same Style           = { a={<key>e; <key>s}; action=SetSame() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
 						ha:Move Object to current layer = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
 					}
@@ -596,7 +596,7 @@ ha:{
 		ha:popup-obj-line {
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
-				ha:Set Same as style      { action=SetSame() }
+				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove line            { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
@@ -607,7 +607,7 @@ ha:{
 		ha:popup-obj-arc {
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
-				ha:Set Same as style      { action=SetSame() }
+				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove arc             { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
@@ -629,7 +629,7 @@ ha:{
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
 				ha:Edit text              { action=ChangeName(Object) }
-				ha:Set Same as style      { action=SetSame() }
+				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove text            { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
@@ -641,7 +641,7 @@ ha:{
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
 				ha:Edit geometry/prototype {action=padstackedit }
-				ha:Set Same as style      { action=SetSame() }
+				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove padstack        { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
