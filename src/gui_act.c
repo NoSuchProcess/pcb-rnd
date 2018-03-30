@@ -1615,6 +1615,39 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return 1;
 }
 
+
+static const char pcb_acts_setunits[] = "SetUnits(mm|mil)";
+static const char pcb_acth_setunits[] = "Set the default measurement units.";
+
+/* %start-doc actions SetUnits
+
+@table @code
+
+@item mil
+Sets the display units to mils (1/1000 inch).
+
+@item mm
+Sets the display units to millimeters.
+
+@end table
+
+%end-doc */
+
+static int pcb_act_SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const pcb_unit_t *new_unit;
+	if (argc == 0)
+		return 0;
+
+	new_unit = get_unit_struct(argv[0]);
+	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
+		conf_set(CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, POL_OVERWRITE);
+		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
+	}
+
+	return 0;
+}
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
 	 pcb_acth_Display, pcb_acts_Display}
@@ -1677,6 +1710,8 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"EditGroup", 0, pcb_act_EditGroup,
 	 pcb_acth_EditGroup, pcb_acts_EditGroup}
+	,
+	{"SetUnits", 0, pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

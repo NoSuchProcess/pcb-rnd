@@ -388,40 +388,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-
-static const char setunits_syntax[] = "SetUnits(mm|mil)";
-
-static const char setunits_help[] = "Set the default measurement units.";
-
-/* %start-doc actions SetUnits
-
-@table @code
-
-@item mil
-Sets the display units to mils (1/1000 inch).
-
-@item mm
-Sets the display units to millimeters.
-
-@end table
-
-%end-doc */
-
-static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const pcb_unit_t *new_unit;
-	if (argc == 0)
-		return 0;
-	new_unit = get_unit_struct(argv[0]);
-	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
-		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
-		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
-	}
-	lesstif_sizes_reset();
-	lesstif_styles_update_values();
-	return 0;
-}
-
 static const char zoom_syntax[] = "Zoom()\n" "Zoom(factor)";
 
 static const char zoom_help[] = "Various zoom factor changes.";
@@ -803,9 +769,6 @@ static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t lesstif_main_action_list[] = {
-	{"SetUnits", 0, SetUnits,
-	 setunits_help, setunits_syntax}
-	,
 	{"Zoom", "Click on a place to zoom in", ZoomAction,
 	 zoom_help, zoom_syntax}
 	,
@@ -3724,6 +3687,34 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 		lesstif_invalidate_all();
 }
 
+static conf_hid_id_t lesstif_conf_id;
+void lesstif_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
+{
+	/* test if PCB struct doesn't exist at startup */
+	if ((PCB == NULL) || (!lesstif_active))
+		return;
+
+	lesstif_sizes_reset();
+	lesstif_styles_update_values();
+}
+
+static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
+{
+	conf_native_t *n = conf_get_field(path);
+	if (n != NULL) {
+		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
+		cbs->val_change_post = func;
+		conf_hid_set_cb(n, lesstif_conf_id, cbs);
+	}
+}
+
+static void lesstif_conf_regs(const char *cookie)
+{
+	static conf_hid_callbacks_t cbs_grid_unit;
+	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", lesstif_confchg_grid_unit);
+}
+
+
 void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 void lesstif_remove_menu(const char *menu);
 
@@ -3826,7 +3817,8 @@ int pplg_init_hid_lesstif(void)
 	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 
 	pcb_hid_register_hid(&lesstif_hid);
-	conf_hid_reg(lesstif_cookie, &ccb);
+	lesstif_conf_id = conf_hid_reg(lesstif_cookie, &ccb);
+	lesstif_conf_regs(lesstif_cookie);
 
 	return 0;
 }
@@ -3848,6 +3840,7 @@ static void lesstif_begin(void)
 	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
+
 	lesstif_active = 1;
 }
 

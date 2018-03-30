@@ -259,48 +259,6 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* ------------------------------------------------------------ */
-static const char setunits_syntax[] = "SetUnits(mm|mil)";
-
-static const char setunits_help[] = N_("Set the default measurement units.");
-
-/* %start-doc actions SetUnits
-
-@table @code
-
-@item mil
-Sets the display units to mils (1/1000 inch).
-
-@item mm
-Sets the display units to millimeters.
-
-@end table
-
-%end-doc */
-
-static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const pcb_unit_t *new_unit;
-	if (argc == 0)
-		return 0;
-
-	new_unit = get_unit_struct(argv[0]);
-	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
-		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
-		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
-	}
-
-	ghid_handle_units_changed(&ghidgui->topwin);
-
-	ghidgui->common.set_status_line_label();
-
-	/* FIXME ?
-	 * lesstif_sizes_reset ();
-	 * lesstif_styles_update_values ();
-	 */
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 static const char popup_syntax[] = "Popup(MenuName, [Button])";
 
 static const char popup_help[] =
@@ -555,8 +513,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
 	,
 	{"Scroll", N_("Click on a place to scroll"), ScrollAction, pcb_acth_scroll, pcb_acts_scroll}
-	,
-	{"SetUnits", 0, SetUnits, setunits_help, setunits_syntax}
 	,
 	{"SwapSides", 0, SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
 	,

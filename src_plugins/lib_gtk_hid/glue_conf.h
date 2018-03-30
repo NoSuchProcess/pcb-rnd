@@ -6,5 +6,6 @@ void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx);
 void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx);
 void ghid_confchg_flip(conf_native_t *cfg, int arr_idx);
 void ghid_confchg_grid(conf_native_t *cfg, int arr_idx);
+void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx);
 
 void ghid_conf_regs(const char *cookie);
