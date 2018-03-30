@@ -67,7 +67,7 @@ ha:{
 						ha:a single element                  = {                  li:action={ Save(ElementConnections) } }
 						ha:all elements                      = {                  action=Save(AllConnections) }
 						ha:unused pins                       = {                  action=Save(AllUnusedPins) }
-						ha:netlist patch for back annotation = {a={<key>f;<key>x;<key>p}; action=SavePatch() }
+						ha:netlist patch for back annotation = {li:a={{<key>f;<key>x;<key>p}; {<key>a;<key>b;<key>x};}; action=SavePatch() }
 					}
 				}
 				ha:Print layout...      = { a={<key>f;<key>p}; action=Print()}
@@ -374,39 +374,38 @@ ha:{
 		ha:Connects = {
 			m=C
 			li:submenu {
-				ha:Optimize rats nest            = { a=<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
-				ha:Erase rats nest               = { action=DeleteRats(AllRats) }
+				ha:Optimize rats nest                        = { a={<key>c;<key>r;}; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
+				ha:Erase rats nest                           = { a={<key>c;<key>e;}; action=DeleteRats(AllRats) }
 				-
-				ha:Lookup connection to object               = { a=Ctrl<Key>f; li:action={GetXY(Click on the object); Connection(Find)} }
-				ha:Reset lookup                              = { a=Shift<Key>f; li:action={Connection(Reset); Display(Redraw)} }
+				ha:Find Connections                          = { a={<key>c;<key>f;}; li:action={Connection(Reset); Connection(Find)} }
+				ha:Clear/reset lookup                        = { a={<key>c;<key>c;}; li:action={Connection(Reset); Display(Redraw)} }
 				-
 				ha:Subcircuit Placement {
 					li:submenu {
-						ha:Auto-place selected subcircuits       = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
-						ha:Disperse all subcircuits              = { action=DisperseElements(All) }
-						ha:Disperse selected subcircuits         = { action=DisperseElements(Selected) }
+						ha:Auto-place selected subcircuits       = { a={<key>a;<key>p;<key>s;}; action=AutoPlaceSelected() }
+						ha:Disperse all subcircuits              = { a={<key>a;<key>d;<key>a;}; action=DisperseElements(All) }
+						ha:Disperse selected subcircuits         = { a={<key>a;<key>d;<key>s;}; action=DisperseElements(Selected) }
 					}
 				}
 				ha:Automatic Routing {
 					li:submenu {
-						ha:Auto-route selected rats              = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
-						ha:Rip up selected auto-routed tracks    = { action=RipUp(Selected) }
-						ha:Auto-route selected rats      = { action=AutoRoute(Selected) }
-						ha:Auto-route all rats           = { action=AutoRoute(AllRats) }
-						ha:Rip up all auto-routed tracks = { action=RipUp(All) }
+						ha:Auto-route selected rats              = { a={<key>a;<key>r;<key>s;}; action=AutoRoute(SelectedRats) }
+						ha:Auto-route all rats                   = { a={<key>a;<key>r;<key>a;}; action=AutoRoute(AllRats) }
+						ha:Rip up selected auto-routed tracks    = { a={<key>a;<key>r;<key>t;}; action=RipUp(Selected) }
+						ha:Rip up all auto-routed tracks         = { a={<key>a;<key>r;<key>r;}; action=RipUp(All) }
 					}
 				}
 				ha:Optimize routed tracks {
 					li:submenu {
-						ha:Auto-Optimize        = { a={Ctrl<Char>=}; action=djopt(auto) }
-						ha:Debumpify            = { action=djopt(debumpify) }
-						ha:Unjaggy              = { action=djopt(unjaggy) }
-						ha:Vianudge             = { action=djopt(vianudge) }
-						ha:Viatrim              = { action=djopt(viatrim) }
-						ha:Ortho pull           = { action=djopt(orthopull) }
-						ha:Simple optimization  = { a={<char>=}; action=djopt(simple) }
-						ha:Miter                = { action=djopt(miter) }
-						ha:Puller               = { a=<Key>y; action=Puller() }
+						ha:Auto-Optimize        = { a={<key>a;<key>o;<key>a;}; action=djopt(auto) }
+						ha:Debumpify            = { a={<key>a;<key>o;<key>d;}; action=djopt(debumpify) }
+						ha:Unjaggy              = { a={<key>a;<key>o;<key>u;}; action=djopt(unjaggy) }
+						ha:Vianudge             = { a={<key>a;<key>o;<key>n;}; action=djopt(vianudge) }
+						ha:Viatrim              = { a={<key>a;<key>o;<key>t;}; action=djopt(viatrim) }
+						ha:Ortho pull           = { a={<key>a;<key>o;<key>o;}; action=djopt(orthopull) }
+						ha:Simple optimization  = { a={<key>a;<key>o;<key>s;}; action=djopt(simple) }
+						ha:Miter                = { a={<key>a;<key>o;<key>m;}; action=djopt(miter) }
+						ha:Puller               = { a={<key>a;<key>o;<key>p;}; action=Puller() }
 						ha:Global Puller {
 							li:submenu {
 								ha:Selected  = { action=GlobalPuller(selected) }
@@ -419,14 +418,14 @@ ha:{
 					}
 				}
 				-
-				ha:Design Rule Checker = { action=DRC() }
+				ha:Design Rule Checker = { a={<key>a;<key>c;}; action=DRC() }
 				-
-				ha:Apply vendor drill mapping = { action=ApplyVendor() }
+				ha:Apply vendor drill mapping = { a={<key>a;<key>v;}; action=ApplyVendor() }
 				-
 				ha:Design changes (back annotation) {
 					li:submenu {
-						ha:Swap nets on two selected pins  = { a=Shift<Key>x; action=net(swap) }
-						ha:Replace footprint               = { a=Alt Shift<Key>f; action=ReplaceFootprint() }
+						ha:Swap nets on two selected pins  = { a={<key>a;<key>b;<key>s;}; action=net(swap) }
+						ha:Replace footprint               = { a={<key>a;<key>b;<key>f;}; action=ReplaceFootprint() }
 					}
 				}
 			}
@@ -468,7 +467,6 @@ ha:{
 							li:submenu {
 								ha:Set Same                     = { action=SetSame() }
 								ha:Flip Object                  = { action=Flip(Object) }
-								ha:Find Connections             = { li:action={Connection(Reset); Connection(Find)} }
 								ha:ChangeHole Object            = { action=ChangeHole(Object) }
 								ha:ChangeJoin Object            = { action=ChangeJoin(Object) }
 								ha:ChangeJoin SelectedObject    = { action=ChangeJoin(SelectedObjects) }
