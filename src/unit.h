@@ -96,30 +96,8 @@ struct pcb_unit_s {
 	const char *alias[1];
 };
 
-struct pcb_increments_s {
-	const char *suffix;
-	/* key g and <shift>g value  */
-	pcb_coord_t grid;
-	pcb_coord_t grid_min;
-	pcb_coord_t grid_max;
-	/* key s and <shift>s value  */
-	pcb_coord_t size;
-	pcb_coord_t size_min;
-	pcb_coord_t size_max;
-	/* key l and <shift>l value  */
-	pcb_coord_t line;
-	pcb_coord_t line_min;
-	pcb_coord_t line_max;
-	/* key k and <shift>k value  */
-	pcb_coord_t clear;
-	pcb_coord_t clear_min;
-	pcb_coord_t clear_max;
-};
-
 typedef struct pcb_unit_s pcb_unit_t;
-typedef struct pcb_increments_s pcb_increments_t;
 extern pcb_unit_t pcb_units[];
-extern pcb_increments_t pcb_increments[];
 
 /* Look up a given suffix in the units array. Pluralized units are supported.
    The _ version allows strict (full name match) lookup if strict iz non-zero. */
