@@ -1,6 +1,6 @@
 #!/bin/sh
-#   keylist - list hotkey->actions found in .lht files in a html table, per HID
-#   Copyright (C) 2015..2016 Tibor 'Igor2' Palinkas
+#   keylist - list hotkey->actions found in .lht files in a html table
+#   Copyright (C) 2015..2016, 2018 Tibor 'Igor2' Palinkas
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -42,7 +42,16 @@ then
 	echo ""
 	exit
 else
-	res_files="$@"
+	cmd="html"
+	while test $# -gt 0
+	do
+		case "$1" in
+			--html) cmd="html";;
+			--dot) cmd="dot"; nodenames=$2; shift 1;;
+			*) res_files="$res_files $1" ;;
+		esac
+		shift 1
+	done
 fi
 
 extract_from_lht()
@@ -242,8 +251,23 @@ gen_html()
 	'
 }
 
-for n in $res_files 
-do
-	extract_from_lht "`basename $n`" < $n
-done | sort | gen_html
+gen_list()
+{
+	local n
+	for n in $res_files 
+	do
+		extract_from_lht "`basename $n`" < $n
+	done | sort
+}
+
+# load node names and generate a dot drawing of the multikey bindings
+gen_dot()
+{
+	echo TODO
+}
+
+case "$cmd" in
+	html) gen_list | gen_html ;;
+	dot) gen_list | gen_dot ;;
+esac
 
