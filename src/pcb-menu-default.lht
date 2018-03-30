@@ -231,10 +231,10 @@ ha:{
 				-
 				ha:Displayed subcircuit ID {
 					li:submenu {
-						ha:refdes                 = { checked=ChkSubcID(); action=Display(SubcID); update_on={editor/name_on_pcb} }
-						ha:footprint              = { checked=ChkSubcID(%a.footprint%); action=Display(SubcID,"%a.footprint%"); update_on={editor/subc_id} }
-						ha:value                  = { checked=ChkSubcID(%a.value%); action=Display(SubcID,"%a.value%"); update_on={editor/subc_id} }
-						ha:refdes+value           = { checked=ChkSubcID(%a.refdes%\\n%a.value%); action=Display(SubcID,"%a.refdes%\\\\n%a.value%"); update_on={editor/subc_id} }
+						ha:refdes                 = { a={<key>v; <key>s; <key>r}; checked=ChkSubcID(); action=Display(SubcID); update_on={editor/name_on_pcb} }
+						ha:footprint              = { a={<key>v; <key>s; <key>f}; checked=ChkSubcID(%a.footprint%); action=Display(SubcID,"%a.footprint%"); update_on={editor/subc_id} }
+						ha:value                  = { a={<key>v; <key>s; <key>v}; checked=ChkSubcID(%a.value%); action=Display(SubcID,"%a.value%"); update_on={editor/subc_id} }
+						ha:refdes+value           = { a={<key>v; <key>s; <key>s}; checked=ChkSubcID(%a.refdes%\\n%a.value%); action=Display(SubcID,"%a.refdes%\\\\n%a.value%"); update_on={editor/subc_id} }
 					}
 				}
 				ha:Zoom and side {
