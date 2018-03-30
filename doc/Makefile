@@ -5,7 +5,6 @@ ROOT=..
 
 all: keys.html user/05_ui/06_common/keytree.svg
 	ROOT="" ./Autostyle.sh *.html
-	ROOT="../" ./Autostyle.sh features/*.html
 
 include ../Makefile.conf
 
