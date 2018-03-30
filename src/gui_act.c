@@ -398,7 +398,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				PCB->Grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					pcb_notify_crosshair_change(pcb_true);	/* first notify was in MoveCrosshairAbs */
-				pcb_board_set_grid(oldGrid, pcb_true);
+				pcb_board_set_grid(oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
 			}
 			break;
 

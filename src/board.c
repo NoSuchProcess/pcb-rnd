@@ -263,12 +263,12 @@ void pcb_board_remove(pcb_board_t *Ptr)
 }
 
 /* sets cursor grid with respect to grid offset values */
-void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
+void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_coord_t oy)
 {
 	if (Grid >= 1 && Grid <= PCB_MAX_GRID) {
 		if (align) {
-			PCB->GridOffsetX = pcb_crosshair.X % Grid;
-			PCB->GridOffsetY = pcb_crosshair.Y % Grid;
+			PCB->GridOffsetX = ox % Grid;
+			PCB->GridOffsetY = oy % Grid;
 		}
 		PCB->Grid = Grid;
 		conf_set_design("editor/grid", "%$mS", Grid);

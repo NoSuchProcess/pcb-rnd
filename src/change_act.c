@@ -900,16 +900,16 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		case F_Grid:
 			if (absolute)
-				pcb_board_set_grid(value, pcb_false);
+				pcb_board_set_grid(value, pcb_false, 0, 0);
 			else {
 				/* On the way down, short against the minimum
 				 * PCB drawing unit */
 				if ((value + PCB->Grid) < 1)
-					pcb_board_set_grid(1, pcb_false);
+					pcb_board_set_grid(1, pcb_false, 0, 0);
 				else if (PCB->Grid == 1)
-					pcb_board_set_grid(value, pcb_false);
+					pcb_board_set_grid(value, pcb_false, 0, 0);
 				else
-					pcb_board_set_grid(value + PCB->Grid, pcb_false);
+					pcb_board_set_grid(value + PCB->Grid, pcb_false, 0, 0);
 			}
 			break;
 

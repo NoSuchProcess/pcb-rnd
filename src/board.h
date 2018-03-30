@@ -150,7 +150,7 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height);
 void pcb_board_remove(pcb_board_t *Ptr);
 
 /* sets cursor grid with respect to grid offset values */
-void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align);
+void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_coord_t oy);
 
 /* sets a new line thickness */
 void pcb_board_set_line_width(pcb_coord_t Size);
