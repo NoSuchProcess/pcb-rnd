@@ -112,6 +112,7 @@ ha:{
 					li_submenu {
 						ha:Set Same as style        = { a={<key>e; <key>s}; action=SetSame() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
+						ha:Move Object to current layer = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
 					}
 				}
 				-
@@ -507,7 +508,6 @@ ha:{
 								ha:Clear Selected -2 mil        = { action=ChangeClearSize(SelectedObjects,-2,mil) }
 								ha:Line Tool size +5 mil        = { action=SetValue(LineSize,+5,mil) }
 								ha:Line Tool size -5 mil        = { action=SetValue(LineSize,-5,mil) }
-								ha:Move Object to current layer = { action=MoveToCurrentLayer(Object) }
 								ha:Polygon PreviousPoint        = { action=Polygon(PreviousPoint) }
 								ha:Polygon Close                = { action=Polygon(Close) }
 								ha:ChangeSizes to Route style   = { action=ChangeSizes(Object,style,mil) }
