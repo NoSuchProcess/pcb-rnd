@@ -7,6 +7,7 @@ li:pcb-rnd-conf-v1 {
 				{0.1 mil}; {1 mil}; {5 mil}; {10 mil}; {25 mil}; {50 mil}; {100 mil};
 				{0.01 mm}; {0.05 mm}; {0.1 mm}; {0.25 mm}; {0.5 mm}; {1 mm};
 			}
+			grids_idx = 4
 			zoom = 1
 			mode = 1
 			buffer_number = 0

@@ -19,6 +19,7 @@ typedef struct {
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
 		CFT_LIST grids;                    /* grid in grid-string format */
+		CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
 		CFT_REAL zoom;                     /* default zoom */
 		CFT_INTEGER mode;                  /* currently active mode */
 		CFT_INTEGER buffer_number;         /* number of the current buffer */
