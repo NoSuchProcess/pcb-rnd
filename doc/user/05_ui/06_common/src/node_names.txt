@@ -1,0 +1,14 @@
+/e         edit
+/f         file
+/f/e       export
+/f/c       configuration
+/i         info
+/m         mode
+/m/c       cursor/crosshair mode
+/m/d       drawing (render) mode
+/m/f       floater mode
+/m/l       line drawing (routing) mode
+/m/p       polygon drawing mode
+/m/r       rubber band mode
+/t         tool
+/u         undo
