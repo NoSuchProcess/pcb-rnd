@@ -166,3 +166,9 @@ void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src)
 	if (src->unit != NULL)
 		pcb_board_set_unit(pcb, src->unit);
 }
+
+void pcb_grid_free(pcb_grid_t *dst)
+{
+	free(dst->name);
+	dst->name = NULL;
+}

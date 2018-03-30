@@ -53,6 +53,9 @@ pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t gr
 /* Parse packed string format src into dst; allocat dst->name on success */
 pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src);
 
+/* Free all allocated fields of a grid struct */
+void pcb_grid_free(pcb_grid_t *dst);
+
 /* Convert src into packed string format */
 pcb_bool_t pcb_grid_append_print(gds_t *dst, const pcb_grid_t *src);
 char *pcb_grid_print(const pcb_grid_t *src);
