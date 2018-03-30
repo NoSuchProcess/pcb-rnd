@@ -10,5 +10,9 @@
 /m/l       line drawing (routing) mode
 /m/p       polygon drawing mode
 /m/r       rubber band mode
+/s         select
+/s/a       select all...
+/s/u       unselect all...
+/s/c       convert selected
 /t         tool
 /u         undo
