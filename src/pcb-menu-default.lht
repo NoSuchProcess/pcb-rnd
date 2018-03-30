@@ -37,7 +37,7 @@ ha:{
 				ha:Start New Layout                  = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
 				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-
-				ha:Load layout                       = { a={<key>f;<key>o};          action=Load(Layout); tip=Load a layout from a file }
+				ha:Load layout                       = { li:a={{<key>f;<key>o};{<key>f;<key>l};}  action=Load(Layout); tip=Load a layout from a file }
 				-
 				ha:Save Layout                       = { m=S; li:a={{<key>f;<key>s}; {Ctrl<Key>s};};        action=Save(Layout); tip=Saves current layout }
 				ha:Save Layout As...                 = { m=A; li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s};};  action=Save(LayoutAs); tip=Saves current layout into a new file }
@@ -67,53 +67,52 @@ ha:{
 						ha:a single element                  = {                  li:action={ Save(ElementConnections) } }
 						ha:all elements                      = {                  action=Save(AllConnections) }
 						ha:unused pins                       = {                  action=Save(AllUnusedPins) }
-						ha:netlist patch for back annotation = {a=Alt Ctrl<Key>b; action=SavePatch() }
+						ha:netlist patch for back annotation = {a={<key>f;<key>x;<key>p}; action=SavePatch() }
 					}
 				}
 				ha:Print layout...      = { a={<key>f;<key>p}; action=Print()}
-				ha:Export layout...     = { a={<key>f;<key>i}; action=ExportGUI()}
+				ha:Export layout...     = { a={<key>f;<key>e}; action=ExportGUI()}
 				ha:Reports {
 					li:submenu {
-						ha:Generate object report  = { a=Ctrl<Key>r; action=ReportObject() }
-						ha:Generate drill summary  = { action=Report(DrillReport) }
-						ha:Report found pins\/pads = { action=Report(FoundPins) }
+						ha:Generate object report  = { a={<key>i;<key>r}; action=ReportObject() }
+						ha:Generate drill summary  = { a={<key>i;<key>d}; action=Report(DrillReport) }
+						ha:Report found pins\/pads = { a={<key>i;<key>f}; action=Report(FoundPins) }
 					}
 				}
 				-
-				ha:Preferences...       = {               action=DoWindows(Preferences)}
+				ha:Preferences...       = { a={<key>i;<key>c;<key>p}; action=DoWindows(Preferences)}
 				ha:Maintenance {
 					li:submenu {
-						ha:Calibrate Printer...           = { action=PrintCalibrate() }
-						ha:Re-scan the footprint library  = { action=fp_rehash() }
+						ha:Calibrate Printer...           = { a={<key>i;<key>c;<key>c}; action=PrintCalibrate() }
+						ha:Re-scan the footprint library  = { a={<key>i;<key>c;<key>r}; action=fp_rehash() }
 						-
-						ha:Edit current font              = { action=FontEdit() }
+						ha:Edit current font              = { a={<key>e;<key>f}; action=FontEdit() }
 						ha:Edit on-disk font              = { action={ LoadFontFrom("", 126); conf(set, design/text_font_id, 126, design); FontEdit() } }
 						ha:Save font from font editor     = { action=FontSave() }
 					}
 				}
 				-
-				ha:Quit Program         = { li:a={{<key>f;<key>c}; {Ctrl<Key>q};}; action=Quit() }
+				ha:Quit Program         = { li:a={{<key>f;<key>q}; {Ctrl<Key>q};}; action=Quit() }
 			}
 		} # File
 
 		ha:Edit {
 			m=E
 			li:submenu {
-				ha:Undo last operation          = { li:a={{<key>e; Shift<Key>u}; {Ctrl<Key>z}; {<Key>u};};        action=Undo() }
-				ha:Redo last undone operation   = { li:a={{<key>e; Shift<Key>r}; {Ctrl<Key>y}; {Shift<Key>r};};   action=Redo() }
-				ha:Clear undo-buffer            = { a=Shift Ctrl<Key>u; action=Undo(ClearList) }
+				ha:Undo last operation          = { li:a={{<key>u; <Key>u}; {Ctrl<Key>z};};   action=Undo() }
+				ha:Redo last undone operation   = { li:a={{<key>u; <Key>r}; {Ctrl<Key>y};};   action=Redo() }
+				ha:Clear undo-buffer            = { a={<key>u; <Key>c}; action=Undo(ClearList) }
 				-
-				ha:Cut selection to buffer      = { a=Ctrl<Key>x;                            li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Mode(PasteBuffer) } }
-				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};}  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
-				ha:Paste buffer to layout       = { a=Ctrl<Key>v;       action=Mode(PasteBuffer) }
+				ha:Cut selection to buffer      = { li:a={{<key>e; <Key>x}; a=Ctrl<Key>x;}; li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Mode(PasteBuffer) } }
+				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};};  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
+				ha:Paste buffer to layout       = { li:a={{<key>e; <Key>v}; a=Ctrl<Key>v;};   action=Mode(PasteBuffer) }
 				-
 				ha:Edit name of {
-					ha:Change font on layout        = { li:a={{<key>e;<key>f};}   action=FontSel(Object) }
+					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 					li:submenu {
-						ha:text on layout             = { li:a={{<key>e;<key>x}; {<Key>n};}; action=ChangeName(Object) }
-						ha:pin on layout              = { a=Shift Ctrl<Key>n;                action=ChangeName(Object, Number) }
-						ha:layout                     = {                                    action=ChangeName(Layout) }
-						ha:active layer               = {                                    action=ChangeName(Layer) }
+						ha:text on layout             = { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
+						ha:layout                     = {                           action=ChangeName(Layout) }
+						ha:active layer               = {                           action=ChangeName(Layer) }
 					}
 				}
 				ha:Edit attributes of {
@@ -131,12 +130,12 @@ ha:{
 				}
 				ha:Subcircuit {
 					li:submenu {
-						ha:Layer bindings...          = { action=LayerBinding() }
-						ha:External editor...         = { li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
+						ha:Layer bindings...          = { a={<key>e; <key>c}; action=LayerBinding() }
+						ha:External editor...         = { a={<key>e; <key>e}; li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
 					}
 				}
-				ha:Object flags...                = { action=FlagEdit() }
-				ha:Object Properties...           = { action=PropEdit() }
+				ha:Object flags...                = { a={<key>e; <key>f}; action=FlagEdit() }
+				ha:Object Properties...           = { a={<key>e; <key>p}; action=PropEdit() }
 			}
 		} # Edit
 
@@ -146,12 +145,12 @@ ha:{
 			ha:Grid {
 				m=G
 				li:submenu {
-					ha:Enable visible grid        = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
-					ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+					ha:Enable visible grid        = { a={<key>v; <key>g}; checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
+					ha:Enable local grid          = { a={<key>v; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 					ha:Grid units {
 						li:submenu {
-							ha:mil                    = { checked=ChkGridUnits(mil); action=SetUnits(mil); update_on={editor/grid_unit} }
-							ha:mm                     = { checked=ChkGridUnits(mm); action=SetUnits(mm); update_on={editor/grid_unit} }
+							ha:mil                    = { a={<key>v; <key>i}; checked=ChkGridUnits(mil); action=SetUnits(mil); update_on={editor/grid_unit} }
+							ha:mm                     = { a={<key>v; <key>m}; checked=ChkGridUnits(mm); action=SetUnits(mm); update_on={editor/grid_unit} }
 						}
 					}
 					ha:Grid size = {
@@ -173,17 +172,17 @@ ha:{
 							ha:0.5 mm                 = { checked=ChkGridSize(0.50mm); li:action={SetUnits(mm); SetValue(Grid,0.5mm)}; update_on={editor/grid} }
 							ha:1 mm                   = { checked=ChkGridSize(1mm); li:action={SetUnits(mm); SetValue(Grid,1mm)}; update_on={editor/grid} }
 							-
-							ha:Grid -5mil             = { li:a={{<key>[};{Shift<Key>g};}; action=SetValue(Grid,-5,mil) }
-							ha:Grid +5mil             = { li:a={{<key>]};{<Key>g};};  action=SetValue(Grid,+5,mil) }
-							ha:Grid -0.05mm           = { a=Shift Ctrl<Key>g; action=SetValue(Grid,-0.05,mm) }
-							ha:Grid +0.05mm           = { a=Ctrl<Key>g; action=SetValue(Grid,+0.05,mm) }
+							ha:Grid -5mil             = { action=SetValue(Grid,-5,mil) }
+							ha:Grid +5mil             = { action=SetValue(Grid,+5,mil) }
+							ha:Grid -0.05mm           = { action=SetValue(Grid,-0.05,mm) }
+							ha:Grid +0.05mm           = { action=SetValue(Grid,+0.05,mm) }
 						}
 					}
 					ha:Grid properties = {
 						li:submenu {
-							ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+							ha:Enable local grid      = { a={<key>v; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 							-
-							ha:local grid radius 4   =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+							ha:local grid radius 4    =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 							ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 							ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 							ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
@@ -194,7 +193,7 @@ ha:{
 							ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
 						}
 					}
-					ha:Realign grid               = { action={ GetXY(Click to set the grid origin); Display(ToggleGrid) } }
+					ha:Realign grid               = { a={<key>v; <key>r}; action={ GetXY(Click to set the grid origin); Display(ToggleGrid) } }
 					}
 				}
 				-
@@ -208,11 +207,11 @@ ha:{
 				}
 				ha:Zoom and side {
 					li:submenu {
-						ha:Zoom In 20%                = { m=Z; a=<Key>z; action=Zoom(-1.2) }
-						ha:Zoom Out 20%               = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
-						ha:Zoom Max               = { li:a={{<key>v;<key>f}; {<key>v;<key>e};}; m=M; action=Zoom() }
-						ha:Zoom In 2X             = { a={<key>v;<key>i}; action=Zoom(-2) }
-						ha:Zoom Out 2X            = { a={<key>v;<key>o}; action=Zoom(+2) }
+						ha:Zoom In 20%            = { m=Z; a=<Key>z; action=Zoom(-1.2) }
+						ha:Zoom Out 20%           = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
+						ha:Zoom Max               = { li:a={{<key>v;<key>f};}; m=M; action=Zoom() }
+						ha:Zoom In 2X             = { action=Zoom(-2) }
+						ha:Zoom Out 2X            = { action=Zoom(+2) }
 						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
 						ha:Zoom to 0.01mm/px      = { action={Zoom(=0.01mm)} }
 						ha:Zoom to 1mil/px        = { action={Zoom(=1mil)} }
@@ -228,7 +227,7 @@ ha:{
 						ha:Spin 180 degrees       = { a=Ctrl<Key>Tab; action=SwapSides(R) }
 						ha:Swap Sides             = { a=Ctrl Shift<Key>Tab; action=SwapSides() }
 						-
-						ha:Center cursor          = { a=<Key>c; action=Center() }
+						ha:Center cursor          = { a={<key>v; <key>c} action=Center() }
 					}
 				}
 				ha:Layers {
@@ -253,7 +252,7 @@ ha:{
 						}
 					}
 				}
-				ha:Show padstack numbers in a subc = { a=<Key>d; action=Display(PinOrPadName) }
+				ha:Show padstack numbers in a subc = { a={<key>v; <key>n} action=Display(PinOrPadName) }
 				ha:Full screen                     = { checked=editor/fullscreen; a=<char>\\;  action=fullscreen(toggle) }
 			}
 		} # View
