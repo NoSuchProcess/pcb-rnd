@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h1> pcb-rnd - user manual </h1>
+
+<h2> 6.1 keyboard bindings </h2>
+<p>
+The same default menu file is used in all GUI HIDs. It comes with multi-stroke
+key bindings, plus only a very few, alternative keys that use modifiers
+(mostly ctrl). A multi-stroke key binding requires the user to type in a
+sequence of keys, e.g. pressing 't' and 'l' (written as {t l} in this document)
+will make pcb-rnd switch to the line tool. There are two major advanatges of
+using multi-stroke instead of modifiers:
+<ul>
+	<li> It is often easier to remember them, e.g. the above {t l} can be
+	     memorized as 'tool, line', and it is similar to {t a} for 'tool, arc'
+	     and {t, p} for 'tool, polygon'. The old menu file had these as F2, F3
+	     and F6. They could be also ctrl+l, ctrl+a, ctrl+p, but then if another
+	     group of functionality required similar letters, like l for list or
+	     p for print, they would ned to use a different modifier, e.g. alt+l
+	     and alt+p. At the end there would be a random set of alt, ctrl, shift
+	     combinations that are real hard to remember - this is exactly how
+	     the old (pre-2.0.0) default menu file was.
+	<li> Since pcb-rnd is a graphical CAD, the mouse is an inportant user input
+	     device. Most users will have one hand constantly on the mouse. It is much
+	     faster to type a sequence of 2 or rarely 3 plain keys with one hand than
+	     doing the acrobatics for something like ctrl+t or even alt+shif+u.
+</ul>
+<p>
+Most multi-stroke keys, especially the commonly used ones, use two strokes.
+Some rarely used feature will require three. The system can be regarded
+as a tree: e.g. in a 3-key sequence, starting from the root
+(nothing is pressed) the first key select a chapter, the second
+key narrows it down to a subchapter and the third key (leaf) selects the actual
+action within the subchapter. The current key tree is:
+<p>
+<img src="keytree.svg" alt="tree of multi-stroke key combinations">
+<p>
+
