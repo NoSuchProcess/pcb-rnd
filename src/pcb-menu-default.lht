@@ -418,7 +418,7 @@ ha:{
 					}
 				}
 				-
-				ha:Design Rule Checker = { a={<key>a;<key>c;}; action=DRC() }
+				ha:Design Rule Checker = { a={<key>a;<key>a;}; action=DRC() }
 				-
 				ha:Apply vendor drill mapping = { a={<key>a;<key>v;}; action=ApplyVendor() }
 				-
