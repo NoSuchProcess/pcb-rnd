@@ -352,7 +352,7 @@ ha:{
 				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
 				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				-
-				ha:Clear buffer                    = { a={<key>b;<key>c;}; action=PasteBuffer(Clear) }
+				ha:Clear buffer                    = { a={<key>b;<key>c;<key>c;}; action=PasteBuffer(Clear) }
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
 				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
