@@ -37,6 +37,7 @@
 
 #include "unit.h"
 #include "grid.h"
+#include "board.h"
 #include "compat_misc.h"
 #include "misc_util.h"
 #include "pcb_bool.h"
@@ -156,3 +157,13 @@ char *pcb_grid_print(const pcb_grid_t *src)
 	return tmp.array; /* do not uninit tmp */
 }
 
+void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src)
+{
+	if ((src->ox != 0) ||  (src->oy != 0))
+		pcb_board_set_grid(src->size, pcb_true, src->ox, src->oy);
+	else
+		pcb_board_set_grid(src->size, pcb_false, 0, 0);
+	if (src->unit != NULL) {
+#warning TODO
+	}
+}

@@ -32,6 +32,7 @@
 
 #include <genvector/gds_char.h>
 #include "pcb_bool.h"
+#include "board.h"
 #include "unit.h"
 
 /* String packed syntax (bracket means optional):
@@ -55,5 +56,8 @@ pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src);
 /* Convert src into packed string format */
 pcb_bool_t pcb_grid_append_print(gds_t *dst, const pcb_grid_t *src);
 char *pcb_grid_print(const pcb_grid_t *src);
+
+/* Apply grid settings from src to the pcb */
+void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src);
 
 #endif
