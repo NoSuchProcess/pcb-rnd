@@ -306,45 +306,6 @@ int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio)
 	}
 }
 
-static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
-{
-	lht_node_t *val;
-
-	if (node->type != LHT_HASH) {
-		pcb_hid_cfg_error(node, "Increments need to be a hash\n");
-		return -1;
-	}
-
-#define incload(field) \
-	val = lht_dom_hash_get(node, #field); \
-	if (val != NULL) {\
-		if (val->type == LHT_TEXT) {\
-			pcb_bool succ; \
-			inc->field = pcb_get_value(val->data.text.value, NULL, NULL, &succ); \
-			if (!succ) \
-				pcb_hid_cfg_error(node, "invalid numeric value in increment field " #field ": %s\n", val->data.text.value); \
-		} \
-		else\
-			pcb_hid_cfg_error(node, "increment field " #field " needs to be a text node\n"); \
-	}
-
-	incload(grid);
-	incload(grid_min);
-	incload(grid_max);
-	incload(size);
-	incload(size_min);
-	incload(size_max);
-	incload(line);
-	incload(line_min);
-	incload(line_max);
-	incload(clear);
-	incload(clear_min);
-	incload(clear_max);
-
-#undef incload
-	return 0;
-}
-
 const char *conf_get_user_conf_name()
 {
 	return conf_user_fn;
@@ -464,8 +425,6 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 			else
 				dst->unit[idx] = u;
 			break;
-		case CFN_INCREMENTS:
-			return conf_parse_increments(&(dst->increments[idx]), err_node);
 		case CFN_COLOR:
 			dst->color[idx] = text; /* let the HID check validity to support flexibility of the format */
 			break;
@@ -511,7 +470,6 @@ static void conf_insert_arr(conf_native_t *dest, int offs)
 			CASE_PCB_MOVE(CFN_UNIT, unit);
 			CASE_PCB_MOVE(CFN_COLOR, color);
 			CASE_PCB_MOVE(CFN_LIST, list);
-			CASE_PCB_MOVE(CFN_INCREMENTS, increments);
 		}
 	}
 #undef CASE_MOVE
@@ -801,7 +759,6 @@ static void conf_field_clear(conf_native_t *f)
 			case CFN_COORD:       clr(coord); break;
 			case CFN_UNIT:        clr(unit); break;
 			case CFN_COLOR:       clr(color); break;
-			case CFN_INCREMENTS:  clr(increments); break;
 			case CFN_LIST:
 				while(conflist_first(f->val.list)) { /* need to free all items of a list before clearing the main struct */
 					conf_listitem_t *i = conflist_first(f->val.list);
@@ -845,19 +802,6 @@ void conf_update(const char *path, int arr_idx)
 				arr_idx = atoi(field+1);
 				*field = '\0';
 				n = conf_get_field(path_);
-			}
-
-			/* It may be a field of an increment, truncate last portion */
-			if (n == NULL) {
-				field = strrchr(path_, '/');
-				if (field == NULL) {
-					free(path_);
-					return;
-				}
-				*field = '\0';
-				n = conf_get_field(path_);
-				if (n->type != CFN_INCREMENTS)
-					n = NULL;
 			}
 
 			/* if a valid node is found, update it */
@@ -1103,7 +1047,7 @@ conf_native_t *conf_get_field(const char *path)
 
 int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
 {
-	char *path, *basename, *next, *last, *sidx, *increment_field = NULL;
+	char *path, *basename, *next, *last, *sidx;
 	conf_native_t *nat;
 	lht_node_t *cwd, *nn;
 	lht_node_type_t ty;
@@ -1134,20 +1078,8 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 
 	nat = conf_get_field(path);
 	if (nat == NULL) {
-		/* might be increments */
-		increment_field = strrchr(path, '/');
-		if (increment_field == NULL) {
-			free(path);
-			return -1;
-		}
-		*increment_field = '\0';
-		nat = conf_get_field(path);
-		if ((nat == NULL) || (nat->type != CFN_INCREMENTS)) {
-			free(path);
-			return -1;
-		}
-		*increment_field = '/';
-		increment_field++;
+		free(path);
+		return -1;
 	}
 
 
@@ -1487,10 +1419,7 @@ void conf_usage(const char *prefix, void (*print)(const char *name, const char *
 					case CFN_COORD:   strcpy(s, " coord"); break;
 					case CFN_UNIT:    strcpy(s, " unit"); break;
 					case CFN_COLOR:   strcpy(s, " color"); break;
-					case CFN_LIST:
-					case CFN_INCREMENTS:
-						strcpy(s, " ???");
-						break;
+					case CFN_LIST:    strcpy(s, " <list>"); break;
 				}
 				print(name, n->description);
 				free(name);
@@ -1812,16 +1741,6 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
 		case CFN_COORD:   ret += pfn(ctx, "%$mS", val->coord[idx]); break;
 		case CFN_UNIT:    print_str_or_null(pfn, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
 		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx], val->color[idx]); break;
-		case CFN_INCREMENTS:
-			{
-				pcb_increments_t *i = &val->increments[idx];
-				ret += pfn(ctx, "{ grid=%$mS/%$mS/%$mS size=%$mS/%$mS/%$mS line=%$mS/%$mS/%$mS clear=%$mS/%$mS/%$mS}",
-				i->grid, i->grid_min, i->grid_max,
-				i->size, i->size_min, i->size_max,
-				i->line, i->line_min, i->line_max,
-				i->clear, i->clear_min, i->clear_max);
-			}
-			break;
 		case CFN_LIST:
 			{
 				conf_listitem_t *n;

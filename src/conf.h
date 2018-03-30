@@ -62,7 +62,6 @@ typedef pcb_coord_t        CFT_COORD;
 typedef pcb_unit_t *       CFT_UNIT;
 typedef char *       CFT_COLOR;
 typedef conflist_t   CFT_LIST;
-typedef pcb_increments_t   CFT_INCREMENTS;
 
 typedef enum {
 	CFN_STRING,
@@ -72,8 +71,7 @@ typedef enum {
 	CFN_COORD,
 	CFN_UNIT,
 	CFN_COLOR,
-	CFN_LIST,
-	CFN_INCREMENTS
+	CFN_LIST
 } conf_native_type_t;
 
 union confitem_u {
@@ -85,7 +83,6 @@ union confitem_u {
 	const pcb_unit_t **unit;
 	const char **color;
 	conflist_t *list;
-	pcb_increments_t *increments;
 	void *any;
 };
 

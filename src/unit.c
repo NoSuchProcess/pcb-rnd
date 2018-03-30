@@ -98,65 +98,6 @@ void pcb_units_init(void)
 	}
 }
 
-/* This list -must- contain all printable units from the above list */
-/* For now I have just copy/pasted the same values for all metric
- * units and the same values for all imperial ones */
-pcb_increments_t pcb_increments[] = {
-	/* TABLE FORMAT   |  default  |  min  |  max
-	 *          grid  |           |       |
-	 *          size  |           |       |
-	 *          line  |           |       |
-	 *         clear  |           |       |
-	 */
-	{"km", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"m", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"cm", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"mm", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"um", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"du", PCB_MM_TO_COORD3(0.1, 0.01, 1.0), /* du = eagle bin 0.1 micron = "decimicron" unit */
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"nm", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
-	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
-	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
-	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
-
-	{"cmil", PCB_MIL_TO_COORD3(5, 1, 25),
-	 PCB_MIL_TO_COORD3(10, 1, 10),
-	 PCB_MIL_TO_COORD3(5, 0.5, 10),
-	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
-	{"dmil", PCB_MIL_TO_COORD3(5, 1, 25), /* kicad legacy decimil unit */
-	 PCB_MIL_TO_COORD3(10, 1, 10),
-	 PCB_MIL_TO_COORD3(5, 0.5, 10),
-	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
-	{"mil", PCB_MIL_TO_COORD3(5, 1, 25),
-	 PCB_MIL_TO_COORD3(10, 1, 10),
-	 PCB_MIL_TO_COORD3(5, 0.5, 10),
-	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
-	{"in", PCB_MIL_TO_COORD3(5, 1, 25),
-	 PCB_MIL_TO_COORD3(10, 1, 10),
-	 PCB_MIL_TO_COORD3(5, 0.5, 10),
-	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
-};
-
-#define N_INCREMENTS (sizeof pcb_increments / sizeof pcb_increments[0])
-
 const pcb_unit_t *get_unit_struct_(const char *suffix, int strict)
 {
 	int i;
@@ -254,16 +195,6 @@ pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x)
 double pcb_unit_to_factor(const pcb_unit_t * unit)
 {
 	return 1.0 / pcb_coord_to_unit(unit, 1);
-}
-
-pcb_increments_t *pcb_get_increments_struct(const char *suffix)
-{
-	int i;
-	/* Do lookup */
-	for (i = 0; i < N_INCREMENTS; ++i)
-		if (strcmp(suffix, pcb_increments[i].suffix) == 0)
-			return &pcb_increments[i];
-	return NULL;
 }
 
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a)

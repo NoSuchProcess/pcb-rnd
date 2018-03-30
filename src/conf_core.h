@@ -18,8 +18,6 @@ typedef struct {
 	const struct editor {
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
-		CFT_INCREMENTS increments_mm;      /* increments (size deltas) when drawing in mil */
-		CFT_INCREMENTS increments_mil;     /* increments (size deltas) when drawing in mil */
 		CFT_REAL zoom;                     /* default zoom */
 		CFT_INTEGER mode;                  /* currently active mode */
 		CFT_INTEGER buffer_number;         /* number of the current buffer */

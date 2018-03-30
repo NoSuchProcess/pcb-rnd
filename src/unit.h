@@ -144,10 +144,6 @@ double pcb_unit_to_factor(const pcb_unit_t * unit);
 /* Convert a given unit to pcb coords; clamp at the end of the ranges */
 pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x);
 
-/* Looks up a given suffix in the increments array. Pluralized units
-   are not supported. Returns NULL on error. */
-pcb_increments_t *pcb_get_increments_struct(const char *suffix);
-
 /* Bring an angle into [0, 360) range */
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
 
