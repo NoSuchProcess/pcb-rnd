@@ -379,7 +379,7 @@ static const char *rot[] = {
 
 
 /* XPM */
-static const char *sel[] = {
+static const char *arr[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",

@@ -67,7 +67,7 @@ static ModeButton mode_buttons[] = {
 	{NULL, NULL, 0, 0, "rotate", PCB_MODE_ROTATE, rot, "rotate an object on the board"},
 	{NULL, NULL, 0, 0, "insertPoint", PCB_MODE_INSERT_POINT, ins, "insert a point in a trace or polygon contour"},
 	{NULL, NULL, 0, 0, "thermal", PCB_MODE_THERMAL, thrm, "change thermal connectivity of a pin or via"},
-	{NULL, NULL, 0, 0, "select", PCB_MODE_ARROW, sel, "switch to select mode"},
+	{NULL, NULL, 0, 0, "arrow", PCB_MODE_ARROW, arr, "switch to arrow mode"},
 	{NULL, NULL, 0, 0, "lock", PCB_MODE_LOCK, lock, "lock or unlock objects on the board"}
 };
 
@@ -202,7 +202,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 		gtk_widget_get_requisition(image, &requisition);
 		tb_width += requisition.width;
 
-		if (strcmp(MB->name, "select") == 0) {
+		if (strcmp(MB->name, "arrow") == 0) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(MB->button), TRUE);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(MB->toolbar_button), TRUE);
 		}
