@@ -61,6 +61,8 @@ SUBC: element removal:
 	- display number of items at top of drc window
 	- export to file 
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
+- BUG: gtk: left click popup in layersel broke with context popups [report: Alain]
+- BUG: gtk: edit the arrow tool's button icon so it has "ARR" instead of "SEL" because the tool is called arrow everywhere [report: Alain]
 - BUG: {v n} always prefers the top side padstack: bug_files/vard_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 - BUG: menu/gtk: keypad + and - won't do anything (search for <char>+ in the new menu file) [report: Igor2]
