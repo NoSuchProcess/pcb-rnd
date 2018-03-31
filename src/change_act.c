@@ -538,17 +538,25 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	const char *function = PCB_ACTION_ARG(0);
 	char *name;
 	int pinnum;
+	pcb_objtype_t type;
 
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
+
+		/* change the refdes of a subcircuit */
+		case F_Subc:
+			pcb_gui->get_coords("Select a subcircuit", &x, &y);
+			type = PCB_OBJ_SUBC;
+			goto do_chg_name;
+
 			/* change the name of an object */
 		case F_Object:
 			{
-				int type;
 				void *ptr1, *ptr2, *ptr3;
-
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				type = PCB_CHANGENAME_TYPES;
+				do_chg_name:;
+				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
 					pinnum = 0;
 					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3)) {
