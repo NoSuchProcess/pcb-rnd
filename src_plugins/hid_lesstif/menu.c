@@ -606,22 +606,15 @@ int lesstif_key_event(XKeyEvent * e)
 
 	/* Ignore these.  */
 	switch (sym) {
-	case XK_Shift_L:
-	case XK_Shift_R:
-	case XK_Control_L:
-	case XK_Control_R:
-	case XK_Caps_Lock:
-	case XK_Shift_Lock:
-	case XK_Meta_L:
-	case XK_Meta_R:
-	case XK_Alt_L:
-	case XK_Alt_R:
-	case XK_Super_L:
-	case XK_Super_R:
-	case XK_Hyper_L:
-	case XK_Hyper_R:
-	case XK_ISO_Level3_Shift:
-		return 1;
+		case XK_Shift_L:    case XK_Shift_R:
+		case XK_Control_L:  case XK_Control_R:
+		case XK_Caps_Lock:  case XK_Shift_Lock:
+		case XK_Meta_L:     case XK_Meta_R:
+		case XK_Alt_L:      case XK_Alt_R:
+		case XK_Super_L:    case XK_Super_R:
+		case XK_Hyper_L:    case XK_Hyper_R:
+		case XK_ISO_Level3_Shift:
+			return 1;
 	}
 
 /* TODO#3: this works only on US keyboard */
