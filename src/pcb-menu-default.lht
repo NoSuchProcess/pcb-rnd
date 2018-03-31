@@ -141,7 +141,7 @@ ha:{
 				ha:Edit name of {
 					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 					li:submenu {
-						ha:text on layout             = { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
+						ha:text or name               = { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
 						ha:layout                     = {                           action=ChangeName(Layout) }
 						ha:active layer               = {                           action=ChangeName(Layer) }
 					}
@@ -164,6 +164,7 @@ ha:{
 					li:submenu {
 						ha:Layer bindings...          = { a={<key>e; <key>s; <key>b}; action=LayerBinding() }
 						ha:External editor...         = { a={<key>e; <key>s; <key>e}; li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
+						ha:Refdes                     = { a={<key>e; <key>s; <key>r}; action=ChangeName(Subc) }
 					}
 				}
 				ha:Object flags...                = { a={<key>e; <key>f}; action=FlagEdit() }
