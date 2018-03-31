@@ -241,7 +241,7 @@ ha:{
 					li:submenu {
 						ha:Zoom In 20%            = { m=Z; li:a={{<Key>z;<Key>z;}; {<char>+};} action=Zoom(-1.2) }
 						ha:Zoom Out 20%           = { m=O; li:a={{<Key>z;<Key>x;}; {<char>-};} action=Zoom(+1.2) }
-						ha:Zoom Max               = {      li:a={{<Key>z;<Key>e;}; {<key>v;<key>f};}; m=M; action=Zoom() }
+						ha:Zoom Extents           = {      li:a={{<Key>z;<Key>e;}; {<key>v;<key>f};}; m=M; action=Zoom() }
 						ha:Zoom In 2X             = { action=Zoom(-2) }
 						ha:Zoom Out 2X            = { action=Zoom(+2) }
 						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
