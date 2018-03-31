@@ -11,8 +11,9 @@
 /b/s       subcircuit
 /c         connections & rats
 /e         edit
-/e/l       edit layer
-/e/m       edit: move
+/e/l       layer
+/e/m       move
+/e/s       subcircuit or style
 /f         file
 /f/x       export to
 /f/c       configuration
