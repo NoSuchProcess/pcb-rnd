@@ -47,6 +47,7 @@ else
 	do
 		case "$1" in
 			--html) cmd="html";;
+			--lst) cmd="lst";;
 			--dot) cmd="dot"; nodenames=$2; shift 1;;
 			*) res_files="$res_files $1" ;;
 		esac
@@ -339,5 +340,6 @@ gen_dot()
 case "$cmd" in
 	html) gen_list | gen_html ;;
 	dot) gen_list | gen_dot ;;
+	lst) gen_list ;;
 esac
 
