@@ -268,7 +268,7 @@ gen_dot()
 			q="\""
 			print "digraph keytree {"
 			print "rankdir=LR"
-			print "ranksep=1.5"
+			print "ranksep=0.2"
 			while((getline < names) == 1) {
 				path=$1
 				$1=""
