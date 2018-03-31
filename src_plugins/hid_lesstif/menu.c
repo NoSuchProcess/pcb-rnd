@@ -604,8 +604,8 @@ int lesstif_key_event(XKeyEvent * e)
 		e->state &= ~ShiftMask;
 	slen = XLookupString(e, buf, sizeof(buf), &sym, NULL);
 
-	/* Ignore these.  */
 	switch (sym) {
+	/* Ignore these.  */
 		case XK_Shift_L:    case XK_Shift_R:
 		case XK_Control_L:  case XK_Control_R:
 		case XK_Caps_Lock:  case XK_Shift_Lock:
@@ -615,6 +615,12 @@ int lesstif_key_event(XKeyEvent * e)
 		case XK_Hyper_L:    case XK_Hyper_R:
 		case XK_ISO_Level3_Shift:
 			return 1;
+
+		case XK_KP_Add: sym = '+'; break;
+		case XK_KP_Subtract: sym = '-'; break;
+		case XK_KP_Multiply: sym = '*'; break;
+		case XK_KP_Divide: sym = '/'; break;
+		case XK_KP_Enter: sym = XK_Return; break;
 	}
 
 /* TODO#3: this works only on US keyboard */
