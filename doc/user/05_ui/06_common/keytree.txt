@@ -1,0 +1,251 @@
++	pcb-menu-default.lht	Zoom(-1.2) 	Zoom In 20%
+,	pcb-menu-default.lht	CycleDrag() 	Cycle object being dragged
+-	pcb-menu-default.lht	Zoom(+1.2) 	Zoom Out 20%
+.	pcb-menu-default.lht	conf(toggle, editor\057all_direction_lines, design)	'All-direction' lines
+0	pcb-menu-default.lht	SelectLayer(10) 	Select Layer 10
+0-alt	pcb-menu-default.lht	SelectLayer(20) 	Select Layer 20
+0-alt-ctrl	pcb-menu-default.lht	ToggleView(20) 	Toggle Layer 20
+0-ctrl	pcb-menu-default.lht	ToggleView(10) 	Toggle Layer 10
+1	pcb-menu-default.lht	SelectLayer(1) 	Select Layer 1
+1-alt	pcb-menu-default.lht	SelectLayer(11) 	Select Layer 11
+1-alt-ctrl	pcb-menu-default.lht	ToggleView(11) 	Toggle Layer 11
+1-ctrl	pcb-menu-default.lht	ToggleView(1) 	Toggle Layer 1
+2	pcb-menu-default.lht	SelectLayer(2) 	Select Layer 2
+2-alt	pcb-menu-default.lht	SelectLayer(12) 	Select Layer 12
+2-alt-ctrl	pcb-menu-default.lht	ToggleView(12) 	Toggle Layer 12
+2-ctrl	pcb-menu-default.lht	ToggleView(2) 	Toggle Layer 2
+3	pcb-menu-default.lht	SelectLayer(3) 	Select Layer 3
+3-alt	pcb-menu-default.lht	SelectLayer(13) 	Select Layer 13
+3-alt-ctrl	pcb-menu-default.lht	ToggleView(13) 	Toggle Layer 13
+3-ctrl	pcb-menu-default.lht	ToggleView(3) 	Toggle Layer 3
+4	pcb-menu-default.lht	SelectLayer(4) 	Select Layer 4
+4-alt	pcb-menu-default.lht	SelectLayer(14) 	Select Layer 14
+4-alt-ctrl	pcb-menu-default.lht	ToggleView(14) 	Toggle Layer 14
+4-ctrl	pcb-menu-default.lht	ToggleView(4) 	Toggle Layer 4
+5	pcb-menu-default.lht	SelectLayer(5) 	Select Layer 5
+5-alt	pcb-menu-default.lht	SelectLayer(15) 	Select Layer 15
+5-alt-ctrl	pcb-menu-default.lht	ToggleView(15) 	Toggle Layer 15
+5-ctrl	pcb-menu-default.lht	ToggleView(5) 	Toggle Layer 5
+6	pcb-menu-default.lht	SelectLayer(6) 	Select Layer 6
+6-alt	pcb-menu-default.lht	SelectLayer(16) 	Select Layer 16
+6-alt-ctrl	pcb-menu-default.lht	ToggleView(16) 	Toggle Layer 16
+6-ctrl	pcb-menu-default.lht	ToggleView(6) 	Toggle Layer 6
+7	pcb-menu-default.lht	SelectLayer(7) 	Select Layer 7
+7-alt	pcb-menu-default.lht	SelectLayer(17) 	Select Layer 17
+7-alt-ctrl	pcb-menu-default.lht	ToggleView(17) 	Toggle Layer 17
+7-ctrl	pcb-menu-default.lht	ToggleView(7) 	Toggle Layer 7
+8	pcb-menu-default.lht	SelectLayer(8) 	Select Layer 8
+8-alt	pcb-menu-default.lht	SelectLayer(18) 	Select Layer 18
+8-alt-ctrl	pcb-menu-default.lht	ToggleView(18) 	Toggle Layer 18
+8-ctrl	pcb-menu-default.lht	ToggleView(8) 	Toggle Layer 8
+9	pcb-menu-default.lht	SelectLayer(9) 	Select Layer 9
+9-alt	pcb-menu-default.lht	SelectLayer(19) 	Select Layer 19
+9-alt-ctrl	pcb-menu-default.lht	ToggleView(19) 	Toggle Layer 19
+9-ctrl	pcb-menu-default.lht	ToggleView(9) 	Toggle Layer 9
+:	pcb-menu-default.lht	Command() 	Command Entry
+\	pcb-menu-default.lht	fullscreen(toggle) 	Full screen
+\057	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
+a;a	pcb-menu-default.lht	Mode(Save);Mode(Arc);Mode(Notify)	Start routeing an arc
+a;b;f;	pcb-menu-default.lht	ReplaceFootprint() 	Replace footprint
+a;b;s;	pcb-menu-default.lht	net(swap) 	Swap nets on two selected pins
+a;b;x	pcb-menu-default.lht	SavePatch() 	netlist patch for back annotation
+a;d;a;	pcb-menu-default.lht	DisperseElements(All) 	Disperse all subcircuits
+a;d;s;	pcb-menu-default.lht	DisperseElements(Selected) 	Disperse selected subcircuits
+a;l	pcb-menu-default.lht	Mode(Save);Mode(Line);Mode(Notify)	Start routeing a line
+a;m	pcb-menu-default.lht	MarkCrosshair() 	Place mark
+a;o;a;	pcb-menu-default.lht	djopt(auto) 	Auto-Optimize
+a;o;d;	pcb-menu-default.lht	djopt(debumpify) 	Debumpify
+a;o;m;	pcb-menu-default.lht	djopt(miter) 	Miter
+a;o;n;	pcb-menu-default.lht	djopt(vianudge) 	Vianudge
+a;o;o;	pcb-menu-default.lht	djopt(orthopull) 	Ortho pull
+a;o;p;	pcb-menu-default.lht	Puller() 	Puller
+a;o;s;	pcb-menu-default.lht	djopt(simple) 	Simple optimization
+a;o;t;	pcb-menu-default.lht	djopt(viatrim) 	Viatrim
+a;o;u;	pcb-menu-default.lht	djopt(unjaggy) 	Unjaggy
+a;p;s;	pcb-menu-default.lht	AutoPlaceSelected() 	Auto-place selected subcircuits
+a;r;a;	pcb-menu-default.lht	AutoRoute(AllRats) 	Auto-route all rats
+a;r;r;	pcb-menu-default.lht	RipUp(All) 	Rip up all auto-routed tracks
+a;r;s;	pcb-menu-default.lht	AutoRoute(SelectedRats) 	Auto-route selected rats
+a;r;t;	pcb-menu-default.lht	RipUp(Selected) 	Rip up selected auto-routed tracks
+a;v	pcb-menu-default.lht	Mode(Save);Mode(Via);Mode(Notify);Mode(Restore)	Place via
+a;x;	pcb-menu-default.lht	DRC() 	Design Rule Checker
+b;1;	pcb-menu-default.lht	PasteBuffer(1)	Select Buffer #1
+b;2;	pcb-menu-default.lht	PasteBuffer(2)	Select Buffer #2
+b;3;	pcb-menu-default.lht	PasteBuffer(3)	Select Buffer #3
+b;4;	pcb-menu-default.lht	PasteBuffer(4)	Select Buffer #4
+b;5;	pcb-menu-default.lht	PasteBuffer(5)	Select Buffer #5
+b;b;	pcb-menu-default.lht	LayerBinding(buffer) 	Layer bindings...
+b;c;c;	pcb-menu-default.lht	PasteBuffer(Clear) 	Clear buffer
+b;c;p	pcb-menu-default.lht	PadstackConvert(buffer);Mode(PasteBuffer)	Convert buffer to padstack
+b;c;s	pcb-menu-default.lht	PasteBuffer(ConvertSubc) 	Convert buffer to subcircuit
+b;m;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
+b;m;u	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
+b;r;a	pcb-menu-default.lht	Mode(PasteBuffer);FreeRotateBuffer()	Arbitrarily Rotate Buffer
+b;r;c	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW
+b;r;r	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW
+b;s;b	pcb-menu-default.lht	PasteBuffer(Restore) 	Break buffer subcircuits to pieces
+b;s;s	pcb-menu-default.lht	Save(PasteBuffer) 	Save buffer subcircuits to file
+c-ctrl;	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
+c;c;	pcb-menu-default.lht	Connection(Reset);Display(Redraw)	Clear\057reset lookup
+c;d;	pcb-menu-default.lht	Atomic(Save);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Restore);Connection(Find);Atomic(Restore);Select(Connection);Atomic(Restore);RemoveSelected();Atomic(Restore);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Block)	Del\057Remove Connected
+c;e;	pcb-menu-default.lht	DeleteRats(AllRats) 	Erase rats nest
+c;f;	pcb-menu-default.lht	Connection(Reset);Connection(Find)	Find Connections
+c;r;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRats(AllRats);Atomic(Block)	Optimize rats nest
+c;s;	pcb-menu-default.lht	AddRats(Close) 	Select shortest rat
+delete	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
+down	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
+down-shift	pcb-menu-default.lht	Cursor(Pan,0,-50,view) 	Step +Down
+e;c	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
+e;d	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
+e;f	pcb-menu-default.lht	FlagEdit() 	Object flags...
+e;g;c	pcb-menu-default.lht	ChangeClearSize(Object,+2,mil) 	Clearance +2 mil
+e;g;c-shift	pcb-menu-default.lht	ChangeClearSize(Object,-2,mil) 	Clearance -2 mil
+e;g;d	pcb-menu-default.lht	ChangeDrillSize(Object,+5,mil) 	ChangeDrill +5 mil
+e;g;d-shift	pcb-menu-default.lht	ChangeDrillSize(Object,-5,mil) 	ChangeDrill -5 mil
+e;g;s	pcb-menu-default.lht	ChangeSize(Object,+5,mil) 	ChangeSize +5 mil
+e;g;s-shift	pcb-menu-default.lht	ChangeSize(Object,-5,mil) 	ChangeSize -5 mil
+e;g;y	pcb-menu-default.lht	ChangeSizes(Object,style,mil) 	ChangeSizes to Route style
+e;i	pcb-menu-default.lht	Flip(Object) 	Flip Object
+e;j	pcb-menu-default.lht	ChangeJoin(Object) 	ChangeJoin Object
+e;l	pcb-menu-default.lht	MoveToCurrentLayer(Object) 	Move to current layer
+e;o	pcb-menu-default.lht	FontSel(Object) 	Edit name of/Change font on layout
+e;p	pcb-menu-default.lht	PropEdit() 	Object Properties...
+e;s;b	pcb-menu-default.lht	LayerBinding() 	Layer bindings...
+e;s;e	pcb-menu-default.lht	GetXY(Click on the subcircuit to edit);extedit(object)	External editor...
+e;s;r	pcb-menu-default.lht	ChangeName(Subc) 	Refdes
+e;s;s	pcb-menu-default.lht	SetSame() 	Set Same Style
+e;t	pcb-menu-default.lht	ChangeName(Object) 	text or name
+e;v	pcb-menu-default.lht	Mode(PasteBuffer) 	Paste buffer to layout
+e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(MoveSelected);Mode(PasteBuffer)	Cut selection to buffer
+e;y;	pcb-menu-default.lht	CycleDrag() 	Cycle object being dragged
+enter	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click
+escape	pcb-menu-default.lht	Mode(Escape) 	Cancel
+f1	pcb-menu-default.lht	Mode(Via)	Via
+f10	pcb-menu-default.lht	Mode(Thermal)	Thermal
+f11	pcb-menu-default.lht	Mode(Arrow)	Arrow
+f12	pcb-menu-default.lht	Mode(Lock)	Lock
+f2	pcb-menu-default.lht	Mode(Line)	Line
+f3	pcb-menu-default.lht	Mode(Arc)	Arc
+f4	pcb-menu-default.lht	Mode(Text)	Text
+f5	pcb-menu-default.lht	Mode(Rectangle)	Rectangle
+f6	pcb-menu-default.lht	Mode(Polygon)	Polygon
+f7	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
+f7-shift	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW
+f8	pcb-menu-default.lht	Mode(Remove)	Del\057Remove
+f9	pcb-menu-default.lht	Mode(Rotate)	Rotate
+f;a	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
+f;c;p;	pcb-menu-default.lht	ManagePlugins() 	Manage plugins...
+f;e	pcb-menu-default.lht	ExportGUI()	Export layout...
+f;l	pcb-menu-default.lht	Load(Layout)	Load layout
+f;n	pcb-menu-default.lht	New() 	Start New Layout
+f;o	pcb-menu-default.lht	Load(Layout)	Load layout
+f;p	pcb-menu-default.lht	Print()	Print layout...
+f;q	pcb-menu-default.lht	Quit() 	Quit Program
+f;r	pcb-menu-default.lht	Load(Revert,none)	Revert
+f;s	pcb-menu-default.lht	Save(Layout)	Save Layout
+f;x;p	pcb-menu-default.lht	SavePatch() 	netlist patch for back annotation
+i;a	pcb-menu-default.lht	About() 	About...
+i;c;c	pcb-menu-default.lht	PrintCalibrate() 	Calibrate Printer...
+i;c;p	pcb-menu-default.lht	DoWindows(Preferences)	Preferences...
+i;c;r	pcb-menu-default.lht	fp_rehash() 	Re-scan the footprint library
+i;d	pcb-menu-default.lht	Report(DrillReport) 	Generate drill summary
+i;f	pcb-menu-default.lht	Report(FoundPins) 	Report found padstacks
+i;r	pcb-menu-default.lht	ReportObject() 	Generate object report
+insert	pcb-menu-default.lht	Mode(InsertPoint)	Insert Point
+left	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
+left-shift	pcb-menu-default.lht	Cursor(Pan,-50,0,view) 	Step +Left
+m;c;c	pcb-menu-default.lht	conf(toggle, editor\057show_drc, design) 	Crosshair shows DRC clearance
+m;c;o	pcb-menu-default.lht	conf(toggle, editor\057orthogonal_moves, design) 	Orthogonal moves
+m;c;p	pcb-menu-default.lht	conf(toggle, editor\057snap_pin, design) 	Crosshair snaps to padstacks
+m;c;s	pcb-menu-default.lht	conf(toggle, editor\057snap_offgrid_line, design) 	Crosshair snaps to off-grid points on lines
+m;d;a	pcb-menu-default.lht	conf(toggle, editor\057live_routing, design) 	Show autorouter trials
+m;d;c	pcb-menu-default.lht	conf(toggle, editor\057check_planes, design) 	Check polygons
+m;d;h	pcb-menu-default.lht	conf(toggle, editor\057highlight_on_point, design) 	Highlighting on line, arc points
+m;d;p	pcb-menu-default.lht	conf(toggle, editor\057thin_draw_poly, design)	Thin draw poly
+m;d;t	pcb-menu-default.lht	conf(toggle, editor\057thin_draw, design) 	Thin draw
+m;d;w	pcb-menu-default.lht	conf(toggle, editor\057wireframe_draw, design) 	Wireframe draw
+m;f;h	pcb-menu-default.lht	conf(toggle, editor\057hide_names, design) 	Hide floaters
+m;f;l	pcb-menu-default.lht	conf(toggle, editor\057lock_names, design) 	Lock floaters
+m;f;o	pcb-menu-default.lht	conf(toggle, editor\057only_names, design) 	Only floaters
+m;l;+	pcb-menu-default.lht	SetValue(LineSize,+5,mil) 	Line Tool size +5 mil
+m;l;-	pcb-menu-default.lht	SetValue(LineSize,-5,mil) 	Line Tool size -5 mil
+m;l;a	pcb-menu-default.lht	conf(toggle, editor\057all_direction_lines, design)	'All-direction' lines
+m;l;c	pcb-menu-default.lht	conf(toggle, editor\057clear_line, design) 	New lines, arcs clear polygons
+m;l;d	pcb-menu-default.lht	conf(toggle, editor\057auto_drc, design) 	Auto enforce DRC clearance
+m;l;f	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
+m;p;c	pcb-menu-default.lht	conf(toggle, editor\057clear_polypoly, design) 	New polygons clear polygons
+m;p;f	pcb-menu-default.lht	conf(toggle, editor\057full_poly, design) 	New polygons are full ones
+m;r;m	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_keep_midlinedir, design) 	Rubber band keeps middle line dir
+m;r;r	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_mode, design) 	Rubber band mode
+m;t;+	pcb-menu-default.lht	SetValue(TextScale,-10,mil) 	Text Tool scale -10 mil
+m;t;-	pcb-menu-default.lht	SetValue(TextScale,+10,mil) 	Text Tool scale +10 mil
+n-ctrl	pcb-menu-default.lht	New() 	Start New Layout
+q-ctrl	pcb-menu-default.lht	Quit() 	Quit Program
+r;r;+	pcb-menu-default.lht	conf(delta, editor\057route_radius, +0.5, design)	Route radius +0.5
+r;r;-	pcb-menu-default.lht	conf(delta, editor\057route_radius, -0.5, design)	Route radius -0.5
+r;r;m	pcb-menu-default.lht	conf(delta, editor\057route_radius, -0.5, design)	Route radius -0.5
+r;r;p	pcb-menu-default.lht	conf(delta, editor\057route_radius, +0.5, design)	Route radius +0.5
+right	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
+right-shift	pcb-menu-default.lht	Cursor(Pan,50,0,view) 	Step +Right
+s-ctrl	pcb-menu-default.lht	Save(Layout)	Save Layout
+s-ctrl-shift	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
+s;a;a;	pcb-menu-default.lht	Select(All) 	Select all visible objects
+s;a;c;	pcb-menu-default.lht	Select(Connection) 	Select all connected objects
+s;c;p;	pcb-menu-default.lht	PadstackConvert(selected);Mode(PasteBuffer)	Convert selection to padstack
+s;c;s;	pcb-menu-default.lht	Select(ConvertSubc) 	Convert selection to subcircuit
+s;f;	pcb-menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to other side
+s;l;	pcb-menu-default.lht	MoveToCurrentLayer(Selected) 	Move selected objects to current layer
+s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
+s;s;	pcb-menu-default.lht	DoWindows(search) 	Advanced search and select
+s;u;a;	pcb-menu-default.lht	Unselect(All) 	Unselect all objects
+s;u;c;	pcb-menu-default.lht	Unselect(Connection) 	unselect all connected objects
+t;a	pcb-menu-default.lht	Mode(Arc)	Arc
+t;b	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
+t;c	pcb-menu-default.lht	Mode(Copy)	Copy
+t;d	pcb-menu-default.lht	Mode(Remove)	Del\057Remove
+t;e	pcb-menu-default.lht	Mode(Thermal)	Thermal
+t;h	pcb-menu-default.lht	Mode(PolygonHole)	Polygon Hole
+t;i	pcb-menu-default.lht	Mode(InsertPoint)	Insert Point
+t;k	pcb-menu-default.lht	Mode(Lock)	Lock
+t;l	pcb-menu-default.lht	Mode(Line)	Line
+t;m	pcb-menu-default.lht	Mode(Move)	Move
+t;n	pcb-menu-default.lht	Mode(Arrow)	Arrow
+t;o	pcb-menu-default.lht	Mode(Rotate)	Rotate
+t;p	pcb-menu-default.lht	Mode(Polygon)	Polygon
+t;r	pcb-menu-default.lht	Mode(Rectangle)	Rectangle
+t;t	pcb-menu-default.lht	Mode(Text)	Text
+t;v	pcb-menu-default.lht	Mode(Via)	Via
+tab	pcb-menu-default.lht	SwapSides(V) 	Flip up\057down
+tab-ctrl	pcb-menu-default.lht	SwapSides(R) 	Spin 180 degrees
+tab-ctrl-shift	pcb-menu-default.lht	SwapSides() 	Swap Sides
+tab-shift	pcb-menu-default.lht	SwapSides(H) 	Flip left\057right
+u;c	pcb-menu-default.lht	Undo(ClearList) 	Clear undo-buffer
+u;r	pcb-menu-default.lht	Redo() 	Redo last undone operation
+u;u	pcb-menu-default.lht	Undo() 	Undo last operation
+up	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
+up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
+v;c	pcb-menu-default.lht	Center() 	Center cursor
+v;f	pcb-menu-default.lht	Zoom() 	Zoom Max
+v;g	pcb-menu-default.lht	conf(toggle, editor\057draw_grid, design) 	Enable visible grid
+v;i	pcb-menu-default.lht	SetUnits(mil)	mil
+v;l	pcb-menu-default.lht	conf(toggle, plugins\057hid_gtk\057local_grid\057enable, design) 	Enable local grid
+v;m	pcb-menu-default.lht	SetUnits(mm)	mm
+v;n	pcb-menu-default.lht	Display(PinOrPadName) 	Show padstack numbers in a subc
+v;r	pcb-menu-default.lht	 GetXY(Click to set the grid origin); Display(ToggleGrid) 	Realign grid
+v;s;f	pcb-menu-default.lht	Display(SubcID,"%a.footprint%")	footprint
+v;s;r	pcb-menu-default.lht	Display(SubcID)	refdes
+v;s;s	pcb-menu-default.lht	Display(SubcID,"%a.refdes%\\n%a.value%")	refdes+value
+v;s;v	pcb-menu-default.lht	Display(SubcID,"%a.value%")	value
+w;a	pcb-menu-default.lht	About() 	About...
+w;d	pcb-menu-default.lht	DoWindows(DRC) 	DRC Check
+w;f	pcb-menu-default.lht	FontSel() 	Font selector
+w;l	pcb-menu-default.lht	DoWindows(Library) 	Library
+w;m	pcb-menu-default.lht	DoWindows(Log) 	Message Log
+w;n	pcb-menu-default.lht	DoWindows(Netlist) 	Netlist
+w;p	pcb-menu-default.lht	Display(Pinout) 	Pinout
+y-ctrl	pcb-menu-default.lht	Redo() 	Redo last undone operation
+z-ctrl	pcb-menu-default.lht	Undo() 	Undo last operation
+z;e;	pcb-menu-default.lht	Zoom() 	Zoom Max
+z;x;	pcb-menu-default.lht	Zoom(+1.2) 	Zoom Out 20%
+z;z;	pcb-menu-default.lht	Zoom(-1.2) 	Zoom In 20%
+|	pcb-menu-default.lht	conf(toggle, editor\057wireframe_draw, design) 	Wireframe draw
