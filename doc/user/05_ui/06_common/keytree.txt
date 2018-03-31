@@ -45,13 +45,13 @@
 :	pcb-menu-default.lht	Command() 	Command Entry
 \	pcb-menu-default.lht	fullscreen(toggle) 	Full screen
 \057	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
-a;a	pcb-menu-default.lht	Mode(Save);Mode(Arc);Mode(Notify)	Start routeing an arc
+a;a	pcb-menu-default.lht	Mode(Save);Mode(Arc);Mode(Notify)	Start routing an arc
 a;b;f;	pcb-menu-default.lht	ReplaceFootprint() 	Replace footprint
 a;b;s;	pcb-menu-default.lht	net(swap) 	Swap nets on two selected pins
 a;b;x	pcb-menu-default.lht	SavePatch() 	netlist patch for back annotation
 a;d;a;	pcb-menu-default.lht	DisperseElements(All) 	Disperse all subcircuits
 a;d;s;	pcb-menu-default.lht	DisperseElements(Selected) 	Disperse selected subcircuits
-a;l	pcb-menu-default.lht	Mode(Save);Mode(Line);Mode(Notify)	Start routeing a line
+a;l	pcb-menu-default.lht	Mode(Save);Mode(Line);Mode(Notify)	Start routing a line
 a;m	pcb-menu-default.lht	MarkCrosshair() 	Place mark
 a;o;a;	pcb-menu-default.lht	djopt(auto) 	Auto-Optimize
 a;o;d;	pcb-menu-default.lht	djopt(debumpify) 	Debumpify
@@ -136,9 +136,9 @@ f9	pcb-menu-default.lht	Mode(Rotate)	Rotate
 f;a	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
 f;c;p;	pcb-menu-default.lht	ManagePlugins() 	Manage plugins...
 f;e	pcb-menu-default.lht	ExportGUI()	Export layout...
-f;l	pcb-menu-default.lht	Load(Layout)	Load layout
+f;l	pcb-menu-default.lht	Load(Layout)	Load layout...
 f;n	pcb-menu-default.lht	New() 	Start New Layout
-f;o	pcb-menu-default.lht	Load(Layout)	Load layout
+f;o	pcb-menu-default.lht	Load(Layout)	Load layout...
 f;p	pcb-menu-default.lht	Print()	Print layout...
 f;q	pcb-menu-default.lht	Quit() 	Quit Program
 f;r	pcb-menu-default.lht	Load(Revert,none)	Revert
@@ -225,7 +225,7 @@ u;u	pcb-menu-default.lht	Undo() 	Undo last operation
 up	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
 up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
 v;c	pcb-menu-default.lht	Center() 	Center cursor
-v;f	pcb-menu-default.lht	Zoom() 	Zoom Max
+v;f	pcb-menu-default.lht	Zoom() 	Zoom Extents
 v;g	pcb-menu-default.lht	conf(toggle, editor\057draw_grid, design) 	Enable visible grid
 v;i	pcb-menu-default.lht	SetUnits(mil)	mil
 v;l	pcb-menu-default.lht	conf(toggle, plugins\057hid_gtk\057local_grid\057enable, design) 	Enable local grid
@@ -245,7 +245,7 @@ w;n	pcb-menu-default.lht	DoWindows(Netlist) 	Netlist
 w;p	pcb-menu-default.lht	Display(Pinout) 	Pinout
 y-ctrl	pcb-menu-default.lht	Redo() 	Redo last undone operation
 z-ctrl	pcb-menu-default.lht	Undo() 	Undo last operation
-z;e;	pcb-menu-default.lht	Zoom() 	Zoom Max
+z;e;	pcb-menu-default.lht	Zoom() 	Zoom Extents
 z;x;	pcb-menu-default.lht	Zoom(+1.2) 	Zoom Out 20%
 z;z;	pcb-menu-default.lht	Zoom(-1.2) 	Zoom In 20%
 |	pcb-menu-default.lht	conf(toggle, editor\057wireframe_draw, design) 	Wireframe draw

@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 	<title> Key to action bindings </title>
 <!--AUTO head begin-->
-<link rel="icon" href="http://repo.hu/projects/pcb-rnd/resources/logo16.png">
+	<link rel="icon" href="resources/logo16.png">
 <!--AUTO head end-->
 </head>
 <body>
@@ -13,8 +13,14 @@
 <table border=1 cellspacing=0>
 <tr><th> key <th>pcb-menu-default.lht
 <tr bgcolor="#DDFFFF">
+	<th align=left>+
+	<td> <I>Zoom In 20%</I><br>Zoom(-1.2) 
+<tr bgcolor="#FFFFFF">
 	<th align=left>,
 	<td> <I>Cycle object being dragged</I><br>CycleDrag() 
+<tr bgcolor="#DDFFFF">
+	<th align=left>-
+	<td> <I>Zoom Out 20%</I><br>Zoom(+1.2) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>.
 	<td> <I>'All-direction' lines</I><br>conf(toggle, editor/all_direction_lines, design)
@@ -149,7 +155,7 @@
 	<td> <I>Cycle line clip/refraction</I><br>Display(CycleClip) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>a<br>&nbsp;a
-	<td> <I>Start routeing an arc</I><br>Mode(Save); Mode(Arc); Mode(Notify)
+	<td> <I>Start routing an arc</I><br>Mode(Save); Mode(Arc); Mode(Notify)
 <tr bgcolor="#DDFFFF">
 	<th align=left>a<br>&nbsp;b<br>&nbsp;&nbsp;f<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Replace footprint</I><br>ReplaceFootprint() 
@@ -167,7 +173,7 @@
 	<td> <I>Disperse selected subcircuits</I><br>DisperseElements(Selected) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>a<br>&nbsp;l
-	<td> <I>Start routeing a line</I><br>Mode(Save); Mode(Line); Mode(Notify)
+	<td> <I>Start routing a line</I><br>Mode(Save); Mode(Line); Mode(Notify)
 <tr bgcolor="#DDFFFF">
 	<th align=left>a<br>&nbsp;m
 	<td> <I>Place mark</I><br>MarkCrosshair() 
@@ -304,11 +310,29 @@
 	<th align=left>e<br>&nbsp;d
 	<td> <I>Remove object</I><br>Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)
 <tr bgcolor="#FFFFFF">
-	<th align=left>e<br>&nbsp;e
-	<td> <I>External editor...</I><br>GetXY(Click on the subcircuit to edit); extedit(object)
-<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;f
 	<td> <I>Object flags...</I><br>FlagEdit() 
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;c
+	<td> <I>Clearance +2 mil</I><br>ChangeClearSize(Object,+2,mil) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;c-shift
+	<td> <I>Clearance -2 mil</I><br>ChangeClearSize(Object,-2,mil) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;d
+	<td> <I>ChangeDrill +5 mil</I><br>ChangeDrillSize(Object,+5,mil) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;d-shift
+	<td> <I>ChangeDrill -5 mil</I><br>ChangeDrillSize(Object,-5,mil) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;s
+	<td> <I>ChangeSize +5 mil</I><br>ChangeSize(Object,+5,mil) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;s-shift
+	<td> <I>ChangeSize -5 mil</I><br>ChangeSize(Object,-5,mil) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;y
+	<td> <I>ChangeSizes to Route style</I><br>ChangeSizes(Object,style,mil) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;i
 	<td> <I>Flip Object</I><br>Flip(Object) 
@@ -316,23 +340,29 @@
 	<th align=left>e<br>&nbsp;j
 	<td> <I>ChangeJoin Object</I><br>ChangeJoin(Object) 
 <tr bgcolor="#FFFFFF">
-	<th align=left>e<br>&nbsp;l<br>&nbsp;&nbsp;b
-	<td> <I>Layer bindings...</I><br>LayerBinding() 
-<tr bgcolor="#DDFFFF">
-	<th align=left>e<br>&nbsp;m<br>&nbsp;&nbsp;l
+	<th align=left>e<br>&nbsp;l
 	<td> <I>Move to current layer</I><br>MoveToCurrentLayer(Object) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;o
 	<td> <I>Edit name of/Change font on layout</I><br>FontSel(Object) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;p
 	<td> <I>Object Properties...</I><br>PropEdit() 
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;b
+	<td> <I>Layer bindings...</I><br>LayerBinding() 
 <tr bgcolor="#FFFFFF">
-	<th align=left>e<br>&nbsp;s
+	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;e
+	<td> <I>External editor...</I><br>GetXY(Click on the subcircuit to edit); extedit(object)
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;r
+	<td> <I>Refdes</I><br>ChangeName(Subc) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>Set Same Style</I><br>SetSame() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;t
-	<td> <I>text on layout</I><br>ChangeName(Object) 
+	<td> <I>text or name</I><br>ChangeName(Object) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;v
 	<td> <I>Paste buffer to layout</I><br>Mode(PasteBuffer) 
@@ -398,13 +428,13 @@
 	<td> <I>Export layout...</I><br>ExportGUI()
 <tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;l
-	<td> <I>Load layout</I><br>Load(Layout)
+	<td> <I>Load layout...</I><br>Load(Layout)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;n
 	<td> <I>Start New Layout</I><br>New() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;o
-	<td> <I>Load layout</I><br>Load(Layout)
+	<td> <I>Load layout...</I><br>Load(Layout)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;p
 	<td> <I>Print layout...</I><br>Print()
@@ -665,7 +695,7 @@
 	<td> <I>Center cursor</I><br>Center() 
 <tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;f
-	<td> <I>Zoom Max</I><br>Zoom() 
+	<td> <I>Zoom Extents</I><br>Zoom() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;g
 	<td> <I>Enable visible grid</I><br>conf(toggle, editor/draw_grid, design) 
@@ -721,15 +751,18 @@
 	<th align=left>y-ctrl
 	<td> <I>Redo last undone operation</I><br>Redo() 
 <tr bgcolor="#DDFFFF">
-	<th align=left>z
-	<td> <I>Zoom In 20%</I><br>Zoom(-1.2) 
-<tr bgcolor="#FFFFFF">
 	<th align=left>z-ctrl
 	<td> <I>Undo last operation</I><br>Undo() 
+<tr bgcolor="#FFFFFF">
+	<th align=left>z<br>&nbsp;e<br>&nbsp;&nbsp;
+	<td> <I>Zoom Extents</I><br>Zoom() 
 <tr bgcolor="#DDFFFF">
-	<th align=left>z-shift
+	<th align=left>z<br>&nbsp;x<br>&nbsp;&nbsp;
 	<td> <I>Zoom Out 20%</I><br>Zoom(+1.2) 
 <tr bgcolor="#FFFFFF">
+	<th align=left>z<br>&nbsp;z<br>&nbsp;&nbsp;
+	<td> <I>Zoom In 20%</I><br>Zoom(-1.2) 
+<tr bgcolor="#DDFFFF">
 	<th align=left>|
 	<td> <I>Wireframe draw</I><br>conf(toggle, editor/wireframe_draw, design) 
 </table>
