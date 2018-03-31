@@ -5,7 +5,7 @@
 /a/r       auto-route
 /a/o       optimize (djopt)
 /b         buffer
-/b/c       convert
+/b/c       convert & clear
 /b/m       mirror
 /b/r       rotate
 /b/s       subcircuit
