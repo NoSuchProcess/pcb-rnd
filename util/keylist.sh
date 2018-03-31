@@ -303,9 +303,18 @@ gen_dot()
 			}
 		}
 
+		function cleanup(s)
+		{
+			gsub("\260", "\\&deg;", s)
+			gsub("\\\\37777777660", "\\&deg;", s)
+			gsub("\\\\057", "/", s)
+			return s
+		}
+
 		function node(path, desc, shape,    orig)
 		{
 			orig=path
+			desc=cleanup(desc)
 			sub("^[/_;]", "", orig)
 			sub("[/_;]$", "", orig)
 			gsub("[/_;]", " ", orig)
