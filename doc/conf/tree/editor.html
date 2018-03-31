@@ -5,8 +5,8 @@
 <tr><th>node name <th> type <td> flags <td> description
 <tr><td> grid_unit <td><a href="CFN_UNIT.html"> unit </a><td> 0 <td> select whether you draw in mm or mil
 <tr><td> grid <td><a href="CFN_COORD.html"> coord </a><td> 0 <td> grid in pcb-units
-<tr><td> increments_mm <td><a href="CFN_INCREMENTS.html"> increments </a><td> 0 <td> increments (size deltas) when drawing in mil
-<tr><td> increments_mil <td><a href="CFN_INCREMENTS.html"> increments </a><td> 0 <td> increments (size deltas) when drawing in mil
+<tr><td> grids <td><a href="CFN_LIST.html"> list </a><td> 0 <td> grid in grid-string format
+<tr><td> grids_idx <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> the index of the currently active grid from grids
 <tr><td> zoom <td><a href="CFN_REAL.html"> real </a><td> 0 <td> default zoom
 <tr><td> mode <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> currently active mode
 <tr><td> buffer_number <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> number of the current buffer
@@ -29,7 +29,7 @@
 <tr><td> swap_start_direction <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> change starting direction after each click
 <tr><td> show_drc <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> show drc region on crosshair
 <tr><td> auto_drc <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, PCB doesn't let you place copper that violates DRC.
-<tr><td> show_number <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> pinout shows number
+<tr><td> show_number <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> OBSOLETE: pinout shows number
 <tr><td> orthogonal_moves <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move items orthogonally.
 <tr><td> reset_after_element <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> reset connections after each element while saving all connections
 <tr><td> auto_place <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> flag which says we should force placement of the windows on startup
@@ -40,7 +40,7 @@
 <tr><td> wireframe_draw <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if set, lines and arcs on the screen are drawn as outlines.
 <tr><td> local_ref <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> use local reference for moves, by setting the mark at the beginning of each move.
 <tr><td> check_planes <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, only polygons and their clearances are drawn, to see if polygons have isolated regions.
-<tr><td> hide_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, element names are not drawn.
+<tr><td> hide_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, subc floater text objects (typical use case: refdes text) are not drawn.
 <tr><td> description <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> obsolete - DO NOT USE - kept for compatibility
 <tr><td> name_on_pcb <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> obsolete - DO NOT USE - kept for compatibility
 <tr><td> subc_id <td><a href="CFN_STRING.html"> string </a><td> 0 <td> subcircuit ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying the refes, if empty; syntax if the same as for DYNTEXT
