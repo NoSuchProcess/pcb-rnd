@@ -110,9 +110,9 @@ ha:{
 				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Change object {
 					li:submenu {
-						ha:Set Same Style           = { a={<key>e; <key>s}; action=SetSame() }
+						ha:Set Same Style           = { a={<key>e; <key>s; <key>s}; action=SetSame() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
-						ha:Move to current layer    = { a={<key>e; <key>m; <key>l}; action=MoveToCurrentLayer(Object) }
+						ha:Move to current layer    = { a={<key>e; <key>l}; action=MoveToCurrentLayer(Object) }
 						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
 
 						ha:Geometry {
@@ -162,8 +162,8 @@ ha:{
 				-
 				ha:Subcircuit {
 					li:submenu {
-						ha:Layer bindings...          = { a={<key>e; <key>l; <key>b}; action=LayerBinding() }
-						ha:External editor...         = { a={<key>e; <key>e}; li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
+						ha:Layer bindings...          = { a={<key>e; <key>s; <key>b}; action=LayerBinding() }
+						ha:External editor...         = { a={<key>e; <key>s; <key>e}; li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
 					}
 				}
 				ha:Object flags...                = { a={<key>e; <key>f}; action=FlagEdit() }
