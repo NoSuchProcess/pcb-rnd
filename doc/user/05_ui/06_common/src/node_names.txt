@@ -11,10 +11,13 @@
 /b/s       subcircuit
 /c         connections & rats
 /e         edit
+/e/l       edit layer
+/e/m       edit: move
 /f         file
-/f/e       export
+/f/x       export to
 /f/c       configuration
 /i         info
+/i/c       configuration
 /m         mode
 /m/c       cursor/crosshair mode
 /m/d       drawing (render) mode
