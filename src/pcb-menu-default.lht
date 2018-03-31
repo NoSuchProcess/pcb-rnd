@@ -117,14 +117,13 @@ ha:{
 
 						ha:Geometry {
 							li:submenu {
-								ha:ChangeJoin SelectedObject    = { action=ChangeJoin(SelectedObjects) }
-								ha:Clearance +2 mil             = { action=ChangeClearSize(Object,+2,mil) }
-								ha:Clearance -2 mil             = { action=ChangeClearSize(Object,-2,mil) }
-								ha:ChangeSizes to Route style   = { action=ChangeSizes(Object,style,mil) }
-								ha:ChangeSize +5 mil            = { action=ChangeSize(Object,+5,mil) }
-								ha:ChangeSize -5 mil            = { action=ChangeSize(Object,-5,mil) }
-								ha:ChangeDrill +5 mil           = { action=ChangeDrillSize(Object,+5,mil) }
-								ha:ChangeDrill -5 mil           = { action=ChangeDrillSize(Object,-5,mil) }
+								ha:Clearance +2 mil             = { a={<key>e; <key>g; <key>c}; action=ChangeClearSize(Object,+2,mil) }
+								ha:Clearance -2 mil             = { a={<key>e; <key>g; Shift<key>c}; action=ChangeClearSize(Object,-2,mil) }
+								ha:ChangeSizes to Route style   = { a={<key>e; <key>g; <key>y}; action=ChangeSizes(Object,style,mil) }
+								ha:ChangeSize +5 mil            = { a={<key>e; <key>g; <key>s}; action=ChangeSize(Object,+5,mil) }
+								ha:ChangeSize -5 mil            = { a={<key>e; <key>g; Shift<key>s}; action=ChangeSize(Object,-5,mil) }
+								ha:ChangeDrill +5 mil           = { a={<key>e; <key>g; <key>d}; action=ChangeDrillSize(Object,+5,mil) }
+								ha:ChangeDrill -5 mil           = { a={<key>e; <key>g; Shift<key>d}; action=ChangeDrillSize(Object,-5,mil) }
 							}
 						}
 					}
@@ -386,7 +385,7 @@ ha:{
 				ha:Remove selected objects                = { a={<key>s; <key>r;} action=RemoveSelected() }
 				ha:Convert selection to subcircuit        = { a={<key>s; <key>c; <key>s;} action=Select(ConvertSubc) }
 				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
-				ha:Change size of selected objects {
+				ha:Change selected objects {
 					li:submenu {
 						ha:Lines -10 mil     = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
 						ha:Lines +10 mil     = { li:action={ChangeSize(SelectedLines,+10,mil); ChangeSize(SelectedArcs,+10,mil)} }
@@ -398,6 +397,8 @@ ha:{
 						-
 						ha:Hole -10 mil      = { action=ChangeDrillSize(SelectedPadstacks,-10,mil) }
 						ha:Hole +10 mil      = { action=ChangeDrillSize(SelectedPadstacks,+10,mil) }
+						-
+						ha:Toggle join       = { action=ChangeJoin(SelectedObjects) }
 					}
 				}
 			}
