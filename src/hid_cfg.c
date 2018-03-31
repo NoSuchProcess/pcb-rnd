@@ -32,6 +32,7 @@
 #include <liblihata/tree.h>
 
 #include "config.h"
+#include "hid.h"
 #include "hid_cfg.h"
 #include "error.h"
 #include "paths.h"
@@ -524,3 +525,52 @@ void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 	va_end(ap);
 	pcb_message(PCB_MSG_ERROR, hid_cfg_error_shared);
 }
+
+static void map_anchor_menus(pcb_hid_cfg_t *cfg, lht_node_t *node, const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
+{
+	lht_dom_iterator_t it;
+
+	switch(node->type) {
+		case LHT_HASH:
+		case LHT_LIST:
+			for(node = lht_dom_first(&it, node); node != NULL; node = lht_dom_next(&it))
+				map_anchor_menus(cfg, node, name, cb, ctx);
+			break;
+		case LHT_TEXT:
+			if (strcmp(node->data.text.value, name) == 0) {
+				lht_node_t *n;
+				char *path = NULL;
+				int used = 0, alloced = 0, l0 = strlen(name) + 128;
+
+				for(n = node->parent; n != NULL; n = n->parent) {
+					int len;
+					if (strcmp(n->name, "submenu") == 0)
+						continue;
+					len = strlen(n->name);
+					if (used+len+2+l0 >= alloced) {
+						alloced = used+len+2+l0 + 128;
+						path = realloc(path, alloced);
+					}
+					memmove(path+len+1, path, used);
+					memcpy(path, n->name, len);
+					path[len] = '/';
+					used += len+1;
+				}
+				memcpy(path+used, name, l0+1);
+				printf("path='%s' used=%d\n", path, used);
+				cb(ctx, cfg, node, path);
+				free(path);
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
+{
+	if ((pcb_gui == NULL) || (pcb_gui->hid_cfg == NULL) || (pcb_gui->hid_cfg->doc == NULL) || (pcb_gui->hid_cfg->doc->root == NULL))
+		return;
+	map_anchor_menus(pcb_gui->hid_cfg, pcb_gui->hid_cfg->doc->root, name, cb, ctx);
+}
+
