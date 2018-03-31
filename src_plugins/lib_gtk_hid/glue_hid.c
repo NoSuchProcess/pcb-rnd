@@ -162,6 +162,9 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
 	pcb_gtk_drcwin_init(&ghidgui->drcwin);     /* DRC window is not built, yet    */
 
+	/* assume pcb_gui is us */
+	pcb_gui->hid_cfg = ghidgui->topwin.ghid_cfg;
+
 	gport->mouse.drawing_area = ghidgui->topwin.drawing_area;
 	gport->drawing_area = ghidgui->topwin.drawing_area;
 	gport->mouse.top_window = ghidgui->common.top_window;
@@ -197,6 +200,7 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	gtkhid_end();
 
 	ghidgui->gui_is_up = 0;
+	pcb_gui->hid_cfg = NULL;
 }
 
 static void ghid_do_exit(pcb_hid_t * hid)

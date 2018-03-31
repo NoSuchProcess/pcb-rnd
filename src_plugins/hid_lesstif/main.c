@@ -3726,6 +3726,8 @@ void pplg_uninit_hid_lesstif(void)
 	conf_hid_unreg(lesstif_cookie);
 }
 
+extern pcb_hid_cfg_t *lesstif_cfg;
+
 int pplg_init_hid_lesstif(void)
 {
 	static conf_hid_callbacks_t ccb;
@@ -3806,6 +3808,7 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.remove_menu = lesstif_remove_menu;
+	lesstif_hid.hid_cfg = lesstif_cfg;
 	lesstif_hid.usage = lesstif_usage;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);

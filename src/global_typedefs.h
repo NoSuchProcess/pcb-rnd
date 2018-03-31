@@ -60,6 +60,8 @@ typedef union pcb_parent_s pcb_parent_t;
 
 typedef struct pcb_plug_io_s pcb_plug_io_t;
 
+typedef struct pcb_hid_cfg_s pcb_hid_cfg_t;
+
 typedef unsigned int pcb_cardinal_t;
 typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */
 

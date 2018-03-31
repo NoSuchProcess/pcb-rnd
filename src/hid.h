@@ -507,6 +507,10 @@ struct pcb_hid_s {
 	/* Removes a menu recursively */
 	int (*remove_menu)(const char *menu_path);
 
+	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
+	pcb_hid_cfg_t *hid_cfg;
+
+
 	/* Optional: print usage string (if accepts command line arguments)
 	   Subtopic:
 	     NULL    print generic help
