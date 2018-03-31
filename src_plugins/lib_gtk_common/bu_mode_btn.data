@@ -400,14 +400,14 @@ static const char *sel[] = {
 "ooooooooooo .. oooooo",
 "oooooooooooo  ooooooo",
 "ooooooooooooooooooooo",
-"ooo   oo     o oooooo",
-"oo ooo o ooooo oooooo",
-"ooo oooo ooooo oooooo",
-"oooo ooo    oo oooooo",
-"ooooo oo ooooo oooooo",
-"oooooo o ooooo oooooo",
-"oo ooo o ooooo oooooo",
-"ooo   oo     o     oo"
+"ooo ooo    ooo    ooo",
+"oo o oo ooo oo ooo oo",
+"oo o oo ooo oo ooo oo",
+"o ooo o    ooo    ooo",
+"o ooo o ooo oo ooo oo",
+"o     o ooo oo ooo oo",
+"o ooo o ooo oo ooo oo",
+"o ooo o ooo oo ooo oo"
 };
 
 
