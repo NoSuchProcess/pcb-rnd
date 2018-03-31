@@ -31,10 +31,11 @@
 
 #include <liblihata/dom.h>
 #include <stdarg.h>
+#include "global_typedefs.h"
 
-typedef struct pcb_hid_cfg_s {
+struct pcb_hid_cfg_s {
 	lht_doc_t *doc;
-} pcb_hid_cfg_t;
+};
 
 /* Create a set of resources representing a single menu item
    If action is NULL, it's a drop-down item that has submenus.
