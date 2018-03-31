@@ -37,7 +37,7 @@ ha:{
 				ha:Start New Layout                  = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
 				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-
-				ha:Load layout                       = { li:a={{<key>f;<key>o};{<key>f;<key>l};}  action=Load(Layout); tip=Load a layout from a file }
+				ha:Load layout...                    = { li:a={{<key>f;<key>o};{<key>f;<key>l};}  action=Load(Layout); tip=Load a layout from a file }
 				-
 				ha:Save Layout                       = { m=S; li:a={{<key>f;<key>s}; {Ctrl<Key>s};};        action=Save(Layout); tip=Saves current layout }
 				ha:Save Layout As...                 = { m=A; li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s};};  action=Save(LayoutAs); tip=Saves current layout into a new file }
