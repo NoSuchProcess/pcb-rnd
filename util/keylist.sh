@@ -306,12 +306,14 @@ gen_dot()
 		function node(path, desc, shape,    orig)
 		{
 			orig=path
-			gsub("[_;]", "/", orig)
+			sub("^[/_;]", "", orig)
+			sub("[/_;]$", "", orig)
+			gsub("[/_;]", " ", orig)
 			sub("^[/;]", "", path)
 			sub("[/;]$", "", path)
 			gsub("[/;]", "_", path)
 			gsub("[\"]", "", desc)
-			print q path q " [label=" q orig "\\n" desc q " " shape "]"
+			print q path q " [label=" q "{" orig "} \\n" desc q " " shape "]"
 			arrow(path)
 		}
 
