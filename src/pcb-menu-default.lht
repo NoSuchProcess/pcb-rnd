@@ -686,5 +686,39 @@ ha:{
 				ha:Redo last undone operation   = { action=Redo() }
 			}
 		} # popup-obj-misc
+
+		ha:layer {
+			li:submenu {
+				ha:Layer properties...              = { action=EditLayer() }
+				ha:Layer attributes...              = { action=Attributes(Layer) }
+				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
+				-
+				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
+				ha:Move down (within group)         = { action=MoveLayer(c, step+) }
+				-
+				ha:Remove                           = { action=MoveLayer(c, -1) }
+				ha:Insert new, before this layer    = { action={ MoveLayer(-1, c); EditLayer() } }
+				ha:Insert new, after this layer     = { action={ MoveLayer(-1, c); MoveLayer(c, step+); EditLayer() } }
+				-
+				ha:all layers on                    = { action=ToggleView(all, vis, set) }
+				ha:all layers off                   = { action=ToggleView(all, vis, clear) }
+			}
+		} # layer
+
+		ha:group {
+			li:submenu {
+				ha:Group properties...              = { action=EditGroup(@) }
+				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
+				-
+				ha:Insert new layer                 = { action={ MoveLayer(-1, gi); EditLayer() } }
+				ha:Append new layer                 = { action={ MoveLayer(-1, ga); EditLayer() } }
+				-
+				ha:expand groups                    = { action=ToggleView(all, open, set) }
+				ha:collapse groups                  = { action=ToggleView(all, open, clear) }
+				ha:all layers on                    = { action=ToggleView(all, vis, set) }
+				ha:all layers off                   = { action=ToggleView(all, vis, clear) }
+			}
+		} # group
+
 	} # popups
 } # root
