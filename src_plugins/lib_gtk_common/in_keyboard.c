@@ -115,6 +115,12 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		}
 
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
+		if (kv == GDK_KEY_KP_Add) key_raw = kv = '+';
+		if (kv == GDK_KEY_KP_Subtract) key_raw = kv = '-';
+		if (kv == GDK_KEY_KP_Multiply) key_raw = kv = '*';
+		if (kv == GDK_KEY_KP_Divide) key_raw = kv = '/';
+		if (kv == GDK_KEY_KP_Enter) key_raw = kv = GDK_KEY_Return;
+
 		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv, seq, &seq_len);
 		if (slen > 0) {
 			view->has_entered  = 1;
