@@ -459,8 +459,6 @@ int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int 
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
-printf("MENU: '%s' %d\n", path, is_popup);;
-
 	ghid_main_menu_real_add_node(ctx, GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), menu_item);
 
 /* make sure new menu items appear on screen */
