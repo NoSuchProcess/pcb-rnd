@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include "hid.h"
 #include "conf.h"
 #include "conf_hid.h"
 #include "conf_core.h"
@@ -11,6 +12,7 @@ int lineno = 0;
 int global_notify = 0;
 conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
+pcb_hid_t *pcb_gui = NULL;
 
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
