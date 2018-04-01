@@ -510,8 +510,7 @@ lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, lht_node_t *ins_aft
 	n = lht_dom_node_alloc(LHT_HASH, name);
 	if (ins_after != NULL) {
 		/* insert as next sibling below a @anchor */
-#warning menu TODO: insert after ins_after->name
-		lht_dom_list_append(parent, n);
+		lht_dom_list_insert_after(ins_after, n);
 	}
 	else if (parent != NULL) {
 		/* insert as last item under a parent node */
