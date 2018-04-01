@@ -21,9 +21,12 @@
 #include "../src/error.h"
 #include "../src/event.h"
 #include "../src/plugins.h"
+#include "../src/hid.h"
 #include "gsch2pcb_rnd_conf.h"
 
 /* glue for pcb-rnd core */
+
+pcb_hid_t *pcb_gui = NULL;
 
 void pcb_chdir_error_message(const char *DirName)
 {
