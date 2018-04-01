@@ -213,11 +213,17 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	conflist_t *lst = (conflist_t *)&conf_core.editor.grids;
 	conf_listitem_t *li;
 	char *end = path + strlen(path);
+	pcb_menu_prop_t props;
+
+	memset(&props, 0,sizeof(props));
+	props.action = "action";
+	props.cookie = ANCH;
+
 /*	pcb_hid_cfg_del_anchor_menus(node->next, ANCH);*/
 
 /*	for(li = conflist_first(lst); li != NULL; li = conflist_next(li)) {*/
 		strcpy(end, "/test123");
-		pcb_gui->create_menu(path, "action", NULL, NULL, "tip", ANCH);
+		pcb_gui->create_menu(path, &props);
 /*	}*/
 
 }

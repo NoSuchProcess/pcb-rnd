@@ -986,7 +986,14 @@ static int pcb_act_CreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_co
 	}
 
 	if (argc > 0) {
-		pcb_gui->create_menu(argv[0], (argc > 1) ? argv[1] : NULL, (argc > 2) ? argv[2] : NULL, (argc > 3) ? argv[3] : NULL, (argc > 4) ? argv[4] : NULL, (argc > 5) ? argv[5] : NULL);
+		pcb_menu_prop_t props;
+		memset(&props, 0, sizeof(props));
+		props.action = (argc > 1) ? argv[1] : NULL;
+		props.mnemonic = (argc > 2) ? argv[2] : NULL;
+		props.accel = (argc > 3) ? argv[3] : NULL;
+		props.tip = (argc > 4) ? argv[4] : NULL;
+		props.cookie = (argc > 5) ? argv[5] : NULL;
+		pcb_gui->create_menu(argv[0], &props);
 		return 0;
 	}
 
@@ -1667,6 +1674,8 @@ static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		pcb_grid_list_step(+1);
 	else if ((strcmp(argv[0], "down") == 0) || (strcmp(argv[0], "-") == 0))
 		pcb_grid_list_step(-1);
+	else if (strcmp(argv[0], "menu") == 0)
+		pcb_grid_install_menu();
 	else
 		PCB_ACT_FAIL(grid);
 

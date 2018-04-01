@@ -48,11 +48,7 @@ typedef struct {
 	pcb_create_menu_widget_t cb;
 	void *cb_ctx;
 	lht_node_t *parent;
-	const char *action;
-	const char *mnemonic;
-	const char *accel;
-	const char *tip;
-	const char *cookie;
+	const pcb_menu_prop_t *props;
 	int target_level;
 	int err;
 	lht_node_t *after;
@@ -85,17 +81,17 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "m", "cookie", cmc->props->cookie, cmc->props->mnemonic, "a", cmc->props->accel, "tip", cmc->props->tip, ((cmc->props->action != NULL) ? "action": NULL), cmc->props->action, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
 		else
-			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->cookie,  NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie,  NULL);
 
 		if (node == NULL)
 			return NULL;
 
-		if ((rel_level != cmc->target_level) || (cmc->action == NULL))
+		if ((rel_level != cmc->target_level) || (cmc->props->action == NULL))
 			lht_dom_hash_put(node, lht_dom_node_alloc(LHT_LIST, "submenu"));
 
 		if (node->parent == NULL) {
@@ -128,7 +124,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 	return node;
 }
 
-int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, pcb_create_menu_widget_t cb, void *cb_ctx)
+int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx)
 {
 	const char *name;
 	create_menu_ctx_t cmc;
@@ -137,11 +133,7 @@ int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *act
 	cmc.cb = cb;
 	cmc.cb_ctx = cb_ctx;
 	cmc.parent = NULL;
-	cmc.action = action;
-	cmc.mnemonic = mnemonic;
-	cmc.accel = accel;
-	cmc.tip = tip;
-	cmc.cookie = cookie;
+	cmc.props = props;
 	cmc.err = -1;
 	cmc.after = NULL;
 

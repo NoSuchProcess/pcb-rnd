@@ -452,9 +452,9 @@ static int ghid_remove_menu(const char *menu_path)
 	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
 }
 
-static void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
+static void ghid_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 {
-	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, &ghidgui->topwin.menu);
+	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &ghidgui->topwin.menu);
 }
 
 static int ghid_usage(const char *topic)

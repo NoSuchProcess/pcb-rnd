@@ -951,9 +951,9 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 }
 
 
-void lesstif_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
+void lesstif_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 {
-	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, cookie, lesstif_create_menu_widget, NULL);
+	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, props, lesstif_create_menu_widget, NULL);
 }
 
 void lesstif_remove_menu(const char *menu_path)

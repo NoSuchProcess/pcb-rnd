@@ -153,6 +153,15 @@ typedef enum pcb_hid_attr_ev_e {
 	PCB_HID_ATTR_EV_WINCLOSE
 } pcb_hid_attr_ev_t;
 
+/* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */
+typedef struct pcb_menu_prop_s {
+	const char *action;
+	const char *mnemonic;
+	const char *accel;
+	const char *tip;        /* tooltip */
+	const char *cookie;     /* used for cookie based removal */
+} pcb_menu_prop_t;
+
 typedef struct pcb_hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
@@ -502,7 +511,7 @@ struct pcb_hid_s {
 	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu)(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
+	void (*create_menu)(const char *menu_path, const pcb_menu_prop_t *props);
 
 	/* Removes a menu recursively */
 	int (*remove_menu)(const char *menu_path);

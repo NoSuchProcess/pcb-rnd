@@ -50,19 +50,24 @@ void pcb_layer_menu_create(const char *path_prefix, const char *cookie)
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
+		pcb_menu_prop_t props;
 		int n;
 
 		if (g->type & PCB_LYT_SUBSTRATE)
 			continue;
 
+		memset(&props, 0, sizeof(props));
+		props.action = "action";
+		props.cookie = cookie;
+
 		pcb_snprintf(bn, len_avail, "[%s]", g->name);
-		pcb_gui->create_menu(path, "TODO: action", "", "accel", "Layer group", cookie);
+		pcb_gui->create_menu(path, &props);
 
 		for(n = 0; n < g->len; n++) {
 			pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
 
 			pcb_snprintf(bn, len_avail, "  %s", l->name);
-			pcb_gui->create_menu(path, "TODO: action", "", "accel", "Layer", cookie);
+			pcb_gui->create_menu(path, &props);
 		}
 	}
 }

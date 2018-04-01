@@ -32,6 +32,7 @@
 #include <liblihata/dom.h>
 #include <stdarg.h>
 #include "global_typedefs.h"
+#include "hid.h"
 
 struct pcb_hid_cfg_s {
 	lht_doc_t *doc;
@@ -43,7 +44,7 @@ struct pcb_hid_cfg_s {
    NOTE: unlike other cookies, this cookie is strdup()'d. 
    */
 typedef int (*pcb_create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
-int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, pcb_create_menu_widget_t cb, void *cb_ctx);
+int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx);
 
 /* Remove a path recursively; call gui_remove() on leaf paths until the subtree
    is consumed (should return 0 on success) */
