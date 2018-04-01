@@ -961,6 +961,11 @@ void lesstif_remove_menu(const char *menu_path)
 	pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
 }
 
+void lesstif_remove_menu_node(lht_node_t *node)
+{
+	pcb_hid_cfg_remove_menu(lesstif_cfg, node, del_menu, NULL);
+}
+
 void lesstif_uninit_menu(void)
 {
 	XtDestroyWidget(lesstif_menubar);

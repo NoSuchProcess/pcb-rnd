@@ -166,8 +166,7 @@ static int hid_cfg_remove_item(pcb_hid_cfg_t *hr, lht_node_t *item, int (*gui_re
 	return 0;
 }
 
-
-static int hid_cfg_remove_menu_(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+int pcb_hid_cfg_remove_menu_node(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if (root == NULL)
 		return -1;
@@ -179,7 +178,7 @@ static int hid_cfg_remove_menu_(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_r
 			int res = 0;
 			for(n = psub->data.list.first; n != NULL; n = next) {
 				next = n->next;
-				if (hid_cfg_remove_menu_(hr, n, gui_remove, ctx) != 0)
+				if (pcb_hid_cfg_remove_menu_node(hr, n, gui_remove, ctx) != 0)
 					res = -1;
 			}
 			if (res == 0)
@@ -197,9 +196,8 @@ static int hid_cfg_remove_menu_(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_r
 
 int pcb_hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
-	return hid_cfg_remove_menu_(hr, pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL), gui_remove, ctx);
+	return pcb_hid_cfg_remove_menu_node(hr, pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL), gui_remove, ctx);
 }
-
 
 static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t err)
 {
@@ -610,12 +608,27 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hi
 
 int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 {
+	lht_node_t *nxt;
 	if ((node->type != LHT_TEXT) || (node->data.text.value == NULL) || (node->data.text.value[0] != '@'))
 		return -1;
 pcb_trace("DEL:\n");
-	for(node = node->next; node != NULL; node = node->next) {
+	for(node = node->next; node != NULL; node = nxt) {
+		lht_node_t *ncookie;
+
 		if (node->type != LHT_HASH)
 			break;
-pcb_trace("  '%s'\n", node->name);
+		ncookie = lht_dom_hash_get(node, "cookie");
+
+#if 0
+		pcb_trace("  '%s' cookie='%s'\n", node->name, ncookie == NULL ? "NULL":ncookie->data.text.value );
+		if ((ncookie == NULL) || (ncookie->type != LHT_TEXT) || (strcmp(ncookie->data.text.value, cookie) != 0))
+			break;
+#endif
+
+		nxt = node->next;
+		
+
+		pcb_gui->remove_menu_node(node);
 	}
+	return 0;
 }

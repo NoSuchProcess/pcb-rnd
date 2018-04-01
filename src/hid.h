@@ -2,6 +2,7 @@
 #define PCB_HID_H
 
 #include <stdarg.h>
+#include <liblihata/dom.h>
 
 #include "config.h"
 #include "error.h"
@@ -515,6 +516,7 @@ struct pcb_hid_s {
 
 	/* Removes a menu recursively */
 	int (*remove_menu)(const char *menu_path);
+	int (*remove_menu_node)(lht_node_t *nd);
 
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
 	pcb_hid_cfg_t *hid_cfg;

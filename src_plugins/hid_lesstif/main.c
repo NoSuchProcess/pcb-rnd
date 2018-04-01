@@ -3717,6 +3717,7 @@ static void lesstif_conf_regs(const char *cookie)
 
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 void lesstif_remove_menu(const char *menu);
+void lesstif_remove_menu_node(lht_node_t *node);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
@@ -3806,6 +3807,7 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.remove_menu = lesstif_remove_menu;
+	lesstif_hid.remove_menu_node = lesstif_remove_menu_node;
 	lesstif_hid.usage = lesstif_usage;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);
