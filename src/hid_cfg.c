@@ -81,7 +81,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "m", "cookie", cmc->props->cookie, cmc->props->mnemonic, "a", cmc->props->accel, "tip", cmc->props->tip, ((cmc->props->action != NULL) ? "action": NULL), cmc->props->action, NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "m", "", "cookie", cmc->props->cookie, cmc->props->mnemonic, "a", cmc->props->accel, "tip", cmc->props->tip, ((cmc->props->action != NULL) ? "action": NULL), cmc->props->action, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
@@ -609,9 +609,10 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hi
 int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 {
 	lht_node_t *nxt;
+
 	if ((node->type != LHT_TEXT) || (node->data.text.value == NULL) || (node->data.text.value[0] != '@'))
 		return -1;
-pcb_trace("DEL:\n");
+
 	for(node = node->next; node != NULL; node = nxt) {
 		lht_node_t *ncookie;
 
@@ -619,15 +620,11 @@ pcb_trace("DEL:\n");
 			break;
 		ncookie = lht_dom_hash_get(node, "cookie");
 
-#if 0
-		pcb_trace("  '%s' cookie='%s'\n", node->name, ncookie == NULL ? "NULL":ncookie->data.text.value );
+/*		pcb_trace("  '%s' cookie='%s'\n", node->name, ncookie == NULL ? "NULL":ncookie->data.text.value );*/
 		if ((ncookie == NULL) || (ncookie->type != LHT_TEXT) || (strcmp(ncookie->data.text.value, cookie) != 0))
 			break;
-#endif
 
 		nxt = node->next;
-		
-
 		pcb_gui->remove_menu_node(node);
 	}
 	return 0;
