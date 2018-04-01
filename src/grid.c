@@ -44,6 +44,8 @@
 #include "misc_util.h"
 #include "pcb_bool.h"
 #include "pcb-printf.h"
+#include "hid_cfg.h"
+#include "hid.h"
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {
@@ -202,4 +204,25 @@ pcb_bool_t pcb_grid_list_step(int stp)
 
 
 		return pcb_true;
+}
+
+#define ANCH "@grid"
+
+static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+{
+	conflist_t *lst = (conflist_t *)&conf_core.editor.grids;
+	conf_listitem_t *li;
+	char *end = path + strlen(path);
+/*	pcb_hid_cfg_del_anchor_menus(node->next, ANCH);*/
+
+/*	for(li = conflist_first(lst); li != NULL; li = conflist_next(li)) {*/
+		strcpy(end, "/test123");
+		pcb_gui->create_menu(path, "action", NULL, NULL, "tip", ANCH);
+/*	}*/
+
+}
+
+void pcb_grid_install_menu(void)
+{
+	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
 }

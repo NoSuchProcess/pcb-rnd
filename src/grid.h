@@ -66,5 +66,8 @@ void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src);
 /* Step stp steps (can be 0) on the grids list and set the resulting grid */
 pcb_bool_t pcb_grid_list_step(int stp);
 
+/* Reinstall grid menus */
+void pcb_grid_install_menu(void);
+
 
 #endif
