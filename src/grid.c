@@ -188,7 +188,7 @@ pcb_bool_t pcb_grid_list_step(int stp)
 	if (dst >= max)
 		dst = max - 1;
 	if (dst < 0)
-		return;
+		return pcb_false;
 
 	conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
 
