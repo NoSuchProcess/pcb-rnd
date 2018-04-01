@@ -79,9 +79,29 @@ struct _GHidMainMenuClass {
 
 /* LHT HANDLER */
 
-void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * base);
+void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
 
-static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * sub_res)
+static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after)
+{
+	int pos;
+	lht_dom_iterator_t it;
+	lht_node_t *n;
+
+	/* append at the end of the shell */
+	if (ins_after == NULL) {
+		gtk_menu_shell_append(shell, item);
+		return;
+	}
+
+	/* insert after ins_after or append at the end */
+	for(n = lht_dom_first(&it, ins_after->parent), pos = 1; n != NULL; n = lht_dom_next(&it),pos++)
+		if (n == ins_after)
+			break;
+
+	gtk_menu_shell_insert(shell, item, pos);
+}
+
+static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *sub_res)
 {
 	const char *tmp_val;
 	GtkAction *action = NULL;
@@ -114,8 +134,8 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 		lht_node_t *n;
 
 		sub_res->user_data = handle_alloc(submenu, item);
+		ins_menu(item, shell, ins_after);
 
-		gtk_menu_shell_append(shell, item);
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
 
 		/* add tearoff to menu */
@@ -126,7 +146,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 		   them recursively. */
 		n = pcb_hid_cfg_menu_field(sub_res, PCB_MF_SUBMENU, NULL);
 		for (n = n->data.list.first; n != NULL; n = n->next)
-			ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(submenu), n);
+			ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(submenu), NULL, n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
@@ -176,7 +196,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 			/* NORMAL ITEM */
 			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel);
 			accel = NULL;
-			gtk_menu_shell_append(shell, item);
+			ins_menu(item, shell, ins_after);
 			sub_res->user_data = handle_alloc(item, item);
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer) n_action);
 			if ((tip != NULL) || (n_keydesc != NULL)) {
@@ -199,7 +219,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer) sub_res);
 		gtk_activatable_set_use_action_appearance(GTK_ACTIVATABLE (item), FALSE);
 		gtk_activatable_set_related_action(GTK_ACTIVATABLE (item), action);
-		gtk_menu_shell_append(shell, item);
+		ins_menu(item, shell, ins_after);
 		menu->actions = g_list_append(menu->actions, action);
 		sub_res->user_data = handle_alloc(item, item);
 	}
@@ -213,13 +233,13 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 
 /* Translate a resource tree into a menu structure; shell is the base menu
    shell (a menu bar or popup menu) */
-void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *base)
+void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
 {
 	switch (base->type) {
 	case LHT_HASH:								/* leaf submenu */
 		{
 			GtkAction *action = NULL;
-			action = ghid_add_menu(ctx, menu, shell, base);
+			action = ghid_add_menu(ctx, menu, shell, ins_after, base);
 			if (action) {
 				const char *val;
 
@@ -244,7 +264,7 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 
 			if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
 				GtkWidget *item = gtk_separator_menu_item_new();
-				gtk_menu_shell_append(shell, item);
+				ins_menu(item, shell, ins_after);
 				base->user_data = handle_alloc(item, item);
 			}
 			else if (strcmp(base->data.text.value, "@layerview") == 0) {
@@ -258,6 +278,9 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 			else if (strcmp(base->data.text.value, "@routestyles") == 0) {
 				menu->route_style_shell = shell;
 				menu->route_style_pos = pos;
+			}
+			else if (base->data.text.value[0] == '@') {
+				/* anchor; ignore */
 			}
 			else
 				pcb_hid_cfg_error(base,
@@ -333,7 +356,7 @@ void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const 
 		abort();
 	}
 	for (n = base->data.list.first; n != NULL; n = n->next) {
-		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(menu), n);
+		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(menu), NULL, n);
 	}
 }
 
@@ -353,7 +376,7 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 	base->user_data = handle_alloc(new_menu, new_menu);
 
 	for (i = submenu->data.list.first; i != NULL; i = i->next)
-		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(new_menu), i);
+		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(new_menu), NULL, i);
 
 	gtk_widget_show_all(new_menu);
 }
@@ -452,14 +475,14 @@ static GtkWidget *new_popup(lht_node_t * menu_item)
 }
 
 /* Menu widget create callback: create a main menu, popup or submenu as descending the path */
-int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
+int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	pcb_gtk_menu_ctx_t *ctx = ctx_;
 	int is_popup = (strncmp(path, "/popups", 7) == 0);
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
-	ghid_main_menu_real_add_node(ctx, GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), menu_item);
+	ghid_main_menu_real_add_node(ctx, GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), ins_after, menu_item);
 
 /* make sure new menu items appear on screen */
 	gtk_widget_show_all(w);

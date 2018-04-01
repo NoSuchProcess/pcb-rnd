@@ -37,7 +37,7 @@ void ghid_main_menu_install_layer_selector(GHidMainMenu * mm);
 void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss);
 
 int ghid_remove_menu_widget(void *ctx, lht_node_t *nd);
-int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
+int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag);
 

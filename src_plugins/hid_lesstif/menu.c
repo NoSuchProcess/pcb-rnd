@@ -657,7 +657,7 @@ int lesstif_key_event(XKeyEvent * e)
 	return 1;
 }
 
-static void add_node_to_menu(Widget menu, lht_node_t *node, XtCallbackProc callback, int level);
+static void add_node_to_menu(Widget menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level);
 
 typedef struct {
 	Widget sub;     /* the open menu pane that hosts all the submenus */
@@ -715,11 +715,35 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 		lht_node_t *i;
 		i = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, NULL);
 		for(i = i->data.list.first; i != NULL; i = i->next)
-			add_node_to_menu(md->sub, i, callback, 1);
+			add_node_to_menu(md->sub, NULL, i, callback, 1);
 	}
 }
 
-static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc callback, int level)
+/* when ins_after is specified, calculate where the new node needs to be
+   inserted and set the XmNpositionIndex accordingly */
+static void set_ins_after(Widget menu, lht_node_t *ins_after)
+{
+	WidgetList ch;
+	Cardinal n, nch;
+	lht_node_t *nd;
+
+	if (ins_after == NULL)
+		return;
+
+	XtVaGetValues(menu, XmNchildren, &ch, XmNnumChildren, &nch, NULL);
+	assert(ins_after->parent->type == LHT_LIST);
+	for(n = 0, nd = ins_after->parent->data.list.first; n < nch; n++,nd = nd->next) {
+		short pos;
+		
+		XtVaGetValues(ch[n], XmNpositionIndex, &pos, NULL);
+		if (nd == ins_after) {
+			stdarg(XmNpositionIndex, pos);
+			break;
+		}
+	}
+}
+
+static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level)
 {
 	const char *v;
 	lht_node_t *act, *kacc;
@@ -762,6 +786,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 	v = node->name;
 	stdarg(XmNlabelString, XmStringCreatePCB(pcb_strdup(v)));
+	set_ins_after(menu, ins_after);
 
 	md = menu_data_alloc();
 	if (pcb_hid_cfg_has_submenus(node)) {
@@ -780,7 +805,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 		/* assume submenu is a list, pcb_hid_cfg_has_submenus() already checked that */
 		for(i = submenu_node->data.list.first; i != NULL; i = i->next)
-			add_node_to_menu(md->sub, i, callback, level+1);
+			add_node_to_menu(md->sub, NULL, i, callback, level+1);
 	}
 	else {
 		/* doesn't have submenu */
@@ -823,6 +848,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 			md->btn = XmCreateLabel(menu, XmStrCast("menulabel"), stdarg_args, stdarg_n);
 		}
 		else {
+
 			md->btn = XmCreatePushButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 			XtAddCallback(md->btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
@@ -852,6 +878,7 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 			insert_layerpick_buttons(menu);
 		if (strcmp(node->data.text.value, "@routestyles") == 0)
 			lesstif_insert_style_buttons(menu);
+		/* ignore the rest */
 	}
 	else if ((strcmp(node->data.text.value, "-") == 0) || (strcmp(node->data.text.value, "-"))) {
 		btn = XmCreateSeparator(menu, XmStrCast("sep"), stdarg_args, stdarg_n);
@@ -859,7 +886,7 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 	}
 }
 
-static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc callback, int level)
+static void add_node_to_menu(Widget in_menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level)
 {
 	if (level == 0) {
 		add_res2menu_main(in_menu, node, callback);
@@ -867,7 +894,7 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc ca
 	}
 
 	switch(node->type) {
-		case LHT_HASH: add_res2menu_named(in_menu, node, callback, level); break;
+		case LHT_HASH: add_res2menu_named(in_menu, ins_after, node, callback, level); break;
 		case LHT_TEXT: add_res2menu_text_special(in_menu, node, callback); break;
 		default: /* ignore them */;
 	}
@@ -875,7 +902,7 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc ca
 
 extern char *lesstif_pcbmenu_path;
 extern const char *pcb_menu_default;
-
+extern pcb_hid_t lesstif_hid;
 
 Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 {
@@ -888,6 +915,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	cmap = DefaultColormap(display, screen);
 
 	lesstif_cfg = pcb_hid_cfg_load("lesstif", 0, pcb_menu_default);
+	lesstif_hid.hid_cfg = lesstif_cfg;
 	if (lesstif_cfg == NULL) {
 		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
@@ -898,7 +926,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
 			for(n = mr->data.list.first; n != NULL; n = n->next)
-				add_node_to_menu(mb, n, (XtCallbackProc) callback, 0);
+				add_node_to_menu(mb, NULL, n, (XtCallbackProc) callback, 0);
 		}
 		else
 			pcb_hid_cfg_error(mr, "/main_menu should be a list");
@@ -910,14 +938,14 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	return mb;
 }
 
-static int lesstif_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
+static int lesstif_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	Widget w = (is_main) ? lesstif_menubar : ((menu_data_t *)parent->user_data)->sub;
 
 	if (strncmp(path, "/popups", 7) == 0)
 		return -1; /* there's no popup support in lesstif */
 
-	add_node_to_menu(w, menu_item, (XtCallbackProc) callback, is_main ? 0 : 2);
+	add_node_to_menu(w, ins_after, menu_item, (XtCallbackProc) callback, is_main ? 0 : 2);
 
 	return 0;
 }

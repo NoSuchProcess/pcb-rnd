@@ -42,7 +42,7 @@ struct pcb_hid_cfg_s {
    The callback is called after the new lihata node is created.
    NOTE: unlike other cookies, this cookie is strdup()'d. 
    */
-typedef int (*pcb_create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
+typedef int (*pcb_create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, pcb_create_menu_widget_t cb, void *cb_ctx);
 
 /* Remove a path recursively; call gui_remove() on leaf paths until the subtree
@@ -104,8 +104,9 @@ int pcb_hid_cfg_has_submenus(const lht_node_t *submenu);
 
 /* Create a new hash node under parent (optional) and create a flat subtree of
    text nodes from name,value varargs (NULL terminated). This is a shorthand
-   for creating a menu item in a subtree list. */
-lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...);
+   for creating a menu item in a subtree list. If ins_after is not NULL and
+   is under the same parent, the new menu is inserted after ins_after. */
+lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, lht_node_t *ins_after, const char *name, ...);
 
 /* Create a flat subtree of text nodes from name,value varargs (NULL
    terminated). This is a shorthand for creating a menu item in a

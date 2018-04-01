@@ -55,12 +55,13 @@ typedef struct {
 	const char *cookie;
 	int target_level;
 	int err;
+	lht_node_t *after;
 } create_menu_ctx_t;
 
 static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path, int rel_level)
 {
 	create_menu_ctx_t *cmc = ctx;
-	lht_node_t *psub;
+	lht_node_t *psub, *after;
 
 /*	printf(" CB: '%s' %p at %d->%d\n", path, node, rel_level, cmc->target_level);*/
 	if (node == NULL) { /* level does not exist, create it */
@@ -84,12 +85,12 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = pcb_hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
 		else
-			node = pcb_hid_cfg_create_hash_node(psub, name, "dyn", "1", "cookie", cmc->cookie,  NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->cookie,  NULL);
 
 		if (node == NULL)
 			return NULL;
@@ -104,12 +105,26 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			assert(node->parent == psub);
 		}
 
-		if (cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, node) != 0) {
+		if ((cmc->after != NULL) && (cmc->after->parent->parent == cmc->parent))
+			after = cmc->after;
+		else
+			after = NULL;
+
+		if (cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, after, node) != 0) {
 			cmc->err = -1;
 			return NULL;
 		}
 	}
+	else {
+		/* existing level */
+		if ((node->type == LHT_TEXT) && (node->data.text.value[0] == '@')) {
+			cmc->after = node;
+			goto skip_parent;
+		}
+	}
 	cmc->parent = node;
+
+	skip_parent:;
 	return node;
 }
 
@@ -128,6 +143,7 @@ int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *act
 	cmc.tip = tip;
 	cmc.cookie = cookie;
 	cmc.err = -1;
+	cmc.after = NULL;
 
 	/* Allow creating new nodes only under certain main paths that correspond to menus */
 	name = path;
@@ -331,7 +347,7 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 {
 	lht_err_t err;
 	lht_node_t *curr;
-	int level = 0, len = strlen(menu_path);
+	int level = 0, len = strlen(menu_path), iafter = 0;
 	char *next_seg, *path;
 
  path = malloc(len+4); /* need a few bytes after the end for the ':' */
@@ -342,8 +358,11 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 
 	/* Have to descend manually because of the submenu nodes */
 	for(;;) {
-		char *next, *end, save;
+		char *next, *end;
+		lht_dom_iterator_t it;
+
 		while(*next_seg == '/') next_seg++;
+
 		if (curr != hr->doc->root) {
 			if (level > 1) {
 				curr = lht_tree_path_(hr->doc, curr, "submenu", 1, 0, &err);
@@ -355,21 +374,27 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 		if (end == NULL)
 			end = next_seg + strlen(next_seg);
 		
-		if (level > 0)
-			*end = ':';
-		else
-			*end = '\0';
-		end++;
-		save = *end;
 		*end = '\0';
-		
-		curr = lht_tree_path_(hr->doc, curr, next_seg, 1, 0, &err);
-		if (cb != NULL) {
-			end[-1] = '\0';
-			curr = cb(ctx, curr, path, level);
+
+		/* find next_seg in the current level */
+		for(curr = lht_dom_first(&it, curr); curr != NULL; curr = lht_dom_next(&it)) {
+			if (*next_seg == '@') {
+				/* looking for an anon text node with the value matching the anchor name */
+				if ((curr->type == LHT_TEXT) && (strcmp(curr->data.text.value, next_seg) == 0)) {
+					iafter = 1;
+					break;
+				}
+			}
+			else {
+				/* looking for a hash node */
+				if (strcmp(curr->name, next_seg) == 0)
+					break;
+			}
 		}
 
-		*end = save;
+		if (cb != NULL)
+			curr = cb(ctx, curr, path, level);
+
 		if (next != NULL) /* restore previous / so that path is a full path */
 			*next = '/';
 		next_seg = next;
@@ -377,6 +402,12 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 			break;
 		next_seg++;
 		level++;
+		if (iafter) {
+			/* special case: insert after an @anchor and exit */
+			if (cb != NULL)
+				curr = cb(ctx, NULL, path, level);
+			break;
+		}
 	}
 
 	free(path);
@@ -472,7 +503,7 @@ void pcb_hid_cfg_extend_hash_node(lht_node_t *node, ...)
 	va_end(ap);
 }
 
-lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
+lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, lht_node_t *ins_after, const char *name, ...)
 {
 	lht_node_t *n;
 	va_list ap;
@@ -480,9 +511,20 @@ lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, const char *name, .
 	if ((parent != NULL) && (parent->type != LHT_LIST))
 		return NULL;
 
+	/* ignore ins_after if we are already deeper in the tree */
+	if ((ins_after != NULL) && (ins_after->parent != parent))
+		ins_after = NULL;
+
 	n = lht_dom_node_alloc(LHT_HASH, name);
-	if (parent != NULL)
+	if (ins_after != NULL) {
+		/* insert as next sibling below a @anchor */
+#warning menu TODO: insert after ins_after->name
 		lht_dom_list_append(parent, n);
+	}
+	else if (parent != NULL) {
+		/* insert as last item under a parent node */
+		lht_dom_list_append(parent, n);
+	}
 
 	va_start(ap, name);
 	pcb_hid_cfg_extend_hash_nodev(n, ap);
