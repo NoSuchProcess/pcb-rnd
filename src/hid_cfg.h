@@ -68,6 +68,10 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
    call cb on the lihata node; path has 128 extra bytes available at the end */
 void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx);
 
+/* remove all adjacent anchor menus with matching cookie below anode, the
+   anchor node */
+int pcb_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
+
 
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
    lihata node names */

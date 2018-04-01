@@ -609,3 +609,14 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hi
 	map_anchor_menus(pcb_gui->hid_cfg, pcb_gui->hid_cfg->doc->root, name, cb, ctx);
 }
 
+int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
+{
+	if ((node->type != LHT_TEXT) || (node->data.text.value == NULL) || (node->data.text.value[0] != '@'))
+		return -1;
+pcb_trace("DEL:\n");
+	for(node = node->next; node != NULL; node = node->next) {
+		if (node->type != LHT_HASH)
+			break;
+pcb_trace("  '%s'\n", node->name);
+	}
+}

@@ -219,12 +219,17 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	props.action = "action";
 	props.cookie = ANCH;
 
-/*	pcb_hid_cfg_del_anchor_menus(node->next, ANCH);*/
+	pcb_hid_cfg_del_anchor_menus(node, ANCH);
 
-/*	for(li = conflist_first(lst); li != NULL; li = conflist_next(li)) {*/
-		strcpy(end, "/test123");
+	/* prepare for appending the strings at the end of the path, "under" the anchor */
+	*end = '/';
+	end++;
+
+	/* have to go reverse to keep order because this will insert items */
+	for(li = conflist_last(lst); li != NULL; li = conflist_prev(li)) {
+		strcpy(end, li->val.string[0]);
 		pcb_gui->create_menu(path, &props);
-/*	}*/
+	}
 
 }
 
