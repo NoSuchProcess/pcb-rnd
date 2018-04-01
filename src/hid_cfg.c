@@ -97,10 +97,12 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 		if ((rel_level != cmc->target_level) || (cmc->action == NULL))
 			lht_dom_hash_put(node, lht_dom_node_alloc(LHT_LIST, "submenu"));
 
-		if (node->parent == NULL)
+		if (node->parent == NULL) {
 			lht_dom_list_append(psub, node);
-		else
+		}
+		else {
 			assert(node->parent == psub);
+		}
 
 		if (cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, node) != 0) {
 			cmc->err = -1;
@@ -142,7 +144,6 @@ int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *act
 		}
 
 		/* descend and visit each level, create missing levels */
-
 		pcb_hid_cfg_get_menu_at(hr, NULL, path, create_menu_cb, &cmc);
 	}
 
