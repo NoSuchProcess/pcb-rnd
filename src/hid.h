@@ -160,6 +160,8 @@ typedef struct pcb_menu_prop_s {
 	const char *mnemonic;
 	const char *accel;
 	const char *tip;        /* tooltip */
+	const char *checked;
+	const char *update_on;
 	const char *cookie;     /* used for cookie based removal */
 } pcb_menu_prop_t;
 
