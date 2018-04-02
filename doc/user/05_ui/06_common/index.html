@@ -8,7 +8,7 @@
 <body>
 <h1> pcb-rnd - user manual </h1>
 
-<h2> 6.1 keyboard bindings </h2>
+<h2> 6.1. keyboard bindings </h2>
 <p>
 The same default menu file is used in all GUI HIDs. It comes with multi-stroke
 key bindings, plus only a very few, alternative keys that use modifiers
@@ -40,3 +40,72 @@ key narrows it down to a subchapter and the third key (leaf) selects the actual
 action within the subchapter. The <a href="keytree.svg">current key tree</a> is
 accessible in a large svg drawing or in a script-digestable
 <a href="keytree.txt">flat list</a>.
+
+<h2> 6.2. keyboard bindings </h2>
+<p id="grid">
+The grid is an imaginary set of points over the drawing. The crosshair
+can snap to the grid, helping the user to keep coordinates of objects
+distributed evenly.
+<p>
+The only grid geometr pcb-rnd supports is a regular, rectangular grid, that
+is: grid points spaced evenly in x and y directions, aligned into horizontal
+and vertical rows. The grid also has an optional offset in x and y directions
+(which is usually set to 0;0).
+<p>
+The grid spacing (distance between grid points) is user configurable. There
+are two methods managing the grid.
+
+<h3> 6.2.1. Preset grid </h3>
+
+<table border=0>
+<tr><td><img src="grid_menu.png">
+<td>
+<p>
+The configuration system has a node called editor/grids, which is an ordered
+list of <i>preset</i> grid settings. This list should contain the grid settings
+preferred by the user, or preferred for the given design. Since this is a
+configuration item, the usual conf rules apply (e.g. local grid config
+can be saved in the project's config or even in the board file).
+<p>
+While drawing, the user can use the {g b} and {g f} hotkeys, or the shorter
+[ and ] keys to <i>step</i> the current grid, selecting the previous or next item
+from the list. The grid sizes menu will always have the currently selected
+item checked.
+<p>
+If the user changes grid properties directly, the new grid setup will most
+likely not match any of the presets and the check mark is gone from the menu.
+However, pcb-rnd remember the last used preset menu and upon the next
+<i>stepping</i> it will move from the last selected preset grid.
+
+<p>
+The format for the grid configuration is a simple text that lists an
+optional grid name, the mandatory grid size, the optional offset and
+optionally instructs pcb-rnd to also switch units when the grid is activated.
+The full syntax, optional parts written in [] is:
+<pre>
+[name:]size[@offs][!unit]
+</pre>
+<p>
+(The optional name has no functionality other than being displayed, helping
+the user to remember the purpose of the grid.)
+
+</table>
+<p>
+Examples:
+<p>
+<table border=1>
+	<tr><th> grid spec                           <th> description
+	<tr><td> <pre>10 mil</pre>                   <th> anonymous 10 mil grid with no offset
+	<tr><td> <pre>1.5 mm</pre>                   <th> anonymous 1.5 mm grid with no offset
+	<tr><td> <pre>20 mil@1mil;-3mil</pre>        <th> 20 mil grid with a horizontal offset of +1 mil and vertical offset of -3 mil
+	<tr><td> <pre>1.5 mm!mm</pre>                <th> 1.5 mm grid; when activated, switch untis to mm
+	<tr><td> <pre>placing dips:100 mil</pre>     <th> named grid
+	<tr><td> <pre>leds:1mm@0.5mm;-0.1mm!mm</pre> <th> all the above features, combined
+</table>
+
+<h3> 6.2.2. Custom grid </h3>
+<p>
+The current grid is stored as grid distance and x;y offset. Regardless of
+the configured presets, these properties of the current grid can be changed
+any time, using the SetValue() action or using the menu.
+
