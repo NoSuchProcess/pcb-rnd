@@ -41,6 +41,7 @@
 #include "event.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "conf_hid.h"
 #include "compat_misc.h"
 #include "misc_util.h"
 #include "pcb_bool.h"
@@ -260,19 +261,37 @@ void pcb_grid_install_menu(void)
 	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
 }
 
-static void grid_update(void *user_data, int argc, pcb_event_arg_t argv[])
+static void grid_update_conf(conf_native_t *cfg, int arr_idx)
+{
+	pcb_grid_install_menu();
+}
+
+static void grid_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_grid_install_menu();
 }
 
 
+static conf_hid_id_t conf_id;
 void pcb_grid_init(void)
 {
-	pcb_event_bind(PCB_EVENT_GUI_INIT, grid_update, NULL, grid_cookie);
+	static conf_hid_callbacks_t ccb;
+	conf_native_t *nat;
+
+	pcb_event_bind(PCB_EVENT_GUI_INIT, grid_update_ev, NULL, grid_cookie);
+
+	conf_id = conf_hid_reg(grid_cookie, NULL);
+	memset(&ccb, 0, sizeof(ccb));
+	ccb.val_change_post = grid_update_conf;
+	nat = conf_get_field("editor/grids");
+printf("*********nat=%p\n", nat);
+	if (nat != NULL)
+		conf_hid_set_cb(nat, conf_id, &ccb);
 }
 
 void pcb_grid_uninit(void)
 {
 	pcb_event_unbind_allcookie(grid_cookie);
+	conf_hid_unreg(grid_cookie);
 }
 
