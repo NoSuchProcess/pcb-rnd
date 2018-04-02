@@ -217,10 +217,13 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	conf_listitem_t *li;
 	char *end = path + strlen(path);
 	pcb_menu_prop_t props;
-	char act[256];
+	char act[256], chk[256];
+	int idx;
 
 	memset(&props, 0,sizeof(props));
 	props.action = act;
+	props.checked = chk;
+	props.update_on = "editor/grids_idx";
 	props.cookie = ANCH;
 
 	pcb_hid_cfg_del_anchor_menus(node, ANCH);
@@ -230,8 +233,10 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	end++;
 
 	/* have to go reverse to keep order because this will insert items */
-	for(li = conflist_last(lst); li != NULL; li = conflist_prev(li)) {
-		sprintf(act, "grid(set, %s)", li->val.string[0]);
+	idx = conflist_length(lst)-1;
+	for(li = conflist_last(lst); li != NULL; li = conflist_prev(li),idx--) {
+		sprintf(act, "grid(#%d)", idx);
+		sprintf(chk, "conf(iseq, editor/grids_idx, %d)", idx);
 		strcpy(end, li->val.string[0]);
 		pcb_gui->create_menu(path, &props);
 	}
