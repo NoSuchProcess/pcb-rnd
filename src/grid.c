@@ -269,6 +269,10 @@ static void grid_update_conf(conf_native_t *cfg, int arr_idx)
 static void grid_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_grid_install_menu();
+
+	/* to get the right menu checked */
+	if (conf_core.editor.grids_idx >= 0)
+		pcb_grid_list_step(0);
 }
 
 
