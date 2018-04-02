@@ -211,7 +211,7 @@ pcb_bool_t pcb_grid_list_jump(int dst)
 pcb_bool_t pcb_grid_list_step(int stp)
 {
 	int dst = conf_core.editor.grids_idx;
-	if (dst < 1)
+	if (dst < 0)
 		dst = -dst-1;
 	return pcb_grid_list_jump(dst + stp);
 }
