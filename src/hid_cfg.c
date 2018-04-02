@@ -558,7 +558,7 @@ void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 	pcb_message(PCB_MSG_ERROR, hid_cfg_error_shared);
 }
 
-static void map_anchor_menus(pcb_hid_cfg_t *cfg, lht_node_t *node, const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
+static void map_anchor_menus(vtp0_t *dst, lht_node_t *node, const char *name)
 {
 	lht_dom_iterator_t it;
 
@@ -566,33 +566,11 @@ static void map_anchor_menus(pcb_hid_cfg_t *cfg, lht_node_t *node, const char *n
 		case LHT_HASH:
 		case LHT_LIST:
 			for(node = lht_dom_first(&it, node); node != NULL; node = lht_dom_next(&it))
-				map_anchor_menus(cfg, node, name, cb, ctx);
+				map_anchor_menus(dst, node, name);
 			break;
 		case LHT_TEXT:
-			if (strcmp(node->data.text.value, name) == 0) {
-				lht_node_t *n;
-				char *path = NULL;
-				int used = 0, alloced = 0, l0 = strlen(name) + 128;
-
-				for(n = node->parent; n != NULL; n = n->parent) {
-					int len;
-					if (strcmp(n->name, "submenu") == 0)
-						continue;
-					len = strlen(n->name);
-					if (used+len+2+l0 >= alloced) {
-						alloced = used+len+2+l0 + 128;
-						path = realloc(path, alloced);
-					}
-					memmove(path+len+1, path, used);
-					memcpy(path, n->name, len);
-					path[len] = '/';
-					used += len+1;
-				}
-				memcpy(path+used, name, l0+1);
-				printf("path='%s' used=%d\n", path, used);
-				cb(ctx, cfg, node, path);
-				free(path);
-			}
+			if ((node->parent != NULL) && (node->parent->type == LHT_LIST) && (strcmp(node->data.text.value, name) == 0))
+				vtp0_append(dst, node);
 			break;
 		default:
 			break;
@@ -601,9 +579,49 @@ static void map_anchor_menus(pcb_hid_cfg_t *cfg, lht_node_t *node, const char *n
 
 void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
 {
+	vtp0_t anchors;
+
 	if ((pcb_gui == NULL) || (pcb_gui->hid_cfg == NULL) || (pcb_gui->hid_cfg->doc == NULL) || (pcb_gui->hid_cfg->doc->root == NULL))
 		return;
-	map_anchor_menus(pcb_gui->hid_cfg, pcb_gui->hid_cfg->doc->root, name, cb, ctx);
+
+	/* extract anchors; don't do the callbacks from there because the tree
+	   is going to be changed from the callbacks. It is however guaranteed
+	   that anchors are not removed. */
+	vtp0_init(&anchors);
+	map_anchor_menus(&anchors, pcb_gui->hid_cfg->doc->root, name);
+
+	/* iterate over all anchors extracted and call the callback */
+	{
+		char *path = NULL;
+		int used = 0, alloced = 0, l0 = strlen(name) + 128;
+		size_t an;
+
+		for(an = 0; an < vtp0_len(&anchors); an++) {
+			lht_node_t *n, *node = anchors.array[an];
+
+			for(n = node->parent; n != NULL; n = n->parent) {
+				int len;
+				if (strcmp(n->name, "submenu") == 0)
+					continue;
+				len = strlen(n->name);
+				if (used+len+2+l0 >= alloced) {
+					alloced = used+len+2+l0 + 128;
+					path = realloc(path, alloced);
+				}
+				memmove(path+len+1, path, used);
+				memcpy(path, n->name, len);
+				path[len] = '/';
+				used += len+1;
+			}
+			memcpy(path+used, name, l0+1);
+/*			pcb_trace("path='%s' used=%d\n", path, used);*/
+			cb(ctx, pcb_gui->hid_cfg, node, path);
+			used = 0;
+		}
+		free(path);
+	}
+
+	vtp0_uninit(&anchors);
 }
 
 int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
