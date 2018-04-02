@@ -206,7 +206,16 @@ pcb_bool_t pcb_grid_list_jump(int dst)
 
 pcb_bool_t pcb_grid_list_step(int stp)
 {
-	return pcb_grid_list_jump(conf_core.editor.grids_idx + stp);
+	int dst = conf_core.editor.grids_idx;
+	if (dst < 1)
+		dst = -dst-1;
+	return pcb_grid_list_jump(dst + stp);
+}
+
+void pcb_grid_inval(void)
+{
+	if (conf_core.editor.grids_idx > 0)
+		conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - conf_core.editor.grids_idx);
 }
 
 #define ANCH "@grid"

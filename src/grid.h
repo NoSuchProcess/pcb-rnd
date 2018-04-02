@@ -69,6 +69,9 @@ pcb_bool_t pcb_grid_list_jump(int dst);
 /* Step stp steps (can be 0) on the grids list and set the resulting grid; relative set */
 pcb_bool_t pcb_grid_list_step(int stp);
 
+/* invalidate the grid index; call this when changing the grid settings */
+void pcb_grid_inval(void);
+
 /* Reinstall grid menus */
 void pcb_grid_install_menu(void);
 

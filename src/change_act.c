@@ -54,6 +54,7 @@
 #include "obj_rat_draw.h"
 #include "data_it.h"
 #include "macro.h"
+#include "grid.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
@@ -907,6 +908,7 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		switch (pcb_funchash_get(function, NULL)) {
 
 		case F_Grid:
+			pcb_grid_inval();
 			if (absolute)
 				pcb_board_set_grid(value, pcb_false, 0, 0);
 			else {
