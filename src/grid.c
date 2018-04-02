@@ -176,12 +176,11 @@ void pcb_grid_free(pcb_grid_t *dst)
 	dst->name = NULL;
 }
 
-pcb_bool_t pcb_grid_list_step(int stp)
+pcb_bool_t pcb_grid_list_jump(int dst)
 {
 	const conf_listitem_t *li;
 	pcb_grid_t g;
 	int max = conflist_length((conflist_t *)&conf_core.editor.grids);
-	int dst = conf_core.editor.grids_idx + stp;
 
 	if (dst < 0)
 		dst = 0;
@@ -202,8 +201,12 @@ pcb_bool_t pcb_grid_list_step(int stp)
 	pcb_grid_set(PCB, &g);
 	pcb_grid_free(&g);
 
+	return pcb_true;
+}
 
-		return pcb_true;
+pcb_bool_t pcb_grid_list_step(int stp)
+{
+	return pcb_grid_list_jump(conf_core.editor.grids_idx + stp);
 }
 
 #define ANCH "@grid"
@@ -214,9 +217,10 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	conf_listitem_t *li;
 	char *end = path + strlen(path);
 	pcb_menu_prop_t props;
+	char act[256];
 
 	memset(&props, 0,sizeof(props));
-	props.action = "action";
+	props.action = act;
 	props.cookie = ANCH;
 
 	pcb_hid_cfg_del_anchor_menus(node, ANCH);
@@ -227,6 +231,7 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 
 	/* have to go reverse to keep order because this will insert items */
 	for(li = conflist_last(lst); li != NULL; li = conflist_prev(li)) {
+		sprintf(act, "grid(set, %s)", li->val.string[0]);
 		strcpy(end, li->val.string[0]);
 		pcb_gui->create_menu(path, &props);
 	}

@@ -1655,7 +1655,7 @@ static int pcb_act_SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 static const char pcb_acts_grid[] =
 	"grid(set, [name:]size[@offs][!unit])\n"
-	"grid(+|up)\n" "grid(-|down)\n";
+	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n";
 static const char pcb_acth_grid[] = "Set the grid.";
 static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -1674,6 +1674,14 @@ static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		pcb_grid_list_step(+1);
 	else if ((strcmp(argv[0], "down") == 0) || (strcmp(argv[0], "-") == 0))
 		pcb_grid_list_step(-1);
+	else if (strcmp(argv[0], "idx") == 0) {
+		if (argc < 2)
+			PCB_ACT_FAIL(grid);
+		pcb_grid_list_jump(atoi(argv[1]));
+	}
+	else if (argv[0][0] == '#') {
+		pcb_grid_list_jump(atoi(argv[0]+1));
+	}
 	else if (strcmp(argv[0], "menu") == 0)
 		pcb_grid_install_menu();
 	else

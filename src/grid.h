@@ -63,7 +63,10 @@ char *pcb_grid_print(const pcb_grid_t *src);
 /* Apply grid settings from src to the pcb */
 void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src);
 
-/* Step stp steps (can be 0) on the grids list and set the resulting grid */
+/* Jump to grid index dst (clamped); absolute set */
+pcb_bool_t pcb_grid_list_jump(int dst);
+
+/* Step stp steps (can be 0) on the grids list and set the resulting grid; relative set */
 pcb_bool_t pcb_grid_list_step(int stp);
 
 /* Reinstall grid menus */
