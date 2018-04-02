@@ -261,18 +261,26 @@ void pcb_grid_install_menu(void)
 	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
 }
 
+static int grid_lock = 0;
+
 static void grid_update_conf(conf_native_t *cfg, int arr_idx)
 {
+	if (grid_lock) return;
+	grid_lock++;
 	pcb_grid_install_menu();
+	grid_lock--;
 }
 
 static void grid_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	if (grid_lock) return;
+	grid_lock++;
 	pcb_grid_install_menu();
 
 	/* to get the right menu checked */
 	if (conf_core.editor.grids_idx >= 0)
 		pcb_grid_list_step(0);
+	grid_lock--;
 }
 
 
