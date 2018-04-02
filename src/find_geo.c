@@ -984,5 +984,19 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_pstk(pcb_pstk_t *ps1, pcb_pstk_t *ps2)
 
 PCB_INLINE pcb_bool_t pcb_pstk_intersect_rat(pcb_pstk_t *ps, pcb_rat_t *rat)
 {
-	return ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) || ((rat->Point2.X == ps->x) && (rat->Point2.Y == ps->y));
+	pcb_board_t *pcb = PCB;
+
+	if ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) {
+		pcb_layer_t *layer = pcb_get_layer(pcb->Data, pcb->LayerGroups.grp[rat->group1].lid[0]);
+		if ((layer != NULL) && (pcb_pstk_shape_at(pcb, ps, layer) != NULL))
+			return pcb_true;
+	}
+
+	if ((rat->Point2.X == ps->x) && (rat->Point2.Y == ps->y)) {
+		pcb_layer_t *layer = pcb_get_layer(pcb->Data, pcb->LayerGroups.grp[rat->group2].lid[0]);
+		if ((layer != NULL) && (pcb_pstk_shape_at(pcb, ps, layer) != NULL))
+			return pcb_true;
+	}
+
+	return pcb_false;
 }
