@@ -38,6 +38,7 @@
 #include "unit.h"
 #include "grid.h"
 #include "board.h"
+#include "event.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "compat_misc.h"
@@ -46,6 +47,8 @@
 #include "pcb-printf.h"
 #include "hid_cfg.h"
 #include "hid.h"
+
+static const char *grid_cookie = "grid";
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {
@@ -256,3 +259,20 @@ void pcb_grid_install_menu(void)
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
 }
+
+static void grid_update(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_grid_install_menu();
+}
+
+
+void pcb_grid_init(void)
+{
+	pcb_event_bind(PCB_EVENT_GUI_INIT, grid_update, NULL, grid_cookie);
+}
+
+void pcb_grid_uninit(void)
+{
+	pcb_event_unbind_allcookie(grid_cookie);
+}
+

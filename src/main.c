@@ -65,6 +65,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "obj_text.h"
 #include "pcb_minuid.h"
 #include "tool.h"
+#include "grid.h"
 
 #include "hid_actions.h"
 #include "hid_init.h"
@@ -248,6 +249,7 @@ void pcb_main_uninit(void)
 	if (conf_isdirty(CFR_USER))
 		conf_save_file(NULL, NULL, CFR_USER, NULL);
 
+	pcb_grid_uninit();
 	pcb_uninit_buffers(PCB);
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
@@ -346,6 +348,7 @@ int main(int argc, char *argv[])
 	conf_core_postproc(); /* to get all the paths initialized */
 	pcb_layer_vis_init();
 	pcb_brave_init();
+	pcb_grid_init();
 
 	vtp0_init(&plugin_cli_conf);
 
