@@ -284,7 +284,7 @@ void pcb_grid_init(void)
 	memset(&ccb, 0, sizeof(ccb));
 	ccb.val_change_post = grid_update_conf;
 	nat = conf_get_field("editor/grids");
-printf("*********nat=%p\n", nat);
+
 	if (nat != NULL)
 		conf_hid_set_cb(nat, conf_id, &ccb);
 }
