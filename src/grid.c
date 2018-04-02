@@ -130,7 +130,11 @@ pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
 
 	/* success */
 	free(tmp);
-	dst->name = pcb_strndup(src, nsep-src-1);
+
+	if (nsep != NULL)
+		dst->name = pcb_strndup(src, nsep-src-1);
+	else
+		dst->name = NULL;
 	return pcb_true;
 
 	error:;
