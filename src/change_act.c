@@ -919,9 +919,9 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 			pcb_grid_inval();
 			if (val[0] == '*')
-				pcb_board_set_grid(PCB->Grid * d, pcb_false, 0, 0);
+				pcb_board_set_grid(pcb_round(PCB->Grid * d), pcb_false, 0, 0);
 			else
-				pcb_board_set_grid(PCB->Grid / d, pcb_false, 0, 0);
+				pcb_board_set_grid(pcb_round(PCB->Grid / d), pcb_false, 0, 0);
 		}
 
 		value = pcb_get_value(val, units, &absolute, NULL);
