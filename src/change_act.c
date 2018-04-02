@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -904,8 +905,28 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	int err = 0;
 
 	if (function && val) {
+		int fnc_id = pcb_funchash_get(function, NULL);
+
+		/* special case: can't convert with pcb_get_value() */
+		if ((fnc_id == F_Grid) && ((val[0] == '*') || (val[0] == '/'))) {
+			double d;
+			char *end;
+
+			d = strtod(val+1, &end);
+			if ((*end != '\0') || (d <= 0)) {
+				pcb_message(PCB_MSG_ERROR, "SetValue: Invalid multiplier/divider for grid set: needs to be a positive number\n");
+				return 1;
+			}
+			pcb_grid_inval();
+			if (val[0] == '*')
+				pcb_board_set_grid(PCB->Grid * d, pcb_false, 0, 0);
+			else
+				pcb_board_set_grid(PCB->Grid / d, pcb_false, 0, 0);
+		}
+
 		value = pcb_get_value(val, units, &absolute, NULL);
-		switch (pcb_funchash_get(function, NULL)) {
+
+		switch (fnc_id) {
 
 		case F_Grid:
 			pcb_grid_inval();
