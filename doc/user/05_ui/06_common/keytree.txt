@@ -43,8 +43,10 @@
 9-alt-ctrl	pcb-menu-default.lht	ToggleView(19) 	Toggle Layer 19
 9-ctrl	pcb-menu-default.lht	ToggleView(9) 	Toggle Layer 9
 :	pcb-menu-default.lht	Command() 	Command Entry
+[	pcb-menu-default.lht	Grid(down) 	Previous grid
 \	pcb-menu-default.lht	fullscreen(toggle) 	Full screen
 \057	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
+]	pcb-menu-default.lht	Grid(up) 	Next grid
 a;a	pcb-menu-default.lht	Mode(Save);Mode(Arc);Mode(Notify)	Start routing an arc
 a;b;f;	pcb-menu-default.lht	ReplaceFootprint() 	Replace footprint
 a;b;s;	pcb-menu-default.lht	net(swap) 	Swap nets on two selected pins
@@ -144,6 +146,10 @@ f;q	pcb-menu-default.lht	Quit() 	Quit Program
 f;r	pcb-menu-default.lht	Load(Revert,none)	Revert
 f;s	pcb-menu-default.lht	Save(Layout)	Save Layout
 f;x;p	pcb-menu-default.lht	SavePatch() 	netlist patch for back annotation
+g;b	pcb-menu-default.lht	Grid(down) 	Previous grid
+g;d	pcb-menu-default.lht	SetValue(Grid,*2) 	Grid *2
+g;f	pcb-menu-default.lht	Grid(up) 	Next grid
+g;h	pcb-menu-default.lht	SetValue(Grid,\0572) 	Grid \0572
 i;a	pcb-menu-default.lht	About() 	About...
 i;c;c	pcb-menu-default.lht	PrintCalibrate() 	Calibrate Printer...
 i;c;p	pcb-menu-default.lht	DoWindows(Preferences)	Preferences...

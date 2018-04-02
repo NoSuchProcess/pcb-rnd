@@ -14,6 +14,7 @@
 /e/m       move
 /e/s       subcircuit or style
 /e/g       geometry
+/g         grid
 /f         file
 /f/x       export to
 /f/c       configuration
