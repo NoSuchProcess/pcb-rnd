@@ -28,7 +28,6 @@
 
 #include "board.h"
 #include "data.h"
-#include "hid.h"
 #include "layer.h"
 #include "layer_grp.h"
 #include "pcb-printf.h"
