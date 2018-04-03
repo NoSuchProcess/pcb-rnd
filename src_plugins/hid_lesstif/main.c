@@ -349,7 +349,6 @@ static void PointCursor(pcb_bool grabbed)
 
 extern void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 extern void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
-extern void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 extern void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 
 
@@ -373,7 +372,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	zoom_max();
 
 	LesstifNetlistChanged(NULL, 0, NULL);
-	LesstifLayersChanged(NULL, 0, NULL);
 	LesstifRouteStylesChanged(NULL, 0, NULL);
 	lesstif_sizes_reset();
 	lesstif_update_layer_groups();
@@ -3813,8 +3811,6 @@ int pplg_init_hid_lesstif(void)
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, LesstifRouteStylesChanged, NULL, lesstif_cookie);
-	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, LesstifLayersChanged, NULL, lesstif_cookie);
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, LesstifLayersChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 
