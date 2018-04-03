@@ -148,34 +148,6 @@ PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 
 static int need_xy = 0, have_xy = 0, action_x, action_y;
 
-#if 0
-typedef struct ToggleItem {
-	struct ToggleItem *next;
-	Widget w;
-	char *group, *item;
-	XtCallbackProc callback;
-	lht_node_t *node;
-} ToggleItem;
-static ToggleItem *toggle_items = 0;
-
-static void radio_callback(Widget toggle, ToggleItem * me, XmToggleButtonCallbackStruct * cbs)
-{
-	if (!cbs->set)								/* uh uh, can't turn it off */
-		XmToggleButtonSetState(toggle, 1, 0);
-	else {
-		ToggleItem *ti;
-		for (ti = toggle_items; ti; ti = ti->next)
-			if (strcmp(me->group, ti->group) == 0) {
-				if (me->item == ti->item || strcmp(me->item, ti->item) == 0)
-					XmToggleButtonSetState(ti->w, 1, 0);
-				else
-					XmToggleButtonSetState(ti->w, 0, 0);
-			}
-		me->callback(toggle, me->node, cbs);
-	}
-}
-#endif
-
 int lesstif_button_event(Widget w, XEvent * e)
 {
 	have_xy = 1;
@@ -488,28 +460,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 		/* doesn't have submenu */
 		const char *checked = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
 		const char *label = pcb_hid_cfg_menu_field_str(node, PCB_MF_SENSITIVE);
-#if 0
-/* Do not support radio for now: the gtk HID doesn't have it either */
-		Resource *radio = resource_subres(node->v[i].subres, "radio");
-		if (radio) {
-			ToggleItem *ti = (ToggleItem *) malloc(sizeof(ToggleItem));
-			ti->next = toggle_items;
-			ti->group = radio->v[0].value;
-			ti->item = radio->v[1].value;
-			ti->callback = callback;
-			ti->node = node->v[i].subres;
-			toggle_items = ti;
 
-			if (resource_value(node->v[i].subres, "set")) {
-				stdarg(XmNset, True);
-			}
-			stdarg(XmNindicatorType, XmONE_OF_MANY);
-			btn = XmCreateToggleButton(menu, "menubutton", args, n);
-			ti->w = btn;
-			XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) radio_callback, (XtPointer) ti);
-		}
-		else
-#endif
 		act = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
 		if (checked) {
 			if (strchr(checked, '='))
