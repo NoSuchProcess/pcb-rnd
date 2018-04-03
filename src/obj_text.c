@@ -639,9 +639,11 @@ void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text
 {
 	pcb_text_invalidate_erase(Layer, Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
-	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+	if (Layer->text_tree != NULL)
+		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	pcb_text_rotate90(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+	if (Layer->text_tree != NULL)
+		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
 	return Text;

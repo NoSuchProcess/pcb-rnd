@@ -209,14 +209,16 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
-		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+		if (ps->parent.data->padstack_tree != NULL)
+			pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
 		pcb_rotate(&nx, &ny, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
 		if ((nx != ps->x) || (ny != ps->y))
 			pcb_pstk_move_(ps, nx - ps->x, ny - ps->y);
 
 		pcb_pstk_bbox(ps);
-		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+		if (ps->parent.data->padstack_tree != NULL)
+			pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 
