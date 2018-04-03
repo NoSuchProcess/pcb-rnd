@@ -461,6 +461,14 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 		note_accelerator(node);
 	}
 
+	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_BACKGROUND);
+	if (v != NULL)
+		stdarg(XmNbackground, lesstif_parse_color(v));
+
+	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FOREGROUND);
+	if (v != NULL)
+		stdarg(XmNforeground, lesstif_parse_color(v));
+
 	v = node->name;
 	stdarg(XmNlabelString, XmStringCreatePCB(pcb_strdup(v)));
 	set_ins_after(menu, ins_after);
