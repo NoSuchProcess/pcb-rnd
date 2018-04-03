@@ -4086,6 +4086,22 @@
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h board.h library.h rats_patch.h \
  board.h event.h ../src_plugins/lib_gtk_hid/render.h
+../src_plugins/lib_hid_common/grid_menu.o: \
+ ../src_plugins/lib_hid_common/grid_menu.c ../config.h conf.h \
+ global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h conf_core.h globalconst.h grid.h board.h \
+ vtroutestyle.h attrib.h layer.h obj_arc_list.h obj_common.h flag.h \
+ data_parent.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
+ obj_line.h obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h move.h \
+ misc_util.h layer_grp.h library.h rats_patch.h event.h hid_cfg.h hid.h \
+ error.h drc.h hid.h ../src_plugins/lib_hid_common/grid_menu.h
 ../src_plugins/lib_hid_common/layer_menu.o: \
  ../src_plugins/lib_hid_common/layer_menu.c ../config.h board.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -4105,12 +4121,21 @@
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h hid.h layer.h layer_grp.h pcb-printf.h
+ vtpadstack_t.h layer.h layer_grp.h pcb-printf.h hid_cfg.h hid.h
 ../src_plugins/lib_hid_common/lib_hid_common.o: \
  ../src_plugins/lib_hid_common/lib_hid_common.c plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h conf_hid.h conf.h \
+ ../config.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h error.h \
+ ../src_plugins/lib_hid_common/grid_menu.h conf.h event.h
 ../src_plugins/lib_hid_gl/draw_gl.o: ../src_plugins/lib_hid_gl/draw_gl.c \
  ../src_plugins/lib_hid_gl/stencil_gl.h \
  ../src_plugins/lib_hid_gl/opengl.h
@@ -5552,11 +5577,11 @@ grid.o: grid.c ../config.h ../src_3rd/genvector/gds_char.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
  ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h layer_grp.h \
- library.h rats_patch.h event.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf_core.h conf_hid.h error.h compat_misc.h hid_cfg.h hid.h drc.h
+ library.h rats_patch.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h conf_hid.h error.h \
+ compat_misc.h
 gui_act.o: gui_act.c ../config.h board.h global_typedefs.h pcb_bool.h \
  unit.h vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
@@ -5906,7 +5931,7 @@ main.o: main.c ../config.h ../src_3rd/libminuid/libminuid.h board.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h build_run.h flag_str.h plugins.h \
  ../src_3rd/puplug/error.h plug_footprint.h vtlibrary.h plug_import.h \
- event.h funchash.h conf_core.h layer_vis.h pcb_minuid.h tool.h grid.h \
+ event.h funchash.h conf_core.h layer_vis.h pcb_minuid.h tool.h \
  hid_actions.h hid_init.h compat_misc.h compat_nls.h dolists.h \
  generated_lists.h
 main_act.o: main_act.c ../config.h hid_actions.h hid.h \
