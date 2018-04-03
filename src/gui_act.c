@@ -1550,7 +1550,7 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 }
 
 
-const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)\n" "ToggleView(All, Open|Vis, Set|Clear|Toggle)";
+const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|BackSide)\n" "ToggleView(All, Open|Vis, Set|Clear|Toggle)";
 const char pcb_acth_toggleview[] = "Toggle the visibility of the specified layer or layer group.";
 
 /* %start-doc actions ToggleView
