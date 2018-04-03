@@ -427,7 +427,6 @@ lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufi
 		case PCB_MF_FOREGROUND:   fieldstr = "foreground"; break;
 		case PCB_MF_BACKGROUND:   fieldstr = "background"; break;
 		case PCB_MF_FONT:         fieldstr = "font"; break;
-/*		case MF_RADIO:        fieldstr = "radio"; break; */
 	}
 	if (field_name != NULL)
 		*field_name = fieldstr;

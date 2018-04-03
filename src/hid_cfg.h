@@ -89,7 +89,6 @@ typedef enum {
 	PCB_MF_FOREGROUND,
 	PCB_MF_BACKGROUND,
 	PCB_MF_FONT
-/*	MF_RADIO*/
 } pcb_hid_cfg_menufield_t;
 
 /* Return a field of a submenu and optionally fill in field_name with the
