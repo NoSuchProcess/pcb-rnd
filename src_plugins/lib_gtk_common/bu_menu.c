@@ -52,18 +52,12 @@ struct _GHidMainMenu {
 
 	GtkAccelGroup *accel_group;
 
-	gint layer_view_pos;
-	gint layer_pick_pos;
 	gint route_style_pos;
 
-	GtkMenuShell *layer_view_shell;
-	GtkMenuShell *layer_pick_shell;
 	GtkMenuShell *route_style_shell;
 
 	GList *actions;
 
-	gint n_layer_views;
-	gint n_layer_picks;
 	gint n_route_styles;
 
 	GCallback action_cb;
@@ -267,14 +261,6 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 				ins_menu(item, shell, ins_after);
 				base->user_data = handle_alloc(item, item);
 			}
-			else if (strcmp(base->data.text.value, "@layerview") == 0) {
-				menu->layer_view_shell = shell;
-				menu->layer_view_pos = pos;
-			}
-			else if (strcmp(base->data.text.value, "@layerpick") == 0) {
-				menu->layer_pick_shell = shell;
-				menu->layer_pick_pos = pos;
-			}
 			else if (strcmp(base->data.text.value, "@routestyles") == 0) {
 				menu->route_style_shell = shell;
 				menu->route_style_pos = pos;
@@ -283,8 +269,7 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 				/* anchor; ignore */
 			}
 			else
-				pcb_hid_cfg_error(base,
-													"Unexpected text node; the only text accepted here is sep, -, @layerview, @layerpick and @routestyles");
+				pcb_hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, or @");
 		}
 		break;
 	default:
@@ -332,14 +317,8 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 
 	mm->accel_group = gtk_accel_group_new();
 
-	mm->layer_view_pos = 0;
-	mm->layer_pick_pos = 0;
 	mm->route_style_pos = 0;
-	mm->n_layer_views = 0;
-	mm->n_layer_picks = 0;
 	mm->n_route_styles = 0;
-	mm->layer_view_shell = NULL;
-	mm->layer_pick_shell = NULL;
 	mm->route_style_shell = NULL;
 
 	mm->action_cb = action_cb;
@@ -401,39 +380,6 @@ ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
 		cb(GTK_ACTION(list->data), tf, af);
 		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
-	}
-}
-
-void ghid_main_menu_install_layer_selector(GHidMainMenu * mm)
-{
-	GList *children, *iter;
-
-	/* @layerview */
-	if (mm->layer_view_shell) {
-		/* Remove old children */
-		children = gtk_container_get_children(GTK_CONTAINER(mm->layer_view_shell));
-		for (iter = g_list_nth(children, mm->layer_view_pos);
-				 iter != NULL && mm->n_layer_views > 0; iter = g_list_next(iter), mm->n_layer_views--)
-			gtk_container_remove(GTK_CONTAINER(mm->layer_view_shell), iter->data);
-		g_list_free(children);
-
-		/* Install new ones */
-#warning layersel TODO
-		mm->n_layer_views = /*pcb_gtk_layer_selector_install_view_items(ls, mm->layer_view_shell, mm->layer_view_pos)*/ NULL;
-	}
-
-	/* @layerpick */
-	if (mm->layer_pick_shell) {
-		/* Remove old children */
-		children = gtk_container_get_children(GTK_CONTAINER(mm->layer_pick_shell));
-		for (iter = g_list_nth(children, mm->layer_pick_pos);
-				 iter != NULL && mm->n_layer_picks > 0; iter = g_list_next(iter), mm->n_layer_picks--)
-			gtk_container_remove(GTK_CONTAINER(mm->layer_pick_shell), iter->data);
-		g_list_free(children);
-
-		/* Install new ones */
-#warning layersel TODO
-		mm->n_layer_picks = /*pcb_gtk_layer_selector_install_pick_items(ls, mm->layer_pick_shell, mm->layer_pick_pos);*/ NULL;
 	}
 }
 
