@@ -28,6 +28,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "conf_core.h"
 #include "event.h"
 #include "layer.h"
 #include "layer_grp.h"
@@ -53,7 +54,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	int idx;
 	pcb_layergrp_id_t gid;
 
-	memset(&props, 0,sizeof(props));
+	memset(&props, 0, sizeof(props));
 	props.action = act;
 	props.checked = chk;
 	props.update_on = "";
@@ -66,26 +67,38 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	end++;
 
 	/* have to go reverse to keep order because this will insert items */
-
-	for(gid = pcb_max_group(PCB); gid >= 0; gid--) {
+	for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
-		pcb_menu_prop_t props;
 		int n;
 
 		if (g->type & PCB_LYT_SUBSTRATE)
 			continue;
 
 		for(n = g->len-1; n >= 0; n--) {
-			pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
+			pcb_layer_id_t lid = g->lid[n];
+			pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
 
+#warning layer TODO: hardwired layer colors
+			
+			props.background = conf_core.appearance.color.layer[lid];
+			props.foreground = conf_core.appearance.color.background;
+			sprintf(chk, "TODO");
+			sprintf(act, "TODO");
+			props.checked = NULL/*chk*/;
 			pcb_snprintf(end, len_avail, "  %s", l->name);
 			pcb_gui->create_menu(path, &props);
 		}
 
+		props.foreground = NULL;
+		props.background = NULL;
+		props.checked = NULL;
 		pcb_snprintf(end, len_avail, "[%s]", g->name);
 		pcb_gui->create_menu(path, &props);
-
 	}
+
+	/* restore the path */
+	end--;
+	*end = '\0';
 }
 
 
