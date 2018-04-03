@@ -162,6 +162,8 @@ typedef struct pcb_menu_prop_s {
 	const char *tip;        /* tooltip */
 	const char *checked;
 	const char *update_on;
+	const char *foreground;
+	const char *background;
 	const char *cookie;     /* used for cookie based removal */
 } pcb_menu_prop_t;
 
