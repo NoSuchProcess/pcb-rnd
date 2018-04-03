@@ -1544,6 +1544,8 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 	else {
 		PCB->RatDraw = 0;
 		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 
 	return 0;
@@ -1619,6 +1621,8 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 	}
 	else {
 		pcb_layervis_change_group_vis(atoi(argv[0])-1, -1, 0);
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 
 	return 1;
