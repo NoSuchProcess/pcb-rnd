@@ -82,9 +82,15 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 			
 			props.background = conf_core.appearance.color.layer[lid];
 			props.foreground = conf_core.appearance.color.background;
-			sprintf(chk, "TODO");
-			sprintf(act, "TODO");
 			props.checked = NULL/*chk*/;
+			if (ctx->view) {
+				sprintf(act, "ToggleView(%ld)", lid+1);
+				sprintf(chk, "TODO");
+			}
+			else {
+				sprintf(act, "SelectLayer(%ld)", lid+1);
+				sprintf(chk, "TODO");
+			}
 			pcb_snprintf(end, len_avail, "  %s", l->name);
 			pcb_gui->create_menu(path, &props);
 		}
