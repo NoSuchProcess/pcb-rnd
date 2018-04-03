@@ -75,7 +75,4 @@ void pcb_grid_inval(void);
 /* Reinstall grid menus */
 void pcb_grid_install_menu(void);
 
-void pcb_grid_init(void);
-void pcb_grid_uninit(void);
-
 #endif

@@ -38,7 +38,6 @@
 #include "unit.h"
 #include "grid.h"
 #include "board.h"
-#include "event.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "conf_hid.h"
@@ -46,10 +45,6 @@
 #include "misc_util.h"
 #include "pcb_bool.h"
 #include "pcb-printf.h"
-#include "hid_cfg.h"
-#include "hid.h"
-
-static const char *grid_cookie = "grid";
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {
@@ -224,90 +219,5 @@ void pcb_grid_inval(void)
 {
 	if (conf_core.editor.grids_idx > 0)
 		conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - conf_core.editor.grids_idx);
-}
-
-#define ANCH "@grid"
-
-static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
-{
-	conflist_t *lst = (conflist_t *)&conf_core.editor.grids;
-	conf_listitem_t *li;
-	char *end = path + strlen(path);
-	pcb_menu_prop_t props;
-	char act[256], chk[256];
-	int idx;
-
-	memset(&props, 0,sizeof(props));
-	props.action = act;
-	props.checked = chk;
-	props.update_on = "editor/grids_idx";
-	props.cookie = ANCH;
-
-	pcb_hid_cfg_del_anchor_menus(node, ANCH);
-
-	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	*end = '/';
-	end++;
-
-	/* have to go reverse to keep order because this will insert items */
-	idx = conflist_length(lst)-1;
-	for(li = conflist_last(lst); li != NULL; li = conflist_prev(li),idx--) {
-		sprintf(act, "grid(#%d)", idx);
-		sprintf(chk, "conf(iseq, editor/grids_idx, %d)", idx);
-		strcpy(end, li->val.string[0]);
-		pcb_gui->create_menu(path, &props);
-	}
-
-}
-
-void pcb_grid_install_menu(void)
-{
-	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
-}
-
-static int grid_lock = 0;
-
-static void grid_update_conf(conf_native_t *cfg, int arr_idx)
-{
-	if (grid_lock) return;
-	grid_lock++;
-	pcb_grid_install_menu();
-	grid_lock--;
-}
-
-static void grid_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	if (grid_lock) return;
-	grid_lock++;
-	pcb_grid_install_menu();
-
-	/* to get the right menu checked */
-	if (conf_core.editor.grids_idx >= 0)
-		pcb_grid_list_step(0);
-	grid_lock--;
-}
-
-
-static conf_hid_id_t conf_id;
-void pcb_grid_init(void)
-{
-	static conf_hid_callbacks_t ccb;
-	conf_native_t *nat;
-
-	pcb_event_bind(PCB_EVENT_GUI_INIT, grid_update_ev, NULL, grid_cookie);
-
-	conf_id = conf_hid_reg(grid_cookie, NULL);
-	memset(&ccb, 0, sizeof(ccb));
-	ccb.val_change_post = grid_update_conf;
-	nat = conf_get_field("editor/grids");
-
-	if (nat != NULL)
-		conf_hid_set_cb(nat, conf_id, &ccb);
-}
-
-void pcb_grid_uninit(void)
-{
-	pcb_event_unbind_allcookie(grid_cookie);
-	conf_hid_unreg(grid_cookie);
 }
 
