@@ -363,18 +363,14 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
  * flag (maybe NULL), and its active flag (maybe NULL), to a
  * callback function. It is the responsibility of the function
  * to actually change the state of the action. */
-void
-ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
-																	 void (*cb) (GtkAction *, const char *toggle_flag, const char *active_flag))
+void ghid_main_menu_update_toggle_state(GHidMainMenu *menu, void (*cb)(GtkAction *, const char *toggle_flag, const char *active_flag))
 {
 	GList *list;
 	for (list = menu->actions; list; list = list->next) {
 		lht_node_t *res = g_object_get_data(G_OBJECT(list->data), "resource");
 		lht_node_t *act = pcb_hid_cfg_menu_field(res, PCB_MF_ACTION, NULL);
-		const char *tf = g_object_get_data(G_OBJECT(list->data),
-																			 "checked-flag");
-		const char *af = g_object_get_data(G_OBJECT(list->data),
-																			 "active-flag");
+		const char *tf = g_object_get_data(G_OBJECT(list->data), "checked-flag");
+		const char *af = g_object_get_data(G_OBJECT(list->data), "active-flag");
 		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
 		cb(GTK_ACTION(list->data), tf, af);
 		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
