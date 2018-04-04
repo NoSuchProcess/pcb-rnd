@@ -1656,11 +1656,6 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
-	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
-		PCB->RatOn = !PCB->RatOn;
-		pcb_gui->invalidate_all();
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	}
 	else if (pcb_strcasecmp(argv[0], "vias") == 0) {
 		PCB->ViaOn = !PCB->ViaOn;
 		pcb_gui->invalidate_all();
@@ -1677,14 +1672,25 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else {
-		int id = atoi(argv[0]) - 1;
-		if (id >= 0) {
+		char *end;
+		int id = strtol(argv[0], &end, 10) - 1;
+		if (*end == '\0') { /* integer layer */
 			pcb_layervis_change_group_vis(id, -1, 0);
 			pcb_gui->invalidate_all();
 			pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+			return 0;
 		}
-		else
-			pcb_message(PCB_MSG_ERROR, "Invalid layer id\n");
+		else { /* virtual menu layer */
+			const pcb_menu_layers_t *ml = pcb_menu_layer_find(argv[0]);
+			if (ml != NULL) {
+				pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
+				*v = !(*v);
+				pcb_gui->invalidate_all();
+				pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+				return 0;
+			}
+			pcb_message(PCB_MSG_ERROR, "Invalid layer id: '%s'\n", argv[0]);
+		}
 	}
 
 	return 1;
@@ -1707,10 +1713,19 @@ static int pcb_act_ChkView(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		PCB_ACT_FAIL(chkview); /* argv[0] is a must */
 
 	lid = strtol(argv[0], &end, 10);
+
 	if (*end != '\0') {
+		const pcb_menu_layers_t *ml = pcb_menu_layer_find(argv[0]);
+
+		if (ml != NULL) {
+			pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
+			return *v;
+		}
+
 		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
 		return -1;
 	}
+
 	lid--;
 	ly = pcb_get_layer(PCB->Data, lid);
 	if (ly == NULL)
