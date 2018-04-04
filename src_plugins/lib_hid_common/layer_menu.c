@@ -88,7 +88,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 			}
 			else {
 				sprintf(act, "SelectLayer(%ld)", lid+1);
-				sprintf(chk, "TODO");
+				sprintf(chk, "ChkLayer(%ld)", lid+1);
 			}
 			pcb_snprintf(end, len_avail, "  %s", l->name);
 			pcb_gui->create_menu(path, &props);
@@ -128,6 +128,6 @@ void pcb_layer_menu_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 void pcb_layer_menu_vis_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (pcb_gui != NULL)
-		pcb_gui->update_menu_checkbox("@layerview");
+		pcb_gui->update_menu_checkbox(NULL);
 }
 
