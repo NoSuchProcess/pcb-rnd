@@ -1551,6 +1551,36 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 	return 0;
 }
 
+const char pcb_acts_chklayer[] = "ChkLayer(layerid)";
+const char pcb_acth_chklayer[] = "Returns 1 if the specified layer is the active layer";
+/* %start-doc actions ChkLayer
+
+Returns 1 if the specified layer is the active layer.
+
+%end-doc */
+
+static int pcb_act_ChkLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layer_id_t lid;
+	pcb_layer_t *ly;
+	char *end;
+
+	if (argc < 1)
+		PCB_ACT_FAIL(chklayer); /* argv[0] is a must */
+
+	lid = strtol(argv[0], &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
+		return -1;
+	}
+	lid--;
+	ly = pcb_get_layer(PCB->Data, lid);
+	if (ly == NULL)
+		return -1;
+
+	return ly == CURRENT;
+}
+
 
 const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|BackSide)\n" "ToggleView(All, Open|Vis, Set|Clear|Toggle)";
 const char pcb_acth_toggleview[] = "Toggle the visibility of the specified layer or layer group.";
@@ -1760,6 +1790,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"SelectLayer", 0, pcb_act_SelectLayer,
 	 pcb_acth_selectlayer, pcb_acts_selectlayer}
+	,
+	{"ChkLayer", 0, pcb_act_ChkLayer,
+	 pcb_acth_chklayer, pcb_acts_chklayer}
 	,
 	{"SwitchHID", 0, pcb_act_SwitchHID,
 	 pcb_acth_SwitchHID, pcb_acts_SwitchHID}
