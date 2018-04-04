@@ -916,6 +916,22 @@ void pcb_layer_edit_attrib(pcb_layer_t *layer)
 	free(buf);
 }
 
+const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev)
+{
+	const pcb_menu_layers_t *ml;
+
+	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
+		if (pcb_strcasecmp(name_or_abbrev, ml->abbrev) == 0)
+			return ml;
+
+	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
+		if (pcb_strcasecmp(name_or_abbrev, ml->name) == 0)
+			return ml;
+
+	return NULL;
+}
+
+
 static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
 	pcb_layergrp_t *g;

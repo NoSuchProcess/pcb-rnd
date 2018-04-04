@@ -167,6 +167,8 @@ typedef struct {
 
 extern const pcb_menu_layers_t pcb_menu_layers[];
 
+const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
+
 /************ OLD API - new code should not use these **************/
 
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
