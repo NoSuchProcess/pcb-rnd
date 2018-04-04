@@ -170,11 +170,10 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 					cbs.val_change_post = ctx->confchg_checkbox;
 					cbs_inited = 1;
 				}
-/*				pcb_trace("conf_hid_set for %s -> %s\n", checked, nat->hash_path);*/
 				conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
 			}
 			else {
-				if ((update_on == NULL) || (*update_on != '\0'))	/* warn if update_on is not explicitly empty */
+				if ((update_on == NULL) || (*update_on != '\0'))
 					pcb_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
 			}
 		}
