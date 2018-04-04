@@ -55,13 +55,13 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 };
 
 const pcb_menu_layers_t pcb_menu_layers[] = {
-	{ "Subcircuits",&conf_core.appearance.color.subc,              NULL,       offsetof(pcb_board_t, SubcOn),             0 },
-	{ "Subc. parts",&conf_core.appearance.color.subc,              NULL,       offsetof(pcb_board_t, SubcPartsOn),        0 },
-	{ "Pstk. marks",&conf_core.appearance.color.padstackmark,      NULL,       offsetof(pcb_board_t, padstack_mark_on),   0 },
-	{ "Holes",      &conf_core.appearance.color.pin,               NULL,       offsetof(pcb_board_t, hole_on),            0 },
-	{ "Far side",   &conf_core.appearance.color.invisible_objects, NULL,       offsetof(pcb_board_t, InvisibleObjectsOn), 0 },
-	{ "Rats",       &conf_core.appearance.color.rat,               "rats",     offsetof(pcb_board_t, RatOn),              offsetof(pcb_board_t, RatDraw) },
-	{ NULL,         NULL,                                          NULL,       0}
+	{ "Subcircuits", "subc",     &conf_core.appearance.color.subc,              NULL,       offsetof(pcb_board_t, SubcOn),             0 },
+	{ "Subc. parts", "subcpart", &conf_core.appearance.color.subc,              NULL,       offsetof(pcb_board_t, SubcPartsOn),        0 },
+	{ "Pstk. marks", "pstkmark", &conf_core.appearance.color.padstackmark,      NULL,       offsetof(pcb_board_t, padstack_mark_on),   0 },
+	{ "Holes",       "holes",    &conf_core.appearance.color.pin,               NULL,       offsetof(pcb_board_t, hole_on),            0 },
+	{ "Far side",    "farside",  &conf_core.appearance.color.invisible_objects, NULL,       offsetof(pcb_board_t, InvisibleObjectsOn), 0 },
+	{ "Rats",        "rats",     &conf_core.appearance.color.rat,               "rats",     offsetof(pcb_board_t, RatOn),              offsetof(pcb_board_t, RatDraw) },
+	{ NULL,          NULL,       NULL,                                          NULL,       0}
 };
 
 

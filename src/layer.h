@@ -159,7 +159,7 @@ pcb_layer_id_t pcb_layer_get_top_silk();
 #define pcb_layer_get_top(layer) pcb_data_get_top((layer)->parent)
 
 typedef struct {
-	const char *name;
+	const char *name, *abbrev;
 	char * const *force_color;
 	const char *select_name;
 	int vis_offs, sel_offs;
