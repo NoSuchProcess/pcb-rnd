@@ -558,18 +558,17 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 typedef struct {
 	const char *name;
 	char * const*force_color;
-	int (*ev_vis)(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on);
 	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl, int do_select);
 	int virt_data;
 } virt_layers_t;
 
 static const virt_layers_t virts[] = {
-	{ "Subcircuits",&conf_core.appearance.color.subc,              vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, SubcOn) },
-	{ "Subc. parts",&conf_core.appearance.color.subc,              vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, SubcPartsOn) },
-	{ "Pstk. marks",&conf_core.appearance.color.padstackmark,      vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, padstack_mark_on) },
-	{ "Holes",      &conf_core.appearance.color.pin,               vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, hole_on) },
-	{ "Far side",   &conf_core.appearance.color.invisible_objects, vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, InvisibleObjectsOn) },
-	{ "Rats",       &conf_core.appearance.color.rat,               vis_virt, ev_lyr_select_rat, offsetof(pcb_board_t, RatOn) },
+	{ "Subcircuits",&conf_core.appearance.color.subc,              ev_lyr_no_select,  offsetof(pcb_board_t, SubcOn) },
+	{ "Subc. parts",&conf_core.appearance.color.subc,              ev_lyr_no_select,  offsetof(pcb_board_t, SubcPartsOn) },
+	{ "Pstk. marks",&conf_core.appearance.color.padstackmark,      ev_lyr_no_select,  offsetof(pcb_board_t, padstack_mark_on) },
+	{ "Holes",      &conf_core.appearance.color.pin,               ev_lyr_no_select,  offsetof(pcb_board_t, hole_on) },
+	{ "Far side",   &conf_core.appearance.color.invisible_objects, ev_lyr_no_select,  offsetof(pcb_board_t, InvisibleObjectsOn) },
+	{ "Rats",       &conf_core.appearance.color.rat,               ev_lyr_select_rat, offsetof(pcb_board_t, RatOn) },
 };
 
 static void layersel_populate(pcb_gtk_layersel_t *ls)
@@ -597,7 +596,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		for(n = 0; n < ls->grp_virt.len; n++) {
 			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], virts[n].name, -1, (const char *const *)virts[n].force_color), FALSE, FALSE, 1);
 			lsg->layer[n].ev_selected = virts[n].ev_selected;
-			lsg->layer[n].ev_vis = virts[n].ev_vis;
+			lsg->layer[n].ev_vis = vis_virt;
 			lsg->layer[n].virt_data = virts[n].virt_data;
 			lsg->layer[n].lid = ls->grp_virt.lid[n] = -1;
 		}
