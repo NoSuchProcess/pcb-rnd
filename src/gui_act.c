@@ -1650,9 +1650,14 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else {
-		pcb_layervis_change_group_vis(atoi(argv[0])-1, -1, 0);
-		pcb_gui->invalidate_all();
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		int id = atoi(argv[0]) - 1;
+		if (id >= 0) {
+			pcb_layervis_change_group_vis(id, -1, 0);
+			pcb_gui->invalidate_all();
+			pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		}
+		else
+			pcb_message(PCB_MSG_ERROR, "Invalid layer id\n");
 	}
 
 	return 1;
