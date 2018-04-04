@@ -2607,7 +2607,8 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 	}
 
-	lesstif_update_widget_flags();
+#warning TODO: remove this, update-on should handle all cases
+	lesstif_update_widget_flags(NULL);
 
 	show_crosshair(1);
 	idle_proc_set = 0;
@@ -3807,6 +3808,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.remove_menu = lesstif_remove_menu;
 	lesstif_hid.remove_menu_node = lesstif_remove_menu_node;
+	lesstif_hid.update_menu_checkbox = lesstif_update_widget_flags;
 	lesstif_hid.usage = lesstif_usage;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);

@@ -47,7 +47,7 @@ typedef struct {
 	pcb_gtk_layersel_t layersel;
 } pcb_gtk_topwin_t;
 
-void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw);
+void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie);
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);

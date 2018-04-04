@@ -462,6 +462,12 @@ static void ghid_create_menu(const char *menu_path, const pcb_menu_prop_t *props
 	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &ghidgui->topwin.menu);
 }
 
+static void ghid_update_menu_checkbox(const char *cookie)
+{
+	if (ghidgui->hid_active)
+		ghid_update_toggle_flags(&ghidgui->topwin, cookie);
+}
+
 static int ghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
@@ -560,6 +566,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->create_menu = ghid_create_menu;
 	dst->remove_menu = ghid_remove_menu;
 	dst->remove_menu_node = ghid_remove_menu_node;
+	dst->update_menu_checkbox = ghid_update_menu_checkbox;
 
 	dst->usage = ghid_usage;
 }

@@ -522,6 +522,11 @@ struct pcb_hid_s {
 	int (*remove_menu)(const char *menu_path);
 	int (*remove_menu_node)(lht_node_t *nd);
 
+	/* Update the state of all checkboxed menus whose luhata
+	   node cookie matches cookie (or all checkboxed menus globally if cookie
+	   is NULL) */
+	void (*update_menu_checkbox)(const char *cookie);
+
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
 	pcb_hid_cfg_t *hid_cfg;
 

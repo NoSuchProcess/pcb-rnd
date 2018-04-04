@@ -104,7 +104,7 @@ static int del_widget_flag(int idx)
 	return 0;
 }
 
-void lesstif_update_widget_flags()
+void lesstif_update_widget_flags(const char *cookie)
 {
 	int i;
 	for (i = 0; i < n_wflags; i++) {
@@ -396,7 +396,7 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 
 static void lesstif_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 {
-	lesstif_update_widget_flags();
+	lesstif_update_widget_flags(NULL);
 }
 
 static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level)

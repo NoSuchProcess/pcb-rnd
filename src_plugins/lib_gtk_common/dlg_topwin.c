@@ -71,7 +71,7 @@
 #include "win_place.h"
 
 /* sync the menu checkboxes with actual pcb state */
-void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)
+void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie)
 {
 	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
@@ -564,7 +564,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 
 	ghid_build_pcb_top_window(tw);
 	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
-	ghid_update_toggle_flags(tw);
+	ghid_update_toggle_flags(tw, NULL);
 
 	pcb_gtk_icons_init(GTK_WINDOW(tw->com->top_window));
 	pcb_crosshair_set_mode(PCB_MODE_ARROW);

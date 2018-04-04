@@ -44,7 +44,7 @@ extern void lesstif_show_crosshair(int);
 extern void lesstif_invalidate_all(void);
 extern void lesstif_coords_to_pcb(int, int, pcb_coord_t *, pcb_coord_t *);
 extern void lesstif_get_xy(const char *msg);
-extern void lesstif_update_widget_flags(void);
+extern void lesstif_update_widget_flags(const char *cookie);
 extern int lesstif_call_action(const char *, int, char **);
 extern void lesstif_sizes_reset(void);
 extern void lesstif_pan_fixup(void);
