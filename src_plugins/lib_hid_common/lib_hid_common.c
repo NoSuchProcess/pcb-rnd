@@ -51,6 +51,7 @@ int pplg_init_lib_hid_common(void)
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
+	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, pcb_layer_menu_vis_update_ev, NULL, layer_cookie);
 
 	conf_id = conf_hid_reg(grid_cookie, NULL);
 	memset(&ccb, 0, sizeof(ccb));
