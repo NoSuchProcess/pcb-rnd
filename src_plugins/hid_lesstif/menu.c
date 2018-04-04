@@ -18,6 +18,7 @@
 #include "hid_cfg.h"
 #include "hid_cfg_action.h"
 #include "hid_cfg_input.h"
+#include "conf_hid.h"
 #include "lesstif.h"
 #include "paths.h"
 #include "hid_actions.h"
@@ -30,6 +31,7 @@
 
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;
+conf_hid_id_t lesstif_menuconf_id;
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -392,6 +394,11 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 	}
 }
 
+static void lesstif_confchg_checkbox(conf_native_t *cfg, int arr_idx)
+{
+	lesstif_update_widget_flags();
+}
+
 static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level)
 {
 	const char *v;
@@ -482,8 +489,34 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 		}
 
 		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
-		if (v != NULL)
+		if (v != NULL) {
+			const char *uo;
+
 			md->wflag_idx = note_widget_flag(md->btn, XmNset, v);
+
+			/* set up the update-on callback */
+			uo = pcb_hid_cfg_menu_field_str(node, PCB_MF_UPDATE_ON);
+			if (uo == NULL)
+				uo = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
+			if (uo != NULL) {
+				static conf_hid_callbacks_t cbs;
+				static int cbs_inited = 0;
+				conf_native_t *nat = conf_get_field(uo);
+
+				if (nat != NULL) {
+					if (!cbs_inited) {
+						memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
+						cbs.val_change_post = lesstif_confchg_checkbox;
+						cbs_inited = 1;
+					}
+					conf_hid_set_cb(nat, lesstif_menuconf_id, &cbs);
+				}
+				else {
+					if (*uo != '\0')
+						pcb_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
+				}
+			}
+		}
 
 		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_ACTIVE);
 		if (v != NULL)
@@ -587,10 +620,18 @@ void lesstif_remove_menu(const char *menu_path)
 
 void lesstif_remove_menu_node(lht_node_t *node)
 {
+#warning TODO: remove by node
 	pcb_hid_cfg_remove_menu(lesstif_cfg, node, del_menu, NULL);
+}
+
+extern const char *lesstif_cookie;
+void lesstif_init_menu(void)
+{
+	lesstif_menuconf_id = conf_hid_reg(lesstif_cookie, NULL);
 }
 
 void lesstif_uninit_menu(void)
 {
+	conf_hid_unreg(lesstif_cookie);
 	XtDestroyWidget(lesstif_menubar);
 }

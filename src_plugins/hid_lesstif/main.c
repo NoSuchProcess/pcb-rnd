@@ -1585,6 +1585,8 @@ int lesstif_key_name(unsigned short int key_raw, char *out, int out_len)
 	return 0;
 }
 
+void lesstif_uninit_menu(void);
+void lesstif_init_menu(void);
 
 extern Widget lesstif_menubar;
 static int lesstif_hid_inited = 0;
@@ -1745,6 +1747,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	lesstif_menubar = menu;
 	pcb_event(PCB_EVENT_GUI_INIT, NULL);
 
+	lesstif_init_menu();
 	lesstif_hid_inited = 1;
 
 	XtAppMainLoop(app_context);
@@ -1757,8 +1760,6 @@ static void lesstif_do_exit(pcb_hid_t *hid)
 {
 	XtAppSetExitFlag(app_context);
 }
-
-void lesstif_uninit_menu(void);
 
 static void lesstif_uninit(pcb_hid_t *hid)
 {
