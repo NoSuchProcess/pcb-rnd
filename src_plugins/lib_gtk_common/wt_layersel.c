@@ -206,7 +206,8 @@ static void ensure_visible_current(pcb_gtk_layersel_t *ls)
 /* Toggle a virtual layer: flip the bool */
 static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 {
-	pcb_bool *b = (pcb_bool *)((char *)PCB + lsl->virt_data);
+	const pcb_menu_layers_t *ml = &pcb_menu_layers[lsl->virt_idx];
+	pcb_bool *b = (pcb_bool *)((char *)PCB + ml->vis_offs);
 	if (toggle)
 		*b = !*b;
 	*is_on = *b;
@@ -215,7 +216,7 @@ static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 
 static int vis_ui(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 {
-	pcb_layer_t *l = &pcb_uilayer.array[lsl->virt_data];
+	pcb_layer_t *l = &pcb_uilayer.array[lsl->vis_ui_idx];
 	if (toggle)
 		l->meta.real.vis = !l->meta.real.vis;
 	*is_on = l->meta.real.vis;
@@ -236,11 +237,19 @@ static int ev_lyr_no_select(pcb_gtk_ls_lyr_t *lsl, int do_select)
 	return -1; /* layer can not be selected ever */
 }
 
-static int ev_lyr_select_rat(pcb_gtk_ls_lyr_t *lsl, int do_select)
+static int ev_lyr_select_virt(pcb_gtk_ls_lyr_t *lsl, int do_select)
 {
+	const pcb_menu_layers_t *ml = &pcb_menu_layers[lsl->virt_idx];
+	pcb_bool *b;
+
+	if ((ml->select_name == NULL) || (ml->sel_offs == 0))
+		return -1; /* can not be selected */
+
 	if (do_select)
-		lsl->lsg->ls->no_copper_sel = PCB->RatOn = PCB->RatDraw = 1;
-	return PCB->RatDraw;
+		pcb_hid_actionl("SelectLayer", ml->select_name, NULL);
+
+	b = (pcb_bool *)((char *)PCB + ml->sel_offs);
+	return *b;
 }
 
 static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_grp_t *lsg)
@@ -555,22 +564,6 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 }
 
 /*** Layer selector widget building function ***/
-typedef struct {
-	const char *name;
-	char * const*force_color;
-	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl, int do_select);
-	int virt_data;
-} virt_layers_t;
-
-static const virt_layers_t virts[] = {
-	{ "Subcircuits",&conf_core.appearance.color.subc,              ev_lyr_no_select,  offsetof(pcb_board_t, SubcOn) },
-	{ "Subc. parts",&conf_core.appearance.color.subc,              ev_lyr_no_select,  offsetof(pcb_board_t, SubcPartsOn) },
-	{ "Pstk. marks",&conf_core.appearance.color.padstackmark,      ev_lyr_no_select,  offsetof(pcb_board_t, padstack_mark_on) },
-	{ "Holes",      &conf_core.appearance.color.pin,               ev_lyr_no_select,  offsetof(pcb_board_t, hole_on) },
-	{ "Far side",   &conf_core.appearance.color.invisible_objects, ev_lyr_no_select,  offsetof(pcb_board_t, InvisibleObjectsOn) },
-	{ "Rats",       &conf_core.appearance.color.rat,               ev_lyr_select_rat, offsetof(pcb_board_t, RatOn) },
-};
-
 static void layersel_populate(pcb_gtk_layersel_t *ls)
 {
 	GtkWidget *spring;
@@ -588,16 +581,17 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	{ /* build hardwired virtual layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
+		const pcb_menu_layers_t *ml;
 
-		ls->grp_virt.len = sizeof(virts) / sizeof(virts[0]);
+		for(ml = pcb_menu_layers, ls->grp_virt.len = 0; ml->name != NULL; ml++) ls->grp_virt.len++;
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_virt.len);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0, &ls->grp_virt), FALSE, FALSE, 0);
 
 		for(n = 0; n < ls->grp_virt.len; n++) {
-			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], virts[n].name, -1, (const char *const *)virts[n].force_color), FALSE, FALSE, 1);
-			lsg->layer[n].ev_selected = virts[n].ev_selected;
+			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_menu_layers[n].name, -1, (const char *const *)pcb_menu_layers[n].force_color), FALSE, FALSE, 1);
+			lsg->layer[n].ev_selected = ev_lyr_select_virt;
 			lsg->layer[n].ev_vis = vis_virt;
-			lsg->layer[n].virt_data = virts[n].virt_data;
+			lsg->layer[n].virt_idx = n;
 			lsg->layer[n].lid = ls->grp_virt.lid[n] = -1;
 		}
 
@@ -618,7 +612,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].name, -1, &pcb_uilayer.array[n].meta.real.color), FALSE, FALSE, 1);
 			lsg->layer[g].ev_selected = ev_lyr_no_select;
 			lsg->layer[g].ev_vis = vis_ui;
-			lsg->layer[g].virt_data = n;
+			lsg->layer[g].vis_ui_idx = n;
 			lsg->layer[g].lid = -1;
 			g++;
 		}

@@ -158,6 +158,15 @@ pcb_layer_id_t pcb_layer_get_top_silk();
 /* Return the board the layer is under */
 #define pcb_layer_get_top(layer) pcb_data_get_top((layer)->parent)
 
+typedef struct {
+	const char *name;
+	char * const *force_color;
+	const char *select_name;
+	int vis_offs, sel_offs;
+} pcb_menu_layers_t;
+
+extern const pcb_menu_layers_t pcb_menu_layers[];
+
 /************ OLD API - new code should not use these **************/
 
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])

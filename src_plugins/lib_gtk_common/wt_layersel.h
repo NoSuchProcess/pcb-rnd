@@ -2,6 +2,7 @@
 #define PCB_GTK_LAYERSEL_H
 
 #include <gtk/gtk.h>
+#include "layer.h"
 #include "layer_grp.h"
 #include "glue.h"
 
@@ -18,7 +19,7 @@ struct pcb_gtk_ls_lyr_s {
 	pcb_layer_id_t lid;
 	const char * const*force_color;
 
-	int virt_data;
+	int vis_ui_idx, virt_idx;
 
 	/* for callbacks */
 	pcb_gtk_ls_grp_t *lsg;  /* points to parent */
