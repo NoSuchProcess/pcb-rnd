@@ -51,8 +51,9 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	char *end = path + plen;
 	pcb_menu_prop_t props;
 	char act[256], chk[256];
-	int idx;
+	int idx, max_ml;
 	pcb_layergrp_id_t gid;
+	const pcb_menu_layers_t *ml;
 
 	memset(&props, 0, sizeof(props));
 	props.action = act;
@@ -64,6 +65,30 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
 	end++;
+
+	/* menu-only virtual layers; have to go reverse to keep order because this will insert items */
+	for(ml = pcb_menu_layers, max_ml = 0; ml->name != NULL; ml++) max_ml++;
+	for(idx = max_ml-1; idx >= 0; idx--) {
+		ml = &pcb_menu_layers[idx];
+		props.checked = chk;
+		if (ctx->view) {
+			sprintf(act, "ToggleView(%s)", ml->abbrev);
+			sprintf(chk, "ChkView(%s)", ml->abbrev);
+		}
+		else {
+			if (ml->sel_offs == 0) /* do not list layers that can not be selected */
+				continue;
+			sprintf(act, "SelectLayer(%s)", ml->abbrev);
+			sprintf(chk, "ChkLayer(%s)", ml->abbrev);
+		}
+		pcb_snprintf(end, len_avail, "  %s", ml->name);
+		pcb_gui->create_menu(path, &props);
+	}
+
+	props.checked = NULL;
+	pcb_snprintf(end, len_avail, "[virtual]");
+	pcb_gui->create_menu(path, &props);
+
 
 	/* have to go reverse to keep order because this will insert items */
 	for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
@@ -108,6 +133,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 		pcb_snprintf(end, len_avail, "[%s]", g->name);
 		pcb_gui->create_menu(path, &props);
 	}
+
 
 	/* restore the path */
 	end--;
