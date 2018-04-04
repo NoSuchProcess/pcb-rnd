@@ -41,6 +41,7 @@ static conf_hid_id_t conf_id;
 void pplg_uninit_lib_hid_common(void)
 {
 	pcb_event_unbind_allcookie(grid_cookie);
+	pcb_event_unbind_allcookie(layer_cookie);
 	conf_hid_unreg(grid_cookie);
 }
 
