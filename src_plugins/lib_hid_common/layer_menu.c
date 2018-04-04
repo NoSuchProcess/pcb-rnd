@@ -56,7 +56,6 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 
 	memset(&props, 0, sizeof(props));
 	props.action = act;
-	props.checked = chk;
 	props.update_on = "";
 	props.cookie = ctx->anch;
 
@@ -82,10 +81,10 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 			
 			props.background = conf_core.appearance.color.layer[lid];
 			props.foreground = conf_core.appearance.color.background;
-			props.checked = NULL/*chk*/;
+			props.checked = chk;
 			if (ctx->view) {
 				sprintf(act, "ToggleView(%ld)", lid+1);
-				sprintf(chk, "TODO");
+				sprintf(chk, "ChkView(%ld)", lid+1);
 			}
 			else {
 				sprintf(act, "SelectLayer(%ld)", lid+1);

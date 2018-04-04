@@ -1628,6 +1628,35 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return 1;
 }
 
+const char pcb_acts_chkview[] = "ChkView(layerid)\n";
+const char pcb_acth_chkview[] = "Return 1 if layerid is visible.";
+
+/* %start-doc actions ChkView
+Return 1 if layerid is visible. Intended for meu item 'checked' fields.
+%end-doc */
+
+static int pcb_act_ChkView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layer_id_t lid;
+	pcb_layer_t *ly;
+	char *end;
+
+	if (argc < 1)
+		PCB_ACT_FAIL(chkview); /* argv[0] is a must */
+
+	lid = strtol(argv[0], &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
+		return -1;
+	}
+	lid--;
+	ly = pcb_get_layer(PCB->Data, lid);
+	if (ly == NULL)
+		return -1;
+
+	return ly->meta.real.vis;
+}
+
 
 static const char pcb_acts_setunits[] = "SetUnits(mm|mil)";
 static const char pcb_acth_setunits[] = "Set the default measurement units.";
@@ -1737,6 +1766,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"ToggleView", 0, pcb_act_ToggleView,
 	 pcb_acth_toggleview, pcb_acts_toggleview}
+	,
+	{"ChkView", 0, pcb_act_ChkView,
+	 pcb_acth_chkview, pcb_acts_chkview}
 	,
 	{"PCBChanged", 0, pcb_act_PCBChanged,
 	 pcb_acth_PCBChanged, pcb_acts_PCBChanged}
