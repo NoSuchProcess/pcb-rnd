@@ -1529,6 +1529,8 @@ visible if it is not already visible
 static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_layer_id_t lid;
+	const pcb_menu_layers_t *ml;
+	
 
 	if (pcb_strcasecmp(argv[0], "silk") == 0) {
 		PCB->RatDraw = 0;
@@ -1536,18 +1538,26 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_layervis_change_group_vis(lid, 1, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
-	}
-	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
-		PCB->RatOn = PCB->RatDraw = 1;
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	}
-	else {
-		PCB->RatDraw = 0;
-		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
-		pcb_gui->invalidate_all();
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		return 0;
 	}
 
+	ml = pcb_menu_layer_find(argv[0]);
+	if (ml != NULL) {
+		pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
+		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
+		if (ml->sel_offs == 0) {
+			pcb_message(PCB_MSG_ERROR, "Virtual layer '%s' (%s) can not be selected\n", ml->name, ml->abbrev);
+			return 0;
+		}
+		*s = *v = 1;
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		return 0;
+	}
+
+	PCB->RatDraw = 0;
+	pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
+	pcb_gui->invalidate_all();
+	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return 0;
 }
 
@@ -1564,15 +1574,32 @@ static int pcb_act_ChkLayer(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	pcb_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
+	const pcb_menu_layers_t *ml;
 
 	if (argc < 1)
 		PCB_ACT_FAIL(chklayer); /* argv[0] is a must */
 
 	lid = strtol(argv[0], &end, 10);
 	if (*end != '\0') {
+		ml = pcb_menu_layer_find(argv[0]);
+		if (ml != NULL) {
+			if (ml->sel_offs != 0) {
+				pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
+				return *s;
+			}
+			return -1;
+		}
 		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
 		return -1;
 	}
+
+	/* if any virtual is selected, do not accept CURRENT as selected */
+	for(ml = pcb_menu_layers; ml->name != NULL; ml++) {
+		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
+		if ((ml->sel_offs != 0) && (*s))
+			return 0;
+	}
+
 	lid--;
 	ly = pcb_get_layer(PCB->Data, lid);
 	if (ly == NULL)
