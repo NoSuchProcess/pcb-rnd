@@ -232,6 +232,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 	if (load_settings)
 		pcb_event(PCB_EVENT_LOAD_POST, "si", Filename, res);
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 
 	plug_io_err(res, "load pcb", Filename);
 	return res;

@@ -91,7 +91,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	save = PCB;
 	PCB = ptr;
 	pcb_layer_parse_group_string(ptr, conf_core.design.groups, PCB_MAX_LAYER, 0);
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	PCB = save;
 
 	ptr->Zoom = conf_core.editor.zoom;
@@ -111,6 +110,8 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 		ptr->Data->Layer[i].name = pcb_strdup(conf_core.design.default_layer_name[i]);
 
 	pcb_font_create_default(ptr);
+
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 
 	return ptr;
 }
@@ -160,6 +161,8 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 			nw->Data->loader = NULL;
 		}
 	}
+
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 
 	PCB = old;
 	return nw;
