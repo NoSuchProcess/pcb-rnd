@@ -397,36 +397,6 @@ void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 	return;
 }
 
-void lesstif_insert_style_buttons(Widget menu)
-{
-	StyleButtons *sb;
-	int s, i;
-
-	num_style_buttons++;
-	s = num_style_buttons * sizeof(StyleButtons);
-	style_button_list = (StyleButtons *) realloc(style_button_list, s);
-	sb = style_button_list + num_style_buttons - 1;
-	sb->w = NULL;
-
-	alloced_styles = vtroutestyle_len(&PCB->RouteStyle);
-	style_pb = realloc(style_pb, sizeof(style_pb[0]) * alloced_styles);
-	units_pb = realloc(units_pb, sizeof(units_pb[0]) * alloced_styles);
-	name_hashes = realloc(name_hashes, sizeof(name_hashes[0]) * alloced_styles);
-	sb->w = realloc(sb->w, sizeof(sb->w[0]) * alloced_styles);
-
-	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
-		Widget btn;
-		stdarg_n = 0;
-		stdarg(XmNindicatorType, XmONE_OF_MANY);
-		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle.array[i].name));
-		btn = XmCreateToggleButton(menu, XmStrCast("style"), stdarg_args, stdarg_n);
-		XtManageChild(btn);
-		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) style_selected, (XtPointer) (size_t) i);
-		sb->w[i] = btn;
-	}
-	update_style_buttons();
-}
-
 pcb_hid_action_t lesstif_styles_action_list[] = {
 	{"AdjustStyle", 0, AdjustStyle,
 	 adjuststyle_help, adjuststyle_syntax}

@@ -533,9 +533,7 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 	Widget btn = NULL;
 	stdarg_n = 0;
 	if (*node->data.text.value == '@') {
-		if (strcmp(node->data.text.value, "@routestyles") == 0)
-			lesstif_insert_style_buttons(menu);
-		/* ignore the rest */
+		/* ignore anchors */
 	}
 	else if ((strcmp(node->data.text.value, "-") == 0) || (strcmp(node->data.text.value, "-"))) {
 		btn = XmCreateSeparator(menu, XmStrCast("sep"), stdarg_args, stdarg_n);
