@@ -180,21 +180,26 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
 
 #define cmp(a,b) (((a) != -1) && (coord_abs((a)-(b)) > 32))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
-int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
+int pcb_route_style_match(pcb_route_style_t *rst, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
 {
-	int n;
-	for (n = 0; n < vtroutestyle_len(styles); n++) {
-		if (cmp(Thick, styles->array[n].Thick)) continue;
-		if (cmp(Diameter, styles->array[n].Diameter)) continue;
-		if (cmp(Hole, styles->array[n].Hole)) continue;
-		if (cmp(Clearance, styles->array[n].Clearance)) continue;
-		if (cmps(Name, styles->array[n].name)) continue;
-		return n;
-	}
-	return -1;
+	if (cmp(Thick, rst->Thick)) return 0;
+	if (cmp(Diameter, rst->Diameter)) return 0;
+	if (cmp(Hole, rst->Hole)) return 0;
+	if (cmp(Clearance, rst->Clearance)) return 0;
+	if (cmps(Name, rst->name)) return 0;
+	return 1;
 }
 #undef cmp
 #undef cmps
+
+int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
+{
+	int n;
+	for (n = 0; n < vtroutestyle_len(styles); n++)
+		if (pcb_route_style_match(&styles->array[n], Thick, Diameter, Hole, Clearance, Name))
+			return n;
+	return -1;
+}
 
 
 int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)

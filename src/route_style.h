@@ -51,6 +51,10 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
    a style. Return -1 on no match. */
 int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name);
 
+/* Return 1 if rst matches the style in supplied args. Same matching rules as
+   in pcb_route_style_lookup(). */
+int pcb_route_style_match(pcb_route_style_t *rst, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name);
+
 extern pcb_route_style_t pcb_custom_route_style;
 
 /* helper: get route style size for a function and selected object type.
