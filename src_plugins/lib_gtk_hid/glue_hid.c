@@ -449,12 +449,12 @@ static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx
 /* Create a new menu by path */
 static int ghid_remove_menu(const char *menu_path)
 {
-	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
+	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
 }
 
 static int ghid_remove_menu_node(lht_node_t *node)
 {
-	return pcb_hid_cfg_remove_menu_node(ghidgui->topwin.ghid_cfg, node, ghid_remove_menu_widget, NULL);
+	return pcb_hid_cfg_remove_menu_node(ghidgui->topwin.ghid_cfg, node, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
 }
 
 static void ghid_create_menu(const char *menu_path, const pcb_menu_prop_t *props)

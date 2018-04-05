@@ -26,13 +26,15 @@ static int action_counter;
 typedef struct {
 	GtkWidget *widget;						/* for most uses */
 	GtkWidget *destroy;						/* destroy this */
+	GtkAction *action;    /* for removing from the central lists */
 } menu_handle_t;
 
-static menu_handle_t *handle_alloc(GtkWidget * widget, GtkWidget * destroy)
+static menu_handle_t *handle_alloc(GtkWidget *widget, GtkWidget *destroy, GtkAction *action)
 {
 	menu_handle_t *m = malloc(sizeof(menu_handle_t));
 	m->widget = widget;
 	m->destroy = destroy;
+	m->action = action;
 	return m;
 }
 
@@ -127,7 +129,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		GtkWidget *tearoff = gtk_tearoff_menu_item_new();
 		lht_node_t *n;
 
-		sub_res->user_data = handle_alloc(submenu, item);
+		sub_res->user_data = handle_alloc(submenu, item, NULL);
 		ins_menu(item, shell, ins_after);
 
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
@@ -182,14 +184,14 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 			GtkWidget *item = gtk_menu_item_new_with_label(menu_label);
 			gtk_widget_set_sensitive(item, FALSE);
 			gtk_menu_shell_append(shell, item);
-			sub_res->user_data = handle_alloc(item, item);
+			sub_res->user_data = handle_alloc(item, item, NULL);
 		}
 		else {
 			/* NORMAL ITEM */
 			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel);
 			accel = NULL;
 			ins_menu(item, shell, ins_after);
-			sub_res->user_data = handle_alloc(item, item);
+			sub_res->user_data = handle_alloc(item, item, NULL);
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer) n_action);
 			if ((tip != NULL) || (n_keydesc != NULL)) {
 				char *acc = NULL, *s;
@@ -213,7 +215,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		gtk_activatable_set_related_action(GTK_ACTIVATABLE (item), action);
 		ins_menu(item, shell, ins_after);
 		menu->actions = g_list_append(menu->actions, action);
-		sub_res->user_data = handle_alloc(item, item);
+		sub_res->user_data = handle_alloc(item, item, action);
 	}
 
 	/* unused accel key - generated, but never stored, time to free it */
@@ -257,7 +259,7 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 			if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
 				GtkWidget *item = gtk_separator_menu_item_new();
 				ins_menu(item, shell, ins_after);
-				base->user_data = handle_alloc(item, item);
+				base->user_data = handle_alloc(item, item, NULL);
 			}
 			else if (strcmp(base->data.text.value, "@routestyles") == 0) {
 				menu->route_style_shell = shell;
@@ -350,7 +352,7 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 
 	new_menu = gtk_menu_new();
 	g_object_ref_sink(new_menu);
-	base->user_data = handle_alloc(new_menu, new_menu);
+	base->user_data = handle_alloc(new_menu, new_menu, NULL);
 
 	for (i = submenu->data.list.first; i != NULL; i = i->next)
 		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(new_menu), NULL, i);
@@ -409,7 +411,7 @@ static GtkWidget *new_popup(lht_node_t * menu_item)
 /*	GHidMainMenu *menu  = GHID_MAIN_MENU(ctx->menu_bar);*/
 
 	g_object_ref_sink(new_menu);
-	menu_item->user_data = handle_alloc(new_menu, new_menu);
+	menu_item->user_data = handle_alloc(new_menu, new_menu, NULL);
 
 	return new_menu;
 }
@@ -433,7 +435,8 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 {
 	menu_handle_t *h = nd->user_data;
 	if (h != NULL) {
-/*		printf("GUI remove '%s' %p %p\n", nd->name, h->widget, h->destroy);*/
+		GHidMainMenu *menu = (GHidMainMenu *)ctx;
+		g_list_remove(menu->actions, h->action);
 		gtk_widget_destroy(h->destroy);
 		free(h);
 		nd->user_data = NULL;
