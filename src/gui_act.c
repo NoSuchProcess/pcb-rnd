@@ -963,7 +963,6 @@ static int pcb_act_RouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_co
 			pcb_board_set_via_size(rts->Diameter, pcb_true);
 			pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
 			pcb_board_set_clearance(rts->Clearance);
-			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		}
 		else
 			pcb_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
