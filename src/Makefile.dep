@@ -3652,7 +3652,7 @@
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h conf_core.h conf.h pcb-printf.h \
+ vtpadstack_t.h event.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h hid_actions.h math_helper.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h \
  ../src_plugins/lib_gtk_common/glue.h hid.h conf.h \
@@ -4122,8 +4122,9 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h event.h layer.h layer_grp.h \
- pcb-printf.h hid_cfg.h hid.h ../src_plugins/lib_hid_common/layer_menu.h
+ ../src_3rd/liblihata/lihata.h list_conf.h event.h layer.h layer_ui.h \
+ layer_grp.h pcb-printf.h hid_cfg.h hid.h \
+ ../src_plugins/lib_hid_common/layer_menu.h
 ../src_plugins/lib_hid_common/lib_hid_common.o: \
  ../src_plugins/lib_hid_common/lib_hid_common.c plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -5607,8 +5608,8 @@ gui_act.o: gui_act.c ../config.h board.h global_typedefs.h pcb_bool.h \
  tool.h grid.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  funchash_core.h funchash.h funchash_core_list.h change.h draw.h search.h \
  rats.h netlist.h route_style.h find.h stub_stroke.h hid_actions.h \
- hid_init.h compat_nls.h compat_misc.h event.h layer_vis.h hid_attrib.h \
- operation.h obj_subc_op.h
+ hid_init.h compat_nls.h compat_misc.h event.h layer_ui.h layer_vis.h \
+ hid_attrib.h operation.h obj_subc_op.h
 heap.o: heap.c ../config.h heap.h
 hid_actions.o: hid_actions.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
