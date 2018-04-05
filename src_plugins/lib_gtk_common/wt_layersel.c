@@ -37,6 +37,7 @@
 #include "layer_vis.h"
 #include "board.h"
 #include "data.h"
+#include "event.h"
 #include "conf_core.h"
 #include "hid_actions.h"
 #include "math_helper.h"
@@ -268,6 +269,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 				layersel_lyr_vis_sync(&lsg->layer[n]);
 			group_vis_sync(lsg);
 			ls->com->invalidate_all();
+			pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			break;
 		case 3:
 			if (lsg->grp != &lsg->ls->grp_virt) {
@@ -327,6 +329,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			}
 
 			ls->com->invalidate_all();
+			pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			layer_popup(ls, event->button.button, lsl->lid, lsl->lsg->grp);
 			break;
 	}
@@ -348,6 +351,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 				ls->com->invalidate_all();
 				pcb_gtk_layersel_vis_update(ls); /* need to do a full redraw because of side effects of special layer selections (e.g. Rats') */
 			}
+			pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			layer_popup(ls, event->button.button, lsl->lid, lsl->lsg->grp);
 			break;
 	}
