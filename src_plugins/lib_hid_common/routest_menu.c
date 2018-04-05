@@ -71,7 +71,9 @@ static void rst_update(void)
 {
 	if (rst_lock) return;
 	rst_lock++;
-	pcb_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);
+/*
+temporarily disabled because of a memory handling bug
+pcb_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);*/
 	rst_lock--;
 }
 
