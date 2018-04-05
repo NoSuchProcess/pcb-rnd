@@ -1819,6 +1819,35 @@ static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	return 0;
 }
 
+const char pcb_acts_chkrst[] = "ChkRst(route_style_id)\n";
+const char pcb_acth_chkrst[] = "Return 1 if route_style_id matches pen.";
+
+/* %start-doc actions ChkRst
+Return 1 if route_style_id matches pen.
+%end-doc */
+
+static int pcb_act_ChkRst(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int rid;
+	pcb_route_style_t *rst;
+	char *end;
+
+	if (argc < 1)
+		PCB_ACT_FAIL(chkview); /* argv[0] is a must */
+
+	rid = strtol(argv[0], &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkRst: '%s' is not a valid route style ID - check your menu file!\n", argv[0]);
+		return -1;
+	}
+
+	rst = vtroutestyle_get(&PCB->RouteStyle, rid, 0);
+	if (rst == NULL)
+		return -1;
+
+	return pcb_route_style_match(rst, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+}
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
 	 pcb_acth_Display, pcb_acts_Display}
@@ -1891,6 +1920,9 @@ pcb_hid_action_t gui_action_list[] = {
 	{"Grid", 0, pcb_act_grid, pcb_acth_grid, pcb_acts_grid}
 	,
 	{"SetUnits", 0, pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits}
+	,
+	{"ChkRst", 0, pcb_act_ChkRst,
+	 pcb_acth_chkrst, pcb_acts_chkrst}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
