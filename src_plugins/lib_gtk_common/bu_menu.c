@@ -438,12 +438,6 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 		free(h);
 		nd->user_data = NULL;
 	}
-#if 0
-	else {
-		/* @layer pick and friends */
-		printf("GUI remove NULL '%s'\n", nd->name);
-	}
-#endif
 	return 0;
 }
 
