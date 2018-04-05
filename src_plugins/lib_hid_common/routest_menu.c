@@ -36,7 +36,7 @@
 
 #include "routest_menu.h"
 
-#define ANCH "@routestyle"
+#define ANCH "@routestyles"
 
 static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
