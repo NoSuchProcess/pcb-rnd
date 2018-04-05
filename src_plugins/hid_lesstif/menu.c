@@ -620,8 +620,7 @@ void lesstif_remove_menu(const char *menu_path)
 
 void lesstif_remove_menu_node(lht_node_t *node)
 {
-#warning TODO: remove by node
-	pcb_hid_cfg_remove_menu(lesstif_cfg, node, del_menu, NULL);
+	pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
 extern const char *lesstif_cookie;
