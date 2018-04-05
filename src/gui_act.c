@@ -54,6 +54,7 @@
 #include "compat_misc.h"
 #include "event.h"
 #include "layer.h"
+#include "layer_ui.h"
 #include "layer_grp.h"
 #include "layer_vis.h"
 #include "attrib.h"
@@ -1671,6 +1672,16 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		pcb_gui->invalidate_all();
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
+	else if (strncmp(argv[0], "ui:", 3) == 0) {
+		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(argv[0]+3), 0);
+		if (ly == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Invalid ui layer id: '%s'\n", argv[0]);
+			return -1;
+		}
+		ly->meta.real.vis = !ly->meta.real.vis;
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
 	else {
 		char *end;
 		int id = strtol(argv[0], &end, 10) - 1;
@@ -1711,6 +1722,13 @@ static int pcb_act_ChkView(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	if (argc < 1)
 		PCB_ACT_FAIL(chkview); /* argv[0] is a must */
+
+	if (strncmp(argv[0], "ui:", 3) == 0) {
+		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(argv[0]+3), 0);
+		if (ly == NULL)
+			return -1;
+		return ly->meta.real.vis;
+	}
 
 	lid = strtol(argv[0], &end, 10);
 
