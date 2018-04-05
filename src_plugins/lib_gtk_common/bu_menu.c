@@ -403,7 +403,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 	menu_handle_t *h = nd->user_data;
 	if (h != NULL) {
 		GHidMainMenu *menu = (GHidMainMenu *)ctx;
-		g_list_remove(menu->actions, h->action);
+		menu->actions = g_list_remove(menu->actions, h->action);
 		gtk_widget_destroy(h->destroy);
 		free(h);
 		nd->user_data = NULL;
