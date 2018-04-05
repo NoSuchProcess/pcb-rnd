@@ -157,6 +157,7 @@ static void layer_install_menu(void)
 void pcb_layer_menu_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	layer_install_menu();
+	pcb_gui->update_menu_checkbox(NULL);
 }
 
 void pcb_layer_menu_vis_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
