@@ -59,7 +59,7 @@ static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 
 	/* have to go reverse to keep order because this will insert items */
 	for(idx = vtroutestyle_len(&PCB->RouteStyle)-1; idx >= 0; idx--) {
-		sprintf(act, "RouteStyle(%d)", idx);
+		sprintf(act, "RouteStyle(%d)", idx+1); /* for historical reasons this action counts from 1 */
 		sprintf(chk, "ChkRst(%d)", idx);
 		strcpy(end, PCB->RouteStyle.array[idx].name);
 		pcb_gui->create_menu(path, &props);
@@ -71,9 +71,7 @@ static void rst_update(void)
 {
 	if (rst_lock) return;
 	rst_lock++;
-/*
-temporarily disabled because of a memory handling bug
-pcb_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);*/
+	pcb_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);
 	rst_lock--;
 }
 
@@ -84,5 +82,6 @@ void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 
 void pcb_rst_update_conf(conf_native_t *cfg, int arr_idx)
 {
-	rst_update();
+	if (pcb_gui != NULL)
+		pcb_gui->update_menu_checkbox(NULL);
 }
