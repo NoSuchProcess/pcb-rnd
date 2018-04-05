@@ -51,17 +51,8 @@ GtkWidget *pcb_gtk_menu_widget(lht_node_t *node)
 
 struct _GHidMainMenu {
 	GtkMenuBar parent;
-
 	GtkAccelGroup *accel_group;
-
-	gint route_style_pos;
-
-	GtkMenuShell *route_style_shell;
-
 	GList *actions;
-
-	gint n_route_styles;
-
 	GCallback action_cb;
 };
 
@@ -261,10 +252,6 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 				ins_menu(item, shell, ins_after);
 				base->user_data = handle_alloc(item, item, NULL);
 			}
-			else if (strcmp(base->data.text.value, "@routestyles") == 0) {
-				menu->route_style_shell = shell;
-				menu->route_style_pos = pos;
-			}
 			else if (base->data.text.value[0] == '@') {
 				/* anchor; ignore */
 			}
@@ -316,10 +303,6 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 	GHidMainMenu *mm = g_object_new(GHID_MAIN_MENU_TYPE, NULL);
 
 	mm->accel_group = gtk_accel_group_new();
-
-	mm->route_style_pos = 0;
-	mm->n_route_styles = 0;
-	mm->route_style_shell = NULL;
 
 	mm->action_cb = action_cb;
 	mm->actions = NULL;
@@ -376,22 +359,6 @@ void ghid_main_menu_update_toggle_state(GHidMainMenu *menu, void (*cb)(GtkAction
 		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
 		cb(GTK_ACTION(list->data), tf, af);
 		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
-	}
-}
-
-void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss)
-{
-	GList *children, *iter;
-	/* @routestyles */
-	if (mm->route_style_shell) {
-		/* Remove old children */
-		children = gtk_container_get_children(GTK_CONTAINER(mm->route_style_shell));
-		for (iter = g_list_nth(children, mm->route_style_pos);
-				 iter != NULL && mm->n_route_styles > 0; iter = g_list_next(iter), mm->n_route_styles--)
-			gtk_container_remove(GTK_CONTAINER(mm->route_style_shell), iter->data);
-		g_list_free(children);
-		/* Install new ones */
-		mm->n_route_styles = pcb_gtk_route_style_install_items(rss, mm->route_style_shell, mm->route_style_pos);
 	}
 }
 

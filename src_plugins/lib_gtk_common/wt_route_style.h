@@ -85,13 +85,6 @@ GType pcb_gtk_route_style_get_type(void);
 
 GtkWidget *pcb_gtk_route_style_new(pcb_gtk_common_t *com);
 
-/* Installs the "Route Style" menu items.
-   Takes a menu shell and installs menu items for route style selection in
-   the shell, at the given position. Note that we aren't really guaranteed
-   the ordering of these items, since our internal data structure is a hash
-   table. Return the number of items installed */
-gint pcb_gtk_route_style_install_items(pcb_gtk_route_style_t * rss, GtkMenuShell * shell, gint pos);
-
 /* Adds a PCB route style. The route style object passed to this function
    will be updated directly. */
 pcb_gtk_obj_route_style_t *pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide);

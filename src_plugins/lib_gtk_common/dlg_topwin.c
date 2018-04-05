@@ -236,9 +236,8 @@ void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw)
 /* Called when user clicks OK on route style dialog */
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
 {
-	ghid_main_menu_install_route_style_selector(GHID_MAIN_MENU(tw->menu.menu_bar), GHID_ROUTE_STYLE(tw->route_style_selector));
+#warning TODO: generate a route styles changed event
 }
-
 
 /*
  * ---------------------------------------------------------------

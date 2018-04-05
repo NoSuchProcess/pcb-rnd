@@ -228,30 +228,6 @@ static void add_route_style_with_hidden_check(pcb_gtk_route_style_t * rss, pcb_r
 		pcb_gtk_route_style_add_route_style(rss, data, 0);
 }
 
-gint pcb_gtk_route_style_install_items(pcb_gtk_route_style_t * rss, GtkMenuShell * shell, gint pos)
-{
-	gint n = 0;
-	GtkTreeIter iter;
-
-	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
-		return 0;
-	do {
-		GtkAction *action;
-		pcb_gtk_obj_route_style_t *style;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, STYLE_DATA_COL, &style, -1);
-		if (style->hidden)
-			continue;
-		action = GTK_ACTION(style->action);
-		style->menu_item = gtk_action_create_menu_item(action);
-		gtk_menu_shell_insert(shell, style->menu_item, pos + n);
-		++n;
-	}
-	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(rss->model), &iter));
-
-	return n;
-}
-
 gboolean pcb_gtk_route_style_select_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst)
 {
 	GtkTreeIter iter;
