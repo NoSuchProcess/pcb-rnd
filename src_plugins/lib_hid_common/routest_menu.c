@@ -67,8 +67,7 @@ static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 }
 
 static int rst_lock = 0;
-
-void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void rst_update(void)
 {
 	if (rst_lock) return;
 	rst_lock++;
@@ -76,4 +75,12 @@ void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 	rst_lock--;
 }
 
+void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	rst_update();
+}
 
+void pcb_rst_update_conf(conf_native_t *cfg, int arr_idx)
+{
+	rst_update();
+}

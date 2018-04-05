@@ -46,12 +46,16 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	conf_hid_unreg(grid_cookie);
+	conf_hid_unreg(rst_cookie);
 }
 
 int pplg_init_lib_hid_common(void)
 {
-	static conf_hid_callbacks_t ccb;
+#warning padstack TODO: remove some paths when route style has proto
+	const char **rp, *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
+	static conf_hid_callbacks_t ccb, rcb[sizeof(rpaths)/sizeof(rpaths[0])];
 	conf_native_t *nat;
+	int n;
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
@@ -65,5 +69,15 @@ int pplg_init_lib_hid_common(void)
 
 	if (nat != NULL)
 		conf_hid_set_cb(nat, conf_id, &ccb);
+
+	conf_id = conf_hid_reg(rst_cookie, NULL);
+	for(rp = rpaths, n = 0; *rp != NULL; rp++, n++) {
+		memset(&rcb[n], 0, sizeof(rcb[0]));
+		rcb[n].val_change_post = pcb_rst_update_conf;
+		nat = conf_get_field(*rp);
+		if (nat != NULL)
+			conf_hid_set_cb(nat, conf_id, &rcb[n]);
+	}
+
 	return 0;
 }
