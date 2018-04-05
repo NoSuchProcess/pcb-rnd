@@ -31,6 +31,7 @@
 #include "conf_core.h"
 #include "event.h"
 #include "layer.h"
+#include "layer_ui.h"
 #include "layer_grp.h"
 #include "pcb-printf.h"
 #include "hid_cfg.h"
@@ -65,6 +66,25 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
 	end++;
+
+	/* ui layers; have to go reverse to keep order because this will insert items */
+	if ((ctx->view) && (vtlayer_len(&pcb_uilayer) > 0)) {
+		for(idx = vtlayer_len(&pcb_uilayer)-1; idx >= 0; idx--) {
+			if (pcb_uilayer.array[idx].name == NULL)
+				continue;
+
+			props.checked = chk;
+			sprintf(act, "ToggleView(ui:%d)", idx);
+			sprintf(chk, "ChkView(ui:%d)", idx);
+
+			pcb_snprintf(end, len_avail, "  %s", pcb_uilayer.array[idx].name);
+			pcb_gui->create_menu(path, &props);
+		}
+
+		props.checked = NULL;
+		pcb_snprintf(end, len_avail, "[UI]");
+		pcb_gui->create_menu(path, &props);
+	}
 
 	/* menu-only virtual layers; have to go reverse to keep order because this will insert items */
 	for(ml = pcb_menu_layers, max_ml = 0; ml->name != NULL; ml++) max_ml++;
