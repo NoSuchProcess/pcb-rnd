@@ -3,6 +3,7 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/lib_hid_common.o
   $(PLUGDIR)/lib_hid_common/layer_menu.o
   $(PLUGDIR)/lib_hid_common/grid_menu.o
+  $(PLUGDIR)/lib_hid_common/routest_menu.o
 @]
 
 switch /local/pcb/lib_hid_common/controls
