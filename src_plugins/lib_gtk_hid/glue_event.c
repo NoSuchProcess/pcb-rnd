@@ -8,18 +8,21 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
-static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_ghid_rst_chg(void)
 {
 	if (!ghidgui || !ghidgui->topwin.route_style_selector)
 		return;
 
-	pcb_gtk_route_style_sync
-		(GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector),
-		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness,
-		 conf_core.design.clearance);
+	pcb_gtk_route_style_sync (GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector), conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance);
 
 	return;
 }
+
+static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_ghid_rst_chg();
+}
+
 
 static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
