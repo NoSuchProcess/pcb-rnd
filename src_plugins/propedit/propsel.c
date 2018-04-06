@@ -245,6 +245,7 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 	if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) return;
 
 #define DONE { st->set_cnt++; pcb_undo_restore_serial(); return; }
+#define DONE0 { st->set_cnt++; pcb_undo_restore_serial(); return 0; }
 
 static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
 {
@@ -252,24 +253,26 @@ static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
 	return 0;
 }
 
-static void set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer)
+static int set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 8;
 
 	if (!layer->propedit)
-		return;
+		return 0;
 
 	if (st->is_attr) {
 		set_attr(st, &layer->Attributes);
-		return;
+		return 0;
 	}
 
 	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE;
+	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE0;
 
 	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
+	return 0;
 }
+
 
 static void set_layergrp_cb(void *ctx, pcb_board_t *pcb, pcb_layergrp_t *grp)
 {
