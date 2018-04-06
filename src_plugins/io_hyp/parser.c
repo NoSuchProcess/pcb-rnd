@@ -801,7 +801,7 @@ void hyp_reset_layers()
 
 	pcb_layers_reset(PCB);
 
-	pcb_layer_group_setup_default(&PCB->LayerGroups);
+	pcb_layer_group_setup_default(PCB);
 
 	/* set up dual layer board: top and bottom copper and silk */
 

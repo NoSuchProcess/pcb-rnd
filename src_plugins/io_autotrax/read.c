@@ -781,7 +781,7 @@ static int autotrax_create_layers(read_state_t *st)
 	pcb_layergrp_t *g;
 	pcb_layer_id_t id;
 
-	pcb_layer_group_setup_default(&st->pcb->LayerGroups);
+	pcb_layer_group_setup_default(st->pcb);
 
 	st->protel_to_stackup[7] = autotrax_reg_layer(st, "top silk", PCB_LYT_SILK | PCB_LYT_TOP);
 	st->protel_to_stackup[8] = autotrax_reg_layer(st, "bottom silk", PCB_LYT_SILK | PCB_LYT_BOTTOM);

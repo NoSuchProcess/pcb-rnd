@@ -705,6 +705,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 	case PCB_OBJ_SUBC:
 	case PCB_OBJ_NET:
 	case PCB_OBJ_LAYER:
+	case PCB_OBJ_LAYERGRP:
 	case PCB_OBJ_VOID:
 		break;
 	}

@@ -136,7 +136,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	/* create the layer stack and logical layers */
 	pcb_layergrp_inhibit_inc();
 	pcb_layers_reset(PCB);
-	pcb_layer_group_setup_default(&PCB->LayerGroups);
+	pcb_layer_group_setup_default(PCB);
 	pcb_get_grp_new_intern(PCB, 1);
 	pcb_get_grp_new_intern(PCB, 2);
 

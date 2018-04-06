@@ -213,7 +213,7 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	}
 
 	/* set up layers */
-	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	pcb_layer_group_setup_default(pcb);
 	if (pcb_layergrp_list(pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1))
 		pcb_layer_create(pcb, gid, "top_copper");
 	if (pcb_layergrp_list(pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1))

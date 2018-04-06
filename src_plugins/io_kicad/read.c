@@ -1184,7 +1184,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	}
 	else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
 		pcb_layergrp_inhibit_inc();
-		pcb_layer_group_setup_default(&st->pcb->LayerGroups);
+		pcb_layer_group_setup_default(st->pcb);
 
 		/* set up the hash for implicit layers */
 		res = 0;

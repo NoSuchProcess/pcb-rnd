@@ -710,7 +710,7 @@ void PostLoadElementPCB()
 		return;
 
 	pcb_board_new_postproc(yyPCB, 0);
-	pcb_layer_group_setup_default(&yyPCB->LayerGroups);
+	pcb_layer_group_setup_default(yyPCB);
 	PCB = yyPCB;
 	pcb_layer_group_setup_silks(yyPCB);
 	pcb_data_bbox(&dbb, yyPCB->Data, pcb_false);
@@ -843,7 +843,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 	pcb_layer_id_t lid, silk = -1;
 
 	if (setup) {
-		pcb_layer_group_setup_default(&pcb->LayerGroups);
+		pcb_layer_group_setup_default(pcb);
 
 		for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 			if (strcmp(pcb->Data->Layer[lid].name, "silk") == 0) {

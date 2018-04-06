@@ -286,10 +286,16 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 			stack->grp[bl].name = pcb_strdup("Intern");
 			stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
 			stack->grp[bl].valid = 1;
+			stack->grp[bl].parent_type = PCB_PARENT_BOARD;
+			stack->grp[bl].parent.board = pcb;
+			stack->grp[bl].type = PCB_OBJ_LAYERGRP;
 			bl++;
 			if (!omit_substrate) {
 				stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 				stack->grp[bl].valid = 1;
+			stack->grp[bl].parent_type = PCB_PARENT_BOARD;
+			stack->grp[bl].parent.board = pcb;
+			stack->grp[bl].type = PCB_OBJ_LAYERGRP;
 			}
 			return &stack->grp[bl-1];
 		}
@@ -494,7 +500,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 	inhibit_notify++;
 
 	/* clear struct */
-	pcb_layer_group_setup_default(LayerGroup);
+	pcb_layer_group_setup_default(pcb);
 
 	for(start = s = grp_str; ; s++) {
 		switch(*s) {
@@ -620,9 +626,12 @@ int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layerg
 	return pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[group_id], group_id, layer_id);
 }
 
-#define NEWG(g, flags, gname) \
+#define NEWG(g, flags, gname, pcb) \
 do { \
 	g = &(newg->grp[newg->len]); \
+	g->parent_type = PCB_PARENT_BOARD; \
+	g->parent.board = pcb; \
+	g->type = PCB_OBJ_LAYERGRP; \
 	g->valid = 1; \
 	if (gname != NULL) \
 		g->name = pcb_strdup(gname); \
@@ -632,22 +641,23 @@ do { \
 	newg->len++; \
 } while(0)
 
-void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
+void pcb_layer_group_setup_default(pcb_board_t *pcb)
 {
+	pcb_layer_stack_t *newg = &pcb->LayerGroups;
 	pcb_layergrp_t *g;
 
 	memset(newg, 0, sizeof(pcb_layer_stack_t));
 
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_PASTE, "top_paste");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top_silk");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_MASK, "top_mask");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top_copper");
-	NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_PASTE, "top_paste", pcb);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top_silk", pcb);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_MASK, "top_mask", pcb);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top_copper", pcb);
+	NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL, pcb);
 
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom_copper");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom_mask");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom_silk");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom_paste");
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom_copper", pcb);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom_mask", pcb);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom_silk", pcb);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom_paste", pcb);
 
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
@@ -747,6 +757,9 @@ void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
 			ng->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 			ng->name = pcb_strdup("implicit_subst");
 			ng->valid = 1;
+			ng->parent_type = PCB_PARENT_BOARD;
+			ng->parent.board = pcb;
+			ng->type = PCB_OBJ_LAYERGRP;
 		}
 	}
 }

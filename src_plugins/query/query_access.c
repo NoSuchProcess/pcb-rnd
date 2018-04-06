@@ -694,6 +694,8 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 		case PCB_OBJ_NET:      return field_net(obj, fld, res);
 		case PCB_OBJ_LAYER:    return field_layer(obj, fld, res);
+#warning layer TODO
+		case PCB_OBJ_LAYERGRP:
 		default:;
 	}
 

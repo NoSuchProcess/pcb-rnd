@@ -323,6 +323,9 @@ static void prop_preview_init(void)
 	preview_pcb.LayerGroups.grp[0].ltype = PCB_LYT_COPPER | PCB_LYT_TOP;
 	preview_pcb.LayerGroups.grp[0].lid[0] = 0;
 	preview_pcb.LayerGroups.grp[0].len = 1;
+	preview_pcb.LayerGroups.grp[0].parent.any = NULL;
+	preview_pcb.LayerGroups.grp[0].parent_type = PCB_PARENT_INVALID;
+	preview_pcb.LayerGroups.grp[0].type = PCB_OBJ_LAYERGRP;
 	preview_pcb.LayerGroups.len = 1;
 	PCB_SET_PARENT(preview_pcb.Data, board, &preview_pcb);
 	preview_pcb.Data->Layer[0].parent.data = preview_pcb.Data;

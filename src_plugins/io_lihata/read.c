@@ -1140,7 +1140,7 @@ static void layer_fixup(pcb_board_t *pcb)
 
 	pcb_layergrp_inhibit_inc();
 
-	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	pcb_layer_group_setup_default(pcb);
 
 	/* old silk assumption: last two layers are silk, bottom and top */
 	bottom_silk = pcb->Data->Layer[pcb->Data->LayerN-2].meta.real.grp;

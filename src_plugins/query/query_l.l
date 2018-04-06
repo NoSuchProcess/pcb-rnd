@@ -62,6 +62,7 @@ a[.]            { return T_FLD_A; }
 "SUBCIRCUIT"    { qry_lval.n = make_constant(yytext, PCB_OBJ_SUBC); return T_CONST; }
 "NET"           { qry_lval.n = make_constant(yytext, PCB_OBJ_NET); return T_CONST; }
 "LAYER"         { qry_lval.n = make_constant(yytext, PCB_OBJ_LAYER); return T_CONST; }
+"LAYERGRP"      { qry_lval.n = make_constant(yytext, PCB_OBJ_LAYERGRP); return T_CONST; }
 
 "TRUE"          { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 "VISIBLE"       { qry_lval.n = make_constant(yytext, 1); return T_CONST; }

@@ -421,7 +421,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	/* we are loading the cells into a board, make a default layer stack for that */
 	pcb_layergrp_inhibit_inc();
 	pcb_layers_reset(pcb);
-	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	pcb_layer_group_setup_default(pcb);
 	pcb_layer_group_setup_silks(pcb);
 	pcb_layer_auto_fixup(pcb);
 	pcb_layergrp_inhibit_dec();

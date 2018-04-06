@@ -1119,6 +1119,7 @@ static routedata_t *CreateRouteData()
 						case PCB_OBJ_SUBC:
 						case PCB_OBJ_NET:
 						case PCB_OBJ_LAYER:
+						case PCB_OBJ_LAYERGRP:
 							break; /* don't care about these */
 						}
 					assert(rb);

@@ -40,6 +40,7 @@ typedef struct pcb_layergrp_s pcb_layergrp_t;
  */
 
 struct pcb_layergrp_s {
+	PCB_ANY_OBJ_FIELDS;
 	pcb_cardinal_t len;                    /* number of layer IDs in use */
 	pcb_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
 	char *name;                            /* name of the physical layer (independent of the name of the layer groups) */
@@ -189,7 +190,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
 		layer = &data->Layer[number];
 
 /* for parsing old files with old layer descriptions, with no layer groups */
-void pcb_layer_group_setup_default(pcb_layer_stack_t *newg); /* default layer groups, no layers */
+void pcb_layer_group_setup_default(pcb_board_t *pcb); /* default layer groups, no layers */
 void pcb_layer_group_setup_silks(pcb_board_t *pcb); /* make sure we have two silk layers, add them if needed */
 pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
 pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);

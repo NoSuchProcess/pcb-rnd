@@ -1478,7 +1478,7 @@ static void st_init(read_state_t *st)
 {
 	htip_init(&st->layers, longhash, longkeyeq);
 	htsp_init(&st->libs, strhash, strkeyeq);
-	pcb_layer_group_setup_default(&st->pcb->LayerGroups);
+	pcb_layer_group_setup_default(st->pcb);
 }
 
 static void st_uninit(read_state_t *st)
