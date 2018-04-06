@@ -70,7 +70,7 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					PCB->Data->Layer[lid].propedit = 1;
 			}
 			else if (strncmp(argv[n], "layer:", 6) == 0) {
-				char *id = argv[n]+6;
+				const char *id = argv[n]+6;
 				if (strcmp(id, "current") == 0)
 					ly = CURRENT;
 				else
