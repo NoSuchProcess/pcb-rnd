@@ -682,7 +682,7 @@ ha:{
 		ha:layer {
 			li:submenu {
 				ha:Layer properties...              = { action=EditLayer() }
-				ha:Layer attributes...              = { action=Attributes(Layer) }
+				ha:Layer attributes...              = { action={Propedit(layer:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
