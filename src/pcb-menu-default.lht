@@ -700,6 +700,7 @@ ha:{
 		ha:group {
 			li:submenu {
 				ha:Group properties...              = { action=EditGroup(@) }
+				ha:Group attributes...              = { action={Propedit(layer_group:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Insert new layer                 = { action={ MoveLayer(-1, gi); EditLayer() } }

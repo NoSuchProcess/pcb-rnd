@@ -117,6 +117,16 @@ static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int ent
 	return 0;
 }
 
+static int map_layergrp_cb(void *ctx, pcb_board_t *pcb, pcb_layergrp_t *grp)
+{
+	if (!grp->propedit)
+		return 0;
+
+	map_add_prop(ctx, "p/layer_group/name", String, grp->name);
+	map_attr(ctx, &grp->Attributes);
+	return 0;
+}
+
 static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
@@ -194,6 +204,7 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 void pcb_propsel_map_core(htsp_t *props)
 {
 	map_ctx_t ctx;
+	pcb_layergrp_id_t gid;
 
 	ctx.props = props;
 	
@@ -202,6 +213,8 @@ void pcb_propsel_map_core(htsp_t *props)
 		map_subc_cb,
 		map_pstk_cb
 	);
+	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
+		map_layergrp_cb(&ctx, PCB, &PCB->LayerGroups.grp[gid]);
 }
 
 /*******************/
@@ -254,6 +267,25 @@ static void set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer)
 
 	if ((strcmp(pn, "name") == 0) &&
 	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE;
+
+	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
+}
+
+static void set_layergrp_cb(void *ctx, pcb_board_t *pcb, pcb_layergrp_t *grp)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 14;
+
+	if (!grp->propedit)
+		return;
+
+	if (st->is_attr) {
+		set_attr(st, &grp->Attributes);
+		return;
+	}
+
+	if ((strcmp(pn, "name") == 0) &&
+	    (pcb_layergrp_rename_(grp, pcb_strdup(st->value)) == 0)) DONE;
 
 	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
 }
@@ -457,6 +489,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 	set_ctx_t ctx;
 	char *end;
 	const char *start;
+	pcb_layergrp_id_t gid;
 
 	/* sanity checks for invalid props */
 	if (prop[1] != '/')
@@ -492,6 +525,9 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/subc/", set_subc_cb),
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
+
+	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
+		set_layergrp_cb(&ctx, PCB, &PCB->LayerGroups.grp[gid]);
 
 	pcb_undo_inc_serial();
 	return ctx.set_cnt;

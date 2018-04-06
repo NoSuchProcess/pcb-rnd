@@ -37,6 +37,8 @@
 
 /* ************************************************************ */
 
+extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+
 #warning TODO
 static const char propedit_syntax[] = "propedit()";
 static const char propedit_help[] = "Run the property editor";
@@ -45,17 +47,20 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
 	pcb_layer_t *ly = NULL;
+	pcb_layergrp_t *lg = NULL;
 	pcb_layer_id_t lid;
+	pcb_layergrp_id_t gid;
 
 	if ((pcb_gui == NULL) || (pcb_gui->propedit_start == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Error: there's no GUI or the active GUI can't edit properties.\n");
 		return 1;
 	}
 
-
 	ctx.core_props = pcb_props_init();
 	for(lid = 0; lid < PCB->Data->LayerN; lid++)
 		PCB->Data->Layer[lid].propedit = 0;
+	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
+		PCB->LayerGroups.grp[gid].propedit = 0;
 
 	if (argc > 0) {
 		int n;
@@ -75,6 +80,25 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					goto err;
 				}
 				ly->propedit = 1;
+			}
+			if (strcmp(argv[n], "layer_groups") == 0) {
+				for(gid = 0; gid < PCB->LayerGroups.len; gid++)
+					PCB->LayerGroups.grp[gid].propedit = 1;
+			}
+			else if (strncmp(argv[n], "layer_group:", 12) == 0) {
+				const char *id = argv[n]+12;
+				if (strcmp(id, "current") == 0) {
+					lg = pcb_get_layergrp(PCB, pcb_actd_EditGroup_gid);
+					if ((lg == NULL) && (CURRENT != NULL) && (!CURRENT->is_bound))
+						lg = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
+				}
+				else
+					lg = pcb_get_layergrp(PCB, atoi(id));
+				if (lg == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Invalid layer group index %s\n", argv[n]);
+					goto err;
+				}
+				lg->propedit = 1;
 			}
 		}
 	}
