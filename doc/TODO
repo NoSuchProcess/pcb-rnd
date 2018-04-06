@@ -39,8 +39,10 @@ SUBC: element removal:
 		- write.c: build_thermal for heavy terminals
 		- read.c: parse_thermal_heavy already does this right
 	- throw out meta/cursor and friends
-	- add attributes to layer groups
-	- add attributes to layers
+	- everything has attributes:
+		- layer groups
+		- layers
+		- netlist networks
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
