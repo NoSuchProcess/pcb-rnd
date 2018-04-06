@@ -98,6 +98,24 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 #warning TODO: flags
 }
 
+static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
+{
+	/* layers can not be selected so do not check for skip */
+	map_add_prop(ctx, "p/layer/name", String, layer->name);
+	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
+	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
+#warning layer TODO: when hardwired layer colors are gone make color selection possible
+#if 0
+	if (!layer->is_bound) {
+		map_add_prop(ctx, "p/layer/color", int, layer->meta.real.color);
+		map_add_prop(ctx, "p/layer/selected_color", int, layer->meta.real.selected_color);
+	}
+#endif
+	map_attr(ctx, &layer->Attributes);
+	layer->propedit = 1;
+	return 0;
+}
+
 static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
@@ -185,6 +203,20 @@ void pcb_propsel_map_core(htsp_t *props)
 	);
 }
 
+void pcb_propsel_map_layers(pe_ctx_t *pe, pcb_layer_t *ly)
+{
+	map_ctx_t ctx;
+
+	ctx.props = pe->core_props;
+
+	if (ly == NULL) {
+		pcb_loop_all(PCB, &ctx, map_layer_cb,
+			NULL, NULL, NULL, NULL, NULL, NULL);
+	}
+	else
+		map_layer_cb(&ctx, PCB, ly, 1);
+}
+
 /*******************/
 
 typedef struct set_ctx_s {
@@ -219,6 +251,26 @@ static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
 #warning TODO: flags
 	return 0;
 }
+
+static void set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 8;
+
+	if (!layer->propedit)
+		return;
+
+	if (st->is_attr) {
+		set_attr(st, &layer->Attributes);
+		return;
+	}
+
+	if ((strcmp(pn, "name") == 0) &&
+	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE;
+
+	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
+}
+
 
 static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
@@ -445,7 +497,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 	pcb_undo_save_serial();
 
 	pcb_loop_all(PCB, &ctx,
-		NULL,
+		set_layer_cb,
 		MAYBE_PROP(ctx.is_trace, "p/line/", set_line_cb),
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
 		MAYBE_PROP(0, "p/text/", set_text_cb),
@@ -453,6 +505,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/subc/", set_subc_cb),
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
+
 	pcb_undo_inc_serial();
 	return ctx.set_cnt;
 }
