@@ -1188,7 +1188,7 @@ static void layer_fixup(pcb_board_t *pcb)
 
 static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 {
-	lht_node_t *grps, *grp, *name, *layers, *lyr;
+	lht_node_t *grps, *grp, *name, *layers, *lyr, *nattr;
 	lht_dom_iterator_t it, itt;
 	long int n;
 
@@ -1230,6 +1230,15 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		else
 			g->name = pcb_strdup(name->data.text.value);
 		parse_layer_type(&g->ltype, lht_dom_hash_get(grp, "type"), g->name);
+
+		/* load attributes */
+		nattr= lht_dom_hash_get(grp, "attributes");
+		if (nattr != NULL) {
+			if (rdver < 5)
+				iolht_warn(nattr, 2, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
+			if (parse_attributes(&g->Attributes, nattr) < 0)
+				return iolht_error(nattr, "failed to load attributes\n");
+		}
 
 		/* load layers */
 		layers = lht_dom_hash_get(grp, "layers");
@@ -1638,7 +1647,7 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 		return iolht_error(netlist, "netlist (parent) must be a list\n");
 
 	for(nnet = netlist->data.list.first; nnet != NULL; nnet = nnet->next) {
-		lht_node_t *nconn, *nstyle, *nt;
+		lht_node_t *nconn, *nstyle, *nt, *nattr;
 		pcb_lib_menu_t *net;
 		const char *style = NULL;
 
@@ -1646,6 +1655,7 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 			return iolht_error(nnet, "netlist must be a hash\n");
 		nconn  = lht_dom_hash_get(nnet, "conn");
 		nstyle = lht_dom_hash_get(nnet, "style");
+		nattr = lht_dom_hash_get(nnet, "attributes");
 
 		if ((nconn != NULL) && (nconn->type != LHT_LIST))
 			return iolht_error(nconn, "conn must be a list\n");
@@ -1663,6 +1673,13 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 					return iolht_error(nt, "terminal id must be a non-empty text\n");
 				pcb_lib_conn_new(net, nt->data.text.value);
 			}
+		}
+
+		if (nattr != NULL) {
+			if (rdver < 5)
+				iolht_warn(nattr, 2, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
+			if (parse_attributes(&net->Attributes, nattr) < 0)
+				return iolht_error(nattr, "failed to load attributes\n");
 		}
 	}
 	return 0;

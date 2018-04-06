@@ -743,6 +743,11 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 		sprintf(tmp, "%d", n);
 		lht_dom_list_append(grps, grp = lht_dom_node_alloc(LHT_HASH, tmp));
 
+		if (wrver >= 5)
+			lht_dom_hash_put(grp, build_attributes(&g->Attributes));
+		else if (g->Attributes.Number > 0)
+			pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
+
 		lht_dom_hash_put(grp, build_text("name", g->name));
 		lht_dom_hash_put(grp, layers = lht_dom_node_alloc(LHT_LIST, "layers"));
 		for(i = 0; i < g->len; i++)
@@ -1065,6 +1070,12 @@ static lht_node_t *build_netlist(pcb_lib_t *netlist, const char *name, int *none
 
 		/* create the net hash */
 		nnet = lht_dom_node_alloc(LHT_HASH, netname);
+
+		if (wrver >= 5)
+			lht_dom_hash_put(nnet, build_attributes(&menu->Attributes));
+		else if (menu->Attributes.Number > 0)
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)menu, "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
+
 		pl = lht_dom_node_alloc(LHT_LIST, "conn");
 		lht_dom_hash_put(nnet, pl);
 		if ((style != NULL) && (*style == '\0')) style = NULL;
