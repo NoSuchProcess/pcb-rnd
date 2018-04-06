@@ -497,7 +497,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 	pcb_undo_save_serial();
 
 	pcb_loop_all(PCB, &ctx,
-		set_layer_cb,
+		MAYBE_PROP(0, "p/layer/", set_layer_cb),
 		MAYBE_PROP(ctx.is_trace, "p/line/", set_line_cb),
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
 		MAYBE_PROP(0, "p/text/", set_text_cb),
