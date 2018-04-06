@@ -115,3 +115,6 @@ typedef struct {
 
 /* add a row in the gui propedit table */
 void propedit_ins_prop(pe_ctx_t *ctx, htsp_entry_t *pe);
+
+/* Whether the board is selected for editing */
+extern int propedit_board;

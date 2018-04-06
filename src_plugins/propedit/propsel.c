@@ -98,6 +98,18 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 #warning TODO: flags
 }
 
+static int map_board_cb(void *ctx, pcb_board_t *pcb)
+{
+	if (!propedit_board)
+		return 0;
+
+	map_add_prop(ctx, "p/board/name",   String, pcb->Name);
+	map_add_prop(ctx, "p/board/width", pcb_coord_t, pcb->MaxWidth);
+	map_add_prop(ctx, "p/board/height", pcb_coord_t, pcb->MaxHeight);
+	map_attr(ctx, &pcb->Attributes);
+	return 0;
+}
+
 static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
 	if (!layer->propedit)
@@ -215,6 +227,7 @@ void pcb_propsel_map_core(htsp_t *props)
 	);
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
 		map_layergrp_cb(&ctx, PCB, &PCB->LayerGroups.grp[gid]);
+	map_board_cb(&ctx, PCB);
 }
 
 /*******************/
@@ -252,6 +265,38 @@ static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
 #warning TODO: flags
 	return 0;
 }
+
+static int brd_resize(pcb_coord_t w, pcb_coord_t h)
+{
+	pcb_board_resize(w, h);
+	return 1;
+}
+
+static void set_board_cb(void *ctx, pcb_board_t *pcb)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 8;
+
+	if (!propedit_board)
+		return;
+
+	if (st->is_attr) {
+		set_attr(st, &pcb->Attributes);
+		return;
+	}
+
+	if ((strcmp(pn, "name") == 0) &&
+	    (pcb_board_change_name(pcb_strdup(st->value)))) DONE;
+
+	if (st->c_valid && (strcmp(pn, "width") == 0) &&
+	    brd_resize(st->c, PCB->MaxHeight)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "height") == 0) &&
+	    brd_resize(PCB->MaxWidth,st->c)) DONE;
+
+	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
+}
+
 
 static int set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
@@ -531,6 +576,8 @@ int pcb_propsel_set(const char *prop, const char *value)
 
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
 		set_layergrp_cb(&ctx, PCB, &PCB->LayerGroups.grp[gid]);
+
+	set_board_cb(&ctx, PCB);
 
 	pcb_undo_inc_serial();
 	return ctx.set_cnt;

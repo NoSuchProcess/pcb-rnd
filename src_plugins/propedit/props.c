@@ -35,6 +35,8 @@
 #include <genht/ht.c>
 #undef HT
 
+int propedit_board = 0;
+
 /* Type names in text */
 static const char *type_names[] = { "invalid", "string", "coord", "angle", "int" };
 

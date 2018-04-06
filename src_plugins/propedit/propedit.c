@@ -61,11 +61,15 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		PCB->Data->Layer[lid].propedit = 0;
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
 		PCB->LayerGroups.grp[gid].propedit = 0;
+	propedit_board = 0;
 
 	if (argc > 0) {
 		int n;
 		for(n = 0; n < argc; n++) {
-			if (strcmp(argv[n], "layers") == 0) {
+			if (strcmp(argv[n], "board") == 0) {
+				propedit_board = 1;
+			}
+			else if (strcmp(argv[n], "layers") == 0) {
 				for(lid = 0; lid < PCB->Data->LayerN; lid++)
 					PCB->Data->Layer[lid].propedit = 1;
 			}
