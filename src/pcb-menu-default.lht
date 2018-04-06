@@ -681,8 +681,8 @@ ha:{
 
 		ha:layer {
 			li:submenu {
-				ha:Layer properties...              = { action=EditLayer() }
-				ha:Layer attributes...              = { action={Propedit(layer:current)} }
+				ha:Layer comb. flags...             = { action=EditLayer() }
+				ha:Layer properties...              = { action={Propedit(layer:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
@@ -699,8 +699,8 @@ ha:{
 
 		ha:group {
 			li:submenu {
-				ha:Group properties...              = { action=EditGroup(@) }
-				ha:Group attributes...              = { action={Propedit(layer_group:current)} }
+				ha:Group name and flags...          = { action=EditGroup(@) }
+				ha:Group properties...              = { action={Propedit(layer_group:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Insert new layer                 = { action={ MoveLayer(-1, gi); EditLayer() } }
