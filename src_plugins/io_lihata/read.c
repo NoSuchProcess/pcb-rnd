@@ -1216,6 +1216,9 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		g = &pcb->LayerGroups.grp[gid];
 		if (pcb->LayerGroups.len <= gid)
 			pcb->LayerGroups.len = gid+1;
+		g->parent.board = pcb;
+		g->parent_type = PCB_PARENT_BOARD;
+		g->type = PCB_OBJ_LAYERGRP;
 		g->valid = 1;
 
 		/* set name and type*/
