@@ -42,7 +42,7 @@ typedef enum pcb_subc_cached_s {
 } pcb_subc_cached_t;
 
 struct pcb_subc_s {
-	PCB_ANYOBJECTFIELDS;
+	PCB_ANY_PRIMITIVE_FIELDS;
 	minuid_bin_t uid;
 	pcb_data_t *data;
 	htsp_t terminals;

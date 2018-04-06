@@ -36,7 +36,7 @@
 #include <genvector/gds_char.h>
 
 struct pcb_text_s {
-	PCB_ANYOBJECTFIELDS;
+	PCB_ANY_PRIMITIVE_FIELDS;
 	int Scale;                    /* text scaling in percent */
 	pcb_coord_t X, Y;                   /* origin */
 	pcb_uint8_t Direction;

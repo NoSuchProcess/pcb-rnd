@@ -34,7 +34,7 @@
 /* The actual padstack is just a reference to a padstack proto within the same data */
 struct pcb_pstk_s {
 #define thermal thermal_dont_use
-	PCB_ANYOBJECTFIELDS;
+	PCB_ANY_PRIMITIVE_FIELDS;
 #undef thermal
 	pcb_cardinal_t proto;          /* reference to a pcb_pstk_proto_t within pcb_data_t */
 	int protoi;                    /* index of the transformed proto; -1 means invalid; local cache, not saved */

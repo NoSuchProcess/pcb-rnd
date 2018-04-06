@@ -36,7 +36,7 @@
 #include "polyarea.h"
 
 struct pcb_poly_s  {           /* holds information about a polygon */
-	PCB_ANYOBJECTFIELDS;
+	PCB_ANY_PRIMITIVE_FIELDS;
 	pcb_coord_t Clearance;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
 	pcb_cardinal_t PointMax;     /* max number from malloc() */
