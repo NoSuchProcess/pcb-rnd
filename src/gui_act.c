@@ -1457,8 +1457,6 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			interactive = 0;
 			pcb_board_set_changed_flag(pcb_true);
 		}
-#warning layer TODO:
-#if 0
 		else if (strncmp(argv[n], "attrib", 6) == 0) {
 			char *key, *val;
 			interactive = 0;
@@ -1481,7 +1479,6 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				ret |= pcb_attribute_put(&g->Attributes, key, val);
 			free(key);
 		}
-#endif
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid EditGroup() command: %s\n", argv[n]);
 			PCB_ACT_FAIL(EditLayer);
