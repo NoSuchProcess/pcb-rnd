@@ -17,6 +17,9 @@
 + BUG: lesstif: invalidate_all() on config change colors [report: Karl]
 + BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
++ BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
++ BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
+	+> this has been rewritten in the big increments rewrite (with Richard)
 - BUG: Text is no longer drawn when moving it. The refdes text is however drawn when moving the subc that it belongs to. [report: Ade]
 - BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
 SUBC: element removal:
@@ -43,6 +46,8 @@ SUBC: element removal:
 	- warn for saving attribute intnoconn in v4
 	- save layer color
 	- add a subtree where random plugins can store their stuff - probably in a form of an attribute list
+	- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
+		Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - layer color rewrite:
 	- depends on lihata v5 layer color save/load
 	- grep for layer TODO, hardwired layer colors
@@ -81,16 +86,12 @@ SUBC: element removal:
 - BUG: pressing 'b' for back side on a floater refdes text doesn't send it to the back [report: igor2]
 - BUG: place 1206 on top; switch to bottom; turn off top copper; press 'n' over the pad - still can rename, even tho pad is invisible! [report: igor2]
 - BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
-- BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
-	-> this will be handled in the big increments rewrite (with Richard)
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
-- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
-- BUG: 'n' on a dyntext (e.g. refdes text) should edit the text, not the term of the text [report: igor2]
+- BUG: 'n' on a dyntext (e.g. refdes text) should offer a multi-field edit, not the term of the text [report: igor2]
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
@@ -102,7 +103,7 @@ SUBC: element removal:
 - BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 - BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
 - BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
-- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich].
+- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
 - BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
 - BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
@@ -113,15 +114,14 @@ SUBC: element removal:
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
-- BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
 - feature: when moving text, also xor-draw the bounding box (should be a config option!) use case: moving refdes texts; easier to line them up with bbox [report: al3x]
 - autocrop bug: copper lines become invisible [report: wojciechk8]
 	-> should use central data move instead of local implementation
 	-> bug_files/redrawbug1.lht, run autocrop()
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
-? BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
+- BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
 	-> the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8]
-? BUG: macrofab xy: 5 mil offset [report: celem]
++ BUG: macrofab xy: 5 mil offset [report: celem]
 	-> pcb-rnd seems to do everything properly, no idea why macrofab distorts the result
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
