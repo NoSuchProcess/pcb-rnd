@@ -175,7 +175,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		pcb_message(PCB_MSG_ERROR, CHK "%s data: parent proken (%p != %p)\n", whose, data->parent, parent);
 
 
-	for(n = 0; n < pcb_max_layer; n++) {
+	for(n = 0; n < data->LayerN; n++) {
 		pcb_line_t *lin;
 		pcb_text_t *txt;
 		pcb_arc_t *arc;
