@@ -238,9 +238,24 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 #warning subc TODO: check buffers: parents
 }
 
+static void chk_layergrps(pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t n;
+	const char *whose = "board";
+
+	for(n = 0; n < pcb->LayerGroups.len; n++) {
+		pcb_layergrp_t *grp = &pcb->LayerGroups.grp[n];
+		check_parent("layer_group", grp, PCB_PARENT_BOARD, pcb);
+		check_type(grp, PCB_OBJ_LAYERGRP);
+	}
+}
+
+
 void pcb_check_integrity(pcb_board_t *pcb)
 {
 	int n;
+
+	chk_layergrps(pcb);
 	chk_layers("board", pcb->Data, PCB_PARENT_BOARD, pcb, 1);
 
 	for (n = 0; n < PCB_MAX_BUFFER; n++) {
