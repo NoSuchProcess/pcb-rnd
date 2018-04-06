@@ -100,7 +100,9 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 
 static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
-	/* layers can not be selected so do not check for skip */
+	if (!layer->propedit)
+		return;
+
 	map_add_prop(ctx, "p/layer/name", String, layer->name);
 	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
 	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
@@ -112,7 +114,6 @@ static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int ent
 	}
 #endif
 	map_attr(ctx, &layer->Attributes);
-	layer->propedit = 1;
 	return 0;
 }
 
@@ -197,24 +198,10 @@ void pcb_propsel_map_core(htsp_t *props)
 	ctx.props = props;
 	
 	pcb_loop_all(PCB, &ctx,
-		NULL, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
+		map_layer_cb, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
 		map_subc_cb,
 		map_pstk_cb
 	);
-}
-
-void pcb_propsel_map_layers(pe_ctx_t *pe, pcb_layer_t *ly)
-{
-	map_ctx_t ctx;
-
-	ctx.props = pe->core_props;
-
-	if (ly == NULL) {
-		pcb_loop_all(PCB, &ctx, map_layer_cb,
-			NULL, NULL, NULL, NULL, NULL, NULL);
-	}
-	else
-		map_layer_cb(&ctx, PCB, ly, 1);
 }
 
 /*******************/
