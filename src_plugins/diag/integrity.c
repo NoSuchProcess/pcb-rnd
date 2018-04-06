@@ -33,6 +33,13 @@
 
 #define CHK "Broken integrity: "
 
+#define check_type(obj, exp_type) \
+	do { \
+		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \
+		if (__obj__->type != exp_type) \
+			pcb_message(PCB_MSG_ERROR, CHK "%s %ld type proken (%d != %d)\n", pcb_obj_type_name(exp_type), __obj__->ID, __obj__->type, exp_type); \
+	} while(0)
+
 #define check_parent(name, obj, pt, prnt) \
 	do { \
 		if (obj->parent_type != pt) \
@@ -179,27 +186,32 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].name == NULL) || (*data->Layer[n].name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
+		check_type(&data->Layer[n], PCB_OBJ_LAYER);
 		check_parent("layer", (&data->Layer[n]), PCB_PARENT_DATA, data);
 		chk_attr("layer", &data->Layer[n]);
 
 		/* check layer objects */
 		for(lin = linelist_first(&data->Layer[n].Line); lin != NULL; lin = linelist_next(lin)) {
 			check_parent("line", lin, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_type(lin, PCB_OBJ_LINE);
 			chk_attr("line", lin);
 		}
 
 		for(txt = textlist_first(&data->Layer[n].Text); txt != NULL; txt = textlist_next(txt)) {
 			check_parent("text", txt, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_type(txt, PCB_OBJ_TEXT);
 			chk_attr("text", txt);
 		}
 
 		for(poly = polylist_first(&data->Layer[n].Polygon); poly != NULL; poly = polylist_next(poly)) {
 			check_parent("polygon", poly, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_type(poly, PCB_OBJ_POLY);
 			chk_attr("polygon", poly);
 		}
 
 		for(arc = arclist_first(&data->Layer[n].Arc); arc != NULL; arc = arclist_next(arc)) {
 			check_parent("arc", arc, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_type(arc, PCB_OBJ_ARC);
 			chk_attr("arc", arc);
 		}
 	}
@@ -211,12 +223,14 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 			check_parent("padstack", ps, PCB_PARENT_DATA, data);
+			check_type(ps, PCB_OBJ_PSTK);
 			chk_attr("padstack", ps);
 			chk_term("padstack", (pcb_any_obj_t *)ps);
 		}
 
 		for(subc = pcb_subclist_first(&data->subc); subc != NULL; subc = pcb_subclist_next(subc)) {
 			check_parent("subc", subc, PCB_PARENT_DATA, data);
+			check_type(subc, PCB_OBJ_SUBC);
 			chk_subc(whose, subc);
 			chk_attr("subc", subc);
 		}
