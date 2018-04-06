@@ -39,10 +39,6 @@ SUBC: element removal:
 		- write.c: build_thermal for heavy terminals
 		- read.c: parse_thermal_heavy already does this right
 	- throw out meta/cursor and friends
-	- everything has attributes:
-		- layer groups
-		- layers
-		- netlist networks
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- remove elements, pins, pads
 	- warn for saving attribute intnoconn in v4
@@ -141,6 +137,10 @@ SUBC: element removal:
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - feature: property editor should deal with flags
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
+- propedit revamp:
+	- move the property editor out from gtk, using the DAD, into propedit
+	- test under lesstif
+	- remove Attribute()
 - DEL: retire the nelma plugin - nelma is unfinished and not maintained
 - feautres/cleanup: hid:
 	- "erase" color:
