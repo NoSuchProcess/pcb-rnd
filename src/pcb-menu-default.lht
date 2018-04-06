@@ -147,7 +147,7 @@ ha:{
 				}
 				ha:Edit attributes of {
 					li:submenu {
-						ha:Layout                     = { action=Attributes(Layout) }
+						ha:Layout                     = { action=Propedit(board) }
 						ha:Current Layer              = { action={Propedit(layer:current)} }
 					}
 				}
