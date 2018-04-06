@@ -65,7 +65,11 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					PCB->Data->Layer[lid].propedit = 1;
 			}
 			else if (strncmp(argv[n], "layer:", 6) == 0) {
-				ly = pcb_get_layer(PCB->Data, atoi(argv[n]+6));
+				char *id = argv[n]+6;
+				if (strcmp(id, "current") == 0)
+					ly = CURRENT;
+				else
+					ly = pcb_get_layer(PCB->Data, atoi(id));
 				if (ly == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Invalid layer index %s\n", argv[n]);
 					goto err;
