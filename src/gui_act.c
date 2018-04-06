@@ -1354,9 +1354,9 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 					val = NULL;
 			}
 			if (val == NULL)
-				ret |= pcb_attribute_remove(&ly->meta.real.Attributes, key);
+				ret |= pcb_attribute_remove(&ly->Attributes, key);
 			else
-				ret |= pcb_attribute_put(&ly->meta.real.Attributes, key, val);
+				ret |= pcb_attribute_put(&ly->Attributes, key, val);
 			free(key);
 			pcb_board_set_changed_flag(pcb_true);
 		}

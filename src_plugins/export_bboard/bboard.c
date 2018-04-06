@@ -202,7 +202,7 @@ static void bboard_get_layer_color(pcb_layer_t * layer, int *clr_r, int *clr_g, 
 	char *clr;
 	unsigned int r, g, b;
 
-	if ((clr = pcb_attribute_get(&(layer->meta.real.Attributes), "BBoard::LayerColor")) != NULL) {
+	if ((clr = pcb_attribute_get(&(layer->Attributes), "BBoard::LayerColor")) != NULL) {
 		if (clr[0] == '#') {
 			if (sscanf(&(clr[1]), "%02x%02x%02x", &r, &g, &b) == 3)
 				goto ok;

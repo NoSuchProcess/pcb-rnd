@@ -213,7 +213,7 @@ static void trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_i
 
 int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
-	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
+	pcb_board_t *pcb = pcb_data_get_top(layer->parent.data);
 
 	setup_ui_layers(pcb, result, layer);
 	setup_remove_poly(pcb, result, layer);

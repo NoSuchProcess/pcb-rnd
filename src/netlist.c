@@ -211,7 +211,7 @@ pcb_lib_menu_t *pcb_netlist_find_net4term(pcb_board_t *pcb, const pcb_any_obj_t 
 		return NULL;
 
 	if (term->parent_type == PCB_PARENT_LAYER)
-		data = term->parent.layer->parent;
+		data = term->parent.layer->parent.data;
 	else if (term->parent_type == PCB_PARENT_DATA)
 		data = term->parent.data;
 	else

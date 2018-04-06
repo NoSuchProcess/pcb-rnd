@@ -64,7 +64,9 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	sc->data->Layer[n].comb = comb;
 	sc->data->Layer[n].is_bound = 1;
 	sc->data->Layer[n].meta.bound.type = lyt;
-	sc->data->Layer[n].parent = sc->data;
+	sc->data->Layer[n].parent.data = sc->data;
+	sc->data->Layer[n].parent_type = PCB_PARENT_DATA;
+	sc->data->Layer[n].type = PCB_OBJ_LAYER;
 	return &sc->data->Layer[n];
 }
 

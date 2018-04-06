@@ -436,7 +436,7 @@ static pcb_r_dir_t polypoint_callback(const pcb_box_t *box, void *cl)
 	double d;
 	pcb_data_t *dt;
 
-	dt = polygon->parent.layer->parent; /* polygon -> layer -> data */
+	dt = polygon->parent.layer->parent.data; /* polygon -> layer -> data */
 	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
 		/* do not find subc part poly points if not explicitly requested */
 		if (!(ctx->Type & PCB_OBJ_SUBC_PART))

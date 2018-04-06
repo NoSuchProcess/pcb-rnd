@@ -550,7 +550,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
 		pcb_print_quoted_string(FP, layer_name_hack(layer, PCB_EMPTY(layer->name)));
 		fputs(")\n(\n", FP);
-		WriteAttributeList(FP, &layer->meta.real.Attributes, "\t");
+		WriteAttributeList(FP, &layer->Attributes, "\t");
 
 		linelist_foreach(&layer->Line, &it, line) {
 			pcb_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
@@ -798,7 +798,9 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 		return -1;
 	lid = pcb->Data->LayerN;
 	pcb->Data->Layer[lid].name = pcb_strdup(name);
-	pcb->Data->Layer[lid].parent = pcb->Data;
+	pcb->Data->Layer[lid].parent.data = pcb->Data;
+	pcb->Data->Layer[lid].parent_type = PCB_PARENT_DATA;
+	pcb->Data->Layer[lid].type = PCB_OBJ_LAYER;
 	pcb->Data->LayerN++;
 	return lid;
 }
@@ -826,7 +828,9 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 		if (pcb->Data->Layer[lid].meta.real.grp == 0) {
 			free((char *)pcb->Data->Layer[lid].name);
 			pcb->Data->Layer[lid].name = pcb_strdup(name);
-			pcb->Data->Layer[lid].parent = pcb->Data;
+			pcb->Data->Layer[lid].parent.data = pcb->Data;
+			pcb->Data->Layer[lid].parent_type = PCB_PARENT_DATA;
+			pcb->Data->Layer[lid].type = PCB_OBJ_LAYER;
 			return lid;
 		}
 	}

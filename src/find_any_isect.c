@@ -39,9 +39,9 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 {
 	/* produce the clopped version for polygons to compare */
 	if ((a->type == PCB_OBJ_POLY) && (((pcb_poly_t *)a)->Clipped == NULL))
-		pcb_poly_init_clip(a->parent.layer->parent, a->parent.layer, (pcb_poly_t *)a);
+		pcb_poly_init_clip(a->parent.layer->parent.data, a->parent.layer, (pcb_poly_t *)a);
 	if ((b->type == PCB_OBJ_POLY) && (((pcb_poly_t *)b)->Clipped == NULL))
-		pcb_poly_init_clip(b->parent.layer->parent, b->parent.layer, (pcb_poly_t *)b);
+		pcb_poly_init_clip(b->parent.layer->parent.data, b->parent.layer, (pcb_poly_t *)b);
 
 	switch(a->type) {
 		case PCB_OBJ_VOID: return pcb_false;

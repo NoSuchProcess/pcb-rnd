@@ -52,7 +52,7 @@ static void reassign_no_drc_flags(void)
 #warning layer TODO: decide whether it is from attribute or not
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = LAYER_PTR(layer);
-		l->meta.real.no_drc = pcb_attribute_get(&l->meta.real.Attributes, "PCB::skip-drc") != NULL;
+		l->meta.real.no_drc = pcb_attribute_get(&l->Attributes, "PCB::skip-drc") != NULL;
 	}
 }
 

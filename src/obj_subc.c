@@ -126,7 +126,9 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 	memcpy(&dst->meta, &src->meta, sizeof(src->meta));
 	dst->is_bound = 1;
 	dst->comb = src->comb;
-	dst->parent = sc->data;
+	dst->parent.data = sc->data;
+	dst->parent_type = PCB_PARENT_DATA;
+	dst->type = PCB_OBJ_LAYER;
 	dst->name = pcb_strdup(src->name);
 	return dst;
 }
@@ -294,7 +296,7 @@ static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, poly);
 	pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
 
-	pcb_poly_init_clip(dst->parent, dst, poly);
+	pcb_poly_init_clip(dst->parent.data, dst, poly);
 	pcb_add_poly_on_layer(dst, poly);
 
 	return poly;
@@ -1058,7 +1060,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	pcb_arc_t *arc;
 	gdl_iterator_t it;
 	int chg = 0;
-	pcb_data_t *dst_data = dl == NULL ? NULL : dl->parent;
+	pcb_data_t *dst_data = dl == NULL ? NULL : dl->parent.data;
 
 	linelist_foreach(&sl->Line, &it, line) {
 		if (src_has_real_layer) {

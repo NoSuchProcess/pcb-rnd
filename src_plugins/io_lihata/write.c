@@ -786,7 +786,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	}
 
 	if (!layer->is_bound)
-		lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
+		lht_dom_hash_put(obj, build_attributes(&layer->Attributes));
 
 	if (wrver >= 2) {
 		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));

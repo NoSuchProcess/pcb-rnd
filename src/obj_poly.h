@@ -211,7 +211,7 @@ void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pc
 do { \
 	if (layer->is_bound) layer = layer->meta.bound.real; \
 	if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
-		pcb_poly_clear_from_poly(layer->parent, PCB_OBJ_POLY, layer, poly); \
+		pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_POLY, layer, poly); \
 } while(0)
 
 /* Let the poly clear sorrunding polys in its layer */
@@ -219,7 +219,7 @@ do { \
 do { \
 	if (poly->parent.layer != NULL) { \
 		pcb_layer_t *layer = pcb_layer_get_real(poly->parent.layer); \
-		if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
+		if ((layer != NULL) && (layer->parent.data->parent_type == PCB_PARENT_BOARD)) { \
 			pcb_poly_ppclear_at(poly, layer); \
 		} \
 	} \
@@ -230,10 +230,10 @@ do { \
 do { \
 	if (poly->parent.layer != NULL) { \
 		pcb_layer_t *layer = pcb_layer_get_real(poly->parent.layer); \
-		if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
+		if ((layer != NULL) && (layer->parent.data->parent_type == PCB_PARENT_BOARD)) { \
 			if (layer->is_bound) layer = layer->meta.bound.real; \
 			if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
-				pcb_poly_restore_to_poly(layer->parent, PCB_OBJ_POLY, layer, poly); \
+				pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_POLY, layer, poly); \
 		} \
 	} \
 } while(0)

@@ -253,8 +253,10 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_float
 void pcb_data_set_layer_parents(pcb_data_t *data)
 {
 	pcb_layer_id_t n;
-	for(n = 0; n < PCB_MAX_LAYER; n++)
-		data->Layer[n].parent = data;
+	for(n = 0; n < PCB_MAX_LAYER; n++) {
+		data->Layer[n].parent.data = data;
+		data->Layer[n].parent_type = PCB_PARENT_DATA;
+	}
 }
 
 void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees)
@@ -262,7 +264,8 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
 	pcb_layer_id_t n;
 	for(n = 0; n < pcb->Data->LayerN; n++) {
 		pcb_layer_real2bound(&data->Layer[n], &pcb->Data->Layer[n], share_rtrees);
-		data->Layer[n].parent = data;
+		data->Layer[n].parent.data = data;
+		data->Layer[n].parent_type = PCB_PARENT_DATA;
 	}
 	data->LayerN = pcb->Data->LayerN;
 }
@@ -273,7 +276,9 @@ void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_layer_type_t lyt = pcb_layergrp_flags(pcb4layer_groups, data->Layer[n].meta.real.grp);
 		pcb_layer_real2bound_offs(&data->Layer[n], pcb4layer_groups, &data->Layer[n]);
-		data->Layer[n].parent = data;
+		data->Layer[n].parent.data = data;
+		data->Layer[n].parent_type = PCB_PARENT_DATA;
+		data->Layer[n].type = PCB_OBJ_LAYER;
 		data->Layer[n].meta.bound.type = lyt;
 	}
 }

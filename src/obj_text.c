@@ -158,7 +158,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 		pcb_attribute_list_t *attr = &text->Attributes;
 		path = key+2;
 		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
-			pcb_data_t *par = text->parent.layer->parent;
+			pcb_data_t *par = text->parent.layer->parent.data;
 			if (par->parent_type == PCB_PARENT_SUBC)
 				attr = &par->parent.subc->Attributes;
 			else if (par->parent_type == PCB_PARENT_BOARD)
@@ -693,7 +693,7 @@ void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
 
 void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 {
-	pcb_data_t *data = layer->parent;
+	pcb_data_t *data = layer->parent.data;
 	pcb_board_t *pcb = pcb_data_get_top(data);
 
 	if (pcb == NULL)

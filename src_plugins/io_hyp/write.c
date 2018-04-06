@@ -280,7 +280,7 @@ static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
 
 	if (poly->Clipped == NULL) {
 		pcb_layer_t *l = poly->parent.layer;
-		pcb_poly_init_clip(l->parent, l, poly);
+		pcb_poly_init_clip(l->parent.data, l, poly);
 	}
 
 	if (poly->Clipped == NULL)

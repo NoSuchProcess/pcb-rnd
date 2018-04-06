@@ -293,7 +293,7 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 		Layer->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon);
 	PCB_SET_PARENT(polygon, layer, Layer);
-	pcb_poly_clear_from_poly(Layer->parent, PCB_OBJ_POLY, Layer, polygon);
+	pcb_poly_clear_from_poly(Layer->parent.data, PCB_OBJ_POLY, Layer, polygon);
 }
 
 /* creates a new polygon on a layer */
@@ -327,7 +327,7 @@ pcb_poly_t *pcb_poly_dup(pcb_layer_t *dst, pcb_poly_t *src)
 	pcb_add_poly_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
 
-	pcb = pcb_data_get_top(dst->parent);
+	pcb = pcb_data_get_top(dst->parent.data);
 	if (pcb != NULL)
 		pcb_poly_init_clip(pcb->Data, dst, p);
 	return p;
@@ -341,7 +341,7 @@ pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, pcb_coord_t dx, p
 	pcb_add_poly_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
 
-	pcb = pcb_data_get_top(dst->parent);
+	pcb = pcb_data_get_top(dst->parent.data);
 	if (pcb != NULL)
 		pcb_poly_init_clip(pcb->Data, dst, p);
 	return p;

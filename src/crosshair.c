@@ -447,7 +447,7 @@ void XORDrawMoveOrCopy(void)
 			&& PCB_FLAG_TEST(PCB_FLAG_FLOATER, (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2)) {
 		pcb_any_obj_t *obj = pcb_crosshair.AttachedObject.Ptr2;
 		if (obj->parent_type == PCB_PARENT_LAYER) {
-			pcb_data_t *data = obj->parent.layer->parent;
+			pcb_data_t *data = obj->parent.layer->parent.data;
 			if ((data != NULL) && (data->parent_type == PCB_PARENT_SUBC)) {
 				pcb_subc_t *sc = data->parent.subc;
 				pcb_coord_t ox, oy;

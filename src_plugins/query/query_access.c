@@ -242,7 +242,7 @@ static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *r
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->meta.real.Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->Attributes, s2));
 	}
 
 	if (fld->next != NULL)

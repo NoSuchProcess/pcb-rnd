@@ -902,7 +902,9 @@ layer
 					YYABORT;
 				}
 				Layer = &yyData->Layer[$3-1];
-				Layer->parent = yyData;
+				Layer->parent.data = yyData;
+				Layer->parent_type = PCB_PARENT_DATA;
+				Layer->type = PCB_OBJ_LAYER;
 
 					/* memory for name is already allocated */
 				if (Layer->name != NULL)
@@ -943,7 +945,7 @@ layerdefinition
 		| text_hi_format
 		| text_newformat
 		| text_oldformat
-		| { attr_list = & Layer->meta.real.Attributes; } attribute
+		| { attr_list = & Layer->Attributes; } attribute
 		| polygon_format
 
 /* %start-doc pcbfile Line

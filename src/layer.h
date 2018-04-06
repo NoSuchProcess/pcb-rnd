@@ -100,11 +100,12 @@ typedef enum { /* bitfield */
 #include "obj_text_list.h"
 
 struct pcb_layer_s {              /* holds information about one layer */
+	PCB_ANY_OBJ_FIELDS;
+
 	linelist_t Line;
 	textlist_t Text;
 	polylist_t Polygon;
 	arclist_t Arc;
-	pcb_data_t *parent;
 
 	const char *name;              /* layer name */
 
@@ -119,7 +120,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 			pcb_bool vis;                  /* visible flag */
 			const char *color;             /* color */
 			const char *selected_color;
-			pcb_attribute_list_t Attributes;
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 		} real;
@@ -156,7 +156,7 @@ pcb_layer_id_t pcb_layer_get_bottom_silk();
 pcb_layer_id_t pcb_layer_get_top_silk();
 
 /* Return the board the layer is under */
-#define pcb_layer_get_top(layer) pcb_data_get_top((layer)->parent)
+#define pcb_layer_get_top(layer) pcb_data_get_top((layer)->parent.data)
 
 typedef struct {
 	const char *name, *abbrev;

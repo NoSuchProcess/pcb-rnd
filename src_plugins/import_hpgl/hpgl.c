@@ -66,7 +66,9 @@ static pcb_layer_t *get_pen_layer(pcb_data_t *data, int pen)
 			pcb_layer_real2bound(&data->Layer[n], &PCB->Data->Layer[n], 0);
 			free((char *)data->Layer[n].name);
 			data->Layer[n].name = pcb_strdup_printf("hpgl_pen_%d", n);
-			data->Layer[n].parent = data;
+			data->Layer[n].parent.data = data;
+			data->Layer[n].parent_type = PCB_PARENT_DATA;
+			data->Layer[n].type = PCB_OBJ_LAYER;
 		}
 	}
 

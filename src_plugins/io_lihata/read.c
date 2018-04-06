@@ -673,7 +673,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	}
 
 	pcb_add_poly_on_layer(ly, poly);
-	pcb_poly_init_clip(ly->parent, ly, poly);
+	pcb_poly_init_clip(ly->parent.data, ly, poly);
 
 	return 0;
 }
@@ -765,9 +765,11 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (layer_id >= dt->LayerN)
 		dt->LayerN = layer_id+1;
 
-	ly->parent = dt;
+	ly->parent.data = dt;
+	ly->parent_type = PCB_PARENT_DATA;
+	ly->type = PCB_OBJ_LAYER;
 
-	parse_attributes(&ly->meta.real.Attributes, lht_dom_hash_get(grp, "attributes"));
+	parse_attributes(&ly->Attributes, lht_dom_hash_get(grp, "attributes"));
 
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {

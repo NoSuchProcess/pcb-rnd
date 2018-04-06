@@ -121,7 +121,7 @@ do { \
 void pcb_layer_free(pcb_layer_t *layer)
 {
 	if (!layer->is_bound)
-		pcb_attribute_free(&layer->meta.real.Attributes);
+		pcb_attribute_free(&layer->Attributes);
 	PCB_TEXT_LOOP(layer);
 	{
 		free(text->TextString);
@@ -234,7 +234,7 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 	if ((Layer >= pcb_uilayer.array) && (Layer < pcb_uilayer.array + vtlayer_len(&pcb_uilayer)))
 		return (Layer - pcb_uilayer.array) | PCB_LYT_UI;
 
-	if (Layer->parent != Data) {
+	if (Layer->parent.data != Data) {
 		/* the only case this makes sense is when we are resolving a bound layer */
 		if ((Layer->is_bound) && (Layer->meta.bound.real != NULL))
 			return pcb_layer_id(Data, Layer->meta.bound.real);
@@ -269,7 +269,7 @@ unsigned int pcb_layer_flags_(pcb_layer_t *layer)
 
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
 	if (!layer->is_bound) {
-		pcb_data_t *data = layer->parent;
+		pcb_data_t *data = layer->parent.data;
 		pcb_layer_id_t lid;
 
 		if (data == NULL)
@@ -427,7 +427,10 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	}
 	pcb->Data->Layer[id].meta.real.grp = grp;
 
-	pcb->Data->Layer[id].parent = pcb->Data;
+	pcb->Data->Layer[id].parent_type = PCB_PARENT_DATA;
+	pcb->Data->Layer[id].parent.data = pcb->Data;
+	pcb->Data->Layer[id].type = PCB_OBJ_LAYER;
+
 	return id;
 }
 
@@ -502,7 +505,9 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 			default: break;
 		}
 	}
-	lp->parent = parent;
+	lp->parent.data = parent;
+	lp->parent_type = PCB_PARENT_DATA;
+	lp->type = PCB_OBJ_LAYER;
 }
 
 int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
@@ -778,8 +783,9 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	lay->is_bound = 1;
 	lay->name = pcb_strdup(name);
 	lay->meta.bound.type = type;
-	lay->parent = data;
-
+	lay->parent.data = data;
+	lay->parent_type = PCB_PARENT_DATA;
+	lay->type = PCB_OBJ_LAYER;
 	return lay;
 }
 
@@ -903,7 +909,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(-1, pcb_layer_id(first->parent, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
+		return pcb_gui->set_layer_group(-1, pcb_layer_id(first->parent.data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
@@ -912,7 +918,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 void pcb_layer_edit_attrib(pcb_layer_t *layer)
 {
 	char *buf = pcb_strdup_printf("Layer %s Attributes", layer->name);
-	pcb_gui->edit_attributes(buf, &(layer->meta.real.Attributes));
+	pcb_gui->edit_attributes(buf, &(layer->Attributes));
 	free(buf);
 }
 

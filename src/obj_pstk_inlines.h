@@ -213,8 +213,8 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps,
 
 		/* special case: if thermal says 'no shape' on this layer, omit the shape */
 		layer = pcb_layer_get_real(layer);
-		if ((layer != NULL) && (layer->parent != NULL)) {
-			lid = pcb_layer_id(layer->parent, layer);
+		if ((layer != NULL) && (layer->parent.data != NULL)) {
+			lid = pcb_layer_id(layer->parent.data, layer);
 			if (lid < ps->thermals.used) {
 				if ((ps->thermals.shape[lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[lid] & 3) == PCB_THERMAL_NOSHAPE))
 					return NULL;

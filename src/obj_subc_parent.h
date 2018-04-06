@@ -54,11 +54,11 @@ PCB_INLINE pcb_subc_t *pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p
 	if (p->layer == NULL)
 		return NULL;
 	
-	if (p->layer->parent == NULL)
+	if (p->layer->parent.data == NULL)
 		return NULL;
 
-	if (p->layer->parent->parent_type == PCB_PARENT_SUBC)
-		return p->layer->parent->parent.subc;
+	if (p->layer->parent.data->parent_type == PCB_PARENT_SUBC)
+		return p->layer->parent.data->parent.subc;
 	return NULL;
 }
 
@@ -95,7 +95,7 @@ PCB_INLINE pcb_bool_t pcb_obj_is_under(pcb_any_obj_t *obj, pcb_data_t *data)
 		switch(obj->parent_type) {
 			case PCB_PARENT_INVALID: return pcb_false;
 			case PCB_PARENT_BOARD:   return pcb_false;
-			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent == data) return pcb_true; break;
+			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent.data == data) return pcb_true; break;
 			case PCB_PARENT_SUBC:    if (obj->parent.subc->data == data) return pcb_true; break;
 			case PCB_PARENT_DATA:    if (obj->parent.data == data) return pcb_true; break;
 		}
