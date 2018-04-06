@@ -136,21 +136,23 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
  * not need to know what kind of actual object they're working on.
  */
 
-/* Any object that uses the "object flags" defined in const.h, or
-   exists as an object on the pcb, MUST be defined using this as the
-   first fields, either directly or through PCB_ANYLINEFIELDS.  */
-#define PCB_ANY_PRIMITIVE_FIELDS \
+/* Any object that ends up in common use as pcb_any_obj_t, MUST be defined
+   using this as the first fieldsusing the following macros.  */
+#define PCB_ANY_OBJ_FIELDS \
 	pcb_box_t            BoundingBox; \
 	long int             ID; \
 	pcb_flag_t           Flags; \
 	pcb_objtype_t        type; \
 	pcb_parenttype_t     parent_type; \
 	pcb_parent_t         parent; \
+	pcb_attribute_list_t Attributes \
+
+#define PCB_ANY_PRIMITIVE_FIELDS \
+	PCB_ANY_OBJ_FIELDS; \
 	const char           *term; \
 	void                 *ratconn; \
 	unsigned char        thermal; \
 	unsigned char        intconn, intnoconn; \
-	pcb_attribute_list_t Attributes; \
 	char                 override_color[sizeof("#XXXXXX")]
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
