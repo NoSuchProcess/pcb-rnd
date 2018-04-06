@@ -53,6 +53,11 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 1;
 	}
 
+
+	ctx.core_props = pcb_props_init();
+	for(lid = 0; lid < PCB->Data->LayerN; lid++)
+		PCB->Data->Layer[lid].propedit = 0;
+
 	if (argc > 0) {
 		int n;
 		for(n = 0; n < argc; n++) {
@@ -60,31 +65,29 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				need_layers = 1;
 			}
 			else if (strncmp(argv[n], "layer:", 6) == 0) {
-				need_layers = 1;
-				ly = pcb_get_layer(PCB, atoi(argv[n]+6));
+				ly = pcb_get_layer(PCB->Data, atoi(argv[n]+6));
 				if (ly == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Invalid layer index %s\n", argv[n]);
-					return 1;
+					goto err;
 				}
+				pcb_propsel_map_layers(&ctx, ly);
 			}
 		}
 	}
 	else
 		need_core = 1;
 
-	ctx.core_props = pcb_props_init();
-	for(lid = 0; lid < PCB->Data->LayerN; lid++)
-		PCB->Data->Layer[lid].propedit = 0;
 
 	if (need_core)
 		pcb_propsel_map_core(ctx.core_props);
 	if (need_layers)
-		pcb_propsel_map_layers(&ctx, ly);
+		pcb_propsel_map_layers(&ctx, NULL);
 
 	pcb_gui->propedit_start(&ctx, ctx.core_props->fill, propedit_query);
 	for (pe = htsp_first(ctx.core_props); pe; pe = htsp_next(ctx.core_props, pe))
 		propedit_ins_prop(&ctx, pe);
 
+	err:;
 	pcb_gui->propedit_end(&ctx);
 	pcb_props_uninit(ctx.core_props);
 	return 0;
