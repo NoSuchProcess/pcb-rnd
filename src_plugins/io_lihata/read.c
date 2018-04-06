@@ -80,13 +80,15 @@ static int iolht_error(lht_node_t *nd, char *fmt, ...)
 	va_list ap;
 
 	gds_init(&str);
-	pcb_append_printf(&str, "io_lihata parse error at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+	gds_append_str(&str, "io_lihata parse error");
+	if (nd != NULL)
+		pcb_append_printf(&str, "at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+	else
+		gds_append_str(&str, ": ");
 
 	va_start(ap, fmt);
 	pcb_append_vprintf(&str, fmt, ap);
 	va_end(ap);
-
-	gds_append(&str, '\n');
 
 	pcb_message(PCB_MSG_ERROR, "%s", str.array);
 
@@ -107,13 +109,15 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
 	}
 
 	gds_init(&str);
-	pcb_append_printf(&str, "io_lihata parse warning at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+	gds_append_str(&str, "io_lihata parse warning");
+	if (nd != NULL)
+		pcb_append_printf(&str, "at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+	else
+		gds_append_str(&str, ": ");
 
 	va_start(ap, fmt);
 	pcb_append_vprintf(&str, fmt, ap);
 	va_end(ap);
-
-	gds_append(&str, '\n');
 
 	pcb_message(PCB_MSG_WARNING, "%s", str.array);
 
@@ -148,8 +152,10 @@ static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 /* Load the (duplicated) string value of a text node into res. Return 0 on success */
 static int parse_text(char **res, lht_node_t *nd)
 {
-	if ((nd == NULL) || (nd->type != LHT_TEXT))
+	if (nd == NULL)
 		return -1;
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "expected a text node\n");
 	*res = pcb_strdup(nd->data.text.value);
 	return 0;
 }
@@ -158,9 +164,9 @@ static int parse_text(char **res, lht_node_t *nd)
 static int parse_minuid(minuid_bin_t res, lht_node_t *nd)
 {
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
-		return -1;
+		return iolht_error(nd, "expected a text node for minuid\n");
 	if (strlen(nd->data.text.value) != sizeof(minuid_str_t)-1)
-		return -1;
+		return iolht_error(nd, "invalid minuid: '%s'\n", nd->data.text.value);
 	minuid_str2bin(res, (char *)nd->data.text.value);
 	return 0;
 }
@@ -323,7 +329,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	lht_node_t *grp;
 
 	if (nd->type != LHT_HASH)
-		return -1;
+		return iolht_error(nd, "board meta must be a hash\n");
 
 	parse_text(&pcb->Name, lht_dom_hash_get(nd, "meta"));
 
@@ -370,7 +376,7 @@ static int parse_thermal(unsigned char *dst, lht_node_t *src)
 		return 0;
 
 	if (src->type != LHT_LIST)
-		return -1;
+		return iolht_error(src, "thermals must be a list\n");
 
 	*dst = 0;
 	for(src = src->data.list.first; src != NULL; src = src->next)
@@ -490,7 +496,7 @@ static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
 		return 0;
 
 	if (src->type != LHT_LIST)
-		return -1;
+		return iolht_error(src, "heavy thermal must be a list\n");
 
 	src->user_data = obj;
 	vtp0_append(&post_thermal_heavy, src);
@@ -506,7 +512,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 	if (ly != NULL)
 		line = pcb_line_alloc(ly);
 	else
-		return -1;
+		return iolht_error(obj, "failed to allocate line object\n");
 
 	if (no_id)
 		line->ID = 0;
@@ -581,7 +587,7 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord
 	if (ly != NULL)
 		arc = pcb_arc_alloc(ly);
 	else
-		return -1;
+		return iolht_error(obj, "failed to allocate arc object\n");
 
 	parse_id(&arc->ID, obj, 4);
 	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
@@ -683,8 +689,10 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 
 	if (ly != NULL) {
 		if (role != NULL)
-			return -1;
+			return iolht_error(obj, "invalid role: text on layer shall not have a role\n");
 		text = pcb_text_alloc(ly);
+		if (text == NULL)
+			return iolht_error(obj, "failed to allocate yrcy object\n");
 	}
 
 	parse_id(&text->ID, obj, 5);
@@ -797,7 +805,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	lst = lht_dom_hash_get(grp, "objects");
 	if (lst != NULL) {
 		if (lst->type != LHT_LIST)
-			return -1;
+			return iolht_error(lst, "objects must be in a list\n");
 
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
@@ -1103,7 +1111,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 	lht_dom_iterator_t it;
 
 	if (grp->type != LHT_LIST)
-		return -1;
+		return iolht_error(grp, "groups must be a list\n");
 
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "padstack_ref.", 13) == 0)
@@ -1116,7 +1124,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 			parse_element(pcb_for_font, dt, n);
 		else if (strncmp(n->name, "subc.", 5) == 0)
 			if (parse_subc(pcb_for_font, dt, n, NULL) != 0)
-				return -1;
+				return iolht_error(n, "failed to parse subcircuit\n");
 	}
 
 	return 0;
@@ -1348,7 +1356,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	/* read shapes */
 	nshape = lht_dom_hash_get(nproto, "shape");
 	if ((nshape == NULL) || (nshape->type != LHT_LIST))
-		return -1;
+		return iolht_error(nshape, "shape must be an existing list\n");
 
 	ts = pcb_vtpadstack_tshape_get(&dst->tr, 0, 1);
 
@@ -1365,7 +1373,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	free(ts->shape);
 	ts->shape = NULL;
 	ts->len = 0;
-	return -1;
+	return iolht_error(n, "failed to parse padstack due to bad shape\n");
 }
 
 static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
@@ -1512,7 +1520,7 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 	lht_dom_iterator_t it;
 
 	if (nd->type != LHT_HASH)
-		return -1;
+		return iolht_error(nd, "font must be a hash\n");
 
 	parse_coord(&font->MaxHeight, lht_dom_hash_get(nd, "cell_height"));
 	parse_coord(&font->MaxWidth, lht_dom_hash_get(nd, "cell_width"));
@@ -1547,8 +1555,8 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 	lht_dom_iterator_t it;
 
 	if (nd->type != LHT_HASH)
-		return -1;
-	
+		return iolht_error(nd, "fontkit must be a hash\n");
+
 	pcb_fontkit_reset (fk);
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
@@ -1591,7 +1599,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 	lht_dom_iterator_t it;
 
 	if (nd->type != LHT_LIST)
-		return -1;
+		return iolht_error(nd, "route styles must be a list\n");
 
 	for(stn = lht_dom_first(&it, nd); stn != NULL; stn = lht_dom_next(&it)) {
 		pcb_route_style_t *s = vtroutestyle_alloc_append(styles, 1);
@@ -1622,7 +1630,7 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 {
 	lht_node_t *nnet;
 	if (netlist->type != LHT_LIST)
-		return -1;
+		return iolht_error(netlist, "netlist (parent) must be a list\n");
 
 	for(nnet = netlist->data.list.first; nnet != NULL; nnet = nnet->next) {
 		lht_node_t *nconn, *nstyle, *nt;
@@ -1630,16 +1638,16 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 		const char *style = NULL;
 
 		if (nnet->type != LHT_HASH)
-			return -1;
+			return iolht_error(nnet, "netlist must be a hash\n");
 		nconn  = lht_dom_hash_get(nnet, "conn");
 		nstyle = lht_dom_hash_get(nnet, "style");
 
 		if ((nconn != NULL) && (nconn->type != LHT_LIST))
-			return -1;
+			return iolht_error(nconn, "conn must be a list\n");
 
 		if (nstyle != NULL) {
 			if (nstyle->type != LHT_TEXT)
-				return -1;
+				return iolht_error(nstyle, "style must be text\n");
 			style = nstyle->data.text.value;
 		}
 
@@ -1647,7 +1655,7 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 		if (nconn != NULL) {
 			for(nt = nconn->data.list.first; nt != NULL; nt = nt->next) {
 				if ((nt->type != LHT_TEXT) || (*nt->data.text.value == '\0'))
-					return -1;
+					return iolht_error(nt, "terminal id must be a non-empty text\n");
 				pcb_lib_conn_new(net, nt->data.text.value);
 			}
 		}
@@ -1660,35 +1668,35 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 	lht_node_t *np;
 
 	if (patches->type != LHT_LIST)
-		return -1;
+		return iolht_error(patches, "netlist patches must be a list\n");
 
 	for(np = patches->data.list.first; np != NULL; np = np->next) {
 		lht_node_t *nnet, *nkey, *nval;
 		if (np->type != LHT_HASH)
-			return -1;
+			return iolht_error(np, "each netlist patch must be a hash\n");
 		nnet = lht_dom_hash_get(np, "net");
 		if ((nnet == NULL) || (nnet->type != LHT_TEXT) || (*nnet->data.text.value == '\0'))
-			return -1;
+			return iolht_error(nnet, "netlist patch net name must be a non-empty text\n");
 
 		if (strcmp(np->name, "del_conn") == 0) {
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
-				return -1;
+				return iolht_error(nval, "netlist patch terminal ID must be a non-empty string (del_conn)\n");
 			pcb_ratspatch_append(pcb, RATP_ADD_CONN, nval->data.text.value, nnet->data.text.value, NULL);
 		}
 		else if (strcmp(np->name, "add_conn") == 0) {
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
-				return -1;
+				return iolht_error(nval, "netlist patch terminal ID must be a non-empty string (add_conn)\n");
 			pcb_ratspatch_append(pcb, RATP_DEL_CONN, nval->data.text.value, nnet->data.text.value, NULL);
 		}
 		else if (strcmp(np->name, "change_attrib") == 0) {
 			nkey = lht_dom_hash_get(np, "key");
 			if ((nkey == NULL) || (nkey->type != LHT_TEXT) || (*nkey->data.text.value == '\0'))
-				return -1;
+				return iolht_error(nval, "netlist patch attrib key must be a non-empty string (change_attrib)\n");
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT))
-				return -1;
+				return iolht_error(nval, "netlist patch attrib value must be a non-empty string (change_attrib)\n");
 			pcb_ratspatch_append(pcb, RATP_CHANGE_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value);
 		}
 	}
@@ -1700,15 +1708,15 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 	lht_node_t *sub;
 
 	if (netlists->type != LHT_HASH)
-		return -1;
+		return iolht_error(netlists, "netlists must be a hash\n");
 
 	sub = lht_dom_hash_get(netlists, "input");
 	if ((sub != NULL) && (parse_netlist_input(pcb->NetlistLib+PCB_NETLIST_INPUT, sub) != 0))
-		return -1;
+		return iolht_error(sub, "failed to parse the input netlist\n");
 
 	sub = lht_dom_hash_get(netlists, "netlist_patch");
 	if ((sub != NULL) && (parse_netlist_patch(pcb, sub) != 0))
-		return -1;
+		return iolht_error(sub, "failed to parse the netlist patch\n");
 
 	return 0;
 }
