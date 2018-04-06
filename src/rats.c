@@ -249,7 +249,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 				badnet = pcb_true;
 				continue;
 			}
-			net = pcb_net_new(Wantlist);
+			net = pcb_net_new(PCB, Wantlist);
 			if (menu->Style) {
 				int idx = pcb_route_style_lookup(&PCB->RouteStyle, -1, -1, -1, -1, menu->Style);
 				if (idx >= 0)
@@ -751,7 +751,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 		PCB_CONNECTION_LOOP(net);
 		{
 			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *)connection->obj)) {
-				lonesome = pcb_net_new(Nets);
+				lonesome = pcb_net_new(PCB, Nets);
 				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
 				lonesome->Style = net->Style;
@@ -836,7 +836,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 		PCB_CONNECTION_LOOP(net);
 		{
 			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *)connection->obj)) {
-				lonesome = pcb_net_new(Nets);
+				lonesome = pcb_net_new(PCB, Nets);
 				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
 				lonesome->Style = net->Style;

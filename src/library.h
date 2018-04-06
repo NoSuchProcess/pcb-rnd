@@ -31,6 +31,7 @@
 #define PCB_LIBRARY_H
 
 #include "global_typedefs.h"
+#include "obj_common.h"
 
 typedef struct pcb_lib_entry_s  pcb_lib_entry_t;
 typedef struct pcb_lib_menu_s   pcb_lib_menu_t;
@@ -61,6 +62,7 @@ struct pcb_lib_entry_s {
    electrical paths that aren't yet assigned to a real net.  */
 
 struct pcb_lib_menu_s {
+	PCB_ANY_OBJ_FIELDS;
 	char *Name,										/* name of the menu entry */
 	 *directory,									/* Directory name library elements are from */
 	 *Style;											/* routing style */

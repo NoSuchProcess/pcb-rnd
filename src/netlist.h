@@ -33,8 +33,10 @@
 #include "config.h"
 #include "library.h"
 #include "route_style.h"
+#include "obj_common.h"
 
 struct pcb_net_s {								/* holds a net of connections */
+	PCB_ANY_OBJ_FIELDS;
 	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
 	  ConnectionMax;							/* max connections from malloc */
 	pcb_connection_t *Connection;
@@ -88,7 +90,7 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 
-pcb_net_t *pcb_net_new(pcb_netlist_t *);
+pcb_net_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *);
 pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *);
 void pcb_netlist_list_free(pcb_netlist_list_t *);
 void pcb_netlist_free(pcb_netlist_t *);

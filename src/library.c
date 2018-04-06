@@ -130,6 +130,7 @@ pcb_lib_menu_t *pcb_lib_net_new(pcb_lib_t *lib, char *name, const char *style)
 		menu->Style = NULL;
 	else
 		menu->Style = pcb_strdup(style);
+	menu->type = PCB_OBJ_NET;
 	return menu;
 }
 

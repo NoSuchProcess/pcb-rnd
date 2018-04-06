@@ -246,7 +246,7 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)
 /* ---------------------------------------------------------------------------
  * get next slot for a subnet, allocates memory if necessary
  */
-pcb_net_t *pcb_net_new(pcb_netlist_t *Netlist)
+pcb_net_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *Netlist)
 {
 	pcb_net_t *net = Netlist->Net;
 
@@ -257,6 +257,10 @@ pcb_net_t *pcb_net_new(pcb_netlist_t *Netlist)
 		Netlist->Net = net;
 		memset(net + Netlist->NetN, 0, STEP_POINT * sizeof(pcb_net_t));
 	}
+
+	net->type = PCB_OBJ_NET;
+	net->parent_type = PCB_PARENT_BOARD;
+	net->parent.board = pcb;
 	return (net + Netlist->NetN++);
 }
 
