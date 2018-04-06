@@ -101,7 +101,7 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
 	if (!layer->propedit)
-		return;
+		return 0;
 
 	map_add_prop(ctx, "p/layer/name", String, layer->name);
 	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
