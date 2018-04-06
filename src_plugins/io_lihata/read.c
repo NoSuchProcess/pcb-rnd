@@ -64,6 +64,7 @@
 #warning cleanup TODO: put these in a gloal load-context-struct
 vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
+unsigned long warned;
 
 #warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
 #define PCB_OBJ_VIA PCB_OBJ_PSTK
@@ -73,6 +74,51 @@ static int rdver;
 
 static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
 
+static int iolht_error(lht_node_t *nd, char *fmt, ...)
+{
+	gds_t str;
+	va_list ap;
+
+	gds_init(&str);
+	pcb_append_printf(&str, "io_lihata parse error at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+
+	va_start(ap, fmt);
+	pcb_append_vprintf(&str, fmt, ap);
+	va_end(ap);
+
+	gds_append(&str, '\n');
+
+	pcb_message(PCB_MSG_ERROR, "%s", str.array);
+
+	gds_uninit(&str);
+	return -1;
+}
+
+static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
+{
+	gds_t str;
+	va_list ap;
+
+	if (wbit >= 0) {
+		unsigned long bv = 1ul << wbit;
+		if (warned & bv)
+			return;
+		warned |= bv;
+	}
+
+	gds_init(&str);
+	pcb_append_printf(&str, "io_lihata parse warning at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+
+	va_start(ap, fmt);
+	pcb_append_vprintf(&str, fmt, ap);
+	va_end(ap);
+
+	gds_append(&str, '\n');
+
+	pcb_message(PCB_MSG_WARNING, "%s", str.array);
+
+	gds_uninit(&str);
+}
 
 /* Collect objects that has unknown ID on a list. Once all objects with
    known-IDs are allocated, the unknonw-ID objects are allocated a fresh
@@ -129,10 +175,8 @@ static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 		return -1;
 
 	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
-	if (!success) {
-		pcb_message(PCB_MSG_ERROR, "#LHT1 Invalid coord value: '%s'\n", nd->data.text.value);
-		return -1;
-	}
+	if (!success)
+		return iolht_error(nd, "Invalid coord value: '%s'\n", nd->data.text.value);
 
 	*res = tmp;
 	return 0;
@@ -144,16 +188,12 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	double tmp;
 	pcb_bool success;
 
-	if ((nd == NULL) || (nd->type != LHT_TEXT)) {
-		pcb_message(PCB_MSG_ERROR, "#LHT2 Invalid angle type: '%d'\n", nd->type);
-		return -1;
-	}
+	if ((nd == NULL) || (nd->type != LHT_TEXT))
+		return iolht_error(nd, "Invalid angle type: '%d'\n", nd->type);
 
 	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
-	if (!success) {
-		pcb_message(PCB_MSG_ERROR, "#LHT3 Invalid angle value: '%s'\n", nd->data.text.value);
-		return -1;
-	}
+	if (!success)
+		return iolht_error(nd, "Invalid angle value: '%s'\n", nd->data.text.value);
 
 	*res = tmp;
 	return 0;
@@ -169,18 +209,14 @@ static int parse_int(int *res, lht_node_t *nd)
 	if (nd == NULL)
 		return -1;
 
-	if (nd->type != LHT_TEXT) {
-		pcb_message(PCB_MSG_ERROR, "#LHT4 Invalid int type: '%d'\n", nd->type);
-		return -1;
-	}
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "Invalid integer node type (int): '%d'\n", nd->type);
 
 	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
 		base = 16;
 	tmp = strtol(nd->data.text.value, &end, base);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "#LHT5 Invalid int value: '%s'\n", nd->data.text.value);
-		return -1;
-	}
+	if (*end != '\0')
+		return iolht_error(nd, "Invalid integer value (not an integer number): '%s'\n", nd->data.text.value);
 
 	*res = tmp;
 	return 0;
@@ -197,18 +233,14 @@ static int parse_ulong(unsigned long *res, lht_node_t *nd)
 	if (nd == NULL)
 		return -1;
 
-	if (nd->type != LHT_TEXT) {
-		pcb_message(PCB_MSG_ERROR, "#LHT4u Invalid int type: '%d'\n", nd->type);
-		return -1;
-	}
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "Invalid integer node type (ulong): '%d'\n", nd->type);
 
 	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
 		base = 16;
 	tmp = strtoul(nd->data.text.value, &end, base);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "#LHT5u Invalid int value: '%s'\n", nd->data.text.value);
-		return -1;
-	}
+	if (*end != '\0')
+		return iolht_error(nd, "Invalid integer value (not an unsigned long integer): '%s'\n", nd->data.text.value);
 
 	*res = tmp;
 	return 0;
@@ -223,17 +255,13 @@ static int parse_double(double *res, lht_node_t *nd)
 	if (nd == NULL)
 		return -1;
 
-	if (nd->type != LHT_TEXT) {
-		pcb_message(PCB_MSG_ERROR, "#LHT8 Invalid double type: '%d'\n", nd->type);
-		return -1;
-	}
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "Invalid floating point number type: '%d'\n", nd->type);
 
 	tmp = strtod(nd->data.text.value, &end);
 
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "#LHT9 Invalid double value: '%s'\n", nd->data.text.value);
-		return -1;
-	}
+	if (*end != '\0')
+		return iolht_error(nd, "Invalid floating point value: '%s'\n", nd->data.text.value);
 
 	*res = tmp;
 	return 0;
@@ -250,10 +278,8 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 		return -1;
 
 	tmp = strtol(nd->name + prefix_len, &end, 10);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "#LHT6 Invalid id value: '%s' in line %d\n", nd->data.text.value, nd->line);
-		return -1;
-	}
+	if (*end != '\0')
+		return iolht_error(nd, "Invalid id value (must be a positive integer): '%s'\n", nd->data.text.value);
 
 	pcb_create_ID_bump(tmp+1);
 
@@ -289,8 +315,7 @@ static int parse_bool(pcb_bool *res, lht_node_t *nd)
 		return 0;
 	}
 
-	pcb_message(PCB_MSG_ERROR, "#LHT7 Invalid bool value: '%s'\n", nd->data.text.value);
-	return -1;
+	return iolht_error(nd, "Invalid bool value: '%s'\n", nd->data.text.value);
 }
 
 static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
@@ -387,10 +412,8 @@ static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
 			for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
 				if (n->type == LHT_TEXT) {
 					int layer = pcb_layer_by_name(pcb->Data, n->name);
-					if (layer < 0) {
-						pcb_message(PCB_MSG_ERROR, "#LHT10o Invalid layer name in thermal: '%s'\n", n->name);
-						return -1;
-					}
+					if (layer < 0)
+						return iolht_error(n, "Invalid layer name in thermal: '%s'\n", n->name);
 					ps->thermals.shape[layer] = io_lihata_resolve_thermal_style_old(n->data.text.value);
 				}
 			}
@@ -429,9 +452,9 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 			}
 		}
 
-		if ((!can_have_thermal) && (lht_dom_hash_get(fn, "thermal") != NULL)) {
-			pcb_message(PCB_MSG_ERROR, "#LHT10o Invalid flag thermal: object type can not have a thermal (ignored)\n");
-		}
+		if ((!can_have_thermal) && (lht_dom_hash_get(fn, "thermal") != NULL))
+			iolht_error(fn, "Invalid flag thermal: object type can not have a thermal (ignored)\n");
+
 
 		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
 			fh.Flags.q = n;
@@ -696,7 +719,7 @@ static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *l
 	for(flg = lht_dom_first(&itt, nd); flg != NULL; flg = lht_dom_next(&itt)) {
 		pcb_layer_type_t val = pcb_layer_type_str2bit(flg->name);
 		if (val == 0)
-			pcb_message(PCB_MSG_ERROR, "Invalid type name: '%s' in %s (ignoring the type flag)\n", flg->name, loc);
+			iolht_error(flg, "Invalid type name: '%s' in %s (ignoring the type flag)\n", flg->name, loc);
 		*dst |= val;
 	}
 
@@ -712,12 +735,12 @@ static pcb_layer_combining_t parse_comb(pcb_board_t *pcb, lht_node_t *ncmb)
 	for(n = lht_dom_first(&it, ncmb); n != NULL; n = lht_dom_next(&it)) {
 		pcb_layer_combining_t cval;
 		if (n->type != LHT_TEXT) {
-			pcb_message(PCB_MSG_WARNING, "Ignoring non-text combining flag\n");
+			iolht_error(n, "Ignoring non-text combining flag\n");
 			continue;
 		}
 		cval = pcb_layer_comb_str2bit(n->name);
 		if (cval == 0)
-			pcb_message(PCB_MSG_WARNING, "Ignoring unknown combining flag: '%s'\n", n->name);
+			iolht_error(n, "Ignoring unknown combining flag: '%s'\n", n->name);
 		comb |= cval;
 	}
 
@@ -741,7 +764,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {
 		if (rdver < 2)
-			pcb_message(PCB_MSG_WARNING, "Version 1 lihata board should not have combining subtree for layers\n");
+			iolht_warn(ncmb, 0, "Version 1 lihata board should not have combining subtree for layers\n");
 		ly->comb = parse_comb(pcb, ncmb);
 	}
 
@@ -755,7 +778,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			if (dt->Layer[layer_id].meta.bound.real != NULL)
 				pcb_layer_link_trees(&dt->Layer[layer_id], dt->Layer[layer_id].meta.bound.real);
 			else if (!(dt->Layer[layer_id].meta.bound.type & PCB_LYT_VIRTUAL))
-				pcb_message(PCB_MSG_WARNING, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
+				iolht_warn(ncmb, 1, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
 			dt->padstack_tree = subc_parent->padstack_tree;
 		}
 	}
@@ -813,10 +836,8 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	int tmp;
 
 	parse_ulong(&pid, lht_dom_hash_get(obj, "proto"));
-	if (pcb_pstk_get_proto_(dt, pid) == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Padstack references to non-existent prototype\n");
-		return -1;
-	}
+	if (pcb_pstk_get_proto_(dt, pid) == NULL)
+		return iolht_error(obj, "Padstack references to non-existent prototype\n");
 
 	ps = pcb_pstk_alloc(dt);
 
@@ -902,7 +923,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 
 	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
 	if (ps == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to convert old via to padstack\n");
+		iolht_error(obj, "Failed to convert old via to padstack (this via is LOST)\n");
 		return 0;
 	}
 
@@ -1057,10 +1078,8 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	pcb_add_subc_to_data(dt, sc);
 
-	if (parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt) == 0) {
-		pcb_message(PCB_MSG_ERROR, "Invalid subc: no data\n");
-		return -1;
-	}
+	if (parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt) == 0)
+		return iolht_error(obj, "Invalid subc: no data\n");
 
 	for(n = 0; n < sc->data->LayerN; n++)
 		sc->data->Layer[n].is_bound = 1;
@@ -1174,11 +1193,11 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		char *end;
 		gid = strtol(grp->name, &end, 10);
 		if ((*end != '\0') || (gid < 0)) {
-			pcb_message(PCB_MSG_ERROR, "Invalid group id in layer stack: '%s' (not an int or negative; ignoring the group)\n", grp->name);
+			iolht_error(grp, "Invalid group id in layer stack: '%s' (not an int or negative; ignoring the group)\n", grp->name);
 			continue;
 		}
 		if (gid >= PCB_MAX_LAYERGRP) {
-			pcb_message(PCB_MSG_ERROR, "Invalid group id in layer stack: '%s' (too many layers; ignoring the group)\n", grp->name);
+			iolht_error(grp, "Invalid group id in layer stack: '%s' (too many layers; ignoring the group)\n", grp->name);
 			continue;
 		}
 
@@ -1205,16 +1224,16 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			for(lyr = lht_dom_first(&itt, layers); lyr != NULL; lyr = lht_dom_next(&itt)) {
 				pcb_layer_id_t lid;
 				if (lyr->type != LHT_TEXT) {
-					pcb_message(PCB_MSG_ERROR, "Invalid layer node type in group '%s' (ignoring the layer)\n", g->name);
+					iolht_error(lyr, "Invalid layer node type in group '%s' (ignoring the layer)\n", g->name);
 					continue;
 				}
 				lid = strtol(lyr->data.text.value, &end, 10);
 				if ((*end != '\0') || (lid < 0)) {
-					pcb_message(PCB_MSG_ERROR, "Invalid layer id '%s' in group '%s' (not an int or negative; ignoring the layer)\n", lyr->data.text.value, g->name);
+					iolht_error(lyr, "Invalid layer id '%s' in group '%s' (not an int or negative; ignoring the layer)\n", lyr->data.text.value, g->name);
 					continue;
 				}
 				if (g->len >= PCB_MAX_LAYER) {
-					pcb_message(PCB_MSG_ERROR, "Too many layers  in group '%s' (ignoring the layer)\n", g->name);
+					iolht_error(lyr, "Too many layers  in group '%s' (ignoring the layer)\n", g->name);
 					continue;
 				}
 				g->lid[g->len] = lid;
@@ -1236,10 +1255,9 @@ static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 	for(n = nshape->data.list.first; n != NULL; n = n->next)
 		dst->data.poly.len++;
 
-	if ((dst->data.poly.len % 2) != 0) {
-		pcb_message(PCB_MSG_ERROR, "odd number of padstack shape polygon points\n");
-		return -1;
-	}
+	if ((dst->data.poly.len % 2) != 0)
+		return iolht_error(n, "odd number of padstack shape polygon points\n");
+
 	dst->data.poly.len /= 2;
 
 	pcb_pstk_shape_alloc_poly(&dst->data.poly, dst->data.poly.len);
@@ -1287,10 +1305,8 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 	if ((nlyt != NULL) && (nlyt->type == LHT_HASH))
 		res = parse_layer_type(&dst->layer_mask, nlyt, "padstack shape");
 
-	if (res != 0) {
-		pcb_message(PCB_MSG_ERROR, "Failed to parse pad stack shape (layer mask)\n");
-		return -1;
-	}
+	if (res != 0)
+		return iolht_error(nlyt != NULL ? nlyt : nshape, "Failed to parse pad stack shape (layer mask)\n");
 
 	ncmb = lht_dom_hash_get(nshape, "combining");
 	if ((ncmb != NULL) && (ncmb->type == LHT_HASH))
@@ -1307,10 +1323,8 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 	ns = lht_dom_hash_get(nshape, "ps_circ");
 	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_circ(pcb, dst, ns, subc_parent);
 
-	pcb_message(PCB_MSG_ERROR, "Failed to parse pad stack: missing shape\n");
-	return -1;
+	return iolht_error(nshape, "Failed to parse pad stack: missing shape\n");
 }
-
 
 
 static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent)
@@ -1375,32 +1389,22 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 			if (*sid == '.') {
 				sid++;
 				pid_in_file = strtol(sid, &end, 0);
-				if (*end != '\0') {
-					pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (not an integer)\n", sid);
-					return -1;
-				}
-				else if (pid_in_file < pid) {
-					pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (can't rewind)\n", sid);
-					return -1;
-				}
+				if (*end != '\0')
+					return iolht_error(pr, "Invalid padstack proto ID '%s' (not an integer)\n", sid);
+				else if (pid_in_file < pid)
+					return iolht_error(pr, "Invalid padstack proto ID '%s' (can't rewind)\n", sid);
 				pid = pid_in_file;
 			}
-			else if (*sid != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (syntax)\n", sid);
-				return -1;
-			}
+			else if (*sid != '\0')
+				return iolht_error(pr, "Invalid padstack proto ID '%s' (syntax)\n", sid);
 			if (pid >= dst->ps_protos.used)
 				pcb_vtpadstack_proto_enlarge(&dst->ps_protos, pid);
 			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
-			if (res != 0) {
-				pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n");
-				return -1;
-			}
+			if (res != 0)
+				return iolht_error(pr, "Invalid padstack proto definition\n");
 		}
-		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n", pp->name);
-			return -1;
-		}
+		else
+			return iolht_error(pr, "Invalid padstack proto definition\n", pp->name);
 	}
 
 	return res;
@@ -1479,12 +1483,12 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 			int len;
 			pcb_poly_t *sp;
 			if (obj->type != LHT_LIST) {
-				pcb_message(PCB_MSG_ERROR, "Symbol error: simplepoly is not a list!\n");
+				iolht_error(obj, "Symbol error: simplepoly is not a list! (ignoring this poly)\n");
 				continue;
 			}
 			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) ;
 			if ((len % 2 != 0) || (len < 6)) {
-				pcb_message(PCB_MSG_ERROR, "Symbol error: sumplepoly has wrong number of points (%d, expected an even integer >= 6)!\n", len);
+				iolht_error(obj, "Symbol error: sumplepoly has wrong number of points (%d, expected an even integer >= 6)! (ignoring this poly)\n", len);
 				continue;
 			}
 			sp = pcb_font_new_poly_in_sym(sym, len/2);
@@ -1523,7 +1527,7 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 			char *end;
 			chr = strtol(sym->name+1, &end, 16);
 			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Ignoring invalid symbol name '%s'.\n", sym->name);
+				iolht_error(sym, "Ignoring symbol with invalid symbol name '%s'.\n", sym->name);
 				continue;
 			}
 		}
@@ -1593,14 +1597,12 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		pcb_route_style_t *s = vtroutestyle_alloc_append(styles, 1);
 		int name_len = strlen(stn->name);
 
-		if (stn->type != LHT_HASH) {
-			pcb_message(PCB_MSG_ERROR, "route style entry must be a hash\n");
-			return -1;
-		}
+		if (stn->type != LHT_HASH)
+			return iolht_error(stn, "route style entry must be a hash\n");
 		
 		/* safe copy the name */
 		if (name_len > sizeof(s->name)-1) {
-			pcb_message(PCB_MSG_WARNING, "Route style name too long: '%s' (should be less than %d characters)\n", stn->name, sizeof(s->name)-1);
+			iolht_warn(stn, -1, "Route style name too long: '%s' (should be less than %d characters); name will be truncated\n", stn->name, sizeof(s->name)-1);
 			memcpy(s->name, stn->name, sizeof(s->name)-2);
 			s->name[sizeof(s->name)-1] = '\0';
 		}
@@ -1714,7 +1716,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
 	if (conf_insert_tree_as(CFR_DESIGN, sub) != 0)
-		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree found in %s\n", pcb->Filename);
+		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->Filename);
 	else
 		conf_update(NULL, -1);
 }
@@ -1725,6 +1727,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	lht_node_t *sub;
 	pcb_plug_io_t *loader;
 
+	warned = 0;
 	rdver = atoi(nd->name+15);
 	switch(rdver) {
 		case 1: loader = &plug_io_lihata_v1; break;
@@ -1732,8 +1735,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		case 3: loader = &plug_io_lihata_v3; break;
 		case 4: loader = &plug_io_lihata_v4; break;
 		default:
-			pcb_message(PCB_MSG_ERROR, "Lihata board version %d not supported; must be 1 or 2.\n", rdver);
-			return -1;
+			return iolht_error(nd, "Lihata board version %d not supported;\n"
+				"must be 1, 2, 3, 4 or 5.\n", rdver);
 	}
 
 	vtp0_init(&post_ids);
@@ -1835,6 +1838,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	else if ((doc->root->type == LHT_LIST) && (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20) == 0)) {
 		pcb_subc_t *sc;
 
+		warned = 0;
 		rdver = atoi(doc->root->name+20);
 		Ptr->is_footprint = 1;
 		res = parse_subc(NULL, Ptr->Data, doc->root->data.list.first, &sc);
@@ -1847,7 +1851,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		}
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
+		iolht_error(doc->root, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
 		res = -1;
 	}
 
@@ -1972,6 +1976,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 		return -1;
 	}
 
+	warned = 0;
 	rdver = atoi(doc->root->name+20);
 	if (rdver < 3) {
 		if (!pcb_io_err_inhibit)
