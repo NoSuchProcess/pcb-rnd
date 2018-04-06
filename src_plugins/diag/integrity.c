@@ -179,6 +179,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].name == NULL) || (*data->Layer[n].name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
+		check_parent("layer", (&data->Layer[n]), PCB_PARENT_DATA, data);
 		chk_attr("layer", &data->Layer[n]);
 
 		/* check layer objects */
