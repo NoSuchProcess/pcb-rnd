@@ -110,16 +110,16 @@ static int wrax_map_layers(wctx_t *ctx)
 		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[n];
 		int al;
 
-		if ((grp->type & PCB_LYT_SUBSTRATE) || (grp->type & PCB_LYT_VIRTUAL) || (grp->type & PCB_LYT_PASTE) || (grp->type & PCB_LYT_MASK))
+		if ((grp->ltype & PCB_LYT_SUBSTRATE) || (grp->ltype & PCB_LYT_VIRTUAL) || (grp->ltype & PCB_LYT_PASTE) || (grp->ltype & PCB_LYT_MASK))
 			continue;
 
-		al = wrax_lyt2id(ctx, grp->type);
+		al = wrax_lyt2id(ctx, grp->ltype);
 		if (al == 0) {
 			wrax_map_layer_error(ctx, grp, "Unable to map pcb-rnd layer group to autotrax layer", "change layer type");
 			continue;
 		}
 
-		if (grp->type & PCB_LYT_INTERN) {
+		if (grp->ltype & PCB_LYT_INTERN) {
 			/* intern copper: find the first free slot */
 			while((layer_map[al+intcnt].lyt & PCB_LYT_INTERN) && (ctx->id2grp[al+intcnt] != NULL)) intcnt++;
 			al += intcnt;

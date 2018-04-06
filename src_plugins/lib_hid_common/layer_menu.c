@@ -115,7 +115,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		int n;
 
-		if (g->type & PCB_LYT_SUBSTRATE)
+		if (g->ltype & PCB_LYT_SUBSTRATE)
 			continue;
 
 		for(n = g->len-1; n >= 0; n--) {

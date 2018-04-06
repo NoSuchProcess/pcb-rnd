@@ -415,7 +415,7 @@ static const char *lyr_color(pcb_layer_id_t lid)
 
 static const char * const grp_color(pcb_layergrp_t *g)
 {
-	hardwired_colors(g->type);
+	hardwired_colors(g->ltype);
 	/* normal mechanism: first layer's color or yellow */
 	if (g->len == 0) return "#ffff00";
 	return lyr_color(g->lid[0]);
@@ -576,7 +576,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
-		if (g->type & PCB_LYT_SUBSTRATE)
+		if (g->ltype & PCB_LYT_SUBSTRATE)
 			continue;
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[gid], g), FALSE, FALSE, 0);
 	}

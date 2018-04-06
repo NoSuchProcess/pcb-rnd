@@ -350,10 +350,10 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
-		if (grp->type & PCB_LYT_COPPER) {
+		if (grp->ltype & PCB_LYT_COPPER) {
 			y += mesh->def_copper_thick;
 		}
-		else if (grp->type & PCB_LYT_SUBSTRATE) {
+		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
 			pcb_coord_t d, t = mesh->def_subs_thick;
 			double dens = (double)t/(double)lns;
 			bottom_dens = pcb_round(dens);
@@ -485,13 +485,13 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
-		if (grp->type & PCB_LYT_COPPER) {
+		if (grp->ltype & PCB_LYT_COPPER) {
 			y2 = y + mesh->def_copper_thick * mag / 2;
 			pcb_line_new(mesh->ui_layer_z, xr, y2, xr+PCB_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
 			pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
 			y += mesh->def_copper_thick * mag;
 		}
-		else if (grp->type & PCB_LYT_SUBSTRATE) {
+		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
 			y2 = y + mesh->def_subs_thick * mag;
 			pcb_line_new(mesh->ui_layer_z, xl, y, xr, y, spen, 0, pcb_no_flags());
 			pcb_line_new(mesh->ui_layer_z, xl, y2, xr, y2, spen, 0, pcb_no_flags());

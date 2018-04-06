@@ -241,11 +241,11 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 	if ((grp == NULL) || (grp->len < 1))
 		return NULL;
 
-	if (grp->type & PCB_LYT_COPPER) {
+	if (grp->ltype & PCB_LYT_COPPER) {
 		int n, nosh;
 
 		/* blind/buried: intern layer has no shape if no hole */
-		if (grp->type & PCB_LYT_INTERN) {
+		if (grp->ltype & PCB_LYT_INTERN) {
 			/* apply internal only if that layer has drill */
 			if (!pcb_pstk_bb_drills(pcb, ps, gid, NULL))
 				return NULL;
@@ -262,7 +262,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 	}
 
 	/* normal procedure: go by group flags */
-	return pcb_pstk_shape(ps, grp->type, comb);
+	return pcb_pstk_shape(ps, grp->ltype, comb);
 }
 
 

@@ -435,7 +435,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 
 		if ((!g->valid) || (gid == drag_gid)  || (gid == drag_gid_subst))
 			continue;
-		else if (g->type & PCB_LYT_COPPER) {
+		else if (g->ltype & PCB_LYT_COPPER) {
 			last_copper_step = -last_copper_step;
 			if (last_copper_step > 0)
 				stepf = last_copper_step;
@@ -444,32 +444,32 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			th = 5;
 			color = COLOR_COPPER;
 		}
-		else if (g->type & PCB_LYT_SUBSTRATE) {
+		else if (g->ltype & PCB_LYT_SUBSTRATE) {
 			stepf = stepb = 7;
 			th = 10;
 			color = COLOR_SUBSTRATE;
 		}
-		else if (g->type & PCB_LYT_SILK) {
+		else if (g->ltype & PCB_LYT_SILK) {
 			th = 5;
 			color = COLOR_SILK;
 			stepb = 3;
 		}
-		else if (g->type & PCB_LYT_MASK) {
+		else if (g->ltype & PCB_LYT_MASK) {
 			th = 5;
 			color = COLOR_MASK;
 			stepb = 9;
 		}
-		else if (g->type & PCB_LYT_PASTE) {
+		else if (g->ltype & PCB_LYT_PASTE) {
 			th = 5;
 			color = COLOR_PASTE;
 			stepf = 9;
 		}
-		else if (g->type & PCB_LYT_MISC) {
+		else if (g->ltype & PCB_LYT_MISC) {
 			th = 5;
 			color = COLOR_MISC;
 			stepf = 3;
 		}
-		else if (g->type & PCB_LYT_OUTLINE) {
+		else if (g->ltype & PCB_LYT_OUTLINE) {
 			outline_gid = gid;
 			continue;
 		}
@@ -708,11 +708,11 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					pcb_layergrp_t *g;
 					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = NULL;
-					g->type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+					g->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 					g->valid = 1;
 					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = pcb_strdup("Intern");
-					g->type = PCB_LYT_INTERN | PCB_LYT_COPPER;
+					g->ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
 					g->valid = 1;
 				}
 				drag_addgrp = 0;
@@ -848,14 +848,14 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 				continue;
 			type_gfx = "old";
 		}
-		else if (g->type & PCB_LYT_VIRTUAL) continue;
-		else if (g->type & PCB_LYT_COPPER) type_gfx = "====";
-		else if (g->type & PCB_LYT_SUBSTRATE) type_gfx = "xxxx";
-		else if (g->type & PCB_LYT_SILK) type_gfx = "silk";
-		else if (g->type & PCB_LYT_MASK) type_gfx = "mask";
-		else if (g->type & PCB_LYT_PASTE) type_gfx = "pst.";
-		else if (g->type & PCB_LYT_MISC) type_gfx = "misc";
-		else if (g->type & PCB_LYT_OUTLINE) type_gfx = "||||";
+		else if (g->ltype & PCB_LYT_VIRTUAL) continue;
+		else if (g->ltype & PCB_LYT_COPPER) type_gfx = "====";
+		else if (g->ltype & PCB_LYT_SUBSTRATE) type_gfx = "xxxx";
+		else if (g->ltype & PCB_LYT_SILK) type_gfx = "silk";
+		else if (g->ltype & PCB_LYT_MASK) type_gfx = "mask";
+		else if (g->ltype & PCB_LYT_PASTE) type_gfx = "pst.";
+		else if (g->ltype & PCB_LYT_MISC) type_gfx = "misc";
+		else if (g->ltype & PCB_LYT_OUTLINE) type_gfx = "||||";
 		else type_gfx = "????";
 
 		printf("%s {%ld} %s\n", type_gfx, gid, g->name);

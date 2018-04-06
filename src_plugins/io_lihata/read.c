@@ -1226,7 +1226,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		}
 		else
 			g->name = pcb_strdup(name->data.text.value);
-		parse_layer_type(&g->type, lht_dom_hash_get(grp, "type"), g->name);
+		parse_layer_type(&g->ltype, lht_dom_hash_get(grp, "type"), g->name);
 
 		/* load layers */
 		layers = lht_dom_hash_get(grp, "layers");

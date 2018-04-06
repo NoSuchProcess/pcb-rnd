@@ -249,7 +249,7 @@ static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int 
 	}
 #endif
 
-	opt = (grp->type & PCB_LYT_COPPER) ? cop_opt : subs_opt;
+	opt = (grp->ltype & PCB_LYT_COPPER) ? cop_opt : subs_opt;
 	assert(opt >= 0);
 	if (is_str)
 		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str_value);
@@ -270,9 +270,9 @@ static void openems_write_layers(wctx_t *ctx)
 	/* linear map of copper and substrate layers */
 	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[gid];
-		int iscop = (grp->type & PCB_LYT_COPPER);
+		int iscop = (grp->ltype & PCB_LYT_COPPER);
 
-		if (!(iscop) && !(grp->type & PCB_LYT_SUBSTRATE))
+		if (!(iscop) && !(grp->ltype & PCB_LYT_SUBSTRATE))
 			continue;
 		ctx->lg_ems2pcb[next] = gid;
 		ctx->lg_pcb2ems[gid] = next;
@@ -353,7 +353,7 @@ static void openems_write_outline(wctx_t *ctx)
 	/* create all substrate layers using this polygon*/
 	for(n = 1; n < ctx->lg_next; n++) {
 		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[ctx->lg_ems2pcb[n]];
-		if (grp->type & PCB_LYT_SUBSTRATE)
+		if (grp->ltype & PCB_LYT_SUBSTRATE)
 			fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, outline_xy, 1);\n", n);
 	}
 
@@ -413,10 +413,10 @@ static void openems_write_testpoint(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x
 			if (grp->len <= 0) /* group has no layers -> probably substrate */
 				continue;
 
-			if (!(grp->type & PCB_LYT_COPPER)) /* testpoint goes on copper only */
+			if (!(grp->ltype & PCB_LYT_COPPER)) /* testpoint goes on copper only */
 				continue;
 
-			if (!(grp->type & PCB_LYT_TOP) && !(grp->type & PCB_LYT_BOTTOM)) /* do not put testpoints on inner layers */
+			if (!(grp->ltype & PCB_LYT_TOP) && !(grp->ltype & PCB_LYT_BOTTOM)) /* do not put testpoints on inner layers */
 				continue;
 
 			lid = grp->lid[0];

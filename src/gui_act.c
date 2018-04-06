@@ -1451,12 +1451,13 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				return 1;
 			}
 			switch(*sbit) {
-				case '+': g->type |= bit; break;
-				case '-': g->type &= ~bit; break;
+				case '+': g->ltype |= bit; break;
+				case '-': g->ltype &= ~bit; break;
 			}
 			interactive = 0;
 			pcb_board_set_changed_flag(pcb_true);
 		}
+#warning layer TODO:
 #if 0
 		else if (strncmp(argv[n], "attrib", 6) == 0) {
 			char *key, *val;

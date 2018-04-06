@@ -820,7 +820,7 @@ static int autotrax_create_layers(read_state_t *st)
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
 	g->name = pcb_strdup("outline"); /* equivalent to keepout = layer 12 in autotrax */
-	g->type = PCB_LYT_OUTLINE; /* and includes cutouts */
+	g->ltype = PCB_LYT_OUTLINE; /* and includes cutouts */
 	st->protel_to_stackup[12] = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
 
 	pcb_layergrp_inhibit_dec();

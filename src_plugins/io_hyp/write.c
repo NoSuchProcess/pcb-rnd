@@ -251,7 +251,7 @@ static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int pri
 			loc = (shp->layer_mask & PCB_LYT_ANYWHERE);
 			for(l = 0; l < wr->pcb->LayerGroups.len; l++) {
 				pcb_layergrp_t *lg = &wr->pcb->LayerGroups.grp[l];
-				pcb_layer_type_t lyt = lg->type;
+				pcb_layer_type_t lyt = lg->ltype;
 				if ((lyt & PCB_LYT_COPPER) && (lyt & loc))
 					hyp_pstk_shape(wr, hyp_grp_name(wr, lg, NULL), shp);
 			}
@@ -396,14 +396,14 @@ static int write_lstack(hyp_wr_t * wr)
 		pcb_layergrp_t *grp = &wr->pcb->LayerGroups.grp[n];
 		const char *name = grp->name;
 
-		if (grp->type & PCB_LYT_COPPER) {
+		if (grp->ltype & PCB_LYT_COPPER) {
 			pcb_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", hyp_grp_name(wr, grp, name));
-			if (grp->type & PCB_LYT_TOP)
+			if (grp->ltype & PCB_LYT_TOP)
 				wr->ln_top = name;
-			else if (grp->type & PCB_LYT_BOTTOM)
+			else if (grp->ltype & PCB_LYT_BOTTOM)
 				wr->ln_bottom = name;
 		}
-		else if (grp->type & PCB_LYT_SUBSTRATE) {
+		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
 			char tmp[128];
 			if (name == NULL) {
 				sprintf(tmp, "dielectric layer %d", n);

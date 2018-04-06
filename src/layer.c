@@ -389,7 +389,7 @@ void pcb_layers_reset(pcb_board_t *pcb)
 	/* reset layer groups */
 	for(n = 0; n < PCB_MAX_LAYERGRP; n++) {
 		pcb->LayerGroups.grp[n].len = 0;
-		pcb->LayerGroups.grp[n].type = 0;
+		pcb->LayerGroups.grp[n].ltype = 0;
 		pcb->LayerGroups.grp[n].valid = 0;
 	}
 	pcb->LayerGroups.len = 0;
@@ -498,7 +498,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->meta.real.color = conf_core.appearance.color.layer[idx];
 	lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[idx];
 	if ((gid >= 0) && (pcb->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
-		switch((pcb->LayerGroups.grp[gid].type) & PCB_LYT_ANYTHING) {
+		switch((pcb->LayerGroups.grp[gid].ltype) & PCB_LYT_ANYTHING) {
 			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;
 			case PCB_LYT_SILK:  lp->comb = PCB_LYC_AUTO;
 			case PCB_LYT_PASTE: lp->comb = PCB_LYC_AUTO;
@@ -946,7 +946,7 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cac
 		pcb_layergrp_id_t gid = pcb->Data->Layer[*cache].meta.real.grp;
 		if ((gid >= 0) && (gid < pcb->LayerGroups.len)) {
 			g = &(pcb->LayerGroups.grp[gid]);
-			if ((g->type & loc) && (g->type & typ) && (g->lid[0] == *cache))
+			if ((g->ltype & loc) && (g->ltype & typ) && (g->lid[0] == *cache))
 				return *cache;
 		}
 	}

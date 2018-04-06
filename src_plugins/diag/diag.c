@@ -169,7 +169,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 		printf("Per group:\n");
 		for(g = 0; g < PCB->LayerGroups.len; g++) {
 			pcb_layergrp_t *grp = &PCB->LayerGroups.grp[g];
-			printf(" Group %d: '%s' %x\n", g, grp->name, grp->type);
+			printf(" Group %d: '%s' %x\n", g, grp->name, grp->ltype);
 			for(n = 0; n < grp->len; n++) {
 				pcb_layer_t *ly = pcb_get_layer(PCB->Data, grp->lid[n]);
 				if (ly != NULL) {

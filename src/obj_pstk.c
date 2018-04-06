@@ -413,7 +413,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 		if (grp == NULL)
 			set_ps_color(ps, ctx->is_current, ctx->shape_mask);
 		else
-			set_ps_color(ps, ctx->is_current, grp->type);
+			set_ps_color(ps, ctx->is_current, grp->ltype);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_pstk_draw_shape_thin(pcb_draw_out.fgGC, ps, shape);

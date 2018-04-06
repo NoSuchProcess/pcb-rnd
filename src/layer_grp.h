@@ -43,7 +43,7 @@ struct pcb_layergrp_s {
 	pcb_cardinal_t len;                    /* number of layer IDs in use */
 	pcb_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
 	char *name;                            /* name of the physical layer (independent of the name of the layer groups) */
-	pcb_layer_type_t type;
+	pcb_layer_type_t ltype;
 
 	unsigned valid:1;                      /* 1 if it's a new-style, valid layer group; 0 after loading old files with no layer stackup info */
 	unsigned vis:1;                        /* 1 if layer group is visible on the GUI */

@@ -143,7 +143,7 @@ unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 	if ((gid < 0) || (gid >= pcb->LayerGroups.len))
 		return 0;
 
-	return pcb->LayerGroups.grp[gid].type;
+	return pcb->LayerGroups.grp[gid].ltype;
 }
 
 const char *pcb_layergrp_name(pcb_board_t *pcb, pcb_layergrp_id_t gid)
@@ -161,7 +161,7 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	pcb_layergrp_t *g = &pcb->LayerGroups.grp[num];
 
 	/* some layers are never empty */
-	if (g->type & PCB_LYT_MASK)
+	if (g->ltype & PCB_LYT_MASK)
 		return pcb_false;
 
 	if (!pcb_pstk_is_group_empty(pcb, num))
@@ -244,7 +244,7 @@ pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_
 {
 	int n;
 	for(n = 0; n < stack->len; n++)
-		if ((stack->grp[n].type & loc) && (stack->grp[n].type & typ))
+		if ((stack->grp[n].ltype & loc) && (stack->grp[n].ltype & typ))
 			return &(stack->grp[n]);
 	return NULL;
 }
@@ -275,7 +275,7 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 
 	/* seek the bottom copper layer */
 	for(bl = stack->len; bl >= 0; bl--) {
-		if ((stack->grp[bl].type & PCB_LYT_BOTTOM) && (stack->grp[bl].type & PCB_LYT_COPPER)) {
+		if ((stack->grp[bl].ltype & PCB_LYT_BOTTOM) && (stack->grp[bl].ltype & PCB_LYT_COPPER)) {
 
 			/* insert a new internal layer: move existing layers to make room */
 			for(n = stack->len-1; n >= bl; n--)
@@ -284,11 +284,11 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 			stack->len += room;
 
 			stack->grp[bl].name = pcb_strdup("Intern");
-			stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_COPPER;
+			stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
 			stack->grp[bl].valid = 1;
 			bl++;
 			if (!omit_substrate) {
-				stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+				stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 				stack->grp[bl].valid = 1;
 			}
 			return &stack->grp[bl-1];
@@ -465,7 +465,7 @@ void pcb_layergrp_fix_old_outline(pcb_board_t *pcb)
 {
 	pcb_layer_stack_t *LayerGroup = &pcb->LayerGroups;
 	pcb_layergrp_t *g = pcb_get_grp(LayerGroup, PCB_LYT_ANYWHERE, PCB_LYT_OUTLINE);
-	if ((g != NULL) && (g[1].type & PCB_LYT_SUBSTRATE)) {
+	if ((g != NULL) && (g[1].ltype & PCB_LYT_SUBSTRATE)) {
 		pcb_layergrp_id_t gid = g - LayerGroup->grp + 1;
 		pcb_layergrp_del(pcb, gid, 0);
 	}
@@ -473,8 +473,8 @@ void pcb_layergrp_fix_old_outline(pcb_board_t *pcb)
 
 void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 {
-	g->type |= PCB_LYT_OUTLINE;
-	g->type &= ~PCB_LYT_COPPER;
+	g->ltype |= PCB_LYT_OUTLINE;
+	g->ltype &= ~PCB_LYT_COPPER;
 	free(g->name);
 	g->name = pcb_strdup("global_outline");
 }
@@ -517,7 +517,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 					if (lids[n] < 0)
 						continue;
 					if (LAYER_IS_OUTLINE(lids[n])) {
-						if (g->type & PCB_LYT_INTERN)
+						if (g->ltype & PCB_LYT_INTERN)
 							pcb_layergrp_fix_turn_to_outline(g);
 						else
 							pcb_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
@@ -628,7 +628,7 @@ do { \
 		g->name = pcb_strdup(gname); \
 	else \
 		g->name = NULL; \
-	g->type = flags; \
+	g->ltype = flags; \
 	newg->len++; \
 } while(0)
 
@@ -656,7 +656,7 @@ void pcb_layer_group_setup_silks(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
 	for(gid = 0; gid < pcb->LayerGroups.len; gid++)
-		if ((pcb->LayerGroups.grp[gid].type & PCB_LYT_SILK) && (pcb->LayerGroups.grp[gid].len == 0))
+		if ((pcb->LayerGroups.grp[gid].ltype & PCB_LYT_SILK) && (pcb->LayerGroups.grp[gid].len == 0))
 			pcb_layer_create(pcb, gid, "silk");
 }
 
@@ -700,7 +700,7 @@ int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_
 	for(gid = gid1; gid != gid2; gid += d) {
 		if ((gid < 0) || (gid >= pcb->LayerGroups.len))
 			return -1;
-		if ((pcb->LayerGroups.grp[gid].type & mask) == mask)
+		if ((pcb->LayerGroups.grp[gid].ltype & mask) == mask)
 			cnt++;
 	}
 	*diff = cnt;
@@ -727,7 +727,7 @@ pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int
 	for(gid += d;; gid += d) {
 		if ((gid < 0) || (gid >= pcb->LayerGroups.len))
 			return -1;
-		if ((pcb->LayerGroups.grp[gid].type & mask) == mask) {
+		if ((pcb->LayerGroups.grp[gid].ltype & mask) == mask) {
 			steps--;
 			if (steps == 0)
 				return gid;
@@ -741,10 +741,10 @@ void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
 	pcb_layergrp_id_t g;
 	for(g = 0; g < pcb->LayerGroups.len-2; g++) {
 		pcb_layergrp_t *g0 = &pcb->LayerGroups.grp[g], *g1 = &pcb->LayerGroups.grp[g+1];
-		if ((g < pcb->LayerGroups.len-3) && (g1->type & PCB_LYT_OUTLINE)) g1++;
-		if ((g0->type & PCB_LYT_COPPER) && (g1->type & PCB_LYT_COPPER)) {
+		if ((g < pcb->LayerGroups.len-3) && (g1->ltype & PCB_LYT_OUTLINE)) g1++;
+		if ((g0->ltype & PCB_LYT_COPPER) && (g1->ltype & PCB_LYT_COPPER)) {
 			pcb_layergrp_t *ng = pcb_layergrp_insert_after(pcb, g);
-			ng->type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+			ng->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 			ng->name = pcb_strdup("implicit_subst");
 			ng->valid = 1;
 		}
@@ -757,7 +757,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 	static char *anon = "anon";
 
 	for(n = 0; n < pcb->LayerGroups.len; n++)
-		if ((pcb->LayerGroups.grp[n].type & PCB_LYT_COPPER) && (pcb->LayerGroups.grp[n].type & PCB_LYT_INTERN))
+		if ((pcb->LayerGroups.grp[n].ltype & PCB_LYT_COPPER) && (pcb->LayerGroups.grp[n].ltype & PCB_LYT_INTERN))
 			existing_intern++;
 
 	for(n = 0; n < num_layer; n++) {
@@ -780,7 +780,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 
 		if (ly->meta.bound.type & PCB_LYT_OUTLINE) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
-			grp->type = PCB_LYT_OUTLINE | PCB_LYT_INTERN;
+			grp->ltype = PCB_LYT_OUTLINE | PCB_LYT_INTERN;
 			grp->name = pcb_strdup("outline");
 			pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
 			continue;
@@ -884,7 +884,7 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 		else {
 			grp = pcb_get_grp_new_misc(pcb);
 			gid = grp - pcb->LayerGroups.grp;
-			grp->type = m->lyt;
+			grp->ltype = m->lyt;
 		}
 
 		grp->name = pcb_strdup(m->name);
@@ -905,7 +905,7 @@ static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_
 	/* check if the last known value is still accurate */
 	if ((*cache >= 0) && (*cache < pcb->LayerGroups.len)) {
 		g = &(pcb->LayerGroups.grp[*cache]);
-		if ((g->type & loc) && (g->type & typ))
+		if ((g->ltype & loc) && (g->ltype & typ))
 			return *cache;
 	}
 
@@ -1015,7 +1015,7 @@ void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st)
 
 	st->cache.copper_len = 0;
 	for(n = 0; n < st->len; n++)
-		if (st->grp[n].type & PCB_LYT_COPPER)
+		if (st->grp[n].ltype & PCB_LYT_COPPER)
 			st->cache.copper[st->cache.copper_len++] = n;
 
 	st->cache.copper_valid = 1;

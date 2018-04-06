@@ -749,7 +749,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 			lht_dom_list_append(layers, build_textf("", "%ld", g->lid[i]));
 
 		lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
-		pcb_layer_type_map(g->type, flags, build_layer_stack_flag);
+		pcb_layer_type_map(g->ltype, flags, build_layer_stack_flag);
 	}
 
 	return lstk;
