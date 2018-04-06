@@ -148,7 +148,7 @@ ha:{
 				ha:Edit attributes of {
 					li:submenu {
 						ha:Layout                     = { action=Attributes(Layout) }
-						ha:CurrentLayer               = { action=Attributes(Layer) }
+						ha:Current Layer              = { action={Propedit(layer:current)} }
 					}
 				}
 				ha:Route Styles {
