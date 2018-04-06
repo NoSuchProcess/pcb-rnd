@@ -145,10 +145,11 @@ ha:{
 						ha:active layer               = {                           action=ChangeName(Layer) }
 					}
 				}
-				ha:Edit attributes of {
+				ha:Edit properties of {
 					li:submenu {
 						ha:Layout                     = { action=Propedit(board) }
 						ha:Current Layer              = { action={Propedit(layer:current)} }
+						ha:Current Layer Group        = { action={Propedit(layer_group:current)} }
 					}
 				}
 				ha:Route Styles {
