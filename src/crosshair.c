@@ -442,7 +442,7 @@ void XORDrawMoveOrCopy(void)
 		break;
 	}
 
-	/* floaters have a line back to their parent subc */
+	/* floaters have a link back to their parent subc */
 	if (pcb_crosshair.AttachedObject.Ptr2 != NULL
 			&& PCB_FLAG_TEST(PCB_FLAG_FLOATER, (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2)) {
 		pcb_any_obj_t *obj = pcb_crosshair.AttachedObject.Ptr2;
