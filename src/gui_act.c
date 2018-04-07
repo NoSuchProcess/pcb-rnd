@@ -1803,8 +1803,6 @@ static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	else if (argv[0][0] == '#') {
 		pcb_grid_list_jump(atoi(argv[0]+1));
 	}
-	else if (strcmp(argv[0], "menu") == 0)
-		pcb_grid_install_menu();
 	else
 		PCB_ACT_FAIL(grid);
 
