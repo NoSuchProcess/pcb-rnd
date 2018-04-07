@@ -211,7 +211,7 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 	/* draw subcircuit */
 	PCB_SUBC_LOOP(Buffer->Data);
 	{
-		XORDrawSubc(subc, x, y, Buffer->from_outside);
+		pcb_xordraw_subc(subc, x, y, Buffer->from_outside);
 	}
 	PCB_END_LOOP;
 
@@ -445,7 +445,7 @@ void pcb_xordraw_movecopy(void)
 		}
 
 	case PCB_OBJ_SUBC:
-		XORDrawSubc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0);
+		pcb_xordraw_subc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0);
 		break;
 	}
 

@@ -83,7 +83,7 @@ pcb_bool pcb_selected_subc_change_side(void);
 /* Draw a subcircuit for a preview (silk, copper and outline only) */
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area);
 
-void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side);
+void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side);
 
 /* Redo the layer binding after the layer binding recipe changed in sc */
 int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc);

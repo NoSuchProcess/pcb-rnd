@@ -1764,3 +1764,4 @@ XORDrawAttachedArc -> pcb_xordraw_attached_arc
 XORDrawBuffer -> pcb_xordraw_buffer
 XORDrawMoveOrCopy -> pcb_xordraw_movecopy
 XORDrawInsertPointObject -> pcb_xordraw_insert_pt_obj
+XORDrawSubc -> pcb_xordraw_subc

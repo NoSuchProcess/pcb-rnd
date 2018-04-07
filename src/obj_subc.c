@@ -580,7 +580,7 @@ static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX
 	pcb_gui->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
-void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
+void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
 {
 	int n, mirr;
 	pcb_coord_t w = 0, h = 0;
