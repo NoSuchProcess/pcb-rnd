@@ -87,6 +87,7 @@ struct ans_info {
 	double area;
 	unsigned long objst, req_flag;
 	int on_current;
+	pcb_layer_type_t on_lyt;
 };
 
 /* ---------------------------------------------------------------------------
@@ -104,6 +105,8 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, CURRENT) == NULL))
 		return PCB_R_DIR_NOT_FOUND;
+	if ((i->on_lyt != 0) && (pcb_pstk_shape(ps, i->on_lyt, 0) == NULL))
+		return PCB_R_DIR_NOT_FOUND;
 	*i->ptr2 = *i->ptr3 = ps;
 	assert(ps->parent_type == PCB_PARENT_DATA);
 	pdata = ps->parent.data;
@@ -114,7 +117,7 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 	return PCB_R_DIR_CANCEL; /* found, stop searching */
 }
 
-static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_flag, pcb_pstk_t **ps, pcb_pstk_t **Dummy1, pcb_pstk_t **Dummy2, int on_current)
+static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_flag, pcb_pstk_t **ps, pcb_pstk_t **Dummy1, pcb_pstk_t **Dummy2, int on_current, pcb_layer_type_t on_lyt)
 {
 	struct ans_info info;
 
@@ -128,6 +131,7 @@ static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	info.objst = objst;
 	info.req_flag = req_flag;
 	info.on_current = on_current;
+	info.on_lyt = on_lyt;
 
 	if (pcb_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
@@ -1120,10 +1124,16 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			SearchRatLineByLocation(objst, req_flag, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
 		return PCB_OBJ_RAT;
 
-	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1))
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_COPPER))
 		return PCB_OBJ_PSTK;
 
-	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0))
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1, 0))
+		return PCB_OBJ_PSTK;
+
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_ANYTHING))
+		return PCB_OBJ_PSTK;
+
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, 0))
 		return PCB_OBJ_PSTK;
 
 	if (!HigherAvail && (Type & PCB_OBJ_FLOATER) && (Type & PCB_OBJ_TEXT) &&
