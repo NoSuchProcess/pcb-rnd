@@ -45,18 +45,6 @@ SUBC: element removal:
 	- add a subtree where random plugins can store their stuff - probably in a form of an attribute list
 	- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 		Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
-- layer color rewrite:
-	- depends on lihata v5 layer color save/load
-	- use only one selected color, not layer based, in the config
-	- grep for layer TODO, hardwired layer colors
-	- always use the stored per layer color
-	- use the config color only if a new layer is created or loaded without known color
-	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
-- find.c rewrite:
-	- a new "report(NetLength)" should not care about netlists but depend on find.c only
-	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
-	- netlist rewrite
-		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 - DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
 	- io infra for save incompatibility note with DRC list
@@ -128,6 +116,18 @@ SUBC: element removal:
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 
 2. For later releases ===============================================================================
+- layer color rewrite:
+	- depends on lihata v5 layer color save/load
+	- use only one selected color, not layer based, in the config
+	- grep for layer TODO, hardwired layer colors
+	- always use the stored per layer color
+	- use the config color only if a new layer is created or loaded without known color
+	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
+- find.c rewrite:
+	- a new "report(NetLength)" should not care about netlists but depend on find.c only
+	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
+	- netlist rewrite
+		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 - When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
