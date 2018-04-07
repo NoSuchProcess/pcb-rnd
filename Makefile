@@ -3,7 +3,7 @@ all: FORCE
 	cd src && $(MAKE)
 	cd util && $(MAKE)
 	cd pcblib && $(MAKE)
-	cd doc && $(MAKE)
+#	cd doc && $(MAKE)
 
 test: FORCE
 	cd tests && $(MAKE) test
