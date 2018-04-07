@@ -60,7 +60,7 @@ static int pcb_act_DRCheck(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_message(PCB_MSG_INFO, _("%m+Rules are minspace %$mS, minoverlap %$mS "
 							"minwidth %$mS, minsilk %$mS\n"
 							"min drill %$mS, min annular ring %$mS\n"),
-						conf_core.editor.grid_unit->allow, PCB->Bloat, PCB->Shrink, PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
+						conf_core.editor.grid_unit->allow, conf_core.design.bloat, conf_core.design.shrink, conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);
 	}
 	count = pcb_drc_all();
 	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {

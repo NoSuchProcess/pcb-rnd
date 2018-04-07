@@ -103,6 +103,7 @@ static int integer_value (PLMeasure m);
 static pcb_coord_t old_units (PLMeasure m);
 static pcb_coord_t new_units (PLMeasure m);
 static pcb_flag_t pcb_flag_old(unsigned int flags);
+static void load_meta_coord(const char *path, pcb_coord_t crd);
 
 #define YYDEBUG 1
 #define YYERROR_VERBOSE 1
@@ -557,33 +558,33 @@ pcbdrc
 pcbdrc1
                 : T_DRC '[' measure measure measure ']'
 		        {
-				yyPCB->Bloat = NU ($3);
-				yyPCB->Shrink = NU ($4);
-				yyPCB->minWid = NU ($5);
-				yyPCB->minRing = NU ($5);
+				load_meta_coord("design/bloat", NU($3));
+				load_meta_coord("design/shrink", NU($4));
+				load_meta_coord("design/min_wid", NU($5));
+				load_meta_coord("design/min_ring", NU($5));
 			}
 		;
 
 pcbdrc2
                 : T_DRC '[' measure measure measure measure ']'
 		        {
-				yyPCB->Bloat = NU ($3);
-				yyPCB->Shrink = NU ($4);
-				yyPCB->minWid = NU ($5);
-				yyPCB->minSlk = NU ($6);
-				yyPCB->minRing = NU ($5);
+				load_meta_coord("design/bloat", NU($3));
+				load_meta_coord("design/shrink", NU($4));
+				load_meta_coord("design/min_wid", NU($5));
+				load_meta_coord("design/min_slk", NU($6));
+				load_meta_coord("design/min_ring", NU($5));
 			}
 		;
 
 pcbdrc3
                 : T_DRC '[' measure measure measure measure measure measure ']'
 		        {
-				yyPCB->Bloat = NU ($3);
-				yyPCB->Shrink = NU ($4);
-				yyPCB->minWid = NU ($5);
-				yyPCB->minSlk = NU ($6);
-				yyPCB->minDrill = NU ($7);
-				yyPCB->minRing = NU ($8);
+				load_meta_coord("design/bloat", NU($3));
+				load_meta_coord("design/shrink", NU($4));
+				load_meta_coord("design/min_wid", NU($5));
+				load_meta_coord("design/min_slk", NU($6));
+				load_meta_coord("design/min_drill", NU($7));
+				load_meta_coord("design/min_ring", NU($8));
 			}
 		;
 
@@ -2139,4 +2140,12 @@ static pcb_flag_t pcb_flag_old(unsigned int flags)
 		f <<= 1;
 	}
 	return rv;
+}
+
+/* load a board metadata into conf_core */
+static void load_meta_coord(const char *path, pcb_coord_t crd)
+{
+	char tmp[128];
+	pcb_sprintf(tmp, "%$mm", crd);
+	conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
 }

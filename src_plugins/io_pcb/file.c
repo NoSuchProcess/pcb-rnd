@@ -297,8 +297,8 @@ static void WritePCBDataHeader(FILE * FP)
 	/* PolyArea should be output in square cmils, no suffix */
 	fprintf(FP, "PolyArea[%s]\n", c_dtostr(PCB_COORD_TO_MIL(PCB_COORD_TO_MIL(PCB->IsleArea) * 100) * 100));
 	pcb_fprintf(FP, "Thermal[%s]\n", c_dtostr(PCB->ThermScale));
-	pcb_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", PCB->Bloat, PCB->Shrink,
-							PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
+	pcb_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", conf_core.design.bloat, conf_core.design.shrink,
+							conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);
 	fprintf(FP, "Flags(%s)\n", pcb_strflg_board_f2s(pcb_flags));
 	fprintf(FP, "Groups(\"%s\")\n", LayerGroupsToString(&PCB->LayerGroups));
 	fputs("Styles[\"", FP);

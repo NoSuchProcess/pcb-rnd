@@ -287,10 +287,10 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, value);
-	if (!ctx->chgsize.is_absolute && (ctx->chgsize.value < 0) && (value < PCB->Bloat * 2))
+	if (!ctx->chgsize.is_absolute && (ctx->chgsize.value < 0) && (value < conf_core.design.bloat * 2))
 		value = 0;
-	if ((ctx->chgsize.value > 0) && (value < PCB->Bloat * 2))
-		value = PCB->Bloat * 2 + 2;
+	if ((ctx->chgsize.value > 0) && (value < conf_core.design.bloat * 2))
+		value = conf_core.design.bloat * 2 + 2;
 	if (ps->Clearance == value)
 		return NULL;
 
@@ -313,8 +313,8 @@ void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_pstk_proto_copy(&proto, pcb_pstk_get_proto(ps));
 	if (!ctx->chgsize.is_absolute) {
 		proto.hdia += ctx->chgsize.value;
-		if (proto.hdia < ctx->chgsize.pcb->minDrill)
-			proto.hdia = ctx->chgsize.pcb->minDrill;
+		if (proto.hdia < conf_core.design.min_drill)
+			proto.hdia = conf_core.design.min_drill;
 	}
 	else
 		proto.hdia = ctx->chgsize.value;

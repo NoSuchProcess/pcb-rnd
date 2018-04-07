@@ -624,7 +624,7 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 void
 pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC )
 {
-	pcb_coord_t thickness = p_route->thickness + 2 * p_route->PCB->Bloat;
+	pcb_coord_t thickness = p_route->thickness + 2 * conf_core.design.bloat;
 	int i;
 
 	pcb_gui->set_color(GC,conf_core.appearance.color.cross);

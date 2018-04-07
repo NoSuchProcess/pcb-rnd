@@ -33,6 +33,7 @@
 #include <libminuid/libminuid.h>
 #include "config.h"
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
 #include "plugins.h"
 #include "plug_io.h"
@@ -147,15 +148,16 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 	lht_dom_hash_put(grp, build_textf("isle_area_nm2", "%f", pcb->IsleArea));
 	lht_dom_hash_put(grp, build_textf("thermal_scale", "%f", pcb->ThermScale));
 
-
-	grp = lht_dom_node_alloc(LHT_HASH, "drc");
-	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("bloat",     CFMT, pcb->Bloat));
-	lht_dom_hash_put(grp, build_textf("shrink",    CFMT, pcb->Shrink));
-	lht_dom_hash_put(grp, build_textf("min_width", CFMT, pcb->minWid));
-	lht_dom_hash_put(grp, build_textf("min_silk",  CFMT, pcb->minSlk));
-	lht_dom_hash_put(grp, build_textf("min_drill", CFMT, pcb->minDrill));
-	lht_dom_hash_put(grp, build_textf("min_ring",  CFMT, pcb->minRing));
+	if (wrver < 5) {
+		grp = lht_dom_node_alloc(LHT_HASH, "drc");
+		lht_dom_hash_put(meta, grp);
+		lht_dom_hash_put(grp, build_textf("bloat",     CFMT, conf_core.design.bloat));
+		lht_dom_hash_put(grp, build_textf("shrink",    CFMT, conf_core.design.shrink));
+		lht_dom_hash_put(grp, build_textf("min_width", CFMT, conf_core.design.min_wid));
+		lht_dom_hash_put(grp, build_textf("min_silk",  CFMT, conf_core.design.min_slk));
+		lht_dom_hash_put(grp, build_textf("min_drill", CFMT, conf_core.design.min_drill));
+		lht_dom_hash_put(grp, build_textf("min_ring",  CFMT, conf_core.design.min_ring));
+	}
 
 	if (wrver < 5) {
 		grp = lht_dom_node_alloc(LHT_HASH, "cursor");

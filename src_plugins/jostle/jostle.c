@@ -487,7 +487,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 	else {
-		value = conf_core.design.via_thickness + (PCB->Bloat + 1) * 2 + 50;
+		value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
 	}
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;

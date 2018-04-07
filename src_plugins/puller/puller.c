@@ -1646,7 +1646,7 @@ static void maybe_pull_1(pcb_line_t *line)
 
 	if (start_line->Thickness != end_line->Thickness)
 		return;
-	thickness = (start_line->Thickness + 1) / 2 + PCB->Bloat;
+	thickness = (start_line->Thickness + 1) / 2 + conf_core.design.bloat;
 
 	/* At this point, our expectations are all met.  */
 

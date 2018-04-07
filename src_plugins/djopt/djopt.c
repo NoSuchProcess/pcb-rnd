@@ -67,7 +67,7 @@ static const char *djopt_cookie = "djopt";
 #define selected(x) PCB_FLAG_TEST(PCB_FLAG_SELECTED, (x))
 #define autorouted(x) PCB_FLAG_TEST(PCB_FLAG_AUTO, (x))
 
-#define SB (PCB->Bloat+1)
+#define SB (conf_core.design.bloat+1)
 
 /* must be 2^N-1 */
 #define INC 7

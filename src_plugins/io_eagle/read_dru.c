@@ -33,6 +33,7 @@
 #include <genvector/gds_char.h>
 
 #include "read_dru.h"
+#include "conf_core.h"
 
 int pcb_eagle_dru_test_parse(FILE *f)
 {
@@ -142,7 +143,7 @@ int io_eagle_test_parse_dru(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *
 	return pcb_eagle_dru_test_parse(f);
 }
 
-static void bump_up_str(const char *key, const char *val, pcb_coord_t *dst)
+static void bump_up_str(const char *key, const char *val, const char *cpath, pcb_coord_t curr_val)
 {
 	pcb_bool succ;
 	double d;
@@ -152,8 +153,8 @@ static void bump_up_str(const char *key, const char *val, pcb_coord_t *dst)
 		pcb_message(PCB_MSG_ERROR, "Invalid coord value for key %s: '%s'\n", key, val);
 		return;
 	}
-	if (d > *dst)
-		*dst = d;
+	if (d > curr_val)
+		conf_set(CFR_DESIGN, "design/min_drill", -1, val, POL_OVERWRITE);
 }
 
 int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
@@ -170,9 +171,9 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (f == NULL)
 		return -1;
 
-	pcb->Bloat = 0;
-	pcb->minWid = 0;
-	pcb->minDrill = 0;
+	conf_set(CFR_DESIGN, "design/bloat", -1, "0", POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "design/min_wid", -1, "0", POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "design/min_drill", -1, "0", POL_OVERWRITE);
 
 	memcpy(tmp, prefix, sizeof(prefix));
 
@@ -190,19 +191,19 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 			}
 		}
 		else if (strcmp(k, "mdWireWire") == 0)
-			bump_up_str(k, v, &pcb->Bloat);
+			bump_up_str(k, v, "design/bloat", conf_core.design.bloat);
 		else if (strcmp(k, "mdWirePad") == 0)
-			bump_up_str(k, v, &pcb->Bloat);
+			bump_up_str(k, v, "design/bloat", conf_core.design.bloat);
 		else if (strcmp(k, "mdWireVia") == 0)
-			bump_up_str(k, v, &pcb->Bloat);
+			bump_up_str(k, v, "design/bloat", conf_core.design.bloat);
 		else if (strcmp(k, "mdPadPad") == 0)
-			bump_up_str(k, v, &pcb->Bloat);
+			bump_up_str(k, v, "design/bloat", conf_core.design.bloat);
 		else if (strcmp(k, "mdPadVia") == 0)
-			bump_up_str(k, v, &pcb->Bloat);
+			bump_up_str(k, v, "design/bloat", conf_core.design.bloat);
 		else if (strcmp(k, "msWidth") == 0)
-			bump_up_str(k, v, &pcb->minWid);
+			bump_up_str(k, v, "design/min_wid", conf_core.design.min_wid);
 		else if (strcmp(k, "msDrill") == 0)
-			bump_up_str(k, v, &pcb->minDrill);
+			bump_up_str(k, v, "design/min_drill", conf_core.design.min_drill);
 		else {
 			int len = strlen(k);
 			if (len < sizeof(tmp) - sizeof(prefix)) {

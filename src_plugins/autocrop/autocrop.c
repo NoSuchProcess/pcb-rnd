@@ -9,7 +9,7 @@
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
- * Copyright (C) 2016..2017 Tibor 'Igor2' Palinkas
+ * Copyright (C) 2016..2018 Tibor 'Igor2' Palinkas
  *
  * From: Ben Jackson <bjj@saturn.home.ben.com>
  * To: geda-user@moria.seul.org
@@ -47,6 +47,7 @@
 
 #include "config.h"
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
 #include "hid.h"
 #include "rtree.h"
@@ -171,7 +172,7 @@ static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	 * the edge.  Reduce the move by the edge relief requirement XXX
 	 * and expand the board by the same amount.
 	 */
-	pad = PCB->minWid * 5;				/* XXX real edge clearance */
+	pad = conf_core.design.min_wid * 5;				/* XXX real edge clearance */
 	dx = -box->X1 + pad;
 	dy = -box->Y1 + pad;
 	box->X2 += pad;

@@ -231,7 +231,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	/* Calculate the bounding box based on the larger of the thicknesses
 	 * the text might clamped at on silk or copper layers.
 	 */
-	min_final_radius = MAX(PCB->minWid, PCB->minSlk) / 2;
+	min_final_radius = MAX(conf_core.design.min_wid, conf_core.design.min_slk) / 2;
 
 	/* Pre-adjust the line radius for the fact we are initially computing the
 	 * bounds of the un-scaled text, and the thickness clamping applies to
@@ -333,10 +333,10 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too
 	 */
-	Text->BoundingBox.X1 -= PCB->Bloat;
-	Text->BoundingBox.Y1 -= PCB->Bloat;
-	Text->BoundingBox.X2 += PCB->Bloat;
-	Text->BoundingBox.Y2 += PCB->Bloat;
+	Text->BoundingBox.X1 -= conf_core.design.bloat;
+	Text->BoundingBox.Y1 -= conf_core.design.bloat;
+	Text->BoundingBox.X2 += conf_core.design.bloat;
+	Text->BoundingBox.Y2 += conf_core.design.bloat;
 	pcb_close_box(&Text->BoundingBox);
 	pcb_text_free_str(Text, rendered);
 }
@@ -970,9 +970,9 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);
 
 	if (flg & PCB_LYT_SILK)
-		min_silk_line = PCB->minSlk;
+		min_silk_line = conf_core.design.min_slk;
 	else
-		min_silk_line = PCB->minWid;
+		min_silk_line = conf_core.design.min_wid;
 
 	pcb_text_draw_(text, min_silk_line, allow_term_gfx);
 }

@@ -769,7 +769,7 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
 		return 0;
-	if (!(np = RoundRect(b->X1 + PCB->Bloat, b->X2 - PCB->Bloat, b->Y1 + PCB->Bloat, b->Y2 - PCB->Bloat, PCB->Bloat)))
+	if (!(np = RoundRect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, conf_core.design.bloat)))
 		return -1;
 	return Subtract(np, p, pcb_true);
 }

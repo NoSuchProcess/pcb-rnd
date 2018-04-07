@@ -1509,13 +1509,7 @@ static void sizes_set()
 {
 	PCB->MaxWidth = sz_str2val(sz_pcb_w, 1);
 	PCB->MaxHeight = sz_str2val(sz_pcb_h, 1);
-	PCB->Bloat = sz_str2val(sz_bloat, 1);
-	PCB->Shrink = sz_str2val(sz_shrink, 1);
-	PCB->minWid = sz_str2val(sz_drc_wid, 1);
-	PCB->minSlk = sz_str2val(sz_drc_slk, 1);
-	PCB->minDrill = sz_str2val(sz_drc_drill, 1);
-	PCB->minRing = sz_str2val(sz_drc_ring, 1);
-#warning think these over - are these only for new designs amd we keep real values in PCB-> ?
+
 	conf_set_design("design/text_scale", "%s", sz_text);
 	conf_set_design("design/bloat", "%s", sz_bloat);
 	conf_set_design("design/shrink", "%s", sz_shrink);
@@ -1535,12 +1529,6 @@ void lesstif_sizes_reset()
 		return;
 	sz_val2str(sz_pcb_w, PCB->MaxWidth, 1);
 	sz_val2str(sz_pcb_h, PCB->MaxHeight, 1);
-	sz_val2str(sz_bloat, PCB->Bloat, 1);
-	sz_val2str(sz_shrink, PCB->Shrink, 1);
-	sz_val2str(sz_drc_wid, PCB->minWid, 1);
-	sz_val2str(sz_drc_slk, PCB->minSlk, 1);
-	sz_val2str(sz_drc_drill, PCB->minDrill, 1);
-	sz_val2str(sz_drc_ring, PCB->minRing, 1);
 	sz_val2str(sz_text, conf_core.design.text_scale, 0);
 
 	ls = pcb_strdup_printf(_("Units are %s."), conf_core.editor.grid_unit->in_suffix);

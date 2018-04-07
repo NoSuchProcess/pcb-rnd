@@ -122,10 +122,10 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 #warning TODO do we need to change design.bloat here?
 	conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mil", POL_OVERWRITE);
-	conf_set_design("design/bloat", "%s", "1"); PCB->Bloat = 1;
-	conf_set_design("design/shrink", "%s", "1"); PCB->Shrink = 1;
-	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
-	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
+	conf_set_design("design/bloat", "%s", "1");
+	conf_set_design("design/shrink", "%s", "1");
+	conf_set_design("design/min_wid", "%s", "1");
+	conf_set_design("design/min_slk", "%s", "1");
 	conf_set_design("design/text_font_id", "%s", "0");
 
 

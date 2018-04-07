@@ -759,13 +759,13 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
 
 	/* global clearance */
 	if (ps->Clearance > 0)
-		return ps->Clearance < 2 * PCB->Bloat;
+		return ps->Clearance < 2 * conf_core.design.bloat;
 
 	/* else check each shape; it's safest to run this check on the canonical
 	   transformed shape, that's always available */
 	ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 	for(n = 0; n < ts->len; n++)
-		if ((ts->shape[n].clearance > 0) && (ts->shape[n].clearance < 2 * PCB->Bloat))
+		if ((ts->shape[n].clearance > 0) && (ts->shape[n].clearance < 2 * conf_core.design.bloat))
 			return 1;
 
 	return 0;
@@ -837,13 +837,13 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 
 		for(n = 0; n < ts->len; n++) {
-			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, 2 * PCB->minRing, err_minring)) {
+			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, 2 * conf_core.design.min_ring, err_minring)) {
 				break;
 			}
 		}
 	}
 
-	if ((proto->hdia > 0) && (proto->hdia < PCB->minDrill))
+	if ((proto->hdia > 0) && (proto->hdia < conf_core.design.min_drill))
 		*err_minhole = proto->hdia;
 }
 

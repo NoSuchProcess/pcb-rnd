@@ -99,13 +99,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;
 
-	ptr->Bloat = conf_core.design.bloat;
-	ptr->Shrink = conf_core.design.shrink;
-	ptr->minWid = conf_core.design.min_wid;
-	ptr->minSlk = conf_core.design.min_slk;
-	ptr->minDrill = conf_core.design.min_drill;
-	ptr->minRing = conf_core.design.min_ring;
-
 	for (i = 0; i < PCB_MAX_LAYER; i++)
 		ptr->Data->Layer[i].name = pcb_strdup(conf_core.design.default_layer_name[i]);
 

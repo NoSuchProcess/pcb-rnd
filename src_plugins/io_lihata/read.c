@@ -324,6 +324,19 @@ static int parse_bool(pcb_bool *res, lht_node_t *nd)
 	return iolht_error(nd, "Invalid bool value: '%s'\n", nd->data.text.value);
 }
 
+static int parse_coord_conf(const char *path, lht_node_t *nd)
+{
+	pcb_coord_t tmp;
+
+	if (nd == NULL)
+		return 0;
+	if (parse_coord(&tmp, nd) != 0)
+		return -1;
+
+	conf_set(CFR_DESIGN, path, -1, nd->data.text.value, POL_OVERWRITE);
+	return 0;
+}
+
 static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grp;
@@ -352,18 +365,20 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "drc");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		parse_coord(&pcb->Bloat, lht_dom_hash_get(grp, "bloat"));
-		parse_coord(&pcb->Shrink, lht_dom_hash_get(grp, "shrink"));
-		parse_coord(&pcb->minWid, lht_dom_hash_get(grp, "min_width"));
-		parse_coord(&pcb->minSlk, lht_dom_hash_get(grp, "min_silk"));
-		parse_coord(&pcb->minDrill, lht_dom_hash_get(grp, "min_drill"));
-		parse_coord(&pcb->minRing, lht_dom_hash_get(grp, "min_ring"));
+		if (rdver >= 5)
+			iolht_warn(grp, 5, "Lihata board v5+ should not have drc metadata saved in board header (use the config)\n");
+		parse_coord_conf("design/bloat", lht_dom_hash_get(grp, "bloat"));
+		parse_coord_conf("design/shrink", lht_dom_hash_get(grp, "shrink"));
+		parse_coord_conf("design/min_wid", lht_dom_hash_get(grp, "min_width"));
+		parse_coord_conf("design/min_slk", lht_dom_hash_get(grp, "min_silk"));
+		parse_coord_conf("design/min_drill", lht_dom_hash_get(grp, "min_drill"));
+		parse_coord_conf("design/min_ring", lht_dom_hash_get(grp, "min_ring"));
 	}
 
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		if (rdver >= 5)
-			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata save\n");
+			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
 		parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
 		parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
 		parse_double(&pcb->Zoom, lht_dom_hash_get(grp, "zoom"));

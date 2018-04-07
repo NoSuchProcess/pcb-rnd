@@ -76,8 +76,6 @@ struct pcb_board_s {
 	pcb_bool loose_subc;          /* when set, subc parts are not locked into the subc */
 	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;
-	pcb_coord_t Bloat,									/* drc sizes saved with layout */
-	  Shrink, minWid, minSlk, minDrill, minRing;
 	pcb_coord_t GridOffsetX,						/* as saved with layout */
 	  GridOffsetY, MaxWidth,			/* allowed size */
 	  MaxHeight;

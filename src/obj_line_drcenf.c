@@ -264,7 +264,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	line1.Flags = line2.Flags = pcb_no_flags();
 	line1.parent_type = line2.parent_type = PCB_PARENT_LAYER;
 	line1.parent.layer = line2.parent.layer = CURRENT;
-	line1.Thickness = conf_core.design.line_thickness + 2 * (PCB->Bloat + 1);
+	line1.Thickness = conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
 	line1.Point1.X = pcb_crosshair.AttachedLine.Point1.X;

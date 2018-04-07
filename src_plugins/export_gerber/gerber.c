@@ -854,9 +854,9 @@ emit_outline:
 		else if (!outline_layer) {
 			pcb_hid_gc_t gc = pcb_gui->make_gc();
 			if (flags & PCB_LYT_SILK)
-				pcb_gui->set_line_width(gc, PCB->minSlk);
+				pcb_gui->set_line_width(gc, conf_core.design.min_slk);
 			else if (group >= 0)
-				pcb_gui->set_line_width(gc, PCB->minWid);
+				pcb_gui->set_line_width(gc, conf_core.design.min_wid);
 			else
 				pcb_gui->set_line_width(gc, AUTO_OUTLINE_WIDTH);
 			pcb_gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);

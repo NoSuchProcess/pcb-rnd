@@ -554,19 +554,20 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 static GtkWidget *config_sizes_vbox, *config_sizes_tab_vbox, *config_text_spin_button;
 
 static pcb_coord_t new_board_width, new_board_height;
+static pcb_coord_t new_Bloat, new_Shrink, new_minWid, new_minSlk, new_minDrill, new_minRing;
 
 static void config_sizes_apply(void)
 {
 	conf_setf(CFR_DESIGN, "design/max_width", -1, "%$mS", new_board_width);
 	conf_setf(CFR_DESIGN, "design/max_height", -1, "%$mS", new_board_height);
 
-	conf_set_design("design/bloat", "%$mS", PCB->Bloat);
-	conf_set_design("design/shrink", "%$mS", PCB->Shrink);
-	conf_set_design("design/min_wid", "%$mS", PCB->minWid);
-	conf_set_design("design/min_slk", "%$mS", PCB->minSlk);
+	conf_set_design("design/bloat", "%$mS", new_Bloat);
+	conf_set_design("design/shrink", "%$mS", new_Shrink);
+	conf_set_design("design/min_wid", "%$mS", new_minWid);
+	conf_set_design("design/min_slk", "%$mS", new_minSlk);
 	conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
-	conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
-	conf_set_design("design/min_ring", "%$mS", PCB->minRing);
+	conf_set_design("design/min_drill", "%$mS", new_minDrill);
+	conf_set_design("design/min_ring", "%$mS", new_minRing);
 
 	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
 		pcb_board_resize(conf_core.design.max_width, conf_core.design.max_height);
@@ -668,29 +669,36 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 6);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
 
+	new_Bloat    = conf_core.design.bloat;
+	new_Shrink   = conf_core.design.shrink;
+	new_minWid   = conf_core.design.min_wid;
+	new_minSlk   = conf_core.design.min_slk;
+	new_minDrill = conf_core.design.min_drill;
+	new_minRing  = conf_core.design.min_ring;
+
 	ghid_table_coord_entry(table, 0, 0, NULL,
-												 PCB->Bloat, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
-												 CE_SMALL, 0, coord_entry_cb, &PCB->Bloat, FALSE, _("Minimum copper spacing"));
+												 conf_core.design.bloat, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
+												 CE_SMALL, 0, coord_entry_cb, &new_Bloat, FALSE, _("Minimum copper spacing"));
 
 	ghid_table_coord_entry(table, 1, 0, NULL,
-												 PCB->minWid, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
-												 CE_SMALL, 0, coord_entry_cb, &PCB->minWid, FALSE, _("Minimum copper width"));
+												 conf_core.design.min_wid, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
+												 CE_SMALL, 0, coord_entry_cb, &new_minWid, FALSE, _("Minimum copper width"));
 
 	ghid_table_coord_entry(table, 2, 0, NULL,
-												 PCB->Shrink, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
-												 CE_SMALL, 0, coord_entry_cb, &PCB->Shrink, FALSE, _("Minimum touching copper overlap"));
+												 conf_core.design.shrink, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
+												 CE_SMALL, 0, coord_entry_cb, &new_Shrink, FALSE, _("Minimum touching copper overlap"));
 
 	ghid_table_coord_entry(table, 3, 0, NULL,
-												 PCB->minSlk, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
-												 CE_SMALL, 0, coord_entry_cb, &PCB->minSlk, FALSE, _("Minimum silk width"));
+												 conf_core.design.min_slk, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
+												 CE_SMALL, 0, coord_entry_cb, &new_minSlk, FALSE, _("Minimum silk width"));
 
 	ghid_table_coord_entry(table, 4, 0, NULL,
-												 PCB->minDrill, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
-												 CE_SMALL, 0, coord_entry_cb, &PCB->minDrill, FALSE, _("Minimum drill diameter"));
+												 conf_core.design.min_drill, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
+												 CE_SMALL, 0, coord_entry_cb, &new_minDrill, FALSE, _("Minimum drill diameter"));
 
 	ghid_table_coord_entry(table, 5, 0, NULL,
-												 PCB->minRing, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
-												 CE_SMALL, 0, coord_entry_cb, &PCB->minRing, FALSE, _("Minimum annular ring"));
+												 conf_core.design.min_ring, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
+												 CE_SMALL, 0, coord_entry_cb, &new_minRing, FALSE, _("Minimum annular ring"));
 
 	vbox = gtkc_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);

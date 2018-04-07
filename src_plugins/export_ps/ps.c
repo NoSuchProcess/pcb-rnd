@@ -1167,8 +1167,8 @@ static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_
 {
 	use_gc(gc);
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
-		if (gc->erase && global.is_copper && global.drill_helper && radius >= PCB->minDrill / 4)
-			radius = PCB->minDrill / 4;
+		if (gc->erase && global.is_copper && global.drill_helper && radius >= conf_core.design.min_drill / 4)
+			radius = conf_core.design.min_drill / 4;
 		pcb_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius + (gc->erase ? -1 : 1) * global.bloat);
 	}
 }

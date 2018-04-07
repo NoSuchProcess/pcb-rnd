@@ -515,7 +515,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	   the outline layer.  */
 	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(PCB, Layer)) {
 		pcb_gui->set_color(pcb_draw_out.fgGC, Layer->meta.real.color);
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, PCB->minWid);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
 

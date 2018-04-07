@@ -333,7 +333,7 @@ void pcb_tool_line_draw_attached(void)
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
 															pcb_crosshair.X, pcb_crosshair.Y,
 															pcb_crosshair.X, pcb_crosshair.Y, 
-															conf_core.design.line_thickness + (2 * PCB->Bloat),0 );
+															conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
 		}
 	}
 }
