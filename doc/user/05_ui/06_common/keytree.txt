@@ -70,6 +70,7 @@ a;r;r;	pcb-menu-default.lht	RipUp(All) 	Rip up all auto-routed tracks
 a;r;s;	pcb-menu-default.lht	AutoRoute(SelectedRats) 	Auto-route selected rats
 a;r;t;	pcb-menu-default.lht	RipUp(Selected) 	Rip up selected auto-routed tracks
 a;v	pcb-menu-default.lht	Mode(Save);Mode(Via);Mode(Notify);Mode(Restore)	Place via
+a;w	pcb-menu-default.lht	MarkCrosshair() 	Place mark
 a;x;	pcb-menu-default.lht	DRC() 	Design Rule Checker
 b;1;	pcb-menu-default.lht	PasteBuffer(1)	Select Buffer #1
 b;2;	pcb-menu-default.lht	PasteBuffer(2)	Select Buffer #2
@@ -183,8 +184,8 @@ m;p;c	pcb-menu-default.lht	conf(toggle, editor\057clear_polypoly, design) 	New p
 m;p;f	pcb-menu-default.lht	conf(toggle, editor\057full_poly, design) 	New polygons are full ones
 m;r;m	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_keep_midlinedir, design) 	Rubber band keeps middle line dir
 m;r;r	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_mode, design) 	Rubber band mode
-m;t;+	pcb-menu-default.lht	SetValue(TextScale,-10,mil) 	Text Tool scale -10 mil
-m;t;-	pcb-menu-default.lht	SetValue(TextScale,+10,mil) 	Text Tool scale +10 mil
+m;t;+	pcb-menu-default.lht	SetValue(TextScale,+10,mil) 	Text Tool scale +10 mil
+m;t;-	pcb-menu-default.lht	SetValue(TextScale,-10,mil) 	Text Tool scale -10 mil
 n-ctrl	pcb-menu-default.lht	New() 	Start New Layout
 q-ctrl	pcb-menu-default.lht	Quit() 	Quit Program
 r;r;+	pcb-menu-default.lht	conf(delta, editor\057route_radius, +0.5, design)	Route radius +0.5
