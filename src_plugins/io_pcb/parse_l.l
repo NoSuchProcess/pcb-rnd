@@ -212,92 +212,85 @@ in	{ return T_IN; }
 
 %%
 
-/* ---------------------------------------------------------------------------
- * sets up the preprocessor command
- */
+/* sets up the preprocessor command */
 static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename)
 {
-	static	char	*command = NULL;
-	int		returncode;
-	int		used_popen = 0;
+	static char *command = NULL;
+	int returncode;
+	int used_popen = 0;
 	char *tmps;
 	size_t l;
 #ifdef FLEX_SCANNER
-	static	pcb_bool	firsttime = pcb_true;
+	static pcb_bool firsttime = pcb_true;
 #endif
 	pcb_io_pcb_usty_seen = 0;
 	if (Pipe == NULL) {
-	if (PCB_EMPTY_STRING_P(Executable))
-	  {
-	    l = 2;
-	    if ( Path != NULL )
-              l += strlen (Path);
+		if (PCB_EMPTY_STRING_P(Executable)) {
+			l = 2;
+			if (Path != NULL)
+				l += strlen(Path);
 
-            l += strlen (Filename);
+			l += strlen(Filename);
 
-	    if ( (tmps = (char *) malloc ( l * sizeof (char))) == NULL)
-              {
-                fprintf (stderr, "Parse():  malloc failed\n");
-                exit (1);
-              }
+			if ((tmps = (char *)malloc(l * sizeof(char))) == NULL) {
+				fprintf(stderr, "Parse():  malloc failed\n");
+				exit(1);
+			}
 
-	    if ( Path != NULL && *Path != '\0')
-              sprintf (tmps, "%s%s%s", Path, PCB_DIR_SEPARATOR_S, Filename);
-            else
-              sprintf (tmps, "%s", Filename);
+			if (Path != NULL && *Path != '\0')
+				sprintf(tmps, "%s%s%s", Path, PCB_DIR_SEPARATOR_S, Filename);
+			else
+				sprintf(tmps, "%s", Filename);
 
-	    yyin = pcb_fopen(tmps, "r");
-	    if (!yyin)
-	      {
-		free (tmps);
-		return(1);
-	      }
-            free (tmps);
-	  }
-	else
-	  {
-	    pcb_build_argfn_t p;
-	    used_popen = 1;
-	    memset(&p, 0, sizeof(p));
-	    p.params['p'-'a'] = Path;
-	    p.params['f'-'a'] = Filename;
-	    command = pcb_build_argfn(Executable, &p);
-	    /* open pipe to stdout of command */
-	    if (*command == '\0' || (yyin = pcb_popen(command, "r")) == NULL)
-	      {
-		pcb_popen_error_message(command);
-		free(command);
-		return(1);
-	      }
+			yyin = pcb_fopen(tmps, "r");
+			if (!yyin) {
+				free(tmps);
+				return (1);
+			}
+			free(tmps);
+		}
+		else {
+			pcb_build_argfn_t p;
+			used_popen = 1;
+			memset(&p, 0, sizeof(p));
+			p.params['p' - 'a'] = Path;
+			p.params['f' - 'a'] = Filename;
+			command = pcb_build_argfn(Executable, &p);
+			/* open pipe to stdout of command */
+			if (*command == '\0' || (yyin = pcb_popen(command, "r")) == NULL) {
+				pcb_popen_error_message(command);
+				free(command);
+				return (1);
+			}
 			free(command);
-	  }
+		}
 	}
 	else {
 		yyin = Pipe;
 	}
 
 #ifdef FLEX_SCANNER
-		/* reset parser if not called the first time */
+	/* reset parser if not called the first time */
 	if (!firsttime)
 		yyrestart(yyin);
 	firsttime = pcb_false;
 #endif
 
-		/* init linenumber and filename for yyerror() */
+	/* init linenumber and filename for yyerror() */
 	yylineno = 1;
 	yyfilename = Filename;
 
-		/* We need to save the data temporarily because lex-yacc are able
-		 * to break the application if the input file has an illegal format.
-		 * It's not necessary if the system supports the call of functions
-		 * on termination.
-		 */
+	/* We need to save the data temporarily because lex-yacc are able
+	 * to break the application if the input file has an illegal format.
+	 * It's not necessary if the system supports the call of functions
+	 * on termination.
+	 */
 
 	pcb_create_be_lenient(pcb_true);
 
 #if !defined(HAS_ATEXIT)
 	if (PCB && PCB->Data)
-	  pcb_tmp_data_save();
+		pcb_tmp_data_save();
 	returncode = pcb_parse();
 	pcb_tmp_data_remove();
 #else
@@ -312,8 +305,8 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 		return returncode;
 
 	if (used_popen)
-	  return(pcb_pclose(yyin) ? 1 : returncode);
-	return(fclose(yyin) ? 1 : returncode);
+		return (pcb_pclose(yyin) ? 1 : returncode);
+	return (fclose(yyin) ? 1 : returncode);
 }
 
 /* ---------------------------------------------------------------------------
