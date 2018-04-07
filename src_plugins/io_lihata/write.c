@@ -1518,7 +1518,7 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 
 	if (wrver == 3)
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
-	else if (wrver == 4)
+	else if (wrver >= 4)
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v4");
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
