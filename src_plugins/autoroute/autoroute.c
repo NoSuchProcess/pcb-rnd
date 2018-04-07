@@ -95,6 +95,7 @@
 #warning padstack TODO: when style contains proto, remove this
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
+#define autoroute_therm_style 4
 
 /* #defines to enable some debugging output */
 /*
@@ -4536,7 +4537,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_false);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_PSTK, LAYER_PTR(p->layer), pin);
 					pcb_undo_add_obj_to_flag(pin);
-					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
+					PCB_FLAG_THERM_ASSIGN(p->layer, autoroute_therm_style, pin);
 					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_true);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_PSTK, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;

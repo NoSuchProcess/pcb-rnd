@@ -80,7 +80,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr = calloc(1, sizeof(pcb_board_t));
 	ptr->Data = pcb_buffer_new(ptr);
 
-	ptr->ThermStyle = 4;
 	conf_set(CFR_INTERNAL, "design/poly_isle_area", -1, "200000000", POL_OVERWRITE);
 
 	ptr->RatDraw = pcb_false;

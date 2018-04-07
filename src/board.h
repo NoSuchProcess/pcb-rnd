@@ -81,7 +81,6 @@ struct pcb_board_s {
 	pcb_coord_t MaxWidth, MaxHeight;                /* board dimensions (drawing area extents) */
 
 	double ThermScale;                              /* scale factor used with thermals */
-	char ThermStyle;                                /* type of thermal to place with thermal tool */
 
 	pcb_fontkit_t fontkit;
 	pcb_layer_stack_t LayerGroups;
