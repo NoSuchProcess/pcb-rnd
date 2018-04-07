@@ -1039,7 +1039,7 @@ pcb_bool pcb_selected_subc_change_side(void)
 {
 	pcb_bool change = pcb_false;
 
-	if (PCB->PinOn && pcb_silk_on(PCB)) {
+	if (PCB->pstk_on && pcb_silk_on(PCB)) {
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {

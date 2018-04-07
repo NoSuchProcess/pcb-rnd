@@ -45,7 +45,7 @@
  * pcb_layervis_restore_stack()
  */
 static struct {
-	pcb_bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
+	pcb_bool ElementOn, InvisibleObjectsOn, pstk_on, RatOn;
 	int pcb_layer_stack[PCB_MAX_LAYER];
 	pcb_bool LayerOn[PCB_MAX_LAYER];
 	int cnt;
@@ -145,8 +145,7 @@ void pcb_layervis_reset_stack(void)
 		PCB->Data->Layer[i].meta.real.vis = pcb_true;
 	}
 	PCB->InvisibleObjectsOn = pcb_true;
-	PCB->PinOn = pcb_true;
-	PCB->ViaOn = pcb_true;
+	PCB->pstk_on = pcb_true;
 	PCB->SubcOn = pcb_true;
 	PCB->SubcPartsOn = pcb_true;
 	PCB->RatOn = pcb_true;
@@ -181,8 +180,7 @@ void pcb_layervis_save_stack(void)
 	}
 	SavedStack.ElementOn = pcb_silk_on(PCB);
 	SavedStack.InvisibleObjectsOn = PCB->InvisibleObjectsOn;
-	SavedStack.PinOn = PCB->PinOn;
-	SavedStack.ViaOn = PCB->ViaOn;
+	SavedStack.pstk_on = PCB->pstk_on;
 	SavedStack.RatOn = PCB->RatOn;
 	SavedStack.cnt++;
 }
@@ -208,8 +206,7 @@ void pcb_layervis_restore_stack(void)
 		PCB->Data->Layer[i].meta.real.vis = SavedStack.LayerOn[i];
 	}
 	PCB->InvisibleObjectsOn = SavedStack.InvisibleObjectsOn;
-	PCB->PinOn = SavedStack.PinOn;
-	PCB->ViaOn = SavedStack.ViaOn;
+	PCB->pstk_on = SavedStack.pstk_on;
 	PCB->RatOn = SavedStack.RatOn;
 
 	SavedStack.cnt--;

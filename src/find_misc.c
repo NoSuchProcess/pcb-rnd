@@ -117,10 +117,10 @@ static void DrawNewConnections(void)
 		pcb_pstk_t *ps = PADSTACKLIST_ENTRY(PadstackList.DrawLocation);
 
 		if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps)) {
-			if (PCB->PinOn)
+			if (PCB->pstk_on)
 				pcb_pstk_invalidate_draw(ps);
 		}
-		else if (PCB->ViaOn)
+		else if (PCB->pstk_on)
 			pcb_pstk_invalidate_draw(ps);
 		PadstackList.DrawLocation++;
 	}

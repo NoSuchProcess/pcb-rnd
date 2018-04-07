@@ -185,7 +185,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 	}
 	PCB_ENDALL_LOOP;
 
-	if (PCB->ViaOn)
+	if (PCB->pstk_on)
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))

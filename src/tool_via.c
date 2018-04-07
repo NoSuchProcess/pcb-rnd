@@ -53,7 +53,7 @@
 void pcb_tool_via_notify_mode(void)
 {
 
-	if (!PCB->ViaOn) {
+	if (!PCB->pstk_on) {
 		pcb_message(PCB_MSG_WARNING, _("You must turn via visibility on before\n" "you can place vias\n"));
 		return;
 	}

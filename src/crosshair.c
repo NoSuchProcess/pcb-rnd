@@ -216,7 +216,7 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 
 	/* and the padstacks */
-	if (PCB->ViaOn)
+	if (PCB->pstk_on)
 		PCB_PADSTACK_LOOP(Buffer->Data);
 	{
 		thindraw_moved_ps(padstack, x, y);

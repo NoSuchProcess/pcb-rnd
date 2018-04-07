@@ -308,7 +308,7 @@ static void prop_preview_init(void)
 	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(1000);
 	pcb_layer_colors_from_conf(&preview_pcb);
 	pcb_font_create_default(&preview_pcb);
-	preview_pcb.ViaOn = 1;
+	preview_pcb.pstk_on = 1;
 
 	for (n = 0; n < pcb_max_layer; n++) {
 		preview_pcb.Data->Layer[n].meta.real.vis = 1;

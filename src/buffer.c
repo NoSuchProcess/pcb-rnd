@@ -616,7 +616,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	PCB_END_LOOP;
 
 	/* finally: padstacks */
-	if (pcb->ViaOn) {
+	if (pcb->pstk_on) {
 		pcb_board_t dummy;
 		changed |= (padstacklist_length(&(PCB_PASTEBUFFER->Data->padstack)) != 0);
 

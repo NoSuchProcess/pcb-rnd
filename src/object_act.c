@@ -759,7 +759,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				}
 			}
 			PCB_ENDALL_LOOP;
-			if (PCB->ViaOn)
+			if (PCB->pstk_on)
 			PCB_PADSTACK_LOOP(PCB->Data);
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, padstack)

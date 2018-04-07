@@ -189,7 +189,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 
 
 	/* process padstacks */
-	if (type & PCB_OBJ_PSTK && pcb->ViaOn && F->padstack) {
+	if (type & PCB_OBJ_PSTK && pcb->pstk_on && F->padstack) {
 		PCB_PADSTACK_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack)) {

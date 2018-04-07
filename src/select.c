@@ -329,14 +329,14 @@ do { \
 	}
 
 	/* end with vias */
-	if (pcb->ViaOn || !Flag) {
+	if (pcb->pstk_on || !Flag) {
 		PCB_PADSTACK_LOOP(pcb->Data);
 		{
 			if (pcb_pstk_near_box(padstack, Box, NULL)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
 				append(PCB_OBJ_PSTK, padstack, padstack);
-				if (pcb->ViaOn)
+				if (pcb->pstk_on)
 					pcb_pstk_invalidate_draw(padstack);
 			}
 		}

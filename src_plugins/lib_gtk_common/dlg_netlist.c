@@ -534,7 +534,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	}
 	PCB_ENDALL_LOOP;
 
-	if (PCB->ViaOn)
+	if (PCB->pstk_on)
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))

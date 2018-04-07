@@ -1654,13 +1654,8 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
-	else if (pcb_strcasecmp(argv[0], "vias") == 0) {
-		PCB->ViaOn = !PCB->ViaOn;
-		pcb_gui->invalidate_all();
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	}
-	else if ((pcb_strcasecmp(argv[0], "pins") == 0) || (pcb_strcasecmp(argv[0], "pads") == 0)) {
-		PCB->PinOn = !PCB->PinOn;
+	else if ((pcb_strcasecmp(argv[0], "padstacks") == 0) || (pcb_strcasecmp(argv[0], "vias") == 0) || (pcb_strcasecmp(argv[0], "pins") == 0) || (pcb_strcasecmp(argv[0], "pads") == 0)) {
+		PCB->pstk_on = !PCB->pstk_on;
 		pcb_gui->invalidate_all();
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}

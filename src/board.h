@@ -70,8 +70,8 @@ struct pcb_board_s {
 
 	pcb_bool Changed;                               /* layout has been changed */
 
-	pcb_bool ViaOn, RatOn, InvisibleObjectsOn,
-	         PinOn, SubcOn, SubcPartsOn,
+	pcb_bool pstk_on, RatOn, InvisibleObjectsOn,
+	         SubcOn, SubcPartsOn,
 	         padstack_mark_on, hole_on;             /* visibility flags */
 	pcb_bool RatDraw;                               /* we're drawing rats */
 

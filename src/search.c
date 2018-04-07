@@ -119,7 +119,7 @@ static pcb_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	struct ans_info info;
 
 	/* search only if via-layer is visible */
-	if (!PCB->ViaOn)
+	if (!PCB->pstk_on)
 		return pcb_false;
 
 	info.ptr1 = (void **)ps;

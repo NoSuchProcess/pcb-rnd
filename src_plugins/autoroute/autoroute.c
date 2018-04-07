@@ -964,7 +964,7 @@ static routedata_t *CreateRouteData()
 		}
 	}
 	/* if via visibility is turned off, don't use them */
-	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->ViaOn;
+	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->pstk_on;
 
 	back = front = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &back, 1) <= 0)

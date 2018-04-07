@@ -138,7 +138,7 @@ void pcb_tool_line_notify_mode(void)
 		/* place a via if vias are visible, the layer is
 			 in a new group since the last line and there
 			 isn't a pin already here */
-		if (conf_core.editor.auto_via && PCB->ViaOn
+		if (conf_core.editor.auto_via && PCB->pstk_on
 				&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer)
 				&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																			pcb_crosshair.AttachedLine.Point1.X,
@@ -229,7 +229,7 @@ void pcb_tool_line_notify_mode(void)
 			/* place a via if vias are visible, the layer is
 				 in a new group since the last line and there
 				 isn't a pin already here */
-			if (PCB->ViaOn 
+			if (PCB->pstk_on
 					&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer) 
 					&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
 					&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
