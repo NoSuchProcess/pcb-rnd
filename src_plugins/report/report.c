@@ -208,13 +208,13 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"It is on layer %d\n"
 									"and has name \"%s\".\n"
 									"%s"
-									"%s%s%s", USER_UNITMASK,
+									"%s%s", USER_UNITMASK,
 									line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL),
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
 									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-									PCB_UNKNOWN(line->Number), gen_locked(line), gen_term(line));
+									gen_locked(line), gen_term(line));
 			break;
 		}
 	case PCB_OBJ_RAT:

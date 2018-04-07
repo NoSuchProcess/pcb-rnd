@@ -36,7 +36,6 @@
 
 struct pcb_line_s {            /* holds information about one line */
 	PCB_ANYLINEFIELDS;
-	char *Number;
 	gdl_elem_t link;             /* a line is in a list: either on a layer or in an element */
 };
 

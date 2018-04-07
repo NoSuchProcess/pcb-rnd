@@ -237,8 +237,6 @@ static pcb_line_t *pcb_line_copy_meta(pcb_line_t *dst, pcb_line_t *src)
 	if (dst == NULL)
 		return NULL;
 	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
-	if (src->Number != NULL)
-		dst->Number = pcb_strdup(src->Number);
 	return dst;
 }
 
@@ -450,16 +448,6 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 		return Line;
 	}
 	return NULL;
-}
-
-/* changes the name of a line */
-void *pcb_lineop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
-{
-	char *old = Line->Number;
-
-	Layer = Layer;
-	Line->Number = ctx->chgname.new_name;
-	return old;
 }
 
 /* changes the clearance flag of a line */
@@ -713,7 +701,6 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 void *pcb_lineop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
-	free(Line->Number);
 
 	pcb_line_free(Line);
 	return NULL;

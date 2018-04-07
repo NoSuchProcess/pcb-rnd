@@ -119,7 +119,7 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {
-	pcb_lineop_change_name,
+	NULL,
 	pcb_textop_change_name,
 	NULL,
 	NULL,
@@ -756,10 +756,6 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	}
 
 	switch (Type) {
-	case PCB_OBJ_LINE:
-		name = pcb_gui->prompt_for(_("Linename:"), PCB_EMPTY(((pcb_line_t *) Ptr2)->Number));
-		break;
-
 	case PCB_OBJ_TEXT:
 		name = pcb_gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *) Ptr2)->TextString));
 		break;

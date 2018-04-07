@@ -442,7 +442,6 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 
 	int i;
 	int applied = 0;
-	char * number = (apply_to_line ? apply_to_line->Number : NULL);
 
 	for( i=0;i<p_route->size;i++)	{
 		pcb_route_object_t const * p_obj = &p_route->objects[i];
@@ -503,8 +502,6 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 																									p_route->clearance,
 																									p_route->flags );
 					if(line) {
-						if(number)
-							line->Number = pcb_strdup(number);
 						pcb_added_lines++;
 						pcb_obj_add_attribs(line, PCB->pen_attr);
 						pcb_line_invalidate_draw(layer, line);

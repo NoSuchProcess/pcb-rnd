@@ -128,12 +128,6 @@ void pcb_layer_free(pcb_layer_t *layer)
 		free(text->TextString);
 	}
 	PCB_END_LOOP;
-	PCB_LINE_LOOP(layer);
-	{
-		if (line->Number)
-			free(line->Number);
-	}
-	PCB_END_LOOP;
 
 	list_map0(&layer->Line, pcb_line_t, pcb_line_free);
 	list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);
