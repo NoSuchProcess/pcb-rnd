@@ -765,9 +765,15 @@ int pcb_save_pcb(const char *file, const char *fmt)
 int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int how)
 {
 	int res = real_load_pcb(file, fmt, pcb_false, require_font, how);
-	if (res == 0)
+	if (res == 0) {
 		pcb_file_loaded_set_at("design", "main", file, PCB->is_footprint ? "footprint" : "board");
-
+		if (PCB->is_footprint) {
+			pcb_box_t b;
+			/* a footprint has no board size set, need to invent one */
+			pcb_data_bbox(&b, PCB->Data, 0);
+			pcb_board_resize(b.X2*1.5, b.Y2*1.5);
+		}
+	}
 	return res;
 }
 
