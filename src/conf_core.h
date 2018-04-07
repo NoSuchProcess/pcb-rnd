@@ -140,8 +140,6 @@ typedef struct {
 		CFT_COORD line_thickness;
 		CFT_COORD clearance;
 
-		CFT_COORD max_width;
-		CFT_COORD max_height;
 		CFT_COORD alignment_distance;/* default drc size */
 		CFT_COORD bloat; /* default drc size */
 		CFT_COORD shrink;

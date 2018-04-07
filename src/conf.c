@@ -587,6 +587,9 @@ static conf_ignore_t conf_ignores[] = {
 	{"editor/show_mask", 16, 0},
 	{"editor/show_paste", 17, 0},
 	{"editor/increments", 17, 0},
+	{"design/max_width", 16, 0},
+	{"design/max_height", 17, 0},
+
 	{NULL, 0, 0}
 };
 

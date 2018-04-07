@@ -95,8 +95,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	PCB = save;
 
 	ptr->Zoom = conf_core.editor.zoom;
-	ptr->MaxWidth = conf_core.design.max_width;
-	ptr->MaxHeight = conf_core.design.max_height;
+	ptr->MaxHeight = ptr->MaxWidth = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;
 

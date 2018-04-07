@@ -558,9 +558,6 @@ static pcb_coord_t new_Bloat, new_Shrink, new_minWid, new_minSlk, new_minDrill, 
 
 static void config_sizes_apply(void)
 {
-	conf_setf(CFR_DESIGN, "design/max_width", -1, "%$mS", new_board_width);
-	conf_setf(CFR_DESIGN, "design/max_height", -1, "%$mS", new_board_height);
-
 	conf_set_design("design/bloat", "%$mS", new_Bloat);
 	conf_set_design("design/shrink", "%$mS", new_Shrink);
 	conf_set_design("design/min_wid", "%$mS", new_minWid);
@@ -568,8 +565,8 @@ static void config_sizes_apply(void)
 	conf_set_design("design/min_drill", "%$mS", new_minDrill);
 	conf_set_design("design/min_ring", "%$mS", new_minRing);
 
-	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
-		pcb_board_resize(conf_core.design.max_width, conf_core.design.max_height);
+	if ((PCB->MaxWidth != new_board_width) || (PCB->MaxWidth != new_board_height))
+		pcb_board_resize(new_board_width, new_board_height);
 }
 
 static void text_spin_button_cb(GtkSpinButton * spin, void *data)
@@ -587,8 +584,6 @@ static void coord_entry_cb(pcb_gtk_coord_entry_t * ce, void *dst)
 void config_sizes_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
-		"design/max_width",
-		"design/max_height",
 		"design/bloat",
 		"design/shrink",
 		"design/min_wid",
