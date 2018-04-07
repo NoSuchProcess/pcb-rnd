@@ -106,19 +106,21 @@ li:pcb-rnd-conf-v1 {
 		} # rc
 
 		ha:design {
-#			via_thickness = 0
-#			via_drilling_hole  = 0
-#			line_thickness = 0
-#			clearance = 0
-#			max_width = 0
-#			max_height = 0
+# old DRC (design rule checked) section
+			bloat = 12.00 mil
+			shrink = 9.00 mil
+			min_drill = 15.00 mil
+			min_ring = 10.00 mil
+			min_slk = 7.00 mil
+			min_wid = 10.00 mil
+			line_thickness = 10.00 mil
+			clearance = 20.00 mil
+			poly_isle_area = 200000000.2
+
+			via_thickness = 2000.00 um
+			via_drilling_hole = 31.50 mil
+
 #			alignment_distance = 0
-#			bloat = 0
-#			shrink = 0
-#			min_wid = 0
-#			min_slk = 0
-#			min_drill = 0
-#			min_ring = 0
 			text_scale = 100
 			text_font_id = 0
 #			poly_isle_area = 0

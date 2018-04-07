@@ -34,14 +34,6 @@ ha:pcb-rnd-board-v4 {
     x = 127.0mm; y = 127.0mm
     isle_area_nm2 = 200000000.0
    }
-   ha:drc {
-    min_drill = 15.0mil
-    min_ring = 10.0mil
-    bloat = 12.0mil
-    shrink = 9.0mil
-    min_width = 10.0mil
-    min_silk = 7.0mil
-   }
    ha:grid {
     spacing = 25.0mil
     offs_x = 0.0
@@ -118,29 +110,6 @@ ha:pcb-rnd-board-v4 {
     name = bottom_paste
     ha:type { bottom=1; paste=1; }
     li:layers { 12; }
-   }
-  }
- }
-
- li:pcb-rnd-conf-v1 {
-  ha:overwrite {
-   ha:design {
-    min_ring = 10.00 mil
-    clearance = 20.00 mil
-    via_thickness = 2000.00 um
-    via_drilling_hole = 31.50 mil
-    min_slk = 7.00 mil
-    max_height = 5.00000 in
-    line_thickness = 10.00 mil
-    shrink = 9.00 mil
-    poly_isle_area = 200000000.2
-    max_width = 6.00000 in
-    min_wid = 10.00 mil
-    bloat = 12.00 mil
-    min_drill = 15.00 mil
-   }
-   ha:editor {
-     grid_unit = mil
    }
   }
  }
