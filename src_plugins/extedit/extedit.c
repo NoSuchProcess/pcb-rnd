@@ -34,6 +34,7 @@
 #include "hid_actions.h"
 #include "hid_dad.h"
 #include "action_helper.h"
+#include "plugins.h"
 
 #include "board.h"
 #include "compat_fs.h"
@@ -306,6 +307,7 @@ void pplg_uninit_extedit(void)
 #include "dolists.h"
 int pplg_init_extedit(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(extedit_action_list, extedit_cookie)
 	return 0;
 }

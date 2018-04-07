@@ -480,6 +480,8 @@ void pplg_uninit_export_dxf(void)
 
 int pplg_init_export_dxf(void)
 {
+	PCB_API_CHK_VER;
+
 	memset(&dxf_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&dxf_hid);

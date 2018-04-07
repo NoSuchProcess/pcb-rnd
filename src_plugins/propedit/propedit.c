@@ -154,6 +154,7 @@ void pplg_uninit_propedit(void)
 #include "dolists.h"
 int pplg_init_propedit(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 	return 0;
 }

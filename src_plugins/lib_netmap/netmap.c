@@ -177,5 +177,6 @@ void pplg_uninit_lib_netmap(void)
 
 int pplg_init_lib_netmap(void)
 {
+	PCB_API_CHK_VER;
 	return 0;
 }

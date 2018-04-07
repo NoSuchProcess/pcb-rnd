@@ -15,5 +15,6 @@ void pplg_uninit_lib_compat_help(void)
 
 int pplg_init_lib_compat_help(void)
 {
+	PCB_API_CHK_VER;
 	return 0;
 }

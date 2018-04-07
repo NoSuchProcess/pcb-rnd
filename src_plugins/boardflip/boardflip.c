@@ -197,6 +197,8 @@ void pplg_uninit_boardflip(void)
 #include "dolists.h"
 int pplg_init_boardflip(void)
 {
+	PCB_API_CHK_VER;
+
 	PCB_REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie);
 	return 0;
 }

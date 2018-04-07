@@ -284,6 +284,7 @@ void pplg_uninit_teardrops(void)
 #include "dolists.h"
 int pplg_init_teardrops(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie);
 	return 0;
 }

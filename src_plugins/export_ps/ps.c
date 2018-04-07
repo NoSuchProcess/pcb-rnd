@@ -1641,6 +1641,7 @@ void pplg_uninit_export_ps(void)
 
 int pplg_init_export_ps(void)
 {
+	PCB_API_CHK_VER;
 	memset(&ps_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&ps_hid);

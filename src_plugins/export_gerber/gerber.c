@@ -1297,6 +1297,7 @@ void pplg_uninit_export_gerber(void)
 
 int pplg_init_export_gerber(void)
 {
+	PCB_API_CHK_VER;
 	memset(&gerber_hid, 0, sizeof(gerber_hid));
 
 	pcb_hid_nogui_init(&gerber_hid);

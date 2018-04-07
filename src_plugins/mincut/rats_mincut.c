@@ -374,6 +374,7 @@ void pplg_uninit_mincut(void)
 #include "stub_mincut.h"
 int pplg_init_mincut(void)
 {
+	PCB_API_CHK_VER;
 	pcb_stub_rat_found_short = rat_found_short;
 	pcb_stub_rat_proc_shorts = rat_proc_shorts;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

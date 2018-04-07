@@ -57,6 +57,8 @@ int pplg_init_lib_hid_common(void)
 	conf_native_t *nat;
 	int n;
 
+	PCB_API_CHK_VER;
+
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);

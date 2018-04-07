@@ -35,5 +35,6 @@ void pplg_uninit_lib_hid_gl(void)
 
 int pplg_init_lib_hid_gl(void)
 {
+	PCB_API_CHK_VER;
 	return 0;
 }

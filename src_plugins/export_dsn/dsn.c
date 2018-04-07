@@ -692,6 +692,7 @@ void pplg_uninit_export_dsn(void)
 #include "dolists.h"
 int pplg_init_export_dsn(void)
 {
+	PCB_API_CHK_VER;
 	memset(&dsn_hid, 0, sizeof(pcb_hid_t));
 	pcb_hid_nogui_init(&dsn_hid);
 

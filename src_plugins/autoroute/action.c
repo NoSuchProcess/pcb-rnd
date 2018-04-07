@@ -106,6 +106,7 @@ void pplg_uninit_autoroute(void)
 #include "dolists.h"
 int pplg_init_autoroute(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 	return 0;
 }

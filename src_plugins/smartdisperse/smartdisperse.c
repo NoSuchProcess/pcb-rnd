@@ -253,6 +253,7 @@ void pplg_uninit_smartdisperse(void)
 #include "dolists.h"
 int pplg_init_smartdisperse(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie);
 	return 0;
 }

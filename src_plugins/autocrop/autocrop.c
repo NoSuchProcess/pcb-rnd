@@ -219,6 +219,7 @@ void pplg_uninit_autocrop(void)
 #include "dolists.h"
 int pplg_init_autocrop(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie);
 	return 0;
 }

@@ -57,6 +57,7 @@ void pplg_uninit_io_kicad_legacy(void)
 
 int pplg_init_io_kicad_legacy(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	io_kicad_legacy.plugin_data = NULL;

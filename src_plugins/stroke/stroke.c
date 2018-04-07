@@ -174,6 +174,7 @@ int pplg_uninit_stroke(void)
 
 int pplg_init_stroke(void)
 {
+	PCB_API_CHK_VER;
 	stroke_init();
 
 	pcb_stub_stroke_record = real_stroke_record;

@@ -708,6 +708,7 @@ void pplg_uninit_vendordrill(void)
 #include "dolists.h"
 int pplg_init_vendordrill(void)
 {
+	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"

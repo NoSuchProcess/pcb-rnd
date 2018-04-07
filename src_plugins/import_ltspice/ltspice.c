@@ -325,6 +325,7 @@ void pplg_uninit_import_ltspice(void)
 #include "dolists.h"
 int pplg_init_import_ltspice(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
 	return 0;
 }

@@ -30,6 +30,8 @@
  *
  */
 
+#include "config.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include "plugins.h"
 
@@ -41,6 +43,7 @@ void pplg_uninit_lib_gtk_common(void)
 
 int pplg_init_lib_gtk_common(void)
 {
+	PCB_API_CHK_VER;
 	return 0;
 }
 

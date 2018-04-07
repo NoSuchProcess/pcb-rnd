@@ -296,6 +296,7 @@ void pplg_uninit_import_mentor_sch(void)
 #include "dolists.h"
 int pplg_init_import_mentor_sch(void)
 {
+	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_mentor, field,isarray,type_name,cpath,cname,desc,flags);

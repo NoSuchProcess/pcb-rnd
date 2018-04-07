@@ -185,6 +185,7 @@ void pplg_uninit_import_hpgl(void)
 #include "dolists.h"
 int pplg_init_import_hpgl(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(hpgl_action_list, hpgl_cookie)
 	return 0;
 }

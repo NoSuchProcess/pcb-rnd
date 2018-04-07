@@ -464,6 +464,8 @@ void pplg_uninit_diag(void)
 #include "dolists.h"
 int pplg_init_diag(void)
 {
+	PCB_API_CHK_VER;
+
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
 #include "diag_conf_fields.h"

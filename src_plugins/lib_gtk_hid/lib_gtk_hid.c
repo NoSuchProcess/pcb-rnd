@@ -27,8 +27,9 @@
 
 #include "config.h"
 
+#include <stdio.h>
 #include <stdlib.h>
-/*#include "lib_gtk_hid.h"*/
+
 #include "plugins.h"
 
 static const char *lib_gtk_hid_cookie = "lib_gtk_hid";
@@ -41,6 +42,7 @@ void pplg_uninit_lib_gtk_hid(void)
 
 int pplg_init_lib_gtk_hid(void)
 {
+	PCB_API_CHK_VER;
 	return 0;
 }
 

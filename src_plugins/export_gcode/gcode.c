@@ -894,6 +894,7 @@ void pplg_uninit_export_gcode(void)
 
 int pplg_init_export_gcode(void)
 {
+	PCB_API_CHK_VER;
 	memset(&gcode_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&gcode_hid);

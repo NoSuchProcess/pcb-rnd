@@ -66,6 +66,7 @@ void pplg_uninit_io_lihata(void)
 
 int pplg_init_io_lihata(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	plug_io_lihata_v5.plugin_data = NULL;

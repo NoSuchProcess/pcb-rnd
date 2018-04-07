@@ -247,5 +247,6 @@ int pplg_init_gpmi(void)
 /* Workaround: can't call it gpmi.so so basename is gpmi_plugin thus init name must be that too for the loader */
 int pplg_init_gpmi_plugin(void)
 {
+	PCB_API_CHK_VER;
 	return pplg_init_gpmi();
 }

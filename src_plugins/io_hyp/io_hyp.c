@@ -165,6 +165,8 @@ void pplg_uninit_io_hyp(void)
 #include "dolists.h"
 int pplg_init_io_hyp(void)
 {
+	PCB_API_CHK_VER;
+
 	/* register the IO hook */
 	io_hyp.plugin_data = NULL;
 	io_hyp.fmt_support_prio = io_hyp_fmt;

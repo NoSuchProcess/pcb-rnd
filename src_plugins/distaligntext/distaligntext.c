@@ -619,6 +619,7 @@ void pplg_uninit_distaligntext(void)
 #include "dolists.h"
 int pplg_init_distaligntext(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie);
 	return 0;
 }

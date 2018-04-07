@@ -86,6 +86,7 @@ void pplg_uninit_import_edif(void)
 
 int pplg_init_import_edif(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	import_edif.plugin_data = NULL;

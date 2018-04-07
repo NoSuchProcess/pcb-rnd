@@ -50,6 +50,7 @@ void pplg_uninit_lib_gtk_config(void)
 
 int pplg_init_lib_gtk_config(void)
 {
+	PCB_API_CHK_VER;
 	pcb_gtk_conf_init();
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

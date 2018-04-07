@@ -62,6 +62,7 @@ void pplg_uninit_io_pcb(void)
 
 int pplg_init_io_pcb(void)
 {
+	PCB_API_CHK_VER;
 
 	memset(&io_pcb, 0, sizeof(io_pcb));
 

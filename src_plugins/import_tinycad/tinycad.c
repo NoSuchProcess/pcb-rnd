@@ -210,6 +210,7 @@ void pplg_uninit_import_tinycad(void)
 #include "dolists.h"
 int pplg_init_import_tinycad(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
 	return 0;
 }

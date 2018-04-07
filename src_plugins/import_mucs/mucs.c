@@ -165,6 +165,7 @@ void pplg_uninit_import_mucs(void)
 #include "dolists.h"
 int pplg_init_import_mucs(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)
 	return 0;
 }

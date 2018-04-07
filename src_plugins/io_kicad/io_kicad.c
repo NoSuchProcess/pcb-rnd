@@ -70,6 +70,7 @@ void pplg_uninit_io_kicad(void)
 
 int pplg_init_io_kicad(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	io_kicad.plugin_data = NULL;

@@ -17,6 +17,8 @@ void pplg_uninit_fp_wget(void)
 
 int pplg_init_fp_wget(void)
 {
+	PCB_API_CHK_VER;
+
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_fp_wget, field,isarray,type_name,cpath,cname,desc,flags);
 #include "fp_wget_conf_fields.h"

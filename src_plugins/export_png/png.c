@@ -1850,6 +1850,8 @@ void pplg_uninit_export_png(void)
 
 int pplg_init_export_png(void)
 {
+	PCB_API_CHK_VER;
+
 	memset(&png_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&png_hid);

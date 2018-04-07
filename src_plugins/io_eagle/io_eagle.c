@@ -65,6 +65,7 @@ void pplg_uninit_io_eagle(void)
 
 int pplg_init_io_eagle(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	io_eagle_xml.plugin_data = NULL;

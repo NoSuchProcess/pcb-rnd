@@ -766,6 +766,8 @@ void pplg_uninit_export_xy(void)
 
 int pplg_init_export_xy(void)
 {
+	PCB_API_CHK_VER;
+
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&xy_hid);

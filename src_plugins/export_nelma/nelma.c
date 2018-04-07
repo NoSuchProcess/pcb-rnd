@@ -980,6 +980,8 @@ int pplg_uninit_export_nelma(void)
 
 int pplg_init_export_nelma(void)
 {
+	PCB_API_CHK_VER;
+
 	memset(&nelma_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&nelma_hid);

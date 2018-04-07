@@ -3731,6 +3731,8 @@ int pplg_init_hid_lesstif(void)
 {
 	static conf_hid_callbacks_t ccb;
 
+	PCB_API_CHK_VER;
+
 	memset(&ccb, 0, sizeof(ccb));
 	ccb.val_change_post = lesstif_globconf_change_post;
 

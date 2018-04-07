@@ -60,6 +60,7 @@ void pplg_uninit_io_mentor_cell(void)
 
 int pplg_init_io_mentor_cell(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	io_mentor_cell.plugin_data = NULL;

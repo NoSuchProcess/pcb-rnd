@@ -308,6 +308,8 @@ void pplg_uninit_export_bom(void)
 
 int pplg_init_export_bom(void)
 {
+	PCB_API_CHK_VER;
+
 	memset(&bom_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&bom_hid);

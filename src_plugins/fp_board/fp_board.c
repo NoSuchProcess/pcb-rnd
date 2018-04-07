@@ -169,6 +169,7 @@ void pplg_uninit_fp_board(void)
 
 int pplg_init_fp_board(void)
 {
+	PCB_API_CHK_VER;
 	fp_board.plugin_data = NULL;
 	fp_board.load_dir = fp_board_load_dir;
 	fp_board.fp_fopen = fp_board_fopen;

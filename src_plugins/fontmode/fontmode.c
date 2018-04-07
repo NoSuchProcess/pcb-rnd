@@ -378,6 +378,7 @@ void pplg_uninit_fontmode(void)
 #include "dolists.h"
 int pplg_init_fontmode(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
 	return 0;
 }

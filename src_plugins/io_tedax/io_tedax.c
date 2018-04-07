@@ -189,6 +189,8 @@ void pplg_uninit_io_tedax(void)
 #include "dolists.h"
 int pplg_init_io_tedax(void)
 {
+	PCB_API_CHK_VER;
+
 	/* register the IO hook */
 	io_tedax.plugin_data = NULL;
 	io_tedax.fmt_support_prio = io_tedax_fmt;

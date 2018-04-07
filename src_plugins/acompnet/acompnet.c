@@ -114,6 +114,7 @@ void pplg_uninit_acompnet(void)
 #include "dolists.h"
 int pplg_init_acompnet(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
 	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", "#c09920");
 

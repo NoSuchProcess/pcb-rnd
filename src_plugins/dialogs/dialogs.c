@@ -33,6 +33,7 @@
 #include "hid_actions.h"
 #include "hid_dad.h"
 #include "action_helper.h"
+#include "plugins.h"
 
 /* include them all for static inlines */
 #include "dlg_test.c"
@@ -65,6 +66,7 @@ void pplg_uninit_dialogs(void)
 #include "dolists.h"
 int pplg_init_dialogs(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	return 0;
 }

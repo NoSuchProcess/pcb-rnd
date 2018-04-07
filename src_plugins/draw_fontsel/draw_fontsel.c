@@ -243,6 +243,7 @@ void pplg_uninit_draw_fontsel(void)
 
 int pplg_init_draw_fontsel(void)
 {
+	PCB_API_CHK_VER;
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
 	pcb_stub_draw_fontsel_text_obj = &fontsel_txt;

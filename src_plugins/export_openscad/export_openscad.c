@@ -661,6 +661,8 @@ void pplg_uninit_export_openscad(void)
 
 int pplg_init_export_openscad(void)
 {
+	PCB_API_CHK_VER;
+
 	memset(&openscad_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&openscad_hid);

@@ -330,6 +330,7 @@ void pplg_uninit_draw_fab(void)
 
 int pplg_init_draw_fab(void)
 {
+	PCB_API_CHK_VER;
 	pcb_stub_draw_fab = DrawFab;
 	pcb_stub_draw_fab_overhang = DrawFab_overhang;
 

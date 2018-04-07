@@ -81,6 +81,7 @@ void pplg_uninit_autoplace(void)
 #include "dolists.h"
 int pplg_init_autoplace(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
 	return 0;
 }

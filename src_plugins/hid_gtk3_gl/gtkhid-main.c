@@ -46,6 +46,7 @@ void pplg_uninit_hid_gtk3_gl(void)
 
 int pplg_init_hid_gtk3_gl(void)
 {
+	PCB_API_CHK_VER;
 	ghid_win32_init();
 
 	ghid_glue_hid_init(&gtk3_gl_hid);

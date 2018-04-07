@@ -188,6 +188,7 @@ void pplg_uninit_import_netlist(void)
 
 int pplg_init_import_netlist(void)
 {
+	PCB_API_CHK_VER;
 
 	/* register the IO hook */
 	import_netlist.plugin_data = NULL;

@@ -894,6 +894,7 @@ void pplg_uninit_draw_csect(void)
 
 int pplg_init_draw_csect(void)
 {
+	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
 
 	pcb_stub_draw_csect = draw_csect;

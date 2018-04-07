@@ -605,6 +605,7 @@ void pplg_uninit_export_bboard(void)
 
 int pplg_init_export_bboard(void)
 {
+	PCB_API_CHK_VER;
 	memset(&bboard_hid, 0, sizeof(bboard_hid));
 
 	pcb_hid_nogui_init(&bboard_hid);

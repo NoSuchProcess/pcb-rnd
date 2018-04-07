@@ -556,6 +556,7 @@ void pplg_uninit_fp_fs(void)
 
 int pplg_init_fp_fs(void)
 {
+	PCB_API_CHK_VER;
 	fp_fs.plugin_data = NULL;
 	fp_fs.load_dir = fp_fs_load_dir;
 	fp_fs.fp_fopen = fp_fs_fopen;

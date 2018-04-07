@@ -2633,6 +2633,8 @@ void pplg_uninit_djopt(void)
 #include "dolists.h"
 int pplg_init_djopt(void)
 {
+	PCB_API_CHK_VER;
+
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc,flags);
 #include "djopt_conf_fields.h"

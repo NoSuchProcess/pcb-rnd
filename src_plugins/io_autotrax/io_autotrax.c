@@ -72,6 +72,8 @@ void pplg_uninit_io_autotrax(void)
 
 int pplg_init_io_autotrax(void)
 {
+	PCB_API_CHK_VER;
+
 	io_autotrax.plugin_data = NULL;
 	io_autotrax.fmt_support_prio = io_autotrax_fmt;
 	io_autotrax.test_parse = io_autotrax_test_parse;
