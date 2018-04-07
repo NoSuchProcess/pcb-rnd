@@ -63,41 +63,40 @@ enum {
 	 */
 struct pcb_board_s {
 	long ID;
-	char *Name,										/* name of board */
-	 *Filename,										/* name of file (from load) */
-	 *PrintFilename,							/* from print dialog */
-	 *Netlistname,								/* name of netlist file */
-	  ThermStyle;									/* type of thermal to place with thermal tool */
-	pcb_bool Changed,									/* layout has been changed */
-	  ViaOn,											/* visibility flags */
-	  RatOn, InvisibleObjectsOn, PinOn,
-	  RatDraw,										/* we're drawing rats */
-	  SubcOn, SubcPartsOn, padstack_mark_on, hole_on;
-	pcb_bool loose_subc;          /* when set, subc parts are not locked into the subc */
-	pcb_coord_t CursorX,									/* cursor position as saved with layout */
-	  CursorY;
-	pcb_coord_t GridOffsetX,						/* as saved with layout */
-	  GridOffsetY, MaxWidth,			/* allowed size */
-	  MaxHeight;
+	char *Name;                                     /* name of board */
+	char *Filename;                                 /* name of file (from load) */
+	char *PrintFilename;                            /* from print dialog */
+	char *Netlistname;                              /* name of netlist file */
 
-	pcb_coord_t Grid;										/* used grid with offsets */
-	double Zoom,									/* zoom factor */
-	  ThermScale;									/* scale factor used with thermals */
+	pcb_bool Changed;                               /* layout has been changed */
+
+	pcb_bool ViaOn, RatOn, InvisibleObjectsOn,
+	         PinOn, SubcOn, SubcPartsOn,
+	         padstack_mark_on, hole_on;             /* visibility flags */
+	pcb_bool RatDraw;                               /* we're drawing rats */
+
+	pcb_bool loose_subc;                            /* when set, subc parts are not locked into the subc */
+	pcb_coord_t Zoom, CursorX, CursorY;             /* cursor position as saved with layout */
+	pcb_coord_t Grid, GridOffsetX, GridOffsetY;     /* as saved with layout */
+	pcb_coord_t MaxWidth, MaxHeight;                /* board dimensions (drawing area extents) */
+
+	double ThermScale;                              /* scale factor used with thermals */
+	char ThermStyle;                                /* type of thermal to place with thermal tool */
+
 	pcb_fontkit_t fontkit;
 	pcb_layer_stack_t LayerGroups;
 	vtroutestyle_t RouteStyle;
 	pcb_lib_t NetlistLib[PCB_NUM_NETLISTS];
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
 	pcb_attribute_list_t Attributes;
-	pcb_data_t *Data;							/* entire database */
 
-	pcb_bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */
+	pcb_data_t *Data;                               /* entire database */
+	pcb_bool is_footprint;                          /* If set, the user has loaded a footprint, not a pcb. */
 
 	const pcb_attribute_list_t *pen_attr;
 
-
 /* netlist states */
-	int netlist_frozen;                /* counter */
+	int netlist_frozen;                             /* counter */
 	unsigned netlist_needs_update:1;
 };
 
