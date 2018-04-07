@@ -1676,17 +1676,6 @@
  ../src_3rd/puplug/error.h compat_misc.h event.h \
  ../src_plugins/hid_remote/proto.h hid_draw_helpers.h hid_nogui.h \
  hid_actions.h hid_init.h dolists.h
-../src_plugins/hid_srv_ws/c2s.o: ../src_plugins/hid_srv_ws/c2s.c \
- ../config.h error.h ../src_plugins/hid_srv_ws/server.h \
- ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h \
- ../src_plugins/hid_srv_ws/c2s.h
-../src_plugins/hid_srv_ws/server.o: ../src_plugins/hid_srv_ws/server.c \
- ../config.h ../src_3rd/genht/hash.h plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h error.h ../src_plugins/hid_srv_ws/server.h \
- ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h \
- ../src_plugins/hid_srv_ws/c2s.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
