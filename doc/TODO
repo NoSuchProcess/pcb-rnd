@@ -21,7 +21,6 @@
 + BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	+> this has been rewritten in the big increments rewrite (with Richard)
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-+ BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
 - BUG: subc: put a 1206 on an empty board, save it in old .pcb -> pads become round; probably the same happens with old lihata? [report: igor2]
 		- see also: padstack TODO #22
 - autocrop:
