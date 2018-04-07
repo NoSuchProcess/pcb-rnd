@@ -41,13 +41,6 @@ SUBC: element removal:
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- add a subtree where random plugins can store their stuff - probably in a form of an attribute list
 	- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-- DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
-	- buttons to select one or all items or all items including locked
-	- io infra for save incompatibility note with DRC list
-	- import sch. shouldn't select elements to be removed but put them on a drc list
-	- display number of items at top of drc window
-	- export to file 
-	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 - BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 - BUG: {v n} always prefers the top side padstack: bug_files/vard_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
@@ -119,6 +112,13 @@ SUBC: element removal:
 	- always use the stored per layer color
 	- use the config color only if a new layer is created or loaded without known color
 	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
+- DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
+	- buttons to select one or all items or all items including locked
+	- io infra for save incompatibility note with DRC list
+	- import sch. shouldn't select elements to be removed but put them on a drc list
+	- display number of items at top of drc window
+	- export to file 
+	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 - find.c rewrite:
 	- a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
