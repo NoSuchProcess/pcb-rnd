@@ -128,6 +128,9 @@
 	- test under lesstif
 	- remove Attribute()
 - DEL: retire the nelma plugin - nelma is unfinished and not maintained
+- feature: padstack label smarter print [report: Ade]
+	- rotate depending pastack bbox orientation (example: tqfp upper pads)
+	- global conf setting for label text size
 - feautres/cleanup: hid:
 	- "erase" color:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
