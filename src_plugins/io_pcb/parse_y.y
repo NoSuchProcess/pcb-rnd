@@ -493,7 +493,7 @@ polyarea
 		| T_AREA '[' number ']'
 			{
 				/* Read in cmil^2 for now; in future this should be a noop. */
-				yyPCB->IsleArea = PCB_MIL_TO_COORD (PCB_MIL_TO_COORD ($3) / 100.0) / 100.0;
+				load_meta_coord("design/poly_isle_area", PCB_MIL_TO_COORD(PCB_MIL_TO_COORD ($3) / 100.0) / 100.0);
 			}
 		;
 

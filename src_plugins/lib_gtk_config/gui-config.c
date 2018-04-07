@@ -565,7 +565,6 @@ static void config_sizes_apply(void)
 	conf_set_design("design/shrink", "%$mS", new_Shrink);
 	conf_set_design("design/min_wid", "%$mS", new_minWid);
 	conf_set_design("design/min_slk", "%$mS", new_minSlk);
-	conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
 	conf_set_design("design/min_drill", "%$mS", new_minDrill);
 	conf_set_design("design/min_ring", "%$mS", new_minRing);
 

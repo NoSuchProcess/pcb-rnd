@@ -82,7 +82,6 @@ struct pcb_board_s {
 
 	pcb_coord_t Grid;										/* used grid with offsets */
 	double Zoom,									/* zoom factor */
-	  IsleArea,										/* minimum poly island to retain */
 	  ThermScale;									/* scale factor used with thermals */
 	pcb_fontkit_t fontkit;
 	pcb_layer_stack_t LayerGroups;

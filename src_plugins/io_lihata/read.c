@@ -359,7 +359,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		parse_coord(&pcb->MaxWidth, lht_dom_hash_get(grp, "x"));
 		parse_coord(&pcb->MaxHeight, lht_dom_hash_get(grp, "y"));
-		parse_double(&pcb->IsleArea, lht_dom_hash_get(grp, "isle_area_nm2"));
+		parse_coord_conf("design/poly_isle_area", lht_dom_hash_get(grp, "isle_area_nm2"));
 		parse_double(&pcb->ThermScale, lht_dom_hash_get(grp, "thermal_scale"));
 	}
 

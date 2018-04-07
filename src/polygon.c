@@ -168,7 +168,7 @@ static pcb_polyarea_t *biggest(pcb_polyarea_t * p)
 	n = p;
 	do {
 #if 0
-		if (n->contours->area < PCB->IsleArea) {
+		if (n->contours->area < conf_core.design.poly_isle_area) {
 			n->b->f = n->f;
 			n->f->b = n->b;
 			pcb_poly_contour_del(&n->contours);
@@ -1895,7 +1895,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 		pcb_vnode_t *v;
 		pcb_poly_t *newone;
 
-		if (p->contours->area > PCB->IsleArea) {
+		if (p->contours->area > conf_core.design.poly_isle_area) {
 			newone = pcb_poly_new(layer, poly->Clearance, flags);
 			if (!newone)
 				return pcb_false;
