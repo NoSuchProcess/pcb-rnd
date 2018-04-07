@@ -79,7 +79,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v5.write_pcb = io_lihata_write_pcb_v5;
 	plug_io_lihata_v5.default_fmt = "lihata";
 	plug_io_lihata_v5.description = "lihata board v5";
-	plug_io_lihata_v5.save_preference_prio = 77;
+	plug_io_lihata_v5.save_preference_prio = 199;
 	plug_io_lihata_v5.default_extension = ".lht";
 	plug_io_lihata_v5.fp_extension = ".lht";
 	plug_io_lihata_v5.mime_type = "application/x-pcbrnd-board";
@@ -98,7 +98,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v4.write_pcb = io_lihata_write_pcb_v4;
 	plug_io_lihata_v4.default_fmt = "lihata";
 	plug_io_lihata_v4.description = "lihata board v4";
-	plug_io_lihata_v4.save_preference_prio = 199;
+	plug_io_lihata_v4.save_preference_prio = 100;
 	plug_io_lihata_v4.default_extension = ".lht";
 	plug_io_lihata_v4.fp_extension = ".lht";
 	plug_io_lihata_v4.mime_type = "application/x-pcbrnd-board";
