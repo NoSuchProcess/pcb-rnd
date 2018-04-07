@@ -115,7 +115,7 @@ void pcb_tool_poly_draw_attached(void)
 
 	/* draw attached polygon only if in PCB_MODE_POLYGON or PCB_MODE_POLYGON_HOLE */
 	if (pcb_crosshair.AttachedPolygon.PointN > 1) {
-		XORPolygon(&pcb_crosshair.AttachedPolygon, 0, 0, 1);
+		pcb_xordraw_poly(&pcb_crosshair.AttachedPolygon, 0, 0, 1);
 	}
 }
 

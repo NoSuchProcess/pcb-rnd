@@ -125,13 +125,13 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 
 
 /*** utility for plugins ***/
-void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
-void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
-void XORPolygon_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr);
-void XORDrawAttachedArc(pcb_coord_t thick);
-void XORDrawBuffer(pcb_buffer_t *Buffer);
-void XORDrawMoveOrCopy(void);
-void XORDrawInsertPointObject(void);
+void pcb_xordraw_attached_line(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
+void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr);
+void pcb_xordraw_attached_arc(pcb_coord_t thick);
+void pcb_xordraw_buffer(pcb_buffer_t *Buffer);
+void pcb_xordraw_movecopy(void);
+void pcb_xordraw_insert_pt_obj(void);
 
 
 

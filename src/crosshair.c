@@ -76,7 +76,7 @@ static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
+void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -105,7 +105,7 @@ void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_la
  * creates a tmp polygon with coordinates converted to screen system, designed
  * for subc paste xor-draw
  */
-void XORPolygon_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr)
+void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -128,7 +128,7 @@ void XORPolygon_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_co
 /*-----------------------------------------------------------
  * Draws the outline of an attached arc
  */
-void XORDrawAttachedArc(pcb_coord_t thick)
+void pcb_xordraw_attached_arc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
 	pcb_coord_t wx, wy;
@@ -163,7 +163,7 @@ void XORDrawAttachedArc(pcb_coord_t thick)
 /* ---------------------------------------------------------------------------
  * draws all visible and attached objects of the pastebuffer
  */
-void XORDrawBuffer(pcb_buffer_t *Buffer)
+void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_cardinal_t i;
 	pcb_coord_t x, y;
@@ -203,7 +203,7 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 			 */
 			PCB_POLY_LOOP(layer);
 			{
-				XORPolygon(polygon, x, y, 0);
+				pcb_xordraw_poly(polygon, x, y, 0);
 			}
 			PCB_END_LOOP;
 		}
@@ -227,7 +227,7 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 /* ---------------------------------------------------------------------------
  * draws the rubberband to insert points into polygons/lines/...
  */
-void XORDrawInsertPointObject(void)
+void pcb_xordraw_insert_pt_obj(void)
 {
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 	pcb_point_t *point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
@@ -241,7 +241,7 @@ void XORDrawInsertPointObject(void)
 /* ---------------------------------------------------------------------------
  * draws the attached object while in PCB_MODE_MOVE or PCB_MODE_COPY
  */
-void XORDrawMoveOrCopy(void)
+void pcb_xordraw_movecopy(void)
 {
 	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X;
 	pcb_coord_t dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
@@ -325,7 +325,7 @@ void XORDrawMoveOrCopy(void)
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
 			 */
-			XORPolygon(polygon, dx, dy, 0);
+			pcb_xordraw_poly(polygon, dx, dy, 0);
 			break;
 		}
 

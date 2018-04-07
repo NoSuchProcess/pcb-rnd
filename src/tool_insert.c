@@ -114,7 +114,7 @@ void pcb_tool_insert_adjust_attached_objects(void)
 
 void pcb_tool_insert_draw_attached(void)
 {
-	XORDrawInsertPointObject();
+	pcb_xordraw_insert_pt_obj();
 }
 
 pcb_bool pcb_tool_insert_undo_act(void)

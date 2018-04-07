@@ -90,7 +90,7 @@ void pcb_tool_copy_release_mode (void)
 
 void pcb_tool_copy_draw_attached(void)
 {
-	XORDrawMoveOrCopy();
+	pcb_xordraw_movecopy();
 }
 
 pcb_bool pcb_tool_copy_undo_act(void)

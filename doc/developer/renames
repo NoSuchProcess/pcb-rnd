@@ -1757,3 +1757,10 @@ PCB_TYPEMASK_ALL -> PCB_OBJ_ANY
 PCB_OBJ_RATLINE -> PCB_OBJ_RAT
 PCB_OBJ_SUBC_FLOATER -> PCB_OBJ_FLOATER
 PCB_TYPEMASK_ -> PCB_OBJ_CLASS_
+XORDrawAttachedLine -> pcb_xordraw_attached_line
+XORPolygon -> pcb_xordraw_poly
+XORPolygon_subc -> pcb_xordraw_poly_subc
+XORDrawAttachedArc -> pcb_xordraw_attached_arc
+XORDrawBuffer -> pcb_xordraw_buffer
+XORDrawMoveOrCopy -> pcb_xordraw_movecopy
+XORDrawInsertPointObject -> pcb_xordraw_insert_pt_obj

@@ -87,7 +87,7 @@ void pcb_tool_buffer_release_mode(void)
 
 void pcb_tool_buffer_draw_attached(void)
 {
-	XORDrawBuffer(PCB_PASTEBUFFER);
+	pcb_xordraw_buffer(PCB_PASTEBUFFER);
 }
 
 pcb_tool_t pcb_tool_buffer = {

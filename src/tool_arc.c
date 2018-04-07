@@ -112,10 +112,10 @@ void pcb_tool_arc_adjust_attached_objects(void)
 void pcb_tool_arc_draw_attached(void)
 {
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
-		XORDrawAttachedArc(conf_core.design.line_thickness);
+		pcb_xordraw_attached_arc(conf_core.design.line_thickness);
 		if (conf_core.editor.show_drc) {
 			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-			XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1));
+			pcb_xordraw_attached_arc(conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1));
 			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 		}
 	}

@@ -633,7 +633,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_si
 		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
-			XORPolygon_subc(poly, DX, DY, w, h, mirr);
+			pcb_xordraw_poly_subc(poly, DX, DY, w, h, mirr);
 
 		textlist_foreach(&ly->Text, &it, text) {
 			if (mirr) {
