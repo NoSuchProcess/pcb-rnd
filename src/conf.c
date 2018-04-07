@@ -593,7 +593,7 @@ static conf_ignore_t conf_ignores[] = {
 	{NULL, 0, 0}
 };
 
-static int conf_warn_unknown_paths(const char *path, lht_node_t *n)
+static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
 {
 	conf_ignore_t *i;
 
