@@ -104,6 +104,7 @@ static pcb_coord_t old_units (PLMeasure m);
 static pcb_coord_t new_units (PLMeasure m);
 static pcb_flag_t pcb_flag_old(unsigned int flags);
 static void load_meta_coord(const char *path, pcb_coord_t crd);
+static void load_meta_float(const char *path, double val);
 
 #define YYDEBUG 1
 #define YYERROR_VERBOSE 1
@@ -493,7 +494,7 @@ polyarea
 		| T_AREA '[' number ']'
 			{
 				/* Read in cmil^2 for now; in future this should be a noop. */
-				load_meta_coord("design/poly_isle_area", PCB_MIL_TO_COORD(PCB_MIL_TO_COORD ($3) / 100.0) / 100.0);
+				load_meta_float("design/poly_isle_area", PCB_MIL_TO_COORD(PCB_MIL_TO_COORD ($3) / 100.0) / 100.0);
 			}
 		;
 
@@ -2147,5 +2148,12 @@ static void load_meta_coord(const char *path, pcb_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);
+	conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
+}
+
+static void load_meta_float(const char *path, double val)
+{
+	char tmp[128];
+	pcb_sprintf(tmp, "%f", val);
 	conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
 }
