@@ -1,5 +1,4 @@
 - rename:
-	- XORDraw*
 	- conf_*
 - centralize pcb_gui->attribute_dialog()
 - remove pcb board Zoom/x/y, move the drc stuff to config
