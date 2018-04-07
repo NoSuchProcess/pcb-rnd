@@ -23,7 +23,9 @@
  *    lead developer: email to pcb-rnd (at) igor2.repo.hu
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
+#include "config.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "plugins.h"
 
