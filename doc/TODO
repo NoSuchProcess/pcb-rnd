@@ -23,12 +23,7 @@
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 + BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
-SUBC: element removal:
-	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
-	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
-	- convert pcblib to subcircuits:
-		- revise the value attribute - should be empty by default
-	- BUG: put a 1206 on an empty board, save it in old .pcb -> pads become round; probably the same happens with old lihata? [report: igor2]
+- BUG: subc: put a 1206 on an empty board, save it in old .pcb -> pads become round; probably the same happens with old lihata? [report: igor2]
 		- see also: padstack TODO #22
 - autocrop:
 	- rewrite to use pcb_data_move
@@ -112,6 +107,11 @@ SUBC: element removal:
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
 	- netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
+SUBC: element removal:
+	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
+	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
+	- convert pcblib to subcircuits:
+		- revise the value attribute - should be empty by default
 - When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
