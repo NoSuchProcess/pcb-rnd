@@ -57,6 +57,7 @@ int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
 void pplg_uninit_io_lihata(void)
 {
 	conf_unreg_fields("plugins/io_lihata/");
+	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
