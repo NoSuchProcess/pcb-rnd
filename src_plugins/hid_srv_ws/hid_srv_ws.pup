@@ -1,6 +1,0 @@
-$class hid
-$short websocket server HID
-$long HID server: websockets using hid_remote.
-$state WIP
-default disable-all
-autoload 1

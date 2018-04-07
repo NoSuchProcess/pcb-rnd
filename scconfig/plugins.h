@@ -108,7 +108,6 @@ plugin_def("hid_gtk3_cairo",   "GTK3 GUI, cairo render",          sdisable, 0)
 plugin_def("hid_gtk3_gl",      "GTK3 GUI, gl render",             sdisable, 0)
 plugin_def("hid_lesstif",      "the lesstif gui",                 sbuildin, 1)
 plugin_def("hid_remote",       "remote HID server",               sdisable, 0)
-plugin_def("hid_srv_ws",       "websocket server HID",            sdisable, 0)
 
 
 plugin_dep("autoroute", "lib_compat_help")
