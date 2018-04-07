@@ -1874,6 +1874,13 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if (sub != NULL)
 		parse_conf(pcb, sub);
 
+	if (rdver < 5) {
+		/* have to parse meta again to get config values overwritten */
+		sub = lht_dom_hash_get(nd, "meta");
+		if (sub != NULL)
+			parse_meta(pcb, sub);
+	}
+
 	pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 
 	pcb->Data->loader = loader; /* set this manually so the version is remembered */
