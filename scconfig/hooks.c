@@ -858,7 +858,7 @@ int hook_generate()
 	curr = next+1; next = strchr(curr, '.'); *next = '\n';
 	v2 = atoi(curr);
 	v3 = atoi(next+1);
-	sprintf(apiver, "%01d%01d%02d%05d", v1, v2, v3, r);
+	sprintf(apiver, "%01d%01d%02d%05ld", v1, v2, v3, r);
 
 	logprintf(0, "scconfig generate version info: version='%s' rev='%s'\n", version, rev);
 	put("/local/revision", rev);
