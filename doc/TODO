@@ -39,7 +39,6 @@ SUBC: element removal:
 		- revise thermal format for all objects: heavy terminals and padstacks
 		- write.c: build_thermal for heavy terminals
 		- read.c: parse_thermal_heavy already does this right
-	- store thermal on a layer name basis instead of layer ID (padstack)
 - BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 - BUG: {v n} always prefers the top side padstack: bug_files/vard_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
