@@ -28,7 +28,7 @@
 	- rewrite to use pcb_data_move
 	- make sure pcb_data_move does one full poly clipping, the way autocrop does
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
-- BUG: {v n} always prefers the top side padstack: bug_files/vard_edge.fp, {v n}, {tab}, {v n} [report: al3x]
++ BUG: {v n} always prefers the top side padstack: bug_files/card_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 - BUG: TODO: set same (e s) doesn't work on lines and padstacks [report: Igor2]
 - BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
