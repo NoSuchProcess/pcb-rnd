@@ -22,23 +22,28 @@
 <!--AUTO navbar end-->
 
 <H1> pcb-rnd - io_lihata versions </H1>
+<p>
 History of io_lihata, per format version.
 
 <H2> lihata board </H2>
 	<H3> v1 </H3>
+	<p id="v1">
 	Feature-compatible with the gEDA/PCB file format, plus allows multiple
 	fonts. Same assumptions on layers: last two must be the silk layers.
 
 	<H3> v2 </H3>
+	<p id="v2">
 	Introduce the layer stack subtree and remove layer assumptions. Save
 	the combining field of layers.
 
 	<H3> v3 </H3>
+	<p id="v3">
 	New global object subtree: subcircuit. Global object element has been removed.
 	<p>
 	Intconn is not a flag, but a pin/pad/terminal attribute.
 
 	<H3> v4 </H3>
+	<p id="v4">
 	New subtree under data: padstack_prototypes, for storing padstack prototypes.
 	ID is the place of the padstack within the list.
 	<p>
