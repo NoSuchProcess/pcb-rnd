@@ -1,9 +1,9 @@
 all: FORCE
-	cd src_3rd/puplug/util && $(MAKE)
+	cd src_3rd/puplug/util && $(MAKE) CC=$(PCB_RND_HOST_CC)
 	cd src && $(MAKE)
 	cd util && $(MAKE)
 	cd pcblib && $(MAKE)
-#	cd doc && $(MAKE)
+	cd doc && $(MAKE)
 
 test: FORCE
 	cd tests && $(MAKE) test
@@ -50,5 +50,7 @@ uninstall: FORCE
 	cd util && $(MAKE) uninstall
 	cd pcblib && $(MAKE) uninstall
 	cd doc && $(MAKE) uninstall
+
+include Makefile.conf
 
 FORCE:

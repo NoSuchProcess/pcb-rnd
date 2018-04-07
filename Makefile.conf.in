@@ -17,7 +17,7 @@ LN=@/host/fstools/ln@
 MKDIR=@/host/fstools/mkdir@
 SCCBOX=$(ROOT)/scconfig/sccbox
 EXE=@/target/sys/ext_exe@
-
+PCB_RND_HOST_CC=@/host/cc/cc@
 
 # The installation directoried to be used from within binaries (with
 # install_root/DESTDIR removed)
