@@ -49,12 +49,12 @@ static void acompnet_mesh_addpt(double x, double y, int score)
 	x = pcb_round(x);
 	y = pcb_round(y);
 	
-	pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, PCB->Bloat, flg_mesh_pt);
+	pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, conf_core.design.bloat, flg_mesh_pt);
 }
 
 static void acompnet_mesh()
 {
-	double sep = conf_core.design.line_thickness + PCB->Bloat;
+	double sep = conf_core.design.line_thickness + conf_core.design.bloat;
 	int n;
 
 	PCB_LINE_LOOP(CURRENT) {
