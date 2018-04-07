@@ -20,6 +20,7 @@
 + BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
 + BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	+> this has been rewritten in the big increments rewrite (with Richard)
++ BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 - BUG: Text is no longer drawn when moving it. The refdes text is however drawn when moving the subc that it belongs to. [report: Ade]
 - BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
 SUBC: element removal:
@@ -40,7 +41,6 @@ SUBC: element removal:
 		- read.c: parse_thermal_heavy already does this right
 	- store thermal on a layer name basis instead of layer ID (padstack)
 	- add a subtree where random plugins can store their stuff - probably in a form of an attribute list
-	- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 - BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 - BUG: {v n} always prefers the top side padstack: bug_files/vard_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
