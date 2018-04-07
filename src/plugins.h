@@ -37,7 +37,7 @@ extern unsigned long pcb_api_ver;
 #define PCB_API_CHK_VER \
 do { \
 	if (!PCB_API_VER_MATCH) {\
-		fprintf(stderr, "pcb-rnd API version incompatibility: " __FILE__ "=%lu core=%lu\n(not loading this plugin)\n", PCB_API_VER, pcb_api_ver); \
+		fprintf(stderr, "pcb-rnd API version incompatibility: " __FILE__ "=%lu core=%lu\n(not loading this plugin)\n", (unsigned long)PCB_API_VER, pcb_api_ver); \
 		return 1; \
 	} \
 } while(0)
