@@ -21,6 +21,7 @@
 + BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	+> this has been rewritten in the big increments rewrite (with Richard)
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
++ BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 - BUG: Text is no longer drawn when moving it. The refdes text is however drawn when moving the subc that it belongs to. [report: Ade]
 - BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
 SUBC: element removal:
@@ -47,10 +48,6 @@ SUBC: element removal:
 	- get the loop go backward if we are in prepend
 - BUG: revert r15465, fix conf merge bug
 - BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
-- BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
-	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
-	- Lesstif HID does not have this dialog => implement it, using DAD
-	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: pressing 'b' for back side on a floater refdes text doesn't send it to the back [report: igor2]
 - BUG: place 1206 on top; switch to bottom; turn off top copper; press 'n' over the pad - still can rename, even tho pad is invisible! [report: igor2]
 - BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
