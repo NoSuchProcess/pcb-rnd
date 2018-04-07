@@ -25,7 +25,6 @@
 + BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
 SUBC: element removal:
 	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
-	- remove Line->Number and *->Number: we use ->term
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
