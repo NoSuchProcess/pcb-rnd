@@ -157,11 +157,13 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 	lht_dom_hash_put(grp, build_textf("min_drill", CFMT, pcb->minDrill));
 	lht_dom_hash_put(grp, build_textf("min_ring",  CFMT, pcb->minRing));
 
-	grp = lht_dom_node_alloc(LHT_HASH, "cursor");
-	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->CursorX));
-	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->CursorY));
-	lht_dom_hash_put(grp, build_textf("zoom", "%.6f", pcb->Zoom));
+	if (wrver < 5) {
+		grp = lht_dom_node_alloc(LHT_HASH, "cursor");
+		lht_dom_hash_put(meta, grp);
+		lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->CursorX));
+		lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->CursorY));
+		lht_dom_hash_put(grp, build_textf("zoom", "%.6f", pcb->Zoom));
+	}
 
 	return meta;
 }

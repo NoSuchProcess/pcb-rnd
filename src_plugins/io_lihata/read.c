@@ -362,6 +362,8 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
+		if (rdver >= 5)
+			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata save\n");
 		parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
 		parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
 		parse_double(&pcb->Zoom, lht_dom_hash_get(grp, "zoom"));
@@ -774,7 +776,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {
 		if (rdver < 2)
-			iolht_warn(ncmb, 0, "Version 1 lihata board should not have combining subtree for layers\n");
+			iolht_warn(ncmb, 1, "Version 1 lihata board should not have combining subtree for layers\n");
 		ly->comb = parse_comb(pcb, ncmb);
 	}
 
@@ -788,7 +790,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			if (dt->Layer[layer_id].meta.bound.real != NULL)
 				pcb_layer_link_trees(&dt->Layer[layer_id], dt->Layer[layer_id].meta.bound.real);
 			else if (!(dt->Layer[layer_id].meta.bound.type & PCB_LYT_VIRTUAL))
-				iolht_warn(ncmb, 1, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
+				iolht_warn(ncmb, 2, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
 			dt->padstack_tree = subc_parent->padstack_tree;
 		}
 	}
@@ -1251,7 +1253,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		nattr= lht_dom_hash_get(grp, "attributes");
 		if (nattr != NULL) {
 			if (rdver < 5)
-				iolht_warn(nattr, 2, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
+				iolht_warn(nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
 			if (parse_attributes(&g->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
@@ -1693,7 +1695,7 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 
 		if (nattr != NULL) {
 			if (rdver < 5)
-				iolht_warn(nattr, 2, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
+				iolht_warn(nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
 			if (parse_attributes(&net->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
