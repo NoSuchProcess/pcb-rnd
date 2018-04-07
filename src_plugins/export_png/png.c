@@ -1606,7 +1606,7 @@ static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	if (x1 == x2 && y1 == y2) {
+	if (x1 == x2 && y1 == y2 && !photo_mode) {
 		pcb_coord_t w = gc->width / 2;
 		if (gc->cap != Square_Cap)
 			png_fill_circle(gc, x1, y1, w);
