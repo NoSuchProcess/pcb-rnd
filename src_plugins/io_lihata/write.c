@@ -248,6 +248,28 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 	return hsh;
 }
 
+static void obj_attr_flag_warn(pcb_any_obj_t *obj)
+{
+	int warned = 0;
+
+	if (wrver < 5) {
+		if (pcb_attribute_get(&obj->Attributes, "intnoconn") != NULL) {
+			warned = 1;
+			pcb_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v5 may ignore the intnoconn flag\n");
+		}
+	}
+	if (wrver < 3) {
+		if (pcb_attribute_get(&obj->Attributes, "intconn") != NULL) {
+			warned = 1;
+			pcb_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v3 may ignore the intconn flag\n");
+		}
+	}
+
+	if (warned)
+		pcb_message(PCB_MSG_WARNING, "^^^ in %s #%ld\n", pcb_obj_type_name(obj->type), obj->ID);
+}
+
+
 static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pcb_coord_t dy, int simple)
 {
 	char buff[128];
@@ -257,6 +279,7 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pc
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	if (!simple) {
+		obj_attr_flag_warn((pcb_any_obj_t *)line);
 		lht_dom_hash_put(obj, build_attributes(&line->Attributes));
 		lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_OBJ_LINE, line->intconn));
 		lht_dom_hash_put(obj, build_textf("clearance", CFMT, line->Clearance));
@@ -314,6 +337,8 @@ static lht_node_t *build_rat(pcb_rat_t *rat)
 	sprintf(buff, "rat.%ld", rat->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
+	obj_attr_flag_warn((pcb_any_obj_t *)rat);
+
 	lht_dom_hash_put(obj, build_attributes(&rat->Attributes));
 	lht_dom_hash_put(obj, build_flags(&rat->Flags, PCB_OBJ_LINE, rat->intconn));
 	lht_dom_hash_put(obj, build_textf("x1", CFMT, rat->Point1.X));
@@ -333,6 +358,8 @@ static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
 
 	sprintf(buff, "arc.%ld", arc->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	obj_attr_flag_warn((pcb_any_obj_t *)arc);
 
 	lht_dom_hash_put(obj, build_attributes(&arc->Attributes));
 	lht_dom_hash_put(obj, build_flags(&arc->Flags, PCB_OBJ_ARC, arc->intconn));
@@ -369,6 +396,8 @@ static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool 
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	flg = pcb_pstk_compat_pinvia_flag(ps, cshape);
+
+	obj_attr_flag_warn((pcb_any_obj_t *)ps);
 
 	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
 	lht_dom_hash_put(obj, build_flags(&flg, PCB_OBJ_VIA, ps->intconn));
@@ -407,6 +436,8 @@ static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, pcb_coord_t 
 	if (nopaste)
 		flg.f |= PCB_FLAG_NOPASTE;
 
+	obj_attr_flag_warn((pcb_any_obj_t *)ps);
+
 	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
 	lht_dom_hash_put(obj, build_flags(&flg, PCB_OBJ_PAD, ps->intconn));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, thickness));
@@ -429,6 +460,8 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 
 	sprintf(buff, "polygon.%ld", poly->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	obj_attr_flag_warn((pcb_any_obj_t *)poly);
 
 	lht_dom_hash_put(obj, build_attributes(&poly->Attributes));
 	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_OBJ_POLY, poly->intconn));
@@ -472,6 +505,8 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	sprintf(buff, "text.%ld", text->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
+	obj_attr_flag_warn((pcb_any_obj_t *)text);
+
 	lht_dom_hash_put(obj, build_attributes(&text->Attributes));
 	lht_dom_hash_put(obj, build_flags(&text->Flags, PCB_OBJ_TEXT, text->intconn));
 	lht_dom_hash_put(obj, build_text("string", text->TextString));
@@ -504,6 +539,8 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 
 	sprintf(buff, "element.%ld", subc->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	obj_attr_flag_warn((pcb_any_obj_t *)subc);
 
 	lht_dom_hash_put(obj, build_attributes(&subc->Attributes));
 	lht_dom_hash_put(obj, build_flags(&subc->Flags, PCB_OBJ_ELEMENT, 0));
@@ -594,6 +631,8 @@ static lht_node_t *build_subc(pcb_subc_t *sc)
 
 	sprintf(buff, "subc.%ld", sc->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	obj_attr_flag_warn((pcb_any_obj_t *)sc);
 
 	lht_dom_hash_put(obj, build_attributes(&sc->Attributes));
 	lht_dom_hash_put(obj, build_flags(&sc->Flags, PCB_OBJ_SUBC, 0));
