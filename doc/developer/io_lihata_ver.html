@@ -43,5 +43,22 @@ History of io_lihata, per format version.
 	ID is the place of the padstack within the list.
 	<p>
 	New object type under : ha:padstack_ref.id.
+
+	<H3> v5 </H3>
+	<p id="v5">
+	Removed drc and isle_area_nm from the board header in favor of the config
+	subtree. Removed the cursor section from board header - cursor position and
+	zoom should not be saved or loaded.
+	<p>
+	Warn for the intnoconn attribute when saving pre-v5 - pcb-rnd vesions
+	supporting v4 or lower will most probably not understand it.
+	<p>
+	Layer group and network attributes. Layer colors.
+	<p>
+	Remove old model objects: elements, element-lines, element-arcs,
+	pins, pads, vias. They are still loaded if they are found in v5,
+	but a warning is generated and the objects are force-converted to
+	the new model on save.
+
 </body>
 </html>
