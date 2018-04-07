@@ -34,6 +34,8 @@
 #include "compat_misc.h"
 #include "hid.h"
 
+unsigned long pcb_api_ver = PCB_API_VER;
+
 pup_context_t pcb_pup;
 char **pcb_pup_paths = NULL;
 static int paths_used = 0, paths_alloced = 0;

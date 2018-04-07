@@ -189,7 +189,7 @@ print [@
 
 /* Format: abccrrrrr where a, b and c are pcb-rnd version numbers and r is
    the svn revision number (optional) */
-#define PCB_API_VER "@/local/apiver@"
+#define PCB_API_VER @/local/apiver@
 
 
 /* Define to 1 if you have the `dmalloc' library (-ldmalloc);

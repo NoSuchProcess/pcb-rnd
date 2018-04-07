@@ -12,8 +12,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-unsigned long pcb_api_ver = PCB_API_VER;
-
 static htsp_t *all_actions = NULL;
 const pcb_hid_action_t *pcb_current_action = NULL;
 

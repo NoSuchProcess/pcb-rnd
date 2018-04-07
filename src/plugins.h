@@ -30,6 +30,19 @@
 #include <puplug/puplug.h>
 #include <puplug/error.h>
 
+/* core's version stored in plugins.o */
+extern unsigned long pcb_api_ver;
+
+#define PCB_API_VER_MATCH (PCB_API_VER == pcb_api_ver)
+#define PCB_API_CHK_VER \
+do { \
+	if (!PCB_API_VER_MATCH) {\
+		fprintf(stderr, "pcb-rnd API version incompatibility: " __FILE__ "=%d core=%d\n(not loading this plugin)\n", PCB_API_VER, pcb_api_ver); \
+		return 1; \
+	} \
+	return 0; \
+} while(0)
+
 extern pup_context_t pcb_pup;
 extern char **pcb_pup_paths;
 
