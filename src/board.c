@@ -111,8 +111,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 
 	pcb_font_create_default(ptr);
 
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-
 	return ptr;
 }
 
