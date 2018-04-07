@@ -64,7 +64,7 @@
 #warning cleanup TODO: put these in a gloal load-context-struct
 vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
-unsigned long warned;
+unsigned long warned, old_model_warned;
 
 #warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
 #define PCB_OBJ_VIA PCB_OBJ_PSTK
@@ -909,6 +909,16 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
+static void warn_old_model(lht_node_t *obj, char *type, int warnid)
+{
+	unsigned long warnbit = 1ul << warnid;
+	if ((rdver < 5) || (old_model_warned & warnbit))
+		return;
+
+	old_model_warned |= warnbit;
+	iolht_warn(obj, -1, "Lihata from v5 does not support the old data model (elements, pins, pads and vias);\nyour file contains %s that will be converted to the new model\n", type);
+}
+
 static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy, int subc_on_bottom)
 {
 	pcb_pstk_t *ps;
@@ -920,6 +930,8 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 
 	if (dt == NULL)
 		return -1;
+
+	warn_old_model(obj, "via", 1);
 
 	parse_flags(&flg, fln=lht_dom_hash_get(obj, "flags"), PCB_OBJ_VIA, &intconn, 1);
 	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
@@ -962,6 +974,8 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask;
 	char *Name = NULL, *Number = NULL;
 
+	warn_old_model(obj, "pad", 2);
+
 	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PAD, &intconn, 0);
 
 	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
@@ -1000,6 +1014,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	int onsld, tdir = 0, tscale = 100;
 	pcb_coord_t ox = 0, oy = 0, tx, ty;
 	pcb_text_t *txt;
+
+	warn_old_model(obj, "element", 3);
 
 	pcb_add_subc_to_data(dt, subc);
 
@@ -1758,6 +1774,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	pcb_plug_io_t *loader;
 
 	warned = 0;
+	old_model_warned = 0;
 	rdver = atoi(nd->name+15);
 	switch(rdver) {
 		case 1: loader = &plug_io_lihata_v1; break;
@@ -1870,6 +1887,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		pcb_subc_t *sc;
 
 		warned = 0;
+		old_model_warned = 0;
 		rdver = atoi(doc->root->name+20);
 		Ptr->is_footprint = 1;
 		res = parse_subc(NULL, Ptr->Data, doc->root->data.list.first, &sc);
@@ -2008,6 +2026,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 	}
 
 	warned = 0;
+	old_model_warned = 0;
 	rdver = atoi(doc->root->name+20);
 	if (rdver < 3) {
 		if (!pcb_io_err_inhibit)
