@@ -130,7 +130,7 @@ ha:{
 				} # Change object
 				ha:Add/place object {
 					li:submenu {
-						ha:Place mark                       = { a={<key>a;<key>m}; action=MarkCrosshair() }
+						ha:Place mark                       = { li:a={{<key>a;<key>m}; {<key>a;<key>w}; }; action=MarkCrosshair() }
 						ha:Place via                        = { a={<key>a;<key>v}; li:action={Mode(Save); Mode(Via); Mode(Notify); Mode(Restore);} }
 						ha:Start routing a line             = { a={<key>a;<key>l}; li:action={Mode(Save); Mode(Line); Mode(Notify); } }
 						ha:Start routing an arc             = { a={<key>a;<key>a}; li:action={Mode(Save); Mode(Arc); Mode(Notify); } }
