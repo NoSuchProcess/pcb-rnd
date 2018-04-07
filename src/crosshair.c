@@ -329,6 +329,13 @@ void XORDrawMoveOrCopy(void)
 			break;
 		}
 
+	case PCB_OBJ_TEXT:
+		{
+			pcb_text_t *text = (pcb_text_t *)pcb_crosshair.AttachedObject.Ptr2;
+			pcb_text_draw_xor(text, dx, dy);
+			break;
+		}
+
 	case PCB_OBJ_LINE_POINT:
 		{
 			pcb_line_t *line;
