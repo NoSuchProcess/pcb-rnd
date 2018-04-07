@@ -275,6 +275,30 @@ static void obj_attr_flag_warn(pcb_any_obj_t *obj)
 		pcb_message(PCB_MSG_WARNING, "^^^ in %s #%ld\n", pcb_obj_type_name(obj->type), obj->ID);
 }
 
+/* Write the thermal list of heavy terminals; put the resulting "thermal"
+   node in ha:dst */
+void build_thermal_heavy(lht_node_t *dst, pcb_any_obj_t *o)
+{
+	lht_node_t *th;
+	pcb_thermal_t tin = o->thermal;
+	const char *bit;
+
+	assert(dst->type == LHT_HASH);
+
+	if (o->thermal == 0) {
+		lht_dom_hash_put(dst, dummy_node("thermal"));
+		return;
+	}
+
+	if (wrver < 4)
+		pcb_io_incompat_save(NULL, o, "lihata boards before version v4 did not support heavy terminal vias\n", "Either save in lihata v4+ or do not use heavy terminal thermals");
+
+	th = lht_dom_node_alloc(LHT_LIST, "thermal");
+	lht_dom_hash_put(dst, th);
+	while((bit = pcb_thermal_bits2str(&tin)) != NULL)
+		lht_dom_list_append(th, build_textf(NULL, bit));
+}
+
 
 static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pcb_coord_t dy, int simple)
 {
@@ -296,6 +320,8 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pc
 	lht_dom_hash_put(obj, build_textf("y1", CFMT, line->Point1.Y+dy));
 	lht_dom_hash_put(obj, build_textf("x2", CFMT, line->Point2.X+dx));
 	lht_dom_hash_put(obj, build_textf("y2", CFMT, line->Point2.Y+dy));
+
+	build_thermal_heavy(obj, (pcb_any_obj_t*)line);
 
 	return obj;
 }
@@ -377,6 +403,8 @@ static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
 	lht_dom_hash_put(obj, build_textf("height", CFMT, arc->Height));
 	lht_dom_hash_put(obj, build_textf("astart", "%ma", arc->StartAngle));
 	lht_dom_hash_put(obj, build_textf("adelta", "%ma", arc->Delta));
+
+	build_thermal_heavy(obj, (pcb_any_obj_t*)arc);
 
 	return obj;
 }
@@ -499,6 +527,8 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 		tbl->data.table.r[row][0] = build_textf(NULL, CFMT, poly->Points[n].X);
 		tbl->data.table.r[row][1] = build_textf(NULL, CFMT, poly->Points[n].Y);
 	}
+
+	build_thermal_heavy(obj, (pcb_any_obj_t*)poly);
 
 	return obj;
 }
