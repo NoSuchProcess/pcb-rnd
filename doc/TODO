@@ -22,7 +22,7 @@
 	+> this has been rewritten in the big increments rewrite (with Richard)
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
-- BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
++ BUG: Zero length lines are not drawn by the PNG exporter in photo mode. Use test file in bug_files/png_photo_zero_len_line.lht to see the issue. Export_Layout->PNG, enable 'photo'. The output PNG should show solid circles inside the top 3 boxes. [report: Ade]
 SUBC: element removal:
 	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
 	- remove Line->Number and *->Number: we use ->term
