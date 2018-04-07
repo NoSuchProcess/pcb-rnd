@@ -12,6 +12,11 @@
 #include "layer.h"
 #include "layer_grp.h"
 
+/* core's version stored in hid_actions.o */
+extern unsigned long pcb_api_ver;
+
+#define PCB_API_VER_MATCH (PCB_API_VER == pcb_hid_ver)
+
 /* attribute dialog properties */
 typedef enum pcb_hat_property_e {
 	PCB_HATP_GLOBAL_CALLBACK,

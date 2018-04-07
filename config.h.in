@@ -187,6 +187,10 @@ print [@
 #define PCB_VERSION "@/local/version@"
 #define PCB_REVISION "@/local/revision@"
 
+/* Format: abccrrrrr where a, b and c are pcb-rnd version numbers and r is
+   the svn revision number (optional) */
+#define PCB_API_VER "@/local/apiver@"
+
 
 /* Define to 1 if you have the `dmalloc' library (-ldmalloc);
    (memory debugging without valgrind) */
