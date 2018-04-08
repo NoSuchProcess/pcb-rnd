@@ -551,7 +551,8 @@ void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar)
 	}
 	data->clip_inhibit--;
 
-	pcb_data_clip_dirty(data, enable_progbar);
+	if (data->clip_inhibit == 0)
+		pcb_data_clip_dirty(data, enable_progbar);
 }
 
 void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool force_all)
