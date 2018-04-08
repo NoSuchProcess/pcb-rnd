@@ -740,7 +740,7 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 
 	parent_subc = pcb_obj_parent_subc(obj);
 	if (parent_subc != NULL) {
-		name = pcb_gui->prompt_for(_("Enter terminal ID:"), PCB_EMPTY(obj->term));
+		name = pcb_gui->prompt_for("Enter terminal ID:", PCB_EMPTY(obj->term));
 		if (name != NULL) {
 			pcb_term_undoable_rename(PCB, obj, name);
 			pcb_draw();
@@ -750,11 +750,11 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 
 	switch(obj->type) {
 	case PCB_OBJ_TEXT:
-		name = pcb_gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *)obj)->TextString));
+		name = pcb_gui->prompt_for("Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString));
 		break;
 
 	case PCB_OBJ_SUBC:
-		name = pcb_gui->prompt_for(_("Subcircuit refdes:"), PCB_EMPTY(((pcb_subc_t *)obj)->refdes));
+		name = pcb_gui->prompt_for("Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes));
 		break;
 
 		default:
