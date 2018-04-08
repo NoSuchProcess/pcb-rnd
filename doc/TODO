@@ -30,7 +30,7 @@
 + BUG: {v n} always prefers the top side padstack: bug_files/card_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 - BUG: TODO: set same (e s) doesn't work on lines and padstacks [report: Igor2]
-- BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
++ BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
 - BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
 - BUG: revert r15462, get conf_set do this automatically; conf_set_dry will need a create arg [report: igor2]
 - BUG: revert r15464, fix conf merge bug:
