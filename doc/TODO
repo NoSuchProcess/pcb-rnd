@@ -68,9 +68,9 @@
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
 + feature: when moving text, also xor-draw the bounding box (should be a config option!) use case: moving refdes texts; easier to line them up with bbox [report: al3x]
-- autocrop bug: copper lines become invisible [report: wojciechk8]
-	-> should use central data move instead of local implementation
-	-> bug_files/redrawbug1.lht, run autocrop()
++ autocrop bug: copper lines become invisible [report: wojciechk8]
+	+> should use central data move instead of local implementation
+	+> bug_files/redrawbug1.lht, run autocrop()
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
 	-> the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8]
