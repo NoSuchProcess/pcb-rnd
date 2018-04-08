@@ -38,16 +38,22 @@ typedef struct pse_proto_layer_s {
 	pcb_coord_t auto_bloat;
 } pse_proto_layer_t;
 
+#define PSE_MASK_BLOAT PCB_MIL_TO_COORD(4)
+
 static const pse_proto_layer_t pse_layer[] = {
 	{"top paste",            PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO,             {2,-1}, 0},
-	{"top mask",             PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB|PCB_LYC_AUTO, {2,-1}, PCB_MIL_TO_COORD(4)},
+	{"top mask",             PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB|PCB_LYC_AUTO, {2,-1}, PSE_MASK_BLOAT},
 	{"top copper",           PCB_LYT_TOP | PCB_LYT_COPPER,    0,                        {4,3},  0},
 	{"any internal copper",  PCB_LYT_INTERN | PCB_LYT_COPPER, 0,                        {2,4},  0},
 	{"bottom copper",        PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0,                        {2,3},  0},
-	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB|PCB_LYC_AUTO, {4,-1}, PCB_MIL_TO_COORD(4)},
-	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1},  0}
+	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB|PCB_LYC_AUTO, {4,-1}, PSE_MASK_BLOAT},
+	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1}, 0}
 };
 #define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
+
+static const char *shapes[] = { "circle", "square", NULL };
+static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only", "top only", "bottom only", "none", NULL };
+static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_INTERN, PCB_LYT_TOP | PCB_LYT_BOTTOM, PCB_LYT_TOP, PCB_LYT_BOTTOM, 0 };
 
 typedef struct pse_s {
 	pcb_hid_attribute_t *attrs;
@@ -66,6 +72,7 @@ typedef struct pse_s {
 	int hdia, hplated;
 	int htop_val, htop_text, htop_layer;
 	int hbot_val, hbot_text, hbot_layer;
+	int gen_shp, gen_size, gen_drill, gen_sides, gen_expose, gen_paste, gen_do;
 
 	/* sub-dialog: shape change */
 	void *parent_hid_ctx;
@@ -453,13 +460,94 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	PCB_DAD_FREE(dlg);
 }
 
+/* Auto gen shape on a single layer */
+static void pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape, pcb_coord_t size)
+{
+	int idx = ts->len;
+
+	ts->len++;
+	ts->shape = realloc(ts->shape, ts->len * sizeof(pcb_pstk_shape_t));
+
+	ts->shape[idx].layer_mask = lyt;
+	ts->shape[idx].comb = 0;
+
+	switch(shape) {
+		case 0:
+			ts->shape[idx].shape = PCB_PSSH_CIRC;
+			ts->shape[idx].data.circ.x = ts->shape[idx].data.circ.y = 0;
+			ts->shape[idx].data.circ.dia = size;
+			break;
+		case 1:
+			ts->shape[idx].shape = PCB_PSSH_POLY;
+			pcb_pstk_shape_alloc_poly(&ts->shape[idx].data.poly, 4);
+			ts->shape[idx].data.poly.x[0] = -size/2;
+			ts->shape[idx].data.poly.y[0] = -size/2;
+			ts->shape[idx].data.poly.x[1] = ts->shape[idx].data.poly.x[0];
+			ts->shape[idx].data.poly.y[1] = ts->shape[idx].data.poly.y[0] + size;
+			ts->shape[idx].data.poly.x[2] = ts->shape[idx].data.poly.x[0] + size;
+			ts->shape[idx].data.poly.y[2] = ts->shape[idx].data.poly.y[0] + size;
+			ts->shape[idx].data.poly.x[3] = ts->shape[idx].data.poly.x[0] + size;
+			ts->shape[idx].data.poly.y[3] = ts->shape[idx].data.poly.y[0];
+			break;
+	}
+}
+
+/* Auto derive shape from the related copper layer */
+static void pse_drv_shape(pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int paste)
+{
+	int srci = (lyt & PCB_LYT_TOP) ? 0 : 1;
+	pcb_pstk_shape_derive(proto, -1, srci, PSE_MASK_BLOAT, lyt | PCB_LYT_MASK, PCB_LYC_SUB|PCB_LYC_AUTO);
+	if (paste)
+		pcb_pstk_shape_derive(proto, -1, srci, 0, lyt | PCB_LYT_PASTE, PCB_LYC_AUTO);
+}
+
+/* Auto gen shapes for all layers the user selected on the dialog plus add the hole */
+static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t proto;
+	int sides = pse->attrs[pse->gen_sides].default_val.int_value;
+	int shape = pse->attrs[pse->gen_shp].default_val.int_value;
+	int expose = pse->attrs[pse->gen_expose].default_val.int_value;
+	int paste = pse->attrs[pse->gen_paste].default_val.int_value;
+	pcb_coord_t size = pse->attrs[pse->gen_size].default_val.coord_value;
+	pcb_layer_type_t lyt = sides_lyt[sides];
+	pcb_pstk_tshape_t *ts;
+	pcb_cardinal_t pid;
+
+	memset(&proto, 0, sizeof(proto));
+
+	ts = pcb_vtpadstack_tshape_alloc_append(&proto.tr, 1);
+	ts->rot = 0.0;
+	ts->xmirror = 0;
+	ts->smirror = 0;
+	ts->len = 0;
+
+	if (lyt & PCB_LYT_TOP)     pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_TOP, shape, size);
+	if (lyt & PCB_LYT_BOTTOM)  pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, shape, size);
+	if (lyt & PCB_LYT_INTERN)  pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, shape, size);
+	if (expose) {
+		if (lyt & PCB_LYT_TOP)    pse_drv_shape(&proto, ts, PCB_LYT_TOP, paste);
+		if (lyt & PCB_LYT_BOTTOM) pse_drv_shape(&proto, ts, PCB_LYT_BOTTOM, paste);
+	}
+
+	proto.hdia = pse->attrs[pse->gen_drill].default_val.coord_value;
+	proto.hplated = 1;
+
+	pid = pcb_pstk_proto_insert_dup(pse->pcb->Data, &proto, 1);
+	pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
+
+	pse_ps2dlg(hid_ctx, pse);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */
+}
+
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
 static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int n;
 	pse_t pse;
-	const char *tabs[] = { "this instance", "prototype", NULL };
+	const char *tabs[] = { "this instance", "prototype", "generate common geometry", NULL };
 	PCB_DAD_DECL(dlg);
 
 	memset(&pse, 0, sizeof(pse));
@@ -483,6 +571,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 		pse.pcb = PCB;
 
 	PCB_DAD_BEGIN_TABBED(dlg, tabs);
+		pse.tab = PCB_DAD_CURRENT(dlg);
 		/* Tab 0: this instance */
 		PCB_DAD_BEGIN_VBOX(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
@@ -592,6 +681,48 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						pse.hbot_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
 						pse.hbot_layer = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_END(dlg);
+			PCB_DAD_END(dlg);
+		PCB_DAD_END(dlg);
+
+		/* Tab 2: generate common geometry */
+		PCB_DAD_BEGIN_VBOX(dlg);
+			PCB_DAD_BEGIN_VBOX(dlg);
+				PCB_DAD_LABEL(dlg, "Generate a new prototype using a few numeric input");
+
+				PCB_DAD_BEGIN_TABLE(dlg, 2);
+					PCB_DAD_LABEL(dlg, "Copper shape:");
+					PCB_DAD_ENUM(dlg, shapes);
+						pse.gen_shp = PCB_DAD_CURRENT(dlg);
+
+					PCB_DAD_LABEL(dlg, "Size (cirlce diameter or square side):");
+					PCB_DAD_COORD(dlg, "");
+						pse.gen_size = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_MINVAL(dlg, 1);
+						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+
+					PCB_DAD_LABEL(dlg, "Drill diameter (0 means no hole):");
+					PCB_DAD_COORD(dlg, "");
+						pse.gen_drill = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_MINVAL(dlg, 1);
+						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+
+					PCB_DAD_LABEL(dlg, "Copper shapes on:");
+					PCB_DAD_ENUM(dlg, sides);
+						pse.gen_sides = PCB_DAD_CURRENT(dlg);
+
+					PCB_DAD_LABEL(dlg, "Expose top/bottom copper:");
+					PCB_DAD_BOOL(dlg, "");
+						pse.gen_expose = PCB_DAD_CURRENT(dlg);
+
+					PCB_DAD_LABEL(dlg, "Paste exposed copper:");
+					PCB_DAD_BOOL(dlg, "");
+						pse.gen_paste = PCB_DAD_CURRENT(dlg);
+
+					PCB_DAD_LABEL(dlg, "");
+					PCB_DAD_BUTTON(dlg, "Generate!");
+						pse.gen_do = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_CHANGE_CB(dlg, pse_gen);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
