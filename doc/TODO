@@ -59,15 +59,15 @@
 - BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
 + BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
-- BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
-	-> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
++ BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
+	+> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
 - BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
 - BUG: undo 'k' on subc, padstacks are undone separatly [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
-- feature: when moving text, also xor-draw the bounding box (should be a config option!) use case: moving refdes texts; easier to line them up with bbox [report: al3x]
++ feature: when moving text, also xor-draw the bounding box (should be a config option!) use case: moving refdes texts; easier to line them up with bbox [report: al3x]
 - autocrop bug: copper lines become invisible [report: wojciechk8]
 	-> should use central data move instead of local implementation
 	-> bug_files/redrawbug1.lht, run autocrop()
