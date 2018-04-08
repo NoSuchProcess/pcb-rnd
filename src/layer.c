@@ -740,6 +740,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 			return NULL;
 	}
 
+	/* target group identified; pick the closest match layer within that group */
 	{
 		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
 		for(l = 0; l < grp->len; l++) {
