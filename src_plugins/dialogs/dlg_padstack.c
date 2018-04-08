@@ -56,7 +56,6 @@ typedef struct pse_s {
 	int tab;
 
 	/* widget IDs */
-	int tab_instance, tab_prototype;
 	int but_instance, but_prototype;
 	int proto_id, clearance, rot, xmirror, smirror;
 	int proto_shape[pse_num_layers];
@@ -76,24 +75,6 @@ typedef struct pse_s {
 	int copy_do, copy_from;
 	int shrink, amount, grow;
 } pse_t;
-
-static void pse_tab_update(void *hid_ctx, pse_t *pse)
-{
-	switch(pse->tab) {
-		case 0:
-			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_instance, pcb_false);
-			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_prototype, pcb_true);
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_instance, pcb_false);
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_prototype, pcb_true);
-			break;
-		case 1:
-			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_instance, pcb_true);
-			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_prototype, pcb_false);
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_instance, pcb_true);
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_prototype, pcb_false);
-			break;
-	}
-}
 
 /* build a group/layer name string in tmp */
 char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int size)
@@ -201,20 +182,6 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_text, str_value, tmp);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_layer, str_value, pse_group_string(pse->pcb, bottom_grp, tmp, sizeof(tmp)));
 
-}
-
-static void pse_tab_ps(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-	pse_t *pse = caller_data;
-	pse->tab = 0;
-	pse_tab_update(hid_ctx, pse);
-}
-
-static void pse_tab_proto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-	pse_t *pse = caller_data;
-	pse->tab = 1;
-	pse_tab_update(hid_ctx, pse);
 }
 
 static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -492,6 +459,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 {
 	int n;
 	pse_t pse;
+	const char *tabs[] = { "this instance", "prototype", NULL };
 	PCB_DAD_DECL(dlg);
 
 	memset(&pse, 0, sizeof(pse));
@@ -514,21 +482,22 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 	if (pse.pcb == NULL)
 		pse.pcb = PCB;
 
+	PCB_DAD_BEGIN_TABBED(dlg, tabs);
+
+#if 0
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "this instance");
 				pse.but_instance = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_CHANGE_CB(dlg, pse_tab_ps);
 				PCB_DAD_HELP(dlg, "Change the properties of\nthis one padstack instance");
 			PCB_DAD_BUTTON(dlg, "prototype");
 				pse.but_prototype = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_CHANGE_CB(dlg, pse_tab_proto);
 				PCB_DAD_HELP(dlg, "Change the properties of\nthe padstack prototype used by\nthis padstack\n(affects all padstacks using the same prototype)");
 		PCB_DAD_END(dlg);
+#endif
 
-		/* this instance */
+		/* Tab 0: this instance */
 		PCB_DAD_BEGIN_VBOX(dlg);
-			pse.tab_instance = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 				PCB_DAD_LABEL(dlg, "Setting that affect only this padstack instance");
@@ -564,9 +533,8 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
 
-		/* prototype */
+		/* Tab 1: prototype */
 		PCB_DAD_BEGIN_VBOX(dlg);
-			pse.tab_prototype = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_LABEL(dlg, "Setting that affect all padstacks with the same prototype");
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
@@ -644,7 +612,6 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 
 	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", &pse, pcb_true, NULL);
 	pse.attrs = dlg;
-	pse_tab_update(dlg_hid_ctx, &pse);
 	pse_ps2dlg(dlg_hid_ctx, &pse);
 	PCB_DAD_RUN(dlg);
 
