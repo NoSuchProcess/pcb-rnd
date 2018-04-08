@@ -23,9 +23,6 @@
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 - BUG: subc: put a 1206 on an empty board, save it in old .pcb -> pads become round; probably the same happens with old lihata? [report: igor2]
 		- see also: padstack TODO #22
-- autocrop:
-	- rewrite to use pcb_data_move
-	- make sure pcb_data_move does one full poly clipping, the way autocrop does
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 + BUG: {v n} always prefers the top side padstack: bug_files/card_edge.fp, {v n}, {tab}, {v n} [report: al3x]
 - BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
