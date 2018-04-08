@@ -294,6 +294,7 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (ps->Clearance == value)
 		return NULL;
 
+	value /= 2;
 	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL, NULL) == 0)
 		return ps;
 
