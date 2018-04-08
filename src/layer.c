@@ -736,7 +736,12 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		gid = pcb_layergrp_step(pcb, gid, src->meta.bound.stack_offs, PCB_LYT_COPPER | PCB_LYT_INTERN);
 	}
 	else {
-		if (pcb_layergrp_list(pcb, src->meta.bound.type, &gid, 1) != 1)
+		pcb_layer_type_t lyt = src->meta.bound.type;
+		if ((lyt & PCB_LYT_OUTLINE) && (lyt & PCB_LYT_ANYWHERE)) {
+			lyt = PCB_LYT_OUTLINE;
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: outline layer must be global\n", src->name);
+		}
+		if (pcb_layergrp_list(pcb, lyt, &gid, 1) != 1)
 			return NULL;
 	}
 
