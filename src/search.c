@@ -1124,10 +1124,10 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			SearchRatLineByLocation(objst, req_flag, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
 		return PCB_OBJ_RAT;
 
-	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_COPPER))
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1, 0))
 		return PCB_OBJ_PSTK;
 
-	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 1, 0))
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_COPPER))
 		return PCB_OBJ_PSTK;
 
 	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_ANYTHING))
