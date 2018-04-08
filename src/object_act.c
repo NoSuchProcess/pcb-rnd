@@ -680,6 +680,7 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
 	if (sc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
+		return 0;
 	}
 
 	if (value != NULL)
