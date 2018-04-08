@@ -57,8 +57,12 @@ static int pcb_act_autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if ((dx == 0) && (dy == 0) && (w == PCB->MaxWidth) && (h == PCB->MaxHeight))
 		return 0;
 
+	pcb_draw_inhibit_inc();
+	pcb_data_clip_inhibit_inc(PCB->Data);
 	pcb_data_move(PCB->Data, dx, dy);
 	pcb_board_resize(w, h);
+	pcb_data_clip_inhibit_dec(PCB->Data, 1);
+	pcb_draw_inhibit_dec();
 
 	pcb_undo_inc_serial();
 	pcb_redraw();
