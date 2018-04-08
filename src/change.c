@@ -749,13 +749,13 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 	}
 
 	switch(obj->type) {
-	case PCB_OBJ_TEXT:
-		name = pcb_gui->prompt_for("Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString));
-		break;
+		case PCB_OBJ_TEXT:
+			name = pcb_gui->prompt_for("Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString));
+			break;
 
-	case PCB_OBJ_SUBC:
-		name = pcb_gui->prompt_for("Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes));
-		break;
+		case PCB_OBJ_SUBC:
+			name = pcb_gui->prompt_for("Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes));
+			break;
 
 		default:
 			break;
@@ -764,9 +764,9 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 	if (name) {
 		/* ChangeObjectName takes ownership of the passed memory; do not free old name, it's kept for undo */
 		char *old;
-		old = (char *) pcb_chg_obj_name(obj->type, obj->parent.any, obj, obj, name);
+		old = (char *)pcb_chg_obj_name(obj->type, obj->parent.any, obj, obj, name);
 
-		if (old != (char *) -1) {
+		if (old != (char *)-1) {
 			pcb_undo_add_obj_to_change_name(obj->type, obj->parent.any, obj, obj, old);
 			pcb_undo_inc_serial();
 		}
