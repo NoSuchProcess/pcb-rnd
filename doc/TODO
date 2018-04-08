@@ -58,7 +58,7 @@
 - BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
 - BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
-- BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
++ BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
 - BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
 - BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
