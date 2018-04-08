@@ -54,6 +54,9 @@ static int pcb_act_autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	w = ((box.X2 + dx) / PCB->Grid + 2) * PCB->Grid;
 	h = ((box.Y2 + dy) / PCB->Grid + 2) * PCB->Grid;
 
+	if ((dx == 0) && (dy == 0) && (w == PCB->MaxWidth) && (h == PCB->MaxHeight))
+		return 0;
+
 	pcb_data_move(PCB->Data, dx, dy);
 	pcb_board_resize(w, h);
 
