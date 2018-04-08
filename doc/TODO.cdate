@@ -6,9 +6,6 @@ Author Igor
 ./cycdrag:
 Author Igor
 
-./Default:
-Author Igor
-
 ./devlog:
 Author Igor
 
@@ -21,12 +18,8 @@ Author Igor
 ./ecosys_fmt:
 Author Igor
 
-./ecosys_name:
-Author pcb-rnd community
-
 ./ecosys_prop:
 Author Igor
-
 
 ./fp_wget:
 Author Igor
@@ -35,22 +28,6 @@ Author Igor
 Author Igor
 
 ./genxproj_a1:
-Author Igor
-
-./hyp2mat:
-Abstract
-Author
-Body.html
-Tags
-Title
-
-./Iecosys:
-Author Igor
-
-./Ifootprint:
-Author Igor
-
-./Iformat:
 Author Igor
 
 ./library_t:
@@ -79,34 +56,12 @@ Author Robert Drehmel
 ./pcblib:
 Author Igor
 
-./poly_bug1:
-Author Igor
-
-./pool:
-Author Igor
-
-./prog_tip3:
-TODO
-
 ./propedit:
 Author Igor
-
-./subc1:
-Author ibor 'Igor2' Palinkas Erich S. Heinzle 
 
 ./svn_rev:
 Author Igor
 
-./thermal_howto:
-#Written to SVN
-Author erich
-
-./toner_transfer:
-#Written to SVN
-Author erich
-
 ./ui_layer:
 Author Igor
 
-./vs_geda:
-Author Igor
