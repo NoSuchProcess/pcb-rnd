@@ -58,6 +58,11 @@ void pcb_tool_via_notify_mode(void)
 		return;
 	}
 
+	if (conf_core.design.via_drilling_hole >= conf_core.design.via_thickness) {
+		pcb_message(PCB_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
+		return;
+	}
+
 #warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
 	{
 		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, pcb_tool_note.X, pcb_tool_note.Y,
