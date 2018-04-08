@@ -483,24 +483,11 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 		pse.pcb = PCB;
 
 	PCB_DAD_BEGIN_TABBED(dlg, tabs);
-
-#if 0
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_BEGIN_HBOX(dlg);
-			PCB_DAD_BUTTON(dlg, "this instance");
-				pse.but_instance = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_HELP(dlg, "Change the properties of\nthis one padstack instance");
-			PCB_DAD_BUTTON(dlg, "prototype");
-				pse.but_prototype = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_HELP(dlg, "Change the properties of\nthe padstack prototype used by\nthis padstack\n(affects all padstacks using the same prototype)");
-		PCB_DAD_END(dlg);
-#endif
-
 		/* Tab 0: this instance */
 		PCB_DAD_BEGIN_VBOX(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-				PCB_DAD_LABEL(dlg, "Setting that affect only this padstack instance");
+				PCB_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
 				PCB_DAD_BEGIN_HBOX(dlg);
 					PCB_DAD_LABEL(dlg, "prototype");
 					PCB_DAD_BUTTON(dlg, "#5");
@@ -536,7 +523,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 		/* Tab 1: prototype */
 		PCB_DAD_BEGIN_VBOX(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
-				PCB_DAD_LABEL(dlg, "Setting that affect all padstacks with the same prototype");
+				PCB_DAD_LABEL(dlg, "Settings that affect all padstacks with the same prototype");
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 				PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
 				PCB_DAD_BEGIN_TABLE(dlg, 5);
