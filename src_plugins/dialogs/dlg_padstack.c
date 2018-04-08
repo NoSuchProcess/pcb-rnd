@@ -375,7 +375,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 	}
 
-	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pse_layer[pse->editing_shape].auto_bloat, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_shape_derive(proto, dst_idx, src_idx, 0, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
