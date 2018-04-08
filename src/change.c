@@ -739,17 +739,11 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 	pcb_subc_t *parent_subc;
 
 	parent_subc = pcb_obj_parent_subc(obj);
-	if (parent_subc != NULL) {
-		name = pcb_gui->prompt_for("Enter terminal ID:", PCB_EMPTY(obj->term));
-		if (name != NULL) {
-			pcb_term_undoable_rename(PCB, obj, name);
-			pcb_draw();
-		}
-		return obj;
-	}
 
 	switch(obj->type) {
 		case PCB_OBJ_TEXT:
+			if ((parent_subc != NULL) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, obj) && !PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, obj))
+				goto term_name; /* special case: dyntext floaters are rarely temrinals */
 			name = pcb_gui->prompt_for("Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString));
 			break;
 
@@ -758,6 +752,15 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 			break;
 
 		default:
+			term_name:;
+			if (parent_subc != NULL) {
+				name = pcb_gui->prompt_for("Enter terminal ID:", PCB_EMPTY(obj->term));
+				if (name != NULL) {
+					pcb_term_undoable_rename(PCB, obj, name);
+					pcb_draw();
+				}
+				return obj;
+			}
 			break;
 	}
 
