@@ -67,7 +67,6 @@
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
-+ feature: when moving text, also xor-draw the bounding box (should be a config option!) use case: moving refdes texts; easier to line them up with bbox [report: al3x]
 + autocrop bug: copper lines become invisible [report: wojciechk8]
 	+> should use central data move instead of local implementation
 	+> bug_files/redrawbug1.lht, run autocrop()
