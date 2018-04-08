@@ -733,12 +733,6 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	return pcb_false;
 }
 
-/* ---------------------------------------------------------------------------
- * queries the user for a new object name and changes it
- *
- * The allocated memory isn't freed because the old string is used
- * by the undo module.
- */
 void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 {
 	char *name = NULL;
@@ -768,7 +762,7 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 	}
 
 	if (name) {
-		/* NB: ChangeObjectName takes ownership of the passed memory */
+		/* ChangeObjectName takes ownership of the passed memory; do not free old name, it's kept for undo */
 		char *old;
 		old = (char *) pcb_chg_obj_name(obj->type, obj->parent.any, obj, obj, name);
 
