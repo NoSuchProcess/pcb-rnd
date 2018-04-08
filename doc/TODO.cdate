@@ -1,0 +1,129 @@
+### list of pool nodes with missing Cdate
+./background_image:
+#Straight to SVN
+Author Erich
+
+./bbvia:
+Author Igor
+
+./cross_sect:
+Author Igor
+
+./cycdrag:
+Author Igor
+
+./Default:
+Author Igor
+
+./devlog:
+Author Igor
+
+./ecosys_edacore:
+Author Igor
+
+./ecosys_edakrill:
+Author Igor
+
+./ecosys_fmt:
+Author Igor
+
+./ecosys_name:
+Author pcb-rnd community
+
+./ecosys_prop:
+Author Igor
+
+
+./fp_wget:
+Author Igor
+
+./fullscreen:
+Author Igor
+
+./genxproj_a1:
+Author Igor
+
+./hyp2mat:
+Abstract
+Author
+Body.html
+Tags
+Title
+
+./Iecosys:
+Author Igor
+
+./Ifootprint:
+Author Igor
+
+./Iformat:
+Author Igor
+
+./library_t:
+Author Igor
+
+./local_grid:
+Author Igor
+
+./mincut:
+Author Igor
+
+./mucs:
+#written to SVN
+Author erich
+
+./negselect:
+Author Igor
+
+./oldplugins:
+Author Igor
+
+./onpoint:
+#import from /features
+Author Robert Drehmel
+
+
+./padstack:
+Author Igor
+
+./padstack_imp:
+Author Igor
+
+
+./pcblib:
+Author Igor
+
+./poly_bug1:
+Author Igor
+
+./pool:
+Author Igor
+
+./prog_tip3:
+TODO
+
+./propedit:
+Author Igor
+
+./subc1:
+Author ibor 'Igor2' Palinkas Erich S. Heinzle 
+
+./svn_rev:
+Author Igor
+
+./thermal_howto:
+#Written to SVN
+Author erich
+
+./thermals:
+Author Igor
+
+./toner_transfer:
+#Written to SVN
+Author erich
+
+./ui_layer:
+Author Igor
+
+./vs_geda:
+Author Igor
