@@ -290,14 +290,12 @@ static const char pcb_acts_ChangeSize[] =
 
 static const char pcb_acth_ChangeSize[] = "Changes the size of objects.";
 
-#warning subc TODO: check if it is true:
 /* %start-doc actions ChangeSize
 
 For lines and arcs, this changes the width.  For padstacks, this
-changes the overall diameter of the copper annulus.  For pads, this
-changes the width and, indirectly, the length.  For texts and names,
-this changes the scaling factor.  For subcircuits, this changes the width
-of the silk layer lines and arcs for this element.
+changes the shape size (but does not touch the hole diameter). For
+texts, this changes the scaling factor.  For subcircuits, this
+changes the width of the silk layer lines and arcs for this element.
 
 %end-doc */
 
