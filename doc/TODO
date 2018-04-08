@@ -80,6 +80,7 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouter: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
+- BUG: lesstif: doesn't draw top copper [report: Karl, Igor2]
 - BUG: place default qfn subc from the parametric lib, rotate 90deg with the rotate tool, U-undo the rotate and the individual pads get rotated back instead of the whole subc [report: Miloh]
 
 2. For later releases ===============================================================================
