@@ -470,6 +470,7 @@ static void pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape
 
 	ts->shape[idx].layer_mask = lyt;
 	ts->shape[idx].comb = 0;
+	ts->shape[idx].clearance = 0;
 
 	switch(shape) {
 		case 0:
