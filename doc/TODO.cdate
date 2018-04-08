@@ -1,26 +1,5 @@
 ### list of pool nodes with missing Cdate
 
-./cross_sect:
-Author Igor
-
-./cycdrag:
-Author Igor
-
-./devlog:
-Author Igor
-
-./ecosys_edacore:
-Author Igor
-
-./ecosys_edakrill:
-Author Igor
-
-./ecosys_fmt:
-Author Igor
-
-./ecosys_prop:
-Author Igor
-
 ./fp_wget:
 Author Igor
 
@@ -57,9 +36,6 @@ Author Robert Drehmel
 Author Igor
 
 ./propedit:
-Author Igor
-
-./svn_rev:
 Author Igor
 
 ./ui_layer:
