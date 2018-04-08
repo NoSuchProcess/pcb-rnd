@@ -1414,6 +1414,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 			char *fe_name = pcb_concat(old_filename, ".mem.lht", NULL);
 			fe = pcb_fopen(fe_name, "w");
 			if (fe != NULL) {
+				clean_invalid(brd->root); /* remove invalid nodes placed for persistency */
 				res = lht_dom_export(brd->root, fe, "");
 				fclose(fe);
 			}
@@ -1527,6 +1528,7 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 
 	lht_dom_list_append(doc->root, build_subc(sc));
 
+	clean_invalid(doc->root); /* remove invalid nodes placed for persistency */
 	res = lht_dom_export(doc->root, f, "");
 
 	lht_dom_uninit(doc);
