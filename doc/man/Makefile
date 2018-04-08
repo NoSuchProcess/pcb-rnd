@@ -48,6 +48,7 @@ install_all:
 	$(SCCBOX) $(HOW) "pcb-prj2lht.1" "$(MAN1DIR)/pcb-prj2lht.1"
 	$(SCCBOX) $(HOW) "gsch2pcb-rnd.1" "$(MAN1DIR)/gsch2pcb-rnd.1"
 	$(SCCBOX) $(HOW) "fp2anim.1" "$(MAN1DIR)/fp2anim.1"
+	$(SCCBOX) $(HOW) "fp2subc.1" "$(MAN1DIR)/fp2subc.1"
 
 install:
 	$(MAKE) install_all HOW="install -f"
