@@ -86,7 +86,7 @@ pcb_bool pcb_set_obj_join(int, void *, void *, void *);
 pcb_bool pcb_clr_obj_join(int, void *, void *, void *);
 pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 void *pcb_chg_obj_name(int, void *, void *, void *, char *);
-void *pcb_chg_obj_name_query(int, void *, void *, void *);
+void *pcb_chg_obj_name_query(pcb_any_obj_t *obj);
 pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, pcb_coord_t r, pcb_bool absolute);
 pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool absolute);
 pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);

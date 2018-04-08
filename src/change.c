@@ -739,10 +739,9 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * The allocated memory isn't freed because the old string is used
  * by the undo module.
  */
-void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 {
 	char *name = NULL;
-	pcb_any_obj_t *obj = Ptr2;
 	pcb_subc_t *parent_subc;
 
 	parent_subc = pcb_obj_parent_subc(obj);
@@ -752,29 +751,33 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			pcb_term_undoable_rename(PCB, obj, name);
 			pcb_draw();
 		}
-		return Ptr3;
+		return obj;
 	}
 
-	switch (Type) {
+	switch(obj->type) {
 	case PCB_OBJ_TEXT:
-		name = pcb_gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *) Ptr2)->TextString));
+		name = pcb_gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *)obj)->TextString));
 		break;
 
 	case PCB_OBJ_SUBC:
-		name = pcb_gui->prompt_for(_("Subcircuit refdes:"), PCB_EMPTY(((pcb_subc_t *)Ptr2)->refdes));
+		name = pcb_gui->prompt_for(_("Subcircuit refdes:"), PCB_EMPTY(((pcb_subc_t *)obj)->refdes));
 		break;
+
+		default:
+			break;
 	}
+
 	if (name) {
 		/* NB: ChangeObjectName takes ownership of the passed memory */
 		char *old;
-		old = (char *) pcb_chg_obj_name(Type, Ptr1, Ptr2, Ptr3, name);
+		old = (char *) pcb_chg_obj_name(obj->type, obj->parent.any, obj, obj, name);
 
 		if (old != (char *) -1) {
-			pcb_undo_add_obj_to_change_name(Type, Ptr1, Ptr2, Ptr3, old);
+			pcb_undo_add_obj_to_change_name(obj->type, obj->parent.any, obj, obj, old);
 			pcb_undo_inc_serial();
 		}
 		pcb_draw();
-		return Ptr3;
+		return obj;
 	}
 	return NULL;
 }
