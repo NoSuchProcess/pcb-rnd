@@ -545,7 +545,7 @@ static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
 static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int n;
+	int n, target_tab = -1;
 	pse_t pse;
 	const char *tabs[] = { "this instance", "prototype", "generate common geometry", NULL };
 	PCB_DAD_DECL(dlg);
@@ -565,6 +565,9 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 	}
 	else
 		PCB_ACT_FAIL(PadstackEdit);
+
+	if (argc > 0)
+		target_tab = atoi(argv[1]);
 
 	pse.pcb = pcb_data_get_top(pse.ps->parent.data);
 	if (pse.pcb == NULL)
@@ -731,6 +734,8 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", &pse, pcb_true, NULL);
 	pse.attrs = dlg;
 	pse_ps2dlg(dlg_hid_ctx, &pse);
+	if (target_tab > 0)
+		PCB_DAD_SET_VALUE(dlg_hid_ctx, pse.tab, int_value, target_tab);
 	PCB_DAD_RUN(dlg);
 
 	PCB_DAD_FREE(dlg);
