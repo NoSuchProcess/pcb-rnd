@@ -126,8 +126,9 @@
 	- remove Attribute()
 - DEL: retire the nelma plugin - nelma is unfinished and not maintained
 - feature: padstack label smarter print [report: Ade]
-	- rotate depending pastack bbox orientation (example: tqfp upper pads)
-	- global conf setting for label text size
+	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
+	- global conf setting for label text size [report: Ade]
+	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - feautres/cleanup: hid:
 	- "erase" color:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
