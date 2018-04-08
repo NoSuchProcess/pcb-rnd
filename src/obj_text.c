@@ -1018,6 +1018,12 @@ void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text)
 void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 {
 	DrawTextLowLevel_(text, 0, 1, x, y);
+	if (conf_core.appearance.text_host_bbox) {
+		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
+		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
+		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
+		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
+	}
 }
 
 /*** init ***/

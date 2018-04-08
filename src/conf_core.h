@@ -166,6 +166,7 @@ typedef struct {
 		CFT_COORD mark_size;               /* relative marker size */
 		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
 		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
+		CFT_BOOLEAN text_host_bbox;        /* when moving a text object, the outline thin-draw should also include the bounding box */
 		struct loglevels {
 			CFT_STRING   debug_tag;          /* log style tag of debug messages */
 			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
