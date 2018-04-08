@@ -1,0 +1,65 @@
+.\" pcb-rnd - manual
+.\" Copyright (C) 2016 Tibor 'Igor2' Palinkas
+.\" 
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\" 
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details.
+.\" 
+.\" You should have received a copy of the GNU General Public License along
+.\" with this program; if not, write to the Free Software Foundation, Inc.,
+.\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.\" 
+.\" Contact: pcb-rnd[removethis]@igor2.repo.hu
+.TH fp2subc 1 2018-04-08 "" "pcb-rnd manual"
+.SH NAME
+fp2subc - convert any footprint into a pcb-rnd subcircuit
+.SH SYNPOSIS
+.nf
+.sp
+\fBfp2subc [\fIoptions\fB] \fIinfile\fB [\fIoutfile\fB]
+.fi
+.SH DECSRIPTION
+
+.BR fp2subc
+executes pcb-rnd in batch mode to load a footprint (typically specified in an alien format) and save it as a native pcb-rnd subcircuit. The script is useful for mass-converting old footprint libraries. 
+.PP
+If \fIoutfile\fR is not specified, its name is guessed from \fIinfile\fR
+.SH OPTIONS
+
+
+.TP
+
+.B --lib 
+\fIinfile\fR is not a path but a footprint name that should be searched in the library 
+.TP
+
+.B -l 
+same as --lib 
+.TP
+
+.B --pcb-rnd exepath 
+run exepath for invoking pcb-rnd (default is "pcb-rnd", which depends on $PATH) 
+.TP
+
+.B -p exepath 
+same as --pcb-rnd 
+.TP
+
+.B --debugger exepath 
+insert exepath before pcb-rnd on the command line; useful for running the process e.g. in valgrind 
+.TP
+
+.B -d exepath 
+same as --debugger 
+.TP
+
+.B -c key=val 
+pass on a -c key=val CLI config setting to pcb-rnd; useful for setting up library paths
+.PP
+

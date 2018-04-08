@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+<title>fp2subc - pcb-rnd manual</title>
+</HEAD><BODY>
+<!--
+pcb-rnd - manual
+Copyright (C) 2016 Tibor 'Igor2' Palinkas
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Contact: pcb-rnd[removethis]@igor2.repo.hu
+-->
+<table width="100%">
+<TR>
+		<TH align="left">   fp2subc 1
+		<TH align="center"> 2018-04-08
+		<TH align="right">  pcb-rnd manual
+</table>
+
+
+
+<H3>NAME</H3>
+<blockquote>
+fp2subc - convert any footprint into a pcb-rnd subcircuit
+</blockquote>
+
+<H3>SYNPOSIS</H3>
+<blockquote>
+<P>
+<tt><B>fp2subc</B> [<I>options</I>] <I>infile</I> [<I>outfile</I>]</tt>
+
+
+
+</blockquote>
+
+<H3>DESCRIPTION</H3>
+<blockquote>
+<B>fp2subc</B> executes pcb-rnd in batch mode to load a footprint (typically specified in an alien format) and save it as a native pcb-rnd subcircuit. The script is useful for mass-converting old footprint libraries. 
+<P>
+If <I>outfile</I> is not specified, its name is guessed from <I>infile</I>
+
+</blockquote>
+
+
+<H3>OPTIONS</H3>
+<blockquote>
+
+<table border=1>
+
+	<TR>
+
+		<TD> --lib 
+		<TD> <I>infile</I> is not a path but a footprint name that should be searched in the library 
+	<TR>
+
+		<TD> -l 
+		<TD> same as --lib 
+	<TR>
+
+		<TD> --pcb-rnd exepath 
+		<TD> run exepath for invoking pcb-rnd (default is "pcb-rnd", which depends on $PATH) 
+	<TR>
+
+		<TD> -p exepath 
+		<TD> same as --pcb-rnd 
+	<TR>
+
+		<TD> --debugger exepath 
+		<TD> insert exepath before pcb-rnd on the command line; useful for running the process e.g. in valgrind 
+	<TR>
+
+		<TD> -d exepath 
+		<TD> same as --debugger 
+	<TR>
+
+		<TD> -c key=val 
+		<TD> pass on a -c key=val CLI config setting to pcb-rnd; useful for setting up library paths
+</table>
+</blockquote>
+<P>
+<table width="100%">
+<TR>
+		<TH align="left">   fp2subc 1
+		<TH align="center"> 2018-04-08
+		<TH align="right">  pcb-rnd manual
+</table>
+
+
+</BODY></HTML>

@@ -1,0 +1,58 @@
+<title>fp2subc</title>
+<sect>1</sect>
+<date>2018-04-08</date>
+
+<name> fp2subc - convert any footprint into a pcb-rnd subcircuit </name>
+<syn> <call>fp2subc</call> [<arg>options</arg>] <arg>infile</arg> [<arg>outfile</arg>] </syn>
+
+<description>
+<call>fp2subc</call> executes pcb-rnd in batch mode to load a footprint
+(typically specified in an alien format) and save it as a native pcb-rnd
+subcircuit. The script is useful for mass-converting old footprint
+libraries.
+<p>
+If <arg>outfile</arg> is not specified, its name is guessed from
+<arg>infile</arg>
+</description>
+
+<options>
+<kvlist>
+
+	<item>
+		<key> --lib </key>
+		<value> <arg>infile</arg> is not a path but a footprint name that
+		        should be searched in the library </value>
+	</item>
+	<item>
+		<key> -l </key>
+		<value> same as --lib
+	</item>
+
+	<item>
+		<key> --pcb-rnd exepath </key>
+		<value> run exepath for invoking pcb-rnd (default is "pcb-rnd", which
+		        depends on $PATH) </value>
+	</item>
+	<item>
+		<key> -p exepath </key>
+		<value> same as --pcb-rnd
+	</item>
+
+	<item>
+		<key> --debugger exepath </key>
+		<value> insert exepath before pcb-rnd on the command line; useful
+		        for running the process e.g. in valgrind </value>
+	</item>
+	<item>
+		<key> -d exepath </key>
+		<value> same as --debugger
+	</item>
+
+	<item>
+		<key> -c key=val </key>
+		<value> pass on a -c key=val CLI config setting to pcb-rnd; useful for
+		        setting up library paths </value>
+	</item>
+
+</kvlist>
+</options>
