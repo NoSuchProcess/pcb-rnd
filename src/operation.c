@@ -168,7 +168,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type & PCB_OBJ_SUBC && F->subc) {
+	if ((type & (PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART)) && F->subc) {
 		PCB_SUBC_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
@@ -179,18 +179,10 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				F->subc(ctx, subc);
 				changed = pcb_true;
 			}
-			else if (pcb->loose_subc) {
+			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART)) {
 				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type))
 					changed = pcb_true;
 			}
-		}
-		PCB_END_LOOP;
-	}
-
-	if (type & PCB_OBJ_SUBC_PART) {
-		PCB_SUBC_LOOP(data);
-		{
-			changed |= pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type);
 		}
 		PCB_END_LOOP;
 	}
