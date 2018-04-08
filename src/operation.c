@@ -187,6 +187,13 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		PCB_END_LOOP;
 	}
 
+	if (type & PCB_OBJ_SUBC_PART) {
+		PCB_SUBC_LOOP(data);
+		{
+			changed |= pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type);
+		}
+		PCB_END_LOOP;
+	}
 
 	/* process padstacks */
 	if (type & PCB_OBJ_PSTK && pcb->pstk_on && F->padstack) {
