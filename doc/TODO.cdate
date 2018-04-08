@@ -1,10 +1,4 @@
 ### list of pool nodes with missing Cdate
-./background_image:
-#Straight to SVN
-Author Erich
-
-./bbvia:
-Author Igor
 
 ./cross_sect:
 Author Igor
@@ -82,14 +76,6 @@ Author Igor
 #import from /features
 Author Robert Drehmel
 
-
-./padstack:
-Author Igor
-
-./padstack_imp:
-Author Igor
-
-
 ./pcblib:
 Author Igor
 
@@ -114,9 +100,6 @@ Author Igor
 ./thermal_howto:
 #Written to SVN
 Author erich
-
-./thermals:
-Author Igor
 
 ./toner_transfer:
 #Written to SVN
