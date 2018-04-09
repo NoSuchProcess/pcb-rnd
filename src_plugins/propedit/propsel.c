@@ -200,14 +200,29 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_common(ctx, (pcb_any_obj_t *)ps);
 }
 
-static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *msubc)
 {
-	map_chk_skip(ctx, subc);
-	map_attr(ctx, &subc->Attributes);
-	map_common(ctx, (pcb_any_obj_t *)subc);
+	map_chk_skip(ctx, msubc);
+	map_attr(ctx, &msubc->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)msubc);
 	if (pcb->loose_subc) {
-		PCB_PADSTACK_LOOP(subc->data); {
+		PCB_ARC_ALL_LOOP(msubc->data); {
+			map_arc_cb(ctx, pcb, layer, arc);
+		} PCB_ENDALL_LOOP;
+		PCB_LINE_ALL_LOOP(msubc->data); {
+			map_line_cb(ctx, pcb, layer, line);
+		} PCB_ENDALL_LOOP;
+		PCB_POLY_ALL_LOOP(msubc->data); {
+			map_poly_cb(ctx, pcb, layer, polygon);
+		} PCB_ENDALL_LOOP;
+		PCB_TEXT_ALL_LOOP(msubc->data); {
+			map_text_cb(ctx, pcb, layer, text);
+		} PCB_ENDALL_LOOP;
+		PCB_PADSTACK_LOOP(msubc->data); {
 			map_pstk_cb(ctx, pcb, padstack);
+		} PCB_END_LOOP;
+		PCB_SUBC_LOOP(msubc->data); {
+			map_subc_cb_(ctx, pcb, subc);
 		} PCB_END_LOOP;
 	}
 }
@@ -510,22 +525,37 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
 }
 
-static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *ssubc)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
 	if (pcb->loose_subc) {
-		PCB_PADSTACK_LOOP(subc->data); {
+		PCB_ARC_ALL_LOOP(ssubc->data); {
+			set_arc_cb(ctx, pcb, layer, arc);
+		} PCB_ENDALL_LOOP;
+		PCB_LINE_ALL_LOOP(ssubc->data); {
+			set_line_cb(ctx, pcb, layer, line);
+		} PCB_ENDALL_LOOP;
+		PCB_POLY_ALL_LOOP(ssubc->data); {
+			set_poly_cb(ctx, pcb, layer, polygon);
+		} PCB_ENDALL_LOOP;
+		PCB_TEXT_ALL_LOOP(ssubc->data); {
+			set_text_cb(ctx, pcb, layer, text);
+		} PCB_ENDALL_LOOP;
+		PCB_PADSTACK_LOOP(ssubc->data); {
 			set_pstk_cb(ctx, pcb, padstack);
+		} PCB_END_LOOP;
+		PCB_SUBC_LOOP(ssubc->data); {
+			set_subc_cb_(ctx, pcb, subc);
 		} PCB_END_LOOP;
 	}
 
-	set_chk_skip(st, subc);
+	set_chk_skip(st, ssubc);
 
-	if (set_common(st, (pcb_any_obj_t *)subc)) return;
+	if (set_common(st, (pcb_any_obj_t *)ssubc)) return;
 
 	if (st->is_attr) {
-		set_attr(st, &subc->Attributes);
+		set_attr(st, &ssubc->Attributes);
 		return;
 	}
 }
