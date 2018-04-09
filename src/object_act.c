@@ -1060,13 +1060,33 @@ static int pcb_act_CreateText(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return 0;
 }
 
-static const char pcb_acts_subc[] = "subc(hash, [board|selected])\n";
+static const char pcb_acts_subc[] =
+	"subc(hash, [board|selected])\n"
+	"subc(loose, on|off|toggle|check)\n"
+	;
 static const char pcb_acth_subc[] = "Various operations on subc";
 static int pcb_act_subc(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc == 0)
 		PCB_ACT_FAIL(subc);
 	switch (pcb_funchash_get(argv[0], NULL)) {
+		case F_Loose:
+			if ((argc < 2) || (strcmp(argv[1], "toggle") == 0))
+				PCB->loose_subc = !PCB->loose_subc;
+			else if (strcmp(argv[1], "on") == 0)
+				PCB->loose_subc = 1;
+			else if (strcmp(argv[1], "off") == 0)
+				PCB->loose_subc = 0;
+			else if (strcmp(argv[1], "check") == 0)
+				return PCB->loose_subc;
+			else {
+				PCB_ACT_FAIL(subc);
+				return 1;
+			}
+			/* have to manually trigger the update as it is not a conf item */
+			if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
+				pcb_gui->update_menu_checkbox(NULL);
+			return 0;
 		case F_Hash:
 			{
 				int selected_only = 0;

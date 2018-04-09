@@ -337,6 +337,7 @@ ha:{
 				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:Brave mode                       = { action=brave() }
 				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
+				ha:Loose subcircuits (no subc lock) = { a={<key>m; <key>k; <key>s}; checked=subc(loose, check); action=subc(loose, toggle); }
 				ha:Tool {
 					li:submenu {
 						ha:None           = { checked=ChkMode(none);            action=Mode(None); update_on={editor/mode} }
