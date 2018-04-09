@@ -280,7 +280,7 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
-	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : ps->Clearance + ctx->chgsize.value;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value / 2 : ps->Clearance + ctx->chgsize.value / 2;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
 		return NULL;
@@ -294,7 +294,6 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (ps->Clearance == value)
 		return NULL;
 
-	value /= 2;
 	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL, NULL) == 0)
 		return ps;
 
