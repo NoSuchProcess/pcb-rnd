@@ -484,7 +484,7 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
 	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
 		if (st->d_absolute) {
 			if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
