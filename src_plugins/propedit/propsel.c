@@ -179,19 +179,6 @@ static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, poly->Clearance/2);
 }
 
-static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
-{
-	map_chk_skip(ctx, subc);
-	map_attr(ctx, &subc->Attributes);
-	map_common(ctx, (pcb_any_obj_t *)subc);
-}
-
-static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
-{
-	map_subc_cb_(ctx, pcb, subc);
-	return 0;
-}
-
 static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto;
@@ -211,6 +198,24 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 	map_attr(ctx, &ps->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)ps);
+}
+
+static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	map_chk_skip(ctx, subc);
+	map_attr(ctx, &subc->Attributes);
+	map_common(ctx, (pcb_any_obj_t *)subc);
+	if (pcb->loose_subc) {
+		PCB_PADSTACK_LOOP(subc->data); {
+			map_pstk_cb(ctx, pcb, padstack);
+		} PCB_END_LOOP;
+	}
+}
+
+static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	map_subc_cb_(ctx, pcb, subc);
+	return 0;
 }
 
 void pcb_propsel_map_core(htsp_t *props)
@@ -458,26 +463,6 @@ static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 	}
 }
 
-static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
-{
-	set_ctx_t *st = (set_ctx_t *)ctx;
-
-	set_chk_skip(st, subc);
-
-	if (set_common(st, (pcb_any_obj_t *)subc)) return;
-
-	if (st->is_attr) {
-		set_attr(st, &subc->Attributes);
-		return;
-	}
-}
-
-static int set_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
-{
-	set_subc_cb_(ctx, pcb, subc);
-	return 0;
-}
-
 static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
@@ -525,6 +510,32 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
 }
 
+static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+
+	if (pcb->loose_subc) {
+		PCB_PADSTACK_LOOP(subc->data); {
+			set_pstk_cb(ctx, pcb, padstack);
+		} PCB_END_LOOP;
+	}
+
+	set_chk_skip(st, subc);
+
+	if (set_common(st, (pcb_any_obj_t *)subc)) return;
+
+	if (st->is_attr) {
+		set_attr(st, &subc->Attributes);
+		return;
+	}
+}
+
+static int set_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	set_subc_cb_(ctx, pcb, subc);
+	return 0;
+}
+
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
 #define MAYBE_PROP(trc, prefix, cb) \
 	(((ctx.is_attr) || (trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
@@ -570,7 +581,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
 		MAYBE_PROP(0, "p/text/", set_text_cb),
 		MAYBE_PROP(ctx.is_trace, "p/poly/", set_poly_cb),
-		MAYBE_PROP(0, "p/subc/", set_subc_cb),
+		MAYBE_PROP(PCB->loose_subc, "p/subc/", set_subc_cb),
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
 
