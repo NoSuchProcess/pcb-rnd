@@ -457,6 +457,12 @@ static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		dst->shape = PCB_PSSH_POLY;
 		pad_shape(&dst->data.poly, x1, y1, x2, y2, thickness);
 	}
+	else if (x1 == x2 && y1 == y2) {
+		dst->shape = PCB_PSSH_CIRC;
+		dst->data.circ.x = x1;
+		dst->data.circ.y = y1;
+		dst->data.circ.dia = thickness;
+	}
 	else {
 		dst->shape = PCB_PSSH_LINE;
 		dst->data.line.x1 = x1;
