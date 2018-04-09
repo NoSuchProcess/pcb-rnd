@@ -500,12 +500,16 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 
 	/* no match, have to register a new one */
 	if (first_free == PCB_PADSTACK_INVALID) {
+		pcb_pstk_proto_t *np;
 		n = pcb_vtpadstack_proto_len(&data->ps_protos);
 		pcb_vtpadstack_proto_append(&data->ps_protos, *proto);
+		np = pcb_vtpadstack_proto_get(&data->ps_protos, n, 0);
+		np->parent = data;
 	}
 	else {
 		memcpy(data->ps_protos.array+first_free, proto, sizeof(pcb_pstk_proto_t));
 		data->ps_protos.array[first_free].in_use = 1;
+		data->ps_protos.array[first_free].parent = data;
 	}
 	memset(proto, 0, sizeof(pcb_pstk_proto_t)); /* make sure a subsequent free() won't do any harm */
 	return n;
