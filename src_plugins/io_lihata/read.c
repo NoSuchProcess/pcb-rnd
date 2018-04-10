@@ -1640,7 +1640,7 @@ static void post_ids_assign(vtp0_t *ids)
 	vtp0_uninit(ids);
 }
 
-static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
+static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 {
 	lht_node_t *stn;
 	lht_dom_iterator_t it;
@@ -1664,11 +1664,26 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		else
 			memcpy(s->name, stn->name, name_len+1);
 
+		s->via_proto = 0;
+		s->via_proto_set = 0;
 		parse_coord(&s->Thick, lht_dom_hash_get(stn, "thickness"));
 		parse_coord(&s->Diameter, lht_dom_hash_get(stn, "diameter"));
 		parse_coord(&s->Hole, lht_dom_hash_get(stn, "hole"));
 		parse_coord(&s->Clearance, lht_dom_hash_get(stn, "clearance"));
 		parse_attributes(&s->attr, lht_dom_hash_get(stn, "attributes"));
+
+		if (rdver >= 5) {
+			lht_node_t *vp = lht_dom_hash_get(stn, "via_proto");
+			if (vp != NULL) {
+				unsigned long pid;
+				if (parse_ulong(&pid, vp) != 0)
+					return iolht_error(stn, "Invalid route style prototype ID\n");
+				s->via_proto = pid;
+				s->via_proto_set = 1;
+				if (pcb_pstk_get_proto_(dt, pid) == NULL)
+					iolht_warn(vp, -1, "Route style %s references to non-existent prototype %ld\n", s->via_proto);
+			}
+		}
 	}
 	return 0;
 }
@@ -1837,7 +1852,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	sub = lht_dom_hash_get(nd, "styles");
-	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0)) {
+	if ((sub != NULL) && (parse_styles(pcb->Data, &pcb->RouteStyle, sub) != 0)) {
 		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
 	}
