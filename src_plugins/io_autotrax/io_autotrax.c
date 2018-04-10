@@ -78,10 +78,10 @@ int pplg_init_io_autotrax(void)
 	io_autotrax.fmt_support_prio = io_autotrax_fmt;
 	io_autotrax.test_parse = io_autotrax_test_parse;
 	io_autotrax.parse_pcb = io_autotrax_read_pcb;
-	io_autotrax.parse_element = NULL;
+	io_autotrax.parse_footprint = NULL;
 	io_autotrax.parse_font = NULL;
 	io_autotrax.write_buffer = NULL;
-	io_autotrax.write_element = NULL;
+	io_autotrax.write_footprint = NULL;
 	io_autotrax.write_pcb = io_autotrax_write_pcb;
 	io_autotrax.default_fmt = "Protel autotrax";
 	io_autotrax.description = "Protel autotrax and easytrax";

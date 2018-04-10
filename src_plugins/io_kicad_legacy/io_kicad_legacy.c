@@ -63,10 +63,10 @@ int pplg_init_io_kicad_legacy(void)
 	io_kicad_legacy.plugin_data = NULL;
 	io_kicad_legacy.fmt_support_prio = io_kicad_legacy_fmt;
 	io_kicad_legacy.parse_pcb = NULL;
-	io_kicad_legacy.parse_element = NULL;
+	io_kicad_legacy.parse_footprint = NULL;
 	io_kicad_legacy.parse_font = NULL;
 	io_kicad_legacy.write_buffer = io_kicad_legacy_write_buffer;
-	io_kicad_legacy.write_element = io_kicad_legacy_write_element;
+	io_kicad_legacy.write_footprint = io_kicad_legacy_write_element;
 	io_kicad_legacy.write_pcb = io_kicad_legacy_write_pcb;
 	io_kicad_legacy.default_fmt = "kicadl";
 	io_kicad_legacy.description = "Kicad, legacy format";

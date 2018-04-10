@@ -72,7 +72,7 @@ struct pcb_plug_io_s {
 	int (*parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
-	int (*parse_element)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
+	int (*parse_footprint)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
 	int (*parse_font)(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
@@ -82,7 +82,7 @@ struct pcb_plug_io_s {
 	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only);
 
 	/* Write element data to a file. Return 0 on success. */
-	int (*write_element)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e);
+	int (*write_footprint)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e);
 
 	/* Write PCB to f; there's a copy of the file we are going to
 	   "overwrite", named in old_filename and the new file name we are

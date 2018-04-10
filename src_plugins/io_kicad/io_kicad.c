@@ -77,10 +77,10 @@ int pplg_init_io_kicad(void)
 	io_kicad.fmt_support_prio = io_kicad_fmt;
 	io_kicad.test_parse = io_kicad_test_parse;
 	io_kicad.parse_pcb = io_kicad_read_pcb;
-	io_kicad.parse_element = io_kicad_parse_element;
+	io_kicad.parse_footprint = io_kicad_parse_element;
 	io_kicad.parse_font = NULL;
 	io_kicad.write_buffer = io_kicad_write_buffer;
-	io_kicad.write_element = io_kicad_write_element;
+	io_kicad.write_footprint = io_kicad_write_element;
 	io_kicad.write_pcb = io_kicad_write_pcb;
 	io_kicad.default_fmt = "kicad";
 	io_kicad.description = "Kicad, s-expression";

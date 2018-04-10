@@ -258,9 +258,9 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 
 	/* try all plugins that said it could handle the file */
 	for(n = 0; n < len; n++) {
-		if ((available[n].plug->parse_element == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
+		if ((available[n].plug->parse_footprint == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
 			continue;
-		res = available[n].plug->parse_element(available[n].plug, Ptr, Filename);
+		res = available[n].plug->parse_footprint(available[n].plug, Ptr, Filename);
 		if (res == 0) {
 			if (Ptr->loader == NULL) /* if the loader didn't set this (to some more fine grained, e.g. depending on file format version) */
 				Ptr->loader = available[n].plug;
@@ -396,8 +396,8 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt)
 		newfmt = 1;
 	}
 
-	if ((p != NULL) && (p->write_element != NULL))
-		res = p->write_element(p, f, e);
+	if ((p != NULL) && (p->write_footprint != NULL))
+		res = p->write_footprint(p, f, e);
 
 	if ((res == 0) && (newfmt))
 		e->loader = p;

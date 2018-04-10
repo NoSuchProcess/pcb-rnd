@@ -172,10 +172,10 @@ int pplg_init_io_hyp(void)
 	io_hyp.fmt_support_prio = io_hyp_fmt;
 	io_hyp.test_parse = io_hyp_test_parse;
 	io_hyp.parse_pcb = io_hyp_read_pcb;
-/*	io_hyp.parse_element = NULL;
+/*	io_hyp.parse_footprint = NULL;
 	io_hyp.parse_font = NULL;
 	io_hyp.write_buffer = io_hyp_write_buffer;
-	io_hyp.write_element = io_hyp_write_element;*/
+	io_hyp.write_footprint = io_hyp_write_element;*/
 	io_hyp.write_pcb = io_hyp_write_pcb;
 	io_hyp.default_fmt = "hyp";
 	io_hyp.description = "hyperlynx";

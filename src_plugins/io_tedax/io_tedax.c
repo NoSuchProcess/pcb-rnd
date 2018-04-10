@@ -196,10 +196,10 @@ int pplg_init_io_tedax(void)
 	io_tedax.fmt_support_prio = io_tedax_fmt;
 	io_tedax.test_parse = io_tedax_test_parse;
 	io_tedax.parse_pcb = io_tedax_parse_pcb;
-	io_tedax.parse_element = io_tedax_parse_element;
+	io_tedax.parse_footprint = io_tedax_parse_element;
 	io_tedax.parse_font = NULL;
 	io_tedax.write_buffer = io_tedax_write_buffer;
-	io_tedax.write_element = io_tedax_write_element;
+	io_tedax.write_footprint = io_tedax_write_element;
 	io_tedax.write_pcb = NULL;
 	io_tedax.default_fmt = "tEDAx";
 	io_tedax.description = "Trivial EDA eXchange format";
