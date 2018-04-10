@@ -21,7 +21,7 @@
 
 static const char *url_idx_md5 = ROOT_URL "tags.idx.md5";
 static const char *url_idx_list = ROOT_URL "tags.idx";
-static const char *gedasym_cache = "fp_wget_cache";
+static const char *edakrill_cache = "fp_wget_cache";
 static const char *last_sum_fn = "fp_wget_cache/edakrill.last";
 
 struct {
@@ -129,7 +129,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (force || (conf_fp_wget.plugins.fp_wget.auto_update_edakrill))
 		wmode &= ~FP_WGET_OFFLINE;
 
-	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, wmode) != 0) {
+	if (fp_wget_open(url_idx_md5, edakrill_cache, &f, &fctx, wmode) != 0) {
 		if (wmode & FP_WGET_OFFLINE) /* accept that we don't have the index in offline mode */
 			goto quit;
 		goto err;
@@ -155,7 +155,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	else
 		mode = 0;
 
-	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, mode) != 0) {
+	if (fp_wget_open(url_idx_list, edakrill_cache, &f, &fctx, mode) != 0) {
 		pcb_message(PCB_MSG_ERROR, "edakrill: failed to download the new list\n");
 		pcb_remove(last_sum_fn); /* make sure it is downloaded next time */
 		goto err;
@@ -219,25 +219,37 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	gds_t s;
+	char tmp[1024];
 	FILE *f;
+	int from_path = (path != NULL) && (strcmp(path, REQUIRE_PATH_PREFIX) == 0);
 
-	if (strncmp(name, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) == 0)
-		name+=strlen(REQUIRE_PATH_PREFIX);
-	else
-		return NULL;
+	if (!from_path) {
+		if (strncmp(name, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) == 0)
+			name+=strlen(REQUIRE_PATH_PREFIX);
+		else
+			return NULL;
+	}
 
 	if (*name == '/')
 		name++;
+
+	if (from_path) {
+		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_edakrill, url_idx_list, edakrill_cache) != 0)
+			goto bad;
+		name = tmp;
+	}
 
 	gds_init(&s);
 	gds_append_str(&s, FP_URL);
 	gds_append_str(&s, name);
 
-	fp_wget_open(s.array, gedasym_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
-
-	fctx->backend = ctx;
+	fp_wget_open(s.array, edakrill_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
 
 	gds_uninit(&s);
+
+	bad:;
+	fctx->backend = ctx;
+
 	return f;
 }
 
