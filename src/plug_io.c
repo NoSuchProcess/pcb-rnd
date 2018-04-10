@@ -238,8 +238,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	return res;
 }
 
-#warning subc TODO: rename this API
-int pcb_parse_element(pcb_data_t *Ptr, const char *Filename, const char *fmt)
+int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 {
 	int res = -1, len, n;
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];

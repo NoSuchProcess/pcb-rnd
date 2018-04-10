@@ -669,7 +669,7 @@ void pcb_buffer_set_number(int Number)
 pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt)
 {
 	pcb_buffer_clear(PCB, Buffer);
-	if (!pcb_parse_element(Buffer->Data, Name, fmt)) {
+	if (!pcb_parse_footprint(Buffer->Data, Name, fmt)) {
 		if (conf_core.editor.show_solder_side)
 			pcb_buffer_flip_side(PCB, Buffer);
 		pcb_set_buffer_bbox(Buffer);
