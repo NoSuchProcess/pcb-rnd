@@ -111,7 +111,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 int pcb_parse_footprint(pcb_data_t *Ptr, const char *name, const char *fmt);
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
 int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool elem_only);
-int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
+int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt);
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/

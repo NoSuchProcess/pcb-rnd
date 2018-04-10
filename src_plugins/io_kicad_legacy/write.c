@@ -662,7 +662,7 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 	io_kicad_legacy_write_subc_index(FP, buff->Data);
 	fputs("$EndINDEX\n", FP);
 
-	pcb_write_element_data(FP, buff->Data, "kicadl");
+	pcb_write_footprint_data(FP, buff->Data, "kicadl");
 
 	return 0;
 }
