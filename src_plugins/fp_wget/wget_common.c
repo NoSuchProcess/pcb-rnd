@@ -159,3 +159,45 @@ int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 	free(md5_new);
 	return changed;
 }
+
+int fp_wget_search_(char *out, int out_len, FILE *f, const char *fn)
+{
+	char *line, line_[8192];
+
+	*out = '\0';
+
+	if (f == NULL)
+		return -1;
+
+	while((line = fgets(line_, sizeof(line_), f)) != NULL) {
+		char *sep;
+		sep = strchr(line, '|');
+		if (sep == NULL)
+			continue;
+		*sep = '\0';
+		if ((strstr(line, fn) != NULL) && (strlen(line) < out_len)) {
+			strcpy(out, line);
+			return 0;
+		}
+	}
+	return -1;
+}
+
+
+int fp_wget_search(char *out, int out_len, char *name, int offline, const char *url, const char *cache)
+{
+	FILE *f_idx;
+	int fctx;
+	fp_get_mode mode = offline ? FP_WGET_OFFLINE : 0;
+
+	if (fp_wget_open(url, cache, &f_idx, &fctx, mode) == 0) {
+		if (fp_wget_search_(out, out_len, f_idx, name) != 0) {
+			fp_wget_close(&f_idx, &fctx);
+			return -1;
+		}
+	}
+	else
+		return -1;
+	fp_wget_close(&f_idx, &fctx);
+	return 0;
+}
