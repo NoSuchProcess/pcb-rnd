@@ -1,9 +1,6 @@
 0. For the upcoming release ===============================================================================
 + feature req: show grid in both mm and mil in the status bar [report:smilie]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
-+ BUG: missing subc snap:
-	+ polygon pad center snap [report: jg]
-	+ subc centroid/origin snap [report: jg]
 + BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
 + BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
 + BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: jg]
