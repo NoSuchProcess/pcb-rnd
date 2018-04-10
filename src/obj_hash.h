@@ -82,10 +82,6 @@ PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
 
 #define pcb_hash_str(s) ((s) == NULL ? 0 : strhash(s))
 
-/* hash relative x and y within an element */
-#define pcb_hash_element_ox(e, c) ((e) == NULL ? pcb_hash_coord(c) : pcb_hash_coord(c - e->MarkX))
-#define pcb_hash_element_oy(e, c) ((e) == NULL ? pcb_hash_coord(c) : pcb_hash_coord(c - e->MarkY))
-
 /* compare two fields and return 0 if they are equal */
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 
@@ -99,6 +95,3 @@ PCB_INLINE pcb_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, pcb_coord_t x
 	return pcb_false;
 }
 
-#define pcb_element_offs(e,ef, s,sf) ((e == NULL) ? (s)->sf : ((s)->sf) - ((e)->ef))
-#define pcb_element_neq_offsx(e1, x1, e2, x2, f) (pcb_element_offs(e1, MarkX, x1, f) != pcb_element_offs(e2, MarkX, x2, f))
-#define pcb_element_neq_offsy(e1, y1, e2, y2, f) (pcb_element_offs(e1, MarkY, y1, f) != pcb_element_offs(e2, MarkY, y2, f))
