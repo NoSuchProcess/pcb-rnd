@@ -1,10 +1,12 @@
+#include "config.h"
+
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <genvector/gds_char.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
-#include "config.h"
+#include "error.h"
 #include "wget_common.h"
 #include "edakrill.h"
 #include "plugins.h"
@@ -144,17 +146,17 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (f != NULL)
 		fclose(f);
 
-	printf("old='%s' new='%s'\n", md5_last, md5_new);
+/*	printf("old='%s' new='%s'\n", md5_last, md5_new);*/
 
 	if (!md5_cmp_free(last_sum_fn, md5_last, md5_new)) {
-		printf("no chg.\n");
+/*		printf("no chg.\n");*/
 		mode = FP_WGET_OFFLINE; /* use the cache */
 	}
 	else
 		mode = 0;
 
 	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, mode) != 0) {
-		printf("failed to download the new list\n");
+		pcb_message(PCB_MSG_ERROR, "edakrill: failed to download the new list\n");
 		pcb_remove(last_sum_fn); /* make sure it is downloaded next time */
 		goto err;
 	}
@@ -202,8 +204,6 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	}
 	krill_flush(ctx, &vpath, vpath_base_len);
 	fp_wget_close(&f, &fctx);
-
-	printf("update!\n");
 
 	quit:;
 	gds_uninit(&vpath);
