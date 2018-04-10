@@ -80,6 +80,7 @@
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 - BUG: lesstif: doesn't draw top copper [report: Karl, Igor2]
 - BUG: place default qfn subc from the parametric lib, rotate 90deg with the rotate tool, U-undo the rotate and the individual pads get rotated back instead of the whole subc [report: Miloh]
+- BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 
 2. For later releases ===============================================================================
 - layer color rewrite:
