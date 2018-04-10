@@ -803,11 +803,13 @@ void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned 
 
 void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
 {
-	pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
+	if (layer->line_tree != NULL)
+		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 	pcb_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
 	pcb_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
 	pcb_line_bbox(line);
-	pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
+	if (layer->line_tree != NULL)
+		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
 }
 
 void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t y_offs)

@@ -142,14 +142,16 @@ void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsign
 
 void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
 {
-	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+	if (layer->polygon_tree != NULL)
+		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 	PCB_POLY_POINT_LOOP(polygon);
 	{
 		pcb_rotate(&point->X, &point->Y, X, Y, cosa, sina);
 	}
 	PCB_END_LOOP;
 	pcb_poly_bbox(polygon);
-	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+	if (layer->polygon_tree != NULL)
+		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 }
 
 void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs)
@@ -888,9 +890,11 @@ void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Poly
 	pcb_poly_pprestore(Polygon);
 	if (Layer->meta.real.vis)
 		pcb_poly_invalidate_erase(Polygon);
-	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	if (Layer->polygon_tree != NULL)
+		pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_rotate90(Polygon, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	if (Layer->polygon_tree != NULL)
+		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (Layer->meta.real.vis)
 		pcb_poly_invalidate_draw(Layer, Polygon);

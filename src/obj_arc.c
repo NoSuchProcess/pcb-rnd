@@ -678,10 +678,12 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 
 void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
 {
-	pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+	if (layer->arc_tree != NULL)
+		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 	pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 	arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
-	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
+	if (layer->arc_tree != NULL)
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
 void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t y_offs)
@@ -713,9 +715,11 @@ void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_arc_invalidate_erase(Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_ARC, Layer, Arc);
-	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
+	if (Layer->arc_tree != NULL)
+		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_arc_rotate90(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
+	if (Layer->arc_tree != NULL)
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_ARC, Layer, Arc);
 	pcb_arc_invalidate_draw(Layer, Arc);
 	return Arc;
