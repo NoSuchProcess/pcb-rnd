@@ -1388,6 +1388,15 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	lht_node_t *nshape, *n;
 	pcb_pstk_tshape_t *ts;
 
+	n = lht_dom_hash_get(nproto, "name");
+	if (n != NULL) {
+		dst->name = pcb_strdup(n->data.text.value);
+		if (rdver < 5)
+			iolht_warn(n, 6, "lihata board before v5 did not support padstack prototype names");
+	}
+	else
+		dst->name = NULL;
+
 	/* read the hole */
 	if (parse_coord(&dst->hdia, lht_dom_hash_get(nproto, "hdia")) != 0) return -1;
 	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "htop")) != 0) return -1;

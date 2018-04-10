@@ -714,6 +714,14 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 		lht_dom_hash_put(nproto, build_textf("htop", "%d", proto->htop));
 		lht_dom_hash_put(nproto, build_textf("hbottom", "%d", proto->hbottom));
 		lht_dom_hash_put(nproto, build_textf("hplated", "%d", proto->hplated));
+		if (proto->name != NULL) {
+			if (wrver >= 5)
+				lht_dom_hash_put(nproto, build_text("name", proto->name));
+			else
+				pcb_io_incompat_save(NULL, NULL, "versions below lihata board v5 do not support padstack prototype names\n", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
+		}
+		else
+			lht_dom_hash_put(nproto, dummy_node("name"));
 
 		/* save each shape */
 		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
