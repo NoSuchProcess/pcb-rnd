@@ -8,11 +8,10 @@
 /* Elem=RouteStyle; init=0 */
 
 typedef struct {
-	pcb_coord_t Thick,       /* line thickness */
-	  Diameter,        /* via diameter */
-	  Hole,            /* via drill hole */
-	  Clearance;       /* min. separation from other nets */
-	char name[32];     /* fixed length name to save malloc/free */
+	pcb_coord_t Thick;            /* line thickness */
+	pcb_coord_t Clearance;        /* min. separation from other nets */
+	pcb_coord_t Diameter, Hole;   /* OBSOLETE: via diameter and drill hole*/
+	char name[32];                /* fixed length name to save malloc/free */
 	pcb_attribute_list_t attr;
 } pcb_route_style_t;
 
