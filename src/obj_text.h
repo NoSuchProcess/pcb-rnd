@@ -42,7 +42,7 @@ struct pcb_text_s {
 	pcb_uint8_t Direction;
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
-	gdl_elem_t link;              /* a text is in a list of a layer or an element */
+	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
 /* These need to be carefully written to avoid overflows, and return

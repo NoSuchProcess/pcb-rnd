@@ -36,7 +36,7 @@
 
 struct pcb_line_s {            /* holds information about one line */
 	PCB_ANYLINEFIELDS;
-	gdl_elem_t link;             /* a line is in a list: either on a layer or in an element */
+	gdl_elem_t link;             /* a line is in a list: either on a layer */
 };
 
 /* crosshair: */

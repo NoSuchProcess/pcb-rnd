@@ -20,7 +20,7 @@ void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 
 /* duplicates the name and splits it into a basename and params;
    params is NULL if the name is not parametric (and "" if parameter list is empty)
-   returns 1 if name is parametric, 0 if file element.
+   returns 1 if name is parametric footprint, 0 if static file footprint.
    The caller shall free only *basename at the end.
    */
 int pcb_fp_dupname(const char *name, char **basename, char **params);

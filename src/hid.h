@@ -574,7 +574,7 @@ struct pcb_hid_s {
    * allocate any colors needed, via get_color.
 
    * cycle through the layers, calling set_layer for each layer to be
-     drawn, and only drawing elements (all or specified) of desired
+     drawn, and only drawing objects (all or specified) of desired
      layers.
 
    Do *not* assume that the hid that is passed is the GUI hid.  This
@@ -601,7 +601,7 @@ typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx
 /* Normal expose: draw all layers with all flags (no .content is used) */
 void pcb_hid_expose_all(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region);
 
-/* Pinout preview expose: draws an element; content.elem is used */
+/* Pinout preview expose: draws a subc; content.elem is used */
 void pcb_hid_expose_pinout(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *element);
 
 

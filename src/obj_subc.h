@@ -68,7 +68,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
 
 void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror);
 
-/* changes the side of the board an element is on; returns pcb_true if done */
+/* changes the side of the board a subc is on; returns pcb_true if done */
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff);
 
 void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle);

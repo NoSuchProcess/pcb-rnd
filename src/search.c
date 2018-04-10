@@ -496,7 +496,7 @@ static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, g, subc, subc);
 
 	if ((PCB_FRONT(subc) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &subc->BoundingBox)) {
-		/* use the element with the smallest bounding box */
+		/* use the subcircuit with the smallest bounding box */
 		newarea = (subc->BoundingBox.X2 - subc->BoundingBox.X1) * (double) (subc->BoundingBox.Y2 - subc->BoundingBox.Y1);
 		if (newarea < i->area) {
 			i->area = newarea;
