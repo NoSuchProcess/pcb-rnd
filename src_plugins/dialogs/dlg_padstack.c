@@ -68,6 +68,7 @@ typedef struct pse_s {
 	int proto_info[pse_num_layers];
 	int proto_change[pse_num_layers];
 	pcb_coord_t proto_clr[pse_num_layers];
+	int prname;
 	int hole_header;
 	int hdia, hplated;
 	int htop_val, htop_text, htop_layer;
@@ -170,6 +171,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	}
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str_value, s);
 
+	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str_value, pcb_strdup(proto->name == NULL ? "" : proto->name));
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, int_value, proto->hplated);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, int_value, proto->htop);
@@ -205,6 +207,34 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		&pse->attrs[pse->rot].default_val.real_value,
 		&pse->attrs[pse->xmirror].default_val.int_value,
 		&pse->attrs[pse->smirror].default_val.int_value);
+
+	lock++;
+	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
+	lock--;
+
+	pcb_gui->invalidate_all();
+}
+
+static void pse_chg_prname(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	static int lock = 0;
+	const char *new_name = pse->attrs[pse->prname].default_val.str_value;
+
+	if ((lock != 0) || (proto == NULL))
+		return;
+
+	if (proto->name == NULL) {
+		if ((new_name == NULL) || (*new_name == '\0'))
+			return;
+	}
+	else {
+		if (strcmp(proto->name, new_name) == 0)
+			return;
+	}
+
+	pcb_pstk_proto_change_name(proto, new_name);
 
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
@@ -639,7 +669,15 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 							PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
 					}
 				PCB_DAD_END(dlg);
-			
+
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+					PCB_DAD_LABEL(dlg, "Prototype name:");
+					PCB_DAD_STRING(dlg);
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_prname);
+						pse.prname = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_END(dlg);
+
 				PCB_DAD_LABEL(dlg, "Hole properties:");
 					pse.hole_header = PCB_DAD_CURRENT(dlg);
 
