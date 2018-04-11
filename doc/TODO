@@ -22,7 +22,6 @@
 		- see also: padstack TODO #22
 		- BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
-- feature: add padstack name in lihata v5 and on the UI [report: Igor2]
 - BUG: TODO: set same (e s) doesn't work on lines and padstacks [report: Igor2]
 - BUG: new board, place a 1206, set refdes, move refdes text out, double click refdes text -> it gets detached from the subc [report: Igor2]
 + BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
