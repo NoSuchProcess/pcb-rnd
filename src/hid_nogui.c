@@ -31,7 +31,7 @@ static void nogui_do_export(pcb_hid_attr_val_t * options)
 	CRASH("do_export");
 }
 
-static void nogui_parse_arguments(int *argc, char ***argv)
+static int nogui_parse_arguments(int *argc, char ***argv)
 {
 	CRASH("parse_arguments");
 }

@@ -1387,7 +1387,7 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 	return ret;
 }
 
-void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
+int conf_parse_arguments(const char *prefix, int *argc, char ***argv)
 {
 	int n, dst;
 
@@ -1411,6 +1411,7 @@ void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
 			dst--;
 	}
 	*argc = dst;
+	return 0;
 }
 
 void conf_usage(const char *prefix, void (*print)(const char *name, const char *help))

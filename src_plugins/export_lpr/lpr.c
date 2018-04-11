@@ -93,11 +93,11 @@ static void lpr_do_export(pcb_hid_attr_val_t * options)
 	pcb_pclose(f);
 }
 
-static void lpr_parse_arguments(int *argc, char ***argv)
+static int lpr_parse_arguments(int *argc, char ***argv)
 {
 	lpr_get_export_options(0);
 	pcb_hid_register_attributes(lpr_options, num_lpr_options, lpr_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static void lpr_calibrate(double xval, double yval)

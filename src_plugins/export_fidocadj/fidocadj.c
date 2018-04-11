@@ -344,10 +344,10 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	}
 }
 
-static void fidocadj_parse_arguments(int *argc, char ***argv)
+static int fidocadj_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static int fidocadj_usage(const char *topic)

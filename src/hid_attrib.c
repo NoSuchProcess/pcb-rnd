@@ -47,7 +47,7 @@ void pcb_hid_remove_attributes_by_cookie(const char *cookie)
 	}
 }
 
-void pcb_hid_parse_command_line(int *argc, char ***argv)
+int pcb_hid_parse_command_line(int *argc, char ***argv)
 {
 	pcb_hid_attr_node_t *ha;
 	int i, e, ok;
@@ -196,7 +196,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 			goto try_no_arg;
 		}
 		fprintf(stderr, "unrecognized option: %s\n", (*argv)[0]);
-		exit(1);
+		return -1;
 	got_match:;
 	}
 	else {
@@ -209,7 +209,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
-			exit(1);
+			return -1;
 		}
 	}
 
@@ -218,6 +218,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 		(*argv)[0] = filename;
 		(*argc) = 1;
 	}
+	return 0;
 }
 
 void pcb_hid_usage_option(const char *name, const char *help)

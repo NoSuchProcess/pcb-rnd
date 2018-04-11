@@ -226,10 +226,10 @@ struct drill_struct *sort_drill(struct drill_struct *drill, int n_drill)
 
 /* *** Main export callback ************************************************ */
 
-static void gcode_parse_arguments(int *argc, char ***argv)
+static int gcode_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), gcode_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static pcb_hid_attribute_t *gcode_get_export_options(int *n)

@@ -143,9 +143,9 @@ static void batch_do_exit(pcb_hid_t *hid)
 	batch_stay = 0;
 }
 
-static void batch_parse_arguments(int *argc, char ***argv)
+static int batch_parse_arguments(int *argc, char ***argv)
 {
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static void batch_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)

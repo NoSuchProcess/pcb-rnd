@@ -45,7 +45,7 @@ const char *gerber_cookie = "gerber HID";
 
 static pcb_hid_attribute_t *gerber_get_export_options(int *n);
 static void gerber_do_export(pcb_hid_attr_val_t * options);
-static void gerber_parse_arguments(int *argc, char ***argv);
+static int gerber_parse_arguments(int *argc, char ***argv);
 static pcb_hid_gc_t gerber_make_gc(void);
 static void gerber_destroy_gc(pcb_hid_gc_t gc);
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name);
@@ -651,10 +651,10 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	conf_update(NULL, -1); /* resotre forced sets */
 }
 
-static void gerber_parse_arguments(int *argc, char ***argv)
+static int gerber_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static int drill_sort(const void *va, const void *vb)

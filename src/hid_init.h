@@ -40,7 +40,7 @@ pcb_hid_t **pcb_hid_enumerate(void);
 /* A HID may use this if it does not need command line arguments in
    any special format; for example, the Lesstif HID needs to use the
    Xt parser, but the Postscript HID can use this function.  */
-void pcb_hid_parse_command_line(int *argc, char ***argv);
+int pcb_hid_parse_command_line(int *argc, char ***argv);
 
 /* Called by the init funcs, used to set up pcb_hid_list.  */
 extern void pcb_hid_register_hid(pcb_hid_t * hid);

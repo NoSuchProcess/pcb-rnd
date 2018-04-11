@@ -604,9 +604,9 @@ static void IPCD356_do_export(pcb_hid_attr_val_t * options)
 	IPCD356_Netlist();
 }
 
-static void IPCD356_parse_arguments(int *argc, char ***argv)
+static int IPCD356_parse_arguments(int *argc, char ***argv)
 {
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 pcb_hid_t IPCD356_hid;

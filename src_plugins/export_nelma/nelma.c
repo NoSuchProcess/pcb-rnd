@@ -467,10 +467,10 @@ static void nelma_write_objects(FILE * out)
 
 /* *** Main export callback ************************************************ */
 
-static void nelma_parse_arguments(int *argc, char ***argv)
+static int nelma_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]), nelma_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static pcb_hid_attribute_t *nelma_get_export_options(int *n)

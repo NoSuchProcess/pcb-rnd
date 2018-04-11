@@ -206,7 +206,7 @@ static void ghid_do_exit(pcb_hid_t * hid)
 	/* Create top level window for routines that will need top_window
 	   |  before ghid_create_pcb_widgets() is called.
 	 */
-void gtkhid_parse_arguments(int *argc, char ***argv)
+int gtkhid_parse_arguments(int *argc, char ***argv)
 {
 	GtkWidget *window;
 
@@ -278,6 +278,7 @@ void gtkhid_parse_arguments(int *argc, char ***argv)
 	wplc_place(WPLC_TOP, window);
 
 	gtk_widget_show_all(gport->top_window);
+	return 0;
 }
 
 static void ghid_calibrate(double xval, double yval)

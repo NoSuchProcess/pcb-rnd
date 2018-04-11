@@ -332,10 +332,10 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	f = NULL;
 }
 
-static void svg_parse_arguments(int *argc, char ***argv)
+static int svg_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static int svg_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)

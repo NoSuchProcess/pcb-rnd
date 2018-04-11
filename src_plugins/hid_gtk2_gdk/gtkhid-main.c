@@ -27,10 +27,10 @@ const char *ghid_menu_cookie = "gtk2 hid menu, gdk";
 
 pcb_hid_t gtk2_gdk_hid;
 
-void gtk2_gdk_parse_arguments(int *argc, char ***argv)
+int gtk2_gdk_parse_arguments(int *argc, char ***argv)
 {
 	ghid_gdk_install(&ghidgui->common, NULL);
-	gtkhid_parse_arguments(argc, argv);
+	return gtkhid_parse_arguments(argc, argv);
 }
 
 int pplg_check_ver_hid_gtk2_gdk(int ver_needed) { return 0; }

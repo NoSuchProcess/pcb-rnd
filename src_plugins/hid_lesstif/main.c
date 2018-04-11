@@ -1821,7 +1821,7 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 	}
 }
 
-static void lesstif_parse_arguments(int *argc, char ***argv)
+static int lesstif_parse_arguments(int *argc, char ***argv)
 {
 	Atom close_atom;
 	pcb_hid_attr_node_t *ha;
@@ -2056,6 +2056,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 	if (stdin_listen) {
 		XtAppAddInput(app_context, pcb_fileno(stdin), (XtPointer) XtInputReadMask, lesstif_listener_cb, NULL);
 	}
+	return 0;
 }
 
 static void draw_grid()

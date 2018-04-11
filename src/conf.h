@@ -198,7 +198,7 @@ int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val);
 int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, const char **why);
 
 /* Attempt to consume argv[] using conf_set_from_cli */
-void conf_parse_arguments(const char *prefix, int *argc, char ***argv);
+int conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 
 #define conf_reg_field_array(globvar, field, type_name, path, desc, flags) \
 	conf_reg_field_((void *)&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc, flags)

@@ -526,7 +526,8 @@ int main(int argc, char *argv[])
 		exit(res);
 	}
 
-	pcb_gui->parse_arguments(&hid_argc, &hid_argv);
+	if (pcb_gui->parse_arguments(&hid_argc, &hid_argv) != 0)
+		exit(1);
 
 	/* Create a new PCB object in memory */
 	PCB = pcb_board_new(0);

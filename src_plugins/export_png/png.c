@@ -1168,10 +1168,10 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	free(black);
 }
 
-static void png_parse_arguments(int *argc, char ***argv)
+static int png_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 

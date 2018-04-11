@@ -68,10 +68,10 @@ void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
 	h->result = NULL;
 }
 
-void gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv)
+int gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv)
 {
 	/* Do nothing for now */
-	pcb_hid_parse_command_line(pcbargc, pcbargv);
+	return pcb_hid_parse_command_line(pcbargc, pcbargv);
 }
 
 void gpmi_hid_set_crosshair(int x, int y, int cursor_action)

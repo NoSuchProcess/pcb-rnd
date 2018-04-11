@@ -56,7 +56,7 @@ pcb_hid_attribute_t loghid_attribute_list[] = {
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
 
-static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
+static int loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 {
 	pcb_hid_t *target, *me;
 	const char *target_name;
@@ -76,17 +76,17 @@ static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 	}
 
 	create_log_hid(stdout, me, target);
-	target->parse_arguments(argc, argv);
+	return target->parse_arguments(argc, argv);
 }
 
-static void loghid_parse_arguments_gui(int *argc, char ***argv)
+static int loghid_parse_arguments_gui(int *argc, char ***argv)
 {
-	loghid_parse_arguments_real(argc, argv, 1);
+	return loghid_parse_arguments_real(argc, argv, 1);
 }
 
-static void loghid_parse_arguments_exp(int *argc, char ***argv)
+static int loghid_parse_arguments_exp(int *argc, char ***argv)
 {
-	loghid_parse_arguments_real(argc, argv, 0);
+	return loghid_parse_arguments_real(argc, argv, 0);
 }
 
 

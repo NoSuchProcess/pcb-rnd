@@ -606,10 +606,10 @@ static void openems_do_export(pcb_hid_attr_val_t * options)
 	f = NULL;
 }
 
-static void openems_parse_arguments(int *argc, char ***argv)
+static int openems_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]), openems_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static int openems_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)

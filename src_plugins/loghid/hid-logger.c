@@ -27,10 +27,10 @@ static void log_do_exit(pcb_hid_t *hid)
 	delegatee_->do_exit(delegatee_);
 }
 
-static void log_parse_arguments(int *argc, char ***argv)
+static int log_parse_arguments(int *argc, char ***argv)
 {
 	pcb_fprintf(out_, "parse_arguments()\n");
-	delegatee_->parse_arguments(argc, argv);
+	return delegatee_->parse_arguments(argc, argv);
 }
 
 static void log_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)

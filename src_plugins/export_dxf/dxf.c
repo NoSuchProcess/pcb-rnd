@@ -319,10 +319,10 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	fclose(dxf_ctx.f);
 }
 
-static void dxf_parse_arguments(int *argc, char ***argv)
+static int dxf_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)

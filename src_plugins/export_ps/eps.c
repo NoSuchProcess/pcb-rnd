@@ -31,7 +31,7 @@
 /*----------------------------------------------------------------------------*/
 static pcb_hid_attribute_t *eps_get_export_options(int *n);
 static void eps_do_export(pcb_hid_attr_val_t * options);
-static void eps_parse_arguments(int *argc, char ***argv);
+static int eps_parse_arguments(int *argc, char ***argv);
 static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 static pcb_hid_gc_t eps_make_gc(void);
 static void eps_destroy_gc(pcb_hid_gc_t gc);
@@ -337,10 +337,10 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 	fclose(f);
 }
 
-static void eps_parse_arguments(int *argc, char ***argv)
+static int eps_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static int is_mask;

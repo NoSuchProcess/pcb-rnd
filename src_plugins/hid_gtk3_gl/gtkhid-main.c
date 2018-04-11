@@ -29,10 +29,10 @@ pcb_hid_t gtk3_gl_hid;
 
 void ghid_gl_install(pcb_gtk_common_t * common, pcb_hid_t * hid);
 
-void gtk3_gl_parse_arguments(int *argc, char ***argv)
+int gtk3_gl_parse_arguments(int *argc, char ***argv)
 {
 	ghid_gl_install(&ghidgui->common, NULL);
-	gtkhid_parse_arguments(argc, argv);
+	return gtkhid_parse_arguments(argc, argv);
 }
 
 int pplg_check_ver_hid_gtk3_gl(int ver_needed) { return 0; }

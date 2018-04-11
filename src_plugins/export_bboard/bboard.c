@@ -577,9 +577,9 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 }
 
-static void bboard_parse_arguments(int *argc, char ***argv)
+static int bboard_parse_arguments(int *argc, char ***argv)
 {
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 

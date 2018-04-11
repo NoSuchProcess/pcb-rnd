@@ -727,10 +727,10 @@ static void ps_do_export(pcb_hid_attr_val_t * options)
 	}
 }
 
-static void ps_parse_arguments(int *argc, char ***argv)
+static int ps_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	return pcb_hid_parse_command_line(argc, argv);
 }
 
 static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, int dx, int dy)
