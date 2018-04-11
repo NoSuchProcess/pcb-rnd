@@ -73,10 +73,12 @@ void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 
 int pcb_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc)
 {
+	return 0;
 }
 
 int pcb_file_loaded_del_at(const char *catname, const char *name)
 {
+	return 0;
 }
 
 
