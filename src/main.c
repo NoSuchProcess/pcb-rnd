@@ -526,8 +526,10 @@ int main(int argc, char *argv[])
 		exit(res);
 	}
 
-	if (pcb_gui->parse_arguments(&hid_argc, &hid_argv) != 0)
+	if (pcb_gui->parse_arguments(&hid_argc, &hid_argv) != 0) {
+		fprintf(stderr, "Failed to initialize hid %s (unrecoverable)\n", pcb_gui->name);
 		exit(1);
+	}
 
 	/* Create a new PCB object in memory */
 	PCB = pcb_board_new(0);

@@ -253,7 +253,11 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	 * We also don't want locale set if no ENABLE_NLS to keep "C" LC_NUMERIC.
 	 */
 	gtk_disable_setlocale();
-	gtk_init(argc, argv);
+
+	if (!gtk_init_check(argc, argv)) {
+		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");
+		return 1; /* recoverable error - try another HID */
+	}
 
 
 	gport = &ghid_port;

@@ -15,6 +15,7 @@
 #include <math.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <setjmp.h>
 
 #include "data.h"
 #include "action_helper.h"
@@ -1821,13 +1822,27 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 	}
 }
 
+static jmp_buf lesstif_err_jmp;
+static lesstif_err_msg(String name, String type, String class, String dflt, String *params, Cardinal *num_params)
+{
+	char *par[8];
+	int n;
+	for(n = 0; n < 8; n++) par[n] = "";
+	for(n = 0; n < *num_params; n++) par[n] = params[n];
+	fprintf(stderr, "Lesstif/motif initializaion error:\n");
+	fprintf(stderr, dflt, par[0], par[1], par[2], par[3], par[4], par[5], par[6], par[7]);
+	fprintf(stderr, "\n");
+	longjmp(lesstif_err_jmp, 1);
+}
+
+
 static int lesstif_parse_arguments(int *argc, char ***argv)
 {
 	Atom close_atom;
 	pcb_hid_attr_node_t *ha;
 	int acount = 0, amax;
 	int rcount = 0, rmax;
-	int i;
+	int i, err;
 	XrmOptionDescRec *new_options;
 	XtResource *new_resources;
 	val_union *new_values;
@@ -1974,7 +1989,14 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 	stdarg_n = 0;
 	stdarg(XmNdeleteResponse, XmDO_NOTHING);
 
+	XtSetErrorMsgHandler(lesstif_err_msg);
+	err = setjmp(lesstif_err_jmp);
+	if (err != 0)
+		return err;
 	appwidget = XtAppInitialize(&app_context, "Pcb", new_options, amax, argc, *argv, 0, stdarg_args, stdarg_n);
+	if (appwidget == NULL)
+		return 1;
+	XtSetErrorMsgHandler(NULL); /* restore the default handler */
 
 	display = XtDisplay(appwidget);
 	screen_s = XtScreen(appwidget);
