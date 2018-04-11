@@ -674,6 +674,17 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 	return 0;
 }
 
+int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name)
+{
+#warning undo TODO: make this undoable (check how pcb_pstk_proto_change_hole() does it)
+	free(proto->name);
+	if ((new_name == NULL) || (*new_name == '\0'))
+		proto->name = NULL;
+	else
+		proto->name = pcb_strdup(new_name);
+	return 0;
+}
+
 #define TSHAPE_ANGLE_TOL 0.01
 #define tshape_angle_eq(a1, a2) (((a1 - a2) >= -TSHAPE_ANGLE_TOL) && ((a1 - a2) <= TSHAPE_ANGLE_TOL))
 

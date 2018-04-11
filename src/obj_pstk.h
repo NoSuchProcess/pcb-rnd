@@ -157,6 +157,10 @@ pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_
    Returns 0 on success. */
 int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, const pcb_coord_t *hdia, const int *htop, const int *hbottom);
 
+/* Change the name of a padstack proto; not yet undoable.
+   Returns 0 on success. */
+int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name);
+
 /* Find or create a new transformed version of an existing proto */
 pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int smirror, int *out_protoi);
 
