@@ -106,6 +106,7 @@ char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int siz
 static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 {
 	char tmp[256], *s;
+	const char *prn = "";
 	int n;
 	pcb_pstk_proto_t *proto;
 	pcb_layergrp_id_t top_gid, bottom_gid;
@@ -117,7 +118,9 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
 
 	/* instance */
-	sprintf(tmp, "#%ld, %d", (long int)pse->ps->proto, pse->ps->protoi);
+	if ((proto != NULL) && (proto->name != NULL))
+		prn = proto->name;
+	pcb_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str_value, tmp);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, real_value, pse->ps->rot);
