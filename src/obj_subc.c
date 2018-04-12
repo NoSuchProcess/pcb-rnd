@@ -991,16 +991,30 @@ void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_board_t *pcb = pcb_data_get_top(sc->data);
-	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &Rotate90Functions, ctx);
+	uundo_serial_t last;
+	void *ret;
+
+	pcb_undo_inc_serial();
+	last = pcb_undo_serial();
+	ret = pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &Rotate90Functions, ctx);
+	pcb_undo_truncate_from(last);
+	return ret;
 }
 
 void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_data_t *data;
+	uundo_serial_t last;
+	void *ret;
 
 	ctx->rotate.pcb = pcb_data_get_top(sc->data);
 	data = (ctx->rotate.pcb != NULL ? ctx->rotate.pcb->Data : NULL);
-	return pcb_subc_op(data, sc, &RotateFunctions, ctx);
+
+	pcb_undo_inc_serial();
+	last = pcb_undo_serial();
+	ret = pcb_subc_op(data, sc, &RotateFunctions, ctx);
+	pcb_undo_truncate_from(last);
+	return ret;
 }
 
 void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int steps)
