@@ -346,11 +346,21 @@ gen_boxed_html()
 			TBL[key] = TBL[key] "\n<tr><td>" $1 "<td>" $4
 		}
 		END {
+			print "<html><head><style>"
+			print "div.key {"
+			print "	margin: auto;"
+			print "	background: #bbffff;"
+			print "	float: left;"
+			print "	margin: 15px;"
+			print "}"
+			print "</style></head>"
+			print "<body><h1>pcb-rnd 2.x.x keys - cheat sheet </h1>"
 			for(n = 0; n < 26; n++) {
 				key = sprintf("%c", 97+n)
-				print "<table border=1>"
+				print "<div class=\"key\"><table border=1 cellspacing=0>"
 				print TBL[key]
-				print "</table>"
+				print "</table></div>"
+				print ""
 			}
 		}
 	'
