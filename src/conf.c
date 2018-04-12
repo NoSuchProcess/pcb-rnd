@@ -1643,6 +1643,7 @@ conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, in
 conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_str, int *idx)
 {
 	while((item_li = conflist_next(item_li)) != NULL) {
+		(*idx)++;
 		if (item_li->type != CFN_STRING)
 			continue;
 		/* found next string */
@@ -1650,6 +1651,7 @@ conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_
 		return item_li;
 	}
 	/* found end of the list */
+	(*idx)++;
 	*item_str = NULL;
 	return item_li;
 }
