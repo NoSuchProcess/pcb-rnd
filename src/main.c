@@ -318,6 +318,7 @@ int main(int argc, char *argv[])
 	const char *main_action = NULL, *main_action_hint = NULL;
 	char *command_line_pcb = NULL;
 	vtp0_t plugin_cli_conf;
+	int autopick_gui = -1;
 
 #ifdef LOCALEDIR
 	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
@@ -488,12 +489,11 @@ int main(int argc, char *argv[])
 			}
 			break;
 		default: {
-			conf_listitem_t *i;
-			int n;
 			const char *g;
+			conf_listitem_t *i;
 
 			pcb_gui = NULL;
-			conf_loop_list_str(&conf_core.rc.preferred_gui, i, g, n) {
+			conf_loop_list_str(&conf_core.rc.preferred_gui, i, g, autopick_gui) {
 				pcb_gui = pcb_hid_find_gui(g);
 				if (pcb_gui != NULL)
 					break;
@@ -526,9 +526,45 @@ int main(int argc, char *argv[])
 		exit(res);
 	}
 
-	if (pcb_gui->parse_arguments(&hid_argc, &hid_argv) != 0) {
-		fprintf(stderr, "Failed to initialize hid %s (unrecoverable)\n", pcb_gui->name);
-		exit(1);
+	/* parse arguments using the gui; if fails and fallback is enabled,
+	   try the next gui */
+	{
+		conf_listitem_t *apg = NULL;
+		if (autopick_gui >= 0) { /* start from the GUI we are initializing first */
+			int n;
+			const char *g;
+
+			conf_loop_list_str(&conf_core.rc.preferred_gui, apg, g, n) {
+				if (n == autopick_gui)
+					break;
+			}
+		}
+
+		for(;;) {
+			if (pcb_gui->parse_arguments(&hid_argc, &hid_argv) == 0)
+				break; /* HID accepted, don't try anything else */
+			fprintf(stderr, "Failed to initialize HID %s (unrecoverable)\n", pcb_gui->name);
+			if (apg == NULL) {
+				if (conf_core.rc.hid_fallback) {
+					ran_out_of_hids:;
+					fprintf(stderr, "Tried all available HIDs, all failed, giving up.\n");
+				}
+				else
+					fprintf(stderr, "Not trying any other hid as fallback becase rc/hid_fallback is disabled.\n");
+				exit(1);
+			}
+
+			/* falling back to the next HID */
+			do {
+				int n;
+				const char *g;
+
+				apg = conf_list_next_str(apg, &g, &n);
+				if (apg == NULL)
+					goto ran_out_of_hids;
+				pcb_gui = pcb_hid_find_gui(g);
+			} while(pcb_gui == NULL);
+		}
 	}
 
 	/* Create a new PCB object in memory */
