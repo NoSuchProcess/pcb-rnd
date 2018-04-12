@@ -319,9 +319,14 @@ int gui_parse_argumemts(int autopick_gui, int *hid_argc, char **hid_argv[])
 	}
 
 	for(;;) {
-		if (pcb_gui->parse_arguments(hid_argc, hid_argv) == 0)
+		int res = pcb_gui->parse_arguments(hid_argc, hid_argv);
+		if (res == 0)
 			break; /* HID accepted, don't try anything else */
-		fprintf(stderr, "Failed to initialize HID %s (unrecoverable)\n", pcb_gui->name);
+		if (res < 0) {
+			fprintf(stderr, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
+			return -1;
+		}
+		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", pcb_gui->name);
 		if (apg == NULL) {
 			if (conf_core.rc.hid_fallback) {
 				ran_out_of_hids:;
