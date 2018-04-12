@@ -5,9 +5,9 @@ Active user wishes:
 
 Being done:
 	W1: cschem [Chris]
-	W2: proper primitives - data model rewrite [Chris]
 
 User wishes fulfilled:
+	W2: proper primitives - data model rewrite [Chris]
 	W3: more generic footprints [Chris, Evan] -> subcircuits
 	W5: 3d modeller export [Miloh, Evan] (bdale's sponsoration)
 	W6:  GUI access to object attributes: gtk editor, find/select by attrib [James]
