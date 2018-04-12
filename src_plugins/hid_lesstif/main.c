@@ -2740,14 +2740,6 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		autofade = 0;
 #endif
 
-	if (flags & PCB_LYT_SILK) {
-		if (!PCB->Data->Layer[idx].meta.real.vis)
-			return 0;
-		if (flags & PCB_LYT_INVIS)
-			return PCB->InvisibleObjectsOn;
-		return 0;
-	}
-
 	if ((flags & PCB_LYT_MASK) || (flags & PCB_LYT_PASTE)) {
 		if (pinout)
 			return 0;
@@ -2762,6 +2754,10 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
 			return pinout ? 0 : PCB->InvisibleObjectsOn;
+		case PCB_LYT_SILK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+				return pcb_silk_on(PCB);
+			return 0;
 		case PCB_LYT_ASSY:
 			return 0;
 		case PCB_LYT_UDRILL:
