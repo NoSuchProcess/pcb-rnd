@@ -66,6 +66,7 @@ li:pcb-rnd-conf-v1 {
 			verbose = 0
 			quiet = 0
 			backup_interval = 60
+			hid_fallback = 1
 			brave = {}
 			menu_file = {default}
 #			font_command = {}
@@ -100,7 +101,7 @@ li:pcb-rnd-conf-v1 {
 #			action_string = {}
 #			rat_path = {}
 #			rat_command = {}
-			li:preferred_gui = { gtk2_gl; gtk2_gdk; lesstif }
+			li:preferred_gui = { gtk2_gl; gtk2_gdk; lesstif; batch }
 			save_final_fallback_fmt = lihata
 			save_fp_fmt = lihata
 		} # rc
