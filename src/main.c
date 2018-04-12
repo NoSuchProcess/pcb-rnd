@@ -308,7 +308,7 @@ int gui_parse_argumemts(int autopick_gui, int *hid_argc, char **hid_argv[])
 {
 	conf_listitem_t *apg = NULL;
 
-	if (autopick_gui >= 0) { /* start from the GUI we are initializing first */
+	if ((autopick_gui >= 0) && (conf_core.rc.hid_fallback)) { /* start from the GUI we are initializing first */
 		int n;
 		const char *g;
 
