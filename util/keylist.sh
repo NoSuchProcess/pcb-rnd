@@ -47,6 +47,7 @@ else
 	do
 		case "$1" in
 			--html) cmd="html";;
+			--boxed) cmd="boxed";;
 			--lst) cmd="lst";;
 			--dot) cmd="dot"; nodenames=$2; shift 1;;
 			*) res_files="$res_files $1" ;;
@@ -337,8 +338,27 @@ gen_dot()
 	'
 }
 
+gen_boxed_html()
+{
+	$AWK -F '[\t]' '
+		/^[a-z][;]/ {
+			key=substr($0, 1, 1)
+			TBL[key] = TBL[key] "\n<tr><td>" $1 "<td>" $4
+		}
+		END {
+			for(n = 0; n < 26; n++) {
+				key = sprintf("%c", 97+n)
+				print "<table border=1>"
+				print TBL[key]
+				print "</table>"
+			}
+		}
+	'
+}
+
 case "$cmd" in
 	html) gen_list | gen_html ;;
+	boxed) gen_list | gen_boxed_html ;;
 	dot) gen_list | gen_dot ;;
 	lst) gen_list ;;
 esac
