@@ -303,6 +303,49 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 	pcb_message(PCB_MSG_ERROR, "puplug: %s\n", string);
 }
 
+/* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
+int gui_parse_argumemts(int autopick_gui, int *hid_argc, char **hid_argv[])
+{
+	conf_listitem_t *apg = NULL;
+
+	if (autopick_gui >= 0) { /* start from the GUI we are initializing first */
+		int n;
+		const char *g;
+
+		conf_loop_list_str(&conf_core.rc.preferred_gui, apg, g, n) {
+			if (n == autopick_gui)
+				break;
+		}
+	}
+
+	for(;;) {
+		if (pcb_gui->parse_arguments(hid_argc, hid_argv) == 0)
+			break; /* HID accepted, don't try anything else */
+		fprintf(stderr, "Failed to initialize HID %s (unrecoverable)\n", pcb_gui->name);
+		if (apg == NULL) {
+			if (conf_core.rc.hid_fallback) {
+				ran_out_of_hids:;
+				fprintf(stderr, "Tried all available HIDs, all failed, giving up.\n");
+			}
+			else
+				fprintf(stderr, "Not trying any other hid as fallback becase rc/hid_fallback is disabled.\n");
+			return -1;
+		}
+
+		/* falling back to the next HID */
+		do {
+			int n;
+			const char *g;
+
+			apg = conf_list_next_str(apg, &g, &n);
+			if (apg == NULL)
+				goto ran_out_of_hids;
+			pcb_gui = pcb_hid_find_gui(g);
+		} while(pcb_gui == NULL);
+	}
+	return 0;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -526,46 +569,8 @@ int main(int argc, char *argv[])
 		exit(res);
 	}
 
-	/* parse arguments using the gui; if fails and fallback is enabled,
-	   try the next gui */
-	{
-		conf_listitem_t *apg = NULL;
-		if (autopick_gui >= 0) { /* start from the GUI we are initializing first */
-			int n;
-			const char *g;
-
-			conf_loop_list_str(&conf_core.rc.preferred_gui, apg, g, n) {
-				if (n == autopick_gui)
-					break;
-			}
-		}
-
-		for(;;) {
-			if (pcb_gui->parse_arguments(&hid_argc, &hid_argv) == 0)
-				break; /* HID accepted, don't try anything else */
-			fprintf(stderr, "Failed to initialize HID %s (unrecoverable)\n", pcb_gui->name);
-			if (apg == NULL) {
-				if (conf_core.rc.hid_fallback) {
-					ran_out_of_hids:;
-					fprintf(stderr, "Tried all available HIDs, all failed, giving up.\n");
-				}
-				else
-					fprintf(stderr, "Not trying any other hid as fallback becase rc/hid_fallback is disabled.\n");
-				exit(1);
-			}
-
-			/* falling back to the next HID */
-			do {
-				int n;
-				const char *g;
-
-				apg = conf_list_next_str(apg, &g, &n);
-				if (apg == NULL)
-					goto ran_out_of_hids;
-				pcb_gui = pcb_hid_find_gui(g);
-			} while(pcb_gui == NULL);
-		}
-	}
+	if (gui_parse_argumemts(autopick_gui, &hid_argc, &hid_argv) != 0)
+		exit(1);
 
 	/* Create a new PCB object in memory */
 	PCB = pcb_board_new(0);
