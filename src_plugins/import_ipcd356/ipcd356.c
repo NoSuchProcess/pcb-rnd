@@ -58,7 +58,6 @@ static int netname_valid(const char *netname)
 {
 	if (*netname == '\0') return 0;
 	if (strcmp(netname, "N/C") == 0) return 0;
-	if (strcmp(netname, "N/A") == 0) return 0;
 	return 1;
 }
 
