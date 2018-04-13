@@ -94,9 +94,121 @@ typedef struct {
 	pcb_coord_t hole, width, height, cx, cy;
 } test_feature_t;
 
+static int parse_feature(char *line, test_feature_t *tf, const char *fn, int lineno, int is_mil, int is_rad, char *netname, char *refdes, char *term)
+{
+	if (line[2] != '7') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%d' - does not end in 7\n", line[1], line[2], fn, lineno);
+		return -1;
+	}
+	if (line[26] != '-') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing dash between refdes and pin number\n", fn, lineno);
+		return -1;
+	}
+	extract_field(netname, line, 3, 16);
+	extract_field(refdes,  line, 20, 25);
+	extract_field(term,    line, 27, 30);
+	tf->is_via = (strcmp(refdes, "VIA") == 0);
+	tf->is_middle = (line[31] == 'M');
+	if (line[32] == 'D') {
+		if (extract_dim(&tf->hole, line, 33, 36, 0, is_mil)) {
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid hole dimension\n", fn, lineno);
+			return -1;
+		}
+		if (line[37] == 'P')
+			tf->is_plated = 1;
+		else if (line[37] == 'U')
+			tf->is_plated = 0;
+		else {
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - hole is neither plated nor unplated\n", fn, lineno);
+			return -1;
+		}
+	}
+	else {
+		tf->hole = 0;
+		tf->is_plated = 0;
+	}
+	if (line[38] != 'A') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing 'A' for access\n", fn, lineno);
+		return -1;
+	}
+	if (extract_int(&tf->side, line, 40, 41)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid hole dimension\n", fn, lineno);
+		return -1;
+	}
+	if (line[41] != 'X') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing 'X'\n", fn, lineno);
+		return -1;
+	}
+	if (extract_dim(&tf->cx, line, 42, 48, 1, is_mil)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid X dimension\n", fn, lineno);
+		return -1;
+	}
+	if (line[49] != 'Y') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing 'Y'\n", fn, lineno);
+		return -1;
+	}
+	if (extract_dim(&tf->cy, line, 50, 56, 1, is_mil)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid Y dimension\n", fn, lineno);
+		return -1;
+	}
+	if (line[57] != 'X') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing width 'X'\n", fn, lineno);
+		return -1;
+	}
+	if (extract_dim(&tf->width, line, 58, 61, 0, is_mil)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid width dimension\n", fn, lineno);
+		return -1;
+	}
+	if (line[62] != 'Y') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing height 'Y'\n", fn, lineno);
+		return -1;
+	}
+	if (extract_dim(&tf->height, line, 63, 66, 0, is_mil)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid height 'Y' dimension\n", fn, lineno);
+		return -1;
+	}
+	if (line[67] != 'R') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing rotation 'R'\n", fn, lineno);
+		return -1;
+	}
+	if (extract_int(&tf->rot, line, 68, 70)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid height 'Y' dimension\n", fn, lineno);
+		return -1;
+	}
+	if (line[72] != 'S') {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - solder mask marker 'S'\n", fn, lineno);
+		return -1;
+	}
+	if (extract_int(&tf->mask, line, 73, 73)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid height 'Y' dimension\n", fn, lineno);
+		return -1;
+	}
+	tf->is_tooling = 0;
+
+	switch(line[1]) {
+		case '3': /* tooling feature/hole */
+		case '4': /* tooling hole only */
+			tf->is_tooling = 1;
+		case '1': /* through hole */
+			if (tf->hole == 0) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - thru-hole feature without hole dia\n", fn, lineno);
+				return -1;
+			}
+			break;
+		case '2': /* SMT feature */
+			if (tf->hole > 0) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - SMD feature with hole dia\n", fn, lineno);
+				break;
+			}
+			break;
+		default:
+			pcb_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%d - unknown second digit'\n", line[1], line[2], fn, lineno);
+	}
+	return 0;
+}
+
 static void create_feature(pcb_data_t *data, test_feature_t *tf)
 {
-
 }
 
 static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs)
@@ -128,114 +240,8 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 				}
 				break;
 			case '3': /* test feature */
-				if (line[2] != '7') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%d' - does not end in 7\n", line[1], line[2], fn, lineno);
-					break;
-				}
-				if (line[26] != '-') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing dash between refdes and pin number\n", fn, lineno);
-					break;
-				}
-				extract_field(netname, line, 3, 16);
-				extract_field(refdes,  line, 20, 25);
-				extract_field(term,    line, 27, 30);
-				tf.is_via = (strcmp(refdes, "VIA") == 0);
-				tf.is_middle = (line[31] == 'M');
-				if (line[32] == 'D') {
-					if (extract_dim(&tf.hole, line, 33, 36, 0, is_mil)) {
-						pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid hole dimension\n", fn, lineno);
-						break;
-					}
-					if (line[37] == 'P')
-						tf.is_plated = 1;
-					else if (line[37] == 'U')
-						tf.is_plated = 0;
-					else {
-						pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - hole is neither plated nor unplated\n", fn, lineno);
-						break;
-					}
-				}
-				else {
-					tf.hole = 0;
-					tf.is_plated = 0;
-				}
-				if (line[38] != 'A') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing 'A' for access\n", fn, lineno);
-					break;
-				}
-				if (extract_int(&tf.side, line, 40, 41)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid hole dimension\n", fn, lineno);
-					break;
-				}
-				if (line[41] != 'X') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing 'X'\n", fn, lineno);
-					break;
-				}
-				if (extract_dim(&tf.cx, line, 42, 48, 1, is_mil)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid X dimension\n", fn, lineno);
-					break;
-				}
-				if (line[49] != 'Y') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing 'Y'\n", fn, lineno);
-					break;
-				}
-				if (extract_dim(&tf.cy, line, 50, 56, 1, is_mil)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid Y dimension\n", fn, lineno);
-					break;
-				}
-				if (line[57] != 'X') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing width 'X'\n", fn, lineno);
-					break;
-				}
-				if (extract_dim(&tf.width, line, 58, 61, 0, is_mil)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid width dimension\n", fn, lineno);
-					break;
-				}
-				if (line[62] != 'Y') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing height 'Y'\n", fn, lineno);
-					break;
-				}
-				if (extract_dim(&tf.height, line, 63, 66, 0, is_mil)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid height 'Y' dimension\n", fn, lineno);
-					break;
-				}
-				if (line[67] != 'R') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - missing rotation 'R'\n", fn, lineno);
-					break;
-				}
-				if (extract_int(&tf.rot, line, 68, 70)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid height 'Y' dimension\n", fn, lineno);
-					break;
-				}
-				if (line[72] != 'S') {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - solder mask marker 'S'\n", fn, lineno);
-					break;
-				}
-				if (extract_int(&tf.mask, line, 73, 73)) {
-					pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - invalid height 'Y' dimension\n", fn, lineno);
-					break;
-				}
-				tf.is_tooling = 0;
-
-				switch(line[1]) {
-					case '3': /* tooling feature/hole */
-					case '4': /* tooling hole only */
-						tf.is_tooling = 1;
-					case '1': /* through hole */
-						if (tf.hole == 0) {
-							pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - thru-hole feature without hole dia\n", fn, lineno);
-							break;
-						}
-						break;
-					case '2': /* SMT feature */
-						if (tf.hole > 0) {
-							pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%d' - SMD feature with hole dia\n", fn, lineno);
-							break;
-						}
-						break;
-					default:
-						pcb_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%d - unknown second digit'\n", line[1], line[2], fn, lineno);
-				}
+				if (parse_feature(line, &tf, fn, lineno, is_mil, is_rad, netname, refdes, term) != 0)
+					return 1;
 
 				if (subcs != NULL) {
 					sc = htsp_get(subcs, refdes);
