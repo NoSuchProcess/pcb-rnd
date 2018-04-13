@@ -61,7 +61,8 @@ typedef enum {
 	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
 	PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, /* rubber band: adapt main line to keep rubberband lines direction */
 
-	PCB_EVENT_GUI_SYNC,               /* sync GUI state (e.g. after a menu clicked) */
+	PCB_EVENT_GUI_SYNC,               /* sync full GUI state (e.g. after a menu clicked) */
+	PCB_EVENT_GUI_SYNC_STATUS,        /* sync partial GUI state (status line update - do not update menus and do not redraw) */
 	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
 
 	PCB_EVENT_last                    /* not a real event */
