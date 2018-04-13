@@ -1,0 +1,9 @@
+$class import
+$short import IPC-D-356 Netlist
+$long IPC-D-356 Netlist and pad centroid import
+$state WIP
+$fmt-native no
+$fmt-feature-w import IPC-D-356 Netlist (from automated testing)
+$package import-net
+default disable
+autoload 1
