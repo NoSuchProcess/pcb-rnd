@@ -247,6 +247,19 @@ static void ipcd356_write_line(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *
 	ipcd356_write_feature(ctx, &t);
 }
 
+static void ipcd356_write_arc(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *layer, pcb_arc_t *arc)
+{
+	test_feature_t t;
+
+	if (ipcd356_heavy(ctx, &t, subc, layer, (pcb_any_obj_t *)arc) != 0)
+		return;
+
+	pcb_arc_middle(arc, &t.cx, &t.cy);
+	t.width = t.height = arc->Thickness;
+	t.rot = arc->StartAngle + (arc->Delta / 2);
+	ipcd356_write_feature(ctx, &t);
+}
+
 static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 {
 	write_ctx_t ctx;
@@ -260,12 +273,13 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 #warning subc TODO: subc-in-subc
 		PCB_PADSTACK_LOOP(subc->data); {
 			ipcd356_write_pstk(&ctx, subc, padstack);
-		}
-		PCB_END_LOOP;
+		} PCB_END_LOOP;
 		PCB_LINE_ALL_LOOP(subc->data); {
 			ipcd356_write_line(&ctx, subc, layer, line);
-		}
-		PCB_ENDALL_LOOP;
+		} PCB_ENDALL_LOOP;
+		PCB_ARC_ALL_LOOP(subc->data); {
+			ipcd356_write_arc(&ctx, subc, layer, arc);
+		} PCB_ENDALL_LOOP;
 	} PCB_END_LOOP;
 	ipcd356_write_foot(&ctx);
 }
