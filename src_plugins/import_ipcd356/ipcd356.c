@@ -314,6 +314,8 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 						set_src(&sc->Attributes, fn, lineno);
 						nr = pcb_attribute_get(&sc->Attributes, "refdes");
 						htsp_set(subcs, (char *)nr, sc);
+						pcb_add_subc_to_data(pcb->Data, sc);
+						pcb_subc_bind_globals(pcb, sc);
 					}
 					data = sc->data;
 				}
@@ -350,8 +352,15 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	res = ipc356_parse(PCB, f, argv[0], &subcs);
 
 	fclose(f);
-	for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e))
-		pcb_add_subc_to_data(PCB->Data, (pcb_subc_t *)e->value);
+	for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e)) {
+		pcb_subc_t *sc = (pcb_subc_t *)e->value;
+		pcb_add_subc_to_data(PCB->Data, sc);
+		pcb_subc_bbox(sc);
+		if (PCB->Data->subc_tree == NULL)
+			PCB->Data->subc_tree = pcb_r_create_tree();
+		pcb_r_insert_entry(PCB->Data->subc_tree, sc);
+		pcb_subc_rebind(PCB, sc);
+	}
 	htsp_uninit(&subcs);
 	return res;
 }
