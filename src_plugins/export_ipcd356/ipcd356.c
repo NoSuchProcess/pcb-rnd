@@ -104,11 +104,11 @@ static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, pc
 		len--;
 	}
 	if (ctx->is_mil) {
-		sprintf(fmt, "%%0%dmi", len);
+		sprintf(fmt, "%%0%d.0mi", len);
 		crd *= 10;
 	}
 	else {
-		sprintf(fmt, "%%0%dmm", len);
+		sprintf(fmt, "%%0%d.0mm", len);
 		crd *= 1000;
 	}
 	pcb_snprintf(tmp, sizeof(tmp), fmt, crd);
