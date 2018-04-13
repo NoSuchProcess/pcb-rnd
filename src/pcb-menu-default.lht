@@ -179,12 +179,12 @@ ha:{
 			ha:Grid {
 				m=G
 				li:submenu {
-					ha:Enable visible grid        = { a={<key>v; <key>g}; checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
-					ha:Enable local grid          = { a={<key>v; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+					ha:Enable visible grid        = { a={<key>g; <key>v}; checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
+					ha:Enable local grid          = { a={<key>g; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 					ha:Grid units {
 						li:submenu {
-							ha:mil                    = { a={<key>v; <key>i}; checked=ChkGridUnits(mil); action=SetUnits(mil); update_on={editor/grid_unit} }
-							ha:mm                     = { a={<key>v; <key>m}; checked=ChkGridUnits(mm); action=SetUnits(mm); update_on={editor/grid_unit} }
+							ha:mil                    = { a={<key>g; <key>i}; checked=ChkGridUnits(mil); action=SetUnits(mil); update_on={editor/grid_unit} }
+							ha:mm                     = { a={<key>g; <key>m}; checked=ChkGridUnits(mm); action=SetUnits(mm); update_on={editor/grid_unit} }
 						}
 					}
 					ha:Grid size = {
@@ -219,7 +219,7 @@ ha:{
 							ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } update_on={} }
 						}
 					}
-					ha:Realign grid               = { a={<key>v; <key>r}; action={ GetXY(Click to set the grid origin); Display(ToggleGrid) } }
+					ha:Realign grid               = { a={<key>g; <key>r}; action={ GetXY(Click to set the grid origin); Display(ToggleGrid) } }
 					}
 				}
 				-
