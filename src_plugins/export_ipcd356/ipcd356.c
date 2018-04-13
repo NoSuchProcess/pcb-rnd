@@ -260,6 +260,21 @@ static void ipcd356_write_arc(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *l
 	ipcd356_write_feature(ctx, &t);
 }
 
+static void ipcd356_write_poly(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *layer, pcb_poly_t *poly)
+{
+	test_feature_t t;
+
+	if (ipcd356_heavy(ctx, &t, subc, layer, (pcb_any_obj_t *)poly) != 0)
+		return;
+
+	t.cx = (poly->BoundingBox.X1 + poly->BoundingBox.X2) / 2;
+	t.cy = (poly->BoundingBox.Y1 + poly->BoundingBox.Y2) / 2;
+	t.width = (poly->BoundingBox.X2 - poly->BoundingBox.X1) / 8;
+	t.height = (poly->BoundingBox.Y2 - poly->BoundingBox.Y1) / 8;
+	t.rot = 0;
+	ipcd356_write_feature(ctx, &t);
+}
+
 static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 {
 	write_ctx_t ctx;
@@ -279,6 +294,9 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 		} PCB_ENDALL_LOOP;
 		PCB_ARC_ALL_LOOP(subc->data); {
 			ipcd356_write_arc(&ctx, subc, layer, arc);
+		} PCB_ENDALL_LOOP;
+		PCB_POLY_ALL_LOOP(subc->data); {
+			ipcd356_write_poly(&ctx, subc, layer, polygon);
 		} PCB_ENDALL_LOOP;
 	} PCB_END_LOOP;
 	ipcd356_write_foot(&ctx);
