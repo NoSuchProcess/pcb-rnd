@@ -54,6 +54,13 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
 
+	if (ghid_keymap.seq_len_action > 0) {
+		int len;
+		memcpy(kbd, "(last: ", 7);
+		len = pcb_hid_cfg_keys_seq(&ghid_keymap, kbd+7, sizeof(kbd)-9);
+		memcpy(kbd+len+7, ")", 2);
+	}
+	else
 	pcb_hid_cfg_keys_seq(&ghid_keymap, kbd, sizeof(kbd));
 
 	pcb_snprintf(text, text_size, _(
