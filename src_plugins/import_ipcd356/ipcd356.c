@@ -260,7 +260,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 						pcb_attribute_put(&sc->Attributes, "refdes", refdes);
 						set_src(&sc->Attributes, fn, lineno);
 						nr = pcb_attribute_get(&sc->Attributes, "refdes");
-						htsp_set(subcs, nr, sc);
+						htsp_set(subcs, (char *)nr, sc);
 					}
 					data = sc->data;
 				}
