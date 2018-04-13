@@ -356,14 +356,27 @@ static const char pcb_acth_LoadIpc356From[] = "Loads the specified IPC356-D netl
 int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	FILE *f;
+	static char *default_file = NULL;
+	char *fname;
 	int res, n, want_subc = 1, want_net = 1, want_pads = 1;
 	htsp_t subcs, *scs = NULL;
 	htsp_entry_t *e;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(LoadIpc356From);
+	fname = argc ? argv[0] : 0;
 
-	f = pcb_fopen(argv[0], "r");
+	if ((fname == NULL) || (*fname == '\0')) {
+		fname = pcb_gui->fileselect("Load IPC-D-356 netlist...",
+			"Pick an IPC-D-356 netlist file.\n",
+			default_file, ".net", "ipcd356", HID_FILESELECT_READ);
+		if (fname == NULL)
+			return 1;
+		if (default_file != NULL) {
+			free(default_file);
+			default_file = NULL;
+		}
+	}
+
+	f = pcb_fopen(fname, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", argv[0]);
 		return 1;
@@ -388,7 +401,7 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_hid_actionl("Netlist", "Clear", NULL);
 	}
 
-	res = ipc356_parse(PCB, f, argv[0], scs, want_net, want_pads);
+	res = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
 		pcb_hid_actionl("Netlist", "Sort", NULL);
