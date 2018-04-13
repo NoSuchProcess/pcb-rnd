@@ -145,5 +145,7 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
    Returns: the result of the action or -1 on error */
 int pcb_hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len);
 
+/* Print a squence into dst in human readable form; returns strlen(dst) */
+int pcb_hid_cfg_keys_seq(pcb_hid_cfg_keys_t *km, const pcb_hid_cfg_keyseq_t *seq, int seq_len, char *dst, int dst_len);
 
 #endif

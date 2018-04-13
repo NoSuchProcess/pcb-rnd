@@ -548,3 +548,35 @@ int pcb_hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len)
 	pcb_event(PCB_EVENT_USER_INPUT_POST, NULL);
 	return res;
 }
+
+int pcb_hid_cfg_keys_seq(pcb_hid_cfg_keys_t *km, const pcb_hid_cfg_keyseq_t *seq, int seq_len, char *dst, int dst_len)
+{
+	int n, l, sum = 0;
+	char *end = dst;
+
+	dst_len--; /* make room for the \0 */
+
+	for(n = 0; n < seq_len; n++) {
+		int k = seq[n].addr.key_raw;
+		if ((k > 32) && (k < 127)) {
+			
+		}
+		if (km->key_name(k, end, dst_len) != 0)
+			strncpy(end, "<unknown>", dst_len);
+		l = strlen(end);
+		sum += l;
+		dst_len -= l;
+		end += l;
+
+		if (dst_len <= 5) {
+			strcpy(dst, " ...");
+			sum += 4;
+			dst_len -= 4;
+			end += 4;
+			break;
+		}
+	}
+	*end = '\0';
+	return sum;
+}
+
