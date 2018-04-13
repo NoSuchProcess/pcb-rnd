@@ -12,10 +12,30 @@
 
 static const char *ipcd356_cookie = "ipcd356 importer";
 
-static int ipc356_parse(pcb_board_t *pcb, FILE *f)
+static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn)
 {
+	char line_[128], *line;
+	int lineno = 0;
 
-	return 0;
+	while((line = fgets(line_, sizeof(line_), f)) != NULL) {
+		lineno++;
+		switch(*line) {
+			case '\r':
+			case '\n':
+			case 'C': /* comment */
+				break;
+			case 'P': /* parameter */
+			case '3': /* test feature */
+				break;
+			case '9': /* EOF */
+				if ((line[1] == '9') && (line[2] == '9'))
+					return 0;
+				pcb_message(PCB_MSG_ERROR, "Invalid end-of-file marker in %s:%d - expected '999'\n", fn, lineno);
+		}
+	}
+
+	pcb_message(PCB_MSG_ERROR, "Unexpected end of file - expected '999'\n");
+	return 1;
 }
 
 static const char pcb_acts_LoadIpc356From[] = "LoadIpc356From(filename)";
@@ -30,7 +50,7 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", argv[0]);
 		return 1;
 	}
-	res = ipc356_parse(PCB, f);
+	res = ipc356_parse(PCB, f, argv[0]);
 	fclose(f);
 	return res;
 }
