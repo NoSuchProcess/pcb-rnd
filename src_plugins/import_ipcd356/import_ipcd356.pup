@@ -1,10 +1,10 @@
 $class import
 $short import IPC-D-356 Netlist
 $long IPC-D-356 Netlist and pad centroid import
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-w import IPC-D-356 Netlist (from automated testing)
 $package import-net
 dep lib_compat_help
-default disable
+default buildin
 autoload 1
