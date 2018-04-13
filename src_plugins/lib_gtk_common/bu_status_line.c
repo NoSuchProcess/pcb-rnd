@@ -50,7 +50,7 @@ void pcb_gtk_status_line_set_text(GtkWidget *status_line_label, const gchar * te
 
 static inline void gen_status_long(char *text, size_t text_size, int compat_horiz, const pcb_unit_t *unit)
 {
-	char kbd[32];
+	char kbd[128];
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
 
