@@ -591,11 +591,17 @@ int pcb_hid_cfg_keys_seq_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t **seq, in
 		if (mods & PCB_M_Ctrl)  { strncpy(end, "Ctrl-", dst_len); end += 5; ll += 5; }
 		if (mods & PCB_M_Shift) { strncpy(end, "Shift-", dst_len); end += 6; ll += 6; }
 
-		if ((k > 32) && (k < 127)) {
+		if (k == 0)
+			k = seq[n]->addr.key_tr;
+
+		if (km->key_name(k, end, dst_len) == 0) {
+			l = strlen(end);
 		}
-		if (km->key_name(k, end, dst_len) != 0)
+		else {
 			strncpy(end, "<unknown>", dst_len);
-		l = strlen(end);
+			l = 9;
+		}
+
 		ll += l;
 
 		sum += ll;
