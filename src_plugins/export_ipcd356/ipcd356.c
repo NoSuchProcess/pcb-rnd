@@ -163,8 +163,13 @@ static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
 	fill_field(line, 27, 30, t->term, "term ID");
 	line[31] = is_mid ? 'M' : ' ';
 
-	line[32] = 'D';
-	fill_field_coord(ctx, line, 33, 36, t->hole, 0, "hole");
+	if (t->hole > 0) {
+		line[32] = 'D';
+		fill_field_coord(ctx, line, 33, 36, t->hole, 0, "hole");
+	}
+	else
+		fill_field(line, 32, 36, NULL, NULL);
+
 	if (t->hole > 0)
 		line[37] = t->is_plated ? 'P' : 'U';
 	else
