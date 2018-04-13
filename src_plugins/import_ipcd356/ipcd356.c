@@ -53,6 +53,14 @@ static void set_src(pcb_attribute_list_t *a, const char *fn, long lineno)
 	pcb_attribute_put(a, "source", src);
 }
 
+static int netname_valid(const char *netname)
+{
+	if (*netname == '\0') return 0;
+	if (strcmp(netname, "N/C") == 0) return 0;
+	if (strcmp(netname, "N/A") == 0) return 0;
+	return 1;
+}
+
 static void extract_field(char *dst, const char *line, int start, int end)
 {
 	int n;
@@ -321,6 +329,11 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 				}
 
 				create_feature(pcb, data, &tf, fn, lineno);
+				if (netname_valid(netname)) {
+					char tn[36];
+					sprintf(tn, "%s-%s", refdes, term);
+					pcb_hid_actionl("Netlist", "Add",  netname, tn, NULL);
+				}
 				break;
 			case '9': /* EOF */
 				if ((line[1] == '9') && (line[2] == '9'))
@@ -349,7 +362,12 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return 1;
 	}
 	htsp_init(&subcs, strhash, strkeyeq);
+
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
 	res = ipc356_parse(PCB, f, argv[0], &subcs);
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
 
 	fclose(f);
 	for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e)) {
