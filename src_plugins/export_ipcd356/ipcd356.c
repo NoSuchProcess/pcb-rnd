@@ -35,6 +35,7 @@
 #include "safe_fs.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "netlist.h"
 #include "math_helper.h"
 #include "layer.h"
 #include "obj_arc.h"
@@ -212,7 +213,7 @@ static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *p
 }
 
 /* heavy terminals: lines, arcs, polygons */
-static int ipcd356_heavy(test_feature_t *t, pcb_subc_t *subc, pcb_layer_t *layer, pcb_any_obj_t *o)
+static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, pcb_layer_t *layer, pcb_any_obj_t *o)
 {
 	pcb_layer_type_t flg;
 
@@ -224,7 +225,7 @@ static int ipcd356_heavy(test_feature_t *t, pcb_subc_t *subc, pcb_layer_t *layer
 
 	memset(&t, 0, sizeof(t));
 	t->o = o;
-	t->netname = "TODO";
+	t->netname = pcb_netlist_name(pcb_netlist_find_net4term(ctx->pcb, o));
 	t->refdes = subc->refdes;
 	t->term = o->term;
 	t->access_top = (flg & PCB_LYT_TOP);
@@ -236,7 +237,7 @@ static void ipcd356_write_line(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *
 {
 	test_feature_t t;
 
-	if (ipcd356_heavy(&t, subc, layer, (pcb_any_obj_t *)line) != 0)
+	if (ipcd356_heavy(ctx, &t, subc, layer, (pcb_any_obj_t *)line) != 0)
 		return;
 
 	t.cx = (line->Point1.X + line->Point2.X) / 2;
