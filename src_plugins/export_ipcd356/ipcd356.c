@@ -149,11 +149,11 @@ static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
 
 	line[0] = '3';
 	if (is_tooling)
-		line[1] = 4;
+		line[1] = '4';
 	else if (t->hole > 0)
-		line[1] = 1;
+		line[1] = '1';
 	else
-		line[1] = 2;
+		line[1] = '2';
 	line[2] = '7';
 
 	fill_field(line, 3, 16, t->netname, "netname");
