@@ -1781,7 +1781,7 @@
  action_helper.h compat_misc.h hid_actions.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h rtree.h \
  ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h dolists.h
 ../src_plugins/import_ltspice/ltspice.o: \
  ../src_plugins/import_ltspice/ltspice.c ../config.h \
