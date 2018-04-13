@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "bu_status_line.h"
+#include "in_keyboard.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
@@ -53,8 +54,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
 
-	strcpy(kbd, "???");
-
+	pcb_hid_cfg_keys_seq(&ghid_keymap, kbd, sizeof(kbd));
 
 	pcb_snprintf(text, text_size, _(
 		"%m+<b>view</b>=%s  "
