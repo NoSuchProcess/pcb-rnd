@@ -35,6 +35,13 @@
 #include "safe_fs.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "math_helper.h"
+#include "layer.h"
+#include "obj_arc.h"
+#include "obj_line.h"
+#include "obj_poly.h"
+#include "obj_subc.h"
+#include "obj_pstk.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -55,7 +62,7 @@ typedef struct {
 typedef struct {
 	pcb_any_obj_t *o;
 	const char *netname, *refdes, *term;
-	int is_via, is_plated, access_top, access_bottom, rot, masked_top, masked_bottom;
+	int is_plated, access_top, access_bottom, rot, masked_top, masked_bottom;
 	pcb_coord_t hole, width, height, cx, cy;
 } test_feature_t;
 
@@ -196,7 +203,47 @@ static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
 	line[80] = '\n';
 	line[81] = '\0';
 	fprintf(ctx->f, "%s", line);
+}
 
+/* light terminals */
+static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *pstk)
+{
+
+}
+
+/* heavy terminals: lines, arcs, polygons */
+static int ipcd356_heavy(test_feature_t *t, pcb_subc_t *subc, pcb_layer_t *layer, pcb_any_obj_t *o)
+{
+	pcb_layer_type_t flg;
+
+	if (o->term == NULL)
+		return -1;
+	flg = pcb_layer_flags_(layer);
+	if (!(flg & PCB_LYT_COPPER))
+		return -1;
+
+	memset(&t, 0, sizeof(t));
+	t->o = o;
+	t->netname = "TODO";
+	t->refdes = subc->refdes;
+	t->term = o->term;
+	t->access_top = (flg & PCB_LYT_TOP);
+	t->access_bottom = (flg & PCB_LYT_BOTTOM);
+	return 0;
+}
+
+static void ipcd356_write_line(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *layer, pcb_line_t *line)
+{
+	test_feature_t t;
+
+	if (ipcd356_heavy(&t, subc, layer, (pcb_any_obj_t *)line) != 0)
+		return;
+
+	t.cx = (line->Point1.X + line->Point2.X) / 2;
+	t.cy = (line->Point1.Y + line->Point2.Y) / 2;
+	t.width = t.height = line->Thickness;
+	t.rot = atan2(line->Point2.Y - line->Point1.Y, line->Point2.X - line->Point1.X) * PCB_RAD_TO_DEG;
+	ipcd356_write_feature(ctx, &t);
 }
 
 static void ipcd356_write(pcb_board_t *pcb, FILE *f)
@@ -208,7 +255,17 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 	ctx.is_mil = (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0);
 
 	ipcd356_write_head(&ctx);
-
+	PCB_SUBC_LOOP(pcb->Data); {
+#warning subc TODO: subc-in-subc
+		PCB_PADSTACK_LOOP(subc->data); {
+			ipcd356_write_pstk(&ctx, subc, padstack);
+		}
+		PCB_END_LOOP;
+		PCB_LINE_ALL_LOOP(subc->data); {
+			ipcd356_write_line(&ctx, subc, layer, line);
+		}
+		PCB_ENDALL_LOOP;
+	} PCB_END_LOOP;
 	ipcd356_write_foot(&ctx);
 }
 
