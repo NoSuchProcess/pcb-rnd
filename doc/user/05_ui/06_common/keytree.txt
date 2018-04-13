@@ -84,8 +84,8 @@ b;c;s	pcb-menu-default.lht	PasteBuffer(ConvertSubc) 	Convert buffer to subcircui
 b;m;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
 b;m;u	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
 b;r;a	pcb-menu-default.lht	Mode(PasteBuffer);FreeRotateBuffer()	Arbitrarily Rotate Buffer
-b;r;c	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW
-b;r;r	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW
+b;r;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
+b;r;r	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW (right)
 b;s;b	pcb-menu-default.lht	PasteBuffer(Restore) 	Break buffer subcircuits to pieces
 b;s;s	pcb-menu-default.lht	Save(PasteBuffer) 	Save buffer subcircuits to file
 c-ctrl;	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
@@ -133,7 +133,7 @@ f4	pcb-menu-default.lht	Mode(Text)	Text
 f5	pcb-menu-default.lht	Mode(Rectangle)	Rectangle
 f6	pcb-menu-default.lht	Mode(Polygon)	Polygon
 f7	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
-f7-shift	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW
+f7-shift	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
 f8	pcb-menu-default.lht	Mode(Remove)	Del\057Remove
 f9	pcb-menu-default.lht	Mode(Rotate)	Rotate
 f;a	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
@@ -151,6 +151,11 @@ g;b	pcb-menu-default.lht	Grid(down) 	Previous grid
 g;d	pcb-menu-default.lht	SetValue(Grid,*2) 	Grid *2
 g;f	pcb-menu-default.lht	Grid(up) 	Next grid
 g;h	pcb-menu-default.lht	SetValue(Grid,\0572) 	Grid \0572
+g;i	pcb-menu-default.lht	SetUnits(mil)	mil
+g;l	pcb-menu-default.lht	conf(toggle, plugins\057hid_gtk\057local_grid\057enable, design) 	Enable local grid
+g;m	pcb-menu-default.lht	SetUnits(mm)	mm
+g;r	pcb-menu-default.lht	 GetXY(Click to set the grid origin); Display(ToggleGrid) 	Realign grid
+g;v	pcb-menu-default.lht	conf(toggle, editor\057draw_grid, design) 	Enable visible grid
 i;a	pcb-menu-default.lht	About() 	About...
 i;c;c	pcb-menu-default.lht	PrintCalibrate() 	Calibrate Printer...
 i;c;p	pcb-menu-default.lht	DoWindows(Preferences)	Preferences...
@@ -174,6 +179,7 @@ m;d;w	pcb-menu-default.lht	conf(toggle, editor\057wireframe_draw, design) 	Wiref
 m;f;h	pcb-menu-default.lht	conf(toggle, editor\057hide_names, design) 	Hide floaters
 m;f;l	pcb-menu-default.lht	conf(toggle, editor\057lock_names, design) 	Lock floaters
 m;f;o	pcb-menu-default.lht	conf(toggle, editor\057only_names, design) 	Only floaters
+m;k;s	pcb-menu-default.lht	subc(loose, toggle)	Loose subcircuits (no subc lock)
 m;l;+	pcb-menu-default.lht	SetValue(LineSize,+5,mil) 	Line Tool size +5 mil
 m;l;-	pcb-menu-default.lht	SetValue(LineSize,-5,mil) 	Line Tool size -5 mil
 m;l;a	pcb-menu-default.lht	conf(toggle, editor\057all_direction_lines, design)	'All-direction' lines
@@ -233,12 +239,7 @@ up	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
 up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
 v;c	pcb-menu-default.lht	Center() 	Center cursor
 v;f	pcb-menu-default.lht	Zoom() 	Zoom Extents
-v;g	pcb-menu-default.lht	conf(toggle, editor\057draw_grid, design) 	Enable visible grid
-v;i	pcb-menu-default.lht	SetUnits(mil)	mil
-v;l	pcb-menu-default.lht	conf(toggle, plugins\057hid_gtk\057local_grid\057enable, design) 	Enable local grid
-v;m	pcb-menu-default.lht	SetUnits(mm)	mm
 v;n	pcb-menu-default.lht	Display(PinOrPadName) 	Show padstack numbers in a subc
-v;r	pcb-menu-default.lht	 GetXY(Click to set the grid origin); Display(ToggleGrid) 	Realign grid
 v;s;f	pcb-menu-default.lht	Display(SubcID,"%a.footprint%")	footprint
 v;s;r	pcb-menu-default.lht	Display(SubcID)	refdes
 v;s;s	pcb-menu-default.lht	Display(SubcID,"%a.refdes%\\n%a.value%")	refdes+value
