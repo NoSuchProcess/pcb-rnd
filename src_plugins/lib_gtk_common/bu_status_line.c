@@ -61,7 +61,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		memcpy(kbd+len+7, ")", 2);
 	}
 	else
-	pcb_hid_cfg_keys_seq(&ghid_keymap, kbd, sizeof(kbd));
+		pcb_hid_cfg_keys_seq(&ghid_keymap, kbd, sizeof(kbd));
 
 	pcb_snprintf(text, text_size, _(
 		"%m+<b>view</b>=%s  "
