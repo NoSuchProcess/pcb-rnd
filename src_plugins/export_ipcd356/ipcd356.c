@@ -52,6 +52,60 @@ typedef struct {
 	int is_mil;
 } write_ctx_t;
 
+typedef struct {
+	pcb_any_obj_t *o;
+	const char *netname, *refdes, *term;
+	int is_via, is_plated, access_top, access_bottom, rot, masked_top, masked_bottom;
+	pcb_coord_t hole, width, height, cx, cy;
+} test_feature_t;
+
+static int getattr(pcb_any_obj_t *o, const char *key)
+{
+	char *val = pcb_attribute_get(&o->Attributes, key);
+	if (val == NULL) return 0;
+	if (pcb_strcasecmp(val, "yes") == 0) return 1;
+	return 0;
+}
+
+static void fill_field(char *dst, int start, int end, const char *data, const char *name)
+{
+	int n;
+	const char *d = data;
+
+	if (data == NULL)
+		d = "";
+
+	for(n = start; n <= end; n++) {
+		if (*d != '\0')
+			dst[n] = *d++;
+		else
+			dst[n] = ' ';
+	}
+	if (*d != '\0')
+		pcb_message(PCB_MSG_WARNING, "Data '%s' is too long for a(n) %s, truncated\n", data, name);
+}
+
+static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, pcb_coord_t crd, int sign, const char *name)
+{
+	int len = end-start+1;
+	char tmp[32], fmt[16];
+	if (sign) {
+		dst[start] =  (crd >= 0) ? '+' : '-';
+		start++;
+		len--;
+	}
+	if (ctx->is_mil) {
+		sprintf(fmt, "%%0%dmi", len);
+		crd *= 10;
+	}
+	else {
+		sprintf(fmt, "%%0%dmm", len);
+		crd *= 1000;
+	}
+	pcb_snprintf(tmp, sizeof(tmp), fmt, crd);
+	fill_field(dst, start, end, tmp, name);
+}
+
 static void ipcd356_write_head(write_ctx_t *ctx)
 {
 	char utc[64];
@@ -74,6 +128,75 @@ static void ipcd356_write_head(write_ctx_t *ctx)
 static void ipcd356_write_foot(write_ctx_t *ctx)
 {
 	fprintf(ctx->f, "999\n\n");
+}
+
+static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
+{
+	char line[128];
+	int is_tooling, is_mid;
+
+	is_tooling = getattr(t->o, "ipcd356::tooling");
+	is_mid = getattr(t->o, "ipcd356::mid");
+
+	line[0] = '3';
+	if (is_tooling)
+		line[1] = 4;
+	else if (t->hole > 0)
+		line[1] = 1;
+	else
+		line[1] = 2;
+	line[2] = '7';
+
+	fill_field(line, 3, 16, t->netname, "netname");
+	fill_field(line, 17, 19, NULL, NULL);
+	fill_field(line, 20, 25, t->refdes, "refdes");
+	line[26] = '-';
+	fill_field(line, 27, 30, t->term, "term ID");
+	line[31] = is_mid ? 'M' : ' ';
+
+	line[32] = 'D';
+	fill_field_coord(ctx, line, 33, 36, t->hole, 0, "hole");
+	if (t->hole > 0)
+		line[37] = t->is_plated ? 'P' : 'U';
+	else
+		line[37] = ' ';
+
+	if ((t->access_top) && (t->access_bottom))
+		strcpy(line+38, "A00");
+	else if (t->access_top)
+		strcpy(line+38, "A01");
+	else if (t->access_bottom)
+		strcpy(line+38, "A02");
+	else
+		return; /* do not export something that's not accessible from top or bottom */
+
+	line[41] = 'X';
+	fill_field_coord(ctx, line, 42, 48, t->cx, 1, "X coord");
+	line[49] = 'Y';
+	fill_field_coord(ctx, line, 50, 56, t->cy, 1, "Y coord");
+
+	line[57] = 'X';
+	fill_field_coord(ctx, line, 58, 61, t->width, 0, "width");
+	line[62] = 'Y';
+	fill_field_coord(ctx, line, 63, 66, t->height, 0, "height");
+	line[67] = 'R';
+	fill_field_coord(ctx, line, 68, 70, t->rot, 0, "rotation");
+
+	line[71] = ' ';
+	if ((t->masked_top) && (t->masked_bottom))
+		strcpy(line+72, "S3");
+	else if (t->masked_top)
+		strcpy(line+72, "S1");
+	else if (t->masked_bottom)
+		strcpy(line+72, "S2");
+	else
+		strcpy(line+72, "S0");
+	fill_field(line, 74, 79, NULL, NULL);
+
+	line[80] = '\n';
+	line[81] = '\0';
+	fprintf(ctx->f, "%s", line);
+
 }
 
 static void ipcd356_write(pcb_board_t *pcb, FILE *f)
