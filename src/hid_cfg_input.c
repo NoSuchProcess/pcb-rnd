@@ -573,24 +573,30 @@ int pcb_hid_cfg_keys_action(pcb_hid_cfg_keys_t *km)
 
 int pcb_hid_cfg_keys_seq_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t **seq, int seq_len, char *dst, int dst_len)
 {
-	int n, l, sum = 0;
+	int n, sum = 0;
 	char *end = dst;
 
-	dst_len--; /* make room for the \0 */
+	dst_len -= 25; /* make room for a full key with modifiers, the \0 and the potential ellipsis */
 
 	for(n = 0; n < seq_len; n++) {
-		int k = seq[n]->addr.key_raw;
+		int k = seq[n]->addr.key_raw, mods = seq[n]->addr.mods, ll = 0, l;
+
+		if (mods & PCB_M_Alt)   { strncpy(end, "Alt-", dst_len); end += 4; ll = 4; }
+		if (mods & PCB_M_Ctrl)  { strncpy(end, "Ctrl-", dst_len); end += 5; ll = 5; }
+		if (mods & PCB_M_Shift) { strncpy(end, "Shift-", dst_len); end += 6; ll = 6; }
+
 		if ((k > 32) && (k < 127)) {
-			
 		}
 		if (km->key_name(k, end, dst_len) != 0)
 			strncpy(end, "<unknown>", dst_len);
 		l = strlen(end);
-		sum += l;
-		dst_len -= l;
+		ll += l;
+
+		sum += ll;
+		dst_len -= ll;
 		end += l;
 
-		if (dst_len <= 5) {
+		if (dst_len <= 1) {
 			strcpy(dst, " ...");
 			sum += 4;
 			dst_len -= 4;
