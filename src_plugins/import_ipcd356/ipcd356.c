@@ -54,7 +54,8 @@ static void extract_field(char *dst, const char *line, int start, int end)
 
 static int extract_dim(pcb_coord_t *dst, const char *line, int start, int end, int has_sign, int is_mil)
 {
-	char tmp[16], *sign = line + start;
+	char tmp[16];
+	const char *sign = line + start;
 	double d;
 	pcb_bool succ;
 
