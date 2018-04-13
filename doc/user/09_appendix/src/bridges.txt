@@ -10,10 +10,11 @@
 |[tcad]|   |                                                                |   |[lesstif]  |
 |[edif]|   |                                                                |   |           |
 |[netl]|   |                                                                |   |[remote]   |
+|[ipcd]|   |                                                                |   |           |
 |[hpgl]|   +----------------------------------------------------------------+   +-----------+
 +------+
          *out-----------------------------------------------------------------+
-         | [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]    [scad] | [web     ]
+         | [bbrd]    [bom_]    [xy__]    [gerb]    [opcd]    [lpr_]    [scad] | [web     ]
          |      [stat]    [ps__]    [svg_]    [png_]    [nelm]    [dxf_]      |
          +--------------------------------------------------------------------+
 %%
@@ -77,6 +78,9 @@
 [netl]
 	label (any)\nnetlist
 
+[ipcd]
+	label (any)\nIPC-D-356
+
 [hpgl]
 	label HPGL\n(2D CAD)
 
@@ -122,7 +126,7 @@
 [gerb]
 	label gerber
 
-[ipcd]
+[opcd]
 	label ipcd356\ne-tester
 
 [lpr_]
@@ -186,7 +190,7 @@
 -> eesc.e pcbrnd
 	label import\nschematics
 
--> pcbrnd ipcd.n
+-> pcbrnd opcd.n
 	label IPC356D
 
 -> pcbrnd lpr_.n
@@ -228,6 +232,9 @@
 
 -> netl.e pcbrnd
 	label import\nnetlist
+
+-> ipcd.e pcbrnd
+	label netlist\npads/subcs
 
 -> hpgl.e pcbrnd
 	label import\nlines/arcs

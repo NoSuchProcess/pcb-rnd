@@ -22,13 +22,13 @@
  <td>
   lihata pcb-rnd board (any version)
   <br>
-  lihata pcb-rnd subcircuit (any version)
+  lihata pcb-rnd footprint (any version)
   <br>
   lihata pcb-rnd font (any version)
  <td>
   lihata pcb-rnd board (any version)
   <br>
-  lihata pcb-rnd subcircuit (any version)
+  lihata pcb-rnd footprint (any version)
   <br>
   lihata pcb-rnd font (any version)
 <tr><th>io_autotrax
@@ -72,7 +72,7 @@ n/a
  <td>
   kicad board, version 3 (s-expr)
   <br>
-  kicad element (s-expr, according to version 3)
+  kicad module (s-expr, according to version 3)
 <tr><th>io_kicad_legacy
 <td>no
 <td>works
@@ -132,6 +132,13 @@ n/a
   import lines, arcs and polygons from HPGL plot files
  <td>
 n/a
+<tr><th>import_ipcd356
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  import IPC-D-356 Netlist (from automated testing)
 <tr><th>import_ltspice
 <td>no
 <td>works
@@ -196,7 +203,7 @@ n/a
  <td>
 n/a
  <td>
-  export specctra .dsn files with padstacks and elements (usable for freerouting)
+  export specctra .dsn files with padstacks and subcircuits (usable for freerouting)
 <tr><th>export_dxf
 <td>no
 <td>works
@@ -227,7 +234,7 @@ n/a
   export gerber for PCB fabbing, multiple files (configurable)
 <tr><th>export_ipcd356
 <td>no
-<td>Work-in-progress
+<td>requires-full-rewrite
  <td>
 n/a
  <td>
@@ -241,11 +248,18 @@ n/a
   use export_ps and lpr to print a board directly
 <tr><th>export_nelma
 <td>no
-<td>works
+<td>deprecated
  <td>
 n/a
  <td>
   export a board in the nelma format for Numerical capacitance calculation
+<tr><th>export_openems
+<td>no
+<td>WIP
+ <td>
+n/a
+ <td>
+  export a matlab file suitable for OpenEMS simulation
 <tr><th>export_openscad
 <td>no
 <td>WIP
