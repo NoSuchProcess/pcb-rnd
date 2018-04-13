@@ -90,7 +90,9 @@ static int extract_dim(pcb_coord_t *dst, const char *line, int start, int end, i
 	d = pcb_get_value(tmp, is_mil ? "mil" : "mm", NULL, &succ);
 	if (!succ)
 		return -1;
-	if (!is_mil)
+	if (is_mil)
+		d = d / 10;
+	else
 		d = d / 1000.0;
 	*dst = pcb_round(d);
 	return 0;
