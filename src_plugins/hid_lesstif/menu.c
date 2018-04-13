@@ -228,7 +228,7 @@ static void note_accelerator(const lht_node_t *node)
 	anode = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
 	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if ((anode != NULL) && (knode != NULL))
-		pcb_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode, NULL, 0);
+		pcb_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode);
 	else
 		pcb_hid_cfg_error(node, "No action specified for key accel\n");
 }
@@ -239,8 +239,6 @@ int lesstif_key_event(XKeyEvent * e)
 	KeySym sym;
 	int slen;
 	int mods = 0;
-	static pcb_hid_cfg_keyseq_t *seq[32];
-	static int seq_len = 0;
 
 	if (e->state & ShiftMask)
 		mods |= PCB_M_Shift;
@@ -289,7 +287,7 @@ int lesstif_key_event(XKeyEvent * e)
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
 #warning TODO#3: pass on raw and translated keys
-	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym, seq, &seq_len);
+	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym);
 	if (slen <= 0)
 		return 1;
 
@@ -303,7 +301,7 @@ int lesstif_key_event(XKeyEvent * e)
 
 	/* Parsing actions may not return until more user interaction
 	   happens.  */
-	pcb_hid_cfg_keys_action(seq, slen);
+	pcb_hid_cfg_keys_action(&lesstif_keymap);
 
 	return 1;
 }

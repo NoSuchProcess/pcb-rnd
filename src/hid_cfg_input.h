@@ -89,6 +89,11 @@ typedef struct pcb_hid_cfg_keys_s {
 
 	int auto_chr;                       /* if non-zero: don't call translate_key() for 1-char symbols, handle the default way */
 	const pcb_hid_cfg_keytrans_t *auto_tr;  /* apply this table before calling translate_key() */
+
+	/* current sequence state */
+	pcb_hid_cfg_keyseq_t *seq[HIDCFG_MAX_KEYSEQ_LEN];
+	int seq_len;
+	int seq_len_action; /* when an action node is hit, save sequence length for executing the action while seq_len is reset */
 } pcb_hid_cfg_keys_t;
 
 
@@ -115,8 +120,10 @@ pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid
    same action). In this case return value and seq are set using the first key.
    Returns -1 on failure or the length of the sequence.
 */
-int pcb_hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
-int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int pcb_hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node);
+int pcb_hid_cfg_keys_add_by_desc_(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node);
+int pcb_hid_cfg_keys_add_by_strdesc_(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
 
 
 /* Allocate a new string and generate a human readable accel-text; mask determines
@@ -139,13 +146,16 @@ char *pcb_hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keyde
      + a positive integer means the lookup succeeded and the return value
        is the length of the resulting sequence.
 */
-int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
+int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
+int pcb_hid_cfg_keys_input_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
 
 /* Run the action for a key sequence looked up by pcb_hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */
-int pcb_hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len);
+int pcb_hid_cfg_keys_action(pcb_hid_cfg_keys_t *km);
+int pcb_hid_cfg_keys_action_(pcb_hid_cfg_keyseq_t **seq, int seq_len);
 
 /* Print a squence into dst in human readable form; returns strlen(dst) */
-int pcb_hid_cfg_keys_seq(pcb_hid_cfg_keys_t *km, const pcb_hid_cfg_keyseq_t *seq, int seq_len, char *dst, int dst_len);
+int pcb_hid_cfg_keys_seq(pcb_hid_cfg_keys_t *km, char *dst, int dst_len);
+int pcb_hid_cfg_keys_seq_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t **seq, int seq_len, char *dst, int dst_len);
 
 #endif

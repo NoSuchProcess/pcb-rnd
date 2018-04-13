@@ -91,8 +91,6 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 	if (kev->keyval <= 0xffff) {
 		GdkModifierType state = (GdkModifierType) (kev->state);
 		int slen, mods = 0;
-		static pcb_hid_cfg_keyseq_t *seq[32];
-		static int seq_len = 0;
 		unsigned short int key_raw = 0;
 		unsigned short int kv = kev->keyval;
 		guint *keyvals;
@@ -121,10 +119,10 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		if (kv == GDK_KEY_KP_Divide) key_raw = kv = '/';
 		if (kv == GDK_KEY_KP_Enter) key_raw = kv = GDK_KEY_Return;
 
-		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv, seq, &seq_len);
+		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
 		if (slen > 0) {
 			view->has_entered  = 1;
-			pcb_hid_cfg_keys_action(seq, slen);
+			pcb_hid_cfg_keys_action(&ghid_keymap);
 			return TRUE;
 		}
 	}

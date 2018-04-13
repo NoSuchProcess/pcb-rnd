@@ -100,7 +100,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 	/* Resolve accelerator and save it */
 	if (n_keydesc != NULL) {
 		if (n_action != NULL) {
-			pcb_hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action, NULL, 0);
+			pcb_hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action);
 			accel = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
 		}
 		else
