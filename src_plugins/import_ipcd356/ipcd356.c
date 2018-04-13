@@ -245,6 +245,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 
 				if (subcs != NULL) {
 					sc = htsp_get(subcs, refdes);
+
 					if (sc == NULL) {
 						const char *nr;
 						sc = pcb_subc_alloc();
@@ -284,7 +285,7 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return 1;
 	}
 	htsp_init(&subcs, strhash, strkeyeq);
-	res = ipc356_parse(PCB, f, argv[0], NULL);
+	res = ipc356_parse(PCB, f, argv[0], &subcs);
 
 	fclose(f);
 	for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e))
