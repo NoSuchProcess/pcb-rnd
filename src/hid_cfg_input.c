@@ -581,9 +581,15 @@ int pcb_hid_cfg_keys_seq_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t **seq, in
 	for(n = 0; n < seq_len; n++) {
 		int k = seq[n]->addr.key_raw, mods = seq[n]->addr.mods, ll = 0, l;
 
-		if (mods & PCB_M_Alt)   { strncpy(end, "Alt-", dst_len); end += 4; ll = 4; }
-		if (mods & PCB_M_Ctrl)  { strncpy(end, "Ctrl-", dst_len); end += 5; ll = 5; }
-		if (mods & PCB_M_Shift) { strncpy(end, "Shift-", dst_len); end += 6; ll = 6; }
+		if (n != 0) {
+			*end = ' ';
+			end++;
+			ll = 1;
+		}
+
+		if (mods & PCB_M_Alt)   { strncpy(end, "Alt-", dst_len); end += 4; ll += 4; }
+		if (mods & PCB_M_Ctrl)  { strncpy(end, "Ctrl-", dst_len); end += 5; ll += 5; }
+		if (mods & PCB_M_Shift) { strncpy(end, "Shift-", dst_len); end += 6; ll += 6; }
 
 		if ((k > 32) && (k < 127)) {
 		}
