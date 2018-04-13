@@ -402,8 +402,8 @@ ha:{
 		ha:Buffer {
 			m=B
 			li:submenu {
-				ha:Rotate buffer 90 deg CCW   = { li:a={{<key>b;<key>r;<key>r}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
-				ha:Rotate buffer 90 deg CW    = { a={<key>b;<key>r;<key>c}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
+				ha:Rotate buffer 90 deg CCW (left)  = { li:a={{<key>b;<key>r;<key>l}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
+				ha:Rotate buffer 90 deg CW (right)  = { a={<key>b;<key>r;<key>r}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
 				ha:Arbitrarily Rotate Buffer  = { a={<key>b;<key>r;<key>a}; li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
 				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
 				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
