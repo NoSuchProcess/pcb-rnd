@@ -76,6 +76,12 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 	ghidgui->common.set_status_line_label();
 }
 
+static void ghid_gui_sync_status(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	ghidgui->common.window_set_name_label(PCB->Name);
+	ghidgui->common.set_status_line_label();
+}
+
 static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (gport != NULL)
@@ -94,4 +100,5 @@ void glue_event_init(const char *cookie)
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayervisChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, ghid_Busy, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_GUI_SYNC, ghid_gui_sync, NULL, cookie);
+	pcb_event_bind(PCB_EVENT_GUI_SYNC_STATUS, ghid_gui_sync_status, NULL, cookie);
 }

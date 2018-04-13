@@ -132,6 +132,11 @@ static void ghid_command_use_command_window_sync(void)
 
 /*** input ***/
 
+void ghid_status_update(void)
+{
+	ghidgui->common.set_status_line_label();
+}
+
 static void ghid_interface_set_sensitive(gboolean sensitive)
 {
 	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
