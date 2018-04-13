@@ -66,7 +66,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		"<b>clearance</b>=%mS  "
 		"<b>text</b>=%i%%  "
 		"<b>buffer</b>=#%i"),
-		unit->allow, conf_core.editor.show_solder_side ? _("solder") : _("component"),
+		unit->allow, conf_core.editor.show_solder_side ? _("bottom") : _("top"),
 		PCB->Grid,
 		conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "",
 		kbd,
