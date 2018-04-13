@@ -94,12 +94,18 @@ typedef struct {
 	pcb_coord_t hole, width, height, cx, cy;
 } test_feature_t;
 
+static void create_feature(pcb_data_t *data, test_feature_t *tf)
+{
+
+}
+
 static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs)
 {
 	char line_[128], *line, netname[16], refdes[8], term[8];
 	int lineno = 0, is_mil = 1, is_rad = 0;
 	test_feature_t tf;
-	pcb_any_obj_t *sc = NULL, *o;
+	pcb_subc_t *sc;
+	pcb_data_t *data = pcb->Data;
 
 	while((line = fgets(line_, sizeof(line_), f)) != NULL) {
 		lineno++;
@@ -234,10 +240,16 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 				if (subcs != NULL) {
 					sc = htsp_get(subcs, refdes);
 					if (sc == NULL) {
-						
+						const char *nr;
+						sc = pcb_subc_alloc();
+						pcb_attribute_put(&sc->Attributes, "refdes", refdes);
+						nr = pcb_attribute_get(&sc->Attributes, "refdes");
+						htsp_set(subcs, nr, sc);
 					}
+					data = sc->data;
 				}
 
+				create_feature(data, &tf);
 				break;
 			case '9': /* EOF */
 				if ((line[1] == '9') && (line[2] == '9'))
@@ -257,14 +269,21 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 	FILE *f;
 	int res;
+	htsp_t subcs;
+	htsp_entry_t *e;
 
 	f = pcb_fopen(argv[0], "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", argv[0]);
 		return 1;
 	}
+	htsp_init(&subcs, strhash, strkeyeq);
 	res = ipc356_parse(PCB, f, argv[0], NULL);
+
 	fclose(f);
+	for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e))
+		pcb_add_subc_to_data(PCB->Data, (pcb_subc_t *)e->value);
+	htsp_uninit(&subcs);
 	return res;
 }
 
