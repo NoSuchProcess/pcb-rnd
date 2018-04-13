@@ -358,7 +358,7 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 	FILE *f;
 	static char *default_file = NULL;
-	char *fname;
+	const char *fname;
 	int res, n, want_subc = 1, want_net = 1, want_pads = 1;
 	htsp_t subcs, *scs = NULL;
 	htsp_entry_t *e;
