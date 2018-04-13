@@ -41,6 +41,7 @@
 #include "compat_misc.h"
 #include "hid_actions.h"
 #include "plugins.h"
+#include "rtree.h"
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
@@ -417,7 +418,7 @@ int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			pcb_subc_bbox(sc);
 			if (PCB->Data->subc_tree == NULL)
 				PCB->Data->subc_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(PCB->Data->subc_tree, sc);
+			pcb_r_insert_entry(PCB->Data->subc_tree, (pcb_box_t *)sc);
 			pcb_subc_rebind(PCB, sc);
 		}
 		htsp_uninit(&subcs);
