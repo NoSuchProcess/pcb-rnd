@@ -65,7 +65,7 @@ static void extract_field(char *dst, const char *line, int start, int end)
 {
 	int n;
 	line += start;
-	for(n = end-start; n > 0; n--) {
+	for(n = end-start; n >= 0; n--) {
 		if (*line == ' ')
 			break;
 		*dst++ = *line++;
@@ -91,7 +91,7 @@ static int extract_dim(pcb_coord_t *dst, const char *line, int start, int end, i
 	if (!succ)
 		return -1;
 	if (is_mil)
-		d = d / 10;
+		d = d / 10.0;
 	else
 		d = d / 1000.0;
 	*dst = pcb_round(d);
@@ -151,8 +151,8 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'A' for access\n", fn, lineno);
 		return -1;
 	}
-	if (extract_int(&tf->side, line, 40, 41)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid hole dimension\n", fn, lineno);
+	if (extract_int(&tf->side, line, 39, 40)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid access side\n", fn, lineno);
 		return -1;
 	}
 	if (line[41] != 'X') {
