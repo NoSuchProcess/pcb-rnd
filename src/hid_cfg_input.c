@@ -604,5 +604,8 @@ int pcb_hid_cfg_keys_seq_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t **seq, in
 
 int pcb_hid_cfg_keys_seq(pcb_hid_cfg_keys_t *km, char *dst, int dst_len)
 {
-	return pcb_hid_cfg_keys_seq_(km, km->seq, km->seq_len, dst, dst_len);
+	if (km->seq_len_action > 0)
+		return pcb_hid_cfg_keys_seq_(km, km->seq, km->seq_len_action, dst, dst_len);
+	else
+		return pcb_hid_cfg_keys_seq_(km, km->seq, km->seq_len, dst, dst_len);
 }
