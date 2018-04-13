@@ -43,6 +43,13 @@
 
 static const char *ipcd356_cookie = "ipcd356 importer";
 
+static void set_src(pcb_attribute_list_t *a, const char *fn, int lineno)
+{
+	char src[8192];
+	pcb_snprintf(src, sizeof(src), "ipcd356::%s:%d", fn, lineno);
+	pcb_attribute_put(a, "source", src);
+}
+
 static void extract_field(char *dst, const char *line, int start, int end)
 {
 	int n;
@@ -250,6 +257,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 						const char *nr;
 						sc = pcb_subc_alloc();
 						pcb_attribute_put(&sc->Attributes, "refdes", refdes);
+						set_src(&sc->Attributes, fn, lineno);
 						nr = pcb_attribute_get(&sc->Attributes, "refdes");
 						htsp_set(subcs, nr, sc);
 					}
