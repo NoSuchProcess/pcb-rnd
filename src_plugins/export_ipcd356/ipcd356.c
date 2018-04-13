@@ -43,6 +43,7 @@
 #include "obj_poly.h"
 #include "obj_subc.h"
 #include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -207,15 +208,86 @@ static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
 }
 
 /* light terminals */
+static void ipcd356_pstk_shape(test_feature_t *t, pcb_pstk_shape_t *sh)
+{
+	int n;
+	pcb_coord_t x1, y1, x2, y2;
+	switch(sh->shape) {
+		case PCB_PSSH_CIRC:
+			t->width = sh->data.circ.dia;
+			t->height = 0;
+			t->cx += sh->data.circ.x;
+			t->cy += sh->data.circ.y;
+			break;
+		case PCB_PSSH_LINE:
+			t->height = t->width = sh->data.line.thickness;
+			t->cx += (sh->data.line.x1 + sh->data.line.x2)/2;
+			t->cy += (sh->data.line.y1 + sh->data.line.y2)/2;
+			break;
+		case PCB_PSSH_POLY:
+			t->height = t->width = sh->data.line.thickness;
+			x1 = x2 = sh->data.poly.x[0];
+			y1 = y2 = sh->data.poly.y[0];
+			for(n = 1; n < sh->data.poly.len; n++) {
+				if (sh->data.poly.x[n] < x1) x1 = sh->data.poly.x[n];
+				if (sh->data.poly.x[n] > x2) x2 = sh->data.poly.x[n];
+				if (sh->data.poly.y[n] < y1) y1 = sh->data.poly.y[n];
+				if (sh->data.poly.y[n] > y2) y2 = sh->data.poly.y[n];
+			}
+			t->cx += (x1 + x2)/2;
+			t->cy += (y1 + y2)/2;
+			t->height = (x2 - x1) / 4 + 1;
+			t->width = (y2 - y1) / 4 + 1;
+			break;
+	}
+}
+
 static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *pstk)
 {
+	test_feature_t t;
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_shape_t *st, *sb;
+	pcb_pstk_tshape_t *tshp;
+	pcb_lib_menu_t *mn;
 
+	if (pstk->term == NULL)
+		return;
+
+	proto = pcb_pstk_get_proto(pstk);
+	if (proto == NULL)
+		return;
+
+	mn = pcb_netlist_find_net4term(ctx->pcb, (pcb_any_obj_t *)pstk);
+
+	t.o = (pcb_any_obj_t *)pstk;
+	t.netname = (mn == NULL) ? "N/C" : pcb_netlist_name(mn);
+	t.refdes = subc->refdes;
+	t.term = pstk->term;
+	t.is_plated = proto->hplated;
+	t.access_top = ((st = pcb_pstk_shape(pstk, PCB_LYT_TOP | PCB_LYT_COPPER, 0)) != NULL);
+	t.access_bottom = ((sb = pcb_pstk_shape(pstk, PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0)) != NULL);
+	/* this assumes the mask shape will expose all copper */
+	t.masked_top = (pcb_pstk_shape(pstk, PCB_LYT_TOP | PCB_LYT_MASK, 0) == NULL);
+	t.masked_bottom = (pcb_pstk_shape(pstk, PCB_LYT_BOTTOM | PCB_LYT_MASK, 0) == NULL);
+	t.hole = proto->hdia;
+	t.cx = pstk->x;
+	t.cy = pstk->y;
+
+	/* this assumes bottom shape is not smaller than top shape */
+	if (st != NULL) ipcd356_pstk_shape(&t, st);
+	else if (sb != NULL) ipcd356_pstk_shape(&t, sb);
+
+	tshp = pcb_pstk_get_tshape(pstk);
+	t.rot = tshp->rot;
+
+	ipcd356_write_feature(ctx, &t);
 }
 
 /* heavy terminals: lines, arcs, polygons */
 static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, pcb_layer_t *layer, pcb_any_obj_t *o)
 {
 	pcb_layer_type_t flg;
+	pcb_lib_menu_t *mn;
 
 	if (o->term == NULL)
 		return -1;
@@ -223,9 +295,11 @@ static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, 
 	if (!(flg & PCB_LYT_COPPER))
 		return -1;
 
+	mn = pcb_netlist_find_net4term(ctx->pcb, o);
+
 	memset(&t, 0, sizeof(t));
 	t->o = o;
-	t->netname = pcb_netlist_name(pcb_netlist_find_net4term(ctx->pcb, o));
+	t->netname = (mn == NULL) ? "N/C" : pcb_netlist_name(mn);
 	t->refdes = subc->refdes;
 	t->term = o->term;
 	t->access_top = (flg & PCB_LYT_TOP);
@@ -269,8 +343,8 @@ static void ipcd356_write_poly(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *
 
 	t.cx = (poly->BoundingBox.X1 + poly->BoundingBox.X2) / 2;
 	t.cy = (poly->BoundingBox.Y1 + poly->BoundingBox.Y2) / 2;
-	t.width = (poly->BoundingBox.X2 - poly->BoundingBox.X1) / 8;
-	t.height = (poly->BoundingBox.Y2 - poly->BoundingBox.Y1) / 8;
+	t.width = (poly->BoundingBox.X2 - poly->BoundingBox.X1) / 8 + 1;
+	t.height = (poly->BoundingBox.Y2 - poly->BoundingBox.Y1) / 8 + 1;
 	t.rot = 0;
 	ipcd356_write_feature(ctx, &t);
 }
