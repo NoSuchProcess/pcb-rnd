@@ -281,7 +281,7 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 		pcb_attribute_put(&ps->Attributes, "term", term);
 }
 
-static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs)
+static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs, int want_net, int want_pads)
 {
 	char line_[128], *line, netname[16], refdes[8], term[8];
 	long lineno = 0;
@@ -330,8 +330,10 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 					data = sc->data;
 				}
 
-				create_feature(pcb, data, &tf, fn, lineno, term);
-				if (netname_valid(netname)) {
+				if (want_pads)
+					create_feature(pcb, data, &tf, fn, lineno, term);
+	
+				if (want_net && (netname_valid(netname))) {
 					char tn[36];
 					sprintf(tn, "%s-%s", refdes, term);
 					pcb_hid_actionl("Netlist", "Add",  netname, tn, NULL);
@@ -349,39 +351,64 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 	return 1;
 }
 
-static const char pcb_acts_LoadIpc356From[] = "LoadIpc356From(filename)";
+static const char pcb_acts_LoadIpc356From[] = "LoadIpc356From(filename, [nonet], [nopad], [nosubc])";
 static const char pcb_acth_LoadIpc356From[] = "Loads the specified IPC356-D netlist";
 int pcb_act_LoadIpc356From(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	FILE *f;
-	int res;
-	htsp_t subcs;
+	int res, n, want_subc = 1, want_net = 1, want_pads = 1;
+	htsp_t subcs, *scs = NULL;
 	htsp_entry_t *e;
+
+	if (argc < 1)
+		PCB_ACT_FAIL(LoadIpc356From);
 
 	f = pcb_fopen(argv[0], "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", argv[0]);
 		return 1;
 	}
-	htsp_init(&subcs, strhash, strkeyeq);
 
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
-	res = ipc356_parse(PCB, f, argv[0], &subcs);
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	for(n = 1; n < argc; n++) {
+		if (strcmp(argv[n], "nonet") == 0) want_net = 0;
+		if (strcmp(argv[n], "nopad") == 0) want_pads = 0;
+		if (strcmp(argv[n], "nosubc") == 0) want_subc = 0;
+	}
+
+	if (!want_pads)
+		want_subc = 0; /* can't load subcircuits if there are no padstacks - they would be all empty */
+
+	if (want_subc) {
+		htsp_init(&subcs, strhash, strkeyeq);
+		scs = &subcs;
+	}
+
+	if (want_net) {
+		pcb_hid_actionl("Netlist", "Freeze", NULL);
+		pcb_hid_actionl("Netlist", "Clear", NULL);
+	}
+
+	res = ipc356_parse(PCB, f, argv[0], scs, want_net, want_pads);
+
+	if (want_net) {
+		pcb_hid_actionl("Netlist", "Sort", NULL);
+		pcb_hid_actionl("Netlist", "Thaw", NULL);
+	}
 
 	fclose(f);
-	for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e)) {
-		pcb_subc_t *sc = (pcb_subc_t *)e->value;
-		pcb_add_subc_to_data(PCB->Data, sc);
-		pcb_subc_bbox(sc);
-		if (PCB->Data->subc_tree == NULL)
-			PCB->Data->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(PCB->Data->subc_tree, sc);
-		pcb_subc_rebind(PCB, sc);
+
+	if (want_subc) {
+		for (e = htsp_first(&subcs); e; e = htsp_next(&subcs, e)) {
+			pcb_subc_t *sc = (pcb_subc_t *)e->value;
+			pcb_add_subc_to_data(PCB->Data, sc);
+			pcb_subc_bbox(sc);
+			if (PCB->Data->subc_tree == NULL)
+				PCB->Data->subc_tree = pcb_r_create_tree();
+			pcb_r_insert_entry(PCB->Data->subc_tree, sc);
+			pcb_subc_rebind(PCB, sc);
+		}
+		htsp_uninit(&subcs);
 	}
-	htsp_uninit(&subcs);
 	return res;
 }
 
