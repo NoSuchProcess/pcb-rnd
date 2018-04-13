@@ -49,20 +49,28 @@ void pcb_gtk_status_line_set_text(GtkWidget *status_line_label, const gchar * te
 
 static inline void gen_status_long(char *text, size_t text_size, int compat_horiz, const pcb_unit_t *unit)
 {
+	char kbd[32];
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
+
+	strcpy(kbd, "???");
+
 
 	pcb_snprintf(text, text_size, _(
 		"%m+<b>view</b>=%s  "
 		"<b>grid</b>=%$mS  "
-		"<b>line</b>=%mS (%s%s)%s"
+		"<b>line</b>=%mS (%s%s) "
+		"<b>kbd</b>=%s"
+		"%s" /* line break */
 		"<b>via</b>=%mS (%mS)  "
 		"<b>clearance</b>=%mS  "
 		"<b>text</b>=%i%%  "
 		"<b>buffer</b>=#%i"),
 		unit->allow, conf_core.editor.show_solder_side ? _("solder") : _("component"),
 		PCB->Grid,
-		conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "", compat_horiz ? "\n" : "",
+		conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "",
+		kbd,
+		compat_horiz ? "\n" : "", /* line break */
 		conf_core.design.via_thickness, conf_core.design.via_drilling_hole, 
 		conf_core.design.clearance,
 		conf_core.design.text_scale,
