@@ -1,9 +1,9 @@
 $class export
 $short IPC-D-356 Netlist pcb_exporter
 $long IPC-D-356 Netlist export.
-$state requires-full-rewrite
+$state works
 $fmt-native no
 $fmt-feature-w export IPC-D-356 Netlist (for automated testing)
 $package export-extra
-default disable-all
+default buildin
 autoload 1
