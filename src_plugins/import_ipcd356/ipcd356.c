@@ -225,7 +225,7 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 	return 0;
 }
 
-static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *tf, const char *fn, long lineno)
+static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *tf, const char *fn, long lineno, const char *term)
 {
 	pcb_pstk_t *ps;
 	pcb_pstk_shape_t sh[6];
@@ -277,6 +277,8 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 		pcb_attribute_put(&ps->Attributes, "ipcd356::mid", "yes");
 	if (tf->is_tooling)
 		pcb_attribute_put(&ps->Attributes, "ipcd356::tooling", "yes");
+	if (term)
+		pcb_attribute_put(&ps->Attributes, "term", term);
 }
 
 static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs)
@@ -328,7 +330,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 					data = sc->data;
 				}
 
-				create_feature(pcb, data, &tf, fn, lineno);
+				create_feature(pcb, data, &tf, fn, lineno, term);
 				if (netname_valid(netname)) {
 					char tn[36];
 					sprintf(tn, "%s-%s", refdes, term);
