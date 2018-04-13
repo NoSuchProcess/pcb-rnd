@@ -2,7 +2,7 @@
 
 CLEANFILES=../action_reference.html ../dialogtable.html ../bridges.svg ../formats.html
 
-all:  ../action_reference.html ../dialogtable.html ../formats.html
+all:  ../action_reference.html ../dialogtable.html ../formats.html ../bridges.svg
 
 ../action_reference.html : ./dump_actions_to_html.sh ../../../../src/pcb-rnd
 	./dump_actions_to_html.sh > ../action_reference.html
