@@ -104,7 +104,7 @@ static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, pc
 		len--;
 	}
 	if (ctx->is_mil) {
-		sprintf(fmt, "%%0%d.0mi", len);
+		sprintf(fmt, "%%0%d.0ml", len);
 		crd *= 10;
 	}
 	else {
