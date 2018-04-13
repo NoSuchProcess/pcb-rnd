@@ -35,11 +35,14 @@
 #include "data.h"
 #include "safe_fs.h"
 
+#include "conf_core.h"
 #include "hid.h"
 #include "action_helper.h"
 #include "compat_misc.h"
 #include "hid_actions.h"
 #include "plugins.h"
+
+#include "../src_plugins/lib_compat_help/pstk_help.h"
 
 static const char *ipcd356_cookie = "ipcd356 importer";
 
@@ -214,8 +217,58 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 	return 0;
 }
 
-static void create_feature(pcb_data_t *data, test_feature_t *tf)
+static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *tf, const char *fn, long lineno)
 {
+	pcb_pstk_t *ps;
+	pcb_pstk_shape_t sh[6];
+	pcb_coord_t msk = PCB_MIL_TO_COORD(4), y;
+	int i = 0, thru = (tf->hole > 0) && (tf->is_plated);
+
+	memset(sh, 0, sizeof(sh));
+	if (tf->height == 0) {
+		if ((tf->side == 0) || (tf->side == 1) || thru) {
+			sh[i].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; pcb_shape_oval(&sh[i], tf->width, tf->width); i++;
+		}
+		if ((tf->side == 0) || (tf->side == 2) || thru) {
+			sh[i].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_oval(&sh[i], tf->width, tf->width); i++;
+		}
+		if (thru) {
+			sh[i].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_oval(&sh[i], tf->width, tf->width); i++;
+		}
+		if ((tf->mask == 0) || (tf->mask == 1)) {
+			sh[i].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[i].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[i], tf->width + msk, tf->width + msk); i++;
+		}
+		if ((tf->mask == 0) || (tf->mask == 2)) {
+			sh[i].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; sh[i].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[i], tf->width + msk, tf->width + msk); i++;
+		}
+	}
+	else {
+		if ((tf->side == 0) || (tf->side == 1) || thru) {
+			sh[i].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; pcb_shape_rect(&sh[i], tf->width, tf->height); i++;
+		}
+		if ((tf->side == 0) || (tf->side == 2) || thru) {
+			sh[i].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[i], tf->width, tf->height); i++;
+		}
+		if (thru) {
+			sh[i].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[i], tf->width, tf->height); i++;
+		}
+		if ((tf->mask == 0) || (tf->mask == 1)) {
+			sh[i].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[i].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[i], tf->width + msk, tf->height + msk); i++;
+		}
+		if ((tf->mask == 0) || (tf->mask == 2)) {
+			sh[i].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; sh[i].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[i], tf->width + msk, tf->height + msk); i++;
+		}
+	}
+
+	y = pcb->MaxHeight - tf->cy;
+	if ((y < 0) || (y > pcb->MaxHeight) || (tf->cx < 0) || (tf->cx > pcb->MaxWidth))
+		pcb_message(PCB_MSG_WARNING, "Test feature ended up out of the board extents in %s:%ld - board too small please use autocrop()\n", fn, lineno);
+	ps = pcb_pstk_new_from_shape(data, tf->cx, y, tf->hole, tf->is_plated, conf_core.design.bloat, sh);
+
+	if (tf->is_middle)
+		pcb_attribute_put(&ps->Attributes, "ipcd356::mid", "yes");
+	if (tf->is_tooling)
+		pcb_attribute_put(&ps->Attributes, "ipcd356::tooling", "yes");
 }
 
 static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs)
@@ -265,7 +318,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 					data = sc->data;
 				}
 
-				create_feature(data, &tf);
+				create_feature(pcb, data, &tf, fn, lineno);
 				break;
 			case '9': /* EOF */
 				if ((line[1] == '9') && (line[2] == '9'))
