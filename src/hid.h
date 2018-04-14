@@ -359,7 +359,7 @@ struct pcb_hid_s {
 	   timer during the callback for the first.  user_data_ can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
-	 pcb_hidval_t (*add_timer) (void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
+	pcb_hidval_t (*add_timer) (void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
 	/* Use this to stop a timer that hasn't triggered yet.  */
 	void (*stop_timer) (pcb_hidval_t timer);
 
