@@ -778,7 +778,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 		case F_AddSelected:
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-				pcb_message(PCB_MSG_WARNING, "Nothing is selected, nothing copied to the paste buffer\n");
+				pcb_message(PCB_MSG_WARNING, "Nothing movable is selected, nothing copied to the paste buffer\n");
 				goto error;
 			}
 			break;
@@ -787,7 +787,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 		case F_MoveSelected:
 			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-				pcb_message(PCB_MSG_WARNING, "Nothing is selected, nothing moved to the paste buffer\n");
+				pcb_message(PCB_MSG_WARNING, "Nothing movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
 			break;
