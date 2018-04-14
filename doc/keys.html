@@ -271,11 +271,11 @@
 	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;a
 	<td> <I>Arbitrarily Rotate Buffer</I><br>Mode(PasteBuffer); FreeRotateBuffer()
 <tr bgcolor="#DDFFFF">
-	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;c
-	<td> <I>Rotate buffer 90 deg CW</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,3)
+	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;l
+	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
 <tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;r
-	<td> <I>Rotate buffer 90 deg CCW</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
+	<td> <I>Rotate buffer 90 deg CW (right)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,3)
 <tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;b
 	<td> <I>Break buffer subcircuits to pieces</I><br>PasteBuffer(Restore) 
@@ -419,7 +419,7 @@
 	<td> <I>Buffer</I><br>Mode(PasteBuffer)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f7-shift
-	<td> <I>Rotate buffer 90 deg CCW</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
+	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f8
 	<td> <I>Del/Remove</I><br>Mode(Remove)
@@ -472,74 +472,92 @@
 	<th align=left>g<br>&nbsp;h
 	<td> <I>Grid /2</I><br>SetValue(Grid,/2) 
 <tr bgcolor="#FFFFFF">
+	<th align=left>g<br>&nbsp;i
+	<td> <I>mil</I><br>SetUnits(mil)
+<tr bgcolor="#DDFFFF">
+	<th align=left>g<br>&nbsp;l
+	<td> <I>Enable local grid</I><br>conf(toggle, plugins/hid_gtk/local_grid/enable, design) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>g<br>&nbsp;m
+	<td> <I>mm</I><br>SetUnits(mm)
+<tr bgcolor="#DDFFFF">
+	<th align=left>g<br>&nbsp;r
+	<td> <I>Realign grid</I><br> GetXY(Click to set the grid origin);  Display(ToggleGrid) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>g<br>&nbsp;v
+	<td> <I>Enable visible grid</I><br>conf(toggle, editor/draw_grid, design) 
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;a
 	<td> <I>About...</I><br>About() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;c
 	<td> <I>Calibrate Printer...</I><br>PrintCalibrate() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;p
 	<td> <I>Preferences...</I><br>DoWindows(Preferences)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;r
 	<td> <I>Re-scan the footprint library</I><br>fp_rehash() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;d
 	<td> <I>Generate drill summary</I><br>Report(DrillReport) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;f
 	<td> <I>Report found padstacks</I><br>Report(FoundPins) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;r
 	<td> <I>Generate object report</I><br>ReportObject() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>insert
 	<td> <I>Insert Point</I><br>Mode(InsertPoint)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>left
 	<td> <I>Step Left</I><br>Cursor(Warp,-1,0,grid) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>left-shift
 	<td> <I>Step +Left</I><br>Cursor(Pan,-50,0,view) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;c<br>&nbsp;&nbsp;c
 	<td> <I>Crosshair shows DRC clearance</I><br>conf(toggle, editor/show_drc, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;c<br>&nbsp;&nbsp;o
 	<td> <I>Orthogonal moves</I><br>conf(toggle, editor/orthogonal_moves, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;c<br>&nbsp;&nbsp;p
 	<td> <I>Crosshair snaps to padstacks</I><br>conf(toggle, editor/snap_pin, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;c<br>&nbsp;&nbsp;s
 	<td> <I>Crosshair snaps to off-grid points on lines</I><br>conf(toggle, editor/snap_offgrid_line, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;a
 	<td> <I>Show autorouter trials</I><br>conf(toggle, editor/live_routing, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;c
 	<td> <I>Check polygons</I><br>conf(toggle, editor/check_planes, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;h
 	<td> <I>Highlighting on line, arc points</I><br>conf(toggle, editor/highlight_on_point, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;p
 	<td> <I>Thin draw poly</I><br>conf(toggle, editor/thin_draw_poly, design)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;t
 	<td> <I>Thin draw</I><br>conf(toggle, editor/thin_draw, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;w
 	<td> <I>Wireframe draw</I><br>conf(toggle, editor/wireframe_draw, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;f<br>&nbsp;&nbsp;h
 	<td> <I>Hide floaters</I><br>conf(toggle, editor/hide_names, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;f<br>&nbsp;&nbsp;l
 	<td> <I>Lock floaters</I><br>conf(toggle, editor/lock_names, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;f<br>&nbsp;&nbsp;o
 	<td> <I>Only floaters</I><br>conf(toggle, editor/only_names, design) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>m<br>&nbsp;k<br>&nbsp;&nbsp;s
+	<td> <I>Loose subcircuits (no subc lock)</I><br>subc(loose, toggle)
 <tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;+
 	<td> <I>Line Tool size +5 mil</I><br>SetValue(LineSize,+5,mil) 
@@ -718,72 +736,57 @@
 	<th align=left>v<br>&nbsp;f
 	<td> <I>Zoom Extents</I><br>Zoom() 
 <tr bgcolor="#FFFFFF">
-	<th align=left>v<br>&nbsp;g
-	<td> <I>Enable visible grid</I><br>conf(toggle, editor/draw_grid, design) 
-<tr bgcolor="#DDFFFF">
-	<th align=left>v<br>&nbsp;i
-	<td> <I>mil</I><br>SetUnits(mil)
-<tr bgcolor="#FFFFFF">
-	<th align=left>v<br>&nbsp;l
-	<td> <I>Enable local grid</I><br>conf(toggle, plugins/hid_gtk/local_grid/enable, design) 
-<tr bgcolor="#DDFFFF">
-	<th align=left>v<br>&nbsp;m
-	<td> <I>mm</I><br>SetUnits(mm)
-<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;n
 	<td> <I>Show padstack numbers in a subc</I><br>Display(PinOrPadName) 
 <tr bgcolor="#DDFFFF">
-	<th align=left>v<br>&nbsp;r
-	<td> <I>Realign grid</I><br> GetXY(Click to set the grid origin);  Display(ToggleGrid) 
-<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;f
 	<td> <I>footprint</I><br>Display(SubcID,"%a.footprint%")
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;r
 	<td> <I>refdes</I><br>Display(SubcID)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>refdes+value</I><br>Display(SubcID,"%a.refdes%\\n%a.value%")
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;v
 	<td> <I>value</I><br>Display(SubcID,"%a.value%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;a
 	<td> <I>About...</I><br>About() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;d
 	<td> <I>DRC Check</I><br>DoWindows(DRC) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;f
 	<td> <I>Font selector</I><br>FontSel() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;l
 	<td> <I>Library</I><br>DoWindows(Library) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;m
 	<td> <I>Message Log</I><br>DoWindows(Log) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;n
 	<td> <I>Netlist</I><br>DoWindows(Netlist) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;p
 	<td> <I>Pinout</I><br>Display(Pinout) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>y-ctrl
 	<td> <I>Redo last undone operation</I><br>Redo() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z-ctrl
 	<td> <I>Undo last operation</I><br>Undo() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z<br>&nbsp;e<br>&nbsp;&nbsp;
 	<td> <I>Zoom Extents</I><br>Zoom() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z<br>&nbsp;x<br>&nbsp;&nbsp;
 	<td> <I>Zoom Out 20%</I><br>Zoom(+1.2) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z<br>&nbsp;z<br>&nbsp;&nbsp;
 	<td> <I>Zoom In 20%</I><br>Zoom(-1.2) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>|
 	<td> <I>Wireframe draw</I><br>conf(toggle, editor/wireframe_draw, design) 
 </table>
