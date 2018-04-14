@@ -30,13 +30,13 @@
 
 #include "board.h"
 #include "conf_core.h"
+#include "crosshair.h"
+#include "compat_nls.h"
 #include "data.h"
 #include "error.h"
 #include "event.h"
 #include "grid.h"
 
-#warning tool TODO: remove this when pcb_crosshair_set_mode() got moved here
-#include "crosshair.h"
 
 static void default_tool_reg(void);
 static void default_tool_unreg(void);
@@ -95,15 +95,83 @@ int pcb_tool_select_by_name(const char *name)
 	pcb_toolid_t id = pcb_tool_lookup(name);
 	if (id == PCB_TOOLID_INVALID)
 		return -1;
-	pcb_crosshair_set_mode(id);
-	return 0;
+	return pcb_tool_select_by_id(id);
 }
 
 int pcb_tool_select_by_id(pcb_toolid_t id)
 {
+	char id_s[32];
+	static pcb_bool recursing = pcb_false;
+	
 	if ((id < 0) || (id > vtp0_len(&pcb_tools)))
 		return -1;
-	pcb_crosshair_set_mode(id);
+	
+	/* protect the cursor while changing the mode
+	 * perform some additional stuff depending on the new mode
+	 * reset 'state' of attached objects
+	 */
+	if (recursing)
+		return -1;
+	recursing = pcb_true;
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_added_lines = 0;
+	pcb_route_reset(&pcb_crosshair.Route);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedPolygon.PointN = 0;
+	if (PCB->RatDraw) {
+		if (id == PCB_MODE_ARC || id == PCB_MODE_RECTANGLE ||
+				id == PCB_MODE_VIA || id == PCB_MODE_POLYGON ||
+				id == PCB_MODE_POLYGON_HOLE || id == PCB_MODE_TEXT || id == PCB_MODE_THERMAL) {
+			pcb_message(PCB_MSG_WARNING, _("That mode is NOT allowed when drawing ratlines!\n"));
+			id = PCB_MODE_NO;
+		}
+	}
+	if (conf_core.editor.mode == PCB_MODE_LINE && id == PCB_MODE_ARC && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
+		pcb_adjust_attached_objects();
+	}
+	else if (conf_core.editor.mode == PCB_MODE_ARC && id == PCB_MODE_LINE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedBox.Point1.X;
+		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y;
+		sprintf(id_s, "%d", id);
+		conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
+		pcb_adjust_attached_objects();
+	}
+	else {
+		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		if (id == PCB_MODE_LINE && conf_core.editor.auto_drc) {
+			if (pcb_reset_conns(pcb_true)) {
+				pcb_undo_inc_serial();
+				pcb_draw();
+			}
+		}
+	}
+
+	sprintf(id_s, "%d", id);
+	conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
+
+	if (id == PCB_MODE_PASTE_BUFFER)
+		/* do an update on the crosshair range */
+		pcb_crosshair_range_to_buffer();
+	else
+		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+
+	recursing = pcb_false;
+
+	/* force a crosshair grid update because the valid range
+	 * may have changed
+	 */
+	pcb_crosshair_move_relative(0, 0);
+	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
 
@@ -120,8 +188,7 @@ int pcb_tool_select_highest(void)
 	}
 	if (bestn == PCB_TOOLID_INVALID)
 		return -1;
-	pcb_crosshair_set_mode(bestn);
-	return 0;
+	return pcb_tool_select_by_id(bestn);
 }
 
 /**** current tool function wrappers ****/
@@ -277,7 +344,6 @@ pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line)
 	else
 		return pcb_false;
 }
-
 
 #warning tool TODO: move this out to a tool plugin
 

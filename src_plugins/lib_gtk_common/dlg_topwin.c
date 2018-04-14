@@ -123,7 +123,7 @@ gboolean ghid_idle_cb(void *topwin)
 {
 	pcb_gtk_topwin_t *tw = topwin;
 	if (conf_core.editor.mode == PCB_MODE_NO)
-		pcb_crosshair_set_mode(PCB_MODE_ARROW);
+		pcb_tool_select_by_id(PCB_MODE_ARROW);
 	tw->com->mode_cursor_main(conf_core.editor.mode);
 	if (tw->mode_btn.settings_mode != conf_core.editor.mode) {
 		ghid_mode_buttons_update();
@@ -566,7 +566,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 	ghid_update_toggle_flags(tw, NULL);
 
 	pcb_gtk_icons_init(GTK_WINDOW(tw->com->top_window));
-	pcb_crosshair_set_mode(PCB_MODE_ARROW);
+	pcb_tool_select_by_id(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }
 

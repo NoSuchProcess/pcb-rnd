@@ -131,14 +131,14 @@ static int pcb_act_LoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
-			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 
 	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
-			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 

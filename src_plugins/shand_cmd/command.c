@@ -156,7 +156,7 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 	case 1:											/* filename is passed in commandline */
 		filename = argv[0];
 		if (filename && pcb_buffer_load_footprint(PCB_PASTEBUFFER, filename, NULL))
-			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
 		break;
 
 	default:											/* usage */
@@ -192,7 +192,7 @@ static int CommandLoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x,
 	case 1:  /* filename is passed in commandline */
 		filename = argv[0];
 		if (filename && pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, filename, format))
-			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
 		break;
 
 	default:  /* usage */

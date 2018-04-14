@@ -63,7 +63,7 @@ static int pcb_act_Delete(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	case F_Object:
 		pcb_gui->get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y);
 		pcb_crosshair_save_mode();
-		pcb_crosshair_set_mode(PCB_MODE_REMOVE);
+		pcb_tool_select_by_id(PCB_MODE_REMOVE);
 		pcb_notify_mode();
 		pcb_crosshair_restore_mode();
 		break;

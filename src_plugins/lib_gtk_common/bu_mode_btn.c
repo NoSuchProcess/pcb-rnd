@@ -75,7 +75,7 @@ static gint n_mode_buttons = G_N_ELEMENTS(mode_buttons);
 
 static void do_set_mode(pcb_gtk_mode_btn_t *mbb, int mode)
 {
-	pcb_crosshair_set_mode(mode);
+	pcb_tool_select_by_id(mode);
 	mbb->com->mode_cursor_main(mode);
 	mbb->settings_mode = mode;
 }

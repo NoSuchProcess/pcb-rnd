@@ -65,14 +65,14 @@ static void click_timer_cb(pcb_hidval_t hv)
 			pcb_remove_selected();
 			pcb_crosshair_save_mode();
 			pcb_tool_is_saved = pcb_true;
-			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
 		}
 		else if (pcb_tool_note.Hit && !pcb_gui->shift_is_pressed()) {
 			pcb_box_t box;
 
 			pcb_crosshair_save_mode();
 			pcb_tool_is_saved = pcb_true;
-			pcb_crosshair_set_mode(pcb_gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
+			pcb_tool_select_by_id(pcb_gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
 			pcb_crosshair.AttachedObject.Ptr1 = pcb_tool_note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = pcb_tool_note.ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = pcb_tool_note.ptr3;

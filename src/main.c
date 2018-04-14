@@ -597,7 +597,7 @@ int main(int argc, char *argv[])
 	InitHandler();
 	pcb_init_buffers(PCB);
 
-	pcb_crosshair_set_mode(PCB_MODE_ARROW);
+	pcb_tool_select_by_id(PCB_MODE_ARROW);
 
 	if (command_line_pcb) {
 		/* keep filename even if initial load command failed;
@@ -656,7 +656,7 @@ int main(int argc, char *argv[])
 			pcb_gui->parse_arguments(&hid_argc, &hid_argv);
 			if (pcb_gui->gui)
 				pcb_crosshair_init();
-			pcb_crosshair_set_mode(PCB_MODE_ARROW);
+			pcb_tool_select_by_id(PCB_MODE_ARROW);
 			pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
 		}
 	} while(pcb_gui != NULL);
