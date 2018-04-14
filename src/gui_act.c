@@ -1470,7 +1470,7 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (val != NULL) {
 				*val = '\0';
 				val++;
-				if (val == '\0')
+				if (*val == '\0')
 					val = NULL;
 			}
 			if (val == NULL)
