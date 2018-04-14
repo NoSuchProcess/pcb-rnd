@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
+pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -26,11 +26,17 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> LoadhypFrom </td>
 <td>Loads the specified Hyperlynx file.</td>
 <td>LoadhypFrom(filename[, "debug"]...)</td>
+<tr><td> ChkView </td>
+<td>Return 1 if layerid is visible.</td>
+<td>ChkView(layerid)</td>
 <tr><td> acompnet </td>
 <td>Attempt to auto-complete the current network</td>
 <td>acompnet()</td>
+<tr><td> ChkLayer </td>
+<td>Returns 1 if the specified layer is the active layer</td>
+<td>ChkLayer(layerid)</td>
 <tr><td> SetOctagon </td>
-<td>Sets the octagon-flag of objects.</td>
+<td>Sets the octagon-flag of objects. Not supported anymore.</td>
 <td>SetOctagon(Object|ToggleObject|SelectedElements|Selected)</td>
 <tr><td> aligntext </td>
 <td>Align Text Elements</td>
@@ -82,7 +88,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>DumpLibrary()</td>
 <tr><td> ToggleView </td>
 <td>Toggle the visibility of the specified layer or layer group.</td>
-<td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td>
+<td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td>
 <tr><td> CreateText </td>
 <td>Create a new text object</td>
 <td>CreateText(layer, fontID, X, Y, direction, scale, text)</td>
@@ -110,16 +116,19 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]<br>Editlayer([@layer], attrib, key=value)</td>
 <tr><td> SetFlag </td>
 <td>Sets flags on objects.</td>
-<td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = square | octagon | thermal | join</td>
+<td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td>
 <tr><td> ClrFlag </td>
 <td>Clears flags on objects.</td>
-<td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = square | octagon | thermal | join</td>
+<td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td>
 <tr><td> PrintUsage </td>
 <td>Print command line arguments of pcb-rnd or a plugin loaded.</td>
 <td>PrintUsage()<br>PrintUsage(plugin)</td>
 <tr><td> ClearSquare </td>
-<td>Clears the square-flag of pins and pads.</td>
+<td>Clears the square-flag of pins and pads. Not supported anymore.</td>
 <td>ClearSquare(ToggleObject|SelectedElements|SelectedPins)</td>
+<tr><td> ChangeHole </td>
+<td>Changes the hole flag of objects. Not supported anymore; use the propery editor.</td>
+<td>ChangeHole(ToggleObject|Object|SelectedVias|Selected)</td>
 <tr><td> conf </td>
 <td>Perform various operations on the configuration tree.</td>
 <td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td>
@@ -139,11 +148,11 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Dump all actions available.</td>
 <td>DumpActions()</td>
 <tr><td> Attributes </td>
-<td>Let the user edit the attributes of the layout, current or given<br>layer, or selected element or subcircuit.</td>
+<td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td>
 <td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td>
 <tr><td> RenumberBlock </td>
 <tr><td> ToggleHideName </td>
-<td>Toggles the visibility of element names.</td>
+<td>Toggles the visibility of subcircuit names.</td>
 <td>ToggleHideName(Object|SelectedElements)</td>
 <tr><td> RenumberBuffer </td>
 <tr><td> AutoRoute </td>
@@ -164,11 +173,14 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> New </td>
 <td>Starts a new layout.</td>
 <td>New([name])</td>
+<tr><td> Grid </td>
+<td>Set the grid.</td>
+<td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td>
 <tr><td> subc </td>
 <td>Various operations on subc</td>
-<td>subc(hash, [board|selected])</td>
+<td>subc(hash, [board|selected])<br>subc(loose, on|off|toggle|check)</td>
 <tr><td> RipUp </td>
-<td>Ripup auto-routed tracks, or convert an element to parts.</td>
+<td>Ripup auto-routed tracks</td>
 <td>RipUp(All|Selected|Element)</td>
 <tr><td> Import </td>
 <td>Import schematics.</td>
@@ -208,7 +220,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Calculate toolpath for milling away copper</td>
 <td>mill()</td>
 <tr><td> ChangeSquare </td>
-<td>Changes the square flag of pins and pads.</td>
+<td>Changes the square flag of pins and pads. Not supported anymore.</td>
 <td>ChangeSquare(ToggleObject)<br>ChangeSquare(SelectedElements|SelectedPins)<br>ChangeSquare(Selected|SelectedObjects)</td>
 <tr><td> djopt </td>
 <td>Perform various optimizations on the current board.</td>
@@ -228,6 +240,9 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> SaveFontTo </td>
 <td>Save PCB font to a file</td>
 <td>SaveFontTo([file, id])</td>
+<tr><td> SetUnits </td>
+<td>Set the default measurement units.</td>
+<td>SetUnits(mm|mil)</td>
 <tr><td> integrity </td>
 <td>perform integrirty check on the current board and generate errors if needed</td>
 <td>integrity()</td>
@@ -236,7 +251,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>ExecuteFile(filename)</td>
 <tr><td> ChangePinName </td>
 <td>Sets the name of a specific pin on a specific subcircuit.</td>
-<td>ChangePinName(ElementName,PinNumber,PinName)</td>
+<td>ChangePinName(Refdes,PinNumber,PinName)</td>
 <tr><td> RouteStyle </td>
 <td>Copies the indicated routing style into the current sizes.</td>
 <td>RouteStyle(1|2|3|4)</td>
@@ -247,7 +262,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Pull all traces tight.</td>
 <td>pcb_act_GlobalPuller()</td>
 <tr><td> SetSquare </td>
-<td>sets the square-flag of objects.</td>
+<td>sets the square-flag of objects. Not supported anymore.</td>
 <td>SetSquare(ToggleObject|SelectedElements|SelectedPins)</td>
 <tr><td> Renumber </td>
 <td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td>
@@ -262,7 +277,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Some polygon related stuff.</td>
 <td>Polygon(Close|CloseHole|PreviousPoint)</td>
 <tr><td> autocrop </td>
-<td>Autocrops the board dimensions to extants + margin</td>
+<td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td>
 <td>autocrop()</td>
 <tr><td> SelectLayer </td>
 <td>Select which layer is the current layer.</td>
@@ -278,7 +293,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>query(dump, expr) - dry run: compile and dump an expression</td>
 <tr><td> ChangeFlag </td>
 <td>Sets or clears flags on objects.</td>
-<td>ChangeFlag(Object|Selected|SelectedObjects, flag, value)<br>ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)<br>ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)<br>ChangeFlag(SelectedElements, flag, value)<br>flag = square | octagon | thermal | join<br>value = 0 | 1</td>
+<td>ChangeFlag(Object|Selected|SelectedObjects, flag, value)<br>ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)<br>ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)<br>ChangeFlag(SelectedElements, flag, value)<br>flag = thermal | join<br>value = 0 | 1</td>
 <tr><td> ListRotations </td>
 <tr><td> Report </td>
 <td>Produce various report.</td>
@@ -305,6 +320,9 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> FontEdit </td>
 <td>Convert the current font to a PCB for editing.</td>
 <td>FontEdit()</td>
+<tr><td> ChkRst </td>
+<td>Return 1 if route_style_id matches pen.</td>
+<td>ChkRst(route_style_id)</td>
 <tr><td> regpoly </td>
 <td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td>
 <td>regpoly([where,] corners, radius [,rotation])</td>
@@ -340,7 +358,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>q</td>
 <tr><td> SetValue </td>
 <td>Change various board-wide values and sizes.</td>
-<td>SetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, delta)</td>
+<td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td>
 <tr><td> s </td>
 <td>Saves layout data.</td>
 <td>s [name]</td>
@@ -360,7 +378,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Moves the object under the crosshair.</td>
 <td>pcb_move_obj(X,Y,dim)</td>
 <tr><td> DisperseElements </td>
-<td>Disperses elements.</td>
+<td>Disperses subcircuits.</td>
 <td>DisperseElements(All|Selected)</td>
 <tr><td> Atomic </td>
 <td>Save or restore the undo serial number.</td>
@@ -450,7 +468,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Move lines out of the way</td>
 <td>Jostle(diameter)</td>
 <tr><td> ChangeOctagon </td>
-<td>Changes the octagon-flag of pins and vias.</td>
+<td>Changes the octagon-flag of pins and vias. Not supported anymore.</td>
 <td>ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)<br>ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)</td>
 <tr><td> ToggleVendor </td>
 <td>Toggles the state of automatic drill size mapping.</td>
@@ -465,7 +483,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Return 1 if currently shown subc ID matches the requested pattern</td>
 <td>ChkSubcID(pattern)</td>
 <tr><td> Flip </td>
-<td>Flip an element to the opposite side of the board.</td>
+<td>Flip a subcircuit to the opposite side of the board.</td>
 <td>Flip(Object|Selected|SelectedElements)</td>
 <tr><td> ChangeSizes </td>
 <td>Changes all sizes of objects.</td>
@@ -476,6 +494,9 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> align </td>
 <td>Align subcircuits</td>
 <td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td>
+<tr><td> dumpundo </td>
+<td>Print info about fonts</td>
+<td>dumpfonts()</td>
 <tr><td> PolyOffs </td>
 <td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td>
 <td>PolyOffs(offset)</td>
@@ -530,6 +551,9 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> EnableVendor </td>
 <td>Enables automatic drill size mapping.</td>
 <td>EnableVendor()</td>
+<tr><td> LoadIpc356From </td>
+<td>Loads the specified IPC356-D netlist</td>
+<td>LoadIpc356From(filename, [nonet], [nopad], [nosubc])</td>
 <tr><td> Quit </td>
 <td>Quits the application after confirming.</td>
 <td>Quit()</td>
@@ -537,7 +561,7 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Loads the specified routed dsn file.</td>
 <td>LoadDsnFrom(filename)</td>
 <tr><td> ClearOctagon </td>
-<td>Clears the octagon-flag of pins and vias.</td>
+<td>Clears the octagon-flag of pins and vias. Not supported anymore.</td>
 <td>ClearOctagon(ToggleObject|Object|SelectedObjects|Selected)<br>ClearOctagon(SelectedElements|SelectedPins|SelectedVias)</td>
 <tr><td> RemoveSelected </td>
 <td>Removes any selected objects.</td>
@@ -551,6 +575,9 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <tr><td> wq </td>
 <td>Saves the layout data and quits.</td>
 <td>wq</td>
+<tr><td> ChangePaste </td>
+<td>Changes the no paste flag of objects. Not supported anymore.</td>
+<td>ChangePaste(ToggleObject|Object|SelectedPads|Selected)</td>
 <tr><td> PolyCombine </td>
 <tr><td> DisableVendor </td>
 <td>Disables automatic drill size mapping.</td>
@@ -560,14 +587,14 @@ pcb-rnd version 1.2.8 rev svn r15534, Revision: 15534
 <td>Toggles or sets the selection.</td>
 <td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(Convert)</td>
 <tr><td> MinMaskGap </td>
-<td>Ensures the mask is a minimum distance from pins and pads.</td>
+<td>Ensures the mask is a minimum distance from pins and pads. Not supported anymore.</td>
 <td>MinMaskGap(delta)<br>MinMaskGap(Selected, delta)</td>
 <tr><td> PrintFiles </td>
 <td>Print files currently loaded.</td>
 <td>PrintFiles()</td>
 <tr><td> ChangeName </td>
 <td>Sets the name (or pin number) of objects.</td>
-<td>ChangeName(Object)<br>ChangeName(Object|"Number")<br>ChangeName(Layout|Layer)</td>
+<td>ChangeName(Object)<br>ChangeName(Layout|Layer)</td>
 <tr><td> LoadMucsFrom </td>
 <td>Loads the specified mucs routing file.</td>
 <td>LoadMucsFrom(filename)</td>
