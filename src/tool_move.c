@@ -45,6 +45,8 @@
 
 void pcb_tool_move_notify_mode(void)
 {
+	pcb_coord_t dx, dy;
+
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
@@ -67,13 +69,13 @@ void pcb_tool_move_notify_mode(void)
 
 		/* second notify, move object */
 	case PCB_CH_STATE_SECOND:
-		pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type,
-														pcb_crosshair.AttachedObject.Ptr1,
-														pcb_crosshair.AttachedObject.Ptr2,
-														pcb_crosshair.AttachedObject.Ptr3,
-														pcb_tool_note.X - pcb_crosshair.AttachedObject.X, pcb_tool_note.Y - pcb_crosshair.AttachedObject.Y);
-		pcb_crosshair_set_local_ref(0, 0, pcb_false);
-		pcb_board_set_changed_flag(pcb_true);
+		dx = pcb_tool_note.X - pcb_crosshair.AttachedObject.X;
+		dy = pcb_tool_note.Y - pcb_crosshair.AttachedObject.Y;
+		if ((dx != 0) || (dy != 0)) {
+			pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
+			pcb_board_set_changed_flag(pcb_true);
+		}
 
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
