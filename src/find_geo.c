@@ -52,17 +52,6 @@
        (p)->BoundingBox.Y1 -= Bloat; \
        (p)->BoundingBox.Y2 += Bloat;}
 
-#define IS_PV_ON_RAT(PV, Rat) \
-	(pcb_is_point_on_line_end((PV)->X,(PV)->Y, (Rat)))
-
-#define IS_PV_ON_ARC(PV, Arc)	\
-	(PCB_FLAG_TEST(PCB_FLAG_SQUARE, (PV)) ? \
-		pcb_is_arc_in_rectangle( \
-			(PV)->X -MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y -MAX(((PV)->Thickness+1)/2 +Bloat,0), \
-			(PV)->X +MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y +MAX(((PV)->Thickness+1)/2 +Bloat,0), \
-			(Arc)) : \
-		pcb_is_point_on_arc((PV)->X,(PV)->Y,MAX((PV)->Thickness/2.0 + Bloat,0.0), (Arc)))
-
 /* reduce arc start angle and delta to 0..360 */
 static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
 {
