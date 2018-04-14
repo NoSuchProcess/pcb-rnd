@@ -169,5 +169,7 @@ pcb_tool_t pcb_tool_arc = {
 	pcb_tool_arc_adjust_attached_objects,
 	pcb_tool_arc_draw_attached,
 	pcb_tool_arc_undo_act,
-	NULL
+	NULL,
+	
+	pcb_false
 };

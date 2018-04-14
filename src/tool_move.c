@@ -112,5 +112,7 @@ pcb_tool_t pcb_tool_move = {
 	NULL,
 	pcb_tool_move_draw_attached,
 	pcb_tool_move_undo_act,
-	NULL
+	NULL,
+	
+	pcb_true
 };

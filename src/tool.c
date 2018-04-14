@@ -119,13 +119,9 @@ int pcb_tool_select_by_id(pcb_toolid_t id)
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedPolygon.PointN = 0;
-	if (PCB->RatDraw) {
-		if (id == PCB_MODE_ARC || id == PCB_MODE_RECTANGLE ||
-				id == PCB_MODE_VIA || id == PCB_MODE_POLYGON ||
-				id == PCB_MODE_POLYGON_HOLE || id == PCB_MODE_TEXT || id == PCB_MODE_THERMAL) {
-			pcb_message(PCB_MSG_WARNING, _("That mode is NOT allowed when drawing ratlines!\n"));
-			id = PCB_MODE_NO;
-		}
+	if (PCB->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
+		pcb_message(PCB_MSG_WARNING, _("That mode is NOT allowed when drawing ratlines!\n"));
+		id = PCB_MODE_NO;
 	}
 	if (conf_core.editor.mode == PCB_MODE_LINE && id == PCB_MODE_ARC && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;

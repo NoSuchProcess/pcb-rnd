@@ -112,5 +112,7 @@ pcb_tool_t pcb_tool_rectangle = {
 	pcb_tool_rectangle_adjust_attached_objects,
 	NULL,
 	pcb_tool_rectangle_anydo_act,
-	pcb_tool_rectangle_anydo_act
+	pcb_tool_rectangle_anydo_act,
+	
+	pcb_false
 };

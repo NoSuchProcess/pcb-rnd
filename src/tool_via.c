@@ -111,5 +111,7 @@ pcb_tool_t pcb_tool_via = {
 	NULL,
 	pcb_tool_via_draw_attached,
 	NULL,
-	NULL
+	NULL,
+	
+	pcb_false
 };

@@ -54,5 +54,7 @@ pcb_tool_t pcb_tool_rotate = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	
+	pcb_true
 };

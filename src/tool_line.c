@@ -428,5 +428,7 @@ pcb_tool_t pcb_tool_line = {
 	pcb_tool_line_adjust_attached_objects,
 	pcb_tool_line_draw_attached,
 	pcb_tool_line_undo_act,
-	pcb_tool_line_redo_act
+	pcb_tool_line_redo_act,
+	
+	pcb_true
 };

@@ -87,5 +87,7 @@ pcb_tool_t pcb_tool_remove = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	
+	pcb_true
 };

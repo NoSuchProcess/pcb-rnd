@@ -97,5 +97,7 @@ pcb_tool_t pcb_tool_buffer = {
 	NULL,
 	pcb_tool_buffer_draw_attached,
 	NULL,
-	NULL
+	NULL,
+	
+	pcb_true
 };

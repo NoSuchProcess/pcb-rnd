@@ -207,5 +207,7 @@ pcb_tool_t pcb_tool_arrow = {
 	pcb_tool_arrow_adjust_attached_objects,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	
+	pcb_true
 };

@@ -98,6 +98,8 @@ pcb_tool_t pcb_tool_text = {
 	NULL,
 	pcb_tool_text_draw_attached,
 	NULL,
-	NULL
+	NULL,
+	
+	pcb_false
 };
 

@@ -68,6 +68,8 @@ typedef struct pcb_tool_s {
 	void     (*draw_attached)(void);
 	pcb_bool (*undo_act)(void);
 	pcb_bool (*redo_act)(void);
+	
+	pcb_bool allow_when_drawing_ratlines;
 } pcb_tool_t;
 
 vtp0_t pcb_tools;
