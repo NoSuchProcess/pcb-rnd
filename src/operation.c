@@ -108,14 +108,14 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (type & PCB_OBJ_LINE && F->Line) {
 		PCB_LINE_VISIBLE_LOOP(data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(line);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
-				}
-				F->Line(ctx, layer, line);
-				changed = pcb_true;
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(line);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
+			F->Line(ctx, layer, line);
+			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -124,14 +124,14 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (type & PCB_OBJ_ARC && F->Arc) {
 		PCB_ARC_VISIBLE_LOOP(data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(arc);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
-				}
-				F->Arc(ctx, layer, arc);
-				changed = pcb_true;
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(arc);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
 			}
+			F->Arc(ctx, layer, arc);
+			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -140,14 +140,14 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (type & PCB_OBJ_TEXT && F->Text) {
 		PCB_TEXT_ALL_LOOP(data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(text);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
-				}
-				F->Text(ctx, layer, text);
-				changed = pcb_true;
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !pcb_text_is_visible(PCB, layer, text))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(text);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
 			}
+			F->Text(ctx, layer, text);
+			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -156,14 +156,14 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (type & PCB_OBJ_POLY && F->Polygon) {
 		PCB_POLY_VISIBLE_LOOP(data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(polygon);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
-				}
-				F->Polygon(ctx, layer, polygon);
-				changed = pcb_true;
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(polygon);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
 			}
+			F->Polygon(ctx, layer, polygon);
+			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -191,14 +191,14 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (type & PCB_OBJ_PSTK && pcb->pstk_on && F->padstack) {
 		PCB_PADSTACK_LOOP(data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(padstack);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, padstack);
-				}
-				F->padstack(ctx, padstack);
-				changed = pcb_true;
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(padstack);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, padstack);
 			}
+			F->padstack(ctx, padstack);
+			changed = pcb_true;
 		}
 		PCB_END_LOOP;
 	}
@@ -207,14 +207,14 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (type & PCB_OBJ_RAT && pcb->RatOn && F->Rat) {
 		PCB_RAT_LOOP(data);
 		{
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
-				if (Reset) {
-					pcb_undo_add_obj_to_flag(line);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
-				}
-				F->Rat(ctx, line);
-				changed = pcb_true;
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(line);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
+			F->Rat(ctx, line);
+			changed = pcb_true;
 		}
 		PCB_END_LOOP;
 	}
