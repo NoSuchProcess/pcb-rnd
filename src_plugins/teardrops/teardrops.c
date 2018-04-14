@@ -250,9 +250,9 @@ static void check_pstk(pcb_pstk_t *ps)
 
 static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	new_arcs = 0;
 	pcb_box_t *b;
 	pcb_rtree_it_t it;
+	new_arcs = 0;
 
 	for(b = pcb_r_first(PCB->Data->padstack_tree, &it); b != NULL; b = pcb_r_next(&it))
 		check_pstk((pcb_pstk_t *)b);
