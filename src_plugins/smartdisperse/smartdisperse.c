@@ -165,7 +165,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	PCB_NET_LOOP(Nets);
 	{
 		pcb_connection_t *conna, *connb;
-		pcb_any_obj_t *ea, *eb;
+		pcb_subc_t *ea, *eb;
 
 		if (net->ConnectionN != 2)
 			continue;
@@ -175,8 +175,8 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		if (!IS_IN_SUBC(conna) || !IS_IN_SUBC(conna))
 			continue;
 
-		ea = (pcb_any_obj_t *) conna->ptr1;
-		eb = (pcb_any_obj_t *) connb->ptr1;
+		ea = (pcb_subc_t *) conna->ptr1;
+		eb = (pcb_subc_t *) connb->ptr1;
 
 		/* place this pair if possible */
 		if (is_visited(ea) || is_visited(eb))
