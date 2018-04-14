@@ -468,7 +468,8 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 	if (fn != NULL) {
 		int n;
 		for (n = 0; n < pcb_object_flagbits_len; n++) {
-			if (pcb_object_flagbits[n].object_types & object_type) {
+			long my_types = pcb_object_flagbits[n].object_types | ((rdver < 4) ? pcb_object_flagbits[n].compat_types : 0);
+			if (my_types & object_type) {
 				pcb_bool b;
 				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
 					PCB_FLAG_SET(pcb_object_flagbits[n].mask, &fh);
