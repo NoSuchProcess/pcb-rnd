@@ -6,6 +6,7 @@
 <tr><td> verbose <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> <verbose>
 <tr><td> quiet <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> print only errors on stderr
 <tr><td> backup_interval <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> time between two backups in seconds; 0 means disabled (no backups)
+<tr><td> hid_fallback <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode
 <tr><td> brave <td><a href="CFN_STRING.html"> string </a><td> 0 <td> brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers
 <tr><td> font_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its output for loading the font; %f is the file name
 <tr><td> file_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its output for loading a pcb file; %f is the file name, %p is the conf setting rc.file_path
