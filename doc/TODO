@@ -37,7 +37,6 @@
 	- if we are adding a prepend list, inserting one by one, going from the first to the last of the list is a bad idea: the prepend list has a1;a2;a3, then we insert them in this order ending up as a3;a2;a1
 	- get the loop go backward if we are in prepend
 - BUG: revert r15465, fix conf merge bug
-- BUG: pressing 'b' for back side on a floater refdes text doesn't send it to the back [report: igor2]
 - BUG: place 1206 on top; switch to bottom; turn off top copper; press 'n' over the pad - still can rename, even tho pad is invisible! [report: igor2]
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
