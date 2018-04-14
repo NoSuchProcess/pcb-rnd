@@ -377,11 +377,13 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
+		double _zoom;
 		if (rdver >= 5)
 			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
 		parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
 		parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
-		parse_int(&pcb->Zoom, lht_dom_hash_get(grp, "zoom"));
+		parse_double(&_zoom, lht_dom_hash_get(grp, "zoom"));
+		pcb->Zoom = (pcb_coord_t)pcb_round(_zoom);
 	}
 
 	return 0;
