@@ -126,6 +126,6 @@ pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line)
 /**** Low level, for internal use ****/
 
 /* Get the tool pointer of a tool by id */
-#define pcb_tool_get(id) ((const pcb_tool_t *)vtp0_get(&pcb_tools, id, 0))
+#define pcb_tool_get(id) ((const pcb_tool_t *)*vtp0_get(&pcb_tools, id, 0))
 
 #endif
