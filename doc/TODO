@@ -20,7 +20,6 @@
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
-- BUG: TODO: set same (e s) doesn't work on lines and padstacks [report: Igor2]
 - BUG: new board, place a 1206, set refdes, move refdes text out, double click refdes text -> it gets detached from the subc [report: Igor2]
 + BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
 - BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
@@ -76,6 +75,8 @@
 - BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 
 2. For later releases ===============================================================================
+- route style upgrade to prototypes:
+	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - layer color rewrite:
 	- depends on lihata v5 layer color save/load
 	- use only one selected color, not layer based, in the config
