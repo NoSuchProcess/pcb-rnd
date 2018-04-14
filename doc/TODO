@@ -18,9 +18,7 @@
 + BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
 	+> this has been rewritten in the big increments rewrite (with Richard)
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-- BUG: subc: put a 1206 on an empty board, save it in lht v1 -> pads become round [report: igor2]
-		- see also: padstack TODO #22
-		- BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
++ BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 - BUG: TODO: set same (e s) doesn't work on lines and padstacks [report: Igor2]
 - BUG: new board, place a 1206, set refdes, move refdes text out, double click refdes text -> it gets detached from the subc [report: Igor2]
