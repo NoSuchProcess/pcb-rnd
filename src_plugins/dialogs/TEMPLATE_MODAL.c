@@ -55,7 +55,7 @@ static void pcb_dlg_foo(whatever args) <<<- edit this
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-	PCB_DAD_LABEL(dlg, foo);
+		PCB_DAD_LABEL(dlg, "foo");
 	PCB_DAD_END(dlg);
 
 	/* set up the context */
