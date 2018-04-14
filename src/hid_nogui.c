@@ -385,7 +385,7 @@ static int nogui_progress(int so_far, int total, const char *message)
 	return 0;
 }
 
-static void nogui_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
+static void nogui_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
 
