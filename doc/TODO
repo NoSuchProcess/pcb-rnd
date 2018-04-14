@@ -20,9 +20,18 @@
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: old square element pads become round when converted on load: bug_files/sq_pad_round.lht [report: Ade, miloh]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
-- BUG: new board, place a 1206, set refdes, move refdes text out, double click refdes text -> it gets detached from the subc [report: Igor2]
 + BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
++ BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
++ BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
++ BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
++ BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
+	+> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
++ autocrop bug: copper lines become invisible [report: wojciechk8]
+	+> should use central data move instead of local implementation
+	+> bug_files/redrawbug1.lht, run autocrop()
++ BUG: place default qfn subc from the parametric lib, rotate 90deg with the rotate tool, U-undo the rotate and the individual pads get rotated back instead of the whole subc [report: Miloh]
 - BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
+- BUG: new board, place a 1206, set refdes, move refdes text out, double click refdes text -> it gets detached from the subc [report: Igor2]
 - BUG: revert r15462, get conf_set do this automatically; conf_set_dry will need a create arg [report: igor2]
 - BUG: revert r15464, fix conf merge bug:
 	- the bug is in conf_merge_patch_list() conf.c:607@r15463
@@ -32,7 +41,6 @@
 - BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
 - BUG: pressing 'b' for back side on a floater refdes text doesn't send it to the back [report: igor2]
 - BUG: place 1206 on top; switch to bottom; turn off top copper; press 'n' over the pad - still can rename, even tho pad is invisible! [report: igor2]
-+ BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
@@ -49,21 +57,14 @@
 - BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 - BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 - BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
-+ BUG: User places a 'tall' part from current default part libs(DB25F.fp), moves cursor over the part on the main window, open pinout dialog (shift-d) -- dialog opens partially offscreen, cannot be resised. x220 with 1360x768 screen [report: Miloh]
 - BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
-+ BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
-+ BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
-	+> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
 - BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
 - BUG: undo 'k' on subc, padstacks are undone separatly [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
-+ autocrop bug: copper lines become invisible [report: wojciechk8]
-	+> should use central data move instead of local implementation
-	+> bug_files/redrawbug1.lht, run autocrop()
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
 	-> the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8]
@@ -71,7 +72,6 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouter: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
-+ BUG: place default qfn subc from the parametric lib, rotate 90deg with the rotate tool, U-undo the rotate and the individual pads get rotated back instead of the whole subc [report: Miloh]
 - BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 
 2. For later releases ===============================================================================
