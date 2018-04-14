@@ -1071,6 +1071,18 @@ pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_c
 	return NULL; /* found nothing */
 }
 
+pcb_layer_type_t pstk_vis_layers(pcb_board_t *pcb, pcb_layer_type_t material)
+{
+	pcb_layer_type_t res = 0, lyt;
+	pcb_layer_id_t lid;
+	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		pcb_layer_t *ly = &pcb->Data->Layer[lid];
+		lyt = pcb_layer_flags_(ly);
+		if ((ly->meta.real.vis) && (lyt & material))
+			res |= (lyt & PCB_LYT_ANYWHERE);
+	}
+	return res | material;
+}
 
 /* ---------------------------------------------------------------------------
  * searches for any kind of object or for a set of object types
@@ -1130,10 +1142,16 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_COPPER))
 		return PCB_OBJ_PSTK;
 
-	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_ANYTHING))
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, (PCB_LYT_VISIBLE_SIDE() | PCB_LYT_ANYTHING) & pstk_vis_layers(PCB, PCB_LYT_ANYTHING)))
 		return PCB_OBJ_PSTK;
 
-	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, 0))
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, pstk_vis_layers(PCB, PCB_LYT_MASK)))
+		return PCB_OBJ_PSTK;
+
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, pstk_vis_layers(PCB, PCB_LYT_COPPER)))
+		return PCB_OBJ_PSTK;
+
+	if (Type & PCB_OBJ_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3, 0, pstk_vis_layers(PCB, PCB_LYT_PASTE)))
 		return PCB_OBJ_PSTK;
 
 	if (!HigherAvail && (Type & PCB_OBJ_FLOATER) && (Type & PCB_OBJ_TEXT) &&
