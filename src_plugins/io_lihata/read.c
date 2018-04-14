@@ -66,7 +66,7 @@ vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 unsigned long warned, old_model_warned;
 
-#warning padstack TODO #22: flags: old pins/pads had more flags (e.g. square)
+/* Note: this works because of using str_flag compat_types */
 #define PCB_OBJ_VIA PCB_OBJ_PSTK
 #define PCB_OBJ_PIN PCB_OBJ_PSTK
 #define PCB_OBJ_PAD PCB_OBJ_PSTK
