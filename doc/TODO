@@ -37,7 +37,6 @@
 	- if we are adding a prepend list, inserting one by one, going from the first to the last of the list is a bad idea: the prepend list has a1;a2;a3, then we insert them in this order ending up as a3;a2;a1
 	- get the loop go backward if we are in prepend
 - BUG: revert r15465, fix conf merge bug
-- BUG: place 1206 on top; switch to bottom; turn off top copper; press 'n' over the pad - still can rename, even tho pad is invisible! [report: igor2]
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
