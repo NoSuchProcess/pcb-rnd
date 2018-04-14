@@ -30,6 +30,7 @@
 
 #include "board.h"
 #include "conf_core.h"
+#include "data.h"
 #include "error.h"
 #include "event.h"
 #include "grid.h"
@@ -259,6 +260,22 @@ void pcb_tool_notify_block(void)
 		break;
 	}
 	pcb_notify_crosshair_change(pcb_true);
+}
+
+pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line)
+{
+	/* Allow snapping to off-grid lines when drawing new lines (on
+	 * the same layer), and when moving a line end-point
+	 * (but don't snap to the same line)
+	 */
+	if ((conf_core.editor.mode == PCB_MODE_LINE && CURRENT == layer) ||
+			(conf_core.editor.mode == PCB_MODE_MOVE
+			 && pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT
+			 && pcb_crosshair.AttachedObject.Ptr1 == layer
+			 && pcb_crosshair.AttachedObject.Ptr2 != line))
+		return pcb_true;
+	else
+		return pcb_false;
 }
 
 

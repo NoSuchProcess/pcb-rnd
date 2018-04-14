@@ -782,15 +782,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 
 	line = (pcb_line_t *) ptr2;
 
-	/* Allow snapping to off-grid lines when drawing new lines (on
-	 * the same layer), and when moving a line end-point
-	 * (but don't snap to the same line)
-	 */
-	if ((conf_core.editor.mode != PCB_MODE_LINE || CURRENT != ptr1) &&
-			(conf_core.editor.mode != PCB_MODE_MOVE ||
-			 pcb_crosshair.AttachedObject.Ptr1 != ptr1 ||
-			 pcb_crosshair.AttachedObject.Type != PCB_OBJ_LINE_POINT
-			 || pcb_crosshair.AttachedObject.Ptr2 == line))
+	if (!pcb_tool_should_snap_offgrid_line(ptr1, line))
 		return;
 
 	dx = line->Point2.X - line->Point1.X;
