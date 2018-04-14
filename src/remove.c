@@ -78,7 +78,7 @@ pcb_bool pcb_remove_selected(void)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	if (pcb_selected_operation(PCB, PCB->Data, &RemoveFunctions, &ctx, pcb_false, PCB_OBJ_ANY)) {
+	if (pcb_selected_operation(PCB, PCB->Data, &RemoveFunctions, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART))) {
 		pcb_undo_inc_serial();
 		pcb_draw();
 		return pcb_true;
