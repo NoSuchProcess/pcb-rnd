@@ -201,7 +201,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	{
 		PCB_CONNECTION_LOOP(net);
 		{
-			pcb_any_obj_t *parent;
+			pcb_subc_t *parent;
 
 			if (!IS_IN_SUBC(connection))
 				continue;
