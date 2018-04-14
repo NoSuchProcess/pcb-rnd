@@ -28,14 +28,18 @@
 
 #include "tool.h"
 
+#include "action_helper.h"
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
 #include "compat_nls.h"
 #include "data.h"
+#include "draw.h"
 #include "error.h"
 #include "event.h"
+#include "find.h"
 #include "grid.h"
+#include "undo.h"
 
 
 static void default_tool_reg(void);
