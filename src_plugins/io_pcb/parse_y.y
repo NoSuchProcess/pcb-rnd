@@ -1750,7 +1750,7 @@ pad
 		;
 
 flags		: INTEGER	{ $$ = pcb_flag_old($1); }
-		| STRING	{ $$ = pcb_strflg_s2f($1, yyerror, &yy_intconn); free($1); }
+		| STRING	{ $$ = pcb_strflg_s2f($1, yyerror, &yy_intconn, 1); free($1); }
 		;
 
 symbols

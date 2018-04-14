@@ -484,7 +484,7 @@ static void new_line(corner_s * s, corner_s * e, int layer, pcb_line_t * example
 		pcb_line_t *nl;
 		dprintf
 			("New line \033[35m%#mD to %#mD from l%d t%#mS c%#mS f%s\033[0m\n",
-			 s->x, s->y, e->x, e->y, layer, example->Thickness, example->Clearance, pcb_strflg_f2s(example->Flags, PCB_OBJ_LINE, NULL));
+			 s->x, s->y, e->x, e->y, layer, example->Thickness, example->Clearance, pcb_strflg_f2s(example->Flags, PCB_OBJ_LINE, NULL, 0));
 		nl = create_pcb_line(layer, s->x, s->y, e->x, e->y, example->Thickness, example->Clearance, example->Flags);
 
 		if (!nl)
@@ -2121,7 +2121,7 @@ static line_s *choose_example_line(corner_s * c1, corner_s * c2)
 							c[ci]->lines[li]->s->x, c[ci]->lines[li]->s->y,
 							c[ci]->lines[li]->e->x, c[ci]->lines[li]->e->y,
 							c[ci]->lines[li]->line->Thickness,
-							c[ci]->lines[li]->line->Clearance, pcb_strflg_f2s(c[ci]->lines[li]->line->Flags, PCB_OBJ_LINE, NULL));
+							c[ci]->lines[li]->line->Clearance, pcb_strflg_f2s(c[ci]->lines[li]->line->Flags, PCB_OBJ_LINE, NULL, 0));
 			/* Pads are disqualified, as we want to mimic a trace line. */
 			if (c[ci]->lines[li]->line == (pcb_line_t *) c[ci]->pad) {
 				dprintf("  bad, pad\n");

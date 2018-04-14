@@ -94,7 +94,7 @@ static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 static char *pcb_strflg_f2s_compat(pcb_flag_t flags, int object_type, unsigned char *intconn)
 {
 	flags.f &= ~IGNORE_FLAGS;
-	return pcb_strflg_f2s(flags, object_type, intconn);
+	return pcb_strflg_f2s(flags, object_type, intconn, 1);
 }
 
 
@@ -362,7 +362,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
-		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_VIA, NULL));
+		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_VIA, NULL, 1));
 	}
 }
 
@@ -461,7 +461,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
 				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_PIN, &ic));
+				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_PIN, &ic, 1));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0);
@@ -470,7 +470,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 					fprintf(FP, " ");
 					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_OBJ_PAD, &ic));
+					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_OBJ_PAD, &ic, 1));
 			}
 			else
 				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");

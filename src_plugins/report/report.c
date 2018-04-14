@@ -178,7 +178,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			gds_init(&tmp);
 
 			pcb_append_printf(&tmp, "%m+PADSTACK ID# %ld; Flags:%s\n"
-				"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL),
+				"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL, 0),
 				ps->x, ps->y);
 
 			if ((proto != NULL) && (proto->hdia > 0))
@@ -209,7 +209,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"and has name \"%s\".\n"
 									"%s"
 									"%s%s", USER_UNITMASK,
-									line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL),
+									line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
@@ -232,7 +232,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"connects to layer group #%d (%s).\n"
 									"SecondPoint(X,Y) = %$mD; ID = %ld; "
 									"connects to layer group #%d (%s).\n",
-									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL),
+									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
 									line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
 									line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
 			break;
@@ -260,7 +260,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"That makes the end points at %$mD and %$mD.\n"
 									"It is on layer %d.\n"
 									"%s"
-									"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_OBJ_ARC, NULL),
+									"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_OBJ_ARC, NULL, 0),
 									Arc->X, Arc->Y,
 									Arc->Thickness, Arc->Clearance / 2,
 									Arc->Width, Arc->StartAngle, Arc->Delta,
@@ -304,7 +304,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"Its unclipped area is %f square %s.\n"
 									"%s"
 									"%s%s%s", USER_UNITMASK, Polygon->ID,
-									pcb_strflg_f2s(Polygon->Flags, PCB_OBJ_POLY, NULL),
+									pcb_strflg_f2s(Polygon->Flags, PCB_OBJ_POLY, NULL, 0),
 									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
@@ -328,7 +328,7 @@ static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 									"BoundingBox %$mD %$mD.\n"
 									"Refdes \"%s\".\n"
 									"%s", USER_UNITMASK,
-									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL),
+									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
 									subc->BoundingBox.X1, subc->BoundingBox.Y1,
 									subc->BoundingBox.X2, subc->BoundingBox.Y2,
 									PCB_EMPTY(subc->refdes),

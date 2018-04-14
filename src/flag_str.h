@@ -46,11 +46,14 @@ typedef struct {
 	const char *name;
 	int nlen;
 
-	/* If set, this entry won't be output unless the object type is one
-	   of these.  */
+	/* The entry won't be output unless the object type is one of these.  */
 	int object_types;
 
 	char *help;
+
+	/* in compatibility mode also accept these object types to have the flag */
+	int compat_types;
+
 } pcb_flag_bits_t;
 
 /* All flags natively known by the core */
@@ -59,17 +62,19 @@ extern const int pcb_object_flagbits_len;
 
 /* The purpose of this interface is to make the file format able to
    handle more than 32 flags, and to hide the internal details of
-   flags from the file format.  */
+   flags from the file format. In compat mode, compat_types are
+   also considered (so an old PCB PAD (padstack now) can have
+   a square flag). */
 
 /* When passed a string, parse it and return an appropriate set of
    flags.  Errors cause error() to be called with a suitable message;
    if error is NULL, errors are ignored.  */
-pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg), unsigned char *intconn);
+pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg), unsigned char *intconn, int compat);
 
 /* Given a set of flags for a given object type, return a string which
    can be output to a file.  The returned pointer must not be
    freed.  */
-char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn);
+char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn, int compat);
 
 /* same as above, for pcb level flags */
 char *pcb_strflg_board_f2s(pcb_flag_t flags);
@@ -79,7 +84,7 @@ void pcb_strflg_uninit_buf(void);
 void pcb_strflg_uninit_layerlist(void);
 
 /* low level */
-pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn);
-char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn);
+pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn, int compat);
+char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn, int compat);
 
 #endif

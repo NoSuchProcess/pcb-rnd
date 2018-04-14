@@ -2802,7 +2802,7 @@ yyreduce:
 
   case 163:
 #line 1753 "parse_y.y" /* yacc.c:1646  */
-    { (yyval.flagtype) = pcb_strflg_s2f((yyvsp[0].string), yyerror, &yy_intconn); free((yyvsp[0].string)); }
+    { (yyval.flagtype) = pcb_strflg_s2f((yyvsp[0].string), yyerror, &yy_intconn, 1); free((yyvsp[0].string)); }
 #line 2807 "parse_y.c" /* yacc.c:1646  */
     break;
 
