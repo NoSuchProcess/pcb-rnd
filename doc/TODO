@@ -31,7 +31,6 @@
 	+> bug_files/redrawbug1.lht, run autocrop()
 + BUG: place default qfn subc from the parametric lib, rotate 90deg with the rotate tool, U-undo the rotate and the individual pads get rotated back instead of the whole subc [report: Miloh]
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
-- BUG: new board, place a 1206, set refdes, move refdes text out, double click refdes text -> it gets detached from the subc [report: Igor2]
 - BUG: revert r15462, get conf_set do this automatically; conf_set_dry will need a create arg [report: igor2]
 - BUG: revert r15464, fix conf merge bug:
 	- the bug is in conf_merge_patch_list() conf.c:607@r15463
