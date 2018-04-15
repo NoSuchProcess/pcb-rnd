@@ -1,6 +1,5 @@
 - rename:
 	- conf_*
-- centralize pcb_gui->attribute_dialog()
 - remove pcb board Zoom/x/y, move the drc stuff to config
 - remove the polygrid feature from the ps exporter - use the poly hatch instead
 - move the GetXY action to central
