@@ -48,8 +48,8 @@
 	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
 - BUG: undo 'k' on subc, padstacks are undone separatly [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
-- BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
-	-> bug_files/via_clearance.lht
++ BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
+	+> bug_files/via_clearance.lht
 - BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
 	-> the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
