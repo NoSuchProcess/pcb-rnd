@@ -121,6 +121,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	pcb_pstk_proto_t *prt;
 
 	dst->in_use = 1;
+	dst->name = NULL;
 	pcb_vtpadstack_tshape_init(&dst->tr);
 	dst->hdia = 0;
 	dst->htop = dst->hbottom = 0;
