@@ -46,6 +46,12 @@ void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
 void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
-void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx);
+typedef enum pcb_subc_op_undo_e {
+	PCB_SUBCOP_UNDO_NORMAL,  /* each part operation is undone separately */
+	PCB_SUBCOP_UNDO_SUBC,    /* the undo for the parent subcircuit will handle each part's undo */
+	PCB_SUBCOP_UNDO_BATCH    /* each part operation has its own undo, but with the same serial */
+} pcb_subc_op_undo_t;
+
+void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx, pcb_subc_op_undo_t batch_undo);
 
 #endif

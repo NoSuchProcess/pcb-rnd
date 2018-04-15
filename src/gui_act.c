@@ -445,7 +445,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							opctx.chgflag.pcb = PCB;
 							opctx.chgflag.how = PCB_CHGFLG_TOGGLE;
 							opctx.chgflag.flag = PCB_FLAG_TERMNAME;
-							pcb_subc_op(PCB->Data, (pcb_subc_t *)obj, &ChgFlagFunctions, &opctx);
+							pcb_subc_op(PCB->Data, (pcb_subc_t *)obj, &ChgFlagFunctions, &opctx, 0);
 							pcb_undo_inc_serial();
 							return 0;
 							break;

@@ -871,9 +871,22 @@ void DrawSubc(pcb_subc_t *sc)
 
 
 /* Execute an operation on all children on an sc and update the bbox of the sc */
-void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx)
+void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx, pcb_subc_op_undo_t batch_undo)
 {
 	int n;
+	uundo_serial_t last;
+
+	switch(batch_undo) {
+		case PCB_SUBCOP_UNDO_SUBC:
+			pcb_undo_inc_serial();
+			last = pcb_undo_serial();
+			break;
+		case PCB_SUBCOP_UNDO_BATCH:
+			pcb_undo_inc_serial();
+			pcb_undo_save_serial();
+			pcb_undo_freeze_serial();
+			break;
+	}
 
 	EraseSubc(sc);
 	if (pcb_data_get_top(Data) != NULL) {
@@ -935,6 +948,12 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	if (pcb_data_get_top(Data) != NULL)
 		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc);
 	DrawSubc(sc);
+
+	switch(batch_undo) {
+		case PCB_SUBCOP_UNDO_SUBC: pcb_undo_truncate_from(last); break;
+		case PCB_SUBCOP_UNDO_BATCH: pcb_undo_unfreeze_serial(); break;
+	}
+
 	return sc;
 }
 
@@ -977,44 +996,31 @@ void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	/* restore all pins/pads at once, at the old location */
 	clip.clip.restore = 1; clip.clip.clear = 0;
 	clip.clip.pcb = ctx->move.pcb;
-	pcb_subc_op(data, sc, &ClipFunctions, &clip);
+	pcb_subc_op(data, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_NORMAL);
 
 	/* do the move without messing with the clipping */
-	pcb_subc_op(data, sc, &MoveFunctions_noclip, ctx);
+	pcb_subc_op(data, sc, &MoveFunctions_noclip, ctx, PCB_SUBCOP_UNDO_NORMAL);
 
 	/* clear all pins/pads at once, at the new location */
 	clip.clip.restore = 0; clip.clip.clear = 1;
-	pcb_subc_op(data, sc, &ClipFunctions, &clip);
+	pcb_subc_op(data, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_NORMAL);
 	return sc;
 }
 
 void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_board_t *pcb = pcb_data_get_top(sc->data);
-	uundo_serial_t last;
-	void *ret;
-
-	pcb_undo_inc_serial();
-	last = pcb_undo_serial();
-	ret = pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &Rotate90Functions, ctx);
-	pcb_undo_truncate_from(last);
-	return ret;
+	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &Rotate90Functions, ctx, PCB_SUBCOP_UNDO_SUBC);
 }
 
 void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_data_t *data;
-	uundo_serial_t last;
-	void *ret;
 
 	ctx->rotate.pcb = pcb_data_get_top(sc->data);
 	data = (ctx->rotate.pcb != NULL ? ctx->rotate.pcb->Data : NULL);
 
-	pcb_undo_inc_serial();
-	last = pcb_undo_serial();
-	ret = pcb_subc_op(data, sc, &RotateFunctions, ctx);
-	pcb_undo_truncate_from(last);
-	return ret;
+	return pcb_subc_op(data, sc, &RotateFunctions, ctx, PCB_SUBCOP_UNDO_SUBC);
 }
 
 void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int steps)
@@ -1337,25 +1343,25 @@ void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeSizeFunctions, ctx);
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeSizeFunctions, ctx, PCB_SUBCOP_UNDO_BATCH);
 	return sc;
 }
 
 void *pcb_subcop_change_clear_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeClearSizeFunctions, ctx);
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeClearSizeFunctions, ctx, PCB_SUBCOP_UNDO_BATCH);
 	return sc;
 }
 
 void *pcb_subcop_change_1st_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &Change1stSizeFunctions, ctx);
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &Change1stSizeFunctions, ctx, PCB_SUBCOP_UNDO_BATCH);
 	return sc;
 }
 
 void *pcb_subcop_change_2nd_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &Change2ndSizeFunctions, ctx);
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &Change2ndSizeFunctions, ctx, PCB_SUBCOP_UNDO_BATCH);
 	return sc;
 }
 
@@ -1423,7 +1429,7 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		return sc;
 	}
 
-	pcb_subc_op(ctx->chgflag.pcb->Data, sc, &ChgFlagFunctions, ctx);
+	pcb_subc_op(ctx->chgflag.pcb->Data, sc, &ChgFlagFunctions, ctx, PCB_SUBCOP_UNDO_NORMAL);
 	if ((ctx->chgflag.flag & pcb_subc_flags) == ctx->chgflag.flag)
 		PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
 	return sc;
@@ -1440,7 +1446,7 @@ void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 	ctx.chgflag.how = how;
 	ctx.chgflag.flag = PCB_FLAG_SELECTED;
 
-	pcb_subc_op((pcb == NULL ? NULL : pcb->Data), sc, &ChgFlagFunctions, &ctx);
+	pcb_subc_op((pcb == NULL ? NULL : pcb->Data), sc, &ChgFlagFunctions, &ctx, PCB_SUBCOP_UNDO_NORMAL);
 	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, sc);
 	if (redraw)
 		DrawSubc(sc);
