@@ -45,7 +45,7 @@
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
+- BUG: dsn export: smd-only component backside [report: celem]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
 - BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
