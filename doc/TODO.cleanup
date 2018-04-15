@@ -1,4 +1,3 @@
 - rename:
 	- conf_*
-- remove the polygrid feature from the ps exporter - use the poly hatch instead
 - move the GetXY action to central
