@@ -351,18 +351,6 @@ Print file name and scale on printout.
 	{"show-legend", "Print file name and scale on printout",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_legend 17
-
-/* %start-doc options "91 Postscript Export"
-@ftable @code
-@item --polygrid <num>
-If non-zero grid polygons instead of filling them with gridlines spaced as specified.
-@end ftable
-%end-doc
-*/
-	{"polygrid", "When non-zero: grid polygons instead of filling  with gridlines spaced as specified",
-	 PCB_HATT_REAL, 0, 10, {0, 0, 0.0}, 0, 0},
-#define HA_polygrid 18
-
 };
 
 #define NUM_OPTIONS (sizeof(ps_attribute_list)/sizeof(ps_attribute_list[0]))
@@ -408,8 +396,6 @@ static struct {
 	pcb_bool is_assy;
 	pcb_bool is_copper;
 	pcb_bool is_paste;
-
-	double polygrid;
 
 	pcb_composite_op_t drawing_mode;
 } global;
@@ -624,7 +610,6 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.calibration_y = options[HA_ycalib].real_value;
 	global.drillcopper = options[HA_drillcopper].int_value;
 	global.legend = options[HA_legend].int_value;
-	global.polygrid = options[HA_polygrid].real_value;
 
 	if (the_file)
 		ps_start_file(the_file);
@@ -1248,19 +1233,14 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_bo
 	pcb_pline_t *pl;
 	const char *op;
 	int len;
-	double POLYGRID = ps_attribute_list[HA_polygrid].default_val.real_value;
 
 	use_gc(gc);
 
 	pl = poly->Clipped->contours;
 	len = 0;
-	if (POLYGRID > 0.1)
-		POLYGRID *= 1000000.0;
 
 	do {
 		v = pl->head.next;
-		if (POLYGRID > 0.1)
-			fprintf(global.f, "closepath\n");
 		op = "moveto";
 		do {
 			pcb_fprintf(global.f, "%mi %mi %s\n", v->point[0], v->point[1], op);
@@ -1272,107 +1252,7 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_bo
 	}
 	while ((pl = pl->next) != NULL);
 
-	if (POLYGRID > 0.1) {
-		pcb_coord_t y, x, lx, ly, fx, fy, lsegs_xmin, lsegs_xmax, lsegs_ymin, lsegs_ymax;
-		lseg_t *lsegs = malloc(sizeof(lseg_t) * len);
-		pcb_coord_t *lpoints = malloc(sizeof(pcb_coord_t) * len);
-		int lsegs_used = 0;
-
-		lsegs_xmin = -1000000000;
-		lsegs_ymin = -1000000000;
-		lsegs_xmax = +1000000000;
-		lsegs_ymax = +1000000000;
-
-		/* save all line segs in an array */
-		pl = poly->Clipped->contours;
-		do {
-			v = pl->head.next;
-			fx = v->point[0];
-			fy = v->point[1];
-			goto start1;
-			do {
-				lsegs_append(lx, ly, v->point[0], v->point[1]);
-			start1:;
-				lx = v->point[0];
-				ly = v->point[1];
-			} while ((v = v->next) != pl->head.next);
-			lsegs_append(lx, ly, fx, fy);
-		} while ((pl = pl->next) != NULL);
-
-
-
-
-		fprintf(global.f, "%% POLYGRID2\n");
-		fprintf(global.f, "gsave\n");
-		fprintf(global.f, "0.0015 setlinewidth\n");
-		fprintf(global.f, "closepath\n");
-		fprintf(global.f, "stroke\n");
-
-		for (y = lsegs_ymin; y < lsegs_ymax; y += POLYGRID) {
-			int pts, n;
-/*		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);*/
-		retry1:;
-			if (y > lsegs_ymax)
-				break;
-			pts = 0;
-			for (n = 0; n < lsegs_used; n++) {
-				if ((lsegs[n].y1 <= y) && (lsegs[n].y2 >= y)) {
-					if ((lsegs[n].y2 == lsegs[n].y1) || (lsegs[n].y1 == y) || (lsegs[n].y2 == y)) {
-						y += POLYGRID / 100.0;
-						goto retry1;
-					}
-					x = lsegs[n].x1 + (lsegs[n].x2 - lsegs[n].x1) * (y - lsegs[n].y1) / (lsegs[n].y2 - lsegs[n].y1);
-					lpoints[pts] = x;
-					pts++;
-				}
-			}
-			if ((pts % 2) != 0) {
-				y += POLYGRID / 100.0;
-				goto retry1;
-			}
-			if (pts > 1) {
-				qsort(lpoints, pts, sizeof(pcb_coord_t), coord_comp);
-				for (n = 0; n < pts; n += 2)
-					lseg_line(lpoints[n], y, lpoints[n + 1], y);
-			}
-		}
-
-		for (x = lsegs_xmin; x < lsegs_xmax; x += POLYGRID) {
-			int pts, n;
-/*		pcb_fprintf(global.f, "%% gridline at y %mi\n", y); */
-		retry2:;
-			if (x > lsegs_xmax)
-				break;
-			pts = 0;
-			for (n = 0; n < lsegs_used; n++) {
-				if (((lsegs[n].x1 <= x) && (lsegs[n].x2 >= x)) || ((lsegs[n].x1 >= x) && (lsegs[n].x2 <= x))) {
-					if ((lsegs[n].x2 == lsegs[n].x1) || (lsegs[n].x1 == x) || (lsegs[n].x2 == x)) {
-						x += POLYGRID / 100.0;
-						goto retry2;
-					}
-					y = lsegs[n].y1 + (lsegs[n].y2 - lsegs[n].y1) * (x - lsegs[n].x1) / (lsegs[n].x2 - lsegs[n].x1);
-					lpoints[pts] = y;
-					pts++;
-				}
-			}
-			if ((pts % 2) != 0) {
-				x += POLYGRID / 100.0;
-				goto retry2;
-			}
-			if ((pts > 1)) {
-				qsort(lpoints, pts, sizeof(pcb_coord_t), coord_comp);
-				for (n = 0; n < pts; n += 2)
-					lseg_line(x, lpoints[n], x, lpoints[n + 1]);
-			}
-		}
-
-
-		fprintf(global.f, "grestore\nnewpath\n");
-		free(lsegs);
-		free(lpoints);
-	}
-	else
-		fprintf(global.f, "fill\n");
+	fprintf(global.f, "fill\n");
 }
 
 static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
