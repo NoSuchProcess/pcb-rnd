@@ -67,6 +67,7 @@
 - BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 - BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 - BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
+- BUG: open pcb-rnd, wl (window/library place a subc), to ( tool/orient rotate the whole subc once), uu, ur, uu (undo/undo undo/repeat cycle these) pcb-rnd segfaults on bad undo stack number [report:Miloh]
 
 2. For later releases ===============================================================================
 - route style upgrade to prototypes:
