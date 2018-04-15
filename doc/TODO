@@ -245,6 +245,9 @@
 	- rewrite using DAD
 	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
 	- react on conf change events, refresh the fields
+- lihata v6:
+	- remove pcb_board_t Zoom/x/y
+
 
 3. Long term ===============================================================================
 
