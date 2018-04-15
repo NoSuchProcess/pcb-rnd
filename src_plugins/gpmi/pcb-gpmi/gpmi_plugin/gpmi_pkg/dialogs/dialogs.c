@@ -87,5 +87,5 @@ int dialog_attribute(gpmi_hid_t *hid, const char *title, const char *descr)
 	else
 		hid->result = calloc(sizeof(pcb_hid_attribute_t), hid->attr_num);
 
-	return pcb_gui->attribute_dialog(hid->attr, hid->attr_num, hid->result, title, descr, NULL);
+	return pcb_attribute_dialog(hid->attr, hid->attr_num, hid->result, title, descr, NULL);
 }

@@ -74,7 +74,7 @@ do { \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
-	pcb_gui->attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
+	pcb_attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
 } while(0)
 
 /* Return the index of the item currenty being edited */

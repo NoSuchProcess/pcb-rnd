@@ -405,7 +405,7 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		attrs[4].type = PCB_HATT_BOOL;
 		attrs[4].default_val.int_value = results[4].int_value;
 
-		if (pcb_gui->attribute_dialog(attrs, nattr, results, "Polygon hatch", "Hatch a polygon", NULL) != 0)
+		if (pcb_attribute_dialog(attrs, nattr, results, "Polygon hatch", "Hatch a polygon", NULL) != 0)
 			return 1;
 
 		period = results[0].coord_value;

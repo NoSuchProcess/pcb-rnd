@@ -1379,7 +1379,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		attr[1].default_val.int_value = ly->comb & PCB_LYC_SUB;
 		attr[2].default_val.int_value = ly->comb & PCB_LYC_AUTO;
 
-		ar = pcb_gui->attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
+		ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
 
 		if (ar == 0) {
 			pcb_layer_combining_t comb = 0;
@@ -1494,7 +1494,7 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		attr[0].default_val.str_value = pcb_strdup(g->name);
 
-		ar = pcb_gui->attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
+		ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
 
 		if (ar == 0) {
 			if (strcmp(g->name, attr[0].default_val.str_value) != 0) {

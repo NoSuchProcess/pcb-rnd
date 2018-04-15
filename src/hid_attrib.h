@@ -113,4 +113,7 @@ void pcb_hid_usage_option(const char *name, const char *help);
 /* Count the number of direct children, start_from the first children */
 int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs);
 
+/* Invoke a simple modal attribute dialog if GUI is available */
+int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
+
 #endif

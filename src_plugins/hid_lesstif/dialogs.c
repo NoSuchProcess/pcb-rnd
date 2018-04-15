@@ -1391,7 +1391,7 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 {
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
-	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
+	if (pcb_attribute_dialog(printer_calibrate_attrs, 3,
 														printer_calibrate_values,
 														"Printer Calibration Values", "Enter calibration values for your printer", NULL))
 		return 1;

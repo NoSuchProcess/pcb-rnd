@@ -68,7 +68,7 @@ static hid_gpmi_script_info_t *choose_script(const char **operations, int *opera
 	if (operations != NULL)
 		attr_make_enum(&attr[1],  "operation", "Choose what to do with the script", operations, *operation);
 
-	res = pcb_gui->attribute_dialog(attr, 1 + (operations != NULL), result, "GPMI manage scripts - select script", "Select one of the scripts already loaded", NULL);
+	res = pcb_attribute_dialog(attr, 1 + (operations != NULL), result, "GPMI manage scripts - select script", "Select one of the scripts already loaded", NULL);
 
 	/* free scrl slots before return */
 	for(s = scrl; *s != NULL; s++)
@@ -149,7 +149,7 @@ static hid_gpmi_script_info_t *load_script(void)
 
 	attr_make_enum(&attr[0],  "module", "Select a GPMI module to interpret the script", modules, default_mod);
 
-	if (pcb_gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select module", "Select one of GPMI modules to interpret the script", NULL))
+	if (pcb_attribute_dialog(attr, 1, result, "GPMI manage scripts - select module", "Select one of GPMI modules to interpret the script", NULL))
 		return NULL;
 
 	if (result[0].int_value < 0)
@@ -173,7 +173,7 @@ static void script_details(hid_gpmi_script_info_t *i)
 	attr_make_label_str(&attr[0], "File name:   ", i->name, "File name of the script (if not absolute, it's relative to the config file)");
 	attr_make_label_str(&attr[1], "GPMI module: ", i->module_name, "Name of the GPMI module that is interpreting the script");
 	attr_make_label_str(&attr[2], "Config file: ", cf, "Name of config file that requested the script to be loaded ");
-	pcb_gui->attribute_dialog(attr, 3, result, "GPMI manage scripts - script details", "Displaying detailed info on a script already loaded", NULL);
+	pcb_attribute_dialog(attr, 3, result, "GPMI manage scripts - script details", "Displaying detailed info on a script already loaded", NULL);
 	free((char *)attr[0].name);
 	free((char *)attr[1].name);
 	free((char *)attr[2].name);
