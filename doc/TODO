@@ -45,7 +45,6 @@
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> search.c configuration) bug_files/farsilk.lht [report: Ade]
 - BUG: dsn export: 2 pin thru-hole rotation bug [report: celem]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
 - BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
@@ -279,6 +278,7 @@ FEATURES
 - menu item for export of multiple selected layout elements to discrete .fp files
 
 4. Low prio ===============================================================================
+- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - CAM:
 	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
