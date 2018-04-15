@@ -267,3 +267,14 @@ void undo_dump(void)
 	uundo_dump(&pcb_uundo, NULL, NULL);
 }
 #endif
+
+void pcb_undo_freeze_serial(void)
+{
+	uundo_freeze_serial(&pcb_uundo);
+}
+
+void pcb_undo_unfreeze_serial(void)
+{
+	uundo_unfreeze_serial(&pcb_uundo);
+}
+
