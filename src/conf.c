@@ -918,7 +918,7 @@ static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, c
 		return NULL;
 	r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	if ((r == NULL) && (create)) {
-		conf_set_dry(target, conf_path, -1, "", POL_OVERWRITE);
+		conf_set_dry(target, conf_path, -1, "", POL_OVERWRITE, 0);
 		r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	}
 	return r;
@@ -969,7 +969,7 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 		char buf[20];
 		if (dln == NULL) {
 			sprintf(buf, "signal%d", i + 1);
-			if (conf_set_dry(CFR_INTERNAL, "design/default_layer_name", i, buf, POL_OVERWRITE) != 0)
+			if (conf_set_dry(CFR_INTERNAL, "design/default_layer_name", i, buf, POL_OVERWRITE, 0) != 0)
 				printf("Can't set layer name\n");
 		}
 		else
@@ -1066,7 +1066,7 @@ conf_native_t *conf_get_field(const char *path)
 	return htsp_get(conf_fields, path);
 }
 
-int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
+int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol, int mkdirp)
 {
 	char *path, *basename, *next, *last, *sidx;
 	conf_native_t *nat;
@@ -1077,6 +1077,9 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	/* Remove in overwrite only */
 	if ((new_val == NULL) && (pol != POL_OVERWRITE))
 		return -1;
+
+	if (mkdirp)
+		conf_lht_get_first_pol(target, pol, 1);
 
 	path = pcb_strdup(path_);
 	sidx = strrchr(path, '[');
@@ -1281,7 +1284,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, conf_policy_t pol)
 {
 	int res;
-	res = conf_set_dry(target, path, arr_idx, new_val, pol);
+	res = conf_set_dry(target, path, arr_idx, new_val, pol, 1);
 	if (res < 0)
 		return res;
 	conf_update(path, arr_idx);
@@ -1291,7 +1294,7 @@ int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_
 int conf_del(conf_role_t target, const char *path, int arr_idx)
 {
 	int res;
-	res = conf_set_dry(target, path, arr_idx, NULL, POL_OVERWRITE);
+	res = conf_set_dry(target, path, arr_idx, NULL, POL_OVERWRITE, 0);
 	if (res < 0)
 		return res;
 	conf_update(path, arr_idx);

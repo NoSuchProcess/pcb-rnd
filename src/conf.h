@@ -182,8 +182,9 @@ int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_
 int conf_del(conf_role_t target, const char *path, int arr_idx);
 
 /* Same as conf_set, but without updating the binary - useful for multiple
-   conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions. */
-int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol);
+   conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions.
+   If mkdirp is non-zero, automatically create the policy subtree if it doesn't exist. */
+int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol, int mkdirp);
 
 /* Same as conf_set, but doesn't look up where to set things: change the value of
    the lihata node backing the native field */

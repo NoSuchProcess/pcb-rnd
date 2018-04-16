@@ -248,7 +248,6 @@ void cmd_set(char *arg)
 	val++;
 	while(isspace(*val) || (*val == '=')) val++;
 
-	conf_lht_get_first_pol(current_role, current_policy, 1);
 	res = conf_set(current_role, path, -1, val, current_policy);
 	if (res != 0)
 		printf("set error: %d\n", res);

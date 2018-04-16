@@ -2118,7 +2118,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 			for (valid = gtk_tree_model_get_iter_first(tm, &it), n = 0; valid; valid = gtk_tree_model_iter_next(tm, &it), n++) {
 				gchar *s;
 				gtk_tree_model_get(tm, &it, auto_tab_widgets.cl.col_data, &s, -1);
-				conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND);
+				conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND, 0);
 				g_free(s);
 			}
 			conf_update(nat->hash_path, -1);
