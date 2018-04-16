@@ -380,7 +380,7 @@ ha:{
 				ha:Remove selected objects                = { a={<key>s; <key>r;} action=RemoveSelected() }
 				ha:Convert selection to subcircuit        = { a={<key>s; <key>c; <key>s;} action=Select(ConvertSubc) }
 				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
-				ha:Break selection subcircuits to pieces  = { a={<key>s; <key>b; <key>s}; li:action={PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear);} }
+				ha:Break selection subcircuits to pieces  = { a={<key>s; <key>b; <key>s}; li:action={PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop);} }
 				ha:Change selected objects {
 					li:submenu {
 						ha:Lines -10 mil     = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
