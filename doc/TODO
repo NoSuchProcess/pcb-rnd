@@ -28,10 +28,6 @@
 	+> should use central data move instead of local implementation
 	+> bug_files/redrawbug1.lht, run autocrop()
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
-- BUG: revert r15464, fix conf merge bug:
-	- the bug is in conf_merge_patch_list() conf.c:607@r15463
-	- if we are adding a prepend list, inserting one by one, going from the first to the last of the list is a bad idea: the prepend list has a1;a2;a3, then we insert them in this order ending up as a3;a2;a1
-	- get the loop go backward if we are in prepend
 - BUG: revert r15465, fix conf merge bug
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
