@@ -593,6 +593,7 @@ ha:{
 		ha:popup-obj-line {
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove line            { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
@@ -604,6 +605,7 @@ ha:{
 		ha:popup-obj-arc {
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove arc             { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
@@ -615,6 +617,7 @@ ha:{
 		ha:popup-obj-polygon {
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit flags...          { action=FlagEdit() }
 				-
 				ha:Remove polygon         { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
@@ -625,6 +628,7 @@ ha:{
 		ha:popup-obj-text {
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit text              { action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
 				-
@@ -638,6 +642,7 @@ ha:{
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
 				ha:Edit geometry/prototype {action=padstackedit }
+				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove padstack        { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
@@ -649,6 +654,7 @@ ha:{
 			li:submenu {
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
 				ha:External editor...     { action=extedit(object) }
+				ha:Edit flags...          { action=FlagEdit() }
 #TODO: replace from lib
 				-
 				ha:Remove subcircuit      { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
