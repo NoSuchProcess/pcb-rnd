@@ -24,6 +24,8 @@ dump native rc/library_search_paths
 
 echo === overwrite ===
 policy overwrite
+chprio 710
+# NOTE: have to raise priority because previous prepend and append subtrees also remain in the tree
 
 set rc/library_search_paths new
 dump native rc/library_search_paths

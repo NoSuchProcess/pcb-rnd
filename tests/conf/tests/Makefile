@@ -1,10 +1,10 @@
 TESTS =  \
 	list_merge.diff \
+	list_set.diff \
 	arr_merge.diff \
 	scalar.diff
 
 # temporarily disabled because of a conf bug
-#	list_set.diff
 #	arr_set.diff
 
 .SUFFIXES: .ref .test .out .diff .REF
