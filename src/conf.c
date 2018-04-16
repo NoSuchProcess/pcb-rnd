@@ -507,7 +507,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 				break;
 			}
 
-			if (conf_parse_text(&dest->val, didx, dest->type, s->data.text.value, s) == 0) {
+			if ((s->data.text.value != NULL) && (conf_parse_text(&dest->val, didx, dest->type, s->data.text.value, s) == 0)) {
 				dest->prop[didx].prio = prio;
 				dest->prop[didx].src  = s;
 				if (didx >= dest->used)
