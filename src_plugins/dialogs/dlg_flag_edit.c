@@ -105,7 +105,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_COMPFLAG(dlg, PCB_HATF_LABEL);
 
-		sprintf(tmp, "Object flags of %x #%ld\n", ctx.obj_type, ctx.obj->ID);
+		sprintf(tmp, "Object flags of %s #%ld\n", pcb_obj_type_name(ctx.obj_type), ctx.obj->ID);
 		PCB_DAD_LABEL(dlg, tmp);
 
 		for(n = 0; n < pcb_object_flagbits_len; n++) {
