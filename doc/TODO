@@ -35,6 +35,7 @@
 - BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
+       place a rect, cut to buffer, convert to subc, undo -> hace
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: dsn export: smd-only component backside [report: celem]
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
