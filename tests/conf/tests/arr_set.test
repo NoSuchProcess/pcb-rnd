@@ -24,6 +24,7 @@ dump native design/default_layer_name
 
 echo === overwrite item ===
 policy overwrite
+chprio 710
 
 set design/default_layer_name[1] NEW1
 dump native design/default_layer_name
@@ -37,6 +38,7 @@ dump native design/default_layer_name
 
 echo === overwrite array ===
 policy overwrite
+chprio 720
 
 set design/default_layer_name new
 dump native design/default_layer_name
