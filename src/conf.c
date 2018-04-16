@@ -525,47 +525,65 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 
 int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, conf_policy_t pol)
 {
-	lht_node_t *s;
+	lht_node_t *s, *prev;
 	int res = 0;
 	conf_listitem_t *i;
 
-	if ((pol == POL_DISABLE) || (pol == POL_invalid))
-		return 0;
+	switch(pol) {
+		case POL_DISABLE:
+		case POL_invalid:
+			return 0;
 
-	if (pol == POL_OVERWRITE) {
-		/* overwrite the whole list: make it empty then append new elements */
-		while((i = conflist_first(dest->val.list)) != NULL)
-			conflist_remove(i);
-	}
-
-	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
-		if (s->type == LHT_TEXT) {
-			i = calloc(sizeof(conf_listitem_t), 1);
-			i->val.string = &i->payload;
-			i->prop.prio = prio;
-			i->prop.src  = s;
-			if (conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
-				free(i);
-				continue;
-			}
-
-			switch(pol) {
-				case POL_PREPEND:
+		case POL_PREPEND:
+			for(s = src_lst->data.list.last; s != NULL; s = prev) {
+				/* because lihata lists are single linked, need to look up the previous node manually; O(N^2) */
+				if (s != src_lst->data.list.first)
+					for(prev = src_lst->data.list.first; prev->next != s; prev = prev->next);
+				else
+					prev = NULL;
+				if (s->type == LHT_TEXT) {
+					i = calloc(sizeof(conf_listitem_t), 1);
+					i->val.string = &i->payload;
+					i->prop.prio = prio;
+					i->prop.src  = s;
+					if (conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
+						free(i);
+						continue;
+					}
 					conflist_insert(dest->val.list, i);
 					dest->used |= 1;
-					break;
-				case POL_APPEND:
-				case POL_OVERWRITE:
+				}
+				else {
+					pcb_hid_cfg_error(s, "List item must be text\n");
+					res = -1;
+				}
+			}
+			break;
+		case POL_OVERWRITE:
+			/* overwrite the whole list: make it empty then append new elements */
+			while((i = conflist_first(dest->val.list)) != NULL)
+				conflist_remove(i);
+			/* fall through */
+		case POL_APPEND:
+			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
+				if (s->type == LHT_TEXT) {
+					i = calloc(sizeof(conf_listitem_t), 1);
+					i->val.string = &i->payload;
+					i->prop.prio = prio;
+					i->prop.src  = s;
+					if (conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
+						free(i);
+						continue;
+					}
 					conflist_append(dest->val.list, i);
 					dest->used |= 1;
-					break;
-				case POL_DISABLE: case POL_invalid: return 0; /* compiler warning */
+				}
+				else {
+					pcb_hid_cfg_error(s, "List item must be text\n");
+					res = -1;
+				}
 			}
-		}
-		else {
-			pcb_hid_cfg_error(s, "List item must be text\n");
-			res = -1;
-		}
+			break;
 	}
 	return res;
 }
