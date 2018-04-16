@@ -422,7 +422,7 @@ ha:{
 						ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a={<key>b;<Key>2;} action=PasteBuffer(2); update_on={editor/buffer_number} }
 						ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a={<key>b;<Key>3;} action=PasteBuffer(3); update_on={editor/buffer_number} }
 						ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a={<key>b;<Key>4;} action=PasteBuffer(4); update_on={editor/buffer_number} }
-						ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a={<key>b;<Key>5;} action=PasteBuffer(5); update_on={editor/buffer_number} }
+						ha:Select scratchpad = { checked=ChkBuffer(5); m=5; a={<key>b;<Key>5;} action=PasteBuffer(5); update_on={editor/buffer_number} }
 					}
 				}
 			}
