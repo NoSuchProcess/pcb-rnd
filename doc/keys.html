@@ -248,7 +248,7 @@
 	<td> <I>Select Buffer #4</I><br>PasteBuffer(4)
 <tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;5<br>&nbsp;&nbsp;
-	<td> <I>Select Buffer #5</I><br>PasteBuffer(5)
+	<td> <I>Select scratchpad</I><br>PasteBuffer(5)
 <tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;b<br>&nbsp;&nbsp;
 	<td> <I>Layer bindings...</I><br>LayerBinding(buffer) 
@@ -631,162 +631,165 @@
 	<th align=left>s<br>&nbsp;a<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Select all connected objects</I><br>Select(Connection) 
 <tr bgcolor="#DDFFFF">
+	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;s
+	<td> <I>Break selection subcircuits to pieces</I><br>PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop)
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to padstack</I><br>PadstackConvert(selected); Mode(PasteBuffer)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to subcircuit</I><br>Select(ConvertSubc) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;f<br>&nbsp;&nbsp;
 	<td> <I>Move selected subcircuits to other side</I><br>Flip(SelectedElements) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;l<br>&nbsp;&nbsp;
 	<td> <I>Move selected objects to current layer</I><br>MoveToCurrentLayer(Selected) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;r<br>&nbsp;&nbsp;
 	<td> <I>Remove selected objects</I><br>RemoveSelected() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;s<br>&nbsp;&nbsp;
 	<td> <I>Advanced search and select</I><br>DoWindows(search) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Unselect all objects</I><br>Unselect(All) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>unselect all connected objects</I><br>Unselect(Connection) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;a
 	<td> <I>Arc</I><br>Mode(Arc)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;b
 	<td> <I>Buffer</I><br>Mode(PasteBuffer)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;c
 	<td> <I>Copy</I><br>Mode(Copy)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;d
 	<td> <I>Del/Remove</I><br>Mode(Remove)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;e
 	<td> <I>Thermal</I><br>Mode(Thermal)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;h
 	<td> <I>Polygon Hole</I><br>Mode(PolygonHole)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;i
 	<td> <I>Insert Point</I><br>Mode(InsertPoint)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;k
 	<td> <I>Lock</I><br>Mode(Lock)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;l
 	<td> <I>Line</I><br>Mode(Line)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;m
 	<td> <I>Move</I><br>Mode(Move)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;n
 	<td> <I>Arrow</I><br>Mode(Arrow)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;o
 	<td> <I>Rotate</I><br>Mode(Rotate)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;p
 	<td> <I>Polygon</I><br>Mode(Polygon)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;r
 	<td> <I>Rectangle</I><br>Mode(Rectangle)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;t
 	<td> <I>Text</I><br>Mode(Text)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;v
 	<td> <I>Via</I><br>Mode(Via)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>tab
 	<td> <I>Flip up/down</I><br>SwapSides(V) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>tab-ctrl
 	<td> <I>Spin 180 degrees</I><br>SwapSides(R) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>tab-ctrl-shift
 	<td> <I>Swap Sides</I><br>SwapSides() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>tab-shift
 	<td> <I>Flip left/right</I><br>SwapSides(H) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>u<br>&nbsp;c
 	<td> <I>Clear undo-buffer</I><br>Undo(ClearList) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>u<br>&nbsp;r
 	<td> <I>Redo last undone operation</I><br>Redo() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>u<br>&nbsp;u
 	<td> <I>Undo last operation</I><br>Undo() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>up
 	<td> <I>Step Up</I><br>Cursor(Warp,0,1,grid) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>up-shift
 	<td> <I>Step +Up</I><br>Cursor(Pan,0,50,view) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;c
 	<td> <I>Center cursor</I><br>Center() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;f
 	<td> <I>Zoom Extents</I><br>Zoom() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;n
 	<td> <I>Show padstack numbers in a subc</I><br>Display(PinOrPadName) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;f
 	<td> <I>footprint</I><br>Display(SubcID,"%a.footprint%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;r
 	<td> <I>refdes</I><br>Display(SubcID)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>refdes+value</I><br>Display(SubcID,"%a.refdes%\\n%a.value%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;v
 	<td> <I>value</I><br>Display(SubcID,"%a.value%")
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;a
 	<td> <I>About...</I><br>About() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;d
 	<td> <I>DRC Check</I><br>DoWindows(DRC) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;f
 	<td> <I>Font selector</I><br>FontSel() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;l
 	<td> <I>Library</I><br>DoWindows(Library) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;m
 	<td> <I>Message Log</I><br>DoWindows(Log) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;n
 	<td> <I>Netlist</I><br>DoWindows(Netlist) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;p
 	<td> <I>Pinout</I><br>Display(Pinout) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>y-ctrl
 	<td> <I>Redo last undone operation</I><br>Redo() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z-ctrl
 	<td> <I>Undo last operation</I><br>Undo() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z<br>&nbsp;e<br>&nbsp;&nbsp;
 	<td> <I>Zoom Extents</I><br>Zoom() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z<br>&nbsp;x<br>&nbsp;&nbsp;
 	<td> <I>Zoom Out 20%</I><br>Zoom(+1.2) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z<br>&nbsp;z<br>&nbsp;&nbsp;
 	<td> <I>Zoom In 20%</I><br>Zoom(-1.2) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>|
 	<td> <I>Wireframe draw</I><br>conf(toggle, editor/wireframe_draw, design) 
 </table>

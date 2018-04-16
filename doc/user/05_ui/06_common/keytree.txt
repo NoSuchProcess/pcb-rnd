@@ -76,7 +76,7 @@ b;1;	pcb-menu-default.lht	PasteBuffer(1)	Select Buffer #1
 b;2;	pcb-menu-default.lht	PasteBuffer(2)	Select Buffer #2
 b;3;	pcb-menu-default.lht	PasteBuffer(3)	Select Buffer #3
 b;4;	pcb-menu-default.lht	PasteBuffer(4)	Select Buffer #4
-b;5;	pcb-menu-default.lht	PasteBuffer(5)	Select Buffer #5
+b;5;	pcb-menu-default.lht	PasteBuffer(5)	Select scratchpad
 b;b;	pcb-menu-default.lht	LayerBinding(buffer) 	Layer bindings...
 b;c;c;	pcb-menu-default.lht	PasteBuffer(Clear) 	Clear buffer
 b;c;p	pcb-menu-default.lht	PadstackConvert(buffer);Mode(PasteBuffer)	Convert buffer to padstack
@@ -204,6 +204,7 @@ s-ctrl	pcb-menu-default.lht	Save(Layout)	Save Layout
 s-ctrl-shift	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
 s;a;a;	pcb-menu-default.lht	Select(All) 	Select all visible objects
 s;a;c;	pcb-menu-default.lht	Select(Connection) 	Select all connected objects
+s;b;s	pcb-menu-default.lht	PasteBuffer(Push);PasteBuffer(5);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();PasteBuffer(Restore);PasteBuffer(ToLayout, crosshair);PasteBuffer(Clear);PasteBuffer(Pop)	Break selection subcircuits to pieces
 s;c;p;	pcb-menu-default.lht	PadstackConvert(selected);Mode(PasteBuffer)	Convert selection to padstack
 s;c;s;	pcb-menu-default.lht	Select(ConvertSubc) 	Convert selection to subcircuit
 s;f;	pcb-menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to other side
