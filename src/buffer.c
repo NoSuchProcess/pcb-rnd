@@ -699,7 +699,10 @@ static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(Convert|Restore|Mirror)\n"
 	"PasteBuffer(ToLayout, X, Y, units)\n"
 	"PasteBuffer(ToLayout, crosshair)\n"
-	"PasteBuffer(Save, Filename, [format], [force])";
+	"PasteBuffer(Save, Filename, [format], [force])\n"
+	"PasteBuffer(Push)\n"
+	"PasteBuffer(Pop)\n"
+	;
 
 static const char pcb_acth_PasteBuffer[] = "Various operations on the paste buffer.";
 
@@ -765,6 +768,8 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 	static char *default_file = NULL;
 	pcb_bool free_name = pcb_false;
 	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
+	static int stack[32];
+	static int sp = 0;
 
 	pcb_notify_crosshair_change(pcb_false);
 	if (function) {
@@ -772,6 +777,20 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			/* clear contents of paste buffer */
 		case F_Clear:
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			break;
+
+		case F_Push:
+			if (sp < sizeof(stack) / sizeof(stack[0]))
+				stack[sp++] = conf_core.editor.buffer_number;
+			else
+				pcb_message(PCB_MSG_ERROR, "Paste buffer stack overflow on push.\n");
+			break;
+
+		case F_Pop:
+			if (sp > 0)
+				pcb_buffer_set_number(stack[--sp]);
+			else
+				pcb_message(PCB_MSG_ERROR, "Paste buffer stack underflow on pop.\n");
 			break;
 
 			/* copies objects to paste buffer */
