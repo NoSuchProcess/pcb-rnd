@@ -30,6 +30,7 @@
 #include "hid_init.h"
 
 #include "../src_plugins/lib_compat_help/elem_rot.h"
+#include "../src_plugins/export_xy/conf_internal.c"
 
 #define CONF_FN "export_xy.conf"
 
@@ -809,6 +810,7 @@ int pplg_init_export_xy(void)
 	PCB_API_CHK_VER;
 
 	conf_reg_file(CONF_FN);
+/*	conf_load_as(CFR_INTERNAL, export_xy_conf_internal, 1);*/
 
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 
