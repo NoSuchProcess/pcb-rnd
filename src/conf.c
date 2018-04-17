@@ -576,6 +576,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 					prev = NULL;
 				if (s->type == LHT_TEXT) {
 					i = calloc(sizeof(conf_listitem_t), 1);
+					i->name = s->name;
 					i->val.string = &i->payload;
 					i->prop.prio = prio;
 					i->prop.src  = s;
@@ -601,6 +602,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
 				if (s->type == LHT_TEXT) {
 					i = calloc(sizeof(conf_listitem_t), 1);
+					i->name = s->name;
 					i->val.string = &i->payload;
 					i->prop.prio = prio;
 					i->prop.src  = s;
