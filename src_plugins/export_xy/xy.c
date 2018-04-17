@@ -601,7 +601,7 @@ static void xy_translate(subst_ctx_t *ctx, pcb_coord_t *x, pcb_coord_t *y)
 }
 
 typedef struct {
-	const char *hdr, *elem, *pad, *foot;
+	const char *hdr, *subc, *term, *foot;
 } template_t;
 
 
@@ -657,7 +657,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
 		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
 
-		fprintf_templ(fp, &ctx, templ->elem);
+		fprintf_templ(fp, &ctx, templ->subc);
 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term != NULL) {
@@ -666,7 +666,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 					ctx.pad_netname = m->Name;
 				else
 					ctx.pad_netname = NULL;
-				fprintf_templ(fp, &ctx, templ->pad);
+				fprintf_templ(fp, &ctx, templ->term);
 			}
 		}
 
@@ -746,29 +746,29 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 	switch(options[HA_format].int_value) {
 		case FORMAT_XY:
 			templ.hdr = templ_xy_hdr;
-			templ.elem = templ_xy_elem;
+			templ.subc = templ_xy_elem;
 			break;
 		case FORMAT_GXYRS:
 			templ.hdr = templ_gxyrs_hdr;
-			templ.elem = templ_gxyrs_elem;
+			templ.subc = templ_gxyrs_elem;
 			break;
 		case FORMAT_MACROFAB:
 			xy_unit = get_unit_struct("mil"); /* Macrofab requires mils */
 			templ.hdr = templ_macrofab_hdr;
-			templ.elem = templ_macrofab_elem;
+			templ.subc = templ_macrofab_elem;
 			break;
 		case FORMAT_TM220TM240:
 			templ.hdr = templ_TM220TM240_hdr;
-			templ.elem = templ_TM220TM240_elem;
+			templ.subc = templ_TM220TM240_elem;
 			break;
 		case FORMAT_KICADPOS:
 			templ.hdr = templ_KICADPOS_hdr;
-			templ.elem = templ_KICADPOS_elem;
+			templ.subc = templ_KICADPOS_elem;
 			break;
 		case FORMAT_NCAP:
 			templ.hdr = templ_NCAP_hdr;
-			templ.elem = templ_NCAP_elem;
-			templ.pad = templ_NCAP_pad;
+			templ.subc = templ_NCAP_elem;
+			templ.term = templ_NCAP_pad;
 			break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Invalid format\n");
