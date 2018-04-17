@@ -10,7 +10,7 @@ CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=-lm @/local/pcb/LDFLAGS@
 CC=@cc/cc@
 
-HASHOBJ=../../src_3rd//genht/hash.o ../../src_3rd//genht/htsp.o ../../src_3rd//genht/htpp.o
+HASHOBJ=../../src_3rd//genht/hash.o ../../src_3rd//genht/htsp.o ../../src_3rd//genht/htpp.o ../../src_3rd//genht/htsi.o
 VECTOBJ=../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o ../../src_3rd/genvector/vts0.o
 LISTOBJ=../../src_3rd/genlist/genadlist.o ../../src_3rd/genlist/genlistalloc.o
 QPARSE=../../src_3rd/qparse/qparse.o
