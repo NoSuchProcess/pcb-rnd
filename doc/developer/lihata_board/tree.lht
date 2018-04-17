@@ -7,7 +7,7 @@ ha:lht_tree_doc {
 			This is the root of a board .lht file. The * after the v in the name
 			is an integer which is the format version.
 		}
-		li:chidren {
+		li:children {
 			ha:meta {
 				type=ha
 				desc { Any meta-data that won't directly turn into physical material (e.g. copper). }
@@ -73,8 +73,6 @@ ha:lht_tree_doc {
 										type=ha
 										desc { a flag-list of layer type flag bits }
 										li:children {
-											ha:min_silk { valtype=coord; desc={Minimum silk width}}
-
 											ha:top        { valtype=flag; desc={location: top side}}
 											ha:bottom     { valtype=flag; desc={location: bottom side}}
 											ha:intern     { valtype=flag; desc={location: internal}}
