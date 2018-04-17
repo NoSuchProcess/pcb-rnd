@@ -36,6 +36,7 @@ LIB_3RD_OBJS= \
 	../../src_3rd/genht/hash.o \
 	../../src_3rd/genht/htsp.o \
 	../../src_3rd/genht/htpi.o \
+	../../src_3rd/genht/htsi.o \
 	../../src_3rd/genht/htip.o \
 	../../src_3rd/genht/htpp.o \
 	../../src_3rd/genvector/gds_char.o \
