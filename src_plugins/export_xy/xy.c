@@ -686,12 +686,43 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 #include "default_templ.h"
 
+static void gather_templates(void)
+{
+	conf_listitem_t *i;
+	int n;
+
+	conf_loop_list(&conf_xy.plugins.export_xy.templates, i, n) {
+		char buff[256], *id, *sect;
+		int nl = strlen(i->name);
+		if (nl > sizeof(buff)-1) {
+			pcb_message(PCB_MSG_ERROR, "export_xy: ignoring template '%s': name too long\n", i->name);
+			continue;
+		}
+		memcpy(buff, i->name, nl+1);
+		id = buff;
+		sect = strchr(id, '.');
+		if (sect == NULL) {
+			pcb_message(PCB_MSG_ERROR, "export_xy: ignoring template '%s': does not have a .section suffix\n", i->name);
+			continue;
+		}
+		*sect = '\0';
+		sect++;
+	}
+}
+
+static void free_templates(void)
+{
+
+}
+
 static void xy_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 	template_t templ;
 
 	memset(&templ, 0, sizeof(templ));
+
+	gather_templates();
 
 	if (!options) {
 		xy_get_export_options(0);
@@ -744,6 +775,8 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	PrintXY(&templ, options[HA_format].str_value);
+
+	free_templates();
 }
 
 static int xy_usage(const char *topic)
