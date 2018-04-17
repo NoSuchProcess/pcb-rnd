@@ -96,8 +96,8 @@ int main()
 				if (random() & 4)
 					PCB_FLAG_THERM_ASSIGN(i, 3, &fh);
 
-		str = pcb_strflg_f2s(fh.Flags, otype, &intconn);
-		new_flags = pcb_strflg_s2f(str, 0, &intconn);
+		str = pcb_strflg_f2s(fh.Flags, otype, &intconn, 0);
+		new_flags = pcb_strflg_s2f(str, 0, &intconn, 0);
 
 		count++;
 		if (PCB_FLAG_EQ(fh.Flags, new_flags))
