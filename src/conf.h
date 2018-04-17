@@ -119,6 +119,7 @@ struct conf_listitem_s {
 	conf_native_type_t type;
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
 	confprop_t prop; /* an array of properties allocated as big as val's array */
+	const char *name;
 	const char *payload;
 	gdl_elem_t link;
 };
@@ -330,7 +331,7 @@ conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_
 
 /*conf_listitem_t *item;*/
 #define conf_loop_list(list, item, idx) \
-	for (idx = 0, item = conflist_first((conflist_t *)cl); item != NULL; item = conflist_next(item), idx++)
+	for (idx = 0, item = conflist_first((conflist_t *)list); item != NULL; item = conflist_next(item), idx++)
 
 /*conf_listitem_t *item; const char *item_str; */
 #define conf_loop_list_str(list, item_li, item_str, idx) \
