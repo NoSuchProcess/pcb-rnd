@@ -209,7 +209,9 @@ int conf_load_plug(conf_role_t role, const char *dir)
 		strcpy(fn, e->key);
 		if (pcb_file_readable(path)) {
 			if (conf_load_as(role, path, 0) == 0) {
-				printf("!!! custom conf loaded: '%s'\n", path);
+				char id[256];
+				pcb_snprintf(id, sizeof(id), "%s:%s", conf_role_name(role), fn);
+				pcb_file_loaded_set_at("conf/plugin", id, path, NULL);
 				cnt++;
 			}
 		}
