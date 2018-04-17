@@ -5,9 +5,9 @@
 
 typedef struct {
 	const struct plugins {
-		const struct xy {
+		const struct export_xy {
 			CFT_LIST templates;
-		} xy;
+		} export_xy;
 	} plugins;
 } conf_xy_t;
 
