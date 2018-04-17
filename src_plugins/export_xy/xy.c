@@ -31,8 +31,9 @@
 
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 
-conf_xy_t conf_xy;
+#define CONF_FN "export_xy.conf"
 
+conf_xy_t conf_xy;
 
 extern char *CleanBOMString(const char *in);
 
@@ -766,11 +767,15 @@ int pplg_check_ver_export_xy(int ver_needed) { return 0; }
 void pplg_uninit_export_xy(void)
 {
 	pcb_hid_remove_attributes_by_cookie(xy_cookie);
+	conf_unreg_file(CONF_FN);
 }
+
 
 int pplg_init_export_xy(void)
 {
 	PCB_API_CHK_VER;
+
+	conf_reg_file(CONF_FN);
 
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 
