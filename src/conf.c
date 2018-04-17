@@ -1046,11 +1046,13 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 
 void conf_load_extra(const char *project_fn, const char *pcb_fn)
 {
+#if 0
 	int cnt;
 	cnt = conf_load_plug(CFR_SYSTEM, PCBSHAREDIR);
 	cnt += conf_load_plug(CFR_USER, CONF_USER_DIR);
 	if (cnt > 0)
 		conf_merge_all(NULL);
+#endif
 }
 
 
