@@ -65,6 +65,7 @@ opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
+- BUG: shape() dialog opens offscreen vertically on a 1360x768 screen (x230 laptop), dialog is resizable [report: Miloh] 
 
 2. For later releases ===============================================================================
 - route style upgrade to prototypes:
