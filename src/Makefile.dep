@@ -942,10 +942,11 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h compat_misc.h obj_pstk_inlines.h thermal.h \
- layer.h netlist.h route_style.h safe_fs.h macro.h hid.h hid_nogui.h \
- hid_attrib.h hid_helper.h hid_init.h \
- ../src_plugins/lib_compat_help/elem_rot.h \
- ../src_plugins/export_xy/default_templ.h
+ layer.h netlist.h route_style.h safe_fs.h macro.h \
+ ../src_plugins/export_xy/xy_conf.h conf.h hid.h hid_nogui.h hid_attrib.h \
+ hid_helper.h hid_init.h ../src_plugins/lib_compat_help/elem_rot.h \
+ ../src_plugins/export_xy/default_templ.h \
+ ../src_plugins/export_xy/xy_conf_fields.h
 ../src_plugins/extedit/extedit.o: ../src_plugins/extedit/extedit.c \
  ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -5353,6 +5354,7 @@ conf.o: conf.c ../src_3rd/genht/hash.h ../src_3rd/liblihata/tree.h \
  obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
  layer_grp.h paths.h compat_fs.h compat_misc.h safe_fs.h build_run.h \
+ conf_regfile.c ../src_3rd/genht/htsi.h \
  ../src_3rd/genvector/genvector_impl.c
 conf_act.o: conf_act.c ../config.h board.h global_typedefs.h pcb_bool.h \
  unit.h vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
