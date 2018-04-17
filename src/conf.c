@@ -515,7 +515,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 			}
 		}
 		else {
-			pcb_hid_cfg_error(s, "List item must be text\n");
+			pcb_hid_cfg_error(s, "List item (in an array) must be text\n");
 			res = -1;
 		}
 	}
@@ -554,7 +554,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 					dest->used |= 1;
 				}
 				else {
-					pcb_hid_cfg_error(s, "List item must be text\n");
+					pcb_hid_cfg_error(s, "List item (on a list, prepend) must be text\n");
 					res = -1;
 				}
 			}
@@ -579,7 +579,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 					dest->used |= 1;
 				}
 				else {
-					pcb_hid_cfg_error(s, "List item must be text\n");
+					pcb_hid_cfg_error(s, "List item (on a list) must be text\n");
 					res = -1;
 				}
 			}
