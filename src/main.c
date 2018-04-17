@@ -498,6 +498,8 @@ int main(int argc, char *argv[])
 	pcb_pup.error_stack_enable = 1;
 	pup_buildin_load(&pcb_pup, pup_buildins);
 	pup_autoload_dir(&pcb_pup, NULL, NULL);
+	conf_load_extra(NULL, NULL);
+
 	if (pcb_pup.err_stack != NULL) {
 		pcb_message(PCB_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
 		pup_err_stack_process_str(&pcb_pup, print_pup_err);

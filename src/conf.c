@@ -43,9 +43,11 @@
 #include "safe_fs.h"
 #include "build_run.h"
 
+#define CONF_USER_DIR "~/" DOT_PCB_RND
+
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
-static const char *conf_user_fn = "~/" DOT_PCB_RND "/pcb-conf.lht";
+static const char *conf_user_fn = CONF_USER_DIR "/pcb-conf.lht";
 static const char *flcat = "conf";
 
 
@@ -185,6 +187,35 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	if (d != NULL)
 		lht_dom_uninit(d);
 	return -1;
+}
+
+#include "conf_regfile.c"
+
+/* Load plugin config files */
+int conf_load_plug(conf_role_t role, const char *dir)
+{
+	char path[PCB_PATH_MAX], *fn;
+	int dlen, cnt = 0;
+	htsi_entry_t *e;
+
+	if (!conf_files_inited) return 0;
+
+	dlen = strlen(dir);
+	memcpy(path, dir, dlen);
+	path[dlen] = '/';
+	fn = path+dlen+1;
+
+	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e)) {
+		strcpy(fn, e->key);
+		if (pcb_file_readable(path)) {
+			if (conf_load_as(role, path, 0) == 0) {
+				printf("!!! custom conf loaded: '%s'\n", path);
+				cnt++;
+			}
+		}
+	}
+
+	return cnt;
 }
 
 conf_policy_t conf_policy_parse(const char *s)
@@ -1008,6 +1039,16 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	if (conf_root[CFR_USER] == NULL)
 		conf_reset(CFR_USER, conf_user_fn);
 }
+
+void conf_load_extra(const char *project_fn, const char *pcb_fn)
+{
+	int cnt;
+	cnt = conf_load_plug(CFR_SYSTEM, PCBSHAREDIR);
+	cnt += conf_load_plug(CFR_USER, CONF_USER_DIR);
+	if (cnt > 0)
+		conf_merge_all(NULL);
+}
+
 
 void conf_load_project(const char *project_fn, const char *pcb_fn)
 {
