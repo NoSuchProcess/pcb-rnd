@@ -21,6 +21,7 @@
 #include "netlist.h"
 #include "safe_fs.h"
 #include "macro.h"
+#include "xy_conf.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -29,6 +30,9 @@
 #include "hid_init.h"
 
 #include "../src_plugins/lib_compat_help/elem_rot.h"
+
+conf_xy_t conf_xy;
+
 
 extern char *CleanBOMString(const char *in);
 
@@ -769,6 +773,10 @@ int pplg_init_export_xy(void)
 	PCB_API_CHK_VER;
 
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_xy, field,isarray,type_name,cpath,cname,desc,flags);
+#include "xy_conf_fields.h"
 
 	pcb_hid_nogui_init(&xy_hid);
 

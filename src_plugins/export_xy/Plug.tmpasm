@@ -1,5 +1,6 @@
 put /local/pcb/mod {export_xy}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_xy/xy.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/export_xy/xy_conf.h}
 
 switch /local/pcb/export_xy/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
