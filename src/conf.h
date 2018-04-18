@@ -379,8 +379,11 @@ int pcb_conf_cmd_is_safe_(const char *path, const char *value, const char **val_
    subtree if needed */
 lht_node_t *conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int create);
 
-/* (un)register a custom config file name (not path, just file name) */
-void conf_reg_file(const char *path);
+/* (un)register a custom config file name (not path, just file name);
+   if intern is not NULL, it is the internal (executable-embedded)
+   version; it's not strdup'd, the caller needs to keep the string available
+   until conf_unreg_file() */
+void conf_reg_file(const char *path, const char *intern);
 void conf_unreg_file(const char *path);
 
 #endif

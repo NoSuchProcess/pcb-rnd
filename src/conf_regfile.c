@@ -38,7 +38,7 @@ static void conf_files_init(void)
 	conf_files_inited = 1;
 }
 
-void conf_reg_file(const char *path)
+void conf_reg_file(const char *path, const char *intern)
 {
 	htsi_entry_t *e;
 	if (!conf_files_inited) conf_files_init();
