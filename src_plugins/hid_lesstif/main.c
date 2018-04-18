@@ -1823,7 +1823,7 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 }
 
 static jmp_buf lesstif_err_jmp;
-static lesstif_err_msg(String name, String type, String class, String dflt, String *params, Cardinal *num_params)
+static void lesstif_err_msg(String name, String type, String class, String dflt, String *params, Cardinal *num_params)
 {
 	char *par[8];
 	int n;
