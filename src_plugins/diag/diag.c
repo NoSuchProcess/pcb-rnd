@@ -57,7 +57,8 @@ static const char dump_conf_syntax[] =
 
 static const char dump_conf_help[] = "Perform various operations on the configuration tree.";
 
-extern lht_doc_t *conf_root[];
+extern lht_doc_t *conf_main_root[];
+extern lht_doc_t *conf_plug_root[];
 static int pcb_act_DumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *cmd = argc > 0 ? argv[0] : NULL;
@@ -86,8 +87,11 @@ static int pcb_act_DumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		}
 		if (argc > 2)
 			prefix = argv[2];
-		if (conf_root[role] != NULL)
-			lht_dom_export(conf_root[role]->root, stdout, prefix);
+		if (conf_main_root[role] != NULL) {
+			lht_dom_export(conf_main_root[role]->root, stdout, prefix);
+			if (conf_plug_root[role] != NULL)
+				lht_dom_export(conf_plug_root[role]->root, stdout, prefix);
+		}
 		else
 			printf("%s <empty>\n", prefix);
 	}
@@ -158,7 +162,7 @@ static const char dump_layers_syntax[] =
 
 static const char dump_layers_help[] = "Print info about each layer";
 
-extern lht_doc_t *conf_root[];
+extern lht_doc_t *conf_main_root[];
 static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int g, n, used;

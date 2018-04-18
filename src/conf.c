@@ -51,9 +51,19 @@ static const char *conf_user_fn = CONF_USER_DIR "/pcb-conf.lht";
 static const char *flcat = "conf";
 
 
-lht_doc_t *conf_root[CFR_max_alloc];
-int conf_root_lock[CFR_max_alloc];
+/* The main conf: monolithic config files affecting all parts of the conf tree;
+   By default every operation is done on these trees. */
+lht_doc_t *conf_main_root[CFR_max_alloc];
+int conf_main_root_lock[CFR_max_alloc];
 int conf_lht_dirty[CFR_max_alloc];
+
+/* Plugin config: only plugin configuration is accepted; never edited, only
+   merged in. Merge takes two steps: first all files per role are merged into
+   a single conf_plug_root[R] (lihata level merge), then conf_plug_root[R]
+   is merged in using the normal conf merge mechanism. Plug roots are
+   merged before main roots so main root overwrite are stronger. */
+lht_doc_t *conf_plug_root[CFR_max_alloc];
+
 
 htsp_t *conf_fields = NULL;
 const int conf_default_prio[] = {
@@ -94,16 +104,16 @@ int conf_insert_tree_as(conf_role_t role, lht_node_t *root)
 	if ((root->type != LHT_LIST) || (strcmp(root->name, "pcb-rnd-conf-v1") != 0))
 		return -1;
 
-	if (conf_root[role] != NULL) {
-		lht_dom_uninit(conf_root[role]);
-		conf_root[role] = NULL;
+	if (conf_main_root[role] != NULL) {
+		lht_dom_uninit(conf_main_root[role]);
+		conf_main_root[role] = NULL;
 	}
 
 	d = lht_dom_init();
 	d->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 	d->root->doc = d;
 	lht_tree_merge(d->root, root);
-	conf_root[role] = d;
+	conf_main_root[role] = d;
 	return 0;
 }
 
@@ -112,11 +122,11 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	lht_doc_t *d;
 	const char *ifn, *role_name = conf_role_name(role);
 
-	if (conf_root_lock[role])
+	if (conf_main_root_lock[role])
 		return -1;
-	if (conf_root[role] != NULL) {
-		lht_dom_uninit(conf_root[role]);
-		conf_root[role] = NULL;
+	if (conf_main_root[role] != NULL) {
+		lht_dom_uninit(conf_main_root[role]);
+		conf_main_root[role] = NULL;
 		if (role_name != NULL)
 			pcb_file_loaded_del_at(flcat, role_name);
 	}
@@ -150,14 +160,14 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		prjroot->doc = d;
 		confroot->doc = d;
 		d->root = prjroot;
-		conf_root[role] = d;
+		conf_main_root[role] = d;
 		if (role_name != NULL)
 			pcb_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 		return 0;
 	}
 
 	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
-		conf_root[role] = d;
+		conf_main_root[role] = d;
 		if (role_name != NULL)
 			pcb_file_loaded_set_at(flcat, role_name, ifn, "conf");
 		return 0;
@@ -171,14 +181,14 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 			pcb_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 
 		if ((confroot != NULL)  && (confroot->type == LHT_LIST) && (strcmp(confroot->name, "li:pcb-rnd-conf-v1") == 0)) {
-			conf_root[role] = d;
+			conf_main_root[role] = d;
 			return 0;
 		}
 
 		/* project file with no config root */
 		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 		lht_dom_hash_put(d->root, confroot);
-		conf_root[role] = d;
+		conf_main_root[role] = d;
 		return 0;
 	}
 
@@ -791,10 +801,10 @@ int conf_merge_all(const char *path)
 
 	for(n = 0; n < CFR_max_real; n++) {
 		lht_node_t *cr, *r, *r2;
-		if (conf_root[n] == NULL)
+		if (conf_main_root[n] == NULL)
 			continue;
 
-		cr = conf_lht_get_confroot(conf_root[n]->root);
+		cr = conf_lht_get_confroot(conf_main_root[n]->root);
 		if (cr == NULL)
 			continue;
 
@@ -948,9 +958,9 @@ lht_node_t *conf_lht_get_first(conf_role_t target, int create)
 	assert(target != CFR_invalid);
 	assert(target >= 0);
 	assert(target < CFR_max_alloc);
-	if (conf_root[target] == NULL)
+	if (conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(conf_root[target]->root, POL_ANY, create);
+	return conf_lht_get_first_(conf_main_root[target]->root, POL_ANY, create);
 }
 
 lht_node_t *conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int create)
@@ -958,9 +968,9 @@ lht_node_t *conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int cr
 	assert(target != CFR_invalid);
 	assert(target >= 0);
 	assert(target < CFR_max_alloc);
-	if (conf_root[target] == NULL)
+	if (conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(conf_root[target]->root, pol, create);
+	return conf_lht_get_first_(conf_main_root[target]->root, pol, create);
 }
 
 static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int create)
@@ -981,7 +991,7 @@ lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 {
 	lht_node_t *r;
 	char *pc, *end;
-	if (conf_root[target] == NULL) {
+	if (conf_main_root[target] == NULL) {
 		if (!create)
 			return NULL;
 		conf_reset(target, "<conf_lht_get_at>");
@@ -1040,7 +1050,7 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	/* create the user config (in-memory-lht) if it does not exist on disk;
 	   this is needed so if the user makes config changes from the GUI things
 	   get saved. */
-	if (conf_root[CFR_USER] == NULL)
+	if (conf_main_root[CFR_USER] == NULL)
 		conf_reset(CFR_USER, conf_user_fn);
 }
 
@@ -1172,7 +1182,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	}
 
 
-	if (conf_root[target] == NULL) {
+	if (conf_main_root[target] == NULL) {
 		free(path);
 		return -1;
 	}
@@ -1212,13 +1222,13 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		if (next != NULL)
 			*next = '\0';
 
-		nn = lht_tree_path_(conf_root[target], cwd, last, 1, 0, NULL);
+		nn = lht_tree_path_(conf_main_root[target], cwd, last, 1, 0, NULL);
 		if (nn == NULL) {
 			if (new_val == NULL) {
 				free(path);
 				return 0;
 			}
-			if (conf_root_lock[target]) {
+			if (conf_main_root_lock[target]) {
 				pcb_message(PCB_MSG_WARNING, "WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
 				free(path);
 				return -1;
@@ -1242,9 +1252,9 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	else
 		ty = LHT_TEXT;
 
-	nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
+	nn = lht_tree_path_(conf_main_root[target], cwd, basename, 1, 0, NULL);
 	if (nn == NULL) {
-		if (conf_root_lock[target]) {
+		if (conf_main_root_lock[target]) {
 			free(path);
 			return -1;
 		}
@@ -1335,7 +1345,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 			free(cwd->data.text.value);
 
 		cwd->data.text.value = pcb_strdup(new_val);
-		cwd->file_name = conf_root[target]->active_file;
+		cwd->file_name = conf_main_root[target]->active_file;
 	}
 	else
 		lht_tree_del(cwd);
@@ -1750,17 +1760,17 @@ const char *conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited,
 
 void conf_lock(conf_role_t target)
 {
-	conf_root_lock[target] = 1;
+	conf_main_root_lock[target] = 1;
 }
 
 void conf_unlock(conf_role_t target)
 {
-	conf_root_lock[target] = 0;
+	conf_main_root_lock[target] = 0;
 }
 
 int conf_islocked(conf_role_t target)
 {
-	return conf_root_lock[target];
+	return conf_main_root_lock[target];
 }
 
 int conf_isdirty(conf_role_t target)
@@ -1776,7 +1786,7 @@ conf_role_t conf_lookup_role(const lht_node_t *nd)
 {
 	conf_role_t r;
 	for(r = 0; r < CFR_max_real; r++)
-		if (conf_root[r] == nd->doc)
+		if (conf_main_root[r] == nd->doc)
 			return r;
 
 	return CFR_invalid;
@@ -1786,15 +1796,15 @@ void conf_reset(conf_role_t target, const char *source_fn)
 {
 	lht_node_t *n;
 
-	if (conf_root[target] != NULL)
-		lht_dom_uninit(conf_root[target]);
+	if (conf_main_root[target] != NULL)
+		lht_dom_uninit(conf_main_root[target]);
 
-	conf_root[target] = lht_dom_init();
-	lht_dom_loc_newfile(conf_root[target], source_fn);
-	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
-	conf_root[target]->root->doc = conf_root[target];
+	conf_main_root[target] = lht_dom_init();
+	lht_dom_loc_newfile(conf_main_root[target], source_fn);
+	conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
+	conf_main_root[target]->root->doc = conf_main_root[target];
 	n = lht_dom_node_alloc(LHT_HASH, "overwrite");
-	lht_dom_list_insert(conf_root[target]->root, n);
+	lht_dom_list_insert(conf_main_root[target]->root, n);
 }
 
 /*****************/
@@ -1918,9 +1928,12 @@ void conf_uninit(void)
 
 	conf_pcb_hid_uninit();
 
-	for(n = 0; n < CFR_max_alloc; n++)
-		if (conf_root[n] != NULL)
-			lht_dom_uninit(conf_root[n]);
+	for(n = 0; n < CFR_max_alloc; n++) {
+		if (conf_main_root[n] != NULL)
+			lht_dom_uninit(conf_main_root[n]);
+		if (conf_plug_root[n] != NULL)
+			lht_dom_uninit(conf_plug_root[n]);
+	}
 
 	conf_fields_foreach(e) {
 		conf_free_native(e->value);
