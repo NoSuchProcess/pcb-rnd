@@ -15,18 +15,10 @@
 + BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 + BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
-+ BUG: changing grid with 'g' uses mil increments when mm grid is activated [wojciechk8]
-	+> this has been rewritten in the big increments rewrite (with Richard)
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 + BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
 + BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
-+ BUG: ChangeSize() doesn't work on floaters if only a floater is selected [report: wojciechk8]
-+ BUG: ChangeClearSize() results in 2x specified clearance for padstacks in subc [report: wojciechk8]
-	+> bug_files/ps_clearance.lht, select subc, :ChangeClearSize(selected, 10 mil)
-+ autocrop bug: copper lines become invisible [report: wojciechk8]
-	+> should use central data move instead of local implementation
-	+> bug_files/redrawbug1.lht, run autocrop()
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - update /usr/share/pcb-rnd/default.pcb to default lihata 
@@ -43,8 +35,6 @@
 - BUG: ratlines are not updated after subc rotate [wojciechk8]
 - BUG: changing clearance to polygon with 'k' on padstack should have priority over lines [report: wojciechk8]
 	-> bug_files/ps_clearance.lht, press 'k' on the left padstack -> the line changes clearance instead of the padstack
-+ BUG: undo 'k' on subc, padstacks are undone separatly [report: wojciechk8]
-	+> bug_files/ps_clearance.lht, press 'k' on subc, undo -> only one padstack is affected
 - BUG: changing clearance to polygon with 'k' on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	-> bug_files/via_clearance.lht
 - BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
