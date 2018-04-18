@@ -29,6 +29,8 @@
 	+> bug_files/redrawbug1.lht, run autocrop()
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
 - feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
+- update /usr/share/pcb-rnd/default.pcb to default lihata 
+	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
@@ -53,6 +55,7 @@
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 - BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 - BUG: open pcb-rnd, wl (window/library place a subc), to ( tool/orient rotate the whole subc once), uu, ur, uu (undo/undo undo/repeat cycle these) pcb-rnd segfaults on bad undo stack number [report:Miloh]
+- BUG: shape() dialog opens offscreen vertically on a 1360x768 screen (x230 laptop), dialog is resizable [report: Miloh] 
 
 eagle:
 	- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
@@ -65,7 +68,6 @@ opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-- BUG: shape() dialog opens offscreen vertically on a 1360x768 screen (x230 laptop), dialog is resizable [report: Miloh] 
 
 2. For later releases ===============================================================================
 - route style upgrade to prototypes:
@@ -123,8 +125,6 @@ opengl:
 - feature: fp_wget cache dir configurable [report: agaran]
 - feature in subc/term:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
-- update /usr/share/pcb-rnd/default.pcb to default lihata 
-	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - fontsel: ttf import?
 - library window: allow long tags and long location text to split
@@ -154,7 +154,6 @@ opengl:
 	- BUG: default layer names from the user config are ignored
 	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
-	- remove redundancy: don't store values in the PCB struct that are in the design conf
 - Mark cleanup
 	- see pool node mark_cleanup
 	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
@@ -162,9 +161,7 @@ opengl:
 	- grid size change should be undoable? [report:Evan]
 	- maybe other conf settings too?
 - pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
-- layer group rewrite:
-	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-	- make the color config dynamic too; invent color for new layers
+- layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
 - eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
 - eagle rectangle parsing should generate a rectangular feature, not a four line rectangular outline [erich]
