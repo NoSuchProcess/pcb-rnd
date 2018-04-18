@@ -250,6 +250,7 @@ int conf_load_plug(conf_role_t role, const char *dir)
 				if (conf_plug_root[role] == NULL) {
 					conf_plug_root[role] = lht_dom_init();
 					conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+					conf_plug_root[role]->root->doc = conf_plug_root[role];
 				}
 				err = lht_tree_merge(conf_plug_root[role]->root, d->root);
 				lht_dom_uninit(d);
