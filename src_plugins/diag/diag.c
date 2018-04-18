@@ -77,12 +77,12 @@ static int pcb_act_DumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		conf_role_t role;
 		const char *prefix = "";
 		if (argc <= 1) {
-			pcb_message(PCB_MSG_ERROR, "conf(dumplht) needs a role");
+			pcb_message(PCB_MSG_ERROR, "conf(dumplht) needs a role\n");
 			return 1;
 		}
 		role = conf_role_parse(argv[1]);
 		if (role == CFR_invalid) {
-			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", argv[1]);
+			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
 			return 1;
 		}
 		if (argc > 2)
