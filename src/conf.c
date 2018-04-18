@@ -117,6 +117,25 @@ int conf_insert_tree_as(conf_role_t role, lht_node_t *root)
 	return 0;
 }
 
+static lht_doc_t *conf_load_plug_file(const char *fn)
+{
+	lht_doc_t *d;
+
+	d = pcb_hid_cfg_load_lht(fn);
+	if (d == NULL) {
+		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (can't open the file or syntax error)\n", fn);
+		return NULL;
+	}
+
+	if ((d->root->type != LHT_LIST) || (strcmp(d->root->name, "pcb-rnd-conf-v1") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (not a pcb-rnd-conf-v1)\n", fn);
+		lht_dom_uninit(d);
+		return NULL;
+	}
+
+	return d;
+}
+
 int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 {
 	lht_doc_t *d;
@@ -208,6 +227,12 @@ int conf_load_plug(conf_role_t role, const char *dir)
 	int dlen, cnt = 0;
 	htsi_entry_t *e;
 
+
+	if (conf_plug_root[role] != NULL) {
+		lht_dom_uninit(conf_plug_root[role]);
+		conf_plug_root[role] = NULL;
+	}
+
 	if (!conf_files_inited) return 0;
 
 	dlen = strlen(dir);
@@ -218,11 +243,24 @@ int conf_load_plug(conf_role_t role, const char *dir)
 	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e)) {
 		strcpy(fn, e->key);
 		if (pcb_file_readable(path)) {
-			if (conf_load_as(role, path, 0) == 0) {
-				char id[256];
-				pcb_snprintf(id, sizeof(id), "%s:%s", conf_role_name(role), fn);
-				pcb_file_loaded_set_at("conf/plugin", id, path, NULL);
-				cnt++;
+			lht_doc_t *d = conf_load_plug_file(path);
+			if (d != NULL) {
+				lht_err_t err;
+
+				if (conf_plug_root[role] == NULL) {
+					conf_plug_root[role] = lht_dom_init();
+					conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+				}
+				err = lht_tree_merge(conf_plug_root[role]->root, d->root);
+				lht_dom_uninit(d);
+				if (err == 0) {
+					char id[256];
+					pcb_snprintf(id, sizeof(id), "%s:%s", conf_role_name(role), fn);
+					pcb_file_loaded_set_at("conf/plugin", id, path, NULL);
+					cnt++;
+				}
+				else
+					pcb_message(PCB_MSG_ERROR, "Failed to lihata-merge plugin config %s: %s\n", path, lht_err_str(err));
 			}
 		}
 	}
@@ -1064,13 +1102,11 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 
 void conf_load_extra(const char *project_fn, const char *pcb_fn)
 {
-#if 0
 	int cnt;
 	cnt = conf_load_plug(CFR_SYSTEM, PCBSHAREDIR);
 	cnt += conf_load_plug(CFR_USER, CONF_USER_DIR);
 	if (cnt > 0)
 		conf_merge_all(NULL);
-#endif
 }
 
 
