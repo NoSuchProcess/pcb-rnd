@@ -63,8 +63,8 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	FILE *fi;
 	int c, c2;
 	pcb_coord_t x1, y1, x2, y2, r;
-	fname = argc ? argv[0] : 0;
 	pcb_pstk_t *ps;
+	fname = argc ? argv[0] : 0;
 
 	if (!(pcb_layer_flags(PCB, INDEXOFCURRENT) & PCB_LYT_COPPER)) {
 		pcb_message(PCB_MSG_ERROR, "The currently active layer is not a copper layer.\n");
