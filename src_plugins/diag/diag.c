@@ -88,10 +88,10 @@ static int pcb_act_DumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		if (argc > 2)
 			prefix = argv[2];
 		if (conf_main_root[role] != NULL) {
-			printf("### main\n");
+			printf("%s### main\n", prefix);
 			if (conf_main_root[role] != NULL)
 				lht_dom_export(conf_main_root[role]->root, stdout, prefix);
-			printf("### plugin\n");
+			printf("%s### plugin\n", prefix);
 			if (conf_plug_root[role] != NULL)
 				lht_dom_export(conf_plug_root[role]->root, stdout, prefix);
 		}
