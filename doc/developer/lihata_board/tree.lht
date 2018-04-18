@@ -140,7 +140,20 @@ ha:lht_tree_doc {
 				}
 			}
 			ha:styles {
-			
+				type=ha
+				desc { routing styles hash: collection of all available routing syles }
+				ha:ROUTE-STYLE-NAME {
+					type=ha
+					desc { routing style: a collection of pen settings }
+					li:children {
+						ha:thickness   { valtype=coord; desc={default trace thickness (affects lines and arcs)}}
+						ha:clearance   { valtype=coord; desc={default clearance (affects lines, arcs and polygons)}}
+						ha:diameter    { valtype=coord; ver={<=5} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
+						ha:hole        { valtype=coord; ver={<=5} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
+						ha:via_proto   { valtype=integer; ver={>5} desc={padstack prototype ID used for placing new vias}}
+						sy:attributes  {/roots/attributes}
+					}
+				}
 			}
 			ha:netlists {
 			
