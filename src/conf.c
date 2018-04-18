@@ -794,28 +794,36 @@ static int mst_prio_cmp(const void *a, const void *b)
 	return -1;
 }
 
+static void conf_merge_all_top(int role, const char *path, lht_node_t *cr)
+{
+	lht_node_t *r, *r2;
+	for(r = cr->data.list.first; r != NULL; r = r->next) {
+		if (path != NULL) {
+			r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
+			if (r2 != NULL)
+				add_subtree(role, r, r2);
+		}
+		else
+			add_subtree(role, r, r);
+	}
+}
+
 int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
 	vmst_truncate(&merge_subtree, 0);
 
 	for(n = 0; n < CFR_max_real; n++) {
-		lht_node_t *cr, *r, *r2;
-		if (conf_main_root[n] == NULL)
-			continue;
-
-		cr = conf_lht_get_confroot(conf_main_root[n]->root);
-		if (cr == NULL)
-			continue;
-
-		for(r = cr->data.list.first; r != NULL; r = r->next) {
-			if (path != NULL) {
-				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
-				if (r2 != NULL)
-					add_subtree(n, r, r2);
-			}
-			else
-				add_subtree(n, r, r);
+		lht_node_t *cr;
+		if (conf_main_root[n] != NULL) {
+			cr = conf_lht_get_confroot(conf_main_root[n]->root);
+			if (cr != NULL)
+				conf_merge_all_top(n, path, cr);
+		}
+		if (conf_plug_root[n] != NULL) {
+			cr = conf_lht_get_confroot(conf_plug_root[n]->root);
+			if (cr != NULL)
+				conf_merge_all_top(n, path, cr);
 		}
 	}
 
