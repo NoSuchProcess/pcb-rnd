@@ -44,6 +44,14 @@
 #include "tool.h"
 
 
+void pcb_tool_polyhole_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedPolygon.PointN = 0;
+	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 void pcb_tool_polyhole_notify_mode(void)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
@@ -171,6 +179,8 @@ pcb_bool pcb_tool_polyhole_redo_act(void)
 
 pcb_tool_t pcb_tool_polyhole = {
 	"polyhole", NULL, 100,
+	NULL,
+	pcb_tool_polyhole_uninit,
 	pcb_tool_polyhole_notify_mode,
 	NULL,
 	pcb_tool_polyhole_adjust_attached_objects,

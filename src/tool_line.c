@@ -59,6 +59,39 @@
 static pcb_layer_t *last_layer;
 
 
+void pcb_tool_line_init(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	if (pcb_tool_prev_id == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedBox.Point1.X;
+		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y;
+		pcb_adjust_attached_objects();
+	}
+	else {
+		if (conf_core.editor.auto_drc) {
+			if (pcb_reset_conns(pcb_true)) {
+				pcb_undo_inc_serial();
+				pcb_draw();
+			}
+		}
+	}
+	pcb_notify_crosshair_change(pcb_true);
+}
+
+void pcb_tool_line_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_added_lines = 0;
+	pcb_route_reset(&pcb_crosshair.Route);
+	if (pcb_tool_next_id != PCB_MODE_ARC) {
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+	}
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 /* creates points of a line (when clicked) */
 static void notify_line(void)
 {
@@ -423,6 +456,8 @@ pcb_bool pcb_tool_line_redo_act(void)
 
 pcb_tool_t pcb_tool_line = {
 	"line", NULL, 100,
+	pcb_tool_line_init,
+	pcb_tool_line_uninit,
 	pcb_tool_line_notify_mode,
 	NULL,
 	pcb_tool_line_adjust_attached_objects,

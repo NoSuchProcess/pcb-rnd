@@ -41,6 +41,13 @@
 #include "search.h"
 #include "tool.h"
 
+void pcb_tool_copy_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
 
 void pcb_tool_copy_notify_mode(void)
 {
@@ -103,6 +110,8 @@ pcb_bool pcb_tool_copy_undo_act(void)
 
 pcb_tool_t pcb_tool_copy = {
 	"copy", NULL, 100,
+	NULL,
+	pcb_tool_copy_uninit,
 	pcb_tool_copy_notify_mode,
 	pcb_tool_copy_release_mode,
 	NULL,

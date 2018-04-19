@@ -43,6 +43,14 @@
 #include "tool.h"
 
 
+void pcb_tool_move_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 void pcb_tool_move_notify_mode(void)
 {
 	pcb_coord_t dx, dy;
@@ -107,6 +115,8 @@ pcb_bool pcb_tool_move_undo_act(void)
 
 pcb_tool_t pcb_tool_move = {
 	"move", NULL, 100,
+	NULL,
+	pcb_tool_move_uninit,
 	pcb_tool_move_notify_mode,
 	pcb_tool_move_release_mode,
 	NULL,

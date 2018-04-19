@@ -42,6 +42,14 @@
 #include "tool.h"
 
 
+void pcb_tool_poly_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedPolygon.PointN = 0;
+	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 void pcb_tool_poly_notify_mode(void)
 {
 	pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
@@ -140,6 +148,8 @@ pcb_bool pcb_tool_poly_redo_act(void)
 
 pcb_tool_t pcb_tool_poly = {
 	"poly", NULL, 100,
+	NULL,
+	pcb_tool_poly_uninit,
 	pcb_tool_poly_notify_mode,
 	NULL,
 	pcb_tool_poly_adjust_attached_objects,

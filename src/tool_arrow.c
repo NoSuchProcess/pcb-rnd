@@ -48,6 +48,15 @@
 #include "undo.h"
 
 
+void pcb_tool_arrow_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 /* Called some time after the click if there was a release but no second click
 	 a.k.a. finalize single click (some things are already done in pcb_notify_mode
 	 at the initial click event) */
@@ -202,6 +211,8 @@ void pcb_tool_arrow_adjust_attached_objects(void)
 
 pcb_tool_t pcb_tool_arrow = {
 	"arrow", NULL, 10,
+	NULL,
+	pcb_tool_arrow_uninit,
 	pcb_tool_arrow_notify_mode,
 	pcb_tool_arrow_release_mode,
 	pcb_tool_arrow_adjust_attached_objects,

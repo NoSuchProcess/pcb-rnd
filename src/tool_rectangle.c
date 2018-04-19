@@ -46,6 +46,13 @@
 #include "obj_poly_draw.h"
 
 
+void pcb_tool_rectangle_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 void pcb_tool_rectangle_notify_mode(void)
 {
 	/* do update of position */
@@ -107,6 +114,8 @@ pcb_bool pcb_tool_rectangle_anydo_act(void)
 
 pcb_tool_t pcb_tool_rectangle = {
 	"rectangle", NULL, 100,
+	NULL,
+	pcb_tool_rectangle_uninit,
 	pcb_tool_rectangle_notify_mode,
 	NULL,
 	pcb_tool_rectangle_adjust_attached_objects,

@@ -82,6 +82,8 @@ void pcb_tool_remove_notify_mode(void)
 
 pcb_tool_t pcb_tool_remove = {
 	"remove", NULL, 100,
+	NULL,
+	NULL,
 	pcb_tool_remove_notify_mode,
 	NULL,
 	NULL,

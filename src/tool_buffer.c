@@ -46,6 +46,16 @@
 #include "tool.h"
 #include "undo.h"
 
+void pcb_tool_buffer_init(void)
+{
+	pcb_crosshair_range_to_buffer();
+}
+
+void pcb_tool_buffer_uninit(void)
+{
+	pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+}
+
 void pcb_tool_buffer_notify_mode(void)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -92,6 +102,8 @@ void pcb_tool_buffer_draw_attached(void)
 
 pcb_tool_t pcb_tool_buffer = {
 	"buffer", NULL, 100,
+	pcb_tool_buffer_init,
+	pcb_tool_buffer_uninit,
 	pcb_tool_buffer_notify_mode,
 	pcb_tool_buffer_release_mode,
 	NULL,

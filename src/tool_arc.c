@@ -49,6 +49,30 @@
 #include "obj_arc_draw.h"
 
 
+void pcb_tool_arc_init(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	if (pcb_tool_prev_id == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
+		pcb_adjust_attached_objects();
+	}
+	pcb_notify_crosshair_change(pcb_true);
+}
+
+void pcb_tool_arc_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_added_lines = 0;
+	if (pcb_tool_next_id != PCB_MODE_LINE) {
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+	}
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 void pcb_tool_arc_notify_mode(void)
 {
 	switch (pcb_crosshair.AttachedBox.State) {
@@ -164,6 +188,8 @@ pcb_bool pcb_tool_arc_undo_act(void)
 
 pcb_tool_t pcb_tool_arc = {
 	"arc", NULL, 100,
+	pcb_tool_arc_init,
+	pcb_tool_arc_uninit,
 	pcb_tool_arc_notify_mode,
 	NULL,
 	pcb_tool_arc_adjust_attached_objects,

@@ -42,8 +42,13 @@
 #include "undo.h"
 
 
+pcb_toolid_t pcb_tool_prev_id;
+pcb_toolid_t pcb_tool_next_id;
+
 static void default_tool_reg(void);
 static void default_tool_unreg(void);
+static void init_current_tool(void);
+static void uninit_current_tool(void);
 
 void pcb_tool_init(void)
 {
@@ -117,59 +122,25 @@ int pcb_tool_select_by_id(pcb_toolid_t id)
 	if (recursing)
 		return -1;
 	recursing = pcb_true;
-	pcb_notify_crosshair_change(pcb_false);
-	pcb_added_lines = 0;
-	pcb_route_reset(&pcb_crosshair.Route);
-	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
-	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	pcb_crosshair.AttachedPolygon.PointN = 0;
+	
 	if (PCB->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
 		pcb_message(PCB_MSG_WARNING, _("That mode is NOT allowed when drawing ratlines!\n"));
 		id = PCB_MODE_NO;
 	}
-	if (conf_core.editor.mode == PCB_MODE_LINE && id == PCB_MODE_ARC && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
-		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
-		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
-		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
-		pcb_adjust_attached_objects();
-	}
-	else if (conf_core.editor.mode == PCB_MODE_ARC && id == PCB_MODE_LINE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
-		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
-		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedBox.Point1.X;
-		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y;
-		sprintf(id_s, "%d", id);
-		conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
-		pcb_adjust_attached_objects();
-	}
-	else {
-		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
-			pcb_crosshair_set_local_ref(0, 0, pcb_false);
-		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-		if (id == PCB_MODE_LINE && conf_core.editor.auto_drc) {
-			if (pcb_reset_conns(pcb_true)) {
-				pcb_undo_inc_serial();
-				pcb_draw();
-			}
-		}
-	}
-
+	
+	pcb_tool_prev_id = conf_core.editor.mode;
+	pcb_tool_next_id = id;
+	uninit_current_tool();
 	sprintf(id_s, "%d", id);
 	conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
-
-	if (id == PCB_MODE_PASTE_BUFFER)
-		/* do an update on the crosshair range */
-		pcb_crosshair_range_to_buffer();
-	else
-		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	init_current_tool();
 
 	recursing = pcb_false;
 
 	/* force a crosshair grid update because the valid range
 	 * may have changed
 	 */
+	pcb_notify_crosshair_change(pcb_false);
 	pcb_crosshair_move_relative(0, 0);
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
@@ -205,6 +176,16 @@ int pcb_tool_select_highest(void)
 
 #define wrap_void(func, args)           wrap(func, return,  ;,      args)
 #define wrap_retv(func, err_ret, args)  wrap(func, err_ret, return, args)
+
+static void init_current_tool(void)
+{
+	wrap_void(init, ());
+}
+
+static void uninit_current_tool(void)
+{
+	wrap_void(uninit, ());
+}
 
 void pcb_tool_notify_mode(void)
 {

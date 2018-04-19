@@ -53,6 +53,14 @@ static pcb_point_t InsertedPoint;
 static pcb_cardinal_t polyIndex = 0;
 
 
+void pcb_tool_insert_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 void pcb_tool_insert_notify_mode(void)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
@@ -127,6 +135,8 @@ pcb_bool pcb_tool_insert_undo_act(void)
 
 pcb_tool_t pcb_tool_insert = {
 	"insert", NULL, 100,
+	NULL,
+	pcb_tool_insert_uninit,
 	pcb_tool_insert_notify_mode,
 	NULL,
 	pcb_tool_insert_adjust_attached_objects,
