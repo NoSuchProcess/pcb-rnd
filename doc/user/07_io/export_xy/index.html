@@ -16,12 +16,12 @@ for each subcircuit and after each such subcircuit block an optional block
 for each terminal in that subcircuit. In pseudo-code:
 <pre>
 print header_template
-	foreach <i>subc</i> in subcircuits {
-		print subc_template
-		foreach <i>term</i> in s.terminals {
-			print term_template
-		}
+foreach <i>subc</i> in subcircuits {
+	print subc_template
+	foreach <i>term</i> in s.terminals {
+		print term_template
 	}
+}
 </pre>
 <p>
 Templates can reference to the current <i>term</i>, the current
