@@ -440,23 +440,23 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			gds_append_str(s, val);
 			return 0;
 		}
-		if (strncmp(*input, "name%", 5) == 0) {
-			*input += 5;
+		if (strncmp(*input, "refdes%", 7) == 0) {
+			*input += 7;
 			gds_append_str(s, ctx->name);
 			return 0;
 		}
-		if (strncmp(*input, "name_%", 6) == 0) {
-			*input += 6;
+		if (strncmp(*input, "refdes_%", 8) == 0) {
+			*input += 8;
 			append_clean(s, ctx->name);
 			return 0;
 		}
-		if (strncmp(*input, "descr%", 6) == 0) {
-			*input += 6;
+		if (strncmp(*input, "footprint%", 10) == 0) {
+			*input += 10;
 			gds_append_str(s, ctx->descr);
 			return 0;
 		}
-		if (strncmp(*input, "descr_%", 7) == 0) {
-			*input += 7;
+		if (strncmp(*input, "footprint_%", 11) == 0) {
+			*input += 11;
 			append_clean(s, ctx->descr);
 			return 0;
 		}
