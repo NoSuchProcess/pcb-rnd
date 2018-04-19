@@ -713,7 +713,7 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			else if (conf_core.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 				pcb_tool_select_by_id(PCB_MODE_POLYGON);
 			else {
-				pcb_crosshair_save_mode();
+				pcb_tool_save();
 				pcb_tool_is_saved = pcb_true;
 				pcb_tool_select_by_id(PCB_MODE_ARROW);
 				pcb_notify_mode();
@@ -729,12 +729,12 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_tool_select_by_id(PCB_MODE_VIA);
 			break;
 
-		case F_Restore:						/* restore the last saved mode */
-			pcb_crosshair_restore_mode();
+		case F_Restore:						/* restore the last saved tool */
+			pcb_tool_restore();
 			break;
 
-		case F_Save:								/* save currently selected mode */
-			pcb_crosshair_save_mode();
+		case F_Save:								/* save currently selected tool */
+			pcb_tool_save();
 			break;
 		}
 		pcb_notify_crosshair_change(pcb_true);

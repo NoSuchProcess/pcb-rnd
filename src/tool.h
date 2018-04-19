@@ -95,6 +95,9 @@ int pcb_tool_select_by_name(const char *name);
 int pcb_tool_select_by_id(pcb_toolid_t id);
 int pcb_tool_select_highest(void);
 
+int pcb_tool_save(void);
+int pcb_tool_restore(void);
+
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in conf_core.editor.mode ****/
 

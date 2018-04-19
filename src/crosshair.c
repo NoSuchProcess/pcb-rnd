@@ -1074,10 +1074,6 @@ void pcb_crosshair_uninit(void)
 	pcb_gui->destroy_gc(pcb_crosshair.GC);
 }
 
-/************************* mode *************************************/
-static int mode_position = 0;
-static int mode_stack[PCB_MAX_MODESTACK_DEPTH];
-
 /* sets the crosshair range to the current buffer extents */
 void pcb_crosshair_range_to_buffer(void)
 {
@@ -1092,22 +1088,6 @@ void pcb_crosshair_range_to_buffer(void)
 		else /* failed to calculate the bounding box of the buffer, it's probably a single-object move, allow the whole page */
 			pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
-}
-
-void pcb_crosshair_save_mode(void)
-{
-	mode_stack[mode_position] = conf_core.editor.mode;
-	if (mode_position < PCB_MAX_MODESTACK_DEPTH - 1)
-		mode_position++;
-}
-
-void pcb_crosshair_restore_mode(void)
-{
-	if (mode_position == 0) {
-		pcb_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
-		return;
-	}
-	pcb_tool_select_by_id(mode_stack[--mode_position]);
 }
 
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)

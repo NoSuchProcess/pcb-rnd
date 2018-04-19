@@ -183,7 +183,7 @@ void pcb_release_mode(void)
 	pcb_tool_release_mode();
 
 	if (pcb_tool_is_saved)
-		pcb_crosshair_restore_mode();
+		pcb_tool_restore();
 	pcb_tool_is_saved = pcb_false;
 	pcb_draw();
 }

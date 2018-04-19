@@ -44,6 +44,8 @@
 
 pcb_toolid_t pcb_tool_prev_id;
 pcb_toolid_t pcb_tool_next_id;
+static int save_position = 0;
+static int save_stack[PCB_MAX_MODESTACK_DEPTH];
 
 static void default_tool_reg(void);
 static void default_tool_unreg(void);
@@ -160,6 +162,25 @@ int pcb_tool_select_highest(void)
 	if (bestn == PCB_TOOLID_INVALID)
 		return -1;
 	return pcb_tool_select_by_id(bestn);
+}
+
+int pcb_tool_save(void)
+{
+	save_stack[save_position] = conf_core.editor.mode;
+	if (save_position < PCB_MAX_MODESTACK_DEPTH - 1)
+		save_position++;
+	else
+		return -1;
+	return 0;
+}
+
+int pcb_tool_restore(void)
+{
+	if (save_position == 0) {
+		pcb_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
+		return -1;
+	}
+	return pcb_tool_select_by_id(save_stack[--save_position]);
 }
 
 /**** current tool function wrappers ****/
