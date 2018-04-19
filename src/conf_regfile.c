@@ -30,11 +30,13 @@
 #include <genht/htsi.h>
 
 static htsi_t conf_files;
+static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
 static void conf_files_init(void)
 {
 	htsi_init(&conf_files, strhash, strkeyeq);
+	htsi_init(&conf_interns, strhash, strkeyeq);
 	conf_files_inited = 1;
 }
 
@@ -47,22 +49,35 @@ void conf_reg_file(const char *path, const char *intern)
 		htsi_set(&conf_files, pcb_strdup(path), 1);
 	else
 		e->value++;
+	e = htsi_getentry(&conf_interns, intern);
+	if (e == NULL)
+		htsi_set(&conf_interns, (char *)intern, 1);
+	else
+		e->value++;
 }
 
-void conf_unreg_file(const char *path)
+static void conf_unreg_any(htsi_t *ht, const char *key, int free_key)
 {
 	htsi_entry_t *e;
-	assert(conf_files_inited);
-	if (!conf_files_inited) return;
 
-	e = htsi_getentry(&conf_files, path);
+	e = htsi_getentry(ht, key);
 	assert(e != NULL);
 	if (e == NULL) return;
 
 	e->value--;
 	if (e->value == 0) {
-		htsi_delentry(&conf_files, e);
-		free(e->key);
+		htsi_delentry(ht, e);
+		if (free_key)
+			free(e->key);
 	}
+}
+
+void conf_unreg_file(const char *path, const char *intern)
+{
+	assert(conf_files_inited);
+	if (!conf_files_inited) return;
+
+	conf_unreg_any(&conf_files, path, 1);
+	conf_unreg_any(&conf_interns, intern, 0);
 }
 
