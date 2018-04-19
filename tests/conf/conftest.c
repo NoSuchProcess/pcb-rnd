@@ -74,7 +74,7 @@ conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
 conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
 
 
-extern lht_doc_t *conf_root[];
+extern lht_doc_t *conf_main_root[];
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
@@ -94,8 +94,8 @@ void cmd_dump(char *arg)
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
-		if (conf_root[role] != NULL)
-			lht_dom_export(conf_root[role]->root, stdout, "");
+		if (conf_main_root[role] != NULL)
+			lht_dom_export(conf_main_root[role]->root, stdout, "");
 		else
 			printf("<empty>\n");
 	}
