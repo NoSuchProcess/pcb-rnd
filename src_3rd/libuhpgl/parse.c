@@ -361,12 +361,16 @@ static int parse_coord(uhpgl_ctx_t *ctx, double coord, int is_last)
 			}
 			return error(ctx, "PT needs 1 argument");
 		case inst2num('V','S'):
-			if ((p->argc == 1) && (is_last)) {
-				ctx->state.pen_speed = p->argv[0];
-				p->state = ST_INST_END;
-				return 0;
+			if (is_last) {
+				if ((p->argc == 1) || (p->argc == 2)) {
+					ctx->state.pen_speed = p->argv[0];
+					p->state = ST_INST_END;
+					return 0;
+				}
+				printf("argc=%d\n", p->argc);
+				return error(ctx, "VS needs 1 or 2 arguments");
 			}
-			return error(ctx, "VS needs 1 argument");
+			return 0;
 	}
 	return error(ctx, "unimplemented coord instruction");
 }
