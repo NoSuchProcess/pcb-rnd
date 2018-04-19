@@ -167,7 +167,7 @@ typedef struct {
 	pcb_coord_t pad_cx, pad_cy;
 	pcb_coord_t pad_w, pad_h;
 	pcb_coord_t prpad_w, prpad_h;
-	int count;
+	pcb_cardinal_t count;
 	pcb_coord_t ox, oy;
 	int origin_score;
 	char *origin_tmp;
