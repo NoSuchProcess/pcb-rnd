@@ -117,18 +117,33 @@ int conf_insert_tree_as(conf_role_t role, lht_node_t *root)
 	return 0;
 }
 
-static lht_doc_t *conf_load_plug_file(const char *fn)
+static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 {
 	lht_doc_t *d;
+	const char *ifn;
 
-	d = pcb_hid_cfg_load_lht(fn);
+	if (fn_is_text) {
+		d = pcb_hid_cfg_load_str(fn);
+		ifn = "<string>";
+	}
+	else {
+		d = pcb_hid_cfg_load_lht(fn);
+		ifn = fn;
+	}
+
 	if (d == NULL) {
-		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (can't open the file or syntax error)\n", fn);
+		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (can't open the file or syntax error)\n", ifn);
+		return NULL;
+	}
+
+	if (d->root == NULL) {
+		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (no root)\n", ifn);
+		lht_dom_uninit(d);
 		return NULL;
 	}
 
 	if ((d->root->type != LHT_LIST) || (strcmp(d->root->name, "pcb-rnd-conf-v1") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (not a pcb-rnd-conf-v1)\n", fn);
+		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (not a pcb-rnd-conf-v1)\n", ifn);
 		lht_dom_uninit(d);
 		return NULL;
 	}
@@ -220,13 +235,30 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 
 #include "conf_regfile.c"
 
+static int conf_merge_plug(lht_doc_t *d, conf_role_t role, const char *path)
+{
+	lht_err_t err;
+
+	if (conf_plug_root[role] == NULL) {
+		conf_plug_root[role] = lht_dom_init();
+		conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		conf_plug_root[role]->root->doc = conf_plug_root[role];
+	}
+	err = lht_tree_merge(conf_plug_root[role]->root, d->root);
+	lht_dom_uninit(d);
+	if (err != 0) {
+		pcb_message(PCB_MSG_ERROR, "Failed to lihata-merge plugin config %s: %s\n", path, lht_err_str(err));
+		return 0;
+	}
+	return 1;
+}
+
 /* Load plugin config files */
-int conf_load_plug(conf_role_t role, const char *dir)
+static int conf_load_plug_files(conf_role_t role, const char *dir)
 {
 	char path[PCB_PATH_MAX], *fn;
 	int dlen, cnt = 0;
 	htsi_entry_t *e;
-
 
 	if (conf_plug_root[role] != NULL) {
 		lht_dom_uninit(conf_plug_root[role]);
@@ -243,26 +275,38 @@ int conf_load_plug(conf_role_t role, const char *dir)
 	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e)) {
 		strcpy(fn, e->key);
 		if (pcb_file_readable(path)) {
-			lht_doc_t *d = conf_load_plug_file(path);
+			lht_doc_t *d = conf_load_plug_file(path, 0);
 			if (d != NULL) {
-				lht_err_t err;
-
-				if (conf_plug_root[role] == NULL) {
-					conf_plug_root[role] = lht_dom_init();
-					conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
-					conf_plug_root[role]->root->doc = conf_plug_root[role];
-				}
-				err = lht_tree_merge(conf_plug_root[role]->root, d->root);
-				lht_dom_uninit(d);
-				if (err == 0) {
+				int res = conf_merge_plug(d, role, path);
+				if (res) {
 					char id[256];
 					pcb_snprintf(id, sizeof(id), "%s:%s", conf_role_name(role), fn);
 					pcb_file_loaded_set_at("conf/plugin", id, path, NULL);
-					cnt++;
 				}
-				else
-					pcb_message(PCB_MSG_ERROR, "Failed to lihata-merge plugin config %s: %s\n", path, lht_err_str(err));
+				cnt += res;
 			}
+		}
+	}
+
+	return cnt;
+}
+
+static int conf_load_plug_interns(conf_role_t role)
+{
+	int cnt = 0;
+	htsi_entry_t *e;
+
+	if (conf_plug_root[role] != NULL) {
+		lht_dom_uninit(conf_plug_root[role]);
+		conf_plug_root[role] = NULL;
+	}
+
+	if (!conf_files_inited) return 0;
+	for (e = htsi_first(&conf_interns); e; e = htsi_next(&conf_interns, e)) {
+		lht_doc_t *d = conf_load_plug_file(e->key, 1);
+		if (d != NULL) {
+			int res = conf_merge_plug(d, role, NULL);
+			cnt += res;
 		}
 	}
 
@@ -1104,8 +1148,9 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 void conf_load_extra(const char *project_fn, const char *pcb_fn)
 {
 	int cnt;
-	cnt = conf_load_plug(CFR_SYSTEM, PCBSHAREDIR);
-	cnt += conf_load_plug(CFR_USER, CONF_USER_DIR);
+	cnt = conf_load_plug_files(CFR_SYSTEM, PCBSHAREDIR);
+	cnt += conf_load_plug_files(CFR_USER, CONF_USER_DIR);
+	cnt += conf_load_plug_interns(CFR_INTERNAL);
 	if (cnt > 0)
 		conf_merge_all(NULL);
 }
