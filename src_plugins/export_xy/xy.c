@@ -167,7 +167,7 @@ typedef struct {
 	pcb_coord_t pad_cx, pad_cy;
 	pcb_coord_t pad_w, pad_h;
 	pcb_coord_t prpad_w, prpad_h;
-	int element_num;
+	int count;
 	pcb_coord_t ox, oy;
 	int origin_score;
 	char *origin_tmp;
@@ -533,9 +533,9 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			gds_append_str(s, ctx->front ? "top" : "bottom");
 			return 0;
 		}
-		if (strncmp(*input, "element_num%", 12) == 0) {
-			*input += 12;
-			pcb_append_printf(s, "%d", ctx->element_num);
+		if (strncmp(*input, "count%", 6) == 0) {
+			*input += 6;
+			pcb_append_printf(s, "%d", ctx->count);
 			return 0;
 		}
 		if (strncmp(*input, "num-side%", 9) == 0) {
@@ -651,7 +651,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		return 1;
 	}
 
-	ctx.element_num = 0;
+	ctx.count = 0;
 
 	pcb_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
 
@@ -665,7 +665,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		int bott;
-		ctx.element_num++;
+		ctx.count++;
 
 		ctx.pad_w = ctx.pad_h = 0;
 		ctx.theta = ctx.xray_theta = 0.0;
