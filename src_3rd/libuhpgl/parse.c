@@ -419,7 +419,10 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			return 0;
 		case '\r':
 		case '\t':
+			return 0;
 		case ' ':
+			if ((p->state == ST_NUMBERS) || (p->state == ST_NUMBERS_OR_END))
+				break;
 			return 0;
 	}
 
@@ -461,7 +464,7 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 				goto got_end;
 			/* fall thru: number */
 		case ST_NUMBERS:
-			if ((c == ',') || (c == ';')) {
+			if ((c == ',') || (c == ' ') || (c == ';')) {
 				char *end;
 				int last = (c == ';');
 				p->token[p->len] = '\0';
