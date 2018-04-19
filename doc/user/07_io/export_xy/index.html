@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h1> pcb-rnd - user manual </h1>
+
+<h2> 7.x export_xy </h2>
+<p>
+Export_xy is a configurable template based export plugin that prints
+text files. The output contains an optional header, then an optional block
+for each subcircuit and after each such subcircuit block an optional block
+for each terminal in that subcircuit. In pseudo-code:
+<pre>
+print header_template
+	foreach <i>subc</i> in subcircuits {
+		print subc_template
+		foreach <i>term</i> in s.terminals {
+			print term_template
+		}
+	}
+</pre>
+<p>
+Templates can reference to the current <i>term</i>, the current
+<i>subc</i> and global properties (such as board properties).
+
+<h3> 7.x.1. Template configuration </h3>
+<p>
+Each xy export format has an user assigned <i>ID</i> (which is the short name of the format).
+There is a list of strings in the config tree under plugins/export_xy/templates;
+each item is named as <i>ID</i>.<i>something</i> where <i>something</i> is:
+<ul>
+	<lI> <i>ID</i>.name: the long name of the format (as shown on the UI); mandatory
+	<li> <i>ID</i>.hdr: header template, printed once when the output file is opened; optional
+	<li> <i>ID</i>.subc: subcircuit template, printed once when a subcircuit is entered; optional
+	<li> <i>ID</i>.term: terminal template, printed once for each terminal within each subcircuit; optional
+</ul>
+<p>
+Templates are text strings; they are printed as is, keeping all newlines and
+whitespace. Portions in between % signs are substituted, depending on the
+context.
+
+<h2> Substitution keywords </h2>
+<p>
+<table border=1>
+	<tr><th> keyword                   <th> description
+	<tr><td> %UTC%                     <td> current date and time in UTC
+	<tr><td> %author%                  <td> board author
+	<tr><td> %title%                   <td> board title
+	<tr><td> %suffix%                  <td> coordinate unit (mm or mil)
+	<tr><td> %boardw%                  <td> boward width (unit suffixed coord)
+	<tr><td> %boardh%                  <td> boward height (unit suffixed coord)
+	<tr><td> %subc.a.KEY%              <td> paste the current subcircuit's attribute value of the attribute whose name matches KEY; print "n/a" for non-existing attributes
+	<tr><td> %subc.a.KEY|unk%          <td> same as %subc.a.KEY% but print "unknown" instead of "n/a"
+	<tr><td> %subc.a.KEY?yes%          <td> same as %subc.a.KEY% but print "yes" if attribute value represents true, "n/a" otherwise
+	<tr><td> %subc.a.KEY?yes:nope%     <td> same as %subc.a.KEY% but print "yes" if attribute value represents true, "nope" otherwise
+	<tr><td> %subc.refdes%             <td> print the refdes of the current subcircuit
+	<tr><td> %subc.refdes_%            <td> print the cleaned refdes of the current subcircuit
+	<tr><td> %subc.footprint%          <td> print the footprint name of the current subcircuit
+	<tr><td> %subc.footprint_%         <td> print the cleaned footprint name of the current subcircuit
+	<tr><td> %subc.value%              <td> print the value of the current subcircuit
+	<tr><td> %subc.value_%             <td> print the cleaned value of the current subcircuit
+	<tr><td> %subc.x%                  <td> print the X coordinate of the origin of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.y%                  <td> print the Y coordinate of the origin of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.padx%               <td> print the X coordinate calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.pady%               <td> print the Y coordinate calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.pad_width%          <td> print the total width calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.pad_height%         <td> print the total height calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.pad_width_prerot%   <td> print the total width calculated from padstacks of the subcircuit, before applying rotation (coord with unit suffix)
+	<tr><td> %subc.pad_height_prerot%  <td> print the total height calculated from padstacks of the subcircuit, before applying rotation (coord with unit suffix)
+	<tr><td> %subc.rot%                <td> print the subc rotation value in degrees
+	<tr><td> %subc.siderot%            <td> print the subc rotation value in degrees, always looking from the top side, "x-ray mode" (relative to side)
+	<tr><td> %subc.270-rot%            <td> print the subc rotation value in degrees, subtracted from 270
+	<tr><td> %subc.side270-rot%        <td> print the subc rotation value in degrees, always looking from the top side, "x-ray mode", subtracted from 270 (relative to side)
+	<tr><td> %subc.side%               <td> "top" or "bottom" (determined by subc placement, the subc aux layer)
+	<tr><td> %subc.num-side%           <td> "1" for top or "2" for bottom (determined by subc placement, the subc aux layer)
+	<tr><td> %subc.count%              <td> integer value, incremented by one before processing each subcircuit
+	<tr><td> %subc.smdvsthru%          <td> "SMD" if contains padstacks but no padstack with hole; "PTH" if contains padstack with hole; "0" if neither
+	<tr><td> %subc.smdvsthrunum%       <td> "2" if contains padstacks but no padstack with hole; "1" if contains padstack with hole; "0" if neither
+	<tr><td> %subc.pincout%            <td> "pin" or "pad" count. Do not use.
+	<tr><td> %term.netname%            <td> name of the net the current terminal should be connected to according to the netlist; "NC" for no connection
+</table>
+
+<p>
+<i>Cleaned</i> means any character that is non-alphanumeric, not "." and not "-"
+and not "+" is replaced with "_".
