@@ -1,4 +1,4 @@
-16562	configure	export_xy: tempalte config
+16591	configure	export_xy: tempalte config
 16456	configure	new plugin: import_ipcd356; rewrite export_ipcd356
 16265	configure	introducing pcb api ver
 16233	configure	retire hid_srv_ws: we are not going to use websockets for the web variant

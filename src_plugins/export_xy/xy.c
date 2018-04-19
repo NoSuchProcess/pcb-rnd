@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <genvector/vts0.h>
 
 #include "math_helper.h"
 #include "build_run.h"
@@ -40,22 +41,8 @@ extern char *CleanBOMString(const char *in);
 
 const char *xy_cookie = "XY HID";
 
-static const char *format_names[] = {
-#define FORMAT_XY 0
-	"pcb xy",
-#define FORMAT_GXYRS 1
-	"gxyrs",
-#define FORMAT_MACROFAB 2
-	"Macrofab",
-#define FORMAT_TM220TM240 3
-	"TM220/TM240",
-#define FORMAT_KICADPOS 4
-	"KiCad .pos",
-#define FORMAT_NCAP 5
-	"ncap export (WIP)",
-	NULL
-};
-
+/* Maximum length of a template name (in the config file, in the enum) */
+#define MAX_TEMP_NAME_LEN 128
 
 
 static pcb_hid_attribute_t xy_options[] = {
@@ -84,7 +71,7 @@ Unit of XY dimensions. Defaults to mil.
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xymm 2
 	{"format", "file format (template)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, format_names, 0},
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, NULL, 0},
 #define HA_format 3
 };
 
@@ -94,12 +81,60 @@ static pcb_hid_attr_val_t xy_values[NUM_OPTIONS];
 
 static const char *xy_filename;
 static const pcb_unit_t *xy_unit;
+vts0_t fmt_names; /* array of const char * long name of each format, pointing into the conf database */
+vts0_t fmt_ids;   /* array of strdup'd short name (ID) of each format */
+
+static void free_fmts(void)
+{
+	int n;
+	for(n = 0; n < fmt_ids.used; n++) {
+		free(fmt_ids.array[n]);
+		fmt_ids.array[n] = NULL;
+	}
+}
 
 static pcb_hid_attribute_t *xy_get_export_options(int *n)
 {
 	static char *last_xy_filename = 0;
 	static int last_unit_value = -1;
+	conf_listitem_t *li;
+	int idx;
 
+	/* load all formats from the config */
+	fmt_names.used = 0;
+	fmt_ids.used = 0;
+
+	free_fmts();
+	conf_loop_list(&conf_xy.plugins.export_xy.templates, li, idx) {
+		char id[MAX_TEMP_NAME_LEN];
+		const char *sep = strchr(li->name, '.');
+		int len;
+
+		if (sep == NULL) {
+			pcb_message(PCB_MSG_ERROR, "export_xy: ignoring invalid template name (missing period): '%s'\n", li->name);
+			continue;
+		}
+		if (strcmp(sep+1, "name") != 0)
+			continue;
+		len = sep - li->name;
+		if (len > sizeof(id)-1) {
+			pcb_message(PCB_MSG_ERROR, "export_xy: ignoring invalid template name (too long): '%s'\n", li->name);
+			continue;
+		}
+		memcpy(id, li->name, len);
+		id[len] = '\0';
+		vts0_append(&fmt_names, (char *)li->payload);
+		vts0_append(&fmt_ids, pcb_strdup(id));
+	}
+
+	if (fmt_names.used == 0) {
+		pcb_message(PCB_MSG_ERROR, "export_xy: can not set up export options: no template available\n");
+		return NULL;
+	}
+
+	xy_options[HA_format].enumerations = (const char **)fmt_names.array;
+
+	/* set default unit and filename */
 	if (xy_options[HA_unit].default_val.int_value == last_unit_value) {
 		if (conf_core.editor.grid_unit)
 			xy_options[HA_unit].default_val.int_value = conf_core.editor.grid_unit->index;
@@ -685,8 +720,6 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	return 0;
 }
 
-#include "default_templ.h"
-
 static void gather_templates(void)
 {
 	conf_listitem_t *i;
@@ -711,15 +744,24 @@ static void gather_templates(void)
 	}
 }
 
-static void free_templates(void)
+static const char *get_templ(const char *tid, const char *type)
 {
+	char path[MAX_TEMP_NAME_LEN + 16];
+	conf_listitem_t *li;
+	int idx;
 
+	sprintf(path, "%s.%s", tid, type); /* safe: tid's length is checked before it was put in the vector, type is hardwired in code and is never longer than a few chars */
+	conf_loop_list(&conf_xy.plugins.export_xy.templates, li, idx)
+		if (strcmp(li->name, path) == 0)
+			return li->payload;
+	return NULL;
 }
 
 static void xy_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 	template_t templ;
+	char **tid;
 
 	memset(&templ, 0, sizeof(templ));
 
@@ -742,42 +784,16 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 	else
 		xy_unit = &pcb_units[options[HA_unit].int_value];
 
-
-	switch(options[HA_format].int_value) {
-		case FORMAT_XY:
-			templ.hdr = templ_xy_hdr;
-			templ.subc = templ_xy_elem;
-			break;
-		case FORMAT_GXYRS:
-			templ.hdr = templ_gxyrs_hdr;
-			templ.subc = templ_gxyrs_elem;
-			break;
-		case FORMAT_MACROFAB:
-			xy_unit = get_unit_struct("mil"); /* Macrofab requires mils */
-			templ.hdr = templ_macrofab_hdr;
-			templ.subc = templ_macrofab_elem;
-			break;
-		case FORMAT_TM220TM240:
-			templ.hdr = templ_TM220TM240_hdr;
-			templ.subc = templ_TM220TM240_elem;
-			break;
-		case FORMAT_KICADPOS:
-			templ.hdr = templ_KICADPOS_hdr;
-			templ.subc = templ_KICADPOS_elem;
-			break;
-		case FORMAT_NCAP:
-			templ.hdr = templ_NCAP_hdr;
-			templ.subc = templ_NCAP_elem;
-			templ.term = templ_NCAP_pad;
-			break;
-		default:
-			pcb_message(PCB_MSG_ERROR, "Invalid format\n");
-			return;
+	tid = vts0_get(&fmt_ids, options[HA_format].int_value, 0);
+	if ((tid == NULL) || (*tid == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "export_xy: invalid template selected\n");
+		return;
 	}
+	templ.hdr  = get_templ(*tid, "hdr");
+	templ.subc = get_templ(*tid, "subc");
+	templ.term = get_templ(*tid, "term");
 
 	PrintXY(&templ, options[HA_format].str_value);
-
-	free_templates();
 }
 
 static int xy_usage(const char *topic)
@@ -802,6 +818,9 @@ void pplg_uninit_export_xy(void)
 {
 	pcb_hid_remove_attributes_by_cookie(xy_cookie);
 	conf_unreg_file(CONF_FN, export_xy_conf_internal);
+	free_fmts();
+	vts0_uninit(&fmt_names);
+	vts0_uninit(&fmt_ids);
 }
 
 
@@ -831,5 +850,8 @@ int pplg_init_export_xy(void)
 	xy_hid.usage = xy_usage;
 
 	pcb_hid_register_hid(&xy_hid);
+
+	vts0_init(&fmt_names);
+	vts0_init(&fmt_ids);
 	return 0;
 }
