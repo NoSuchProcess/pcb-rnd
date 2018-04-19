@@ -237,6 +237,10 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 			ctx->state.pen_down = 1;
 			p->state = ST_NUMBERS_OR_END;
 			return 0;
+		case inst2num('W','U'):
+			p->state = ST_NUMBERS_OR_END;
+			return 0;
+
 		case inst2num('P','A'):
 		case inst2num('P','R'):
 		case inst2num('S','P'):
@@ -371,6 +375,10 @@ static int parse_coord(uhpgl_ctx_t *ctx, double coord, int is_last)
 				return error(ctx, "VS needs 1 or 2 arguments");
 			}
 			return 0;
+		case inst2num('W','U'): /* unknown */
+			if ((p->argc == 1) && (is_last))
+				return 0;
+			return error(ctx, "WU needs 1 argument");
 	}
 	return error(ctx, "unimplemented coord instruction");
 }
