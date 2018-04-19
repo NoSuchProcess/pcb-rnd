@@ -365,14 +365,14 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		pcb_append_printf(s, "%m+%mS", xy_unit->allow, PCB->MaxHeight);
 		return 0;
 	}
-	if (strncmp(*input, "elem.", 5) == 0) {
+	if (strncmp(*input, "subc.", 5) == 0) {
 		*input += 5;
 
 		/* elem attribute print:
-		    elem.a.attribute            - print the attribute if exists, "n/a" if not
-		    elem.a.attribute|unk        - print the attribute if exists, unk if not
-		    elem.a.attribute?yes        - print yes if attribute is true, "n/a" if not
-		    elem.a.attribute?yes:nope   - print yes if attribute is true, nope if not
+		    subc.a.attribute            - print the attribute if exists, "n/a" if not
+		    subc.a.attribute|unk        - print the attribute if exists, unk if not
+		    subc.a.attribute?yes        - print yes if attribute is true, "n/a" if not
+		    subc.a.attribute?yes:nope   - print yes if attribute is true, nope if not
 		*/
 		if (strncmp(*input, "a.", 2) == 0) {
 			char aname[256], unk_buf[256], *nope;
@@ -600,8 +600,8 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			return 0;
 		}
 	}
-	if (strncmp(*input, "pad.", 4) == 0) {
-		*input += 4;
+	if (strncmp(*input, "term.", 5) == 0) {
+		*input += 5;
 		if (strncmp(*input, "netname%", 8) == 0) {
 			*input += 8;
 			if (*ctx->pad_netname != '\0')
