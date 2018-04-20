@@ -551,6 +551,7 @@ void ghid_drc_window_append_violation(pcb_gtk_drcwin_t *drcwin, pcb_gtk_common_t
 void ghid_drc_window_reset_message(pcb_gtk_drcwin_t *drcwin)
 {
 	drcwin->num_violations = 0;
+	gtk_container_foreach(GTK_CONTAINER(drcwin->drc_vbox), destroy_widget, NULL);
 }
 
 int ghid_drc_window_throw_dialog(pcb_gtk_drcwin_t *drcwin)
