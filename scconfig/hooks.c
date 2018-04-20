@@ -682,14 +682,14 @@ int hook_detect_target()
 		int long_bits      = safe_atoi(get("sys/types/size/signed_long_int")) * 8;
 		int long_long_bits = safe_atoi(get("sys/types/size/signed_long_long_int")) * 8;
 		int int64_bits     = safe_atoi(get("sys/types/size/uint64_t")) * 8;
-		const char *chosen, *abs_name, *postfix;
+		const char *chosen, *postfix;
 		char tmp[64];
 		int need_stdint = 0;
 
-		if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           abs_name="abs"; }
-		else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      abs_name="labs"; }
-		else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       abs_name="llabs"; need_stdint = 1; }
-		else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; abs_name="llabs"; }
+		if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           }
+		else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      }
+		else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       need_stdint = 1; }
+		else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; }
 		else {
 			report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_coord_bits);
 			exit(1);
@@ -698,7 +698,6 @@ int hook_detect_target()
 		sprintf(tmp, "((1%s<<%d)-1)", postfix, want_coord_bits - 1);
 		put("/local/pcb/coord_type", chosen);
 		put("/local/pcb/coord_max", tmp);
-		put("/local/pcb/coord_abs", abs_name);
 
 		chosen = NULL;
 		if (istrue(get("/local/pcb/debug"))) { /* debug: c89 */
