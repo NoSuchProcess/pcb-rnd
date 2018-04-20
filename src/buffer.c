@@ -905,8 +905,9 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			break;
 
 		case F_Normalize:
-			pcb_data_normalize(PCB_PASTEBUFFER->Data);
 			pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+			PCB_PASTEBUFFER->X = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.X1 + (double)PCB_PASTEBUFFER->BoundingBox.X2) / 2.0);
+			PCB_PASTEBUFFER->Y = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.Y1 + (double)PCB_PASTEBUFFER->BoundingBox.Y2) / 2.0);
 			break;
 
 			/* set number */
