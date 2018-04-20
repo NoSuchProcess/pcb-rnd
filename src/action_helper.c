@@ -201,7 +201,7 @@ void pcb_notify_mode(void)
 	pcb_draw();
 }
 
-void pcb_event_move_crosshair(int ev_x, int ev_y)
+void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 {
 	if (pcb_mid_stroke)
 		pcb_stub_stroke_record(ev_x, ev_y);
