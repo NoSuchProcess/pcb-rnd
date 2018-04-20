@@ -1346,7 +1346,6 @@ void pcb_polygon_go_to_prev_point(void)
 	case 1:
 		pcb_crosshair.AttachedPolygon.PointN = 0;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-		pcb_added_lines = 0;
 		break;
 
 		/* back-up one point */
@@ -1450,7 +1449,6 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	/* reset state of attached line */
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-	pcb_added_lines = 0;
 
 	/* add to undo list */
 	pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, polygon, polygon);
@@ -1517,7 +1515,6 @@ void pcb_polygon_hole_create_from_attached(void)
 	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_poly_t));
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	pcb_added_lines = 0;
 }
 
 /* find polygon holes in range, then call the callback function for
