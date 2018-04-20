@@ -736,6 +736,11 @@ Rotates the current buffer.  The number to pass is 1..3, where 1 means
 90 degrees counter clockwise, 2 means 180 degrees, and 3 means 90
 degrees clockwise (270 CCW).
 
+@item Normalize
+Set the buffer origin to the center of the paste buffer bounding box.
+This is useful especially if an import plugin loaded objects in the buffer
+with a large offset.
+
 @item Save
 Saves any elements in the current buffer to the indicated file. If
 format is specified, try to use that file format, else use the default.
