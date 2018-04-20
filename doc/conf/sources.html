@@ -26,10 +26,10 @@ The full list of config sources is:
     <td> recommended
     <td> should hold system and installation specific settings, e.g. path to the system-wise installed footprint library
 
-<tr><td> default.pcb
+<tr><td> default board
     <td> 300
-    <td> /usr/share/pcb-rnd/default.pcb
-    <td> deprecated
+    <td> /usr/share/pcb-rnd/default4.pcb<a href="#footnote1"><sup>1</sup></a>
+    <td> deprecated<a href="#footnote2"><sup>2</sup></a>
     <td> pcb editable defaults
 
 <tr><td> user
@@ -74,5 +74,16 @@ in weak settings ("use this value if it was not already set") or strong settings
 ("I always want to use mincut, so I enable it from my user's config with high
 priority and a version controlled project setting can not turn it off")
 
+<p>
+Footnotes:
+<ul>
+	<li id="footnote1"> <sup>1</sup>: the name of the default board is default4.lht for
+	the default 4 layer board. The standard installation also ships default2.lht
+	as a similar 2 layer board. The name of the default baordfile is configured
+	in config node rc/default_pcb_file.
+	<li id="footnote2"> <sup>2</sup>: default pcb should not contain a config subtree; it is
+	easier to maintain the config tree if default configuration is coming from
+	config files only.
+</ul>
 </body>
 </html>
