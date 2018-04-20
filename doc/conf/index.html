@@ -27,7 +27,7 @@ hard to fix keeping the original design:
 	<li> ... there are <a href="lists.html">arrays and lists</a>
 	<li> ... a config file can overwrite a list or <a href="lists.html">prepend/append</a> to it (e.g. design-level config prepending an extra library path keeping system set paths as well)
 	<li> there are different <a href="sources.html"> sources </a> of configuration, e.g. system-wise, user-wise, project-wise, etc.
-	<li> the user has the power to change default config <a href="prio.html">priority per setting</a>; e.g. normally design config overrides user config, but it's possible to mark a setting from user config so strong that it overrides even the setting read from the .pcb file
+	<li> the user has the power to change default config <a href="prio.html">priority per setting</a>; e.g. normally design config overrides user config, but it's possible to mark a setting from user config so strong that it overrides even the setting read from the board file
 	<li> the way settings are stored is flexible and extensible so that a plugin can define their subtree of settings
 	<li> ... since the API even makes it easier to access such settings (vs. parsing your own config file), plugins will tend to use the unified config format/system instead of inventing their own
 	<li> ... the GUI (gtk's preferences dialog) thus can automatically handle the new settings
