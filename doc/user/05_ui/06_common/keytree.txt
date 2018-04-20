@@ -214,6 +214,7 @@ s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
 s;s;	pcb-menu-default.lht	DoWindows(search) 	Advanced search and select
 s;u;a;	pcb-menu-default.lht	Unselect(All) 	Unselect all objects
 s;u;c;	pcb-menu-default.lht	Unselect(Connection) 	unselect all connected objects
+space	pcb-menu-default.lht	Mode(Arrow)	Arrow
 t;a	pcb-menu-default.lht	Mode(Arc)	Arc
 t;b	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
 t;c	pcb-menu-default.lht	Mode(Copy)	Copy
