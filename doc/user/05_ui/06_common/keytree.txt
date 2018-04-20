@@ -83,6 +83,7 @@ b;c;p	pcb-menu-default.lht	PadstackConvert(buffer);Mode(PasteBuffer)	Convert buf
 b;c;s	pcb-menu-default.lht	PasteBuffer(ConvertSubc) 	Convert buffer to subcircuit
 b;m;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
 b;m;u	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
+b;n	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Normalize)	Normalize
 b;r;a	pcb-menu-default.lht	Mode(PasteBuffer);FreeRotateBuffer()	Arbitrarily Rotate Buffer
 b;r;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
 b;r;r	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW (right)
