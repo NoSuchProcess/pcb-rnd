@@ -357,7 +357,7 @@ gen_boxed_html()
 			print "<body><h1>pcb-rnd 2.x.x keys - cheat sheet </h1>"
 			for(n = 0; n < 26; n++) {
 				key = sprintf("%c", 97+n)
-				print "<div class=\"key\"><table border=1 cellspacing=0>"
+				print "<div class=\"key\"><table border=1 cellspacing=0 width=400px>"
 				print TBL[key]
 				print "</table></div>"
 				print ""
