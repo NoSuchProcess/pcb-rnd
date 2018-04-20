@@ -239,6 +239,7 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 			return 0;
 		case inst2num('W','U'):
 		case inst2num('P','W'):
+		case inst2num('L','T'):
 			p->state = ST_NUMBERS_OR_END;
 			return 0;
 
@@ -365,6 +366,13 @@ static int parse_coord(uhpgl_ctx_t *ctx, double coord, int is_last)
 				return 0;
 			}
 			return error(ctx, "PT needs 1 argument");
+		case inst2num('L','T'):
+			if (is_last) {
+				if ((p->argc <= 3) && (is_last))
+					return 0;
+				return error(ctx, "LT needs at most 3 argument");
+			}
+			return 0;
 		case inst2num('V','S'):
 			if (is_last) {
 				if ((p->argc == 1) || (p->argc == 2)) {
