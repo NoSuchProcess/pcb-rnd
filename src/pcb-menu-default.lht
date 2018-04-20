@@ -408,6 +408,7 @@ ha:{
 				ha:Arbitrarily Rotate Buffer  = { a={<key>b;<key>r;<key>a}; li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
 				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
 				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
+				ha:Normalize                  = { a={<key>b;<key>n}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize);} }
 				-
 				ha:Clear buffer                    = { a={<key>b;<key>c;<key>c;}; action=PasteBuffer(Clear) }
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
