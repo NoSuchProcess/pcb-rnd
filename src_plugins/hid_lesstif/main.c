@@ -964,7 +964,7 @@ static pcb_hid_attribute_t *lesstif_get_export_options(int *n)
 
 static void set_scroll(Widget s, int pos, int view, int pcb)
 {
-	int sz = view * view_zoom;
+	unsigned int sz = view * view_zoom;
 	if (sz > pcb)
 		sz = pcb;
 	if (pos > pcb - sz)
