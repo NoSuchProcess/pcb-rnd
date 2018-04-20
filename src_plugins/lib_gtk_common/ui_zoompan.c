@@ -95,8 +95,8 @@ pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pc
 
 pcb_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
 {
-	*pcb_x = EVENT_TO_PCB_X(v, event_x);
-	*pcb_y = EVENT_TO_PCB_Y(v, event_y);
+	*pcb_x = pcb_round(EVENT_TO_PCB_X(v, event_x));
+	*pcb_y = pcb_round(EVENT_TO_PCB_Y(v, event_y));
 
 	return pcb_true;
 }
