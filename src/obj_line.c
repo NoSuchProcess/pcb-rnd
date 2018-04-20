@@ -516,11 +516,15 @@ void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 
 void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
-	pcb_poly_restore_to_poly(ctx->move.pcb->Data, PCB_OBJ_LINE, Layer, Line);
+	if (Layer->line_tree != NULL)
+		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
+	if (ctx->move.pcb != NULL)
+		pcb_poly_restore_to_poly(ctx->move.pcb->Data, PCB_OBJ_LINE, Layer, Line);
 	pcb_lineop_move_noclip(ctx, Layer, Line);
-	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line);
-	pcb_poly_clear_from_poly(ctx->move.pcb->Data, PCB_OBJ_LINE, Layer, Line);
+	if (Layer->line_tree != NULL)
+		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line);
+	if (ctx->move.pcb != NULL)
+		pcb_poly_clear_from_poly(ctx->move.pcb->Data, PCB_OBJ_LINE, Layer, Line);
 	return Line;
 }
 
