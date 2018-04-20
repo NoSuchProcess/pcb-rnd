@@ -353,7 +353,7 @@ ha:{
 						ha:Del/Remove     = { checked=ChkMode(remove);      li:a={{<key>t;<key>d};{<Key>F8};}; action=Mode(Remove); update_on={editor/mode} }
 						ha:Rotate         = { checked=ChkMode(rotate);      li:a={{<key>t;<key>o};{<Key>F9};}; action=Mode(Rotate); update_on={editor/mode} }
 						ha:Thermal        = { checked=ChkMode(thermal);     li:a={{<key>t;<key>e};{<Key>F10};}; action=Mode(Thermal); update_on={editor/mode} }
-						ha:Arrow          = { checked=ChkMode(arrow);       li:a={{<key>t;<key>n};{<Key>F11};}; action=Mode(Arrow); update_on={editor/mode} }
+						ha:Arrow          = { checked=ChkMode(arrow);       li:a={{<key>t;<key>n};{<Key>F11};{<Key>space};}; action=Mode(Arrow); update_on={editor/mode} }
 						ha:Insert Point   = { checked=ChkMode(insertpoint); li:a={{<key>t;<key>i};{<Key>Insert};}; action=Mode(InsertPoint); update_on={editor/mode} }
 						ha:Move           = { checked=ChkMode(move);        a={<key>t;<key>m}; action=Mode(Move); update_on={editor/mode} }
 						ha:Copy           = { checked=ChkMode(copy);        a={<key>t;<key>c}; action=Mode(Copy); update_on={editor/mode} }
