@@ -151,7 +151,7 @@ static int view_width, view_height;
 /* This is the PCB location represented by the upper left corner of
    the viewport.  Note that PCB coordinates put 0,0 in the upper left,
    much like X does.  */
-static int view_left_x = 0, view_top_y = 0;
+static pcb_coord_t view_left_x = 0, view_top_y = 0;
 /* Denotes PCB units per screen pixel.  Larger numbers mean zooming
    out - the largest value means you are looking at the whole
    board.  */
@@ -236,12 +236,12 @@ static pcb_composite_op_t lesstif_drawing_mode = 0;
 #define use_mask() ((lesstif_drawing_mode == PCB_HID_COMP_POSITIVE) || (lesstif_drawing_mode == PCB_HID_COMP_NEGATIVE))
 
 static void zoom_max();
-static void zoom_to(double factor, int x, int y);
-static void zoom_by(double factor, int x, int y);
-static void zoom_toggle(int x, int y);
+static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
+static void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y);
+static void zoom_toggle(pcb_coord_t x, pcb_coord_t y);
 static void pinout_callback(Widget, PreviewData *, XmDrawingAreaCallbackStruct *);
 static void pinout_unmap(Widget, PreviewData *, void *);
-static void Pan(int mode, int x, int y);
+static void Pan(int mode, pcb_coord_t x, pcb_coord_t y);
 
 /* Px converts view->pcb, Vx converts pcb->view */
 
@@ -1010,10 +1010,10 @@ static void zoom_max()
 	lesstif_pan_fixup();
 }
 
-static void zoom_to(double new_zoom, int x, int y)
+static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 {
 	double max_zoom, xfrac, yfrac;
-	int cx, cy;
+	pcb_coord_t cx, cy;
 
 	if (PCB == NULL)
 		return;
@@ -1050,7 +1050,7 @@ static void zoom_to(double new_zoom, int x, int y)
 	lesstif_pan_fixup();
 }
 
-static void zoom_toggle(int x, int y)
+static void zoom_toggle(pcb_coord_t x, pcb_coord_t y)
 {
 	double tmp;
 
@@ -1059,7 +1059,7 @@ static void zoom_toggle(int x, int y)
 	zoom_to(tmp, x, y);
 }
 
-void zoom_by(double factor, int x, int y)
+void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y)
 {
 	zoom_to(view_zoom * factor, x, y);
 }
@@ -1070,10 +1070,10 @@ static int ctrl_pressed;
 static int alt_pressed;
 
 /* X and Y are in screen coordinates.  */
-static void Pan(int mode, int x, int y)
+static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 {
-	static int ox, oy;
-	static int opx, opy;
+	static pcb_coord_t ox, oy;
+	static pcb_coord_t opx, opy;
 
 	panning = mode;
 	/* This is for ctrl-pan, where the viewport's position is directly
@@ -3071,7 +3071,7 @@ static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	if (y1 > view_height + vw && y2 > view_height + vw)
 		return;
 	if (x1 > x2) {
-		int xt = x1;
+		pcb_coord_t xt = x1;
 		x1 = x2;
 		x2 = xt;
 	}
@@ -3183,7 +3183,7 @@ static void lesstif_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	if (y1 > view_height + vw && y2 > view_height + vw)
 		return;
 	if (x1 > x2) {
-		int xt = x1;
+		pcb_coord_t xt = x1;
 		x1 = x2;
 		x2 = xt;
 	}
