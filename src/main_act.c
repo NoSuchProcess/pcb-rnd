@@ -36,6 +36,7 @@
 
 #include "config.h"
 
+#include "board.h"
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "conf_core.h"
@@ -321,6 +322,7 @@ int pcb_act_System(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc < 1)
 		return 1;
+	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->Filename);
 	return pcb_system(argv[0]);
 }
 
