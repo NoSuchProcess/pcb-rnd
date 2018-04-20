@@ -21,8 +21,6 @@
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
 + feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
-- BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
-	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
@@ -223,6 +221,8 @@ opengl:
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - feature req: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
+- BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
+	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - BUG: gtk: preferences/user POV/sizes is not in sync with preferences/config POV/ [report: Alain]
 	- rewrite using DAD
 	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
