@@ -904,6 +904,11 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			}
 			break;
 
+		case F_Normalize:
+			pcb_data_normalize(PCB_PASTEBUFFER->Data);
+			pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+			break;
+
 			/* set number */
 		default:
 			{
