@@ -14,8 +14,8 @@
 + BUG: lesstif: invalidate_all() on config change colors [report: Karl]
 + BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
-- BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
-	-> bug_files/drc1.lht: run drc() command - the drc window will appear with 2 errors; run drc() again - same 2 errors are appended to the list
++ BUG: run DRC() action multiple times - duplicated entries are added to the list [report: wojciechk8]
+	+> bug_files/drc1.lht: run drc() command - the drc window will appear with 2 errors; run drc() again - same 2 errors are appended to the list
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 + BUG: route style/via place assert: in a route style enter 100 mil to line width and via hol size, place via -> assert [report: keantoken]
