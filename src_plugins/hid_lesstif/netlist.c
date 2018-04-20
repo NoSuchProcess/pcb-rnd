@@ -226,8 +226,8 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 			PCB_PAD_LOOP(element);
 			{
 				if (strcmp(pad->Number, pname) == 0) {
-					int x = (pad->Point1.X + pad->Point2.X) / 2;
-					int y = (pad->Point1.Y + pad->Point2.Y) / 2;
+					pcb_coord_t x = (pad->Point1.X + pad->Point2.X) / 2;
+					pcb_coord_t y = (pad->Point1.Y + pad->Point2.Y) / 2;
 					pcb_gui->set_crosshair(x, y, HID_SC_PAN_VIEWPORT);
 					free(ename);
 					return;

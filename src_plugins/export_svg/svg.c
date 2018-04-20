@@ -787,7 +787,7 @@ static void svg_calibrate(double xval, double yval)
 	return;
 }
 
-static void svg_set_crosshair(int x, int y, int a)
+static void svg_set_crosshair(pcb_coord_t x, pcb_coord_t y, int a)
 {
 }
 

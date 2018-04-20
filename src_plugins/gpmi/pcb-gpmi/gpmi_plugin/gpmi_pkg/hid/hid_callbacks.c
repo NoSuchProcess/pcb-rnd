@@ -74,7 +74,7 @@ int gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv)
 	return pcb_hid_parse_command_line(pcbargc, pcbargv);
 }
 
-void gpmi_hid_set_crosshair(int x, int y, int cursor_action)
+void gpmi_hid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int cursor_action)
 {
 	/* Do nothing */
 }

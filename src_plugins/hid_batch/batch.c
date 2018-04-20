@@ -237,7 +237,7 @@ static void batch_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 }
 
-static void batch_set_crosshair(int x, int y, int action)
+static void batch_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 

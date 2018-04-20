@@ -1827,7 +1827,7 @@ static void png_calibrate(double xval, double yval)
 	CRASH("png_calibrate");
 }
 
-static void png_set_crosshair(int x, int y, int a)
+static void png_set_crosshair(pcb_coord_t x, pcb_coord_t y, int a)
 {
 }
 

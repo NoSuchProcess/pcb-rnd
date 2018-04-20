@@ -954,7 +954,7 @@ static void nelma_calibrate(double xval, double yval)
 	CRASH("nelma_calibrate");
 }
 
-static void nelma_set_crosshair(int x, int y, int a)
+static void nelma_set_crosshair(pcb_coord_t x, pcb_coord_t y, int a)
 {
 }
 

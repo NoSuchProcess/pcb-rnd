@@ -163,7 +163,7 @@ static void nogui_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 	CRASH("get_coords");
 }
 
-static void nogui_set_crosshair(int x, int y, int action)
+static void nogui_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 

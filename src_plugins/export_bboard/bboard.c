@@ -589,7 +589,7 @@ static void bboard_calibrate(double xval, double yval)
 	abort();
 }
 
-static void bboard_set_crosshair(int x, int y, int action)
+static void bboard_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 

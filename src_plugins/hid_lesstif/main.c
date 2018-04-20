@@ -136,7 +136,7 @@ static PreviewData *pinouts = 0;
 /* If set, we are currently updating this pinout window.  */
 static PreviewData *pinout = 0;
 
-static int crosshair_x = 0, crosshair_y = 0;
+static pcb_coord_t crosshair_x = 0, crosshair_y = 0;
 static int in_move_event = 0, crosshair_in_window = 1;
 
 Widget mainwind;
@@ -3220,7 +3220,7 @@ static int lesstif_mod1_is_pressed(void)
 
 extern void lesstif_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 
-static void lesstif_set_crosshair(int x, int y, int action)
+static void lesstif_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 	if (crosshair_x != x || crosshair_y != y) {
 		lesstif_show_crosshair(0);
