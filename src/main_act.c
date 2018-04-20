@@ -37,6 +37,10 @@
 #include "config.h"
 
 #include "board.h"
+#include "data.h"
+#include "crosshair.h"
+#include "compat_misc.h"
+#include "layer.h"
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "conf_core.h"
@@ -320,9 +324,15 @@ static const char pcb_acts_System[] = "System(shell_cmd)";
 static const char pcb_acth_System[] = "Run shell command";
 int pcb_act_System(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	char tmp[128];
 	if (argc < 1)
 		return 1;
-	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->Filename);
+	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->Filename == NULL ? "" : PCB->Filename, 1);
+	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
+	pcb_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
+	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
+	pcb_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
+	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", CURRENT->name, 1);
 	return pcb_system(argv[0]);
 }
 
