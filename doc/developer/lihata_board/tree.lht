@@ -156,7 +156,69 @@ ha:lht_tree_doc {
 				}
 			}
 			ha:netlists {
-			
+				type=ha
+				desc { all availale netlists }
+				li:children {
+					ha:netlist {
+						type=li
+						desc { the input netlist (as seen in the last netlist import, a.k.a. forward annotation) }
+						li:children {
+							ha:NETNAME {
+								type=ha
+								desc { a network }
+								li:children {
+									ha:conn {
+										type=li
+										desc { list of terminals connceted to the network }
+										li:children {
+											ha:diameter    { valtype=string; desc={refdes-terminal}}
+										}
+									}
+									sy:attributes_v5p  {/roots/attributes}
+								}
+							}
+						}
+					}
+					ha:netlist_patch {
+						type=li
+						desc { a list of intentional deviations from the input netlist, a.k.a. material for back annotation }
+						li:children {
+							ha:net_info {
+								type=li
+								desc { describe the current state of a net, as seen on the input }
+								li:children {
+									ha:net   { valtype=string; desc={net name; first item on the list, only once}}
+									ha:term  { valtype=string; desc={terminal name; zero or more items starting from the second item}}
+								}
+							}
+							ha:add_conn {
+								type=ha
+								desc { the 'as built' network requires a new conncetion to be created during the back annotation }
+								li:children {
+									ha:net   { valtype=string; desc={net name the terminal should be added to}}
+									ha:term  { valtype=string; desc={terminal name}}
+								}
+							}
+							ha:del_conn {
+								type=ha
+								desc { the 'as built' network requires an existing conncetion to be removed during the back annotation }
+								li:children {
+									ha:net   { valtype=string; desc={net name the terminal should be removed from}}
+									ha:term  { valtype=string; desc={terminal name}}
+								}
+							}
+							ha:change_attrib {
+								type=ha
+								desc { the 'as built' network requires an attribute to be set or changed }
+								li:children {
+									ha:net   { valtype=string; desc={net name whose attribute needs to be changed }}
+									ha:key   { valtype=string; desc={key (name) of the attribute}}
+									ha:val   { valtype=string; desc={new value of the attribute}}
+								}
+							}
+						}
+					}
+				}
 			}
 			sy:conf = {/roots/conf}
 			sy:data = {/roots/data}
@@ -164,14 +226,72 @@ ha:lht_tree_doc {
 		}
 	}
 	ha:data {
-			
+		type=ha
+		desc { Layers and global objects of the board }
+		li:children {
+			ha:objects {
+				type=li
+				desc { List of global (non-layer/multi-layer) objects }
+				li:children {
+					ha:padstack_ref.ID {
+						type=ha
+						desc { a padstack reference (instance) placed on the board (e.g. used as a via) }
+						li:children {
+							ha:proto      = { valtype=integer; desc={padstack prototype ID to use, from the parent data's proto list }}
+							ha:x          = { valtype=coord;   desc={place padstack with origin at this horizontal coordinate }}
+							ha:y          = { valtype=coord;   desc={place padstack with origin at this vertical coordinate }}
+							ha:clearance  = { valtype=coord;   desc={global clearance; if non-zero, overrides local (per shape) clearance }}
+							ha:rot        = { valtype=angle;   desc={rotation angle in degrees }}
+							ha:xmirror    = { valtype=integer; desc={0 or 1; if 1, mirror all shapes over the x (horizontal) axis (so that y coords are flipped)}}
+							ha:smirror    = { valtype=integer; desc={0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")}}
+							sy:attributes = {/roots/attributes}
+							sy:flags      = {/roots/flags_pstk}
+							ha:thermal {
+								type=li
+								desc { list of thermal shapes, per layer }
+								li:children {
+									ha:LAYERID {
+										type=li
+										desc { integer layer ID the thermal affects; each word is a boolean flag that is either present on the list or is missing; only one shape may be present }
+										li:children {
+											ha:on         = { valtype=none;  desc={ thermal is present on this layer; if not present, all other thermal flags are ignored on this layer }}
+											ha:diag       = { valtype=none;  desc={ thermal graphics is not axis aligned but diagonal (rotated by 45 degrees) }}
+											ha:round      = { valtype=none;  desc={ shape: rounded edge fingers }}
+											ha:sharp      = { valtype=none;  desc={ shape: sharp edge fingers }}
+											ha:solid      = { valtype=none;  desc={ shape: no thermal relief, solid connection without clearance }}
+											ha:noshape    = { valtype=none;  desc={ shape: special: omit copper shape of the padstack on this layer }}
+										}
+									}
+								}
+							}
+						}
+					}
+					{TODO: ver>=4 lht_dom_list_append}
+					{TODO: var<4 build_pstk_pinvia}
+				}
+			}
+			ha:layers {
+				{type=TODO: build_data_layers}
+			}
+		}
 	}
 	ha:conf {
 			
 	}
+	ha:flags_pstk {
+		TODO
+	}
 	ha:attributes {
 		type=ha
 		desc { a hash of attribute key=value pairs }
+		li:children {
+			ha:attrib-key { valtype=string; desc={attribute value}}
+		}
+	}
+	ha:attributes_v5p {
+		type=ha
+		desc { a hash of attribute key=value pairs }
+		ver={>=5}
 		li:children {
 			ha:attrib-key { valtype=string; desc={attribute value}}
 		}
