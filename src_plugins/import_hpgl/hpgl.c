@@ -50,7 +50,9 @@
 
 static const char *hpgl_cookie = "hpgl importer";
 
-#define HPGL2CRD(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
+#define HPGL2CRD_D(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
+#define HPGL2CRD_X(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
+#define HPGL2CRD_Y(crd)   (PCB_MM_TO_COORD((double)crd*(-0.025)))
 
 static pcb_layer_t *get_pen_layer(pcb_data_t *data, int pen)
 {
@@ -80,7 +82,7 @@ static int load_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
 	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
 	pcb_layer_t *layer = get_pen_layer(data, line->pen);
 	pcb_line_new(layer,
-		HPGL2CRD(line->p1.x), HPGL2CRD(line->p1.y), HPGL2CRD(line->p2.x), HPGL2CRD(line->p2.y), 
+		HPGL2CRD_X(line->p1.x), HPGL2CRD_Y(line->p1.y), HPGL2CRD_X(line->p2.x), HPGL2CRD_Y(line->p2.y), 
 		conf_core.design.line_thickness, 2 * conf_core.design.clearance,
 		pcb_flag_make((conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 	return 0;
@@ -92,8 +94,8 @@ static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 	pcb_layer_t *layer = get_pen_layer(data, arc->pen);
 
 	pcb_arc_new(layer,
-		HPGL2CRD(arc->center.x), HPGL2CRD(arc->center.y),
-		HPGL2CRD(arc->r), HPGL2CRD(arc->r),
+		HPGL2CRD_X(arc->center.x), HPGL2CRD_Y(arc->center.y),
+		HPGL2CRD_D(arc->r), HPGL2CRD_D(arc->r),
 		arc->starta+180, arc->deltaa,
 		conf_core.design.line_thickness, 2 * conf_core.design.clearance,
 		pcb_flag_make((conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
