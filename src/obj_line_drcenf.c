@@ -196,7 +196,7 @@ void pcb_line_adjust_attached_2lines(pcb_bool way)
 		}
 		else {
 			line->Point2.X = pcb_crosshair.X;
-			line->Point2.Y = line->Point1.Y + SGN(dy) * coord_abs(dx);;
+			line->Point2.Y = line->Point1.Y + SGN(dy) * coord_abs(dx);
 		}
 	}
 }
