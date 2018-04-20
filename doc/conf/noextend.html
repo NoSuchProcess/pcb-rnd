@@ -17,7 +17,7 @@ The core implemented a so called Settings. It was a flat list of items,
 each bound to a C variable. There was a bunch of metadata attached to
 the items: name, type, description. Generic code could query or change
 the value of any setting, the C code could read and write them directly
-too. The content is saved to ~/.pcb/settings.
+too. The content was saved to ~/.pcb/settings.
 <p>
 On the downside, the actual items this system knew about was pretty much
 static, hardwired in core. A plugin could not register its own settings.
