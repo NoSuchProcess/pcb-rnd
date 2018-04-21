@@ -50,7 +50,7 @@
 
 /* We include polygons here only to inform the user not to do it that way.  */
 #define PCB_CHANGECLEARSIZE_TYPES \
-	(PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC | \
+	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC | \
 	PCB_OBJ_SUBC_PART)
 
 #define	PCB_CHANGENONETLIST_TYPES     \
