@@ -240,11 +240,10 @@ static void print_placement(FILE * fp)
 		pcb_coord_t ox, oy;
 		char *side;
 		int res;
-		pcb_layer_type_t lyt = PCB_LYT_TOP;
+		int subc_on_solder = 0;
 
-		if (subc->aux_layer != NULL)
-			lyt = pcb_layer_flags_(subc->aux_layer);
-		side = (lyt & PCB_LYT_BOTTOM) ? "back" : "front";
+		pcb_subc_get_side(subc, &subc_on_solder);
+		side = subc_on_solder ? "back" : "front";
 
 		res = pcb_subc_get_origin(subc, &ox, &oy);
 		assert(res == 0);
@@ -406,7 +405,7 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coo
 	pcb_pstk_shape_t *shp;
 	pcb_layer_t *lay = g_list_nth_data(layerlist, lid);
 	pcb_layer_type_t lyt = pcb_layer_flags_(lay);
-		pcb_poly_it_t it;
+	pcb_poly_it_t it;
 
 	if (!(lyt & PCB_LYT_COPPER))
 		return;
@@ -414,6 +413,12 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coo
 	shp = pcb_pstk_shape(padstack, lyt, 0);
 	if (shp == NULL)
 		return;
+
+	/* if the subc is placed on the other side, need to invert the output layerstack as well */
+	if (partsidesign < 0)
+		lay = g_list_nth_data(layerlist, g_list_length(layerlist) - 1 - lid);
+	else
+		lay = g_list_nth_data(layerlist, lid);
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY:
@@ -443,10 +448,12 @@ static void print_library(FILE * fp)
 		pcb_coord_t ox, oy;
 		pcb_point_t centroid;
 		int partside, partsidesign, subc_on_solder = 0;
+		pcb_layer_type_t lyt_side;
 
 		pcb_subc_get_side(subc, &subc_on_solder);
 		partside = subc_on_solder ? g_list_length(layerlist) - 1 : 0;
 		partsidesign = subc_on_solder ? -1 : 1;
+		lyt_side = subc_on_solder ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 
 		pcb_subc_get_origin(subc, &ox, &oy);
 		centroid.X = ox;
@@ -457,7 +464,7 @@ static void print_library(FILE * fp)
 		{
 			pcb_layer_type_t lyt = pcb_layer_flags_(layer);
 			if ((lyt & PCB_LYT_COPPER) && ((lyt & PCB_LYT_TOP) || (lyt & PCB_LYT_BOTTOM))) {
-				int termside = (lyt & PCB_LYT_BOTTOM) ? g_list_length(layerlist) - 1 : 0;
+				int termside = (lyt & lyt_side) ? 0 : g_list_length(layerlist) - 1;
 				print_term_poly(fp, &term_shapes, polygon, ox, oy, termside, partsidesign);
 			}
 		}
