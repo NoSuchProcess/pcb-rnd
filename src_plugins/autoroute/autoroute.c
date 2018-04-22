@@ -39,8 +39,7 @@
  *  haceaton@aplcomm.jhuapl.edu
  *
  */
-/* functions used to autoroute nets.
- */
+
 /*
  *-------------------------------------------------------------------
  * This file implements a rectangle-expansion router, based on
