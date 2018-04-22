@@ -41,7 +41,7 @@
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 - BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 - BUG: open pcb-rnd, wl (window/library place a subc), to ( tool/orient rotate the whole subc once), uu, ur, uu (undo/undo undo/repeat cycle these) pcb-rnd segfaults on bad undo stack number [report:Miloh]
-- BUG: shape() dialog opens offscreen vertically on a 1360x768 screen (x230 laptop), dialog is resizable [report: Miloh] 
++ BUG: shape() dialog opens offscreen vertically on a 1360x768 screen (x230 laptop), dialog is resizable [report: Miloh] 
 
 eagle:
 	- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
