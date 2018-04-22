@@ -114,30 +114,20 @@ static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	pcb_angle_t end_angle, tmp;
 	dxf_ctx_t *ctx = &dxf_ctx;
 
-	if (delta_angle > 0) {
-		end_angle = start_angle-delta_angle;
-		start_angle -= 90;
-		end_angle -= 90;
+	end_angle = start_angle + delta_angle;
 
-		if (end_angle >= 360)
-			end_angle -= 360;
-		if (end_angle < 0)
-			end_angle += 360;
-
+	if (delta_angle < 0) {
 		tmp = start_angle;
 		start_angle = end_angle;
 		end_angle = tmp;
 	}
-	else {
-		end_angle = start_angle-delta_angle;
-		start_angle += 90;
-		end_angle += 90;
 
-		if (end_angle >= 360)
-			end_angle -= 360;
-		if (end_angle < 0)
-			end_angle += 360;
-	}
+	start_angle -= 180;
+	end_angle -= 180;
+	if (end_angle >= 360)
+		end_angle -= 360;
+	if (end_angle < 0)
+		end_angle += 360;
 
 	fprintf(ctx->f, "0\nARC\n");
 	dxf_draw_handle(ctx);
