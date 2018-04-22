@@ -48,6 +48,8 @@
 #include "rotate.h"
 #include "macro.h"
 
+static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp);
+
 static void preview_set_view(pcb_gtk_preview_t * preview)
 {
 	float scale = 100.0 / PCB_MIL_TO_COORD (150.); /* arbitrary zoom factor: 100 pixel per 150 mil */
@@ -256,18 +258,6 @@ static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev
 	return TRUE;
 }
 
-static void get_ptr(pcb_gtk_preview_t * preview, pcb_coord_t * cx, pcb_coord_t * cy, gint * xp, gint * yp)
-{
-	gdkc_window_get_pointer(GTK_WIDGET(preview), xp, yp, NULL);
-#undef SIDE_X
-#undef SIDE_Y
-#define SIDE_X(x) x
-#define SIDE_Y(y) y
-	*cx = EVENT_TO_PCB_X(&preview->view, *xp);
-	*cy = EVENT_TO_PCB_Y(&preview->view, *yp);
-#undef SIDE_X
-#undef SIDE_Y
-}
 
 static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
 {
@@ -526,4 +516,18 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *h
 {
 	*width = preview->w_pixels;
 	*height = preview->h_pixels;
+}
+
+/* Has to be at the end since it undef's SIDE_X */
+static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp)
+{
+	gdkc_window_get_pointer(GTK_WIDGET(preview), xp, yp, NULL);
+#undef SIDE_X
+#undef SIDE_Y
+#define SIDE_X(x) x
+#define SIDE_Y(y) y
+	*cx = EVENT_TO_PCB_X(&preview->view, *xp);
+	*cy = EVENT_TO_PCB_Y(&preview->view, *yp);
+#undef SIDE_X
+#undef SIDE_Y
 }
