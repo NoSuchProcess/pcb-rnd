@@ -802,7 +802,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			}
 			break;
 
-			/* moves objects to paste buffer */
+			/* moves objects to paste buffer: kept for compatibility with old menu files */
 		case F_MoveSelected:
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
