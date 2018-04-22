@@ -232,6 +232,9 @@ typedef enum etype { TERM, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, 
 
 struct routebox_s {
 	pcb_box_t box, sbox;
+	struct {
+		pcb_coord_t x1, y1, x2, y2;
+	} line; /* exact coords of the line we are going to draw if type is line; reverse engineering these from the bounding box using halfthick and other hacks lead to rounding errors, a few LSB flicker in coords, e.g. breaking rubber band */
 	union {
 		pcb_pstk_t *via;
 		pcb_any_obj_t *term;
@@ -701,6 +704,10 @@ static routebox_t *AddLine(vtp0_t layergroupboxes[], int layergroup, pcb_line_t 
 	}
 	/* set aux. properties */
 	(*rbpp)->type = LINE;
+	(*rbpp)->line.x1 = line->Point1.X;
+	(*rbpp)->line.y1 = line->Point1.Y;
+	(*rbpp)->line.x2 = line->Point2.X;
+	(*rbpp)->line.y2 = line->Point2.Y;
 	(*rbpp)->parent.line = ptr;
 	(*rbpp)->flags.fixed = 1;
 	(*rbpp)->came_from = PCB_ANY_DIR;
@@ -2980,6 +2987,10 @@ RD_DrawLine(routedata_t * rd,
 								 /*Y2 */ MAX(qY1, qY2) + qhthick + 1, ka);
 	rb->group = qgroup;
 	rb->type = LINE;
+	rb->line.x1 = qX1;
+	rb->line.x2 = qX2;
+	rb->line.y1 = qY1;
+	rb->line.y2 = qY2;
 	rb->parent.line = NULL;				/* indicates that not on PCB yet */
 	rb->flags.fixed = 0;					/* indicates that not on PCB yet */
 	rb->flags.is_odd = AutoRouteParameters.is_odd;
@@ -4484,7 +4495,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					}
 					/* using CreateDrawn instead of CreateNew concatenates sequential lines */
 					p->parent.line = pcb_line_new_merge
-						(layer, b.X1, b.Y1, b.X2, b.Y2,
+						(layer, p->line.x1, p->line.y1, p->line.x2, p->line.y2,
 						 p->style->Thick, p->style->Clearance * 2, pcb_flag_make(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 
 					if (p->parent.line) {
