@@ -493,11 +493,30 @@ GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing
 
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height)
 {
+	pcb_coord_t tmp;
+
 	/* just in case the size has changed meanwhile */
 	p->view.height = PCB->MaxHeight;
 	p->view.width = PCB->MaxWidth;
 	p->view.canvas_width = canvas_width;
 	p->view.canvas_height = canvas_height;
+
+	x1 = SIDE_X(x1);
+	y1 = SIDE_Y(y1);
+	x2 = SIDE_X(x2);
+	y2 = SIDE_Y(y2);
+
+	if (x1 > x2) {
+		tmp = x1;
+		x1 = x2;
+		x2 = tmp;
+	}
+
+	if (y1 > y2) {
+		tmp = y1;
+		y1 = y2;
+		y2 = tmp;
+	}
 
 	pcb_gtk_zoom_view_win(&p->view, x1, y1, x2, y2);
 }
