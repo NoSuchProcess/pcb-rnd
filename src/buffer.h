@@ -50,9 +50,6 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 /* adds (copies) all selected and visible objects to the paste buffer */
 void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
 
-/* moves all selected and visible objects to the paste buffer */
-void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected);
-
 /* load a board into buffer parse the file with enabled 'PCB mode' */
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
 
