@@ -33,8 +33,8 @@
 	+> bug_files/ps_clearance.lht, press {e g c} on the left padstack -> the line changes clearance instead of the padstack
 + BUG: changing clearance to polygon with {e g c} on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
 	+> bug_files/via_clearance.lht
-- BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [report: Igor2]
-	-> the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8]
++ BUG: DRC preview windows don't show all padstacks after a shift-tab or ctrl-tab flip - bug_files/drc1.lht [wojciechk8]
+		(the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8])
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouter: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
@@ -56,6 +56,10 @@ opengl:
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 
 2. For later releases ===============================================================================
+- rewrite the preview API:
+	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
+	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
+	- ... but there also should be an option for going with board flip (drc view)
 - route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - layer color rewrite:
