@@ -1627,6 +1627,8 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 			if (*end != '\0')
 				continue; /* ingore fonts with invalid name for now - maybe it'd be safer to read the ID field */
 			f = pcb_new_font(fk, id, NULL);
+			if (f == NULL)
+				return iolht_error(nd, "Failed to allocate font id %d (name '%s').\n", id, n->name);
 		}
 		else {
 			pcb_font_free (&fk->dflt);
