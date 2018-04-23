@@ -1020,6 +1020,8 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	err |= parse_coord(&Y,            hash_get(obj, "y", 0));
 	err |= parse_text(&Name,          hash_get(obj, "name", 1));
 	err |= parse_text(&Number,        hash_get(obj, "number", 1));
+	if (err != 0)
+		return -1;
 
 	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
 	if (ps == NULL) {
@@ -1067,6 +1069,9 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	err |= parse_text(&Name,       hash_get(obj, "name", 1));
 	err |= parse_text(&Number,     hash_get(obj, "number", 1));
 
+	if (err != 0)
+		return -1;
+
 	p = pcb_pstk_new_compat_pad(subc->data, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)) != subc_on_bottom);
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
@@ -1080,7 +1085,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_attrib_compat_set_intconn(&p->Attributes, intconn);
 	parse_attributes(&p->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	return err;
+	return 0;
 }
 
 
