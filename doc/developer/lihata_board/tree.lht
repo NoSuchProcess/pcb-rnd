@@ -1,5 +1,5 @@
 ha:lht_tree_doc {
-	li:roots b{
+	li:roots {
 	ha:pcb-rnd-board-v* {
 		type=ha
 		desc {
@@ -353,7 +353,18 @@ ha:lht_tree_doc {
 				ver = {<3}
 			}
 			ha:rat.ID {
-				{type=TODO: build_rat}
+				type=ha
+				desc={global rat line}
+				li:children {
+					ha:x1        = { valtype=coord;   desc={line first endpoint, horizontal offset }}
+					ha:y1        = { valtype=coord;   desc={line first endpoint, vertical offset }}
+					ha:x2        = { valtype=coord;   desc={line second endpoint, horizontal offset }}
+					ha:y2        = { valtype=coord;   desc={line second endpoint, vertical offset }}
+					ha:lgrp1     = { valtype=integer; desc={first endpoint's layer group ID }}
+					ha:lgrp2     = { valtype=integer; desc={second endpoint's layer group ID }}
+					sy:attributes = {/roots/attributes}
+					sy:flags      = {/roots/flags_line}
+				}
 			}
 			ha:layers {
 				{type=TODO: build_data_layers}
@@ -361,12 +372,15 @@ ha:lht_tree_doc {
 		}
 	}
 	ha:conf {
-			
+		TODO
 	}
 	ha:flags_pstk {
 		TODO
 	}
 	ha:flags_pinvia {
+		TODO
+	}
+	ha:flags_line {
 		TODO
 	}
 	ha:attributes {
