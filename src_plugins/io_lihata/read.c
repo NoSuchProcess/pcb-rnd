@@ -748,10 +748,15 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	else
 		return iolht_error(obj, "invalid polygon: empty geometry\n");
 
+	if (err != 0) {
+		pcb_poly_free(poly);
+		return -1;
+	}
+
 	pcb_add_poly_on_layer(ly, poly);
 	pcb_poly_init_clip(ly->parent.data, ly, poly);
 
-	return err;
+	return 0;
 }
 
 static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
