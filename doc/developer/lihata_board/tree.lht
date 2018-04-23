@@ -286,6 +286,20 @@ ha:lht_tree_doc {
 					}
 				}
 			}
+			ha:padstack_prototypes {
+				{type=TODO: build_data_protos}
+			}
+			ha:subc.ID {
+				{type=TODO: build_subc}
+				ver = {>=3}
+			}
+			ha:element.ID {
+				{type=TODO: build_subc_element}
+				ver = {<3}
+			}
+			ha:rat.ID {
+				{type=TODO: build_rat}
+			}
 			ha:layers {
 				{type=TODO: build_data_layers}
 			}
