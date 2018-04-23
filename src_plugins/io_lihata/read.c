@@ -1317,6 +1317,12 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_t *g;
 		char *end;
+
+		if (grp->type != LHT_HASH) {
+			iolht_error(grp, "Invalid group in layer stack: '%s' (not a hash; ignoring the group)\n", grp->name);
+			continue;
+		}
+
 		gid = strtol(grp->name, &end, 10);
 		if ((*end != '\0') || (gid < 0)) {
 			iolht_error(grp, "Invalid group id in layer stack: '%s' (not an int or negative; ignoring the group)\n", grp->name);
