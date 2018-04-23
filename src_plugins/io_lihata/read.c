@@ -130,10 +130,15 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
    objects during the load. */
 #define post_id_req(obj) vtp0_append(&post_ids, &((obj)->ID))
 
+static lht_node_t missing_ok;
+
 static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
+
+	if (nd == &missing_ok)
+		return 0;
 
 	if (nd == NULL)
 		return 0;
@@ -152,6 +157,8 @@ static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 /* Load the (duplicated) string value of a text node into res. Return 0 on success */
 static int parse_text(char **res, lht_node_t *nd)
 {
+	if (nd == &missing_ok)
+		return 0;
 	if (nd == NULL)
 		return -1;
 	if (nd->type != LHT_TEXT)
@@ -163,6 +170,8 @@ static int parse_text(char **res, lht_node_t *nd)
 /* Load a minuid from a text node into res. Return 0 on success */
 static int parse_minuid(minuid_bin_t res, lht_node_t *nd)
 {
+	if (nd == &missing_ok)
+		return 0;
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return iolht_error(nd, "expected a text node for minuid\n");
 	if (strlen(nd->data.text.value) != sizeof(minuid_str_t)-1)
@@ -176,6 +185,9 @@ static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 {
 	double tmp;
 	pcb_bool success;
+
+	if (nd == &missing_ok)
+		return 0;
 
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
@@ -194,6 +206,9 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	double tmp;
 	pcb_bool success;
 
+	if (nd == &missing_ok)
+		return 0;
+
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return iolht_error(nd, "Invalid angle type: '%d'\n", nd->type);
 
@@ -211,6 +226,9 @@ static int parse_int(int *res, lht_node_t *nd)
 	long int tmp;
 	int base = 10;
 	char *end;
+
+	if (nd == &missing_ok)
+		return 0;
 
 	if (nd == NULL)
 		return -1;
@@ -236,6 +254,9 @@ static int parse_ulong(unsigned long *res, lht_node_t *nd)
 	int base = 10;
 	char *end;
 
+	if (nd == &missing_ok)
+		return 0;
+
 	if (nd == NULL)
 		return -1;
 
@@ -257,6 +278,9 @@ static int parse_double(double *res, lht_node_t *nd)
 {
 	double tmp;
 	char *end;
+
+	if (nd == &missing_ok)
+		return 0;
 
 	if (nd == NULL)
 		return -1;
@@ -280,6 +304,9 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 	long int tmp;
 	char *end;
 
+	if (nd == &missing_ok)
+		return 0;
+
 	if (nd == NULL)
 		return -1;
 
@@ -298,6 +325,9 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 static int parse_bool(pcb_bool *res, lht_node_t *nd)
 {
 	char val[8], *end;
+
+	if (nd == &missing_ok)
+		return 0;
 
 	if (nd == NULL)
 		return -1;
@@ -328,6 +358,8 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 {
 	pcb_coord_t tmp;
 
+	if (nd == &missing_ok)
+		return 0;
 	if (nd == NULL)
 		return 0;
 	if (parse_coord(&tmp, nd) != 0)
@@ -337,9 +369,21 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 	return 0;
 }
 
+static lht_node_t *hash_get(lht_node_t *hash, const char *name, int optional)
+{
+	lht_node_t *nd = lht_dom_hash_get(hash, name);
+	if (nd != NULL)
+		return nd;
+	if (optional)
+		return &missing_ok;
+	iolht_error(hash, "Missing hash field: '%s'\n", name);
+	return NULL;
+}
+
 static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grp;
+	int err = 0;
 
 	if (nd->type != LHT_HASH)
 		return iolht_error(nd, "board meta must be a hash\n");
@@ -350,43 +394,45 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "grid");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		parse_coord(&pcb->GridOffsetX, lht_dom_hash_get(grp, "offs_x"));
-		parse_coord(&pcb->GridOffsetY, lht_dom_hash_get(grp, "offs_y"));
-		parse_coord(&pcb->Grid, lht_dom_hash_get(grp, "spacing"));
+		err |= parse_coord(&pcb->GridOffsetX, hash_get(grp, "offs_x", 1));
+		err |= parse_coord(&pcb->GridOffsetY, hash_get(grp, "offs_y", 1));
+		err |= parse_coord(&pcb->Grid, hash_get(grp, "spacing", 1));
+		if (err != 0)
+			return -1;
 	}
 
 	grp = lht_dom_hash_get(nd, "size");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		int err = 0;
-		err |= parse_coord(&pcb->MaxWidth, lht_dom_hash_get(grp, "x"));
-		err |= parse_coord(&pcb->MaxHeight, lht_dom_hash_get(grp, "y"));
-		err |= parse_coord_conf("design/poly_isle_area", lht_dom_hash_get(grp, "isle_area_nm2"));
-		err |= parse_double(&pcb->ThermScale, lht_dom_hash_get(grp, "thermal_scale"));
+		err |= parse_coord(&pcb->MaxWidth, hash_get(grp, "x", 0));
+		err |= parse_coord(&pcb->MaxHeight, hash_get(grp, "y", 0));
+		err |= parse_coord_conf("design/poly_isle_area", hash_get(grp, "isle_area_nm2", 1));
+		err |= parse_double(&pcb->ThermScale, hash_get(grp, "thermal_scale", 1));
 		if (err != 0)
-			return 01;
+			return -1;
 	}
 
 	grp = lht_dom_hash_get(nd, "drc");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		if (rdver >= 5)
 			iolht_warn(grp, 5, "Lihata board v5+ should not have drc metadata saved in board header (use the config)\n");
-		parse_coord_conf("design/bloat", lht_dom_hash_get(grp, "bloat"));
-		parse_coord_conf("design/shrink", lht_dom_hash_get(grp, "shrink"));
-		parse_coord_conf("design/min_wid", lht_dom_hash_get(grp, "min_width"));
-		parse_coord_conf("design/min_slk", lht_dom_hash_get(grp, "min_silk"));
-		parse_coord_conf("design/min_drill", lht_dom_hash_get(grp, "min_drill"));
-		parse_coord_conf("design/min_ring", lht_dom_hash_get(grp, "min_ring"));
+		err |= parse_coord_conf("design/bloat", hash_get(grp, "bloat", 1));
+		err |= parse_coord_conf("design/shrink", hash_get(grp, "shrink", 1));
+		err |= parse_coord_conf("design/min_wid", hash_get(grp, "min_width", 1));
+		err |= parse_coord_conf("design/min_slk", hash_get(grp, "min_silk", 1));
+		err |= parse_coord_conf("design/min_drill", hash_get(grp, "min_drill", 1));
+		err |= parse_coord_conf("design/min_ring", hash_get(grp, "min_ring", 1));
+		if (err != 0)
+			return 1;
 	}
 
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		int err = 0;
 		double zoom = 0.0;
 		if (rdver >= 5)
 			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
-		err |= parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
-		err |= parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
-		err |= parse_double(&zoom, lht_dom_hash_get(grp, "zoom"));
+		err |= parse_coord(&pcb->CursorX, hash_get(grp, "x", 1));
+		err |= parse_coord(&pcb->CursorY, hash_get(grp, "y", 1));
+		err |= parse_double(&zoom, hash_get(grp, "zoom", 1));
 		pcb->Zoom = (pcb_coord_t)pcb_round(zoom);
 		if (err != 0)
 			return -1;
@@ -534,6 +580,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 {
 	pcb_line_t *line;
 	unsigned char intconn = 0;
+	int err = 0;
 
 	if (ly != NULL)
 		line = pcb_line_alloc(ly);
@@ -551,12 +598,12 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 	if (rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)line, lht_dom_hash_get(obj, "thermal"));
 
-	parse_coord(&line->Thickness, lht_dom_hash_get(obj, "thickness"));
-	parse_coord(&line->Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_coord(&line->Point1.X, lht_dom_hash_get(obj, "x1"));
-	parse_coord(&line->Point1.Y, lht_dom_hash_get(obj, "y1"));
-	parse_coord(&line->Point2.X, lht_dom_hash_get(obj, "x2"));
-	parse_coord(&line->Point2.Y, lht_dom_hash_get(obj, "y2"));
+	err |= parse_coord(&line->Thickness, hash_get(obj, "thickness", 0));
+	err |= parse_coord(&line->Clearance, hash_get(obj, "clearance", 0));
+	err |= parse_coord(&line->Point1.X, hash_get(obj, "x1", 0));
+	err |= parse_coord(&line->Point1.Y, hash_get(obj, "y1", 0));
+	err |= parse_coord(&line->Point2.X, hash_get(obj, "x2", 0));
+	err |= parse_coord(&line->Point2.Y, hash_get(obj, "y2", 0));
 
 	line->Point1.X += dx;
 	line->Point2.X += dx;
@@ -571,26 +618,26 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 	if (ly != NULL)
 		pcb_add_line_on_layer(ly, line);
 
-	return 0;
+	return err;
 }
 
 static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 {
 	pcb_rat_t rat, *new_rat;
-	int tmp;
+	int tmp, err = 0;
 
 	parse_id(&rat.ID, obj, 4);
 	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, NULL, 0);
 	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	parse_coord(&rat.Point1.X, lht_dom_hash_get(obj, "x1"));
-	parse_coord(&rat.Point1.Y, lht_dom_hash_get(obj, "y1"));
-	parse_coord(&rat.Point2.X, lht_dom_hash_get(obj, "x2"));
-	parse_coord(&rat.Point2.Y, lht_dom_hash_get(obj, "y2"));
+	err |= parse_coord(&rat.Point1.X, hash_get(obj, "x1", 0));
+	err |= parse_coord(&rat.Point1.Y, hash_get(obj, "y1", 0));
+	err |= parse_coord(&rat.Point2.X, hash_get(obj, "x2", 0));
+	err |= parse_coord(&rat.Point2.Y, hash_get(obj, "y2", 0));
 
-	parse_int(&tmp, lht_dom_hash_get(obj, "lgrp1"));
+	err |= parse_int(&tmp, hash_get(obj, "lgrp1", 0));
 	rat.group1 = tmp;
-	parse_int(&tmp, lht_dom_hash_get(obj, "lgrp2"));
+	err |= parse_int(&tmp, hash_get(obj, "lgrp2", 0));
 	rat.group2 = tmp;
 
 
@@ -602,13 +649,14 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 
 	new_rat->ID = rat.ID;
 
-	return 0;
+	return err;
 }
 
 static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_arc_t *arc;
 	unsigned char intconn = 0;
+	int err = 0;
 
 	if (ly != NULL)
 		arc = pcb_arc_alloc(ly);
@@ -623,14 +671,14 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord
 	if (rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)arc, lht_dom_hash_get(obj, "thermal"));
 
-	parse_coord(&arc->Thickness, lht_dom_hash_get(obj, "thickness"));
-	parse_coord(&arc->Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_coord(&arc->X, lht_dom_hash_get(obj, "x"));
-	parse_coord(&arc->Y, lht_dom_hash_get(obj, "y"));
-	parse_coord(&arc->Width, lht_dom_hash_get(obj, "width"));
-	parse_coord(&arc->Height, lht_dom_hash_get(obj, "height"));
-	parse_angle(&arc->StartAngle, lht_dom_hash_get(obj, "astart"));
-	parse_angle(&arc->Delta, lht_dom_hash_get(obj, "adelta"));
+	err |= parse_coord(&arc->Thickness,  hash_get(obj, "thickness", 0));
+	err |= parse_coord(&arc->Clearance,  hash_get(obj, "clearance", 0));
+	err |= parse_coord(&arc->X,          hash_get(obj, "x", 0));
+	err |= parse_coord(&arc->Y,          hash_get(obj, "y", 0));
+	err |= parse_coord(&arc->Width,      hash_get(obj, "width", 0));
+	err |= parse_coord(&arc->Height,     hash_get(obj, "height", 0));
+	err |= parse_angle(&arc->StartAngle, hash_get(obj, "astart", 0));
+	err |= parse_angle(&arc->Delta,      hash_get(obj, "adelta", 0));
 
 	arc->X += dx;
 	arc->Y += dy;
@@ -638,8 +686,7 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord
 	if (ly != NULL)
 		pcb_add_arc_on_layer(ly, arc);
 
-	return 0;
-
+	return err;
 }
 
 static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
@@ -648,6 +695,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	lht_node_t *geo;
 	pcb_cardinal_t n = 0, c;
 	unsigned char intconn = 0;
+	int err = 0;
 
 	parse_id(&poly->ID, obj, 8);
 	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_POLY, &intconn, 0);
@@ -655,7 +703,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 3)
-		parse_coord(&poly->Clearance, lht_dom_hash_get(obj, "clearance"));
+		err |= parse_coord(&poly->Clearance, hash_get(obj, "clearance", 1));
 
 	if (rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)poly, lht_dom_hash_get(obj, "thermal"));
@@ -688,8 +736,8 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 			if (c > 0)
 				poly->HoleIndex[c-1] = n;
 			for(r = 0; r < cnt->data.table.rows; r++) {
-				parse_coord(&poly->Points[n].X, cnt->data.table.r[r][0]);
-				parse_coord(&poly->Points[n].Y, cnt->data.table.r[r][1]);
+				err |= parse_coord(&poly->Points[n].X, cnt->data.table.r[r][0]);
+				err |= parse_coord(&poly->Points[n].Y, cnt->data.table.r[r][1]);
 				/* a point also needs to be a box on paper, but the poly code sets X2 and Y2 to 0 in reality... */
 				poly->Points[n].X2 = poly->Points[n].Y2 = 0;
 				post_id_req(&poly->Points[n]);
@@ -701,14 +749,14 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	pcb_add_poly_on_layer(ly, poly);
 	pcb_poly_init_clip(ly->parent.data, ly, poly);
 
-	return 0;
+	return err;
 }
 
 static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_text_t *text;
 	lht_node_t *role;
-	int tmp;
+	int tmp, err = 0;
 	unsigned char intconn = 0;
 
 	role = lht_dom_hash_get(obj, "role");
@@ -726,20 +774,20 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_TEXT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&text->Attributes, intconn);
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
-	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
-	parse_int(&tmp, lht_dom_hash_get(obj, "fid"));
+	err |= parse_int(&text->Scale, hash_get(obj, "scale", 0));
+	err |= parse_int(&tmp, hash_get(obj, "fid", 0));
 	text->fid = tmp;
-	parse_int(&tmp, lht_dom_hash_get(obj, "direction"));
+	err |= parse_int(&tmp, hash_get(obj, "direction", 0));
 	text->Direction = tmp;
-	parse_coord(&text->X, lht_dom_hash_get(obj, "x"));
-	parse_coord(&text->Y, lht_dom_hash_get(obj, "y"));
-	parse_text(&text->TextString, lht_dom_hash_get(obj, "string"));
+	err |= parse_coord(&text->X, hash_get(obj, "x", 0));
+	err |= parse_coord(&text->Y, hash_get(obj, "y", 0));
+	err |= parse_text(&text->TextString, hash_get(obj, "string", 0));
 
 #warning TODO: get the font
 	if (ly != NULL)
 		pcb_add_text_on_layer(ly, text, pcb_font(PCB, text->fid, 1));
 
-	return 0;
+	return err;
 }
 
 static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *loc)
@@ -882,16 +930,17 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	err |= parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
-	err |= parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
-	err |= parse_double(&ps->rot, lht_dom_hash_get(obj, "rot"));
+	err |= parse_coord(&ps->x,    hash_get(obj, "x", 0));
+	err |= parse_coord(&ps->y,    hash_get(obj, "y", 0));
+	err |= parse_double(&ps->rot, hash_get(obj, "rot", 0));
 	tmp = 0;
-	err |= parse_int(&tmp, lht_dom_hash_get(obj, "xmirror"));
+	err |= parse_int(&tmp,        hash_get(obj, "xmirror", 1));
 	ps->xmirror = tmp;
 	tmp = 0;
-	err |= parse_int(&tmp, lht_dom_hash_get(obj, "smirror"));
+	err |= parse_int(&tmp,        hash_get(obj, "smirror", 1));
 	ps->smirror = tmp;
-	parse_coord(&ps->Clearance, lht_dom_hash_get(obj, "clearance"));
+	ps->Clearance = 0;
+	parse_coord(&ps->Clearance,   hash_get(obj, "clearance", 1));
 	ps->proto = pid;
 	if (err != 0)
 		return -1;
@@ -955,6 +1004,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	char *Name = NULL, *Number = NULL;
 	pcb_flag_t flg;
 	lht_node_t *fln;
+	int err = 0;
 
 	if (dt == NULL)
 		return -1;
@@ -962,14 +1012,14 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	warn_old_model(obj, "via", 1);
 
 	parse_flags(&flg, fln=lht_dom_hash_get(obj, "flags"), PCB_OBJ_VIA, &intconn, 1);
-	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
-	parse_coord(&Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_coord(&Mask, lht_dom_hash_get(obj, "mask"));
-	parse_coord(&DrillingHole, lht_dom_hash_get(obj, "hole"));
-	parse_coord(&X, lht_dom_hash_get(obj, "x"));
-	parse_coord(&Y, lht_dom_hash_get(obj, "y"));
-	parse_text(&Name, lht_dom_hash_get(obj, "name"));
-	parse_text(&Number, lht_dom_hash_get(obj, "number"));
+	err |= parse_coord(&Thickness,    hash_get(obj, "thickness", 0));
+	err |= parse_coord(&Clearance,    hash_get(obj, "clearance", 0));
+	err |= parse_coord(&Mask,         hash_get(obj, "mask", 1));
+	err |= parse_coord(&DrillingHole, hash_get(obj, "hole", 0));
+	err |= parse_coord(&X,            hash_get(obj, "x", 0));
+	err |= parse_coord(&Y,            hash_get(obj, "y", 0));
+	err |= parse_text(&Name,          hash_get(obj, "name", 1));
+	err |= parse_text(&Number,        hash_get(obj, "number", 1));
 
 	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
 	if (ps == NULL) {
@@ -991,7 +1041,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	if (subc_on_bottom)
 		pcb_pstk_mirror(ps, 0, 1);
 
-	return 0;
+	return err;
 }
 
 static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy, int subc_on_bottom)
@@ -1001,20 +1051,21 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_flag_t flg;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask;
 	char *Name = NULL, *Number = NULL;
+	int err = 0;
 
 	warn_old_model(obj, "pad", 2);
 
 	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PAD, &intconn, 0);
 
-	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
-	parse_coord(&Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_coord(&Mask, lht_dom_hash_get(obj, "mask"));
-	parse_coord(&X1, lht_dom_hash_get(obj, "x1"));
-	parse_coord(&Y1, lht_dom_hash_get(obj, "y1"));
-	parse_coord(&X2, lht_dom_hash_get(obj, "x2"));
-	parse_coord(&Y2, lht_dom_hash_get(obj, "y2"));
-	parse_text(&Name, lht_dom_hash_get(obj, "name"));
-	parse_text(&Number, lht_dom_hash_get(obj, "number"));
+	err |= parse_coord(&Thickness, hash_get(obj, "thickness", 0));
+	err |= parse_coord(&Clearance, hash_get(obj, "clearance", 0));
+	err |= parse_coord(&Mask,      hash_get(obj, "mask", 1));
+	err |= parse_coord(&X1,        hash_get(obj, "x1", 0));
+	err |= parse_coord(&Y1,        hash_get(obj, "y1", 0));
+	err |= parse_coord(&X2,        hash_get(obj, "x2", 0));
+	err |= parse_coord(&Y2,        hash_get(obj, "y2", 0));
+	err |= parse_text(&Name,       hash_get(obj, "name", 1));
+	err |= parse_text(&Number,     hash_get(obj, "number", 1));
 
 	p = pcb_pstk_new_compat_pad(subc->data, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)) != subc_on_bottom);
 	if (Number != NULL)
@@ -1029,7 +1080,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_attrib_compat_set_intconn(&p->Attributes, intconn);
 	parse_attributes(&p->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	return 0;
+	return err;
 }
 
 
@@ -1042,6 +1093,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	int onsld, tdir = 0, tscale = 100;
 	pcb_coord_t ox = 0, oy = 0, tx, ty;
 	pcb_text_t *txt;
+	int err = 0;
 
 	warn_old_model(obj, "element", 3);
 
@@ -1050,8 +1102,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_id(&subc->ID, obj, 8);
 	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, NULL, 0);
 	parse_attributes(&subc->Attributes, lht_dom_hash_get(obj, "attributes"));
-	parse_coord(&ox, lht_dom_hash_get(obj, "x"));
-	parse_coord(&oy, lht_dom_hash_get(obj, "y"));
+	err |= parse_coord(&ox, hash_get(obj, "x", 0));
+	err |= parse_coord(&oy, hash_get(obj, "y", 0));
 	tx = ox;
 	ty = oy;
 
@@ -1085,10 +1137,10 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 					if (strcmp(key, "desc") == 0)   pcb_attribute_put(&subc->Attributes, "footprint", val);
 					if (strcmp(key, "value") == 0)  pcb_attribute_put(&subc->Attributes, "value", val);
 					if (strcmp(key, "name") == 0)   pcb_attribute_put(&subc->Attributes, "refdes", val);
-					parse_coord(&tx, lht_dom_hash_get(n, "x"));
-					parse_coord(&ty, lht_dom_hash_get(n, "y"));
-					parse_coord(&tdir, lht_dom_hash_get(n, "direction"));
-					parse_coord(&tscale, lht_dom_hash_get(n, "scale"));
+					err |= parse_coord(&tx,     hash_get(n, "x", 0));
+					err |= parse_coord(&ty,     hash_get(n, "y", 0));
+					err |= parse_coord(&tdir,   hash_get(n, "direction", 1));
+					err |= parse_coord(&tscale, hash_get(n, "scale", 1));
 				}
 			}
 			if (strncmp(n->name, "pin.", 4) == 0)
@@ -1111,7 +1163,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 
 	pcb_subc_rebind(pcb, subc);
 
-	return 0;
+	return err;
 }
 
 static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_subc_t **subc_out)
@@ -1354,27 +1406,29 @@ static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 static int parse_data_pstk_shape_line(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	int sq;
+	int err = 0;
 
 	dst->shape = PCB_PSSH_LINE;
 
-	if (parse_coord(&dst->data.line.x1, lht_dom_hash_get(nshape, "x1")) != 0) return -1;
-	if (parse_coord(&dst->data.line.y1, lht_dom_hash_get(nshape, "y1")) != 0) return -1;
-	if (parse_coord(&dst->data.line.x2, lht_dom_hash_get(nshape, "x2")) != 0) return -1;
-	if (parse_coord(&dst->data.line.y2, lht_dom_hash_get(nshape, "y2")) != 0) return -1;
-	if (parse_coord(&dst->data.line.thickness, lht_dom_hash_get(nshape, "thickness")) != 0) return -1;
-	if (parse_int(&sq, lht_dom_hash_get(nshape, "square")) != 0) return -1;
+	err |= parse_coord(&dst->data.line.x1,        hash_get(nshape, "x1", 0));
+	err |= parse_coord(&dst->data.line.y1,        hash_get(nshape, "y1", 0));
+	err |= parse_coord(&dst->data.line.x2,        hash_get(nshape, "x2", 0));
+	err |= parse_coord(&dst->data.line.y2,        hash_get(nshape, "y2", 0));
+	err |= parse_coord(&dst->data.line.thickness, hash_get(nshape, "thickness", 0));
+	err |= parse_int(&sq,                         hash_get(nshape, "square", 0));
 	dst->data.line.square = sq;
-	return 0;
+	return err;
 }
 
 static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
+	int err = 0;
 	dst->shape = PCB_PSSH_CIRC;
 
-	if (parse_coord(&dst->data.circ.x, lht_dom_hash_get(nshape, "x")) != 0) return -1;
-	if (parse_coord(&dst->data.circ.y, lht_dom_hash_get(nshape, "y")) != 0) return -1;
-	if (parse_coord(&dst->data.circ.dia, lht_dom_hash_get(nshape, "dia")) != 0) return -1;
-	return 0;
+	err |= parse_coord(&dst->data.circ.x,   hash_get(nshape, "x", 0));
+	err |= parse_coord(&dst->data.circ.y,   hash_get(nshape, "y", 0));
+	err |= parse_coord(&dst->data.circ.dia, hash_get(nshape, "dia", 0));
+	return err;
 }
 
 static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
@@ -1544,9 +1598,9 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 	lht_dom_iterator_t it;
 	int err = 0;
 
-	parse_coord(&sym->Width, lht_dom_hash_get(nd, "width"));
-	parse_coord(&sym->Height, lht_dom_hash_get(nd, "height"));
-	parse_coord(&sym->Delta, lht_dom_hash_get(nd, "delta"));
+	err |= parse_coord(&sym->Width,  hash_get(nd, "width", 0));
+	err |= parse_coord(&sym->Height, hash_get(nd, "height", 0));
+	err |= parse_coord(&sym->Delta,  hash_get(nd, "delta", 0));
 
 	grp = lht_dom_hash_get(nd, "objects");
 	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
@@ -1554,22 +1608,22 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 		double sa, da;
 
 		if (strncmp(obj->name, "line.", 5) == 0) {
-			err |= parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
-			err |= parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
-			err |= parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
-			err |= parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
-			err |= parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+			err |= parse_coord(&x1, hash_get(obj, "x1", 0));
+			err |= parse_coord(&y1, hash_get(obj, "y1", 0));
+			err |= parse_coord(&x2, hash_get(obj, "x2", 0));
+			err |= parse_coord(&y2, hash_get(obj, "y2", 0));
+			err |= parse_coord(&th, hash_get(obj, "thickness", 0));
 			if (err != 0)
 				return -1;
 			pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
 		}
 		else if (strncmp(obj->name, "simplearc.", 10) == 0) {
-			err |= parse_coord(&x1, lht_dom_hash_get(obj, "x"));
-			err |= parse_coord(&y1, lht_dom_hash_get(obj, "y"));
-			err |= parse_coord(&r, lht_dom_hash_get(obj, "r"));
-			err |= parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
-			err |= parse_double(&sa, lht_dom_hash_get(obj, "astart"));
-			err |= parse_double(&da, lht_dom_hash_get(obj, "adelta"));
+			err |= parse_coord(&x1,  hash_get(obj, "x", 0));
+			err |= parse_coord(&y1,  hash_get(obj, "y", 0));
+			err |= parse_coord(&r,   hash_get(obj, "r", 0));
+			err |= parse_coord(&th,  hash_get(obj, "thickness", 0));
+			err |= parse_double(&sa, hash_get(obj, "astart", 0));
+			err |= parse_double(&da, hash_get(obj, "adelta", 0));
 			if (err != 0)
 				return -1;
 			pcb_font_new_arc_in_sym(sym, x1, y1, r, sa, da, th);
@@ -1605,12 +1659,13 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 {
 	lht_node_t *grp, *sym;
 	lht_dom_iterator_t it;
+	int err = 0;
 
 	if (nd->type != LHT_HASH)
 		return iolht_error(nd, "font must be a hash\n");
 
-	parse_coord(&font->MaxHeight, lht_dom_hash_get(nd, "cell_height"));
-	parse_coord(&font->MaxWidth, lht_dom_hash_get(nd, "cell_width"));
+	err |= parse_coord(&font->MaxHeight, hash_get(nd, "cell_height", 0));
+	err |= parse_coord(&font->MaxWidth,  hash_get(nd, "cell_width", 0));
 
 	grp = lht_dom_hash_get(nd, "symbols");
 
@@ -1633,7 +1688,7 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 		}
 	}
 
-	return 0;
+	return err;
 }
 
 static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
@@ -1686,6 +1741,7 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 {
 	lht_node_t *stn;
 	lht_dom_iterator_t it;
+	int err = 0;
 
 	if (nd->type != LHT_LIST)
 		return iolht_error(nd, "route styles must be a list\n");
@@ -1708,10 +1764,10 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 
 		s->via_proto = 0;
 		s->via_proto_set = 0;
-		parse_coord(&s->Thick, lht_dom_hash_get(stn, "thickness"));
-		parse_coord(&s->Diameter, lht_dom_hash_get(stn, "diameter"));
-		parse_coord(&s->Hole, lht_dom_hash_get(stn, "hole"));
-		parse_coord(&s->Clearance, lht_dom_hash_get(stn, "clearance"));
+		err |= parse_coord(&s->Thick,     hash_get(stn, "thickness", 0));
+		err |= parse_coord(&s->Diameter,  hash_get(stn, "diameter", 1));
+		err |= parse_coord(&s->Hole,      hash_get(stn, "hole", 1));
+		err |= parse_coord(&s->Clearance, hash_get(stn, "clearance", 0));
 		parse_attributes(&s->attr, lht_dom_hash_get(stn, "attributes"));
 
 		if (rdver >= 5) {
