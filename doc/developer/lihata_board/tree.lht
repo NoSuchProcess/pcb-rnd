@@ -1,5 +1,5 @@
 ha:lht_tree_doc {
-	li:roots {
+	li:roots b{
 	ha:pcb-rnd-board-v* {
 		type=ha
 		desc {
@@ -287,7 +287,62 @@ ha:lht_tree_doc {
 				}
 			}
 			ha:padstack_prototypes {
-				{type=TODO: build_data_protos}
+				type=li
+				ver = {>=4}
+				li:children {
+					ha:unused          = { valtype=n/a;   desc={placeholder for markign uunsed slot to keep slot indices for early lihata v4 }}
+					ha:ps_proto_v4.PID {
+						type=ha
+						desc={padstack prototype specification, as introduced in lihata board v4}
+						li:children {
+							ha:hdia       = { valtype=coord;   desc={hole diameter; 0 means no hole }}
+							ha:htop       = { valtype=integer; desc={hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)}}
+							ha:hbottom    = { valtype=integer; desc={hole start: copper layer index from the bottom (positive) or top (negative) copper layer (0 means bottom copper layer)}}
+							ha:plated     = { valtype=integer; desc={0=unplated hole; 1=plated hole}}
+							ha:name       = { valtype=string; ver={>=5} desc={optional user assigned prototype name}}
+							ha:shape {
+								type=li
+								desc={shape per layer type definition}
+								li:children {
+									ha:ps_shape_v4 {
+										type=ha
+										desc={shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin}
+										li:children {
+											sy:layer_mask = {/roots/layer_mask}
+											sy:combining  = {/roots/combining}
+											ha:clearance  = { valtype=coord;   desc={local, per-layer-type clearance; applied if global padstack clearance is 0 }}
+											ha:ps_poly {
+												type=li
+												desc={arbitrary convex polygon shape; contains a list of x;y coordinates }
+											}
+											ha:ps_line {
+												type=ha
+												desc={straight line shape, round or square cap}
+												li:children {
+													ha:x1        = { valtype=coord;   desc={line first endpoint, horizontal offset }}
+													ha:y1        = { valtype=coord;   desc={line first endpoint, vertical offset }}
+													ha:x2        = { valtype=coord;   desc={line second endpoint, horizontal offset }}
+													ha:y2        = { valtype=coord;   desc={line second endpoint, vertical offset }}
+													ha:thickness = { valtype=coord;   desc={width of the line }}
+													ha:square    = { valtype=integer; desc={0=round cap; 1=square cap }}
+												}
+											}
+											ha:ps_circ {
+												type=ha
+												desc={filled circle shape}
+												li:children {
+													ha:x        = { valtype=coord;   desc={center, horizontal offset }}
+													ha:y        = { valtype=coord;   desc={center, vertical offset }}
+													ha:dia      = { valtype=coord;   desc={circle diameter }}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 			ha:subc.ID {
 				{type=TODO: build_subc}
@@ -328,6 +383,12 @@ ha:lht_tree_doc {
 		li:children {
 			ha:attrib-key { valtype=string; desc={attribute value}}
 		}
+	}
+	ha:layer_mask {
+		type={TODO:build_layer_stack_flag}
+	}
+	ha:combining {
+		type={TODO:build_data_layer_comb}
 	}
 	}
 }
