@@ -292,7 +292,7 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	for(n = 0; n < ply->len; n++) {
 		if ((fld % 3) == 0)
 			gds_append_str(term_shapes, "\n       ");
-		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox), -(ply->y[n] - oy));
+		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox) * partsidesign, -(ply->y[n] - oy));
 		gds_append_str(term_shapes, tmp);
 		fld++;
 	}
@@ -325,7 +325,7 @@ static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_
 	for(n = 0; n < 4; n++) {
 		if ((fld % 3) == 0)
 			gds_append_str(term_shapes, "\n       ");
-		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x[n] - ox), -(y[n] - oy));
+		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x[n] - ox) * partsidesign, -(y[n] - oy));
 		gds_append_str(term_shapes, tmp);
 		fld++;
 	}
