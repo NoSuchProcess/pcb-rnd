@@ -1222,6 +1222,21 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
+static int validate_layer_stack(pcb_board_t *pcb, lht_node_t *loc)
+{
+	pcb_layer_id_t tmp[2];
+
+#warning layer TODO: #tbs do not require top and bottom silk to present
+	/* for now, require top and bottom silk */
+	if (pcb_layer_list_any(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
+		return iolht_error(loc, "Unsupported layer stackup: top silk missing\n");
+	if (pcb_layer_list_any(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
+		return iolht_error(loc, "Unsupported layer stackup: bottom silk missing\n");
+	if (pcb_layer_list_any(pcb, PCB_LYT_OUTLINE, tmp, 2) > 1)
+		return iolht_error(loc, "Unsupported layer stackup: multiple outline layers\n");
+	return 0;
+}
+
 static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grps, *grp, *name, *layers, *lyr, *nattr;
@@ -1299,7 +1314,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			}
 		}
 	}
-	return 0;
+	return validate_layer_stack(pcb, nd);
 }
 
 static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
@@ -1853,8 +1868,12 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	if (rdver >= 2) {
 		sub = lht_dom_hash_get(nd, "layer_stack");
-		if ((sub != NULL) && ((parse_layer_stack(pcb, sub)) != 0))
-			return -1;
+		if (sub != NULL) {
+			if (parse_layer_stack(pcb, sub) != 0)
+				return -1;
+		}
+		else
+			return validate_layer_stack(pcb, nd);
 	}
 
 	pcb_data_clip_inhibit_inc(pcb->Data);
