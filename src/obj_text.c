@@ -185,7 +185,10 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 		return (unsigned char *)text->TextString;
 
 	res = (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
-	if (*res == '\0') {
+	if (res == NULL) {
+		res = (unsigned char *)pcb_strdup("<!>");
+	}
+	else if (*res == '\0') {
 		free(res);
 		res = (unsigned char *)pcb_strdup("<?>");
 	}
