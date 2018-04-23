@@ -357,10 +357,13 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "size");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		parse_coord(&pcb->MaxWidth, lht_dom_hash_get(grp, "x"));
-		parse_coord(&pcb->MaxHeight, lht_dom_hash_get(grp, "y"));
-		parse_coord_conf("design/poly_isle_area", lht_dom_hash_get(grp, "isle_area_nm2"));
-		parse_double(&pcb->ThermScale, lht_dom_hash_get(grp, "thermal_scale"));
+		int err = 0;
+		err |= parse_coord(&pcb->MaxWidth, lht_dom_hash_get(grp, "x"));
+		err |= parse_coord(&pcb->MaxHeight, lht_dom_hash_get(grp, "y"));
+		err |= parse_coord_conf("design/poly_isle_area", lht_dom_hash_get(grp, "isle_area_nm2"));
+		err |= parse_double(&pcb->ThermScale, lht_dom_hash_get(grp, "thermal_scale"));
+		if (err != 0)
+			return 01;
 	}
 
 	grp = lht_dom_hash_get(nd, "drc");
@@ -377,13 +380,16 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
+		int err = 0;
 		double zoom = 0.0;
 		if (rdver >= 5)
 			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
-		parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
-		parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
-		parse_double(&zoom, lht_dom_hash_get(grp, "zoom"));
+		err |= parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
+		err |= parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
+		err |= parse_double(&zoom, lht_dom_hash_get(grp, "zoom"));
 		pcb->Zoom = (pcb_coord_t)pcb_round(zoom);
+		if (err != 0)
+			return -1;
 	}
 
 	return 0;
@@ -863,7 +869,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	lht_node_t *thl, *t;
 	unsigned char intconn = 0;
 	unsigned long int pid;
-	int tmp;
+	int tmp, err = 0;
 
 	parse_ulong(&pid, lht_dom_hash_get(obj, "proto"));
 	if (pcb_pstk_get_proto_(dt, pid) == NULL)
@@ -876,17 +882,19 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
-	parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
-	parse_double(&ps->rot, lht_dom_hash_get(obj, "rot"));
+	err |= parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
+	err |= parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
+	err |= parse_double(&ps->rot, lht_dom_hash_get(obj, "rot"));
 	tmp = 0;
-	parse_int(&tmp, lht_dom_hash_get(obj, "xmirror"));
+	err |= parse_int(&tmp, lht_dom_hash_get(obj, "xmirror"));
 	ps->xmirror = tmp;
 	tmp = 0;
-	parse_int(&tmp, lht_dom_hash_get(obj, "smirror"));
+	err |= parse_int(&tmp, lht_dom_hash_get(obj, "smirror"));
 	ps->smirror = tmp;
 	parse_coord(&ps->Clearance, lht_dom_hash_get(obj, "clearance"));
 	ps->proto = pid;
+	if (err != 0)
+		return -1;
 
 	thl = lht_dom_hash_get(obj, "thermal");
 	if ((thl != NULL) && (thl->type == LHT_LIST)) {
@@ -1534,6 +1542,7 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 {
 	lht_node_t *grp, *obj, *n;
 	lht_dom_iterator_t it;
+	int err = 0;
 
 	parse_coord(&sym->Width, lht_dom_hash_get(nd, "width"));
 	parse_coord(&sym->Height, lht_dom_hash_get(nd, "height"));
@@ -1545,20 +1554,24 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 		double sa, da;
 
 		if (strncmp(obj->name, "line.", 5) == 0) {
-			parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
-			parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
-			parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
-			parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
-			parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+			err |= parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
+			err |= parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
+			err |= parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
+			err |= parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
+			err |= parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+			if (err != 0)
+				return -1;
 			pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
 		}
 		else if (strncmp(obj->name, "simplearc.", 10) == 0) {
-			parse_coord(&x1, lht_dom_hash_get(obj, "x"));
-			parse_coord(&y1, lht_dom_hash_get(obj, "y"));
-			parse_coord(&r, lht_dom_hash_get(obj, "r"));
-			parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
-			parse_double(&sa, lht_dom_hash_get(obj, "astart"));
-			parse_double(&da, lht_dom_hash_get(obj, "adelta"));
+			err |= parse_coord(&x1, lht_dom_hash_get(obj, "x"));
+			err |= parse_coord(&y1, lht_dom_hash_get(obj, "y"));
+			err |= parse_coord(&r, lht_dom_hash_get(obj, "r"));
+			err |= parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+			err |= parse_double(&sa, lht_dom_hash_get(obj, "astart"));
+			err |= parse_double(&da, lht_dom_hash_get(obj, "adelta"));
+			if (err != 0)
+				return -1;
 			pcb_font_new_arc_in_sym(sym, x1, y1, r, sa, da, th);
 		}
 		else if (strncmp(obj->name, "simplepoly.", 11) == 0) {
