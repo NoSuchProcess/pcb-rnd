@@ -474,7 +474,7 @@ static void print_library(FILE * fp)
 		{
 			int n;
 			char *pid = pcb_strdup_printf("Pstk_shape_%ld", padstack->ID);
-			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, padstack->x-ox, -(padstack->y-oy));
+			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, (padstack->x-ox)*partsidesign, -(padstack->y-oy));
 
 			gds_append_str(&term_shapes, "    (padstack ");
 			gds_append_str(&term_shapes, pid);
