@@ -235,6 +235,7 @@ ha:lht_tree_doc {
 				li:children {
 					ha:padstack_ref.ID {
 						type=ha
+						ver={>=4}
 						desc { a padstack reference (instance) placed on the board (e.g. used as a via) }
 						li:children {
 							ha:proto      = { valtype=integer; desc={padstack prototype ID to use, from the parent data's proto list }}
@@ -266,8 +267,23 @@ ha:lht_tree_doc {
 							}
 						}
 					}
-					{TODO: ver>=4 lht_dom_list_append}
-					{TODO: var<4 build_pstk_pinvia}
+					ha:via.ID {
+						type=ha
+						ver={<=4}
+						desc { an old via object (loaded as padstack in the new model) }
+						li:children {
+							ha:x          = { valtype=coord;   desc={place padstack with origin at this horizontal coordinate }}
+							ha:y          = { valtype=coord;   desc={place padstack with origin at this vertical coordinate }}
+							ha:thickness  = { valtype=coord;   desc={copper shape dimension (diameter) }}
+							ha:clearance  = { valtype=coord;   desc={copper clearance around the copper shape }}
+							ha:mask       = { valtype=coord;   desc={mask cutout shape dimension (diameter) }}
+							ha:hole       = { valtype=coord;   desc={drill/hole diameter }}
+							ha:name       = { valtype=string;  desc={optional name attribute }}
+							ha:number     = { valtype=string;  desc={for a pin (or to-be-pin) this is the terminal ID }}
+							sy:attributes = {/roots/attributes}
+							sy:flags      = {/roots/flags_pinvia}
+						}
+					}
 				}
 			}
 			ha:layers {
@@ -279,6 +295,9 @@ ha:lht_tree_doc {
 			
 	}
 	ha:flags_pstk {
+		TODO
+	}
+	ha:flags_pinvia {
 		TODO
 	}
 	ha:attributes {
