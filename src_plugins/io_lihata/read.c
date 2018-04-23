@@ -1129,6 +1129,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	}
 
 	lst = lht_dom_hash_get(obj, "objects");
+	if (lst == NULL)
+		return iolht_error(obj, "Invalid element: no objects\n");
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
@@ -1156,6 +1158,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 				parse_pad(subc, n, ox, oy, onsld);
 		}
 	}
+	else
+		return iolht_error(obj, "invalid element: objects is not a list\n");
 
 #warning subc TODO: TextFlags
 	txt = pcb_subc_add_refdes_text(subc, tx, ty, tdir, tscale, onsld);
