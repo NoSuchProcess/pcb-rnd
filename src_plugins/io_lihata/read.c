@@ -1010,7 +1010,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 {
 	pcb_pstk_t *ps;
 	unsigned char intconn = 0;
-	pcb_coord_t Thickness, Clearance, Mask, DrillingHole, X, Y;
+	pcb_coord_t Thickness, Clearance, Mask = 0, DrillingHole, X, Y;
 	char *Name = NULL, *Number = NULL;
 	pcb_flag_t flg;
 	lht_node_t *fln;
@@ -1061,7 +1061,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_pstk_t *p;
 	unsigned char intconn = 0;
 	pcb_flag_t flg;
-	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask;
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask = 0;
 	char *Name = NULL, *Number = NULL;
 	int err = 0;
 
@@ -1804,6 +1804,8 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 
 		s->via_proto = 0;
 		s->via_proto_set = 0;
+		s->Hole = 0;
+		s->Diameter = 0;
 		err |= parse_coord(&s->Thick,     hash_get(stn, "thickness", 0));
 		err |= parse_coord(&s->Diameter,  hash_get(stn, "diameter", 1));
 		err |= parse_coord(&s->Hole,      hash_get(stn, "hole", 1));
