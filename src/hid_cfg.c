@@ -549,10 +549,13 @@ void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 {
 	char *end;
 	va_list ap;
+	int len, maxlen = sizeof(hid_cfg_error_shared);
 
-	end = hid_cfg_error_shared + sprintf(hid_cfg_error_shared, "Error in lihata node %s:%d.%d:", node->file_name, node->line, node->col);
+	len = pcb_snprintf(hid_cfg_error_shared, maxlen, "Error in lihata node %s:%d.%d:", node->file_name, node->line, node->col);
+	end = hid_cfg_error_shared + len;
+	maxlen -= len;
 	va_start(ap, fmt);
-	end += vsprintf(end, fmt, ap);
+	end += pcb_vsnprintf(end, maxlen, fmt, ap);
 	va_end(ap);
 	pcb_message(PCB_MSG_ERROR, hid_cfg_error_shared);
 }
