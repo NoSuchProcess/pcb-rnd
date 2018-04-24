@@ -808,6 +808,10 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 
 	for(n = lht_dom_first(&it, sect); n != NULL; n = lht_dom_next(&it)) {
 		nl = strlen(n->name);
+		if (nl >= (sizeof(path) - (pathe - path))) {
+			pcb_message(PCB_MSG_ERROR, "Can not merge conf patch: name too long: '%s'\n", n->name);
+			return -1;
+		}
 		memcpy(pathe, n->name, nl);
 		namee = pathe+nl;
 		*namee = '\0';
