@@ -875,7 +875,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	}
 	else {
 		/* real */
-	ly->name = pcb_strdup(grp->name);
+		ly->name = pcb_strdup(grp->name);
 		parse_bool(&ly->meta.real.vis, lht_dom_hash_get(grp, "visible"));
 		if (pcb != NULL) {
 			int grp_id;
