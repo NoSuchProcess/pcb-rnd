@@ -28,7 +28,6 @@
 		(the bug is still there - the problem with preview widget was that it exposed the correct part of the board, but was showing the opposite side. The patch changed expose area, but the viewport is wrong (see bug_files/drc2.lht). Before the patch there would be only the blue line shown in DRC preview, because it touches the proper DRC error area. [wojciechk8])
 + BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouted: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
-+ BUG: shape() dialog opens offscreen vertically on a 1360x768 screen (x230 laptop), dialog is resizable [report: Miloh] 
 ? BUG: ratlines are not updated after subc rotate [wojciechk8]
 	?> can not be reproduced. It just works. Please be much more specific: include a test case and reproduction recipe
 - BUG: subc terminals should be drawn at the end [report: Ade]
