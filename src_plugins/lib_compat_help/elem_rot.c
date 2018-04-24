@@ -101,6 +101,8 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
 
+	memset(pinfound, 0, sizeof(pinfound));
+
 	if (!autodetect) {
 		if (pcb_subc_get_origin(subc, &ox, &oy) != 0)
 			pcb_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc origin for %s\n", subc->refdes);
