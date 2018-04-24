@@ -1298,18 +1298,33 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
-static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
+static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 {
 	pcb_layer_id_t tmp[2];
 
 #warning layer TODO: #tbs do not require top and bottom silk to present
 	/* for now, require top and bottom silk */
-	if (pcb_layer_list_any(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
-		return iolht_error(loc, "Unsupported layer stackup: top silk missing\n");
-	if (pcb_layer_list_any(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
-		return iolht_error(loc, "Unsupported layer stackup: bottom silk missing\n");
-	if (pcb_layer_list_any(pcb, PCB_LYT_OUTLINE, tmp, 2) > 1)
+	if (pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
+		return iolht_error(loc, "Unsupported layer stackup: top silk layer missing\n");
+	if (pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
+		return iolht_error(loc, "Unsupported layer stackup: bottom silk layer missing\n");
+	if (pcb_layer_list(pcb, PCB_LYT_OUTLINE, tmp, 2) > 1)
 		return iolht_error(loc, "Unsupported layer stackup: multiple outline layers\n");
+	return 0;
+}
+
+static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
+{
+	pcb_layergrp_id_t tmp[2];
+
+#warning layer TODO: #tbs do not require top and bottom silk to present
+	/* for now, require top and bottom silk */
+	if (pcb_layergrp_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
+		return iolht_error(loc, "Unsupported layer stackup: top silk layer group missing\n");
+	if (pcb_layergrp_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
+		return iolht_error(loc, "Unsupported layer stackup: bottom silk layer group missing\n");
+	if (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, tmp, 2) > 1)
+		return iolht_error(loc, "Unsupported layer stackup: multiple outline layer groups\n");
 	return 0;
 }
 
@@ -1963,17 +1978,24 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 			if (parse_layer_stack(pcb, sub) != 0)
 				return -1;
 		}
-		else
-			return validate_layer_stack_grp(pcb, nd);
+		else if (validate_layer_stack_grp(pcb, nd) != 0)
+			return -1;
 	}
 
 	pcb_data_clip_inhibit_inc(pcb->Data);
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, pcb->Data, sub, NULL)) == NULL)) {
+	if (sub == NULL) {
+		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+		return iolht_error(nd, "Lihata board without data\n");
+	}
+	if (parse_data(pcb, pcb->Data, sub, NULL) == NULL) {
 		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
 		return -1;
 	}
+
+	if (validate_layer_stack_lyr(pcb, sub) != 0)
+		return -1;
 
 	sub = lht_dom_hash_get(nd, "styles");
 	if ((sub != NULL) && (parse_styles(pcb->Data, &pcb->RouteStyle, sub) != 0)) {
