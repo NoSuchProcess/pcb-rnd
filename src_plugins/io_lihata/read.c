@@ -841,8 +841,10 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	lht_node_t *n, *lst, *ncmb;
 	lht_dom_iterator_t it;
 	int bound = (subc_parent != NULL);
-
 	pcb_layer_t *ly = &dt->Layer[layer_id];
+
+	if (layer_id >= PCB_MAX_LAYER)
+		return iolht_error(grp, "Board has more layers than supported by this compilation of pcb-rnd (%d)\nIf this is a valid board, please increase PCB_MAX_LAYER and recompile.\n", PCB_MAX_LAYER);
 	if (layer_id >= dt->LayerN)
 		dt->LayerN = layer_id+1;
 
@@ -913,7 +915,8 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, 
 
 	for(id = 0, n = lht_dom_first(&it, grp); n != NULL; id++, n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			parse_data_layer(pcb, dt, n, id, subc_parent);
+			if (parse_data_layer(pcb, dt, n, id, subc_parent) < 0)
+				return -1;
 
 	return 0;
 }
