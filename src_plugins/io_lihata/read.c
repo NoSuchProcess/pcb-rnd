@@ -1216,6 +1216,9 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	unsigned char intconn = 0;
 	int n;
 
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "subc.ID must be a hash\n");
+
 	parse_id(&sc->ID, obj, 5);
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&sc->Attributes, intconn);
