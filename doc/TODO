@@ -20,8 +20,6 @@
 + BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
 + feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
-+ BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
-       place a rect, cut to buffer, convert to subc, undo -> hace
 + BUG: changing clearance to polygon with {e g c} on padstack should have priority over lines [report: wojciechk8]
 	+> bug_files/ps_clearance.lht, press {e g c} on the left padstack -> the line changes clearance instead of the padstack
 + BUG: changing clearance to polygon with {e g c} on "via padstacks" doesn't work (ChangeClearSize() neither) [report: wojciechk8]
