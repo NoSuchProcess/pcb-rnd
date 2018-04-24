@@ -582,6 +582,9 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 	unsigned char intconn = 0;
 	int err = 0;
 
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "line.ID must be a hash\n");
+
 	if (ly != NULL)
 		line = pcb_line_alloc(ly);
 	else
@@ -659,6 +662,9 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord
 	unsigned char intconn = 0;
 	int err = 0;
 
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "arc.ID must be a hash\n");
+
 	if (ly != NULL)
 		arc = pcb_arc_alloc(ly);
 	else
@@ -697,6 +703,9 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	pcb_cardinal_t n = 0, c;
 	unsigned char intconn = 0;
 	int err = 0;
+
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "polygon.ID must be a hash\n");
 
 	parse_id(&poly->ID, obj, 8);
 	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_POLY, &intconn, 0);
@@ -766,6 +775,9 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	lht_node_t *role;
 	int tmp, err = 0;
 	unsigned char intconn = 0;
+
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "text.ID must be a hash\n");
 
 	role = lht_dom_hash_get(obj, "role");
 
@@ -929,6 +941,9 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	unsigned char intconn = 0;
 	unsigned long int pid;
 	int tmp, err = 0;
+
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "pstk.ID must be a hash\n");
 
 	parse_ulong(&pid, lht_dom_hash_get(obj, "proto"));
 	if (pcb_pstk_get_proto_(dt, pid) == NULL)
