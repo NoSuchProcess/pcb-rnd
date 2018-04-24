@@ -1298,7 +1298,7 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
-static int validate_layer_stack(pcb_board_t *pcb, lht_node_t *loc)
+static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
 {
 	pcb_layer_id_t tmp[2];
 
@@ -1396,7 +1396,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			}
 		}
 	}
-	return validate_layer_stack(pcb, nd);
+	return validate_layer_stack_grp(pcb, nd);
 }
 
 static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
@@ -1964,7 +1964,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 				return -1;
 		}
 		else
-			return validate_layer_stack(pcb, nd);
+			return validate_layer_stack_grp(pcb, nd);
 	}
 
 	pcb_data_clip_inhibit_inc(pcb->Data);
