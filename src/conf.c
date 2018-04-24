@@ -1349,6 +1349,13 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 			return -1;
 		}
 		nn = lht_dom_node_alloc(ty, basename);
+		if (cwd->type != LHT_HASH) {
+			lht_node_t *parent = cwd->parent;
+			pcb_message(PCB_MSG_ERROR, "Expected HASH conf subtree '%s' (in path '%s'); cleaning up broken conf, check your config sources!\n", cwd->name, path);
+			lht_tree_del(cwd);
+			free(path);
+			return -1;
+		}
 		if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
 			lht_dom_node_free(nn);
 			free(path);
