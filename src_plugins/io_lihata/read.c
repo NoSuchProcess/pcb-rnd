@@ -189,8 +189,11 @@ static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 	if (nd == &missing_ok)
 		return 0;
 
-	if ((nd == NULL) || (nd->type != LHT_TEXT))
-		return -1;
+	if (nd == NULL)
+		return iolht_error(nd, "Missing coord value\n");
+
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "Invalid coord type: '%d'\n", nd->type);
 
 	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success)
@@ -209,7 +212,10 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	if (nd == &missing_ok)
 		return 0;
 
-	if ((nd == NULL) || (nd->type != LHT_TEXT))
+	if (nd == NULL)
+		return iolht_error(nd, "Missing angle\n");
+
+	if (nd->type != LHT_TEXT)
 		return iolht_error(nd, "Invalid angle type: '%d'\n", nd->type);
 
 	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
@@ -258,7 +264,7 @@ static int parse_ulong(unsigned long *res, lht_node_t *nd)
 		return 0;
 
 	if (nd == NULL)
-		return -1;
+		return iolht_error(nd, "Missing unsigned long field\n");
 
 	if (nd->type != LHT_TEXT)
 		return iolht_error(nd, "Invalid integer node type (ulong): '%d'\n", nd->type);
@@ -283,7 +289,7 @@ static int parse_double(double *res, lht_node_t *nd)
 		return 0;
 
 	if (nd == NULL)
-		return -1;
+		return iolht_error(nd, "Missing floating point number\n");
 
 	if (nd->type != LHT_TEXT)
 		return iolht_error(nd, "Invalid floating point number type: '%d'\n", nd->type);
@@ -308,7 +314,7 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 		return 0;
 
 	if (nd == NULL)
-		return -1;
+		return iolht_error(nd, "Missing ID node\n");
 
 	tmp = strtol(nd->name + prefix_len, &end, 10);
 	if (*end != '\0')
@@ -330,7 +336,10 @@ static int parse_bool(pcb_bool *res, lht_node_t *nd)
 		return 0;
 
 	if (nd == NULL)
-		return -1;
+		return iolht_error(nd, "Missing bool\n");
+
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "Invalid bool type: '%d'\n", nd->type);
 
 	strncpy(val, nd->data.text.value, sizeof(val)-1);
 	val[sizeof(val)-1] = '\0';
