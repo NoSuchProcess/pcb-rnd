@@ -802,6 +802,11 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 	char *namee;
 	int nl, ppl = strlen(path_prefix), res = 0;
 
+	if (ppl >= sizeof(path)) {
+		pcb_message(PCB_MSG_ERROR, "Can not merge conf patch: name too long: '%s'\n", path_prefix);
+		return -1;
+	}
+
 	memcpy(path, path_prefix, ppl);
 	path[ppl] = '/';
 	pathe = path + ppl + 1;
