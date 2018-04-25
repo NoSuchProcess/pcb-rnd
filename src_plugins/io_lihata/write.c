@@ -503,6 +503,8 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 
 	if ((wrver >= 3) && (poly->Clearance > 0))
 		lht_dom_hash_put(obj, build_textf("clearance", CFMT, poly->Clearance));
+	else
+		lht_dom_hash_put(obj, dummy_node("clearance"));
 
 	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
 	lht_dom_hash_put(obj, geo);
