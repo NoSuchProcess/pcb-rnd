@@ -65,7 +65,6 @@
 /* ---------------------------------------------------------------------------
  * some forward declarations
  */
-static pcb_bool pcb_term_find_name_ppt(const char *, const char *, pcb_connection_t *, pcb_bool);
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
@@ -124,7 +123,6 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 /* ---------------------------------------------------------------------------
  * Find a particular terminal from an element/subc name and pin/pad/terminal number
  */
-#warning padstack TODO: once pins and pads are gone, move this to obj_term.c
 static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
 	pcb_any_obj_t *obj;
