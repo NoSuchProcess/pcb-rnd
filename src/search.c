@@ -484,18 +484,20 @@ static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	return pcb_false;
 }
 
-#warning subc TODO: this is not how it is done - PCB_FLAG_ONSOLDER is not used for subc
-#define PCB_FRONT(o) ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == conf_core.editor.show_solder_side)
 
 static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 {
 	pcb_subc_t *subc = (pcb_subc_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
+	int subc_on_bottom = 0, front;
+
+	pcb_subc_get_side(subc, &subc_on_bottom);
+	front = subc_on_bottom == conf_core.editor.show_solder_side;
 
 	TEST_OBJST(i->objst, i->req_flag, g, subc, subc);
 
-	if ((PCB_FRONT(subc) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &subc->BoundingBox)) {
+	if ((front || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &subc->BoundingBox)) {
 		/* use the subcircuit with the smallest bounding box */
 		newarea = (subc->BoundingBox.X2 - subc->BoundingBox.X1) * (double) (subc->BoundingBox.Y2 - subc->BoundingBox.Y1);
 		if (newarea < i->area) {
