@@ -121,15 +121,15 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 }
 
 /* ---------------------------------------------------------------------------
- * Find a particular terminal from an element/subc name and pin/pad/terminal number
+ * Find a particular terminal from an subc name and terminal number
  */
-static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
+static pcb_bool pcb_term_find_name_term(const char *refdes, const char *termid, pcb_connection_t *conn, pcb_bool Same)
 {
 	pcb_any_obj_t *obj;
 
 	/* first check for subcircuits; this is the only one thing we'll need to do
 	   once elements are removed */
-	obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, ElementName, PinNum, Same, (pcb_subc_t **)&conn->ptr1, &conn->group);
+	obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, refdes, termid, Same, (pcb_subc_t **)&conn->ptr1, &conn->group);
 	if (obj != NULL) {
 		conn->obj = obj;
 		pcb_obj_center(obj, &conn->X, &conn->Y);
@@ -145,27 +145,27 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same)
 {
 	int j;
-	char ElementName[256];
-	char PinNum[256];
+	char refdes[256];
+	char termid[256];
 
-	if (ParseConnection(entry->ListEntry, ElementName, PinNum))
+	if (ParseConnection(entry->ListEntry, refdes, termid))
 		return pcb_false;
-	for (j = 0; PinNum[j] != '\0'; j++);
+	for (j = 0; termid[j] != '\0'; j++);
 	if (j == 0) {
-		pcb_message(PCB_MSG_ERROR, _("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), ElementName);
+		pcb_message(PCB_MSG_ERROR, _("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), refdes);
 		badnet = pcb_true;
 	}
 	else {
-		if (pcb_term_find_name_ppt(ElementName, PinNum, conn, Same))
+		if (pcb_term_find_name_term(refdes, termid, conn, Same))
 			return pcb_true;
 		if (Same)
 			return pcb_false;
-		if (PinNum[j - 1] < '0' || PinNum[j - 1] > '9') {
+		if (termid[j - 1] < '0' || termid[j - 1] > '9') {
 			pcb_message(PCB_MSG_WARNING, "WARNING! Pin number ending with '%c'"
-							" encountered in netlist file\n" "Probably a bad netlist file format\n", PinNum[j - 1]);
+							" encountered in netlist file\n" "Probably a bad netlist file format\n", termid[j - 1]);
 		}
 	}
-	pcb_message(PCB_MSG_WARNING, _("Can't find %s pin %s called for in netlist.\n"), ElementName, PinNum);
+	pcb_message(PCB_MSG_WARNING, _("Can't find %s pin %s called for in netlist.\n"), refdes, termid);
 	return pcb_false;
 }
 
