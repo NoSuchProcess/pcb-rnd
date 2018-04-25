@@ -62,9 +62,6 @@
 #define TRIEDFIRST 0x1
 #define BESTFOUND 0x2
 
-/* ---------------------------------------------------------------------------
- * some forward declarations
- */
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
@@ -91,13 +88,11 @@ static pcb_layergrp_id_t rat_padstack_side(pcb_pstk_t *padstack)
 	return Sgrp; /* ultimate fallback */
 }
 
-/* ---------------------------------------------------------------------------
- * parse a connection description from a string
+/* parse a connection description from a string
  * puts the subcircuit name in the string and the pin number in
  * the number.  If a valid connection is found, it returns the
  * number of characters processed from the string, otherwise
- * it returns 0
- */
+ * it returns 0 */
 static pcb_bool ParseConnection(const char *InString, char *ElementName, char *PinNum)
 {
 	int i, j;
@@ -120,9 +115,7 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * Find a particular terminal from an subc name and terminal number
- */
+/* Find a particular terminal from an subc name and terminal number */
 static pcb_bool pcb_term_find_name_term(const char *refdes, const char *termid, pcb_connection_t *conn, pcb_bool Same)
 {
 	pcb_any_obj_t *obj;
@@ -296,10 +289,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	return Wantlist;
 }
 
-/*
- * copy all connections from one net into another
- * and then remove the first net from its netlist
- */
+/* copy all connections from one net into another and then remove the first net from its netlist */
 static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *DestNet)
 {
 	pcb_connection_t *conn;
@@ -511,12 +501,9 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 	PCB_END_LOOP;
 }
 
-/* ---------------------------------------------------------------------------
- * Determine existing interconnections of the net and gather into sub-nets
- *
- * initially the netlist has each connection in its own individual net
- * afterwards there can be many fewer nets with multiple connections each
- */
+/* Determine existing interconnections of the net and gather into sub-nets.
+ * Initially the netlist has each connection in its own individual net
+ * afterwards there can be many fewer nets with multiple connections each */
 static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
 	pcb_net_t *a, *b;
@@ -550,16 +537,12 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 	return Warned;
 }
 
-/* ---------------------------------------------------------------------------
- * Draw a rat net (tree) having the shortest lines
- * this also frees the subnet memory as they are consumed
- *
+/* Draw a rat net (tree) having the shortest lines
+ * this also frees the subnet memory as they are consumed.
  * Note that the Netl we are passed is NOT the main netlist - it's the
  * connectivity for ONE net.  It represents the CURRENT connectivity
  * state for the net, with each Netl->Net[N] representing one
- * copper-connected subset of the net.
- */
-
+ * copper-connected subset of the net. */
 static pcb_bool
 DrawShortestRats(pcb_netlist_t *Netl,
 								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
@@ -850,10 +833,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 	return result;
 }
 
-/*
- * Check to see if a particular name is the name of an already existing rats
- * line
- */
+/* Check to see if a particular name is the name of an already existing rats line */
 static int rat_used(char *name)
 {
 	if (name == NULL)
@@ -990,9 +970,7 @@ char *pcb_connection_name(pcb_any_obj_t *obj)
 	return name;
 }
 
-/* ---------------------------------------------------------------------------
- * get next slot for a connection, allocates memory if necessary
- */
+/* get next slot for a connection, allocates memory if necessary */
 pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *Net)
 {
 	pcb_connection_t *con = Net->Connection;
