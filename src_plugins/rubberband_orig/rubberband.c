@@ -1345,10 +1345,10 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	rubber_ctx_t *rbnd = user_data;
 	pcb_line_t *line = argv[1].d.p;
 	int * constrained = argv[2].d.p;
-	int * dx1 = argv[3].d.p;	/* in/out */
-	int * dy1 = argv[4].d.p;  /* in/out */
-	int * dx2 = argv[5].d.p;	/* out */
-	int * dy2 = argv[6].d.p;	/* out */
+	pcb_coord_t * dx1 = argv[3].d.p;	/* in/out */
+	pcb_coord_t * dy1 = argv[4].d.p;	/* in/out */
+	pcb_coord_t * dx2 = argv[5].d.p;	/* out */
+	pcb_coord_t * dy2 = argv[6].d.p;	/* out */
 	pcb_line_t *rub1, *rub2;
 	int rub1end, rub2end;
 	pcb_fline_t fmain, frub1, frub2;

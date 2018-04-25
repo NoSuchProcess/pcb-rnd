@@ -264,8 +264,8 @@ void pcb_xordraw_movecopy(void)
 			int constrained = 0;
 			pcb_line_t line;
 			
-			int dx1 = dx, dx2 = dx;
-			int dy1 = dy, dy2 = dy;
+			pcb_coord_t dx1 = dx, dx2 = dx;
+			pcb_coord_t dy1 = dy, dy2 = dy;
 			
 			memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
