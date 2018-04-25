@@ -93,24 +93,24 @@ static pcb_layergrp_id_t rat_padstack_side(pcb_pstk_t *padstack)
  * the number.  If a valid connection is found, it returns the
  * number of characters processed from the string, otherwise
  * it returns 0 */
-static pcb_bool ParseConnection(const char *InString, char *ElementName, char *PinNum)
+static pcb_bool ParseConnection(const char *InString, char *refdes, char *termid)
 {
 	int i, j;
 
 	/* copy element name portion */
 	for (j = 0; InString[j] != '\0' && InString[j] != '-'; j++)
-		ElementName[j] = InString[j];
+		refdes[j] = InString[j];
 	if (InString[j] == '-') {
-		for (i = j; i > 0 && ElementName[i - 1] >= 'a'; i--);
-		ElementName[i] = '\0';
+		for (i = j; i > 0 && refdes[i - 1] >= 'a'; i--);
+		refdes[i] = '\0';
 		for (i = 0, j++; InString[j] != '\0'; i++, j++)
-			PinNum[i] = InString[j];
-		PinNum[i] = '\0';
+			termid[i] = InString[j];
+		termid[i] = '\0';
 		return pcb_false;
 	}
 	else {
-		ElementName[j] = '\0';
-		pcb_message(PCB_MSG_ERROR, _("Bad net-list format encountered near: \"%s\"\n"), ElementName);
+		refdes[j] = '\0';
+		pcb_message(PCB_MSG_ERROR, _("Bad net-list format encountered near: \"%s\"\n"), refdes);
 		return pcb_true;
 	}
 }
