@@ -345,12 +345,59 @@ ha:lht_tree_doc {
 				}
 			}
 			ha:subc.ID {
-				{type=TODO: build_subc}
+				type=ha
+				desc={an instance (full copy) of a subcircuit}
 				ver = {>=3}
+				li:children {
+					ha:uid        = { valtype=minuid;   desc={UID assigned by the user to track subc history }}
+					sy:attributes = {/roots/attributes}
+					sy:flags      = {/roots/flags_subc}
+					sy:data       = {/roots/data }
+				}
 			}
 			ha:element.ID {
-				{type=TODO: build_subc_element}
+				type=ha
+				desc={an instance (full copy) of an obsolete element footprint}
 				ver = {<3}
+				li:children {
+					ha:x          = { valtype=coord;   desc={element origin (diamond), horizontal offset }}
+					ha:y          = { valtype=coord;   desc={element origin (diamond), vertical offset }}
+					sy:attributes = {/roots/attributes}
+					sy:flags      = {/roots/flags_element}
+					ha:objects {
+						type=li
+						desc={list of special objects that make up the element; lines and arcs are always on a silk layer}
+						li:children {
+							sy:line.ID  = {/roots/data/layers/NAME/objects/line.ID}
+							sy:arc.ID   = {/roots/data/layers/NAME/objects/arc.ID}
+							sy:desc.ID  = {/roots/data/layers/NAME/objects/text.ID}
+							sy:name.ID  = {/roots/data/layers/NAME/objects/text.ID}
+							sy:value.ID = {/roots/data/layers/NAME/objects/text.ID}
+							ha:pad.ID {
+								type=ha
+								desc={SMD pad emulated using a line object; becomes a rectangle (but watch out for the cap-extended length!) when the square flag is set}
+								li:children {
+									ha:x1        = { valtype=coord;   desc={line first endpoint, horizontal offset }}
+									ha:y1        = { valtype=coord;   desc={line first endpoint, vertical offset }}
+									ha:x2        = { valtype=coord;   desc={line second endpoint, horizontal offset }}
+									ha:y2        = { valtype=coord;   desc={line second endpoint, vertical offset }}
+									ha:thickness = { valtype=coord;   desc={width of the line}}
+									ha:clearance = { valtype=coord;   desc={clearance around the line}}
+									ha:mask      = { valtype=coord;   desc={TODO}}
+									ha:name      = { valtype=string;  desc={symbolic name of the pad}}
+									ha:number    = { valtype=string;  desc={"pin number" for the netlist}}
+									sy:attributes = {/roots/attributes}
+									sy:flags      = {/roots/flags_pad}
+								}
+							}
+							ha:pin.ID {
+								type=ha
+								desc={thru-hole pin; emulated as an old-style via }
+								sy:children = {/roots/data/via.ID/children}
+							}
+						}
+					}
+				}
 			}
 			ha:rat.ID {
 				type=ha
@@ -375,6 +422,12 @@ ha:lht_tree_doc {
 		TODO
 	}
 	ha:flags_pstk {
+		TODO
+	}
+	ha:flags_subc {
+		TODO
+	}
+	ha:flags_element {
 		TODO
 	}
 	ha:flags_pinvia {
