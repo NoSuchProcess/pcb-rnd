@@ -361,7 +361,7 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 		for(go = pcb_poly_vect_first(it, &x, &y); go; go = pcb_poly_vect_next(it, &x, &y)) {
 			if ((fld % 3) == 0)
 				gds_append_str(term_shapes, "\n       ");
-			pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x - ox) * partsidesign, y - oy);
+			pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x - ox) * partsidesign, -(y - oy));
 			gds_append_str(term_shapes, tmp);
 			fld++;
 		}
