@@ -378,7 +378,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 		pcb_poly_it_t it;
 		pcb_polyarea_t *pa;
 
-		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, ox, oy);
+		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, 0, 0);
 
 		gds_append_str(term_shapes, "    (padstack ");
 		gds_append_str(term_shapes, padstack);
