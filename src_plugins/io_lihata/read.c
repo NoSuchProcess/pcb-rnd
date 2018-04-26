@@ -534,7 +534,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 			long my_types = pcb_object_flagbits[n].object_types | ((rdver <= 4) ? pcb_object_flagbits[n].compat_types : 0);
 			if (my_types & object_type) {
 				pcb_bool b;
-				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
+				if ((parse_bool(&b, hash_get(fn, pcb_object_flagbits[n].name, 1)) == 0) && b)
 					PCB_FLAG_SET(pcb_object_flagbits[n].mask, &fh);
 			}
 		}
@@ -900,10 +900,10 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	else {
 		/* real */
 		ly->name = pcb_strdup(grp->name);
-		parse_bool(&ly->meta.real.vis, lht_dom_hash_get(grp, "visible"));
+		parse_bool(&ly->meta.real.vis, hash_get(grp, "visible", 1));
 		if (pcb != NULL) {
 			int grp_id;
-			parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
+			parse_int(&grp_id, hash_get(grp, "group", 0));
 			dt->Layer[layer_id].meta.real.grp = grp_id;
 	/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->name, grp_id);*/
 		}
