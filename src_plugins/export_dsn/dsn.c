@@ -446,7 +446,6 @@ static void print_library(FILE * fp)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_coord_t ox, oy;
-		pcb_point_t centroid;
 		int partside, partsidesign, subc_on_solder = 0;
 		pcb_layer_type_t lyt_side;
 
@@ -456,8 +455,6 @@ static void print_library(FILE * fp)
 		lyt_side = subc_on_solder ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 
 		pcb_subc_get_origin(subc, &ox, &oy);
-		centroid.X = ox;
-		centroid.Y = oy;
 
 		fprintf(fp, "    (image %ld\n", subc->ID); /* map every subc by ID */
 		PCB_POLY_COPPER_LOOP(subc->data);
