@@ -1,6 +1,6 @@
 all: tree.html tree.txt
 
-tree.html: render.sh tree.lht
+tree.html: render.sh *.lht
 	./render.sh > tree.html
 
 tree.txt: tree.html

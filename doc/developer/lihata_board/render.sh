@@ -1,6 +1,9 @@
 #!/bin/sh
 
-lhtflat < tree.lht | awk -F "[\t]" '
+for n in *.lht
+do
+	lhtflat < $n
+done | awk -F "[\t]" '
 BEGIN {
 	q="\""
 }
@@ -76,7 +79,6 @@ function gen_sub(root, level,    v, n, N, node)
 
 function gen_main(path,    v, n, N)
 {
-	
 	print "<h1 id=" q NAME[path] q ">"  DATA[path "/type"] ":" NAME[path] "</h1>"
 #	print "<p>"
 #	print qstrip(DATA[path "/desc"])

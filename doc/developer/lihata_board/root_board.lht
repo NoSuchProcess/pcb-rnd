@@ -1,0 +1,229 @@
+ha:lht_tree_doc { li:roots {
+
+	ha:pcb-rnd-board-v* {
+		type=ha
+		desc {
+			The full, self-contained description of a printed circuit board.
+			This is the root of a board .lht file. The * after the v in the name
+			is an integer which is the format version.
+		}
+		li:children {
+			ha:meta {
+				type=ha
+				desc { Any meta-data that won't directly turn into physical material (e.g. copper). }
+				li:children {
+					ha:board_name { valtype=string; desc={User assigned name of the board}}
+					ha:grid {
+						type=ha
+						desc { User interface last grid settings }
+						li:children {
+							ha:offs_x { valtype=coord; desc={grid origin: X offset from 0;0}}
+							ha:offs_y { valtype=coord; desc={grid origin: Y offset from 0;0}}
+							ha:spacing { valtype=coord; desc={distance between two grid points both in X and Y directions }}
+						}
+					}
+					ha:size {
+						type=ha
+						desc { object size related settings }
+						li:children {
+							ha:x { valtype=coord; desc={drawing area size X (width)}}
+							ha:y { valtype=coord; desc={drawing area size Y (height)}}
+							ha:isle_area_nm2 { valtype=double; desc={remove polygon islands smaller than this value, specified in mm<sup>2</sup>}}
+							ha:thermal_scale { valtype=double; desc={scale all thermals on the board by this factor}}
+						}
+					}
+					ha:drc {
+						type=ha
+						desc { design rule checker settings for the old DRC }
+						li:children {
+							ha:bloat { valtype=coord; desc={Minimum copper spacing}}
+							ha:shrink { valtype=coord; desc={Minimum overlap between validly touching copper objects}}
+							ha:min_width { valtype=coord; desc={Minimum copper width}}
+							ha:min_silk { valtype=coord; desc={Minimum silk width}}
+							ha:min_drill { valtype=coord; desc={Minimum drill diameter}}
+							ha:min_ring { valtype=coord; desc={Minimum annular ring width}}
+						}
+					}
+					ha:cursor {
+						type=ha
+						desc { obsolete cursor/view state }
+						li:children {
+							ha:x { valtype=coord; obs=1; desc={last positin, X (horizontal)}}
+							ha:y { valtype=coord; obs=1; desc={last positin, Y (horizontal)}}
+							ha:zoom { valtype=double; obs=1; desc={last view zoom factor}}
+						}
+					}
+				}
+			}
+			ha:layer_stack {
+				type=ha
+				desc { physical layer stack information: geometry and properties of physical layers }
+				li:children {
+					ha:groups {
+						type=li
+						desc { ordered list of physical layers from top to bottom }
+						li:children {
+							ha:INTEGER {
+								li:name_patterns={p={[0-9]+}}
+								type=ha
+								desc { a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node }
+								li:children {
+									ha:name { valtype=string; desc={user assigned name of the layer group, e.g. "top copper"}}
+									ha:type {
+										type=ha
+										desc { a flag-list of layer type flag bits }
+										li:children {
+											ha:top        { valtype=flag; desc={location: top side}}
+											ha:bottom     { valtype=flag; desc={location: bottom side}}
+											ha:intern     { valtype=flag; desc={location: internal}}
+											ha:logical    { valtype=flag; desc={location: logical (not in the actual stackup)}}
+											ha:copper     { valtype=flag; desc={material: copper}}
+											ha:silk       { valtype=flag; desc={material: silk}}
+											ha:mask       { valtype=flag; desc={material: mask}}
+											ha:paste      { valtype=flag; desc={material: paste}}
+											ha:outline    { valtype=flag; desc={"material": router path}}
+											ha:rat        { valtype=flag; desc={virtual: rat lines}}
+											ha:invis      { valtype=flag; desc={virtual: invisible }}
+											ha:assy       { valtype=flag; desc={virtual: assembly drawing }}
+											ha:fab        { valtype=flag; desc={virtual: fab drawing }}
+											ha:plateddrill { valtype=flag; desc={drills: plated }}
+											ha:unplateddrill { valtype=flag; desc={drills: unplated }}
+											ha:cross-section { valtype=flag; desc={virtual: cross section drawing }}
+											ha:substrate  { valtype=flag; desc={material: substrate or insulator}}
+											ha:misc       { valtype=flag; desc={virtual: virtual misc layer}}
+											ha:virtual    { valtype=flag; desc={if set, the layer is not a physical layer but a drawing or documentation}}
+										}
+									}
+									ha:layers {
+										type=li
+										desc { ordered list of logical layer IDs hosted by this layer group }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			ha:font {
+				type=ha
+				desc { font kit: all fonts used on the board }
+				ha:FONT-ID {
+					type=ha
+					li:name_patterns={p={geda_pcb}; p={[0-9]+}}
+					desc { the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below }
+					li:children {
+						ha:cell_height { valtype=coord; desc={height of the tallest glyph}}
+						ha:cell_width { valtype=coord; desc={width of the widest glyph}}
+						ha:id { valtype=integer; desc={unique font ID within the fontkit; fonts are referenced by ID}}
+						ha:name { valtype=string; desc={user specified, user readable font name}}
+						ha:symbols {
+							type=ha
+							desc { a collections of glyphs availbale in the font }
+							li:children {
+								ha:CHARACTER {
+									type=ha
+									li:name_patterns={p={.}}
+									desc { Description of a glyph (symbol). Node name is a signel ASCII character or is of format &xx where xx is a hex digit of the ASCII code of the character. Characters that must use the hex version are: codes below 33 or over 126, &, #, {, \}, /, :, ;, =, \\, :}
+									li:children {
+										ha:height { valtype=coord; desc={height of the glyph}}
+										ha:width { valtype=coord; desc={width of the glyph}}
+										ha:delta { valtype=coord; desc={TODO}}
+										ha:objects {
+											type=li
+											{TODO: link line and describe simple objects}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			ha:styles {
+				type=ha
+				desc { routing styles hash: collection of all available routing syles }
+				ha:ROUTE-STYLE-NAME {
+					type=ha
+					desc { routing style: a collection of pen settings }
+					li:children {
+						ha:thickness   { valtype=coord; desc={default trace thickness (affects lines and arcs)}}
+						ha:clearance   { valtype=coord; desc={default clearance (affects lines, arcs and polygons)}}
+						ha:diameter    { valtype=coord; ver={<=5} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
+						ha:hole        { valtype=coord; ver={<=5} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
+						ha:via_proto   { valtype=integer; ver={>5} desc={padstack prototype ID used for placing new vias}}
+						sy:attributes  {/roots/attributes}
+					}
+				}
+			}
+			ha:netlists {
+				type=ha
+				desc { all availale netlists }
+				li:children {
+					ha:netlist {
+						type=li
+						desc { the input netlist (as seen in the last netlist import, a.k.a. forward annotation) }
+						li:children {
+							ha:NETNAME {
+								type=ha
+								desc { a network }
+								li:children {
+									ha:conn {
+										type=li
+										desc { list of terminals connceted to the network }
+										li:children {
+											ha:diameter    { valtype=string; desc={refdes-terminal}}
+										}
+									}
+									sy:attributes_v5p  {/roots/attributes}
+								}
+							}
+						}
+					}
+					ha:netlist_patch {
+						type=li
+						desc { a list of intentional deviations from the input netlist, a.k.a. material for back annotation }
+						li:children {
+							ha:net_info {
+								type=li
+								desc { describe the current state of a net, as seen on the input }
+								li:children {
+									ha:net   { valtype=string; desc={net name; first item on the list, only once}}
+									ha:term  { valtype=string; desc={terminal name; zero or more items starting from the second item}}
+								}
+							}
+							ha:add_conn {
+								type=ha
+								desc { the 'as built' network requires a new conncetion to be created during the back annotation }
+								li:children {
+									ha:net   { valtype=string; desc={net name the terminal should be added to}}
+									ha:term  { valtype=string; desc={terminal name}}
+								}
+							}
+							ha:del_conn {
+								type=ha
+								desc { the 'as built' network requires an existing conncetion to be removed during the back annotation }
+								li:children {
+									ha:net   { valtype=string; desc={net name the terminal should be removed from}}
+									ha:term  { valtype=string; desc={terminal name}}
+								}
+							}
+							ha:change_attrib {
+								type=ha
+								desc { the 'as built' network requires an attribute to be set or changed }
+								li:children {
+									ha:net   { valtype=string; desc={net name whose attribute needs to be changed }}
+									ha:key   { valtype=string; desc={key (name) of the attribute}}
+									ha:val   { valtype=string; desc={new value of the attribute}}
+								}
+							}
+						}
+					}
+				}
+			}
+			sy:conf = {/roots/conf}
+			sy:data = {/comm/data}
+			sy:attributes = {/comm/attributes}
+		}
+	}
+
+}}
