@@ -39,7 +39,6 @@
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: rubber band: bug_files/rubber_diag.lht: move the diagonal line (drag&drop) - the xor drawn lines are broken [report: Igor2]
 
 eagle:
 	- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
@@ -236,6 +235,7 @@ opengl:
 - lihata v6:
 	- remove pcb_board_t Zoom/x/y
 	- remove via geometry from route style
+	- remove real layer visible flag (UI is always reset)
 
 
 3. Long term ===============================================================================
