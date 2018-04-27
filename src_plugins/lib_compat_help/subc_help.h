@@ -4,11 +4,6 @@
 #include "obj_subc.h"
 #include "layer.h"
 
-/* Look up a layer by lyt and comb (and name, if req_name_match is true);
-   if not found and alloc is true, allocate a new layer with the given name.
-   Return NULL on error. */
-pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, pcb_bool req_name_match);
-
 /* Create dynamic text on the top silk layer (creates the layer if needed).
    Returns the text object, or NULL on error. Does not set any subc
    attribute. The refdes version is just a shorthand for the pattern. */

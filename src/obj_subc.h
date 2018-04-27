@@ -31,6 +31,7 @@
 #include <libminuid/libminuid.h>
 #include <genht/htsp.h>
 #include "obj_common.h"
+#include "layer.h"
 #include "global_typedefs.h"
 
 
@@ -90,6 +91,11 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc);
 
 /* Do the initial global bindings of subc to pcb (rtree links) */
 void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc);
+
+/* Look up a layer by lyt and comb (and name, if req_name_match is true);
+   if not found and alloc is true, allocate a new layer with the given name.
+   Return NULL on error. */
+pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, pcb_bool req_name_match);
 
 #include "rtree.h"
 pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl);

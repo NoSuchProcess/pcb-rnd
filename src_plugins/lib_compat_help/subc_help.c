@@ -26,50 +26,6 @@
 
 #include "subc_help.h"
 
-pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, pcb_bool req_name_match)
-{
-	int n;
-
-	/* look for an existing layer with matching lyt and comb first */
-	for(n = 0; n < sc->data->LayerN; n++) {
-		if (sc->data->Layer[n].meta.bound.type != lyt)
-			continue;
-		if ((comb != -1) && (sc->data->Layer[n].comb != comb))
-			continue;
-		if (req_name_match && (strcmp(sc->data->Layer[n].name, name) != 0))
-			continue;
-		return &sc->data->Layer[n];
-	}
-
-	if (!alloc)
-		return NULL;
-
-	if (sc->data->LayerN == PCB_MAX_LAYER)
-		return NULL;
-
-	n = sc->data->LayerN++;
-	if (name == NULL)
-		name = "";
-
-	if (comb == -1) {
-		/* "any" means default, for the given layer type */
-		if (lyt & PCB_LYT_MASK)
-			comb = PCB_LYC_SUB;
-		else
-			comb = 0; /* positive, manual */
-	}
-
-	memset(&sc->data->Layer[n], 0, sizeof(sc->data->Layer[n]));
-	sc->data->Layer[n].name = pcb_strdup(name);
-	sc->data->Layer[n].comb = comb;
-	sc->data->Layer[n].is_bound = 1;
-	sc->data->Layer[n].meta.bound.type = lyt;
-	sc->data->Layer[n].parent.data = sc->data;
-	sc->data->Layer[n].parent_type = PCB_PARENT_DATA;
-	sc->data->Layer[n].type = PCB_OBJ_LAYER;
-	return &sc->data->Layer[n];
-}
-
 pcb_text_t *pcb_subc_add_dyntex(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale, pcb_bool bottom, const char *pattern)
 {
 	pcb_layer_type_t side = bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
