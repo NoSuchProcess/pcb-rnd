@@ -400,9 +400,28 @@ static int pcb_act_MoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
-					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
+				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+					pcb_layer_t *target = CURRENT;
+					pcb_any_obj_t *o = ptr2;
+
+					/* if object is part of a subc (must be a floater!), target layer
+					   shall be within the subc too else we would move out the object from
+					   under the subc to under the board as an unwanted side effect */
+					if ((o->parent_type == PCB_PARENT_LAYER) && (o->parent.layer->parent.data->parent_type == PCB_PARENT_SUBC)) {
+						pcb_subc_t *subc= o->parent.layer->parent.data->parent.subc;
+						pcb_layer_type_t lyt = pcb_layer_flags_(CURRENT);
+						int old_len = subc->data->LayerN;
+						target = pcb_subc_get_layer(subc, lyt, CURRENT->comb, 1, CURRENT->name, 0);
+						if (target == NULL) {
+							pcb_message(PCB_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
+							break;
+						}
+						if (old_len != subc->data->LayerN)
+							pcb_subc_rebind(PCB, subc); /* had to alloc a new layer */
+					}
+					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, target, pcb_false))
 						pcb_board_set_changed_flag(pcb_true);
+				}
 				break;
 			}
 
