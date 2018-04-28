@@ -874,12 +874,11 @@ void DrawSubc(pcb_subc_t *sc)
 void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx, pcb_subc_op_undo_t batch_undo)
 {
 	int n;
-	uundo_serial_t last;
 
 	switch(batch_undo) {
 		case PCB_SUBCOP_UNDO_SUBC:
-			pcb_undo_inc_serial();
-			last = pcb_undo_serial();
+			pcb_undo_freeze_serial();
+			pcb_undo_freeze_add();
 			break;
 		case PCB_SUBCOP_UNDO_BATCH:
 			pcb_undo_inc_serial();
@@ -950,7 +949,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	DrawSubc(sc);
 
 	switch(batch_undo) {
-		case PCB_SUBCOP_UNDO_SUBC: pcb_undo_truncate_from(last); break;
+		case PCB_SUBCOP_UNDO_SUBC: pcb_undo_unfreeze_add(); pcb_undo_unfreeze_serial(); break;
 		case PCB_SUBCOP_UNDO_BATCH: pcb_undo_unfreeze_serial(); break;
 	}
 

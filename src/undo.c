@@ -151,7 +151,9 @@ int pcb_redo(pcb_bool draw)
 	}
 
 	pcb_undo_lock(); /* lock undo module to prevent from loops */
+	uundo_freeze_add(&pcb_uundo);
 	res = uundo_redo(&pcb_uundo);
+	uundo_unfreeze_add(&pcb_uundo);
 	pcb_undo_unlock();
 
 	if (res != 0)
@@ -276,5 +278,16 @@ void pcb_undo_freeze_serial(void)
 void pcb_undo_unfreeze_serial(void)
 {
 	uundo_unfreeze_serial(&pcb_uundo);
+}
+
+
+void pcb_undo_freeze_add(void)
+{
+	uundo_freeze_add(&pcb_uundo);
+}
+
+void pcb_undo_unfreeze_add(void)
+{
+	uundo_unfreeze_add(&pcb_uundo);
 }
 
