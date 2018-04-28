@@ -33,7 +33,6 @@
 - BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
-+ BUG: open pcb-rnd, wl (window/library place a subc), to ( tool/orient rotate the whole subc once), uu, ur, uu (undo/undo undo/repeat cycle these) pcb-rnd segfaults on bad undo stack number [report:Miloh]
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
