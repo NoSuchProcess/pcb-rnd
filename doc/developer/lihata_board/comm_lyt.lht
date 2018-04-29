@@ -2,6 +2,11 @@ ha:lht_tree_doc { ha:comm {
 
 	ha:layer_mask {
 		type={TODO:build_layer_stack_flag}
+		li:children {
+			ha:top    { valtype=flag; desc={located on the top side of the board, physically accessible}}
+			ha:bottom { valtype=flag; desc={located on the bottom side of the board, physically accessible}}
+			ha:intern { valtype=flag; desc={located inside the board, nt physically accessible}}
+		}
 	}
 	ha:combining {
 		type={TODO:build_data_layer_comb}

@@ -100,7 +100,7 @@ function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 	print "<tr><td> " nm " <td> " vt " <td> " vr " <td> <a href=" q sy_href(dst) q ">" dsc " -&gt; </a>"
 }
 
-function gen_sub(root, level,    v, n, N, node)
+function gen_sub(root, level,    v, n, N, node, dst_children)
 {
 	v = children(N, root "/children")
 	for(n = 1; n <= v; n++) {
@@ -115,8 +115,19 @@ function gen_sub(root, level,    v, n, N, node)
 		}
 		else if ((node "/children") in NAME) {
 			tbl_entry(node, level)
-			gen_sub(node, level+1)
+			if (TYPE[node "/children"] == "symlink") {
+				dst_children = DATA[node "/children"]
+				sub("/children$", "", dst_children)
+				gen_sub(dst_children, level+1)
+			}
+			else {
+				gen_sub(node, level+1)
+			}
 		}
+		else if (TYPE[node] == "hash")
+			tbl_entry(node, level)
+		else
+			print "Unhandled child (unknown type): " node > "/dev/stderr"
 	}
 }
 
