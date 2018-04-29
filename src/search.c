@@ -1263,7 +1263,12 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 
 int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
 {
-	int res = pcb_search_obj_by_location_(Type, Result1, Result2, Result3, X, Y, Radius, 0);
+	int res;
+
+	if (conf_core.editor.lock_names)
+		Type &= ~ PCB_OBJ_FLOATER;
+
+	res = pcb_search_obj_by_location_(Type, Result1, Result2, Result3, X, Y, Radius, 0);
 	if ((res != PCB_OBJ_VOID) && (res != PCB_OBJ_SUBC))
 		return res;
 
