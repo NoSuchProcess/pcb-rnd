@@ -160,7 +160,7 @@ function gen_sub(root, level,    v, n, N, node, dst_children)
 
 function gen_main(path,    v, n, N)
 {
-	print "<h1 id=" q path q ">"  DATA[path "/type"] ":" NAME[path] "</h1>"
+	print "<h3 id=" q path q ">"  DATA[path "/type"] ":" NAME[path] "</h3>"
 #	print "<p>"
 #	print qstrip(DATA[path "/desc"])
 	print "<p>"
