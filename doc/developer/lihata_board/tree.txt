@@ -1,0 +1,272 @@
+File format root nodes
+
+Each table below describes the full tree of one of the pcb-rnd file formats, from the root.
+
+ha:pcb-rnd-board-v*
+
+type:name           value  ver description
+ha:pcb-rnd-board-v*            The full, self-contained description of a printed circuit board. This is the root of a board .lht file. The * after the v in the name is an integer which is the format version.
+ ha:meta                       Any meta-data that won't directly turn into physical material (e.g. copper).
+  board_name        string     User assigned name of the board
+  ha:grid                      User interface last grid settings
+   offs_x           coord      grid origin: X offset from 0;0
+   offs_y           coord      grid origin: Y offset from 0;0
+   spacing          coord      distance between two grid points both in X and Y directions
+  ha:size                      object size related settings
+   x                coord      drawing area size X (width)
+   y                coord      drawing area size Y (height)
+   isle_area_nm2    double     remove polygon islands smaller than this value, specified in mm^2
+   thermal_scale    double     scale all thermals on the board by this factor
+  ha:drc                       design rule checker settings for the old DRC
+   bloat            coord      Minimum copper spacing
+   shrink           coord      Minimum overlap between validly touching copper objects
+   min_width        coord      Minimum copper width
+   min_silk         coord      Minimum silk width
+   min_drill        coord      Minimum drill diameter
+   min_ring         coord      Minimum annular ring width
+  ha:cursor                    obsolete cursor/view state
+   x                coord      last positin, X (horizontal)
+   y                coord      last positin, Y (horizontal)
+   zoom             double     last view zoom factor
+ ha:layer_stack                physical layer stack information: geometry and properties of physical layers
+  li:groups                    ordered list of physical layers from top to bottom
+   ha:INTEGER                  a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node
+    name            string     user assigned name of the layer group, e.g. "top copper"
+    ha:type                    a flag-list of layer type flag bits
+     top            flag       location: top side
+     bottom         flag       location: bottom side
+     intern         flag       location: internal
+     logical        flag       location: logical (not in the actual stackup)
+     copper         flag       material: copper
+     silk           flag       material: silk
+     mask           flag       material: mask
+     paste          flag       material: paste
+     outline        flag       "material": router path
+     rat            flag       virtual: rat lines
+     invis          flag       virtual: invisible
+     assy           flag       virtual: assembly drawing
+     fab            flag       virtual: fab drawing
+     plateddrill    flag       drills: plated
+     unplateddrill  flag       drills: unplated
+     cross-section  flag       virtual: cross section drawing
+     substrate      flag       material: substrate or insulator
+     misc           flag       virtual: virtual misc layer
+     virtual        flag       if set, the layer is not a physical layer but a drawing or documentation
+    li:layers                  ordered list of logical layer IDs hosted by this layer group
+ ha:font                       font kit: all fonts used on the board
+ ha:styles                     routing styles hash: collection of all available routing syles
+ ha:netlists                   all availale netlists
+  li:netlist                   the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
+   ha:NETNAME                  a network
+    li:conn                    list of terminals connceted to the network
+     diameter       string     refdes-terminal
+    ha:attributes          >=5 a hash of attribute key=value pairs
+     attrib-key     string     attribute value
+  li:netlist_patch             a list of intentional deviations from the input netlist, a.k.a. material for back annotation
+   li:net_info                 describe the current state of a net, as seen on the input
+    net             string     net name; first item on the list, only once
+    term            string     terminal name; zero or more items starting from the second item
+   ha:add_conn                 the 'as built' network requires a new conncetion to be created during the back annotation
+    net             string     net name the terminal should be added to
+    term            string     terminal name
+   ha:del_conn                 the 'as built' network requires an existing conncetion to be removed during the back annotation
+    net             string     net name the terminal should be removed from
+    term            string     terminal name
+   ha:change_attrib            the 'as built' network requires an attribute to be set or changed
+    net             string     net name whose attribute needs to be changed
+    key             string     key (name) of the attribute
+    val             string     new value of the attribute
+ conf                          ->
+ ha:data                       Layers and global objects of the board ->
+ ha:attributes                 a hash of attribute key=value pairs
+  attrib-key        string     attribute value
+
+:conf
+
+type:name  value ver description
+conf              
+
+Common subtrees
+
+Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees.
+
+ha:data
+
+type:name               value    ver description
+ha:data                              Layers and global objects of the board
+ li:objects                          List of global (non-layer/multi-layer) objects
+  ha:padstack_ref.ID             >=4 a padstack reference (instance) placed on the board (e.g. used as a via)
+   proto                integer      padstack prototype ID to use, from the parent data's proto list
+   x                    coord        place padstack with origin at this horizontal coordinate
+   y                    coord        place padstack with origin at this vertical coordinate
+   clearance            coord        global clearance; if non-zero, overrides local (per shape) clearance
+   rot                  angle        rotation angle in degrees
+   xmirror              integer      0 or 1; if 1, mirror all shapes over the x (horizontal) axis (so that y coords are flipped)
+   smirror              integer      0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")
+   ha:attributes                     a hash of attribute key=value pairs
+    attrib-key          string       attribute value
+   flags_pstk                     
+   li:thermal                        list of thermal shapes, per layer
+    li:LAYERID                       integer layer ID the thermal affects; each word is a boolean flag that is either present on the list or is missing; only one shape may be present
+     on                 none         thermal is present on this layer; if not present, all other thermal flags are ignored on this layer
+     diag               none         thermal graphics is not axis aligned but diagonal (rotated by 45 degrees)
+     round              none         shape: rounded edge fingers
+     sharp              none         shape: sharp edge fingers
+     solid              none         shape: no thermal relief, solid connection without clearance
+     noshape            none         shape: special: omit copper shape of the padstack on this layer
+  ha:via.ID                      <=4 an old via object (loaded as padstack in the new model)
+   x                    coord        place padstack with origin at this horizontal coordinate
+   y                    coord        place padstack with origin at this vertical coordinate
+   thickness            coord        copper shape dimension (diameter)
+   clearance            coord        copper clearance around the copper shape
+   mask                 coord        mask cutout shape dimension (diameter)
+   hole                 coord        drill/hole diameter
+   name                 string       optional name attribute
+   number               string       for a pin (or to-be-pin) this is the terminal ID
+   ha:attributes                     a hash of attribute key=value pairs
+    attrib-key          string       attribute value
+   flags_pinvia                   
+ li:layers                           ordered list of layers; v1 required the order to be top-bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non-bound) layers have attributes)
+  ha:NAME                            a logical layer
+   lid                  integer  >=2 layer ID
+   visible              integer      only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)
+   group                integer      only in real (non-boud) layers: "parent" layer group ID
+   color                string   >=5 layer color on UI, in #rrggbb format
+   stack_offs           integer      only in bound layers: match offset e.g. for internal copper layers
+   ha:type                           only for bound layers: try to bind to this type of layer on the host board
+    top                 flag         located on the top side of the board, physically accessible
+    bottom              flag         located on the bottom side of the board, physically accessible
+    intern              flag         located inside the board, nt physically accessible
+   combining                     >=2 layer combination (compositing) flags
+    sub                 flag         draw in negative
+   ha:attributes                     a hash of attribute key=value pairs
+    attrib-key          string       attribute value
+   li:objects                        list of drawing primitives put on this layer
+    ha:line.ID                       round cap line
+     x1                 coord        line first endpoint, horizontal offset
+     y1                 coord        line first endpoint, vertical offset
+     x2                 coord        line second endpoint, horizontal offset
+     y2                 coord        line second endpoint, vertical offset
+     thickness          coord        width of the line
+     clearance          coord        copper clearance around the object
+     ha:attributes                   a hash of attribute key=value pairs
+      attrib-key        string       attribute value
+     flags_line                   
+     ha:thermal_heavy                optional thermal flags for heavy terminals
+      attrib-key        string       attribute value
+    ha:arc.ID                        round cap elliptic arc (only width==height is fully supported at the moment)
+     x                  coord        center, X coord
+     y                  coord        center, Y coord
+     width              coord        radius (? TODO) in X direction
+     height             coord        radius (? TODO) in Y direction
+     thickness          coord        width of the pen the arc is drawn with
+     clearance          coord        copper clearance around the object
+     astart             angle        start angle
+     adelta             angle        delta angle
+     ha:attributes                   a hash of attribute key=value pairs
+      attrib-key        string       attribute value
+     flags_arc                    
+     ha:thermal_heavy                optional thermal flags for heavy terminals
+      attrib-key        string       attribute value
+    ha:polygon.ID                    polygon, as drawn (unclipped)
+     clearance          coord    >=3 copper clearance around the object
+     ha:attributes                   a hash of attribute key=value pairs
+      attrib-key        string       attribute value
+     flags_polygon                
+     ha:thermal_heavy                optional thermal flags for heavy terminals
+      attrib-key        string       attribute value
+     li:geometry                     first item is the outer contour, subsequent, optional items are holes
+      contour           coordtbl     2 column table of x;y coords for the outer contour
+      hole              coordtbl     2 column table of x;y coords for a hole
+    ha:text.ID                       single line text object
+     x                  coord        placement: X coord
+     y                  coord        placement: Y coord
+     role               string       when part of an old element, determines which of the three hardwired text object role is used (footprint, refdes or value)
+     string             string       text string (payload)
+     fid                integer      font ID
+     scale              integer      text size scale in %
+     direction          integer      rotation in 90 degree steps (0 is horizontal)
+     ha:attributes                   a hash of attribute key=value pairs
+      attrib-key        string       attribute value
+     flags_text                   
+ li:padstack_prototypes          >=4
+  unused                n/a          placeholder for markign uunsed slot to keep slot indices for early lihata v4
+  ha:ps_proto_v4.PID                 padstack prototype specification, as introduced in lihata board v4
+   hdia                 coord        hole diameter; 0 means no hole
+   htop                 integer      hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)
+   hbottom              integer      hole start: copper layer index from the bottom (positive) or top (negative) copper layer (0 means bottom copper layer)
+   plated               integer      0=unplated hole; 1=plated hole
+   name                 string   >=5 optional user assigned prototype name
+   li:shape                          shape per layer type definition
+    ha:ps_shape_v4                   shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are
+                                     relative to padstack origin
+     ha:layer_mask                   layer type and location
+      top               flag         located on the top side of the board, physically accessible
+      bottom            flag         located on the bottom side of the board, physically accessible
+      intern            flag         located inside the board, nt physically accessible
+     combining                       layer compositing match
+      sub               flag         draw in negative
+     clearance          coord        local, per-layer-type clearance; applied if global padstack clearance is 0
+     li:ps_poly                      arbitrary convex polygon shape; contains a list of x;y coordinates
+     ha:ps_line                      straight line shape, round or square cap
+      x1                coord        line first endpoint, horizontal offset
+      y1                coord        line first endpoint, vertical offset
+      x2                coord        line second endpoint, horizontal offset
+      y2                coord        line second endpoint, vertical offset
+      thickness         coord        width of the line
+      square            integer      0=round cap; 1=square cap
+     ha:ps_circ                      filled circle shape
+      x                 coord        center, horizontal offset
+      y                 coord        center, vertical offset
+      dia               coord        circle diameter
+ ha:subc.ID                      >=3 an instance (full copy) of a subcircuit
+  uid                   minuid       UID assigned by the user to track subc history
+  ha:attributes                      a hash of attribute key=value pairs
+   attrib-key           string       attribute value
+  flags_subc                      
+  ha:data                            Layers and global objects of the board ->
+ ha:element.ID                   <3  an instance (full copy) of an obsolete element footprint
+  x                     coord        element origin (diamond), horizontal offset
+  y                     coord        element origin (diamond), vertical offset
+  ha:attributes                      a hash of attribute key=value pairs
+   attrib-key           string       attribute value
+  flags_element                   
+  li:objects                         list of special objects that make up the element; lines and arcs are always on a silk layer
+   ha:line.ID                        round cap line ->
+   ha:arc.ID                         round cap elliptic arc (only width==height is fully supported at the moment) ->
+   ha:text.ID                        single line text object ->
+   ha:pad.ID                         SMD pad emulated using a line object; becomes a rectangle (but watch out for the cap-extended length!) when the square flag is set
+    x1                  coord        line first endpoint, horizontal offset
+    y1                  coord        line first endpoint, vertical offset
+    x2                  coord        line second endpoint, horizontal offset
+    y2                  coord        line second endpoint, vertical offset
+    thickness           coord        width of the line
+    clearance           coord        clearance around the line
+    mask                coord        TODO
+    name                string       symbolic name of the pad
+    number              string       "pin number" for the netlist
+    ha:attributes                    a hash of attribute key=value pairs
+     attrib-key         string       attribute value
+    flags_pad                     
+   ha:pin.ID                         thru-hole pin; emulated as an old-style via
+    x                   coord        place padstack with origin at this horizontal coordinate
+    y                   coord        place padstack with origin at this vertical coordinate
+    thickness           coord        copper shape dimension (diameter)
+    clearance           coord        copper clearance around the copper shape
+    mask                coord        mask cutout shape dimension (diameter)
+    hole                coord        drill/hole diameter
+    name                string       optional name attribute
+    number              string       for a pin (or to-be-pin) this is the terminal ID
+    ha:attributes                    a hash of attribute key=value pairs
+     attrib-key         string       attribute value
+    flags_pinvia                  
+ ha:rat.ID                           global rat line
+  x1                    coord        line first endpoint, horizontal offset
+  y1                    coord        line first endpoint, vertical offset
+  x2                    coord        line second endpoint, horizontal offset
+  y2                    coord        line second endpoint, vertical offset
+  lgrp1                 integer      first endpoint's layer group ID
+  lgrp2                 integer      second endpoint's layer group ID
+  ha:attributes                      a hash of attribute key=value pairs
+   attrib-key           string       attribute value
+  flags_line                      

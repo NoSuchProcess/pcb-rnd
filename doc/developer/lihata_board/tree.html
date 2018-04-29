@@ -1,0 +1,279 @@
+
+<html>
+<body>
+
+<h2> File format root nodes </h2>
+<p>Each table below describes the full tree of one of the pcb-rnd file formats, from the root.
+<h1 id="/lht_tree_doc/roots/pcb-rnd-board-v*">ha:pcb-rnd-board-v*</h1>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><td> ha:pcb-rnd-board-v* <td> &nbsp; <td> &nbsp; <td>     The full, self-contained description of a printed circuit board.    This is the root of a board .lht file. The * after the v in the name    is an integer which is the format version.   
+<tr><td> &nbsp;ha:meta <td> &nbsp; <td> &nbsp; <td>  Any meta-data that won't directly turn into physical material (e.g. copper). 
+<tr><td> &nbsp;&nbsp;board_name <td> string <td> &nbsp; <td> User assigned name of the board
+<tr><td> &nbsp;&nbsp;ha:grid <td> &nbsp; <td> &nbsp; <td>  User interface last grid settings 
+<tr><td> &nbsp;&nbsp;&nbsp;offs_x <td> coord <td> &nbsp; <td> grid origin: X offset from 0;0
+<tr><td> &nbsp;&nbsp;&nbsp;offs_y <td> coord <td> &nbsp; <td> grid origin: Y offset from 0;0
+<tr><td> &nbsp;&nbsp;&nbsp;spacing <td> coord <td> &nbsp; <td> distance between two grid points both in X and Y directions 
+<tr><td> &nbsp;&nbsp;ha:size <td> &nbsp; <td> &nbsp; <td>  object size related settings 
+<tr><td> &nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> drawing area size X (width)
+<tr><td> &nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> drawing area size Y (height)
+<tr><td> &nbsp;&nbsp;&nbsp;isle_area_nm2 <td> double <td> &nbsp; <td> remove polygon islands smaller than this value, specified in mm<sup>2</sup>
+<tr><td> &nbsp;&nbsp;&nbsp;thermal_scale <td> double <td> &nbsp; <td> scale all thermals on the board by this factor
+<tr><td> &nbsp;&nbsp;ha:drc <td> &nbsp; <td> &nbsp; <td>  design rule checker settings for the old DRC 
+<tr><td> &nbsp;&nbsp;&nbsp;bloat <td> coord <td> &nbsp; <td> Minimum copper spacing
+<tr><td> &nbsp;&nbsp;&nbsp;shrink <td> coord <td> &nbsp; <td> Minimum overlap between validly touching copper objects
+<tr><td> &nbsp;&nbsp;&nbsp;min_width <td> coord <td> &nbsp; <td> Minimum copper width
+<tr><td> &nbsp;&nbsp;&nbsp;min_silk <td> coord <td> &nbsp; <td> Minimum silk width
+<tr><td> &nbsp;&nbsp;&nbsp;min_drill <td> coord <td> &nbsp; <td> Minimum drill diameter
+<tr><td> &nbsp;&nbsp;&nbsp;min_ring <td> coord <td> &nbsp; <td> Minimum annular ring width
+<tr><td> &nbsp;&nbsp;ha:cursor <td> &nbsp; <td> &nbsp; <td>  obsolete cursor/view state 
+<tr><td> &nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> last positin, X (horizontal)
+<tr><td> &nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> last positin, Y (horizontal)
+<tr><td> &nbsp;&nbsp;&nbsp;zoom <td> double <td> &nbsp; <td> last view zoom factor
+<tr><td> &nbsp;ha:layer_stack <td> &nbsp; <td> &nbsp; <td>  physical layer stack information: geometry and properties of physical layers 
+<tr><td> &nbsp;&nbsp;li:groups <td> &nbsp; <td> &nbsp; <td>  ordered list of physical layers from top to bottom 
+<tr><td> &nbsp;&nbsp;&nbsp;ha:INTEGER <td> &nbsp; <td> &nbsp; <td>  a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;name <td> string <td> &nbsp; <td> user assigned name of the layer group, e.g. "top copper"
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:type <td> &nbsp; <td> &nbsp; <td>  a flag-list of layer type flag bits 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> location: top side
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> location: bottom side
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> location: internal
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logical <td> flag <td> &nbsp; <td> location: logical (not in the actual stackup)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copper <td> flag <td> &nbsp; <td> material: copper
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silk <td> flag <td> &nbsp; <td> material: silk
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mask <td> flag <td> &nbsp; <td> material: mask
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paste <td> flag <td> &nbsp; <td> material: paste
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outline <td> flag <td> &nbsp; <td> "material": router path
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rat <td> flag <td> &nbsp; <td> virtual: rat lines
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;invis <td> flag <td> &nbsp; <td> virtual: invisible 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assy <td> flag <td> &nbsp; <td> virtual: assembly drawing 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fab <td> flag <td> &nbsp; <td> virtual: fab drawing 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plateddrill <td> flag <td> &nbsp; <td> drills: plated 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unplateddrill <td> flag <td> &nbsp; <td> drills: unplated 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cross-section <td> flag <td> &nbsp; <td> virtual: cross section drawing 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;misc <td> flag <td> &nbsp; <td> virtual: virtual misc layer
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;virtual <td> flag <td> &nbsp; <td> if set, the layer is not a physical layer but a drawing or documentation
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;li:layers <td> &nbsp; <td> &nbsp; <td>  ordered list of logical layer IDs hosted by this layer group 
+<tr><td> &nbsp;ha:font <td> &nbsp; <td> &nbsp; <td>  font kit: all fonts used on the board 
+<tr><td> &nbsp;ha:styles <td> &nbsp; <td> &nbsp; <td>  routing styles hash: collection of all available routing syles 
+<tr><td> &nbsp;ha:netlists <td> &nbsp; <td> &nbsp; <td>  all availale netlists 
+<tr><td> &nbsp;&nbsp;li:netlist <td> &nbsp; <td> &nbsp; <td>  the input netlist (as seen in the last netlist import, a.k.a. forward annotation) 
+<tr><td> &nbsp;&nbsp;&nbsp;ha:NETNAME <td> &nbsp; <td> &nbsp; <td>  a network 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;li:conn <td> &nbsp; <td> &nbsp; <td>  list of terminals connceted to the network 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diameter <td> string <td> &nbsp; <td> refdes-terminal
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> >=5 <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;li:netlist_patch <td> &nbsp; <td> &nbsp; <td>  a list of intentional deviations from the input netlist, a.k.a. material for back annotation 
+<tr><td> &nbsp;&nbsp;&nbsp;li:net_info <td> &nbsp; <td> &nbsp; <td>  describe the current state of a net, as seen on the input 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;net <td> string <td> &nbsp; <td> net name; first item on the list, only once
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;term <td> string <td> &nbsp; <td> terminal name; zero or more items starting from the second item
+<tr><td> &nbsp;&nbsp;&nbsp;ha:add_conn <td> &nbsp; <td> &nbsp; <td>  the 'as built' network requires a new conncetion to be created during the back annotation 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;net <td> string <td> &nbsp; <td> net name the terminal should be added to
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;term <td> string <td> &nbsp; <td> terminal name
+<tr><td> &nbsp;&nbsp;&nbsp;ha:del_conn <td> &nbsp; <td> &nbsp; <td>  the 'as built' network requires an existing conncetion to be removed during the back annotation 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;net <td> string <td> &nbsp; <td> net name the terminal should be removed from
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;term <td> string <td> &nbsp; <td> terminal name
+<tr><td> &nbsp;&nbsp;&nbsp;ha:change_attrib <td> &nbsp; <td> &nbsp; <td>  the 'as built' network requires an attribute to be set or changed 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;net <td> string <td> &nbsp; <td> net name whose attribute needs to be changed 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;key <td> string <td> &nbsp; <td> key (name) of the attribute
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;val <td> string <td> &nbsp; <td> new value of the attribute
+<tr><td> &nbsp;conf <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/roots/conf"> -&gt; </a>
+<tr><td> &nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
+<tr><td> &nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+</table>
+<h1 id="/lht_tree_doc/roots/conf">:conf</h1>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><td> conf <td> &nbsp; <td> &nbsp; <td> 
+</table>
+<h2> Common subtrees </h2>
+<p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees.
+<h1 id="/lht_tree_doc/comm/data">ha:data</h1>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><td> ha:data <td> &nbsp; <td> &nbsp; <td>  Layers and global objects of the board 
+<tr><td> &nbsp;li:objects <td> &nbsp; <td> &nbsp; <td>  List of global (non-layer/multi-layer) objects 
+<tr><td> &nbsp;&nbsp;ha:padstack_ref.ID <td> &nbsp; <td> >=4 <td>  a padstack reference (instance) placed on the board (e.g. used as a via) 
+<tr><td> &nbsp;&nbsp;&nbsp;proto <td> integer <td> &nbsp; <td> padstack prototype ID to use, from the parent data's proto list 
+<tr><td> &nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> place padstack with origin at this horizontal coordinate 
+<tr><td> &nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> place padstack with origin at this vertical coordinate 
+<tr><td> &nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> global clearance; if non-zero, overrides local (per shape) clearance 
+<tr><td> &nbsp;&nbsp;&nbsp;rot <td> angle <td> &nbsp; <td> rotation angle in degrees 
+<tr><td> &nbsp;&nbsp;&nbsp;xmirror <td> integer <td> &nbsp; <td> 0 or 1; if 1, mirror all shapes over the x (horizontal) axis (so that y coords are flipped)
+<tr><td> &nbsp;&nbsp;&nbsp;smirror <td> integer <td> &nbsp; <td> 0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")
+<tr><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;flags_pstk <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal shapes, per layer 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;li:LAYERID <td> &nbsp; <td> &nbsp; <td>  integer layer ID the thermal affects; each word is a boolean flag that is either present on the list or is missing; only one shape may be present 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> none <td> &nbsp; <td>  thermal is present on this layer; if not present, all other thermal flags are ignored on this layer 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> none <td> &nbsp; <td>  thermal graphics is not axis aligned but diagonal (rotated by 45 degrees) 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;round <td> none <td> &nbsp; <td>  shape: rounded edge fingers 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sharp <td> none <td> &nbsp; <td>  shape: sharp edge fingers 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;solid <td> none <td> &nbsp; <td>  shape: no thermal relief, solid connection without clearance 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;noshape <td> none <td> &nbsp; <td>  shape: special: omit copper shape of the padstack on this layer 
+<tr><td> &nbsp;&nbsp;ha:via.ID <td> &nbsp; <td> <=4 <td>  an old via object (loaded as padstack in the new model) 
+<tr><td> &nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> place padstack with origin at this horizontal coordinate 
+<tr><td> &nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> place padstack with origin at this vertical coordinate 
+<tr><td> &nbsp;&nbsp;&nbsp;thickness <td> coord <td> &nbsp; <td> copper shape dimension (diameter) 
+<tr><td> &nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> copper clearance around the copper shape 
+<tr><td> &nbsp;&nbsp;&nbsp;mask <td> coord <td> &nbsp; <td> mask cutout shape dimension (diameter) 
+<tr><td> &nbsp;&nbsp;&nbsp;hole <td> coord <td> &nbsp; <td> drill/hole diameter 
+<tr><td> &nbsp;&nbsp;&nbsp;name <td> string <td> &nbsp; <td> optional name attribute 
+<tr><td> &nbsp;&nbsp;&nbsp;number <td> string <td> &nbsp; <td> for a pin (or to-be-pin) this is the terminal ID 
+<tr><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;flags_pinvia <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;li:layers <td> &nbsp; <td> &nbsp; <td> ordered list of layers; v1 required the order to be top-bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non-bound) layers have attributes)
+<tr><td> &nbsp;&nbsp;ha:NAME <td> &nbsp; <td> &nbsp; <td> a logical layer
+<tr><td> &nbsp;&nbsp;&nbsp;lid <td> integer <td> >=2 <td> layer ID
+<tr><td> &nbsp;&nbsp;&nbsp;visible <td> integer <td> &nbsp; <td> only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)
+<tr><td> &nbsp;&nbsp;&nbsp;group <td> integer <td> &nbsp; <td> only in real (non-boud) layers: "parent" layer group ID 
+<tr><td> &nbsp;&nbsp;&nbsp;color <td> string <td> >=5 <td>  layer color on UI, in #rrggbb format 
+<tr><td> &nbsp;&nbsp;&nbsp;stack_offs <td> integer <td> &nbsp; <td> only in bound layers: match offset e.g. for internal copper layers
+<tr><td> &nbsp;&nbsp;&nbsp;ha:type <td> &nbsp; <td> &nbsp; <td> only for bound layers: try to bind to this type of layer on the host board
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> located on the top side of the board, physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> located on the bottom side of the board, physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> located inside the board, nt physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> >=2 <td> layer combination (compositing) flags
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;sub <td> flag <td> &nbsp; <td> draw in negative
+<tr><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;li:objects <td> &nbsp; <td> &nbsp; <td> list of drawing primitives put on this layer
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:line.ID <td> &nbsp; <td> &nbsp; <td> round cap line
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x1 <td> coord <td> &nbsp; <td> line first endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y1 <td> coord <td> &nbsp; <td> line first endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x2 <td> coord <td> &nbsp; <td> line second endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y2 <td> coord <td> &nbsp; <td> line second endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thickness <td> coord <td> &nbsp; <td> width of the line 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> copper clearance around the object 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_line <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:thermal_heavy <td> &nbsp; <td> &nbsp; <td>  optional thermal flags for heavy terminals 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:arc.ID <td> &nbsp; <td> &nbsp; <td> round cap elliptic arc (only width==height is fully supported at the moment)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> center, X coord
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> center, Y coord
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width <td> coord <td> &nbsp; <td> radius (? TODO) in X direction 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height <td> coord <td> &nbsp; <td> radius (? TODO) in Y direction 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thickness <td> coord <td> &nbsp; <td> width of the pen the arc is drawn with 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> copper clearance around the object 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;astart <td> angle <td> &nbsp; <td>  start angle
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adelta <td> angle <td> &nbsp; <td>  delta angle
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_arc <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:thermal_heavy <td> &nbsp; <td> &nbsp; <td>  optional thermal flags for heavy terminals 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:polygon.ID <td> &nbsp; <td> &nbsp; <td> polygon, as drawn (unclipped)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> >=3 <td> copper clearance around the object 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_polygon <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:thermal_heavy <td> &nbsp; <td> &nbsp; <td>  optional thermal flags for heavy terminals 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:geometry <td> &nbsp; <td> &nbsp; <td> first item is the outer contour, subsequent, optional items are holes
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contour <td> coordtbl <td> &nbsp; <td> 2 column table of x;y coords for the outer contour
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hole <td> coordtbl <td> &nbsp; <td> 2 column table of x;y coords for a hole
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:text.ID <td> &nbsp; <td> &nbsp; <td> single line text object
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> placement: X coord
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> placement: Y coord
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role <td> string <td> &nbsp; <td> when part of an old element, determines which of the three hardwired text object role is used (footprint, refdes or value)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string <td> string <td> &nbsp; <td> text string (payload)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fid <td> integer <td> &nbsp; <td> font ID
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scale <td> integer <td> &nbsp; <td> text size scale in %
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction <td> integer <td> &nbsp; <td> rotation in 90 degree steps (0 is horizontal)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_text <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;li:padstack_prototypes <td> &nbsp; <td> >=4 <td> 
+<tr><td> &nbsp;&nbsp;unused <td> n/a <td> &nbsp; <td> placeholder for markign uunsed slot to keep slot indices for early lihata v4 
+<tr><td> &nbsp;&nbsp;ha:ps_proto_v4.PID <td> &nbsp; <td> &nbsp; <td> padstack prototype specification, as introduced in lihata board v4
+<tr><td> &nbsp;&nbsp;&nbsp;hdia <td> coord <td> &nbsp; <td> hole diameter; 0 means no hole 
+<tr><td> &nbsp;&nbsp;&nbsp;htop <td> integer <td> &nbsp; <td> hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)
+<tr><td> &nbsp;&nbsp;&nbsp;hbottom <td> integer <td> &nbsp; <td> hole start: copper layer index from the bottom (positive) or top (negative) copper layer (0 means bottom copper layer)
+<tr><td> &nbsp;&nbsp;&nbsp;plated <td> integer <td> &nbsp; <td> 0=unplated hole; 1=plated hole
+<tr><td> &nbsp;&nbsp;&nbsp;name <td> string <td> >=5 <td> optional user assigned prototype name
+<tr><td> &nbsp;&nbsp;&nbsp;li:shape <td> &nbsp; <td> &nbsp; <td> shape per layer type definition
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:ps_shape_v4 <td> &nbsp; <td> &nbsp; <td> shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:layer_mask <td> &nbsp; <td> &nbsp; <td> layer type and location
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> located on the top side of the board, physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> located on the bottom side of the board, physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> located inside the board, nt physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> &nbsp; <td> layer compositing match
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub <td> flag <td> &nbsp; <td> draw in negative
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> local, per-layer-type clearance; applied if global padstack clearance is 0 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:ps_poly <td> &nbsp; <td> &nbsp; <td> arbitrary convex polygon shape; contains a list of x;y coordinates 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:ps_line <td> &nbsp; <td> &nbsp; <td> straight line shape, round or square cap
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x1 <td> coord <td> &nbsp; <td> line first endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y1 <td> coord <td> &nbsp; <td> line first endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x2 <td> coord <td> &nbsp; <td> line second endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y2 <td> coord <td> &nbsp; <td> line second endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thickness <td> coord <td> &nbsp; <td> width of the line 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;square <td> integer <td> &nbsp; <td> 0=round cap; 1=square cap 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:ps_circ <td> &nbsp; <td> &nbsp; <td> filled circle shape
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> center, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> center, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dia <td> coord <td> &nbsp; <td> circle diameter 
+<tr><td> &nbsp;ha:subc.ID <td> &nbsp; <td> >=3 <td> an instance (full copy) of a subcircuit
+<tr><td> &nbsp;&nbsp;uid <td> minuid <td> &nbsp; <td> UID assigned by the user to track subc history 
+<tr><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;flags_subc <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
+<tr><td> &nbsp;ha:element.ID <td> &nbsp; <td> <3 <td> an instance (full copy) of an obsolete element footprint
+<tr><td> &nbsp;&nbsp;x <td> coord <td> &nbsp; <td> element origin (diamond), horizontal offset 
+<tr><td> &nbsp;&nbsp;y <td> coord <td> &nbsp; <td> element origin (diamond), vertical offset 
+<tr><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;flags_element <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;li:objects <td> &nbsp; <td> &nbsp; <td> list of special objects that make up the element; lines and arcs are always on a silk layer
+<tr><td> &nbsp;&nbsp;&nbsp;ha:line.ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/line.ID">round cap line -&gt; </a>
+<tr><td> &nbsp;&nbsp;&nbsp;ha:arc.ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/arc.ID">round cap elliptic arc (only width==height is fully supported at the moment) -&gt; </a>
+<tr><td> &nbsp;&nbsp;&nbsp;ha:text.ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID">single line text object -&gt; </a>
+<tr><td> &nbsp;&nbsp;&nbsp;ha:pad.ID <td> &nbsp; <td> &nbsp; <td> SMD pad emulated using a line object; becomes a rectangle (but watch out for the cap-extended length!) when the square flag is set
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;x1 <td> coord <td> &nbsp; <td> line first endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;y1 <td> coord <td> &nbsp; <td> line first endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;x2 <td> coord <td> &nbsp; <td> line second endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;y2 <td> coord <td> &nbsp; <td> line second endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;thickness <td> coord <td> &nbsp; <td> width of the line
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> clearance around the line
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;mask <td> coord <td> &nbsp; <td> TODO
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;name <td> string <td> &nbsp; <td> symbolic name of the pad
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;number <td> string <td> &nbsp; <td> "pin number" for the netlist
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;flags_pad <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;&nbsp;&nbsp;ha:pin.ID <td> &nbsp; <td> &nbsp; <td> thru-hole pin; emulated as an old-style via 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> place padstack with origin at this horizontal coordinate 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> place padstack with origin at this vertical coordinate 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;thickness <td> coord <td> &nbsp; <td> copper shape dimension (diameter) 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> copper clearance around the copper shape 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;mask <td> coord <td> &nbsp; <td> mask cutout shape dimension (diameter) 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;hole <td> coord <td> &nbsp; <td> drill/hole diameter 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;name <td> string <td> &nbsp; <td> optional name attribute 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;number <td> string <td> &nbsp; <td> for a pin (or to-be-pin) this is the terminal ID 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;flags_pinvia <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> &nbsp;ha:rat.ID <td> &nbsp; <td> &nbsp; <td> global rat line
+<tr><td> &nbsp;&nbsp;x1 <td> coord <td> &nbsp; <td> line first endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;y1 <td> coord <td> &nbsp; <td> line first endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;x2 <td> coord <td> &nbsp; <td> line second endpoint, horizontal offset 
+<tr><td> &nbsp;&nbsp;y2 <td> coord <td> &nbsp; <td> line second endpoint, vertical offset 
+<tr><td> &nbsp;&nbsp;lgrp1 <td> integer <td> &nbsp; <td> first endpoint's layer group ID 
+<tr><td> &nbsp;&nbsp;lgrp2 <td> integer <td> &nbsp; <td> second endpoint's layer group ID 
+<tr><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr><td> &nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;flags_line <td> &nbsp; <td> &nbsp; <td> 
+</table>
+
+</body>
+</html>
+
