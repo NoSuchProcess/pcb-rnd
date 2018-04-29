@@ -29,6 +29,7 @@
 ? BUG: crosshair shouldn't snap to padstacks and line endpoints on another layer [report: wojciechk8]
 	it should snap to anything visible, else you wouldn't be able to draw e.g. a top copper line that ends exactly where a bottom copper line does (so that you later can add a via); FYI: this is how it always have worked
 - BUG: 'Crosshair shows DRC clearance' should show the clearance also when moving a padstack (now it only shows when placing a new padstack) [report: wojciechk8]
+- BUG: 'Crosshair shows DRC clearance' should show the clearance also when moving a clearing poly (now it only shows when placing a new padstack) [report: Igor2, wojciechk8]
 - BUG: [gtk] coordinate entry widgets substitute written unit to the currently activated one after pressing enter
 	-> example: with mm units activated, in 'Edit route styles' dialog write 20mil in "line width" text box and press enter - 20mm is applied [report: wojciechk8]
 
