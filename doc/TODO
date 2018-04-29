@@ -28,8 +28,6 @@
 + BUG: lock floaters doesn't work [report: wojciechk8]
 ? BUG: crosshair shouldn't snap to padstacks and line endpoints on another layer [report: wojciechk8]
 	it should snap to anything visible, else you wouldn't be able to draw e.g. a top copper line that ends exactly where a bottom copper line does (so that you later can add a via); FYI: this is how it always have worked
-- BUG: 'Crosshair shows DRC clearance' should show the clearance also when moving a padstack (now it only shows when placing a new padstack) [report: wojciechk8]
-- BUG: 'Crosshair shows DRC clearance' should show the clearance also when moving a clearing poly (now it only shows when placing a new padstack) [report: Igor2, wojciechk8]
 - BUG: [gtk] coordinate entry widgets substitute written unit to the currently activated one after pressing enter
 	-> example: with mm units activated, in 'Edit route styles' dialog write 20mil in "line width" text box and press enter - 20mm is applied [report: wojciechk8]
 
@@ -53,6 +51,11 @@ opengl:
 	- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
 	- allow padstack xor draw to draw all shapes on all layers
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
+- draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
+	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
+	- padstack
+	- clearing polygon
+	- text
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - rewrite the preview API:
