@@ -64,6 +64,11 @@ function tbl_hdr(node, level)
 
 function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 {
+	if (!(node in NAME)) {
+		print "Error: path not found: " node > "/dev/stderr"
+		return
+	}
+
 	ty = DATA[node "/type"]
 	if (ty == "")
 		nm = qstrip(NAME[node])
@@ -83,6 +88,15 @@ function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 
 function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 {
+	if (!(node in NAME)) {
+		print "Error: path not found: " node > "/dev/stderr"
+		return
+	}
+	if (!(dst in NAME)) {
+		print "Error: path not found: " dst > "/dev/stderr"
+		return
+	}
+
 	ty = DATA[dst "/type"]
 	if (ty == "")
 		nm = qstrip(NAME[node])
@@ -102,6 +116,10 @@ function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 
 function gen_sub(root, level,    v, n, N, node, dst_children)
 {
+	if (!(root in NAME)) {
+		print "Error: path not found: " root > "/dev/stderr"
+		return
+	}
 	v = children(N, root "/children")
 	for(n = 1; n <= v; n++) {
 		node = N[n]
