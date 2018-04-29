@@ -245,9 +245,9 @@ ha:lht_tree_doc { ha:comm {
 						type=li
 						desc={list of special objects that make up the element; lines and arcs are always on a silk layer}
 						li:children {
-							sy:line.ID  = {/roots/data/layers/NAME/objects/line.ID}
-							sy:arc.ID   = {/roots/data/layers/NAME/objects/arc.ID}
-							sy:text.ID  = {/roots/data/layers/NAME/objects/text.ID}
+							sy:line.ID  = {/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/line.ID}
+							sy:arc.ID   = {/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/arc.ID}
+							sy:text.ID  = {/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID}
 							ha:pad.ID {
 								type=ha
 								desc={SMD pad emulated using a line object; becomes a rectangle (but watch out for the cap-extended length!) when the square flag is set}
@@ -268,7 +268,7 @@ ha:lht_tree_doc { ha:comm {
 							ha:pin.ID {
 								type=ha
 								desc={thru-hole pin; emulated as an old-style via }
-								sy:children = {/roots/data/via.ID/children}
+								sy:children = {/lht_tree_doc/comm/data/children/objects/children/via.ID}
 							}
 						}
 					}
