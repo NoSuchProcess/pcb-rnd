@@ -34,20 +34,22 @@ function sy_href(path)
 }
 
 (($1 == "open") || ($1 == "data")) {
-	TYPE[$3] = $2
-	p = parent($3)
+	path=$3
+	gsub("[0-9]+::", "", path)
+	TYPE[path] = $2
+	p = parent(path)
 	if (CHILDREN[p] == "")
-		CHILDREN[p] = $3
+		CHILDREN[p] = path
 	else
-		CHILDREN[p] = CHILDREN[p] "|" $3
+		CHILDREN[p] = CHILDREN[p] "|" path
 	data=$4
 	gsub("\\\\057", "/", data)
-	DATA[$3] = data
+	DATA[path] = data
 	
 	name=$3
 	sub("^.*/", "", name)
 	sub(".*::", "", name)
-	NAME[$3] = name
+	NAME[path] = name
 }
 
 function qstrip(s)
