@@ -2,7 +2,9 @@ ha:lht_tree_doc { ha:comm {
 
 	ha:layer_mask {
 		hide=1
-		type={TODO:build_layer_stack_flag}
+		comment={TODO:build_layer_stack_flag}
+		type=ha
+		desc={layer type and location}
 		li:children {
 			ha:top    { valtype=flag; desc={located on the top side of the board, physically accessible}}
 			ha:bottom { valtype=flag; desc={located on the bottom side of the board, physically accessible}}
