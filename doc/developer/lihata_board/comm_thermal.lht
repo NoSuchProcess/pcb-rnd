@@ -1,0 +1,13 @@
+ha:lht_tree_doc { ha:comm {
+
+	ha:thermal_heavy {
+		type=ha
+		hide=1
+		desc { optional thermal flags for heavy terminals }
+		TODO
+		li:children {
+			ha:attrib-key { valtype=string; desc={attribute value}}
+		}
+	}
+
+}}

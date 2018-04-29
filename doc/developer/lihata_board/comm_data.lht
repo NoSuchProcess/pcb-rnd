@@ -101,7 +101,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:clearance = { valtype=coord;   desc={copper clearance around the object }}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 											sy:flags@dup  = {/lht_tree_doc/comm/flags_line}
-											sy:thermal    = {/roots/thermal_heavy}
+											sy:hvthr@dup  = {/lht_tree_doc/comm/thermal_heavy}
 										}
 									}
 									ha:arc.ID {
@@ -118,7 +118,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:adelta    = { valtype=angle;   desc={ delta angle}}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 											sy:flags@dup  = {/lht_tree_doc/comm/flags_arc}
-											sy:thermal    = {/roots/thermal_heavy}
+											sy:hvthr@dup  = {/lht_tree_doc/comm/thermal_heavy}
 										}
 									}
 									ha:polygon.ID {
@@ -128,7 +128,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:clearance = { valtype=coord; ver={>=3} desc={copper clearance around the object }}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 											sy:flags@dup  = {/lht_tree_doc/comm/flags_polygon}
-											sy:thermal    = {/roots/thermal_heavy}
+											sy:hvthr@dup  = {/lht_tree_doc/comm/thermal_heavy}
 											ha:geometry {
 												type=li
 												desc={first item is the outer contour, subsequent, optional items are holes}
