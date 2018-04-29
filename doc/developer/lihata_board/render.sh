@@ -178,7 +178,12 @@ function gen_roots(rpath,    v, n, N)
 
 
 END {
+	print "<h2> File format root nodes </h2>"
+	print "<p>Each table below describes the full tree of one of the pcb-rnd file formats, from the root."
 	gen_roots("/lht_tree_doc/roots")
+
+	print "<h2> Common subtrees </h2>"
+	print "<p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees."
 	gen_roots("/lht_tree_doc/comm")
 }
 
