@@ -42,7 +42,6 @@ eagle:
 
 opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
-	- BUG: gtk2_gl: RTT/arc_sizes.lht - arc corner case render bug [report: Wed]
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 
 2. For later releases ===============================================================================
@@ -71,6 +70,7 @@ opengl:
 	- always use the stored per layer color
 	- use the config color only if a new layer is created or loaded without known color
 	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
+- BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
 	- io infra for save incompatibility note with DRC list
@@ -134,7 +134,6 @@ opengl:
 		- allow GTK to handle keys in preview
 		- use the zoompan engine for the zooming. Modifiy API if necessary
 - check gpmi when pcb-rnd is fully linstalled - broken symlinks?
-
 - cleanup/rewrite resources:
 	- load/swap menus (TODO#1)
 	- gpmi:
