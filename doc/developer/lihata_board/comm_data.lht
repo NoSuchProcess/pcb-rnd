@@ -79,10 +79,10 @@ ha:lht_tree_doc { ha:comm {
 								desc={only for bound layers: try to bind to this type of layer on the host board}
 								sy:children {/lht_tree_doc/comm/layer_mask/children}
 							}
-							ha:comb {
+							ha:combining {
 								ver={>=2}
 								desc={layer combination (compositing) flags}
-								sy:children {/roots/combining/children}
+								sy:children {/lht_tree_doc/comm/combining/children}
 							}
 							sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 							ha:objects {
@@ -183,7 +183,10 @@ ha:lht_tree_doc { ha:comm {
 										desc={shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin}
 										li:children {
 											sy:layer_mask = {/roots/layer_mask}
-											sy:combining  = {/roots/combining}
+											ha:combining {
+												desc={layer compositing match}
+												sy:children   = {/lht_tree_doc/comm/combining/children}
+											}
 											ha:clearance  = { valtype=coord;   desc={local, per-layer-type clearance; applied if global padstack clearance is 0 }}
 											ha:ps_poly {
 												type=li

@@ -10,6 +10,9 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:combining {
 		type={TODO:build_data_layer_comb}
+		li:children {
+			ha:sub    { valtype=flag; desc={draw in negative}}
+		}
 	}
 
 }}
