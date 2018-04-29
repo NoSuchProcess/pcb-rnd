@@ -25,7 +25,7 @@
 - BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
-- BUG: lock floaters doesn't work [report: wojciechk8]
++ BUG: lock floaters doesn't work [report: wojciechk8]
 - BUG: crosshair shouldn't snap to padstacks and line endpoints on another layer [report: wojciechk8]
 - BUG: 'Crosshair shows DRC clearance' should show the clearance also when moving a padstack (now it only shows when placing a new padstack) [report: wojciechk8]
 - BUG: [gtk] coordinate entry widgets substitute written unit to the currently activated one after pressing enter
