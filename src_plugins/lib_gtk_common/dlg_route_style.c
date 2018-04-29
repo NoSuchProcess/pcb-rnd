@@ -49,7 +49,7 @@
 /* SIGNAL HANDLERS */
 
 /* Rebuild the gtk table for attribute list from style */
-static void update_attrib(pcb_gtk_dlg_route_style_t * dialog, pcb_gtk_obj_route_style_t * style)
+static void update_attrib(pcb_gtk_dlg_route_style_t *dialog, pcb_gtk_obj_route_style_t *style)
 {
 	GtkTreeIter iter;
 	int i;
@@ -67,7 +67,7 @@ static void update_attrib(pcb_gtk_dlg_route_style_t * dialog, pcb_gtk_obj_route_
 	gtk_list_store_set(dialog->attr_model, &iter, 1, "<new>", -1);
 }
 
-static int get_sel(pcb_gtk_dlg_route_style_t * dlg)
+static int get_sel(pcb_gtk_dlg_route_style_t *dlg)
 {
 	GtkTreeIter iter;
 	GtkTreeSelection *tsel;
@@ -95,7 +95,7 @@ static int get_sel(pcb_gtk_dlg_route_style_t * dlg)
 }
 
 /* When a different style is selected, load that style's data into the dialog. */
-static void dialog_style_changed_cb(GtkComboBox * combo, pcb_gtk_dlg_route_style_t * dialog)
+static void dialog_style_changed_cb(GtkComboBox *combo, pcb_gtk_dlg_route_style_t *dialog)
 {
 	pcb_gtk_route_style_t *rss;
 	pcb_gtk_obj_route_style_t *style;
@@ -130,7 +130,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, pcb_gtk_dlg_route_style
 	update_attrib(dialog, style);
 }
 
-static void attr_edited(int col, GtkCellRendererText * cell, gchar * path, gchar * new_text, pcb_gtk_dlg_route_style_t * dlg)
+static void attr_edited(int col, GtkCellRendererText *cell, gchar *path, gchar *new_text, pcb_gtk_dlg_route_style_t *dlg)
 {
 	GtkTreeIter iter;
 	pcb_gtk_obj_route_style_t *style;
@@ -144,13 +144,13 @@ static void attr_edited(int col, GtkCellRendererText * cell, gchar * path, gchar
 	if (style == NULL)
 		return;
 
-	if (idx >= style->rst->attr.Number) {	/* add new */
+	if (idx >= style->rst->attr.Number) { /* add new */
 		if (col == 0)
 			pcb_attribute_put(&style->rst->attr, new_text, "n/a");
 		else
 			pcb_attribute_put(&style->rst->attr, "n/a", new_text);
 	}
-	else {												/* overwrite existing */
+	else {  /* overwrite existing */
 		char **dest;
 		if (col == 0)
 			dest = &style->rst->attr.List[idx].name;
@@ -165,27 +165,27 @@ static void attr_edited(int col, GtkCellRendererText * cell, gchar * path, gchar
 	update_attrib(dlg, style);
 }
 
-static void attr_edited_key_cb(GtkCellRendererText * cell, gchar * path, gchar * new_text, pcb_gtk_dlg_route_style_t * dlg)
+static void attr_edited_key_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, pcb_gtk_dlg_route_style_t *dlg)
 {
 	attr_edited(0, cell, path, new_text, dlg);
 }
 
-static void attr_edited_val_cb(GtkCellRendererText * cell, gchar * path, gchar * new_text, pcb_gtk_dlg_route_style_t * dlg)
+static void attr_edited_val_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, pcb_gtk_dlg_route_style_t *dlg)
 {
 	attr_edited(1, cell, path, new_text, dlg);
 }
 
-static void attr_edit_started_cb(GtkCellRendererText * cell, GtkCellEditable * e, gchar * path, pcb_gtk_dlg_route_style_t * dlg)
+static void attr_edit_started_cb(GtkCellRendererText *cell, GtkCellEditable *e, gchar *path, pcb_gtk_dlg_route_style_t *dlg)
 {
 	dlg->attr_editing = 1;
 }
 
-static void attr_edit_canceled_cb(GtkCellRendererText * cell, pcb_gtk_dlg_route_style_t * dlg)
+static void attr_edit_canceled_cb(GtkCellRendererText *cell, pcb_gtk_dlg_route_style_t *dlg)
 {
 	dlg->attr_editing = 0;
 }
 
-static gboolean attr_key_release_cb(GtkWidget * widget, GdkEventKey * event, pcb_gtk_dlg_route_style_t * dlg)
+static gboolean attr_key_release_cb(GtkWidget *widget, GdkEventKey *event, pcb_gtk_dlg_route_style_t *dlg)
 {
 	unsigned short int kv = event->keyval;
 
@@ -218,7 +218,7 @@ static gboolean attr_key_release_cb(GtkWidget * widget, GdkEventKey * event, pcb
 	return FALSE;
 }
 
-static void add_new_iter(pcb_gtk_route_style_t * rss)
+static void add_new_iter(pcb_gtk_route_style_t *rss)
 {
 	/* Add "new style" option to list */
 	gtk_list_store_append(rss->model, &rss->new_iter);
@@ -226,7 +226,7 @@ static void add_new_iter(pcb_gtk_route_style_t * rss)
 }
 
 /*  Callback for Delete route style button */
-static void delete_button_cb(GtkButton * button, pcb_gtk_dlg_route_style_t * dialog)
+static void delete_button_cb(GtkButton *button, pcb_gtk_dlg_route_style_t *dialog)
 {
 	if (dialog->rss->selected < 0)
 		return;
@@ -249,7 +249,7 @@ static void delete_button_cb(GtkButton * button, pcb_gtk_dlg_route_style_t * dia
 	gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->select_box), 0);
 }
 
-static void _table_attach_(GtkWidget * table, gint row, const gchar * label, GtkWidget * entry)
+static void _table_attach_(GtkWidget *table, gint row, const gchar *label, GtkWidget *entry)
 {
 	GtkWidget *label_w = gtk_label_new(label);
 	gtk_misc_set_alignment(GTK_MISC(label_w), 1.0, 0.5);
@@ -257,8 +257,7 @@ static void _table_attach_(GtkWidget * table, gint row, const gchar * label, Gtk
 	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 }
 
-static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min,
-													pcb_coord_t max)
+static void _table_attach(GtkWidget *table, gint row, const gchar *label, GtkWidget **entry, pcb_coord_t min, pcb_coord_t max)
 {
 	*entry = pcb_gtk_coord_entry_new(min, max, 0, conf_core.editor.grid_unit, CE_SMALL);
 	_table_attach_(table, row, label, *entry);
@@ -278,7 +277,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	GtkWidget *button;
 	const char *new_name;
 
-	memset(&dialog_data, 0, sizeof(dialog_data));	/* make sure all flags are cleared */
+	memset(&dialog_data, 0, sizeof(dialog_data));  /* make sure all flags are cleared */
 
 	/* Build dialog */
 	dialog = gtk_dialog_new_with_buttons(_("Edit Route Styles"),
