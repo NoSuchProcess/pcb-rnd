@@ -1265,7 +1265,7 @@ int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result
 {
 	int res;
 
-	if (conf_core.editor.lock_names)
+	if ((conf_core.editor.lock_names) || (conf_core.editor.hide_names))
 		Type &= ~ PCB_OBJ_FLOATER;
 
 	res = pcb_search_obj_by_location_(Type, Result1, Result2, Result3, X, Y, Radius, 0);
