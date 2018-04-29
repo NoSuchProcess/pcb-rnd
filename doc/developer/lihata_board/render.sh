@@ -62,22 +62,29 @@ function tbl_hdr(node, level)
 	print "<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description"
 }
 
+function get_name(node, ty, level)
+{
+	if (node "/name" in DATA)
+		nm = DATA[node "/name"]
+	else
+		nm = qstrip(NAME[node])
+	if (ty != "")
+		nm =  ty ":" nm
+	while(level > 0) {
+		nm = "&nbsp;" nm
+		level--
+	}
+	return nm
+}
+
 function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 {
 	if (!(node in NAME)) {
 		print "Error: path not found: " node > "/dev/stderr"
 		return
 	}
-
 	ty = DATA[node "/type"]
-	if (ty == "")
-		nm = qstrip(NAME[node])
-	else
-		nm =  ty ":" qstrip(NAME[node])
-	while(level > 0) {
-		nm = "&nbsp;" nm
-		level--
-	}
+	nm = get_name(node, ty, level)
 	vt = DATA[node "/valtype"]
 	if (vt == "") vt = "&nbsp;"
 	vr = DATA[node "/ver"]
@@ -98,14 +105,7 @@ function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 	}
 
 	ty = DATA[dst "/type"]
-	if (ty == "")
-		nm = qstrip(NAME[node])
-	else
-		nm =  ty ":" qstrip(NAME[node])
-	while(level > 0) {
-		nm = "&nbsp;" nm
-		level--
-	}
+	nm = get_name(node, ty, level)
 	vt = DATA[dst "/valtype"]
 	if (vt == "") vt = "&nbsp;"
 	vr = DATA[dst "/ver"]
