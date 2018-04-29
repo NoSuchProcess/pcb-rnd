@@ -1,4 +1,4 @@
-ha:lht_tree_doc { li:comm {
+ha:lht_tree_doc { ha:comm {
 
 	ha:layer_mask {
 		type={TODO:build_layer_stack_flag}
