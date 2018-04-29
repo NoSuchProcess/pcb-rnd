@@ -151,7 +151,7 @@ ha:lht_tree_doc { ha:roots {
 						ha:diameter    { valtype=coord; ver={<=5} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
 						ha:hole        { valtype=coord; ver={<=5} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
 						ha:via_proto   { valtype=integer; ver={>5} desc={padstack prototype ID used for placing new vias}}
-						sy:attributes  {/roots/attributes}
+						sy:attr@dup    {/lht_tree_doc/comm/attributes}
 					}
 				}
 			}
@@ -174,7 +174,7 @@ ha:lht_tree_doc { ha:roots {
 											ha:diameter    { valtype=string; desc={refdes-terminal}}
 										}
 									}
-									sy:attributes_v5p  {/roots/attributes}
+									sy:attr@dup   = {/lht_tree_doc/comm/attributes_v5p}
 								}
 							}
 						}
