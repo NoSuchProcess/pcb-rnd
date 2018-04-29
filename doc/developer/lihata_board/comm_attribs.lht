@@ -2,6 +2,7 @@ ha:lht_tree_doc { ha:comm {
 
 	ha:attributes {
 		type=ha
+		hide=1
 		desc { a hash of attribute key=value pairs }
 		li:children {
 			ha:attrib-key { valtype=string; desc={attribute value}}
@@ -9,6 +10,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:attributes_v5p {
 		name=attributes
+		hide=1
 		type=ha
 		desc { a hash of attribute key=value pairs }
 		ver={>=5}

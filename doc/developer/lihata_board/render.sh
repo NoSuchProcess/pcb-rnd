@@ -165,8 +165,11 @@ function gen_main(path,    v, n, N)
 function gen_roots(rpath,    v, n, N)
 {
 	v = children(N, rpath)
-	for(n = 1; n <= v; n++)
+	for(n = 1; n <= v; n++) {
+		if (N[n] "/hide" in NAME)
+			continue
 		gen_main(N[n])
+	}
 }
 
 

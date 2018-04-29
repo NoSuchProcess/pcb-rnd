@@ -1,6 +1,7 @@
 ha:lht_tree_doc { ha:comm {
 
 	ha:layer_mask {
+		hide=1
 		type={TODO:build_layer_stack_flag}
 		li:children {
 			ha:top    { valtype=flag; desc={located on the top side of the board, physically accessible}}
@@ -9,6 +10,7 @@ ha:lht_tree_doc { ha:comm {
 		}
 	}
 	ha:combining {
+		hide=1
 		type={TODO:build_data_layer_comb}
 		li:children {
 			ha:sub    { valtype=flag; desc={draw in negative}}

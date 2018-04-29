@@ -1,30 +1,39 @@
 ha:lht_tree_doc { ha:comm {
 
 	ha:flags_pstk {
+		hide=1
 		TODO
 	}
 	ha:flags_subc {
+		hide=1
 		TODO
 	}
 	ha:flags_element {
+		hide=1
 		TODO
 	}
 	ha:flags_pinvia {
+		hide=1
 		TODO
 	}
 	ha:flags_line {
+		hide=1
 		TODO
 	}
 	ha:flags_arc {
+		hide=1
 		TODO
 	}
 	ha:flags_text {
+		hide=1
 		TODO
 	}
 	ha:flags_polygon {
+		hide=1
 		TODO
 	}
 	ha:flags_pad {
+		hide=1
 		TODO
 	}
 
