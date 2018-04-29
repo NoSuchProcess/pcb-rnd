@@ -112,11 +112,20 @@ static gboolean ghid_coord_entry_output_cb(pcb_gtk_coord_entry_t * ce, gpointer 
 {
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
 	double value = gtk_adjustment_get_value(adj);
-	char *text;
+	const char *orig, *final;
+	char text[128], *suffix = NULL;
+	const pcb_unit_t *orig_unit;
+	int changed = 0;
 
-	text = pcb_strdup_printf("%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
+	orig = gtk_entry_get_text(GTK_ENTRY(ce));
+	strtod(orig, &suffix);
+	orig_unit = get_unit_struct(suffix);
+
+	if ((suffix != NULL) && (*suffix != '\0') && (orig_unit != NULL) && (ce->unit != orig_unit))
+		pcb_gtk_coord_entry_set_unit(ce, orig_unit);
+
+	pcb_snprintf(text, sizeof(text), "%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
 	gtk_entry_set_text(GTK_ENTRY(ce), text);
-	free(text);
 
 	return TRUE;
 }
