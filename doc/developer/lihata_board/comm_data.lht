@@ -21,7 +21,7 @@ ha:lht_tree_doc { ha:comm {
 							ha:xmirror    = { valtype=integer; desc={0 or 1; if 1, mirror all shapes over the x (horizontal) axis (so that y coords are flipped)}}
 							ha:smirror    = { valtype=integer; desc={0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")}}
 							sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-							sy:flags      = {/roots/flags_pstk}
+							sy:flags@dup  = {/lht_tree_doc/comm/flags_pstk}
 							ha:thermal {
 								type=li
 								desc { list of thermal shapes, per layer }
@@ -56,7 +56,7 @@ ha:lht_tree_doc { ha:comm {
 							ha:name       = { valtype=string;  desc={optional name attribute }}
 							ha:number     = { valtype=string;  desc={for a pin (or to-be-pin) this is the terminal ID }}
 							sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-							sy:flags      = {/roots/flags_pinvia}
+							sy:flags@dup  = {/lht_tree_doc/comm/flags_pinvia}
 						}
 					}
 				}
@@ -100,7 +100,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:thickness = { valtype=coord;   desc={width of the line }}
 											ha:clearance = { valtype=coord;   desc={copper clearance around the object }}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-											sy:flags      = {/roots/flags_line}
+											sy:flags@dup  = {/lht_tree_doc/comm/flags_line}
 											sy:thermal    = {/roots/thermal_heavy}
 										}
 									}
@@ -117,7 +117,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:astart    = { valtype=angle;   desc={ start angle}}
 											ha:adelta    = { valtype=angle;   desc={ delta angle}}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-											sy:flags      = {/roots/flags_line}
+											sy:flags@dup  = {/lht_tree_doc/comm/flags_arc}
 											sy:thermal    = {/roots/thermal_heavy}
 										}
 									}
@@ -127,7 +127,7 @@ ha:lht_tree_doc { ha:comm {
 										li:children {
 											ha:clearance = { valtype=coord; ver={>=3} desc={copper clearance around the object }}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-											sy:flags      = {/roots/flags_line}
+											sy:flags@dup  = {/lht_tree_doc/comm/flags_polygon}
 											sy:thermal    = {/roots/thermal_heavy}
 											ha:geometry {
 												type=li
@@ -151,7 +151,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:scale     = { valtype=integer; desc={text size scale in %}}
 											ha:direction = { valtype=integer; desc={rotation in 90 degree steps (0 is horizontal)}}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-											sy:flags      = {/roots/flags_line}
+											sy:flags@dup  = {/lht_tree_doc/comm/flags_text}
 										}
 									}
 								}
@@ -225,7 +225,7 @@ ha:lht_tree_doc { ha:comm {
 				li:children {
 					ha:uid        = { valtype=minuid;   desc={UID assigned by the user to track subc history }}
 					sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-					sy:flags      = {/roots/flags_subc}
+					sy:flags@dup  = {/lht_tree_doc/comm/flags_subc}
 					sy:data       = {/roots/data }
 				}
 			}
@@ -237,7 +237,7 @@ ha:lht_tree_doc { ha:comm {
 					ha:x          = { valtype=coord;   desc={element origin (diamond), horizontal offset }}
 					ha:y          = { valtype=coord;   desc={element origin (diamond), vertical offset }}
 					sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-					sy:flags      = {/roots/flags_element}
+					sy:flags@dup  = {/lht_tree_doc/comm/flags_element}
 					ha:objects {
 						type=li
 						desc={list of special objects that make up the element; lines and arcs are always on a silk layer}
@@ -259,7 +259,7 @@ ha:lht_tree_doc { ha:comm {
 									ha:name      = { valtype=string;  desc={symbolic name of the pad}}
 									ha:number    = { valtype=string;  desc={"pin number" for the netlist}}
 									sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-									sy:flags      = {/roots/flags_pad}
+									sy:flags@dup  = {/lht_tree_doc/comm/flags_pad}
 								}
 							}
 							ha:pin.ID {
@@ -282,7 +282,7 @@ ha:lht_tree_doc { ha:comm {
 					ha:lgrp1     = { valtype=integer; desc={first endpoint's layer group ID }}
 					ha:lgrp2     = { valtype=integer; desc={second endpoint's layer group ID }}
 					sy:attr@dup  = {/lht_tree_doc/comm/attributes}
-					sy:flags      = {/roots/flags_line}
+					sy:flags@dup  = {/lht_tree_doc/comm/flags_line}
 				}
 			}
 		}
