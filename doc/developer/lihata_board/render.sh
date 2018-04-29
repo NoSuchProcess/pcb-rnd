@@ -126,8 +126,10 @@ function gen_sub(root, level,    v, n, N, node, dst_children)
 		if (TYPE[node] == "symlink") {
 			# normal node symlink: generate a link
 #			print "SY:" node " " DATA[node] "^^^" sy_is_recursive(node) > "/dev/stderr"
-			if (NAME[node] ~ "@dup")
+			if (NAME[node] ~ "@dup") {
 				tbl_entry(DATA[node], level)
+				gen_sub(DATA[node], level+1)
+			}
 			else
 				tbl_entry_link(node, DATA[node], level)
 		}
