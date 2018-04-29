@@ -930,6 +930,9 @@ pcb_r_dir_t pcb_arc_draw_term_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *)b;
 
+	if (pcb_hidden_floater((pcb_any_obj_t*)b))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 

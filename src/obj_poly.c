@@ -1107,6 +1107,9 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 	pcb_draw_info_t *i = cl;
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 
+	if (pcb_hidden_floater((pcb_any_obj_t*)b))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	if (!polygon->Clipped)
 		return PCB_R_DIR_NOT_FOUND;
 

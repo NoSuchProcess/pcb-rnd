@@ -1002,6 +1002,9 @@ pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
 	pcb_layer_t *layer = cl;
 	pcb_text_t *text = (pcb_text_t *) b;
 
+	if (pcb_hidden_floater((pcb_any_obj_t*)b))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
