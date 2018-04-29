@@ -1,5 +1,10 @@
 #!/bin/sh
 
+echo '
+<html>
+<body>
+'
+
 for n in *.lht
 do
 	lhtflat < $n
@@ -189,3 +194,7 @@ END {
 
 '
 
+echo '
+</body>
+</html>
+'
