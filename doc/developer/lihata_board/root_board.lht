@@ -222,7 +222,7 @@ ha:lht_tree_doc { ha:roots {
 			}
 			sy:conf = {/lht_tree_doc/roots/conf}
 			sy:data = {/lht_tree_doc/comm/data}
-			sy:attributes = {/lht_tree_doc/comm/attributes}
+			sy:attributes@dup = {/lht_tree_doc/comm/attributes}
 		}
 	}
 
