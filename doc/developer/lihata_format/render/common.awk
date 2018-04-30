@@ -13,7 +13,19 @@ function get_name(node, ty, level)
 	return nm
 }
 
-function gen_sub(root, level,    v, n, N, node, dst_children, dupsav)
+function dup_begin(DUPSAV)
+{
+	DUPSAV[1] = dupd_prefix
+	if (DUPSAV[1] == "")
+		dupd_prefix = "dup" ++uniq_node_name "_"
+}
+
+function dup_end(DUPSAV)
+{
+	dupd_prefix = DUPSAV[1]
+}
+
+function gen_sub(root, level,    v, n, N, node, dst_children, DUPSAV)
 {
 	if (!(root in NAME)) {
 		print "Error: path not found: " root > "/dev/stderr"
@@ -25,24 +37,23 @@ function gen_sub(root, level,    v, n, N, node, dst_children, dupsav)
 		if (TYPE[node] == "symlink") {
 			# normal node symlink: generate a link
 #			print "SY:" node " " DATA[node] "^^^" sy_is_recursive(node) > "/dev/stderr"
+			dup_begin(DUPSAV)
 			if (NAME[node] ~ "@dup") {
-				dupsav = dupd_prefix
-				if (dupsav == "")
-					dupd_prefix = "dup" ++uniq_node_name "_"
 				tbl_entry(DATA[node], level, root)
 				gen_sub(DATA[node], level+1)
-				if (dupsav == "")
-					dupd_prefix = ""
 			}
 			else
 				tbl_entry_link(node, DATA[node], level, root)
+			dup_end(DUPSAV)
 		}
 		else if ((node "/children") in NAME) {
 			tbl_entry(node, level, root)
 			if (TYPE[node "/children"] == "symlink") {
+				dup_begin(DUPSAV)
 				dst_children = DATA[node "/children"]
 				sub("/children$", "", dst_children)
 				gen_sub(dst_children, level+1)
+				dup_end(DUPSAV)
 			}
 			else {
 				gen_sub(node, level+1)
