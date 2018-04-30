@@ -112,6 +112,12 @@ li:pcb-rnd-font-v1                font description
       adelta          angle       delta angle
      li:simplepoly.ID             round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords)
 
+ha:geda-project-v1
+
+type:name           value ver description
+ha:geda-project-v1            Project file root. Except for "common", each software package should create a single subtree under the root; the subtree shall be named after the software package
+ li:pcb-rnd-conf-v1           complete pcb-rnd configuration tree ->
+
 li:pcb-rnd-subcircuit-v*
 
 type:name                value  ver description
