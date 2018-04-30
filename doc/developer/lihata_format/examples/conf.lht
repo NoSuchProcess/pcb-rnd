@@ -1,0 +1,26 @@
+li:pcb-rnd-conf-v1 {
+ ha:overwrite {
+  ha:plugins {
+   ha:hid_gtk {
+    ha:window_geometry {
+     library_x = 1342
+     library_y = 316
+     library_width = 580
+     library_height = 448
+    }
+   }
+  }
+  ha:editor {
+   auto_place = {  1  }
+   save_in_tmp = {  0  }
+  }
+  ha:rc {
+   li:library_search_paths {
+    ?../pcblib
+    ?~/pcblib/
+    $(rc.path.share)/pcblib
+   }
+   backup_interval = {  60  }
+  }
+ }
+}
