@@ -13,21 +13,6 @@ function tbl_hdr(node, level)
 	print "<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description"
 }
 
-function get_name(node, ty, level)
-{
-	if (node "/name" in DATA)
-		nm = DATA[node "/name"]
-	else
-		nm = qstrip(NAME[node])
-	if (ty != "")
-		nm =  ty ":" nm
-	while(level > 0) {
-		nm = "&nbsp;" nm
-		level--
-	}
-	return nm
-}
-
 function get_valtype(node,    vt)
 {
 	vt = DATA[node "/valtype"]
@@ -38,7 +23,7 @@ function get_valtype(node,    vt)
 	return vt
 }
 
-function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
+function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr)
 {
 	if (!(node in NAME)) {
 		print "Error: path not found: " node > "/dev/stderr"
@@ -53,7 +38,7 @@ function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 	print "<tr id=" q node q "><td> " nm " <td> " vt " <td> " vr " <td> " dsc
 }
 
-function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
+function tbl_entry_link(node, dst, level, parent     ,nm,vt,dsc,ty,vr)
 {
 	if (!(node in NAME)) {
 		print "Error: path not found: " node > "/dev/stderr"
@@ -71,43 +56,6 @@ function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 	if (vr == "") vr = "&nbsp;"
 	dsc = qstrip(DATA[dst "/desc"])
 	print "<tr id=" q node q "><td> " nm " <td> " vt " <td> " vr " <td> <a href=" q sy_href(dst) q ">" dsc " -&gt; </a>"
-}
-
-function gen_sub(root, level,    v, n, N, node, dst_children)
-{
-	if (!(root in NAME)) {
-		print "Error: path not found: " root > "/dev/stderr"
-		return
-	}
-	v = children(N, root "/children")
-	for(n = 1; n <= v; n++) {
-		node = N[n]
-		if (TYPE[node] == "symlink") {
-			# normal node symlink: generate a link
-#			print "SY:" node " " DATA[node] "^^^" sy_is_recursive(node) > "/dev/stderr"
-			if (NAME[node] ~ "@dup") {
-				tbl_entry(DATA[node], level)
-				gen_sub(DATA[node], level+1)
-			}
-			else
-				tbl_entry_link(node, DATA[node], level)
-		}
-		else if ((node "/children") in NAME) {
-			tbl_entry(node, level)
-			if (TYPE[node "/children"] == "symlink") {
-				dst_children = DATA[node "/children"]
-				sub("/children$", "", dst_children)
-				gen_sub(dst_children, level+1)
-			}
-			else {
-				gen_sub(node, level+1)
-			}
-		}
-		else if (TYPE[node] == "hash")
-			tbl_entry(node, level)
-		else
-			print "Unhandled child (unknown type): " node > "/dev/stderr"
-	}
 }
 
 function gen_main(path,    v, n, N)
