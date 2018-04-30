@@ -175,16 +175,16 @@
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/vcs"><td> &nbsp;&nbsp;vcs <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> main vcs url for the project 
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/contact"><td> &nbsp;&nbsp;contact <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> author/maintainer contact info 
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files"><td> &nbsp;&nbsp;li:files <td> &nbsp; <td> &nbsp; <td> ordered list of source files being used by the project
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/type"><td> &nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> optional: type of the file; one of: "pcb", "schematic", "doc" 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/path"><td> &nbsp;&nbsp;&nbsp;path <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> path to the file, relative to the project file 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/desc"><td> &nbsp;&nbsp;&nbsp;desc <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> description of the file 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/type"><td> &nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> optional: type of the file; one of: "pcb", "schematic", "doc" 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/NAME"><td> &nbsp;&nbsp;&nbsp;ha:NAME <td> &nbsp; <td> &nbsp; <td> a project member file
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/NAME/children/path"><td> &nbsp;&nbsp;&nbsp;&nbsp;path <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> path to the file, relative to the project file 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/NAME/children/desc"><td> &nbsp;&nbsp;&nbsp;&nbsp;desc <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> description of the file 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/files/children/NAME/children/type"><td> &nbsp;&nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> optional: type of the file; one of: "pcb", "schematic", "doc" 
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs"><td> &nbsp;&nbsp;li:libs <td> &nbsp; <td> &nbsp; <td> ordered list of libraries the project depends on
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/type"><td> &nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation) 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/path"><td> &nbsp;&nbsp;&nbsp;path <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url) 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/url"><td> &nbsp;&nbsp;&nbsp;url <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> url to the library (must not be used together with path) 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/desc"><td> &nbsp;&nbsp;&nbsp;desc <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> description of the library 
-<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/type"><td> &nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation) 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/NAME"><td> &nbsp;&nbsp;&nbsp;ha:NAME <td> &nbsp; <td> &nbsp; <td> a library
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/NAME/children/path"><td> &nbsp;&nbsp;&nbsp;&nbsp;path <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url) 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/NAME/children/url"><td> &nbsp;&nbsp;&nbsp;&nbsp;url <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> url to the library (must not be used together with path) 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/NAME/children/desc"><td> &nbsp;&nbsp;&nbsp;&nbsp;desc <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> description of the library 
+<tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/libs/children/NAME/children/type"><td> &nbsp;&nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation) 
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/pcb-rnd-conf-v1"><td> &nbsp;li:pcb-rnd-conf-v1 <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/roots/pcb-rnd-conf-v1">complete pcb-rnd configuration tree -&gt; </a>
 </table>
 <h3 id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*">li:pcb-rnd-subcircuit-v*</h3>
@@ -196,7 +196,7 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> <a href="#valtype:minuid">minuid</a> <td> &nbsp; <td> UID assigned by the user to track subc history 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_subcircuit"><td> &nbsp;&nbsp;ha:flags_subcircuit <td> &nbsp; <td> &nbsp; <td> flag bits of a subcircuit
+<tr id="/lht_tree_doc/comm/flags_subcircuit"><td> &nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a subcircuit
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/auto"><td> &nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
@@ -225,7 +225,7 @@
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/smirror"><td> &nbsp;&nbsp;&nbsp;smirror <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> 0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_padstack"><td> &nbsp;&nbsp;&nbsp;ha:flags_padstack <td> &nbsp; <td> &nbsp; <td> flag bits of a padstack
+<tr id="/lht_tree_doc/comm/flags_padstack"><td> &nbsp;&nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a padstack
 <tr id="/lht_tree_doc/comm/flags_padstack/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_padstack/children/hole"><td> &nbsp;&nbsp;&nbsp;&nbsp;hole <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
 <tr id="/lht_tree_doc/comm/flags_padstack/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
@@ -305,7 +305,7 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/line.ID/children/clearance"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> copper clearance around the object 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_line <td> &nbsp; <td> &nbsp; <td> flag bits of a line
+<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a line
 <tr id="/lht_tree_doc/comm/flags_line/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_line/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
 <tr id="/lht_tree_doc/comm/flags_line/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
@@ -334,7 +334,7 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/arc.ID/children/adelta"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adelta <td> <a href="#valtype:angle">angle</a> <td> &nbsp; <td>  delta angle
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_arc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_arc <td> &nbsp; <td> &nbsp; <td> flag bits of a arc
+<tr id="/lht_tree_doc/comm/flags_arc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a arc
 <tr id="/lht_tree_doc/comm/flags_arc/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_arc/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
 <tr id="/lht_tree_doc/comm/flags_arc/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
@@ -356,7 +356,7 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/polygon.ID/children/clearance"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> <a href="#valtype:coord">coord</a> <td> >=3 <td> copper clearance around the object 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_polygon"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_polygon <td> &nbsp; <td> &nbsp; <td> flag bits of a polygon
+<tr id="/lht_tree_doc/comm/flags_polygon"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a polygon
 <tr id="/lht_tree_doc/comm/flags_polygon/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_polygon/children/clearpoly"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearpoly <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. 
 <tr id="/lht_tree_doc/comm/flags_polygon/children/fullpoly"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullpoly <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
@@ -387,7 +387,7 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/direction"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> rotation in 90 degree steps (0 is horizontal)
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_text"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_text <td> &nbsp; <td> &nbsp; <td> flag bits of a text
+<tr id="/lht_tree_doc/comm/flags_text"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a text
 <tr id="/lht_tree_doc/comm/flags_text/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_text/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
 <tr id="/lht_tree_doc/comm/flags_text/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
@@ -440,7 +440,7 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> <a href="#valtype:minuid">minuid</a> <td> &nbsp; <td> UID assigned by the user to track subc history 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_subcircuit"><td> &nbsp;&nbsp;ha:flags_subcircuit <td> &nbsp; <td> &nbsp; <td> flag bits of a subcircuit
+<tr id="/lht_tree_doc/comm/flags_subcircuit"><td> &nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a subcircuit
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/auto"><td> &nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
@@ -531,7 +531,7 @@
 <tr id="/lht_tree_doc/comm/data/children/rat.ID/children/lgrp2"><td> &nbsp;&nbsp;lgrp2 <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> second endpoint's layer group ID 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;ha:flags_line <td> &nbsp; <td> &nbsp; <td> flag bits of a line
+<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;ha:flags <td> &nbsp; <td> &nbsp; <td> flag bits of a line
 <tr id="/lht_tree_doc/comm/flags_line/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
 <tr id="/lht_tree_doc/comm/flags_line/children/clearline"><td> &nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
 <tr id="/lht_tree_doc/comm/flags_line/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
