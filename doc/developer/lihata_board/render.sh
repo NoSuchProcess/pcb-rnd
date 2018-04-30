@@ -91,6 +91,16 @@ function get_name(node, ty, level)
 	return nm
 }
 
+function get_valtype(node,    vt)
+{
+	vt = DATA[node "/valtype"]
+	if (vt != "")
+		vt = "<a href=" q "#valtype:" vt q ">" vt "</a>"
+	else
+		vt = "&nbsp;"
+	return vt
+}
+
 function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 {
 	if (!(node in NAME)) {
@@ -99,8 +109,7 @@ function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 	}
 	ty = DATA[node "/type"]
 	nm = get_name(node, ty, level)
-	vt = DATA[node "/valtype"]
-	if (vt == "") vt = "&nbsp;"
+	vt = get_valtype(node)
 	vr = DATA[node "/ver"]
 	if (vr == "") vr = "&nbsp;"
 	dsc = qstrip(DATA[node "/desc"])
@@ -120,8 +129,7 @@ function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 
 	ty = DATA[dst "/type"]
 	nm = get_name(node, ty, level)
-	vt = DATA[dst "/valtype"]
-	if (vt == "") vt = "&nbsp;"
+	vt = get_valtype(dst)
 	vr = DATA[dst "/ver"]
 	if (vr == "") vr = "&nbsp;"
 	dsc = qstrip(DATA[dst "/desc"])
