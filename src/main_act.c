@@ -331,7 +331,7 @@ static void dumpoflg(void *ctx, unsigned long flg, const char *name)
 
 int pcb_act_DumpObjFlags(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	unsigned long ot, max = (1l<<31);
+	unsigned long ot, max = PCB_OBJ_CLASS_REAL + 1;
 
 	for(ot = 1; ot < max; ot <<= 1) {
 		const char *name = pcb_obj_type_name(ot);
