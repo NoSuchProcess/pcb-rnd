@@ -112,6 +112,41 @@ li:pcb-rnd-font-v1                font description
       adelta          angle       delta angle
      li:simplepoly.ID             round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords)
 
+ha:menu
+
+type:name            value ver description
+ha:                            Menu file
+ li:mouse                      mouse bindings
+  li:left                      actions to execute on left button click
+   li:press                    actions to execute on mouse button press when no modifier is pressed
+   li:press-shift              actions to execute on mouse button press when shift is pressed
+   li:press-ctrl               actions to execute on mouse button press when control is pressed
+   li:release                  actions to execute on mouse button release when no modifier is pressed
+   li:release-shift            actions to execute on mouse button release when shift is pressed
+   li:release-ctrl             actions to execute on mouse button release when control is pressed
+  li:middle                    actions to execute on middle button click
+   li:press                    actions to execute on mouse button press when no modifier is pressed
+   li:press-shift              actions to execute on mouse button press when shift is pressed
+   li:press-ctrl               actions to execute on mouse button press when control is pressed
+   li:release                  actions to execute on mouse button release when no modifier is pressed
+   li:release-shift            actions to execute on mouse button release when shift is pressed
+   li:release-ctrl             actions to execute on mouse button release when control is pressed
+  li:right                     actions to execute on right button click
+   li:press                    actions to execute on mouse button press when no modifier is pressed
+   li:press-shift              actions to execute on mouse button press when shift is pressed
+   li:press-ctrl               actions to execute on mouse button press when control is pressed
+   li:release                  actions to execute on mouse button release when no modifier is pressed
+   li:release-shift            actions to execute on mouse button release when shift is pressed
+   li:release-ctrl             actions to execute on mouse button release when control is pressed
+  li:scroll-up                 actions to execute on scroll wheel scolling up event
+   li:press                    actions to execute on mouse button press when no modifier is pressed
+   li:press-shift              actions to execute on mouse button press when shift is pressed
+   li:press-ctrl               actions to execute on mouse button press when control is pressed
+  li:scroll-down               actions to execute on scroll wheel scolling down event
+   li:press                    actions to execute on mouse button press when no modifier is pressed
+   li:press-shift              actions to execute on mouse button press when shift is pressed
+   li:press-ctrl               actions to execute on mouse button press when control is pressed
+
 ha:geda-project-v1
 
 type:name           value  ver description

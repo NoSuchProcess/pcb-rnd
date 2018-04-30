@@ -1,0 +1,65 @@
+ha:lht_tree_doc {
+
+ha:roots {
+	ha:menu {
+		type=ha
+		name={}
+		desc={Menu file}
+		li:children {
+			ha:mouse {
+				type=li
+				desc={mouse bindings}
+				li:children {
+					ha:left {
+						type=li
+						desc={actions to execute on left button click}
+						sy:children = {/lht_tree_doc/comm/mouse_actions/children}
+					}
+					ha:middle {
+						type=li
+						desc={actions to execute on middle button click}
+						sy:children = {/lht_tree_doc/comm/mouse_actions/children}
+					}
+					ha:right {
+						type=li
+						desc={actions to execute on right button click}
+						sy:children = {/lht_tree_doc/comm/mouse_actions/children}
+					}
+					ha:scroll-up {
+						type=li
+						desc={actions to execute on scroll wheel scolling up event}
+						sy:children = {/lht_tree_doc/comm/mouse_actions_scroll/children}
+					}
+					ha:scroll-down {
+						type=li
+						desc={actions to execute on scroll wheel scolling down event}
+						sy:children = {/lht_tree_doc/comm/mouse_actions_scroll/children}
+					}
+				}
+			}
+		}
+	}
+}
+
+ha:comm {
+	ha:mouse_actions {
+		hide=1
+		li:children {
+			ha:press         { type=li; desc={actions to execute on mouse button press when no modifier is pressed} }
+			ha:press-shift   { type=li; desc={actions to execute on mouse button press when shift is pressed} }
+			ha:press-ctrl    { type=li; desc={actions to execute on mouse button press when control is pressed} }
+			ha:release       { type=li; desc={actions to execute on mouse button release when no modifier is pressed} }
+			ha:release-shift { type=li; desc={actions to execute on mouse button release when shift is pressed} }
+			ha:release-ctrl  { type=li; desc={actions to execute on mouse button release when control is pressed} }
+		}
+	}
+	ha:mouse_actions_scroll {
+		hide=1
+		li:children {
+			ha:press         { type=li; desc={actions to execute on mouse button press when no modifier is pressed} }
+			ha:press-shift   { type=li; desc={actions to execute on mouse button press when shift is pressed} }
+			ha:press-ctrl    { type=li; desc={actions to execute on mouse button press when control is pressed} }
+		}
+	}
+}
+}
