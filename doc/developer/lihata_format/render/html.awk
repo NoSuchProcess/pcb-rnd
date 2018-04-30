@@ -1,5 +1,10 @@
 BEGIN {
+	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
 	print "<html>"
+	print "<head>"
+	print "<title> pcb-rnd developer manual - lihata file formats</title>"
+	print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=us-ascii\">"
+	print "</head>"
 	print "<body>"
 }
 
