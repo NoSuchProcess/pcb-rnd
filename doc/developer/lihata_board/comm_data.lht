@@ -21,7 +21,7 @@ ha:lht_tree_doc { ha:comm {
 							ha:xmirror    = { valtype=integer; desc={0 or 1; if 1, mirror all shapes over the x (horizontal) axis (so that y coords are flipped)}}
 							ha:smirror    = { valtype=integer; desc={0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")}}
 							sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-							sy:flags@dup  = {/lht_tree_doc/comm/flags_pstk}
+							sy:flags@dup  = {/lht_tree_doc/comm/flags_padstack}
 							ha:thermal {
 								type=li
 								desc { list of thermal shapes, per layer }

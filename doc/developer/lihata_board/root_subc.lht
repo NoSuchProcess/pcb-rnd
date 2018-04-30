@@ -11,7 +11,7 @@ ha:lht_tree_doc { ha:roots {
 				li:children {
 					ha:uid        = { valtype=minuid;   desc={UID assigned by the user to track subc history }}
 					sy:attr@dup   = {/lht_tree_doc/comm/attributes}
-					sy:flags@dup  = {/lht_tree_doc/comm/flags_subc}
+					sy:flags@dup  = {/lht_tree_doc/comm/flags_subcircuit}
 					sy:data       = {/lht_tree_doc/comm/data}
 				}
 			}

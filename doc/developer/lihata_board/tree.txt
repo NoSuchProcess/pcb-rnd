@@ -100,14 +100,22 @@ li:pcb-rnd-font-v1             font description
 
 li:pcb-rnd-subcircuit-v*
 
-type:name                 value  ver description
-li:pcb-rnd-subcircuit-v*             footprint file containing a single subcircuit
- ha:subc.ID                      >=3 an instance (full copy) of a subcircuit
-  uid                     minuid     UID assigned by the user to track subc history
-  ha:attributes                      a hash of attribute key=value pairs
-   attrib-key             string     attribute value
-  flags_subc                      
-  ha:data                            Layers and global objects of the board ->
+type:name                value  ver description
+li:pcb-rnd-subcircuit-v*            footprint file containing a single subcircuit
+ ha:subc.ID                     >=3 an instance (full copy) of a subcircuit
+  uid                    minuid     UID assigned by the user to track subc history
+  ha:attributes                     a hash of attribute key=value pairs
+   attrib-key            string     attribute value
+  ha:flags_subcircuit               flag bits of a subcircuit
+   found                 flag       If set, this object has been found by FindConnection()
+   selected              flag       Set when the object is selected.
+   auto                  flag       For lines and vias, indicates that these were created by the autorouter.
+   drc                   flag       Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   lock                  flag       Set for locked objects.
+   nonetlist             flag       subcircuit is not on the netlist and should not interfere with the netlist
+   termname              flag       when set the names of pins are shown.
+   floater               flag       subc part can be moved after subc placing
+  ha:data                           Layers and global objects of the board ->
 
 Common subtrees
 
@@ -128,7 +136,19 @@ ha:data                              Layers and global objects of the board
    smirror              integer      0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")
    ha:attributes                     a hash of attribute key=value pairs
     attrib-key          string       attribute value
-   flags_pstk                     
+   ha:flags_padstack                 flag bits of a padstack
+    found               flag         If set, this object has been found by FindConnection()
+    hole                flag         For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+    clearline           flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+    selected            flag         Set when the object is selected.
+    auto                flag         For lines and vias, indicates that these were created by the autorouter.
+    warn                flag         For pins, vias, and pads, set to indicate a warning.
+    usetherm            flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+    drc                 flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+    lock                flag         Set for locked objects.
+    nonetlist           flag         subcircuit is not on the netlist and should not interfere with the netlist
+    termname            flag         when set the names of pins are shown.
+    floater             flag         subc part can be moved after subc placing
    li:thermal                        list of thermal shapes, per layer
     li:LAYERID                       integer layer ID the thermal affects; each word is a boolean flag that is either present on the list or is missing; only one shape may be present
      on                 none         thermal is present on this layer; if not present, all other thermal flags are ignored on this layer
@@ -148,7 +168,21 @@ ha:data                              Layers and global objects of the board
    number               string       for a pin (or to-be-pin) this is the terminal ID
    ha:attributes                     a hash of attribute key=value pairs
     attrib-key          string       attribute value
-   flags_pinvia                   
+   ha:flags_pinvia                   flag bits of a pin or via
+    found               flag         If set, this object has been found by FindConnection()
+    hole                flag         For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+    clearline           flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+    selected            flag         Set when the object is selected.
+    auto                flag         For lines and vias, indicates that these were created by the autorouter.
+    warn                flag         For pins, vias, and pads, set to indicate a warning.
+    usetherm            flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+    drc                 flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+    lock                flag         Set for locked objects.
+    nonetlist           flag         subcircuit is not on the netlist and should not interfere with the netlist
+    termname            flag         when set the names of pins are shown.
+    floater             flag         subc part can be moved after subc placing
+    pin                 flag         object is a pin (in an element)
+    via                 flag         object is a via
  li:layers                           ordered list of layers; v1 required the order to be top-bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non-bound) layers have attributes)
   ha:NAME                            a logical layer
    lid                  integer  >=2 layer ID
@@ -182,7 +216,18 @@ ha:data                              Layers and global objects of the board
      clearance          coord        copper clearance around the object
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
-     flags_line                   
+     ha:flags_line                   flag bits of a line
+      found             flag         If set, this object has been found by FindConnection()
+      clearline         flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+      selected          flag         Set when the object is selected.
+      auto              flag         For lines and vias, indicates that these were created by the autorouter.
+      rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
+      usetherm          flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      lock              flag         Set for locked objects.
+      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
+      termname          flag         when set the names of pins are shown.
+      floater           flag         subc part can be moved after subc placing
      li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
       on                none         draw any thermal only if this string is present; else normal clearance is applied
       diag              none         if present, the thermal is diagonal (45 degree rotated)
@@ -200,7 +245,18 @@ ha:data                              Layers and global objects of the board
      adelta             angle        delta angle
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
-     flags_arc                    
+     ha:flags_arc                    flag bits of a arc
+      found             flag         If set, this object has been found by FindConnection()
+      clearline         flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+      selected          flag         Set when the object is selected.
+      auto              flag         For lines and vias, indicates that these were created by the autorouter.
+      rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
+      usetherm          flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      lock              flag         Set for locked objects.
+      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
+      termname          flag         when set the names of pins are shown.
+      floater           flag         subc part can be moved after subc placing
      li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
       on                none         draw any thermal only if this string is present; else normal clearance is applied
       diag              none         if present, the thermal is diagonal (45 degree rotated)
@@ -211,7 +267,18 @@ ha:data                              Layers and global objects of the board
      clearance          coord    >=3 copper clearance around the object
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
-     flags_polygon                
+     ha:flags_polygon                flag bits of a polygon
+      found             flag         If set, this object has been found by FindConnection()
+      clearpoly         flag         For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection). When clear, polygons will solidly connect to pins and vias.
+      fullpoly          flag         For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
+      selected          flag         Set when the object is selected.
+      auto              flag         For lines and vias, indicates that these were created by the autorouter.
+      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      lock              flag         Set for locked objects.
+      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
+      termname          flag         when set the names of pins are shown.
+      clearpolypoly     flag         For polygons, apply clearance to nearby polygons
+      floater           flag         subc part can be moved after subc placing
      li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
       on                none         draw any thermal only if this string is present; else normal clearance is applied
       diag              none         if present, the thermal is diagonal (45 degree rotated)
@@ -231,7 +298,18 @@ ha:data                              Layers and global objects of the board
      direction          integer      rotation in 90 degree steps (0 is horizontal)
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
-     flags_text                   
+     ha:flags_text                   flag bits of a text
+      found             flag         If set, this object has been found by FindConnection()
+      clearline         flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+      selected          flag         Set when the object is selected.
+      onsolder          flag         For text, indicates that it is on the solder side.
+      auto              flag         For lines and vias, indicates that these were created by the autorouter.
+      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      lock              flag         Set for locked objects.
+      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
+      termname          flag         when set the names of pins are shown.
+      dyntext           flag         For text: dynamic string (substitute %patterns%)
+      floater           flag         subc part can be moved after subc placing
  li:padstack_prototypes          >=4
   unused                none         placeholder for markign uunsed slot to keep slot indices for early lihata v4
   ha:ps_proto_v4.PID                 padstack prototype specification, as introduced in lihata board v4
@@ -274,14 +352,31 @@ ha:data                              Layers and global objects of the board
   uid                   minuid       UID assigned by the user to track subc history
   ha:attributes                      a hash of attribute key=value pairs
    attrib-key           string       attribute value
-  flags_subc                      
+  ha:flags_subcircuit                flag bits of a subcircuit
+   found                flag         If set, this object has been found by FindConnection()
+   selected             flag         Set when the object is selected.
+   auto                 flag         For lines and vias, indicates that these were created by the autorouter.
+   drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   lock                 flag         Set for locked objects.
+   nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist
+   termname             flag         when set the names of pins are shown.
+   floater              flag         subc part can be moved after subc placing
   ha:data                            Layers and global objects of the board ->
  ha:element.ID                   <3  an instance (full copy) of an obsolete element footprint
   x                     coord        element origin (diamond), horizontal offset
   y                     coord        element origin (diamond), vertical offset
   ha:attributes                      a hash of attribute key=value pairs
    attrib-key           string       attribute value
-  flags_element                   
+  ha:flags_element                   flag bits of an element
+   found                flag         If set, this object has been found by FindConnection()
+   selected             flag         Set when the object is selected.
+   auto                 flag         For lines and vias, indicates that these were created by the autorouter.
+   drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   lock                 flag         Set for locked objects.
+   nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist
+   termname             flag         when set the names of pins are shown.
+   floater              flag         subc part can be moved after subc placing
+   onsolder             flag         element is placed on the solder side
   li:objects                         list of special objects that make up the element; lines and arcs are always on a silk layer
    ha:line.ID                        round cap line ->
    ha:arc.ID                         round cap elliptic arc (only width==height is fully supported at the moment) ->
@@ -298,7 +393,21 @@ ha:data                              Layers and global objects of the board
     number              string       "pin number" for the netlist
     ha:attributes                    a hash of attribute key=value pairs
      attrib-key         string       attribute value
-    flags_pad                     
+    ha:flags_pad                     flag bits of a pad
+     found              flag         If set, this object has been found by FindConnection()
+     hole               flag         For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+     clearline          flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+     selected           flag         Set when the object is selected.
+     auto               flag         For lines and vias, indicates that these were created by the autorouter.
+     warn               flag         For pins, vias, and pads, set to indicate a warning.
+     usetherm           flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+     drc                flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+     lock               flag         Set for locked objects.
+     nonetlist          flag         subcircuit is not on the netlist and should not interfere with the netlist
+     termname           flag         when set the names of pins are shown.
+     floater            flag         subc part can be moved after subc placing
+     pin                flag         object is a pin (in an element)
+     via                flag         object is a via
    ha:pin.ID                         thru-hole pin; emulated as an old-style via
     x                   coord        place padstack with origin at this horizontal coordinate
     y                   coord        place padstack with origin at this vertical coordinate
@@ -310,7 +419,21 @@ ha:data                              Layers and global objects of the board
     number              string       for a pin (or to-be-pin) this is the terminal ID
     ha:attributes                    a hash of attribute key=value pairs
      attrib-key         string       attribute value
-    flags_pinvia                  
+    ha:flags_pinvia                  flag bits of a pin or via
+     found              flag         If set, this object has been found by FindConnection()
+     hole               flag         For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+     clearline          flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+     selected           flag         Set when the object is selected.
+     auto               flag         For lines and vias, indicates that these were created by the autorouter.
+     warn               flag         For pins, vias, and pads, set to indicate a warning.
+     usetherm           flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+     drc                flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+     lock               flag         Set for locked objects.
+     nonetlist          flag         subcircuit is not on the netlist and should not interfere with the netlist
+     termname           flag         when set the names of pins are shown.
+     floater            flag         subc part can be moved after subc placing
+     pin                flag         object is a pin (in an element)
+     via                flag         object is a via
  ha:rat.ID                           global rat line
   x1                    coord        line first endpoint, horizontal offset
   y1                    coord        line first endpoint, vertical offset
@@ -320,7 +443,18 @@ ha:data                              Layers and global objects of the board
   lgrp2                 integer      second endpoint's layer group ID
   ha:attributes                      a hash of attribute key=value pairs
    attrib-key           string       attribute value
-  flags_line                      
+  ha:flags_line                      flag bits of a line
+   found                flag         If set, this object has been found by FindConnection()
+   clearline            flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+   selected             flag         Set when the object is selected.
+   auto                 flag         For lines and vias, indicates that these were created by the autorouter.
+   rubberend            flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
+   usetherm             flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+   drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   lock                 flag         Set for locked objects.
+   nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist
+   termname             flag         when set the names of pins are shown.
+   floater              flag         subc part can be moved after subc placing
 
 Types
 

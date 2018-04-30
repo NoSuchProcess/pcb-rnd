@@ -111,7 +111,15 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> <a href="#valtype:minuid">minuid</a> <td> &nbsp; <td> UID assigned by the user to track subc history 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_subc"><td> &nbsp;&nbsp;flags_subc <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_subcircuit"><td> &nbsp;&nbsp;ha:flags_subcircuit <td> &nbsp; <td> &nbsp; <td> flag bits of a subcircuit
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/auto"><td> &nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/drc"><td> &nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/lock"><td> &nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/termname"><td> &nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/floater"><td> &nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/data"><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
 </table>
 <h2> Common subtrees </h2>
@@ -132,7 +140,19 @@
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/smirror"><td> &nbsp;&nbsp;&nbsp;smirror <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> 0 or 1; if 1, mirror the layer stackup: bottom becomes top, top becomes bottom (a.k.a. "place on the other side")
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_pstk"><td> &nbsp;&nbsp;&nbsp;flags_pstk <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_padstack"><td> &nbsp;&nbsp;&nbsp;ha:flags_padstack <td> &nbsp; <td> &nbsp; <td> flag bits of a padstack
+<tr id="/lht_tree_doc/comm/flags_padstack/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_padstack/children/hole"><td> &nbsp;&nbsp;&nbsp;&nbsp;hole <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/warn"><td> &nbsp;&nbsp;&nbsp;&nbsp;warn <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins, vias, and pads, set to indicate a warning.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/usetherm"><td> &nbsp;&nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_padstack/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_padstack/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal"><td> &nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal shapes, per layer 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID"><td> &nbsp;&nbsp;&nbsp;&nbsp;li:LAYERID <td> &nbsp; <td> &nbsp; <td>  integer layer ID the thermal affects; each word is a boolean flag that is either present on the list or is missing; only one shape may be present 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID/children/on"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> <a href="#valtype:none">none</a> <td> &nbsp; <td>  thermal is present on this layer; if not present, all other thermal flags are ignored on this layer 
@@ -152,7 +172,21 @@
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID/children/number"><td> &nbsp;&nbsp;&nbsp;number <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> for a pin (or to-be-pin) this is the terminal ID 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_pinvia"><td> &nbsp;&nbsp;&nbsp;flags_pinvia <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_pinvia"><td> &nbsp;&nbsp;&nbsp;ha:flags_pinvia <td> &nbsp; <td> &nbsp; <td> flag bits of a pin or via
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/hole"><td> &nbsp;&nbsp;&nbsp;&nbsp;hole <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/warn"><td> &nbsp;&nbsp;&nbsp;&nbsp;warn <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins, vias, and pads, set to indicate a warning.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/usetherm"><td> &nbsp;&nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/pin"><td> &nbsp;&nbsp;&nbsp;&nbsp;pin <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> object is a pin (in an element)
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/via"><td> &nbsp;&nbsp;&nbsp;&nbsp;via <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> object is a via
 <tr id="/lht_tree_doc/comm/data/children/layers"><td> &nbsp;li:layers <td> &nbsp; <td> &nbsp; <td> ordered list of layers; v1 required the order to be top-bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non-bound) layers have attributes)
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME"><td> &nbsp;&nbsp;ha:NAME <td> &nbsp; <td> &nbsp; <td> a logical layer
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/lid"><td> &nbsp;&nbsp;&nbsp;lid <td> <a href="#valtype:integer">integer</a> <td> >=2 <td> layer ID
@@ -186,7 +220,18 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/line.ID/children/clearance"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> copper clearance around the object 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_line <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_line <td> &nbsp; <td> &nbsp; <td> flag bits of a line
+<tr id="/lht_tree_doc/comm/flags_line/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_line/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_line/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_line/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_line/children/rubberend"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rubberend <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines, used internally for rubber band moves: indicates one end already rubber banding.
+<tr id="/lht_tree_doc/comm/flags_line/children/usetherm"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_line/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_line/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_line/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_line/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_line/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/comm/thermal_heavy"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal flags for heavy terminals, on the single layer the object is on 
 <tr id="/lht_tree_doc/comm/thermal_heavy/children/on"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> draw any thermal only if this string is present; else normal clearance is applied
 <tr id="/lht_tree_doc/comm/thermal_heavy/children/diag"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> if present, the thermal is diagonal (45 degree rotated)
@@ -204,7 +249,18 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/arc.ID/children/adelta"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adelta <td> <a href="#valtype:angle">angle</a> <td> &nbsp; <td>  delta angle
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_arc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_arc <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_arc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_arc <td> &nbsp; <td> &nbsp; <td> flag bits of a arc
+<tr id="/lht_tree_doc/comm/flags_arc/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_arc/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_arc/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_arc/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_arc/children/rubberend"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rubberend <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines, used internally for rubber band moves: indicates one end already rubber banding.
+<tr id="/lht_tree_doc/comm/flags_arc/children/usetherm"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_arc/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_arc/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_arc/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_arc/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_arc/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/comm/thermal_heavy"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal flags for heavy terminals, on the single layer the object is on 
 <tr id="/lht_tree_doc/comm/thermal_heavy/children/on"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> draw any thermal only if this string is present; else normal clearance is applied
 <tr id="/lht_tree_doc/comm/thermal_heavy/children/diag"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> if present, the thermal is diagonal (45 degree rotated)
@@ -215,7 +271,18 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/polygon.ID/children/clearance"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> <a href="#valtype:coord">coord</a> <td> >=3 <td> copper clearance around the object 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_polygon"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_polygon <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_polygon"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_polygon <td> &nbsp; <td> &nbsp; <td> flag bits of a polygon
+<tr id="/lht_tree_doc/comm/flags_polygon/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_polygon/children/clearpoly"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearpoly <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. 
+<tr id="/lht_tree_doc/comm/flags_polygon/children/fullpoly"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullpoly <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
+<tr id="/lht_tree_doc/comm/flags_polygon/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_polygon/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_polygon/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_polygon/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_polygon/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_polygon/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_polygon/children/clearpolypoly"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearpolypoly <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For polygons, apply clearance to nearby polygons
+<tr id="/lht_tree_doc/comm/flags_polygon/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/comm/thermal_heavy"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal flags for heavy terminals, on the single layer the object is on 
 <tr id="/lht_tree_doc/comm/thermal_heavy/children/on"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> draw any thermal only if this string is present; else normal clearance is applied
 <tr id="/lht_tree_doc/comm/thermal_heavy/children/diag"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> if present, the thermal is diagonal (45 degree rotated)
@@ -235,7 +302,18 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/direction"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> rotation in 90 degree steps (0 is horizontal)
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_text"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_text <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_text"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:flags_text <td> &nbsp; <td> &nbsp; <td> flag bits of a text
+<tr id="/lht_tree_doc/comm/flags_text/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_text/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_text/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_text/children/onsolder"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onsolder <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For text, indicates that it is on the solder side.
+<tr id="/lht_tree_doc/comm/flags_text/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_text/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_text/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_text/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_text/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_text/children/dyntext"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dyntext <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For text: dynamic string (substitute %patterns%)
+<tr id="/lht_tree_doc/comm/flags_text/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes"><td> &nbsp;li:padstack_prototypes <td> &nbsp; <td> >=4 <td> 
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/unused"><td> &nbsp;&nbsp;unused <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> placeholder for markign uunsed slot to keep slot indices for early lihata v4 
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID"><td> &nbsp;&nbsp;ha:ps_proto_v4.PID <td> &nbsp; <td> &nbsp; <td> padstack prototype specification, as introduced in lihata board v4
@@ -277,14 +355,31 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> <a href="#valtype:minuid">minuid</a> <td> &nbsp; <td> UID assigned by the user to track subc history 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_subc"><td> &nbsp;&nbsp;flags_subc <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_subcircuit"><td> &nbsp;&nbsp;ha:flags_subcircuit <td> &nbsp; <td> &nbsp; <td> flag bits of a subcircuit
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/auto"><td> &nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/drc"><td> &nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/lock"><td> &nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/termname"><td> &nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_subcircuit/children/floater"><td> &nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/data"><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
 <tr id="/lht_tree_doc/comm/data/children/element.ID"><td> &nbsp;ha:element.ID <td> &nbsp; <td> <3 <td> an instance (full copy) of an obsolete element footprint
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/x"><td> &nbsp;&nbsp;x <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> element origin (diamond), horizontal offset 
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/y"><td> &nbsp;&nbsp;y <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> element origin (diamond), vertical offset 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_element"><td> &nbsp;&nbsp;flags_element <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_element"><td> &nbsp;&nbsp;ha:flags_element <td> &nbsp; <td> &nbsp; <td> flag bits of an element
+<tr id="/lht_tree_doc/comm/flags_element/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_element/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_element/children/auto"><td> &nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_element/children/drc"><td> &nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_element/children/lock"><td> &nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_element/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_element/children/termname"><td> &nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_element/children/floater"><td> &nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
+<tr id="/lht_tree_doc/comm/flags_element/children/onsolder"><td> &nbsp;&nbsp;&nbsp;onsolder <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> element is placed on the solder side
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/objects"><td> &nbsp;&nbsp;li:objects <td> &nbsp; <td> &nbsp; <td> list of special objects that make up the element; lines and arcs are always on a silk layer
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/objects/children/line.ID"><td> &nbsp;&nbsp;&nbsp;ha:line.ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/line.ID">round cap line -&gt; </a>
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/objects/children/arc.ID"><td> &nbsp;&nbsp;&nbsp;ha:arc.ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/arc.ID">round cap elliptic arc (only width==height is fully supported at the moment) -&gt; </a>
@@ -301,7 +396,21 @@
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/objects/children/pad.ID/children/number"><td> &nbsp;&nbsp;&nbsp;&nbsp;number <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> "pin number" for the netlist
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_pad"><td> &nbsp;&nbsp;&nbsp;&nbsp;flags_pad <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_pad"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:flags_pad <td> &nbsp; <td> &nbsp; <td> flag bits of a pad
+<tr id="/lht_tree_doc/comm/flags_pad/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_pad/children/hole"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hole <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+<tr id="/lht_tree_doc/comm/flags_pad/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_pad/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_pad/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_pad/children/warn"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;warn <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins, vias, and pads, set to indicate a warning.
+<tr id="/lht_tree_doc/comm/flags_pad/children/usetherm"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_pad/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_pad/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_pad/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_pad/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_pad/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
+<tr id="/lht_tree_doc/comm/flags_pad/children/pin"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pin <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> object is a pin (in an element)
+<tr id="/lht_tree_doc/comm/flags_pad/children/via"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;via <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> object is a via
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/objects/children/pin.ID"><td> &nbsp;&nbsp;&nbsp;ha:pin.ID <td> &nbsp; <td> &nbsp; <td> thru-hole pin; emulated as an old-style via 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID/children/x"><td> &nbsp;&nbsp;&nbsp;&nbsp;x <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> place padstack with origin at this horizontal coordinate 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID/children/y"><td> &nbsp;&nbsp;&nbsp;&nbsp;y <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> place padstack with origin at this vertical coordinate 
@@ -313,7 +422,21 @@
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID/children/number"><td> &nbsp;&nbsp;&nbsp;&nbsp;number <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> for a pin (or to-be-pin) this is the terminal ID 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_pinvia"><td> &nbsp;&nbsp;&nbsp;&nbsp;flags_pinvia <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_pinvia"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:flags_pinvia <td> &nbsp; <td> &nbsp; <td> flag bits of a pin or via
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/found"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/hole"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hole <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins and vias, this flag means that the pin or via is a hole without a copper annulus.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/clearline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/selected"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/warn"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;warn <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For pins, vias, and pads, set to indicate a warning.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/usetherm"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/drc"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/lock"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/termname"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/floater"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/pin"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pin <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> object is a pin (in an element)
+<tr id="/lht_tree_doc/comm/flags_pinvia/children/via"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;via <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> object is a via
 <tr id="/lht_tree_doc/comm/data/children/rat.ID"><td> &nbsp;ha:rat.ID <td> &nbsp; <td> &nbsp; <td> global rat line
 <tr id="/lht_tree_doc/comm/data/children/rat.ID/children/x1"><td> &nbsp;&nbsp;x1 <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> line first endpoint, horizontal offset 
 <tr id="/lht_tree_doc/comm/data/children/rat.ID/children/y1"><td> &nbsp;&nbsp;y1 <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> line first endpoint, vertical offset 
@@ -323,7 +446,18 @@
 <tr id="/lht_tree_doc/comm/data/children/rat.ID/children/lgrp2"><td> &nbsp;&nbsp;lgrp2 <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> second endpoint's layer group ID 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
-<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;flags_line <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/comm/flags_line"><td> &nbsp;&nbsp;ha:flags_line <td> &nbsp; <td> &nbsp; <td> flag bits of a line
+<tr id="/lht_tree_doc/comm/flags_line/children/found"><td> &nbsp;&nbsp;&nbsp;found <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> If set, this object has been found by FindConnection()
+<tr id="/lht_tree_doc/comm/flags_line/children/clearline"><td> &nbsp;&nbsp;&nbsp;clearline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+<tr id="/lht_tree_doc/comm/flags_line/children/selected"><td> &nbsp;&nbsp;&nbsp;selected <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set when the object is selected.
+<tr id="/lht_tree_doc/comm/flags_line/children/auto"><td> &nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines and vias, indicates that these were created by the autorouter.
+<tr id="/lht_tree_doc/comm/flags_line/children/rubberend"><td> &nbsp;&nbsp;&nbsp;rubberend <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> For lines, used internally for rubber band moves: indicates one end already rubber banding.
+<tr id="/lht_tree_doc/comm/flags_line/children/usetherm"><td> &nbsp;&nbsp;&nbsp;usetherm <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Obsolete, indicates that pins/vias should be drawn with thermal fingers.
+<tr id="/lht_tree_doc/comm/flags_line/children/drc"><td> &nbsp;&nbsp;&nbsp;drc <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+<tr id="/lht_tree_doc/comm/flags_line/children/lock"><td> &nbsp;&nbsp;&nbsp;lock <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> Set for locked objects.
+<tr id="/lht_tree_doc/comm/flags_line/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
+<tr id="/lht_tree_doc/comm/flags_line/children/termname"><td> &nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
+<tr id="/lht_tree_doc/comm/flags_line/children/floater"><td> &nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 </table>
 <h2 id="types"> Types </h2>
 <p>
