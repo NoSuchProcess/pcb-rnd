@@ -12,7 +12,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -31,7 +30,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -49,7 +47,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:clearpolypoly { valtype=flag; desc={For polygons, apply clearance to nearby polygons}}
@@ -68,7 +65,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:dyntext { valtype=flag; desc={For text: dynamic string (substitute %patterns%)}}
@@ -85,7 +81,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -105,7 +100,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -122,7 +116,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
 		}
