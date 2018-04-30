@@ -97,7 +97,7 @@ function tbl_entry(node, level     ,nm,vt,dsc,ty,vr)
 	vr = DATA[node "/ver"]
 	if (vr == "") vr = "&nbsp;"
 	dsc = qstrip(DATA[node "/desc"])
-	print "<tr><td> " nm " <td> " vt " <td> " vr " <td> " dsc
+	print "<tr id=" q node q "><td> " nm " <td> " vt " <td> " vr " <td> " dsc
 }
 
 function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
@@ -118,7 +118,7 @@ function tbl_entry_link(node, dst, level     ,nm,vt,dsc,ty,vr)
 	vr = DATA[dst "/ver"]
 	if (vr == "") vr = "&nbsp;"
 	dsc = qstrip(DATA[dst "/desc"])
-	print "<tr><td> " nm " <td> " vt " <td> " vr " <td> <a href=" q sy_href(dst) q ">" dsc " -&gt; </a>"
+	print "<tr id=" q node q "><td> " nm " <td> " vt " <td> " vr " <td> <a href=" q sy_href(dst) q ">" dsc " -&gt; </a>"
 }
 
 function gen_sub(root, level,    v, n, N, node, dst_children)
