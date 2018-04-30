@@ -155,8 +155,12 @@ ha:data                              Layers and global objects of the board
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
      flags_line                   
-     ha:thermal_heavy                optional thermal flags for heavy terminals
-      attrib-key        string       attribute value
+     li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
+      on                none         draw any thermal only if this string is present; else normal clearance is applied
+      diag              none         if present, the thermal is diagonal (45 degree rotated)
+      round             none         if present, thermal shape is rounded
+      sharp             none         if present, thermal shape is sharp
+      solid             none         if present, there is no thermal but a solid connection ("join")
     ha:arc.ID                        round cap elliptic arc (only width==height is fully supported at the moment)
      x                  coord        center, X coord
      y                  coord        center, Y coord
@@ -169,15 +173,23 @@ ha:data                              Layers and global objects of the board
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
      flags_arc                    
-     ha:thermal_heavy                optional thermal flags for heavy terminals
-      attrib-key        string       attribute value
+     li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
+      on                none         draw any thermal only if this string is present; else normal clearance is applied
+      diag              none         if present, the thermal is diagonal (45 degree rotated)
+      round             none         if present, thermal shape is rounded
+      sharp             none         if present, thermal shape is sharp
+      solid             none         if present, there is no thermal but a solid connection ("join")
     ha:polygon.ID                    polygon, as drawn (unclipped)
      clearance          coord    >=3 copper clearance around the object
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
      flags_polygon                
-     ha:thermal_heavy                optional thermal flags for heavy terminals
-      attrib-key        string       attribute value
+     li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
+      on                none         draw any thermal only if this string is present; else normal clearance is applied
+      diag              none         if present, the thermal is diagonal (45 degree rotated)
+      round             none         if present, thermal shape is rounded
+      sharp             none         if present, thermal shape is sharp
+      solid             none         if present, there is no thermal but a solid connection ("join")
      li:geometry                     first item is the outer contour, subsequent, optional items are holes
       contour           coordtbl     2 column table of x;y coords for the outer contour
       hole              coordtbl     2 column table of x;y coords for a hole

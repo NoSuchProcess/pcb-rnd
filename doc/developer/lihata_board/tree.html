@@ -158,8 +158,12 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_line <td> &nbsp; <td> &nbsp; <td> 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:thermal_heavy <td> &nbsp; <td> &nbsp; <td>  optional thermal flags for heavy terminals 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal flags for heavy terminals, on the single layer the object is on 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> none <td> &nbsp; <td> draw any thermal only if this string is present; else normal clearance is applied
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> none <td> &nbsp; <td> if present, the thermal is diagonal (45 degree rotated)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;round <td> none <td> &nbsp; <td> if present, thermal shape is rounded
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sharp <td> none <td> &nbsp; <td> if present, thermal shape is sharp
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;solid <td> none <td> &nbsp; <td> if present, there is no thermal but a solid connection ("join")
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:arc.ID <td> &nbsp; <td> &nbsp; <td> round cap elliptic arc (only width==height is fully supported at the moment)
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> center, X coord
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> center, Y coord
@@ -172,15 +176,23 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_arc <td> &nbsp; <td> &nbsp; <td> 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:thermal_heavy <td> &nbsp; <td> &nbsp; <td>  optional thermal flags for heavy terminals 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal flags for heavy terminals, on the single layer the object is on 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> none <td> &nbsp; <td> draw any thermal only if this string is present; else normal clearance is applied
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> none <td> &nbsp; <td> if present, the thermal is diagonal (45 degree rotated)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;round <td> none <td> &nbsp; <td> if present, thermal shape is rounded
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sharp <td> none <td> &nbsp; <td> if present, thermal shape is sharp
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;solid <td> none <td> &nbsp; <td> if present, there is no thermal but a solid connection ("join")
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:polygon.ID <td> &nbsp; <td> &nbsp; <td> polygon, as drawn (unclipped)
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> >=3 <td> copper clearance around the object 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flags_polygon <td> &nbsp; <td> &nbsp; <td> 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:thermal_heavy <td> &nbsp; <td> &nbsp; <td>  optional thermal flags for heavy terminals 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:thermal <td> &nbsp; <td> &nbsp; <td>  list of thermal flags for heavy terminals, on the single layer the object is on 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on <td> none <td> &nbsp; <td> draw any thermal only if this string is present; else normal clearance is applied
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diag <td> none <td> &nbsp; <td> if present, the thermal is diagonal (45 degree rotated)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;round <td> none <td> &nbsp; <td> if present, thermal shape is rounded
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sharp <td> none <td> &nbsp; <td> if present, thermal shape is sharp
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;solid <td> none <td> &nbsp; <td> if present, there is no thermal but a solid connection ("join")
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:geometry <td> &nbsp; <td> &nbsp; <td> first item is the outer contour, subsequent, optional items are holes
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contour <td> coordtbl <td> &nbsp; <td> 2 column table of x;y coords for the outer contour
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hole <td> coordtbl <td> &nbsp; <td> 2 column table of x;y coords for a hole
