@@ -102,6 +102,18 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID/children/symbols/children/CHARACTER/children/delta"><td> &nbsp;&nbsp;&nbsp;&nbsp;delta <td> coord <td> &nbsp; <td> TODO
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID/children/symbols/children/CHARACTER/children/objects"><td> &nbsp;&nbsp;&nbsp;&nbsp;li:objects <td> &nbsp; <td> &nbsp; <td> 
 </table>
+<h3 id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*">li:pcb-rnd-subcircuit-v*</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*"><td> li:pcb-rnd-subcircuit-v* <td> &nbsp; <td> &nbsp; <td> footprint file containing a single subcircuit
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID"><td> &nbsp;ha:subc.ID <td> &nbsp; <td> >=3 <td> an instance (full copy) of a subcircuit
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> minuid <td> &nbsp; <td> UID assigned by the user to track subc history 
+<tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
+<tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
+<tr id="/lht_tree_doc/comm/flags_subc"><td> &nbsp;&nbsp;flags_subc <td> &nbsp; <td> &nbsp; <td> 
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/data"><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
+</table>
 <h2> Common subtrees </h2>
 <p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees.
 <h3 id="/lht_tree_doc/comm/data">ha:data</h3>
@@ -261,12 +273,12 @@
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_circ/children/x"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x <td> coord <td> &nbsp; <td> center, horizontal offset 
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_circ/children/y"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y <td> coord <td> &nbsp; <td> center, vertical offset 
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_circ/children/dia"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dia <td> coord <td> &nbsp; <td> circle diameter 
-<tr id="/lht_tree_doc/comm/data/children/subc.ID"><td> &nbsp;ha:subc.ID <td> &nbsp; <td> >=3 <td> an instance (full copy) of a subcircuit
-<tr id="/lht_tree_doc/comm/data/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> minuid <td> &nbsp; <td> UID assigned by the user to track subc history 
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID"><td> &nbsp;ha:subc.ID <td> &nbsp; <td> >=3 <td> an instance (full copy) of a subcircuit
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> minuid <td> &nbsp; <td> UID assigned by the user to track subc history 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
 <tr id="/lht_tree_doc/comm/flags_subc"><td> &nbsp;&nbsp;flags_subc <td> &nbsp; <td> &nbsp; <td> 
-<tr id="/lht_tree_doc/comm/data/children/subc.ID/children/data"><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
+<tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/data"><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
 <tr id="/lht_tree_doc/comm/data/children/element.ID"><td> &nbsp;ha:element.ID <td> &nbsp; <td> <3 <td> an instance (full copy) of an obsolete element footprint
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/x"><td> &nbsp;&nbsp;x <td> coord <td> &nbsp; <td> element origin (diamond), horizontal offset 
 <tr id="/lht_tree_doc/comm/data/children/element.ID/children/y"><td> &nbsp;&nbsp;y <td> coord <td> &nbsp; <td> element origin (diamond), vertical offset 

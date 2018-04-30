@@ -1,0 +1,20 @@
+ha:lht_tree_doc { ha:roots {
+
+	ha:pcb-rnd-subcircuit-v* {
+		type=li
+		desc={footprint file containing a single subcircuit}
+		li:children {
+			ha:subc.ID {
+				type=ha
+				desc={an instance (full copy) of a subcircuit}
+				ver = {>=3}
+				li:children {
+					ha:uid        = { valtype=minuid;   desc={UID assigned by the user to track subc history }}
+					sy:attr@dup   = {/lht_tree_doc/comm/attributes}
+					sy:flags@dup  = {/lht_tree_doc/comm/flags_subc}
+					sy:data       = {/lht_tree_doc/comm/data}
+				}
+			}
+		}
+	}
+}}
