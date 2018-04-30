@@ -12,6 +12,7 @@ function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr, url, tip,duppar)
 	gsub("\"", "\\\"", dsc)
 	tip=" tooltip=" q dsc q
 	url=" URL=" q "tree.html#" node q
+
 	if (dupd_prefix != "") {
 		node = dupd_prefix node
 		DUPD[node] ++
@@ -40,6 +41,20 @@ function tbl_entry_link(node, dst, level, parent     ,nm,vt,dsc,ty,vr,contid,url
 	sub("^.*/", "", dr)
 	url=" URL=" q dr ".svg" q
 	tip=" tooltip=" q dsc q
+
+
+	if (dupd_prefix != "") {
+		node = dupd_prefix node
+		DUPD[node] ++
+
+		if (parent != "") {
+			duppar = dupd_prefix parent
+			if (duppar in DUPD)
+				parent = duppar
+		}
+	}
+
+
 	print "	" q node q "	[label=" q nm " ->" nl vt nl vr nl q url tip " shape=plaintext]" >fn
 	if (parent != "")
 		print "	" q parent q "	->	" q node q > fn
