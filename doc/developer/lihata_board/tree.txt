@@ -44,7 +44,8 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
      outline        flag       "material": router path (board outline, slots, cutouts)
      substrate      flag       material: substrate or insulator
     li:layers                  ordered list of logical layer IDs hosted by this layer group
- ha:font                       font kit: all fonts used on the board
+ ha:font                       font kit: all fonts used on the board (if no font specified, default font will be used)
+  ha:FONT-ID                   the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
  ha:styles                     routing styles hash: collection of all available routing syles
  ha:netlists                   all availale netlists
   li:netlist                   the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
@@ -79,6 +80,23 @@ li:pcb-rnd-conf-v1            complete pcb-rnd configuration tree
  ha:overwrite                 overwrite values while merging; children: a full or partial config tree
  ha:prepend                   prepend values while merging; children: a full or partial config tree
  ha:append                    append values while merging; children: a full or partial config tree
+
+li:pcb-rnd-font-v1
+
+type:name          value   ver description
+li:pcb-rnd-font-v1             font description
+ ha:FONT-ID                    the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below
+  cell_height      coord       height of the tallest glyph
+  cell_width       coord       width of the widest glyph
+  id               integer     unique font ID within the fontkit; fonts are referenced by ID
+  name             string      user specified, user readable font name
+  ha:symbols                   a collections of glyphs availbale in the font
+   ha:CHARACTER                Description of a glyph (symbol). Node name is a signel ASCII character or is of format &xx where xx is a hex digit of the ASCII code of the character. Characters that must use the hex version are: codes below 33 or over 126,
+                               &, #, {, }, /, :, ;, =, \, :
+    height         coord       height of the glyph
+    width          coord       width of the glyph
+    delta          coord       TODO
+    li:objects              
 
 Common subtrees
 

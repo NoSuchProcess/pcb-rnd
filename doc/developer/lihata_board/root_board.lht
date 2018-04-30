@@ -86,37 +86,9 @@ ha:lht_tree_doc { ha:roots {
 			}
 			ha:font {
 				type=ha
-				desc { font kit: all fonts used on the board }
-				ha:FONT-ID {
-					type=ha
-					li:name_patterns={p={geda_pcb}; p={[0-9]+}}
-					desc { the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below }
-					li:children {
-						ha:cell_height { valtype=coord; desc={height of the tallest glyph}}
-						ha:cell_width { valtype=coord; desc={width of the widest glyph}}
-						ha:id { valtype=integer; desc={unique font ID within the fontkit; fonts are referenced by ID}}
-						ha:name { valtype=string; desc={user specified, user readable font name}}
-						ha:symbols {
-							type=ha
-							desc { a collections of glyphs availbale in the font }
-							li:children {
-								ha:CHARACTER {
-									type=ha
-									li:name_patterns={p={.}}
-									desc { Description of a glyph (symbol). Node name is a signel ASCII character or is of format &xx where xx is a hex digit of the ASCII code of the character. Characters that must use the hex version are: codes below 33 or over 126, &, #, {, \}, /, :, ;, =, \\, :}
-									li:children {
-										ha:height { valtype=coord; desc={height of the glyph}}
-										ha:width { valtype=coord; desc={width of the glyph}}
-										ha:delta { valtype=coord; desc={TODO}}
-										ha:objects {
-											type=li
-											{TODO: link line and describe simple objects}
-										}
-									}
-								}
-							}
-						}
-					}
+				desc { font kit: all fonts used on the board (if no font specified, default font will be used) }
+				li:children {
+					sy:FONT-ID {/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID}
 				}
 			}
 			ha:styles {

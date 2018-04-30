@@ -47,7 +47,8 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outline <td> flag <td> &nbsp; <td> "material": router path (board outline, slots, cutouts) 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;li:layers <td> &nbsp; <td> &nbsp; <td>  ordered list of logical layer IDs hosted by this layer group 
-<tr><td> &nbsp;ha:font <td> &nbsp; <td> &nbsp; <td>  font kit: all fonts used on the board 
+<tr><td> &nbsp;ha:font <td> &nbsp; <td> &nbsp; <td>  font kit: all fonts used on the board (if no font specified, default font will be used) 
+<tr><td> &nbsp;&nbsp;ha:FONT-ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID"> the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below  -&gt; </a>
 <tr><td> &nbsp;ha:styles <td> &nbsp; <td> &nbsp; <td>  routing styles hash: collection of all available routing syles 
 <tr><td> &nbsp;ha:netlists <td> &nbsp; <td> &nbsp; <td>  all availale netlists 
 <tr><td> &nbsp;&nbsp;li:netlist <td> &nbsp; <td> &nbsp; <td>  the input netlist (as seen in the last netlist import, a.k.a. forward annotation) 
@@ -83,6 +84,23 @@
 <tr><td> &nbsp;ha:overwrite <td> &nbsp; <td> &nbsp; <td> overwrite values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
 <tr><td> &nbsp;ha:prepend <td> &nbsp; <td> &nbsp; <td> prepend values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
 <tr><td> &nbsp;ha:append <td> &nbsp; <td> &nbsp; <td> append values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
+</table>
+<h3 id="/lht_tree_doc/roots/pcb-rnd-font-v1">li:pcb-rnd-font-v1</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><td> li:pcb-rnd-font-v1 <td> &nbsp; <td> &nbsp; <td> font description
+<tr><td> &nbsp;ha:FONT-ID <td> &nbsp; <td> &nbsp; <td>  the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below 
+<tr><td> &nbsp;&nbsp;cell_height <td> coord <td> &nbsp; <td> height of the tallest glyph
+<tr><td> &nbsp;&nbsp;cell_width <td> coord <td> &nbsp; <td> width of the widest glyph
+<tr><td> &nbsp;&nbsp;id <td> integer <td> &nbsp; <td> unique font ID within the fontkit; fonts are referenced by ID
+<tr><td> &nbsp;&nbsp;name <td> string <td> &nbsp; <td> user specified, user readable font name
+<tr><td> &nbsp;&nbsp;ha:symbols <td> &nbsp; <td> &nbsp; <td>  a collections of glyphs availbale in the font 
+<tr><td> &nbsp;&nbsp;&nbsp;ha:CHARACTER <td> &nbsp; <td> &nbsp; <td>  Description of a glyph (symbol). Node name is a signel ASCII character or is of format &xx where xx is a hex digit of the ASCII code of the character. Characters that must use the hex version are: codes below 33 or over 126, &, #, {, }, /, :, ;, =, \, :
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;height <td> coord <td> &nbsp; <td> height of the glyph
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;width <td> coord <td> &nbsp; <td> width of the glyph
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;delta <td> coord <td> &nbsp; <td> TODO
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;li:objects <td> &nbsp; <td> &nbsp; <td> 
 </table>
 <h2> Common subtrees </h2>
 <p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees.
