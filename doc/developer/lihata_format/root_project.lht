@@ -17,19 +17,31 @@ ha:lht_tree_doc { ha:roots {
 						type=li
 						desc={ordered list of source files being used by the project}
 						li:children {
-							ha:path    { valtype=string; desc={path to the file, relative to the project file }}
-							ha:desc    { valtype=string; desc={description of the file }}
-							ha:type    { valtype=string; desc={optional: type of the file; one of: "pcb", "schematic", "doc" }}
+							ha:NAME {
+								type=ha
+								desc={a project member file}
+								li:children {
+									ha:path    { valtype=string; desc={path to the file, relative to the project file }}
+									ha:desc    { valtype=string; desc={description of the file }}
+									ha:type    { valtype=string; desc={optional: type of the file; one of: "pcb", "schematic", "doc" }}
+								}
+							}
 						}
 					}
 					ha:libs {
 						type=li
 						desc={ordered list of libraries the project depends on}
 						li:children {
-							ha:path    { valtype=string; desc={path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url) }}
-							ha:url     { valtype=string; desc={url to the library (must not be used together with path) }}
-							ha:desc    { valtype=string; desc={description of the library }}
-							ha:type    { valtype=string; desc={optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation) }}
+							ha:NAME {
+								type=ha
+								desc={a library}
+								li:children {
+									ha:path    { valtype=string; desc={path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url) }}
+									ha:url     { valtype=string; desc={url to the library (must not be used together with path) }}
+									ha:desc    { valtype=string; desc={description of the library }}
+									ha:type    { valtype=string; desc={optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation) }}
+								}
+							}
 						}
 					}
 				}
