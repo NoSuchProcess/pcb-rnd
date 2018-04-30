@@ -8,6 +8,7 @@ ha:lht_tree_doc { ha:comm {
 		hide=1
 		desc={flag bits of an element}
 		type=ha
+		dot_group=1
 		li:children {
 			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
@@ -24,6 +25,7 @@ ha:lht_tree_doc { ha:comm {
 		hide=1
 		desc={flag bits of a pin or via}
 		type=ha
+		dot_group=1
 		li:children {
 			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
 			ha:hole { valtype=flag; desc={For pins and vias, this flag means that the pin or via is a hole without a copper annulus.}}
@@ -46,6 +48,7 @@ ha:lht_tree_doc { ha:comm {
 		hide=1
 		desc={flag bits of a pad}
 		type=ha
+		dot_group=1
 		li:children {
 			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
 			ha:hole { valtype=flag; desc={For pins and vias, this flag means that the pin or via is a hole without a copper annulus.}}

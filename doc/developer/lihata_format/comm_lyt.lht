@@ -4,6 +4,7 @@ ha:lht_tree_doc { ha:comm {
 		hide=1
 		type=ha
 		desc={layer type and location}
+		dot_group=1
 		li:children {
 			ha:top           { valtype=flag; desc={location: top side}}
 			ha:bottom        { valtype=flag; desc={location: bottom side}}
@@ -30,6 +31,7 @@ ha:lht_tree_doc { ha:comm {
 
 	ha:combining {
 		hide=1
+		dot_group=1
 		li:children {
 			ha:sub    { valtype=flag; desc={draw in negative}}
 			ha:auto   { valtype=flag; desc={padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag}}
