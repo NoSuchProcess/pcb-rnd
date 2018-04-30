@@ -27,11 +27,12 @@ ha:lht_tree_doc { ha:comm {
 #			ha:virtual       { valtype=flag; desc={(if set, the layer is not a physical layer but a drawing or documentation)}}
 		}
 	}
+
 	ha:combining {
 		hide=1
-		type={TODO:build_data_layer_comb}
 		li:children {
 			ha:sub    { valtype=flag; desc={draw in negative}}
+			ha:auto   { valtype=flag; desc={padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag}}
 		}
 	}
 

@@ -140,6 +140,7 @@ ha:data                              Layers and global objects of the board
     substrate           flag         material: substrate or insulator
    combining                     >=2 layer combination (compositing) flags
     sub                 flag         draw in negative
+    auto                flag         padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
    ha:attributes                     a hash of attribute key=value pairs
     attrib-key          string       attribute value
    li:objects                        list of drawing primitives put on this layer
@@ -226,6 +227,7 @@ ha:data                              Layers and global objects of the board
       substrate         flag         material: substrate or insulator
      combining                       layer compositing match
       sub               flag         draw in negative
+      auto              flag         padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
      clearance          coord        local, per-layer-type clearance; applied if global padstack clearance is 0
      li:ps_poly                      arbitrary convex polygon shape; contains a list of x;y coordinates
      ha:ps_line                      straight line shape, round or square cap

@@ -143,6 +143,7 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
 <tr><td> &nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> >=2 <td> layer combination (compositing) flags
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;sub <td> flag <td> &nbsp; <td> draw in negative
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;auto <td> flag <td> &nbsp; <td> padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
 <tr><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
 <tr><td> &nbsp;&nbsp;&nbsp;li:objects <td> &nbsp; <td> &nbsp; <td> list of drawing primitives put on this layer
@@ -228,6 +229,7 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> &nbsp; <td> layer compositing match
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub <td> flag <td> &nbsp; <td> draw in negative
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto <td> flag <td> &nbsp; <td> padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> local, per-layer-type clearance; applied if global padstack clearance is 0 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:ps_poly <td> &nbsp; <td> &nbsp; <td> arbitrary convex polygon shape; contains a list of x;y coordinates 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:ps_line <td> &nbsp; <td> &nbsp; <td> straight line shape, round or square cap
