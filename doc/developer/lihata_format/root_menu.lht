@@ -37,6 +37,34 @@ ha:roots {
 					}
 				}
 			}
+			ha:main_menu {
+				type=li
+				desc={root of the main pull-down menu system; ordered list of main menus}
+				li:children {
+					ha:MENUNAME {
+						type=ha
+						desc={main menu name, e.g. "File"}
+						li:children {
+							sy:m@dup = {/lht_tree_doc/comm/submenu/children/m}
+							sy:submenu = {/lht_tree_doc/comm/submenu}
+						}
+					}
+				}
+			}
+			ha:popups {
+				type=li
+				desc={collection of popup menus}
+				li:children {
+					ha:POPUPNAME {
+						type=ha
+						desc={popup menu name, e.g. "layer" for layer context menu}
+						li:children {
+							sy:m@dup = {/lht_tree_doc/comm/submenu/children/m}
+							sy:submenu = {/lht_tree_doc/comm/submenu}
+						}
+					}
+				}
+			}
 		}
 	}
 }
@@ -61,5 +89,63 @@ ha:comm {
 			ha:press-ctrl    { type=li; desc={actions to execute on mouse button press when control is pressed} }
 		}
 	}
+
+	ha:submenu {
+		type=li
+		desc={ordered list of menu items for a submenu}
+		li:children {
+			ha:m            = {valtype=string; desc={mnemonic: single character that should be underlined and used as a hot key in the menu name}}
+			ha:-            = {valtype=none; desc={horizontal separator}}
+			ha:@ANCHOR      = {valtype=none; desc={an anchor is an invisible placeholder where a dynamically generated set of menu items should be inserted runtime}}
+			ha:SUBSUBMENUNAME  = {
+				type=ha
+				desc={sub-submenu item: opens a new level of submenu when clicked}
+				li:children {
+					sy:m@dup = {/lht_tree_doc/comm/submenu/children/m}
+					sy:submenu = {/lht_tree_doc/comm/submenu}
+				}
+			}
+			ha:LEAFSUBMENUNAME  = {
+				type=ha
+				desc={leaf submenu item: executes an action when clicked}
+				li:children {
+					sy:m@dup = {/lht_tree_doc/comm/submenu/children/m}
+					ha:a1 {
+						type=li
+						name=a
+						desc={list of alternative hotkey sequences to activate the menu}
+					}
+					ha:a2 {
+						valtype=string
+						name=a
+						desc={a single hotkey sequences to activate the menu}
+					}
+					ha:action1 {
+						type=li
+						name=action
+						desc={list of actions to execute when the menu is activated}
+					}
+					ha:action2 {
+						valtype=string
+						name=action
+						desc={a single action to execute when the menu is activated}
+					}
+					ha:tip {
+						valtype=string
+						desc={tooltip text}
+					}
+					ha:checked {
+						valtype=string
+						desc={the menu item has a checkbox; value is the action to execute to determine whether the menu item's checkbox is checked or not}
+					}
+					ha:update_on {
+						valtype=string
+						desc={path of a conf node that triggers re-evaluation of the checkbox state}
+					}
+				}
+			}
+		}
+	}
 }
 }
+

@@ -151,6 +151,14 @@
 <tr id="/lht_tree_doc/comm/mouse_actions_scroll/children/press"><td> &nbsp;&nbsp;&nbsp;li:press <td> &nbsp; <td> &nbsp; <td> actions to execute on mouse button press when no modifier is pressed
 <tr id="/lht_tree_doc/comm/mouse_actions_scroll/children/press-shift"><td> &nbsp;&nbsp;&nbsp;li:press-shift <td> &nbsp; <td> &nbsp; <td> actions to execute on mouse button press when shift is pressed
 <tr id="/lht_tree_doc/comm/mouse_actions_scroll/children/press-ctrl"><td> &nbsp;&nbsp;&nbsp;li:press-ctrl <td> &nbsp; <td> &nbsp; <td> actions to execute on mouse button press when control is pressed
+<tr id="/lht_tree_doc/roots/menu/children/main_menu"><td> &nbsp;li:main_menu <td> &nbsp; <td> &nbsp; <td> root of the main pull-down menu system; ordered list of main menus
+<tr id="/lht_tree_doc/roots/menu/children/main_menu/children/MENUNAME"><td> &nbsp;&nbsp;ha:MENUNAME <td> &nbsp; <td> &nbsp; <td> main menu name, e.g. "File"
+<tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;&nbsp;&nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
+<tr id="/lht_tree_doc/roots/menu/children/main_menu/children/MENUNAME/children/submenu"><td> &nbsp;&nbsp;&nbsp;li:submenu <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/submenu">ordered list of menu items for a submenu -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu/children/popups"><td> &nbsp;li:popups <td> &nbsp; <td> &nbsp; <td> collection of popup menus
+<tr id="/lht_tree_doc/roots/menu/children/popups/children/POPUPNAME"><td> &nbsp;&nbsp;ha:POPUPNAME <td> &nbsp; <td> &nbsp; <td> popup menu name, e.g. "layer" for layer context menu
+<tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;&nbsp;&nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
+<tr id="/lht_tree_doc/roots/menu/children/popups/children/POPUPNAME/children/submenu"><td> &nbsp;&nbsp;&nbsp;li:submenu <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/submenu">ordered list of menu items for a submenu -&gt; </a>
 </table>
 <h3 id="/lht_tree_doc/roots/geda-project-v1">ha:geda-project-v1</h3>
 <p>
@@ -532,6 +540,27 @@
 <tr id="/lht_tree_doc/comm/flags_line/children/nonetlist"><td> &nbsp;&nbsp;&nbsp;nonetlist <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subcircuit is not on the netlist and should not interfere with the netlist 
 <tr id="/lht_tree_doc/comm/flags_line/children/termname"><td> &nbsp;&nbsp;&nbsp;termname <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> when set the names of pins are shown.
 <tr id="/lht_tree_doc/comm/flags_line/children/floater"><td> &nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
+</table>
+<h3 id="/lht_tree_doc/comm/submenu">li:submenu</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr id="/lht_tree_doc/comm/submenu"><td> li:submenu <td> &nbsp; <td> &nbsp; <td> ordered list of menu items for a submenu
+<tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
+<tr id="/lht_tree_doc/comm/submenu/children/-"><td> &nbsp;- <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> horizontal separator
+<tr id="/lht_tree_doc/comm/submenu/children/@ANCHOR"><td> &nbsp;@ANCHOR <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> an anchor is an invisible placeholder where a dynamically generated set of menu items should be inserted runtime
+<tr id="/lht_tree_doc/comm/submenu/children/SUBSUBMENUNAME"><td> &nbsp;ha:SUBSUBMENUNAME <td> &nbsp; <td> &nbsp; <td> sub-submenu item: opens a new level of submenu when clicked
+<tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;&nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
+<tr id="/lht_tree_doc/comm/submenu/children/SUBSUBMENUNAME/children/submenu"><td> &nbsp;&nbsp;li:submenu <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/submenu">ordered list of menu items for a submenu -&gt; </a>
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME"><td> &nbsp;ha:LEAFSUBMENUNAME <td> &nbsp; <td> &nbsp; <td> leaf submenu item: executes an action when clicked
+<tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;&nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/a1"><td> &nbsp;&nbsp;li:a <td> &nbsp; <td> &nbsp; <td> list of alternative hotkey sequences to activate the menu
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/a2"><td> &nbsp;&nbsp;a <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> a single hotkey sequences to activate the menu
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/action1"><td> &nbsp;&nbsp;li:action <td> &nbsp; <td> &nbsp; <td> list of actions to execute when the menu is activated
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/action2"><td> &nbsp;&nbsp;action <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> a single action to execute when the menu is activated
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/tip"><td> &nbsp;&nbsp;tip <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> tooltip text
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/checked"><td> &nbsp;&nbsp;checked <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> the menu item has a checkbox; value is the action to execute to determine whether the menu item's checkbox is checked or not
+<tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/update_on"><td> &nbsp;&nbsp;update_on <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> path of a conf node that triggers re-evaluation of the checkbox state
 </table>
 <h2 id="types"> Types </h2>
 <p>
