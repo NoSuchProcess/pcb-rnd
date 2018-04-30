@@ -2,12 +2,14 @@ BEGIN {
 	nl = "\\n"
 }
 
-function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr, url, tip,duppar)
+function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr, url, tip,duppar,grp,grp_parent)
 {
 	ty = DATA[node "/type"]
 	nm = get_name(node, ty, 0)
 	vt = DATA[node "/valtype"]
 	vr = DATA[node "/ver"]
+	grp_parent = parent(parent(node))
+	grp = DATA[grp_parent "/dot_group"]
 	dsc = qstrip(DATA[node "/desc"])
 	gsub("\"", "\\\"", dsc)
 	tip=" tooltip=" q dsc q
@@ -27,6 +29,12 @@ function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr, url, tip,duppar)
 	print "	" q node q "	[label=" q nm nl vt nl vr q url tip "]" >fn
 	if (parent != "")
 		print "	" q parent q "	->	" q node q > fn
+	if (grp != "") {
+		if (LAST_GRP_SIBL[parent] != "") {
+			print "		" q LAST_GRP_SIBL[parent] q "	->	" q node q  "[style=invis]" > fn
+		}
+		LAST_GRP_SIBL[parent] = node
+	}
 }
 
 function tbl_entry_link(node, dst, level, parent     ,nm,vt,dsc,ty,vr,contid,url,tip,dr)
