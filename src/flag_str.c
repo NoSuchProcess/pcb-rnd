@@ -550,7 +550,7 @@ char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn, 
 	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn, compat);
 }
 
-void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const char *name))
+void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb))
 {
 	int n, i, n_flagbits = PCB_ENTRIES(pcb_object_flagbits);
 	for(n = 0; n < 32; n++) {
@@ -561,7 +561,7 @@ void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(
 		for (i = 0; i < n_flagbits; i++) {
 			unsigned long my_obj_typs = pcb_object_flagbits[i].object_types /*| pcb_object_flagbits[i].compat_types*/;
 			if ((my_obj_typs & object_type) && (!pcb_object_flagbits[i].omit_list) && (pcb_object_flagbits[i].mask & bit)) {
-				cb(ctx, bit, pcb_object_flagbits[i].name);
+				cb(ctx, bit, &pcb_object_flagbits[i]);
 			}
 		}
 	}

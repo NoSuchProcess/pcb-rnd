@@ -80,7 +80,7 @@ char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn, 
 
 
 /* Call cb for each flag bit for a given object type */
-void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const char *name));
+void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb));
 
 
 /* same as above, for pcb level flags */
