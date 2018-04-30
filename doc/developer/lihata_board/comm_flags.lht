@@ -1,40 +1,130 @@
 ha:lht_tree_doc { ha:comm {
-
-	ha:flags_pstk {
+	ha:flags_arc {
 		hide=1
-		TODO
-	}
-	ha:flags_subc {
-		hide=1
-		TODO
-	}
-	ha:flags_element {
-		hide=1
-		TODO
-	}
-	ha:flags_pinvia {
-		hide=1
-		TODO
+		desc={flag bits of a arc}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:clearline { valtype=flag; desc={For lines and arcs, the line/arc will clear polygons instead of connecting to them.}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:rubberend { valtype=flag; desc={For lines, used internally for rubber band moves: indicates one end already rubber banding.}}
+			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
 	}
 	ha:flags_line {
 		hide=1
-		TODO
-	}
-	ha:flags_arc {
-		hide=1
-		TODO
-	}
-	ha:flags_text {
-		hide=1
-		TODO
+		desc={flag bits of a line}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:clearline { valtype=flag; desc={For lines and arcs, the line/arc will clear polygons instead of connecting to them.}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:rubberend { valtype=flag; desc={For lines, used internally for rubber band moves: indicates one end already rubber banding.}}
+			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
 	}
 	ha:flags_polygon {
 		hide=1
-		TODO
+		desc={flag bits of a polygon}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:clearpoly { valtype=flag; desc={For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. }}
+			ha:fullpoly { valtype=flag; desc={For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
+			ha:clearpolypoly { valtype=flag; desc={For polygons, apply clearance to nearby polygons}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
 	}
-	ha:flags_pad {
+	ha:flags_text {
 		hide=1
-		TODO
+		desc={flag bits of a text}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:clearline { valtype=flag; desc={For lines and arcs, the line/arc will clear polygons instead of connecting to them.}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:onsolder { valtype=flag; desc={For text, indicates that it is on the solder side.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
+			ha:dyntext { valtype=flag; desc={For text: dynamic string (substitute %patterns%)}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
 	}
-
-}}
+	ha:flags_subcircuit {
+		hide=1
+		desc={flag bits of a subcircuit}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
+	}
+	ha:flags_padstack {
+		hide=1
+		desc={flag bits of a padstack}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:hole { valtype=flag; desc={For pins and vias, this flag means that the pin or via is a hole without a copper annulus.}}
+			ha:clearline { valtype=flag; desc={For lines and arcs, the line/arc will clear polygons instead of connecting to them.}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:warn { valtype=flag; desc={For pins, vias, and pads, set to indicate a warning.}}
+			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
+	}
+	ha:flags_ratline {
+		hide=1
+		desc={flag bits of a ratline}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:rat { valtype=flag; desc={If set for a line, indicates that this line is a rat line instead of a copper trace.}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:edge2 { valtype=flag; desc={For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)}}
+			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
+	}
+} }
