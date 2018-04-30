@@ -190,7 +190,7 @@ function gen_roots(rpath,    v, n, N)
 
 function gen_types(path,    v, n, N, node)
 {
-	print "<table border=1 cellspacing=0>"
+	print "<table border=1 width=700>"
 	print "<tr><th> type <th> description"
 
 	v = children(N, path)
