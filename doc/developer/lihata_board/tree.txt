@@ -83,20 +83,34 @@ li:pcb-rnd-conf-v1            complete pcb-rnd configuration tree
 
 li:pcb-rnd-font-v1
 
-type:name          value   ver description
-li:pcb-rnd-font-v1             font description
- ha:FONT-ID                    the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below
-  cell_height      coord       height of the tallest glyph
-  cell_width       coord       width of the widest glyph
-  id               integer     unique font ID within the fontkit; fonts are referenced by ID
-  name             string      user specified, user readable font name
-  ha:symbols                   a collections of glyphs availbale in the font
-   ha:CHARACTER                Description of a glyph (symbol). Node name is a signel ASCII character or is of format &xx where xx is a hex digit of the ASCII code of the character. Characters that must use the hex version are: codes below 33 or over 126,
-                               &, #, {, }, /, :, ;, =, \, :
-    height         coord       height of the glyph
-    width          coord       width of the glyph
-    delta          coord       TODO
-    li:objects              
+type:name             value   ver description
+li:pcb-rnd-font-v1                font description
+ ha:FONT-ID                       the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below
+  cell_height         coord       height of the tallest glyph
+  cell_width          coord       width of the widest glyph
+  id                  integer     unique font ID within the fontkit; fonts are referenced by ID
+  name                string      user specified, user readable font name
+  ha:symbols                      a collections of glyphs availbale in the font
+   ha:CHARACTER                   Description of a glyph (symbol). Node name is a signel ASCII character or is of format &xx where xx is a hex digit of the ASCII code of the character. Characters that must use the hex version are: codes below 33 or over
+                                  126, &, #, {, }, /, :, ;, =, \, :
+    height            coord       height of the glyph
+    width             coord       width of the glyph
+    delta             coord       extra space always inserted after the current symbol, before the next character
+    li:objects                    objects that make up the symbol; IDs are per symbol local IDs counted from 0
+     ha:line.ID                   round cap line, simplified
+      x1              coord       line first endpoint, horizontal offset
+      y1              coord       line first endpoint, vertical offset
+      x2              coord       line second endpoint, horizontal offset
+      y2              coord       line second endpoint, vertical offset
+      thickness       coord       width of the line
+     ha:simplearc.ID              round cap arc, simplified
+      x               coord       center, X coord
+      y               coord       center, Y coord
+      r               coord       radius (of the centerline of the arc)
+      thickness       coord       width of the pen the arc is drawn with
+      astart          angle       start angle
+      adelta          angle       delta angle
+     li:simplepoly.ID             round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords)
 
 li:pcb-rnd-subcircuit-v*
 
@@ -237,8 +251,8 @@ ha:data                              Layers and global objects of the board
     ha:arc.ID                        round cap elliptic arc (only width==height is fully supported at the moment)
      x                  coord        center, X coord
      y                  coord        center, Y coord
-     width              coord        radius (? TODO) in X direction
-     height             coord        radius (? TODO) in Y direction
+     width              coord        radius (of the centerline of the arc) in X direction
+     height             coord        radius (of the centerline of the arc) in Y direction
      thickness          coord        width of the pen the arc is drawn with
      clearance          coord        copper clearance around the object
      astart             angle        start angle
@@ -388,7 +402,7 @@ ha:data                              Layers and global objects of the board
     y2                  coord        line second endpoint, vertical offset
     thickness           coord        width of the line
     clearance           coord        clearance around the line
-    mask                coord        TODO
+    mask                coord        size of the mask cutout, as interpreted by gEDA/PCB
     name                string       symbolic name of the pad
     number              string       "pin number" for the netlist
     ha:attributes                    a hash of attribute key=value pairs

@@ -27,7 +27,36 @@ ha:lht_tree_doc { ha:roots {
 									ha:delta { valtype=coord; desc={extra space always inserted after the current symbol, before the next character}}
 									ha:objects {
 										type=li
-										{TODO: link line and describe simple objects}
+										desc={objects that make up the symbol; IDs are per symbol local IDs counted from 0}
+										li:children {
+											ha:line.ID {
+												type=ha
+												desc={round cap line, simplified}
+												li:children {
+													ha:x1        = { valtype=coord;   desc={line first endpoint, horizontal offset }}
+													ha:y1        = { valtype=coord;   desc={line first endpoint, vertical offset }}
+													ha:x2        = { valtype=coord;   desc={line second endpoint, horizontal offset }}
+													ha:y2        = { valtype=coord;   desc={line second endpoint, vertical offset }}
+													ha:thickness = { valtype=coord;   desc={width of the line }}
+												}
+											}
+											ha:simplearc.ID {
+												type=ha
+												desc={round cap arc, simplified }
+												li:children {
+													ha:x         = { valtype=coord;   desc={center, X coord}}
+													ha:y         = { valtype=coord;   desc={center, Y coord}}
+													ha:r         = { valtype=coord;   desc={radius (of the centerline of the arc) }}
+													ha:thickness = { valtype=coord;   desc={width of the pen the arc is drawn with }}
+													ha:astart    = { valtype=angle;   desc={ start angle}}
+													ha:adelta    = { valtype=angle;   desc={ delta angle}}
+												}
+											}
+											ha:simplepoly.ID {
+												type=li
+												desc={round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords) }
+											}
+										}
 									}
 								}
 							}
