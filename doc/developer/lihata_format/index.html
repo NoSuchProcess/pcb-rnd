@@ -13,6 +13,13 @@ a tree can be serialized into a file format. What the tree contains and
 what each node means is up to the user (pcb-rnd in this case). This document
 describes how the lihata trees are interpreted by pcb-rnd.
 <p>
+This document is halfway in between the low level lihata document and the
+high level <a href="../../user/02_model/index.html"> data model </a>
+specification. It is assumed that the reader is familiar with both: the
+lihata interface plugin doesn't do anything on its own, it only takes
+the data model from the memory and the lihata document on disk and
+converts the syntax between the two.
+<p>
 The following table is a summary of the native file formats the <b>core</b>
 handles. Various plugins will handle their own file formats, often also
 lihata based - those are each documented at the corresponding. Note:
