@@ -54,6 +54,8 @@ typedef struct {
 	/* in compatibility mode also accept these object types to have the flag */
 	int compat_types;
 
+	/* when non-zero, omit from all-flag listings */
+	int omit_list;
 } pcb_flag_bits_t;
 
 /* All flags natively known by the core */
@@ -75,6 +77,11 @@ pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg)
    can be output to a file.  The returned pointer must not be
    freed.  */
 char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn, int compat);
+
+
+/* Call cb for each flag bit for a given object type */
+void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const char *name));
+
 
 /* same as above, for pcb level flags */
 char *pcb_strflg_board_f2s(pcb_flag_t flags);
