@@ -41,17 +41,8 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
      silk           flag       material: silk
      mask           flag       material: mask
      paste          flag       material: paste
-     outline        flag       "material": router path
-     rat            flag       virtual: rat lines
-     invis          flag       virtual: invisible
-     assy           flag       virtual: assembly drawing
-     fab            flag       virtual: fab drawing
-     plateddrill    flag       drills: plated
-     unplateddrill  flag       drills: unplated
-     cross-section  flag       virtual: cross section drawing
+     outline        flag       "material": router path (board outline, slots, cutouts)
      substrate      flag       material: substrate or insulator
-     misc           flag       virtual: virtual misc layer
-     virtual        flag       if set, the layer is not a physical layer but a drawing or documentation
     li:layers                  ordered list of logical layer IDs hosted by this layer group
  ha:font                       font kit: all fonts used on the board
  ha:styles                     routing styles hash: collection of all available routing syles
@@ -137,9 +128,16 @@ ha:data                              Layers and global objects of the board
    color                string   >=5 layer color on UI, in #rrggbb format
    stack_offs           integer      only in bound layers: match offset e.g. for internal copper layers
    ha:type                           only for bound layers: try to bind to this type of layer on the host board
-    top                 flag         located on the top side of the board, physically accessible
-    bottom              flag         located on the bottom side of the board, physically accessible
-    intern              flag         located inside the board, nt physically accessible
+    top                 flag         location: top side
+    bottom              flag         location: bottom side
+    intern              flag         location: internal
+    logical             flag         location: logical (not in the actual stackup)
+    copper              flag         material: copper
+    silk                flag         material: silk
+    mask                flag         material: mask
+    paste               flag         material: paste
+    outline             flag         "material": router path (board outline, slots, cutouts)
+    substrate           flag         material: substrate or insulator
    combining                     >=2 layer combination (compositing) flags
     sub                 flag         draw in negative
    ha:attributes                     a hash of attribute key=value pairs
@@ -216,9 +214,16 @@ ha:data                              Layers and global objects of the board
     ha:ps_shape_v4                   shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are
                                      relative to padstack origin
      ha:layer_mask                   layer type and location
-      top               flag         located on the top side of the board, physically accessible
-      bottom            flag         located on the bottom side of the board, physically accessible
-      intern            flag         located inside the board, nt physically accessible
+      top               flag         location: top side
+      bottom            flag         location: bottom side
+      intern            flag         location: internal
+      logical           flag         location: logical (not in the actual stackup)
+      copper            flag         material: copper
+      silk              flag         material: silk
+      mask              flag         material: mask
+      paste             flag         material: paste
+      outline           flag         "material": router path (board outline, slots, cutouts)
+      substrate         flag         material: substrate or insulator
      combining                       layer compositing match
       sub               flag         draw in negative
      clearance          coord        local, per-layer-type clearance; applied if global padstack clearance is 0

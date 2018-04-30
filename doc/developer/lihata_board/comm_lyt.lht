@@ -2,13 +2,29 @@ ha:lht_tree_doc { ha:comm {
 
 	ha:layer_mask {
 		hide=1
-		comment={TODO:build_layer_stack_flag}
 		type=ha
 		desc={layer type and location}
 		li:children {
-			ha:top    { valtype=flag; desc={located on the top side of the board, physically accessible}}
-			ha:bottom { valtype=flag; desc={located on the bottom side of the board, physically accessible}}
-			ha:intern { valtype=flag; desc={located inside the board, nt physically accessible}}
+			ha:top           { valtype=flag; desc={location: top side}}
+			ha:bottom        { valtype=flag; desc={location: bottom side}}
+			ha:intern        { valtype=flag; desc={location: internal}}
+			ha:logical       { valtype=flag; desc={location: logical (not in the actual stackup)}}
+			ha:copper        { valtype=flag; desc={material: copper}}
+			ha:silk          { valtype=flag; desc={material: silk}}
+			ha:mask          { valtype=flag; desc={material: mask}}
+			ha:paste         { valtype=flag; desc={material: paste}}
+			ha:outline       { valtype=flag; desc={"material": router path (board outline, slots, cutouts) }}
+			ha:substrate     { valtype=flag; desc={material: substrate or insulator}}
+
+#			ha:rat           { valtype=flag; desc={(virtual: rat lines)}}
+#			ha:invis         { valtype=flag; desc={(virtual: invisible)}}
+#			ha:assy          { valtype=flag; desc={(virtual: assembly drawing)}}
+#			ha:fab           { valtype=flag; desc={(virtual: fab drawing)}}
+#			ha:plateddrill   { valtype=flag; desc={(drills: plated)}}
+#			ha:unplateddrill { valtype=flag; desc={(drills: unplated)}}
+#			ha:cross-section { valtype=flag; desc={(virtual: cross section drawing)}}
+#			ha:misc          { valtype=flag; desc={(virtual: virtual misc layer)}}
+#			ha:virtual       { valtype=flag; desc={(if set, the layer is not a physical layer but a drawing or documentation)}}
 		}
 	}
 	ha:combining {

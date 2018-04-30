@@ -44,17 +44,8 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silk <td> flag <td> &nbsp; <td> material: silk
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mask <td> flag <td> &nbsp; <td> material: mask
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paste <td> flag <td> &nbsp; <td> material: paste
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outline <td> flag <td> &nbsp; <td> "material": router path
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rat <td> flag <td> &nbsp; <td> virtual: rat lines
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;invis <td> flag <td> &nbsp; <td> virtual: invisible 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assy <td> flag <td> &nbsp; <td> virtual: assembly drawing 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fab <td> flag <td> &nbsp; <td> virtual: fab drawing 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plateddrill <td> flag <td> &nbsp; <td> drills: plated 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unplateddrill <td> flag <td> &nbsp; <td> drills: unplated 
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cross-section <td> flag <td> &nbsp; <td> virtual: cross section drawing 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outline <td> flag <td> &nbsp; <td> "material": router path (board outline, slots, cutouts) 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;misc <td> flag <td> &nbsp; <td> virtual: virtual misc layer
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;virtual <td> flag <td> &nbsp; <td> if set, the layer is not a physical layer but a drawing or documentation
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;li:layers <td> &nbsp; <td> &nbsp; <td>  ordered list of logical layer IDs hosted by this layer group 
 <tr><td> &nbsp;ha:font <td> &nbsp; <td> &nbsp; <td>  font kit: all fonts used on the board 
 <tr><td> &nbsp;ha:styles <td> &nbsp; <td> &nbsp; <td>  routing styles hash: collection of all available routing syles 
@@ -140,9 +131,16 @@
 <tr><td> &nbsp;&nbsp;&nbsp;color <td> string <td> >=5 <td>  layer color on UI, in #rrggbb format 
 <tr><td> &nbsp;&nbsp;&nbsp;stack_offs <td> integer <td> &nbsp; <td> only in bound layers: match offset e.g. for internal copper layers
 <tr><td> &nbsp;&nbsp;&nbsp;ha:type <td> &nbsp; <td> &nbsp; <td> only for bound layers: try to bind to this type of layer on the host board
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> located on the top side of the board, physically accessible
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> located on the bottom side of the board, physically accessible
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> located inside the board, nt physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> location: top side
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> location: bottom side
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> location: internal
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;logical <td> flag <td> &nbsp; <td> location: logical (not in the actual stackup)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;copper <td> flag <td> &nbsp; <td> material: copper
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;silk <td> flag <td> &nbsp; <td> material: silk
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;mask <td> flag <td> &nbsp; <td> material: mask
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;paste <td> flag <td> &nbsp; <td> material: paste
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;outline <td> flag <td> &nbsp; <td> "material": router path (board outline, slots, cutouts) 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
 <tr><td> &nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> >=2 <td> layer combination (compositing) flags
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;sub <td> flag <td> &nbsp; <td> draw in negative
 <tr><td> &nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
@@ -218,9 +216,16 @@
 <tr><td> &nbsp;&nbsp;&nbsp;li:shape <td> &nbsp; <td> &nbsp; <td> shape per layer type definition
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:ps_shape_v4 <td> &nbsp; <td> &nbsp; <td> shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:layer_mask <td> &nbsp; <td> &nbsp; <td> layer type and location
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> located on the top side of the board, physically accessible
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> located on the bottom side of the board, physically accessible
-<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> located inside the board, nt physically accessible
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top <td> flag <td> &nbsp; <td> location: top side
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom <td> flag <td> &nbsp; <td> location: bottom side
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intern <td> flag <td> &nbsp; <td> location: internal
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logical <td> flag <td> &nbsp; <td> location: logical (not in the actual stackup)
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copper <td> flag <td> &nbsp; <td> material: copper
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silk <td> flag <td> &nbsp; <td> material: silk
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mask <td> flag <td> &nbsp; <td> material: mask
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paste <td> flag <td> &nbsp; <td> material: paste
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outline <td> flag <td> &nbsp; <td> "material": router path (board outline, slots, cutouts) 
+<tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substrate <td> flag <td> &nbsp; <td> material: substrate or insulator
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> &nbsp; <td> layer compositing match
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub <td> flag <td> &nbsp; <td> draw in negative
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearance <td> coord <td> &nbsp; <td> local, per-layer-type clearance; applied if global padstack clearance is 0 

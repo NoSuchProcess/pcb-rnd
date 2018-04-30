@@ -72,27 +72,7 @@ ha:lht_tree_doc { ha:roots {
 									ha:type {
 										type=ha
 										desc { a flag-list of layer type flag bits }
-										li:children {
-											ha:top        { valtype=flag; desc={location: top side}}
-											ha:bottom     { valtype=flag; desc={location: bottom side}}
-											ha:intern     { valtype=flag; desc={location: internal}}
-											ha:logical    { valtype=flag; desc={location: logical (not in the actual stackup)}}
-											ha:copper     { valtype=flag; desc={material: copper}}
-											ha:silk       { valtype=flag; desc={material: silk}}
-											ha:mask       { valtype=flag; desc={material: mask}}
-											ha:paste      { valtype=flag; desc={material: paste}}
-											ha:outline    { valtype=flag; desc={"material": router path}}
-											ha:rat        { valtype=flag; desc={virtual: rat lines}}
-											ha:invis      { valtype=flag; desc={virtual: invisible }}
-											ha:assy       { valtype=flag; desc={virtual: assembly drawing }}
-											ha:fab        { valtype=flag; desc={virtual: fab drawing }}
-											ha:plateddrill { valtype=flag; desc={drills: plated }}
-											ha:unplateddrill { valtype=flag; desc={drills: unplated }}
-											ha:cross-section { valtype=flag; desc={virtual: cross section drawing }}
-											ha:substrate  { valtype=flag; desc={material: substrate or insulator}}
-											ha:misc       { valtype=flag; desc={virtual: virtual misc layer}}
-											ha:virtual    { valtype=flag; desc={if set, the layer is not a physical layer but a drawing or documentation}}
-										}
+										sy:children = {/lht_tree_doc/comm/layer_mask/children}
 									}
 									ha:layers {
 										type=li
