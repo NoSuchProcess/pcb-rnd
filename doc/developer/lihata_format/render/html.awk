@@ -1,3 +1,8 @@
+BEGIN {
+	print "<html>"
+	print "<body>"
+}
+
 function tbl_hdr(node, level)
 {
 	print "<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description"
@@ -151,4 +156,7 @@ END {
 	print "<h2 id=\"types\"> Types </h2>"
 	print "<p>"
 	gen_types("/lht_tree_doc/types")
+
+	print "</body>"
+	print "</html>"
 }
