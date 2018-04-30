@@ -16,6 +16,7 @@ function close_last()
 	close_last()
 	print "	ha:flags_" $1 " {"
 	print "		hide=1"
+	print "		name=flags"
 	print "		desc={flag bits of a " $1 "}"
 	print "		type=ha"
 	print "		li:children {"

@@ -1,6 +1,7 @@
 ha:lht_tree_doc { ha:comm {
 	ha:flags_arc {
 		hide=1
+		name=flags
 		desc={flag bits of a arc}
 		type=ha
 		li:children {
@@ -19,6 +20,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:flags_line {
 		hide=1
+		name=flags
 		desc={flag bits of a line}
 		type=ha
 		li:children {
@@ -37,6 +39,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:flags_polygon {
 		hide=1
+		name=flags
 		desc={flag bits of a polygon}
 		type=ha
 		li:children {
@@ -55,6 +58,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:flags_text {
 		hide=1
+		name=flags
 		desc={flag bits of a text}
 		type=ha
 		li:children {
@@ -73,6 +77,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:flags_subcircuit {
 		hide=1
+		name=flags
 		desc={flag bits of a subcircuit}
 		type=ha
 		li:children {
@@ -88,6 +93,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:flags_padstack {
 		hide=1
+		name=flags
 		desc={flag bits of a padstack}
 		type=ha
 		li:children {
@@ -107,6 +113,7 @@ ha:lht_tree_doc { ha:comm {
 	}
 	ha:flags_ratline {
 		hide=1
+		name=flags
 		desc={flag bits of a ratline}
 		type=ha
 		li:children {
