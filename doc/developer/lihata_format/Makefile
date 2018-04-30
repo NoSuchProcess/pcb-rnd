@@ -1,7 +1,7 @@
 all: tree.html tree.txt
 
-tree.html: render/render.sh *.lht
-	cd render && ./render.sh > ../tree.html
+tree.html: render/render.sh render/*.awk *.lht
+	cd render && ./render.sh html > ../tree.html
 
 tree.txt: tree.html
 	w3m -cols 256 tree.html > tree.txt
