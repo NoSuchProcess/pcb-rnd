@@ -24,7 +24,7 @@ ha:lht_tree_doc { ha:roots {
 								li:children {
 									ha:height { valtype=coord; desc={height of the glyph}}
 									ha:width { valtype=coord; desc={width of the glyph}}
-									ha:delta { valtype=coord; desc={TODO}}
+									ha:delta { valtype=coord; desc={extra space always inserted after the current symbol, before the next character}}
 									ha:objects {
 										type=li
 										{TODO: link line and describe simple objects}

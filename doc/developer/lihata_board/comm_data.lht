@@ -110,8 +110,8 @@ ha:lht_tree_doc { ha:comm {
 										li:children {
 											ha:x         = { valtype=coord;   desc={center, X coord}}
 											ha:y         = { valtype=coord;   desc={center, Y coord}}
-											ha:width     = { valtype=coord;   desc={radius (? TODO) in X direction }}
-											ha:height    = { valtype=coord;   desc={radius (? TODO) in Y direction }}
+											ha:width     = { valtype=coord;   desc={radius (of the centerline of the arc) in X direction }}
+											ha:height    = { valtype=coord;   desc={radius (of the centerline of the arc) in Y direction }}
 											ha:thickness = { valtype=coord;   desc={width of the pen the arc is drawn with }}
 											ha:clearance = { valtype=coord;   desc={copper clearance around the object }}
 											ha:astart    = { valtype=angle;   desc={ start angle}}
@@ -248,7 +248,7 @@ ha:lht_tree_doc { ha:comm {
 									ha:y2        = { valtype=coord;   desc={line second endpoint, vertical offset }}
 									ha:thickness = { valtype=coord;   desc={width of the line}}
 									ha:clearance = { valtype=coord;   desc={clearance around the line}}
-									ha:mask      = { valtype=coord;   desc={TODO}}
+									ha:mask      = { valtype=coord;   desc={size of the mask cutout, as interpreted by gEDA/PCB}}
 									ha:name      = { valtype=string;  desc={symbolic name of the pad}}
 									ha:number    = { valtype=string;  desc={"pin number" for the netlist}}
 									sy:attr@dup   = {/lht_tree_doc/comm/attributes}
