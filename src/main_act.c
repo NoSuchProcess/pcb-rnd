@@ -47,6 +47,8 @@
 #include "plugins.h"
 #include "build_run.h"
 #include "safe_fs.h"
+#include "flag_str.h"
+#include "obj_common.h"
 
 
 /* --------------------------------------------------------------------------- */
@@ -320,6 +322,28 @@ int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 0;
 }
 
+static const char pcb_acts_DumpObjFlags[] = "DumpObjFlags()";
+static const char pcb_acth_DumpObjFlags[] = "Print a script processable digest of all flags, per object type";
+static void dumpoflg(void *ctx, unsigned long flg, const char *name)
+{
+	printf("	%lx	%s\n", flg, name);
+}
+
+int pcb_act_DumpObjFlags(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	unsigned long ot, max = (1l<<31);
+
+	for(ot = 1; ot < max; ot <<= 1) {
+		const char *name = pcb_obj_type_name(ot);
+
+		if (*name == '<')
+			continue;
+		printf("%s\n", name);
+		pcb_strflg_map(0x7fffffff, ot, NULL, dumpoflg);
+	}
+	return 0;
+}
+
 static const char pcb_acts_System[] = "System(shell_cmd)";
 static const char pcb_acth_System[] = "Run shell command";
 int pcb_act_System(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -365,6 +389,9 @@ pcb_hid_action_t main_action_list[] = {
 	,
 	{"DumpPluginDirs", 0, pcb_act_DumpPluginDirs,
 	 pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs}
+	,
+	{"DumpObjFlags", 0, pcb_act_DumpObjFlags,
+	 pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags}
 	,
 	{"System", 0, pcb_act_System,
 	 pcb_acth_System, pcb_acts_System}

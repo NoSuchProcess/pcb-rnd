@@ -291,6 +291,7 @@ const char *pcb_action_args[] = {
 	NULL, "-dump-actions",    "DumpActions()",      "Print all available actions (script readable) and exit",  NULL,
 	NULL, "-dump-plugins",    "DumpPlugins()",      "Print all available plugins (script readable) and exit",  NULL,
 	NULL, "-dump-plugindirs", "DumpPluginDirs()",   "Print directories plugins might be loaded from and exit", NULL,
+	NULL, "-dump-oflags",     "DumpObjFlags()",     "Print object flags and exit",                             NULL,
 	NULL, "-show-paths",      "PrintPaths()",       "Print all configured paths and exit",                     NULL,
 	NULL, "-dump-config",     "dumpconf(native,1)", "Print the config tree and exit",                          "Config dump not available - make sure you have configured pcb-rnd with --buildin-diag",
 	"V",  "-version",         "PrintVersion()",     "Print version info and exit",                             NULL,
