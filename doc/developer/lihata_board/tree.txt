@@ -76,15 +76,18 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
     net             string     net name whose attribute needs to be changed
     key             string     key (name) of the attribute
     val             string     new value of the attribute
- conf                          ->
+ li:conf                       complete pcb-rnd configuration tree ->
  ha:data                       Layers and global objects of the board ->
  ha:attributes                 a hash of attribute key=value pairs
   attrib-key        string     attribute value
 
-:conf
+li:pcb-rnd-conf-v1
 
-type:name  value ver description
-conf              
+type:name           value ver description
+li:pcb-rnd-conf-v1            complete pcb-rnd configuration tree
+ ha:overwrite                 overwrite values while merging; children: a full or partial config tree
+ ha:prepend                   prepend values while merging; children: a full or partial config tree
+ ha:append                    append values while merging; children: a full or partial config tree
 
 Common subtrees
 

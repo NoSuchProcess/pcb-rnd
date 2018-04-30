@@ -79,16 +79,19 @@
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;net <td> string <td> &nbsp; <td> net name whose attribute needs to be changed 
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;key <td> string <td> &nbsp; <td> key (name) of the attribute
 <tr><td> &nbsp;&nbsp;&nbsp;&nbsp;val <td> string <td> &nbsp; <td> new value of the attribute
-<tr><td> &nbsp;conf <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/roots/conf"> -&gt; </a>
+<tr><td> &nbsp;li:conf <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/roots/pcb-rnd-conf-v1">complete pcb-rnd configuration tree -&gt; </a>
 <tr><td> &nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
 <tr><td> &nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr><td> &nbsp;&nbsp;attrib-key <td> string <td> &nbsp; <td> attribute value
 </table>
-<h3 id="/lht_tree_doc/roots/conf">:conf</h3>
+<h3 id="/lht_tree_doc/roots/pcb-rnd-conf-v1">li:pcb-rnd-conf-v1</h3>
 <p>
 <table border=0 cellspacing=0>
 <tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
-<tr><td> conf <td> &nbsp; <td> &nbsp; <td> 
+<tr><td> li:pcb-rnd-conf-v1 <td> &nbsp; <td> &nbsp; <td> complete pcb-rnd configuration tree
+<tr><td> &nbsp;ha:overwrite <td> &nbsp; <td> &nbsp; <td> overwrite values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
+<tr><td> &nbsp;ha:prepend <td> &nbsp; <td> &nbsp; <td> prepend values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
+<tr><td> &nbsp;ha:append <td> &nbsp; <td> &nbsp; <td> append values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
 </table>
 <h2> Common subtrees </h2>
 <p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees.

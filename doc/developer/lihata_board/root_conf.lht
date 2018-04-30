@@ -1,7 +1,22 @@
 ha:lht_tree_doc { ha:roots {
 
-	ha:conf {
-		TODO
+	ha:pcb-rnd-conf-v1 {
+		type=li
+		desc=complete pcb-rnd configuration tree
+		li:children {
+			ha:overwrite {
+				type=ha
+				desc={overwrite values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>}
+			}
+			ha:prepend {
+				type=ha
+				desc={prepend values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>}
+			}
+			ha:append {
+				type=ha
+				desc={append values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>}
+			}
+		}
 	}
 
 }}
