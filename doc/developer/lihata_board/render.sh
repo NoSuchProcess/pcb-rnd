@@ -64,6 +64,13 @@ function qstrip(s)
 	return s
 }
 
+function qstripnl(s)
+{
+	gsub("[\\\\]+164", " ", s)
+	gsub("[\\\\]n", "\n", s)
+	return s
+}
+
 function tbl_hdr(node, level)
 {
 	print "<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description"
@@ -181,6 +188,21 @@ function gen_roots(rpath,    v, n, N)
 	}
 }
 
+function gen_types(path,    v, n, N, node)
+{
+	print "<table border=1 cellspacing=0>"
+	print "<tr><th> type <th> description"
+
+	v = children(N, path)
+	for(n = 1; n <= v; n++) {
+		node = N[n]
+		print "<tr id=" q "valtype:" NAME[node] q ">"
+		print "	<td>" NAME[node]
+		print "	<td>" qstripnl(DATA[node])
+	}
+	print "</table>"
+}
+
 
 END {
 	print "<h2> File format root nodes </h2>"
@@ -190,6 +212,10 @@ END {
 	print "<h2> Common subtrees </h2>"
 	print "<p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees."
 	gen_roots("/lht_tree_doc/comm")
+
+	print "<h2 id=\"types\"> Types </h2>"
+	print "<p>"
+	gen_types("/lht_tree_doc/types")
 }
 
 '
