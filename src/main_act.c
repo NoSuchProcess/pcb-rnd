@@ -326,7 +326,7 @@ static const char pcb_acts_DumpObjFlags[] = "DumpObjFlags()";
 static const char pcb_acth_DumpObjFlags[] = "Print a script processable digest of all flags, per object type";
 static void dumpoflg(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb)
 {
-	printf("	%lx	%s\n", flg, fb->name);
+	printf("	%lx	%s	%s\n", flg, fb->name, fb->help);
 }
 
 int pcb_act_DumpObjFlags(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
