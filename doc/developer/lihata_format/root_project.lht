@@ -4,6 +4,38 @@ ha:lht_tree_doc { ha:roots {
 		type=ha
 		desc={Project file root. Except for "common", each software package should create a single subtree under the root; the subtree shall be named after the software package }
 		li:children {
+			ha:common {
+				type=ha
+				desc={project settings that should be common to all software packages}
+				li:children {
+					ha:name    { valtype=string; desc={long name of the project }}
+					ha:desc    { valtype=string; desc={description of the project }}
+					ha:url     { valtype=string; desc={homepage of the project }}
+					ha:vcs     { valtype=string; desc={main vcs url for the project }}
+					ha:contact { valtype=string; desc={author/maintainer contact info }}
+					ha:files {
+						type=li
+						desc={ordered list of source files being used by the project}
+						li:children {
+							type=ha
+							ha:path    { valtype=string; desc={path to the file, relative to the project file }}
+							ha:desc    { valtype=string; desc={description of the file }}
+							ha:type    { valtype=string; desc={optional: type of the file; one of: "pcb", "schematic", "doc" }}
+						}
+					}
+					ha:libs {
+						type=li
+						desc={ordered list of libraries the project depends on}
+						li:children {
+							type=ha
+							ha:path    { valtype=string; desc={path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url) }}
+							ha:url     { valtype=string; desc={url to the library (must not be used together with path) }}
+							ha:desc    { valtype=string; desc={description of the library }}
+							ha:type    { valtype=string; desc={optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation) }}
+						}
+					}
+				}
+			}
 			sy:pcb-rnd-conf-v1 = {/lht_tree_doc/roots/pcb-rnd-conf-v1}
 		}
 	}
