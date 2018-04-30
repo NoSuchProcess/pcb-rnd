@@ -5,7 +5,7 @@ echo '
 <body>
 '
 
-for n in *.lht
+for n in ../*.lht
 do
 	lhtflat < $n
 done | tee Flat | awk -F "[\t]" '
