@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title> pcb-rnd developer manual - lihata file formats</title>
+<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+</head>
+<body>
+<h1> pcb-rnd native file formats </h1>
+<p>
+The native file format of pcb-rnd is <a href="http://repo.hu/projects/lihata">
+lihata </a> based. Lihata is a generic markup language that describes how
+a tree can be serialized into a file format. What the tree contains and
+what each node means is up to the user (pcb-rnd in this case). This document
+describes how the lihata trees are interpreted by pcb-rnd.
+<p>
+The following table is a summary of the native file formats the <b>core</b>
+handles. Various plugins will handle their own file formats, often also
+lihata based - those are each documented at the corresponding. Note:
+pcb-rnd does not try to recognize the purpose of the file by the file name,
+but by the root node name - files can be named anything, there's no
+"extension"; there are some files that are found by name (typically config
+files) - these are marked with bold.
+<p>
+<table border=1 cellspacing=0>
+
+<tr> <th> typical filename     <th> root node
+	<th> purpose (and documentation)
+
+<tr> <td> foo.lht              <td> ha:pcb-rnd-board-v*
+	<td> <a href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*">Printed circuit board</a>, self-contained
+
+<tr> <td> bar.lht, bar.fp      <td> li:pcb-rnd-subcircuit-v*
+	<td> <a href="tree.html#/lht_tree_doc/roots/pcb-rnd-subcircuit-v*">A subcircuit</a>, self-contained, most often used as a footprint
+
+<tr> <td> times.lht            <td> li:pcb-rnd-font-v1
+	<td> <a href="tree.html#/lht_tree_doc/roots/pcb-rnd-font-v1">Vector font</a>
+
+<tr> <td> <b>pcb-conf.lht<b>   <td> li:pcb-rnd-conf-v1
+	<td> <a href="tree.html#/lht_tree_doc/roots/pcb-rnd-conf-v1">A configuration subtree</a>: system config (e.g. /usr/share/pcb-rnd/pcb-conf.lht) or user config (~/.pcb-rnd/pcb-conf.lht)
+
+<!--
+<tr> <td> <b>project.lht<b>    <td> 
+	<td> <a href="tree.html#">A project file</a> that describes configuration and source file names for various software
+-->
+
+<!--
+<tr> <td> <b>pcb-menu-default.lht<b>   <td> ha:
+	<td> <a href="">The main menu system</a>, including popup menus, all key and mouse bindings
+-->
+</table>
+
+</body>
+</html>
