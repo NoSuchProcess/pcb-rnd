@@ -63,6 +63,8 @@ static int pcb_stroke_exec(const char *seq)
 		if ((strcmp(seq, item->name) == 0) && (pcb_hid_parse_actions(item->val.string[0]) == 0))
 			return 0;
 	}
+	if (conf_stroke.plugins.stroke.warn4unknown)
+		pcb_message(PCB_MSG_WARNING, "Stroke: sequence '%s' is not configured.\n", seq);
 	return -1;
 }
 
