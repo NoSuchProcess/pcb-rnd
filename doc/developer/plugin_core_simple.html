@@ -12,10 +12,10 @@
 	<li> 4. edit Makefile: replace <b>report</b> to <i>plg</i>
 	<li> 5. edit <i>plg</i>.pup; there should be short summary about the purpose of the plugin then "#key: value" pairs for statistics:
 		<ul>
-			<li> <i>$class</i> the same as the plugin name prefix (see <a href="plugin_naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins
+			<li> <i>$class</i> the same as the plugin name prefix (see <a href="plugin_naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins - see <a href="mods3/post.html">mods3</a> for a short list of all classes
 			<li> <i>$short</i> short description - should be less than 32 characters; this shows up in the configure summary
 			<li> <i>$long</i> long description - used for documantation; no length limitation, but must be a single line
-			<li> <i>$state</i> either <b>works</b> or <b>disabled</b>
+			<li> <i>$state</i> <b>works</b>, <b>WIP</b>, <b>abandoned</b> or <b>deprecated</b> - see <a href="mods3/post.html">mods3</a> for explanation
 			<li> <i>$lstate</i> [optional] a chance to explain why the value of default is what it is; e.g. why a plugin is disabled
 			<li> <i>$package</i> when pcb-rnd is packaged for a distribution or OS, which package this plugin should end up in (see also: trunk/doc/developer/packaging/)
 			<li> <i>$fmt-native</i> only for io_ plugins: whether this format is considered native (see also: io_lihata's pup)
