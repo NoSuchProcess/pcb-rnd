@@ -153,14 +153,12 @@ static void real_stroke_record(int ev_x, int ev_y)
 {
 	StrokeBox.X2 = ev_x;
 	StrokeBox.Y2 = ev_y;
-	fprintf(stderr, "stroke: %d %d\n", ev_x >> 16, ev_y >> 16);
 	stroke_record(ev_x >> 16, ev_y >> 16);
 	return;
 }
 
 static void real_stroke_start(void)
 {
-	fprintf(stderr, "stroke: MIID!\n");
 	pcb_mid_stroke = pcb_true;
 	StrokeBox.X1 = pcb_crosshair.X;
 	StrokeBox.Y1 = pcb_crosshair.Y;
