@@ -4960,25 +4960,27 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h action_helper.h \
  hid_actions.h compat_nls.h obj_subc.h obj_subc_parent.h data.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
- ../config.h crosshair.h vtonpoint.h global_typedefs.h pcb_bool.h unit.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h drc.h attrib.h \
- layer.h globalconst.h obj_arc_list.h obj_common.h flag.h data_parent.h \
- obj_arc.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
- ../src_3rd/genvector/gds_char.h layer_grp.h route.h hid_actions.h unit.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../config.h action_helper.h global_typedefs.h pcb_bool.h unit.h board.h \
+ vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ obj_arc_list.h obj_common.h flag.h data_parent.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
+ ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h layer_grp.h library.h rats_patch.h \
+ board.h conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h crosshair.h vtonpoint.h hid.h \
+ error.h drc.h route.h hid_actions.h unit.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h stub_stroke.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h stub_stroke.h tool.h \
  ../src_plugins/stroke/conf_internal.c \
- ../src_plugins/stroke/stroke_conf.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h ../src_plugins/stroke/stroke_conf_fields.h
+ ../src_plugins/stroke/stroke_conf.h conf.h dolists.h \
+ ../src_plugins/stroke/stroke_conf_fields.h
 ../src_plugins/teardrops/teardrops.o: \
  ../src_plugins/teardrops/teardrops.c ../config.h math_helper.h board.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
