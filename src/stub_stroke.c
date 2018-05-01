@@ -38,6 +38,13 @@ static void stub_stroke_start_dummy(void)
 	pcb_message(PCB_MSG_WARNING, "Can not use libstroke: not compiled as a buildin and not loaded as a plugin\n");
 }
 
+static int stub_stroke_finish_dummy(void)
+{
+	return -1;
+}
+
 void (*pcb_stub_stroke_record)(int ev_x, int ev_y) = stub_stroke_record_dummy;
 void (*pcb_stub_stroke_start)(void) = stub_stroke_start_dummy;
-void (*pcb_stub_stroke_finish)(void) = stub_stroke_start_dummy;
+
+/* Returns 0 on success (gesture recognized) */
+int (*pcb_stub_stroke_finish)(void) = stub_stroke_finish_dummy;

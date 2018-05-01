@@ -6,6 +6,8 @@
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
  *
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -54,7 +56,7 @@ void FinishStroke(void);
 pcb_box_t StrokeBox;
 
 /* FinishStroke - try to recognize the stroke sent */
-static void real_stroke_finish(void)
+static int real_stroke_finish(void)
 {
 	char msg[255];
 	unsigned long num;
@@ -67,40 +69,40 @@ static void real_stroke_finish(void)
 			if (conf_core.editor.mode == PCB_MODE_LINE) {
 				pcb_tool_select_by_id(PCB_MODE_LINE);
 			}
-			break;
+			return 0;
 		case 9874123:
 		case 74123:
 		case 987412:
 		case 8741236:
 		case 874123:
 			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, conf_core.editor.show_solder_side ? 1 : 3);
-			break;
+			return 0;
 		case 7896321:
 		case 786321:
 		case 789632:
 		case 896321:
 			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, conf_core.editor.show_solder_side ? 3 : 1);
-			break;
+			return 0;
 		case 258:
 			pcb_tool_select_by_id(PCB_MODE_LINE);
-			break;
+			return 0;
 		case 852:
 			pcb_tool_select_by_id(PCB_MODE_ARROW);
-			break;
+			return 0;
 		case 1478963:
 			pcb_act_Undo(0, NULL, 0, 0);
-			break;
+			return 0;
 		case 147423:
 		case 147523:
 		case 1474123:
 			pcb_redo(pcb_true);
-			break;
+			return 0;
 		case 148963:
 		case 147863:
 		case 147853:
 		case 145863:
 			pcb_tool_select_by_id(PCB_MODE_VIA);
-			break;
+			return 0;
 		case 951:
 		case 9651:
 		case 9521:
@@ -111,7 +113,7 @@ static void real_stroke_finish(void)
 		case 96541:
 		case 98541:
 			PCB->Zoom = 1000;						/* special zoom extents */
-			break;
+			return 0;
 		case 159:
 		case 1269:
 		case 1259:
@@ -134,7 +136,7 @@ static void real_stroke_finish(void)
 				PCB->Zoom = z;
 
 				pcb_center_display(x, y);
-				break;
+				return 0;
 			}
 
 		default:
@@ -144,6 +146,7 @@ static void real_stroke_finish(void)
 	}
 	else
 		pcb_gui->beep();
+	return -1;
 }
 
 static void real_stroke_record(int ev_x, int ev_y)
