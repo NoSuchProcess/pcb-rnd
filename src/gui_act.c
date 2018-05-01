@@ -681,10 +681,14 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
 			break;
 		case F_Release:
-			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke))
-				pcb_stub_stroke_finish();
-			else
+			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish() == 0)) {
+				/* Ugly hack: returning 1 here will break execution of the
+				   action script, so actions after this one could do things
+				   that would be executed only after non-recognized gestures */
 				pcb_release_mode();
+				return 1;
+			}
+			pcb_release_mode();
 			break;
 		case F_Remove:
 			pcb_tool_select_by_id(PCB_MODE_REMOVE);
