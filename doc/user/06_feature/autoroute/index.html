@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2> Autoroute plugin </h2>
+<p>
+Tha autoroute plugin attempts to route traces according to the netlist,
+after subcircuit placement is done by the user. There are two modes of
+operation:
+<ul>
+	<li> route all rat lines
+	<li> route only the selected rat lines
+</ul>
+<p>
+Limiting the operation to selected rat lines only gives some control
+to the user; typical use is to route critical nets first, while the board
+is sparse and leave less important nets to the end (getting them longer and
+have more vias).
+<p>
+The autorouter uses only the currently visible copper layers and places
+vias and jumps layers where necessary.
+<p>
+Before the autorouter is ran, a netlist should be imported, subcircuits
+should be loaded and placed. Other plugins, such as the
+<a href="../autoplace"> autoplace </a> or smartdisperse can help with
+the placement. After the autorouting, <a href="../djopt/">djopt</a>
+actions can be used to purify the routed tracks.
+<p>
+The plugin implements a rectangle-expansion router, based on
+"A Method for Gridless Routing of Printed Circuit Boards" by
+A. C. Finch, K. J. Mackenzie, G. J. Balsdon, and G. Symonds in the
+1985 Proceedings of the 22nd ACM/IEEE Design Automation Conference.
+This reference is available from the ACM Digital Library at
+http://www.acm.org/dl for those with institutional or personal
+access to it.
+<p>
+Note: the built-in autorouter is not very smart. There are 3rd party, external
+autorouters that can do better job on some boards, and pcb-rnd supports
+export/import to communicate with them.
+
+</body>
+</html>
