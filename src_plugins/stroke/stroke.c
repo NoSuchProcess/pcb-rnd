@@ -115,6 +115,10 @@ static int pcb_act_stroke(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	else if (pcb_strcasecmp(argv[0], "stopline") == 0) {
 		if (conf_core.editor.mode == PCB_MODE_LINE)
 			pcb_tool_select_by_id(PCB_MODE_LINE);
+		else if (conf_core.editor.mode == PCB_MODE_POLYGON)
+			pcb_tool_select_by_id(PCB_MODE_POLYGON);
+		else if (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE)
+			pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
 	}
 	else
 		PCB_ACT_FAIL(stroke);
