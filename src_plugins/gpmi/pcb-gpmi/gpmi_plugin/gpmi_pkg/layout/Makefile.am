@@ -17,4 +17,6 @@ HEADER  = layout.h
 PKG_LDFLAGS = 
 
 include ../../../Makefile.config
-INCLUDES = -I $(PCB_SRC)
+INCLUDES = -I$(PCB_SRC)/src
+INCLUDES += -I$(PCB_SRC)
+

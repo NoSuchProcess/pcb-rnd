@@ -24,8 +24,6 @@ static inline layout_object_t *search_append(layout_search_t *s, void *obj)
 		case OM_TEXT:     o->obj.t   = obj; break;
 		case OM_POLYGON:  o->obj.p   = obj; break;
 		case OM_ARC:      o->obj.a   = obj; break;
-		case OM_VIA:      o->obj.v   = obj; break;
-		case OM_PIN:      o->obj.pin = obj; break;
 		default:
 			assert(!"Unimplemented object type");
 	}
@@ -90,16 +88,6 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 		pcb_r_search(CURRENT->arc_tree, &spot, NULL, search_callback, s, NULL);
 	}
 
-	if (obj_types & OM_VIA) {
-		s->searching = OM_VIA;
-		pcb_r_search(PCB->Data->via_tree, &spot, NULL, search_callback, s, NULL);
-	}
-
-	if (obj_types & OM_PIN) {
-		s->searching = OM_PIN;
-		pcb_r_search(PCB->Data->pin_tree, &spot, NULL, search_callback, s, NULL);
-	}
-
 	if (obj_types & OM_POLYGON) {
 		s->searching = OM_POLYGON;
 		for (s->layer = 0; s->layer < PCB_MAX_LAYER + 2; s->layer++)
@@ -150,8 +138,6 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 		select2(s, OM_TEXT,    flag, &layer->Text);
 		select2(s, OM_POLYGON, flag, &layer->Polygon);
 	}
-	select2(s, OM_VIA,  flag, &PCB->Data->Via);
-/*	select2(s, OM_PIN,  flag, &PCB->Data->Pin); /* TODO */
 
 	return s->used;
 }

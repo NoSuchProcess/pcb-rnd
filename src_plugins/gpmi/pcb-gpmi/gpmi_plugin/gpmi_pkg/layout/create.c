@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "layout.h"
-#include "src/const.h"
 #include "src/board.h"
 #include "src/undo.h"
 #include "src/conf_core.h"
 #include "src/layer.h"
 #include "src/compat_misc.h"
+#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 
 typedef struct flag_tr_s {
@@ -93,10 +93,10 @@ static void *layout_create_via_(int x, int y, int thickness, int clearance, int 
 {
 	void *pin;
 
-	pin = pcb_via_new(PCB->Data, x, y, thickness, clearance, mask, hole, name, get_flags(flags));
+	pin = pcb_pstk_new_compat_via(PCB->Data, x, y, hole, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, 1);
 
 	if (pin != NULL) {
-		pcb_undo_add_obj_to_create(PCB_OBJ_VIA, pin, pin, pin);
+		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, pin, pin, pin);
 		return pin;
 	}
 	return NULL;

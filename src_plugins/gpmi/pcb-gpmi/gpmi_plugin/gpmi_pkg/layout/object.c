@@ -2,7 +2,6 @@
 #include <assert.h>
 #include "layout.h"
 #include "src/change.h"
-#include "src/const.h"
 #include "src/board.h"
 #include "src/move.h"
 #include "src/conf_core.h"
@@ -49,26 +48,6 @@ int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord)
 				;
 			}
 			break;
-		case OM_VIA:
-			switch (coord) {
-				case OC_P1X:
-				case OC_P2X: return obj->obj.v->X;
-				case OC_P1Y:
-				case OC_P2Y: return obj->obj.v->Y;
-				default: /* avoids warnings for unhandled requests we handled above */
-				;
-			}
-			break;
-		case OM_PIN:
-			switch (coord) {
-				case OC_P1X:
-				case OC_P2X: return obj->obj.pin->X;
-				case OC_P1Y:
-				case OC_P2Y: return obj->obj.pin->Y;
-				default: /* avoids warnings for unhandled requests we handled above */
-				;
-			}
-			break;
 	}
 
 	return -1;
@@ -110,12 +89,6 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 			return 0;
 		case OM_TEXT:
 			pcb_move_obj(PCB_OBJ_TEXT, ly, obj->obj.t, obj->obj.t, dx, dy);
-			return 0;
-		case OM_VIA:
-			pcb_move_obj(PCB_OBJ_VIA, obj->obj.v, obj->obj.v, obj->obj.v, dx, dy);
-			return 0;
-		case OM_PIN:
-			pcb_move_obj(PCB_OBJ_PIN, obj->obj.pin, obj->obj.pin, obj->obj.pin, dx, dy);
 			return 0;
 		case OM_ARC:
 			switch(coord) {
