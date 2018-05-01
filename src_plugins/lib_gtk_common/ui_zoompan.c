@@ -217,7 +217,7 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 
 /* ------------------------------------------------------------ */
 
-const char pcb_acts_zoom[] = "Zoom()\n" "Zoom(factor)";
+const char pcb_acts_zoom[] = "Zoom()\n" "Zoom(factor)\n" "Zoom(x1, y1, x2, y2)\n";
 
 const char pcb_acth_zoom[] = N_("Various zoom factor changes.");
 
@@ -251,6 +251,10 @@ about the actual resolution of most screens - resulting in an "actual
 size" board.  Similarly, a @var{factor} of 100 gives you a 10x actual
 size.
 
+@item @var{x1}, @var{y1}, @var{x2}, @var{y2}
+
+Zoom and pan to the box specified by the coords.
+
 @item ?
 
 Print the current zoom level in the message log (as an info line)
@@ -259,8 +263,6 @@ Print the current zoom level in the message log (as an info line)
 
 Note that zoom factors of zero are silently ignored.
 
-
-
 %end-doc */
 
 int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -268,13 +270,38 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 	const char *vp;
 	double v;
 
-	if (argc > 1)
-		PCB_ACT_FAIL(zoom);
 
 	if (argc < 1) {
 		pcb_gtk_zoom_view_fit(vw);
 		return 0;
 	}
+
+	if (argc == 4) {
+		pcb_coord_t x1, y1, x2, y2;
+		pcb_bool succ;
+
+		x1 = pcb_get_value(argv[0], NULL, NULL, &succ);
+		if (!succ)
+			PCB_ACT_FAIL(zoom);
+
+		y1 = pcb_get_value(argv[1], NULL, NULL, &succ);
+		if (!succ)
+			PCB_ACT_FAIL(zoom);
+
+		x2 = pcb_get_value(argv[2], NULL, NULL, &succ);
+		if (!succ)
+			PCB_ACT_FAIL(zoom);
+
+		y2 = pcb_get_value(argv[3], NULL, NULL, &succ);
+		if (!succ)
+			PCB_ACT_FAIL(zoom);
+
+		pcb_gtk_zoom_view_win(vw, x1, y1, x2, y2);
+		return 0;
+	}
+
+	if (argc > 1)
+		PCB_ACT_FAIL(zoom);
 
 	vp = argv[0];
 	if (*vp == '?') {
