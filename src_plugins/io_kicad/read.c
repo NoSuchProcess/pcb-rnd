@@ -1444,7 +1444,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	char *end, *textLabel, *text;
 	char *pinName, *moduleName;
 	const char *subc_layer_str;
-	pcb_subc_t *subc;
+	pcb_subc_t *subc = NULL;
 	pcb_layer_t *subc_layer;
 	pcb_layer_type_t smd_side;
 
