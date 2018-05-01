@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2> Polystitch plugin </h2>
+<p>
+This plugin is intended as a workaround for a bug in pstoedit. Pstodeit 
+generates polygons instead of polygon holes. This plugin creates a polystitch
+action that can fix up that case. The polystitch action shall be ran while
+the crosshair is over the inner polygon of two overlapping polygons. The action
+takes the inner polygon and converts it into a hole within the outer polygon
+then removes the inner polygon.
+<p>
+The plugin assumes that there are only two polygons under the crosshair and
+the inner polygon is fully within the outer polygon.
+<p>
+The thindraw or wireframe view mode may be of help in searching such
+overlapping polygons.
+
+</body>
+</html>
