@@ -336,7 +336,7 @@ static void set_special_grid_color(void)
 	priv->grid_color.blue ^= priv->bg_color.blue;
 }
 
-void ghid_gl_set_special_colors(conf_native_t *cfg, int arr_idx)
+void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
