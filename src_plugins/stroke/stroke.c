@@ -30,6 +30,8 @@
 
 #include <stroke.h>
 
+#include "board.h"
+#include "conf_core.h"
 #include "crosshair.h"
 #include "hid_actions.h"
 #include "unit.h"
@@ -43,6 +45,8 @@
 
 conf_stroke_t conf_stroke;
 
+#define SIDE_X(x)  ((conf_core.editor.view.flip_x ? PCB->MaxWidth - (x) : (x)))
+#define SIDE_Y(y)  ((conf_core.editor.view.flip_y ? PCB->MaxHeight - (y) : (y)))
 
 static pcb_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
 
@@ -67,6 +71,8 @@ static void pcb_stroke_record(int ev_x, int ev_y)
 {
 	stroke_last_x = ev_x;
 	stroke_last_y = ev_y;
+	ev_x = SIDE_X(ev_x) - stroke_first_x;
+	ev_y = SIDE_Y(ev_y) - stroke_first_y;
 	stroke_record(ev_x >> 16, ev_y >> 16);
 	return;
 }
@@ -74,8 +80,8 @@ static void pcb_stroke_record(int ev_x, int ev_y)
 static void pcb_stroke_start(void)
 {
 	pcb_mid_stroke = pcb_true;
-	stroke_first_x = pcb_crosshair.X;
-	stroke_first_y = pcb_crosshair.Y;
+	stroke_first_x = SIDE_X(pcb_crosshair.X);
+	stroke_first_y = SIDE_Y(pcb_crosshair.Y);
 }
 
 int pplg_check_ver_stroke(int ver_needed) { return 0; }
