@@ -43,10 +43,10 @@ static double ATAN2(pcb_point_t a, pcb_point_t b)
 {
 	if (a.X == b.X && a.Y == b.Y)
 		return 0;
-	return atan2((double) b.Y - a.Y, (double) b.X - a.X);
+	return atan2((double)b.Y - a.Y, (double)b.X - a.X);
 }
 
-static double poly_winding(pcb_poly_t * poly)
+static double poly_winding(pcb_poly_t *poly)
 {
 	double winding, turn;
 	double prev_angle, this_angle;
@@ -85,7 +85,7 @@ static void find_crosshair_poly(pcb_coord_t x, pcb_coord_t y)
 			/* point */
 			pcb_coord_t dx = x - point->X;
 			pcb_coord_t dy = y - point->Y;
-			dist = (double) dx *dx + (double) dy *dy;
+			dist = (double)dx * dx + (double)dy * dy;
 			if (dist < best || inner_poly == NULL) {
 				inner_poly = polygon;
 				poly_layer = layer;
@@ -139,12 +139,12 @@ static void check_windings()
 }
 
 /* Rotate the polygon point list around so that point N is the first one in the list. */
-static void rotate_points(pcb_poly_t * poly, int n)
+static void rotate_points(pcb_poly_t *poly, int n)
 {
 	pcb_point_t *np;
 	int n2 = poly->PointN - n;
 
-	np = (pcb_point_t *) malloc(poly->PointN * sizeof(pcb_point_t));
+	np = (pcb_point_t *)malloc(poly->PointN * sizeof(pcb_point_t));
 	memcpy(np, poly->Points + n, n2 * sizeof(pcb_point_t));
 	memcpy(np + n2, poly->Points, n * sizeof(pcb_point_t));
 	memcpy(poly->Points, np, poly->PointN * sizeof(pcb_point_t));
@@ -177,7 +177,7 @@ static void stitch_them()
 		for (o = 0; o < outer_poly->PointN; o++) {
 			pcb_coord_t dx = inner_poly->Points[i].X - outer_poly->Points[o].X;
 			pcb_coord_t dy = inner_poly->Points[i].Y - outer_poly->Points[o].Y;
-			dist = (double) dx *dx + (double) dy *dy;
+			dist = (double)dx * dx + (double)dy * dy;
 			if (dist < best || best < 0) {
 				ii = i;
 				oo = o;
@@ -191,8 +191,8 @@ static void stitch_them()
 	dup_endpoints(inner_poly);
 	dup_endpoints(outer_poly);
 
-	pcb_r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *) inner_poly);
-	pcb_r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly);
+	pcb_r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *)inner_poly);
+	pcb_r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *)outer_poly);
 
 	for (i = 0; i < inner_poly->PointN; i++)
 		pcb_poly_point_new(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
@@ -201,7 +201,7 @@ static void stitch_them()
 
 	outer_poly->NoHolesValid = 0;
 	pcb_poly_bbox(outer_poly);
-	pcb_r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly);
+	pcb_r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *)outer_poly);
 	pcb_poly_remove_excess_points(poly_layer, outer_poly);
 	pcb_poly_init_clip(PCB->Data, poly_layer, outer_poly);
 	pcb_poly_invalidate_draw(poly_layer, outer_poly);
