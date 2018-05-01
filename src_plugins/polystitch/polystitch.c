@@ -100,11 +100,13 @@ static int polystitch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (outer_poly) {
 			pcb_cardinal_t n, end;
 
+			/* figure how many contour points the inner poly has (holes are going to be ignored) */
 			if (inner_poly->HoleIndexN > 0)
 				end = inner_poly->HoleIndex[0];
 			else
 				end = inner_poly->PointN;
 
+			/* convert the inner poly into a hole */
 			pcb_poly_hole_new(outer_poly);
 			for(n = 0; n < end; n++)
 				pcb_poly_point_new(outer_poly, inner_poly->Points[n].X, inner_poly->Points[n].Y);
