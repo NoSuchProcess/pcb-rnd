@@ -517,6 +517,8 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"SwapSides", 0, SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
 	,
 	{"Zoom", N_("Click on zoom focus"), Zoom, pcb_acth_zoom, pcb_acts_zoom}
+	,
+	{"ZoomTo", 0, Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
