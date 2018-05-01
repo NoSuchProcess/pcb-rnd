@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2> Stroke plugin </h2>
+
+<h3> Gestures </h3>
+<p>
+The stroke plugin uses libstroke to recognize mouse gestures. By the
+default menu config gestures are recognized while the right mouse button
+is pressed and the mouse is moved. If no movement happened between press
+and release or the gesture is not recognized, the context menu is open.
+<p>
+What gestures are recognized and what actions are executed for them are
+all configured in stroke.conf. The default configuration coming with the
+plugin defines the gestures listed in the table below. Please note: it is
+important to start the gesture at the specific point relative to the
+subsequent coordinates of the gesture; for example the rotation gestures
+always need to start at the bottom.
+<p>
+<table border=1>
+	<tr><th> gesture drawing           <th> action taken
+	<tr><td> <img src="line.svg">      <td> switch to line drawing mode
+	<tr><td> <img src="arrow.svg">     <td> switch to arrow mode
+	<tr><td> <img src="stopline.svg">  <td> stop drawing a line, polygon contour or polygon hole
+	<tr><td> <img src="via.svg">       <td> switch to via placing mode
+	<tr><td> <img src="rotcw.svg">     <td> rotate the object under the cursor 90 degrees clock-wise
+	<tr><td> <img src="rotccw.svg">    <td> rotate the object under the cursor 90 degrees counter-clock-wise
+	<tr><td> <img src="undo.svg">      <td> undo an operation
+	<tr><td> <img src="redo.svg">      <td> redo an operation
+	<tr><td> <img src="zoom_ext.svg">  <td> zoom to extent (all-board view)
+	<tr><td> <img src="zoom_in.svg">   <td> zoom in to the area between the endpoints of the gesture
+</table>
+
+<h3> Configuration </h3>
+<p>
+The stroke plugin is compiled only if (the development package of)
+libstroke is installed. Any gesture recognition takes place only if
+editor/enable_stroke is set to true (e.g. "1").
+<p>
+The gestures are configured as an ordered list of
+<i>dial-pad-sequence={pcb-rnd-actions}</i> under plugins/stroke/gestures.
+Only the first match is executed; this allows the user to override default
+gestures from user or project or design config.
+
+</body>
+</html>
