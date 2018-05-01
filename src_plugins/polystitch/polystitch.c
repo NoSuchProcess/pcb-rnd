@@ -6,7 +6,7 @@
  * Licensed under the terms of the GNU General Public 
  * License, version 2 or later.
  *
- * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016 and 2018.
  *
  * Original source: http://www.delorie.com/pcb/polystitch.c
  *
@@ -70,7 +70,7 @@ static double poly_winding(pcb_poly_t * poly)
 }
 
 /* Given the X,Y, find the polygon and set inner_poly and poly_layer. */
-static void find_crosshair_poly(int x, int y)
+static void find_crosshair_poly(pcb_coord_t x, pcb_coord_t y)
 {
 	double best = 0, dist;
 
@@ -83,8 +83,8 @@ static void find_crosshair_poly(int x, int y)
 		PCB_POLY_POINT_LOOP(polygon);
 		{
 			/* point */
-			int dx = x - point->X;
-			int dy = y - point->Y;
+			pcb_coord_t dx = x - point->X;
+			pcb_coord_t dy = y - point->Y;
 			dist = (double) dx *dx + (double) dy *dy;
 			if (dist < best || inner_poly == NULL) {
 				inner_poly = polygon;
@@ -175,8 +175,8 @@ static void stitch_them()
 	/* This is O(n^2) but there's not a lot we can do about that.  */
 	for (i = 0; i < inner_poly->PointN; i++)
 		for (o = 0; o < outer_poly->PointN; o++) {
-			int dx = inner_poly->Points[i].X - outer_poly->Points[o].X;
-			int dy = inner_poly->Points[i].Y - outer_poly->Points[o].Y;
+			pcb_coord_t dx = inner_poly->Points[i].X - outer_poly->Points[o].X;
+			pcb_coord_t dy = inner_poly->Points[i].Y - outer_poly->Points[o].Y;
 			dist = (double) dx *dx + (double) dy *dy;
 			if (dist < best || best < 0) {
 				ii = i;
