@@ -1,7 +1,7 @@
 $class feature
 $short calculate toolpath for milling
 $long Calculate and simulate toolpath for milling away opper
-$state work-in-progress
+$state WIP
 default disable
 autoload 1
 dep lib_polyhelp
