@@ -1,4 +1,4 @@
-GTK3:
+GUI:
 	+ overlapping objects (e.g. 2 fat lines crossing on silk) are darker on the overlap; we need uniform color
 	+ mouse scroll wheel doesn't work in cross section
 	- zoom hangs: press 'z' on the drawing area -> hang
@@ -8,3 +8,6 @@ GTK3:
 	- main window resize scroll bar warnings
 	- component draw "flicker", depending on pan: http://igor2.repo.hu/tmp/gtk3_bug1a.jpg http://igor2.repo.hu/tmp/gtk3_bug1a.jpg
 	- missing grid points: http://igor2.repo.hu/tmp/gtk3_bug2.png
+
+scconfig:
+	- ./configure --buildin-hid_gtk3_cairo ends up depending on hid_gl; have to use --disable-lib_hid_gl
