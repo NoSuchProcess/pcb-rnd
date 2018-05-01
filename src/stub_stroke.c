@@ -29,7 +29,7 @@
 
 pcb_bool pcb_mid_stroke = pcb_false;
 
-static void stub_stroke_record_dummy(int ev_x, int ev_y)
+static void stub_stroke_record_dummy(pcb_coord_t ev_x, pcb_coord_t ev_y)
 {
 }
 
@@ -43,7 +43,7 @@ static int stub_stroke_finish_dummy(void)
 	return -1;
 }
 
-void (*pcb_stub_stroke_record)(int ev_x, int ev_y) = stub_stroke_record_dummy;
+void (*pcb_stub_stroke_record)(pcb_coord_t ev_x, pcb_coord_t ev_y) = stub_stroke_record_dummy;
 void (*pcb_stub_stroke_start)(void) = stub_stroke_start_dummy;
 
 /* Returns 0 on success (gesture recognized) */

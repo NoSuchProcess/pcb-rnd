@@ -67,7 +67,7 @@ static int pcb_stroke_finish(void)
 	return -1;
 }
 
-static void pcb_stroke_record(int ev_x, int ev_y)
+static void pcb_stroke_record(pcb_coord_t ev_x, pcb_coord_t ev_y)
 {
 	stroke_last_x = ev_x;
 	stroke_last_y = ev_y;
