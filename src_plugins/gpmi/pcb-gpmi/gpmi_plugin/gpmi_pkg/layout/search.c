@@ -90,7 +90,7 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 
 	if (obj_types & OM_POLYGON) {
 		s->searching = OM_POLYGON;
-		for (s->layer = 0; s->layer < PCB_MAX_LAYER + 2; s->layer++)
+		for (s->layer = 0; s->layer < PCB_MAX_LAYER; s->layer++)
 			pcb_r_search(PCB->Data->Layer[s->layer].polygon_tree, &spot, NULL, search_callback, s, NULL);
 		s->layer = -1;
 	}
@@ -131,7 +131,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 	layout_search_t *s = new_search(search_ID);
 	pcb_layer_t *layer = PCB->Data->Layer;
 
-	for (l =0; l < PCB_MAX_LAYER + 2; l++, layer++) {
+	for (l =0; l < PCB_MAX_LAYER; l++, layer++) {
 		s->layer = l;
 		select2(s, OM_ARC,     flag, &layer->Arc);
 		select2(s, OM_LINE,    flag, &layer->Line);

@@ -12,7 +12,7 @@
 #define LAYER_SEARCH_MAX 32
 
 #define layer_check(layer) \
-	if ((layer < 0) || (layer >= PCB_MAX_LAYER+2)) \
+	if ((layer < 0) || (layer >= PCB_MAX_LAYER)) \
 		return
 
 
@@ -33,7 +33,7 @@ int layout_resolve_layer(const char *name)
 	int n;
 	if (name == NULL)
 		return -2;
-	for(n = 0; n < PCB_MAX_LAYER + 2; n++)
+	for(n = 0; n < PCB_MAX_LAYER; n++)
 		if ((PCB->Data->Layer[n].name != NULL) && (strcmp(PCB->Data->Layer[n].name, name) == 0))
 			return n;
 	return -1;
@@ -41,7 +41,7 @@ int layout_resolve_layer(const char *name)
 
 int layout_get_max_possible_layer()
 {
-	return PCB_MAX_LAYER+2;
+	return PCB_MAX_LAYER;
 }
 
 int layout_get_max_layer()
