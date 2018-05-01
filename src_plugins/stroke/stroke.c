@@ -2,10 +2,6 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *
  *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -20,154 +16,73 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *  Contact:
  *    Project page: http://repo.hu/projects/pcb-rnd
  *    lead developer: email to pcb-rnd (at) igor2.repo.hu
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
- *
- *
- *  Old contact info:
- *  Harry Eaton, 6697 Buttonhole Ct, Columbia, MD 21044, USA
- *  haceaton@aplcomm.jhuapl.edu
- *
  */
 
+/* Configurable mouse gestures using libstroke */
+
 #include "config.h"
+
 #include <stroke.h>
-#include "math_helper.h"
-#include "board.h"
-#include "conf.h"
-#include "conf_core.h"
-#include "data.h"
+
 #include "crosshair.h"
-#include "stub_stroke.h"
-#include "rotate.h"
-#include "undo.h"
-#include "undo_act.h"
-#include "error.h"
+#include "hid_actions.h"
+#include "unit.h"
 #include "plugins.h"
-#include "compat_nls.h"
-#include "tool.h"
+#include "stub_stroke.h"
 
-void FinishStroke(void);
+#include "../src_plugins/stroke/conf_internal.c"
+#include "stroke_conf.h"
 
-pcb_box_t StrokeBox;
+#define STROKE_CONF_FN "export_xy.conf"
 
-/* FinishStroke - try to recognize the stroke sent */
-static int real_stroke_finish(void)
+conf_stroke_t conf_stroke;
+
+
+static pcb_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
+
+static int pcb_stroke_finish(void)
 {
 	char msg[255];
-	unsigned long num;
 
 	pcb_mid_stroke = pcb_false;
 	if (stroke_trans(msg)) {
-		num = atoi(msg);
-		switch (num) {
-		case 456:
-			if (conf_core.editor.mode == PCB_MODE_LINE) {
-				pcb_tool_select_by_id(PCB_MODE_LINE);
-			}
-			return 0;
-		case 9874123:
-		case 74123:
-		case 987412:
-		case 8741236:
-		case 874123:
-			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, conf_core.editor.show_solder_side ? 1 : 3);
-			return 0;
-		case 7896321:
-		case 786321:
-		case 789632:
-		case 896321:
-			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, conf_core.editor.show_solder_side ? 3 : 1);
-			return 0;
-		case 258:
-			pcb_tool_select_by_id(PCB_MODE_LINE);
-			return 0;
-		case 852:
-			pcb_tool_select_by_id(PCB_MODE_ARROW);
-			return 0;
-		case 1478963:
-			pcb_act_Undo(0, NULL, 0, 0);
-			return 0;
-		case 147423:
-		case 147523:
-		case 1474123:
-			pcb_redo(pcb_true);
-			return 0;
-		case 148963:
-		case 147863:
-		case 147853:
-		case 145863:
-			pcb_tool_select_by_id(PCB_MODE_VIA);
-			return 0;
-		case 951:
-		case 9651:
-		case 9521:
-		case 9621:
-		case 9851:
-		case 9541:
-		case 96521:
-		case 96541:
-		case 98541:
-			PCB->Zoom = 1000;						/* special zoom extents */
-			return 0;
-		case 159:
-		case 1269:
-		case 1259:
-		case 1459:
-		case 1569:
-		case 1589:
-		case 12569:
-		case 12589:
-		case 14589:
-			{
-				pcb_coord_t x = (StrokeBox.X1 + StrokeBox.X2) / 2;
-				pcb_coord_t y = (StrokeBox.Y1 + StrokeBox.Y2) / 2;
-				double z;
-				/* XXX: PCB->MaxWidth and PCB->MaxHeight may be the wrong
-				 *      divisors below. The old code WAS broken, but this
-				 *      replacement has not been tested for correctness.
-				 */
-				z = 1 + log(fabs(StrokeBox.X2 - StrokeBox.X1) / PCB->MaxWidth) / log(2.0);
-				z = MAX(z, 1 + log(fabs(StrokeBox.Y2 - StrokeBox.Y1) / PCB->MaxHeight) / log(2.0));
-				PCB->Zoom = z;
+		conf_listitem_t *item;
+		int idx;
 
-				pcb_center_display(x, y);
+		conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
+			if ((strcmp(msg, item->name) == 0) && (pcb_hid_parse_actions(item->val.string[0]) == 0))
 				return 0;
-			}
-
-		default:
-			pcb_message(PCB_MSG_INFO, _("Unknown stroke %s\n"), msg);
-			break;
 		}
 	}
-	else
-		pcb_gui->beep();
 	return -1;
 }
 
-static void real_stroke_record(int ev_x, int ev_y)
+static void pcb_stroke_record(int ev_x, int ev_y)
 {
-	StrokeBox.X2 = ev_x;
-	StrokeBox.Y2 = ev_y;
+	stroke_last_x = ev_x;
+	stroke_last_y = ev_y;
 	stroke_record(ev_x >> 16, ev_y >> 16);
 	return;
 }
 
-static void real_stroke_start(void)
+static void pcb_stroke_start(void)
 {
 	pcb_mid_stroke = pcb_true;
-	StrokeBox.X1 = pcb_crosshair.X;
-	StrokeBox.Y1 = pcb_crosshair.Y;
+	stroke_first_x = pcb_crosshair.X;
+	stroke_first_y = pcb_crosshair.Y;
 }
 
 int pplg_check_ver_stroke(int ver_needed) { return 0; }
 
 int pplg_uninit_stroke(void)
 {
+	conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
 	return 0;
 }
 
@@ -175,9 +90,15 @@ int pplg_init_stroke(void)
 {
 	PCB_API_CHK_VER;
 	stroke_init();
+	conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
 
-	pcb_stub_stroke_record = real_stroke_record;
-	pcb_stub_stroke_start = real_stroke_start;
-	pcb_stub_stroke_finish = real_stroke_finish;
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
+#include "stroke_conf_fields.h"
+
+
+	pcb_stub_stroke_record = pcb_stroke_record;
+	pcb_stub_stroke_start  = pcb_stroke_start;
+	pcb_stub_stroke_finish = pcb_stroke_finish;
 	return 0;
 }
