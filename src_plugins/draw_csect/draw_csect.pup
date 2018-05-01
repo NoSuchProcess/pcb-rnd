@@ -2,5 +2,5 @@ $class feature
 $short draw cross-section (layers)
 $long Draw cross section and layer map.
 $package (core)
-$state WIP
+$state works
 default disable
