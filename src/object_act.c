@@ -1179,6 +1179,32 @@ static int pcb_act_subc(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	return 0;
 }
 
+static const char pcb_acts_Rotate90[] = "pcb_move_obj(steps)";
+static const char pcb_acth_Rotate90[] = "Rotates the object under the crosshair by 90 degree steps.";
+
+/* %start-doc actions Rotate90
+
+Rotates the object under the crosshair by 90 degree @code{steps}.
+
+%end-doc */
+
+static int pcb_act_Rotate90(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const char *ssteps = PCB_ACTION_ARG(0);
+	int steps = atoi(ssteps);
+
+	if (conf_core.editor.show_solder_side)
+		steps = -steps;
+
+	steps = steps % 4;
+	if (steps < 0)
+		steps = 4+steps;
+
+	pcb_screen_obj_rotate90(x, y, steps);
+
+	return 0;
+}
+
 pcb_hid_action_t object_action_list[] = {
 	{"Attributes", 0, pcb_act_Attributes,
 	 pcb_acth_Attributes, pcb_acts_Attributes}
@@ -1218,6 +1244,9 @@ pcb_hid_action_t object_action_list[] = {
 	,
 	{"CreateText", 0, pcb_act_CreateText,
 	 pcb_acth_CreateText, pcb_acts_CreateText}
+	,
+	{"Rotate90", N_("Select an Object"), pcb_act_Rotate90,
+	 pcb_acth_Rotate90, pcb_acts_Rotate90}
 };
 
 PCB_REGISTER_ACTIONS(object_action_list, NULL)
