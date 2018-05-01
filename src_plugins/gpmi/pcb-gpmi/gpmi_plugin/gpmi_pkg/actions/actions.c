@@ -98,5 +98,14 @@ int action(const char *cmdline)
 
 void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)
 {
-	pcb_gui->create_menu(path, action, mnemonic, hotkey, tooltip, "TODO#2");
+	pcb_menu_prop_t mp;
+
+	memset(&mp, 0, sizeof(mp));
+	mp.action = action;
+	mp.mnemonic = mnemonic;
+	mp.accel = hotkey;
+	mp.tip = tooltip;
+	mp.cookie = "TODO#2";
+
+	pcb_gui->create_menu(path, &mp);
 }

@@ -46,8 +46,16 @@ static void ev_gui_init(void *user_data, int argc, pcb_event_arg_t argv[])
 	char *ev_args;
 	hid_gpmi_script_info_t *i;
 	const char *menu = "/main_menu/Plugins/GPMI scripting/Scripts";
+	pcb_menu_prop_t mp;
 
-	pcb_gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts", gpmi_cookie);
+	memset(&mp, 0, sizeof(mp));
+	mp.action = "gpmi_scripts()";
+	mp.mnemonic = "S";
+	mp.accel = "<Key>p;<key>g;<key>s";
+	mp.tip = "Manage GPMI scripts";
+	mp.cookie = gpmi_cookie;
+
+	pcb_gui->create_menu(menu, &mp);
 
 	ev = gpmi_event_find("ACTE_gui_init", &ev_args);
 	if (ev >= 0) {
