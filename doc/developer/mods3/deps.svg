@@ -685,7 +685,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="2482.51,-77.8286 2482.73,-67.236 2475.96,-75.3801 2482.51,-77.8286"/>
 </g>
 <!-- polycombine -->
-<g id="node82" class="node"><title>polycombine</title>
+<g id="node81" class="node"><title>polycombine</title>
 <ellipse fill="lightgrey" stroke="black" cx="2650.15" cy="-27.4341" rx="57.3905" ry="18"/>
 <text text-anchor="middle" x="2650.15" y="-23.7341" font-family="Times,serif" font-size="14.00">polycombine</text>
 </g>
@@ -695,7 +695,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="2641.59,-56.0183 2642.35,-45.4509 2635.17,-53.237 2641.59,-56.0183"/>
 </g>
 <!-- polystitch -->
-<g id="node83" class="node"><title>polystitch</title>
+<g id="node82" class="node"><title>polystitch</title>
 <ellipse fill="lightgrey" stroke="black" cx="2812.13" cy="-18" rx="45.4919" ry="18"/>
 <text text-anchor="middle" x="2812.13" y="-14.3" font-family="Times,serif" font-size="14.00">polystitch</text>
 </g>
@@ -705,7 +705,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="2802.06,-46.2648 2803.36,-35.7493 2795.79,-43.1622 2802.06,-46.2648"/>
 </g>
 <!-- propedit -->
-<g id="node84" class="node"><title>propedit</title>
+<g id="node83" class="node"><title>propedit</title>
 <ellipse fill="lightgrey" stroke="black" cx="2974.35" cy="-21.1463" rx="40.0939" ry="18"/>
 <text text-anchor="middle" x="2974.35" y="-17.4463" font-family="Times,serif" font-size="14.00">propedit</text>
 </g>
@@ -715,7 +715,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="2962.63,-49.3294 2964.45,-38.8917 2956.51,-45.9172 2962.63,-49.3294"/>
 </g>
 <!-- puller -->
-<g id="node85" class="node"><title>puller</title>
+<g id="node84" class="node"><title>puller</title>
 <ellipse fill="lightgrey" stroke="black" cx="3135.84" cy="-36.854" rx="31.3957" ry="18"/>
 <text text-anchor="middle" x="3135.84" y="-33.154" font-family="Times,serif" font-size="14.00">puller</text>
 </g>
@@ -725,7 +725,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="3122.88,-64.1883 3125.22,-53.8533 3116.95,-60.4781 3122.88,-64.1883"/>
 </g>
 <!-- query -->
-<g id="node86" class="node"><title>query</title>
+<g id="node85" class="node"><title>query</title>
 <ellipse fill="lightgrey" stroke="black" cx="3295.63" cy="-65.0286" rx="30.5947" ry="18"/>
 <text text-anchor="middle" x="3295.63" y="-61.3286" font-family="Times,serif" font-size="14.00">query</text>
 </g>
@@ -735,7 +735,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="3281.1,-92.0485 3283.94,-81.8402 3275.35,-88.0521 3281.1,-92.0485"/>
 </g>
 <!-- renumber -->
-<g id="node87" class="node"><title>renumber</title>
+<g id="node86" class="node"><title>renumber</title>
 <ellipse fill="lightgrey" stroke="black" cx="3452.75" cy="-105.501" rx="44.6926" ry="18"/>
 <text text-anchor="middle" x="3452.75" y="-101.801" font-family="Times,serif" font-size="14.00">renumber</text>
 </g>
@@ -745,7 +745,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="3435.94,-133.062 3439.27,-123.003 3430.4,-128.791 3435.94,-133.062"/>
 </g>
 <!-- rubberband_orig -->
-<g id="node88" class="node"><title>rubberband_orig</title>
+<g id="node87" class="node"><title>rubberband_orig</title>
 <ellipse fill="lightgrey" stroke="black" cx="3606.26" cy="-158.027" rx="69.5877" ry="18"/>
 <text text-anchor="middle" x="3606.26" y="-154.327" font-family="Times,serif" font-size="14.00">rubberband_orig</text>
 </g>
@@ -755,7 +755,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="3587.35,-185.687 3591.16,-175.8 3582.02,-181.154 3587.35,-185.687"/>
 </g>
 <!-- shand_cmd -->
-<g id="node89" class="node"><title>shand_cmd</title>
+<g id="node88" class="node"><title>shand_cmd</title>
 <ellipse fill="lightgrey" stroke="black" cx="3755.25" cy="-222.292" rx="51.1914" ry="18"/>
 <text text-anchor="middle" x="3755.25" y="-218.592" font-family="Times,serif" font-size="14.00">shand_cmd</text>
 </g>
@@ -765,7 +765,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="3734.77,-249.287 3739.05,-239.595 3729.66,-244.504 3734.77,-249.287"/>
 </g>
 <!-- shape -->
-<g id="node90" class="node"><title>shape</title>
+<g id="node89" class="node"><title>shape</title>
 <ellipse fill="lightgrey" stroke="black" cx="3898.8" cy="-297.908" rx="30.5947" ry="18"/>
 <text text-anchor="middle" x="3898.8" y="-294.208" font-family="Times,serif" font-size="14.00">shape</text>
 </g>
@@ -775,7 +775,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="3878.05,-322.938 3882.79,-313.46 3873.18,-317.916 3878.05,-322.938"/>
 </g>
 <!-- smartdisperse -->
-<g id="node91" class="node"><title>smartdisperse</title>
+<g id="node90" class="node"><title>smartdisperse</title>
 <ellipse fill="lightgrey" stroke="black" cx="4036.06" cy="-384.421" rx="59.5901" ry="18"/>
 <text text-anchor="middle" x="4036.06" y="-380.721" font-family="Times,serif" font-size="14.00">smartdisperse</text>
 </g>
@@ -785,7 +785,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="4011.3,-410.957 4016.48,-401.714 4006.67,-405.71 4011.3,-410.957"/>
 </g>
 <!-- stroke -->
-<g id="node92" class="node"><title>stroke</title>
+<g id="node91" class="node"><title>stroke</title>
 <ellipse fill="lightgrey" stroke="black" cx="4166.21" cy="-481.311" rx="32.4942" ry="18"/>
 <text text-anchor="middle" x="4166.21" y="-477.611" font-family="Times,serif" font-size="14.00">stroke</text>
 </g>
@@ -795,7 +795,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="4142.11,-505.136 4147.72,-496.148 4137.73,-499.676 4142.11,-505.136"/>
 </g>
 <!-- teardrops -->
-<g id="node93" class="node"><title>teardrops</title>
+<g id="node92" class="node"><title>teardrops</title>
 <ellipse fill="lightgrey" stroke="black" cx="4288.45" cy="-587.995" rx="43.5923" ry="18"/>
 <text text-anchor="middle" x="4288.45" y="-584.295" font-family="Times,serif" font-size="14.00">teardrops</text>
 </g>
@@ -805,7 +805,7 @@
 <polygon fill="#a0a0a0" stroke="#a0a0a0" points="4260.86,-612.404 4266.89,-603.689 4256.75,-606.744 4260.86,-612.404"/>
 </g>
 <!-- vendordrill -->
-<g id="node94" class="node"><title>vendordrill</title>
+<g id="node93" class="node"><title>vendordrill</title>
 <ellipse fill="lightgrey" stroke="black" cx="4402.07" cy="-703.831" rx="50.0912" ry="18"/>
 <text text-anchor="middle" x="4402.07" y="-700.131" font-family="Times,serif" font-size="14.00">vendordrill</text>
 </g>
@@ -1136,18 +1136,13 @@
 </g>
 <!-- lib_legacy_func -->
 <g id="node76" class="node"><title>lib_legacy_func</title>
-<ellipse fill="#a0a0a0" stroke="black" cx="1339.7" cy="-4151.8" rx="67.6881" ry="18"/>
-<text text-anchor="middle" x="1339.7" y="-4148.1" font-family="Times,serif" font-size="14.00">lib_legacy_func</text>
+<ellipse fill="#a0a0a0" stroke="black" cx="4807.7" cy="-1597.8" rx="67.6881" ry="18"/>
+<text text-anchor="middle" x="4807.7" y="-1594.1" font-family="Times,serif" font-size="14.00">lib_legacy_func</text>
 </g>
 <!-- millpath&#45;&gt;lib_polyhelp -->
 <g id="edge117" class="edge"><title>millpath&#45;&gt;lib_polyhelp</title>
 <path fill="none" stroke="black" d="M2177.77,-148.503C2217.64,-453.609 2745.37,-4491.55 2794.89,-4870.41"/>
 <polygon fill="black" stroke="black" points="2791.44,-4871.08 2796.21,-4880.54 2798.39,-4870.17 2791.44,-4871.08"/>
-</g>
-<!-- pcblib -->
-<g id="node81" class="node"><title>pcblib</title>
-<ellipse fill="lightgrey" stroke="black" cx="4801.7" cy="-1289.8" rx="32.4942" ry="18"/>
-<text text-anchor="middle" x="4801.7" y="-1286.1" font-family="Times,serif" font-size="14.00">pcblib</text>
 </g>
 </g>
 </svg>
