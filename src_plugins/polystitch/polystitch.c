@@ -6,7 +6,8 @@
  * Licensed under the terms of the GNU General Public 
  * License, version 2 or later.
  *
- * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016 and 2018.
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Mostly rewritten for poly holes by Tibor 'Igor2' Palinkas in 2018.
  *
  * Original source: http://www.delorie.com/pcb/polystitch.c
  *
@@ -38,36 +39,6 @@
 
 static pcb_poly_t *inner_poly, *outer_poly;
 static pcb_layer_t *poly_layer;
-
-static double ATAN2(pcb_point_t a, pcb_point_t b)
-{
-	if (a.X == b.X && a.Y == b.Y)
-		return 0;
-	return atan2((double)b.Y - a.Y, (double)b.X - a.X);
-}
-
-static double poly_winding(pcb_poly_t *poly)
-{
-	double winding, turn;
-	double prev_angle, this_angle;
-	int i, n;
-
-	winding = 0;
-
-	prev_angle = ATAN2(poly->Points[0], poly->Points[1]);
-	n = poly->PointN;
-	for (i = 1; i <= n; i++) {
-		this_angle = ATAN2(poly->Points[i % n], poly->Points[(i + 1) % n]);
-		turn = this_angle - prev_angle;
-		if (turn < -M_PI)
-			turn += 2 * M_PI;
-		if (turn > M_PI)
-			turn -= 2 * M_PI;
-		winding += turn;
-		prev_angle = this_angle;
-	}
-	return winding;
-}
 
 /* Given the X,Y, find the polygon and set inner_poly and poly_layer. */
 static void find_crosshair_poly(pcb_coord_t x, pcb_coord_t y)
@@ -121,94 +92,6 @@ static void find_enclosing_poly()
 	pcb_message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
 }
 
-static void check_windings()
-{
-	double iw, ow;
-	int i, j;
-
-	iw = poly_winding(inner_poly);
-	ow = poly_winding(outer_poly);
-	if (iw * ow > 0) {
-		/* Wound in same direction, must reverse one.  */
-		for (i = 0, j = inner_poly->PointN - 1; i < j; i++, j--) {
-			pcb_point_t x = inner_poly->Points[i];
-			inner_poly->Points[i] = inner_poly->Points[j];
-			inner_poly->Points[j] = x;
-		}
-	}
-}
-
-/* Rotate the polygon point list around so that point N is the first one in the list. */
-static void rotate_points(pcb_poly_t *poly, int n)
-{
-	pcb_point_t *np;
-	int n2 = poly->PointN - n;
-
-	np = (pcb_point_t *)malloc(poly->PointN * sizeof(pcb_point_t));
-	memcpy(np, poly->Points + n, n2 * sizeof(pcb_point_t));
-	memcpy(np + n2, poly->Points, n * sizeof(pcb_point_t));
-	memcpy(poly->Points, np, poly->PointN * sizeof(pcb_point_t));
-	free(np);
-}
-
-/* Make sure the first and last point of the polygon are the same
- * point, so we can stitch them properly. */
-static void dup_endpoints(pcb_poly_t * poly)
-{
-	int n = poly->PointN;
-	if (poly->Points[0].X == poly->Points[n - 1].X && poly->Points[0].Y == poly->Points[n - 1].Y)
-		return;
-	pcb_poly_point_new(poly, poly->Points[0].X, poly->Points[0].Y);
-}
-
-/* Find the two closest points between those polygons, and connect them.
-   We assume pstoedit winds the two polygons in opposite directions. */
-static void stitch_them()
-{
-	int i, o;
-	int ii, oo;
-	double best = -1, dist;
-
-	pcb_poly_invalidate_erase(inner_poly);
-	pcb_poly_invalidate_erase(outer_poly);
-
-	/* This is O(n^2) but there's not a lot we can do about that.  */
-	for (i = 0; i < inner_poly->PointN; i++)
-		for (o = 0; o < outer_poly->PointN; o++) {
-			pcb_coord_t dx = inner_poly->Points[i].X - outer_poly->Points[o].X;
-			pcb_coord_t dy = inner_poly->Points[i].Y - outer_poly->Points[o].Y;
-			dist = (double)dx * dx + (double)dy * dy;
-			if (dist < best || best < 0) {
-				ii = i;
-				oo = o;
-				best = dist;
-			}
-		}
-	if (ii != 0)
-		rotate_points(inner_poly, ii);
-	if (oo != 0)
-		rotate_points(outer_poly, oo);
-	dup_endpoints(inner_poly);
-	dup_endpoints(outer_poly);
-
-	pcb_r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *)inner_poly);
-	pcb_r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *)outer_poly);
-
-	for (i = 0; i < inner_poly->PointN; i++)
-		pcb_poly_point_new(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
-
-	pcb_board_set_changed_flag(pcb_true);
-
-	outer_poly->NoHolesValid = 0;
-	pcb_poly_bbox(outer_poly);
-	pcb_r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *)outer_poly);
-	pcb_poly_remove_excess_points(poly_layer, outer_poly);
-	pcb_poly_init_clip(PCB->Data, poly_layer, outer_poly);
-	pcb_poly_invalidate_draw(poly_layer, outer_poly);
-	pcb_draw();
-
-	pcb_poly_remove(poly_layer, inner_poly);
-}
 
 static int polystitch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -216,8 +99,20 @@ static int polystitch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (inner_poly) {
 		find_enclosing_poly();
 		if (outer_poly) {
-			check_windings();
-			stitch_them();
+			pcb_cardinal_t n, end;
+
+			if (inner_poly->HoleIndexN > 0)
+				end = inner_poly->HoleIndex[0];
+			else
+				end = inner_poly->PointN;
+
+			pcb_poly_hole_new(outer_poly);
+			for(n = 0; n < end; n++)
+				pcb_poly_point_new(outer_poly, inner_poly->Points[n].X, inner_poly->Points[n].Y);
+			pcb_poly_init_clip(PCB->Data, outer_poly->parent.layer, outer_poly);
+			pcb_poly_bbox(outer_poly);
+
+			pcb_poly_remove(inner_poly->parent.layer, inner_poly);
 		}
 	}
 	return 0;
