@@ -237,6 +237,7 @@ static pcb_composite_op_t lesstif_drawing_mode = 0;
 
 static void zoom_max();
 static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
+static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 static void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y);
 static void zoom_toggle(pcb_coord_t x, pcb_coord_t y);
 static void pinout_callback(Widget, PreviewData *, XmDrawingAreaCallbackStruct *);
@@ -468,6 +469,60 @@ static int ZoomAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		zoom_to(v, x, y);
 		break;
 	}
+	return 0;
+}
+
+
+static const char zoom_to_syntax[] = "ZoomTo(x1, y1, x2, y2)";
+
+static const char zoom_to_help[] = "Zoom to a specific window on the board.";
+
+/* %start-doc actions ZoomTo
+
+Changes the zoom (magnification) of the view of the board.  If no
+arguments are passed, the view is scaled such that the board just fits
+inside the visible window (i.e. ``view all'').  Otherwise,
+@var{factor} specifies a change in zoom factor.  It may be prefixed by
+@code{+}, @code{-}, or @code{=} to change how the zoom factor is
+modified.  The @var{factor} is a floating point number, such as
+@code{1.5} or @code{0.75}.
+
+@table @code
+
+@item @var{x1}, @var{y1}, @var{x2}, @var{y2}
+Zoom and pan so that a specific box of the board is shown.
+@end table
+
+Note that zoom factors of zero are silently ignored.
+
+%end-doc */
+
+static int ZoomToAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_coord_t x1, y1, x2, y2;
+	pcb_bool succ;
+
+	if (argc != 4)
+		return -1;
+
+	x1 = pcb_get_value(argv[0], NULL, NULL, &succ);
+	if (!succ)
+		return -1;
+
+	y1 = pcb_get_value(argv[1], NULL, NULL, &succ);
+	if (!succ)
+		return -1;
+
+	x2 = pcb_get_value(argv[2], NULL, NULL, &succ);
+	if (!succ)
+		return -1;
+
+	y2 = pcb_get_value(argv[3], NULL, NULL, &succ);
+	if (!succ)
+		return -1;
+
+	zoom_win(x1, y1, x2, y2);
+
 	return 0;
 }
 
@@ -771,6 +826,9 @@ pcb_hid_action_t lesstif_main_action_list[] = {
 	{"Zoom", "Click on a place to zoom in", ZoomAction,
 	 zoom_help, zoom_syntax}
 	,
+	{"ZoomTo", 0, ZoomToAction,
+	 zoom_to_help, zoom_to_syntax}
+	,
 	{"Pan", "Click on a place to pan", PanAction,
 	 zoom_help, zoom_syntax}
 	,
@@ -1010,6 +1068,7 @@ static void zoom_max()
 	lesstif_pan_fixup();
 }
 
+
 static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 {
 	double max_zoom, xfrac, yfrac;
@@ -1047,6 +1106,27 @@ static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 		view_left_x = cx - view_width * xfrac * view_zoom;
 		view_top_y = cy - view_height * yfrac * view_zoom;
 	}
+	lesstif_pan_fixup();
+}
+
+static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	pcb_coord_t w = x2 - x1, h = y2 - y1;
+	double new_zoom = w / view_width;
+	if (new_zoom < h / view_height)
+		new_zoom = h / view_height;
+
+	if (new_zoom < 1)
+		new_zoom = 1;
+
+	if (view_zoom != new_zoom) {
+		view_zoom = new_zoom;
+		pcb_pixel_slop = view_zoom;
+	}
+
+	view_left_x = x1;
+	view_top_y = y1;
+
 	lesstif_pan_fixup();
 }
 
