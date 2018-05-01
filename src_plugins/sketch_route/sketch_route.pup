@@ -1,0 +1,7 @@
+$class feature
+$short assisted semi-auto-routing
+$long TODO
+$state WIP
+$package auto
+default disable
+autoload 1
