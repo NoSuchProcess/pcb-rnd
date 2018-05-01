@@ -73,7 +73,7 @@ static void pcb_stroke_record(pcb_coord_t ev_x, pcb_coord_t ev_y)
 	stroke_last_y = ev_y;
 	ev_x = SIDE_X(ev_x) - stroke_first_x;
 	ev_y = SIDE_Y(ev_y) - stroke_first_y;
-	stroke_record(ev_x >> 16, ev_y >> 16);
+	stroke_record(ev_x / (1 << 16), ev_y / (1 << 16));
 	return;
 }
 
