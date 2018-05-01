@@ -1,0 +1,10 @@
+GTK3:
+	+ overlapping objects (e.g. 2 fat lines crossing on silk) are darker on the overlap; we need uniform color
+	+ mouse scroll wheel doesn't work in cross section
+	- zoom hangs: press 'z' on the drawing area -> hang
+	+ xor draw fails after 'i' library footprint placement; in fail mode there's no xor outline of buffer; drawing a line fixes it
+	- elliptic arc rendering
+	- layer selector vertical layer group name truncation
+	- main window resize scroll bar warnings
+	- component draw "flicker", depending on pan: http://igor2.repo.hu/tmp/gtk3_bug1a.jpg http://igor2.repo.hu/tmp/gtk3_bug1a.jpg
+	- missing grid points: http://igor2.repo.hu/tmp/gtk3_bug2.png
