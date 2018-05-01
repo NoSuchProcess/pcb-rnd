@@ -106,6 +106,11 @@ static int pcb_act_stroke(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			PCB_ACT_FAIL(stroke);
 		pcb_stroke_exec(argv[1]);
 	}
+	else if (pcb_strcasecmp(argv[0], "zoom") == 0) {
+		char tmp[256];
+		pcb_snprintf(tmp, sizeof(tmp), "ZoomTo(%$mm, %$mm, %$mm, %$mm)", stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y);
+		pcb_hid_parse_command(tmp);
+	}
 	else
 		PCB_ACT_FAIL(stroke);
 	return 0;
