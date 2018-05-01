@@ -38,6 +38,7 @@
 #include "unit.h"
 #include "plugins.h"
 #include "stub_stroke.h"
+#include "tool.h"
 
 #include "../src_plugins/stroke/conf_internal.c"
 #include "stroke_conf.h"
@@ -110,6 +111,10 @@ static int pcb_act_stroke(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		char tmp[256];
 		pcb_snprintf(tmp, sizeof(tmp), "ZoomTo(%$mm, %$mm, %$mm, %$mm)", stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y);
 		pcb_hid_parse_command(tmp);
+	}
+	else if (pcb_strcasecmp(argv[0], "stopline") == 0) {
+		if (conf_core.editor.mode == PCB_MODE_LINE)
+			pcb_tool_select_by_id(PCB_MODE_LINE);
 	}
 	else
 		PCB_ACT_FAIL(stroke);
