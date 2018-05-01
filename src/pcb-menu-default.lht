@@ -13,7 +13,8 @@ ha:{
 			li:release            = { Pan(0) }
 		}
 		li:right {
-			li:release       = { Popup(popup-obj, obj-type) }
+			li:press         = { Mode(Stroke) }
+			li:release       = { Mode(Release); Popup(popup-obj, obj-type) }
 			li:shift-release = { Popup(popup-obj-misc) }
 			li:press-ctrl    = { Display(CycleCrosshair) }
 		}
