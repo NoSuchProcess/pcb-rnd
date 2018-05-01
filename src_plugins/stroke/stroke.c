@@ -53,9 +53,7 @@ void FinishStroke(void);
 
 pcb_box_t StrokeBox;
 
-/* ---------------------------------------------------------------------------
- * FinishStroke - try to recognize the stroke sent
- */
+/* FinishStroke - try to recognize the stroke sent */
 static void real_stroke_finish(void)
 {
 	char msg[255];
