@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2> Autoplace plugin </h2>
+<p>
+Tha autoplace plugin looks at the netlist and tries to place subcircuits
+in a way to get routing easier. The algorithms follow those described in
+sections 4.1 of "Placement and Routing of Electronic Modules" edited by
+Michael Pecht Marcel Dekker, Inc. 1993.  ISBN: 0-8247-8916-4 TK7868.P7.P57
+1993.
+<p>
+The plugin declares action <i>AutoPlaceSelected</i> which operates on
+the selected subcircuits. A netlist shall be loaded and subcircuits
+availabel on the board before the action is invoked.
+
+</body>
+</html>
