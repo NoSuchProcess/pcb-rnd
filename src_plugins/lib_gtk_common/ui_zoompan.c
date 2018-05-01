@@ -155,6 +155,7 @@ void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t 
 	ghid_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
+#warning TODO: remove this and make the side-correct version the default (rename that to this short name); check when looking from the bottom: library window, drc window
 void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double xf, yf;
@@ -164,10 +165,28 @@ void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pc
 
 	xf = (x2 - x1) / v->canvas_width;
 	yf = (y2 - y1) / v->canvas_height;
+	v->coord_per_px = (xf > yf ? xf : yf);
 
 	v->x0 = x1;
 	v->y0 = y1;
+
+	pcb_gtk_pan_common(v);
+}
+
+/* Side-correct version - long term this will be kept and the other is removed */
+static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	double xf, yf;
+
+	if ((v->canvas_width < 1) || (v->canvas_height < 1))
+		return;
+
+	xf = (x2 - x1) / v->canvas_width;
+	yf = (y2 - y1) / v->canvas_height;
 	v->coord_per_px = (xf > yf ? xf : yf);
+
+	v->x0 = SIDE_X(conf_core.editor.view.flip_x ? x2 : x1);
+	v->y0 = SIDE_Y(conf_core.editor.view.flip_y ? y2 : y1);
 
 	pcb_gtk_pan_common(v);
 }
@@ -296,7 +315,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 		if (!succ)
 			PCB_ACT_FAIL(zoom);
 
-		pcb_gtk_zoom_view_win(vw, x1, y1, x2, y2);
+		pcb_gtk_zoom_view_win_side(vw, x1, y1, x2, y2);
 		return 0;
 	}
 
