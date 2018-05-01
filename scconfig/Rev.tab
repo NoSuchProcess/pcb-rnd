@@ -1,4 +1,4 @@
-16834	configure	new stroke plugin
+16898	configure	new stroke plugin
 16616	configure	fixes for large boards and 64 bit coords
 16591	configure	export_xy: tempalte config
 16456	configure	new plugin: import_ipcd356; rewrite export_ipcd356

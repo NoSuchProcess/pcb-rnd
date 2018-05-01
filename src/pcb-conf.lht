@@ -44,7 +44,7 @@ li:pcb-rnd-conf-v1 {
 			hide_names = 0
 			description = 0
 			name_on_pcb = 1
-			enable_stroke = 0
+			enable_stroke = 1
 			live_routing = 0
 			beep_when_finished = 0
 			click_time = 200
