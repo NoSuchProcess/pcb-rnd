@@ -7,16 +7,16 @@
   )
   (resolution mm 1000000)
   (structure
-    (layer "comp1"
+    (layer "3__top_copper"
       (type signal)
     )
-    (layer "inner1"
+    (layer "5__Intern"
       (type signal)
     )
-    (layer "inner2"
+    (layer "7__Intern"
       (type signal)
     )
-    (layer "solder1"
+    (layer "10__bottom_copper"
       (type signal)
     )
     (boundary
@@ -35,10 +35,6 @@
   (placement
   )
   (library
-    (padstack via_685800_381000
-      (shape (circle signal 0.685800))
-      (attach off)
-    )
   )
   (network
     (class geda_default
@@ -49,13 +45,13 @@
     )
   )
     (wiring
-        (wire (path comp1 0.381000 3.175000 6.350000 10.160000 6.350000)
+        (wire (path 3__top_copper 0.381000 3.175000 6.350000 10.160000 6.350000)
             (type protect))
-        (wire (path comp1 0.254000 6.350000 9.525000 6.350000 3.175000)
+        (wire (path 3__top_copper 0.254000 6.350000 9.525000 6.350000 3.175000)
             (type protect))
-        (wire (path comp1 0.508000 6.350000 6.350000 10.160000 7.620000)
+        (wire (path 3__top_copper 0.508000 6.350000 6.350000 10.160000 7.620000)
             (type protect))
-        (wire (path comp1 0.127000 6.350000 6.350000 3.810000 8.890000)
+        (wire (path 3__top_copper 0.127000 6.350000 6.350000 3.810000 8.890000)
             (type protect))
 
     )

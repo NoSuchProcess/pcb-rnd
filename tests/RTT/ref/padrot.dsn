@@ -7,16 +7,16 @@
   )
   (resolution mm 1000000)
   (structure
-    (layer "comp1"
+    (layer "3__top_copper"
       (type signal)
     )
-    (layer "inner1"
+    (layer "5__Intern"
       (type signal)
     )
-    (layer "inner2"
+    (layer "7__Intern"
       (type signal)
     )
-    (layer "solder1"
+    (layer "10__bottom_copper"
       (type signal)
     )
     (boundary
@@ -83,13 +83,9 @@
     (image 194
       (pin Pstk_shape_196 "1" 0.881761 -0.360172)
     )
-    (padstack via_685800_381000
-      (shape (circle signal 0.685800))
-      (attach off)
-    )
     (padstack Pstk_shape_7
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -1.079500 -0.127000 -1.079500 0.127000 1.079500 0.127000
         1.079500 -0.127000
         )
@@ -98,7 +94,7 @@
     )
     (padstack Pstk_shape_34
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -0.127000 1.079500 0.127000 1.079500 0.127000 -1.079500
         -0.127000 -1.079500
         )
@@ -107,7 +103,7 @@
     )
     (padstack Pstk_shape_61
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -1.079499 0.126999 -1.079499 -0.126999 1.079499 -0.126999
         1.079499 0.126999
         )
@@ -116,7 +112,7 @@
     )
     (padstack Pstk_shape_88
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         0.126999 1.079499 -0.126999 1.079499 -0.126999 -1.079499
         0.126999 -1.079499
         )
@@ -125,7 +121,7 @@
     )
     (padstack Pstk_shape_115
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -0.853086 0.673481 -0.673481 0.853086 0.853086 -0.673481
         0.673481 -0.853086
         )
@@ -134,7 +130,7 @@
     )
     (padstack Pstk_shape_142
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -0.673481 0.853085 -0.853085 0.673481 0.673481 -0.853085
         0.853085 -0.673481
         )
@@ -143,7 +139,7 @@
     )
     (padstack Pstk_shape_169
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -1.047355 0.290626 -0.951307 0.525766 1.047355 -0.290626
         0.951307 -0.525766
         )
@@ -152,7 +148,7 @@
     )
     (padstack Pstk_shape_196
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -0.951308 0.525765 -1.047354 0.290625 0.951308 -0.525765
         1.047354 -0.290625
         )

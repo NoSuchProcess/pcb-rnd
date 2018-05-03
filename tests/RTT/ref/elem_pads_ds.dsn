@@ -7,16 +7,16 @@
   )
   (resolution mm 1000000)
   (structure
-    (layer "comp1"
+    (layer "3__top_copper"
       (type signal)
     )
-    (layer "inner1"
+    (layer "5__Intern"
       (type signal)
     )
-    (layer "inner2"
+    (layer "7__Intern"
       (type signal)
     )
-    (layer "solder1"
+    (layer "10__bottom_copper"
       (type signal)
     )
     (boundary
@@ -42,13 +42,9 @@
       (pin Pstk_shape_7 "1" 0.952500 0.000000)
       (pin Pstk_shape_8 "2" 2.540000 -1.587500)
     )
-    (padstack via_685800_381000
-      (shape (circle signal 0.685800))
-      (attach off)
-    )
     (padstack Pstk_shape_7
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -1.079500 -0.127000 -1.079500 0.127000 1.079500 0.127000
         1.079500 -0.127000
         )
@@ -57,7 +53,7 @@
     )
     (padstack Pstk_shape_8
       (shape
-        (polygon "solder1" 0
+        (polygon "10__bottom_copper" 0
         -0.127000 1.079500 0.127000 1.079500 0.127000 -1.079500
         -0.127000 -1.079500
         )

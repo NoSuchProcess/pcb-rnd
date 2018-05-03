@@ -7,16 +7,16 @@
   )
   (resolution mm 1000000)
   (structure
-    (layer "comp1"
+    (layer "3__top_copper"
       (type signal)
     )
-    (layer "inner1"
+    (layer "5__Intern"
       (type signal)
     )
-    (layer "inner2"
+    (layer "7__Intern"
       (type signal)
     )
-    (layer "solder1"
+    (layer "10__bottom_copper"
       (type signal)
     )
     (boundary
@@ -49,25 +49,21 @@
       (pin Pstk_shape_39 "1" 0.000000 0.000000)
       (pin Pstk_shape_40 "2" -7.620000 0.000000)
     )
-    (padstack via_685800_381000
-      (shape (circle signal 0.685800))
-      (attach off)
-    )
     (padstack Pstk_shape_7
       (shape
-        (polygon "comp1" 0
+        (polygon "3__top_copper" 0
         -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
         -1.016000 -1.016000
         )
-        (polygon "inner1" 0
+        (polygon "5__Intern" 0
         -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
         -1.016000 -1.016000
         )
-        (polygon "inner2" 0
+        (polygon "7__Intern" 0
         -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
         -1.016000 -1.016000
         )
-        (polygon "solder1" 0
+        (polygon "10__bottom_copper" 0
         -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
         -1.016000 -1.016000
         )
@@ -76,28 +72,28 @@
     )
     (padstack Pstk_shape_8
       (shape
-        (circle "comp1" 2.032000)
-        (circle "inner1" 2.032000)
-        (circle "inner2" 2.032000)
-        (circle "solder1" 2.032000)
+        (circle "3__top_copper" 2.032000)
+        (circle "5__Intern" 2.032000)
+        (circle "7__Intern" 2.032000)
+        (circle "10__bottom_copper" 2.032000)
       )
       (attach off)
     )
     (padstack Pstk_shape_39
       (shape
-        (polygon "solder1" 0
+        (polygon "3__top_copper" 0
         1.016000 -1.016000 -1.016000 -1.016000 -1.016000 1.016000
         1.016000 1.016000
         )
-        (polygon "outline" 0
+        (polygon "5__Intern" 0
         1.016000 -1.016000 -1.016000 -1.016000 -1.016000 1.016000
         1.016000 1.016000
         )
-        (polygon "inner2" 0
+        (polygon "7__Intern" 0
         1.016000 -1.016000 -1.016000 -1.016000 -1.016000 1.016000
         1.016000 1.016000
         )
-        (polygon "comp1" 0
+        (polygon "10__bottom_copper" 0
         1.016000 -1.016000 -1.016000 -1.016000 -1.016000 1.016000
         1.016000 1.016000
         )
@@ -106,10 +102,10 @@
     )
     (padstack Pstk_shape_40
       (shape
-        (circle "solder1" 2.032000)
-        (circle "outline" 2.032000)
-        (circle "inner2" 2.032000)
-        (circle "comp1" 2.032000)
+        (circle "3__top_copper" 2.032000)
+        (circle "5__Intern" 2.032000)
+        (circle "7__Intern" 2.032000)
+        (circle "10__bottom_copper" 2.032000)
       )
       (attach off)
     )
