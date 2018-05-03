@@ -22,6 +22,7 @@
 + feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 + BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouted: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
+- BUG: element's on_solder flag is ignored while loading old element from lihata v1..4; bug_files/farside.lht [report: Ade]
 - BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
