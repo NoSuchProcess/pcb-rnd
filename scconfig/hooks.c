@@ -559,9 +559,6 @@ int hook_detect_target()
 	if (want_gtk)
 		want_glib = 1;
 
-	if (plug_is_enabled("export_dsn"))
-		want_glib = 1;
-
 	if (plug_is_enabled("puller"))
 		want_glib = 1;
 
@@ -575,10 +572,6 @@ int hook_detect_target()
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
 				hook_custom_arg("Disable-puller", NULL);
-			}
-			if (plug_is_enabled("export_dsn")) {
-				report_repeat("WARNING: Since GLIB is not found, disabling the dsn pcb_exporter...\n");
-				hook_custom_arg("Disable-export_dsn", NULL);
 			}
 		}
 	}
