@@ -373,7 +373,6 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_
 
 static void print_library(FILE * fp)
 {
-	char *padstack;
 	gds_t term_shapes;
 
 	gds_init(&term_shapes);
