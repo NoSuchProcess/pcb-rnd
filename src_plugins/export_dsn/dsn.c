@@ -430,46 +430,6 @@ static void print_library(FILE * fp)
 	}
 	PCB_END_LOOP;
 
-#warning TODO: remove
-#if 0
-	/* loop thru padstacks and define them all */
-	for (iter = pads; iter; iter = g_list_next(iter)) {
-		pcb_coord_t dim1, dim2;
-		long int dim1l, dim2l;
-		padstack = iter->data;
-		fprintf(fp, "    (padstack %s\n", padstack);
-
-		/* print info about pad here */
-		if (sscanf(padstack, "Smd_rect_%ldx%ld", &dim1l, &dim2l) == 2) { /* then pad is smd */
-			dim1 = dim1l;
-			dim2 = dim2l;
-			pcb_fprintf(fp,
-									"      (shape (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-									"bottom!", dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
-		}
-		else if (sscanf(padstack, "Th_square_%ld", &dim1l) == 1) {
-			dim1 = dim1l;
-			pcb_fprintf(fp, "      (shape (rect signal %.6mm %.6mm %.6mm %.6mm))\n", dim1 / -2, dim1 / -2, dim1 / 2, dim1 / 2);
-		}
-		else {
-			sscanf(padstack, "Th_round_%ld", &dim1l);
-			dim1 = dim1l;
-			pcb_fprintf(fp, "      (shape (circle signal %.6mm))\n", dim1);
-		}
-		fprintf(fp, "      (attach off)\n");
-		fprintf(fp, "    )\n");
-	}
-
-	/* add padstack for via */
-	pcb_fprintf(fp, "    (padstack via_%ld_%ld\n", viawidth, viadrill);
-	pcb_fprintf(fp, "      (shape (circle signal %.6mm))\n", viawidth);
-	pcb_fprintf(fp, "      (attach off)\n    )\n");
-
-
-	g_list_foreach(pads, (GFunc)free, NULL);
-	g_list_free(pads);
-#endif
-
 	/* add padstack for terminals */
 	pcb_fprintf(fp, "%s", term_shapes.array);
 	pcb_fprintf(fp, "  )\n");
