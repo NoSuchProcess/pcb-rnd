@@ -70,6 +70,8 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 
 static const char *dsn_cookie = "dsn exporter";
 
+#define GRP_NAME(grp_) ((grp_) - PCB->LayerGroups.grp), ((grp_)->name)
+
 static pcb_coord_t trackwidth = 8;  /* user options defined in export dialog */
 static pcb_coord_t clearance = 8;
 static pcb_coord_t viawidth = 45;
@@ -141,7 +143,7 @@ static void print_structure(FILE * fp)
 				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", g->name);
 			}
 		}
-		fprintf(fp, "    (layer \"%s\"\n", g->name);
+		fprintf(fp, "    (layer \"%d__%s\"\n", GRP_NAME(g));
 		fprintf(fp, "      %s\n", layeropts);
 		fprintf(fp, "    )\n");
 		free(layeropts);
@@ -204,13 +206,13 @@ static void print_placement(FILE * fp)
 	fprintf(fp, "  )\n");
 }
 
-static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
+static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
 	int n;
 
-	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%s\" 0", layer_name);
+	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%d__%s\" 0", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
 	fld = 0;
@@ -225,7 +227,7 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	gds_append_str(term_shapes, "\n        )\n");
 }
 
-static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
+static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
@@ -233,7 +235,7 @@ static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_
 	int n;
 	pcb_line_t ltmp;
 
-	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%s\" 0", layer_name);
+	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%d__%s\" 0", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
 	memset(&ltmp, 0, sizeof(ltmp));
@@ -258,11 +260,11 @@ static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_
 	gds_append_str(term_shapes, "\n        )\n");
 }
 
-static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
+static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 
-	pcb_snprintf(tmp, sizeof(tmp), "        (circle \"%s\"", layer_name);
+	pcb_snprintf(tmp, sizeof(tmp), "        (circle \"%d__%s\"", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
 #warning padstack TODO: this ignores circle center offset
@@ -271,7 +273,7 @@ static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord
 	gds_append_str(term_shapes, tmp);
 }
 
-static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
+static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
@@ -279,7 +281,7 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 	int go;
 
 	if (pl != NULL) {
-		pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%s\" 0", layer_name);
+		pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%d__%s\" 0", GRP_NAME(grp));
 		gds_append_str(term_shapes, tmp);
 
 		fld = 0;
@@ -318,7 +320,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 
 			pl = pcb_poly_contour(&it);
 
-			print_polyline(term_shapes, &it, pl, ox, oy, grp->name, partsidesign);
+			print_polyline(term_shapes, &it, pl, ox, oy, grp, partsidesign);
 		}
 
 		gds_append_str(term_shapes, "      )\n");
@@ -360,13 +362,13 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY:
-			print_polyshape(term_shapes, &shp->data.poly, ox, oy, grp->name, partsidesign);
+			print_polyshape(term_shapes, &shp->data.poly, ox, oy, grp, partsidesign);
 			break;
 		case PCB_PSSH_LINE:
-			print_lineshape(term_shapes, &shp->data.line, ox, oy, grp->name, partsidesign);
+			print_lineshape(term_shapes, &shp->data.line, ox, oy, grp, partsidesign);
 			break;
 		case PCB_PSSH_CIRC:
-			print_circshape(term_shapes, &shp->data.circ, ox, oy, grp->name, partsidesign);
+			print_circshape(term_shapes, &shp->data.circ, ox, oy, grp, partsidesign);
 			break;
 	}
 }
@@ -494,7 +496,7 @@ static void print_wires(FILE * fp)
 			PCB_LINE_LOOP(lay);
 			{
 				pcb_fprintf(fp,
-					"        (wire (path %s %.6mm %.6mm %.6mm %.6mm %.6mm)\n", g->name, line->Thickness,
+					"        (wire (path %d__%s %.6mm %.6mm %.6mm %.6mm %.6mm)\n", GRP_NAME(g), line->Thickness,
 					line->Point1.X, (PCB->MaxHeight - line->Point1.Y),
 					line->Point2.X, (PCB->MaxHeight - line->Point2.Y));
 				fprintf(fp, "            (type protect))\n");
