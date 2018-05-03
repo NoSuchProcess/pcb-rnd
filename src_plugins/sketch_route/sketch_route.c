@@ -61,7 +61,5 @@ int pplg_init_sketch_route(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
 
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, sketch_route_layer_chg, NULL, pcb_sketch_route_cookie);
-
 	return 0;
 }
