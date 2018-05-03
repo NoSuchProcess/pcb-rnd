@@ -43,8 +43,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include <time.h>
 #include <genvector/gds_char.h>
 
-#include <glib.h>
-
 #include "board.h"
 #include "data.h"
 #include "error.h"
@@ -117,100 +115,36 @@ static pcb_hid_attribute_t *dsn_get_export_options(int *n)
 	return dsn_options;
 }
 
-static GList *layerlist = NULL;  /* contain routing layers */
-
 static void print_structure(FILE * fp)
 {
 	pcb_layergrp_id_t group, top_group, bot_group;
-	pcb_layer_id_t top_layer, bot_layer;
 
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &top_group, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &bot_group, 1);
 
-	top_layer = PCB->LayerGroups.grp[top_group].lid[0];
-	bot_layer = PCB->LayerGroups.grp[bot_group].lid[0];
-
-
-	g_list_free(layerlist);				/* might be around from the last export */
-
-	if (PCB->Data->Layer[top_layer].meta.real.vis) {
-		layerlist = g_list_append(layerlist, &PCB->Data->Layer[top_layer]);
-	}
-	else {
-		pcb_message(PCB_MSG_WARNING, "WARNING! DSN export does not include the top layer. "
-						 "Router will consider an inner layer to be the \"top\" layer.\n");
-	}
-
-	for (group = 0; group < pcb_max_group(PCB); group++) {
-		pcb_layer_t *first_layer;
-		unsigned int gflg = pcb_layergrp_flags(PCB, group);
-
-		if (gflg & PCB_LYT_SILK)
-			continue;
-
-		if (group == top_group || group == bot_group)
-			continue;
-
-		if (PCB->LayerGroups.grp[group].len < 1)
-			continue;
-
-		first_layer = &PCB->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
-		if (!first_layer->meta.real.vis)
-			continue;
-
-		layerlist = g_list_append(layerlist, first_layer);
-
-		if (group < top_group) {
-			pcb_message(PCB_MSG_WARNING, "WARNING! DSN export moved layer group with the \"%s\" layer "
-							 "after the top layer group.  DSN files must have the top " "layer first.\n", first_layer->name);
-		}
-
-		if (group > bot_group) {
-			pcb_message(PCB_MSG_WARNING, "WARNING! DSN export moved layer group with the \"%s\" layer "
-							 "before the bottom layer group.  DSN files must have the " "bottom layer last.\n", first_layer->name);
-		}
-
-		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
-		{
-			if (entry > 0) {
-				pcb_message(PCB_MSG_WARNING, "WARNING! DSN export squashed layer \"%s\" into layer "
-								 "\"%s\", DSN files do not have layer groups.", layer->name, first_layer->name);
-			}
-		}
-		PCB_END_LOOP;
-	}
-
-	if (PCB->Data->Layer[bot_layer].meta.real.vis) {
-		layerlist = g_list_append(layerlist, &PCB->Data->Layer[bot_layer]);
-	}
-	else {
-		pcb_message(PCB_MSG_WARNING, "WARNING! DSN export does not include the bottom layer. "
-						 "Router will consider an inner layer to be the \"bottom\" layer.\n");
-	}
-
 	fprintf(fp, "  (structure\n");
-
-	for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
-		pcb_layer_t *layer = iter->data;
+	for (group = 0; group < pcb_max_group(PCB); group++) {
+		pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
 		char *layeropts = pcb_strdup("(type signal)");
 		
-		if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
+		if (!(g->ltype & PCB_LYT_COPPER))
 			continue;
-		
-		/* see if layer has same name as a net and make it a power layer */
+
+#warning TODO: revise this; use attributes instead
+		/* see if group has same name as a net and make it a power layer */
 		/* loop thru all nets */
 		for (int ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
 			char *nname;
 			nname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-			if (!strcmp(layer->name, nname)) {
-				g_free(layeropts);
-				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", layer->name);
+			if (!strcmp(g->name, nname)) {
+				free(layeropts);
+				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", g->name);
 			}
 		}
-		fprintf(fp, "    (layer \"%s\"\n", layer->name);
+		fprintf(fp, "    (layer \"%s\"\n", g->name);
 		fprintf(fp, "      %s\n", layeropts);
 		fprintf(fp, "    )\n");
-		g_free(layeropts);
+		free(layeropts);
 	}
 
 	/* PCB outline */
@@ -254,7 +188,7 @@ static void print_placement(FILE * fp)
 		pcb_fprintf(fp, "    (component %d\n", subc->ID);
 		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, PCB->MaxHeight - oy, side);
 		pcb_fprintf(fp, "    )\n");
-		g_free(ename);
+		free(ename);
 	}
 	PCB_END_LOOP;
 
@@ -270,19 +204,10 @@ static void print_placement(FILE * fp)
 	fprintf(fp, "  )\n");
 }
 
-static void add_padstack(GList **pads, char *padstack)
-{
-	if (!g_list_find_custom(*pads, padstack, (GCompareFunc) strcmp))
-		*pads = g_list_append(*pads, padstack);
-	else
-		free(padstack);
-}
-
 static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, const char *layer_name, int partsidesign)
 {
 	char tmp[512];
 	int fld;
-	pcb_coord_t x, y;
 	int n;
 
 	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%s\" 0", layer_name);
@@ -370,13 +295,15 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 	}
 }
 
-static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy, int term_side, int partsidesign)
+static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy, int term_on_bottom, int partsidesign)
 {
 	if (poly->term != NULL) {
-		pcb_layer_t *lay = g_list_nth_data(layerlist, term_side);
+		pcb_layergrp_id_t gid = term_on_bottom ? pcb_layergrp_get_bottom_copper() : pcb_layergrp_get_top_copper();
+		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
 		char *padstack = pcb_strdup_printf("Term_poly_%ld", poly->ID);
 		pcb_poly_it_t it;
 		pcb_polyarea_t *pa;
+
 
 		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, 0, 0);
 
@@ -391,7 +318,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 
 			pl = pcb_poly_contour(&it);
 
-			print_polyline(term_shapes, &it, pl, ox, oy, lay->name, partsidesign);
+			print_polyline(term_shapes, &it, pl, ox, oy, grp->name, partsidesign);
 		}
 
 		gds_append_str(term_shapes, "      )\n");
@@ -400,43 +327,53 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 	}
 }
 
-void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, int lid, pcb_coord_t ox, pcb_coord_t oy, int partsidesign)
+void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_t gid, pcb_coord_t ox, pcb_coord_t oy, int partsidesign)
 {
 	pcb_pstk_shape_t *shp;
-	pcb_layer_t *lay = g_list_nth_data(layerlist, lid);
-	pcb_layer_type_t lyt = pcb_layer_flags_(lay);
-	pcb_poly_it_t it;
-
-	if (!(lyt & PCB_LYT_COPPER))
-		return;
+	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
+	pcb_layer_type_t lyt = grp->ltype;
 
 	shp = pcb_pstk_shape(padstack, lyt, 0);
 	if (shp == NULL)
 		return;
 
 	/* if the subc is placed on the other side, need to invert the output layerstack as well */
-	if (partsidesign < 0)
-		lay = g_list_nth_data(layerlist, g_list_length(layerlist) - 1 - lid);
-	else
-		lay = g_list_nth_data(layerlist, lid);
+	if (partsidesign < 0) {
+		pcb_layergrp_id_t n, offs = 0;
+
+		/* determine copper offset from the top */
+		for(n = 0; (n < PCB->LayerGroups.len) && (n != gid); n++)
+			if (PCB->LayerGroups.grp[n].type & PCB_LYT_COPPER)
+				offs++;
+
+		/* count it back from the bottom and set grp */
+		for(n = PCB->LayerGroups.len-1; (n > 0) && (n != gid); n--) {
+			if (PCB->LayerGroups.grp[n].type & PCB_LYT_COPPER) {
+				if (offs == 0) {
+					grp = &PCB->LayerGroups.grp[n];
+					break;
+				}
+				offs--;
+			}
+		}
+	}
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY:
-			print_polyshape(term_shapes, &shp->data.poly, ox, oy, lay->name, partsidesign);
+			print_polyshape(term_shapes, &shp->data.poly, ox, oy, grp->name, partsidesign);
 			break;
 		case PCB_PSSH_LINE:
-			print_lineshape(term_shapes, &shp->data.line, ox, oy, lay->name, partsidesign);
+			print_lineshape(term_shapes, &shp->data.line, ox, oy, grp->name, partsidesign);
 			break;
 		case PCB_PSSH_CIRC:
-			print_circshape(term_shapes, &shp->data.circ, ox, oy, lay->name, partsidesign);
+			print_circshape(term_shapes, &shp->data.circ, ox, oy, grp->name, partsidesign);
 			break;
 	}
 }
 
 static void print_library(FILE * fp)
 {
-	GList *pads = NULL, *iter; /* contain unique pad names */
-	gchar *padstack;
+	char *padstack;
 	gds_t term_shapes;
 
 	gds_init(&term_shapes);
@@ -446,11 +383,10 @@ static void print_library(FILE * fp)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_coord_t ox, oy;
-		int partside, partsidesign, subc_on_solder = 0;
+		int partsidesign, subc_on_solder = 0;
 		pcb_layer_type_t lyt_side;
 
 		pcb_subc_get_side(subc, &subc_on_solder);
-		partside = subc_on_solder ? g_list_length(layerlist) - 1 : 0;
 		partsidesign = subc_on_solder ? -1 : 1;
 		lyt_side = subc_on_solder ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 
@@ -460,17 +396,16 @@ static void print_library(FILE * fp)
 		PCB_POLY_COPPER_LOOP(subc->data);
 		{
 			pcb_layer_type_t lyt = pcb_layer_flags_(layer);
-			if ((lyt & PCB_LYT_COPPER) && ((lyt & PCB_LYT_TOP) || (lyt & PCB_LYT_BOTTOM))) {
-				int termside = (lyt & lyt_side) ? 0 : g_list_length(layerlist) - 1;
-				print_term_poly(fp, &term_shapes, polygon, ox, oy, termside, partsidesign);
-			}
+			if ((lyt & PCB_LYT_COPPER) && ((lyt & PCB_LYT_TOP) || (lyt & PCB_LYT_BOTTOM)))
+				print_term_poly(fp, &term_shapes, polygon, ox, oy, !(lyt & lyt_side), partsidesign);
 		}
 		PCB_ENDALL_LOOP;
 
 		PCB_PADSTACK_LOOP(subc->data);
 		{
-			int n;
+			pcb_layergrp_id_t group;
 			char *pid = pcb_strdup_printf("Pstk_shape_%ld", padstack->ID);
+
 			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, (padstack->x-ox)*partsidesign, -(padstack->y-oy));
 
 			gds_append_str(&term_shapes, "    (padstack ");
@@ -478,8 +413,13 @@ static void print_library(FILE * fp)
 			gds_append_str(&term_shapes, "\n");
 
 			gds_append_str(&term_shapes, "      (shape\n");
-			for(n = 0; n < g_list_length(layerlist); n++)
-				print_pstk_shape(&term_shapes, padstack, n, 0, 0, partsidesign);
+
+			for (group = 0; group < pcb_max_group(PCB); group++) {
+				pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
+				if (g->ltype & PCB_LYT_COPPER)
+					print_pstk_shape(&term_shapes, padstack, group, 0, 0, partsidesign);
+			}
+
 			gds_append_str(&term_shapes, "      )\n");
 			gds_append_str(&term_shapes, "      (attach off)\n");
 			gds_append_str(&term_shapes, "    )\n");
@@ -490,6 +430,8 @@ static void print_library(FILE * fp)
 	}
 	PCB_END_LOOP;
 
+#warning TODO: remove
+#if 0
 	/* loop thru padstacks and define them all */
 	for (iter = pads; iter; iter = g_list_next(iter)) {
 		pcb_coord_t dim1, dim2;
@@ -503,7 +445,7 @@ static void print_library(FILE * fp)
 			dim2 = dim2l;
 			pcb_fprintf(fp,
 									"      (shape (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-									((pcb_layer_t *) (g_list_first(layerlist)->data))->name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
+									"bottom!", dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
 		}
 		else if (sscanf(padstack, "Th_square_%ld", &dim1l) == 1) {
 			dim1 = dim1l;
@@ -523,12 +465,16 @@ static void print_library(FILE * fp)
 	pcb_fprintf(fp, "      (shape (circle signal %.6mm))\n", viawidth);
 	pcb_fprintf(fp, "      (attach off)\n    )\n");
 
-	/* add padstack for terminals */
-	pcb_fprintf(fp, "%s", term_shapes.array);
 
-	pcb_fprintf(fp, "  )\n");
 	g_list_foreach(pads, (GFunc)free, NULL);
 	g_list_free(pads);
+#endif
+
+	/* add padstack for terminals */
+	pcb_fprintf(fp, "%s", term_shapes.array);
+	pcb_fprintf(fp, "  )\n");
+
+
 	gds_uninit(&term_shapes);
 }
 
@@ -575,21 +521,27 @@ static void print_network(FILE * fp)
 
 static void print_wires(FILE * fp)
 {
-	GList *iter;
-	pcb_layer_t *lay;
+	int group;
 	fprintf(fp, "    (wiring\n");
 
-	for (iter = layerlist; iter; iter = g_list_next(iter)) {
-		lay = iter->data;
-		PCB_LINE_LOOP(lay);
-		{
-			pcb_fprintf(fp,
-									"        (wire (path %s %.6mm %.6mm %.6mm %.6mm %.6mm)\n",
-									lay->name, line->Thickness, line->Point1.X,
-									(PCB->MaxHeight - line->Point1.Y), line->Point2.X, (PCB->MaxHeight - line->Point2.Y));
-			fprintf(fp, "            (type protect))\n");
+	for (group = 0; group < pcb_max_group(PCB); group++) {
+		pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
+		pcb_cardinal_t n;
+		if (!(g->ltype & PCB_LYT_COPPER))
+			continue;
+		for(n = 0; n < g->len; n++) {
+			pcb_layer_t *lay = pcb_get_layer(PCB->Data, g->lid[n]);
+
+			PCB_LINE_LOOP(lay);
+			{
+				pcb_fprintf(fp,
+					"        (wire (path %s %.6mm %.6mm %.6mm %.6mm %.6mm)\n", g->name, line->Thickness,
+					line->Point1.X, (PCB->MaxHeight - line->Point1.Y),
+					line->Point2.X, (PCB->MaxHeight - line->Point2.Y));
+				fprintf(fp, "            (type protect))\n");
+			}
+			PCB_END_LOOP;
 		}
-		PCB_END_LOOP;
 	}
 	fprintf(fp, "\n    )\n)\n"); /* close all braces */
 }
