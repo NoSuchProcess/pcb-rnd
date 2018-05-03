@@ -33,74 +33,130 @@
     )
   )
   (placement
-    (component 8
-      (place "R1" 2.222500 11.430000 front 0 (PN 0))
+    (component 5
+      (place "R1" 1.270000 11.430000 front 0 (PN 0))
     )
-    (component 17
-      (place "R3" 1.270000 8.572500 front 0 (PN 0))
+    (component 32
+      (place "R3" 1.270000 7.620000 front 0 (PN 0))
     )
-    (component 26
-      (place "R2" 6.032500 11.430000 front 0 (PN 0))
+    (component 59
+      (place "R2" 5.080000 11.430000 front 0 (PN 0))
     )
-    (component 35
-      (place "R6" 1.270000 4.762500 front 0 (PN 0))
+    (component 86
+      (place "R6" 1.270000 5.715000 front 0 (PN 0))
     )
-    (component 44
-      (place "R4" 3.848481 8.216519 front 0 (PN 0))
+    (component 113
+      (place "R4" 3.175000 8.890000 front 0 (PN 0))
     )
-    (component 53
-      (place "R5" 6.388481 8.216519 front 0 (PN 0))
+    (component 140
+      (place "R5" 5.715000 8.890000 front 0 (PN 0))
     )
-    (component 62
-      (place "R7" 4.056761 4.719828 front 0 (PN 0))
+    (component 167
+      (place "R7" 3.175000 5.080000 front 0 (PN 0))
     )
-    (component 71
-      (place "R8" 7.866761 4.719828 front 0 (PN 0))
+    (component 194
+      (place "R8" 6.985000 5.080000 front 0 (PN 0))
     )
   )
   (library
-    (image 8
-      (pin Smd_rect_2159000x254000 "1" 0.000000 0.000000)
+    (image 5
+      (pin Pstk_shape_7 "1" 0.952500 0.000000)
     )
-    (image 17
-      (pin Smd_rect_254000x2159000 "1" 0.000000 0.000000)
+    (image 32
+      (pin Pstk_shape_34 "1" 0.000000 0.952500)
     )
-    (image 26
-      (pin Smd_rect_2159000x254000 "1" 0.000000 0.000000)
+    (image 59
+      (pin Pstk_shape_61 "1" 0.952500 0.000000)
     )
-    (image 35
-      (pin Smd_rect_254000x2159000 "1" 0.000000 0.000000)
+    (image 86
+      (pin Pstk_shape_88 "1" 0.000000 -0.952500)
     )
-    (image 44
-      (pin Smd_rect_1600962x254000 "1" 0.000000 0.000000)
+    (image 113
+      (pin Pstk_shape_115 "1" 0.673481 -0.673481)
     )
-    (image 53
-      (pin Smd_rect_1600962x254000 "1" 0.000000 0.000000)
+    (image 140
+      (pin Pstk_shape_142 "1" 0.673481 -0.673481)
     )
-    (image 62
-      (pin Smd_rect_2017522x254000 "1" 0.000000 0.000000)
+    (image 167
+      (pin Pstk_shape_169 "1" 0.881761 -0.360172)
     )
-    (image 71
-      (pin Smd_rect_2017522x254000 "1" 0.000000 0.000000)
-    )
-    (padstack Smd_rect_2159000x254000
-      (shape (rect "comp1" -1.079500 -0.127000 1.079500 0.127000))
-      (attach off)
-    )
-    (padstack Smd_rect_254000x2159000
-      (shape (rect "comp1" -0.127000 -1.079500 0.127000 1.079500))
-      (attach off)
-    )
-    (padstack Smd_rect_1600962x254000
-      (shape (rect "comp1" -0.800481 -0.127000 0.800481 0.127000))
-      (attach off)
-    )
-    (padstack Smd_rect_2017522x254000
-      (shape (rect "comp1" -1.008761 -0.127000 1.008761 0.127000))
-      (attach off)
+    (image 194
+      (pin Pstk_shape_196 "1" 0.881761 -0.360172)
     )
     (padstack via_685800_381000
       (shape (circle signal 0.685800))
+      (attach off)
+    )
+    (padstack Pstk_shape_7
+      (shape
+        (polygon "comp1" 0
+        -1.079500 -0.127000 -1.079500 0.127000 1.079500 0.127000
+        1.079500 -0.127000
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_34
+      (shape
+        (polygon "comp1" 0
+        -0.127000 1.079500 0.127000 1.079500 0.127000 -1.079500
+        -0.127000 -1.079500
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_61
+      (shape
+        (polygon "comp1" 0
+        -1.079499 0.126999 -1.079499 -0.126999 1.079499 -0.126999
+        1.079499 0.126999
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_88
+      (shape
+        (polygon "comp1" 0
+        0.126999 1.079499 -0.126999 1.079499 -0.126999 -1.079499
+        0.126999 -1.079499
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_115
+      (shape
+        (polygon "comp1" 0
+        -0.853086 0.673481 -0.673481 0.853086 0.853086 -0.673481
+        0.673481 -0.853086
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_142
+      (shape
+        (polygon "comp1" 0
+        -0.673481 0.853085 -0.853085 0.673481 0.673481 -0.853085
+        0.853085 -0.673481
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_169
+      (shape
+        (polygon "comp1" 0
+        -1.047355 0.290626 -0.951307 0.525766 1.047355 -0.290626
+        0.951307 -0.525766
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_196
+      (shape
+        (polygon "comp1" 0
+        -0.951308 0.525765 -1.047354 0.290625 0.951308 -0.525765
+        1.047354 -0.290625
+        )
+      )
       (attach off)
     )
   )

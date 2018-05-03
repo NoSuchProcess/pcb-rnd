@@ -47,22 +47,6 @@
     )
   )
   (library
-    (image 5
-      (pin Th_round_3015995 1 0 0)
-    )
-    (image 6
-      (pin Th_round_3015995 1 0 0)
-    )
-    (image 7
-      (pin Th_round_3015995 1 0 0)
-    )
-    (image 8
-      (pin Th_round_3015995 1 0 0)
-    )
-    (padstack Th_round_3015995
-      (shape (circle signal 3.015995))
-      (attach off)
-    )
     (padstack via_685800_381000
       (shape (circle signal 0.685800))
       (attach off)

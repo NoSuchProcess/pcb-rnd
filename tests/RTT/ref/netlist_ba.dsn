@@ -33,27 +33,67 @@
     )
   )
   (placement
-    (component 8
-      (place "U1" 6.350000 6.985000 front 0 (PN 0))
+    (component 5
+      (place "U1" 2.540000 8.255000 front 0 (PN 0))
     )
   )
   (library
-    (image 8
-      (pin Th_square_2032000 "1" -3.810000 1.270000)
-      (pin Th_round_2032000 "4" 3.810000 1.270000)
-      (pin Th_round_2032000 "2" -3.810000 -1.270000)
-      (pin Th_round_2032000 "3" 3.810000 -1.270000)
-    )
-    (padstack Th_square_2032000
-      (shape (rect signal -1.016000 -1.016000 1.016000 1.016000))
-      (attach off)
-    )
-    (padstack Th_round_2032000
-      (shape (circle signal 2.032000))
-      (attach off)
+    (image 5
+      (pin Pstk_shape_7 "1" 0.000000 0.000000)
+      (pin Pstk_shape_8 "4" 7.620000 0.000000)
+      (pin Pstk_shape_9 "2" 0.000000 -2.540000)
+      (pin Pstk_shape_10 "3" 7.620000 -2.540000)
     )
     (padstack via_685800_381000
       (shape (circle signal 0.685800))
+      (attach off)
+    )
+    (padstack Pstk_shape_7
+      (shape
+        (polygon "comp1" 0
+        -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
+        -1.016000 -1.016000
+        )
+        (polygon "inner1" 0
+        -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
+        -1.016000 -1.016000
+        )
+        (polygon "inner2" 0
+        -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
+        -1.016000 -1.016000
+        )
+        (polygon "solder1" 0
+        -1.016000 1.016000 1.016000 1.016000 1.016000 -1.016000
+        -1.016000 -1.016000
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_8
+      (shape
+        (circle "comp1" 2.032000)
+        (circle "inner1" 2.032000)
+        (circle "inner2" 2.032000)
+        (circle "solder1" 2.032000)
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_9
+      (shape
+        (circle "comp1" 2.032000)
+        (circle "inner1" 2.032000)
+        (circle "inner2" 2.032000)
+        (circle "solder1" 2.032000)
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_10
+      (shape
+        (circle "comp1" 2.032000)
+        (circle "inner1" 2.032000)
+        (circle "inner2" 2.032000)
+        (circle "solder1" 2.032000)
+      )
       (attach off)
     )
   )

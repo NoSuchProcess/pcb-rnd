@@ -33,25 +33,35 @@
     )
   )
   (placement
-    (component 8
-      (place "E1" 6.191250 8.096250 front 0 (PN 0))
+    (component 5
+      (place "E1" 4.445000 8.890000 front 0 (PN 0))
     )
   )
   (library
-    (image 8
-      (pin Smd_rect_2159000x254000 "1" -0.793750 0.793750)
-      (pin Smd_rect_254000x2159000 "2" 0.793750 -0.793750)
-    )
-    (padstack Smd_rect_2159000x254000
-      (shape (rect "comp1" -1.079500 -0.127000 1.079500 0.127000))
-      (attach off)
-    )
-    (padstack Smd_rect_254000x2159000
-      (shape (rect "comp1" -0.127000 -1.079500 0.127000 1.079500))
-      (attach off)
+    (image 5
+      (pin Pstk_shape_7 "1" 0.952500 0.000000)
+      (pin Pstk_shape_8 "2" 2.540000 -1.587500)
     )
     (padstack via_685800_381000
       (shape (circle signal 0.685800))
+      (attach off)
+    )
+    (padstack Pstk_shape_7
+      (shape
+        (polygon "comp1" 0
+        -1.079500 -0.127000 -1.079500 0.127000 1.079500 0.127000
+        1.079500 -0.127000
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_8
+      (shape
+        (polygon "solder1" 0
+        -0.127000 1.079500 0.127000 1.079500 0.127000 -1.079500
+        -0.127000 -1.079500
+        )
+      )
       (attach off)
     )
   )
