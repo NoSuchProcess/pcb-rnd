@@ -1107,7 +1107,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	if (err != 0)
 		return -1;
 
-	p = pcb_pstk_new_compat_pad(subc->data, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)) != subc_on_bottom);
+	p = pcb_pstk_new_compat_pad(subc->data, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)));
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
