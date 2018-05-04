@@ -27,7 +27,7 @@
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 - BUG: pcb-rnd running in batchmode, 'saveto' with no args causes segfault [report: miloh]
-- BUG: pcb-rnd running batchmode, load .fp file do some throw-away actions, q, .fp file is unexpectedly altered (changed by default conf?)
+- BUG: pcb-rnd running batchmode, load .fp file do some throw-away actions, q, .fp file is unexpectedly altered ('q' action when running 'save changes' auto confirms affirmative in batchmode?)
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
