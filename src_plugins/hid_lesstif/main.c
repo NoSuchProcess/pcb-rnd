@@ -1016,7 +1016,8 @@ static void DrawBackgroundImage()
 
 static pcb_hid_attribute_t *lesstif_get_export_options(int *n)
 {
-	*n = sizeof(lesstif_attribute_list) / sizeof(pcb_hid_attribute_t);
+	if (n != NULL)
+		*n = sizeof(lesstif_attribute_list) / sizeof(pcb_hid_attribute_t);
 	return lesstif_attribute_list;
 }
 
