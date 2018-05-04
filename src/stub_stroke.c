@@ -29,17 +29,48 @@
 
 pcb_bool pcb_mid_stroke = pcb_false;
 
+/* Warn if gesture is wider or higher than this amount of coords (2mm) */
+#define MIN_CDIFF 2*1000000
+
+/* Warn only once, for large gestures */
+static pcb_bool far = pcb_false, warned = pcb_false;
+static pcb_coord_t x1 = -1, y1;
+
 static void stub_stroke_record_dummy(pcb_coord_t ev_x, pcb_coord_t ev_y)
 {
+	if (x1 < 0) {
+		x1 = ev_x;
+		y1 = ev_y;
+	}
+	else {
+		pcb_coord_t d;
+
+		d = x1 - ev_x;
+		if (d < 0) d = -d;
+		if (d > MIN_CDIFF) far = pcb_true;
+
+		d = y1 - ev_y;
+		if (d < 0) d = -d;
+		if (d > MIN_CDIFF) far = pcb_true;
+	}
 }
 
 static void stub_stroke_start_dummy(void)
 {
-	pcb_message(PCB_MSG_WARNING, "Can not use libstroke: not compiled as a buildin and not loaded as a plugin\n");
+	pcb_mid_stroke = pcb_true;
 }
 
 static int stub_stroke_finish_dummy(void)
 {
+	if (far) {
+		if (!warned) {
+			pcb_message(PCB_MSG_WARNING, "No gesture recognition, can not use libstroke: not compiled as a buildin and not loaded as a plugin\n");
+			warned = pcb_true;
+		}
+	}
+	pcb_mid_stroke = pcb_false;
+	x1 = -1;
+
 	return -1;
 }
 
