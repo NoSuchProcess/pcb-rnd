@@ -22,8 +22,9 @@ typedef struct hid_gc_s {
 
 static pcb_hid_attribute_t *nogui_get_export_options(int *n_ret)
 {
-	CRASH("get_export_options");
-	return 0;
+	if (n_ret != NULL)
+		*n_ret = 0;
+	return NULL;
 }
 
 static void nogui_do_export(pcb_hid_attr_val_t * options)

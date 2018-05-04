@@ -320,7 +320,10 @@ int gui_parse_argumemts(int autopick_gui, int *hid_argc, char **hid_argv[])
 	}
 
 	for(;;) {
-		int res = pcb_gui->parse_arguments(hid_argc, hid_argv);
+		int res;
+		if (pcb_gui->get_export_options != NULL)
+			pcb_gui->get_export_options(NULL);
+		res = pcb_gui->parse_arguments(hid_argc, hid_argv);
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */
 		if (res < 0) {
