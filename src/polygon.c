@@ -1069,9 +1069,10 @@ static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const pcb_box_t *here, pcb_coord_t expand, int noop)
+static pcb_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const pcb_box_t *here, pcb_coord_t expand, int noop)
 {
-	int r = 0, seen;
+	pcb_cardinal_t r = 0;
+	int seen;
 	pcb_box_t region;
 	struct cpInfo info;
 	pcb_layergrp_id_t group;
