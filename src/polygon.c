@@ -1242,10 +1242,12 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 
 static pcb_bool inhibit = pcb_false;
 
-int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t * p)
+int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx)
 {
 	pcb_board_t *pcb;
 	pcb_bool need_full;
+	void (*old_cb)(void *ctx);
+	void *old_ctx;
 
 	if (inhibit)
 		return 0;
@@ -1279,11 +1281,24 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t * p)
 	if (pcb != NULL)
 		Data = pcb->Data;
 
+	old_cb = pcb_poly_clip_prog;
+	old_ctx = pcb_poly_clip_prog_ctx;
+	pcb_poly_clip_prog = cb;
+	pcb_poly_clip_prog_ctx = ctx;
+
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, p))
 		clearPoly(Data, layer, p, NULL, 0, 0);
 	else
 		p->NoHolesValid = 0;
+
+	pcb_poly_clip_prog = old_cb;
+	pcb_poly_clip_prog_ctx = old_ctx;
 	return 1;
+}
+
+int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p)
+{
+	return pcb_poly_init_clip_prog(Data, layer, p, NULL, NULL);
 }
 
 /* --------------------------------------------------------------------------
