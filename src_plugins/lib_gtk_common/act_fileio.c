@@ -139,7 +139,7 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coo
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
-			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
+			return pcb_hid_actionl("SaveTo", "Layout", NULL);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 		int num_fmts, n;
