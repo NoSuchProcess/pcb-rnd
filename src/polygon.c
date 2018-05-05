@@ -1313,7 +1313,7 @@ pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_pol
 	old_cb = pcb_poly_clip_prog;
 	pcb_poly_clip_prog = NULL;
 
-	res = clearPoly(data, layer, polygon, NULL, NULL, 1);
+	res = clearPoly(data, layer, polygon, NULL, 0, 1);
 
 	pcb_poly_clip_prog = old_cb;
 	return res;
