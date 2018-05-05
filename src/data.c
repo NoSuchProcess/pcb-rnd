@@ -30,6 +30,8 @@
  */
 #include "config.h"
 
+#include <time.h>
+
 #include "board.h"
 #include "data.h"
 #include "data_list.h"
@@ -555,9 +557,38 @@ void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar)
 		pcb_data_clip_dirty(data, enable_progbar);
 }
 
+typedef struct {
+	pcb_data_t *data;
+	time_t nextt;
+	int inited, force_all;
+	pcb_cardinal_t at, total;
+} data_clip_all_t;
+
+static void data_clip_all_cb(void *ctx_)
+{
+	data_clip_all_t *ctx = ctx_;
+
+	ctx->at++;
+	if ((ctx->at % 8) == 0) {
+		time_t now = time(NULL);
+		if (now >= ctx->nextt) {
+			ctx->nextt = now+1;
+			if (!ctx->inited) {
+				ctx->total = 0;
+				PCB_POLY_ALL_LOOP(ctx->data); {
+					if (ctx->force_all || polygon->clip_dirty)
+						ctx->total += pcb_poly_num_clears(ctx->data, layer, polygon);
+				} PCB_ENDALL_LOOP;
+				ctx->inited = 1;
+			}
+			pcb_gui->progress(ctx->at, ctx->total, "Clipping polygons...");
+		}
+	}
+}
+
 void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool force_all)
 {
-	pcb_cardinal_t sum = 0, n = 0;
+	data_clip_all_t ctx;
 
 	if (data->clip_inhibit != 0)
 		return;
@@ -566,10 +597,11 @@ void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool 
 		pcb_data_clip_dirty(subc->data, enable_progbar);
 	} PCB_END_LOOP;
 
-	PCB_POLY_ALL_LOOP(data); {
-		if (force_all || polygon->clip_dirty)
-			sum++;
-	} PCB_ENDALL_LOOP;
+	ctx.data = data;
+	ctx.force_all = force_all;
+	ctx.nextt = time(NULL) + 2;
+	ctx.total = ctx.at = 0;
+	ctx.inited = 0;
 
 	/* have to go in two passes, to make sure that clearing polygons are done
 	   before the polygons that are potentially being cleared - this way we
@@ -577,19 +609,16 @@ void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool 
 	   calculated, the clearing poly has a contour */
 	PCB_POLY_ALL_LOOP(data); {
 		if ((force_all || polygon->clip_dirty) && (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
-			pcb_poly_init_clip(data, layer, polygon);
-#warning TODO: progbar
-/*		if ((n % 10) == 0) */
-		n++;
+			pcb_poly_init_clip_prog(data, layer, polygon, (enable_progbar ? data_clip_all_cb : NULL), &ctx);
 	} PCB_ENDALL_LOOP;
 
 	PCB_POLY_ALL_LOOP(data); {
 		if ((force_all || polygon->clip_dirty) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
-			pcb_poly_init_clip(data, layer, polygon);
-#warning TODO: progbar
-/*		if ((n % 10) == 0) */
-		n++;
+			pcb_poly_init_clip_prog(data, layer, polygon, (enable_progbar ? data_clip_all_cb : NULL), &ctx);
 	} PCB_ENDALL_LOOP;
+
+	if (enable_progbar)
+		pcb_gui->progress(0, 0, NULL);
 }
 
 void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
