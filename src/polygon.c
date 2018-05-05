@@ -794,6 +794,19 @@ static void subtract_accumulated(struct cpInfo *info, pcb_poly_t *polygon)
 	info->batch_size = 0;
 }
 
+static int pcb_poly_clip_noop = 0;
+static void *pcb_poly_clip_prog_ctx;
+static void (*pcb_poly_clip_prog)(void *ctx) = NULL;
+
+/* call the progress report callback and return if no-op is set */
+#define POLY_CLIP_PROG() \
+do { \
+	if (pcb_poly_clip_prog != NULL) \
+		pcb_poly_clip_prog(pcb_poly_clip_prog_ctx); \
+	if (pcb_poly_clip_noop) \
+		PCB_R_DIR_FOUND_CONTINUE; \
+} while(0)
+
 static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
@@ -811,16 +824,18 @@ static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
 	/* ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
 		return PCB_R_DIR_NOT_FOUND;
+
 	i = pcb_layer_id(info->data, info->layer);
 
 	np = pcb_thermal_area_pstk(pcb_data_get_top(info->data), ps, i);
 	if (np == 0)
 			return PCB_R_DIR_FOUND_CONTINUE;
 
+	info->batch_size++;
+	POLY_CLIP_PROG();
+
 	pcb_polyarea_boolean_free(info->accumulate, np, &merged, PCB_PBO_UNITE);
 	info->accumulate = merged;
-
-	info->batch_size++;
 
 	if (info->batch_size == SUBTRACT_PADSTACK_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
@@ -839,7 +854,11 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
 		return PCB_R_DIR_NOT_FOUND;
+
+	POLY_CLIP_PROG();
+
 	polygon = info->polygon;
+
 	if (SubtractArc(arc, polygon) < 0)
 		longjmp(info->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -991,6 +1010,8 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 	if (!PCB_POLY_HAS_CLEARANCE(subpoly))
 		return PCB_R_DIR_NOT_FOUND;
 
+	POLY_CLIP_PROG();
+
 	if (SubtractPolyPoly(subpoly, polygon) < 0)
 		longjmp(info->env, 1);
 
@@ -1011,6 +1032,8 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
+
+	POLY_CLIP_PROG();
 
 	np = line_clearance_poly(-1, NULL, line);
 	if (!np)
@@ -1037,13 +1060,16 @@ static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
 		return PCB_R_DIR_NOT_FOUND;
+
+	POLY_CLIP_PROG();
+
 	polygon = info->polygon;
 	if (SubtractText(text, polygon) < 0)
 		longjmp(info->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon, const pcb_box_t * here, pcb_coord_t expand)
+static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const pcb_box_t *here, pcb_coord_t expand, int noop)
 {
 	int r = 0, seen;
 	pcb_box_t region;
@@ -1051,6 +1077,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon,
 	pcb_layergrp_id_t group;
 	unsigned int gflg;
 	pcb_layer_type_t lf;
+	int old_noop;
 
 	lf = pcb_layer_flags_(Layer);
 	if (!(lf & PCB_LYT_COPPER)) { /* also handles lf == 0 */
@@ -1060,6 +1087,9 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon,
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon))
 		return 0;
+
+	old_noop = pcb_poly_clip_noop;
+	pcb_poly_clip_noop = 1;
 
 	group = pcb_layer_get_group_(Layer);
 	gflg = pcb_layergrp_flags(PCB, group);
@@ -1096,7 +1126,9 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon,
 		r += seen;
 		subtract_accumulated(&info, polygon);
 	}
-	polygon->NoHolesValid = 0;
+	if (!noop)
+		polygon->NoHolesValid = 0;
+	pcb_poly_clip_noop = old_noop;
 	return r;
 }
 
@@ -1148,7 +1180,7 @@ static int UnsubtractPadstack(pcb_data_t *data, pcb_pstk_t *ps, pcb_layer_t *l, 
 	if (!Unsubtract(np, p))
 		return 0;
 
-	clearPoly(PCB->Data, l, p, (const pcb_box_t *)ps, 2 * UNSUBTRACT_BLOAT * 400000);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *)ps, 2 * UNSUBTRACT_BLOAT * 400000, 0);
 	return 1;
 }
 
@@ -1168,7 +1200,7 @@ static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const pcb_box_t *) arc, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) arc, 2 * UNSUBTRACT_BLOAT, 0);
 	return 1;
 }
 
@@ -1186,7 +1218,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const pcb_box_t *) line, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) line, 2 * UNSUBTRACT_BLOAT, 0);
 	return 1;
 }
 
@@ -1204,7 +1236,7 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 		return -1;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const pcb_box_t *) text, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) text, 2 * UNSUBTRACT_BLOAT, 0);
 	return 1;
 }
 
@@ -1248,7 +1280,7 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t * p)
 		Data = pcb->Data;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, p))
-		clearPoly(Data, layer, p, NULL, 0);
+		clearPoly(Data, layer, p, NULL, 0, 0);
 	else
 		p->NoHolesValid = 0;
 	return 1;
