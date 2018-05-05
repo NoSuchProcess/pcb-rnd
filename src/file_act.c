@@ -274,6 +274,10 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	name = argv[1];
 
 	if (pcb_strcasecmp(function, "Layout") == 0) {
+		if (argc != 1) {
+			pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
+			return -1;
+		}
 		if (pcb_save_pcb(PCB->Filename, NULL) == 0)
 			pcb_board_set_changed_flag(pcb_false);
 		if (pcb_gui->notify_filename_changed != NULL)
