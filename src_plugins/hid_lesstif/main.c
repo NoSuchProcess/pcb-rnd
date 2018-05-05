@@ -3724,6 +3724,12 @@ static int lesstif_progress(int so_far, int total, const char *message)
 	static double time_then = 0.0;
 	int retval = 0;
 
+	if (!lesstif_active) {
+		if (message != NULL)
+			fprintf(stderr, "progress: %d/%d %s\n", so_far, total, message);
+		return 0;
+	}
+
 	if (so_far == 0 && total == 0 && message == NULL) {
 		XtUnmanageChild(progress_dialog);
 		started = pcb_false;
