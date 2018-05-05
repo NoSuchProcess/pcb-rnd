@@ -383,6 +383,17 @@ static void nogui_beep(void)
 
 static int nogui_progress(int so_far, int total, const char *message)
 {
+	static int on = 0;
+	if (message == NULL) {
+		if ((on) && (conf_core.rc.verbose >= PCB_MSG_INFO))
+			fprintf(stderr, "progress: finished\n");
+		on = 0;
+	}
+	else {
+		if (conf_core.rc.verbose >= PCB_MSG_INFO)
+			fprintf(stderr, "progress: %d/%d %s\n", so_far, total, message);
+		on = 1;
+	}
 	return 0;
 }
 
