@@ -93,6 +93,11 @@ void pcb_poly_clear_from_poly(pcb_data_t *, int, void *, void *);
    giving the caller a chance to draw a progress bar */
 int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx);
 
+/* Return the number of subtractions that have to be executed by a
+   pcb_poly_init_clip() on the given polygon */
+pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon);
+
+
 pcb_bool pcb_poly_is_point_in_p(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_poly_t *);
 pcb_bool pcb_poly_is_point_in_p_ignore_holes(pcb_coord_t, pcb_coord_t, pcb_poly_t *);
 pcb_bool_t pcb_is_point_in_convex_quad(pcb_vector_t p, pcb_vector_t *q);

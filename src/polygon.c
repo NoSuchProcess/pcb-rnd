@@ -1301,6 +1301,23 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p)
 	return pcb_poly_init_clip_prog(Data, layer, p, NULL, NULL);
 }
 
+pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon)
+{
+	pcb_cardinal_t res;
+	void (*old_cb)(void *ctx);
+
+	if (layer->is_bound)
+		layer = layer->meta.bound.real;
+
+	old_cb = pcb_poly_clip_prog;
+	pcb_poly_clip_prog = NULL;
+
+	res = clearPoly(data, layer, polygon, NULL, NULL, 1);
+
+	pcb_poly_clip_prog = old_cb;
+	return res;
+}
+
 /* --------------------------------------------------------------------------
  * remove redundant polygon points. Any point that lies on the straight
  * line between the points on either side of it is redundant.
