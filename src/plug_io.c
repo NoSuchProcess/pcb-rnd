@@ -819,7 +819,7 @@ void pcb_save_in_tmp(void)
 
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
-		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_FMT : conf_core.rc.emergency_name;
+		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_FMT : conf_core.rc.emergency_format;
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		pcb_message(PCB_MSG_INFO, _("Trying to save your layout in '%s'\n"), filename);
 		pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false);
