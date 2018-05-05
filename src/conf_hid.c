@@ -25,7 +25,9 @@ void *conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id)
 
 const conf_hid_callbacks_t *conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
 {
-	void **old = vtp0_get(&cfg->hid_callbacks, id, 0);
+	void **old;
+	assert(id >= 0);
+	old = vtp0_get(&cfg->hid_callbacks, id, 0);
 	vtp0_set(&cfg->hid_callbacks, id, (void *)cbs);
 	return (const conf_hid_callbacks_t *)(old == NULL ? NULL : *old);
 }
