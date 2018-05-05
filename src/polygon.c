@@ -804,7 +804,7 @@ do { \
 	if (pcb_poly_clip_prog != NULL) \
 		pcb_poly_clip_prog(pcb_poly_clip_prog_ctx); \
 	if (pcb_poly_clip_noop) \
-		PCB_R_DIR_FOUND_CONTINUE; \
+		return PCB_R_DIR_FOUND_CONTINUE; \
 } while(0)
 
 static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
@@ -1089,7 +1089,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, 
 		return 0;
 
 	old_noop = pcb_poly_clip_noop;
-	pcb_poly_clip_noop = 1;
+	pcb_poly_clip_noop = noop;
 
 	group = pcb_layer_get_group_(Layer);
 	gflg = pcb_layergrp_flags(PCB, group);
