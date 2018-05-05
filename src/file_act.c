@@ -267,6 +267,9 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char *name;
 	const char *fmt = NULL;
 
+	if (argc < 1)
+		PCB_ACT_FAIL(SaveTo);
+
 	function = argv[0];
 	name = argv[1];
 
