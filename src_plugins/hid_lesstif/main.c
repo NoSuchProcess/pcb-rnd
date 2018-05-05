@@ -1679,6 +1679,9 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	Widget menu;
 	Widget work_area_frame;
 
+	/* this only registers in core, safe to call before anything else */
+	lesstif_init_menu();
+
 	lesstif_begin();
 
 	pcb_hid_cfg_keys_init(&lesstif_keymap);
@@ -1829,7 +1832,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	lesstif_menubar = menu;
 	pcb_event(PCB_EVENT_GUI_INIT, NULL);
 
-	lesstif_init_menu();
+
 	lesstif_hid_inited = 1;
 
 	XtAppMainLoop(app_context);
@@ -3926,7 +3929,8 @@ int pplg_init_hid_lesstif(void)
 	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 
 	pcb_hid_register_hid(&lesstif_hid);
-	lesstif_conf_id = conf_hid_reg(lesstif_cookie, &ccb);
+	if (lesstif_conf_id < 0)
+		lesstif_conf_id = conf_hid_reg(lesstif_cookie, &ccb);
 	lesstif_conf_regs(lesstif_cookie);
 
 	return 0;

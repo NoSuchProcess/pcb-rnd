@@ -31,7 +31,7 @@
 
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;
-conf_hid_id_t lesstif_menuconf_id;
+conf_hid_id_t lesstif_menuconf_id = -1;
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -622,11 +622,13 @@ void lesstif_remove_menu_node(lht_node_t *node)
 extern const char *lesstif_cookie;
 void lesstif_init_menu(void)
 {
-	lesstif_menuconf_id = conf_hid_reg(lesstif_cookie, NULL);
+	if (lesstif_menuconf_id < 0)
+		lesstif_menuconf_id = conf_hid_reg(lesstif_cookie, NULL);
 }
 
 void lesstif_uninit_menu(void)
 {
 	conf_hid_unreg(lesstif_cookie);
 	XtDestroyWidget(lesstif_menubar);
+	lesstif_menuconf_id = -1;
 }
