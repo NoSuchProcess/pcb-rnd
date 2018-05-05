@@ -244,7 +244,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
-			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
+			return pcb_hid_actionl("SaveTo", "Layout", NULL);
 
 	setup_fsb_dialog();
 
