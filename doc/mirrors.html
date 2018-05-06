@@ -26,17 +26,31 @@
 <!--content-->
 <h1> read-only svn mirrors </h1>
 <p>
+Master repository: svn://repo.hu/pcb-rnd
+<p>
 <table border=1 cellspacing=0>
 <tr> <th> url
      <th> update frequency <th> location
-<tr> <td> svn://timesausage.com/pcb-rnd/
+<tr> <td> svn://timesausage.com/pcb-rnd
      <td> 10 minutes
      <td> U.S., west coast
 <tr> <td> svn://igor3.repo.hu/pcb-rnd
      <td> manual/random (every few days)
      <td> Budapest, Hungary
 </table>
-
+<p>
+Note: svn mirrors are always read-only and lag behind the master
+repository. The latest commits are often accessible only in the master
+repo, until mirrors sync, which may take anything between minutes and
+days. <b>You should almost always use the master repository.</b>
+There are situations when using a mirror may help, tho:
+<ul>
+	<li> if you need to do a lot of checkouts of past revisions, e.g. for
+	     bisecting an old bug, you should pick the mirror that is fastest
+	     for you
+	<li> the master repositry is not accessible for some reason and your
+	     svn access can not wait until it is restored
+</ul>
 
 </body>
 </html>
