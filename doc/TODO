@@ -28,6 +28,7 @@
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 - BUG: pcb-rnd running in batchmode, 'saveto' with no args causes segfault [report: miloh]
 - BUG: pcb-rnd running batchmode, load .fp file do throw-away saveto(layout,test.lht,lht) actions, q, .fp file is altered ('q' skips 'Ok to save data..' string in this case) [report: miloh]
+- BUG: open pcb-rnd (use either gtk hid), place any part with pads, toggle top-paste visiblity (on, then off to not-visible state) and pad shading changes. pad shading restores after toggling other layer visibilty [report: miloh]
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
