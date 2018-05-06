@@ -30,6 +30,7 @@
 - BUG: pcb-rnd running batchmode, load .fp file do throw-away saveto(layout,test.lht,lht) actions, q, .fp file is altered ('q' skips 'Ok to save data..' string in this case) [report: miloh]
 - BUG: open pcb-rnd (use either gtk hid), place any part with pads, toggle top-paste visiblity (on, then off to not-visible state) and pad shading changes. pad shading restores after toggling other layer visibilty [report: miloh]
 - BUG: single decrement clearance kbd: 'e g shift-c' operation on a 1206 subc in fresh layout causes clearance to go to zero.
+- BUG: select subc part with multiple padstacks, increment clearance on a single padstack, select eintire subc, summon property editor {e p}, subc dashed border changes as dialog is opened/ comparing to changing global clearance on subc, border changes with increments. 
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
