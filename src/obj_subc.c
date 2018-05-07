@@ -1714,3 +1714,15 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	sc->data->Layer[n].type = PCB_OBJ_LAYER;
 	return &sc->data->Layer[n];
 }
+
+void pcb_subc_part_changed_(pcb_any_obj_t *obj)
+{
+	pcb_subc_t *sc = pcb_obj_parent_subc(obj);
+	if (sc == NULL)
+		return;
+
+	/* can't do this incrementally: if a boundary object is smaller than before
+	   it has to make the subc bbox smaller too */
+	pcb_subc_bbox(sc);
+}
+
