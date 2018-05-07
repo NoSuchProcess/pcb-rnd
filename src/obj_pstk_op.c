@@ -109,6 +109,7 @@ void *pcb_pstkop_move(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_pstkop_move_noclip(ctx, ps);
 	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps);
 	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, ps);
+	pcb_subc_part_changed(ps);
 	return ps;
 }
 
@@ -135,6 +136,7 @@ void *pcb_pstkop_remove(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_invalidate_erase(ps);
 	pcb_undo_move_obj_to_remove(PCB_OBJ_PSTK, ps, ps, ps);
+	pcb_subc_part_changed(ps);
 	return NULL;
 }
 
@@ -222,6 +224,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 
+		pcb_subc_part_changed(ps);
 		return ps;
 	}
 	return NULL;
@@ -272,8 +275,10 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (nproto == PCB_PADSTACK_INVALID)
 		return NULL;
 
-	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL, NULL) == 0) {
+		pcb_subc_part_changed(ps);
 		return ps;
+	}
 
 	return NULL;
 }
@@ -294,8 +299,10 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (ps->Clearance == value)
 		return NULL;
 
-	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL, NULL) == 0) {
+		pcb_subc_part_changed(ps);
 		return ps;
+	}
 
 	return NULL;
 }
@@ -324,8 +331,10 @@ void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (nproto == PCB_PADSTACK_INVALID)
 		return NULL;
 
-	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL, NULL) == 0) {
+		pcb_subc_part_changed(ps);
 		return ps;
+	}
 
 	return NULL;
 }
