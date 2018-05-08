@@ -30,7 +30,8 @@
 + BUG: pcb-rnd running batchmode, load .fp file do throw-away saveto(layout,test.lht,lht) actions, q, .fp file is altered ('q' skips 'Ok to save data..' string in this case) [report: miloh]
 ? BUG: open pcb-rnd (use either gtk hid), place any part that includes padstacks, toggle top-paste visiblity (on, then off to not-visible state) and padstack shading changes. padstack shading restores after toggling other layer visibilty [report: miloh]
 	what do you mean by padstack shade? what changes exactly? If you mean the color of the padstack: you see it dark only if it has a shape on the visible layer. Whenyou tunr off the paste layer visibility, the code will throw you on another layer, which will not necessarily be the top copper layer.
-- BUG: single decrement clearance kbd: 'e g shift-c' operation on a 1206 subc in fresh layout causes clearance to go to zero. [report: miloh]
++ BUG: single decrement clearance kbd: 'e g shift-c' operation on a 1206 subc in fresh layout causes clearance to go to zero. [report: miloh]
+	the negative change was working properly: you were close to the minimum clearance set by the default config. The problem was rather the positive change, which did not jump from 0 to the minimum clearance but allowed steps in between.
 + BUG: select subc part with multiple padstacks, increment clearance on a single padstack, select eintire subc, summon property editor {e p}, subc dashed border changes as dialog is opened/ comparing to changing global clearance on subc, border changes with increments.  [report: miloh]
 
 Rubber band:
