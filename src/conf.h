@@ -164,6 +164,8 @@ int conf_insert_tree_as(conf_role_t role, lht_node_t *root);
    found. Runs conf_update(NULL); */
 void conf_load_project(const char *project_fn, const char *pcb_fn);
 
+void conf_load_extra(const char *project_fn, const char *pcb_fn);
+
 /* Update the binary representation from the memory-lht representation */
 void conf_update(const char *path, int arr_idx);
 
