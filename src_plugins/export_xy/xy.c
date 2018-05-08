@@ -671,7 +671,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.theta = ctx.xray_theta = 0.0;
 
 		ctx.name = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes")));
-		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "footprint")));
+		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
 		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
 
 		/* prefer the pnp-origin but if that doesn't exist, pick the subc origin */
