@@ -73,7 +73,11 @@ extern int pcb_draw_doing_pinout;
 extern pcb_bool pcb_draw_doing_assy;
 
 void pcb_lighten_color(const char *orig, char buf[8], double factor);
-void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+
+/* Draw a series of short line segments emulating a dashed line. segs is
+   the number of on/off segment pairs. It is guaranteed that the line starts
+   and ends with an "on" line segment */
+void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs);
 
 
 void pcb_draw(void);

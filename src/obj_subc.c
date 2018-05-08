@@ -1530,10 +1530,10 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 
 	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
-	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1);
-	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2);
-	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1);
-	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, 5);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2, 5);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1, 5);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, 5);
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
 	if (subc->refdes != NULL) {

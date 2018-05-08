@@ -89,7 +89,7 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int d
 			if (dash_last) {
 				pcb_draw_dashed_line(pcb_crosshair.GC,
 									 polygon->Points[i].X + dx,
-									 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
+									 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy, 5);
 				break; /* skip normal line draw below */
 			}
 		}

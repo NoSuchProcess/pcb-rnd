@@ -108,13 +108,14 @@ void pcb_lighten_color(const char *orig, char buf[8], double factor)
 	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
 }
 
-void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
 	double len_squared = dx*dx + dy*dy;
 	int n;
-	const int segs = 11; /* must be odd */
+
+	segs = (segs << 1) + 1; /* must be odd */
 
 	if (len_squared < 1000000) {
 		/* line too short, just draw it - TODO: magic value; with a proper geo lib this would be gone anyway */
