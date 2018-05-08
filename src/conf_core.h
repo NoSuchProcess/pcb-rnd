@@ -221,6 +221,9 @@ typedef struct {
 			CFT_INTEGER cross_thick;      /* cross thickness in pixels - 0 means disable crosses */
 			CFT_COORD cross_size;         /* cross size in word coords - size of one arm of the cross (minus the hole radius) */
 		} padstack;
+		struct subc {
+			CFT_INTEGER dash_freq;        /* how dense the dashed outline should be; -1 means do not display the dashed outline; 0 means solid outline; 1..32 means dashed outline */
+		} subc;
 		struct messages {
 			CFT_INTEGER char_per_line;   /* width of an output line in characters (used by separator drawing in find.c) */		
 		} messages;

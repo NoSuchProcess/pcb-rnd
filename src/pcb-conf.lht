@@ -215,6 +215,9 @@ li:pcb-rnd-conf-v1 {
 				cross_thick = 1
 				cross_size = 0.1 mm
 			}
+			ha:subc {
+				dash_freq = 5
+			}
 			ha:messages {
 #				char_per_line = 0
 			}
