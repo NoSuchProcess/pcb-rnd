@@ -125,6 +125,12 @@ pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer);
 /* Returns whether there's no object in the subc */
 pcb_bool pcb_subc_is_empty(pcb_subc_t *subc);
 
+/* Return the footprint name; if local_name is not NULL, that attribute
+   is queried first; if that doesn't exist, "footprint" and then "name"
+   is returned (or NULL if nothing is found) */
+const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name);
+
+
 /* Update the subcircuit (e.g. bbox) after a part of the subcircuit has changed */
 void pcb_subc_part_changed_(pcb_any_obj_t *obj);
 #define pcb_subc_part_changed(obj) pcb_subc_part_changed_((pcb_any_obj_t *)obj)

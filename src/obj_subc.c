@@ -1732,3 +1732,19 @@ void pcb_subc_part_changed_(pcb_any_obj_t *obj)
 	pcb_subc_bbox(sc);
 }
 
+
+const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
+{
+	const char *val;
+
+	if (local_name != NULL) {
+		val = pcb_attribute_get(&subc->Attributes, local_name);
+		if (val != NULL)
+			return val;
+	}
+	val = pcb_attribute_get(&subc->Attributes, "footprint");
+	if (val != NULL)
+		return val;
+	val = pcb_attribute_get(&subc->Attributes, "name");
+	return val;
+}
