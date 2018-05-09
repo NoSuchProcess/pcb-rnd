@@ -128,9 +128,9 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 
 		fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
 		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
+			fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
 		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "name");
+			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
 		if ((fpname == NULL) && (subc->refdes != NULL))
 			fpname = subc->refdes;
 		if (fpname == NULL)
