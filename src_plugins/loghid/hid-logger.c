@@ -17,7 +17,10 @@ static FILE *out_ = NULL;
 static pcb_hid_attribute_t *log_get_export_options(int *ret)
 {
 	pcb_hid_attribute_t *result = delegatee_->get_export_options(ret);
-	pcb_fprintf(out_, "get_export_options(ret) -> ret=%d\n", *ret);
+	if (ret != NULL)
+		pcb_fprintf(out_, "get_export_options(ret) -> ret=%d\n", *ret);
+	else
+		pcb_fprintf(out_, "get_export_options(ret) -> ret=n/a\n");
 	return result;
 }
 
