@@ -235,7 +235,7 @@ static int PrintBOM(void)
 	{
 		/* insert this component into the bill of materials list */
 		bom = bom_insert((char *) PCB_UNKNOWN(subc->refdes),
-			(char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "footprint")),
+			(char *) PCB_UNKNOWN(pcb_subc_name(subc, "bom::footprint")),
 			(char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")),
 			bom);
 	}
