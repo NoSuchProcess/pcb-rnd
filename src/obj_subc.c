@@ -1742,9 +1742,9 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 		if (val != NULL)
 			return val;
 	}
-	val = pcb_attribute_get(&subc->Attributes, "footprint");
+	val = pcb_attribute_get(&subc->Attributes, "visible_footprint");
 	if (val != NULL)
 		return val;
-	val = pcb_attribute_get(&subc->Attributes, "name");
+	val = pcb_attribute_get(&subc->Attributes, "footprint");
 	return val;
 }

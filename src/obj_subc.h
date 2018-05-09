@@ -126,8 +126,8 @@ pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer);
 pcb_bool pcb_subc_is_empty(pcb_subc_t *subc);
 
 /* Return the footprint name; if local_name is not NULL, that attribute
-   is queried first; if that doesn't exist, "footprint" and then "name"
-   is returned (or NULL if nothing is found) */
+   is queried first; if that doesn't exist, "visible_footprint" and then
+   "footprint" is returned (or NULL if nothing is found) */
 const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name);
 
 
