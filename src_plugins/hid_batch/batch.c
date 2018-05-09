@@ -33,6 +33,8 @@ typedef struct hid_gc_s {
 
 static pcb_hid_attribute_t *batch_get_export_options(int *n_ret)
 {
+	if (n_ret != NULL)
+		*n_ret = 0;
 	return 0;
 }
 
