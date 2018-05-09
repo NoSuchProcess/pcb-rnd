@@ -134,9 +134,9 @@ Limit the bounds of the EPS file to the visible items.
 
 PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
-		 static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
-		 static pcb_hid_attribute_t *eps_get_export_options(int *n)
+static pcb_hid_attribute_t *eps_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 
