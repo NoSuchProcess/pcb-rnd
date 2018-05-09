@@ -477,7 +477,7 @@ static int parse_layout_attribute_units(const char *name, int def)
 
 static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 {
-	const char *got_name = pcb_attribute_get(&sc->Attributes, "name");
+	const char *got_name = pcb_attribute_get(&sc->Attributes, "footprint");
 	if ((expect_name != NULL) && (*expect_name == '\0'))
 		expect_name = NULL;
 	if ((got_name != NULL) && (*got_name == '\0'))

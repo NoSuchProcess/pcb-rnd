@@ -196,7 +196,7 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	s = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
 	pcb_attribute_put(&s->Attributes, "refdes", refdes);
-	pcb_attribute_put(&s->Attributes, "name", name);
+	pcb_attribute_put(&s->Attributes, "footprint", name);
 	pcb_attribute_put(&s->Attributes, "value", value);
 
 	return 0;
