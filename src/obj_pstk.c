@@ -381,7 +381,7 @@ static void pcb_pstk_draw_shape_thin(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_s
 			pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness, shape->data.line.square);
 			break;
 		case PCB_PSSH_CIRC:
-			pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360); 
+			pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360);
 			break;
 	}
 }
