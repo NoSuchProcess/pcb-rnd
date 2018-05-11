@@ -285,7 +285,6 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl == o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_null();
-printf("s1='%s' s2='%s'\n", s1, s2);
 					if (s1 == s2)
 						PCB_QRY_RET_INT(res, 1);
 					if ((s1 == NULL) || (s2 == NULL))
