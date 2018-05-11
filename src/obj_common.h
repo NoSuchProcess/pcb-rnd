@@ -190,6 +190,9 @@ const char *pcb_obj_id_invalid(const char *id);
 
 #define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 
+/* Returns whether a subc part object is editable (not under the subc lock) */
+#define pcb_subc_part_editable(pcb, obj) \
+	(((pcb)->loose_subc) || ((obj)->term != NULL) || PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 
 /* set const char *dst to a color, depending on the bound layer type:
    top silk and copper get the color of the first crresponding layer
