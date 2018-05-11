@@ -199,9 +199,11 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx)
 {
 	int i;
 	for(i = 0; i < ctx->iter->num_vars; i++) {
-		ctx->iter->idx[i]++;
-		if (ctx->iter->idx[i] < vtp0_len(ctx->iter->vects[i]))
-			return 1;
+		if (ctx->iter->vects[i] != NULL) {
+			ctx->iter->idx[i]++;
+			if (ctx->iter->idx[i] < vtp0_len(ctx->iter->vects[i]))
+				return 1;
+		}
 		ctx->iter->idx[i] = 0;
 	}
 	return 0;
@@ -447,6 +449,8 @@ printf("s1='%s' s2='%s'\n", s1, s2);
 		case PCBQ_VAR:
 			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
 			res->type = PCBQ_VT_VOID;
+			if (ctx->iter->vects[node->data.crd] == NULL)
+				return -1;
 			tmp = (pcb_any_obj_t **)vtp0_get(ctx->iter->vects[node->data.crd], ctx->iter->idx[node->data.crd], 0);
 			if ((tmp == NULL) || (*tmp == NULL))
 				return -1;
