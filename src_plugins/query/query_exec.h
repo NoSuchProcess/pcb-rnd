@@ -73,6 +73,13 @@ do { \
 	return 0; \
 } while(0)
 
+#define PCB_QRY_RET_SIDE(o, on_bottom) \
+do { \
+	o->type = PCBQ_VT_STRING; \
+	o->data.str = on_bottom ? "BOTTOM" : "TOP"; \
+	return 0; \
+} while(0)
+
 /* The case when the operation couldn't be carried out, sort of NaN */
 #define PCB_QRY_RET_INV(o) \
 do { \

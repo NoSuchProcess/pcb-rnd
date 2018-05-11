@@ -622,6 +622,7 @@ static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	query_fields_keys_t fh1;
 	pcb_coord_t x, y;
 	double rot;
+	int on_bottom;
 
 	fld2hash_req(fh1, fld, 0);
 	if (fh1 == query_fields_a) {
@@ -640,6 +641,7 @@ static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_x:            pcb_subc_get_origin(p, &x, &y); PCB_QRY_RET_INT(res, x);
 		case query_fields_y:            pcb_subc_get_origin(p, &x, &y); PCB_QRY_RET_INT(res, y);
 		case query_fields_rotation:     pcb_subc_get_rotation(p, &rot); PCB_QRY_RET_DBL(res, rot);
+		case query_fields_side:         pcb_subc_get_side(p, &on_bottom); PCB_QRY_RET_SIDE(res, on_bottom);
 		case query_fields_refdes:       PCB_QRY_RET_STR(res, p->refdes);
 		default:;
 	}
