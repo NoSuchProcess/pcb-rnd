@@ -509,8 +509,10 @@ static char *expr_wizard_result(int desc)
 
 	switch (w->rtype) {
 	case RIGHT_INT:
-	case RIGHT_DOUBLE:
 		pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj));
+		break;
+	case RIGHT_DOUBLE:
+		pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj2));
 		break;
 	case RIGHT_STR:
 		if (!desc)
@@ -667,12 +669,19 @@ void expr_wizard_import(const char *desc_)
 			gtk_entry_set_text(GTK_ENTRY(expr_wizard_dlg.right_str), right);
 			break;
 		case RIGHT_INT:
-		case RIGHT_DOUBLE:
 			{
 				char *end;
 				double d = strtod(right, &end);
 				if (*end == '\0')
 					gtk_spin_button_set_value(GTK_SPIN_BUTTON(expr_wizard_dlg.right_int), d);
+				break;
+			}
+		case RIGHT_DOUBLE:
+			{
+				char *end;
+				double d = strtod(right, &end);
+				if (*end == '\0')
+					gtk_spin_button_set_value(GTK_SPIN_BUTTON(expr_wizard_dlg.right_double), d);
 				break;
 			}
 		case RIGHT_COORD:
