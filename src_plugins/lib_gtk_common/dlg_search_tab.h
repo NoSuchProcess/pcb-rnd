@@ -81,12 +81,14 @@ static const char *right_const_objtype[] = { "POINT", "LINE", "TEXT", "POLYGON",
 static const char *right_const_yesno[] = {"YES", "NO", NULL};
 static const char *right_const_layerpos[] = {"TOP", "BOTTOM", "INTERNAL", NULL};
 static const char *right_const_layertype[] = {"COPPER", "SILK", "MASK", "PASTE", "OUTLINE" , NULL};
+static const char *right_const_side[] = {"TOP", "BOTTOM", NULL};
 
 enum {
 	RC_OBJTYPE,
 	RC_YESNO,
 	RC_LAYERPOS,
-	RC_LAYERTYPE
+	RC_LAYERTYPE,
+	RC_SIDE
 };
 
 static expr_wizard_op_t right_const_tab[] = {
@@ -94,6 +96,7 @@ static expr_wizard_op_t right_const_tab[] = {
 	{right_const_yesno, NULL},
 	{right_const_layerpos, NULL},
 	{right_const_layertype, NULL},
+	{right_const_side, NULL},
 	{NULL, NULL}
 };
 
@@ -152,6 +155,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
+	{"@.side",            "side",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_SIDE]},
 	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.footprint",       "footprint",        &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
@@ -166,6 +170,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.subc.x",          "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.subc.y",          "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.subc.rotation",   "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
+	{"@.subc.side",       "side",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_SIDE]},
 	{"@.subc.refdes",     "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.subc.footprint",  "a.footprint",      &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.subc.value",      "a.value",          &op_tab[OPS_STR], RIGHT_STR, NULL},
