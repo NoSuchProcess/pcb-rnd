@@ -397,6 +397,7 @@ static void right_hide(void)
 {
 	gtk_widget_hide(expr_wizard_dlg.right_str);
 	gtk_widget_hide(expr_wizard_dlg.right_int);
+	gtk_widget_hide(expr_wizard_dlg.right_double);
 	gtk_widget_hide(expr_wizard_dlg.right_coord);
 	gtk_widget_hide(expr_wizard_dlg.tr_right);
 }
@@ -455,6 +456,9 @@ static void left_chg_cb(GtkTreeView * t, gpointer * data)
 	case RIGHT_INT:
 		gtk_widget_show(expr_wizard_dlg.right_int);
 		break;
+	case RIGHT_DOUBLE:
+		gtk_widget_show(expr_wizard_dlg.right_double);
+		break;
 	case RIGHT_STR:
 		gtk_widget_show(expr_wizard_dlg.right_str);
 		break;
@@ -505,6 +509,7 @@ static char *expr_wizard_result(int desc)
 
 	switch (w->rtype) {
 	case RIGHT_INT:
+	case RIGHT_DOUBLE:
 		pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj));
 		break;
 	case RIGHT_STR:
@@ -662,6 +667,7 @@ void expr_wizard_import(const char *desc_)
 			gtk_entry_set_text(GTK_ENTRY(expr_wizard_dlg.right_str), right);
 			break;
 		case RIGHT_INT:
+		case RIGHT_DOUBLE:
 			{
 				char *end;
 				double d = strtod(right, &end);
@@ -745,11 +751,17 @@ static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e)
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_str, FALSE, TRUE, 4);
 
 	expr_wizard_dlg.right_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
-																																8, 1, 1,	/* steps */
+																																1000, 1, 1,	/* steps */
+																																0.0));
+	expr_wizard_dlg.right_adj2 = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
+																																1000, 0.01, 1,	/* steps */
 																																0.0));
 /*	g_signal_connect(G_OBJECT(expr_wizard_dlg.right_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL); */
 	expr_wizard_dlg.right_int = gtk_spin_button_new(expr_wizard_dlg.right_adj, 1, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_int, FALSE, TRUE, 4);
+
+	expr_wizard_dlg.right_double = gtk_spin_button_new(expr_wizard_dlg.right_adj2, 1, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_double, FALSE, TRUE, 4);
 
 	expr_wizard_dlg.right_coord = pcb_gtk_coord_entry_new(0, PCB_MM_TO_COORD(2100), 0, conf_core.editor.grid_unit, CE_MEDIUM);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_coord, FALSE, TRUE, 4);

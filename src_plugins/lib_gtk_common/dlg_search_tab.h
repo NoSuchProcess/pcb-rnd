@@ -30,9 +30,9 @@
 static struct {
 	GtkWidget *entry_left;
 	GtkWidget *tr_left, *tr_op;
-	GtkWidget *right_str, *right_coord, *tr_right, *right_int;
+	GtkWidget *right_str, *right_coord, *tr_right, *right_int, *right_double;
 	GtkTreeStore *md_left;
-	GtkAdjustment *right_adj;
+	GtkAdjustment *right_adj, *right_adj2;
 } expr_wizard_dlg;
 
 static GType model_op[2] = { G_TYPE_STRING, G_TYPE_POINTER };
@@ -46,6 +46,7 @@ struct expr_wizard_op_s {
 typedef enum {
 	RIGHT_STR,
 	RIGHT_INT,
+	RIGHT_DOUBLE,
 	RIGHT_COORD,
 	RIGHT_CONST
 } right_type;
