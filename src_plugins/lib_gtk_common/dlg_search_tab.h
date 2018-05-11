@@ -124,15 +124,15 @@ static const expr_wizard_t expr_tab[] = {
 	{NULL,                "arc",              NULL,             0, NULL},
 	{"@.x",               "center X",         &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "center Y",         &op_tab[OPS_ANY], RIGHT_COORD, NULL},
-	{"@.angle.start",     "start angle",      &op_tab[OPS_ANY], RIGHT_INT, NULL},
-	{"@.angle.delta",     "delta angle",      &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.angle.start",     "start angle",      &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
+	{"@.angle.delta",     "delta angle",      &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 
 	{NULL,                "text",             NULL,             0, NULL},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.scale",           "scale",            &op_tab[OPS_ANY], RIGHT_INT, NULL},
 	{"@.string",          "string",           &op_tab[OPS_ANY], RIGHT_STR, NULL},
-	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 
 	{NULL,                "polygon",          NULL,             0, NULL},
 	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT, NULL},
