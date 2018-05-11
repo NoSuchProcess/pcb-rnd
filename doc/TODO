@@ -27,8 +27,6 @@
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 + BUG: single decrement clearance kbd: 'e g shift-c' operation on a 1206 subc in fresh layout causes clearance to go to zero. [report: miloh]
 	the negative change was working properly: you were close to the minimum clearance set by the default config. The problem was rather the positive change, which did not jump from 0 to the minimum clearance but allowed steps in between.
-+ BUG: Grid issue: open pcb-rnd with new design, check a specific grid size using menus, run {g r} grid realign on arbitrary point, and selected grid size disappears in grid size menu [report: miloh]
-	this is not a bug but a feature: the full description of a grid if the spacing _and_ the offsets. The offset is always included. The ones you see in the menu are configured. By default they have 0 offset. If you realign, you usually end up having a grid with a specific spacing but a non-zero offset - this does _not_ match the menu item that offers the same spacing but zero offset. If you click on the menu, it will set you back to zero offset. Altneratively if you have a menu with the exact spacing and offset you ended up after the realign, that menu will be checked.
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
