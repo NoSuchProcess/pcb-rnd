@@ -635,18 +635,10 @@ static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
-
-
 	switch(fh1) {
 		case query_fields_x:            pcb_subc_get_origin(p, &x, &y); PCB_QRY_RET_INT(res, x);
 		case query_fields_y:            pcb_subc_get_origin(p, &x, &y); PCB_QRY_RET_INT(res, y);
-		case query_fields_refdes:       /* alias of: */
-		case query_fields_name:         PCB_QRY_RET_STR(res, p->refdes);
-#warning subc TODO:
-/*
-		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString);
-		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
-*/
+		case query_fields_refdes:       PCB_QRY_RET_STR(res, p->refdes);
 		default:;
 	}
 	PCB_QRY_RET_INV(res);
