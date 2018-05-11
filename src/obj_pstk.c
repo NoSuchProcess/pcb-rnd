@@ -998,6 +998,10 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 			ps->rot = rot ? *rot : ps->rot;
 			ps->xmirror = xmirror ? *xmirror : ps->xmirror;
 			ps->smirror = smirror ? *smirror : ps->smirror;
+
+			/* re-render the prototype so the new shape is generated and cached */
+			ps->protoi = -1;
+			pcb_pstk_get_tshape(ps);
 			return 0;
 		case PCB_PARENT_BOARD: parent_ID = -1; break;
 		case PCB_PARENT_SUBC: parent_ID = ps->parent.data->parent.subc->ID; break;
