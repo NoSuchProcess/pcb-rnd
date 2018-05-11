@@ -49,12 +49,27 @@ typedef struct {
 
 static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
+	char *resv;
 	eval_stat_t *st = (eval_stat_t *)user_ctx;
-	int t = pcb_qry_is_true(res);
+	int t;
 
+	if (res->type == PCBQ_VT_VOID) {
+		printf(" <void>\n");
+		st->falses++;
+		return;
+	}
+
+	if (res->type != PCBQ_VT_COORD) {
+		st->trues++;
+		resv = pcb_query_sprint_val(res);
+		printf(" %s\n", resv);
+		free(resv);
+		return;
+	}
+
+	t = pcb_qry_is_true(res);
 	printf(" %s", t ? "true" : "false");
 	if (t) {
-		char *resv;
 		resv = pcb_query_sprint_val(res);
 		printf(" (%s)\n", resv);
 		free(resv);
