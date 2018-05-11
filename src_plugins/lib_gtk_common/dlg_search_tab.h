@@ -147,16 +147,12 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.number",          "number",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 */
 
-#warning subc TODO: upgrade
-/*
-	{NULL,                "element",          NULL,             0, NULL},
+	{NULL,                "subcircuit",       NULL,             0, NULL},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
-	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.description",     "description",      &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.footprint",       "footprint",        &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
-*/
 
 	{NULL,                "host layer's",     NULL,             0, NULL},
 	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
@@ -164,16 +160,13 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.layer.position",  "stack position",   &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERPOS]},
 	{"@.layer.type",      "type",             &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERTYPE]},
 
-#warning subc TODO: upgrade
-/*
-	{NULL,                "host element's",   NULL,             0, NULL},
-	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
-	{"@.element.y",       "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
-	{"@.element.refdes",  "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.element.name",    "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.element.description","description",   &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.element.value",   "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
-*/
+	{NULL,                "host subcircuit's",NULL,             0, NULL},
+	{"@.subc.x",          "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.subc.y",          "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.subc.refdes",     "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.subc.footprint",  "a.footprint",      &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.subc.value",      "a.value",          &op_tab[OPS_STR], RIGHT_STR, NULL},
+
 	{NULL, NULL, NULL, 0, NULL}
 };
 
