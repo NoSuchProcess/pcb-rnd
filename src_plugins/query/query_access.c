@@ -35,6 +35,7 @@
 #include "layer.h"
 #include "fields_sphash.h"
 #include "obj_pstk_inlines.h"
+#include "obj_subc_parent.h"
 
 #define APPEND(_lst_, _obj_) vtp0_append((vtp0_t *)_lst_, _obj_)
 
@@ -615,21 +616,22 @@ static int field_subc_from_ptr(pcb_subc_t *s, pcb_qry_node_t *fld, pcb_qry_val_t
 static int field_subc_obj(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	const char *s1;
+	pcb_subc_t *parent = pcb_obj_parent_subc(obj);
 
 	/* if parent is not a subc (or not available) evaluate to invalid */
-	if (obj->parent_type != PCB_PARENT_SUBC)
+	if (parent == NULL)
 		PCB_QRY_RET_INV(res);
 
 	/* check subfield, if there's none, return the subcircuit object */
 	fld2str_opt(s1, fld, 0);
 	if (s1 == NULL) {
 		res->type = PCBQ_VT_OBJ;
-		res->data.obj = (pcb_any_obj_t *)obj->parent.subc;
+		res->data.obj = (pcb_any_obj_t *)parent;
 		return 0;
 	}
 
 	/* return subfields of the subcircuit */
-	return field_subc_from_ptr(obj->parent.subc, fld, res);
+	return field_subc_from_ptr(parent, fld, res);
 }
 
 /***/
@@ -681,6 +683,9 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	if (fh1 == query_fields_type)
 		PCB_QRY_RET_INT(res, obj->type);
+
+	if (fh1 == query_fields_subc)
+	 return field_subc_obj(obj, fld->next, res);
 
 	switch(obj->type) {
 /*		case PCB_OBJ_POINT:    return field_point(obj, fld, res);*/
