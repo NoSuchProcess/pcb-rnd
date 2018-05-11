@@ -202,29 +202,33 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *msubc)
 {
+	PCB_ARC_ALL_LOOP(msubc->data); {
+		if (pcb_subc_part_editable(pcb, arc))
+			map_arc_cb(ctx, pcb, layer, arc);
+	} PCB_ENDALL_LOOP;
+	PCB_LINE_ALL_LOOP(msubc->data); {
+		if (pcb_subc_part_editable(pcb, line))
+			map_line_cb(ctx, pcb, layer, line);
+	} PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(msubc->data); {
+		if (pcb_subc_part_editable(pcb, polygon))
+			map_poly_cb(ctx, pcb, layer, polygon);
+	} PCB_ENDALL_LOOP;
+	PCB_TEXT_ALL_LOOP(msubc->data); {
+		if (pcb_subc_part_editable(pcb, text))
+			map_text_cb(ctx, pcb, layer, text);
+	} PCB_ENDALL_LOOP;
+	PCB_PADSTACK_LOOP(msubc->data); {
+		if (pcb_subc_part_editable(pcb, padstack))
+			map_pstk_cb(ctx, pcb, padstack);
+	} PCB_END_LOOP;
+	PCB_SUBC_LOOP(msubc->data); {
+		if (pcb_subc_part_editable(pcb, subc))
+			map_subc_cb_(ctx, pcb, subc);
+	} PCB_END_LOOP;
 	map_chk_skip(ctx, msubc);
 	map_attr(ctx, &msubc->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)msubc);
-	if (pcb->loose_subc) {
-		PCB_ARC_ALL_LOOP(msubc->data); {
-			map_arc_cb(ctx, pcb, layer, arc);
-		} PCB_ENDALL_LOOP;
-		PCB_LINE_ALL_LOOP(msubc->data); {
-			map_line_cb(ctx, pcb, layer, line);
-		} PCB_ENDALL_LOOP;
-		PCB_POLY_ALL_LOOP(msubc->data); {
-			map_poly_cb(ctx, pcb, layer, polygon);
-		} PCB_ENDALL_LOOP;
-		PCB_TEXT_ALL_LOOP(msubc->data); {
-			map_text_cb(ctx, pcb, layer, text);
-		} PCB_ENDALL_LOOP;
-		PCB_PADSTACK_LOOP(msubc->data); {
-			map_pstk_cb(ctx, pcb, padstack);
-		} PCB_END_LOOP;
-		PCB_SUBC_LOOP(msubc->data); {
-			map_subc_cb_(ctx, pcb, subc);
-		} PCB_END_LOOP;
-	}
 }
 
 static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
@@ -529,26 +533,30 @@ static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *ssubc)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
-	if (pcb->loose_subc) {
-		PCB_ARC_ALL_LOOP(ssubc->data); {
+	PCB_ARC_ALL_LOOP(ssubc->data); {
+		if (pcb_subc_part_editable(pcb, arc))
 			set_arc_cb(ctx, pcb, layer, arc);
-		} PCB_ENDALL_LOOP;
-		PCB_LINE_ALL_LOOP(ssubc->data); {
+	} PCB_ENDALL_LOOP;
+	PCB_LINE_ALL_LOOP(ssubc->data); {
+		if (pcb_subc_part_editable(pcb, line))
 			set_line_cb(ctx, pcb, layer, line);
-		} PCB_ENDALL_LOOP;
-		PCB_POLY_ALL_LOOP(ssubc->data); {
+	} PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(ssubc->data); {
+		if (pcb_subc_part_editable(pcb, polygon))
 			set_poly_cb(ctx, pcb, layer, polygon);
-		} PCB_ENDALL_LOOP;
-		PCB_TEXT_ALL_LOOP(ssubc->data); {
+	} PCB_ENDALL_LOOP;
+	PCB_TEXT_ALL_LOOP(ssubc->data); {
+		if (pcb_subc_part_editable(pcb, text))
 			set_text_cb(ctx, pcb, layer, text);
-		} PCB_ENDALL_LOOP;
-		PCB_PADSTACK_LOOP(ssubc->data); {
+	} PCB_ENDALL_LOOP;
+	PCB_PADSTACK_LOOP(ssubc->data); {
+		if (pcb_subc_part_editable(pcb, padstack))
 			set_pstk_cb(ctx, pcb, padstack);
-		} PCB_END_LOOP;
-		PCB_SUBC_LOOP(ssubc->data); {
+	} PCB_END_LOOP;
+	PCB_SUBC_LOOP(ssubc->data); {
+		if (pcb_subc_part_editable(pcb, subc))
 			set_subc_cb_(ctx, pcb, subc);
-		} PCB_END_LOOP;
-	}
+	} PCB_END_LOOP;
 
 	set_chk_skip(st, ssubc);
 
@@ -611,7 +619,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
 		MAYBE_PROP(0, "p/text/", set_text_cb),
 		MAYBE_PROP(ctx.is_trace, "p/poly/", set_poly_cb),
-		MAYBE_PROP(PCB->loose_subc, "p/subc/", set_subc_cb),
+		MAYBE_PROP(0, "p/", set_subc_cb),
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
 
