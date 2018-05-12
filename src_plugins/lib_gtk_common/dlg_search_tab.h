@@ -140,16 +140,17 @@ static const expr_wizard_t expr_tab[] = {
 	{NULL,                "polygon",          NULL,             0, NULL},
 	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT, NULL},
 
-#warning padstack TODO: upgrade
-/*
-	{NULL,                "pin or via",       NULL,             0, NULL},
+	{NULL,                "padstack",         NULL,             0, NULL},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
-	{"@.hole",            "drilling hole dia",&op_tab[OPS_ANY], RIGHT_COORD, NULL},
-	{"@.mask",            "mask",             &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.clearance",       "global clearance", &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
+	{"@.xmirror",         "x coords mirrored",&op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.smirror",         "stackup mirrored", &op_tab[OPS_ANY], RIGHT_INT, NULL},
 	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.number",          "number",           &op_tab[OPS_STR], RIGHT_STR, NULL},
-*/
+	{"@.hole",            "proto: hole dia",  &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.plated",          "proto: is plated?",&op_tab[OPS_ANY], RIGHT_INT, NULL},
 
 	{NULL,                "subcircuit",       NULL,             0, NULL},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
