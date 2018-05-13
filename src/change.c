@@ -400,46 +400,6 @@ pcb_bool pcb_chg_selected_nonetlist(int types)
 	return change;
 }
 
-#if 0
-/* ----------------------------------------------------------------------
- * sets the square-flag of all selected and visible pins or pads
- * returns pcb_true if anything has changed
- */
-pcb_bool SetSelectedNonetlist(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &SetNonetlistFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-
-/* ----------------------------------------------------------------------
- * clears the square-flag of all selected and visible pins or pads
- * returns pcb_true if anything has changed
- */
-pcb_bool ClrSelectedNonetlist(int types)
-{
-	pcb_bool change = pcb_false;
-	pcb_opctx_t ctx;
-
-	ctx.chgsize.pcb = PCB;
-
-	change = pcb_selected_operation(PCB, PCB->Data, &ClrNonetlistFunctions, &ctx, pcb_false, types);
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
-	return change;
-}
-#endif
-
 /* ----------------------------------------------------------------------
  * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
