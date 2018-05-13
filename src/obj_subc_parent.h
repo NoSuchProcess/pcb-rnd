@@ -76,12 +76,6 @@ PCB_INLINE pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj)
 		case PCB_OBJ_ARC:
 			return pcb_lobj_parent_subc(obj->parent_type, &obj->parent);
 
-#if 0
-		case PCB_OBJ_RAT:
-			/* easy case: can not be in a subc at all */
-			return 0;
-#endif
-
 		default:
 			/* anything else: virtual */
 			return 0;
