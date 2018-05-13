@@ -242,6 +242,13 @@ opengl:
 	- inhibit mechanism to speed things up:
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
 		- when inhibit drops to zero, revisit all subcircuits that are dirty
+		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
+- export_dsn:
+	- missing global padstack (via) export:
+		- need to think over and check the spec for how to do this with no-hole padstacks
+		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
+	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+
 
 3. Long term ===============================================================================
 
