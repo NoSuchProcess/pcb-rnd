@@ -594,12 +594,13 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * Layer, pcb_arc_t * Arc)
 {
 	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_layergrp_id_t group;
 
 	if(board == NULL)
 		board = PCB;
 
 	/* lookup layergroup and check all visible lines in this group */
-	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	group = pcb_layer_get_group_(Layer);
 
 	if(group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
