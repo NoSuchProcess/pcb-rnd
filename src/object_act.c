@@ -54,6 +54,7 @@
 #include "operation.h"
 #include "obj_pstk.h"
 #include "macro.h"
+#include "rotate.h"
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 
