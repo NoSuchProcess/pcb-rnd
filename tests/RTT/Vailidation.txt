@@ -105,3 +105,7 @@ rat.dsn good r17050
 text_rot.dsn good r17050 (text missing)
 text_scale.dsn good r17050 (text missing)
 text_sides.dsn good r17050 (text missing)
+thermal_layer.dsn bad r17050 missing padstack via
+comp1.dsn bad r17050 missing padstack via
+padstack.dsn bad r17050 missing padstack via
+elem_pads_ds.dsn bad r17050 geo okay, but square in freerouting, rounded on pcb-rnd
