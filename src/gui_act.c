@@ -1784,7 +1784,6 @@ static const char pcb_acts_grid[] =
 static const char pcb_acth_grid[] = "Set the grid.";
 static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const pcb_unit_t *new_unit;
 	if (argc == 0)
 		return 0;
 
