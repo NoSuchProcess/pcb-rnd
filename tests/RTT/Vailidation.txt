@@ -90,3 +90,18 @@ netlist.dsn good r17050
 padrot.dsn good r17050
 line_f_clear.dsn good r17050 (poly missing)
 line_normal.dsn good r17050 (poly missing)
+arc_angles.dsn good r17050 (arc missing)
+arc_f_clear.dsn good r17050 (arc missing)
+arc_normal.dsn good r17050 (arc missing)
+arc_offpage.dsn good r17050 (arc missing)
+arc_sizes.dsn good r17050 (arc missing)
+layer_outline.dsn good r17050
+layer_silk.dsn good r17050 (silk objects not exported)
+layer_spc.dsn good r17050
+poly_hole.dsn good r17050 (polys missing)
+poly_rect.dsn good r17050 (polys missing)
+poly_triangle.dsn good r17050 (polys missing)
+rat.dsn good r17050
+text_rot.dsn good r17050 (text missing)
+text_scale.dsn good r17050 (text missing)
+text_sides.dsn good r17050 (text missing)
