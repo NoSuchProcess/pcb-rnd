@@ -477,26 +477,6 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 			Buffer->Data->Layer[snumber] = Buffer->Data->Layer[cnumber];
 			Buffer->Data->Layer[cnumber] = swap;
 			k++;
-			/* move the thermal flags with the layers */
-#warning padstack TODO: rewrite
-#if 0
-			PCB_PIN_ALL_LOOP(Buffer->Data);
-			{
-				t1 = PCB_FLAG_THERM_TEST(snumber, pin);
-				t2 = PCB_FLAG_THERM_TEST(cnumber, pin);
-				PCB_FLAG_THERM_ASSIGN(snumber, t2, pin);
-				PCB_FLAG_THERM_ASSIGN(cnumber, t1, pin);
-			}
-			PCB_ENDALL_LOOP;
-			PCB_VIA_LOOP(Buffer->Data);
-			{
-				t1 = PCB_FLAG_THERM_TEST(snumber, via);
-				t2 = PCB_FLAG_THERM_TEST(cnumber, via);
-				PCB_FLAG_THERM_ASSIGN(snumber, t2, via);
-				PCB_FLAG_THERM_ASSIGN(cnumber, t1, via);
-			}
-			PCB_END_LOOP;
-#endif
 		}
 	}
 	pcb_set_buffer_bbox(Buffer);
