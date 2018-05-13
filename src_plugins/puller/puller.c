@@ -1406,7 +1406,7 @@ static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 
 static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 {
-	const pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)b; /* have to drop const because we may update the cache in ps */
 	pcb_layer_t *layer = CURRENT;
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer);
 
