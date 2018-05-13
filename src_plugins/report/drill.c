@@ -75,9 +75,7 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 {
 	pcb_drill_info_t *AllDrills;
 	pcb_drill_t *Drill = NULL;
-	pcb_drill_t savedrill, swapdrill;
 	pcb_bool DrillFound = pcb_false;
-	pcb_bool NewDrill;
 	pcb_rtree_it_t it;
 	pcb_box_t *pb;
 
