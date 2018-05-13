@@ -23,7 +23,7 @@
 + BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouted: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 + BUG: element's on_solder flag is ignored while loading old element from lihata v1..4; bug_files/farside.lht [report: Ade]
-- BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
++ BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
 + BUG: single decrement clearance kbd: 'e g shift-c' operation on a 1206 subc in fresh layout causes clearance to go to zero. [report: miloh]
 	the negative change was working properly: you were close to the minimum clearance set by the default config. The problem was rather the positive change, which did not jump from 0 to the minimum clearance but allowed steps in between.
