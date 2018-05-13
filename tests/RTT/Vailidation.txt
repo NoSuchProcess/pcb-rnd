@@ -75,3 +75,18 @@ arc_sizes.eps bad r13746 totally broken arc corner cases
 comp1.eps bad r13746 missing line, see bug_files/eps_comp1.png
 elem_pads.eps bad r13746 suspected pad placement rounding error, see bug_files/eps_elem_pads.png
 elem_pads_ds.eps bad r13746 geometry is okay, outline layer missing
+coord_rounding.dsn good r17050
+elem_pads.dsn good r17050
+elem_pins.dsn good r17050
+elem_sides_smd.dsn good r17050
+elem_sides_trh.dsn good r17050
+layer_copper.dsn good r17050
+line_overlap1.dsn good r17050
+line_overlap2.dsn good r17050
+line_overlap3.dsn good r17050
+line_overlap4.dsn good r17050 (poly missing)
+netlist_ba.dsn good r17050
+netlist.dsn good r17050
+padrot.dsn good r17050
+line_f_clear.dsn good r17050 (poly missing)
+line_normal.dsn good r17050 (poly missing)
