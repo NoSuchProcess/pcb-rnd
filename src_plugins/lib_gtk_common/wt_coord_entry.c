@@ -112,10 +112,9 @@ static gboolean ghid_coord_entry_output_cb(pcb_gtk_coord_entry_t * ce, gpointer 
 {
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
 	double value = gtk_adjustment_get_value(adj);
-	const char *orig, *final;
+	const char *orig;
 	char text[128], *suffix = NULL;
 	const pcb_unit_t *orig_unit;
-	int changed = 0;
 
 	orig = gtk_entry_get_text(GTK_ENTRY(ce));
 	strtod(orig, &suffix);
