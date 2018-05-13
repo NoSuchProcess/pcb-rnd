@@ -1359,7 +1359,6 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		}
 		nn = lht_dom_node_alloc(ty, basename);
 		if (cwd->type != LHT_HASH) {
-			lht_node_t *parent = cwd->parent;
 			pcb_message(PCB_MSG_ERROR, "Expected HASH conf subtree '%s' (in path '%s'); cleaning up broken conf, check your config sources!\n", cwd->name, path);
 			lht_tree_del(cwd);
 			free(path);
