@@ -50,8 +50,8 @@ int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		char *refdes_split, *cp;
-		char *old_ref, *new_ref;
+		char *new_ref;
+		const char *old_ref, *cp, *refdes_split;
 		int num;
 
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
@@ -95,8 +95,8 @@ int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
 	{
-		char *refdes_split, *cp;
-		char *old_ref, *new_ref;
+		const char *refdes_split, *cp, *old_ref;
+		char *new_ref;
 		int num;
 
 		if (subc->refdes == NULL)
