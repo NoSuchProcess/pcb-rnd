@@ -1296,13 +1296,13 @@ static void rbe_rotate(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+#warning TODO: rewrite this for subc
+#if 0
 	rubber_ctx_t *rbnd = user_data;
 	int type = argv[1].d.i;
 	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
 /*	int pinnum = argv[5].d.i;*/
 
-#warning TODO: rewrite this for subc
-#if 0
 	if (type == PCB_OBJ_ELEMENT) {
 		pcb_rubberband_t *ptr;
 		int i;
