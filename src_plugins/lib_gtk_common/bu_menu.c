@@ -241,10 +241,8 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 	case LHT_TEXT:								/* separator */
 		{
 			GList *children;
-			int pos;
 
 			children = gtk_container_get_children(GTK_CONTAINER(shell));
-			pos = g_list_length(children);
 			g_list_free(children);
 
 			if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
