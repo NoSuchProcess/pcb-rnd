@@ -54,6 +54,38 @@ typedef enum {
 	TYPE_SESSION
 } dsn_type_t;
 
+static pcb_layer_id_t ses_layer_by_name(pcb_board_t *pcb, const char *name)
+{
+	char *end;
+	long gid;
+	pcb_layergrp_t *grp;
+
+	gid = strtol(name, &end, 10);
+	if ((end[0] != '_') || (end[1] != '_'))
+		return -1;
+
+	grp = pcb_get_layergrp(pcb, gid);
+	if (grp == NULL)
+		return -1;
+
+	if (strcmp(end+2, grp->name) != 0) {
+		pcb_message(PCB_MSG_ERROR, "layer (group) name mismatch: group %ld should be '%s' but is '%s'\nses file not for this board?\n", gid, grp->name, end+2);
+		return -1;
+	}
+
+	if (grp->len <= 0) {
+		pcb_message(PCB_MSG_ERROR, "layer (group) '%s' has no layers\nses file not for this board?\n", name);
+		return -1;
+	}
+
+	if (!(grp->ltype & PCB_LYT_COPPER)) {
+		pcb_message(PCB_MSG_ERROR, "layer (group) type %s should a copper layer group\nses file not for this board?\n", name);
+		return -1;
+	}
+
+	return grp->lid[0];
+}
+
 static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_t *n, const char *unit, int workaround0)
 {
 	const gsxl_node_t *c;
@@ -71,7 +103,7 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 		return;
 	}
 
-	lid = pcb_layer_by_name(PCB->Data, slayer);
+	lid = ses_layer_by_name(PCB, slayer);
 	if (lid < 0) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
 		return;
