@@ -818,6 +818,7 @@ void pplg_uninit_export_xy(void)
 {
 	pcb_hid_remove_attributes_by_cookie(xy_cookie);
 	conf_unreg_file(CONF_FN, export_xy_conf_internal);
+	conf_unreg_fields("plugins/export_xy/");
 	free_fmts();
 	vts0_uninit(&fmt_names);
 	vts0_uninit(&fmt_ids);
