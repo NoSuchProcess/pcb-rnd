@@ -2031,6 +2031,11 @@ void conf_uninit(void)
 	int n;
 	htsp_entry_t *e;
 
+	conf_fields_foreach(e) {
+		if (strncmp(e->key, "plugins/", 8) == 0)
+			fprintf(stderr, "pcb-rnd conf ERROR: conf node '%s' is not unregistered\n", e->key);
+	}
+
 	conf_pcb_hid_uninit();
 
 	for(n = 0; n < CFR_max_alloc; n++) {
