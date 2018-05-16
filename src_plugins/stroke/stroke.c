@@ -140,6 +140,7 @@ int pplg_check_ver_stroke(int ver_needed) { return 0; }
 int pplg_uninit_stroke(void)
 {
 	conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
+	conf_unreg_fields("plugins/stroke/");
 	pcb_hid_remove_actions_by_cookie(pcb_stroke_cookie);
 	return 0;
 }
