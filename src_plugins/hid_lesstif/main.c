@@ -3832,6 +3832,7 @@ int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
 void pplg_uninit_hid_lesstif(void)
 {
+	pcb_hid_remove_attributes_by_cookie(lesstif_cookie);
 	pcb_event_unbind_allcookie(lesstif_cookie);
 	conf_hid_unreg(lesstif_cookie);
 }
