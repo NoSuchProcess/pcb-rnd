@@ -16,7 +16,7 @@
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
-+ BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: a l3x]
++ BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: al3x]
 + BUG: Rotate a subc and then undo. The undo operation only affects one padstack leaving the rest of the subc unchanged. [report: Ade]
 + feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
 + BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouted: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
