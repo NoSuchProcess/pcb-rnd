@@ -22,6 +22,7 @@
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 + BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
+- can't set appearance/subc/dash_freq to -1 in the gtk preferences window [report: Michael]
 
 Rubber band:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
