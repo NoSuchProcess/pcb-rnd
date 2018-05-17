@@ -1,7 +1,6 @@
 0. For the upcoming release ===============================================================================
 + feature req: show grid in both mm and mil in the status bar [report:smilie]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
-+ BUG: wrong unit picked on save: bugfiles/wrong_unit.lht; load, save as, compare the coords of the two pad objects; no rounding error but picked mil instead of mm or um; happens on negative coords; see also: pcb-rnd@1253 [report: Karl]
 + BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
 + BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: jg]
 + BUG: can't rotate polygon [report: sam]
@@ -10,15 +9,10 @@
 + BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
-+ BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: Karl]
-+ BUG: lesstif: invalidate_all() on config change colors [report: Karl]
-+ BUG: lhtpers table save bug: take bug_files/lhtpers_ta.lht, insert a new point on the bottom edge, save, contour table is ruined by lhtpers [report: gpaubert]
 + BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 + BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: al3x]
-+ feature: xy exporter should have the templates in config, not in hardwired C; maybe make it a hash (per output name) [report: celem]
-+ BUG: autorouter mismatched line ends: place two horizontal 1206's in a horizontal row; rat line connect the two outer pads; get it autorouted: the result will be an U shaped track to avoid the inner pads; the amrs of the U don't end where the horizontal line starts; this breaks the rubber band mode for moving the horizontal segment [report: celem]
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 + BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
