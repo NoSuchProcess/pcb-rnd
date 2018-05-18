@@ -103,7 +103,7 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 
 	if (!pcb_is_point_in_pstk(PosX, PosY, SearchRadius, ps, NULL))
 		return PCB_R_DIR_NOT_FOUND;
-	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, CURRENT) == NULL))
+	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, CURRENT) == NULL) && (!pcb_pstk_bb_drills(PCB, ps, CURRENT->meta.real.grp, NULL)))
 		return PCB_R_DIR_NOT_FOUND;
 	if ((i->on_lyt != 0) && (pcb_pstk_shape(ps, i->on_lyt, 0) == NULL))
 		return PCB_R_DIR_NOT_FOUND;
