@@ -14,7 +14,6 @@
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 + BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: al3x]
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
-+ BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 + can't set appearance/subc/dash_freq to -1 in the gtk preferences window [report: Michael]
 
 eagle:
