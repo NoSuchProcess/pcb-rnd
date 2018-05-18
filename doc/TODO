@@ -64,8 +64,8 @@ opengl:
 	- netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
-= SUBC: element removal:
-	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
+- SUBC: element removal:
+	- BUG? check if drc outline is drawn on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
