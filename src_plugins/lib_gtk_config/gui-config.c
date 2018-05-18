@@ -1635,7 +1635,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	auto_tab_widgets.edit_coord = pcb_gtk_coord_entry_new(PCB_MM_TO_COORD(-1000), PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_coord, FALSE, FALSE, 4);
 
-	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
+	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, -20000,	/* min */
 																																		20000, 1, 10,	/* steps */
 																																		0.0));
 	auto_tab_widgets.edit_int = gtk_spin_button_new(auto_tab_widgets.edit_int_adj, 1, 4);
