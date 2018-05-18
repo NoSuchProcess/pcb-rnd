@@ -15,21 +15,10 @@
 + BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: al3x]
 + BUG: export_dxf: arc angles are wrong; bug_files/dxf_arc.lht [report: Vuokko]
 + BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
-- feature: lesstif does not allow "save as" in non alien format [report: erich]
 + can't set appearance/subc/dash_freq to -1 in the gtk preferences window [report: Michael]
 
-Rubber band:
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-
 eagle:
-	- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
 	- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
-	- BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
-	- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
-
-opengl:
-	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
-	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 
 2. For later releases ===============================================================================
 - XOR rendering upgrade:
@@ -37,6 +26,9 @@ opengl:
 	- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
 	- allow padstack xor draw to draw all shapes on all layers
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
+opengl:
+	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
+	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
 	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
 	- padstack
@@ -50,6 +42,7 @@ opengl:
 	- ... but there also should be an option for going with board flip (drc view)
 - route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - layer color rewrite:
 	- depends on lihata v5 layer color save/load
 	- use only one selected color, not layer based, in the config
@@ -70,6 +63,7 @@ opengl:
 	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
 	- netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
+- feature: lesstif does not allow "save as" in non alien format [report: erich]
 = SUBC: element removal:
 	- BUG? check if drc outline is dran on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
 	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
@@ -117,6 +111,10 @@ opengl:
 	- Layer group changes are not marked in the title bar; Evan's test case:
 	  make any change in the layer group screen, return to the main screen, no * will be added in the title bar in front of the file name.
 	- do not require top and bottom silk (also grep for TODO #tbs)
+eagle:
+	- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
+	- BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
+	- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
 		- allow GTK to handle keys in preview
 		- use the zoompan engine for the zooming. Modifiy API if necessary
