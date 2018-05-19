@@ -80,6 +80,7 @@ typedef struct {
 	long pad_id; /* unique pad ID for the same reason (a single padstack object may make multiple pads) */
 	pcb_coord_t ox, oy;
 	unsigned warn_subc_term:1;
+	unsigned warn_port_pstk:1;
 } wctx_t;
 
 static FILE *f = NULL;
@@ -360,101 +361,79 @@ static void openems_write_outline(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_write_testpoint_(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, int layer, const char *refdes, const char *term)
+static void openems_vport_write(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, const char *port_name)
 {
-	long oid = ctx->oid++;
-	pcb_coord_t sx = PCB_MM_TO_COORD(0.1), sy = PCB_MM_TO_COORD(0.1);
-
-	pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x-sx, oid, -(y-sy));
-	pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x+sx, oid, -(y-sy));
-	pcb_fprintf(ctx->f, "points%ld(1, 3) = %mm; points%ld(2, 3) = %mm;\n", oid, x+sx, oid, -(y+sy));
-	pcb_fprintf(ctx->f, "points%ld(1, 4) = %mm; points%ld(2, 4) = %mm;\n", oid, x-sx, oid, -(y+sy));
-	fprintf(ctx->f, "refdes = '%s';\n", refdes);
-	fprintf(ctx->f, "pad.number = '%s';\n", term);
-	fprintf(ctx->f, "pad.id = '%ld';\n", ++ctx->pad_id);
-	fprintf(ctx->f, "PCBRND = RegPcbrndPad(PCBRND, %d, points%ld, refdes, pad);\n", layer, oid);
-	fprintf(ctx->f, "[pad_points layer_number] = LookupPcbrndPort(PCBRND, refdes, pad);\n");
-	fprintf(ctx->f, "[ start stop] = CalcPcbrndPoly2Port(PCBRND, points%ld, layer_number);\n", oid);
+	fprintf(ctx->f, "\n## vertical 1D port\n");
+	fprintf(ctx->f, "# port name: %s\n", port_name);
+	pcb_fprintf(ctx->f, "# at %mm;%mm\n", x, y);
+	fprintf(ctx->f, "# layer span from %d (+) to %d (-)\n", ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
 }
 
-
-static void openems_write_testpoint_on(wctx_t *ctx, const char *refdes, const char *termid, pcb_layergrp_id_t gid, pcb_coord_t x, pcb_coord_t y)
+pcb_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, int *gstep, const char *port_name)
 {
-	int layer;
+	int top, bot, intern;
+	pcb_layergrp_id_t gid1;
 
-	layer = ctx->lg_pcb2ems[gid];
-	if (layer <= 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't determine EMS layer for pad (%$mm;%$mm)\n", x, y);
-		return;
+	top = (pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_TOP, 0) != NULL);
+	bot = (pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) != NULL);
+	intern = (pcb_pstk_shape(ps, PCB_LYT_INTERN | PCB_LYT_BOTTOM, 0) != NULL);
+	if (intern) {
+		pcb_message(PCB_MSG_ERROR, "Can not export openems vport %s: it has internal copper\n(must be either top or bottom copper)\n", port_name);
+		return -1;
+	}
+	if (top && bot) {
+		pcb_message(PCB_MSG_ERROR, "Can not export openems vport %s: it has both top and bottom copper\n", port_name);
+		return -1;
+	}
+	if (!top && !bot) {
+		pcb_message(PCB_MSG_ERROR, "Can not export openems vport %s: it does not have copper either on top or bottom\n", port_name);
+		return -1;
 	}
 
-	openems_write_testpoint_(ctx, x, y, layer, refdes, termid);
+	/* pick main group */
+	if (top) {
+		gid1 = pcb_layergrp_get_top_copper();
+		*gstep = +1;
+	}
+	else {
+		gid1 = pcb_layergrp_get_bottom_copper();
+		*gstep = -1;
+	}
+	if (gid1 < 0) {
+		pcb_message(PCB_MSG_ERROR, "Can not export openems vport %s: can not find top or bottom layer group ID\n", port_name);
+		return -1;
+	}
+
+	return gid1;
 }
 
-static void openems_write_testpoint(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pcb_coord_t y)
+pcb_layergrp_id_t openems_vport_aux_group(pcb_board_t *pcb, pcb_layergrp_id_t gid1, int gstep, const char *port_name)
 {
-	pcb_layergrp_id_t gid;
-	const char *refdes = NULL;
-	pcb_subc_t *sc;
+	pcb_layergrp_id_t gid2;
 
-	sc = pcb_obj_parent_subc(o);
-	if (sc != NULL)
-		refdes = sc->refdes;
+	for(gid2 = gid1 + gstep; (gid2 >= 0) && (gid2 <= pcb->LayerGroups.len); gid2 += gstep)
+		if (pcb->LayerGroups.grp[gid2].ltype & PCB_LYT_COPPER)
+			return gid2;
 
-	if (refdes == NULL)
-		refdes = "none";
-
-	if (o->type == PCB_OBJ_PSTK) { /* light terminal: padstack */
-		for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) { /* put testpoint on all interesting layers */
-			pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[gid];
-			pcb_layer_id_t lid;
-			pcb_pstk_shape_t *sh;
-
-			if (grp->len <= 0) /* group has no layers -> probably substrate */
-				continue;
-
-			if (!(grp->ltype & PCB_LYT_COPPER)) /* testpoint goes on copper only */
-				continue;
-
-			if (!(grp->ltype & PCB_LYT_TOP) && !(grp->ltype & PCB_LYT_BOTTOM)) /* do not put testpoints on inner layers */
-				continue;
-
-			lid = grp->lid[0];
-			if (lid < 0) /* invalid layer in group, what?! */
-				continue;
-
-			sh = pcb_pstk_shape_at(ctx->pcb, (pcb_pstk_t *)o, &ctx->pcb->Data->Layer[lid]);
-			if (sh == NULL) /* padstack has no shape on layer */
-				continue;
-
-			openems_write_testpoint_on(ctx, refdes, o->term, gid, x, y);
-		}
-	}
-	else { /* heavy terminal: plain layer object */
-		assert(o->parent_type == PCB_PARENT_LAYER);
-
-		gid = pcb_layer_get_group_(o->parent.layer);
-		if (gid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Can't determine pad layer (%$mm;%$mm)\n", x, y);
-			return;
-		}
-
-		openems_write_testpoint_on(ctx, refdes, o->term, gid, x, y);
-	}
+	pcb_message(PCB_MSG_ERROR, "Can not export openems vport %s: can not find pair layer\n", port_name);
+	return -1;
 }
-
 
 #define TPMASK (PCB_OBJ_LINE | PCB_OBJ_PSTK | PCB_OBJ_SUBC)
 static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
-	
+
 	for(o = pcb_data_first(&it, data, TPMASK); o != NULL; o = pcb_data_next(&it)) {
+		const char *port_name;
 		if (o->type == PCB_OBJ_SUBC)
 			openems_write_testpoints(ctx, ((pcb_subc_t *)o)->data);
-		if (o->term == NULL)
+
+		port_name = pcb_attribute_get(&o->Attributes, "openems::vport");
+		if (port_name == NULL)
 			continue;
+
 		if (o->type == PCB_OBJ_SUBC) {
 			if (!ctx->warn_subc_term)
 				pcb_message(PCB_MSG_ERROR, "Subcircuit being a terminal is not supported.\n");
@@ -462,10 +441,38 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 			continue;
 		}
 
-		/* place the test pad */
+		/* place the vertical port */
 		switch(o->type) {
-			case PCB_OBJ_PSTK: openems_write_testpoint(ctx, o, ((pcb_pstk_t *)o)->x, ((pcb_pstk_t *)o)->y); break;
-			default: openems_write_testpoint(ctx, o, (o->BoundingBox.X1+o->BoundingBox.X2)/2, (o->BoundingBox.Y1+o->BoundingBox.Y2)/2);
+			case PCB_OBJ_PSTK:
+				{
+					int gstep;
+					pcb_layergrp_id_t gid1, gid2;
+					pcb_pstk_t *ps = (pcb_pstk_t *)o;
+
+					if (port_name == NULL)
+						break;
+
+					gid1 = openems_vport_main_group_pstk(ctx->pcb, ps, &gstep, port_name);
+					if (gid1 < 0)
+						break;
+
+					gid2 = openems_vport_aux_group(ctx->pcb, gid1, gstep, port_name);
+					if (gid2 < 0)
+						break;
+
+#warning TODO: check if there is copper object on hid2 at x;y
+
+					if (pcb_attribute_get(&o->Attributes, "openems::vport-reverse") == NULL)
+						openems_vport_write(ctx, ps->x, ps->y, gid1, gid2, port_name);
+					else
+						openems_vport_write(ctx, ps->x, ps->y, gid2, gid1, port_name);
+				}
+				break;
+				default:
+					if (!ctx->warn_port_pstk)
+						pcb_message(PCB_MSG_ERROR, "Only padstacks can be openems ports at the moment\n");
+					ctx->warn_port_pstk = 1;
+					break;
 		}
 	}
 }
