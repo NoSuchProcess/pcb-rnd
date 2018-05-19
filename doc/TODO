@@ -9,7 +9,6 @@
 + BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
 + BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
-+ BUG: import .pcb into buffer: bottom side subcircuits or padstacks end up on top: bug_files/maskbug.pcb and maskbug2.pcb (more mini) [report: Vuokko]
 + BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 + BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
 + BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: al3x]
