@@ -278,6 +278,7 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 
 static inline void pcb_gtk_dlg_about_add_button(GtkDialog *about, GtkWidget *button)
 {
+#warning TODO: remove gtk_dialog_get_action_area() - not present in old gtk2 versions
 	GtkWidget *action_area = gtk_dialog_get_action_area(about);
 	gtk_box_pack_end(GTK_BOX(action_area), button, FALSE, TRUE, 0);
 	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(action_area), button, TRUE);
