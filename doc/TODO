@@ -40,6 +40,8 @@ opengl:
 - route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- outline layer creation:
+	- currently if your lht file lacks an outline layer there is no way in the gui to add one
 - layer color rewrite:
 	- depends on lihata v5 layer color save/load
 	- use only one selected color, not layer based, in the config
