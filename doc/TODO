@@ -240,6 +240,8 @@ eagle:
 
 3. Long term ===============================================================================
 
+Lesstif:
+	- the notebook widget is not portable; detect it from scconfig and provide some hackish alternative if not found [report: rqsall]
 
 GTK2:
 	- next_gui: keep them open, hide
