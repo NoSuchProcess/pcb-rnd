@@ -3796,7 +3796,7 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 		lesstif_invalidate_all();
 }
 
-static conf_hid_id_t lesstif_conf_id;
+static conf_hid_id_t lesstif_conf_id = -1;
 void lesstif_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
