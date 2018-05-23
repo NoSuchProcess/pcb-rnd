@@ -1021,7 +1021,7 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t 
 		pcb_attribute_put(&p->Attributes, "name", Name);
 
 	if (yysubc_bottom)
-		pcb_pstk_mirror(p, 0, 1);
+		pcb_pstk_mirror(p, 0, 1, 0);
 	return p;
 }
 
@@ -1038,7 +1038,7 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t
 	if (yysubc_bottom) {
 		pcb_data_t *old_hack = pcb_pstk_data_hack;
 		pcb_pstk_data_hack = subc->parent.data;
-		pcb_pstk_mirror(p, 0, 1);
+		pcb_pstk_mirror(p, 0, 1, 1);
 		pcb_pstk_data_hack = old_hack;
 	}
 

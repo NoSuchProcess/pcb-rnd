@@ -847,13 +847,17 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		*err_minhole = proto->hdia;
 }
 
-void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror)
 {
 	int xmirror = !ps->xmirror, smirror = (swap_side ? (!ps->smirror) : ps->smirror);
 
+
 	/* change the mirror flag - this will automatically cause mirroring in
 	   every aspect */
-	pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror, &smirror);
+	if (disable_xmirror)
+		pcb_pstk_change_instance(ps, NULL, NULL, NULL, NULL, &smirror);
+	else
+		pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror, &smirror);
 
 	/* if mirror center is not 0, also move, to emulate that the mirror took
 	   place around that point */

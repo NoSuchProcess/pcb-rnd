@@ -423,7 +423,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 
 	PCB_PADSTACK_LOOP(Buffer->Data);
 	{
-		pcb_pstk_mirror(padstack, 0, 1);
+		pcb_pstk_mirror(padstack, 0, 1, 0);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
