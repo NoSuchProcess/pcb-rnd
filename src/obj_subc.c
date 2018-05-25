@@ -1258,8 +1258,15 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_t *nsc;
 	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0, pcb_false);
-	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED)
+
+	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED) {
+		pcb_undo_freeze_serial();
+		pcb_undo_freeze_add();
 		pcb_subc_select(NULL, nsc, PCB_CHGFLG_CLEAR, 0);
+		pcb_undo_unfreeze_add();
+		pcb_undo_unfreeze_serial();
+	}
+
 	return nsc;
 }
 
