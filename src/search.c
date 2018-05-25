@@ -1435,6 +1435,28 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 	return res;
 }
 
+int pcb_search_obj_by_id_buf2(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
+{
+	int bid = 0;
+	long res;
+
+	res = pcb_search_obj_by_id_(Base, Result1, Result2, Result3, ID, type);
+	if (res != PCB_OBJ_VOID)
+		return res;
+
+	while(res == PCB_OBJ_VOID) {
+		res = pcb_search_obj_by_id_(pcb_buffers[bid].Data, Result1, Result2, Result3, ID, type);
+		if (res != PCB_OBJ_VOID)
+			return res;
+		bid++;
+		if (bid >= PCB_MAX_BUFFER)
+			break;
+	}
+
+	pcb_message(PCB_MSG_ERROR, "hace: Internal error, search for ID %d failed\n", ID);
+	return PCB_OBJ_VOID;
+}
+
 /* ---------------------------------------------------------------------------
  * searches the cursor position for the type
  */
