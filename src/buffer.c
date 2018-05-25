@@ -235,6 +235,9 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 
 void pcb_buffer_rotate90(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
+	pcb_undo_freeze_serial();
+	pcb_undo_freeze_add();
+
 	PCB_PADSTACK_LOOP(Buffer->Data);
 	{
 		pcb_pstk_rotate90(padstack, Buffer->X, Buffer->Y, Number);
@@ -288,11 +291,17 @@ void pcb_buffer_rotate90(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	/* finally the origin and the bounding box */
 	PCB_COORD_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
 	pcb_box_rotate90(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
+
+	pcb_undo_unfreeze_add();
+	pcb_undo_unfreeze_serial();
 }
 
 void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 {
 	double cosa, sina;
+
+	pcb_undo_freeze_serial();
+	pcb_undo_freeze_add();
 
 	cosa = cos(angle * M_PI / 180.0);
 	sina = sin(angle * M_PI / 180.0);
@@ -328,6 +337,8 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	PCB_ENDALL_LOOP;
 
 	pcb_set_buffer_bbox(Buffer);
+	pcb_undo_unfreeze_add();
+	pcb_undo_unfreeze_serial();
 }
 
 pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
