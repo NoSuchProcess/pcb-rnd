@@ -187,10 +187,12 @@ int pcb_pstk_get_shape_idx(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_laye
 void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb_layer_combining_t comb);
 void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx);
 
+#define PCB_PSTK_DONT_MIRROR_COORDS PCB_MAX_COORD
 /* Mirror a padstack (useful for sending to the other side - set swap_side to 1 in that case)
    Disabling xmirror is useful if side needs to be swapped but coordinates
    are already mirrored so they represent the other-side geometry (e.g. when
-   importing from old pcb formats) */
+   importing from old pcb formats). If y_offs is PCB_PSTK_DONT_MIRROR_COORDS,
+   do not change the y coord */
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror);
 
 /* Rotate in place (op wrapper) */

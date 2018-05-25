@@ -1076,7 +1076,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 		pcb_attribute_put(&ps->Attributes, "name", Name);
 
 	if (subc_on_bottom)
-		pcb_pstk_mirror(ps, 0, 1, 0);
+		pcb_pstk_mirror(ps, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0);
 
 	return err;
 }
@@ -1114,7 +1114,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 		pcb_attribute_put(&p->Attributes, "name", Name);
 
 	if (subc_on_bottom)
-		pcb_pstk_mirror(p, 0, 1, 0);
+		pcb_pstk_mirror(p, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0);
 
 	parse_id(&p->ID, obj, 4);
 	pcb_attrib_compat_set_intconn(&p->Attributes, intconn);
