@@ -496,6 +496,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	const char *refdes, *value, *footprint;
 	const char *args[3];
 	const char *function = argv[0];
+	int fx, fy, fs;
 
 #ifdef DEBUG
 	printf("Entered pcb_act_ElementList, executing function %s\n", function);
@@ -544,6 +545,14 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	args[0] = footprint;
 	args[1] = refdes;
 	args[2] = value;
+
+	/* turn of flip to avoid mirror/rotat confusion */
+	fx = conf_core.editor.view.flip_x;
+	fy = conf_core.editor.view.flip_y;
+	fs = conf_core.editor.show_solder_side;
+	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
+	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 #ifdef DEBUG
 	printf("  ... footprint = %s\n", footprint);
@@ -666,6 +675,10 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 	printf(" ... Leaving pcb_act_ElementList.\n");
 #endif
+
+	conf_force_set_bool(conf_core.editor.view.flip_x, fx);
+	conf_force_set_bool(conf_core.editor.view.flip_y, fy);
+	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
 	return 0;
 }
