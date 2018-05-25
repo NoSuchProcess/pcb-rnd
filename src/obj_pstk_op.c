@@ -197,7 +197,10 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
 		return NULL;
 
-	rot += (double)ctx->rotate.angle;
+	if (ps->xmirror)
+		rot -= (double)ctx->rotate.angle;
+	else
+		rot += (double)ctx->rotate.angle;
 
 	if ((rot > 360.0) || (rot < -360.0))
 		rot = fmod(rot, 360.0);
