@@ -53,6 +53,7 @@
 #include "obj_text_draw.h"
 #include "obj_pstk_draw.h"
 #include "obj_arc_ui.h"
+#include "obj_subc_parent.h"
 
 #include "tool.h"
 
@@ -746,9 +747,22 @@ struct snap_data {
  * pressing the SHIFT key. If the SHIFT key is pressed, the closest object
  * (including grid points), is always preferred.
  */
-static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_coord_t y, pcb_bool prefer_to_grid)
+static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_coord_t y, pcb_bool prefer_to_grid, pcb_any_obj_t *snapo)
 {
 	double sq_dist;
+
+	/* avoid snapping to an object if it is in the same subc */
+	if ((snapo != NULL) && (conf_core.editor.mode == PCB_MODE_MOVE) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
+		pcb_any_obj_t *parent = pcb_obj_parent_subc(snapo);
+		int n;
+		pcb_cardinal_t parent_id = snapo->ID;
+		if (parent != NULL)
+			parent_id = parent->ID;
+		for(n = 0; n < pcb_crosshair.drags_len; n++) {
+			if ((snapo->ID == pcb_crosshair.drags[n]) || (parent_id == pcb_crosshair.drags[n]))
+				return;
+		}
+	}
 
 	sq_dist = crosshair_sq_dist(snap_data->crosshair, x, y);
 	if (sq_dist < snap_data->nearest_sq_dist || (prefer_to_grid && snap_data->nearest_is_grid && !pcb_gui->shift_is_pressed())) {
@@ -793,14 +807,14 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 		/* Move in the X direction until we hit the line */
 		try_x = (nearest_grid_y - line->Point1.Y) / dy * dx + line->Point1.X;
 		try_y = nearest_grid_y;
-		check_snap_object(snap_data, try_x, try_y, pcb_true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true, (pcb_any_obj_t *)line);
 	}
 
 	/* Try snapping along the Y axis */
 	if (dx != 0.) {
 		try_x = nearest_grid_x;
 		try_y = (nearest_grid_x - line->Point1.X) / dx * dy + line->Point1.Y;
-		check_snap_object(snap_data, try_x, try_y, pcb_true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true, (pcb_any_obj_t *)line);
 	}
 
 	if (dx != dy) {								/* If line not parallel with dX = dY direction.. */
@@ -814,7 +828,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 		try_x = nearest_grid_x + dist;
 		try_y = nearest_grid_y + dist;
 
-		check_snap_object(snap_data, try_x, try_y, pcb_true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true, (pcb_any_obj_t *)line);
 	}
 
 	if (dx != -dy) {							/* If line not parallel with dX = -dY direction.. */
@@ -828,7 +842,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 		try_x = nearest_grid_x + dist;
 		try_y = nearest_grid_y - dist;
 
-		check_snap_object(snap_data, try_x, try_y, pcb_true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true, (pcb_any_obj_t *)line);
 	}
 }
 
@@ -878,7 +892,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
 		pcb_coord_t ox, oy;
 		if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
-			check_snap_object(&snap_data, ox, oy, pcb_false);
+			check_snap_object(&snap_data, ox, oy, pcb_false, (pcb_any_obj_t *)sc);
 	}
 
 	/*** padstack center ***/
@@ -892,7 +906,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	if (ans != PCB_OBJ_VOID) {
 		pcb_pstk_t *ps = (pcb_pstk_t *) ptr2;
-		check_snap_object(&snap_data, ps->x, ps->y, pcb_true);
+		check_snap_object(&snap_data, ps->x, ps->y, pcb_true, (pcb_any_obj_t *)ps);
 		pcb_crosshair.snapped_pstk = ps;
 	}
 
@@ -905,11 +919,11 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		/* Arc point needs special handling as it's not a real point but has to be calculated */
 		pcb_coord_t ex, ey;
 		pcb_arc_get_end((pcb_arc_t *)ptr2, (ptr3 != pcb_arc_start_ptr), &ex, &ey);
-		check_snap_object(&snap_data, ex, ey, pcb_true);
+		check_snap_object(&snap_data, ex, ey, pcb_true, (pcb_any_obj_t *)ptr2);
 	}
 	else if (ans != PCB_OBJ_VOID) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
-		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
+		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true, (pcb_any_obj_t *)ptr2);
 	}
 
 	/*** polygon terminal: center ***/
@@ -924,7 +938,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 			cx = (p->BoundingBox.X1 + p->BoundingBox.X2)/2;
 			cy = (p->BoundingBox.Y1 + p->BoundingBox.Y2)/2;
 			if (pcb_poly_is_point_in_p(cx, cy, 1, p))
-				check_snap_object(&snap_data, cx, cy, pcb_true);
+				check_snap_object(&snap_data, cx, cy, pcb_true, (pcb_any_obj_t *)p);
 		}
 	}
 
@@ -940,7 +954,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	if (ans != PCB_OBJ_VOID) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
-		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
+		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true, NULL);
 	}
 
 	if (snap_data.x >= 0 && snap_data.y >= 0) {
