@@ -151,7 +151,12 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data);
    the layers!) */
 void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent);
 
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too, pcb_bool pstk_smirror);
+typedef enum pcb_data_mirror_text_e {
+	PCB_TXM_NONE = 0, /* do not mirror text */
+	PCB_TXM_SIDE = 1, /* mirror text, changing side */
+	PCB_TXM_COORD    /* mirror text base coords only */
+} pcb_data_mirror_text_t;
+void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror);
 
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 

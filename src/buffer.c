@@ -416,7 +416,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
-	pcb_data_mirror(Buffer->Data, 0, pcb_false, pcb_false);
+	pcb_data_mirror(Buffer->Data, 0, PCB_TXM_COORD, pcb_false);
 	pcb_set_buffer_bbox(Buffer);
 }
 
