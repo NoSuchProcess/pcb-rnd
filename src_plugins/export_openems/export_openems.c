@@ -149,6 +149,10 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	 PCB_HATT_STRING, 0, 0, {0, "SetGaussExcite(FDTD, f_max/2, f_max/2)", 0}, 0, 0},
 #define HA_excite 14
 
+	{"port-resistance", "default port resistance",
+	 PCB_HATT_REAL, 0, 1000, {0, 0, 50}, 0, 0}
+#define HA_def_port_res 15
+
 };
 
 #define NUM_OPTIONS (sizeof(openems_attribute_list)/sizeof(openems_attribute_list[0]))
@@ -363,10 +367,20 @@ static void openems_write_outline(wctx_t *ctx)
 
 static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, const char *port_name)
 {
-	char *s, *safe_name = pcb_strdup(port_name);
-	double resistance = 50.0;
+	char *end, *s, *safe_name = pcb_strdup(port_name);
+	const char *att;
+	double resistance = ctx->options[HA_def_port_res].real_value;
 
 	ctx->port_id++;
+
+	att = pcb_attribute_get(&o->Attributes, "openems::resistance");
+	if (att != NULL) {
+		double tmp = strtod(att, &end);
+		if (*end == '\0')
+			resistance = tmp;
+		else
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid openems::resistance value for port %s: '%s' (must be a number without suffix)\n", port_name, att);
+	}
 
 	for(s = safe_name; *s != '\0'; s++)
 		if (!isalnum(*s))
