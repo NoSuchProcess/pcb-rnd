@@ -2,7 +2,7 @@ DPI_BIG=-Gsize=8,8 -Gdpi=166
 DPI=-Gsize=8,8 -Gdpi=100
 
 all:  gpmi_flow.png gpmi_flow_load.png gpmi_flow_reg.png gpmi_flow_menu.png gpmi_flow_exp.png
-	cd rosetta && make
+	cd rosetta && $(MAKE)
 
 gpmi_flow.png: gpmi_flow.dot Makefile
 	dot $(DPI_BIG) -Tpng gpmi_flow.dot >$@
