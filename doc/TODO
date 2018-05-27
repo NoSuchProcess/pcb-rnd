@@ -22,9 +22,15 @@ eagle:
 2. For later releases ===============================================================================
 - BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 - BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
-- XOR rendering upgrade:
-	- make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
-	- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
+- XOR rendering upgrade: [report: pstuge]
+	- option 1: composite solution:
+		- make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
+		- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
+	- option 2: emboss
+		- draw them all at the end
+		- draw with a slightly thicker background, in normal mode, skip xor
+	- option 3:
+		- implement both option 1 and 2 and add a config setting that selects which one to do
 	- allow padstack xor draw to draw all shapes on all layers
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
 opengl:
