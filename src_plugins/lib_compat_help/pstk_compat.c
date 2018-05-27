@@ -175,19 +175,21 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 		shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
 		shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
 		shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
-
-		if (mask > 0) {
-			if (compat_via_shape_gen(&mask_master, cshape, mask) != 0)
-				return NULL;
-		
-			memcpy(&shape[3], &mask_master, sizeof(mask_master));
-			memcpy(&shape[4], &mask_master, sizeof(mask_master));
-			shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-			shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-		}
+		tshp.len = 3;
 	}
 	else
 		tshp.len = 0;
+
+	if (mask > 0) {
+		if (compat_via_shape_gen(&mask_master, cshape, mask) != 0)
+			return NULL;
+	
+		memcpy(&shape[tshp.len+0], &mask_master, sizeof(mask_master));
+		memcpy(&shape[tshp.len+1], &mask_master, sizeof(mask_master));
+		shape[tshp.len+0].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[tshp.len+0].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+		shape[tshp.len+1].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[tshp.len+1].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+		tshp.len += 2;
+	}
 
 	proto.hdia = drill_dia;
 	proto.hplated = plated;
