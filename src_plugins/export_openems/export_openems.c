@@ -401,7 +401,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 	fprintf(ctx->f, "start_layer = %d;\n", ctx->lg_pcb2ems[gid1]);
 	fprintf(ctx->f, "stop_layer = %d;\n", ctx->lg_pcb2ems[gid2]);
 	fprintf(ctx->f, "[%s_start, %s_stop] = CalcPcbrnd2PortV(PCBRND, point, start_layer, stop_layer);\n", safe_name, safe_name);
-	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, port1_start, port1_stop, [0 0 -1], %s);\n", ctx->port_id, ctx->port_id, resistance, act ? "true" : "false");
+	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, %s_start, %s_stop, [0 0 -1], %s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? "true" : "false");
 
 	free(safe_name);
 }
