@@ -619,16 +619,16 @@ void lesstif_remove_menu_node(lht_node_t *node)
 	pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
-extern const char *lesstif_cookie;
+static const char *lesstif_menu_cookie = "hid_lesstif_menu";
 void lesstif_init_menu(void)
 {
 	if (lesstif_menuconf_id < 0)
-		lesstif_menuconf_id = conf_hid_reg(lesstif_cookie, NULL);
+		lesstif_menuconf_id = conf_hid_reg(lesstif_menu_cookie, NULL);
 }
 
 void lesstif_uninit_menu(void)
 {
-	conf_hid_unreg(lesstif_cookie);
+	conf_hid_unreg(lesstif_menu_cookie);
 	XtDestroyWidget(lesstif_menubar);
 	lesstif_menuconf_id = -1;
 }
