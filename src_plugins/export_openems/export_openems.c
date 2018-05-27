@@ -77,7 +77,7 @@ typedef struct {
 	int lg_next;
 	int clayer; /* current layer (lg index really) */
 	long oid; /* unique object ID - we need some unique variable names, keep on counting them */
-	long pad_id; /* unique pad ID for the same reason (a single padstack object may make multiple pads) */
+	long port_id; /* unique port ID for similar reasons */
 	pcb_coord_t ox, oy;
 	unsigned warn_subc_term:1;
 	unsigned warn_port_pstk:1;
@@ -361,12 +361,24 @@ static void openems_write_outline(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_vport_write(wctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, const char *port_name)
+static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, const char *port_name)
 {
-	fprintf(ctx->f, "\n## vertical 1D port\n");
-	fprintf(ctx->f, "# port name: %s\n", port_name);
-	pcb_fprintf(ctx->f, "# at %mm;%mm\n", x, y);
-	fprintf(ctx->f, "# layer span from %d (+) to %d (-)\n", ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
+	char *s, *safe_name = pcb_strdup(port_name);
+	double resistance = 50.0;
+
+	ctx->port_id++;
+
+	for(s = safe_name; *s != '\0'; s++)
+		if (!isalnum(*s))
+			*s = '_';
+
+	pcb_fprintf(ctx->f, "\npoint(1, 1) = %mm; point(2, 1) = %mm;\n",x, y);
+	fprintf(ctx->f, "start_layer = %d;\n", ctx->lg_pcb2ems[gid1]);
+	fprintf(ctx->f, "stop_layer = %d;\n", ctx->lg_pcb2ems[gid2]);
+	fprintf(ctx->f, "[%s_start, %s_stop] = CalcPcbrnd2PortV(PCBRND, point, start_layer, stop_layer);\n", safe_name, safe_name);
+	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, port1_start, port1_stop, [0 0 -1], true);\n", ctx->port_id, ctx->port_id, resistance);
+
+	free(safe_name);
 }
 
 pcb_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, int *gstep, const char *port_name)
@@ -463,9 +475,9 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 #warning TODO: check if there is copper object on hid2 at x;y
 
 					if (pcb_attribute_get(&o->Attributes, "openems::vport-reverse") == NULL)
-						openems_vport_write(ctx, ps->x, ps->y, gid1, gid2, port_name);
+						openems_vport_write(ctx, (pcb_any_obj_t *)ps, ps->x, ps->y, gid1, gid2, port_name);
 					else
-						openems_vport_write(ctx, ps->x, ps->y, gid2, gid1, port_name);
+						openems_vport_write(ctx, (pcb_any_obj_t *)ps, ps->x, ps->y, gid2, gid1, port_name);
 				}
 				break;
 				default:
