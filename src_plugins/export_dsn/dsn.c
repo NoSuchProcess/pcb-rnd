@@ -126,6 +126,7 @@ static void print_structure(FILE * fp)
 
 	fprintf(fp, "  (structure\n");
 	for (group = 0; group < pcb_max_group(PCB); group++) {
+		int ni;
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
 		char *layeropts = pcb_strdup("(type signal)");
 		
@@ -135,7 +136,7 @@ static void print_structure(FILE * fp)
 #warning TODO: revise this; use attributes instead
 		/* see if group has same name as a net and make it a power layer */
 		/* loop thru all nets */
-		for (int ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
+		for(ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
 			char *nname;
 			nname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
 			if (!strcmp(g->name, nname)) {
