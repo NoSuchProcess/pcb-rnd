@@ -28,12 +28,12 @@ regen: instgen
 	./instgen
 
 install:
-	make install_all HOW="install -f"
+	$(MAKE) install_all HOW="install -f"
 
 linstall:
-	make install_all HOW="install -f -l --absolute "
+	$(MAKE) install_all HOW="install -f -l --absolute "
 
 uninstall:
-	make install_all HOW="install -u"
+	$(MAKE) install_all HOW="install -u"
 
 include $(ROOT)/Makefile.conf
