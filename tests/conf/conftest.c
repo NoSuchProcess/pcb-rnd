@@ -87,9 +87,10 @@ void cmd_dump(char *arg)
 		conf_dump(stdout, "", 1, arg);
 	}
 	else if (strncmp(arg, "lihata", 6) == 0) {
+		conf_role_t role;
 		arg+=7;
 		while(isspace(*arg)) arg++;
-		conf_role_t role = conf_role_parse(arg);
+		role = conf_role_parse(arg);
 		if (role == CFR_invalid) {
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
