@@ -370,6 +370,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 	char *end, *s, *safe_name = pcb_strdup(port_name);
 	const char *att;
 	double resistance = ctx->options[HA_def_port_res].real_value;
+	int act = 1;
 
 	ctx->port_id++;
 
@@ -382,6 +383,16 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 			pcb_message(PCB_MSG_WARNING, "Ignoring invalid openems::resistance value for port %s: '%s' (must be a number without suffix)\n", port_name, att);
 	}
 
+	att = pcb_attribute_get(&o->Attributes, "openems::active");
+	if (att != NULL) {
+		if (pcb_strcasecmp(att, "true") == 0)
+			act = 1;
+		else if (pcb_strcasecmp(att, "false") == 0)
+			act = 0;
+		else
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid openems::active value for port %s: '%s' (must be true or false)\n", port_name, att);
+	}
+
 	for(s = safe_name; *s != '\0'; s++)
 		if (!isalnum(*s))
 			*s = '_';
@@ -390,7 +401,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 	fprintf(ctx->f, "start_layer = %d;\n", ctx->lg_pcb2ems[gid1]);
 	fprintf(ctx->f, "stop_layer = %d;\n", ctx->lg_pcb2ems[gid2]);
 	fprintf(ctx->f, "[%s_start, %s_stop] = CalcPcbrnd2PortV(PCBRND, point, start_layer, stop_layer);\n", safe_name, safe_name);
-	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, port1_start, port1_stop, [0 0 -1], true);\n", ctx->port_id, ctx->port_id, resistance);
+	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, port1_start, port1_stop, [0 0 -1], %s);\n", ctx->port_id, ctx->port_id, resistance, act ? "true" : "false");
 
 	free(safe_name);
 }
