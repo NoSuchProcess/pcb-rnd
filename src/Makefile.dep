@@ -4673,7 +4673,7 @@
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
  obj_common.h layer.h ../src_plugins/query/query_exec.h \
- obj_pstk_inlines.h data.h thermal.h
+ obj_pstk_inlines.h data.h thermal.h obj_subc_parent.h
 ../src_plugins/query/query_act.o: ../src_plugins/query/query_act.c \
  ../config.h ../src_plugins/query/query.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -5274,7 +5274,7 @@ buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h funchash.h \
  funchash_core_list.h compat_nls.h obj_arc_op.h obj_line_op.h \
  obj_text_op.h obj_subc_op.h obj_poly_op.h obj_pstk_op.h obj_rat_op.h \
- event.h safe_fs.h
+ event.h safe_fs.h hid_actions.h
 build_run.o: build_run.c ../config.h ../src_3rd/genht/hash.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h conf_core.h conf.h \
@@ -5451,7 +5451,8 @@ crosshair.o: crosshair.c ../config.h conf_core.h conf.h global_typedefs.h \
  draw_wireframe.h search.h rats.h netlist.h route_style.h hid_actions.h \
  compat_misc.h compat_nls.h find.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h event.h action_helper.h macro.h grid.h obj_line_draw.h \
- obj_arc_draw.h obj_text_draw.h obj_pstk_draw.h obj_arc_ui.h tool.h
+ obj_arc_draw.h obj_text_draw.h obj_pstk_draw.h obj_arc_ui.h \
+ obj_subc_parent.h tool.h
 data.o: data.c ../config.h board.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
@@ -6223,12 +6224,11 @@ obj_poly.o: obj_poly.c ../config.h board.h global_typedefs.h pcb_bool.h \
  netlist.h route_style.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h obj_poly_op.h operation.h \
  obj_poly_draw.h obj_subc_parent.h obj_hash.h draw.h
-obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h \
- ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
- ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h \
- polyarea.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.c
+obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h ../config.h \
+ ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h attrib.h \
+ global_typedefs.h pcb_bool.h unit.h data_parent.h polyarea.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 obj_pstk.o: obj_pstk.c ../config.h board.h global_typedefs.h pcb_bool.h \
  unit.h vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
@@ -6427,15 +6427,14 @@ obj_text.o: obj_text.c ../config.h rotate.h global_typedefs.h pcb_bool.h \
  obj_arc_draw.h obj_subc_parent.h obj_hash.h draw.h obj_line_draw.h \
  obj_text_draw.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h
-obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h \
- ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
- ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h \
- polyarea.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_arc_list.h obj_arc.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h box.h math_helper.h move.h \
- misc_util.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
+obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h ../config.h \
+ ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h attrib.h \
+ global_typedefs.h pcb_bool.h unit.h data_parent.h polyarea.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_arc_list.h obj_arc.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
+ ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genlist/gentdlist_impl.c
 object_act.o: object_act.c ../config.h conf_core.h conf.h \
@@ -6461,7 +6460,7 @@ object_act.o: object_act.c ../config.h conf_core.h conf.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h funchash_core.h \
  funchash.h funchash_core_list.h search.h rats.h netlist.h route_style.h \
  draw.h copy.h remove.h compat_misc.h compat_nls.h layer_vis.h \
- operation.h macro.h
+ operation.h macro.h rotate.h
 operation.o: operation.c ../config.h operation.h global_typedefs.h \
  pcb_bool.h unit.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
