@@ -31,6 +31,7 @@
 #ifndef PCB_OBJ_POLY_H
 #define PCB_OBJ_POLY_H
 
+#include "config.h"
 #include <genlist/gendlist.h>
 #include "obj_common.h"
 #include "polyarea.h"
