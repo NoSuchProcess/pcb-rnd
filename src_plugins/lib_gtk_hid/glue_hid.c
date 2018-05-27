@@ -190,6 +190,11 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 
 	pcb_event(PCB_EVENT_GUI_INIT, NULL);
 
+	/* Make sure drawing area has keyboard focus so that keys are handled
+	   while the mouse cursor is over the top window or children widgets,
+	   before first entering the drawing area */
+	gtk_widget_grab_focus(gport->drawing_area);
+
 	gtk_main();
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);
 	gtkhid_end();
