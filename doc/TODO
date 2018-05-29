@@ -20,6 +20,11 @@ eagle:
 	- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 
 2. For later releases ===============================================================================
+- BUG: pcb_pstk_export_compat_pad() - round trip fails [report: igor2]
+	- may need to double clearance value
+	- mask needs some tuning too
+	- check on all callers; io_pcb already has a workaround for the clearance problem, nothing for the mask
+	- load from old pcb and save to old format (pcb, old lihata, check other users too), load again and compare the values
 - BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
 - BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 - BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
