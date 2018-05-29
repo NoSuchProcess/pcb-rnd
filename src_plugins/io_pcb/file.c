@@ -438,6 +438,21 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 			rdir = trefdes->Direction;
 			rscale = trefdes->Scale;
 		}
+		else {
+			const char *tmp;
+			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_x");
+			if (tmp != NULL)
+				rx = pcb_get_value(tmp, NULL, NULL, NULL) - ox;
+			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_y");
+			if (tmp != NULL)
+				ry = pcb_get_value(tmp, NULL, NULL, NULL) - oy;
+			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_direction");
+			if (tmp != NULL)
+				rdir = atoi(tmp);
+			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_scale");
+			if (tmp != NULL)
+				rscale = atoi(tmp);
+		}
 
 		memset(&fobj, 0, sizeof(fobj));
 		fobj.Flags = sc->Flags;
@@ -977,6 +992,19 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 #warning subc TODO: TextFlags
 	if ((NameOnPCB != NULL) && !(Flags.f & PCB_FLAG_HIDENAME))
 		txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale, yysubc_bottom);
+
+	if (Flags.f & PCB_FLAG_HIDENAME) {
+		char tmp[128];
+printf("PUT!!!\n");
+		pcb_sprintf(tmp, "%$mm", TextX);
+		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_x", tmp);
+		pcb_sprintf(tmp, "%$mm", TextY);
+		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_y", tmp);
+		sprintf(tmp, "%d", Direction);
+		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_direction", tmp);
+		sprintf(tmp, "%d", TextScale);
+		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_scale", tmp);
+	}
 
 	return sc;
 }
