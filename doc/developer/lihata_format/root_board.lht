@@ -35,6 +35,7 @@ ha:lht_tree_doc { ha:roots {
 					ha:drc {
 						type=ha
 						desc { design rule checker settings for the old DRC }
+						ver {<5}
 						li:children {
 							ha:bloat { valtype=coord; desc={Minimum copper spacing}}
 							ha:shrink { valtype=coord; desc={Minimum overlap between validly touching copper objects}}
