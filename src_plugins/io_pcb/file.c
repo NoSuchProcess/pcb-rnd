@@ -427,6 +427,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		int rdir = 0, rscale = 100;
 		pcb_text_t *trefdes;
 		pcb_pstk_t *ps;
+		pcb_any_obj_t fobj;
 
 		pcb_subc_get_origin(sc, &ox, &oy);
 		trefdes = pcb_subc_get_refdes_text(sc);
@@ -442,7 +443,11 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 			ry = oy;
 		}
 
-		fprintf(FP, "\nElement[%s ", F2S(sc, PCB_OBJ_ELEMENT));
+		memset(&fobj, 0, sizeof(fobj));
+		fobj.Flags = sc->Flags;
+		if (trefdes == NULL)
+			fobj.Flags.f |= PCB_FLAG_HIDENAME;
+		fprintf(FP, "\nElement[%s ", F2S(&fobj, PCB_OBJ_ELEMENT));
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "footprint")));
 		fputc(' ', FP);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "refdes")));
