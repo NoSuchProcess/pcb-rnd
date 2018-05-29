@@ -82,7 +82,7 @@ static int iolht_error(lht_node_t *nd, char *fmt, ...)
 	gds_init(&str);
 	gds_append_str(&str, "io_lihata parse error");
 	if (nd != NULL)
-		pcb_append_printf(&str, "at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+		pcb_append_printf(&str, " at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
 	else
 		gds_append_str(&str, ": ");
 
