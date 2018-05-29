@@ -990,7 +990,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 		pcb_attribute_put(&sc->Attributes, "value", Value);
 
 #warning subc TODO: TextFlags
-	if ((NameOnPCB != NULL) && !(Flags.f & PCB_FLAG_HIDENAME))
+	if (!(Flags.f & PCB_FLAG_HIDENAME))
 		txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale, yysubc_bottom);
 
 	if (Flags.f & PCB_FLAG_HIDENAME) {
