@@ -423,7 +423,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
 	subclist_foreach(&Data->subc, &sit, sc) {
-		pcb_coord_t ox, oy, rx, ry;
+		pcb_coord_t ox, oy, rx = 0, ry = 0;
 		int rdir = 0, rscale = 100;
 		pcb_text_t *trefdes;
 		pcb_pstk_t *ps;
@@ -437,10 +437,6 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 			ry = trefdes->Y - oy;
 			rdir = trefdes->Direction;
 			rscale = trefdes->Scale;
-		}
-		else {
-			rx = ox;
-			ry = oy;
 		}
 
 		memset(&fobj, 0, sizeof(fobj));
