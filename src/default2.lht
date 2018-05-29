@@ -48,7 +48,7 @@ ha:pcb-rnd-board-v4 {
      ha:top-gnd      { lid=2; group=3; }
      ha:bottom-gnd   { lid=3; group=6; }
      ha:top-vcc      { lid=4; group=7; }
-     ha:bottom-vcc   { lid=5; group=5; }
+     ha:bottom-vcc   { lid=5; group=6; }
      ha:outline      { lid=6; group=5; }
      ha:bottom-silk  { lid=7; group=8; ha:combining { auto=1; } }
      ha:top-silk     { lid=8; group=1; ha:combining { auto=1; } }
