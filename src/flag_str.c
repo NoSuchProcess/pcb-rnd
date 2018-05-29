@@ -67,7 +67,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_RAT),           N("rat"),           PCB_OBJ_RAT, "If set for a line, indicates that this line is a rat line instead of a copper trace.", 0, 0},
 	{FN(PCB_FLAG_PININPOLY),     N("pininpoly"),     0, "For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer.", 0, 0},
 	{FN(PCB_FLAG_CLEARPOLY),     N("clearpoly"),     PCB_OBJ_POLY, "For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. ", 0, 0},
-	{FN(PCB_FLAG_HIDENAME),      N("hidename"),      0, "For elements, when set the name of the element is hidden.", 0, 0},
+	{FN(PCB_FLAG_HIDENAME),      N("hidename"),      0, "For elements, when set the name of the element is hidden.", PCB_OBJ_SUBC, 0},
 	{FN(PCB_FLAG_DISPLAYNAME),   N("showname"),      0, "OBSOLETE: For elements, when set the names of pins are shown.", 0, 0},
 	{FN(PCB_FLAG_CLEARLINE),     N("clearline"),     PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_TEXT | PCB_OBJ_PSTK, "For lines and arcs, the line/arc will clear polygons instead of connecting to them.", 0, 0 },
 	{FN(PCB_FLAG_SELECTED),      N("selected"),      PCB_OBJ_ANY, "Set when the object is selected.", 0, 0},
