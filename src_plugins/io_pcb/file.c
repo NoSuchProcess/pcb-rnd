@@ -995,7 +995,6 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 
 	if (Flags.f & PCB_FLAG_HIDENAME) {
 		char tmp[128];
-printf("PUT!!!\n");
 		pcb_sprintf(tmp, "%$mm", TextX);
 		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_x", tmp);
 		pcb_sprintf(tmp, "%$mm", TextY);
