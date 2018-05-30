@@ -1331,7 +1331,42 @@ static void layer_fixup(pcb_board_t *pcb)
 
 static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 {
-	pcb_layer_id_t tmp[2];
+	pcb_layer_id_t tmp[2], lid;
+	pcb_layergrp_id_t gid;
+		int n, found;
+
+	/* check layer->group cross-links */
+	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		pcb_layergrp_t *grp;
+		gid = pcb->Data->Layer[lid].meta.real.grp;
+		grp = pcb_get_layergrp(pcb, gid);
+		if (grp == NULL)
+			return iolht_error(loc, "Broken layer stackup: missing valid group for layer %ld\n", lid);
+
+		for(found = n = 0; n < grp->len; n++) {
+			if (grp->lid[n] == lid) {
+				found = 1;
+				break;
+			}
+		}
+
+		if (!found)
+			return iolht_error(loc, "Broken layer stackup: group->layer backlink for layer %ld\n", lid);
+	}
+
+	/* check group->layer cross-links */
+	for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
+		pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
+		for(n = 0; n < grp->len; n++) {
+			pcb_layer_t *ly;
+			lid = grp->lid[n];
+			ly = pcb_get_layer(pcb->Data, lid);
+			if (ly == NULL)
+				return iolht_error(loc, "Broken layer stackup: group %ld links to non-existent layer %ld\n", gid, lid);
+			if (ly->meta.real.grp != gid)
+				return iolht_error(loc, "Broken layer stackup: group %ld links to layer %ld which then links back to group %ld instead\n", gid, lid, ly->meta.real.grp);
+		}
+	}
 
 #warning layer TODO: #tbs do not require top and bottom silk to present
 	/* for now, require top and bottom silk */
