@@ -1,20 +1,5 @@
 0. For the upcoming release ===============================================================================
-+ feature req: show grid in both mm and mil in the status bar [report:smilie]
-+ BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
-+ BUG: the padstack editor's prototype tab doesn't have an  input field for the local clearance [report: jg]
-+ BUG: bug_files/jg1_subc.lht: insert from from library ('i') and get an invalid color reg [report: jg]
-+ BUG: can't rotate polygon [report: sam]
-+ BUG: autorouter assert: bug_files/autorouter.lht [report: barjac]
-+ doc: explain the library path -> pool node lib_path_conf [report: Karl]
-+ BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
-	+> if not enough, need to reset the timer in <dlg_library.c> lib_param_chg()
-+ BUG: CLI: '-x gerber A.lht --gerberfile=haha' works but '-x gerber --gerberfile=haha A.lht' does not [report: jg]
-+ BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-+ BUG: start using the version API of puplug and start versioning the hid ABI; refuse to load mismatching plugins [report: keantoken]
-+ BUG: broken input on lihata padstack proto id shouldn't casue an assert: bug_files/id05.pcb [report: al3x]
-+ can't set appearance/subc/dash_freq to -1 in the gtk preferences window [report: Michael]
 - BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
-+ BUG: when subc moved drag&drop, the snap code should ignore the object from the original subc [report: Ade]
 
 eagle:
 	- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
