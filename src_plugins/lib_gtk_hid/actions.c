@@ -447,6 +447,22 @@ static int About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* ------------------------------------------------------------ */
+static const char EditLayerGroups_syntax[] = "EditLayerGroups()";
+static const char EditLayerGroups_help[] = N_("Pop up the gui that edits the layer groups (layer stackup).");
+
+/* %start-doc actions About
+
+Pop up the gui that edits the layer groups (layer stackup).
+
+%end-doc */
+
+static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const char *args[] = {"Preferences", "1", "User PoV/Layers"};
+	return DoWindows(sizeof(args)/sizeof(args[0]), args, 0, 0);
+}
+
+/* ------------------------------------------------------------ */
 static const char getxy_syntax[] = "GetXY()";
 
 static const char getxy_help[] = N_("Get a coordinate.");
@@ -483,6 +499,8 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"Command", 0, Command}
 	,
 	{"DoWindows", 0, DoWindows, dowindows_help, dowindows_syntax}
+	,
+	{"EditLayerGroups", 0, EditLayerGroups, EditLayerGroups_help, EditLayerGroups_syntax}
 	,
 	{"ExportGUI", 0, ExportGUI}
 	,
