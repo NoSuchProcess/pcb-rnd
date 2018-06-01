@@ -2,6 +2,6 @@ $class feature
 $short assisted semi-auto-routing
 $long TODO
 $state WIP
-$package auto
+#$package auto
 default disable
 autoload 1
