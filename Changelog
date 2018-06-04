@@ -26,8 +26,8 @@ pcb-rnd 2.0.0 (r17163)
 		-Add: extend the API so menu items can be inserted after an existing menu item (opposed to appending at the end of the menu)
 		-Add: new default menu file for the configurable grid
 		-Add: buffer normalization menu
-		-Change: edit attributes of current layer uses the poperty editor instead of the obsolete attribute editor
-		-Change: edit layer attributes from the popup menu uses the poperty editor instead of the obsolete attribute editor
+		-Change: edit attributes of current layer uses the property editor instead of the obsolete attribute editor
+		-Change: edit layer attributes from the popup menu uses the property editor instead of the obsolete attribute editor
 		-Change: use propedit for editing board attributes
 		-Rename: buffer #5 to scratchpad (the code often overwrites it as side effect of other operations)
 
@@ -59,7 +59,7 @@ pcb-rnd 2.0.0 (r17163)
 	[core]
 		-Fix: change.c should include change.h to detect API mismatch
 		-Fix: auto-via is created as a padstack to avoid depending on vias
-		-Fix: whem moving a line to another layer and an auto-via is added, use padstacks, not via
+		-Fix: when moving a line to another layer and an auto-via is added, use padstacks, not via
 		-Fix: do not merge new line to an existing line if the existing line is part of a subc or has term set
 		-Fix: do not announce which menu file has been loaded: action PrintFiles will tell
 		-Fix: when rotating buffer, do not expect text or padstack rtree to be non-NULL - if they are NULL, just skip the administration
@@ -70,7 +70,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: make sure to emit the routes changed event when the routes are initialized (on load or new board creation)
 		-Fix: when loading a footprint-as-board, set the board size to make sure the footprint fits
 		-Fix: search: prefer padstacks that have copper shape on the right side, then padstacks that have any shape on the right side then ones with shape on the current layer and only then any other padstack over the given location
-		-Fix: data_is_empty: because of buffers: if global lists are empty, it's enough to check layers for pure emptyness, no global side effects should be checked
+		-Fix: data_is_empty: because of buffers: if global lists are empty, it's enough to check layers for pure emptiness, no global side effects should be checked
 		-Fix: don't segfault if element attr is attempted to set on a non-existing subc
 		-Fix: clip polys only when clip inhibit decreases to 0
 		-Fix: pcb_chg_obj_name_query() doesn't handle dyntext floater subc parts as terminals
@@ -78,7 +78,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: don't execute operation twice on subc parts (by r16304)
 		-Fix: allow rotate function to operate on subc floaters
 		-Fix: do not let the user to select-move or select-remove subc parts (not even floaters, because parent could not be tracked over the buffer)
-		-Fix: consider a padstack for sreen search only if it has a shape on a visible layer
+		-Fix: consider a padstack for screen search only if it has a shape on a visible layer
 		-Fix: allow padstacks to change (global) clearance
 		-Fix: text object: don't crash if a non-subc dyntext tries to reference parent subc
 		-Fix: MoveToCurrentLayer on a subc part (floater) object keeps the object within the subcircuit, either by using an existing subc layer or allocating a new bound layer
@@ -88,17 +88,17 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: hide floaters works on non-silk objects as well
 		-Fix: call get_export_options() when invoking the exporter using -x, to make sure the options are initialized before the cli processor goes through them; the nogui version shouldn't throw an error, the fallback is a nop
 		-Fix: SaveTo() with no args shouldn't segfault
-		-Fix: SaveTo(Layout) shouldn't tolerate file name or format; when specified, it would be ignored; to avoid confusion, rahter throw an error
+		-Fix: SaveTo(Layout) shouldn't tolerate file name or format; when specified, it would be ignored; to avoid confusion, rather throw an error
 		-Fix: emergency format typo - use the configured format
 		-Fix: on footprint import always use the footprint attribute instead of the name attribute
 		-Fix: search on padstacks: accept the padstack found if it has hole on the current layer
 		-Fix: temporary turn off flip/solder-side-view while replacing subcircuits from ElementList(), to avoid coord flip confusion and wrong y coord of the replacement subc
 		-Fix: freeze undo while rotating buffer to make sure nothing ends up on the undo (buffer operations are not undoable)
 		-Fix: when moving an unselected subc with drag&drop it should never snap to any object in the original subc
-		-Fix: when mirroring data, provide an option for mirroring text coords only without mirroring the text graphcis ("onsolder" flag); this needs to be used for subc and buffer mirroring to keep text objects in place
+		-Fix: when mirroring data, provide an option for mirroring text coords only without mirroring the text graphics ("onsolder" flag); this needs to be used for subc and buffer mirroring to keep text objects in place
 		-Fix: flag_str: when converting to string in compatibility mode, permit hidename for subcircuits
 		-Fix: 2 layer default board typos
-		-Fix: find.c: rat vs. padstack intersection must consider wheter padstack has shape on the given layer
+		-Fix: find.c: rat vs. padstack intersection must consider whether padstack has shape on the given layer
 		-Del: obj_all_op.h, obj_all_list.h, trunk/src/obj_all.h - include the op headers directly
 		-Del: old data model: PCB_OBJ_* constants for the old model
 		-Del: obsolete API: get_unit_list()
@@ -139,7 +139,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Add: hid_nogui prints progress bar to stderr if verbosity level is high enough
 		-Add: progress bar on data poly clipping after 2 seconds; poly clipping can be cancelled (at a cost of exiting pcb-rnd)
 		-Add: assert() on invalid menu ID
-		-Add: throw an error for any plugin conf field that is unregitered - such bugs cause segfault with dynamic loaded plugins
+		-Add: throw an error for any plugin conf field that is unregistered - such bugs cause segfault with dynamic loaded plugins
 		-Add: extend the padstack mirror API so that x mirroring can be disabled
 
 	[diag]
@@ -168,7 +168,7 @@ pcb-rnd 2.0.0 (r17163)
 
 	[doc]
 		-Fix: use $(MAKE) instead of hardwired make
-		-Del: old debian list generation: we don't do custom debian packaging anymore
+		-Del: old Debian list generation: we don't do custom Debian packaging anymore
 		-Update: wishlist: data model rewrite done
 		-Add: user manual, ui: explain multi-stroke key bindings, prepare the key tree
 		-Add: multi-stroke key assignment: document non-leaf choices
@@ -195,7 +195,7 @@ pcb-rnd 2.0.0 (r17163)
 	[export_dsn]
 		-Fix: do not x-flip padstack placement within subc - that swaps the pads
 		-Fix: y flip in padstack placement within subcircuit
-		-Fix: mirror x shapes of padstacks when parent subcircuit is on the other side (freerouting dsn improt bug workaround)
+		-Fix: mirror x shapes of padstacks when parent subcircuit is on the other side (freerouting dsn import bug workaround)
 		-Fix: padstack mirrored x placement as a workaround for freerouting's dsn importer bug
 		-Fix: heavy terminal placement within subcircuits, including proper y flip
 		-Fix: make sure layer names are unique by prefixing group name with group ID
@@ -218,7 +218,7 @@ pcb-rnd 2.0.0 (r17163)
 	[export_xy]
 		-Fix: don't count subcircuits in int, use pcb_cardinal_t (int may be 16 bit)
 		-Fix: use central subc footprint name mechanism
-		-Fix: unergister conf nodes in uninit
+		-Fix: unregister conf nodes in uninit
 		-Add: local plugin configuration for templates
 		-Add: conf list parser for templates
 		-Add: lihata conf version of the original templates
@@ -248,7 +248,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: SEL -> ARR in mode button icon for consistency with the code/doc terminology
 		-Fix: emit layer vis change event from wt_layersel on any visibility affecting changes to keep menus in sync
 		-Fix: when removing a menu widget, also remove its action from the action list
-		-Fix: bindigs so that the route style widget is updated when the route style selection changes (from the menu or via the action)
+		-Fix: bindings so that the route style widget is updated when the route style selection changes (from the menu or via the action)
 		-Fix: pinout window: do not enforce window sizes too large for large footprints
 		-Fix: coord correctness: zoom/pan coord conversion doesn't cast coords to gint
 		-Fix: drc window reset shall remove old report widgets
@@ -258,7 +258,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: advanced search non-integer fields are retyped to DOUBLE from INT
 		-Fix: allow negative integers in config pov's spinbox (e.g. subc dash_freq can be set to -1)
 		-Fix: give focus to the drawing window before entering the main loop so key presses are handled even if the mouse cursor haven't yet entered the drawing area
-		-Change: mouse button assigment is in sync with the default menu file
+		-Change: mouse button assignment is in sync with the default menu file
 		-Add: option for context-sensitive popups: per object type under the cursor
 		-Add: status line: display key sequence
 		-Add: low level zoom action feature: zoom(x1,y1,x2,y2) and high level ZoomTo() action  that doesn't try to query the new center
@@ -281,7 +281,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Add: API for removing menu items under an anchor
 		-Add: remove menu subtree by lihata node (for removing under-anchored menu items)
 		-Add: checked and update_on fields for dynamic menus
-		-Add: background and foreground color fields in dyamic menu struct
+		-Add: background and foreground color fields in dynamic menu struct
 		-Add: API to force a global menu checkbox update
 		-Add: wrap pcb_gui->attribute_dialog as it may not be always available
 
@@ -302,11 +302,11 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: when setting up new layer groups, set parent and type properly
 		-Fix: v4: save heavy terminal thermals (and warn if saving to <v4)
 		-Fix: v4: write subcircuit v4 for board v5
-		-Fix: remove invalid nodes (placeholders) from the tree before saving a subcircuit file to avod broken output
+		-Fix: remove invalid nodes (placeholders) from the tree before saving a subcircuit file to avoid broken output
 		-Fix: initialize zoom to 0, as the conversion may fail
 		-Fix: throw an error if font allocation fails (instead of segf)
 		-Fix: quit parsing on floating point conv errors
-		-Fix: be more pedantic on basic field parsing errors (such as coords, ints or floats): distinguish between optional and required fields; always throw an error on existing but broken value, throw an useful error on missing required fileds
+		-Fix: be more pedantic on basic field parsing errors (such as coords, ints or floats): distinguish between optional and required fields; always throw an error on existing but broken value, throw an useful error on missing required fields
 		-Fix: early exit on error to avoid asserts in padstack creation
 		-Fix: require layer group to be a hash
 		-Fix: don't load polygon with no geometry
@@ -315,7 +315,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: buffer overrun on too many input layers
 		-Fix: uninitialized fields: optional fields should be set to a default value before parsing them
 		-Fix: rat line attribute is loaded into the newly initialized rat line, not into an uninited temp
-		-Fix: make sure basic objects are hashes on load, throw meaningul error if they are not
+		-Fix: make sure basic objects are hashes on load, throw meaningful error if they are not
 		-Fix: more pedantic error message generation on missing values
 		-Fix: require subc.ID to be a hash, throw a meaningful error message if not
 		-Fix: place dummy clearance node while saving polygon to make sure a clearance removed will be removed from the file
@@ -340,10 +340,10 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: conf conversion bug: isle area is not coords because of the square, put it in the config as %f
 		-Fix: do not x-mirror on-solder pads, data read from the file is already mirrored
 		-Fix: handle element hidename flag on load
-		-Fix: when thre's no subc refdes text found, write the element with refdes text at 0;0
+		-Fix: when there's no subc refdes text found, write the element with refdes text at 0;0
 		-Fix: preserve refdes text coords and directions in a round trip when hidename is active
 		-Fix: proper load/save round trip on element pad clearance
-		-Add: when saving an old element, export the hidename flag when thre's no refdes text
+		-Add: when saving an old element, export the hidename flag when there's no refdes text
 
 	[layer]
 		-Fix: don't crash when layer group references non-existing layer
@@ -402,7 +402,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: make clearance minimum enforcement symmetric
 		-Fix: when making a modification on an in-buffer padstack, such as rotation, force generating the transformed shape and update ->shapei
 		-Fix: rotate op needs to invert angle if padstack is x-mirrored, because padstack transformation data is interpreted as "rotate first, then mirror"
-		-Fix: for mirroring y_offs=0 does not mean "no coord change": the y coord can still be non-zero in which case it needs to be mirrored. Introduce a special y_offs value to indicate "don't mirror corrds"
+		-Fix: for mirroring y_offs=0 does not mean "no coord change": the y coord can still be non-zero in which case it needs to be mirrored. Introduce a special y_offs value to indicate "don't mirror coords"
 		-Add: event on creating padstacks
 		-Add: low level function for changing prototype name
 
@@ -463,7 +463,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: use detected host cc to compile puplug utils
 		-Fix: do not hardwire inline - use the detection from scconfig
 		-Change: force lib_compat_help to be a builtin because core temporarily depends on it
-		-Change: use localcoord abs implementation instead of labs/llabs because llabs is not c89 and leads to feature macro hell on GNU
+		-Change: use local coord abs implementation instead of labs/llabs because llabs is not c89 and leads to feature macro hell on GNU
 		-Del: export_dsn -> glib dependency
 
 	[shape]
@@ -518,4 +518,4 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: count total number of holes again
 		-Fix: reenable route style tuning
 		-Fix: reenable setting the current 'pen' via drill
-		-Add: event for tuning newly placed padstacks whenvendor drill mapping is enabled (replaces the stub)
+		-Add: event for tuning newly placed padstacks when vendor drill mapping is enabled (replaces the stub)
