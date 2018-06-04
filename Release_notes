@@ -1,18 +1,33 @@
-pcb-rnd 1.2.8
+pcb-rnd 2.0.0
 ~~~~~~~~~~~~~
 
-This release switches over the whole code base to use the new data model
-(padstacks, subcircuits) instead of the old, now obsolete model (vias,
-pins, pads, elements). When using alien file formats, conversion forth and
-back is done automatically, on the fly, during load and save.
+The reason for the major version number bump has two reasons:
+ - The old data model got fully removed; from version 2.0.0, internally
+   pcb-rnd speaks only the new, clean data model and export plugins 
+   translates forth and back when loading/saving in legaci file formats.
+   This completes an 1.5 years long effort to get rid of legacy and
+   limitations imposed by decades old design decisions.
+ - The new, better organized, more new-user-friendly menu and hotkey system;
+   the menu is now the same for lesstif and gtk and it features context
+   popup menu that depends on object type under the mouse cursor. The default
+   mouse button binding is less srtagne: popup menu on right click.
 
-The local rtree implementation has been replaced with genrtree. This makes
-it much easier to share the rtree code among projects, decreases the
-maintenance burden. Unlike the local rtree implementation, genrtree
-has unit tests.
+The grid size and offset system got rewritten too. Instead of hardwired
+settings in the menu file, the user can specify a list of grid sizes, units
+and offsets in the config. Being in the config, this allows per user, per
+project or even per board file preferences.
 
-The new rtree API features loop iterators, which allows the caller to
-have much simpler and more readable code, without callback functions and
-context structs.
+Among with the old data model, the old, local rtree implementation got
+removed too, in favor of genrtree.
 
-The rest of the development focused on fixing bugs.
+There was a major upgrade on plugins too:
+ - the xy exporter got user configurable templates, so it is now possible
+   to define new export file formats (even user or project or board file
+   specific ways) with editing configuration only
+ - the ipcd356 plugin got rewritten for the new data model
+ - a new ipcd356 import plugin is available
+
+Finally, extensive automated and manual testing resulted in collecting
+a logn list of bugs. In turn most of the development cycle was spent on
+fixing bugs.
+
