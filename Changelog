@@ -158,7 +158,7 @@ pcb-rnd 2.0.0 (r17163)
 		-Fix: shape gen sets clearance to 0
 		-Fix: flag edit prints object type in text, not in magic number
 		-Add: padstack editor, 3rd tab: auto generate common cases
-		-Add: padtsakcedit can be invoked with a selected tab open
+		-Add: padstackedit can be invoked with a selected tab open
 		-Add: include optional prototype name in instance proto button text
 
 	[distaligntext]
@@ -516,6 +516,6 @@ pcb-rnd 2.0.0 (r17163)
 
 	[vendor]
 		-Fix: count total number of holes again
-		-Fix: reenable route style tuning
-		-Fix: reenable setting the current 'pen' via drill
+		-Fix: re-enable route style tuning
+		-Fix: re-enable setting the current 'pen' via drill
 		-Add: event for tuning newly placed padstacks when vendor drill mapping is enabled (replaces the stub)
