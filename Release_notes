@@ -4,13 +4,13 @@ pcb-rnd 2.0.0
 The reason for the major version number bump has two reasons:
  - The old data model got fully removed; from version 2.0.0, internally
    pcb-rnd speaks only the new, clean data model and export plugins 
-   translates forth and back when loading/saving in legaci file formats.
+   translates forth and back when loading/saving in legacy file formats.
    This completes an 1.5 years long effort to get rid of legacy and
    limitations imposed by decades old design decisions.
  - The new, better organized, more new-user-friendly menu and hotkey system;
    the menu is now the same for lesstif and gtk and it features context
    popup menu that depends on object type under the mouse cursor. The default
-   mouse button binding is less srtagne: popup menu on right click.
+   mouse button binding is less strange: popup menu on right click.
 
 The grid size and offset system got rewritten too. Instead of hardwired
 settings in the menu file, the user can specify a list of grid sizes, units
@@ -28,6 +28,6 @@ There was a major upgrade on plugins too:
  - a new ipcd356 import plugin is available
 
 Finally, extensive automated and manual testing resulted in collecting
-a logn list of bugs. In turn most of the development cycle was spent on
+a long list of bugs. In turn most of the development cycle was spent on
 fixing bugs.
 
