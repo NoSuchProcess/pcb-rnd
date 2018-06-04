@@ -10,7 +10,7 @@
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
-#define version "1.2.8"
+#define version "2.0.0"
 
 #include "plugin_3state.h"
 
