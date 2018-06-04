@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
+pcb-rnd version 2.0.0 rev svn r17169, Revision: 17169
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -19,7 +19,7 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> smartdisperse </td>
 <tr><td> PasteBuffer </td>
 <td>Various operations on the paste buffer.</td>
-<td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])</td>
+<td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(Push)<br>PasteBuffer(Pop)</td>
 <tr><td> ChangeDrillSize </td>
 <td>Changes the drilling hole size of objects.</td>
 <td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td>
@@ -29,9 +29,6 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> ChkView </td>
 <td>Return 1 if layerid is visible.</td>
 <td>ChkView(layerid)</td>
-<tr><td> acompnet </td>
-<td>Attempt to auto-complete the current network</td>
-<td>acompnet()</td>
 <tr><td> ChkLayer </td>
 <td>Returns 1 if the specified layer is the active layer</td>
 <td>ChkLayer(layerid)</td>
@@ -59,6 +56,9 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> ChkMode </td>
 <td>Return 1 if the currently selected mode is the expected_mode</td>
 <td>ChkMode(expected_mode)</td>
+<tr><td> Rotate90 </td>
+<td>Rotates the object under the crosshair by 90 degree steps.</td>
+<td>pcb_move_obj(steps)</td>
 <tr><td> netlist </td>
 <td>Perform various actions on netlists.</td>
 <td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td>
@@ -164,6 +164,9 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> net </td>
 <td>Perform various actions on netlists.</td>
 <td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td>
+<tr><td> stroke </td>
+<td>Various gesture recognition related functions</td>
+<td>stroke(gesture, seq)</td>
 <tr><td> LoadFootprint </td>
 <td>Loads a single footprint by name.</td>
 <td>pcb_load_footprint(filename[,refdes,value])</td>
@@ -521,9 +524,9 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> LoadEeschemaFrom </td>
 <td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td>
 <td>LoadEeschemaFrom(filename)</td>
-<tr><td> ElementList </td>
-<td>Adds the given element if it doesn't already exist.</td>
-<td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</td>
+<tr><td> DumpObjFlags </td>
+<td>Print a script processable digest of all flags, per object type</td>
+<td>DumpObjFlags()</td>
 <tr><td> AutoPlaceSelected </td>
 <td>Auto-place selected components.</td>
 <td>AutoPlaceSelected()</td>
@@ -542,6 +545,9 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> EditGroup </td>
 <td>Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.</td>
 <td>Editgroup([@group], [name=text|type=+bit|type=-bit])]<br>Editlayer([@layer], attrib, key=value)</td>
+<tr><td> ElementList </td>
+<td>Adds the given element if it doesn't already exist.</td>
+<td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</td>
 <tr><td> ExportScadPoly </td>
 <td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td>
 <td>ScadExportPoly(filename)</td>
@@ -592,6 +598,9 @@ pcb-rnd version 1.2.8 rev svn r16264, Revision: 16456
 <tr><td> PrintFiles </td>
 <td>Print files currently loaded.</td>
 <td>PrintFiles()</td>
+<tr><td> About2 </td>
+<td>Present the about box</td>
+<td>About()</td>
 <tr><td> ChangeName </td>
 <td>Sets the name (or pin number) of objects.</td>
 <td>ChangeName(Object)<br>ChangeName(Layout|Layer)</td>
