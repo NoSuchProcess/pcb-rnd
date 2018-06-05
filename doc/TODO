@@ -237,7 +237,7 @@ eagle:
 		- need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
-
+- feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade] 
 
 3. Long term ===============================================================================
 
