@@ -120,7 +120,7 @@ e;s;r	pcb-menu-default.lht	ChangeName(Subc) 	Refdes
 e;s;s	pcb-menu-default.lht	SetSame() 	Set Same Style
 e;t	pcb-menu-default.lht	ChangeName(Object) 	text or name
 e;v	pcb-menu-default.lht	Mode(PasteBuffer) 	Paste buffer to layout
-e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(MoveSelected);Mode(PasteBuffer)	Cut selection to buffer
+e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();Unselect(All);Mode(PasteBuffer)	Cut selection to buffer
 e;y;	pcb-menu-default.lht	CycleDrag() 	Cycle object being dragged
 enter	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click
 escape	pcb-menu-default.lht	Mode(Escape) 	Cancel
