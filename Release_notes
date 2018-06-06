@@ -3,7 +3,7 @@ pcb-rnd 2.0.0
 
 The major version number bump has two reasons:
  - The old data model got fully removed; from version 2.0.0, internally
-   pcb-rnd speaks only the new, clean data model and export plugins 
+   pcb-rnd speaks only the new, clean data model and export plugins
    translates forth and back when loading/saving in legacy file formats.
    This completes an 1.5 years long effort to get rid of legacy and
    limitations imposed by decades old design decisions.
