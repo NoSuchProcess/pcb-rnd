@@ -238,6 +238,7 @@ eagle:
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
 - feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade] 
+- BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 
 3. Long term ===============================================================================
 
