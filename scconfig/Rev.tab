@@ -1,3 +1,4 @@
+17200	configure	moved clip.h out from core
 16898	configure	new stroke plugin
 16616	configure	fixes for large boards and 64 bit coords
 16591	configure	export_xy: tempalte config

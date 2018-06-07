@@ -23,7 +23,6 @@
 #include "conf_hid.h"
 #include "layer.h"
 #include "pcb-printf.h"
-#include "clip.h"
 #include "event.h"
 #include "error.h"
 #include "plugins.h"
@@ -50,6 +49,8 @@
 #include "compat_nls.h"
 #include "layer_vis.h"
 #include "tool.h"
+
+#include "../src_plugins/lib_hid_common/clip.h"
 
 #include <sys/poll.h>
 

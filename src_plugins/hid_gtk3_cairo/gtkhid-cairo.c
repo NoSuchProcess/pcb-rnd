@@ -32,7 +32,6 @@
 #include <stdio.h>
 
 #include "crosshair.h"
-#include "clip.h"
 #include "data.h"
 #include "layer.h"
 #include "grid.h"
@@ -47,6 +46,8 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+
+#include "../src_plugins/lib_hid_common/clip.h"
 
 extern pcb_hid_t gtk3_cairo_hid;
 static void ghid_cairo_screen_update(void);

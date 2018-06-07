@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include "crosshair.h"
-#include "clip.h"
 #include "data.h"
 #include "layer.h"
 #include "hid_draw_helpers.h"
@@ -11,6 +10,7 @@
 #include "hid_helper.h"
 #include "hid_color.h"
 
+#include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
