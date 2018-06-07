@@ -604,12 +604,12 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	/* If width is negative then treat it as pixel width, otherwise it is world coordinates. */			
-	if(width < 0)	{
+	/* If width is negative then treat it as pixel width, otherwise it is world coordinates. */
+	if(width < 0) {
 		gc->width = -width;
 		width = -width;
 	}
-	else {			
+	else {
 		gc->width = width;
 		width = Vz(width);
 	}
