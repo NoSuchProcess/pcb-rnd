@@ -452,10 +452,8 @@ pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl)
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
-		if (pcb_draw_doing_pinout)
+		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
 			pcb_pstk_draw_label(ps);
-		else if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
-			pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
