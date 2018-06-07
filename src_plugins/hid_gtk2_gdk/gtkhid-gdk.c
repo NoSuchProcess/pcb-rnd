@@ -696,6 +696,16 @@ static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
+
+	/* optimization: draw a single dot if object is too small */
+	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
+		if (pcb_gtk_dot_in_canvas(gc->width, dx1, dy1)) {
+			USE_GC(gc);
+			gdk_draw_point(priv->out_pixel, priv->pixel_gc, dx1, dy1);
+		}
+		return;
+	}
+
 	dx2 = Vx((double) x2);
 	dy2 = Vy((double) y2);
 
@@ -761,7 +771,7 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 
 static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	gint w, h, lw;
+	gint w, h, lw, sx1, sy1;
 	render_priv_t *priv = gport->render_priv;
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
@@ -776,8 +786,20 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 			|| (SIDE_Y(y1) > gport->view.y0 + h + lw && SIDE_Y(y2) > gport->view.y0 + h + lw))
 		return;
 
-	x1 = Vx(x1);
-	y1 = Vy(y1);
+	sx1 = Vx(x1);
+	sy1 = Vy(y1);
+
+	/* optimization: draw a single dot if object is too small */
+	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
+		if (pcb_gtk_dot_in_canvas(gc->width, sx1, sy1)) {
+			USE_GC(gc);
+			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
+		}
+		return;
+	}
+
+	x1 = sx1;
+	y1 = sy1;
 	x2 = Vx(x2);
 	y2 = Vy(y2);
 
@@ -815,6 +837,17 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 		return;
 
 	USE_GC(gc);
+
+	/* optimization: draw a single dot if object is too small */
+	if (pcb_gtk_1dot(radius*2, cx, cy, cx, cy)) {
+		pcb_coord_t sx1 = Vx(cx), sy1 = Vy(cy);
+		if (pcb_gtk_dot_in_canvas(radius*2, sx1, sy1)) {
+			USE_GC(gc);
+			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
+		}
+		return;
+	}
+
 	vr = Vz(radius);
 	gdk_draw_arc(priv->out_pixel, priv->pixel_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 
@@ -872,7 +905,7 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 
 static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	gint w, h, lw, xx, yy;
+	gint w, h, lw, xx, yy, sx1, sy1;
 	render_priv_t *priv = gport->render_priv;
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
@@ -887,8 +920,20 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 			|| (SIDE_Y(y1) > gport->view.y0 + h + lw && SIDE_Y(y2) > gport->view.y0 + h + lw))
 		return;
 
-	x1 = Vx(x1);
-	y1 = Vy(y1);
+	sx1 = Vx(x1);
+	sy1 = Vy(y1);
+
+	/* optimization: draw a single dot if object is too small */
+	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
+		if (pcb_gtk_dot_in_canvas(gc->width, sx1, sy1)) {
+			USE_GC(gc);
+			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
+		}
+		return;
+	}
+
+	x1 = sx1;
+	y1 = sy1;
 	x2 = Vx(x2);
 	y2 = Vy(y2);
 	if (x2 < x1) {
