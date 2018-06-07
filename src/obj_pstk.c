@@ -439,14 +439,16 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 		mark += proto->hdia/2;
 
 	/* draw the cross using xor */
-	if (conf_core.appearance.padstack.cross_thick > 0) {
-		set_ps_annot_color(pcb_draw_out.fgGC, ps);
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
-		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
-		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
-	}
+	set_ps_annot_color(pcb_draw_out.fgGC, ps);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
@@ -457,7 +459,6 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
-
 
 pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 {

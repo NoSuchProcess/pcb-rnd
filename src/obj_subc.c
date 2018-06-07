@@ -1531,23 +1531,23 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	if (freq > 32)
 		freq = 32;
 
-	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
-	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
-	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
-	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 	pcb_gui->set_color(pcb_draw_out.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
-	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
 	if (freq >= 0) {
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
-		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq);
 		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2, freq);
 		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1, freq);
 		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq);
-		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 	}
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_subc_t *subc = (pcb_subc_t *) b;
+	pcb_box_t *bb = &subc->BoundingBox;
 
 	if (subc->refdes != NULL) {
 		pcb_coord_t x0, y0, dx, dy;
@@ -1600,7 +1600,6 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 		else
 			pcb_term_label_draw(x0, y0, 50.0, 0, 0, subc->refdes, subc->intconn);
 	}
-
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

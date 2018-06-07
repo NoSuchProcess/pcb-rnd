@@ -58,6 +58,7 @@ pcb_r_dir_t pcb_pstk_clear_callback(const pcb_box_t *b, void *cl);
 
 void pcb_pstk_draw(pcb_pstk_t *ps, pcb_bool draw_hole);
 pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl);
 void pcb_pstk_draw_label(pcb_pstk_t *ps);
 void pcb_pstk_invalidate_erase(pcb_pstk_t *ps);
 void pcb_pstk_invalidate_draw(pcb_pstk_t *ps);

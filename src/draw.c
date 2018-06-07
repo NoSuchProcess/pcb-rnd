@@ -72,6 +72,7 @@ static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *, int);
 static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj);
 static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area);
+static void pcb_draw_pstk_labels(const pcb_box_t *drawn_area);
 static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype);
 
 /* In draw_ly_spec.c: */
@@ -349,13 +350,20 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw subc Marks */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-	
+
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
+
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
 
-		if (PCB->padstack_mark_on)
+		if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 			pcb_draw_pstk_marks(drawn_area);
+		}
 
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 
 		/* Draw rat lines on top */
@@ -370,6 +378,14 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw pins' and pads' names */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		if (PCB->SubcOn)
+			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, NULL, NULL);
+		if (PCB->padstack_mark_on) {
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+			pcb_draw_pstk_labels(drawn_area);
+		}
 		pcb_draw_pstk_names(conf_core.editor.show_solder_side ? solder : component, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 	}
@@ -420,6 +436,13 @@ static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area)
 	pcb_pstk_draw_t ctx;
 	ctx.pcb = PCB;
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_mark_callback, &ctx, NULL);
+}
+
+static void pcb_draw_pstk_labels(const pcb_box_t *drawn_area)
+{
+	pcb_pstk_draw_t ctx;
+	ctx.pcb = PCB;
+	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_label_callback, &ctx, NULL);
 }
 
 static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype)
