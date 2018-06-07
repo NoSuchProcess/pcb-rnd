@@ -83,7 +83,7 @@ static inline int pcb_gtk_1dot(pcb_coord_t penwidth, pcb_coord_t x1, pcb_coord_t
 }
 
 /* Return non-zero if dot coords are within canvas extents */
-static inline pcb_gtk_dot_in_canvas(pcb_coord_t penwidth, double dx1, double dy1)
+static inline int pcb_gtk_dot_in_canvas(pcb_coord_t penwidth, double dx1, double dy1)
 {
 	penwidth/=2;
 	return ((dx1+penwidth >= 0) && (dx1-penwidth <= gport->view.canvas_width) && (dy1+penwidth >= 0) && (dy1-penwidth <= gport->view.canvas_height));
