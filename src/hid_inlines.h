@@ -37,6 +37,8 @@ PCB_INLINE pcb_hid_gc_t pcb_hid_make_gc(void)
 	hc = (pcb_core_gc_t *)res; /* assumes first field is pcb_core_gc_t */
 	hc->width = PCB_MAX_COORD;
 	hc->cap = pcb_cap_invalid;
+	hc->xor = 0;
+	hc->faded = 0;
 	return res;
 }
 
@@ -62,5 +64,24 @@ PCB_INLINE void pcb_hid_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 		pcb_gui->set_line_width(gc, width);
 	}
 }
+
+PCB_INLINE void pcb_hid_set_draw_xor(pcb_hid_gc_t gc, int xor)
+{
+	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	if (hc->xor != xor) {
+		hc->xor = xor;
+		pcb_gui->set_draw_xor(gc, xor);
+	}
+}
+
+PCB_INLINE void pcb_hid_set_draw_faded(pcb_hid_gc_t gc, int faded)
+{
+	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	if (hc->faded != faded) {
+		hc->faded = faded;
+		pcb_gui->set_draw_faded(gc, faded);
+	}
+}
+
 
 #endif

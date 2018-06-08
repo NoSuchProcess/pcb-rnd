@@ -74,6 +74,8 @@ typedef union {
 typedef struct {
 	pcb_coord_t width;     /* as set by set_line_width */
 	pcb_cap_style_t cap;   /* as set by set_line_cap */
+	int xor;               /* as set by set_draw_xor */
+	int faded;             /* as set by set_draw_faded */
 } pcb_core_gc_t;
 
 /* This graphics context is an opaque pointer defined by the HID.  GCs

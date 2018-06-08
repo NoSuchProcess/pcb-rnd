@@ -172,9 +172,9 @@ static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area
 		return;
 
 	pcb_draw_doing_assy = pcb_true;
-	pcb_gui->set_draw_faded(pcb_draw_out.fgGC, 1);
+	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
 	DrawLayerGroup(side_group, drawn_area, 0);
-	pcb_gui->set_draw_faded(pcb_draw_out.fgGC, 0);
+	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */
 	pcb_draw_silk(lyt_side, drawn_area);

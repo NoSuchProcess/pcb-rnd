@@ -354,7 +354,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
+		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
@@ -364,7 +364,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 			pcb_draw_pstk_marks(drawn_area);
 		}
 
-		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
+		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 
 		/* Draw rat lines on top */
