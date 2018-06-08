@@ -2996,7 +2996,6 @@ static void set_gc(pcb_hid_gc_t gc)
 		cap = CapProjecting;
 		join = JoinMiter;
 		break;
-	case Trace_Cap:
 	case Round_Cap:
 		cap = CapRound;
 		join = JoinRound;

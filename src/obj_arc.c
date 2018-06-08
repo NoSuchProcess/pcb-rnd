@@ -858,13 +858,13 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 		}
 		else
 		pcb_gui->set_line_width(pcb_draw_out.fgGC, arc->Thickness);
-		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 	}
 	else
 	{
 		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
-		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
 
 		if(conf_core.editor.thin_draw)
 			pcb_gui->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);

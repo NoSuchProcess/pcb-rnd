@@ -757,7 +757,6 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	cairo_line_join_t join = CAIRO_LINE_JOIN_MITER;
 
 	switch (style) {
-	case Trace_Cap:
 	case Round_Cap:
 		cap = CAIRO_LINE_CAP_ROUND;
 		join = CAIRO_LINE_JOIN_ROUND;

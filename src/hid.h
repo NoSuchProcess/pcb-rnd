@@ -61,9 +61,8 @@ and may be changed by the HID in response to new information.
    twice.  */
 typedef enum {
 	pcb_cap_invalid = -1,
-	Trace_Cap = 0,							/* This means we're drawing a trace, which has round caps.  */
 	Square_Cap,									/* Square pins or pads. */
-	Round_Cap,									/* Round pins or round-ended pads, thermals.  */
+	Round_Cap,									/* For normal traces, round pins */
 	Beveled_Cap									/* Octagon pins or bevel-cornered pads.  */
 } pcb_cap_style_t;
 

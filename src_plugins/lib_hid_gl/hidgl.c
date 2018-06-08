@@ -324,7 +324,6 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 		}
 
 		switch (cap) {
-		case Trace_Cap:
 		case Round_Cap:
 			circular_caps = 1;
 			break;

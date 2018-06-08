@@ -1296,7 +1296,7 @@ static pcb_hid_gc_t png_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &png_hid;
-	rv->cap = Trace_Cap;
+	rv->cap = Round_Cap;
 	rv->width = 1;
 	rv->color = (color_struct *) malloc(sizeof(color_struct));
 	rv->color->r = rv->color->g = rv->color->b = rv->color->a = 0;
@@ -1475,7 +1475,6 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 
 		switch (gc->cap) {
 		case Round_Cap:
-		case Trace_Cap:
 			type = 'C';
 			break;
 		default:

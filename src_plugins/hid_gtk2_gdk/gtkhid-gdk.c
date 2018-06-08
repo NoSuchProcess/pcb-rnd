@@ -588,7 +588,6 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	switch (style) {
-	case Trace_Cap:
 	case Round_Cap:
 		gc->cap = GDK_CAP_ROUND;
 		gc->join = GDK_JOIN_ROUND;

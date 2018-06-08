@@ -959,7 +959,7 @@ static pcb_hid_gc_t ps_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(hid_gc_s));
 	rv->me_pointer = &ps_hid;
-	rv->cap = Trace_Cap;
+	rv->cap = Round_Cap;
 	return rv;
 }
 
@@ -1039,7 +1039,6 @@ static void use_gc(pcb_hid_gc_t gc)
 		int c;
 		switch (gc->cap) {
 		case Round_Cap:
-		case Trace_Cap:
 			c = 1;
 			break;
 		default:

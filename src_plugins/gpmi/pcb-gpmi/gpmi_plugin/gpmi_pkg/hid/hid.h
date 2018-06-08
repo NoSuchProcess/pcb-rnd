@@ -29,7 +29,6 @@ typedef char* pcb_hid_attr_val_t;
 
 /* Line or arc ending style */
 typedef enum pcb_cap_style_t_e {
- Trace_Cap,    /* filled circle (trace drawing) */
  Square_Cap,   /* rectangular lines (square pad) */
  Round_Cap,    /* round pins or round-ended pads, thermals */
  Beveled_Cap   /* octagon pins or bevel-cornered pads */

@@ -398,7 +398,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 static pcb_hid_gc_t eps_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
-	rv->cap = Trace_Cap;
+	rv->cap = Round_Cap;
 	rv->width = 0;
 	rv->color = 0;
 	return rv;
@@ -492,7 +492,6 @@ static void use_gc(pcb_hid_gc_t gc)
 		int c;
 		switch (gc->cap) {
 		case Round_Cap:
-		case Trace_Cap:
 			c = 1;
 			break;
 		default:

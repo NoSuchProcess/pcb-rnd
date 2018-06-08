@@ -874,7 +874,7 @@ emit_outline:
 static pcb_hid_gc_t gerber_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(*rv));
-	rv->cap = Trace_Cap;
+	rv->cap = Round_Cap;
 	return rv;
 }
 
@@ -957,7 +957,6 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		lastcap = gc->cap;
 		switch (gc->cap) {
 		case Round_Cap:
-		case Trace_Cap:
 			shape = ROUND;
 			break;
 		default:
