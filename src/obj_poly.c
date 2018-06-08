@@ -39,6 +39,7 @@
 #include "polygon_offs.h"
 #include "rotate.h"
 #include "search.h"
+#include "hid_inlines.h"
 
 #include "conf_core.h"
 

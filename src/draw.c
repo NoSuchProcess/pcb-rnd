@@ -41,6 +41,7 @@
 #include "rtree.h"
 #include "stub_draw.h"
 #include "layer_ui.h"
+#include "hid_inlines.h"
 
 #include "obj_pstk_draw.h"
 #include "obj_line_draw.h"

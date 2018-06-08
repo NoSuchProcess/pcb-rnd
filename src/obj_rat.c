@@ -30,6 +30,7 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
+#include "hid_inlines.h"
 #include "undo.h"
 #include "rtree.h"
 

@@ -43,6 +43,7 @@
 #include "conf_core.h"
 #include "macro.h"
 #include "obj_pstk_inlines.h"
+#include "hid_inlines.h"
 
 #include "obj_text_draw.h"
 
