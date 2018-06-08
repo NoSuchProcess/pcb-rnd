@@ -593,7 +593,6 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		gc->join = GDK_JOIN_ROUND;
 		break;
 	case Square_Cap:
-	case Beveled_Cap:
 		gc->cap = GDK_CAP_PROJECTING;
 		gc->join = GDK_JOIN_MITER;
 		break;

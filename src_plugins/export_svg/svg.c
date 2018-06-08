@@ -84,8 +84,6 @@ static const char *CAPS(pcb_cap_style_t cap)
 			return "round";
 		case Square_Cap:
 			return "square";
-		case Beveled_Cap:
-			return "butt";
 	}
 	return "";
 }

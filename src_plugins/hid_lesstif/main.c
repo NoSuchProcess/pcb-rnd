@@ -3000,10 +3000,6 @@ static void set_gc(pcb_hid_gc_t gc)
 		cap = CapRound;
 		join = JoinRound;
 		break;
-	case Beveled_Cap:
-		cap = CapProjecting;
-		join = JoinBevel;
-		break;
 	default:
 		cap = CapProjecting;
 		join = JoinBevel;

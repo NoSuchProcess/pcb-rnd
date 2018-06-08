@@ -329,7 +329,6 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 			break;
 
 		case Square_Cap:
-		case Beveled_Cap:
 			x1 -= deltax * width / 2. / length;
 			y1 -= deltay * width / 2. / length;
 			x2 += deltax * width / 2. / length;

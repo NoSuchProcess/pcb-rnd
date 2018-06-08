@@ -762,7 +762,6 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		join = CAIRO_LINE_JOIN_ROUND;
 		break;
 	case Square_Cap:
-	case Beveled_Cap:
 		cap = CAIRO_LINE_CAP_SQUARE;
 		join = CAIRO_LINE_JOIN_MITER;
 		break;

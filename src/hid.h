@@ -63,7 +63,6 @@ typedef enum {
 	pcb_cap_invalid = -1,
 	Square_Cap,									/* Square pins or pads. */
 	Round_Cap,									/* For normal traces, round pins */
-	Beveled_Cap									/* Octagon pins or bevel-cornered pads.  */
 } pcb_cap_style_t;
 
 /* The HID may need something more than an "int" for colors, timers,

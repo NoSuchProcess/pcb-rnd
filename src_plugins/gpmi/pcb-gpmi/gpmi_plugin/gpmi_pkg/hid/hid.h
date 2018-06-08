@@ -31,7 +31,6 @@ typedef char* pcb_hid_attr_val_t;
 typedef enum pcb_cap_style_t_e {
  Square_Cap,   /* rectangular lines (square pad) */
  Round_Cap,    /* round pins or round-ended pads, thermals */
- Beveled_Cap   /* octagon pins or bevel-cornered pads */
 } pcb_cap_style_t;
 
 typedef void *pcb_poly_t;
