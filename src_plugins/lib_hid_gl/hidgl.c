@@ -283,12 +283,15 @@ static void draw_cap(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_angle_
 	}
 }
 
+#define NEEDS_CAP(width, coord_per_pix) (width > coord_per_pix)
+
 void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, double scale)
 {
 	double angle;
 	float deltax, deltay, length;
 	float wdx, wdy;
 	int circular_caps = 0;
+	pcb_coord_t orig_width = width;
 
 	if (width == 0)
 		drawgl_add_line(x1,y1,x2,y2);
@@ -339,7 +342,7 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
 
-		if (circular_caps) {
+		if (circular_caps && (NEEDS_CAP(orig_width, scale)))  {
 			draw_cap(width, x1, y1, angle, scale);
 			draw_cap(width, x2, y2, angle + 180., scale);
 		}
@@ -363,6 +366,7 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	int slices;
 	int i;
 	int hairline = 0;
+	pcb_coord_t orig_width = width;
 
 	/* TODO: Draw hairlines as lines instead of triangles ? */
 
@@ -422,9 +426,11 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	if (hairline)
 		return;
 
-	draw_cap(width, x + rx * -cosf(start_angle_rad), y + rx * sinf(start_angle_rad), start_angle, scale);
-	draw_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad),
-					 y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
+	if (NEEDS_CAP(orig_width, scale)) {
+		draw_cap(width, x + rx * -cosf(start_angle_rad), y + rx * sinf(start_angle_rad), start_angle, scale);
+		draw_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad),
+			y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
+	}
 }
 
 void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale)
