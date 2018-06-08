@@ -571,6 +571,11 @@ struct pcb_hid_s {
 
 	/* Optional: registers statistical info for a property */
 	void (*propedit_add_stat)(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg);
+
+	/* Optional: when non-zero, the core renderer may decide to draw cheaper
+	   (simplified) approximation of some objects that would end up being too
+	   small. For a GUI, this should depend on the zoom level */
+	pcb_coord_t coord_per_pix;
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

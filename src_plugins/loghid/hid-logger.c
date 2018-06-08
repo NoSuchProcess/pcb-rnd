@@ -97,6 +97,7 @@ static void log_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_fprintf(out_, "render_burst(%d,[%mm;%mm,%mm;%mm])\n", op, screen->X1, screen->Y1, screen->X2, screen->Y2);
 	delegatee_->render_burst(op, screen);
+	pcb_gui->coord_per_pix = delegatee_->coord_per_pix;
 }
 
 

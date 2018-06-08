@@ -94,7 +94,7 @@ static void text_at(pcb_hid_gc_t gc, int x, int y, int align, const char *fmt, .
 	t.X -= w * (align & 3) / 2;
 	if (t.X < 0)
 		t.X = 0;
-	pcb_text_draw_(&t, 0,0);
+	pcb_text_draw_(&t, 0,0, PCB_TXT_TINY_ACCURATE);
 	if (align & 8)
 		fab_line(gc, t.X,
 						 t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + PCB_MIL_TO_COORD(10),
@@ -307,7 +307,7 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		PCB_END_LOOP;
 		PCB_TEXT_LOOP(layer);
 		{
-			pcb_text_draw_(text, 0, 0);
+			pcb_text_draw_(text, 0, 0, PCB_TXT_TINY_ACCURATE);
 		}
 		PCB_END_LOOP;
 		pcb_hid_set_line_width(gc, FAB_LINE_W);

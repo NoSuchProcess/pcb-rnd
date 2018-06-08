@@ -68,7 +68,7 @@ static void draw_lead_user(render_priv_t * priv);
 
 void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
-
+	pcb_gui->coord_per_pix = ghid_port.coord_per_pix;
 }
 
 static const gchar *get_color_name(pcb_gtk_color_t * color)
