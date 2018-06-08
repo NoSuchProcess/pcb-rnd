@@ -30,7 +30,7 @@ typedef char* pcb_hid_attr_val_t;
 /* Line or arc ending style */
 typedef enum pcb_cap_style_t_e {
  Square_Cap,   /* rectangular lines (square pad) */
- Round_Cap,    /* round pins or round-ended pads, thermals */
+ Round_Cap     /* round pins or round-ended pads, thermals */
 } pcb_cap_style_t;
 
 typedef void *pcb_poly_t;
