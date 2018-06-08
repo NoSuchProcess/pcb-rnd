@@ -55,10 +55,8 @@ and may be changed by the HID in response to new information.
 
 */
 
-/* Like end cap styles.  The cap *always* extends beyond the
-   coordinates given, by half the width of the line.  Beveled ends can
-   be used to make octagonal pads by giving the same x,y coordinate
-   twice.  */
+/* Line end cap styles.  The cap *always* extends beyond the
+   coordinates given, by half the width of the line. */
 typedef enum {
 	pcb_cap_invalid = -1,
 	pcb_cap_square,        /* square pins or pads when drawn using a line */
