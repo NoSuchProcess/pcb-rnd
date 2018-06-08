@@ -110,8 +110,8 @@ static void log_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	const char *txt = "unknown";
 	switch (style) {
-		ENUM_LOG_TEXT(Square_Cap);
-		ENUM_LOG_TEXT(Round_Cap);
+		ENUM_LOG_TEXT(pcb_cap_square);
+		ENUM_LOG_TEXT(pcb_cap_round);
 	}
 	pcb_fprintf(out_, "set_line_cap(gc, %s)\n", txt);
 	delegatee_->set_line_cap(gc, style);

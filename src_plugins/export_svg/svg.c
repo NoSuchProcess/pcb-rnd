@@ -80,9 +80,9 @@ typedef struct hid_gc_s {
 static const char *CAPS(pcb_cap_style_t cap)
 {
 	switch (cap) {
-		case Round_Cap:
+		case pcb_cap_round:
 			return "round";
-		case Square_Cap:
+		case pcb_cap_square:
 			return "square";
 	}
 	return "";
@@ -402,7 +402,7 @@ static pcb_hid_gc_t svg_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &svg_hid;
-	rv->cap = Round_Cap;
+	rv->cap = pcb_cap_round;
 	rv->width = 1;
 	rv->color = NULL;
 	return rv;

@@ -998,7 +998,7 @@ void pcb_line_draw_label(pcb_line_t *line)
 void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 {
 	PCB_DRAW_BBOX(line);
-	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
+	pcb_gui->set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw) {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line)) {
 			pcb_gui->set_line_width(pcb_draw_out.active_padGC, line->Thickness);

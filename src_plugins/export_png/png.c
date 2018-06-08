@@ -1296,7 +1296,7 @@ static pcb_hid_gc_t png_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &png_hid;
-	rv->cap = Round_Cap;
+	rv->cap = pcb_cap_round;
 	rv->width = 1;
 	rv->color = (color_struct *) malloc(sizeof(color_struct));
 	rv->color->r = rv->color->g = rv->color->b = rv->color->a = 0;
@@ -1474,11 +1474,11 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 		int r;
 
 		switch (gc->cap) {
-		case Round_Cap:
+		case pcb_cap_round:
 			type = 'C';
 			break;
 		default:
-		case Square_Cap:
+		case pcb_cap_square:
 			type = 'S';
 			break;
 		}
@@ -1608,7 +1608,7 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 {
 	if (x1 == x2 && y1 == y2 && !photo_mode) {
 		pcb_coord_t w = gc->width / 2;
-		if (gc->cap != Square_Cap)
+		if (gc->cap != pcb_cap_square)
 			png_fill_circle(gc, x1, y1, w);
 		else
 			png_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
@@ -1634,7 +1634,7 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
-	if (gc->cap != Square_Cap || x1 == x2 || y1 == y2) {
+	if (gc->cap != pcb_cap_square || x1 == x2 || y1 == y2) {
 		gdImageLine(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gdBrushed);
 	}
 	else {

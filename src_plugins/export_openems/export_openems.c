@@ -756,7 +756,7 @@ static void openems_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 {
 	wctx_t *ctx = ems_ctx;
 
-	if (gc->cap == Square_Cap) {
+	if (gc->cap == pcb_cap_square) {
 		pcb_coord_t x[4], y[4];
 		pcb_line_t tmp;
 		tmp.Point1.X = x1;

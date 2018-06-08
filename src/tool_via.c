@@ -86,7 +86,7 @@ void pcb_tool_via_notify_mode(void)
 static void xor_draw_fake_via(pcb_coord_t x, pcb_coord_t y, pcb_coord_t dia, pcb_coord_t clearance)
 {
 	pcb_coord_t r = (dia/2)+clearance;
-	pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
+	pcb_gui->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_gui->set_line_width(pcb_crosshair.GC, 0);
 	pcb_gui->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
 }

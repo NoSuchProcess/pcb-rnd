@@ -2992,11 +2992,11 @@ static void set_gc(pcb_hid_gc_t gc)
 	pcb_printf("set_gc c%s %08lx w%#mS c%d x%d e%d\n", gc->colorname, gc->color, gc->width, gc->cap, gc->xor_set, gc->erase);
 #endif
 	switch (gc->cap) {
-	case Square_Cap:
+	case pcb_cap_square:
 		cap = CapProjecting;
 		join = JoinMiter;
 		break;
-	case Round_Cap:
+	case pcb_cap_round:
 		cap = CapRound;
 		join = JoinRound;
 		break;
@@ -3071,7 +3071,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	y2 = dy2;
 
 	set_gc(gc);
-	if (gc->cap == Square_Cap && x1 == x2 && y1 == y2) {
+	if (gc->cap == pcb_cap_square && x1 == x2 && y1 == y2) {
 		XFillRectangle(display, pixmap, my_gc, x1 - vw / 2, y1 - vw / 2, vw, vw);
 		if (use_mask())
 			XFillRectangle(display, mask_bitmap, mask_gc, x1 - vw / 2, y1 - vw / 2, vw, vw);

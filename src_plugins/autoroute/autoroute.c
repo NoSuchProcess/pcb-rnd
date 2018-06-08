@@ -1356,7 +1356,7 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 
 	if (ddraw != NULL) {
 		ddraw->set_line_width(ar_gc, thickness);
-		ddraw->set_line_cap(ar_gc, Round_Cap);
+		ddraw->set_line_cap(ar_gc, pcb_cap_round);
 		ddraw->set_color(ar_gc, SLayer->Color);
 
 		ddraw->draw_line(ar_gc, b.X1, b.Y1, b.X2, b.Y1);
@@ -1395,7 +1395,7 @@ static void showedge(edge_t * e)
 	if (ddraw == NULL)
 		return;
 
-	ddraw->set_line_cap(ar_gc, Round_Cap);
+	ddraw->set_line_cap(ar_gc, pcb_cap_round);
 	ddraw->set_line_width(ar_gc, 1);
 	ddraw->set_color(ar_gc, Settings.MaskColor);
 
@@ -4573,7 +4573,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 	ddraw = pcb_gui->request_debug_draw();
 	if (ddraw != NULL) {
 		ar_gc = ddraw->make_gc();
-		ddraw->set_line_cap(ar_gc, Round_Cap);
+		ddraw->set_line_cap(ar_gc, pcb_cap_round);
 	}
 #endif
 

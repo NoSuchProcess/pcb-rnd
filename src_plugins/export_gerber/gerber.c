@@ -874,7 +874,7 @@ emit_outline:
 static pcb_hid_gc_t gerber_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(*rv));
-	rv->cap = Round_Cap;
+	rv->cap = pcb_cap_round;
 	return rv;
 }
 
@@ -939,14 +939,14 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 
 	if (radius) {
 		radius *= 2;
-		if (radius != linewidth || lastcap != Round_Cap) {
+		if (radius != linewidth || lastcap != pcb_cap_round) {
 			Aperture *aptr = findAperture(curr_aptr_list, radius, ROUND);
 			if (aptr == NULL)
 				pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
 			else if (f && !is_drill)
 				fprintf(f, "G54D%d*", aptr->dCode);
 			linewidth = radius;
-			lastcap = Round_Cap;
+			lastcap = pcb_cap_round;
 		}
 	}
 	else if (linewidth != gc->width || lastcap != gc->cap) {
@@ -956,11 +956,11 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		linewidth = gc->width;
 		lastcap = gc->cap;
 		switch (gc->cap) {
-		case Round_Cap:
+		case pcb_cap_round:
 			shape = ROUND;
 			break;
 		default:
-		case Square_Cap:
+		case pcb_cap_square:
 			shape = SQUARE;
 			break;
 		}
@@ -1006,7 +1006,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 {
 	pcb_bool m = pcb_false;
 
-	if (x1 != x2 && y1 != y2 && gc->cap == Square_Cap) {
+	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
 		pcb_coord_t x[5], y[5];
 		double tx, ty, theta;
 

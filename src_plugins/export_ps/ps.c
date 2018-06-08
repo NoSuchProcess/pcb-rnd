@@ -959,7 +959,7 @@ static pcb_hid_gc_t ps_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(hid_gc_s));
 	rv->me_pointer = &ps_hid;
-	rv->cap = Round_Cap;
+	rv->cap = pcb_cap_round;
 	return rv;
 }
 
@@ -1038,11 +1038,11 @@ static void use_gc(pcb_hid_gc_t gc)
 	if (lastcap != gc->cap) {
 		int c;
 		switch (gc->cap) {
-		case Round_Cap:
+		case pcb_cap_round:
 			c = 1;
 			break;
 		default:
-		case Square_Cap:
+		case pcb_cap_square:
 			c = 2;
 			break;
 		}
@@ -1089,7 +1089,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	/* If you're etching your own paste mask, this will reduce the
 	   amount of brass you need to etch by drawing outlines for large
 	   pads.  See also ps_fill_rect.  */
-	if (is_paste && gc->width > 2500 && gc->cap == Square_Cap && (x1 == x2 || y1 == y2)) {
+	if (is_paste && gc->width > 2500 && gc->cap == pcb_cap_square && (x1 == x2 || y1 == y2)) {
 		pcb_coord_t t, w;
 		if (x1 > x2) {
 			t = x1;
@@ -1108,7 +1108,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 #endif
 	if (x1 == x2 && y1 == y2) {
 		pcb_coord_t w = gc->width / 2;
-		if (gc->cap == Square_Cap)
+		if (gc->cap == pcb_cap_square)
 			ps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
 			ps_fill_circle(gc, x1, y1, w);
@@ -1272,7 +1272,7 @@ static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	/* See comment in ps_draw_line.  */
 	if (is_paste && (x2 - x1) > 2500 && (y2 - y1) > 2500) {
 		linewidth = 1000;
-		lastcap = Round_Cap;
+		lastcap = pcb_cap_round;
 		fprintf(f, "1000 setlinewidth 1 setlinecap 1 setlinejoin\n");
 		fprintf(f, "%d %d moveto %d %d lineto %d %d lineto %d %d lineto closepath stroke\n",
 						x1 + 500 - bloat, y1 + 500 - bloat,

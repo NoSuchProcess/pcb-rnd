@@ -398,7 +398,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 static pcb_hid_gc_t eps_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
-	rv->cap = Round_Cap;
+	rv->cap = pcb_cap_round;
 	rv->width = 0;
 	rv->color = 0;
 	return rv;
@@ -491,11 +491,11 @@ static void use_gc(pcb_hid_gc_t gc)
 	if (lastcap != gc->cap) {
 		int c;
 		switch (gc->cap) {
-		case Round_Cap:
+		case pcb_cap_round:
 			c = 1;
 			break;
 		default:
-		case Square_Cap:
+		case pcb_cap_square:
 			c = 2;
 			break;
 		}
@@ -523,14 +523,14 @@ static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 {
 	pcb_coord_t w = gc->width / 2;
 	if (x1 == x2 && y1 == y2) {
-		if (gc->cap == Square_Cap)
+		if (gc->cap == pcb_cap_square)
 			eps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
 			eps_fill_circle(gc, x1, y1, w);
 		return;
 	}
 	use_gc(gc);
-	if (gc->erase && gc->cap != Square_Cap) {
+	if (gc->erase && gc->cap != pcb_cap_square) {
 		double ang = atan2(y2 - y1, x2 - x1);
 		double dx = w * sin(ang);
 		double dy = -w * cos(ang);

@@ -588,11 +588,11 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	switch (style) {
-	case Round_Cap:
+	case pcb_cap_round:
 		gc->cap = GDK_CAP_ROUND;
 		gc->join = GDK_JOIN_ROUND;
 		break;
-	case Square_Cap:
+	case pcb_cap_square:
 		gc->cap = GDK_CAP_PROJECTING;
 		gc->join = GDK_JOIN_MITER;
 		break;

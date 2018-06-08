@@ -30,7 +30,7 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	pcb_coord_t this_x, this_y;
 
 	pcb_gui->set_line_width(gc, 0);
-	pcb_gui->set_line_cap(gc, Round_Cap);
+	pcb_gui->set_line_cap(gc, pcb_cap_round);
 
 	/* If the contour is round, use an arc drawing routine. */
 	if (pl->is_round) {

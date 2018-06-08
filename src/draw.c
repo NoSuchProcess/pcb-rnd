@@ -351,7 +351,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 
-		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 
@@ -378,7 +378,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw pins' and pads' names */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, NULL, NULL);

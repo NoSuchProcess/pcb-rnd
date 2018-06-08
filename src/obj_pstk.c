@@ -358,7 +358,7 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 			pcb_gui->fill_polygon_offs(pcb_draw_out.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 			break;
 		case PCB_PSSH_LINE:
-			pcb_gui->set_line_cap(pcb_draw_out.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
+			pcb_gui->set_line_cap(pcb_draw_out.fgGC, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
 			pcb_gui->set_line_width(pcb_draw_out.fgGC, shape->data.line.thickness);
 			pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;

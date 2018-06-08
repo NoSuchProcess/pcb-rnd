@@ -687,7 +687,7 @@ static pcb_hid_gc_t nelma_make_gc(void)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(struct hid_gc_s));
 	rv->me_pointer = &nelma_hid;
-	rv->cap = Round_Cap;
+	rv->cap = pcb_cap_round;
 	rv->width = 1;
 	rv->color = (struct color_struct *) malloc(sizeof(*rv->color));
 	rv->color->r = rv->color->g = rv->color->b = 0;
@@ -771,12 +771,12 @@ static void use_gc(pcb_hid_gc_t gc)
 		int r;
 
 		switch (gc->cap) {
-		case Round_Cap:
+		case pcb_cap_round:
 			type = 'C';
 			r = pcb_to_nelma(gc->width / 2);
 			break;
 		default:
-		case Square_Cap:
+		case pcb_cap_square:
 			r = pcb_to_nelma(gc->width);
 			type = 'S';
 			break;
