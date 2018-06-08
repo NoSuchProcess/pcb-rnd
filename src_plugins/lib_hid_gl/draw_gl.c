@@ -334,6 +334,14 @@ drawgl_add_triangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2,GLfloat x3,GLflo
 }
 
 PCB_INLINE void
+drawgl_add_point(GLfloat x,GLfloat y)
+{
+	primitive_buffer_add(GL_POINTS,vertex_buffer.size,1);
+	vertex_buffer_reserve_extra(1);
+	vertex_buffer_add(x,y);
+}
+
+PCB_INLINE void
 drawgl_add_line(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 {
 	primitive_buffer_add(GL_LINES,vertex_buffer.size,2);
