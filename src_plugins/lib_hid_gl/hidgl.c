@@ -295,7 +295,7 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 	int circular_caps = 0;
 	pcb_coord_t orig_width = width;
 
-	if (width == 0)
+	if ((width == 0) || (!NEEDS_CAP(orig_width, scale)))
 		drawgl_add_line(x1,y1,x2,y2);
 	else {
 		if (width < scale)
@@ -344,7 +344,7 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
 
-		if (circular_caps && (NEEDS_CAP(orig_width, scale)))  {
+		if (circular_caps)  {
 			draw_cap(width, x1, y1, angle, scale);
 			draw_cap(width, x2, y2, angle + 180., scale);
 		}
