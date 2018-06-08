@@ -20,6 +20,7 @@
 #include "../src_plugins/lib_gtk_hid/preview_helper.h"
 
 #include "../src_plugins/lib_hid_gl/opengl.h"
+#include "../src_plugins/lib_hid_gl/draw_gl.h"
 #include <gtk/gtkgl.h>
 #include "../src_plugins/lib_hid_gl/hidgl.h"
 #include "hid_draw_helpers.h"
