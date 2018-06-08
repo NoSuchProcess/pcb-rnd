@@ -1,6 +1,5 @@
 put /local/pcb/mod {lib_hid_gl}
 put /local/pcb/mod/OBJS_C99 [@
-  $(PLUGDIR)/lib_hid_gl/draw_gl.o
   $(PLUGDIR)/lib_hid_gl/hidgl.o
   $(PLUGDIR)/lib_hid_gl/lib_hid_gl.o
   $(PLUGDIR)/lib_hid_gl/stencil_gl.o

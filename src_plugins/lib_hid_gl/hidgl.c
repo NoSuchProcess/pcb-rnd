@@ -41,6 +41,8 @@
 #include "hid.h"
 #include "hidgl.h"
 
+#include "draw_gl.c"
+
 #include "stencil_gl.h"
 
 void hidgl_init(void)
@@ -431,6 +433,11 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 		draw_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad),
 			y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
 	}
+}
+
+void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	drawgl_add_rectangle(x1, y1, x2, y2);
 }
 
 void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale)

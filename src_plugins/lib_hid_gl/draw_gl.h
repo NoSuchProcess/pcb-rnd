@@ -31,28 +31,11 @@
 #include "config.h"
 #include "opengl.h"
 
-void		drawgl_uninit();
+void drawgl_uninit();
+void drawgl_flush();
+void drawgl_set_colour(GLfloat r,GLfloat g,GLfloat b,GLfloat a);
+void drawgl_reset();
 
-void		drawgl_reserve_triangles(int count);
-
-void		drawgl_set_colour(GLfloat r,GLfloat g,GLfloat b,GLfloat a);
-
-void		drawgl_add_triangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2,GLfloat x3,GLfloat y3);
-void		drawgl_add_line(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2);
-void		drawgl_add_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2);
-void		drawgl_add_mask_create();
-void		drawgl_add_mask_destroy();
-void		drawgl_add_mask_use();
-
-void		drawgl_flush();
-void		drawgl_reset();
-void		drawgl_draw_all(int stencil_bits);
-
-void		drawgl_direct_draw_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2);
-void		drawgl_direct_draw_solid_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2);
-
-void		drawgl_set_marker();
-void		drawgl_rewind_to_marker();
 
 #endif /* ! defined HID_GL_DRAW_GL_H */
 

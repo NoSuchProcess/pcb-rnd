@@ -32,6 +32,8 @@
 #include <math.h>
 #include <assert.h>
 
+#include "config.h"
+
 #include "stencil_gl.h"
 
 #define MARKER_STACK_SIZE				16
@@ -312,7 +314,7 @@ drawgl_set_colour(GLfloat r,GLfloat g,GLfloat b,GLfloat a)
 	alpha = a;
 }
 
-void
+PCB_INLINE void
 drawgl_add_triangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2,GLfloat x3,GLfloat y3)
 {
 	/* Debug Drawing 
@@ -331,7 +333,7 @@ drawgl_add_triangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2,GLfloat x3,GLflo
 
 }
 
-void
+PCB_INLINE void
 drawgl_add_line(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 {
 	primitive_buffer_add(GL_LINES,vertex_buffer.size,2);
@@ -340,7 +342,7 @@ drawgl_add_line(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 	vertex_buffer_add(x2,y2);
 }
 
-void
+PCB_INLINE void
 drawgl_add_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 {
 	primitive_buffer_add(GL_LINE_LOOP,vertex_buffer.size,4);
@@ -351,25 +353,25 @@ drawgl_add_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 	vertex_buffer_add(x1,y2);
 }
 
-void
+PCB_INLINE void
 drawgl_add_mask_create()
 {
 	primitive_buffer_add(PRIM_MASK_CREATE,0,0);
 }
 
-void
+PCB_INLINE void
 drawgl_add_mask_destroy()
 {
 	primitive_buffer_add(PRIM_MASK_DESTROY,0,0);
 }
 
-void
+PCB_INLINE void
 drawgl_add_mask_use()
 {
 	primitive_buffer_add(PRIM_MASK_USE,0,0);
 }
 
-void    
+PCB_INLINE void
 drawgl_direct_draw_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 {
 	glBegin(GL_LINE_LOOP);
@@ -381,7 +383,7 @@ drawgl_direct_draw_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 	glEnd();
 }
 
-void    
+PCB_INLINE void
 drawgl_direct_draw_solid_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 {
 	glBegin(GL_TRIANGLES);
@@ -395,7 +397,7 @@ drawgl_direct_draw_solid_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2)
 	glEnd();
 }
 
-void
+PCB_INLINE void
 drawgl_reserve_triangles(int count)
 {
 	vertex_buffer_reserve_extra(count * 3);
@@ -473,7 +475,7 @@ drawgl_flush()
 /* Draw all buffered primitives. The dirty index is ignored and will remain unchanged.
  * This function accepts stencil bits that can be used to mask the drawing.
  */
-void    
+PCB_INLINE void
 drawgl_draw_all(int stencil_bits)
 {
 	int index = primitive_buffer.size;
@@ -596,14 +598,14 @@ drawgl_reset()
 	primitive_buffer_clear();
 }
 
-void    
+PCB_INLINE void
 drawgl_set_marker()
 {
 	vertex_buffer_set_marker();
 	primitive_buffer_set_marker();
 }
 
-void    
+PCB_INLINE void
 drawgl_rewind_to_marker()
 {
 	vertex_buffer_rewind();

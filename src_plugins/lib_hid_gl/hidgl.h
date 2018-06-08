@@ -28,8 +28,6 @@
 #ifndef PCB_HID_COMMON_HIDGL_H
 #define PCB_HID_COMMON_HIDGL_H
 
-#include "draw_gl.h"
-
 /*extern float global_depth;*/
 void hidgl_draw_local_grid(pcb_coord_t cx,pcb_coord_t cy,int radius);
 void hidgl_draw_grid(pcb_box_t * drawn_area);
