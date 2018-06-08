@@ -853,7 +853,7 @@ emit_outline:
 		if (outline_layer && outline_layer != PCB->Data->Layer + layer)
 			pcb_draw_layer(outline_layer, &region);
 		else if (!outline_layer) {
-			pcb_hid_gc_t gc = pcb_gui->make_gc();
+			pcb_hid_gc_t gc = pcb_hid_make_gc();
 			if (flags & PCB_LYT_SILK)
 				pcb_gui->set_line_width(gc, conf_core.design.min_slk);
 			else if (group >= 0)
@@ -864,7 +864,7 @@ emit_outline:
 			pcb_gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
 			pcb_gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
 			pcb_gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
-			pcb_gui->destroy_gc(gc);
+			pcb_hid_destroy_gc(gc);
 		}
 	}
 

@@ -769,12 +769,12 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	vtp0_truncate(&delayed_labels, 0);
 
 	pcb_gui = hid;
-	pcb_draw_out.fgGC = pcb_gui->make_gc();
-	pcb_draw_out.padGC = pcb_gui->make_gc();
-	pcb_draw_out.backpadGC = pcb_gui->make_gc();
-	pcb_draw_out.padselGC = pcb_gui->make_gc();
-	pcb_draw_out.drillGC = pcb_gui->make_gc();
-	pcb_draw_out.pmGC = pcb_gui->make_gc();
+	pcb_draw_out.fgGC = pcb_hid_make_gc();
+	pcb_draw_out.padGC = pcb_hid_make_gc();
+	pcb_draw_out.backpadGC = pcb_hid_make_gc();
+	pcb_draw_out.padselGC = pcb_hid_make_gc();
+	pcb_draw_out.drillGC = pcb_hid_make_gc();
+	pcb_draw_out.pmGC = pcb_hid_make_gc();
 	if (hid->force_compositing)
 		pcb_draw_out.direct = 0;
 	else
@@ -791,12 +791,12 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 
 static void expose_end(pcb_hid_t *old_gui)
 {
-	pcb_gui->destroy_gc(pcb_draw_out.fgGC);
-	pcb_gui->destroy_gc(pcb_draw_out.padGC);
-	pcb_gui->destroy_gc(pcb_draw_out.backpadGC);
-	pcb_gui->destroy_gc(pcb_draw_out.padselGC);
-	pcb_gui->destroy_gc(pcb_draw_out.drillGC);
-	pcb_gui->destroy_gc(pcb_draw_out.pmGC);
+	pcb_hid_destroy_gc(pcb_draw_out.fgGC);
+	pcb_hid_destroy_gc(pcb_draw_out.padGC);
+	pcb_hid_destroy_gc(pcb_draw_out.backpadGC);
+	pcb_hid_destroy_gc(pcb_draw_out.padselGC);
+	pcb_hid_destroy_gc(pcb_draw_out.drillGC);
+	pcb_hid_destroy_gc(pcb_draw_out.pmGC);
 	pcb_gui = old_gui;
 
 	pcb_draw_out.fgGC = NULL;

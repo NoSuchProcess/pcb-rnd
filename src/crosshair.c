@@ -1051,7 +1051,7 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
  */
 void pcb_crosshair_init(void)
 {
-	pcb_crosshair.GC = pcb_gui->make_gc();
+	pcb_crosshair.GC = pcb_hid_make_gc();
 
 	pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	pcb_gui->set_draw_xor(pcb_crosshair.GC, 1);
@@ -1085,7 +1085,7 @@ void pcb_crosshair_uninit(void)
 {
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
 	pcb_route_destroy(&pcb_crosshair.Route);
-	pcb_gui->destroy_gc(pcb_crosshair.GC);
+	pcb_hid_destroy_gc(pcb_crosshair.GC);
 }
 
 /* sets the crosshair range to the current buffer extents */
