@@ -2874,6 +2874,11 @@ static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
+static void lesstif_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+{
+	pcb_gui->coord_per_pix = view_zoom;
+}
+
 static void lesstif_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
@@ -3867,6 +3872,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.make_gc = lesstif_make_gc;
 	lesstif_hid.destroy_gc = lesstif_destroy_gc;
 	lesstif_hid.set_drawing_mode = lesstif_set_drawing_mode;
+	lesstif_hid.render_burst = lesstif_render_burst;
 	lesstif_hid.set_color = lesstif_set_color;
 	lesstif_hid.set_line_cap = lesstif_set_line_cap;
 	lesstif_hid.set_line_width = lesstif_set_line_width;
