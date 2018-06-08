@@ -471,6 +471,11 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 	curr_drawing_mode = op;
 }
 
+static void ghid_gdk_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+{
+	pcb_gui->coord_per_pix = gport->view.coord_per_px;
+}
+
 typedef struct {
 	int color_set;
 	GdkColor color;
@@ -1494,6 +1499,7 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 		hid->make_gc = ghid_gdk_make_gc;
 		hid->destroy_gc = ghid_gdk_destroy_gc;
 		hid->set_drawing_mode = ghid_gdk_set_drawing_mode;
+		hid->render_burst = ghid_gdk_render_burst;
 		hid->set_color = ghid_gdk_set_color;
 		hid->set_line_cap = ghid_gdk_set_line_cap;
 		hid->set_line_width = ghid_gdk_set_line_width;
