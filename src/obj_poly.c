@@ -1021,7 +1021,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 			pcb_gui->fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, drawn_area);
 			head = &polygon->Clipped->contours->head;
 
-			pcb_gui->set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
 				pcb_coord_t x, y, r;
 				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
@@ -1029,7 +1029,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 
 #warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
 				r = PCB_DRAW_TERM_GFX_WIDTH;
-				pcb_gui->set_line_width(pcb_draw_out.fgGC, r);
+				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
 				pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}

@@ -654,4 +654,22 @@ PCB_INLINE void pcb_hid_destroy_gc(pcb_hid_gc_t gc)
 	pcb_gui->destroy_gc(gc);
 }
 
+PCB_INLINE void pcb_hid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+{
+	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	if (hc->cap != style) {
+		hc->cap = style;
+		pcb_gui->set_line_cap(gc, style);
+	}
+}
+
+PCB_INLINE void pcb_hid_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+{
+	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	if (hc->width != width) {
+		hc->width = width;
+		pcb_gui->set_line_width(gc, width);
+	}
+}
+
 #endif

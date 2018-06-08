@@ -358,8 +358,8 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 			pcb_gui->fill_polygon_offs(pcb_draw_out.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 			break;
 		case PCB_PSSH_LINE:
-			pcb_gui->set_line_cap(pcb_draw_out.fgGC, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
-			pcb_gui->set_line_width(pcb_draw_out.fgGC, shape->data.line.thickness);
+			pcb_hid_set_line_cap(pcb_draw_out.fgGC, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, shape->data.line.thickness);
 			pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;
 		case PCB_PSSH_CIRC:
@@ -415,7 +415,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 		else
 			set_ps_color(ps, ctx->is_current, grp->ltype);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
-			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_pstk_draw_shape_thin(pcb_draw_out.fgGC, ps, shape);
 		}
 		else
@@ -501,7 +501,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 		pcb_coord_t r = proto->hdia / 2;
 		r += r/8; /* +12.5% */
 		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);

@@ -233,9 +233,9 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 		int w = rat->Thickness;
 
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
-			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		else
-			pcb_gui->set_line_width(pcb_draw_out.fgGC, w);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, w);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else

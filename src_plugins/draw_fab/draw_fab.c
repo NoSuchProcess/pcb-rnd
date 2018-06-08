@@ -198,7 +198,7 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		yoff -= (4 - ds) * TEXT_LINE;
 	}
 
-	pcb_gui->set_line_width(gc, FAB_LINE_W);
+	pcb_hid_set_line_width(gc, FAB_LINE_W);
 
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
 		int plated_sym = -1, unplated_sym = -1;
@@ -277,13 +277,13 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		}
 	}
 	if (!found) {
-		pcb_gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
+		pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
 		pcb_gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
 		pcb_gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
 		pcb_gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
 		pcb_gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
 		/*FPrintOutline (); */
-		pcb_gui->set_line_width(gc, FAB_LINE_W);
+		pcb_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0,
 						"Maximum Dimensions: %f mils wide, %f mils high", PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
 		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1,
@@ -293,7 +293,7 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	}
 	else {
 		pcb_layer_t *layer = LAYER_PTR(i);
-		pcb_gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
+		pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
 		PCB_LINE_LOOP(layer);
 		{
 			pcb_gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
@@ -309,7 +309,7 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			pcb_text_draw_(text, 0, 0);
 		}
 		PCB_END_LOOP;
-		pcb_gui->set_line_width(gc, FAB_LINE_W);
+		pcb_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 	yoff -= TEXT_LINE;

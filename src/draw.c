@@ -351,15 +351,15 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 
-		pcb_gui->set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
 
 		if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
-			pcb_gui->set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 			pcb_draw_pstk_marks(drawn_area);
 		}
 
@@ -378,12 +378,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw pins' and pads' names */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_gui->set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, NULL, NULL);
 		if (PCB->padstack_mark_on) {
-			pcb_gui->set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 			pcb_draw_pstk_labels(drawn_area);
 		}
 		pcb_draw_pstk_names(conf_core.editor.show_solder_side ? solder : component, drawn_area);
@@ -539,7 +539,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	   the outline layer.  */
 	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(PCB, Layer)) {
 		pcb_gui->set_color(pcb_draw_out.fgGC, Layer->meta.real.color);
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
 

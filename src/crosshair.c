@@ -1055,8 +1055,8 @@ void pcb_crosshair_init(void)
 
 	pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	pcb_gui->set_draw_xor(pcb_crosshair.GC, 1);
-	pcb_gui->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
-	pcb_gui->set_line_width(pcb_crosshair.GC, 1);
+	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
+	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
 
 	/* set initial shape */
 	pcb_crosshair.shape = pcb_ch_shape_basic;
