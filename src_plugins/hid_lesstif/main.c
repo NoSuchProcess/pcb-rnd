@@ -69,6 +69,7 @@ int lesstif_active = 0;
 #define UUNIT	conf_core.editor.grid_unit->allow
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	Pixel color;
 	char *colorname;

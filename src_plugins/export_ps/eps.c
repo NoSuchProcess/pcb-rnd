@@ -51,6 +51,7 @@ static void eps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action);
 /*----------------------------------------------------------------------------*/
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
 	pcb_coord_t width;
 	int color;

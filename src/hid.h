@@ -60,7 +60,8 @@ and may be changed by the HID in response to new information.
    be used to make octagonal pads by giving the same x,y coordinate
    twice.  */
 typedef enum {
-	Trace_Cap,									/* This means we're drawing a trace, which has round caps.  */
+	pcb_cap_invalid = -1,
+	Trace_Cap = 0,							/* This means we're drawing a trace, which has round caps.  */
 	Square_Cap,									/* Square pins or pads. */
 	Round_Cap,									/* Round pins or round-ended pads, thermals.  */
 	Beveled_Cap									/* Octagon pins or bevel-cornered pads.  */
@@ -74,10 +75,17 @@ typedef union {
 	void *ptr;
 } pcb_hidval_t;
 
+typedef struct {
+	pcb_coord_t width;     /* as set by set_line_width */
+	pcb_cap_style_t cap;   /* as set by set_line_cap */
+} pcb_core_gc_t;
+
 /* This graphics context is an opaque pointer defined by the HID.  GCs
    are HID-specific; attempts to use one HID's GC for a different HID
-   will result in a fatal error.  */
+   will result in a fatal error.  The first field must be:
+   pcb_core_gc_t core_gc; */
 typedef struct hid_gc_s *pcb_hid_gc_t;
+
 
 #define PCB_HIDCONCAT(a,b) a##b
 

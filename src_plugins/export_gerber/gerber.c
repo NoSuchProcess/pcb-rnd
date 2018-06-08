@@ -245,6 +245,7 @@ static ApertureList *setLayerApertureList(int layer_idx)
 static pcb_hid_t gerber_hid;
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
 	int width;
 	int color;

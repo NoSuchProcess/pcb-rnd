@@ -28,7 +28,7 @@ static void batch_end(void);
    non-GUI needs.  */
 
 typedef struct hid_gc_s {
-	int nothing_interesting_here;
+	pcb_core_gc_t core_gc;
 } hid_gc_s;
 
 static pcb_hid_attribute_t *batch_get_export_options(int *n_ret)

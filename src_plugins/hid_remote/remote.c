@@ -26,6 +26,7 @@ static const char *remote_cookie = "remote HID";
 static pcb_hid_t remote_hid;
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	int nop;
 } hid_gc_s;
 

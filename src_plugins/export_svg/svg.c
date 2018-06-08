@@ -68,6 +68,7 @@ const char *svg_cookie = "svg HID";
 
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	int width;

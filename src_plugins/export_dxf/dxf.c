@@ -83,6 +83,7 @@ typedef struct {
 static dxf_ctx_t dxf_ctx;
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	pcb_coord_t width;
@@ -93,6 +94,7 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static struct hid_gc_s thin = {
+	{0},
 	NULL,
 	0, 1,
 	NULL, 0, 0

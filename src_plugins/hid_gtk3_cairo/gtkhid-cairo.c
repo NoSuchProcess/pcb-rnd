@@ -90,6 +90,7 @@ typedef struct render_priv_s {
 } render_priv_t;
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 
 	const char *colorname;								/* current color name for this GC.    */

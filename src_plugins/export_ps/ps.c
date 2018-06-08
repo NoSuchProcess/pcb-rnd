@@ -37,6 +37,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 static void use_gc(pcb_hid_gc_t gc);
 
 typedef struct hid_gc_s {
+	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	pcb_coord_t width;
