@@ -60,7 +60,7 @@ and may be changed by the HID in response to new information.
 typedef enum {
 	pcb_cap_invalid = -1,
 	pcb_cap_square,        /* square pins or pads when drawn using a line */
-	pcb_cap_round,         /* for normal traces, round pins */
+	pcb_cap_round          /* for normal traces, round pins */
 } pcb_cap_style_t;
 
 /* The HID may need something more than an "int" for colors, timers,
