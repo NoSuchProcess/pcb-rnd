@@ -967,7 +967,7 @@ void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool ve
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
-	pcb_text_draw_(&text, 0, 0);
+	pcb_text_draw_(&text, 0, 0, PCB_TXT_TINY_HIDE);
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
 }

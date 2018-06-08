@@ -799,7 +799,7 @@ static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, i
 
 
 /* lowlevel drawing routine for text objects */
-static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
+static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	pcb_coord_t x = 0;
 	unsigned char *string, *rendered = pcb_text_render_str(Text);
@@ -947,9 +947,9 @@ void pcb_text_draw_label(pcb_text_t *text)
 }
 
 
-void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term_gfx)
+void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny)
 {
-	DrawTextLowLevel_(text, min_line_width, 0, 0, 0);
+	DrawTextLowLevel_(text, min_line_width, 0, 0, 0, tiny);
 
 	if (text->term != NULL) {
 		if ((allow_term_gfx) && ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text)))
@@ -990,7 +990,7 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 	else
 		min_silk_line = conf_core.design.min_wid;
 
-	pcb_text_draw_(text, min_silk_line, allow_term_gfx);
+	pcb_text_draw_(text, min_silk_line, allow_term_gfx, PCB_TXT_TINY_CHEAP);
 }
 
 pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
@@ -1036,7 +1036,7 @@ void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text)
 
 void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 {
-	DrawTextLowLevel_(text, 0, 1, x, y);
+	DrawTextLowLevel_(text, 0, 1, x, y, PCB_TXT_TINY_CHEAP);
 	if (conf_core.appearance.text_host_bbox) {
 		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
 		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);

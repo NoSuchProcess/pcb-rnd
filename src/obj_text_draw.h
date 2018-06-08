@@ -35,7 +35,13 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl);
 pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void pcb_text_draw_(pcb_text_t *Text, pcb_coord_t min_line_width, int allow_term_gfx);
+typedef enum pcb_text_tiny_e { /* How to draw text that is too tiny to be readable */
+	PCB_TXT_TINY_HIDE,         /* do not draw it at all */
+	PCB_TXT_TINY_CHEAP,        /* draw a cheaper, simplified approximation that shows there's something there */
+	PCB_TXT_TINY_ACCURATE      /* always draw text accurately, even if it will end up unreadable */
+} pcb_text_tiny_t;
+
+void pcb_text_draw_(pcb_text_t *Text, pcb_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny);
 void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);

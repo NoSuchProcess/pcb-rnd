@@ -44,7 +44,7 @@ void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
 	t.fid = 0; /* use the default font */
 	t.Scale = 150;
 	t.Flags = pcb_no_flags();
-	pcb_text_draw_(&t, 0, 0);
+	pcb_text_draw_(&t, 0, 0, PCB_TXT_TINY_ACCURATE);
 }
 
 static pcb_bool dummy_mouse(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
