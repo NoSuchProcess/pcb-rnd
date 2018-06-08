@@ -21,7 +21,6 @@
 
 #include "../src_plugins/lib_hid_gl/opengl.h"
 #include <gtk/gtkgl.h>
-#include "../src_plugins/lib_hid_gl/draw_gl.h"
 #include "../src_plugins/lib_hid_gl/hidgl.h"
 #include "hid_draw_helpers.h"
 #include "../src_plugins/lib_hid_gl/stencil_gl.h"
