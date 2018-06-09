@@ -286,7 +286,8 @@ struct pcb_hid_s {
 	   positive or negative drawing mode. The canvas covers the screen box. */
 	void (*set_drawing_mode)(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen);
 
-	/* Announce start/end of a render burst for a specific screen screen box. */
+	/* Announce start/end of a render burst for a specific screen screen box;
+	   A GUI hid should set the coord_per_pix value here for proper optimization. */
 	void (*render_burst)(pcb_burst_op_t op, const pcb_box_t *screen);
 
 	/* Sets a color.  Names can be like "red" or "#rrggbb" or special
