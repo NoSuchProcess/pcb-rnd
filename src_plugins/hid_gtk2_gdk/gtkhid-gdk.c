@@ -865,7 +865,9 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 {
 	static GdkPoint *points = 0;
 	static int npoints = 0;
-	int i;
+	int i, len;
+	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
+
 	render_priv_t *priv = gport->render_priv;
 	USE_GC(gc);
 
@@ -875,13 +877,24 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 		npoints = n_coords + 1;
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
 	}
-	for (i = 0; i < n_coords; i++) {
-		points[i].x = Vx(x[i]);
-		points[i].y = Vy(y[i]);
+	for (len = i = 0; i < n_coords; i++) {
+		if ((i != n_coords-1) && (PCB_ABS(x[i] - lastx) < mindist) && (PCB_ABS(y[i] - lasty) < mindist))
+			continue;
+		points[len].x = Vx(x[i]);
+		points[len].y = Vy(y[i]);
+		lastx = x[i];
+		lasty = y[i];
+		len++;
 	}
-	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
+	if (len < 3) {
+		gdk_draw_point(priv->out_pixel, priv->pixel_gc, points[0].x, points[0].y);
+		if (priv->out_clip != NULL)
+			gdk_draw_point(priv->out_clip, priv->pixel_gc, points[0].x, points[0].y);
+		return;
+	}
+	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, len);
 	if (priv->out_clip != NULL)
-		gdk_draw_polygon(priv->out_clip, priv->clip_gc, 1, points, n_coords);
+		gdk_draw_polygon(priv->out_clip, priv->clip_gc, 1, points, len);
 }
 
 /* Intentional code duplication for performance */
@@ -889,8 +902,9 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 {
 	static GdkPoint *points = 0;
 	static int npoints = 0;
-	int i;
+	int i, len;
 	render_priv_t *priv = gport->render_priv;
+	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
 	USE_GC(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
@@ -899,9 +913,20 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 		npoints = n_coords + 1;
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
 	}
-	for (i = 0; i < n_coords; i++) {
-		points[i].x = Vx(x[i]+dx);
-		points[i].y = Vy(y[i]+dy);
+	for (len = i = 0; i < n_coords; i++) {
+		if ((i != n_coords-1) && (PCB_ABS(x[i] - lastx) < mindist) && (PCB_ABS(y[i] - lasty) < mindist))
+			continue;
+		points[len].x = Vx(x[i]+dx);
+		points[len].y = Vy(y[i]+dy);
+		lastx = x[i];
+		lasty = y[i];
+		len++;
+	}
+	if (len < 3) {
+		gdk_draw_point(priv->out_pixel, priv->pixel_gc, points[0].x, points[0].y);
+		if (priv->out_clip != NULL)
+			gdk_draw_point(priv->out_clip, priv->pixel_gc, points[0].x, points[0].y);
+		return;
 	}
 	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
 	if (priv->out_clip != NULL)
