@@ -82,6 +82,13 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 	pcb_polyarea_t *draw_piece;
 	int x;
 
+	/* Optimization: if the polygon has no holes and is smaller the clip_box,
+	   it is safe to draw directly */
+	if ((clip_box->X1 < pl->xmin) && (clip_box->X2 > pl->xmax) && (clip_box->Y1 < pl->ymin) && (clip_box->Y2 > pl->ymax)) {
+		fill_contour(gc, pl);
+		return;
+	}
+
 	clip_poly = pcb_poly_from_rect(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
 	pcb_poly_contour_copy(&pl_copy, pl);
 	piece_poly = pcb_polyarea_create();
