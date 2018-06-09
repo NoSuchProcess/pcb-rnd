@@ -430,7 +430,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
-	pcb_coord_t mark;
+	pcb_coord_t mark, mark2;
 
 	/* mark is a cross in the middle, right on the hole;
 	   cross size should extend beyond the hole */
@@ -439,10 +439,18 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 	if (proto != NULL)
 		mark += proto->hdia/2;
 
+	mark2 = mark*2;
+	if (mark2 < pcb_gui->coord_per_pix)
+		return;
+
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
+	if (mark2 > pcb_gui->coord_per_pix*3) {
+		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
+		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
+	}
+	else
+		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-pcb_gui->coord_per_pix, ps->y, ps->x+pcb_gui->coord_per_pix, ps->y);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
