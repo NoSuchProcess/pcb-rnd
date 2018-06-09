@@ -845,7 +845,7 @@ PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char
 		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
 			w = text_width(font, Text, string);
 			if (xordraw) {
-				cheap_text_line(pcb_crosshair.GC, Text, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2, xordx, xordy);
+				cheap_text_line(pcb_crosshair.GC, Text, 0, h/2, w, h/2, xordx, xordy);
 			}
 			else {
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
