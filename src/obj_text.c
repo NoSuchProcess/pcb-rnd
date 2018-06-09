@@ -814,6 +814,46 @@ static pcb_coord_t text_width(pcb_font_t *font, pcb_text_t *Text, unsigned char 
 	return PCB_SCALE_TEXT(w, Text->Scale);
 }
 
+PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char *string, int xordraw, pcb_text_tiny_t tiny)
+{
+	pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, Text->Scale);
+	if (tiny == PCB_TXT_TINY_HIDE) {
+		if (h <= pcb_gui->coord_per_pix*6) /* <= 6 pixel high: unreadable */
+			return 1;
+	}
+	else if (tiny == PCB_TXT_TINY_CHEAP) {
+		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
+			w = text_width(font, Text, string);
+			if (xordraw) {
+				pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2);
+			}
+			else {
+				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+				pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2);
+			}
+			return 1;
+		}
+		else if (h <= pcb_gui->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
+			w = text_width(font, Text, string);
+			if (xordraw) {
+				h /= 4;
+				pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h, Text->X + w, Text->Y+h);
+				pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h, Text->X + w, Text->Y+h*3);
+				pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h*3, Text->X + w, Text->Y+h*3);
+			}
+			else {
+				h /= 4;
+				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+				pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h, Text->X + w, Text->Y+h);
+				pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h, Text->X + w, Text->Y+h*3);
+				pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h*3, Text->X + w, Text->Y+h*3);
+			}
+			return 1;
+		}
+	}
+	return 0;
+}
+
 /* lowlevel drawing routine for text objects */
 static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
@@ -826,41 +866,8 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 
 	/* cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
-		pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, Text->Scale);
-		if (tiny == PCB_TXT_TINY_HIDE) {
-			if (h <= pcb_gui->coord_per_pix*6) /* <= 6 pixel high: unreadable */
-				return;
-		}
-		else if (tiny == PCB_TXT_TINY_CHEAP) {
-			if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
-				w = text_width(font, Text, string);
-				if (xordraw) {
-					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2);
-				}
-				else {
-					pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2);
-				}
-				return;
-			}
-			else if (h <= pcb_gui->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
-				w = text_width(font, Text, string);
-				if (xordraw) {
-					h /= 4;
-					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h, Text->X + w, Text->Y+h);
-					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h, Text->X + w, Text->Y+h*3);
-					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h*3, Text->X + w, Text->Y+h*3);
-				}
-				else {
-					h /= 4;
-					pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h, Text->X + w, Text->Y+h);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h, Text->X + w, Text->Y+h*3);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h*3, Text->X + w, Text->Y+h*3);
-				}
-				return;
-			}
-		}
+		if (draw_text_cheap(Text, font, string, xordraw, tiny))
+			return;
 	}
 
 	/* normal draw */
