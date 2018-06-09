@@ -865,8 +865,8 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 {
 	static GdkPoint *points = 0;
 	static int npoints = 0;
-	int i, len;
-	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
+	int i, len, sup = 0;
+	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
 
 	render_priv_t *priv = gport->render_priv;
 	USE_GC(gc);
@@ -878,13 +878,23 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
 	}
 	for (len = i = 0; i < n_coords; i++) {
-		if ((i != n_coords-1) && (PCB_ABS(x[i] - lastx) < mindist) && (PCB_ABS(y[i] - lasty) < mindist))
+		if ((i != n_coords-1) && (PCB_ABS(x[i] - lastx) < mindist) && (PCB_ABS(y[i] - lasty) < mindist)) {
+			lsx = x[i];
+			lsy = y[i];
+			sup = 1;
 			continue;
+		}
+		if (sup) { /* before a big jump, make sure to use the accurate coords of the last (suppressed) point of the crowd */
+			points[len].x = Vx(lsx);
+			points[len].y = Vy(lsy);
+			len++;
+			sup = 0;
+		}
 		points[len].x = Vx(x[i]);
 		points[len].y = Vy(y[i]);
+		len++;
 		lastx = x[i];
 		lasty = y[i];
-		len++;
 	}
 	if (len < 3) {
 		gdk_draw_point(priv->out_pixel, priv->pixel_gc, points[0].x, points[0].y);
@@ -902,9 +912,9 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 {
 	static GdkPoint *points = 0;
 	static int npoints = 0;
-	int i, len;
+	int i, len, sup = 0;
 	render_priv_t *priv = gport->render_priv;
-	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
+	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
 	USE_GC(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
@@ -914,13 +924,23 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
 	}
 	for (len = i = 0; i < n_coords; i++) {
-		if ((i != n_coords-1) && (PCB_ABS(x[i] - lastx) < mindist) && (PCB_ABS(y[i] - lasty) < mindist))
+		if ((i != n_coords-1) && (PCB_ABS(x[i] - lastx) < mindist) && (PCB_ABS(y[i] - lasty) < mindist)) {
+			lsx = x[i];
+			lsy = y[i];
+			sup = 1;
 			continue;
+		}
+		if (sup) { /* before a big jump, make sure to use the accurate coords of the last (suppressed) point of the crowd */
+			points[len].x = Vx(lsx);
+			points[len].y = Vy(lsy);
+			len++;
+			sup = 0;
+		}
 		points[len].x = Vx(x[i]+dx);
 		points[len].y = Vy(y[i]+dy);
+		len++;
 		lastx = x[i];
 		lasty = y[i];
-		len++;
 	}
 	if (len < 3) {
 		gdk_draw_point(priv->out_pixel, priv->pixel_gc, points[0].x, points[0].y);
