@@ -644,6 +644,7 @@ void tesselate_contour(GLUtesselator * tobj, pcb_pline_t * contour, GLdouble * v
 {
 	pcb_vnode_t *vn = &contour->head;
 	int offset = 0;
+	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = scale*2;
 
 	/* If the contour is round, and hidgl_fill_circle would use
 	 * less slices than we have vertices to draw it, then call
@@ -660,15 +661,18 @@ void tesselate_contour(GLUtesselator * tobj, pcb_pline_t * contour, GLdouble * v
 	gluTessBeginPolygon(tobj, NULL);
 	gluTessBeginContour(tobj);
 	do {
+		if ((offset > 3) && (PCB_ABS(vn->point[0] - lastx) < mindist) && (PCB_ABS(vn->point[1] - lasty) < mindist))
+			continue;
 		vertices[0 + offset] = vn->point[0];
 		vertices[1 + offset] = vn->point[1];
 		vertices[2 + offset] = 0.;
+		lastx = vn->point[0];
+		lasty = vn->point[1];
 		gluTessVertex(tobj, &vertices[offset], &vertices[offset]);
 		offset += 3;
 	} while ((vn = vn->next) != &contour->head);
 	gluTessEndContour(tobj);
 	gluTessEndPolygon(tobj);
-	
 }
 
 struct do_hole_info {
