@@ -35,6 +35,7 @@
 #include "data.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "hid_inlines.h"
 #include "undo.h"
 #include "polygon.h"
 #include "event.h"
@@ -797,6 +798,21 @@ static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, i
 		pcb_gui->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
 }
 
+/* Very rough estimation on the full width of the text */
+static pcb_coord_t text_width(pcb_font_t *font, pcb_text_t *Text, unsigned char *string)
+{
+	pcb_coord_t w = 0;
+	const pcb_box_t *defaultsymbol = &font->DefaultSymbol;
+	while(string && *string) {
+		/* draw lines if symbol is valid and data is present */
+		if (*string <= PCB_MAX_FONTPOSITION && font->Symbol[*string].Valid)
+			w += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
+		else
+			w += (defaultsymbol->X2 - defaultsymbol->X1) * 6 / 5;
+		string++;
+	}
+	return PCB_SCALE_TEXT(w, Text->Scale);
+}
 
 /* lowlevel drawing routine for text objects */
 static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
@@ -808,6 +824,46 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 
 	string = rendered;
 
+	/* cheap draw */
+	if (tiny != PCB_TXT_TINY_ACCURATE) {
+		pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, Text->Scale);
+		if (tiny == PCB_TXT_TINY_HIDE) {
+			if (h <= pcb_gui->coord_per_pix*6) /* <= 6 pixel high: unreadable */
+				return;
+		}
+		else if (tiny == PCB_TXT_TINY_CHEAP) {
+			if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
+				w = text_width(font, Text, string);
+				if (xordraw) {
+					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2);
+				}
+				else {
+					pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h/2, Text->X + w, Text->Y+h/2);
+				}
+				return;
+			}
+			else if (h <= pcb_gui->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
+				w = text_width(font, Text, string);
+				if (xordraw) {
+					h /= 4;
+					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h, Text->X + w, Text->Y+h);
+					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h, Text->X + w, Text->Y+h*3);
+					pcb_gui->draw_line(pcb_crosshair.GC, Text->X, Text->Y+h*3, Text->X + w, Text->Y+h*3);
+				}
+				else {
+					h /= 4;
+					pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h, Text->X + w, Text->Y+h);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h, Text->X + w, Text->Y+h*3);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, Text->X, Text->Y+h*3, Text->X + w, Text->Y+h*3);
+				}
+				return;
+			}
+		}
+	}
+
+	/* normal draw */
 	while (string && *string) {
 		/* draw lines if symbol is valid and data is present */
 		if (*string <= PCB_MAX_FONTPOSITION && font->Symbol[*string].Valid) {
