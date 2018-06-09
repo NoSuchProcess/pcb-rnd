@@ -110,19 +110,27 @@ void pcb_lighten_color(const char *orig, char buf[8], double factor)
 	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
 }
 
-void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs)
+void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
-	double len_squared = dx*dx + dy*dy;
+	double len_mnt = PCB_ABS(dx) + PCB_ABS(dy);
 	int n;
+	pcb_coord_t minlen = pcb_gui->coord_per_pix * 8;
+
+	if (len_mnt < minlen*2) {
+		/* line too short, just draw it */
+		pcb_gui->draw_line(GC, x1, y1, x2, y2);
+		return;
+	}
 
 	segs = (segs << 1) + 1; /* must be odd */
 
-	if (len_squared < 1000000) {
-		/* line too short, just draw it - TODO: magic value; with a proper geo lib this would be gone anyway */
-		pcb_gui->draw_line(GC, x1, y1, x2, y2);
-		return;
+	if (cheap) {
+		if ((segs > 3) && (len_mnt < minlen * segs))
+			segs = 3;
+		else if ((segs > 5) && (len_mnt < minlen * 2 * segs))
+			segs = 5;
 	}
 
 	/* first seg is drawn from x1, y1 with no rounding error due to n-1 == 0 */
