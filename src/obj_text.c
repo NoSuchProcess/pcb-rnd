@@ -830,7 +830,7 @@ PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_text_t *Text, pcb_coord_t x
 	y1 += Text->Y + xordy;
 	x2 += Text->X + xordx;
 	y2 += Text->Y + xordy;
-	pcb_gui->draw_line(pcb_draw_out.fgGC, x1, y1, x2, y2);
+	pcb_gui->draw_line(gc, x1, y1, x2, y2);
 }
 
 
