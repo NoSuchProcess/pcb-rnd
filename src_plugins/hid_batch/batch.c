@@ -165,7 +165,8 @@ static int batch_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, 
 
 static pcb_hid_gc_t batch_make_gc(void)
 {
-	return 0;
+	static pcb_core_gc_t hc;
+	return (pcb_hid_gc_t)&hc;
 }
 
 static void batch_destroy_gc(pcb_hid_gc_t gc)
