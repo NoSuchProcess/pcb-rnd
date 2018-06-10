@@ -766,6 +766,8 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		cap = CAIRO_LINE_CAP_SQUARE;
 		join = CAIRO_LINE_JOIN_MITER;
 		break;
+	default:
+		assert(!"unhandled cap");
 	}
 	gc->cap = cap;
 	gc->join = join;

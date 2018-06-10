@@ -1477,10 +1477,12 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 		case pcb_cap_round:
 			type = 'C';
 			break;
-		default:
 		case pcb_cap_square:
 			type = 'S';
 			break;
+		default:
+			assert(!"unhandled cap");
+			type = 'C';
 		}
 		if (gc->width)
 			r = SCALE(gc->width + 2 * bloat);

@@ -84,6 +84,9 @@ static const char *CAPS(pcb_cap_style_t cap)
 			return "round";
 		case pcb_cap_square:
 			return "square";
+		default:
+			assert(!"unhandled cap");
+			return "round";
 	}
 	return "";
 }

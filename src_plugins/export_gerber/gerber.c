@@ -960,10 +960,12 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		case pcb_cap_round:
 			shape = ROUND;
 			break;
-		default:
 		case pcb_cap_square:
 			shape = SQUARE;
 			break;
+		default:
+			assert(!"unhandled cap");
+			shape = ROUND;
 		}
 		aptr = findAperture(curr_aptr_list, linewidth, shape);
 		if (aptr == NULL)

@@ -494,10 +494,12 @@ static void use_gc(pcb_hid_gc_t gc)
 		case pcb_cap_round:
 			c = 1;
 			break;
-		default:
 		case pcb_cap_square:
 			c = 2;
 			break;
+		default:
+			assert(!"unhandled cap");
+			c = 1;
 		}
 		fprintf(f, "%d setlinecap\n", c);
 		lastcap = gc->cap;

@@ -3006,9 +3006,9 @@ static void set_gc(pcb_hid_gc_t gc)
 		join = JoinRound;
 		break;
 	default:
-		cap = CapProjecting;
-		join = JoinBevel;
-		break;
+		assert(!"unhandled cap");
+		cap = CapRound;
+		join = JoinRound;
 	}
 	if (gc->xor_set) {
 		XSetFunction(display, my_gc, GXxor);

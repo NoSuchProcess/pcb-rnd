@@ -601,6 +601,10 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		gc->cap = GDK_CAP_PROJECTING;
 		gc->join = GDK_JOIN_MITER;
 		break;
+	default:
+		assert(!"unhandled cap");
+		gc->cap = GDK_CAP_ROUND;
+		gc->join = GDK_JOIN_ROUND;
 	}
 	if (gc->pixel_gc)
 		gdk_gc_set_line_attributes(gc->pixel_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);

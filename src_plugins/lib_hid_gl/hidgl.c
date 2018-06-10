@@ -339,6 +339,10 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 			x2 += deltax * width / 2. / length;
 			y2 += deltay * width / 2. / length;
 			break;
+
+		default:
+			assert(!"unhandled cap");
+			circular_caps = 1;
 		}
 
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);

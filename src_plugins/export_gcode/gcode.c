@@ -669,11 +669,14 @@ static void use_gc(pcb_hid_gc_t gc)
 			type = 'C';
 			r = pcb_to_gcode(gc->width / 2 + gcode_toolradius);
 			break;
-		default:
 		case pcb_cap_square:
 			r = pcb_to_gcode(gc->width + gcode_toolradius * 2);
 			type = 'S';
 			break;
+		default:
+			assert(!"unhandled cap");
+			r = 1;
+			type = 'C';
 		}
 		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
 
