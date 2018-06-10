@@ -711,6 +711,8 @@ static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		if (pcb_gtk_dot_in_canvas(gc->width, dx1, dy1)) {
 			USE_GC(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, dx1, dy1);
+			if (priv->out_clip != NULL)
+				gdk_draw_point(priv->out_clip, priv->clip_gc, dx1, dy1);
 		}
 		return;
 	}
