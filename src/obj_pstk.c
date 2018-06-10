@@ -410,7 +410,6 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 		shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb, &grp);
 
 	if (shape != NULL) {
-		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
 		if (grp == NULL)
 			set_ps_color(ps, ctx->is_current, ctx->shape_mask);
 		else
@@ -502,6 +501,8 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* actual hole */
+	pcb_hid_set_line_width(pcb_draw_out.drillGC, 0);
+	pcb_hid_set_line_cap(pcb_draw_out.drillGC, pcb_cap_round);
 	pcb_gui->fill_circle(pcb_draw_out.drillGC, ps->x, ps->y, proto->hdia / 2);
 
 	/* indicate unplated holes with an arc; unplated holes are more rare

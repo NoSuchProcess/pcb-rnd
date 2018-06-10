@@ -474,8 +474,9 @@ static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_
 void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 {
 	/* draw padstack holes - copper is drawn with each group */
-	if (PCB->pstk_on || !pcb_gui->gui)
+	if (PCB->pstk_on || !pcb_gui->gui) {
 		pcb_draw_pstk_holes(group, drawn_area, PCB_PHOLE_PLATED | PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
+	}
 }
 
 /* ---------------------------------------------------------------------------

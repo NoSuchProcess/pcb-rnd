@@ -1031,6 +1031,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 #warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
 				r = PCB_DRAW_TERM_GFX_WIDTH;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 				pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}
