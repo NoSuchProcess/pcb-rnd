@@ -565,7 +565,7 @@ static void ghid_cairo_draw_bg_image(void)
 
 static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
-	pcb_gui->coord_per_pix = ghid_port.coord_per_pix;
+	pcb_gui->coord_per_pix = gport->view.coord_per_px;
 }
 
 /* Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. screen is not used in this HID. */
