@@ -1008,6 +1008,11 @@ void pcb_poly_draw_label(pcb_poly_t *poly)
 
 void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
+	if (delayed_terms_enabled && (polygon->term != NULL)) {
+		pcb_draw_delay_obj_add((pcb_any_obj_t *)polygon);
+		return;
+	}
+
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
 	{
 		pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, drawn_area);
