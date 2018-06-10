@@ -62,8 +62,9 @@ pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX 
 
 int pcb_draw_doing_pinout = 0;
 pcb_bool pcb_draw_doing_assy = pcb_false;
-static vtp0_t delayed_labels;
+static vtp0_t delayed_labels, delayed_objs;
 pcb_bool delayed_labels_enabled = pcb_false;
+pcb_bool delayed_terms_enabled = pcb_false;
 
 static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *, int);
@@ -84,6 +85,11 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj)
 {
 	if (delayed_labels_enabled)
 		vtp0_append(&delayed_labels, obj);
+}
+
+void pcb_draw_delay_obj_add(pcb_any_obj_t *obj)
+{
+	vtp0_append(&delayed_objs, obj);
 }
 
 
@@ -510,6 +516,25 @@ void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
 	delayed_labels.used = 0;
 }
 
+static void pcb_draw_delayed_objs(pcb_layer_t *Layer)
+{
+	size_t n;
+
+	for(n = 0; n < delayed_objs.used; n++) {
+		pcb_any_obj_t *o = delayed_objs.array[n];
+		pcb_box_t *b = (pcb_box_t *)o;
+		switch(o->type) {
+			case PCB_OBJ_ARC:  pcb_arc_draw_term_callback(b, Layer); break;
+			case PCB_OBJ_LINE: pcb_line_draw_term_callback(b, Layer); break;
+			case PCB_OBJ_TEXT: pcb_text_draw_term_callback(b, Layer); break;
+			case PCB_OBJ_POLY: pcb_poly_draw_term_callback(b, Layer); break;
+			default:
+				assert(!"Don't know how to draw delayed object");
+		}
+	}
+	vtp0_truncate(&delayed_objs, 0);
+}
+
 #include "draw_composite.c"
 #include "draw_ly_spec.c"
 
@@ -518,6 +543,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	pcb_draw_info_t info;
 	pcb_box_t scr2;
 	unsigned int lflg = 0;
+	int may_have_delayed = 0;
 
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
 		scr2 = *screen;
@@ -539,9 +565,12 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 		/* print the non-clearing polys */
 	if (lflg & PCB_LYT_COPPER) {
+		delayed_terms_enabled = pcb_true;
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 1);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_term_callback, &info, NULL);
+		delayed_terms_enabled = pcb_false;
+		may_have_delayed = 1;
 	}
 	else {
 		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, NULL);
@@ -552,9 +581,12 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
+		delayed_terms_enabled = pcb_true;
 		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, Layer, NULL);
 		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, Layer, NULL);
 		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_term_callback, Layer, NULL);
+		delayed_terms_enabled = pcb_false;
+		may_have_delayed = 1;
 	}
 	else {
 		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
@@ -572,6 +604,9 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
+
+	if (may_have_delayed)
+		pcb_draw_delayed_objs(Layer);
 
 	out:;
 		pcb_draw_out.active_padGC = NULL;
@@ -797,6 +832,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 
 	delayed_labels_enabled = pcb_true;
 	vtp0_truncate(&delayed_labels, 0);
+	vtp0_truncate(&delayed_objs, 0);
 
 	pcb_gui = hid;
 	pcb_draw_out.fgGC = pcb_hid_make_gc();
@@ -840,6 +876,7 @@ static void expose_end(pcb_hid_t *old_gui)
 
 	delayed_labels_enabled = pcb_false;
 	vtp0_truncate(&delayed_labels, 0);
+	vtp0_truncate(&delayed_objs, 0);
 }
 
 void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)

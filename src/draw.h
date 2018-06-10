@@ -55,6 +55,12 @@ do { \
 		pcb_draw_inhibit--; \
 } while(0) \
 
+/* When true, do not draw terminals but put them on the obj delay list
+   using pcb_draw_delay_obj_add() - used to delay heavy terminal drawing
+   to get proper overlaps */
+extern pcb_bool delayed_terms_enabled;
+void pcb_draw_delay_obj_add(pcb_any_obj_t *obj);
+
 /* the minimum box that needs to be redrawn */
 extern pcb_box_t pcb_draw_invalidated;
 
