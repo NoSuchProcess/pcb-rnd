@@ -959,11 +959,11 @@ static const char *lab_with_intconn(int intconn, const char *lab, char *buff, in
 	} \
 	dx = w / 2; \
 	dy = h / 2; \
-	if ((vert) && (!(flip_x ^ flip_y))) \
-		dy = -dy; \
 	if (flip_x) \
 		dx = -dx; \
 	if (flip_y) \
+		dy = -dy; \
+	if (vert) \
 		dy = -dy; \
 	if (centered) { \
 		x -= dx; \
