@@ -996,6 +996,11 @@ void pcb_line_draw_label(pcb_line_t *line)
 
 void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 {
+	if (delayed_terms_enabled && (line->term != NULL)) {
+		pcb_draw_delay_obj_add((pcb_any_obj_t *)line);
+		return;
+	}
+
 	PCB_DRAW_BBOX(line);
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw) {
