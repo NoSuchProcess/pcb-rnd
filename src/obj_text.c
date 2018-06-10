@@ -823,9 +823,11 @@ pcb_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *st
 	if (string == NULL)
 		return 0;
 	h = font->MaxHeight;
-	while(*string != '\0')
+	while(*string != '\0') {
 		if (*string == '\n')
 			h += font->MaxHeight;
+		string++;
+	}
 	return PCB_SCALE_TEXT(h, scale);
 }
 
