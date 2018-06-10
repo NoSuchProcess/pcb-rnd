@@ -1,5 +1,5 @@
 0. For the upcoming release ===============================================================================
-- BUG: when term attribute is set on an unselected line, it gets square cap (broke since 2.0.0) [report: Ade]
++ BUG: when term attribute is set on an unselected line, it gets square cap (broke since 2.0.0) [report: Ade]
 
 2. For later releases ===============================================================================
 - BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
