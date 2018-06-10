@@ -195,10 +195,42 @@ static void DrawEverything_holes(pcb_layergrp_id_t gid, const pcb_box_t *drawn_a
 	}
 }
 
+static void draw_ui_layers(const pcb_box_t *drawn_area)
+{
+	int i;
+	pcb_layer_t *first;
+
+	/* find the first ui layer in use */
+	first = NULL;
+	for(i = 0; i < vtlayer_len(&pcb_uilayer); i++) {
+		if (pcb_uilayer.array[i].meta.real.cookie != NULL) {
+			first = pcb_uilayer.array+i;
+			break;
+		}
+	}
+
+	/* if there's any UI layer, try to draw them */
+	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0)) {
+		int have_canvas = 0;
+		for(i = 0; i < vtlayer_len(&pcb_uilayer); i++)
+			if ((pcb_uilayer.array[i].meta.real.cookie != NULL) && (pcb_uilayer.array[i].meta.real.vis)) {
+				if (!have_canvas) {
+					pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+					pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+					have_canvas = 1;
+				}
+				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
+			}
+		pcb_gui->end_layer();
+		if (have_canvas)
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * initializes some identifiers for a new zoom factor and redraws whole screen
  */
-static void DrawEverything(const pcb_box_t * drawn_area)
+static void DrawEverything(const pcb_box_t *drawn_area)
 {
 	int i, ngroups, slk_len;
 	pcb_layergrp_id_t component, solder, slk[16], gid, side_copper_grp;
@@ -206,7 +238,6 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
-	pcb_layer_t *first;
 	pcb_hid_expose_ctx_t  hid_exp;
 	pcb_bool paste_empty;
 
@@ -399,32 +430,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 	}
 
-	/* find the first ui layer in use */
-	first = NULL;
-	for(i = 0; i < vtlayer_len(&pcb_uilayer); i++) {
-		if (pcb_uilayer.array[i].meta.real.cookie != NULL) {
-			first = pcb_uilayer.array+i;
-			break;
-		}
-	}
-
-	/* if there's any UI layer, try to draw them */
-	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0)) {
-		int have_canvas = 0;
-		for(i = 0; i < vtlayer_len(&pcb_uilayer); i++)
-			if ((pcb_uilayer.array[i].meta.real.cookie != NULL) && (pcb_uilayer.array[i].meta.real.vis)) {
-				if (!have_canvas) {
-					pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-					pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-					have_canvas = 1;
-				}
-				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
-			}
-		pcb_gui->end_layer();
-		if (have_canvas)
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
-	}
-
+	draw_ui_layers(drawn_area);
 
 	finish:;
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
