@@ -105,5 +105,24 @@ composite API:
 	<li> use an empty function for .use_mask for now
 </ul>
 
+<H2> XOR drawing </H2>
+<p>
+XOR draw is used as a mean to make an object always visible, no matter
+over what background it is drawns. It is <b>not</b> used as a cheap draw/erase
+mechanism, so HIDs are free to implement it with a different algorithm - as
+long as it is guaranteed that objects drawn on the same colored background
+will stick out. 
+<p>
+There are two places XOR draw takes place:
+<ul>
+	<li> in core's normal draw procedures (pcb_hid_expose*()), as the very last
+	     compsiting canvas (after everything else had been drawn)
+	<li> in pcb_draw_attached(), whenever it is called by the HID
+</ul>
+<p>
+In both cases the drawing mode is set to PCB_HID_COMP_POSITIVE_XOR, which does
+<b>not</b> clear the direct flag. The GC that is used for drawing the actual
+objects also has its xor mode set.
+
 </body>
 </html>
