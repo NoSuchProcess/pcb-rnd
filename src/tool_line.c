@@ -352,7 +352,7 @@ void pcb_tool_line_draw_attached(void)
 	}
 	else {
 		/* Draw a circle (0 length line) to show where the line will be placed */
-		if(CURRENT)
+		if (CURRENT)
 			pcb_gui->set_color(pcb_crosshair.GC,CURRENT->meta.real.color);
 
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
@@ -374,7 +374,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
 		if (conf_core.editor.auto_drc)
-			pcb_undo(pcb_true);						/* undo the connection find */
+			pcb_undo(pcb_true);	  /* undo the connection find */
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		pcb_route_reset(&pcb_crosshair.Route);
 		pcb_crosshair_set_local_ref(0, 0, pcb_false);
@@ -387,7 +387,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		ptrtmp = &pcb_crosshair.AttachedLine; /* a workaround for the line undo bug */
 		/* this search is guaranteed to succeed */
 		pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1,
-													 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
+			&ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
 		ptr2 = (pcb_line_t *) ptrtmp;
 
 		/* save both ends of line */
@@ -408,8 +408,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		/* check if an intermediate point was removed */
 		if (type & PCB_UNDO_REMOVE) {
 			/* this search should find the restored line */
-			pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1,
-														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 0);
+			pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1, &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 0);
 			ptr2 = (pcb_line_t *) ptrtmp;
 			if (conf_core.editor.auto_drc) {
 				/* undo loses PCB_FLAG_FOUND */
@@ -427,8 +426,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		}
 		else {
 			/* this search is guaranteed to succeed too */
-			pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1,
-														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
+			pcb_search_obj_by_location(PCB_OBJ_LINE | PCB_OBJ_RAT, &ptr1, &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
 			ptr2 = (pcb_line_t *) ptrtmp;
 			last_layer = (pcb_layer_t *) ptr1;
 		}
