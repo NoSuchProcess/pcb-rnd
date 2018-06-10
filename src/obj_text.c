@@ -814,6 +814,19 @@ pcb_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *str
 	return PCB_SCALE_TEXT(w, scale);
 }
 
+pcb_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *string)
+{
+	pcb_coord_t h;
+	if (string == NULL)
+		return 0;
+	h = font->MaxHeight;
+	while(*string != '\0')
+		if (*string == '\n')
+			h += font->MaxHeight;
+	return PCB_SCALE_TEXT(h, scale);
+}
+
+
 PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xordx, pcb_coord_t xordy, int direction, int mirror)
 {
 	PCB_COORD_ROTATE90(x1, y1, 0, 0, direction);

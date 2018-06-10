@@ -53,3 +53,5 @@ void pcb_text_draw_string(pcb_font_t *font, const unsigned char *string, pcb_coo
 
 /* lowlevel text bounding box calculation */
 pcb_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string);
+pcb_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *string);
+
