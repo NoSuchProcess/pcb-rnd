@@ -336,37 +336,36 @@ void pcb_tool_line_adjust_attached_objects(void)
 
 void pcb_tool_line_draw_attached(void)
 {
-	if(PCB->RatDraw) {
+	if (PCB->RatDraw) {
 		/* draw only if starting point exists and the line has length */
 		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
-															pcb_crosshair.AttachedLine.Point1.X,
-															pcb_crosshair.AttachedLine.Point1.Y,
-															pcb_crosshair.AttachedLine.Point2.X,
-															pcb_crosshair.AttachedLine.Point2.Y, 10, 0);
+				pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y,
+				pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y,
+				10, 0);
 	}
-	else if(pcb_crosshair.Route.size > 0)	{	
+	else if (pcb_crosshair.Route.size > 0) {
 		pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);
-		if(conf_core.editor.show_drc)
+		if (conf_core.editor.show_drc)
 			pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
 	else {
 		/* Draw a circle (0 length line) to show where the line will be placed */
-    if(CURRENT)
+		if(CURRENT)
 			pcb_gui->set_color(pcb_crosshair.GC,CURRENT->meta.real.color);
 
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
-														pcb_crosshair.X, pcb_crosshair.Y,
-														pcb_crosshair.X, pcb_crosshair.Y, 
-														conf_core.design.line_thickness,0 );
+			pcb_crosshair.X, pcb_crosshair.Y,
+			pcb_crosshair.X, pcb_crosshair.Y, 
+			conf_core.design.line_thickness,0 );
 
-		if(conf_core.editor.show_drc) {
+		if (conf_core.editor.show_drc) {
 			pcb_gui->set_color(pcb_crosshair.GC,conf_core.appearance.color.cross);
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
-															pcb_crosshair.X, pcb_crosshair.Y,
-															pcb_crosshair.X, pcb_crosshair.Y, 
-															conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
+				pcb_crosshair.X, pcb_crosshair.Y,
+				pcb_crosshair.X, pcb_crosshair.Y, 
+				conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
 		}
 	}
 }
