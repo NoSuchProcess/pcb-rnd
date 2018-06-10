@@ -1,5 +1,24 @@
 0. For the upcoming release ===============================================================================
 + BUG: when term attribute is set on an unselected line, it gets square cap (broke since 2.0.0) [report: Ade]
+- XOR rendering upgrade: [report: pstuge]
+	- option 1: composite solution:
+		- make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
+		- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
+	- option 2: emboss
+		- draw them all at the end
+		- draw with a slightly thicker background, in normal mode, skip xor
+	- option 3:
+		- implement both option 1 and 2 and add a config setting that selects which one to do
+	- allow padstack xor draw to draw all shapes on all layers
+	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
+- Draw TERM objects last so that they appear on top. For an example see http://gw.adrianpurser.co.uk/pics/pcbrnd/heavy-term-render.png [report: Ade]
+- feautres/cleanup: hid:
+	- "erase" color:
+		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
+		- holes_after should be set to 1 everywhere, then removed -> breaks gerber
+		- holes should be drawn below silk and mask (maybe this could be a config setting)
+- bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
+
 
 2. For later releases ===============================================================================
 - BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
@@ -13,21 +32,9 @@
 - BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
 - BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 - BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
-- XOR rendering upgrade: [report: pstuge]
-	- option 1: composite solution:
-		- make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
-		- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
-	- option 2: emboss
-		- draw them all at the end
-		- draw with a slightly thicker background, in normal mode, skip xor
-	- option 3:
-		- implement both option 1 and 2 and add a config setting that selects which one to do
-	- allow padstack xor draw to draw all shapes on all layers
-	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
 opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-- Draw TERM objects last so that they appear on top. For an example see http://gw.adrianpurser.co.uk/pics/pcbrnd/heavy-term-render.png [report: Ade]
 - draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
 	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
 	- padstack
@@ -91,11 +98,6 @@ opengl:
 	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
 	- global conf setting for label text size [report: Ade]
 	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- feautres/cleanup: hid:
-	- "erase" color:
-		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
-		- holes_after should be set to 1 everywhere, then removed -> breaks gerber
-		- holes should be drawn below silk and mask (maybe this could be a config setting)
 - feature: fp_wget cache dir configurable [report: agaran]
 - feature in subc/term:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
@@ -286,7 +288,6 @@ FEATURES
 - Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
 - the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
-- bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 - bug: layer menu: the bottom silk screen icon color changes from gray-black to brown when any layer is selected. [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
