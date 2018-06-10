@@ -847,6 +847,11 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 	if (!arc->Thickness)
 		return;
 
+	if (delayed_terms_enabled && (arc->term != NULL)) {
+		pcb_draw_delay_obj_add((pcb_any_obj_t *)arc);
+		return;
+	}
+
 	PCB_DRAW_BBOX(arc);
 
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw)
