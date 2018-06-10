@@ -248,7 +248,7 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 	}
 }
 
-/* Drawe subc and padstack marks in xor mode */
+/* Draw subc and padstack marks in xor mode */
 static void draw_xor_marks(const pcb_box_t *drawn_area)
 {
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
