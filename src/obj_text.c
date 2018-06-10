@@ -802,8 +802,11 @@ static void draw_text_poly(pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, p
 pcb_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string)
 {
 	pcb_coord_t w = 0;
-	const pcb_box_t *defaultsymbol = &font->DefaultSymbol;
-	while(string && *string) {
+	const pcb_box_t *defaultsymbol;
+	if (string == NULL)
+		return 0;
+	defaultsymbol = &font->DefaultSymbol;
+	while(*string) {
 		/* draw lines if symbol is valid and data is present */
 		if (*string <= PCB_MAX_FONTPOSITION && font->Symbol[*string].Valid)
 			w += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
