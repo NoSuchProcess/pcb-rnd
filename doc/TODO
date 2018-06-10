@@ -11,7 +11,7 @@
 		- implement both option 1 and 2 and add a config setting that selects which one to do
 	- allow padstack xor draw to draw all shapes on all layers
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
-- Draw non-padstack heavy terminals last so that they appear on top. For an example see http://gw.adrianpurser.co.uk/pics/pcbrnd/heavy-term-render.png [report: Ade]
++ Draw non-padstack heavy terminals last so that they appear on top. For an example see http://gw.adrianpurser.co.uk/pics/pcbrnd/heavy-term-render.png [report: Ade]
 - feautres/cleanup: hid:
 	- "erase" color:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
