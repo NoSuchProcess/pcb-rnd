@@ -235,7 +235,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	int i, ngroups, slk_len;
 	pcb_layergrp_id_t component, solder, slk[16], gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
-	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
+	char do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_hid_expose_ctx_t  hid_exp;
