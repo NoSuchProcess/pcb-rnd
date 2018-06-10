@@ -48,4 +48,5 @@ void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);
 void pcb_text_name_invalidate_draw(pcb_text_t *txt);
 void pcb_text_draw_label(pcb_text_t *text);
 
-
+/* lowlevel drawing routine for text strings */
+void pcb_text_draw_string(pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny);

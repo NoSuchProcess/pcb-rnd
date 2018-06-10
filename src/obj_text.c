@@ -763,7 +763,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
+static void draw_text_poly(pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, int scale, int direction, int mirror)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
@@ -777,17 +777,17 @@ static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, i
 
 	/* transform each coordinate */
 	for(n = 0, p = poly->Points; n < max; n++,p++) {
-		x[n] = PCB_SCALE_TEXT(p->X + x0, Text->Scale);
-		y[n] = PCB_SCALE_TEXT(p->Y, Text->Scale);
-		PCB_COORD_ROTATE90(x[n], y[n], 0, 0, Text->Direction);
+		x[n] = PCB_SCALE_TEXT(p->X + x0, scale);
+		y[n] = PCB_SCALE_TEXT(p->Y, scale);
+		PCB_COORD_ROTATE90(x[n], y[n], 0, 0, direction);
 
-		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
+		if (mirror) {
 			x[n] = PCB_SWAP_SIGN_X(x[n]);
 			y[n] = PCB_SWAP_SIGN_Y(y[n]);
 		}
 
-		x[n] += Text->X;
-		y[n] += Text->Y;
+		x[n] += tx0;
+		y[n] += ty0;
 
 		if (xordraw && (n > 0))
 			pcb_gui->draw_line(pcb_crosshair.GC, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
@@ -799,7 +799,7 @@ static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, i
 }
 
 /* Very rough estimation on the full width of the text */
-static pcb_coord_t text_width(pcb_font_t *font, pcb_text_t *Text, unsigned char *string)
+static pcb_coord_t text_width(pcb_font_t *font, int scale, const unsigned char *string)
 {
 	pcb_coord_t w = 0;
 	const pcb_box_t *defaultsymbol = &font->DefaultSymbol;
@@ -811,64 +811,64 @@ static pcb_coord_t text_width(pcb_font_t *font, pcb_text_t *Text, unsigned char 
 			w += (defaultsymbol->X2 - defaultsymbol->X1) * 6 / 5;
 		string++;
 	}
-	return PCB_SCALE_TEXT(w, Text->Scale);
+	return PCB_SCALE_TEXT(w, scale);
 }
 
-PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_text_t *Text, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xordx, pcb_coord_t xordy)
+PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xordx, pcb_coord_t xordy, int direction, int mirror)
 {
-	PCB_COORD_ROTATE90(x1, y1, 0, 0, Text->Direction);
-	PCB_COORD_ROTATE90(x2, y2, 0, 0, Text->Direction);
+	PCB_COORD_ROTATE90(x1, y1, 0, 0, direction);
+	PCB_COORD_ROTATE90(x2, y2, 0, 0, direction);
 
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
+	if (mirror) {
 		x1 = PCB_SWAP_SIGN_X(x1);
 		y1 = PCB_SWAP_SIGN_Y(y1);
 		x2 = PCB_SWAP_SIGN_X(x2);
 		y2 = PCB_SWAP_SIGN_Y(y2);
 	}
 
-	x1 += Text->X + xordx;
-	y1 += Text->Y + xordy;
-	x2 += Text->X + xordx;
-	y2 += Text->Y + xordy;
+	x1 += xordx;
+	y1 += xordy;
+	x2 += xordx;
+	y2 += xordy;
 	pcb_gui->draw_line(gc, x1, y1, x2, y2);
 }
 
 
-PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char *string, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, const unsigned char *string, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
-	pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, Text->Scale);
+	pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, scale);
 	if (tiny == PCB_TXT_TINY_HIDE) {
 		if (h <= pcb_gui->coord_per_pix*6) /* <= 6 pixel high: unreadable */
 			return 1;
 	}
 	else if (tiny == PCB_TXT_TINY_CHEAP) {
 		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
-			w = text_width(font, Text, string);
+			w = text_width(font, scale, string);
 			if (xordraw) {
-				cheap_text_line(pcb_crosshair.GC, Text, 0, h/2, w, h/2, xordx, xordy);
+				cheap_text_line(pcb_crosshair.GC, 0, h/2, w, h/2, xordx + x0, xordy + y0, direction, mirror);
 			}
 			else {
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h/2, w, h/2, 0, 0);
+				cheap_text_line(pcb_draw_out.fgGC, 0, h/2, w, h/2, x0, y0, direction, mirror);
 			}
 			return 1;
 		}
 		else if (h <= pcb_gui->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
-			w = text_width(font, Text, string);
+			w = text_width(font, scale, string);
 			if (xordraw) {
 				h /= 4;
-				cheap_text_line(pcb_crosshair.GC, Text, 0, h,   w, h,   xordx, xordy);
-				cheap_text_line(pcb_crosshair.GC, Text, 0, h,   w, h*3, xordx, xordy);
-				cheap_text_line(pcb_crosshair.GC, Text, 0, h*3, w, h*3, xordx, xordy);
+				cheap_text_line(pcb_crosshair.GC, 0, h,   w, h,   xordx + x0, xordy + y0, direction, mirror);
+				cheap_text_line(pcb_crosshair.GC, 0, h,   w, h*3, xordx + x0, xordy + y0, direction, mirror);
+				cheap_text_line(pcb_crosshair.GC, 0, h*3, w, h*3, xordx + x0, xordy + y0, direction, mirror);
 			}
 			else {
 				h /= 4;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h,   w, h,   0, 0);
-				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h,   w, h*3, 0, 0);
-				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h*3, w, h*3, 0, 0);
+				cheap_text_line(pcb_draw_out.fgGC, 0, h,   w, h,   x0, y0, direction, mirror);
+				cheap_text_line(pcb_draw_out.fgGC, 0, h,   w, h*3, x0, y0, direction, mirror);
+				cheap_text_line(pcb_draw_out.fgGC, 0, h*3, w, h*3, x0, y0, direction, mirror);
 			}
 			return 1;
 		}
@@ -876,19 +876,14 @@ PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char
 	return 0;
 }
 
-/* lowlevel drawing routine for text objects */
-static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+static void pcb_text_draw_string_(pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	pcb_coord_t x = 0;
-	unsigned char *string, *rendered = pcb_text_render_str(Text);
 	pcb_cardinal_t n;
-	pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
-
-	string = rendered;
 
 	/* cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
-		if (draw_text_cheap(Text, font, string, xordraw, xordx, xordy, tiny))
+		if (draw_text_cheap(font, x0, y0, scale, direction, mirror, string, xordraw, xordx, xordy, tiny))
 			return;
 	}
 
@@ -904,30 +899,30 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
 				newline = *line;
-				newline.Point1.X = PCB_SCALE_TEXT(newline.Point1.X + x, Text->Scale);
-				newline.Point1.Y = PCB_SCALE_TEXT(newline.Point1.Y, Text->Scale);
-				newline.Point2.X = PCB_SCALE_TEXT(newline.Point2.X + x, Text->Scale);
-				newline.Point2.Y = PCB_SCALE_TEXT(newline.Point2.Y, Text->Scale);
-				newline.Thickness = PCB_SCALE_TEXT(newline.Thickness, Text->Scale / 2);
+				newline.Point1.X = PCB_SCALE_TEXT(newline.Point1.X + x, scale);
+				newline.Point1.Y = PCB_SCALE_TEXT(newline.Point1.Y, scale);
+				newline.Point2.X = PCB_SCALE_TEXT(newline.Point2.X + x, scale);
+				newline.Point2.Y = PCB_SCALE_TEXT(newline.Point2.Y, scale);
+				newline.Thickness = PCB_SCALE_TEXT(newline.Thickness, scale / 2);
 				if (newline.Thickness < min_line_width)
 					newline.Thickness = min_line_width;
 
-				pcb_line_rotate90(&newline, 0, 0, Text->Direction);
+				pcb_line_rotate90(&newline, 0, 0, direction);
 
 				/* the labels of SMD objects on the bottom
 				 * side haven't been swapped yet, only their offset
 				 */
-				if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
+				if (mirror) {
 					newline.Point1.X = PCB_SWAP_SIGN_X(newline.Point1.X);
 					newline.Point1.Y = PCB_SWAP_SIGN_Y(newline.Point1.Y);
 					newline.Point2.X = PCB_SWAP_SIGN_X(newline.Point2.X);
 					newline.Point2.Y = PCB_SWAP_SIGN_Y(newline.Point2.Y);
 				}
 				/* add offset and draw line */
-				newline.Point1.X += Text->X;
-				newline.Point1.Y += Text->Y;
-				newline.Point2.X += Text->X;
-				newline.Point2.Y += Text->Y;
+				newline.Point1.X += x0;
+				newline.Point1.Y += y0;
+				newline.Point2.X += x0;
+				newline.Point2.Y += y0;
 				if (xordraw)
 					pcb_gui->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
@@ -938,22 +933,22 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 			for(a = arclist_first(&font->Symbol[*string].arcs); a != NULL; a = arclist_next(a)) {
 				newarc = *a;
 
-				newarc.X = PCB_SCALE_TEXT(newarc.X + x, Text->Scale);
-				newarc.Y = PCB_SCALE_TEXT(newarc.Y, Text->Scale);
-				newarc.Height = newarc.Width = PCB_SCALE_TEXT(newarc.Height, Text->Scale);
-				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, Text->Scale / 2);
+				newarc.X = PCB_SCALE_TEXT(newarc.X + x, scale);
+				newarc.Y = PCB_SCALE_TEXT(newarc.Y, scale);
+				newarc.Height = newarc.Width = PCB_SCALE_TEXT(newarc.Height, scale);
+				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, scale / 2);
 				if (newarc.Thickness < min_line_width)
 					newarc.Thickness = min_line_width;
-				pcb_arc_rotate90(&newarc, 0, 0, Text->Direction);
+				pcb_arc_rotate90(&newarc, 0, 0, direction);
 
-				if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
+				if (mirror) {
 					newarc.X = PCB_SWAP_SIGN_X(newarc.X);
 					newarc.Y = PCB_SWAP_SIGN_Y(newarc.Y);
 					newarc.StartAngle = PCB_SWAP_ANGLE(newarc.StartAngle);
 					newarc.Delta = PCB_SWAP_DELTA(newarc.Delta);
 				}
-				newarc.X += Text->X;
-				newarc.Y += Text->Y;
+				newarc.X += x0;
+				newarc.Y += y0;
 				if (xordraw)
 					pcb_gui->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
@@ -962,29 +957,28 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 
 			/* draw the polygons */
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				draw_text_poly(Text, p, x, xordraw, xordx, xordy);
+				draw_text_poly(p, x0, y0, x, xordraw, xordx, xordy, scale, direction, mirror);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
 		}
 		else {
 			/* the default symbol is a filled box */
-			pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
 			pcb_box_t defaultsymbol = font->DefaultSymbol;
 			pcb_coord_t size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
 
-			defaultsymbol.X1 = PCB_SCALE_TEXT(defaultsymbol.X1 + x, Text->Scale);
-			defaultsymbol.Y1 = PCB_SCALE_TEXT(defaultsymbol.Y1, Text->Scale);
-			defaultsymbol.X2 = PCB_SCALE_TEXT(defaultsymbol.X2 + x, Text->Scale);
-			defaultsymbol.Y2 = PCB_SCALE_TEXT(defaultsymbol.Y2, Text->Scale);
+			defaultsymbol.X1 = PCB_SCALE_TEXT(defaultsymbol.X1 + x, scale);
+			defaultsymbol.Y1 = PCB_SCALE_TEXT(defaultsymbol.Y1, scale);
+			defaultsymbol.X2 = PCB_SCALE_TEXT(defaultsymbol.X2 + x, scale);
+			defaultsymbol.Y2 = PCB_SCALE_TEXT(defaultsymbol.Y2, scale);
 
-			pcb_box_rotate90(&defaultsymbol, 0, 0, Text->Direction);
+			pcb_box_rotate90(&defaultsymbol, 0, 0, direction);
 
 			/* add offset and draw box */
-			defaultsymbol.X1 += Text->X;
-			defaultsymbol.Y1 += Text->Y;
-			defaultsymbol.X2 += Text->X;
-			defaultsymbol.Y2 += Text->Y;
+			defaultsymbol.X1 += x0;
+			defaultsymbol.Y1 += y0;
+			defaultsymbol.X2 += x0;
+			defaultsymbol.Y2 += y0;
 			if (xordraw)
 				pcb_gui->draw_rect(pcb_crosshair.GC, xordx+defaultsymbol.X1, xordy+defaultsymbol.Y1, xordx+defaultsymbol.X2, xordy+defaultsymbol.Y2);
 			else
@@ -995,6 +989,18 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 		}
 		string++;
 	}
+}
+
+void pcb_text_draw_string(pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+{
+	pcb_text_draw_string_(font, string, x0, y0, scale, direction, mirror, min_line_width, xordraw, xordx, xordy, tiny);
+}
+
+/* lowlevel drawing routine for text objects */
+static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+{
+	unsigned char *rendered = pcb_text_render_str(Text);
+	pcb_text_draw_string_(pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->Direction, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), min_line_width, xordraw, xordx, xordy, tiny);
 	pcb_text_free_str(Text, rendered);
 }
 
