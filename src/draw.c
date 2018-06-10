@@ -259,7 +259,7 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 static void draw_xor_marks(const pcb_box_t *drawn_area)
 {
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, drawn_area);
 
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);

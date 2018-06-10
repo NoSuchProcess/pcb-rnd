@@ -149,6 +149,7 @@ hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *
 
 	switch(op) {
 		case PCB_HID_COMP_RESET :			mode_reset(direct,screen);			break;
+		case PCB_HID_COMP_POSITIVE_XOR:
 		case PCB_HID_COMP_POSITIVE : 	mode_positive(direct,screen);		break; 
   	case PCB_HID_COMP_NEGATIVE :	mode_negative(direct,screen);		break; 
   	case PCB_HID_COMP_FLUSH :  		mode_flush(direct,screen);			break; 
@@ -454,7 +455,7 @@ void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double sc
 	int slices;
 	int i;
 
-	assert((composite_op == PCB_HID_COMP_POSITIVE) || (composite_op == PCB_HID_COMP_NEGATIVE));
+	assert((composite_op == PCB_HID_COMP_POSITIVE) || (composite_op == PCB_HID_COMP_POSITIVE_XOR) || (composite_op == PCB_HID_COMP_NEGATIVE));
 
 	slices = calc_slices(vr / scale, 2 * M_PI);
 

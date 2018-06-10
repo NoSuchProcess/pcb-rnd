@@ -593,6 +593,7 @@ static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, 
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 			//priv->clip_color.pixel = 1;
 			cairo_set_operator(priv->cr, CAIRO_OPERATOR_SOURCE);
 			break;

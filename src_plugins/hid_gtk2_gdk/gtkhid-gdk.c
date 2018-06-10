@@ -450,6 +450,7 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 			priv->clip_color.pixel = 1;
 			break;
 
@@ -660,7 +661,7 @@ static int use_gc(pcb_hid_gc_t gc)
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
 	int need_setup = 0;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	if (gc->me_pointer != &gtk2_gdk_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
@@ -701,7 +702,7 @@ static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	double dx1, dy1, dx2, dy2;
 	render_priv_t *priv = gport->render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
@@ -736,7 +737,7 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 	double w, h, radius;
 	render_priv_t *priv = gport->render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -785,7 +786,7 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	gint w, h, lw, sx1, sy1;
 	render_priv_t *priv = gport->render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -838,7 +839,7 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 	gint w, h, vr;
 	render_priv_t *priv = gport->render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -877,7 +878,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	render_priv_t *priv = gport->render_priv;
 	USE_GC(gc);
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	if (npoints < n_coords) {
 		npoints = n_coords + 1;
@@ -923,7 +924,7 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
 	USE_GC(gc);
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	if (npoints < n_coords) {
 		npoints = n_coords + 1;
@@ -964,7 +965,7 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	gint w, h, lw, xx, yy, sx1, sy1;
 	render_priv_t *priv = gport->render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;

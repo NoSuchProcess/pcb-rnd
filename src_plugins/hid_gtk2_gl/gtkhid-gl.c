@@ -60,7 +60,6 @@ typedef struct hid_gc_s {
 	const char *colorname;
 	double alpha_mult;
 	pcb_coord_t width;
-	gint cap, join;
 	gchar xor;
 } hid_gc_s;
 
@@ -496,7 +495,6 @@ void ghid_gl_set_alpha_mult(pcb_hid_gc_t gc, double alpha_mult)
 
 void ghid_gl_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
-	gc->cap = style;
 }
 
 void ghid_gl_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
@@ -549,7 +547,7 @@ void ghid_gl_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 {
 	USE_GC(gc);
 
-	hidgl_draw_line(gc->cap, gc->width, x1, y1, x2, y2, gport->view.coord_per_px);
+	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, gport->view.coord_per_px);
 }
 
 void ghid_gl_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)

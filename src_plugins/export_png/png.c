@@ -1348,6 +1348,7 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 			im = comp_im;
 			break;
 		case PCB_HID_COMP_NEGATIVE:

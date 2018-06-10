@@ -401,6 +401,7 @@ static void dxf_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 		case PCB_HID_COMP_NEGATIVE:
 			break;
 

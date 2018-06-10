@@ -144,7 +144,8 @@ typedef struct {
 
 typedef enum pcb_composite_op_s {
 	PCB_HID_COMP_RESET,         /* reset (allocate and clear) the sketch canvas */
-	PCB_HID_COMP_POSITIVE,      /* draw subsequent objects in positive, with color */
+	PCB_HID_COMP_POSITIVE,      /* draw subsequent objects in positive, with color, no XOR allowed */
+	PCB_HID_COMP_POSITIVE_XOR,  /* draw subsequent objects in positive, with color, XOR allowed */
 	PCB_HID_COMP_NEGATIVE,      /* draw subsequent objects in negative, ignore color */
 	PCB_HID_COMP_FLUSH          /* combine the sketch canvas onto the output buffer and discard the sketch canvas */
 } pcb_composite_op_t;

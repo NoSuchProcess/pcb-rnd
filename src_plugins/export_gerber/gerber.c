@@ -928,7 +928,7 @@ static void gerber_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 static void use_gc(pcb_hid_gc_t gc, int radius)
 {
 	if ((f != NULL) && (gerber_drawing_mode != drawing_mode_issued)) {
-		if (gerber_drawing_mode == PCB_HID_COMP_POSITIVE) {
+		if ((gerber_drawing_mode == PCB_HID_COMP_POSITIVE) || (gerber_drawing_mode == PCB_HID_COMP_POSITIVE_XOR)) {
 			fprintf(f, "%%LPD*%%\r\n");
 			drawing_mode_issued = gerber_drawing_mode;
 		}
@@ -1209,7 +1209,7 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t 
 	int firstTime = 1;
 	pcb_coord_t startX = 0, startY = 0;
 
-	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
+	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
 		return;
 
 	use_gc(gc, 10 * 100);

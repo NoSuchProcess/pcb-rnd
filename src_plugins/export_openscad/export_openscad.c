@@ -436,6 +436,7 @@ static void openscad_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 			scad_new_layer(1);
 			break;
 		case PCB_HID_COMP_NEGATIVE:

@@ -684,6 +684,7 @@ static void openems_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, con
 		case PCB_HID_COMP_RESET:
 			break;
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 			break;
 		case PCB_HID_COMP_NEGATIVE:
 			pcb_message(PCB_MSG_ERROR, "Can't draw composite layer, especially not on copper\n");

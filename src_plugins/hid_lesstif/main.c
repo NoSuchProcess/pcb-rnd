@@ -235,7 +235,7 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
 static pcb_composite_op_t lesstif_drawing_mode = 0;
-#define use_mask() ((lesstif_drawing_mode == PCB_HID_COMP_POSITIVE) || (lesstif_drawing_mode == PCB_HID_COMP_NEGATIVE))
+#define use_mask() ((lesstif_drawing_mode == PCB_HID_COMP_POSITIVE) || (lesstif_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (lesstif_drawing_mode == PCB_HID_COMP_NEGATIVE))
 
 static void zoom_max();
 static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
@@ -2897,6 +2897,7 @@ static void lesstif_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, con
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 			mask_gc = bset_gc;
 			break;
 

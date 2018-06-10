@@ -434,6 +434,7 @@ static void svg_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_POSITIVE_XOR:
 		case PCB_HID_COMP_NEGATIVE:
 			break;
 
@@ -456,7 +457,7 @@ static const char *svg_color(pcb_hid_gc_t gc)
 
 static const char *svg_clip_color(pcb_hid_gc_t gc)
 {
-	if (drawing_mode == PCB_HID_COMP_POSITIVE)
+	if ((drawing_mode == PCB_HID_COMP_POSITIVE) || (drawing_mode == PCB_HID_COMP_POSITIVE_XOR))
 		return "#FFFFFF";
 	if (drawing_mode == PCB_HID_COMP_NEGATIVE)
 		return "#000000";

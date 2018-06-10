@@ -476,7 +476,7 @@ void pcb_xordraw_movecopy(void)
 void pcb_draw_attached(void)
 {
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, NULL);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE_XOR, 1, NULL);
 
 	pcb_tool_draw_attached();
 
