@@ -509,12 +509,10 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	   than plated holes, thus unplated holes are indicated */
 	if (!proto->hplated) {
 		pcb_coord_t r = proto->hdia / 2;
-		r += r/8; /* +12.5% */
+		r -= r/8; /* +12.5% */
 		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
-		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
