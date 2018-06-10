@@ -26,10 +26,6 @@
  *
  */
 
-
-/* drawing routines
- */
-
 #include "config.h"
 
 #include "conf_core.h"
