@@ -536,10 +536,8 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 			shape = ts->shape;
 	}
 
-	if (shape != NULL) {
-		pcb_hid_set_draw_xor(gc, 0);
+	if (shape != NULL)
 		pcb_pstk_draw_shape_thin(gc, ps, shape);
-	}
 }
 
 void pcb_pstk_draw_label(pcb_pstk_t *ps)
