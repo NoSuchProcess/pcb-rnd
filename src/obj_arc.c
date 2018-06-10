@@ -853,6 +853,7 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw)
 	{
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc)) {
+			pcb_hid_set_line_cap(pcb_draw_out.active_padGC, pcb_cap_round);
 			pcb_hid_set_line_width(pcb_draw_out.active_padGC, arc->Thickness);
 			pcb_gui->draw_arc(pcb_draw_out.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
