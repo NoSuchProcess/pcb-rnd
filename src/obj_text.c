@@ -1055,6 +1055,11 @@ void pcb_text_draw_label(pcb_text_t *text)
 
 void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny)
 {
+	if (delayed_terms_enabled && (text->term != NULL)) {
+		pcb_draw_delay_obj_add((pcb_any_obj_t *)text);
+		return;
+	}
+
 	DrawTextLowLevel_(text, min_line_width, 0, 0, 0, tiny);
 
 	if (text->term != NULL) {
