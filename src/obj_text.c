@@ -845,10 +845,13 @@ PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char
 		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
 			w = text_width(font, Text, string);
 			if (xordraw) {
+				pcb_hid_set_line_width(pcb_crosshair.GC, -1);
+				pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_square);
 				cheap_text_line(pcb_crosshair.GC, Text, 0, h/2, w, h/2, xordx, xordy);
 			}
 			else {
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h/2, w, h/2, 0, 0);
 			}
 			return 1;
@@ -857,6 +860,8 @@ PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char
 			w = text_width(font, Text, string);
 			if (xordraw) {
 				h /= 4;
+				pcb_hid_set_line_width(pcb_crosshair.GC, -1);
+				pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_square);
 				cheap_text_line(pcb_crosshair.GC, Text, 0, h,   w, h,   xordx, xordy);
 				cheap_text_line(pcb_crosshair.GC, Text, 0, h,   w, h*3, xordx, xordy);
 				cheap_text_line(pcb_crosshair.GC, Text, 0, h*3, w, h*3, xordx, xordy);
@@ -864,6 +869,7 @@ PCB_INLINE int draw_text_cheap(pcb_text_t *Text, pcb_font_t *font, unsigned char
 			else {
 				h /= 4;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h,   w, h,   0, 0);
 				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h,   w, h*3, 0, 0);
 				cheap_text_line(pcb_draw_out.fgGC, Text, 0, h*3, w, h*3, 0, 0);
