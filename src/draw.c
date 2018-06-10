@@ -409,8 +409,6 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	}
 
 	if (pcb_gui->gui) {
-		draw_xor_marks(drawn_area);
-
 		/* Draw rat lines on top */
 		if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
@@ -436,6 +434,9 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	}
 
 	draw_ui_layers(drawn_area);
+
+	if (pcb_gui->gui)
+		draw_xor_marks(drawn_area);
 
 	finish:;
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
