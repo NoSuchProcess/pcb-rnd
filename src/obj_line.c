@@ -1010,8 +1010,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, line->Thickness);
 		pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
-	else
-	{
+	else {
 		if(conf_core.editor.thin_draw) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
