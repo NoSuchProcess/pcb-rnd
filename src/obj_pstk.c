@@ -542,16 +542,18 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 
 void pcb_pstk_draw_label(pcb_pstk_t *ps)
 {
-	pcb_coord_t offs = 0;
-	pcb_pstk_proto_t *proto;
-
 	if (ps->term == NULL)
 		return;
 
+#ifdef PCB_PSTK_LABEL_OFFCENTER
+	pcb_coord_t offs = 0;
+	pcb_pstk_proto_t *proto;
 	proto = pcb_pstk_get_proto(ps);
 	if ((proto != NULL) && (proto->hdia > 0))
 		offs = proto->hdia/2;
 	pcb_term_label_draw(ps->x + offs, ps->y, 100.0, 0, pcb_false, ps->term, ps->intconn);
+#endif
+	pcb_term_label_draw(ps->x, ps->y, 100.0, 0, pcb_true, ps->term, ps->intconn);
 }
 
 
