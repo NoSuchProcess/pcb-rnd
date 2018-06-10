@@ -521,6 +521,8 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 		/* print the non-clearing polys */
 	if (lflg & PCB_LYT_COPPER) {
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, 1);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_term_callback, &info, NULL);
 	}
 	else {
@@ -785,6 +787,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	pcb_draw_out.padselGC = pcb_hid_make_gc();
 	pcb_draw_out.drillGC = pcb_hid_make_gc();
 	pcb_draw_out.pmGC = pcb_hid_make_gc();
+
 	if (hid->force_compositing)
 		pcb_draw_out.direct = 0;
 	else
@@ -795,6 +798,12 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	hid->set_color(pcb_draw_out.padGC, conf_core.appearance.color.pin);
 	hid->set_color(pcb_draw_out.backpadGC, conf_core.appearance.color.invisible_objects);
 	hid->set_color(pcb_draw_out.padselGC, conf_core.appearance.color.pin_selected);
+	pcb_hid_set_line_width(pcb_draw_out.backpadGC, -1);
+	pcb_hid_set_line_cap(pcb_draw_out.backpadGC, pcb_cap_square);
+	pcb_hid_set_line_width(pcb_draw_out.padselGC, -1);
+	pcb_hid_set_line_cap(pcb_draw_out.padselGC, pcb_cap_square);
+	pcb_hid_set_line_width(pcb_draw_out.padGC, -1);
+	pcb_hid_set_line_cap(pcb_draw_out.padGC, pcb_cap_square);
 
 	return old_gui;
 }
