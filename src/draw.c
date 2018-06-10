@@ -227,6 +227,28 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 	}
 }
 
+/* Drawe subc and padstack marks in xor mode */
+static void draw_xor_marks(const pcb_box_t *drawn_area)
+{
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
+	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
+
+	if (PCB->SubcOn)
+		pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
+
+	if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+		pcb_draw_pstk_marks(drawn_area);
+	}
+
+	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+}
+
 /* ---------------------------------------------------------------------------
  * initializes some identifiers for a new zoom factor and redraws whole screen
  */
@@ -387,24 +409,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	}
 
 	if (pcb_gui->gui) {
-		/* Draw subc Marks */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-
-		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
-
-		if (PCB->SubcOn)
-			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
-
-		if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
-			pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
-			pcb_draw_pstk_marks(drawn_area);
-		}
-
-		pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+		draw_xor_marks(drawn_area);
 
 		/* Draw rat lines on top */
 		if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
