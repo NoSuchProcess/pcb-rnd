@@ -994,10 +994,8 @@ static pcb_bool is_poly_term_vert(const pcb_poly_t *poly)
 void pcb_poly_name_invalidate_draw(pcb_poly_t *poly)
 {
 	if (poly->term != NULL) {
-		pcb_text_t text;
-		pcb_term_label_setup(&text, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
+		pcb_term_label_invalidate((poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
 			100.0, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
-		pcb_draw_invalidate(&text);
 	}
 }
 

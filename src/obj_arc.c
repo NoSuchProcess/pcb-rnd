@@ -827,8 +827,7 @@ void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 		pcb_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
-		pcb_term_label_setup(&text, x0, y0, 100.0, vert, pcb_true, arc->term, arc->intconn);
-		pcb_draw_invalidate(&text);
+		pcb_term_label_invalidate(x0, y0, 100.0, vert, pcb_true, arc->term, arc->intconn);
 	}
 }
 

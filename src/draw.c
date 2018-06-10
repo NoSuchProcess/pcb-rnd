@@ -944,71 +944,67 @@ static const char *lab_with_intconn(int intconn, const char *lab, char *buff, in
 	return buff;
 }
 
-static void pcb_term_label_setup_(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label)
-{
-	pcb_bool flip_x = conf_core.editor.view.flip_x;
-	pcb_bool flip_y = conf_core.editor.view.flip_y;
-
-	text->TextString = (char *)label;
-	text->Flags = (flip_x ^ flip_y) ? pcb_flag_make(PCB_FLAG_ONSOLDER) : pcb_no_flags();
-	text->X = x;
-	text->Y = y;
-	text->fid = 0;
-	text->Scale = scale;
-	text->Direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
-
-	pcb_text_bbox(NULL, text);
-
-	if (centered) {
-		pcb_coord_t dx, dy;
-		dx = (text->BoundingBox.X2 - text->BoundingBox.X1) / 2;
-		dy = (text->BoundingBox.Y2 - text->BoundingBox.Y1) / 2;
-
-		/* make sure the offset is in-line with the flip and our sick y coords for vertical */
-		if ((vert) && (!(flip_x ^ flip_y)))
-			dy = -dy;
-		if (flip_x)
-			dx = -dx;
-		if (flip_y)
-			dy = -dy;
-
-		text->X -= dx;
-		text->Y -= dy;
-		text->BoundingBox.X1 -= dx;
-		text->BoundingBox.X2 -= dx;
-		text->BoundingBox.Y1 -= dy;
-		text->BoundingBox.Y2 -= dy;
+/* vert flip magic: make sure the offset is in-line with the flip and our sick y coords for vertical */
+#define PCB_TERM_LABEL_SETUP \
+	const unsigned char *label; \
+	char buff[128]; \
+	pcb_bool flip_x = conf_core.editor.view.flip_x; \
+	pcb_bool flip_y = conf_core.editor.view.flip_y; \
+	pcb_font_t *font = pcb_font(PCB, 0, 0); \
+	pcb_coord_t w, h, dx, dy; \
+	label = (const unsigned char *)lab_with_intconn(intconn, lab, buff, sizeof(buff)); \
+	if (vert) { \
+		h = pcb_text_width(font, scale, label); \
+		w = pcb_text_height(font, scale, label); \
+	} \
+	else { \
+		w = pcb_text_width(font, scale, label); \
+		h = pcb_text_height(font, scale, label); \
+	} \
+	dx = w / 2; \
+	dy = h / 2; \
+	if ((vert) && (!(flip_x ^ flip_y))) \
+		dy = -dy; \
+	if (flip_x) \
+		dx = -dx; \
+	if (flip_y) \
+		dy = -dy; \
+	if (centered) { \
+		x -= dx; \
+		y -= dy; \
 	}
-}
-
-void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
-{
-	const char *label;
-	char buff[128];
-
-	label = lab_with_intconn(intconn, lab, buff, sizeof(buff));
-	pcb_term_label_setup_(text, x, y, scale, vert, centered, label);
-}
 
 
 void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
 {
-	pcb_text_t text;
-	const char *label;
-	char buff[128];
+	int mirror, direction;
+	PCB_TERM_LABEL_SETUP;
 
-#warning TODO: split up the label draw functions so we do not need an expensive text object but can just draw low level
-	memset(&text, 0, sizeof(text));
-	label = lab_with_intconn(intconn, lab, buff, sizeof(buff));
+	mirror = (flip_x ^ flip_y);
+	direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
 
 	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.pin_name);
 
-	pcb_term_label_setup_(&text, x, y, scale, vert, centered, label);
-
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
-	pcb_text_draw_(&text, 0, 0, PCB_TXT_TINY_HIDE);
+	pcb_text_draw_string(font, label, x, y, scale, direction, mirror, 1, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
+}
+
+void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+{
+	pcb_coord_t ox = x, oy = y, margin = 0;
+	pcb_box_t b;
+	PCB_TERM_LABEL_SETUP;
+
+	dx = PCB_ABS(dx);
+	dy = PCB_ABS(dy);
+	b.X1 = ox - dx - margin;
+	b.X2 = ox + dx + margin;
+	b.Y1 = oy - dy - margin;
+	b.Y2 = oy + dy + margin;
+
+	pcb_draw_invalidate(&b);
 }
 
