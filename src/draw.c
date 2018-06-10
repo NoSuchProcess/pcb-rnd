@@ -195,6 +195,34 @@ static void DrawEverything_holes(pcb_layergrp_id_t gid, const pcb_box_t *drawn_a
 	}
 }
 
+static void draw_virtual_layers(const pcb_box_t *drawn_area)
+{
+	pcb_hid_expose_ctx_t hid_exp;
+
+	hid_exp.view = *drawn_area;
+	hid_exp.force = 0;
+
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0)) {
+		pcb_draw_assembly(PCB_LYT_TOP, drawn_area);
+		pcb_gui->end_layer();
+	}
+
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_BOTTOM_ASSY, 0)) {
+		pcb_draw_assembly(PCB_LYT_BOTTOM, drawn_area);
+		pcb_gui->end_layer();
+	}
+
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0)) {
+		pcb_stub_draw_fab(pcb_draw_out.fgGC, &hid_exp);
+		pcb_gui->end_layer();
+	}
+
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0)) {
+		pcb_stub_draw_csect(pcb_draw_out.fgGC, &hid_exp);
+		pcb_gui->end_layer();
+	}
+}
+
 static void draw_ui_layers(const pcb_box_t *drawn_area)
 {
 	int i;
@@ -249,6 +277,38 @@ static void draw_xor_marks(const pcb_box_t *drawn_area)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 
+static void draw_rats(const pcb_box_t *drawn_area)
+{
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+		pcb_draw_rats(drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+		pcb_gui->end_layer();
+	}
+}
+
+static void draw_pins_and_pads(const pcb_box_t *drawn_area, pcb_layergrp_id_t component, pcb_layergrp_id_t solder)
+{
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+
+	/* Draw pins' and pads' names */
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
+	if (PCB->SubcOn)
+		pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, NULL, NULL);
+	if (PCB->padstack_mark_on) {
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+		pcb_draw_pstk_labels(drawn_area);
+	}
+	pcb_draw_pstk_names(conf_core.editor.show_solder_side ? solder : component, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+}
+
+
 /* ---------------------------------------------------------------------------
  * initializes some identifiers for a new zoom factor and redraws whole screen
  */
@@ -260,11 +320,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	char do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
-	pcb_hid_expose_ctx_t  hid_exp;
 	pcb_bool paste_empty;
-
-	hid_exp.view = *drawn_area;
-	hid_exp.force = 0;
 
 	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
 	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
@@ -388,51 +444,11 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0)) {
-		pcb_draw_assembly(PCB_LYT_TOP, drawn_area);
-		pcb_gui->end_layer();
-	}
-
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_BOTTOM_ASSY, 0)) {
-		pcb_draw_assembly(PCB_LYT_BOTTOM, drawn_area);
-		pcb_gui->end_layer();
-	}
-
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0)) {
-		pcb_stub_draw_fab(pcb_draw_out.fgGC, &hid_exp);
-		pcb_gui->end_layer();
-	}
-
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0)) {
-		pcb_stub_draw_csect(pcb_draw_out.fgGC, &hid_exp);
-		pcb_gui->end_layer();
-	}
-
+	draw_virtual_layers(drawn_area);
 	if (pcb_gui->gui) {
-		/* Draw rat lines on top */
-		if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-			pcb_draw_rats(drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
-			pcb_gui->end_layer();
-		}
-
-		/* Draw pins' and pads' names */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-		if (PCB->SubcOn)
-			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, NULL, NULL);
-		if (PCB->padstack_mark_on) {
-			pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
-			pcb_draw_pstk_labels(drawn_area);
-		}
-		pcb_draw_pstk_names(conf_core.editor.show_solder_side ? solder : component, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+		draw_rats(drawn_area);
+		draw_pins_and_pads(drawn_area, component, solder);
 	}
-
 	draw_ui_layers(drawn_area);
 
 	if (pcb_gui->gui)
