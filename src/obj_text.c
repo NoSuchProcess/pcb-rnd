@@ -799,7 +799,7 @@ static void draw_text_poly(pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, p
 }
 
 /* Very rough estimation on the full width of the text */
-static pcb_coord_t text_width(pcb_font_t *font, int scale, const unsigned char *string)
+pcb_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string)
 {
 	pcb_coord_t w = 0;
 	const pcb_box_t *defaultsymbol = &font->DefaultSymbol;
@@ -843,7 +843,7 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0,
 	}
 	else if (tiny == PCB_TXT_TINY_CHEAP) {
 		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
-			w = text_width(font, scale, string);
+			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				cheap_text_line(pcb_crosshair.GC, 0, h/2, w, h/2, xordx + x0, xordy + y0, direction, mirror);
 			}
@@ -855,7 +855,7 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0,
 			return 1;
 		}
 		else if (h <= pcb_gui->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
-			w = text_width(font, scale, string);
+			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				h /= 4;
 				cheap_text_line(pcb_crosshair.GC, 0, h,   w, h,   xordx + x0, xordy + y0, direction, mirror);
