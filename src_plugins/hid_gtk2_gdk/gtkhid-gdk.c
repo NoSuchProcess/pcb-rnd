@@ -682,8 +682,8 @@ static int use_gc(pcb_hid_gc_t gc)
 
 	if (need_setup) {
 		ghid_gdk_set_color(gc, gc->colorname);
-		ghid_gdk_set_line_width(gc, gc->width);
-		ghid_gdk_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
+		ghid_gdk_set_line_width(gc, gc->core_gc.width);
+		ghid_gdk_set_line_cap(gc, (pcb_cap_style_t) gc->core_gc.cap);
 		ghid_gdk_set_draw_xor(gc, gc->xor_mask);
 		gdk_gc_set_clip_origin(gc->pixel_gc, 0, 0);
 	}
