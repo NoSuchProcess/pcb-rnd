@@ -938,8 +938,8 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 			continue;
 		}
 		if (sup) { /* before a big jump, make sure to use the accurate coords of the last (suppressed) point of the crowd */
-			points[len].x = Vx(lsx);
-			points[len].y = Vy(lsy);
+			points[len].x = Vx(lsx+dx);
+			points[len].y = Vy(lsy+dy);
 			len++;
 			sup = 0;
 		}
