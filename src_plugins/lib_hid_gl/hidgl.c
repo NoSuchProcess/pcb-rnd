@@ -103,7 +103,7 @@ mode_negative(pcb_bool direct,const pcb_box_t * screen)
 }
 
 static inline void
-mode_flush(pcb_bool direct,const pcb_box_t * screen)
+mode_flush(pcb_bool direct,pcb_bool xor_mode,const pcb_box_t * screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);	
@@ -119,9 +119,15 @@ mode_flush(pcb_bool direct,const pcb_box_t * screen)
 		glStencilMask(comp_stencil_bit);
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
 			
+		if(xor_mode) {
+			glEnable(GL_COLOR_LOGIC_OP);
+			glLogicOp(GL_XOR);
+		}
+
 		/* Draw all primtives through the stencil to the colour buffer. */
 		drawgl_draw_all(comp_stencil_bit);    
 
+		glDisable(GL_COLOR_LOGIC_OP);
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -133,6 +139,8 @@ mode_flush(pcb_bool direct,const pcb_box_t * screen)
 void 
 hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t * screen)
 {
+	pcb_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
+
 	/* If the previous mode was NEGATIVE then all of the primitives drawn
 	 * in that mode were used only for creating the stencil and will not be 
 	 * drawn directly to the colour buffer. Therefore these primitives can be 
@@ -148,11 +156,11 @@ hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *
 	direct_mode = direct;
 
 	switch(op) {
-		case PCB_HID_COMP_RESET :			mode_reset(direct,screen);			break;
-		case PCB_HID_COMP_POSITIVE_XOR:
-		case PCB_HID_COMP_POSITIVE : 	mode_positive(direct,screen);		break; 
-  	case PCB_HID_COMP_NEGATIVE :	mode_negative(direct,screen);		break; 
-  	case PCB_HID_COMP_FLUSH :  		mode_flush(direct,screen);			break; 
+		case PCB_HID_COMP_RESET :				mode_reset(direct,screen);						break;
+		case PCB_HID_COMP_POSITIVE_XOR:	
+		case PCB_HID_COMP_POSITIVE : 		mode_positive(direct,screen);					break; 
+  	case PCB_HID_COMP_NEGATIVE :		mode_negative(direct,screen);					break; 
+  	case PCB_HID_COMP_FLUSH :  			mode_flush(direct,xor_mode,screen);		break; 
 		default : break;
 	}
 
