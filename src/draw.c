@@ -516,7 +516,7 @@ void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
 	delayed_labels.used = 0;
 }
 
-static void pcb_draw_delayed_objs(pcb_layer_t *Layer)
+static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 {
 	size_t n;
 
@@ -524,10 +524,10 @@ static void pcb_draw_delayed_objs(pcb_layer_t *Layer)
 		pcb_any_obj_t *o = delayed_objs.array[n];
 		pcb_box_t *b = (pcb_box_t *)o;
 		switch(o->type) {
-			case PCB_OBJ_ARC:  pcb_arc_draw_term_callback(b, Layer); break;
-			case PCB_OBJ_LINE: pcb_line_draw_term_callback(b, Layer); break;
-			case PCB_OBJ_TEXT: pcb_text_draw_term_callback(b, Layer); break;
-			case PCB_OBJ_POLY: pcb_poly_draw_term_callback(b, Layer); break;
+			case PCB_OBJ_ARC:  pcb_arc_draw_term_callback(b, info->layer); break;
+			case PCB_OBJ_LINE: pcb_line_draw_term_callback(b, info->layer); break;
+			case PCB_OBJ_TEXT: pcb_text_draw_term_callback(b, info->layer); break;
+			case PCB_OBJ_POLY: pcb_poly_draw_term_callback(b, info); break;
 			default:
 				assert(!"Don't know how to draw delayed object");
 		}
@@ -606,7 +606,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	}
 
 	if (may_have_delayed)
-		pcb_draw_delayed_objs(Layer);
+		pcb_draw_delayed_objs(&info);
 
 	out:;
 		pcb_draw_out.active_padGC = NULL;
