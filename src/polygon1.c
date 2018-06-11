@@ -3455,8 +3455,8 @@ pcb_bool pcb_pline_embraces_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy
 		return pcb_false;
 
 	/* ray to the right */
-	bx.X1 = cx - r;
-	bx.X2 = -COORD_MAX;
+	bx.X1 = -COORD_MAX;
+	bx.X2 = cx - r;
 	cnt = 0;
 	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
 	if ((cnt % 2) == 0)
