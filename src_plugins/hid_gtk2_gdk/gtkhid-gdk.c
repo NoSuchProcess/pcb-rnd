@@ -867,9 +867,53 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 		gdk_draw_arc(priv->out_clip, priv->clip_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
+/* Decide if a polygon is an axis aligned rectangle; if so, return non-zero
+   and save the corners in b */
+static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	int n, xi1 = 0, yi1 = 0, xi2 = 0, yi2 = 0, xs1 = 0, ys1 = 0, xs2 = 0, ys2 = 0;
+	if (n_coords != 4)
+		return 0;
+	b->X1 = b->Y1 = PCB_MAX_COORD;
+	b->X2 = b->Y2 = -PCB_MAX_COORD;
+	for(n = 0; n < 4; n++) {
+		if (x[n] == b->X1)
+			xs1++;
+		else if (x[n] < b->X1) {
+			b->X1 = x[n];
+			xi1++;
+		}
+		else if (x[n] == b->X2)
+			xs2++;
+		else if (x[n] > b->X2) {
+			b->X2 = x[n];
+			xi2++;
+		}
+		else
+			return 0;
+		if (y[n] == b->Y1)
+			ys1++;
+		else if (y[n] < b->Y1) {
+			b->Y1 = y[n];
+			yi1++;
+		}
+		else if (y[n] == b->Y2)
+			ys2++;
+		else if (y[n] > b->Y2) {
+			b->Y2 = y[n];
+			yi2++;
+		}
+		else
+			return 0;
+	}
+	return (xi1 == 1) && (yi1 == 1) && (xi2 == 1) && (yi2 == 1) && \
+	       (xs1 == 1) && (ys1 == 1) && (xs2 == 1) && (ys2 == 1);
+}
+
 /* Intentional code duplication for performance */
 static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
+	pcb_box_t b;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;
@@ -879,6 +923,15 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	USE_GC(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
+	/* optimization: axis aligned rectangles can be drawn cheaper than polygons and they are common because of smd pads */
+	if (poly_is_aligned_rect(&b, n_coords, x, y)) {
+		gint x1 = Vx(b.X1), y1 = Vy(b.Y1), x2 = Vx(b.X2), y2 = Vy(b.Y2);
+		gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
+		if (priv->out_clip != NULL)
+			gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
+		return;
+	}
 
 	if (npoints < n_coords) {
 		npoints = n_coords + 1;
@@ -917,6 +970,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 /* Intentional code duplication for performance */
 static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
+	pcb_box_t b;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;
@@ -925,6 +979,15 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 	USE_GC(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
+	/* optimization: axis aligned rectangles can be drawn cheaper than polygons and they are common because of smd pads */
+	if (poly_is_aligned_rect(&b, n_coords, x, y)) {
+		gint x1 = Vx(b.X1+dx), y1 = Vy(b.Y1+dy), x2 = Vx(b.X2+dx), y2 = Vy(b.Y2+dy);
+		gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
+		if (priv->out_clip != NULL)
+			gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
+		return;
+	}
 
 	if (npoints < n_coords) {
 		npoints = n_coords + 1;
