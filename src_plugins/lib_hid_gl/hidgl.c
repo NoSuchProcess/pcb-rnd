@@ -121,7 +121,7 @@ mode_flush(pcb_bool direct,pcb_bool xor_mode,const pcb_box_t * screen)
 			
 		if(xor_mode) {
 			glEnable(GL_COLOR_LOGIC_OP);
-			glLogicOp(GL_XOR);
+			glLogicOp(GL_EQUIV);
 		}
 
 		/* Draw all primtives through the stencil to the colour buffer. */
