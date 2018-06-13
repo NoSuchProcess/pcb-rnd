@@ -95,26 +95,20 @@ void wplc_place(wplc_win_t id, GtkWidget *new_win)
 }
 #undef HAVE
 
-void wplc_config_event(GtkWidget *win, long *cx, long *cy, long *cw, long *ch)
+void wplc_config_event(GtkWidget *win, GdkEventConfigure *ev, long *cx, long *cy, long *cw, long *ch)
 {
-	GtkAllocation allocation;
-	gboolean new_w, new_h, new_x, new_y;
+	gboolean new_x, new_y, new_w, new_h;
 
-	gtk_widget_get_allocation(win, &allocation);
+	new_x = (*cx != ev->x);
+	new_y = (*cy != ev->y);
+	new_w = (*cw != ev->width);
+	new_h = (*ch != ev->height);
 
-	/* For whatever reason, get_allocation doesn't set these. Gtk. */
-	gtk_window_get_position(GTK_WINDOW(win), &allocation.x, &allocation.y);
+	*cx = ev->x;
+	*cy = ev->y;
+	*cw = ev->width;
+	*ch = ev->height;
 
-	new_w = (*cw != allocation.width);
-	new_h = (*ch != allocation.height);
-	new_x = (*cx != allocation.x);
-	new_y = (*cy != allocation.y);
-
-	*cx = allocation.x;
-	*cy = allocation.y;
-	*cw = allocation.width;
-	*ch = allocation.height;
-
-	if (new_w || new_h || new_x || new_y)
+	if (new_x || new_y || new_w || new_h)
 		hid_gtk_wgeo_update();
 }

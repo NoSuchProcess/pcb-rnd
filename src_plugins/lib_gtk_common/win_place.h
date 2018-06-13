@@ -22,5 +22,5 @@ extern void hid_gtk_wgeo_update(void);
 void wplc_place(wplc_win_t id, GtkWidget *win);
 
 /* query window current window sizes and update wgeo cache */
-void wplc_config_event(GtkWidget *win, long *cx, long *cy, long *cw, long *ch);
+void wplc_config_event(GtkWidget *win, GdkEventConfigure *ev, long *cx, long *cy, long *cw, long *ch);
 #endif

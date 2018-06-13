@@ -63,7 +63,7 @@ log_pending_t *log_pending_first = NULL, *log_pending_last = NULL;
 
 static gint log_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.log_x, &hid_gtk_wgeo.log_y, &hid_gtk_wgeo.log_width, &hid_gtk_wgeo.log_height);
+	wplc_config_event(widget, ev, &hid_gtk_wgeo.log_x, &hid_gtk_wgeo.log_y, &hid_gtk_wgeo.log_width, &hid_gtk_wgeo.log_height);
 	return FALSE;
 }
 

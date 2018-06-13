@@ -576,7 +576,7 @@ static pcb_bool node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath
 /* ---------- Manage the GUI treeview of the data models ----------- */
 static gint netlist_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.netlist_x, &hid_gtk_wgeo.netlist_y, &hid_gtk_wgeo.netlist_width,
+	wplc_config_event(widget, ev, &hid_gtk_wgeo.netlist_x, &hid_gtk_wgeo.netlist_y, &hid_gtk_wgeo.netlist_width,
 										&hid_gtk_wgeo.netlist_height);
 	return FALSE;
 }

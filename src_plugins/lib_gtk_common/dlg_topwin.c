@@ -96,7 +96,7 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	 */
 static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void *gport)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.top_x, &hid_gtk_wgeo.top_y, &hid_gtk_wgeo.top_width, &hid_gtk_wgeo.top_height);
+	wplc_config_event(widget, ev, &hid_gtk_wgeo.top_x, &hid_gtk_wgeo.top_y, &hid_gtk_wgeo.top_width, &hid_gtk_wgeo.top_height);
 
 	return FALSE;
 }

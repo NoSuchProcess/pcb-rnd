@@ -62,7 +62,7 @@
 /* Remember user window resizes. */
 static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.drc_x, &hid_gtk_wgeo.drc_y, &hid_gtk_wgeo.drc_width, &hid_gtk_wgeo.drc_height);
+	wplc_config_event(widget, ev, &hid_gtk_wgeo.drc_x, &hid_gtk_wgeo.drc_y, &hid_gtk_wgeo.drc_width, &hid_gtk_wgeo.drc_height);
 	return FALSE;
 }
 

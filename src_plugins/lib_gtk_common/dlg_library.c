@@ -91,9 +91,9 @@ static GtkWidget *library_window;
 #define LIBRARY_FILTER_INTERVAL 200
 
 /* GtkWidget "configure_event" signal emitted when the size, position or stacking of the widget's window has changed. */
-static gint library_window_configure_event_cb(GtkWidget * widget, GdkEvent * ev, gpointer data)
+static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width,
+	wplc_config_event(widget, ev, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width,
 										&hid_gtk_wgeo.library_height);
 	return FALSE;
 }
