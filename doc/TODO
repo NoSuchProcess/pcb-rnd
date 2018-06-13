@@ -1,5 +1,4 @@
 0. For the upcoming release ===============================================================================
-+ BUG: when term attribute is set on an unselected line, it gets square cap (broke since 2.0.0) [report: Ade]
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
