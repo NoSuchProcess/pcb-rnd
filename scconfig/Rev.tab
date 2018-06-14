@@ -1,3 +1,4 @@
+17304	configure	new plugin: expfeat for experimental features
 17216	configure	rendering optimizations: gl inlining
 17200	configure	moved clip.h out from core
 16898	configure	new stroke plugin

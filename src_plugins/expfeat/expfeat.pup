@@ -1,0 +1,6 @@
+$class feature
+$short experimental features
+$long Staging plugin for experimenting with new actions and dialogs before getting them into core or other plugins
+$state works
+default disable
+autoload 1
