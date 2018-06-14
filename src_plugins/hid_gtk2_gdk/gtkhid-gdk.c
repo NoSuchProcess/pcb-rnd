@@ -26,7 +26,8 @@ static void ghid_gdk_screen_update(void);
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
 */
-#define USE_GC(gc) if (!use_gc(gc)) return
+#define USE_GC(gc)        if (!use_gc(gc, 1)) return
+#define USE_GC_NOPEN(gc)  if (!use_gc(gc, 0)) return
 
 typedef struct render_priv_s {
 	GdkGC *bg_gc;
@@ -655,7 +656,7 @@ static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 	}
 }
 
-static int use_gc(pcb_hid_gc_t gc)
+static int use_gc(pcb_hid_gc_t gc, int need_pen)
 {
 	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
@@ -684,7 +685,8 @@ static int use_gc(pcb_hid_gc_t gc)
 	if (need_setup) {
 		ghid_gdk_set_color(gc, gc->colorname);
 		ghid_gdk_set_line_width(gc, gc->core_gc.width);
-		ghid_gdk_set_line_cap(gc, (pcb_cap_style_t) gc->core_gc.cap);
+		if ((need_pen) || (gc->core_gc.cap != pcb_cap_invalid))
+			ghid_gdk_set_line_cap(gc, (pcb_cap_style_t) gc->core_gc.cap);
 		ghid_gdk_set_draw_xor(gc, gc->xor_mask);
 		gdk_gc_set_clip_origin(gc->pixel_gc, 0, 0);
 	}
@@ -920,7 +922,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
 
 	render_priv_t *priv = gport->render_priv;
-	USE_GC(gc);
+	USE_GC_NOPEN(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
@@ -976,7 +978,7 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 	int i, len, sup = 0;
 	render_priv_t *priv = gport->render_priv;
 	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = gport->view.coord_per_px * 2;
-	USE_GC(gc);
+	USE_GC_NOPEN(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
@@ -1046,7 +1048,7 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	/* optimization: draw a single dot if object is too small */
 	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
 		if (pcb_gtk_dot_in_canvas(gc->width, sx1, sy1)) {
-			USE_GC(gc);
+			USE_GC_NOPEN(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
 		}
 		return;
