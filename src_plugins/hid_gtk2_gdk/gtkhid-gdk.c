@@ -928,7 +928,10 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 
 	/* optimization: axis aligned rectangles can be drawn cheaper than polygons and they are common because of smd pads */
 	if (poly_is_aligned_rect(&b, n_coords, x, y)) {
-		gint x1 = Vx(b.X1), y1 = Vy(b.Y1), x2 = Vx(b.X2), y2 = Vy(b.Y2);
+		gint x1 = Vx(b.X1), y1 = Vy(b.Y1), x2 = Vx(b.X2), y2 = Vy(b.Y2), tmp;
+
+		if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+		if (y1 > y2) { tmp = y1; y1 = y2; y2 = tmp; }
 		gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
 		if (priv->out_clip != NULL)
 			gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
@@ -984,7 +987,10 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 
 	/* optimization: axis aligned rectangles can be drawn cheaper than polygons and they are common because of smd pads */
 	if (poly_is_aligned_rect(&b, n_coords, x, y)) {
-		gint x1 = Vx(b.X1+dx), y1 = Vy(b.Y1+dy), x2 = Vx(b.X2+dx), y2 = Vy(b.Y2+dy);
+		gint x1 = Vx(b.X1+dx), y1 = Vy(b.Y1+dy), x2 = Vx(b.X2+dx), y2 = Vy(b.Y2+dy), tmp;
+
+		if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+		if (y1 > y2) { tmp = y1; y1 = y2; y2 = tmp; }
 		gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
 		if (priv->out_clip != NULL)
 			gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1, y2 - y1);
