@@ -117,7 +117,7 @@ static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 #define set_visited(obj) htpi_set(&visited, ((void *)(obj)), 1)
 #define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
-static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ARG(0);
 	pcb_netlist_t *Nets;
@@ -236,7 +236,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 }
 
 static pcb_hid_action_t smartdisperse_action_list[] = {
-	{"smartdisperse", NULL, smartdisperse, NULL, NULL}
+	{"smartdisperse", NULL, pcb_act_smartdisperse, NULL, NULL}
 };
 
 char *smartdisperse_cookie = "smartdisperse plugin";
