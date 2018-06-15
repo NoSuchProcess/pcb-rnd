@@ -236,7 +236,7 @@ static int pcb_act_smartdisperse(int argc, const char **argv)
 }
 
 static pcb_hid_action_t smartdisperse_action_list[] = {
-	{"smartdisperse", NULL, pcb_act_smartdisperse, NULL, NULL}
+	{"smartdisperse", pcb_act_smartdisperse, NULL, NULL}
 };
 
 char *smartdisperse_cookie = "smartdisperse plugin";

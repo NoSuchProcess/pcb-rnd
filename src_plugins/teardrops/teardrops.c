@@ -267,7 +267,7 @@ static int pcb_act_teardrops(int argc, const char **argv)
 }
 
 static pcb_hid_action_t teardrops_action_list[] = {
-	{"Teardrops", NULL, pcb_act_teardrops, NULL, NULL}
+	{"Teardrops", pcb_act_teardrops, NULL, NULL}
 };
 
 char *teardrops_cookie = "teardrops plugin";

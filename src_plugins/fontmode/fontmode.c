@@ -355,10 +355,10 @@ static int pcb_act_FontSave(int argc, const char **argv)
 }
 
 pcb_hid_action_t fontmode_action_list[] = {
-	{"FontEdit", 0, pcb_act_FontEdit,
+	{"FontEdit", pcb_act_FontEdit,
 	 pcb_acth_fontedit, pcb_acts_fontedit}
 	,
-	{"FontSave", 0, pcb_act_FontSave,
+	{"FontSave", pcb_act_FontSave,
 	 pcb_acth_fontsave, pcb_acts_fontsave}
 };
 

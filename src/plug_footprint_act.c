@@ -67,7 +67,7 @@ static int pcb_act_fp_rehash(int argc, const char **argv)
 
 
 pcb_hid_action_t conf_plug_footprint_list[] = {
-	{"fp_rehash", 0, pcb_act_fp_rehash,
+	{"fp_rehash", pcb_act_fp_rehash,
 	 pcb_acth_fp_rehash, pcb_acts_fp_rehash}
 };
 

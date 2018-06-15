@@ -92,7 +92,7 @@ static int pcb_act_acompnet(int argc, const char **argv)
 }
 
 pcb_hid_action_t acompnet_action_list[] = {
-	{"acompnet", 0, pcb_act_acompnet,
+	{"acompnet", pcb_act_acompnet,
 	 pcb_acth_acompnet, pcb_acts_acompnet},
 };
 

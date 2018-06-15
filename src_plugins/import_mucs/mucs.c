@@ -150,7 +150,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t mucs_action_list[] = {
-	{"LoadMucsFrom", 0, pcb_act_LoadMucsFrom, pcb_acth_LoadMucsFrom, pcb_acts_LoadMucsFrom}
+	{"LoadMucsFrom", pcb_act_LoadMucsFrom, pcb_acth_LoadMucsFrom, pcb_acts_LoadMucsFrom}
 };
 
 PCB_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)

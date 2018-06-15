@@ -180,7 +180,7 @@ static int pcb_act_query(int argc, const char **argv)
 }
 
 pcb_hid_action_t query_action_list[] = {
-	{"query", NULL, pcb_act_query,
+	{"query", pcb_act_query,
 	 pcb_acth_query, pcb_acts_query}
 };
 

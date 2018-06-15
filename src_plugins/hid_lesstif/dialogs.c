@@ -2090,45 +2090,45 @@ static int pcb_act_ImportGUI(int argc, const char **argv)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t lesstif_dialog_action_list[] = {
-	{"Load", 0, pcb_act_Load,
+	{"Load", pcb_act_Load,
 	 pcb_acth_Load, pcb_acts_Load}
 	,
-	{"LoadVendor", 0, pcb_act_LoadVendor,
+	{"LoadVendor", pcb_act_LoadVendor,
 	 pcb_acth_LoadVendor, pcb_acts_LoadVendor}
 	,
-	{"Save", 0, pcb_act_Save,
+	{"Save", pcb_act_Save,
 	 pcb_acth_Save, pcb_acts_Save}
 	,
-	{"DoWindows", 0, pcb_act_DoWindows,
+	{"DoWindows", pcb_act_DoWindows,
 	 pcb_acth_DoWindows, pcb_acts_DoWindows}
 	,
-	{"PromptFor", 0, pcb_act_PromptFor,
+	{"PromptFor", pcb_act_PromptFor,
 	 pcb_acth_PromptFor, pcb_acts_PromptFor}
 	,
-	{"Confirm", 0, pcb_act_ConfirmAction}
+	{"Confirm", pcb_act_ConfirmAction}
 	,
-	{"About", 0, pcb_act_About,
+	{"About", pcb_act_About,
 	 pcb_acth_About, pcb_acts_About}
 	,
-	{"Print", 0, pcb_act_Print,
+	{"Print", pcb_act_Print,
 	 pcb_acth_Print, pcb_acts_Print}
 	,
-	{"PrintCalibrate", 0, pcb_act_PrintCalibrate,
+	{"PrintCalibrate", pcb_act_PrintCalibrate,
 	 pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate}
 	,
-	{"ExportGUI", 0, pcb_act_ExportGUI,
+	{"ExportGUI", pcb_act_ExportGUI,
 	 pcb_acth_ExportGUI, pcb_acts_ExportGUI}
 	,
-	{"AdjustSizes", 0, pcb_act_AdjustSizes,
+	{"AdjustSizes", pcb_act_AdjustSizes,
 	 pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
 	,
-	{"EditLayerGroups", 0, pcb_act_EditLayerGroups,
+	{"EditLayerGroups", pcb_act_EditLayerGroups,
 	 pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups}
 	,
-	{"FontSel", 0, pcb_act_fontsel,
+	{"FontSel", pcb_act_fontsel,
 	 pcb_acth_fontsel, pcb_acts_fontsel}
 	,
-	{"ImportGUI", 0, pcb_act_ImportGUI,
+	{"ImportGUI", pcb_act_ImportGUI,
 	 pcb_acth_ImportGUI, pcb_acts_ImportGUI}
 	,
 };

@@ -96,11 +96,6 @@ typedef struct hid_gc_s *pcb_hid_gc_t;
 typedef struct {
 	/* This is matched against action names in the GUI configuration */
 	const char *name;
-	/* If this string is non-NULL, the action needs to know the X,Y
-	   coordinates to act on, and this string may be used to prompt
-	   the user to select a coordinate.  If NULL, the coordinates may
-	   be 0,0 if none are known.  */
-	const char *need_coord_msg;
 	/* Called when the action is triggered.  If this function returns
 	   non-zero, no further actions will be invoked for this key/mouse
 	   event.  */

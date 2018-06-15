@@ -510,10 +510,10 @@ static int pcb_act_SavePatch(int argc, const char **argv)
 }
 
 pcb_hid_action_t rats_patch_action_list[] = {
-	{"ReplaceFootprint", 0, pcb_act_ReplaceFootprint,
+	{"ReplaceFootprint", pcb_act_ReplaceFootprint,
 	 pcb_acth_ReplaceFootprint, pcb_acts_ReplaceFootprint}
 	,
-	{"SavePatch", 0, pcb_act_SavePatch,
+	{"SavePatch", pcb_act_SavePatch,
 	 pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 

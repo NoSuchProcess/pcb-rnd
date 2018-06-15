@@ -117,8 +117,8 @@ static int pcb_act_LoadtedaxFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t tedax_action_list[] = {
-	{"LoadTedaxFrom", 0, pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
-	{"SaveTedax", 0, pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
+	{"LoadTedaxFrom", pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
+	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
 };
 
 PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)

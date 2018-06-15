@@ -195,7 +195,7 @@ int pcb_act_LoadtinycadFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t tinycad_action_list[] = {
-	{"LoadTinycadFrom", 0, pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
+	{"LoadTinycadFrom", pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
 
 PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)

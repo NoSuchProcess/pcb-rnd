@@ -519,7 +519,7 @@ static int pcb_act_jostle(int argc, const char **argv)
 }
 
 static pcb_hid_action_t jostle_action_list[] = {
-	{"jostle", NULL, pcb_act_jostle, "Move lines out of the way", pcb_acts_jostle},
+	{"jostle", pcb_act_jostle, "Move lines out of the way", pcb_acts_jostle}
 };
 
 char *jostle_cookie = "jostle plugin";

@@ -363,34 +363,34 @@ static int pcb_act_SaveLayoutAndQuit(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t shand_cmd_action_list[] = {
-	{"h", 0, pcb_act_Help,
+	{"h", pcb_act_Help,
 	 pcb_acth_Help, pcb_acts_Help}
 	,
-	{"l", 0, pcb_act_LoadLayout,
+	{"l", pcb_act_LoadLayout,
 	 pcb_acth_LoadLayout, pcb_acts_LoadLayout}
 	,
-	{"le", 0, pcb_act_LoadElementToBuffer,
+	{"le", pcb_act_LoadElementToBuffer,
 	 pcb_acth_LoadElementToBuffer, pcb_acts_LoadElementToBuffer}
 	,
-	{"m", 0, pcb_act_LoadLayoutToBuffer,
+	{"m", pcb_act_LoadLayoutToBuffer,
 	 pcb_acth_LoadLayoutToBuffer, pcb_acts_LoadLayoutToBuffer}
 	,
-	{"q", 0, pcb_act_Quit,
+	{"q", pcb_act_Quit,
 	 pcb_acth_Quit, pcb_acts_Quit}
 	,
-	{"q!", 0, pcb_act_ReallyQuit,
+	{"q!", pcb_act_ReallyQuit,
 	 pcb_acth_ReallyQuit, pcb_acts_ReallyQuit}
 	,
-	{"rn", 0, pcb_act_LoadNetlist,
+	{"rn", pcb_act_LoadNetlist,
 	 pcb_acth_LoadNetlist, pcb_acts_LoadNetlist}
 	,
-	{"s", 0, pcb_act_SaveLayout,
+	{"s", pcb_act_SaveLayout,
 	 pcb_acth_SaveLayout, pcb_acts_SaveLayout}
 	,
-	{"w", 0, pcb_act_SaveLayout,
+	{"w", pcb_act_SaveLayout,
 	 pcb_acth_SaveLayout, pcb_acts_SaveLayout}
 	,
-	{"wq", 0, pcb_act_SaveLayoutAndQuit,
+	{"wq", pcb_act_SaveLayoutAndQuit,
 	 pcb_acth_SaveLayoutAndQuit, pcb_acts_SaveLayoutAndQuit}
 	,
 };

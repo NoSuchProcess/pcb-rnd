@@ -307,25 +307,25 @@ int pcb_act_ListRotations(int argc, const char **argv)
 
 
 pcb_hid_action_t oldactions_action_list[] = {
-	{"DumpLibrary", 0, pcb_act_DumpLibrary,
+	{"DumpLibrary", pcb_act_DumpLibrary,
 	 pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
-	{"Bell", 0, pcb_act_Bell,
+	{"Bell", pcb_act_Bell,
 	 pcb_acth_Bell, pcb_acts_Bell},
-	{"Debug", 0, pcb_act_Debug,
+	{"Debug", pcb_act_Debug,
 	 pcb_acth_debug, pcb_acts_debug},
-	{"DebugXY", 0, pcb_act_Debug,
+	{"DebugXY", pcb_act_Debug,
 	 pcb_acth_debugxy, pcb_acts_debugxy},
-	{"Return", 0, pcb_act_Return,
+	{"Return", pcb_act_Return,
 	 pcb_acth_return, pcb_acts_return},
-	{"OptAutoOnly", 0, pcb_act_djopt_set_auto_only,
+	{"OptAutoOnly", pcb_act_djopt_set_auto_only,
 	 pcb_acth_djopt_sao, pcb_acts_djopt_sao},
-	{"ToggleVendor", 0, pcb_act_ToggleVendor,
+	{"ToggleVendor", pcb_act_ToggleVendor,
 	 pcb_acth_toggle_vendor, pcb_acts_toggle_vendor},
-	{"EnableVendor", 0, pcb_act_EnableVendor,
+	{"EnableVendor", pcb_act_EnableVendor,
 	 pcb_acth_enable_vendor, pcb_acts_enable_vendor},
-	{"DisableVendor", 0, pcb_act_DisableVendor,
+	{"DisableVendor", pcb_act_DisableVendor,
 	 pcb_acth_disable_vendor, pcb_acts_disable_vendor},
-	{"ListRotations", 0, pcb_act_ListRotations,
+	{"ListRotations", pcb_act_ListRotations,
 	 0, 0}
 };
 

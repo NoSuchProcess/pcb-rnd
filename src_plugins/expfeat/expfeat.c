@@ -48,7 +48,7 @@ static int pcb_act_ExpFeatTmp(int argc, const char **argv)
 
 
 pcb_hid_action_t expfeat_action_list[] = {
-	{"ExpFeatTmp", 0, pcb_act_ExpFeatTmp,
+	{"ExpFeatTmp", pcb_act_ExpFeatTmp,
 	 pcb_acth_ExpFeatTmp, pcb_acts_ExpFeatTmp}
 };
 

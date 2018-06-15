@@ -497,11 +497,11 @@ static int pcb_act_PolyOffs(int argc, const char **argv)
 
 
 static pcb_hid_action_t polyhelp_action_list[] = {
-	{"PolyHatch", 0, pcb_act_PolyHatch,
+	{"PolyHatch", pcb_act_PolyHatch,
 	 pcb_acth_PolyHatch, pcb_acts_PolyHatch},
-	{"PolyOffs", 0, pcb_act_PolyOffs,
+	{"PolyOffs", pcb_act_PolyOffs,
 	 pcb_acth_PolyOffs, pcb_acts_PolyOffs},
-	{"ToPoly", 0, pcb_act_topoly,
+	{"ToPoly", pcb_act_topoly,
 	 pcb_acth_topoly, pcb_acts_topoly}
 };
 PCB_REGISTER_ACTIONS(polyhelp_action_list, polyhelp_cookie)

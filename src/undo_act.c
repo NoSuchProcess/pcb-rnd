@@ -187,13 +187,13 @@ int pcb_act_Redo(int argc, const char **argv)
 
 
 pcb_hid_action_t undo_action_list[] = {
-	{"Atomic", 0, pcb_act_Atomic,
+	{"Atomic", pcb_act_Atomic,
 	 pcb_acth_Atomic, pcb_acts_Atomic}
 	,
-	{"Undo", 0, pcb_act_Undo,
+	{"Undo", pcb_act_Undo,
 	 pcb_acth_Undo, pcb_acts_Undo}
 	,
-	{"Redo", 0, pcb_act_Redo,
+	{"Redo", pcb_act_Redo,
 	 pcb_acth_Redo, pcb_acts_Redo}
 };
 

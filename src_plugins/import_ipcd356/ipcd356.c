@@ -428,7 +428,7 @@ int pcb_act_LoadIpc356From(int argc, const char **argv)
 }
 
 pcb_hid_action_t import_ipcd356_action_list[] = {
-	{"LoadIpc356From", 0, pcb_act_LoadIpc356From, pcb_acth_LoadIpc356From, pcb_acts_LoadIpc356From}
+	{"LoadIpc356From", pcb_act_LoadIpc356From, pcb_acth_LoadIpc356From, pcb_acts_LoadIpc356From}
 };
 PCB_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie)
 

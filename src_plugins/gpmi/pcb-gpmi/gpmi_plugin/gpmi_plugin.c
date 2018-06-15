@@ -141,14 +141,12 @@ static void register_actions()
 	static pcb_hid_action_t act1, act2;
 
 	act1.name           = "gpmi_scripts";
-	act1.need_coord_msg = NULL;
 	act1.description    = "Manage gpmi scripts";
 	act1.syntax         = "TODO";
 	act1.trigger_cb     = action_gpmi_scripts;
 	pcb_hid_register_action(&act1, gpmi_cookie, 0);
 
 	act2.name           = "rehash";
-	act2.need_coord_msg = NULL;
 	act2.description    = "Reload all gpmi scripts";
 	act2.syntax         = "TODO";
 	act2.trigger_cb     = action_gpmi_rehash;

@@ -488,61 +488,61 @@ static int pcb_act_GetXY(int argc, const char **argv)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
-	{"AdjustStyle", 0, pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
+	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
 	,
-	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
+	{"fontsel", pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
 
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
 pcb_hid_action_t ghid_main_action_list[] = {
-	{"About", 0, pcb_act_About, pcb_acth_About, pcb_acts_About}
+	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About}
 	,
-	{"Benchmark", 0, pcb_act_Benchmark}
+	{"Benchmark", pcb_act_Benchmark}
 	,
-	{"Center", N_("Click on a location to center"), pcb_act_Center, pcb_acth_center, pcb_acts_center}
+	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center}
 	,
-	{"Command", 0, pcb_act_Command}
+	{"Command", pcb_act_Command}
 	,
-	{"DoWindows", 0, pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows}
+	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows}
 	,
-	{"EditLayerGroups", 0, pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups}
+	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups}
 	,
-	{"ExportGUI", 0, pcb_act_ExportGUI}
+	{"ExportGUI", pcb_act_ExportGUI}
 	,
-	{"GetXY", 0, pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
+	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
 	,
-	{"ImportGUI", 0, pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
+	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
 	,
-	{"LayerGroupsChanged", 0, pcb_act_LayerGroupsChanged}
+	{"LayerGroupsChanged", pcb_act_LayerGroupsChanged}
 	,
-	{"Load", 0, pcb_act_load }
+	{"Load", pcb_act_load }
 	,
-	{"LogShowOnAppend", 0, pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend}
+	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend}
 	,
-	{"NetlistShow", 0, pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
+	{"NetlistShow", pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
 	,
-	{"NetlistPresent", 0, pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
+	{"NetlistPresent", pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
 	,
-	{"Pan", 0, pcb_act_Pan, pcb_acth_pan, pcb_acts_pan}
+	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan}
 	,
-	{"Popup", 0, pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
+	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
 	,
-	{"Print", 0, pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print}
+	{"Print", pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print}
 	,
-	{"PrintCalibrate", 0, pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate}
+	{"PrintCalibrate", pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate}
 	,
-	{"Save", 0, pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
+	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
 	,
-	{"SaveWindowGeometry", 0, pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo}
+	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo}
 	,
-	{"Scroll", N_("Click on a place to scroll"), pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll}
+	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll}
 	,
-	{"SwapSides", 0, pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
+	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
 	,
-	{"Zoom", N_("Click on zoom focus"), pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
+	{"Zoom", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
 	,
-	{"ZoomTo", 0, pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
+	{"ZoomTo", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)

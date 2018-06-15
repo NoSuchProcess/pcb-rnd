@@ -204,12 +204,8 @@ int pcb_hid_actionl(const char *name, ...)
 
 int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 {
-	pcb_coord_t x = 0, y = 0;
 	int i, ret;
 	const pcb_hid_action_t *old_action;
-
-	if (a->need_coord_msg)
-		pcb_hid_get_coords(_(a->need_coord_msg), &x, &y);
 
 	if (conf_core.rc.verbose) {
 		printf("Action: \033[34m%s(", a->name);

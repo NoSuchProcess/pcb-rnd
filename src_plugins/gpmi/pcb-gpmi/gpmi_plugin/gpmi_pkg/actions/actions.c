@@ -58,8 +58,6 @@ static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 	acontext_t *ctx = cl->argv[0].p;
 	pcb_hid_remove_action(&ctx->action);
 	free((char *)ctx->action.name);
-	if (ctx->action.need_coord_msg != NULL)
-		free((char *)ctx->action.need_coord_msg);
 	free((char *)ctx->action.description);
 	free((char *)ctx->action.syntax);
 	free(ctx);
@@ -68,15 +66,9 @@ static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 int action_register(const char *name, const char *need_xy, const char *description, const char *syntax)
 {
 	acontext_t *ctx;
-	
-
-	if ((need_xy != NULL) && (*need_xy == '\0'))
-		need_xy = NULL;
-
 
 	ctx = malloc(sizeof(acontext_t));
 	ctx->action.name           = pcb_strdup(name);
-	ctx->action.need_coord_msg = pcb_strdup_null(need_xy);
 	ctx->action.description    = pcb_strdup(description);
 	ctx->action.syntax         = pcb_strdup(syntax);
 	ctx->action.trigger_cb     = action_cb;

@@ -597,8 +597,8 @@ static int pcb_act_distributetext(int argc, const char **argv)
 }
 
 static pcb_hid_action_t distaligntext_action_list[] = {
-	{"distributetext", NULL, pcb_act_distributetext, "Distribute Text Elements", pcb_acts_distributetext},
-	{"aligntext", NULL, pcb_act_aligntext, "Align Text Elements", pcb_acts_aligntext}
+	{"distributetext", pcb_act_distributetext, "Distribute Text Elements", pcb_acts_distributetext},
+	{"aligntext", pcb_act_aligntext, "Align Text Elements", pcb_acts_aligntext}
 };
 
 char *distaligntext_cookie = "distaligntext plugin";

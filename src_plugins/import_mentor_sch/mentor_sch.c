@@ -280,7 +280,7 @@ int pcb_act_LoadMentorFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t mentor_sch_action_list[] = {
-	{"LoadMentorFrom", 0, pcb_act_LoadMentorFrom, pcb_acth_Loadmentor_schFrom, pcb_acts_Loadmentor_schFrom}
+	{"LoadMentorFrom", pcb_act_LoadMentorFrom, pcb_acth_Loadmentor_schFrom, pcb_acts_Loadmentor_schFrom}
 };
 
 PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)

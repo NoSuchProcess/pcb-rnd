@@ -534,8 +534,8 @@ static int pcb_act_distribute(int argc, const char **argv)
 }
 
 static pcb_hid_action_t distalign_action_list[] = {
-	{"distribute", NULL, pcb_act_distribute, "Distribute subcircuits", pcb_acts_distribute},
-	{"align", NULL, pcb_act_align, "Align subcircuits", pcb_acts_align}
+	{"distribute", pcb_act_distribute, "Distribute subcircuits", pcb_acts_distribute},
+	{"align", pcb_act_align, "Align subcircuits", pcb_acts_align}
 };
 
 static char *distalign_cookie = "distalign plugin";

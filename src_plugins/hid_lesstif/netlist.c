@@ -433,7 +433,7 @@ void lesstif_show_netlist()
 }
 
 pcb_hid_action_t lesstif_netlist_action_list[] = {
-	{"NetlistShow", 0, pcb_act_LesstifNetlistShow,
+	{"NetlistShow", pcb_act_LesstifNetlistShow,
 	 pcb_acth_LesstifNetlistShow, pcb_acts_LesstifNetlistShow}
 };
 

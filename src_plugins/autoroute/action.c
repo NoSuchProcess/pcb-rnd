@@ -89,7 +89,7 @@ static int pcb_act_AutoRoute(int argc, const char **argv)
 static const char *autoroute_cookie = "autoroute plugin";
 
 pcb_hid_action_t autoroute_action_list[] = {
-	{"AutoRoute", 0, pcb_act_AutoRoute,
+	{"AutoRoute", pcb_act_AutoRoute,
 	 pcb_acth_AutoRoute, pcb_acts_AutoRoute}
 	,
 };

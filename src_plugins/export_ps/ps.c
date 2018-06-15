@@ -1455,7 +1455,7 @@ static int pcb_act_PSCalib(int argc, const char **argv)
 }
 
 pcb_hid_action_t hidps_action_list[] = {
-	{"pscalib", 0, pcb_act_PSCalib}
+	{"pscalib", pcb_act_PSCalib}
 };
 
 PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)

@@ -1232,46 +1232,46 @@ static int pcb_act_Rotate90(int argc, const char **argv)
 }
 
 pcb_hid_action_t object_action_list[] = {
-	{"Attributes", 0, pcb_act_Attributes,
+	{"Attributes", pcb_act_Attributes,
 	 pcb_acth_Attributes, pcb_acts_Attributes}
 	,
-	{"DisperseElements", 0, pcb_act_DisperseElements,
+	{"DisperseElements", pcb_act_DisperseElements,
 	 pcb_acth_DisperseElements, pcb_acts_DisperseElements}
 	,
-	{"Flip", 0, pcb_act_Flip,
+	{"Flip", pcb_act_Flip,
 	 pcb_acth_Flip, pcb_acts_Flip}
 	,
-	{"MoveObject", 0, pcb_act_MoveObject,
+	{"MoveObject", pcb_act_MoveObject,
 	 pcb_acth_MoveObject, pcb_acts_MoveObject}
 	,
-	{"MoveToCurrentLayer", 0, pcb_act_MoveToCurrentLayer,
+	{"MoveToCurrentLayer", pcb_act_MoveToCurrentLayer,
 	 pcb_acth_MoveToCurrentLayer, pcb_acts_MoveToCurrentLayer}
 	,
-	{"ElementList", 0, pcb_act_ElementList,
+	{"ElementList", pcb_act_ElementList,
 	 pcb_acth_ElementList, pcb_acts_ElementList}
 	,
-	{"ElementSetAttr", 0, pcb_act_ElementSetAttr,
+	{"ElementSetAttr", pcb_act_ElementSetAttr,
 	 pcb_acth_ElementSetAttr, pcb_acts_ElementSetAttr}
 	,
-	{"RipUp", 0, pcb_act_RipUp,
+	{"RipUp", pcb_act_RipUp,
 	 pcb_acth_RipUp, pcb_acts_RipUp}
 	,
-	{"MinMaskGap", 0, pcb_act_MinMaskGap,
+	{"MinMaskGap", pcb_act_MinMaskGap,
 	 pcb_acth_MinMaskGap, pcb_acts_MinMaskGap}
 	,
-	{"MinClearGap", 0, pcb_act_MinClearGap,
+	{"MinClearGap", pcb_act_MinClearGap,
 	 pcb_acth_MinClearGap, pcb_acts_MinClearGap}
 	,
-	{"MoveLayer", 0, pcb_act_MoveLayer,
+	{"MoveLayer", pcb_act_MoveLayer,
 	 movelayer_help, movelayer_syntax}
 	,
-	{"subc", 0, pcb_act_subc,
+	{"subc", pcb_act_subc,
 	 pcb_acth_subc, pcb_acts_subc}
 	,
-	{"CreateText", 0, pcb_act_CreateText,
+	{"CreateText", pcb_act_CreateText,
 	 pcb_acth_CreateText, pcb_acts_CreateText}
 	,
-	{"Rotate90", 0, pcb_act_Rotate90,
+	{"Rotate90", pcb_act_Rotate90,
 	 pcb_acth_Rotate90, pcb_acts_Rotate90}
 };
 

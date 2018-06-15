@@ -180,7 +180,7 @@ static int pcb_act_boardflip(int argc, const char **argv)
 
 
 static pcb_hid_action_t boardflip_action_list[] = {
-	{"BoardFlip", NULL, pcb_act_boardflip, NULL, NULL}
+	{"BoardFlip", pcb_act_boardflip, NULL, NULL}
 };
 
 char *boardflip_cookie = "boardflip plugin";

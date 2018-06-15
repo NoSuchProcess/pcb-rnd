@@ -335,7 +335,7 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t dsn_action_list[] = {
-	{"LoadDsnFrom", 0, pcb_act_LoadDsnFrom, load_dsn_help, load_dsn_syntax}
+	{"LoadDsnFrom", pcb_act_LoadDsnFrom, load_dsn_help, load_dsn_syntax}
 };
 
 PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)

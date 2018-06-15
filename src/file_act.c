@@ -412,28 +412,28 @@ static int pcb_act_Backup(int argc, const char **argv)
 }
 
 pcb_hid_action_t file_action_list[] = {
-	{"ExecCommand", 0, pcb_act_ExecCommand,
+	{"ExecCommand", pcb_act_ExecCommand,
 	 pcb_acth_ExecCommand, pcb_acts_ExecCommand}
 	,
-	{"Backup", 0, pcb_act_Backup,
+	{"Backup", pcb_act_Backup,
 	 pcb_acth_Backup, pcb_acts_Backup}
 	,
-	{"Export", 0, pcb_act_Export,
+	{"Export", pcb_act_Export,
 	 pcb_acth_Export, pcb_acts_Export}
 	,
-	{"LoadFrom", 0, pcb_act_LoadFrom,
+	{"LoadFrom", pcb_act_LoadFrom,
 	 pcb_acth_LoadFrom, pcb_acts_LoadFrom}
 	,
-	{"New", 0, pcb_act_New,
+	{"New", pcb_act_New,
 	 pcb_acth_New, pcb_acts_New}
 	,
-	{"Normalize", 0, pcb_act_normalize,
+	{"Normalize", pcb_act_normalize,
 	 pcb_acth_normalize, pcb_acts_normalize}
 	,
-	{"SaveTo", 0, pcb_act_SaveTo,
+	{"SaveTo", pcb_act_SaveTo,
 	 pcb_acth_SaveTo, pcb_acts_SaveTo}
 	,
-	{"Quit", 0, pcb_act_Quit,
+	{"Quit", pcb_act_Quit,
 	 pcb_acth_Quit, pcb_acts_Quit}
 };
 

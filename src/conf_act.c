@@ -313,25 +313,25 @@ static int pcb_act_ChkBuffer(int argc, const char **argv)
 }
 
 pcb_hid_action_t conf_action_list[] = {
-	{"conf", 0, pcb_act_Conf,
+	{"conf", pcb_act_Conf,
 	 pcb_acth_Conf, pcb_acts_Conf}
 	,
-	{"GetStyle", 0, pcb_act_GetStyle,
+	{"GetStyle", pcb_act_GetStyle,
 	 GetStyle_help, GetStyle_syntax}
 	,
-	{"ChkMode", 0, pcb_act_ChkMode,
+	{"ChkMode", pcb_act_ChkMode,
 	 ChkMode_help, ChkMode_syntax}
 	,
-	{"ChkGridSize", 0, pcb_act_ChkGridSize,
+	{"ChkGridSize", pcb_act_ChkGridSize,
 	 ChkGridSize_help, ChkGridSize_syntax}
 	,
-	{"ChkSubcID", 0, pcb_act_ChkSubcID,
+	{"ChkSubcID", pcb_act_ChkSubcID,
 	 ChkSubcID_help, ChkSubcID_syntax}
 	,
-	{"ChkGridUnits", 0, pcb_act_ChkGridUnits,
+	{"ChkGridUnits", pcb_act_ChkGridUnits,
 	 ChkGridUnits_help, ChkGridUnits_syntax}
 	,
-	{"ChkBuffer", 0, pcb_act_ChkBuffer,
+	{"ChkBuffer", pcb_act_ChkBuffer,
 	 ChkBuffer_help, ChkBuffer_syntax}
 };
 

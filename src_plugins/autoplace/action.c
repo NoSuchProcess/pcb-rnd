@@ -64,7 +64,7 @@ static int pcb_act_AutoPlaceSelected(int argc, const char **argv)
 static const char *autoplace_cookie = "autoplace plugin";
 
 pcb_hid_action_t autoplace_action_list[] = {
-	{"AutoPlaceSelected", 0, pcb_act_AutoPlaceSelected,
+	{"AutoPlaceSelected", pcb_act_AutoPlaceSelected,
 	 autoplace_help, autoplace_syntax}
 	,
 };

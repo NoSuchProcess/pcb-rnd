@@ -54,7 +54,7 @@ int pcb_act_mill(int argc, const char **argv)
 
 
 pcb_hid_action_t millpath_action_list[] = {
-	{"mill", 0, pcb_act_mill, pcb_acth_mill, pcb_acts_mill}
+	{"mill", pcb_act_mill, pcb_acth_mill, pcb_acts_mill}
 };
 
 PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)

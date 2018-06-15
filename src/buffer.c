@@ -934,13 +934,13 @@ static int pcb_act_PasteBuffer(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t buffer_action_list[] = {
-	{"FreeRotateBuffer", 0, pcb_act_FreeRotateBuffer,
+	{"FreeRotateBuffer", pcb_act_FreeRotateBuffer,
 	 pcb_acth_FreeRotateBuffer, pcb_acts_FreeRotateBuffer}
 	,
-	{"LoadFootprint", 0, pcb_act_LoadFootprint,
+	{"LoadFootprint", pcb_act_LoadFootprint,
 	 pcb_acth_LoadFootprint, pcb_acts_LoadFootprint}
 	,
-	{"PasteBuffer", 0, pcb_act_PasteBuffer,
+	{"PasteBuffer", pcb_act_PasteBuffer,
 	 pcb_acth_PasteBuffer, pcb_acts_PasteBuffer}
 };
 

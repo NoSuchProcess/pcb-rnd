@@ -476,10 +476,10 @@ int pcb_act_circle(int argc, const char **argv)
 #include "shape_dialog.c"
 
 pcb_hid_action_t shape_action_list[] = {
-	{"regpoly", 0, pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
-	{"roundrect", 0, pcb_act_roundrect, pcb_acth_roundrect, pcb_acts_roundrect},
-	{"circle", 0, pcb_act_circle, pcb_acth_circle, pcb_acts_circle},
-	{"shape", 0, pcb_act_shape, pcb_acth_shape, pcb_acts_shape}
+	{"regpoly", pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
+	{"roundrect", pcb_act_roundrect, pcb_acth_roundrect, pcb_acts_roundrect},
+	{"circle", pcb_act_circle, pcb_acth_circle, pcb_acts_circle},
+	{"shape", pcb_act_shape, pcb_acth_shape, pcb_acts_shape}
 };
 
 PCB_REGISTER_ACTIONS(shape_action_list, pcb_shape_cookie)

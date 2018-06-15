@@ -116,7 +116,7 @@ int pcb_act_LoadhypFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t hyp_action_list[] = {
-	{"LoadhypFrom", 0, pcb_act_LoadhypFrom, load_hyp_help, load_hyp_syntax}
+	{"LoadhypFrom", pcb_act_LoadhypFrom, load_hyp_help, load_hyp_syntax}
 };
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)

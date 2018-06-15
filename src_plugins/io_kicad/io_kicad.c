@@ -51,7 +51,7 @@ int io_kicad_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 pcb_hid_action_t eeschema_action_list[] = {
-	{"LoadEeschemaFrom", 0, pcb_act_LoadeeschemaFrom, pcb_acth_LoadeeschemaFrom, pcb_acts_LoadeeschemaFrom}
+	{"LoadEeschemaFrom", pcb_act_LoadeeschemaFrom, pcb_acth_LoadeeschemaFrom, pcb_acts_LoadeeschemaFrom}
 };
 
 PCB_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie)

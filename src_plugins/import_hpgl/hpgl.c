@@ -172,7 +172,7 @@ int pcb_act_LoadHpglFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t hpgl_action_list[] = {
-	{"LoadHpglFrom", 0, pcb_act_LoadHpglFrom, pcb_acth_LoadHpglFrom, pcb_acts_LoadHpglFrom}
+	{"LoadHpglFrom", pcb_act_LoadHpglFrom, pcb_acth_LoadHpglFrom, pcb_acts_LoadHpglFrom}
 };
 
 PCB_REGISTER_ACTIONS(hpgl_action_list, hpgl_cookie)

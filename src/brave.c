@@ -260,7 +260,7 @@ static int pcb_act_Brave(int argc, const char **argv)
 }
 
 pcb_hid_action_t brave_action_list[] = {
-	{"Brave", 0, pcb_act_Brave,
+	{"Brave", pcb_act_Brave,
 	 pcb_acth_Brave, pcb_acts_Brave}
 };
 

@@ -1122,73 +1122,73 @@ static int pcb_act_ChangeRadius(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t change_action_list[] = {
-	{"ChangeAngle", 0, pcb_act_ChangeAngle,
+	{"ChangeAngle", pcb_act_ChangeAngle,
 	 pcb_acth_ChangeAngle, pcb_acts_ChangeAngle}
 	,
-	{"ChangeClearSize", 0, pcb_act_ChangeClearSize,
+	{"ChangeClearSize", pcb_act_ChangeClearSize,
 	 pcb_acth_ChangeClearSize, pcb_acts_ChangeClearSize}
 	,
-	{"ChangeDrillSize", 0, pcb_act_Change2ndSize,
+	{"ChangeDrillSize", pcb_act_Change2ndSize,
 	 changedrillsize_help, changedrillsize_syntax}
 	,
-	{"ChangeHole", 0, pcb_act_ChangeHole,
+	{"ChangeHole", pcb_act_ChangeHole,
 	 changehold_help, changehold_syntax}
 	,
-	{"ChangeJoin", 0, pcb_act_ChangeJoin,
+	{"ChangeJoin", pcb_act_ChangeJoin,
 	 pcb_acth_ChangeJoin, pcb_acts_ChangeJoin}
 	,
-	{"ChangeName", 0, pcb_act_ChangeName,
+	{"ChangeName", pcb_act_ChangeName,
 	 pcb_acth_ChangeName, pcb_acts_ChangeName}
 	,
-	{"ChangePaste", 0, pcb_act_ChangePaste,
+	{"ChangePaste", pcb_act_ChangePaste,
 	 pcb_acth_ChangePaste, pcb_acts_ChangePaste}
 	,
-	{"ChangePinName", 0, pcb_act_ChangePinName,
+	{"ChangePinName", pcb_act_ChangePinName,
 	 pcb_acth_ChangePinName, pcb_acts_ChangePinName}
 	,
-	{"ChangeRadius", 0, pcb_act_ChangeRadius,
+	{"ChangeRadius", pcb_act_ChangeRadius,
 	 pcb_acth_ChangeRadius, pcb_acts_ChangeRadius}
 	,
-	{"ChangeSize", 0, pcb_act_ChangeSize,
+	{"ChangeSize", pcb_act_ChangeSize,
 	 pcb_acth_ChangeSize, pcb_acts_ChangeSize}
 	,
-	{"ChangeSizes", 0, pcb_act_ChangeSizes,
+	{"ChangeSizes", pcb_act_ChangeSizes,
 	 pcb_acth_ChangeSizes, pcb_acts_ChangeSizes}
 	,
-	{"ChangeNonetlist", 0, pcb_act_ChangeNonetlist,
+	{"ChangeNonetlist", pcb_act_ChangeNonetlist,
 	 pcb_acth_ChangeNonetlist, pcb_acts_ChangeNonetlist}
 	,
-	{"ChangeSquare", 0, pcb_act_ChangeSquare,
+	{"ChangeSquare", pcb_act_ChangeSquare,
 	 pcb_acth_ChangeSquare, pcb_acts_ChangeSquare}
 	,
-	{"ChangeOctagon", 0, pcb_act_ChangeOctagon,
+	{"ChangeOctagon", pcb_act_ChangeOctagon,
 	 pcb_acth_ChangeOctagon, pcb_acts_ChangeOctagon}
 	,
-	{"ChangeFlag", 0, pcb_act_ChangeFlag,
+	{"ChangeFlag", pcb_act_ChangeFlag,
 	 pcb_acth_ChangeFlag, pcb_acts_ChangeFlag}
 	,
-	{"ClearSquare", 0, pcb_act_ClearSquare,
+	{"ClearSquare", pcb_act_ClearSquare,
 	 pcb_acth_ClearSquare, pcb_acts_ClearSquare}
 	,
-	{"ClearOctagon", 0, pcb_act_ClearOctagon,
+	{"ClearOctagon", pcb_act_ClearOctagon,
 	 pcb_acth_ClearOctagon, pcb_acts_ClearOctagon}
 	,
-	{"SetSquare", 0, pcb_act_SetSquare,
+	{"SetSquare", pcb_act_SetSquare,
 	 pcb_acth_SetSquare, pcb_acts_SetSquare}
 	,
-	{"SetOctagon", 0, pcb_act_SetOctagon,
+	{"SetOctagon", pcb_act_SetOctagon,
 	 pcb_acth_SetOctagon, pcb_acts_SetOctagon}
 	,
-	{"SetThermal", 0, pcb_act_SetThermal,
+	{"SetThermal", pcb_act_SetThermal,
 	 pcb_acth_SetThermal, pcb_acts_SetThermal}
 	,
-	{"SetValue", 0, pcb_act_SetValue,
+	{"SetValue", pcb_act_SetValue,
 	 pcb_acth_SetValue, pcb_acts_SetValue}
 	,
-	{"SetFlag", 0, pcb_act_SetFlag,
+	{"SetFlag", pcb_act_SetFlag,
 	 pcb_acth_SetFlag, pcb_acts_SetFlag}
 	,
-	{"ClrFlag", 0, pcb_act_ClrFlag,
+	{"ClrFlag", pcb_act_ClrFlag,
 	 pcb_acth_ClrFlag, pcb_acts_ClrFlag}
 };
 

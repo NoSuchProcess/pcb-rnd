@@ -795,7 +795,7 @@ static int openems_usage(const char *topic)
 }
 
 static pcb_hid_action_t openems_action_list[] = {
-	{"mesh", NULL, pcb_act_mesh, pcb_acth_mesh, pcb_acts_mesh}
+	{"mesh", pcb_act_mesh, pcb_acth_mesh, pcb_acts_mesh}
 };
 
 PCB_REGISTER_ACTIONS(openems_action_list, openems_cookie)

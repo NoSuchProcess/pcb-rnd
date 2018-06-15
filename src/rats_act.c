@@ -224,13 +224,13 @@ static int pcb_act_DeleteRats(int argc, const char **argv)
 
 
 pcb_hid_action_t rats_action_list[] = {
-	{"AddRats", 0, pcb_act_AddRats,
+	{"AddRats", pcb_act_AddRats,
 	 pcb_acth_AddRats, pcb_acts_AddRats}
 	,
-	{"Connection", 0, pcb_act_Connection,
+	{"Connection", pcb_act_Connection,
 	 pcb_acth_Connection, pcb_acts_Connection}
 	,
-	{"DeleteRats", 0, pcb_act_DeleteRats,
+	{"DeleteRats", pcb_act_DeleteRats,
 	 pcb_acth_DeleteRats, pcb_acts_DeleteRats}
 };
 

@@ -71,7 +71,7 @@ static int pcb_act_autocrop(int argc, const char **argv)
 }
 
 static pcb_hid_action_t autocrop_action_list[] = {
-	{"autocrop", NULL, pcb_act_autocrop, pcb_acth_autocrop, pcb_acts_autocrop}
+	{"autocrop", pcb_act_autocrop, pcb_acth_autocrop, pcb_acts_autocrop}
 };
 
 char *autocrop_cookie = "autocrop plugin";

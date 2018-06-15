@@ -645,7 +645,7 @@ static int pcb_act_scad_export_poly(int argc, const char **argv)
 
 
 static pcb_hid_action_t scad_action_list[] = {
-	{"ExportScadPoly", 0, pcb_act_scad_export_poly,
+	{"ExportScadPoly", pcb_act_scad_export_poly,
 	pcb_acth_scad_export_poly, pcb_acts_scad_export_poly}
 };
 

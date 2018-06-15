@@ -41,7 +41,7 @@ int pcb_act_skroute(int argc, const char **argv)
 }
 
 pcb_hid_action_t sketch_route_action_list[] = {
-	{"skroute", 0, pcb_act_skroute, pcb_acth_skroute, pcb_acts_skroute},
+	{"skroute", pcb_act_skroute, pcb_acth_skroute, pcb_acts_skroute}
 };
 
 PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)

@@ -363,37 +363,37 @@ int pcb_act_System(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t main_action_list[] = {
-	{"PrintActions", 0, pcb_act_PrintActions,
+	{"PrintActions", pcb_act_PrintActions,
 	 pcb_acth_PrintActions, pcb_acts_PrintActions}
 	,
-	{"DumpActions", 0, pcb_act_DumpActions,
+	{"DumpActions", pcb_act_DumpActions,
 	 pcb_acth_DumpActions, pcb_acts_DumpActions}
 	,
-	{"PrintUsage", 0, pcb_act_PrintUsage,
+	{"PrintUsage", pcb_act_PrintUsage,
 	 pcb_acth_PrintUsage, pcb_acts_PrintUsage}
 	,
-	{"PrintVersion", 0, pcb_act_PrintVersion,
+	{"PrintVersion", pcb_act_PrintVersion,
 	 pcb_acth_PrintVersion, pcb_acts_PrintVersion}
 	,
-	{"PrintCopyright", 0, pcb_act_PrintCopyright,
+	{"PrintCopyright", pcb_act_PrintCopyright,
 	 pcb_acth_PrintCopyright, pcb_acts_PrintCopyright}
 	,
-	{"PrintPaths", 0, pcb_act_PrintPaths,
+	{"PrintPaths", pcb_act_PrintPaths,
 	 pcb_acth_PrintPaths, pcb_acts_PrintPaths}
 	,
-	{"PrintFiles", 0, pcb_act_PrintFiles,
+	{"PrintFiles", pcb_act_PrintFiles,
 	 pcb_acth_PrintFiles, pcb_acts_PrintFiles}
 	,
-	{"DumpPlugins", 0, pcb_act_DumpPlugins,
+	{"DumpPlugins", pcb_act_DumpPlugins,
 	 pcb_acth_DumpPlugins, pcb_acts_DumpPlugins}
 	,
-	{"DumpPluginDirs", 0, pcb_act_DumpPluginDirs,
+	{"DumpPluginDirs", pcb_act_DumpPluginDirs,
 	 pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs}
 	,
-	{"DumpObjFlags", 0, pcb_act_DumpObjFlags,
+	{"DumpObjFlags", pcb_act_DumpObjFlags,
 	 pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags}
 	,
-	{"System", 0, pcb_act_System,
+	{"System", pcb_act_System,
 	 pcb_acth_System, pcb_acts_System}
 };
 

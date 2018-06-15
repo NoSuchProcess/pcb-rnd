@@ -130,7 +130,7 @@ static int pcb_act_stroke(int argc, const char **argv)
 /*** administration ***/
 
 pcb_hid_action_t stroke_action_list[] = {
-	{"stroke", 0, pcb_act_stroke, pcb_acth_stroke, pcb_acts_stroke}
+	{"stroke", pcb_act_stroke, pcb_acth_stroke, pcb_acts_stroke}
 };
 PCB_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
 

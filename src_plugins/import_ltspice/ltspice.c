@@ -310,7 +310,7 @@ int pcb_act_LoadLtspiceFrom(int argc, const char **argv)
 }
 
 pcb_hid_action_t ltspice_action_list[] = {
-	{"LoadLtspiceFrom", 0, pcb_act_LoadLtspiceFrom, pcb_acth_LoadLtspiceFrom, pcb_acts_LoadLtspiceFrom}
+	{"LoadLtspiceFrom", pcb_act_LoadLtspiceFrom, pcb_acth_LoadLtspiceFrom, pcb_acts_LoadLtspiceFrom}
 };
 
 PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
