@@ -999,6 +999,8 @@ void pcb_crosshair_move_relative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
 pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_coord_t x, y, z;
+	pcb_crosshair.ptr_x = X;
+	pcb_crosshair.ptr_y = Y;
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
 	pcb_crosshair_grid_fit(X, Y);

@@ -70,6 +70,7 @@ enum pcb_crosshair_shape_e {
 typedef struct {								/* holds cursor information */
 	pcb_hid_gc_t GC,											/* GC for cursor drawing */
 	  AttachGC;										/* and for displaying buffer contents */
+	pcb_coord_t ptr_x, ptr_y;              /* last seen mouse pointer x;y coords */
 	pcb_coord_t X, Y,										/* position in PCB coordinates */
 	  MinX, MinY,									/* lowest and highest coordinates */
 	  MaxX, MaxY;
