@@ -69,13 +69,13 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		prompt = pcb_strdup("no-board");
 }
 
-static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_print_actions();
 	return 0;
 }
 
-static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i, j;
 	if (!PCB || !PCB->Data || !PCB->Filename) {
@@ -95,9 +95,9 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t batch_action_list[] = {
-	{"Help", 0, help}
+	{"Help", 0, pcb_act_help}
 	,
-	{"Info", 0, info}
+	{"Info", 0, pcb_act_info}
 };
 
 PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
