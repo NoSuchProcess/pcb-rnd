@@ -3954,7 +3954,6 @@ static void lesstif_begin(void)
 	PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
-	PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
 
 	lesstif_active = 1;

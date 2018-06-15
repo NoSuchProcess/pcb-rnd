@@ -1844,6 +1844,20 @@ static int pcb_act_ChkRst(int argc, const char **argv)
 	return pcb_route_style_match(rst, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 }
 
+static const char pcb_acts_GetXY[] = "GetXY()";
+static const char pcb_acth_GetXY[] = "Get a coordinate.";
+/* %start-doc actions GetXY
+
+Prompts the user for a coordinate, if one is not already selected.
+
+%end-doc */
+static int pcb_act_GetXY(int argc, const char **argv)
+{
+	pcb_coord_t x, y;
+	pcb_hid_get_coords(argv[0], &x, &y);
+	return 0;
+}
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1870,7 +1884,8 @@ pcb_hid_action_t gui_action_list[] = {
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
-	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst}
+	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
+	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

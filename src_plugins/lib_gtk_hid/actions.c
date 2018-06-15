@@ -468,24 +468,6 @@ static int pcb_act_EditLayerGroups(int argc, const char **argv)
 }
 
 /* ------------------------------------------------------------ */
-static const char pcb_acts_GetXY[] = "GetXY()";
-
-static const char pcb_acth_GetXY[] = N_("Get a coordinate.");
-
-/* %start-doc actions GetXY
-
-Prompts the user for a coordinate, if one is not already selected.
-
-%end-doc */
-
-static int pcb_act_GetXY(int argc, const char **argv)
-{
-	pcb_coord_t x, y;
-	pcb_hid_get_coords(argv[0], &x, &y);
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle},
@@ -502,7 +484,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
 	{"ExportGUI", pcb_act_ExportGUI},
-	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
 	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
 	{"LayerGroupsChanged", pcb_act_LayerGroupsChanged},
 	{"Load", pcb_act_load },

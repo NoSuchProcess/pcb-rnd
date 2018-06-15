@@ -43,23 +43,6 @@ static Colormap cmap;
 static void note_accelerator(const lht_node_t *node);
 static int note_widget_flag(Widget w, char *type, const char *name);
 
-static const char pcb_acts_GetXY[] = "GetXY()";
-
-static const char pcb_acth_GetXY[] = "Get a coordinate.";
-
-/* %start-doc actions GetXY
-
-Prompts the user for a coordinate, if one is not already selected.
-
-%end-doc */
-
-static int pcb_act_GetXY(int argc, const char **argv)
-{
-	pcb_coord_t x, y;
-	pcb_hid_get_coords(argv[0], &x, &y);
-	return 0;
-}
-
 /*-----------------------------------------------------------------------------*/
 
 typedef struct {
@@ -131,11 +114,6 @@ void lesstif_update_widget_flags(const char *cookie)
 
 /*-----------------------------------------------------------------------------*/
 
-pcb_hid_action_t lesstif_menu_action_list[] = {
-	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
-};
-
-PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 #if 0
 		 static void
 		   stdarg_do_color(char *value, char *which)
