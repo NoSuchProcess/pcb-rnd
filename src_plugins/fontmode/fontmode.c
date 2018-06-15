@@ -68,9 +68,8 @@
 
 #define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
-static const char fontedit_syntax[] = "FontEdit()";
-
-static const char fontedit_help[] = "Convert the current font to a PCB for editing.";
+static const char pcb_acts_fontedit[] = "FontEdit()";
+static const char pcb_acth_fontedit[] = "Convert the current font to a PCB for editing.";
 
 /* %start-doc actions FontEdit
 
@@ -101,7 +100,7 @@ static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t ox, pcb_c
 	pcb_poly_invalidate_draw(layer, np);
 }
 
-static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
+static int pcb_act_FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
@@ -232,15 +231,14 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	return 0;
 }
 
-static const char fontsave_syntax[] = "FontSave()";
-
-static const char fontsave_help[] = "Convert the current PCB back to a font.";
+static const char pcb_acts_fontsave[] = "FontSave()";
+static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.";
 
 /* %start-doc actions FontSave
 
 %end-doc */
 
-static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
+static int pcb_act_FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
@@ -357,11 +355,11 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 }
 
 pcb_hid_action_t fontmode_action_list[] = {
-	{"FontEdit", 0, FontEdit,
-	 fontedit_help, fontedit_syntax}
+	{"FontEdit", 0, pcb_act_FontEdit,
+	 pcb_acth_fontedit, pcb_acts_fontedit}
 	,
-	{"FontSave", 0, FontSave,
-	 fontsave_help, fontsave_syntax}
+	{"FontSave", 0, pcb_act_FontSave,
+	 pcb_acth_fontsave, pcb_acts_fontsave}
 };
 
 static const char *fontmode_cookie = "fontmode plugin";
