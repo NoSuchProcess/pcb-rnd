@@ -166,7 +166,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	PCB_END_LOOP;
 }
 
-static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int h = PCB->MaxHeight;
 	int sides = 0;
@@ -180,7 +180,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 static pcb_hid_action_t boardflip_action_list[] = {
-	{"BoardFlip", NULL, boardflip, NULL, NULL}
+	{"BoardFlip", NULL, pcb_act_boardflip, NULL, NULL}
 };
 
 char *boardflip_cookie = "boardflip plugin";
