@@ -337,7 +337,7 @@ int gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 				fprintf(stderr, "Tried all available HIDs, all failed, giving up.\n");
 			}
 			else
-				fprintf(stderr, "Not trying any other hid as fallback becase rc/hid_fallback is disabled.\n");
+				fprintf(stderr, "Not trying any other hid as fallback because rc/hid_fallback is disabled.\n");
 			return -1;
 		}
 
