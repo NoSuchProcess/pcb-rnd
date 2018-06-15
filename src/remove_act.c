@@ -103,12 +103,8 @@ static int pcb_act_RemoveSelected(int argc, const char **argv)
 
 
 pcb_hid_action_t remove_action_list[] = {
-	{"Delete", pcb_act_Delete,
-	 pcb_acth_Delete, pcb_acts_Delete}
-	,
-	{"RemoveSelected", pcb_act_RemoveSelected,
-	 pcb_acth_RemoveSelected, pcb_acts_RemoveSelected}
-	,
+	{"Delete", pcb_act_Delete, pcb_acth_Delete, pcb_acts_Delete},
+	{"RemoveSelected", pcb_act_RemoveSelected, pcb_acth_RemoveSelected, pcb_acts_RemoveSelected}
 };
 
 PCB_REGISTER_ACTIONS(remove_action_list, NULL)

@@ -645,8 +645,7 @@ static int pcb_act_scad_export_poly(int argc, const char **argv)
 
 
 static pcb_hid_action_t scad_action_list[] = {
-	{"ExportScadPoly", pcb_act_scad_export_poly,
-	pcb_acth_scad_export_poly, pcb_acts_scad_export_poly}
+	{"ExportScadPoly", pcb_act_scad_export_poly, pcb_acth_scad_export_poly, pcb_acts_scad_export_poly}
 };
 
 PCB_REGISTER_ACTIONS(scad_action_list, openscad_cookie)

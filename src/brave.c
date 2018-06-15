@@ -260,8 +260,7 @@ static int pcb_act_Brave(int argc, const char **argv)
 }
 
 pcb_hid_action_t brave_action_list[] = {
-	{"Brave", pcb_act_Brave,
-	 pcb_acth_Brave, pcb_acts_Brave}
+	{"Brave", pcb_act_Brave, pcb_acth_Brave, pcb_acts_Brave}
 };
 
 PCB_REGISTER_ACTIONS(brave_action_list, NULL)

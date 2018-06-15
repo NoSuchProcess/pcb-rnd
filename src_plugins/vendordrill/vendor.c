@@ -644,14 +644,9 @@ static pcb_bool rematch(const char *re, const char *s)
 static const char *vendor_cookie = "vendor drill mapping";
 
 pcb_hid_action_t vendor_action_list[] = {
-	{"ApplyVendor", pcb_act_ApplyVendor,
-	 apply_vendor_help, apply_vendor_syntax}
-	,
-	{"UnloadVendor", pcb_act_UnloadVendor,
-	 unload_vendor_help, unload_vendor_syntax}
-	,
-	{"LoadVendorFrom", pcb_act_LoadVendorFrom,
-	 load_vendor_help, load_vendor_syntax}
+	{"ApplyVendor", pcb_act_ApplyVendor, apply_vendor_help, apply_vendor_syntax},
+	{"UnloadVendor", pcb_act_UnloadVendor, unload_vendor_help, unload_vendor_syntax},
+	{"LoadVendorFrom", pcb_act_LoadVendorFrom, load_vendor_help, load_vendor_syntax}
 };
 
 PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)

@@ -368,11 +368,8 @@ static int pcb_act_Netlist(int argc, const char **argv)
 }
 
 pcb_hid_action_t netlist_action_list[] = {
-	{"net", pcb_act_Netlist,
-	 pcb_acth_Netlist, pcb_acts_Netlist}
-	,
-	{"netlist", pcb_act_Netlist,
-	 pcb_acth_Netlist, pcb_acts_Netlist}
+	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
+	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist}
 };
 
 PCB_REGISTER_ACTIONS(netlist_action_list, NULL)

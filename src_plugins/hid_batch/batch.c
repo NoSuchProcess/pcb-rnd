@@ -95,8 +95,7 @@ static int pcb_act_info(int argc, const char **argv)
 }
 
 pcb_hid_action_t batch_action_list[] = {
-	{"Help", pcb_act_help}
-	,
+	{"Help", pcb_act_help},
 	{"Info", pcb_act_info}
 };
 

@@ -488,60 +488,36 @@ static int pcb_act_GetXY(int argc, const char **argv)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
-	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
-	,
+	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle},
 	{"fontsel", pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
 
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
 pcb_hid_action_t ghid_main_action_list[] = {
-	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About}
-	,
-	{"Benchmark", pcb_act_Benchmark}
-	,
-	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center}
-	,
-	{"Command", pcb_act_Command}
-	,
-	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows}
-	,
-	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups}
-	,
-	{"ExportGUI", pcb_act_ExportGUI}
-	,
-	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
-	,
-	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
-	,
-	{"LayerGroupsChanged", pcb_act_LayerGroupsChanged}
-	,
-	{"Load", pcb_act_load }
-	,
-	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend}
-	,
-	{"NetlistShow", pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
-	,
-	{"NetlistPresent", pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
-	,
-	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan}
-	,
-	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
-	,
-	{"Print", pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print}
-	,
-	{"PrintCalibrate", pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate}
-	,
-	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
-	,
-	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo}
-	,
-	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll}
-	,
-	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
-	,
-	{"Zoom", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
-	,
+	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
+	{"Benchmark", pcb_act_Benchmark},
+	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
+	{"Command", pcb_act_Command},
+	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
+	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
+	{"ExportGUI", pcb_act_ExportGUI},
+	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
+	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
+	{"LayerGroupsChanged", pcb_act_LayerGroupsChanged},
+	{"Load", pcb_act_load },
+	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},
+	{"NetlistShow", pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow},
+	{"NetlistPresent", pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent},
+	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan},
+	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
+	{"Print", pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print},
+	{"PrintCalibrate", pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate},
+	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save},
+	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
+	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll},
+	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides},
+	{"Zoom", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom},
 	{"ZoomTo", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 

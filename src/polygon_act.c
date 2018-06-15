@@ -157,11 +157,8 @@ static int pcb_act_Polygon(int argc, const char **argv)
 
 
 pcb_hid_action_t polygon_action_list[] = {
-	{"MorphPolygon", pcb_act_MorphPolygon,
-	 pcb_acth_MorphPolygon, morphpcb_polygon_syntax}
-	,
-	{"Polygon", pcb_act_Polygon,
-	 pcb_acth_Polygon, pcb_polygon_syntax}
+	{"MorphPolygon", pcb_act_MorphPolygon, pcb_acth_MorphPolygon, morphpcb_polygon_syntax},
+	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_polygon_syntax}
 };
 
 PCB_REGISTER_ACTIONS(polygon_action_list, NULL)

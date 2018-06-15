@@ -412,29 +412,14 @@ static int pcb_act_Backup(int argc, const char **argv)
 }
 
 pcb_hid_action_t file_action_list[] = {
-	{"ExecCommand", pcb_act_ExecCommand,
-	 pcb_acth_ExecCommand, pcb_acts_ExecCommand}
-	,
-	{"Backup", pcb_act_Backup,
-	 pcb_acth_Backup, pcb_acts_Backup}
-	,
-	{"Export", pcb_act_Export,
-	 pcb_acth_Export, pcb_acts_Export}
-	,
-	{"LoadFrom", pcb_act_LoadFrom,
-	 pcb_acth_LoadFrom, pcb_acts_LoadFrom}
-	,
-	{"New", pcb_act_New,
-	 pcb_acth_New, pcb_acts_New}
-	,
-	{"Normalize", pcb_act_normalize,
-	 pcb_acth_normalize, pcb_acts_normalize}
-	,
-	{"SaveTo", pcb_act_SaveTo,
-	 pcb_acth_SaveTo, pcb_acts_SaveTo}
-	,
-	{"Quit", pcb_act_Quit,
-	 pcb_acth_Quit, pcb_acts_Quit}
+	{"ExecCommand", pcb_act_ExecCommand, pcb_acth_ExecCommand, pcb_acts_ExecCommand},
+	{"Backup", pcb_act_Backup, pcb_acth_Backup, pcb_acts_Backup},
+	{"Export", pcb_act_Export, pcb_acth_Export, pcb_acts_Export},
+	{"LoadFrom", pcb_act_LoadFrom, pcb_acth_LoadFrom, pcb_acts_LoadFrom},
+	{"New", pcb_act_New, pcb_acth_New, pcb_acts_New},
+	{"Normalize", pcb_act_normalize, pcb_acth_normalize, pcb_acts_normalize},
+	{"SaveTo", pcb_act_SaveTo, pcb_acth_SaveTo, pcb_acts_SaveTo},
+	{"Quit", pcb_act_Quit, pcb_acth_Quit, pcb_acts_Quit}
 };
 
 PCB_REGISTER_ACTIONS(file_action_list, NULL)

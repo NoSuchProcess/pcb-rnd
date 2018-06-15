@@ -155,10 +155,8 @@ int pcb_act_padstackplace(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t padstack_action_list[] = {
-	{"PadstackConvert", pcb_act_padstackconvert,
-	 pcb_acth_padstackconvert, pcb_acts_padstackconvert},
-	{"PadstackPlace", pcb_act_padstackplace,
-	 pcb_acth_padstackplace, pcb_acts_padstackplace}
+	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
+	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}
 };
 
 PCB_REGISTER_ACTIONS(padstack_action_list, NULL)

@@ -363,38 +363,17 @@ int pcb_act_System(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t main_action_list[] = {
-	{"PrintActions", pcb_act_PrintActions,
-	 pcb_acth_PrintActions, pcb_acts_PrintActions}
-	,
-	{"DumpActions", pcb_act_DumpActions,
-	 pcb_acth_DumpActions, pcb_acts_DumpActions}
-	,
-	{"PrintUsage", pcb_act_PrintUsage,
-	 pcb_acth_PrintUsage, pcb_acts_PrintUsage}
-	,
-	{"PrintVersion", pcb_act_PrintVersion,
-	 pcb_acth_PrintVersion, pcb_acts_PrintVersion}
-	,
-	{"PrintCopyright", pcb_act_PrintCopyright,
-	 pcb_acth_PrintCopyright, pcb_acts_PrintCopyright}
-	,
-	{"PrintPaths", pcb_act_PrintPaths,
-	 pcb_acth_PrintPaths, pcb_acts_PrintPaths}
-	,
-	{"PrintFiles", pcb_act_PrintFiles,
-	 pcb_acth_PrintFiles, pcb_acts_PrintFiles}
-	,
-	{"DumpPlugins", pcb_act_DumpPlugins,
-	 pcb_acth_DumpPlugins, pcb_acts_DumpPlugins}
-	,
-	{"DumpPluginDirs", pcb_act_DumpPluginDirs,
-	 pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs}
-	,
-	{"DumpObjFlags", pcb_act_DumpObjFlags,
-	 pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags}
-	,
-	{"System", pcb_act_System,
-	 pcb_acth_System, pcb_acts_System}
+	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
+	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
+	{"PrintUsage", pcb_act_PrintUsage, pcb_acth_PrintUsage, pcb_acts_PrintUsage},
+	{"PrintVersion", pcb_act_PrintVersion, pcb_acth_PrintVersion, pcb_acts_PrintVersion},
+	{"PrintCopyright", pcb_act_PrintCopyright, pcb_acth_PrintCopyright, pcb_acts_PrintCopyright},
+	{"PrintPaths", pcb_act_PrintPaths, pcb_acth_PrintPaths, pcb_acts_PrintPaths},
+	{"PrintFiles", pcb_act_PrintFiles, pcb_acth_PrintFiles, pcb_acts_PrintFiles},
+	{"DumpPlugins", pcb_act_DumpPlugins, pcb_acth_DumpPlugins, pcb_acts_DumpPlugins},
+	{"DumpPluginDirs", pcb_act_DumpPluginDirs, pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs},
+	{"DumpObjFlags", pcb_act_DumpObjFlags, pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags},
+	{"System", pcb_act_System, pcb_acth_System, pcb_acts_System}
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)

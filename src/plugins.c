@@ -116,8 +116,7 @@ static int pcb_act_ManagePlugins(int argc, const char **argv)
 
 
 pcb_hid_action_t plugins_action_list[] = {
-	{"ManagePlugins", pcb_act_ManagePlugins,
-	 pcb_acth_ManagePlugins, pcb_acts_ManagePlugins}
+	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins}
 };
 
 PCB_REGISTER_ACTIONS(plugins_action_list, NULL)

@@ -112,8 +112,7 @@ int pcb_act_ExecuteFile(int argc, const char **argv)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t action_action_list[] = {
-	{"ExecuteFile", pcb_act_ExecuteFile,
-	 pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
+	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 
 PCB_REGISTER_ACTIONS(action_action_list, NULL)

@@ -2616,8 +2616,7 @@ static int pcb_act_DJopt(int argc, const char **argv)
 }
 
 pcb_hid_action_t djopt_action_list[] = {
-	{"djopt", pcb_act_DJopt,
-	 pcb_acth_DJopt, pcb_acts_DJopt}
+	{"djopt", pcb_act_DJopt, pcb_acth_DJopt, pcb_acts_DJopt}
 };
 
 PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)

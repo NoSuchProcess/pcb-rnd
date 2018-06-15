@@ -250,11 +250,8 @@ static int pcb_act_Unselect(int argc, const char **argv)
 }
 
 pcb_hid_action_t select_action_list[] = {
-	{"Select", pcb_act_Select,
-	 pcb_acth_Select, pcb_acts_Select}
-	,
-	{"Unselect", pcb_act_Unselect,
-	 pcb_acth_Unselect, pcb_acts_Unselect}
+	{"Select", pcb_act_Select, pcb_acth_Select, pcb_acts_Select},
+	{"Unselect", pcb_act_Unselect, pcb_acth_Unselect, pcb_acts_Unselect}
 };
 
 PCB_REGISTER_ACTIONS(select_action_list, NULL)

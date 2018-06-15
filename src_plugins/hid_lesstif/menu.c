@@ -132,8 +132,7 @@ void lesstif_update_widget_flags(const char *cookie)
 /*-----------------------------------------------------------------------------*/
 
 pcb_hid_action_t lesstif_menu_action_list[] = {
-	{"GetXY", pcb_act_GetXY,
-	 pcb_acth_GetXY, pcb_acts_GetXY},
+	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)

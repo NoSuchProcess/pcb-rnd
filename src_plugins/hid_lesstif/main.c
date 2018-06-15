@@ -836,26 +836,13 @@ static int pcb_act_Center(int argc, const char **argv)
 }
 
 pcb_hid_action_t lesstif_main_action_list[] = {
-	{"Zoom", pcb_act_Zoom,
-	 pcb_acth_Zoom, pcb_acts_Zoom}
-	,
-	{"ZoomTo", pcb_act_ZoomTo,
-	 pcb_acth_ZoomTo, pcb_acts_ZoomTo}
-	,
-	{"Pan", pcb_act_Pan,
-	 pcb_acth_Zoom, pcb_acts_Zoom}
-	,
-	{"SwapSides", pcb_act_SwapSides,
-	 pcb_acth_SwapSides, pcb_acts_SwapSides}
-	,
-	{"Command", pcb_act_Command,
-	 pcb_acth_Command, pcb_acts_Command}
-	,
-	{"Benchmark", pcb_act_Benchmark,
-	 pcb_acth_Benchmark, pcb_acts_Benchmark}
-	,
+	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
+	{"ZoomTo", pcb_act_ZoomTo, pcb_acth_ZoomTo, pcb_acts_ZoomTo},
+	{"Pan", pcb_act_Pan, pcb_acth_Zoom, pcb_acts_Zoom},
+	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
+	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
+	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark},
 	{"Center", pcb_act_Center}
-	,
 };
 
 PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)

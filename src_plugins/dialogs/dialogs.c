@@ -43,16 +43,11 @@
 #include "dlg_about.c"
 
 pcb_hid_action_t dialogs_action_list[] = {
-	{"dlg_test", pcb_act_dlg_test,
-	 dlg_test_help, dlg_test_syntax},
-	{"LayerBinding", pcb_act_LayerBinding,
-	 pcb_acth_LayerBinding, pcb_acts_LayerBinding},
-	{"FlagEdit", pcb_act_FlagEdit,
-	 pcb_acth_FlagEdit, pcb_acts_FlagEdit},
-	{"PadstackEdit", pcb_act_PadstackEdit,
-	 pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
-	{"About2", pcb_act_About,
-	 pcb_acth_About, pcb_acts_About}
+	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
+	{"LayerBinding", pcb_act_LayerBinding, pcb_acth_LayerBinding, pcb_acts_LayerBinding},
+	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
+	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
+	{"About2", pcb_act_About, pcb_acth_About, pcb_acts_About}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";

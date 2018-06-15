@@ -122,8 +122,7 @@ static int pcb_act_polystitch(int argc, const char **argv)
 }
 
 static pcb_hid_action_t polystitch_action_list[] = {
-	{"PolyStitch", pcb_act_polystitch,
-	 NULL, NULL}
+	{"PolyStitch", pcb_act_polystitch, NULL, NULL}
 };
 
 char *polystitch_cookie = "polystitch plugin";

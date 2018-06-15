@@ -307,26 +307,16 @@ int pcb_act_ListRotations(int argc, const char **argv)
 
 
 pcb_hid_action_t oldactions_action_list[] = {
-	{"DumpLibrary", pcb_act_DumpLibrary,
-	 pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
-	{"Bell", pcb_act_Bell,
-	 pcb_acth_Bell, pcb_acts_Bell},
-	{"Debug", pcb_act_Debug,
-	 pcb_acth_debug, pcb_acts_debug},
-	{"DebugXY", pcb_act_Debug,
-	 pcb_acth_debugxy, pcb_acts_debugxy},
-	{"Return", pcb_act_Return,
-	 pcb_acth_return, pcb_acts_return},
-	{"OptAutoOnly", pcb_act_djopt_set_auto_only,
-	 pcb_acth_djopt_sao, pcb_acts_djopt_sao},
-	{"ToggleVendor", pcb_act_ToggleVendor,
-	 pcb_acth_toggle_vendor, pcb_acts_toggle_vendor},
-	{"EnableVendor", pcb_act_EnableVendor,
-	 pcb_acth_enable_vendor, pcb_acts_enable_vendor},
-	{"DisableVendor", pcb_act_DisableVendor,
-	 pcb_acth_disable_vendor, pcb_acts_disable_vendor},
-	{"ListRotations", pcb_act_ListRotations,
-	 0, 0}
+	{"DumpLibrary", pcb_act_DumpLibrary, pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
+	{"Bell", pcb_act_Bell, pcb_acth_Bell, pcb_acts_Bell},
+	{"Debug", pcb_act_Debug, pcb_acth_debug, pcb_acts_debug},
+	{"DebugXY", pcb_act_Debug, pcb_acth_debugxy, pcb_acts_debugxy},
+	{"Return", pcb_act_Return, pcb_acth_return, pcb_acts_return},
+	{"OptAutoOnly", pcb_act_djopt_set_auto_only, pcb_acth_djopt_sao, pcb_acts_djopt_sao},
+	{"ToggleVendor", pcb_act_ToggleVendor, pcb_acth_toggle_vendor, pcb_acts_toggle_vendor},
+	{"EnableVendor", pcb_act_EnableVendor, pcb_acth_enable_vendor, pcb_acts_enable_vendor},
+	{"DisableVendor", pcb_act_DisableVendor, pcb_acth_disable_vendor, pcb_acts_disable_vendor},
+	{"ListRotations", pcb_act_ListRotations, 0, 0}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";

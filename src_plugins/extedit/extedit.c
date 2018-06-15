@@ -290,8 +290,7 @@ static int pcb_act_extedit(int argc, const char **argv)
 }
 
 static pcb_hid_action_t extedit_action_list[] = {
-	{"extedit", pcb_act_extedit,
-	 pcb_acts_extedit, pcb_acth_extedit}
+	{"extedit", pcb_act_extedit, pcb_acts_extedit, pcb_acth_extedit}
 };
 
 static const char *extedit_cookie = "extedit plugin";

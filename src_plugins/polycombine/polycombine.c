@@ -336,8 +336,7 @@ static int pcb_act_polycombine(int argc, const char **argv)
 }
 
 static pcb_hid_action_t polycombine_action_list[] = {
-	{"PolyCombine", pcb_act_polycombine,
-	 NULL, NULL}
+	{"PolyCombine", pcb_act_polycombine, NULL, NULL}
 };
 
 char *polycombine_cookie = "polycombine plugin";

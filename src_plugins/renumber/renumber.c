@@ -370,12 +370,9 @@ int pcb_act_RenumberBuffer(int argc, const char **argv);
 static const char *renumber_cookie = "renumber plugin";
 
 pcb_hid_action_t renumber_action_list[] = {
-	{"Renumber", pcb_act_Renumber,
-	 pcb_acth_Renumber, pcb_acts_Renumber},
-	{"RenumberBlock", pcb_act_RenumberBlock,
-		NULL, NULL},
-	{"RenumberBuffer", pcb_act_RenumberBuffer,
-		NULL, NULL}
+	{"Renumber", pcb_act_Renumber, pcb_acth_Renumber, pcb_acts_Renumber},
+	{"RenumberBlock", pcb_act_RenumberBlock, NULL, NULL},
+	{"RenumberBuffer", pcb_act_RenumberBuffer, NULL, NULL}
 };
 
 int pplg_check_ver_renumber(int ver_needed) { return 0; }

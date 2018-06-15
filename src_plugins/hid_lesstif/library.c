@@ -183,9 +183,7 @@ void lesstif_show_library()
 }
 
 pcb_hid_action_t lesstif_library_action_list[] = {
-	{"LibraryShow", pcb_act_LibraryShow,
-	 pcb_acth_LibraryShow, pcb_acts_LibraryShow}
-	,
+	{"LibraryShow", pcb_act_LibraryShow, pcb_acth_LibraryShow, pcb_acts_LibraryShow}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)

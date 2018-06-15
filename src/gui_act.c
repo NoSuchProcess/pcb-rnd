@@ -1845,80 +1845,32 @@ static int pcb_act_ChkRst(int argc, const char **argv)
 }
 
 pcb_hid_action_t gui_action_list[] = {
-	{"Display", pcb_act_Display,
-	 pcb_acth_Display, pcb_acts_Display}
-	,
-	{"CycleDrag", pcb_act_CycleDrag,
-	 pcb_acth_CycleDrag, pcb_acts_CycleDrag}
-	,
-	{"FullScreen", pcb_act_FullScreen,
-	 pcb_acth_FullScreen, pcb_acts_FullScreen}
-	,
-	{"MarkCrosshair", pcb_act_MarkCrosshair,
-	 pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair}
-	,
-	{"Message", pcb_act_Message,
-	 pcb_acth_Message, pcb_acts_Message}
-	,
-	{"Mode", pcb_act_Mode,
-	 pcb_acth_Mode, pcb_acts_Mode}
-	,
-	{"ToggleHideName", pcb_act_ToggleHideName,
-	 pcb_acth_ToggleHideName, pcb_acts_ToggleHideName}
-	,
-	{"SetSame", pcb_act_SetSame,
-	 pcb_acth_SetSame, pcb_acts_SetSame}
-	,
-	{"RouteStyle", pcb_act_RouteStyle,
-	 pcb_acth_RouteStyle, pcb_acts_RouteStyle}
-	,
-	{"CreateMenu", pcb_act_CreateMenu,
-	 pcb_acth_CreateMenu, pcb_acts_CreateMenu}
-	,
-	{"RemoveMenu", pcb_act_RemoveMenu,
-	 pcb_acth_RemoveMenu, pcb_acts_RemoveMenu}
-	,
-	{"SelectLayer", pcb_act_SelectLayer,
-	 pcb_acth_selectlayer, pcb_acts_selectlayer}
-	,
-	{"ChkLayer", pcb_act_ChkLayer,
-	 pcb_acth_chklayer, pcb_acts_chklayer}
-	,
-	{"SwitchHID", pcb_act_SwitchHID,
-	 pcb_acth_SwitchHID, pcb_acts_SwitchHID}
-	,
-	{"ToggleView", pcb_act_ToggleView,
-	 pcb_acth_toggleview, pcb_acts_toggleview}
-	,
-	{"ChkView", pcb_act_ChkView,
-	 pcb_acth_chkview, pcb_acts_chkview}
-	,
-	{"PCBChanged", pcb_act_PCBChanged,
-	 pcb_acth_PCBChanged, pcb_acts_PCBChanged}
-	,
-	{"NetlistChanged", pcb_act_NetlistChanged,
-	 pcb_acth_NetlistChanged, pcb_acts_NetlistChanged}
-	,
-	{"RouteStylesChanged", pcb_act_RouteStylesChanged,
-	 pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged}
-	,
-	{"LibraryChanged", pcb_act_LibraryChanged,
-	 pcb_acth_LibraryChanged, pcb_acts_LibraryChanged}
-	,
-	{"Cursor", pcb_act_Cursor, pcb_acth_cursor, pcb_acts_cursor}
-	,
-	{"EditLayer", pcb_act_EditLayer,
-	 pcb_acth_EditLayer, pcb_acts_EditLayer}
-	,
-	{"EditGroup", pcb_act_EditGroup,
-	 pcb_acth_EditGroup, pcb_acts_EditGroup}
-	,
-	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid}
-	,
-	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits}
-	,
-	{"ChkRst", pcb_act_ChkRst,
-	 pcb_acth_chkrst, pcb_acts_chkrst}
+	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
+	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
+	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
+	{"MarkCrosshair", pcb_act_MarkCrosshair, pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair},
+	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message},
+	{"Mode", pcb_act_Mode, pcb_acth_Mode, pcb_acts_Mode},
+	{"ToggleHideName", pcb_act_ToggleHideName, pcb_acth_ToggleHideName, pcb_acts_ToggleHideName},
+	{"SetSame", pcb_act_SetSame, pcb_acth_SetSame, pcb_acts_SetSame},
+	{"RouteStyle", pcb_act_RouteStyle, pcb_acth_RouteStyle, pcb_acts_RouteStyle},
+	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},
+	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},
+	{"SelectLayer", pcb_act_SelectLayer, pcb_acth_selectlayer, pcb_acts_selectlayer},
+	{"ChkLayer", pcb_act_ChkLayer, pcb_acth_chklayer, pcb_acts_chklayer},
+	{"SwitchHID", pcb_act_SwitchHID, pcb_acth_SwitchHID, pcb_acts_SwitchHID},
+	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
+	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
+	{"PCBChanged", pcb_act_PCBChanged, pcb_acth_PCBChanged, pcb_acts_PCBChanged},
+	{"NetlistChanged", pcb_act_NetlistChanged, pcb_acth_NetlistChanged, pcb_acts_NetlistChanged},
+	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
+	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
+	{"Cursor", pcb_act_Cursor, pcb_acth_cursor, pcb_acts_cursor},
+	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
+	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
+	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
+	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
+	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

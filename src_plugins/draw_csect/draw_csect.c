@@ -876,8 +876,7 @@ static int pcb_act_dump_csect(int argc, const char **argv)
 static const char *draw_csect_cookie = "draw_csect";
 
 pcb_hid_action_t draw_csect_action_list[] = {
-	{"DumpCsect", pcb_act_dump_csect,
-	 pcb_acth_dump_csect, pcb_acts_dump_csect}
+	{"DumpCsect", pcb_act_dump_csect, pcb_acth_dump_csect, pcb_acts_dump_csect}
 };
 
 

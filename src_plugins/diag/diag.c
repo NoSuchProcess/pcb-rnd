@@ -432,28 +432,18 @@ static int pcb_act_forcecolor(int argc, const char **argv)
 }
 
 pcb_hid_action_t diag_action_list[] = {
-	{"dumpconf", pcb_act_DumpConf,
-	 dump_conf_help, dump_conf_syntax},
-	{"dumplayers", pcb_act_DumpLayers,
-	 dump_layers_help, dump_layers_syntax},
-	{"dumpfonts", pcb_act_DumpFonts,
-	 dump_fonts_help, dump_fonts_syntax},
-	{"dumpdata", pcb_act_DumpData,
-	 dump_data_help, dump_data_syntax},
+	{"dumpconf", pcb_act_DumpConf, dump_conf_help, dump_conf_syntax},
+	{"dumplayers", pcb_act_DumpLayers, dump_layers_help, dump_layers_syntax},
+	{"dumpfonts", pcb_act_DumpFonts, dump_fonts_help, dump_fonts_syntax},
+	{"dumpdata", pcb_act_DumpData, dump_data_help, dump_data_syntax},
 #ifndef NDEBUG
-	{"dumpundo", pcb_act_DumpUndo,
-	 dump_undo_help, dump_undo_syntax},
+	{"dumpundo", pcb_act_DumpUndo, dump_undo_help, dump_undo_syntax},
 #endif
-	{"EvalConf", pcb_act_EvalConf,
-	 eval_conf_help, eval_conf_syntax},
-	{"d1", pcb_act_d1,
-	 d1_help, d1_syntax},
-	{"integrity", pcb_act_integrity,
-	 integrity_help, integrity_syntax},
-	{"dumpflags", pcb_act_dumpflags,
-	 dumpflags_help, dumpflags_syntax},
-	{"forcecolor", pcb_act_forcecolor,
-	 forcecolor_help, forcecolor_syntax}
+	{"EvalConf", pcb_act_EvalConf, eval_conf_help, eval_conf_syntax},
+	{"d1", pcb_act_d1, d1_help, d1_syntax},
+	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
+	{"dumpflags", pcb_act_dumpflags, dumpflags_help, dumpflags_syntax},
+	{"forcecolor", pcb_act_forcecolor, forcecolor_help, forcecolor_syntax}
 };
 
 static const char *diag_cookie = "diag plugin";

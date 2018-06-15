@@ -2192,11 +2192,8 @@ static int pcb_act_GlobalPuller(int argc, const char **argv)
 /*****************************************************************************/
 
 pcb_hid_action_t puller_action_list[] = {
-	{"Puller", pcb_act_Puller,
-	 pcb_acth_Puller, pcb_acts_Puller}
-	,
-	{"GlobalPuller", pcb_act_GlobalPuller,
-	 pcb_acth_GlobalPuller, pcb_acts_GlobalPuller}
+	{"Puller", pcb_act_Puller, pcb_acth_Puller, pcb_acts_Puller},
+	{"GlobalPuller", pcb_act_GlobalPuller, pcb_acth_GlobalPuller, pcb_acts_GlobalPuller}
 };
 
 static const char *puller_cookie = "puller plugin";
