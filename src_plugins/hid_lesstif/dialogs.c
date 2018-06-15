@@ -106,9 +106,9 @@ static void setup_fsb_dialog()
 	XtAddCallback(fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
 }
 
-static const char load_syntax[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
+static const char pcb_acts_Load[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
 
-static const char load_help[] = "Load layout data from a user-selected file.";
+static const char pcb_acth_Load[] = "Load layout data from a user-selected file.";
 
 /* %start-doc actions Load
 
@@ -120,7 +120,7 @@ called with that filename.
 
 %end-doc */
 
-static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
 	char *name;
@@ -166,9 +166,9 @@ static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char loadvendor_syntax[] = "LoadVendor()";
+static const char pcb_acts_LoadVendor[] = "LoadVendor()";
 
-static const char loadvendor_help[] = "Loads a user-selected vendor resource file.";
+static const char pcb_acth_LoadVendor[] = "Loads a user-selected vendor resource file.";
 
 /* %start-doc actions LoadVendor
 
@@ -178,7 +178,7 @@ load that vendor file.
 
 %end-doc */
 
-static int LoadVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	char *name;
 	XmString xmname, pattern;
@@ -216,10 +216,9 @@ static int LoadVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char save_syntax[] =
-	"Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
+static const char pcb_acts_Save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
 
-static const char save_help[] = "Save layout data to a user-selected file.";
+static const char pcb_acth_Save[] = "Save layout data to a user-selected file.";
 
 /* %start-doc actions Save
 
@@ -231,7 +230,7 @@ called with that filename.
 
 %end-doc */
 
-static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
 	char *name;
@@ -455,7 +454,7 @@ int lesstif_confirm_dialog(const char *msg, ...)
 	return ok;
 }
 
-static int ConfirmAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ConfirmAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int rv = lesstif_confirm_dialog(argc > 0 ? argv[0] : 0,
 																	argc > 1 ? argv[1] : 0,
@@ -565,9 +564,9 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 	return rv;
 }
 
-static const char promptfor_syntax[] = "PromptFor([message[,default]])";
+static const char pcb_acts_PromptFor[] = "PromptFor([message[,default]])";
 
-static const char promptfor_help[] = "Prompt for a response.";
+static const char pcb_acth_PromptFor[] = "Prompt for a response.";
 
 /* %start-doc actions PromptFor
 
@@ -578,7 +577,7 @@ user's stdout.
 
 %end-doc */
 
-static int PromptFor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PromptFor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	char *rv = lesstif_prompt_for(argc > 0 ? argv[0] : 0,
 																argc > 1 ? argv[1] : 0);
@@ -1247,9 +1246,9 @@ int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t 
 
 /* ------------------------------------------------------------ */
 
-static const char dowindows_syntax[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";
+static const char pcb_acts_DoWindows[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";
 
-static const char dowindows_help[] = "Open various GUI windows.";
+static const char pcb_acth_DoWindows[] = "Open various GUI windows.";
 
 /* %start-doc actions DoWindows
 
@@ -1276,7 +1275,7 @@ Open the netlist window.
 
 %end-doc */
 
-static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a = argc == 1 ? argv[0] : "";
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
@@ -1300,9 +1299,9 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* ------------------------------------------------------------ */
-static const char about_syntax[] = "About()";
+static const char pcb_acts_About[] = "About()";
 
-static const char about_help[] = "Tell the user about this version of PCB.";
+static const char pcb_acth_About[] = "Tell the user about this version of PCB.";
 
 /* %start-doc actions About
 
@@ -1312,7 +1311,7 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	static Widget about = 0;
 	if (!about) {
@@ -1331,9 +1330,9 @@ static int About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static const char print_syntax[] = "Print()";
+static const char pcb_acts_Print[] = "Print()";
 
-static const char print_help[] = "Print the layout.";
+static const char pcb_acth_Print[] = "Print the layout.";
 
 /* %start-doc actions Print
 
@@ -1342,7 +1341,7 @@ options, and print the layout.
 
 %end-doc */
 
-static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer;
@@ -1376,9 +1375,9 @@ static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 
 static pcb_hid_attr_val_t printer_calibrate_values[3];
 
-static const char printcalibrate_syntax[] = "PrintCalibrate()";
+static const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
 
-static const char printcalibrate_help[] = "Calibrate the printer.";
+static const char pcb_acth_PrintCalibrate[] = "Calibrate the printer.";
 
 /* %start-doc actions PrintCalibrate
 
@@ -1387,7 +1386,7 @@ the measurements in, so that future printouts will be more precise.
 
 %end-doc */
 
-static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
@@ -1399,9 +1398,9 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
-static const char exportgui_syntax[] = "ExportGUI()";
+static const char pcb_acts_ExportGUI[] = "ExportGUI()";
 
-static const char exportgui_help[] = "Export the layout. Export is configured using dialog a box.";
+static const char pcb_acth_ExportGUI[] = "Export the layout. Export is configured using dialog a box.";
 
 /* %start-doc actions Export
 
@@ -1410,7 +1409,7 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	static Widget selector = 0;
 	pcb_hid_attribute_t *opts;
@@ -1567,9 +1566,9 @@ static Widget size_field(Widget parent, const char *label, int posn)
 	return w;
 }
 
-static const char adjustsizes_syntax[] = "AdjustSizes()";
+static const char pcb_acts_AdjustSizes[] = "AdjustSizes()";
 
-static const char adjustsizes_help[] = "Let the user change the board size, DRC parameters, etc";
+static const char pcb_acth_AdjustSizes[] = "Let the user change the board size, DRC parameters, etc";
 
 /* %start-doc actions AdjustSizes
 
@@ -1580,7 +1579,7 @@ The units are determined by the default display units.
 
 %end-doc */
 
-static int AdjustSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AdjustSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (!sizes_dialog) {
 		Widget inf, sep;
@@ -1657,9 +1656,9 @@ void lesstif_update_layer_groups()
 #warning layer TODO: call a redraw on the edit group
 }
 
-static const char editlayergroups_syntax[] = "EditLayerGroups()";
+static const char pcb_acts_EditLayerGroups[] = "EditLayerGroups()";
 
-static const char editlayergroups_help[] = "Let the user change the layer groupings";
+static const char pcb_acth_EditLayerGroups[] = "Let the user change the layer groupings";
 
 /* %start-doc actions EditLayerGroups
 
@@ -1674,7 +1673,7 @@ See @ref{ChangeName Action}.
 %end-doc */
 
 extern void lesstif_show_layergrp_edit(void);
-static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	lesstif_show_layergrp_edit();
 	return 1;
@@ -2005,9 +2004,9 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 
 /* ------------------------------------------------------------ */
 
-static const char importgui_syntax[] = "ImportGUI()";
+static const char pcb_acts_ImportGUI[] = "ImportGUI()";
 
-static const char importgui_help[] = "Lets the user choose the schematics to import from";
+static const char pcb_acth_ImportGUI[] = "Lets the user choose the schematics to import from";
 
 /* %start-doc actions ImportGUI
 
@@ -2017,7 +2016,7 @@ future imports.
 
 %end-doc */
 
-static int ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	static int I_am_recursing = 0;
 	static XmString xms_sch = 0, xms_import = 0;
@@ -2090,46 +2089,46 @@ static int ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t lesstif_dialog_action_list[] = {
-	{"Load", 0, Load,
-	 load_help, load_syntax}
+	{"Load", 0, pcb_act_Load,
+	 pcb_acth_Load, pcb_acts_Load}
 	,
-	{"LoadVendor", 0, LoadVendor,
-	 loadvendor_help, loadvendor_syntax}
+	{"LoadVendor", 0, pcb_act_LoadVendor,
+	 pcb_acth_LoadVendor, pcb_acts_LoadVendor}
 	,
-	{"Save", 0, Save,
-	 save_help, save_syntax}
+	{"Save", 0, pcb_act_Save,
+	 pcb_acth_Save, pcb_acts_Save}
 	,
-	{"DoWindows", 0, DoWindows,
-	 dowindows_help, dowindows_syntax}
+	{"DoWindows", 0, pcb_act_DoWindows,
+	 pcb_acth_DoWindows, pcb_acts_DoWindows}
 	,
-	{"PromptFor", 0, PromptFor,
-	 promptfor_help, promptfor_syntax}
+	{"PromptFor", 0, pcb_act_PromptFor,
+	 pcb_acth_PromptFor, pcb_acts_PromptFor}
 	,
-	{"Confirm", 0, ConfirmAction}
+	{"Confirm", 0, pcb_act_ConfirmAction}
 	,
-	{"About", 0, About,
-	 about_help, about_syntax}
+	{"About", 0, pcb_act_About,
+	 pcb_acth_About, pcb_acts_About}
 	,
-	{"Print", 0, Print,
-	 print_help, print_syntax}
+	{"Print", 0, pcb_act_Print,
+	 pcb_acth_Print, pcb_acts_Print}
 	,
-	{"PrintCalibrate", 0, PrintCalibrate,
-	 printcalibrate_help, printcalibrate_syntax}
+	{"PrintCalibrate", 0, pcb_act_PrintCalibrate,
+	 pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate}
 	,
-	{"ExportGUI", 0, ExportGUI,
-	 exportgui_help, exportgui_syntax}
+	{"ExportGUI", 0, pcb_act_ExportGUI,
+	 pcb_acth_ExportGUI, pcb_acts_ExportGUI}
 	,
-	{"AdjustSizes", 0, AdjustSizes,
-	 adjustsizes_help, adjustsizes_syntax}
+	{"AdjustSizes", 0, pcb_act_AdjustSizes,
+	 pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
 	,
-	{"EditLayerGroups", 0, EditLayerGroups,
-	 editlayergroups_help, editlayergroups_syntax}
+	{"EditLayerGroups", 0, pcb_act_EditLayerGroups,
+	 pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups}
 	,
 	{"FontSel", 0, pcb_act_fontsel,
 	 pcb_acth_fontsel, pcb_acts_fontsel}
 	,
-	{"ImportGUI", 0, ImportGUI,
-	 importgui_help, importgui_syntax}
+	{"ImportGUI", 0, pcb_act_ImportGUI,
+	 pcb_acth_ImportGUI, pcb_acts_ImportGUI}
 	,
 };
 

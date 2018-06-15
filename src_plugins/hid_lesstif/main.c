@@ -390,9 +390,9 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-static const char zoom_syntax[] = "Zoom()\n" "Zoom(factor)";
+static const char pcb_acts_Zoom[] = "Zoom()\n" "Zoom(factor)";
 
-static const char zoom_help[] = "Various zoom factor changes.";
+static const char pcb_acth_Zoom[] = "Various zoom factor changes.";
 
 /* %start-doc actions Zoom
 
@@ -431,7 +431,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int ZoomAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vp;
 	double v;
@@ -475,9 +475,9 @@ static int ZoomAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 
-static const char zoom_to_syntax[] = "ZoomTo(x1, y1, x2, y2)";
+static const char pcb_acts_ZoomTo[] = "ZoomTo(x1, y1, x2, y2)";
 
-static const char zoom_to_help[] = "Zoom to a specific window on the board.";
+static const char pcb_acth_ZoomTo[] = "Zoom to a specific window on the board.";
 
 /* %start-doc actions ZoomTo
 
@@ -499,7 +499,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int ZoomToAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ZoomTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_coord_t x1, y1, x2, y2;
 	pcb_bool succ;
@@ -530,7 +530,7 @@ static int ZoomToAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 static int pan_thumb_mode;
 
-static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Pan(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int mode;
 
@@ -547,9 +547,9 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char swapsides_syntax[] = "SwapSides(|v|h|r)";
+static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r)";
 
-static const char swapsides_help[] = "Swaps the side of the board you're looking at.";
+static const char pcb_acth_SwapSides[] = "Swaps the side of the board you're looking at.";
 
 /* %start-doc actions SwapSides
 
@@ -599,7 +599,7 @@ static int group_showing(int g, int *c)
 }
 
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
-static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
@@ -716,9 +716,9 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 	}
 }
 
-static const char command_syntax[] = "Command()";
+static const char pcb_acts_Command[] = "Command()";
 
-static const char command_help[] = "Displays the command line input window.";
+static const char pcb_acth_Command[] = "Displays the command line input window.";
 
 /* %start-doc actions Command
 
@@ -756,7 +756,7 @@ before.
 
 %end-doc */
 
-static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
@@ -764,9 +764,9 @@ static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char benchmark_syntax[] = "Benchmark()";
+static const char pcb_acts_Benchmark[] = "Benchmark()";
 
-static const char benchmark_help[] = "Benchmark the GUI speed.";
+static const char pcb_acth_Benchmark[] = "Benchmark the GUI speed.";
 
 /* %start-doc actions Benchmark
 
@@ -776,7 +776,7 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i = 0;
 	time_t start, end;
@@ -810,7 +810,7 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 	y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
@@ -825,25 +825,25 @@ static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t lesstif_main_action_list[] = {
-	{"Zoom", "Click on a place to zoom in", ZoomAction,
-	 zoom_help, zoom_syntax}
+	{"Zoom", "Click on a place to zoom in", pcb_act_Zoom,
+	 pcb_acth_Zoom, pcb_acts_Zoom}
 	,
-	{"ZoomTo", 0, ZoomToAction,
-	 zoom_to_help, zoom_to_syntax}
+	{"ZoomTo", 0, pcb_act_ZoomTo,
+	 pcb_acth_ZoomTo, pcb_acts_ZoomTo}
 	,
-	{"Pan", "Click on a place to pan", PanAction,
-	 zoom_help, zoom_syntax}
+	{"Pan", "Click on a place to pan", pcb_act_Pan,
+	 pcb_acth_Zoom, pcb_acts_Zoom}
 	,
-	{"SwapSides", 0, SwapSides,
-	 swapsides_help, swapsides_syntax}
+	{"SwapSides", 0, pcb_act_SwapSides,
+	 pcb_acth_SwapSides, pcb_acts_SwapSides}
 	,
-	{"Command", 0, Command,
-	 command_help, command_syntax}
+	{"Command", 0, pcb_act_Command,
+	 pcb_acth_Command, pcb_acts_Command}
 	,
-	{"Benchmark", 0, Benchmark,
-	 benchmark_help, benchmark_syntax}
+	{"Benchmark", 0, pcb_act_Benchmark,
+	 pcb_acth_Benchmark, pcb_acts_Benchmark}
 	,
-	{"Center", "Click on a location to center", Center}
+	{"Center", "Click on a location to center", pcb_act_Center}
 	,
 };
 

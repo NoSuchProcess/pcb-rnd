@@ -302,15 +302,15 @@ static Widget style_button(int i)
 	return pb;
 }
 
-static const char adjuststyle_syntax[] = "AdjustStyle()";
+static const char pcb_acts_AdjustStyle[] = "AdjustStyle()";
 
-static const char adjuststyle_help[] = "Displays the route style adjustment window.";
+static const char pcb_acth_AdjustStyle[] = "Displays the route style adjustment window.";
 
 /* %start-doc actions AdjustStyle
 
 %end-doc */
 
-static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if ((!mainwind) || (PCB->RouteStyle.array == NULL))
 		return 1;
@@ -398,8 +398,8 @@ void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 }
 
 pcb_hid_action_t lesstif_styles_action_list[] = {
-	{"AdjustStyle", 0, AdjustStyle,
-	 adjuststyle_help, adjuststyle_syntax}
+	{"AdjustStyle", 0, pcb_act_AdjustStyle,
+	 pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)

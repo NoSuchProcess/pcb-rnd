@@ -158,15 +158,15 @@ void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-static const char libraryshow_syntax[] = "LibraryShow()";
+static const char pcb_acts_LibraryShow[] = "LibraryShow()";
 
-static const char libraryshow_help[] = "Displays the library window.";
+static const char pcb_acth_LibraryShow[] = "Displays the library window.";
 
 /* %start-doc actions LibraryShow
 
 %end-doc */
 
-static int LibraryShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LibraryShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (build_library_dialog())
 		return 0;
@@ -183,8 +183,8 @@ void lesstif_show_library()
 }
 
 pcb_hid_action_t lesstif_library_action_list[] = {
-	{"LibraryShow", 0, LibraryShow,
-	 libraryshow_help, libraryshow_syntax}
+	{"LibraryShow", 0, pcb_act_LibraryShow,
+	 pcb_acth_LibraryShow, pcb_acts_LibraryShow}
 	,
 };
 

@@ -365,15 +365,15 @@ void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-static const char netlistshow_syntax[] = "NetlistShow(pinname|netname)";
+static const char pcb_acts_LesstifNetlistShow[] = "NetlistShow(pinname|netname)";
 
-static const char netlistshow_help[] = "Selects the given pinname or netname in the netlist window.";
+static const char pcb_acth_LesstifNetlistShow[] = "Selects the given pinname or netname in the netlist window.";
 
 /* %start-doc actions NetlistShow
 
 %end-doc */
 
-static int LesstifNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LesstifNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (build_netlist_dialog())
 		return 0;
@@ -433,8 +433,8 @@ void lesstif_show_netlist()
 }
 
 pcb_hid_action_t lesstif_netlist_action_list[] = {
-	{"NetlistShow", 0, LesstifNetlistShow,
-	 netlistshow_help, netlistshow_syntax}
+	{"NetlistShow", 0, pcb_act_LesstifNetlistShow,
+	 pcb_acth_LesstifNetlistShow, pcb_acts_LesstifNetlistShow}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
