@@ -305,7 +305,7 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
-int gui_parse_argumemts(int autopick_gui, int *hid_argc, char **hid_argv[])
+int gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 {
 	conf_listitem_t *apg = NULL;
 
@@ -580,7 +580,7 @@ int main(int argc, char *argv[])
 		exit(res);
 	}
 
-	if (gui_parse_argumemts(autopick_gui, &hid_argc, &hid_argv) != 0)
+	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0)
 		exit(1);
 
 	/* Create a new PCB object in memory */
