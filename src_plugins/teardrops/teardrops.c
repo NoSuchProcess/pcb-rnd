@@ -248,7 +248,7 @@ static void check_pstk(pcb_pstk_t *ps)
 	}
 }
 
-static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_box_t *b;
 	pcb_rtree_it_t it;
@@ -267,7 +267,7 @@ static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 static pcb_hid_action_t teardrops_action_list[] = {
-	{"Teardrops", NULL, teardrops, NULL, NULL}
+	{"Teardrops", NULL, pcb_act_teardrops, NULL, NULL}
 };
 
 char *teardrops_cookie = "teardrops plugin";
