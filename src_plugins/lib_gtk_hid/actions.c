@@ -109,14 +109,6 @@ static int pcb_act_fontsel(int argc, const char **argv)
 
 /* ---------------------------------------------------------------------- */
 
-static int pcb_act_LayerGroupsChanged(int argc, const char **argv)
-{
-	printf(_("LayerGroupsChanged -- not implemented\n"));
-	return 0;
-}
-
-/* ---------------------------------------------------------------------- */
-
 static int pcb_act_Command(int argc, const char **argv)
 {
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
@@ -485,7 +477,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
 	{"ExportGUI", pcb_act_ExportGUI},
 	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
-	{"LayerGroupsChanged", pcb_act_LayerGroupsChanged},
 	{"Load", pcb_act_load },
 	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},
 	{"NetlistShow", pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow},
