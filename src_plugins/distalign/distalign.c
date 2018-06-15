@@ -35,12 +35,6 @@
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
-static const char align_syntax[] =
-	"Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-
-static const char distribute_syntax[] =
-	"Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-
 enum {
 	K_X,
 	K_Y,
@@ -260,7 +254,8 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  *
  * Defaults are Marks, First.
  */
-static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_align[] = "Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])";
+static int pcb_act_align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
@@ -270,7 +265,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int changed = 0;
 
 	if (argc < 1 || argc > 4) {
-		PCB_AFAIL(align);
+		PCB_ACT_FAIL(align);
 	}
 	/* parse direction arg */
 	switch ((dir = keyword(ARG(0)))) {
@@ -278,7 +273,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Y:
 		break;
 	default:
-		PCB_AFAIL(align);
+		PCB_ACT_FAIL(align);
 	}
 	/* parse point (within each subcircuit) which will be aligned */
 	switch ((point = keyword(ARG(1)))) {
@@ -288,20 +283,20 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			PCB_AFAIL(align);
+			PCB_ACT_FAIL(align);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			PCB_AFAIL(align);
+			PCB_ACT_FAIL(align);
 		}
 		break;
 	case K_none:
 		point = K_Marks;						/* default value */
 		break;
 	default:
-		PCB_AFAIL(align);
+		PCB_ACT_FAIL(align);
 	}
 	/* parse reference which will determine alignment coordinates */
 	switch ((reference = keyword(ARG(2)))) {
@@ -314,7 +309,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		reference = K_First;				/* default value */
 		break;
 	default:
-		PCB_AFAIL(align);
+		PCB_ACT_FAIL(align);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(ARG(3))) {
@@ -325,7 +320,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		gridless = 0;
 		break;
 	default:
-		PCB_AFAIL(align);
+		PCB_ACT_FAIL(align);
 	}
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
@@ -381,7 +376,8 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
  * Distributed subcircuits always retain the same relative order they had
  * before they were distributed.
  */
-static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_distribute[] = "Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
+static int pcb_act_distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
@@ -393,7 +389,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int i;
 
 	if (argc < 1 || argc == 3 || argc > 4) {
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	/* parse direction arg */
 	switch ((dir = keyword(ARG(0)))) {
@@ -401,7 +397,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Y:
 		break;
 	default:
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	/* parse point (within each subcircuit) which will be distributed */
 	switch ((point = keyword(ARG(1)))) {
@@ -412,20 +408,20 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			PCB_AFAIL(distribute);
+			PCB_ACT_FAIL(distribute);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			PCB_AFAIL(distribute);
+			PCB_ACT_FAIL(distribute);
 		}
 		break;
 	case K_none:
 		point = K_Marks;						/* default value */
 		break;
 	default:
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	/* parse reference which will determine first distribution coordinate */
 	switch ((refa = keyword(ARG(2)))) {
@@ -438,7 +434,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		refa = K_First;							/* default value */
 		break;
 	default:
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	/* parse reference which will determine final distribution coordinate */
 	switch ((refb = keyword(ARG(3)))) {
@@ -451,10 +447,10 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		refb = K_Last;							/* default value */
 		break;
 	default:
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	if (refa == refb) {
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(ARG(4))) {
@@ -465,7 +461,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		gridless = 0;
 		break;
 	default:
-		PCB_AFAIL(distribute);
+		PCB_ACT_FAIL(distribute);
 	}
 	/* build list of subcircuitss in orthogonal axis order */
 	sort_subcs_by_pos(K_distribute, dir, point);
@@ -538,8 +534,8 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 static pcb_hid_action_t distalign_action_list[] = {
-	{"distribute", NULL, distribute, "Distribute subcircuits", distribute_syntax},
-	{"align", NULL, align, "Align subcircuits", align_syntax}
+	{"distribute", NULL, pcb_act_distribute, "Distribute subcircuits", pcb_acts_distribute},
+	{"align", NULL, pcb_act_align, "Align subcircuits", pcb_acts_align}
 };
 
 static char *distalign_cookie = "distalign plugin";
