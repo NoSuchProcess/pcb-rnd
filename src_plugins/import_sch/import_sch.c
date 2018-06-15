@@ -221,7 +221,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		units = PCB_ACTION_ARG(3);
 
 		if (!xs) {
-			pcb_gui->get_coords(_("Click on a location"), &x, &y);
+			pcb_hid_get_coords(_("Click on a location"), &x, &y);
 		}
 		else if (pcb_strcasecmp(xs, "center") == 0) {
 			pcb_attrib_remove(PCB, "import::newX");

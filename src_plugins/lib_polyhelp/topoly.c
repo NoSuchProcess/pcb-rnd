@@ -40,6 +40,7 @@
 #include "polygon.h"
 #include "search.h"
 #include "hid.h"
+#include "hid_actions.h"
 
 #define VALID_TYPE(obj) (((obj)->type == PCB_OBJ_ARC)  || ((obj)->type == PCB_OBJ_LINE))
 #define CONT_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC)
@@ -320,7 +321,7 @@ int pcb_act_topoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	void *r1, *r2, *r3;
 
 	if (argc == 0) {
-		pcb_gui->get_coords("Click on a line or arc of the contour loop", &x, &y);
+		pcb_hid_get_coords("Click on a line or arc of the contour loop", &x, &y);
 		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
 			pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
 			return 1;

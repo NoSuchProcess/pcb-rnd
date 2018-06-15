@@ -56,7 +56,7 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 		}
 		else {
-			pcb_gui->get_coords("Click at padstack origin", &x, &y);
+			pcb_hid_get_coords("Click at padstack origin", &x, &y);
 			/* rather use the snapped corsshair coords */
 			x = pcb_crosshair.X;
 			y = pcb_crosshair.Y;

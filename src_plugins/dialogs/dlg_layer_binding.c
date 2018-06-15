@@ -199,7 +199,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
 		int type;
 		void *ptr1, *ptr2, *ptr3;
-		pcb_gui->get_coords("Click on object to change size of", &x, &y);
+		pcb_hid_get_coords("Click on object to change size of", &x, &y);
 		type = pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_SUBC) {
 			pcb_message(PCB_MSG_ERROR, "No subc under the cursor\n");

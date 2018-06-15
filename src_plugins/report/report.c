@@ -599,7 +599,7 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		int type;
 		pcb_coord_t ox, oy;
 
-		pcb_gui->get_coords("Click on a copper line", &x, &y);
+		pcb_hid_get_coords("Click on a copper line", &x, &y);
 
 		type = pcb_search_screen(x, y, PCB_OBJ_LINE, &r1, &r2, &r3);
 		if (type != PCB_OBJ_LINE) {
@@ -643,7 +643,7 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		return 0;
 	}
 	else {
-/*		pcb_gui->get_coords("Click on a connection", &x, &y);*/
+/*		pcb_hid_get_coords("Click on a connection", &x, &y);*/
 		return report_net_length_(argc, argv, x, y);
 	}
 }
@@ -793,11 +793,11 @@ static int pcb_act_report(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
-		pcb_gui->get_coords("Click on an object", &x, &y);
+		pcb_hid_get_coords("Click on an object", &x, &y);
 		return pcb_act_report_dialog(argc, argv, x, y);
 	}
 	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
-		pcb_gui->get_coords("Click on a subcircuit", &x, &y);
+		pcb_hid_get_coords("Click on a subcircuit", &x, &y);
 		return pcb_act_report_dialog(argc, argv, x, y);
 	}
 	else if (pcb_strcasecmp(argv[0], "DrillReport") == 0)

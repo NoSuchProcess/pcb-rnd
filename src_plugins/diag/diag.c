@@ -422,7 +422,7 @@ static int pcb_act_forcecolor(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 	const char *new_color = PCB_ACTION_ARG(0);
 
-	pcb_gui->get_coords("Click on object to change", &x, &y);
+	pcb_hid_get_coords("Click on object to change", &x, &y);
 
 	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
 		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);

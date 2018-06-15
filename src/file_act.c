@@ -330,7 +330,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		pcb_bool result;
 		pcb_coord_t x, y;
 
-		pcb_gui->get_coords("Click on an element", &x, &y);
+		pcb_hid_get_coords("Click on an element", &x, &y);
 		if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 			pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
 			if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {

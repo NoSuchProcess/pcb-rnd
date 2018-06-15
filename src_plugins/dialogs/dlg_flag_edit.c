@@ -85,7 +85,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
 		void *ptr1, *ptr2, *ptr3;
-		pcb_gui->get_coords("Click on object to change flags of", &x, &y);
+		pcb_hid_get_coords("Click on object to change flags of", &x, &y);
 		type = pcb_search_screen(x, y, PCB_FLAGEDIT_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3);
 		ctx.ptr1 = ptr1;
 		ctx.obj = (pcb_any_obj_t *)ptr2;

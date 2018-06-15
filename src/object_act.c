@@ -55,6 +55,7 @@
 #include "obj_pstk.h"
 #include "macro.h"
 #include "rotate.h"
+#include "hid_actions.h"
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 
@@ -129,7 +130,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 			}
 			if (n_found == 0) {
 				void *ptrtmp;
-				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
+				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
@@ -400,7 +401,7 @@ static int pcb_act_MoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_hid_get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_layer_t *target = CURRENT;
 					pcb_any_obj_t *o = ptr2;

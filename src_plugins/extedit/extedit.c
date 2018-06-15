@@ -179,7 +179,7 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	/* pick up the object to edit */
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
-		pcb_gui->get_coords("Click on object to edit", &x, &y);
+		pcb_hid_get_coords("Click on object to edit", &x, &y);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 	else if ((argc > 0) && (pcb_strcasecmp(argv[0], "selected") == 0)) {

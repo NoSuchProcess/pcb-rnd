@@ -50,6 +50,8 @@
 #include "hid_attrib.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "hid_actions.h"
+
 
 static const char pcb_acts_Select[] =
 	"Select(Object|ToggleObject)\n"
@@ -145,7 +147,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-				pcb_gui->get_coords(_("Select the Subcircuit's Origin (mark) Location"), &x, &y);
+				pcb_hid_get_coords(_("Select the Subcircuit's Origin (mark) Location"), &x, &y);
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true);

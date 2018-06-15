@@ -44,6 +44,7 @@
 #include "funchash_core.h"
 #include "compat_nls.h"
 #include "obj_rat.h"
+#include "hid_actions.h"
 
 #include "rats.h"
 #include "draw.h"
@@ -157,7 +158,7 @@ static int pcb_act_Connection(int argc, const char **argv, pcb_coord_t x, pcb_co
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Find:
 			{
-				pcb_gui->get_coords(_("Click on a connection"), &x, &y);
+				pcb_hid_get_coords(_("Click on a connection"), &x, &y);
 				pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
 				break;
 			}

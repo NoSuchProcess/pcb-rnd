@@ -46,6 +46,7 @@
 #include "crosshair.h"
 #include "compat_nls.h"
 #include "tool.h"
+#include "hid_actions.h"
 
 #include "obj_poly.h"
 
@@ -75,7 +76,7 @@ static int pcb_act_MorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_hid_get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_OBJ_POLY, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_poly_morph((pcb_layer_t *) ptr1, (pcb_poly_t *) ptr3);
 					pcb_draw();

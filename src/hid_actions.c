@@ -209,7 +209,7 @@ int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 	const pcb_hid_action_t *old_action;
 
 	if (a->need_coord_msg)
-		pcb_gui->get_coords(_(a->need_coord_msg), &x, &y);
+		pcb_hid_get_coords(_(a->need_coord_msg), &x, &y);
 
 	if (conf_core.rc.verbose) {
 		printf("Action: \033[34m%s(", a->name);
@@ -243,6 +243,17 @@ int pcb_hid_actionv(const char *name, int argc, const char **argv)
 		return 1;
 	}
 	return pcb_hid_actionv_(a, argc, argv);
+}
+
+void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
+{
+	if (pcb_gui == NULL) {
+		fprintf(stderr, "pcb_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
+		*x = 0;
+		*y = 0;
+	}
+	else
+		pcb_gui->get_coords(msg, x, y);
 }
 
 static int hid_parse_actionstring(const char *rstr, char require_parens)

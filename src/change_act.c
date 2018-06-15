@@ -92,7 +92,7 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
-			pcb_gui->get_coords(_("Select an Object"), &x, &y);
+			pcb_hid_get_coords(_("Select an Object"), &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
@@ -194,7 +194,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			void *ptr1, *ptr2, *ptr3;
 			pcb_coord_t x, y;
 
-			pcb_gui->get_coords("Click on object to change", &x, &y);
+			pcb_hid_get_coords("Click on object to change", &x, &y);
 
 			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
@@ -315,7 +315,7 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 		if (funcid == F_Object) {
 			pcb_coord_t x, y;
-			pcb_gui->get_coords("Click on object to change size of", &x, &y);
+			pcb_hid_get_coords("Click on object to change size of", &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
@@ -406,7 +406,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
-			pcb_gui->get_coords(_("Select an Object"), &x, &y);
+			pcb_hid_get_coords(_("Select an Object"), &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
@@ -545,7 +545,7 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 		/* change the refdes of a subcircuit */
 		case F_Subc:
-			pcb_gui->get_coords("Select a subcircuit", &x, &y);
+			pcb_hid_get_coords("Select a subcircuit", &x, &y);
 			type = PCB_OBJ_SUBC;
 			goto do_chg_name;
 
@@ -553,7 +553,7 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		case F_Object:
 			{
 				void *ptr1, *ptr2, *ptr3;
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_hid_get_coords(_("Select an Object"), &x, &y);
 				type = PCB_CHANGENAME_TYPES;
 				do_chg_name:;
 				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
@@ -617,7 +617,7 @@ static int pcb_act_ChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_co
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				pcb_gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_hid_get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 					if (pcb_chg_obj_join(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
@@ -668,7 +668,7 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 			{
 				int type;
 				void *ptr1, *ptr2, *ptr3;
-				pcb_gui->get_coords(_("Select an Element"), &x, &y);
+				pcb_hid_get_coords(_("Select an Element"), &x, &y);
 
 				ptr3 = NULL;
 				type = pcb_search_screen(x, y, PCB_CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
@@ -781,7 +781,7 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 		if (absolute && (kind <= 5))
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
-				pcb_gui->get_coords("Click on object for SetThermal", &gx, &gy);
+				pcb_hid_get_coords("Click on object for SetThermal", &gx, &gy);
 				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind, INDEXOFCURRENT);
 					pcb_undo_inc_serial();
@@ -994,7 +994,7 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 		if (funcid == F_Object) {
 			pcb_coord_t x, y;
-			pcb_gui->get_coords("Click on object to change angle of", &x, &y);
+			pcb_hid_get_coords("Click on object to change angle of", &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
@@ -1069,7 +1069,7 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 
 		if (funcid == F_Object) {
 			pcb_coord_t x, y;
-			pcb_gui->get_coords("Click on object to change radius of", &x, &y);
+			pcb_hid_get_coords("Click on object to change radius of", &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 

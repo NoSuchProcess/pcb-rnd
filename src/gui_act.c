@@ -418,7 +418,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				void *ptrtmp;
 				pcb_coord_t x, y;
 
-				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
+				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 					subc = (pcb_subc_t *) ptrtmp;
 					pcb_gui->show_item(subc);
@@ -432,7 +432,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t x, y;
-				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
+				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
 
 				/* toggle terminal ID print for subcircuit parts */
 				type = pcb_search_screen(x, y, PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART | PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
@@ -911,7 +911,7 @@ static int pcb_act_MarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb
 				pcb_marked.Y = pcb_crosshair.Y;
 			}
 			else
-				pcb_gui->get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
+				pcb_hid_get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
@@ -923,7 +923,7 @@ static int pcb_act_MarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb
 			pcb_marked.Y = pcb_crosshair.Y;
 		}
 		else
-			pcb_gui->get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
+			pcb_hid_get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
 		pcb_notify_mark_change(pcb_true);
 	}
 	return 0;

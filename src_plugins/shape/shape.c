@@ -361,7 +361,7 @@ int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
-		pcb_gui->get_coords("Click on the center of the polygon", &x, &y);
+		pcb_hid_get_coords("Click on the center of the polygon", &x, &y);
 
 	if (regpoly_place(data, CURRENT, corners, rx, ry, rot, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "regpoly(): failed to create the polygon\n");
@@ -423,7 +423,7 @@ int pcb_act_roundrect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
-		pcb_gui->get_coords("Click on the center of the polygon", &x, &y);
+		pcb_hid_get_coords("Click on the center of the polygon", &x, &y);
 
 	if (roundrect_place(data, CURRENT, w, h, rx, ry, rot, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "roundrect(): failed to create the polygon\n");
@@ -465,7 +465,7 @@ int pcb_act_circle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
-		pcb_gui->get_coords("Click on the center of the circle", &x, &y);
+		pcb_hid_get_coords("Click on the center of the circle", &x, &y);
 
 	if (circle_place(PCB->Data, CURRENT, dia, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");

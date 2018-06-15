@@ -34,6 +34,7 @@
 #include "config.h"
 #include "data.h"
 #include "action_helper.h"
+#include "hid_actions.h"
 #include "tool.h"
 #include "remove.h"
 #include "board.h"
@@ -61,7 +62,7 @@ static int pcb_act_Delete(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	switch (id) {
 	case F_Object:
-		pcb_gui->get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y);
+		pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y);
 		pcb_tool_save();
 		pcb_tool_select_by_id(PCB_MODE_REMOVE);
 		pcb_notify_mode();

@@ -92,7 +92,7 @@ static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		if (pcb_strcasecmp(argv[0], "Object") == 0) {
 			int type;
 			void *ptr1, *ptr2, *ptr3;
-			pcb_gui->get_coords(_("Select an Object"), &x, &y);
+			pcb_hid_get_coords(_("Select an Object"), &x, &y);
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 /*				pcb_undo_save_serial();*/
 				pcb_gtk_dlg_fontsel(&ghidgui->common, ptr1, ptr2, type, 1);
@@ -296,7 +296,7 @@ static int pcb_act_Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				{
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
-					pcb_gui->get_coords("context sensitive popup: select object", &x, &y);
+					pcb_hid_get_coords("context sensitive popup: select object", &x, &y);
 					type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
 
 					if (type == 0)
@@ -475,7 +475,7 @@ Prompts the user for a coordinate, if one is not already selected.
 
 static int pcb_act_GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_gui->get_coords(argv[0], &x, &y);
+	pcb_hid_get_coords(argv[0], &x, &y);
 	return 0;
 }
 

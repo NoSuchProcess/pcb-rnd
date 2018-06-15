@@ -34,4 +34,8 @@ int pcb_hid_parse_command(const char *str_);
    "action(arg1, arg2)" */
 int pcb_hid_parse_actions(const char *str_);
 
+/* If the mouse cursor is in the drawin area, set x;y silently and return;
+   else show msg and let the user click in the drawing area */
+void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
+
 #endif
