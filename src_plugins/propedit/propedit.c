@@ -39,10 +39,9 @@
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
-#warning TODO
-static const char propedit_syntax[] = "propedit()";
-static const char propedit_help[] = "Run the property editor";
-int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_propedit[] = "propedit()";
+static const char pcb_acth_propedit[] = "Run the property editor";
+int pcb_act_propedit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
@@ -119,9 +118,9 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char propset_syntax[] = "propset(name, value)";
-static const char propset_help[] = "Change the named property of all selected objects to/by value";
-int propset_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_propset[] = "propset(name, value)";
+static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value";
+int pcb_act_propset(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int res;
 /*
@@ -136,10 +135,10 @@ int propset_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 static const char *propedit_cookie = "propedit";
 
 pcb_hid_action_t propedit_action_list[] = {
-	{"propedit", 0, propedit_action,
-	 propedit_help, propedit_syntax},
-	{"propset", 0, propset_action,
-	 propset_help, propset_syntax},
+	{"propedit", 0, pcb_act_propedit,
+	 pcb_acth_propedit, pcb_acts_propedit},
+	{"propset", 0, pcb_act_propset,
+	 pcb_acth_propset, pcb_acts_propset},
 };
 
 PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
