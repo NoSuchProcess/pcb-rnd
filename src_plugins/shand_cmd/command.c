@@ -68,9 +68,9 @@ is documented for that purpose.
 
 /* ---------------------------------------------------------------------- */
 
-static const char h_syntax[] = "h";
+static const char pcb_acts_Help[] = "h";
 
-static const char h_help[] = "Print a help message for commands.";
+static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 /* %start-doc actions h
 
@@ -78,10 +78,10 @@ static const char h_help[] = "Print a help message for commands.";
 
 %end-doc */
 
-static int CommandHelp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
-					"  Command()   execute an action command (too numerous to list)\n"
+					"  pcb_act_()   execute an action command (too numerous to list)\n"
 					"              see the manual for the list of action commands\n"
 					"  h           display this help message\n"
 					"  l  [file]   load layout\n"
@@ -96,23 +96,23 @@ static int CommandHelp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ---------------------------------------------------------------------- */
 
-static const char l_syntax[] = "l [name] [format]";
+static const char pcb_acts_LoadLayout[] = "l [name] [format]";
 
-static const char l_help[] = "Loads layout data.";
+static const char pcb_acth_LoadLayout[] = "Loads layout data.";
 
 /* %start-doc actions l
 
 Loads a new datafile (layout) and, if confirmed, overwrites any
 existing unsaved data.  The filename and the searchpath
 (@emph{filePath}) are passed to the command defined by
-@emph{fileCommand}.  If no filename is specified a file select box
+@emph{filepcb_act_}.  If no filename is specified a file select box
 will popup.
 
 @colonaction
 
 %end-doc */
 
-static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *filename, *format = NULL;
 
@@ -135,9 +135,9 @@ static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* --------------------------------------------------------------------------- */
 
-static const char le_syntax[] = "le [name]";
+static const char pcb_acts_LoadElementToBuffer[] = "le [name]";
 
-static const char le_help[] = "Loads an element (subcircuit, footprint) into the current buffer.";
+static const char pcb_acth_LoadElementToBuffer[] = "Loads an element (subcircuit, footprint) into the current buffer.";
 
 /* %start-doc actions le
 
@@ -148,7 +148,7 @@ element loader.  If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadElementToBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *filename;
 
@@ -168,21 +168,21 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 
 /* --------------------------------------------------------------------------- */
 
-static const char m_syntax[] = "m [name]";
+static const char pcb_acts_LoadLayoutToBuffer[] = "m [name]";
 
-static const char m_help[] = "Loads a layout into the current buffer.";
+static const char pcb_acth_LoadLayoutToBuffer[] = "Loads a layout into the current buffer.";
 
 /* %start-doc actions m
 
 The filename and the searchpath (@emph{filePath}) are passed to the
-command defined by @emph{fileCommand}.
+command defined by @emph{filepcb_act_}.
 If no filename is specified a file select box will popup.
 
 @colonaction
 
 %end-doc */
 
-static int CommandLoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *filename, *format = NULL;
 
@@ -204,9 +204,9 @@ static int CommandLoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x,
 
 /* --------------------------------------------------------------------------- */
 
-static const char q_syntax[] = "q";
+static const char pcb_acts_Quit[] = "q";
 
-static const char q_help[] = "Quits the application after confirming.";
+static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 
 /* %start-doc actions q
 
@@ -217,16 +217,16 @@ save) before quitting.
 
 %end-doc */
 
-static int CommandQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Quit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
 	return 0;
 }
 
-static const char qreally_syntax[] = "q!";
+static const char pcb_acts_ReallyQuit[] = "q!";
 
-static const char qreally_help[] = "Quits the application without confirming.";
+static const char pcb_acth_ReallyQuit[] = "Quits the application without confirming.";
 
 /* %start-doc actions q!
 
@@ -237,7 +237,7 @@ confirmation.
 
 %end-doc */
 
-static int CommandReallyQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ReallyQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_quit_app();
 	return 0;
@@ -245,14 +245,14 @@ static int CommandReallyQuit(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* ---------------------------------------------------------------------- */
 
-static const char rn_syntax[] = "rn [name]";
+static const char pcb_acts_LoadNetlist[] = "rn [name]";
 
-static const char rn_help[] = "Reads netlist.";
+static const char pcb_acth_LoadNetlist[] = "Reads netlist.";
 
 /* %start-doc actions rn
 
 If no filename is given a file select box will pop up.  The file is
-read via the command defined by the @emph{RatCommand} resource. The
+read via the command defined by the @emph{Ratpcb_act_} resource. The
 command must send its output to @emph{stdout}.
 
 Netlists are used for generating rat's nests (see @ref{Rats Nest}) and
@@ -263,7 +263,7 @@ for verifying the board layout (which is also accomplished by the
 
 %end-doc */
 
-static int CommandLoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *filename;
 
@@ -285,24 +285,20 @@ static int CommandLoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 /* ---------------------------------------------------------------------- */
 
-static const char s_syntax[] = "s [name]";
+static const char pcb_acts_SaveLayout[] = "s [name]\nw [name]";
 
-static const char s_help[] = "Saves layout data.";
+static const char pcb_acth_SaveLayout[] = "Saves layout data.";
 
 /* %start-doc actions s
 
 Data and the filename are passed to the command defined by the
-resource @emph{saveCommand}. It must read the layout data from
+resource @emph{savepcb_act_}. It must read the layout data from
 @emph{stdin}.  If no filename is entered, either the last one is used
 again or, if it is not available, a file select box will pop up.
 
 @colonaction
 
 %end-doc */
-
-static const char w_syntax[] = "w [name]";
-
-static const char w_help[] = "Saves layout data.";
 
 /* %start-doc actions w
 
@@ -313,7 +309,7 @@ and has the same functionality as @code{s}.
 
 %end-doc */
 
-static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	switch (argc) {
 	case 0:
@@ -344,9 +340,9 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* --------------------------------------------------------------------------- */
 
-static const char wq_syntax[] = "wq";
+static const char pcb_acts_SaveLayoutAndQuit[] = "wq";
 
-static const char wq_help[] = "Saves the layout data and quits.";
+static const char pcb_acth_SaveLayoutAndQuit[] = "Saves the layout data and quits.";
 
 /* %start-doc actions wq
 
@@ -357,45 +353,45 @@ has the same functionality as @code{s} combined with @code{q}.
 
 %end-doc */
 
-static int CommandSaveLayoutAndQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveLayoutAndQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	if (!CommandSaveLayout(argc, argv, x, y))
-		return CommandQuit(0, 0, 0, 0);
+	if (!pcb_act_SaveLayout(argc, argv, x, y))
+		return pcb_act_Quit(0, 0, 0, 0);
 	return 1;
 }
 
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t shand_cmd_action_list[] = {
-	{"h", 0, CommandHelp,
-	 h_help, h_syntax}
+	{"h", 0, pcb_act_Help,
+	 pcb_acth_Help, pcb_acts_Help}
 	,
-	{"l", 0, CommandLoadLayout,
-	 l_help, l_syntax}
+	{"l", 0, pcb_act_LoadLayout,
+	 pcb_acth_LoadLayout, pcb_acts_LoadLayout}
 	,
-	{"le", 0, CommandLoadElementToBuffer,
-	 le_help, le_syntax}
+	{"le", 0, pcb_act_LoadElementToBuffer,
+	 pcb_acth_LoadElementToBuffer, pcb_acts_LoadElementToBuffer}
 	,
-	{"m", 0, CommandLoadLayoutToBuffer,
-	 m_help, m_syntax}
+	{"m", 0, pcb_act_LoadLayoutToBuffer,
+	 pcb_acth_LoadLayoutToBuffer, pcb_acts_LoadLayoutToBuffer}
 	,
-	{"q", 0, CommandQuit,
-	 q_help, q_syntax}
+	{"q", 0, pcb_act_Quit,
+	 pcb_acth_Quit, pcb_acts_Quit}
 	,
-	{"q!", 0, CommandReallyQuit,
-	 qreally_help, qreally_syntax}
+	{"q!", 0, pcb_act_ReallyQuit,
+	 pcb_acth_ReallyQuit, pcb_acts_ReallyQuit}
 	,
-	{"rn", 0, CommandLoadNetlist,
-	 rn_help, rn_syntax}
+	{"rn", 0, pcb_act_LoadNetlist,
+	 pcb_acth_LoadNetlist, pcb_acts_LoadNetlist}
 	,
-	{"s", 0, CommandSaveLayout,
-	 s_help, s_syntax}
+	{"s", 0, pcb_act_SaveLayout,
+	 pcb_acth_SaveLayout, pcb_acts_SaveLayout}
 	,
-	{"w", 0, CommandSaveLayout,
-	 w_help, w_syntax}
+	{"w", 0, pcb_act_SaveLayout,
+	 pcb_acth_SaveLayout, pcb_acts_SaveLayout}
 	,
-	{"wq", 0, CommandSaveLayoutAndQuit,
-	 wq_help, wq_syntax}
+	{"wq", 0, pcb_act_SaveLayoutAndQuit,
+	 pcb_acth_SaveLayoutAndQuit, pcb_acts_SaveLayoutAndQuit}
 	,
 };
 
