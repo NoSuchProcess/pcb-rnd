@@ -119,9 +119,9 @@ static int report_drills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 }
 
 
-static const char reportdialog_syntax[] = "ReportObject()";
+static const char pcb_acts_reportdialog[] = "ReportObject()";
 
-static const char reportdialog_help[] = "Report on the object under the crosshair";
+static const char pcb_acth_reportdialog[] = "Report on the object under the crosshair";
 
 /* %start-doc actions ReportDialog
 
@@ -145,7 +145,7 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static int report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
@@ -794,11 +794,11 @@ static int pcb_act_report(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		AUSAGE(report);
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_gui->get_coords("Click on an object", &x, &y);
-		return report_dialog(argc, argv, x, y);
+		return pcb_act_report_dialog(argc, argv, x, y);
 	}
 	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
 		pcb_gui->get_coords("Click on a subcircuit", &x, &y);
-		return report_dialog(argc, argv, x, y);
+		return pcb_act_report_dialog(argc, argv, x, y);
 	}
 	else if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
 		return report_drills(argc - 1, argv + 1, x, y);
@@ -820,8 +820,8 @@ static int pcb_act_report(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 }
 
 pcb_hid_action_t report_action_list[] = {
-	{"ReportObject", "Click on an object", report_dialog,
-	 reportdialog_help, reportdialog_syntax}
+	{"ReportObject", "Click on an object", pcb_act_report_dialog,
+	 pcb_acth_reportdialog, pcb_acts_reportdialog}
 	,
 	{"Report", 0, pcb_act_report,
 	 report_help, report_syntax}
