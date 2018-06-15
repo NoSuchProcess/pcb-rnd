@@ -72,8 +72,6 @@ const char *dirnames[] = {
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
-static const char jostle_syntax[] = "Jostle(diameter)";
-
 /* DEBUG */
 static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 {
@@ -470,7 +468,8 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	return 0;
 }
 
-static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_jostle[] = "Jostle(diameter)";
+static int pcb_act_jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool rel;
 	pcb_polyarea_t *expand;
@@ -519,7 +518,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 static pcb_hid_action_t jostle_action_list[] = {
-	{"jostle", NULL, jostle, "Move lines out of the way", jostle_syntax},
+	{"jostle", NULL, pcb_act_jostle, "Move lines out of the way", pcb_acts_jostle},
 };
 
 char *jostle_cookie = "jostle plugin";
