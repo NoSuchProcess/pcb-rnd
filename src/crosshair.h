@@ -64,11 +64,11 @@ enum pcb_crosshair_shape_e {
 	pcb_ch_shape_NUM
 };
 
-typedef struct {                         /* holds cursor information */
+typedef struct {                         /* holds crosshair, cursor and crosshair-attachment information */
 	pcb_hid_gc_t GC;                       /* GC for cursor drawing */
 	pcb_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
-	pcb_coord_t ptr_x, ptr_y;              /* last seen mouse pointer x;y coords */
-	pcb_coord_t X, Y;                      /* position in PCB coordinates */
+	pcb_coord_t ptr_x, ptr_y;              /* last seen raw mouse pointer x;y coords */
+	pcb_coord_t X, Y;                      /* (snapped) crosshair position */
 	pcb_coord_t MinX, MinY, MaxX, MaxY;    /* lowest and highest coordinates */
 	pcb_attached_line_t AttachedLine;      /* data of new lines... */
 	pcb_attached_box_t AttachedBox;
