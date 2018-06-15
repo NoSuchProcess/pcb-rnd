@@ -38,10 +38,10 @@
 #include "board.h"
 #include "macro.h"
 
-static const char query_action_syntax[] =
+static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
 	;
-static const char query_action_help[] = "Perform various queries on PCB data.";
+static const char pcb_acth_query[] = "Perform various queries on PCB data.";
 
 typedef struct {
 	int trues, falses;
@@ -116,7 +116,7 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 	return pcb_qry_run(prg, cb, user_ctx);
 }
 
-static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_query(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
 	select_t sel;
@@ -180,8 +180,8 @@ static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 }
 
 pcb_hid_action_t query_action_list[] = {
-	{"query", NULL, query_action,
-	 query_action_help, query_action_syntax}
+	{"query", NULL, pcb_act_query,
+	 pcb_acth_query, pcb_acts_query}
 };
 
 PCB_REGISTER_ACTIONS(query_action_list, NULL)
