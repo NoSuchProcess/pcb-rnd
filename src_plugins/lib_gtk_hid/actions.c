@@ -60,9 +60,9 @@ static const char *ghid_act_cookie = "gtk HID actions";
 
 /* ------------------------------------------------------------ */
 
-static const char adjuststyle_syntax[] = "AdjustStyle()\n";
+static const char pcb_acts_AdjustStyle[] = "AdjustStyle()\n";
 
-static const char adjuststyle_help[] = "Open the window which allows editing of the route styles.";
+static const char pcb_acth_AdjustStyle[] = "Open the window which allows editing of the route styles.";
 
 /* %start-doc actions AdjustStyle
 
@@ -70,10 +70,10 @@ Opens the window which allows editing of the route styles.
 
 %end-doc */
 
-static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc > 1)
-		PCB_AFAIL(adjuststyle);
+		PCB_ACT_FAIL(AdjustStyle);
 
   pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
 	return 0;
@@ -108,7 +108,7 @@ static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 /* ---------------------------------------------------------------------- */
 
-static int LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	printf(_("LayerGroupsChanged -- not implemented\n"));
 	return 0;
@@ -116,7 +116,7 @@ static int LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 /* ---------------------------------------------------------------------- */
 
-static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 	return 0;
@@ -131,7 +131,7 @@ int pcb_gtk_act_print_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ------------------------------------------------------------ */
 
-static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 
 	/* check if layout is empty */
@@ -146,7 +146,7 @@ static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i = 0;
 	time_t start, end;
@@ -173,11 +173,11 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static const char dowindows_syntax[] =
+static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
 	"DoWindows(Layout|Library|Log|Netlist|Preferences|DRC|Search [,false])";
 
-static const char dowindows_help[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
+static const char pcb_acth_DoWindows[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 
 /* %start-doc actions DoWindows
 
@@ -216,7 +216,7 @@ Open the advanced search window.
 
 %end-doc */
 
-static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a = argc >= 1 ? argv[0] : "";
 	gboolean raise = TRUE;
@@ -252,16 +252,16 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_search_window_show(gport->top_window, raise);
 	}
 	else {
-		PCB_AFAIL(dowindows);
+		PCB_ACT_FAIL(DoWindows);
 	}
 
 	return 0;
 }
 
 /* ------------------------------------------------------------ */
-static const char popup_syntax[] = "Popup(MenuName, [Button])";
+static const char pcb_acts_Popup[] = "Popup(MenuName, [Button])";
 
-static const char popup_help[] =
+static const char pcb_acth_Popup[] =
 N_("Bring up the popup menu specified by @code{MenuName}.\n"
 	 "If called by a mouse event then the mouse button number\n" "must be specified as the optional second argument.");
 
@@ -271,7 +271,7 @@ This just pops up the specified menu.  The menu must have been defined
 in the popups subtree in the menu lht file.
 
 %end-doc */
-static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	GtkWidget *menu = NULL;
 	char name[256];
@@ -283,7 +283,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	} ctx_sens = CTX_NONE;
 
 	if (argc != 1 && argc != 2)
-		PCB_AFAIL(popup);
+		PCB_ACT_FAIL(Popup);
 
 	if (argc == 2) {
 		if (strcmp(argv[1], "obj-type") == 0) ctx_sens = CTX_OBJ_TYPE;
@@ -336,11 +336,11 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* ------------------------------------------------------------ */
-static const char savewingeo_syntax[] = "SaveWindowGeometry()";
+static const char pcb_acts_SaveWinGeo[] = "SaveWindowGeometry()";
 
-static const char savewingeo_help[] = N_("Saves window geometry in the config.\n");
+static const char pcb_acth_SaveWinGeo[] = N_("Saves window geometry in the config.\n");
 
-static int SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ghid_wgeo_save(1, 0);
 	return 0;
@@ -348,12 +348,12 @@ static int SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 /* ------------------------------------------------------------ */
-static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_zoom(&gport->view, argc, argv, x, y);
 }
 
-static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int offset_x, offset_y, pointer_x, pointer_y;
 	GdkDisplay *display = gdk_display_get_default();
@@ -365,7 +365,7 @@ static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int res, oa;
 
@@ -379,7 +379,7 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return res;
 }
 
-static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Scroll(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (ghidgui == NULL)
 		return 0;
@@ -387,7 +387,7 @@ static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	return pcb_gtk_act_scroll(&gport->view, argc, argv, x, y);
 }
 
-static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Pan(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (ghidgui == NULL)
 		return 0;
@@ -395,28 +395,28 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return pcb_gtk_act_pan(&gport->view, argc, argv, x, y);
 }
 
-static int GhidNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_NetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_act_netlistshow(&ghidgui->common, argc, argv, x, y);
 }
 
-static int GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_NetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_act_netlistpresent(&ghidgui->common, argc, argv, x, y);
 }
 
 
-int act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_act_load(ghid_port.top_window, argc, argv, x, y);
 }
 
-int act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_act_save(ghid_port.top_window, argc, argv, x, y);
 }
 
-int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv, x, y);
 }
@@ -428,9 +428,9 @@ int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
  */
 
 /* ------------------------------------------------------------ */
-static const char about_syntax[] = "About()";
+static const char pcb_acts_About[] = "About()";
 
-static const char about_help[] = N_("Tell the user about this version of PCB.");
+static const char pcb_acth_About[] = N_("Tell the user about this version of PCB.");
 
 /* %start-doc actions About
 
@@ -440,15 +440,15 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_gtk_dlg_about(gport->top_window);
 	return 0;
 }
 
 /* ------------------------------------------------------------ */
-static const char EditLayerGroups_syntax[] = "EditLayerGroups()";
-static const char EditLayerGroups_help[] = N_("Pop up the gui that edits the layer groups (layer stackup).");
+static const char pcb_acts_EditLayerGroups[] = "EditLayerGroups()";
+static const char pcb_acth_EditLayerGroups[] = N_("Pop up the gui that edits the layer groups (layer stackup).");
 
 /* %start-doc actions About
 
@@ -456,16 +456,16 @@ Pop up the gui that edits the layer groups (layer stackup).
 
 %end-doc */
 
-static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *args[] = {"Preferences", "1", "User PoV/Layers"};
-	return DoWindows(sizeof(args)/sizeof(args[0]), args, 0, 0);
+	return pcb_act_DoWindows(sizeof(args)/sizeof(args[0]), args, 0, 0);
 }
 
 /* ------------------------------------------------------------ */
-static const char getxy_syntax[] = "GetXY()";
+static const char pcb_acts_GetXY[] = "GetXY()";
 
-static const char getxy_help[] = N_("Get a coordinate.");
+static const char pcb_acth_GetXY[] = N_("Get a coordinate.");
 
 /* %start-doc actions GetXY
 
@@ -473,7 +473,7 @@ Prompts the user for a coordinate, if one is not already selected.
 
 %end-doc */
 
-static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_gui->get_coords(argv[0], &x, &y);
 	return 0;
@@ -482,7 +482,7 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
-	{"AdjustStyle", 0, AdjustStyle, adjuststyle_help, adjuststyle_syntax}
+	{"AdjustStyle", 0, pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
 	,
 	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
@@ -490,53 +490,53 @@ pcb_hid_action_t ghid_menu_action_list[] = {
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
 pcb_hid_action_t ghid_main_action_list[] = {
-	{"About", 0, About, about_help, about_syntax}
+	{"About", 0, pcb_act_About, pcb_acth_About, pcb_acts_About}
 	,
-	{"Benchmark", 0, Benchmark}
+	{"Benchmark", 0, pcb_act_Benchmark}
 	,
-	{"Center", N_("Click on a location to center"), Center, pcb_acth_center, pcb_acts_center}
+	{"Center", N_("Click on a location to center"), pcb_act_Center, pcb_acth_center, pcb_acts_center}
 	,
-	{"Command", 0, Command}
+	{"Command", 0, pcb_act_Command}
 	,
-	{"DoWindows", 0, DoWindows, dowindows_help, dowindows_syntax}
+	{"DoWindows", 0, pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows}
 	,
-	{"EditLayerGroups", 0, EditLayerGroups, EditLayerGroups_help, EditLayerGroups_syntax}
+	{"EditLayerGroups", 0, pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups}
 	,
-	{"ExportGUI", 0, ExportGUI}
+	{"ExportGUI", 0, pcb_act_ExportGUI}
 	,
-	{"GetXY", 0, GetXY, getxy_help, getxy_syntax}
+	{"GetXY", 0, pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
 	,
-	{"ImportGUI", 0, act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
+	{"ImportGUI", 0, pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
 	,
-	{"LayerGroupsChanged", 0, LayerGroupsChanged}
+	{"LayerGroupsChanged", 0, pcb_act_LayerGroupsChanged}
 	,
-	{"Load", 0, act_load }
+	{"Load", 0, pcb_act_load }
 	,
 	{"LogShowOnAppend", 0, pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend}
 	,
-	{"NetlistShow", 0, GhidNetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
+	{"NetlistShow", 0, pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
 	,
-	{"NetlistPresent", 0, GhidNetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
+	{"NetlistPresent", 0, pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
 	,
-	{"Pan", 0, PanAction, pcb_acth_pan, pcb_acts_pan}
+	{"Pan", 0, pcb_act_Pan, pcb_acth_pan, pcb_acts_pan}
 	,
-	{"Popup", 0, Popup, popup_help, popup_syntax}
+	{"Popup", 0, pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
 	,
 	{"Print", 0, pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print}
 	,
 	{"PrintCalibrate", 0, pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate}
 	,
-	{"Save", 0, act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
+	{"Save", 0, pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
 	,
-	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
+	{"SaveWindowGeometry", 0, pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo}
 	,
-	{"Scroll", N_("Click on a place to scroll"), ScrollAction, pcb_acth_scroll, pcb_acts_scroll}
+	{"Scroll", N_("Click on a place to scroll"), pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll}
 	,
-	{"SwapSides", 0, SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
+	{"SwapSides", 0, pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
 	,
-	{"Zoom", N_("Click on zoom focus"), Zoom, pcb_acth_zoom, pcb_acts_zoom}
+	{"Zoom", N_("Click on zoom focus"), pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
 	,
-	{"ZoomTo", 0, Zoom, pcb_acth_zoom, pcb_acts_zoom}
+	{"ZoomTo", 0, pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
