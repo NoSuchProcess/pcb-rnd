@@ -382,7 +382,7 @@ static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
 
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
-static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ReplaceFootprint(int argc, const char **argv)
 {
 	const char *fpname;
 	int found = 0, len;
@@ -469,7 +469,7 @@ static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation
 /* %start-doc actions SavePatch
 Save netlist patch for back annotation.
 %end-doc */
-static int pcb_act_SavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SavePatch(int argc, const char **argv)
 {
 	const char *fn;
 	FILE *f;

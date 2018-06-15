@@ -834,7 +834,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 static const char pcb_acts_dump_csect[] = "DumpCsect()";
 static const char pcb_acth_dump_csect[] = "Print the cross-section of the board (layer stack)";
 
-static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_dump_csect(int argc, const char **argv)
 {
 	pcb_layergrp_id_t gid;
 

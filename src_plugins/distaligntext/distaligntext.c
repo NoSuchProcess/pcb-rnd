@@ -273,7 +273,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  *
  * Defaults are Lefts/Tops, First */
 static const char pcb_acts_aligntext[] = "AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-static int pcb_act_aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_aligntext(int argc, const char **argv)
 {
 	int dir;
 	int point;
@@ -430,7 +430,7 @@ static int pcb_act_aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coo
    Distributed texts always retain the same relative order they had
    before they were distributed. */
 static const char pcb_acts_distributetext[] = "DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-static int pcb_act_distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_distributetext(int argc, const char **argv)
 {
 	int dir;
 	int point;
@@ -524,8 +524,8 @@ static int pcb_act_distributetext(int argc, const char **argv, pcb_coord_t x, pc
 	/* build list of texts in orthogonal axis order */
 	sort_texts_by_pos(K_distributetext, dir, point);
 	/* find the endpoints given the above options */
-	s = reference_coord(K_distributetext, x, y, dir, point, refa);
-	e = reference_coord(K_distributetext, x, y, dir, point, refb);
+	s = reference_coord(K_distributetext, pcb_crosshair.X, pcb_crosshair.Y, dir, point, refa);
+	e = reference_coord(K_distributetext, pcb_crosshair.X, pcb_crosshair.Y, dir, point, refb);
 	slack = e - s;
 	/* use this divisor to calculate spacing (for 1 elt, avoid 1/0) */
 	divisor = (ntexts_by_pos > 1) ? (ntexts_by_pos - 1) : 1;

@@ -2491,7 +2491,7 @@ RF losses and trace length.
 
 %end-doc */
 
-static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DJopt(int argc, const char **argv)
 {
 	const char *arg = argc > 0 ? argv[0] : NULL;
 	int layn, saved = 0;

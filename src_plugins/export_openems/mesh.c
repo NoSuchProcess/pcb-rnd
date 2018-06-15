@@ -894,7 +894,7 @@ int pcb_mesh_interactive(void)
 
 const char pcb_acts_mesh[] = "mesh()";
 const char pcb_acth_mesh[] = "generate a mesh for simulation";
-int pcb_act_mesh(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_mesh(int argc, const char **argv)
 {
 	pcb_mesh_interactive();
 	return 0;

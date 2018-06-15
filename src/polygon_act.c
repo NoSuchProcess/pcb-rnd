@@ -66,13 +66,14 @@ off are automatically deleted.
 
 %end-doc */
 
-static int pcb_act_MorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MorphPolygon(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
+				pcb_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
@@ -128,7 +129,7 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 %end-doc */
 
-static int pcb_act_Polygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Polygon(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && ((conf_core.editor.mode == PCB_MODE_POLYGON) || (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE))) {

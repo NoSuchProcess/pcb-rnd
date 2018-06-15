@@ -224,7 +224,7 @@ static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_sha
 }
 
 extern pcb_opfunc_t ChgFlagFunctions;
-static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_coord_t childY)
+static int pcb_act_Display(int argc, const char **argv)
 {
 	const char *function, *str_dir;
 	int id;
@@ -554,7 +554,7 @@ Restores the tool to the last saved tool.
 
 %end-doc */
 
-static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Mode(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 
@@ -754,7 +754,7 @@ static const char pcb_acts_CycleDrag[] = "CycleDrag()\n";
 static const char pcb_acth_CycleDrag[] = "Cycle through which object is being dragged";
 
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
-static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_CycleDrag(int argc, const char **argv)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
@@ -840,7 +840,7 @@ followed by a newline.
 
 %end-doc */
 
-static int pcb_act_Message(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Message(int argc, const char **argv)
 {
 	int i;
 
@@ -868,7 +868,7 @@ appear on the silk layer when you print the layout.
 
 %end-doc */
 
-static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ToggleHideName(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
 	return 0;
@@ -894,7 +894,7 @@ cursor location.
 
 %end-doc */
 
-static int pcb_act_MarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MarkCrosshair(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
@@ -939,7 +939,7 @@ static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style in
 
 %end-doc */
 
-static int pcb_act_RouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RouteStyle(int argc, const char **argv)
 {
 	const char *str = PCB_ACTION_ARG(0);
 	pcb_route_style_t *rts;
@@ -983,7 +983,7 @@ static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path 
 
 %end-doc */
 
-static int pcb_act_CreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_CreateMenu(int argc, const char **argv)
 {
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
@@ -1014,7 +1014,7 @@ static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup
 
 %end-doc */
 
-static int pcb_act_RemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RemoveMenu(int argc, const char **argv)
 {
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
@@ -1064,11 +1064,14 @@ static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole,
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);
 }
 
-static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetSame(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	pcb_layer_t *layer = CURRENT;
+
+	pcb_hid_get_coords("Select item to use properties from", &x, &y);
 
 	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
@@ -1119,7 +1122,7 @@ Switch to another HID.
 
 %end-doc */
 
-static int pcb_act_SwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SwitchHID(int argc, const char **argv)
 {
 	pcb_hid_t *ng = pcb_hid_find_gui(argv[0]);
 	int chg;
@@ -1145,7 +1148,7 @@ static const char pcb_acts_FullScreen[] = "pcb_act_FullScreen(on|off|toggle)\n";
 
 static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full screen";
 
-static int pcb_act_FullScreen(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_FullScreen(int argc, const char **argv)
 {
 	const char *op = argv == NULL ? NULL : argv[0];
 
@@ -1165,7 +1168,7 @@ static const char pcb_acth_PCBChanged[] =
 	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
 	"parameter can be used as a hint to the GUI that the same design is being"
 	"reloaded, and that it might keep some viewport settings";
-static int pcb_act_PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PCBChanged(int argc, const char **argv)
 {
 	const char *rv = argv == NULL ? NULL : argv[0];
 	pcb_board_changed((rv != NULL) && (pcb_strcasecmp(rv, "revert") == 0));
@@ -1174,7 +1177,7 @@ static int pcb_act_PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
 static const char pcb_acth_NetlistChanged[] = "Tells the GUI that the netlist has changed.";
-static int pcb_act_NetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_NetlistChanged(int argc, const char **argv)
 {
 	pcb_netlist_changed(0);
 	return 0;
@@ -1183,7 +1186,7 @@ static int pcb_act_NetlistChanged(int argc, const char **argv, pcb_coord_t x, pc
 
 static const char pcb_acts_RouteStylesChanged[] = "RouteStylesChanged()";
 static const char pcb_acth_RouteStylesChanged[] = "Tells the GUI that the routing styles have changed.";
-static int pcb_act_RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RouteStylesChanged(int argc, const char **argv)
 {
 	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	return 0;
@@ -1191,7 +1194,7 @@ static int pcb_act_RouteStylesChanged(int argc, const char **argv, pcb_coord_t x
 
 static const char pcb_acts_LibraryChanged[] = "LibraryChanged()";
 static const char pcb_acth_LibraryChanged[] = "Tells the GUI that the libraries have changed.";
-static int pcb_act_LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LibraryChanged(int argc, const char **argv)
 {
 	pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
 	return 0;
@@ -1234,7 +1237,7 @@ The values are percentages of the board size.  Thus, a move of
 
 %end-doc */
 
-static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Cursor(int argc, const char **argv)
 {
 	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
@@ -1305,7 +1308,7 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 static const char pcb_acts_EditLayer[] = "Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditLayer[] = "Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.";
-static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EditLayer(int argc, const char **argv)
 {
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layer_t *ly = CURRENT;
@@ -1410,7 +1413,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 pcb_layergrp_id_t pcb_actd_EditGroup_gid = -1;
 static const char pcb_acts_EditGroup[] = "Editgroup([@group], [name=text|type=+bit|type=-bit])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditGroup[] = "Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.";
-static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EditGroup(int argc, const char **argv)
 {
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layergrp_t *g = NULL;
@@ -1528,7 +1531,7 @@ visible if it is not already visible
 
 %end-doc */
 
-static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SelectLayer(int argc, const char **argv)
 {
 	pcb_layer_id_t lid;
 	const pcb_menu_layers_t *ml;
@@ -1571,7 +1574,7 @@ Returns 1 if the specified layer is the active layer.
 
 %end-doc */
 
-static int pcb_act_ChkLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkLayer(int argc, const char **argv)
 {
 	pcb_layer_id_t lid;
 	pcb_layer_t *ly;
@@ -1627,7 +1630,7 @@ the same as a special layer, the layer is chosen over the special layer.
 
 %end-doc */
 
-static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ToggleView(int argc, const char **argv)
 {
 	pcb_layer_id_t lid;
 
@@ -1710,7 +1713,7 @@ const char pcb_acth_chkview[] = "Return 1 if layerid is visible.";
 Return 1 if layerid is visible. Intended for meu item 'checked' fields.
 %end-doc */
 
-static int pcb_act_ChkView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkView(int argc, const char **argv)
 {
 	pcb_layer_id_t lid;
 	pcb_layer_t *ly;
@@ -1766,7 +1769,7 @@ Sets the display units to millimeters.
 
 %end-doc */
 
-static int pcb_act_SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetUnits(int argc, const char **argv)
 {
 	const pcb_unit_t *new_unit;
 	if (argc == 0)
@@ -1782,7 +1785,7 @@ static const char pcb_acts_grid[] =
 	"grid(set, [name:]size[@offs][!unit])\n"
 	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n";
 static const char pcb_acth_grid[] = "Set the grid.";
-static int pcb_act_grid(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_grid(int argc, const char **argv)
 {
 	if (argc == 0)
 		return 0;
@@ -1819,7 +1822,7 @@ const char pcb_acth_chkrst[] = "Return 1 if route_style_id matches pen.";
 Return 1 if route_style_id matches pen.
 %end-doc */
 
-static int pcb_act_ChkRst(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkRst(int argc, const char **argv)
 {
 	int rid;
 	pcb_route_style_t *rst;
@@ -1863,7 +1866,7 @@ pcb_hid_action_t gui_action_list[] = {
 	{"ToggleHideName", 0, pcb_act_ToggleHideName,
 	 pcb_acth_ToggleHideName, pcb_acts_ToggleHideName}
 	,
-	{"SetSame", N_("Select item to use attributes from"), pcb_act_SetSame,
+	{"SetSame", 0, pcb_act_SetSame,
 	 pcb_acth_SetSame, pcb_acts_SetSame}
 	,
 	{"RouteStyle", 0, pcb_act_RouteStyle,

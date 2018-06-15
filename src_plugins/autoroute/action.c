@@ -69,7 +69,7 @@ responsive.
 
 %end-doc */
 
-static int pcb_act_AutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AutoRoute(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_event(PCB_EVENT_BUSY, NULL);

@@ -60,7 +60,7 @@
 
 conf_import_sch_t conf_import_sch;
 
-extern int pcb_act_ExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+extern int pcb_act_ExecuteFile(int argc, const char **argv);
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_Import[] =
@@ -178,7 +178,7 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Import(int argc, const char **argv)
 {
 	const char *mode;
 	const char **sources = NULL;
@@ -361,7 +361,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 		cmd[0] = tmpfile;
 		cmd[1] = NULL;
-		pcb_act_ExecuteFile(1, cmd, 0, 0);
+		pcb_act_ExecuteFile(1, cmd);
 
 		for(i = 0; i < nsources; i++)
 			free((char *) cmd[8 + i]);
@@ -437,7 +437,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 		cmd[0] = tmpfile;
 		cmd[1] = NULL;
-		pcb_act_ExecuteFile(1, cmd, 0, 0);
+		pcb_act_ExecuteFile(1, cmd);
 
 		free((char*)cmd[2]);
 		free((char*)cmd[3]);

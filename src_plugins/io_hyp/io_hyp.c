@@ -70,7 +70,7 @@ static const char load_hyp_syntax[] = "LoadhypFrom(filename[, \"debug\"]...)";
 
 static const char load_hyp_help[] = "Loads the specified Hyperlynx file.";
 
-int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadhypFrom(int argc, const char **argv)
 {
 	const char *fname = NULL;
 	int debug = 0;

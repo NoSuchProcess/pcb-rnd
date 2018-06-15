@@ -53,7 +53,7 @@ static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
 	return res;
 }
 
-static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Conf(int argc, const char **argv)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
 
@@ -222,14 +222,14 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 /*------------ get/chk (check flag actions for menus) ------------------*/
 static const char GetStyle_syntax[] = "GetStyle()" ;
 static const char GetStyle_help[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
-static int pcb_act_GetStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_GetStyle(int argc, const char **argv)
 {
 	return pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 }
 
 static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
 static const char ChkMode_help[] = "Return 1 if the currently selected mode is the expected_mode";
-static int pcb_act_ChkMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkMode(int argc, const char **argv)
 {
 #warning cleanup TODO: convert this to a compile-time hash; or make the toolbar configurable from the menu file
 	struct {
@@ -272,7 +272,7 @@ static const char ChkGridSize_syntax[] =
 	"ChkGridSize(none)\n"
 	;
 static const char ChkGridSize_help[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
-static int pcb_act_ChkGridSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkGridSize(int argc, const char **argv)
 {
 	assert(argc == 1);
 	if (strcmp(argv[0], "none") == 0)
@@ -283,7 +283,7 @@ static int pcb_act_ChkGridSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 static const char ChkSubcID_syntax[] = "ChkSubcID(pattern)\n";
 static const char ChkSubcID_help[] = "Return 1 if currently shown subc ID matches the requested pattern";
-static int pcb_act_ChkSubcID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkSubcID(int argc, const char **argv)
 {
 	const char *have = conf_core.editor.subc_id, *expected;
 
@@ -296,7 +296,7 @@ static int pcb_act_ChkSubcID(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
 static const char ChkGridUnits_help[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
-static int pcb_act_ChkGridUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkGridUnits(int argc, const char **argv)
 {
 	assert(argc == 1);
 	return strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0;
@@ -304,7 +304,7 @@ static int pcb_act_ChkGridUnits(int argc, const char **argv, pcb_coord_t x, pcb_
 
 static const char ChkBuffer_syntax[] = "ChkBuffer(idx)";
 static const char ChkBuffer_help[] = "Return 1 if currently selected buffer's index matches idx";
-static int pcb_act_ChkBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChkBuffer(int argc, const char **argv)
 {
 	int expected = argv[0][0] - '0';
 	assert(argc == 1);

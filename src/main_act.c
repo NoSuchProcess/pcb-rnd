@@ -57,7 +57,7 @@ static const char pcb_acts_PrintActions[] = "PrintActions()";
 
 static const char pcb_acth_PrintActions[] = "Print all actions available.";
 
-int pcb_act_PrintActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintActions(int argc, const char **argv)
 {
 	pcb_print_actions();
 	return 0;
@@ -68,7 +68,7 @@ static const char pcb_acts_DumpActions[] = "DumpActions()";
 
 static const char pcb_acth_DumpActions[] = "Dump all actions available.";
 
-int pcb_act_DumpActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DumpActions(int argc, const char **argv)
 {
 	pcb_dump_actions();
 	return 0;
@@ -160,7 +160,7 @@ static int help_invoc(void)
 	return 0;
 }
 
-int pcb_act_PrintUsage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintUsage(int argc, const char **argv)
 {
 	u("");
 	if (argc > 0) {
@@ -192,7 +192,7 @@ static const char pcb_acts_PrintVersion[] = "PrintVersion()";
 
 static const char pcb_acth_PrintVersion[] = "Print version.";
 
-int pcb_act_PrintVersion(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintVersion(int argc, const char **argv)
 {
 	printf("pcb-rnd version %s rev %s\n", PCB_VERSION, PCB_REVISION);
 	return 0;
@@ -203,7 +203,7 @@ static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
 
 static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
 
-int pcb_act_PrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintCopyright(int argc, const char **argv)
 {
 	printf("\n"
 				 "                COPYRIGHT for the original pcb program:\n\n"
@@ -245,7 +245,7 @@ static void print_list(const conflist_t *cl)
 	printf("\"\n");
 }
 
-int pcb_act_PrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintPaths(int argc, const char **argv)
 {
 	htsp_entry_t *e;
 	conf_fields_foreach(e) {
@@ -273,7 +273,7 @@ static void print_cat(pcb_file_loaded_t *cat)
 	}
 }
 
-int pcb_act_PrintFiles(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintFiles(int argc, const char **argv)
 {
 	htsp_entry_t *e;
 	printf("# Data files loaded\n");
@@ -287,7 +287,7 @@ static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
 
 static const char pcb_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
 
-int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DumpPlugins(int argc, const char **argv)
 {
 	pup_plugin_t *p;
 	const pup_buildin_t **bu;
@@ -313,7 +313,7 @@ static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
 
 static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a format digestable by scripts.";
 
-int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DumpPluginDirs(int argc, const char **argv)
 {
 	char **p;
 	for(p = pcb_pup_paths; *p != NULL; p++)
@@ -329,7 +329,7 @@ static void dumpoflg(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb)
 	printf("	%lx	%s	%s\n", flg, fb->name, fb->help);
 }
 
-int pcb_act_DumpObjFlags(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DumpObjFlags(int argc, const char **argv)
 {
 	unsigned long ot, max = PCB_OBJ_CLASS_REAL + 1;
 
@@ -346,7 +346,7 @@ int pcb_act_DumpObjFlags(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 static const char pcb_acts_System[] = "System(shell_cmd)";
 static const char pcb_acth_System[] = "Run shell command";
-int pcb_act_System(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_System(int argc, const char **argv)
 {
 	char tmp[128];
 	if (argc < 1)

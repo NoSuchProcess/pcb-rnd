@@ -168,7 +168,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 static const char pcb_acts_extedit[] = "extedit(object|selected, [interactive|method])\n";
 static const char pcb_acth_extedit[] = "Invoke an external program to edit a specific part of the current board.";
-static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_extedit(int argc, const char **argv)
 {
 	long type;
 	void *ptr1, *ptr2, *ptr3;
@@ -179,6 +179,7 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	/* pick up the object to edit */
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+		pcb_coord_t x, y;
 		pcb_hid_get_coords("Click on object to edit", &x, &y);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 	}

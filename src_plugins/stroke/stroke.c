@@ -99,7 +99,7 @@ static void pcb_stroke_start(void)
 
 static const char pcb_acts_stroke[] = "stroke(gesture, seq)";
 static const char pcb_acth_stroke[] = "Various gesture recognition related functions";
-static int pcb_act_stroke(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_stroke(int argc, const char **argv)
 {
 	if (argc < 1)
 		PCB_ACT_FAIL(stroke);

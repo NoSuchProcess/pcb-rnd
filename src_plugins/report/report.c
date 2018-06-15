@@ -145,12 +145,14 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static int pcb_act_report_dialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_report_dialog(int argc, const char **argv)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
 	char *report = NULL;
 	pcb_subc_t *subc;
+	pcb_coord_t x, y;
+	pcb_hid_get_coords("Click on object to report on", &x, &y);
 
 	if ((argv != NULL) && (argv[0] != NULL)) {
 		if (pcb_strncasecmp(argv[0], "Subc", 4) == 0)
@@ -788,19 +790,23 @@ units
 
 %end-doc */
 
-static int pcb_act_report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_report(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_hid_get_coords("Click on an object", &x, &y);
-		return pcb_act_report_dialog(argc, argv, x, y);
+		return pcb_act_report_dialog(argc, argv);
 	}
 	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
 		pcb_hid_get_coords("Click on a subcircuit", &x, &y);
-		return pcb_act_report_dialog(argc, argv, x, y);
+		return pcb_act_report_dialog(argc, argv);
 	}
-	else if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
+
+	pcb_hid_get_coords("Click on object to report on", &x, &y);
+
+	if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
 		return report_drills(argc - 1, argv + 1, x, y);
 	else if (pcb_strcasecmp(argv[0], "FoundPins") == 0)
 		return report_found_pins(argc - 1, argv + 1, x, y);
@@ -820,7 +826,7 @@ static int pcb_act_report(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 }
 
 pcb_hid_action_t report_action_list[] = {
-	{"ReportObject", "Click on an object", pcb_act_report_dialog,
+	{"ReportObject", 0, pcb_act_report_dialog,
 	 pcb_acth_reportdialog, pcb_acts_reportdialog}
 	,
 	{"Report", 0, pcb_act_report,

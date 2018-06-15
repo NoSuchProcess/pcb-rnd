@@ -257,7 +257,7 @@ static int mentor_sch_load(const char *fname_net)
 
 static const char pcb_acts_Loadmentor_schFrom[] = "LoadMentorFrom(filename)";
 static const char pcb_acth_Loadmentor_schFrom[] = "Loads the specified Mentor Graphics Design Capture schematics flat .edf file.";
-int pcb_act_LoadMentorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadMentorFrom(int argc, const char **argv)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;

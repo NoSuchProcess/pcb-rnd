@@ -104,7 +104,7 @@ typedef struct {
 	/* Called when the action is triggered.  If this function returns
 	   non-zero, no further actions will be invoked for this key/mouse
 	   event.  */
-	int (*trigger_cb) (int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+	int (*trigger_cb)(int argc, const char **argv);
 	/* Short description that sometimes accompanies the name.  */
 	const char *description;
 	/* Full allowed syntax; use \n to separate lines.  */

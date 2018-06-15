@@ -355,14 +355,17 @@ arc-line intersection was moved to.
 
 %end-doc */
 
-static int pcb_act_Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
+static int pcb_act_Puller(int argc, const char **argv)
 {
+	pcb_coord_t Ux, Uy;
 	double arc_angle, base_angle;
 #if TRACE1
 	double line_angle, rel_angle;
 #endif
 	double tangent;
 	int new_delta_angle;
+
+	pcb_hid_get_coords("Click on a line-arc intersection or line segment", &Ux, &Uy);
 
 	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y))
 		if (!find_pair(Ux, Uy))
@@ -2073,7 +2076,7 @@ static void trace_print_lines_arcs(void)
 }
 #endif
 
-static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_GlobalPuller(int argc, const char **argv)
 {
 	int select_flags = 0;
 	unsigned int cflg;
@@ -2189,7 +2192,7 @@ static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_
 /*****************************************************************************/
 
 pcb_hid_action_t puller_action_list[] = {
-	{"Puller", "Click on a line-arc intersection or line segment", pcb_act_Puller,
+	{"Puller", 0, pcb_act_Puller,
 	 pcb_acth_Puller, pcb_acts_Puller}
 	,
 	{"GlobalPuller", 0, pcb_act_GlobalPuller,

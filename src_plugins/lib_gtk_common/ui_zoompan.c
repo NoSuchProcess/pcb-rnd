@@ -31,6 +31,7 @@
 
 #include "unit.h"
 #include "action_helper.h"
+#include "hid_actions.h"
 #include "error.h"
 #include "conf_core.h"
 #include "board.h"
@@ -284,11 +285,11 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv)
 {
 	const char *vp;
 	double v;
-
+	pcb_coord_t x, y;
 
 	if (argc < 1) {
 		pcb_gtk_zoom_view_fit(vw);
@@ -333,6 +334,8 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 	v = g_ascii_strtod(vp, 0);
 	if (v <= 0)
 		return 1;
+
+	pcb_hid_get_coords("Select zoom center", &x, &y);
 	switch (argv[0][0]) {
 	case '-':
 		pcb_gtk_zoom_view_rel(vw, x, y, 1 / v);
@@ -426,7 +429,7 @@ side'' of the board.
 %end-doc */
 
 
-int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv)
 {
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
@@ -494,7 +497,7 @@ default is given, div=40.
 
 %end-doc */
 
-int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv)
 {
 	gdouble dx = 0.0, dy = 0.0;
 	int div = 40;
@@ -532,7 +535,7 @@ Mode = 0.
 
 %end-doc */
 
-int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv)
 {
 	int mode;
 

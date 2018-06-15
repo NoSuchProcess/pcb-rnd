@@ -58,8 +58,8 @@
 #include "grid.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
-static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
-static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+static int pcb_act_ChangeSize(int argc, const char **argv);
+static int pcb_act_Change2ndSize(int argc, const char **argv);
 
 /* --------------------------------------------------------------------------- */
 
@@ -78,7 +78,7 @@ changes the polygon clearance.
 
 %end-doc */
 
-static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeClearSize(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
@@ -87,16 +87,24 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 	pcb_coord_t value;
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
+	pcb_coord_t x, y;
+	int got_coords = 0;
 
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			pcb_hid_get_coords(_("Select an Object"), &x, &y);
+			got_coords = 1;
 			type = pcb_search_screen(x, y, PCB_CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
+			if (!got_coords) {
+				pcb_hid_get_coords(_("Select an Object"), &x, &y);
+				got_coords = 1;
+			}
+
 			if ((type == PCB_OBJ_VOID) || (type == PCB_OBJ_POLY))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
 				type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
@@ -157,7 +165,7 @@ cleared.  If the value is 1, the flag is set.
 
 %end-doc */
 
-static int pcb_act_ChangeFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeFlag(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *flag = PCB_ACTION_ARG(1);
@@ -237,14 +245,14 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 /* --------------------------------------------------------------------------- */
 static const char changehold_syntax[] = "ChangeHole(ToggleObject|Object|SelectedVias|Selected)";
 static const char changehold_help[] = "Changes the hole flag of objects. Not supported anymore; use the propery editor.";
-static int pcb_act_ChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeHole(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
 }
 static const char pcb_acts_ChangePaste[] = "ChangePaste(ToggleObject|Object|SelectedPads|Selected)";
 static const char pcb_acth_ChangePaste[] = "Changes the no paste flag of objects. Not supported anymore.";
-static int pcb_act_ChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangePaste(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
@@ -266,15 +274,15 @@ Call pcb_act_ChangeSize, ActionChangeDrillSize and pcb_act_ChangeClearSize
 with the same arguments. If any of them did not fail, return success.
 %end-doc */
 
-static int pcb_act_ChangeSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeSizes(int argc, const char **argv)
 {
 	int a, b, c;
 	pcb_undo_save_serial();
-	a = pcb_act_ChangeSize(argc, argv, x, y);
+	a = pcb_act_ChangeSize(argc, argv);
 	pcb_undo_restore_serial();
-	b = pcb_act_Change2ndSize(argc, argv, x, y);
+	b = pcb_act_Change2ndSize(argc, argv);
 	pcb_undo_restore_serial();
-	c = pcb_act_ChangeClearSize(argc, argv, x, y);
+	c = pcb_act_ChangeClearSize(argc, argv);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	return !(!a || !b || !c);
@@ -299,7 +307,7 @@ changes the width of the silk layer lines and arcs for this element.
 
 %end-doc */
 
-static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeSize(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
@@ -391,7 +399,7 @@ static const char changedrillsize_help[] = "Changes the drilling hole size of ob
 
 %end-doc */
 
-static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Change2ndSize(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
@@ -406,6 +414,7 @@ static int pcb_act_Change2ndSize(int argc, const char **argv, pcb_coord_t x, pcb
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
+			pcb_coord_t x, y;
 			pcb_hid_get_coords(_("Select an Object"), &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
@@ -463,7 +472,7 @@ ChangePinName(U3, 7, VCC)
 
 %end-doc */
 
-static int pcb_act_ChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangePinName(int argc, const char **argv)
 {
 	pcb_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
@@ -533,7 +542,7 @@ Changes the name of the currently active layer.
 
 %end-doc */
 
-int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_ChangeName(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	char *name;
@@ -545,13 +554,16 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 		/* change the refdes of a subcircuit */
 		case F_Subc:
+		{
+			pcb_coord_t x, y;
 			pcb_hid_get_coords("Select a subcircuit", &x, &y);
 			type = PCB_OBJ_SUBC;
 			goto do_chg_name;
-
+		}
 			/* change the name of an object */
 		case F_Object:
 			{
+				pcb_coord_t x, y;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_hid_get_coords(_("Select an Object"), &x, &y);
 				type = PCB_CHANGENAME_TYPES;
@@ -606,7 +618,7 @@ polygon, insulating them from each other.
 
 %end-doc */
 
-static int pcb_act_ChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeJoin(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -614,6 +626,7 @@ static int pcb_act_ChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_co
 		case F_ToggleObject:
 		case F_Object:
 			{
+				pcb_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
@@ -657,7 +670,7 @@ Note that @code{Pins} means both pins and pads.
 
 %end-doc */
 
-static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeNonetlist(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -666,6 +679,7 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 		case F_Object:
 		case F_Element:
 			{
+				pcb_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_hid_get_coords(_("Select an Element"), &x, &y);
@@ -692,14 +706,14 @@ static int pcb_act_ChangeNonetlist(int argc, const char **argv, pcb_coord_t x, p
 
 static const char pcb_acts_ChangeSquare[] = "ChangeSquare(ToggleObject)\n" "ChangeSquare(SelectedElements|SelectedPins)\n" "ChangeSquare(Selected|SelectedObjects)";
 static const char pcb_acth_ChangeSquare[] = "Changes the square flag of pins and pads. Not supported anymore.";
-static int pcb_act_ChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeSquare(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
 }
 static const char pcb_acts_SetSquare[] = "SetSquare(ToggleObject|SelectedElements|SelectedPins)";
 static const char pcb_acth_SetSquare[] = "sets the square-flag of objects. Not supported anymore.";
-static int pcb_act_SetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetSquare(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
@@ -707,28 +721,28 @@ static int pcb_act_SetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 static const char pcb_acts_ClearSquare[] = "ClearSquare(ToggleObject|SelectedElements|SelectedPins)";
 static const char pcb_acth_ClearSquare[] = "Clears the square-flag of pins and pads. Not supported anymore.";
-static int pcb_act_ClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ClearSquare(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
 }
 static const char pcb_acts_ChangeOctagon[] = "ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)\n" "ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)";
 static const char pcb_acth_ChangeOctagon[] = "Changes the octagon-flag of pins and vias. Not supported anymore.";
-static int pcb_act_ChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeOctagon(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
 }
 static const char pcb_acts_SetOctagon[] = "SetOctagon(Object|ToggleObject|SelectedElements|Selected)";
 static const char pcb_acth_SetOctagon[] = "Sets the octagon-flag of objects. Not supported anymore.";
-static int pcb_act_SetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetOctagon(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
 }
 static const char pcb_acts_ClearOctagon[] = "ClearOctagon(ToggleObject|Object|SelectedObjects|Selected)\n" "ClearOctagon(SelectedElements|SelectedPins|SelectedVias)";
 static const char pcb_acth_ClearOctagon[] = "Clears the octagon-flag of pins and vias. Not supported anymore.";
-static int pcb_act_ClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ClearOctagon(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 0;
@@ -765,7 +779,7 @@ Padstacks may have thermals whether or not there is a polygon available
 to connect with. However, they will have no effect without the polygon.
 %end-doc */
 
-static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetThermal(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *style = PCB_ACTION_ARG(1);
@@ -831,7 +845,7 @@ SetFlag(SelectedPins,thermal)
 
 %end-doc */
 
-static int pcb_act_SetFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetFlag(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *flag = PCB_ACTION_ARG(1);
@@ -860,7 +874,7 @@ ClrFlag(SelectedLines,join)
 
 %end-doc */
 
-static int pcb_act_ClrFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ClrFlag(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *flag = PCB_ACTION_ARG(1);
@@ -893,7 +907,7 @@ Changes the size of new text.
 
 %end-doc */
 
-static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetValue(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *val = PCB_ACTION_ARG(1);
@@ -971,7 +985,7 @@ static const char pcb_acts_ChangeAngle[] =
 	"ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)\n"
 	"ChangeAngle(SelectedArcs, start|delta|both, delta)\n";
 static const char pcb_acth_ChangeAngle[] = "Changes the start angle, delta angle or both angles of an arc.";
-static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeAngle(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *prim  = PCB_ACTION_ARG(1);
@@ -1045,7 +1059,7 @@ static const char pcb_acts_ChangeRadius[] =
 	"ChangeRadius(SelectedObjects|Selected, width|x|height|y|both, delta)\n"
 	"ChangeRadius(SelectedArcs, width|x|height|y|both, delta)\n";
 static const char pcb_acth_ChangeRadius[] = "Changes the width or height (radius) of an arc.";
-static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ChangeRadius(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *prim  = PCB_ACTION_ARG(1);

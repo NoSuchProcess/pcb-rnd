@@ -87,7 +87,7 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-int pcb_act_Atomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_Atomic(int argc, const char **argv)
 {
 	if (argc != 1)
 		PCB_ACT_FAIL(Atomic);
@@ -133,7 +133,7 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_Undo(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
@@ -175,7 +175,7 @@ three "undone" lines.
 
 %end-doc */
 
-int pcb_act_Redo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_Redo(int argc, const char **argv)
 {
 	pcb_notify_crosshair_change(pcb_false);
 	if (pcb_tool_redo_act())

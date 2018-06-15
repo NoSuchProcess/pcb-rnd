@@ -236,7 +236,7 @@ static const char pcb_acts_Brave[] =
 	"Brave()\n"
 	"Brave(setting, on|off)\n";
 static const char pcb_acth_Brave[] = "Changes brave settings.";
-static int pcb_act_Brave(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Brave(int argc, const char **argv)
 {
 	desc_t *d;
 	if (argc == 0)

@@ -66,7 +66,7 @@ static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 
-static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ManagePlugins(int argc, const char **argv)
 {
 	pup_plugin_t *p;
 	int nump = 0, numb = 0;

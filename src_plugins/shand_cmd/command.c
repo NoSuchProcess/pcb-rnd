@@ -78,7 +78,7 @@ static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 %end-doc */
 
-static int pcb_act_Help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Help(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
 					"  pcb_act_()   execute an action command (too numerous to list)\n"
@@ -112,7 +112,7 @@ will popup.
 
 %end-doc */
 
-static int pcb_act_LoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadLayout(int argc, const char **argv)
 {
 	const char *filename, *format = NULL;
 
@@ -148,7 +148,7 @@ element loader.  If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int pcb_act_LoadElementToBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadElementToBuffer(int argc, const char **argv)
 {
 	const char *filename;
 
@@ -182,7 +182,7 @@ If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int pcb_act_LoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadLayoutToBuffer(int argc, const char **argv)
 {
 	const char *filename, *format = NULL;
 
@@ -217,7 +217,7 @@ save) before quitting.
 
 %end-doc */
 
-static int pcb_act_Quit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Quit(int argc, const char **argv)
 {
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
@@ -237,7 +237,7 @@ confirmation.
 
 %end-doc */
 
-static int pcb_act_ReallyQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ReallyQuit(int argc, const char **argv)
 {
 	pcb_quit_app();
 	return 0;
@@ -263,7 +263,7 @@ for verifying the board layout (which is also accomplished by the
 
 %end-doc */
 
-static int pcb_act_LoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadNetlist(int argc, const char **argv)
 {
 	const char *filename;
 
@@ -309,7 +309,7 @@ and has the same functionality as @code{s}.
 
 %end-doc */
 
-static int pcb_act_SaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveLayout(int argc, const char **argv)
 {
 	switch (argc) {
 	case 0:
@@ -353,10 +353,10 @@ has the same functionality as @code{s} combined with @code{q}.
 
 %end-doc */
 
-static int pcb_act_SaveLayoutAndQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveLayoutAndQuit(int argc, const char **argv)
 {
-	if (!pcb_act_SaveLayout(argc, argv, x, y))
-		return pcb_act_Quit(0, 0, 0, 0);
+	if (!pcb_act_SaveLayout(argc, argv))
+		return pcb_act_Quit(0, 0);
 	return 1;
 }
 

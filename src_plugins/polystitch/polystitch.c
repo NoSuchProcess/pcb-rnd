@@ -89,10 +89,12 @@ static pcb_poly_t *find_enclosing_poly(pcb_poly_t *inner_poly)
 }
 
 
-static int pcb_act_polystitch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_polystitch(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	pcb_poly_t *inner_poly, *outer_poly;
 
+	pcb_hid_get_coords("Select a corner on the inner polygon", &x, &y);
 	inner_poly = find_crosshair_poly(x, y);
 
 	if (inner_poly) {
@@ -120,7 +122,7 @@ static int pcb_act_polystitch(int argc, const char **argv, pcb_coord_t x, pcb_co
 }
 
 static pcb_hid_action_t polystitch_action_list[] = {
-	{"PolyStitch", "Select a corner on the inner polygon", pcb_act_polystitch,
+	{"PolyStitch", 0, pcb_act_polystitch,
 	 NULL, NULL}
 };
 

@@ -51,7 +51,7 @@ connecting them are minimized.  Note that you cannot undo this.
 
 %end-doc */
 
-static int pcb_act_AutoPlaceSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AutoPlaceSelected(int argc, const char **argv)
 {
 	pcb_event(PCB_EVENT_BUSY, NULL);
 	if (pcb_gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {

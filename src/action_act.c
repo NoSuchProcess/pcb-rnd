@@ -55,7 +55,7 @@ Lines starting with @code{#} are ignored.
 
 %end-doc */
 
-int pcb_act_ExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_ExecuteFile(int argc, const char **argv)
 {
 	FILE *fp;
 	const char *fname;

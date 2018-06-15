@@ -81,7 +81,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 
 
 /* This action is called from ActionElementAddIf() */
-int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int pcb_act_LoadFootprint(int argc, const char **argv);
 
 /* pastes the contents of the buffer to the layout. Only visible objects
    are handled by the routine. */

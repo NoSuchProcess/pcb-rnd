@@ -579,7 +579,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
-static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PadstackEdit(int argc, const char **argv)
 {
 	int n, target_tab = -1;
 	pse_t pse;
@@ -589,6 +589,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 	memset(&pse, 0, sizeof(pse));
 
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+		pcb_coord_t x, y;
 		void *ptr1, *ptr2 = NULL, *ptr3;
 		long type;
 		pcb_hid_get_coords("Click on a padstack to edit", &x, &y);

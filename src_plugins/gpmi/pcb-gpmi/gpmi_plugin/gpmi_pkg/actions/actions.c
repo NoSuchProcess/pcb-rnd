@@ -8,6 +8,7 @@
 #include "actions.h"
 #include "src/hid_actions.h"
 #include "src/compat_misc.h"
+#include "src/crosshair.h"
 #include "../../gpmi_plugin.h"
 
 typedef struct acontext_s  acontext_t;
@@ -30,7 +31,7 @@ const char *action_arg(int argn)
 }
 
 
-static int action_cb(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int action_cb(int argc, const char **argv)
 {
 	acontext_t *ctx = (acontext_t *)pcb_current_action;
 	int action_argc_old;
@@ -43,7 +44,7 @@ static int action_cb(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	action_argv = argv;
 
 	/* call event */
-	gpmi_event(ctx->module, ACTE_action, ctx->name, argc, x, y);
+	gpmi_event(ctx->module, ACTE_action, ctx->name, argc, pcb_crosshair.ptr_x, pcb_crosshair.ptr_y);
 
 	/* restore argc/argv of action_arg() */
 	action_argc = action_argc_old;

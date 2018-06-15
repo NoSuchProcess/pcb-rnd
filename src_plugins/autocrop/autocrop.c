@@ -40,7 +40,7 @@
 
 static const char pcb_acth_autocrop[] = "Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned";
 static const char pcb_acts_autocrop[] = "autocrop()";
-static int pcb_act_autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_autocrop(int argc, const char **argv)
 {
 	pcb_box_t box;
 	pcb_coord_t dx, dy, w, h;

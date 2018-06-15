@@ -120,7 +120,7 @@ called with that filename.
 
 %end-doc */
 
-static int pcb_act_Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Load(int argc, const char **argv)
 {
 	const char *function;
 	char *name;
@@ -178,7 +178,7 @@ load that vendor file.
 
 %end-doc */
 
-static int pcb_act_LoadVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadVendor(int argc, const char **argv)
 {
 	char *name;
 	XmString xmname, pattern;
@@ -230,7 +230,7 @@ called with that filename.
 
 %end-doc */
 
-static int pcb_act_Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Save(int argc, const char **argv)
 {
 	const char *function;
 	char *name;
@@ -454,7 +454,7 @@ int lesstif_confirm_dialog(const char *msg, ...)
 	return ok;
 }
 
-static int pcb_act_ConfirmAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ConfirmAction(int argc, const char **argv)
 {
 	int rv = lesstif_confirm_dialog(argc > 0 ? argv[0] : 0,
 																	argc > 1 ? argv[1] : 0,
@@ -577,7 +577,7 @@ user's stdout.
 
 %end-doc */
 
-static int pcb_act_PromptFor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PromptFor(int argc, const char **argv)
 {
 	char *rv = lesstif_prompt_for(argc > 0 ? argv[0] : 0,
 																argc > 1 ? argv[1] : 0);
@@ -1275,7 +1275,7 @@ Open the netlist window.
 
 %end-doc */
 
-static int pcb_act_DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DoWindows(int argc, const char **argv)
 {
 	const char *a = argc == 1 ? argv[0] : "";
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
@@ -1311,7 +1311,7 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int pcb_act_About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_About(int argc, const char **argv)
 {
 	static Widget about = 0;
 	if (!about) {
@@ -1341,7 +1341,7 @@ options, and print the layout.
 
 %end-doc */
 
-static int pcb_act_Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Print(int argc, const char **argv)
 {
 	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer;
@@ -1386,7 +1386,7 @@ the measurements in, so that future printouts will be more precise.
 
 %end-doc */
 
-static int pcb_act_PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PrintCalibrate(int argc, const char **argv)
 {
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
@@ -1409,7 +1409,7 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static int pcb_act_ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ExportGUI(int argc, const char **argv)
 {
 	static Widget selector = 0;
 	pcb_hid_attribute_t *opts;
@@ -1579,7 +1579,7 @@ The units are determined by the default display units.
 
 %end-doc */
 
-static int pcb_act_AdjustSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AdjustSizes(int argc, const char **argv)
 {
 	if (!sizes_dialog) {
 		Widget inf, sep;
@@ -1673,7 +1673,7 @@ See @ref{ChangeName Action}.
 %end-doc */
 
 extern void lesstif_show_layergrp_edit(void);
-static int pcb_act_EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EditLayerGroups(int argc, const char **argv)
 {
 	lesstif_show_layergrp_edit();
 	return 1;
@@ -1683,13 +1683,14 @@ static int pcb_act_EditLayerGroups(int argc, const char **argv, pcb_coord_t x, p
 static const char pcb_acts_fontsel[] = "EditLayerGroups()";
 static const char pcb_acth_fontsel[] = "Let the user change fonts";
 extern void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type);
-static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_fontsel(int argc, const char **argv)
 {
 	if (argc > 1)
 		PCB_ACT_FAIL(fontsel);
 
 	if (argc > 0) {
 		if (pcb_strcasecmp(argv[0], "Object") == 0) {
+			pcb_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 			pcb_hid_get_coords(_("Select an Object"), &x, &y);
@@ -2016,7 +2017,7 @@ future imports.
 
 %end-doc */
 
-static int pcb_act_ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ImportGUI(int argc, const char **argv)
 {
 	static int I_am_recursing = 0;
 	static XmString xms_sch = 0, xms_import = 0;

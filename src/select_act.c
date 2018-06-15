@@ -85,7 +85,7 @@ numbered paste buffer.
 
 %end-doc */
 
-static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Select(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -192,7 +192,7 @@ Unselect all connections with the ``found'' flag set.
 
 %end-doc */
 
-static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Unselect(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {

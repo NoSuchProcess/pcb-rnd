@@ -70,7 +70,7 @@ Opens the window which allows editing of the route styles.
 
 %end-doc */
 
-static int pcb_act_AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AdjustStyle(int argc, const char **argv)
 {
 	if (argc > 1)
 		PCB_ACT_FAIL(AdjustStyle);
@@ -83,13 +83,14 @@ static int pcb_act_AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 static const char pcb_acts_fontsel[] = "FontSel()\n";
 static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
-static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_fontsel(int argc, const char **argv)
 {
 	if (argc > 1)
 		PCB_ACT_FAIL(fontsel);
 
 	if (argc > 0) {
 		if (pcb_strcasecmp(argv[0], "Object") == 0) {
+			pcb_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 			pcb_hid_get_coords(_("Select an Object"), &x, &y);
@@ -108,7 +109,7 @@ static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 /* ---------------------------------------------------------------------- */
 
-static int pcb_act_LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LayerGroupsChanged(int argc, const char **argv)
 {
 	printf(_("LayerGroupsChanged -- not implemented\n"));
 	return 0;
@@ -116,7 +117,7 @@ static int pcb_act_LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x
 
 /* ---------------------------------------------------------------------- */
 
-static int pcb_act_Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Command(int argc, const char **argv)
 {
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 	return 0;
@@ -124,14 +125,14 @@ static int pcb_act_Command(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 /* ------------------------------------------------------------ */
 
-int pcb_gtk_act_print_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_print_(int argc, const char **argv)
 {
-	return pcb_gtk_act_print(gport->top_window, argc, argv, x, y);
+	return pcb_gtk_act_print(gport->top_window, argc, argv);
 }
 
 /* ------------------------------------------------------------ */
 
-static int pcb_act_ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ExportGUI(int argc, const char **argv)
 {
 
 	/* check if layout is empty */
@@ -146,7 +147,7 @@ static int pcb_act_ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* ------------------------------------------------------------ */
 
-static int pcb_act_Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Benchmark(int argc, const char **argv)
 {
 	int i = 0;
 	time_t start, end;
@@ -216,7 +217,7 @@ Open the advanced search window.
 
 %end-doc */
 
-static int pcb_act_DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DoWindows(int argc, const char **argv)
 {
 	const char *a = argc >= 1 ? argv[0] : "";
 	gboolean raise = TRUE;
@@ -271,7 +272,7 @@ This just pops up the specified menu.  The menu must have been defined
 in the popups subtree in the menu lht file.
 
 %end-doc */
-static int pcb_act_Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Popup(int argc, const char **argv)
 {
 	GtkWidget *menu = NULL;
 	char name[256];
@@ -294,6 +295,7 @@ static int pcb_act_Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		switch(ctx_sens) {
 			case CTX_OBJ_TYPE:
 				{
+					pcb_coord_t x, y;;
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
 					pcb_hid_get_coords("context sensitive popup: select object", &x, &y);
@@ -340,7 +342,7 @@ static const char pcb_acts_SaveWinGeo[] = "SaveWindowGeometry()";
 
 static const char pcb_acth_SaveWinGeo[] = N_("Saves window geometry in the config.\n");
 
-static int pcb_act_SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveWinGeo(int argc, const char **argv)
 {
 	ghid_wgeo_save(1, 0);
 	return 0;
@@ -348,16 +350,19 @@ static int pcb_act_SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 
 /* ------------------------------------------------------------ */
-static int pcb_act_Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Zoom(int argc, const char **argv)
 {
-	return pcb_gtk_zoom(&gport->view, argc, argv, x, y);
+	return pcb_gtk_zoom(&gport->view, argc, argv);
 }
 
-static int pcb_act_Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Center(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	int offset_x, offset_y, pointer_x, pointer_y;
 	GdkDisplay *display = gdk_display_get_default();
 	GdkScreen *screen = gdk_display_get_default_screen(display);
+
+	pcb_hid_get_coords("Click to center", &x, &y);
 
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 	pcb_gtk_act_center(&gport->view, argc, argv, x, y, offset_x, offset_y, &pointer_x, &pointer_y);
@@ -365,7 +370,7 @@ static int pcb_act_Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
-static int pcb_act_SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SwapSides(int argc, const char **argv)
 {
 	int res, oa;
 
@@ -373,52 +378,52 @@ static int pcb_act_SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	oa = ghidgui->hid_active;
 	ghidgui->hid_active = 0;
 
-	res = pcb_gtk_swap_sides(&gport->view, argc, argv, x, y);
+	res = pcb_gtk_swap_sides(&gport->view, argc, argv);
 
 	ghidgui->hid_active = oa;
 	return res;
 }
 
-static int pcb_act_Scroll(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Scroll(int argc, const char **argv)
 {
 	if (ghidgui == NULL)
 		return 0;
 
-	return pcb_gtk_act_scroll(&gport->view, argc, argv, x, y);
+	return pcb_gtk_act_scroll(&gport->view, argc, argv);
 }
 
-static int pcb_act_Pan(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Pan(int argc, const char **argv)
 {
 	if (ghidgui == NULL)
 		return 0;
 
-	return pcb_gtk_act_pan(&gport->view, argc, argv, x, y);
+	return pcb_gtk_act_pan(&gport->view, argc, argv);
 }
 
-static int pcb_act_NetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_NetlistShow(int argc, const char **argv)
 {
-	return pcb_gtk_act_netlistshow(&ghidgui->common, argc, argv, x, y);
+	return pcb_gtk_act_netlistshow(&ghidgui->common, argc, argv);
 }
 
-static int pcb_act_NetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_NetlistPresent(int argc, const char **argv)
 {
-	return pcb_gtk_act_netlistpresent(&ghidgui->common, argc, argv, x, y);
+	return pcb_gtk_act_netlistpresent(&ghidgui->common, argc, argv);
 }
 
 
-static int pcb_act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_load(int argc, const char **argv)
 {
-	return pcb_gtk_act_load(ghid_port.top_window, argc, argv, x, y);
+	return pcb_gtk_act_load(ghid_port.top_window, argc, argv);
 }
 
-static int pcb_act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_save(int argc, const char **argv)
 {
-	return pcb_gtk_act_save(ghid_port.top_window, argc, argv, x, y);
+	return pcb_gtk_act_save(ghid_port.top_window, argc, argv);
 }
 
-static int pcb_act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_importgui(int argc, const char **argv)
 {
-	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv, x, y);
+	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv);
 }
 
 /* ------------------------------------------------------------
@@ -440,7 +445,7 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int pcb_act_About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_About(int argc, const char **argv)
 {
 	pcb_gtk_dlg_about(gport->top_window);
 	return 0;
@@ -456,10 +461,10 @@ Pop up the gui that edits the layer groups (layer stackup).
 
 %end-doc */
 
-static int pcb_act_EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EditLayerGroups(int argc, const char **argv)
 {
 	const char *args[] = {"Preferences", "1", "User PoV/Layers"};
-	return pcb_act_DoWindows(sizeof(args)/sizeof(args[0]), args, 0, 0);
+	return pcb_act_DoWindows(sizeof(args)/sizeof(args[0]), args);
 }
 
 /* ------------------------------------------------------------ */
@@ -473,8 +478,9 @@ Prompts the user for a coordinate, if one is not already selected.
 
 %end-doc */
 
-static int pcb_act_GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_GetXY(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	pcb_hid_get_coords(argv[0], &x, &y);
 	return 0;
 }

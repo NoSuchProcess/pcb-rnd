@@ -56,7 +56,7 @@ static const char *mucs_cookie = "mucs importer";
 
 static const char pcb_acts_LoadMucsFrom[] = "LoadMucsFrom(filename)";
 static const char pcb_acth_LoadMucsFrom[] = "Loads the specified mucs routing file.";
-int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadMucsFrom(int argc, const char **argv)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;

@@ -38,7 +38,7 @@ static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static int attr_idx, attr_idx2;
-static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_dlg_test(int argc, const char **argv)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
 	const char *tabs[] = { "original test", "new test", NULL };

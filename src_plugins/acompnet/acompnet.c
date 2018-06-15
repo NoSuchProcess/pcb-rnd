@@ -85,7 +85,7 @@ static void acompnet_mesh()
 static const char pcb_acts_acompnet[] = "acompnet()\n" ;
 static const char pcb_acth_acompnet[] = "Attempt to auto-complete the current network";
 
-static int pcb_act_acompnet(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_acompnet(int argc, const char **argv)
 {
 	acompnet_mesh();
 	return 0;

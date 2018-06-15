@@ -171,7 +171,7 @@ static void ghid_log_append_string(enum pcb_message_level level, gchar *s, int h
 
 const char pcb_gtk_acts_logshowonappend[] = "LogShowOnAppend(true|false)";
 const char pcb_gtk_acth_logshowonappend[] = "If true, the log window will be shown whenever something is appended to it. If false, the log will still be updated, but the window won't be shown.";
-int pcb_gtk_act_logshowonappend(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_logshowonappend(int argc, const char **argv)
 {
 	const char *a = argc == 1 ? argv[0] : "";
 

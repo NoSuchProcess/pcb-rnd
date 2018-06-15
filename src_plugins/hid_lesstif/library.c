@@ -166,7 +166,7 @@ static const char pcb_acth_LibraryShow[] = "Displays the library window.";
 
 %end-doc */
 
-static int pcb_act_LibraryShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LibraryShow(int argc, const char **argv)
 {
 	if (build_library_dialog())
 		return 0;

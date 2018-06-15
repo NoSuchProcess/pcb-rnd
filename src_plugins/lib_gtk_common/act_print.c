@@ -42,7 +42,7 @@
 
 const char pcb_gtk_acts_print[] = "Print()";
 const char pcb_gtk_acth_print[] = N_("Print the layout.");
-int pcb_gtk_act_print(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_print(GtkWidget *top_window, int argc, const char **argv)
 {
 	pcb_hid_t **hids;
 	int i;
@@ -90,7 +90,7 @@ the measurements in, so that future printouts will be more precise.
 
 %end-doc */
 
-int pcb_gtk_act_printcalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_printcalibrate(int argc, const char **argv)
 {
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);

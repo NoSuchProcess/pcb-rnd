@@ -18,10 +18,10 @@ void pcb_gtk_netlist_changed(pcb_gtk_common_t *com, void *user_data, int argc, p
 /* Actions */
 extern const char pcb_gtk_acts_netlistshow[];
 extern const char pcb_gtk_acth_netlistshow[];
-gint pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+gint pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int argc, const char **argv);
 
 extern const char pcb_gtk_acts_netlistpresent[];
 extern const char pcb_gtk_acth_netlistpresent[];
-gint pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+gint pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int argc, const char **argv);
 
 #endif /* PCB_GTK_DLG_NETLIST_H */

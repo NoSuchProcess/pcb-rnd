@@ -431,10 +431,14 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int pcb_act_Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Zoom(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	const char *vp;
 	double v;
+
+	pcb_hid_get_coords("Click on a place to zoom in", &x, &y);
+
 	if (x == 0 && y == 0) {
 		x = view_width / 2;
 		y = view_height / 2;
@@ -499,7 +503,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int pcb_act_ZoomTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ZoomTo(int argc, const char **argv)
 {
 	pcb_coord_t x1, y1, x2, y2;
 	pcb_bool succ;
@@ -530,9 +534,12 @@ static int pcb_act_ZoomTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 static int pan_thumb_mode;
 
-static int pcb_act_Pan(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Pan(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	int mode;
+
+	pcb_hid_get_coords("Click on a place to pan", &x, &y);
 
 	if (argc == 2) {
 		pan_thumb_mode = (pcb_strcasecmp(argv[0], "thumb") == 0) ? 1 : 0;
@@ -599,7 +606,7 @@ static int group_showing(int g, int *c)
 }
 
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
-static int pcb_act_SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SwapSides(int argc, const char **argv)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
@@ -756,7 +763,7 @@ before.
 
 %end-doc */
 
-static int pcb_act_Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Command(int argc, const char **argv)
 {
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
@@ -776,7 +783,7 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static int pcb_act_Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Benchmark(int argc, const char **argv)
 {
 	int i = 0;
 	time_t start, end;
@@ -810,8 +817,12 @@ static int pcb_act_Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return 0;
 }
 
-static int pcb_act_Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Center(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
+
+	pcb_hid_get_coords("Click on a location to center", &x, &y);
+
 	x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 	y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 	view_left_x = x - (view_width * view_zoom) / 2;
@@ -825,13 +836,13 @@ static int pcb_act_Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 }
 
 pcb_hid_action_t lesstif_main_action_list[] = {
-	{"Zoom", "Click on a place to zoom in", pcb_act_Zoom,
+	{"Zoom", 0, pcb_act_Zoom,
 	 pcb_acth_Zoom, pcb_acts_Zoom}
 	,
 	{"ZoomTo", 0, pcb_act_ZoomTo,
 	 pcb_acth_ZoomTo, pcb_acts_ZoomTo}
 	,
-	{"Pan", "Click on a place to pan", pcb_act_Pan,
+	{"Pan", 0, pcb_act_Pan,
 	 pcb_acth_Zoom, pcb_acts_Zoom}
 	,
 	{"SwapSides", 0, pcb_act_SwapSides,
@@ -843,7 +854,7 @@ pcb_hid_action_t lesstif_main_action_list[] = {
 	{"Benchmark", 0, pcb_act_Benchmark,
 	 pcb_acth_Benchmark, pcb_acts_Benchmark}
 	,
-	{"Center", "Click on a location to center", pcb_act_Center}
+	{"Center", 0, pcb_act_Center}
 	,
 };
 

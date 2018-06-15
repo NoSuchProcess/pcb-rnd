@@ -53,8 +53,9 @@ Prompts the user for a coordinate, if one is not already selected.
 
 %end-doc */
 
-static int pcb_act_GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_GetXY(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	pcb_hid_get_coords(argv[0], &x, &y);
 	return 0;
 }

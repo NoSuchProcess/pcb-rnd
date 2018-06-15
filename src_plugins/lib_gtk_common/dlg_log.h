@@ -14,6 +14,6 @@ void pcb_gtk_logv(int hid_active, enum pcb_message_level level, const char *fmt,
 /* Actions */
 extern const char pcb_gtk_acts_logshowonappend[];
 extern const char pcb_gtk_acth_logshowonappend[];
-int pcb_gtk_act_logshowonappend(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int pcb_gtk_act_logshowonappend(int argc, const char **argv);
 
 #endif /* PCB_GTK_DLG_LOG_H */

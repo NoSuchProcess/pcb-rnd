@@ -38,8 +38,9 @@
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";
 
-int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_padstackconvert(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	pcb_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
@@ -104,10 +105,11 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 static const char pcb_acts_padstackplace[] = "PadstackPlace([proto_id|default], [x, y])";
 static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
 
-int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_padstackplace(int argc, const char **argv)
 {
 	pcb_cardinal_t pid;
 	pcb_pstk_t *ps;
+	pcb_coord_t x, y;
 
 	if (argc > 2) {
 		pcb_bool s1, s2;
@@ -117,6 +119,10 @@ int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			pcb_message(PCB_MSG_ERROR, "Error in coordinate format\n");
 			return -1;
 		}
+	}
+	else {
+		x = pcb_crosshair.X;
+		y = pcb_crosshair.Y;
 	}
 
 	if ((argc <= 0) || (strcmp(argv[0], "default") == 0)) {

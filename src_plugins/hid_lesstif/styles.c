@@ -310,7 +310,7 @@ static const char pcb_acth_AdjustStyle[] = "Displays the route style adjustment 
 
 %end-doc */
 
-static int pcb_act_AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AdjustStyle(int argc, const char **argv)
 {
 	if ((!mainwind) || (PCB->RouteStyle.array == NULL))
 		return 1;

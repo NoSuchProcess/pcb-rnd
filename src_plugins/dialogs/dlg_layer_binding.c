@@ -188,7 +188,7 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
 static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
-static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LayerBinding(int argc, const char **argv)
 {
 	lb_ctx_t ctx;
 	int num_copper;
@@ -197,6 +197,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 	memset(&ctx, 0, sizeof(ctx));
 
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+		pcb_coord_t x, y;
 		int type;
 		void *ptr1, *ptr2, *ptr3;
 		pcb_hid_get_coords("Click on object to change size of", &x, &y);

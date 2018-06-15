@@ -316,11 +316,12 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
 const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";
-int pcb_act_topoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_topoly(int argc, const char **argv)
 {
 	void *r1, *r2, *r3;
 
 	if (argc == 0) {
+		pcb_coord_t x, y;
 		pcb_hid_get_coords("Click on a line or arc of the contour loop", &x, &y);
 		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
 			pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");

@@ -220,7 +220,7 @@ int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 
 	old_action = pcb_current_action;
 	pcb_current_action = a;
-	ret = pcb_current_action->trigger_cb(argc, argv, x, y);
+	ret = pcb_current_action->trigger_cb(argc, argv);
 	pcb_current_action = old_action;
 
 	return ret;

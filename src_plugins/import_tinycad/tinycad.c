@@ -172,7 +172,7 @@ static int tinycad_load(const char *fname_net)
 
 static const char pcb_acts_LoadtinycadFrom[] = "LoadTinycadFrom(filename)";
 static const char pcb_acth_LoadtinycadFrom[] = "Loads the specified tinycad .net file - the netlist must be tinycad netlist output.";
-int pcb_act_LoadtinycadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadtinycadFrom(int argc, const char **argv)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;

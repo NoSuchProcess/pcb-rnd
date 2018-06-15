@@ -84,7 +84,7 @@ static void cmd_reload(const char *name)
 	}
 }
 
-static int action_gpmi_scripts(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int action_gpmi_scripts(int argc, const char **argv)
 {
 	if (argc == 0) {
 		gpmi_hid_manage_scripts();
@@ -130,7 +130,7 @@ static int action_gpmi_scripts(int argc, const char **argv, pcb_coord_t x, pcb_c
 	return 0;
 }
 
-static int action_gpmi_rehash(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int action_gpmi_rehash(int argc, const char **argv)
 {
 	cmd_reload(NULL);
 	return 0;

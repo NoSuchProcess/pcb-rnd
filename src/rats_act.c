@@ -76,7 +76,7 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static int pcb_act_AddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AddRats(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_rat_t *shorty;
@@ -151,13 +151,14 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static int pcb_act_Connection(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Connection(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Find:
 			{
+				pcb_coord_t x, y;
 				pcb_hid_get_coords(_("Click on a connection"), &x, &y);
 				pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
 				break;
@@ -200,7 +201,7 @@ static const char pcb_acth_DeleteRats[] = "Delete rat lines.";
 
 %end-doc */
 
-static int pcb_act_DeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DeleteRats(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {

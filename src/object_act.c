@@ -70,7 +70,7 @@ pcb, a subcircuit, or a layer.
 %end-doc */
 
 
-static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Attributes(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *layername = PCB_ACTION_ARG(1);
@@ -129,6 +129,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 				return 1;
 			}
 			if (n_found == 0) {
+				pcb_coord_t x, y;
 				void *ptrtmp;
 				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
@@ -224,7 +225,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	}
 }
 
-static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DisperseElements(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
@@ -295,16 +296,19 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Flip(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	const char *function = PCB_ACTION_ARG(0);
 	void *ptrtmp;
 	int err = 0;
 
+	pcb_hid_get_coords("Click on Object or Flip Point", &x, &y);
+
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
-			if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
+			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_save_serial();
 				pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
@@ -345,28 +349,30 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MoveObject(int argc, const char **argv)
 {
 	const char *x_str = PCB_ACTION_ARG(0);
 	const char *y_str = PCB_ACTION_ARG(1);
 	const char *units = PCB_ACTION_ARG(2);
-	pcb_coord_t nx, ny;
+	pcb_coord_t nx, ny, x, y;
 	pcb_bool absolute1, absolute2;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
+	pcb_hid_get_coords("Select an Object", &x, &y);
+
 	ny = pcb_get_value(y_str, units, &absolute1, NULL);
 	nx = pcb_get_value(x_str, units, &absolute2, NULL);
 
-	type = pcb_search_screen(x, y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID) {
 		pcb_message(PCB_MSG_ERROR, _("Nothing found under crosshair\n"));
 		return 1;
 	}
 	if (absolute1)
-		nx -= x;
+		nx -= pcb_crosshair.X;
 	if (absolute2)
-		ny -= y;
+		ny -= pcb_crosshair.Y;
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
@@ -391,13 +397,14 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static int pcb_act_MoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MoveToCurrentLayer(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
+				pcb_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
@@ -491,7 +498,7 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 	return strcmp(got_name, expect_name);
 }
 
-static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ElementList(int argc, const char **argv)
 {
 	pcb_subc_t *sc;
 	const char *refdes, *value, *footprint;
@@ -570,7 +577,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (pcb_act_LoadFootprint(argc, args, x, y)) {
+		if (pcb_act_LoadFootprint(argc, args)) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -611,7 +618,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
-		if (pcb_act_LoadFootprint(argc, args, x, y) != 0) {
+		if (pcb_act_LoadFootprint(argc, args) != 0) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -697,7 +704,7 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ElementSetAttr(int argc, const char **argv)
 {
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
@@ -745,7 +752,7 @@ autorouter.
 
 %end-doc */
 
-static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RipUp(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_bool changed = pcb_false;
@@ -818,7 +825,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
 static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
-static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MinMaskGap(int argc, const char **argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
 	return 1;
@@ -891,7 +898,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 	PCB_ENDALL_LOOP;
 }
 
-static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MinClearGap(int argc, const char **argv)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
@@ -972,7 +979,7 @@ Creates a new layer.
 
 %end-doc */
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_MoveLayer(int argc, const char **argv)
 {
 	int old_index, new_index;
 
@@ -1056,8 +1063,9 @@ static pcb_layer_t *pick_layer(const char *user_text)
 
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
 static const char pcb_acth_CreateText[] = "Create a new text object";
-static int pcb_act_CreateText(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_CreateText(int argc, const char **argv)
 {
+	pcb_coord_t x, y;
 	pcb_layer_t *ly;
 	int fid = 0, dir = 0, scale = 0;
 	pcb_bool succ;
@@ -1099,7 +1107,7 @@ static const char pcb_acts_subc[] =
 	"subc(loose, on|off|toggle|check)\n"
 	;
 static const char pcb_acth_subc[] = "Various operations on subc";
-static int pcb_act_subc(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_subc(int argc, const char **argv)
 {
 	if (argc == 0)
 		PCB_ACT_FAIL(subc);
@@ -1199,14 +1207,17 @@ static const char pcb_acth_Rotate90[] = "Rotates the object under the crosshair 
 
 /* %start-doc actions Rotate90
 
-Rotates the object under the crosshair by 90 degree @code{steps}.
+Rotates the object under the mouse pointer by 90 degree @code{steps}.
 
 %end-doc */
 
-static int pcb_act_Rotate90(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Rotate90(int argc, const char **argv)
 {
 	const char *ssteps = PCB_ACTION_ARG(0);
 	int steps = atoi(ssteps);
+	pcb_coord_t x, y;
+
+	pcb_hid_get_coords("Select an Object", &x, &y);
 
 	if (conf_core.editor.show_solder_side)
 		steps = -steps;
@@ -1227,10 +1238,10 @@ pcb_hid_action_t object_action_list[] = {
 	{"DisperseElements", 0, pcb_act_DisperseElements,
 	 pcb_acth_DisperseElements, pcb_acts_DisperseElements}
 	,
-	{"Flip", N_("Click on Object or Flip Point"), pcb_act_Flip,
+	{"Flip", 0, pcb_act_Flip,
 	 pcb_acth_Flip, pcb_acts_Flip}
 	,
-	{"MoveObject", N_("Select an Object"), pcb_act_MoveObject,
+	{"MoveObject", 0, pcb_act_MoveObject,
 	 pcb_acth_MoveObject, pcb_acts_MoveObject}
 	,
 	{"MoveToCurrentLayer", 0, pcb_act_MoveToCurrentLayer,
@@ -1260,7 +1271,7 @@ pcb_hid_action_t object_action_list[] = {
 	{"CreateText", 0, pcb_act_CreateText,
 	 pcb_acth_CreateText, pcb_acts_CreateText}
 	,
-	{"Rotate90", N_("Select an Object"), pcb_act_Rotate90,
+	{"Rotate90", 0, pcb_act_Rotate90,
 	 pcb_acth_Rotate90, pcb_acts_Rotate90}
 };
 

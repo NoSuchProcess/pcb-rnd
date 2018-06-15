@@ -248,7 +248,7 @@ static void check_pstk(pcb_pstk_t *ps)
 	}
 }
 
-static int pcb_act_teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_teardrops(int argc, const char **argv)
 {
 	pcb_box_t *b;
 	pcb_rtree_it_t it;

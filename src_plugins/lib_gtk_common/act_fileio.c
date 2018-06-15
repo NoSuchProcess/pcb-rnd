@@ -58,7 +58,7 @@ static char *dup_cwd()
 	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
 }
 
-int pcb_gtk_act_load(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_load(GtkWidget *top_window, int argc, const char **argv)
 {
 	const char *function;
 	char *name = NULL;
@@ -118,7 +118,7 @@ called with that filename.
 
 %end-doc */
 
-int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv)
 {
 	const char *function;
 	char *name, *name_in = NULL;
@@ -263,7 +263,7 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coo
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
 const char pcb_gtk_acth_importgui[] = N_("Asks user which schematics to import into PCB.\n");
-int pcb_gtk_act_importgui(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_importgui(GtkWidget *top_window, int argc, const char **argv)
 {
 	char *name = NULL;
 	static gchar *current_layout_dir = NULL;

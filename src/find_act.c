@@ -52,7 +52,7 @@ not the current style settings.
 
 %end-doc */
 
-static int pcb_act_DRCheck(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DRCheck(int argc, const char **argv)
 {
 	int count;
 
