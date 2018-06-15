@@ -1858,6 +1858,38 @@ static int pcb_act_GetXY(int argc, const char **argv)
 	return 0;
 }
 
+static pcb_hid_attribute_t printer_calibrate_attrs[] = {
+	{N_("Enter Values here:"), "",
+	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
+	{N_("x-calibration"), N_("X scale for calibrating your printer"),
+	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
+	{N_("y-calibration"), N_("Y scale for calibrating your printer"),
+	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
+};
+
+static pcb_hid_attr_val_t printer_calibrate_values[3];
+
+const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
+const char pcb_acth_PrintCalibrate[] = N_("Calibrate the printer.");
+
+/* %start-doc actions PrintCalibrate
+
+This will print a calibration page, which you would measure and type
+the measurements in, so that future printouts will be more precise.
+
+%end-doc */
+
+int pcb_act_PrintCalibrate(int argc, const char **argv)
+{
+	pcb_hid_t *printer = pcb_hid_find_printer();
+	printer->calibrate(0.0, 0.0);
+
+	if (pcb_attribute_dialog(printer_calibrate_attrs, 3, printer_calibrate_values, "Printer Calibration Values", "Enter calibration values for your printer", NULL))
+		return 1;
+	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
+	return 0;
+}
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1885,7 +1917,8 @@ pcb_hid_action_t gui_action_list[] = {
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
-	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY}
+	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
+	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

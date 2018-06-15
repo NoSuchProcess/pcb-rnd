@@ -493,7 +493,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
 	{"Print", pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print},
-	{"PrintCalibrate", pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate},
 	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save},
 	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
 	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll},

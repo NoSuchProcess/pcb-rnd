@@ -1364,40 +1364,6 @@ static int pcb_act_Print(int argc, const char **argv)
 	return 0;
 }
 
-static pcb_hid_attribute_t printer_calibrate_attrs[] = {
-	{"Enter Values here:", "",
-	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
-	{"x-calibration", "X scale for calibrating your printer",
-	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
-	{"y-calibration", "Y scale for calibrating your printer",
-	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
-};
-
-static pcb_hid_attr_val_t printer_calibrate_values[3];
-
-static const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
-
-static const char pcb_acth_PrintCalibrate[] = "Calibrate the printer.";
-
-/* %start-doc actions PrintCalibrate
-
-This will print a calibration page, which you would measure and type
-the measurements in, so that future printouts will be more precise.
-
-%end-doc */
-
-static int pcb_act_PrintCalibrate(int argc, const char **argv)
-{
-	pcb_hid_t *printer = pcb_hid_find_printer();
-	printer->calibrate(0.0, 0.0);
-	if (pcb_attribute_dialog(printer_calibrate_attrs, 3,
-														printer_calibrate_values,
-														"Printer Calibration Values", "Enter calibration values for your printer", NULL))
-		return 1;
-	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
-	return 0;
-}
-
 static const char pcb_acts_ExportGUI[] = "ExportGUI()";
 
 static const char pcb_acth_ExportGUI[] = "Export the layout. Export is configured using dialog a box.";
@@ -2098,7 +2064,6 @@ pcb_hid_action_t lesstif_dialog_action_list[] = {
 	{"Confirm", pcb_act_ConfirmAction},
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
-	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
 	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},

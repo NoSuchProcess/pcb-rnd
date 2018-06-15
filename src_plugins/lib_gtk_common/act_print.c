@@ -69,36 +69,3 @@ int pcb_gtk_act_print(GtkWidget *top_window, int argc, const char **argv)
 	return 0;
 }
 
-static pcb_hid_attribute_t printer_calibrate_attrs[] = {
-	{N_("Enter Values here:"), "",
-	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
-	{N_("x-calibration"), N_("X scale for calibrating your printer"),
-	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
-	{N_("y-calibration"), N_("Y scale for calibrating your printer"),
-	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
-};
-
-static pcb_hid_attr_val_t printer_calibrate_values[3];
-
-const char pcb_gtk_acts_printcalibrate[] = "PrintCalibrate()";
-const char pcb_gtk_acth_printcalibrate[] = N_("Calibrate the printer.");
-
-/* %start-doc actions PrintCalibrate
-
-This will print a calibration page, which you would measure and type
-the measurements in, so that future printouts will be more precise.
-
-%end-doc */
-
-int pcb_gtk_act_printcalibrate(int argc, const char **argv)
-{
-	pcb_hid_t *printer = pcb_hid_find_printer();
-	printer->calibrate(0.0, 0.0);
-
-	if (pcb_attribute_dialog(printer_calibrate_attrs, 3,
-																printer_calibrate_values,
-																_("Printer Calibration Values"), _("Enter calibration values for your printer"), NULL))
-		return 1;
-	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
-	return 0;
-}
