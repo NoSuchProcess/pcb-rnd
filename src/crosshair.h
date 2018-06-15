@@ -36,21 +36,18 @@
 #include "obj_poly.h"
 #include "route.h"
 
-typedef struct {								/* currently marked block */
-	pcb_point_t Point1,							/* start- and end-position */
-	  Point2;
+typedef struct {              /* currently marked block */
+	pcb_point_t Point1, Point2; /* start- and end-position */
 	long int State;
 	pcb_bool otherway;
 } pcb_attached_box_t;
 
-typedef struct {								/* currently attached object */
-	pcb_coord_t X, Y;										/* saved position when PCB_MODE_MOVE */
+typedef struct {              /* currently attached object */
+	pcb_coord_t X, Y;           /* saved position when PCB_MODE_MOVE */
 	pcb_box_t BoundingBox;
-	long int Type,								/* object type */
-	  State;
-	void *Ptr1,										/* three pointers to data, see */
-	 *Ptr2,												/* search.c */
-	 *Ptr3;
+	long int Type;              /* object type */
+	long int State;
+	void *Ptr1, *Ptr2, *Ptr3;   /* three pointers to data, see search.c */
 	pcb_angle_t start_angle, delta_angle;
 	pcb_coord_t radius;
 } pcb_attached_object_t;
@@ -61,35 +58,33 @@ typedef struct {
 } pcb_mark_t;
 
 enum pcb_crosshair_shape_e {
-	pcb_ch_shape_basic = 0,		/*  4-ray */
-	pcb_ch_shape_union_jack,		/*  8-ray */
-	pcb_ch_shape_dozen,				/* 12-ray */
+	pcb_ch_shape_basic = 0,     /*  4-ray */
+	pcb_ch_shape_union_jack,    /*  8-ray */
+	pcb_ch_shape_dozen,         /* 12-ray */
 	pcb_ch_shape_NUM
 };
 
-typedef struct {								/* holds cursor information */
-	pcb_hid_gc_t GC,											/* GC for cursor drawing */
-	  AttachGC;										/* and for displaying buffer contents */
+typedef struct {                         /* holds cursor information */
+	pcb_hid_gc_t GC;                       /* GC for cursor drawing */
+	pcb_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
 	pcb_coord_t ptr_x, ptr_y;              /* last seen mouse pointer x;y coords */
-	pcb_coord_t X, Y,										/* position in PCB coordinates */
-	  MinX, MinY,									/* lowest and highest coordinates */
-	  MaxX, MaxY;
-	pcb_attached_line_t AttachedLine;	/* data of new lines... */
+	pcb_coord_t X, Y;                      /* position in PCB coordinates */
+	pcb_coord_t MinX, MinY, MaxX, MaxY;    /* lowest and highest coordinates */
+	pcb_attached_line_t AttachedLine;      /* data of new lines... */
 	pcb_attached_box_t AttachedBox;
 	pcb_poly_t AttachedPolygon;
-	int AttachedPolygon_pts;              /* number of valid points ever seen for this poly */
-	pcb_attached_object_t AttachedObject;	/* data of attached objects */
-	pcb_route_t Route;										/* Calculated line route in LINE or MOVE(LINE) mode */ 
-	enum pcb_crosshair_shape_e shape;			/* shape of crosshair */
+	int AttachedPolygon_pts;               /* number of valid points ever seen for this poly */
+	pcb_attached_object_t AttachedObject;  /* data of attached objects */
+	pcb_route_t Route;                     /* Calculated line route in LINE or MOVE(LINE) mode */ 
+	enum pcb_crosshair_shape_e shape;      /* shape of crosshair */
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
 	pcb_pstk_t *snapped_pstk;
 
-
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;
 	int drags_len, drags_current;
-	pcb_coord_t dragx, dragy;						/* the point where drag started */
+	pcb_coord_t dragx, dragy;              /* the point where drag started */
 } pcb_crosshair_t;
 
 
