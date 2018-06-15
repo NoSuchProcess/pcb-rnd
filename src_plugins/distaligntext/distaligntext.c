@@ -40,12 +40,6 @@
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
-static const char aligntext_syntax[] =
-	"AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-
-static const char distributetext_syntax[] =
-	"DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-
 enum {
 	K_X,
 	K_Y,
@@ -278,7 +272,8 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  * Gridless - Do not force results to align to prevailing grid. \n
  *
  * Defaults are Lefts/Tops, First */
-static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_aligntext[] = "AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
+static int pcb_act_aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
@@ -289,7 +284,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int changed = 0;
 
 	if (argc < 1 || argc > 4) {
-		PCB_AFAIL(aligntext);
+		PCB_ACT_FAIL(aligntext);
 	}
 	/* parse direction arg */
 	switch ((dir = keyword(ARG(0)))) {
@@ -297,7 +292,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Y:
 		break;
 	default:
-		PCB_AFAIL(aligntext);
+		PCB_ACT_FAIL(aligntext);
 	}
 	/* parse point (within each element) which will be aligned */
 	switch ((point = keyword(ARG(1)))) {
@@ -306,13 +301,13 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			PCB_AFAIL(aligntext);
+			PCB_ACT_FAIL(aligntext);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			PCB_AFAIL(aligntext);
+			PCB_ACT_FAIL(aligntext);
 		}
 		break;
 	case K_none:									/* default value */
@@ -324,7 +319,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 		break;
 	default:
-		PCB_AFAIL(aligntext);
+		PCB_ACT_FAIL(aligntext);
 	}
 	/* parse reference which will determine alignment coordinates */
 	switch ((reference = keyword(ARG(2)))) {
@@ -337,7 +332,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		reference = K_First;				/* default value */
 		break;
 	default:
-		PCB_AFAIL(aligntext);
+		PCB_ACT_FAIL(aligntext);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(ARG(3))) {
@@ -348,7 +343,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		gridless = 0;
 		break;
 	default:
-		PCB_AFAIL(aligntext);
+		PCB_ACT_FAIL(aligntext);
 	}
 	pcb_undo_save_serial();
 	/* find the final alignment coordinate using the above options */
@@ -434,7 +429,8 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
    Distributed texts always retain the same relative order they had
    before they were distributed. */
-static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_distributetext[] = "DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
+static int pcb_act_distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
@@ -446,7 +442,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	int i;
 
 	if (argc < 1 || argc == 3 || argc > 4) {
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	/* parse direction arg */
 	switch ((dir = keyword(ARG(0)))) {
@@ -454,7 +450,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	case K_Y:
 		break;
 	default:
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	/* parse point (within each element) which will be distributed */
 	switch ((point = keyword(ARG(1)))) {
@@ -464,13 +460,13 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			PCB_AFAIL(distributetext);
+			PCB_ACT_FAIL(distributetext);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			PCB_AFAIL(distributetext);
+			PCB_ACT_FAIL(distributetext);
 		}
 		break;
 	case K_none:									/* default value */
@@ -482,7 +478,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		}
 		break;
 	default:
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	/* parse reference which will determine first distribution coordinate */
 	switch ((refa = keyword(ARG(2)))) {
@@ -495,7 +491,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		refa = K_First;							/* default value */
 		break;
 	default:
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	/* parse reference which will determine final distribution coordinate */
 	switch ((refb = keyword(ARG(3)))) {
@@ -508,10 +504,10 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		refb = K_Last;							/* default value */
 		break;
 	default:
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	if (refa == refb) {
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(ARG(4))) {
@@ -522,7 +518,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		gridless = 0;
 		break;
 	default:
-		PCB_AFAIL(distributetext);
+		PCB_ACT_FAIL(distributetext);
 	}
 	pcb_undo_save_serial();
 	/* build list of texts in orthogonal axis order */
@@ -601,8 +597,8 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 }
 
 static pcb_hid_action_t distaligntext_action_list[] = {
-	{"distributetext", NULL, distributetext, "Distribute Text Elements", distributetext_syntax},
-	{"aligntext", NULL, aligntext, "Align Text Elements", aligntext_syntax}
+	{"distributetext", NULL, pcb_act_distributetext, "Distribute Text Elements", pcb_acts_distributetext},
+	{"aligntext", NULL, pcb_act_aligntext, "Align Text Elements", pcb_acts_aligntext}
 };
 
 char *distaligntext_cookie = "distaligntext plugin";
