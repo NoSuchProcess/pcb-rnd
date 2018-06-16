@@ -1329,8 +1329,9 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 
 	case LeaveNotify:
 		crosshair_in_window = 0;
+		if (crosshair_on)
+			pcb_draw_attached(1);
 		ShowCrosshair(pcb_false);
-		pcb_draw_attached(1);
 		need_idle_proc();
 		break;
 
