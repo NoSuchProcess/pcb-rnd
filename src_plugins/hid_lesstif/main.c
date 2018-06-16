@@ -2749,6 +2749,7 @@ void lesstif_invalidate_all(void)
 static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
+	Pixmap save_pixmap;
 
 	if (!my_gc)
 		return;
@@ -2766,6 +2767,13 @@ static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
 		need_redraw = 1;
 		need_idle_proc();
 		return;
+	}
+
+	if (invalidate_depth == 0 && crosshair_on) {
+		save_pixmap = pixmap;
+		pixmap = window;
+		pcb_draw_attached();
+		pixmap = save_pixmap;
 	}
 
 	if (!changes_complete)
