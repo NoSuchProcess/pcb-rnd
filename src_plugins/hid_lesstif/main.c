@@ -2432,15 +2432,15 @@ static Boolean idle_proc(XtPointer dummy)
 		pcb_hid_expose_all(&lesstif_hid, &ctx);
 		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
 		draw_grid();
-		if (crosshair_on) {
-			pcb_draw_attached(0);
+		if (crosshair_on)
 			pcb_draw_mark();
-		}
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
 		XSetFunction(display, my_gc, GXcopy);
 		XCopyArea(display, main_pixmap, window, my_gc, 0, 0, view_width, view_height, 0, 0);
 		pixmap = window;
 		need_redraw = 0;
+		if (crosshair_on)
+			pcb_draw_attached(1);
 	}
 
 	{
