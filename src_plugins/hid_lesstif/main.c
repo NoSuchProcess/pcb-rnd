@@ -60,6 +60,9 @@ pcb_hid_cfg_mouse_t lesstif_mouse;
 pcb_hid_cfg_keys_t lesstif_keymap;
 int lesstif_active = 0;
 
+static int idle_proc_set = 0;
+static int need_redraw = 0;
+
 #ifndef XtRDouble
 #define XtRDouble "Double"
 #endif
@@ -1336,6 +1339,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		pcb_event_move_crosshair(Px(e->xcrossing.x), Py(e->xcrossing.y));
 		ShowCrosshair(pcb_true);
 		in_move_event = 0;
+		need_redraw = 1;
 		need_idle_proc();
 		break;
 
@@ -2351,8 +2355,6 @@ void lesstif_update_status_line()
 	free(buf);
 }
 
-static int idle_proc_set = 0;
-static int need_redraw = 0;
 
 static Boolean idle_proc(XtPointer dummy)
 {
