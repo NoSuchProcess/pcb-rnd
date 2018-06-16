@@ -1596,7 +1596,7 @@ static void draw_lead_user(render_priv_t *priv)
 	}
 }
 
-static GtkWidget *ghid_gdk_new_drawing_widget(void)
+static GtkWidget *ghid_gdk_new_drawing_widget(pcb_gtk_common_t *common)
 {
 	return gtk_drawing_area_new();
 }

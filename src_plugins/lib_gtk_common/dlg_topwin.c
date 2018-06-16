@@ -484,7 +484,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	/* -- The PCB layout output drawing area */
 
-	tw->drawing_area = tw->com->new_drawing_widget();
+	tw->drawing_area = tw->com->new_drawing_widget(tw->com);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(tw->com->drawing_realize), tw->com->gport);
 	tw->com->init_drawing_widget(tw->drawing_area, tw->com->gport);
 
