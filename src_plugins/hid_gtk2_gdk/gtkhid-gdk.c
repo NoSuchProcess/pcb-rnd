@@ -1219,6 +1219,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
 	if (changes_complete)
 		priv->attached_invalidate_depth--;
 
+	assert(priv->attached_invalidate_depth >= 0);
 	if (priv->attached_invalidate_depth < 0) {
 		priv->attached_invalidate_depth = 0;
 		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
