@@ -207,8 +207,7 @@ void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 		pcb_stub_stroke_record(ev_x, ev_y);
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
-		pcb_notify_crosshair_change(pcb_true); /* xor-draw-remove from old loc */
 		pcb_adjust_attached_objects();
-		pcb_notify_crosshair_change(pcb_true); /* xor-draw-flush to new loc */
+		pcb_notify_crosshair_change(pcb_true);
 	}
 }
