@@ -473,10 +473,12 @@ void pcb_xordraw_movecopy(void)
 /* ---------------------------------------------------------------------------
  * draws additional stuff that follows the crosshair
  */
-void pcb_draw_attached(void)
+void pcb_draw_attached(pcb_bool inhibit_drawing_mode)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE_XOR, 1, NULL);
+	if (!inhibit_drawing_mode) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE_XOR, 1, NULL);
+	}
 
 	pcb_tool_draw_attached();
 
@@ -491,7 +493,8 @@ void pcb_draw_attached(void)
 		pcb_gui->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
 	}
 
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
+	if (!inhibit_drawing_mode)
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
 }
 
 

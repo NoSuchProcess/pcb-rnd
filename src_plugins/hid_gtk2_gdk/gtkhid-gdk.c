@@ -1160,7 +1160,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	/* In some cases we are called with the crosshair still off */
 	if (priv->attached_invalidate_depth == 0)
-		pcb_draw_attached();
+		pcb_draw_attached(0);
 
 	/* In some cases we are called with the mark still off */
 	if (priv->mark_invalidate_depth == 0)
@@ -1232,7 +1232,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
 	}
 
 	if (priv->attached_invalidate_depth == 0)
-		pcb_draw_attached();
+		pcb_draw_attached(0);
 
 	if (!changes_complete) {
 		priv->attached_invalidate_depth++;

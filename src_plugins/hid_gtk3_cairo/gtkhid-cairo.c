@@ -1155,7 +1155,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	/* Draws "GUI" information on top of design */
 	priv->cr = priv->cr_drawing_area;
-	pcb_draw_attached();
+	pcb_draw_attached(0);
 	pcb_draw_mark();
 
 	draw_lead_user(priv);

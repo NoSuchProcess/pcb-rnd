@@ -2433,7 +2433,7 @@ static Boolean idle_proc(XtPointer dummy)
 		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
 		draw_grid();
 		if (crosshair_on) {
-			pcb_draw_attached();
+			pcb_draw_attached(0);
 			pcb_draw_mark();
 		}
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
@@ -2772,7 +2772,7 @@ static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		pcb_draw_attached();
+		pcb_draw_attached(1);
 		pixmap = save_pixmap;
 	}
 

@@ -955,7 +955,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 
 	ghid_gl_invalidate_current_gc();
 
-	pcb_draw_attached();
+	pcb_draw_attached(0);
 	pcb_draw_mark();
 	drawgl_flush();
 
