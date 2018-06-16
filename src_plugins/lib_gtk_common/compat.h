@@ -102,7 +102,6 @@ static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 
 #define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->draw = (gboolean (*)(GtkWidget *, cairo_t *))val
 typedef cairo_t pcb_gtk_expose_t;
-#define PCB_GTK_DRAW_SIGNAL_NAME "draw"
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
 {
@@ -244,7 +243,6 @@ static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 
 #define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
 typedef GdkEventExpose pcb_gtk_expose_t;
-#define PCB_GTK_DRAW_SIGNAL_NAME "expose_event"
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
 {

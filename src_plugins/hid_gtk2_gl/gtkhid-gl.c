@@ -1125,7 +1125,11 @@ static void draw_lead_user(render_priv_t * priv)
 
 static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_common_t *common)
 {
-	return gtk_drawing_area_new();
+	GtkWidget *w = gtk_drawing_area_new();
+
+	g_signal_connect(G_OBJECT(w), "expose_event", G_CALLBACK(common->drawing_area_expose), common->gport);
+
+	return w;
 }
 
 
