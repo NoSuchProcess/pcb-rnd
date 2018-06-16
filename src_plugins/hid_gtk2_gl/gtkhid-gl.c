@@ -1123,13 +1123,17 @@ static void draw_lead_user(render_priv_t * priv)
 	glPopAttrib();
 }
 
-
+static GtkWidget *ghid_gl_new_drawing_widget(void)
+{
+	return gtk_drawing_area_new();
+}
 
 
 void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
 
 	if (common != NULL) {
+	common->new_drawing_widget = ghid_gl_new_drawing_widget;
 	common->init_drawing_widget = ghid_gl_init_drawing_widget;
 	common->drawing_realize = ghid_gl_port_drawing_realize_cb;
 	common->drawing_area_expose = ghid_gl_drawing_area_expose_cb;

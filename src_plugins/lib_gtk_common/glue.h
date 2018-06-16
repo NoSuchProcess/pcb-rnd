@@ -20,6 +20,7 @@ typedef struct pcb_gtk_common_s {
 	gboolean (*drawing_area_expose)(GtkWidget *w, pcb_gtk_expose_t *p, void *gport);
 	void (*drawing_area_configure_hook)(void *);
 
+	GtkWidget *(*new_drawing_widget)(void);
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
 	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx);
 	void (*load_bg_image)(void);

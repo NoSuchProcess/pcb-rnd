@@ -1611,9 +1611,16 @@ static void draw_lead_user(render_priv_t * priv)
 	}
 }
 
+static GtkWidget *ghid_cairo_new_drawing_widget(void)
+{
+	return gtk_drawing_area_new();
+}
+
+
 void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 {
 	if (common != NULL) {
+		common->new_drawing_widget = ghid_cairo_new_drawing_widget;
 		common->init_drawing_widget = ghid_cairo_init_drawing_widget;
 		common->drawing_realize = ghid_cairo_port_drawing_realize_cb;
 		common->drawing_area_expose = ghid_cairo_drawing_area_expose_cb;
