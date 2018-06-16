@@ -501,7 +501,7 @@ void pcb_draw_attached(pcb_bool inhibit_drawing_mode)
 /* --------------------------------------------------------------------------
  * draw the marker position
  */
-void pcb_draw_mark(void)
+void pcb_draw_mark(pcb_bool inhibit_drawing_mode)
 {
 	pcb_coord_t ms = conf_core.appearance.mark_size;
 
@@ -509,13 +509,16 @@ void pcb_draw_mark(void)
 	if (!pcb_marked.status)
 		return;
 
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, NULL);
+	if (!inhibit_drawing_mode) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, NULL);
+	}
 
 	pcb_gui->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
 	pcb_gui->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
 
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
+	if (!inhibit_drawing_mode)
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
 }
 
 /* ---------------------------------------------------------------------------

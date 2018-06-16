@@ -2435,7 +2435,7 @@ static Boolean idle_proc(XtPointer dummy)
 		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
 		draw_grid();
 		if (crosshair_on)
-			pcb_draw_mark();
+			pcb_draw_mark(0);
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
 		XSetFunction(display, my_gc, GXcopy);
 		XCopyArea(display, main_pixmap, window, my_gc, 0, 0, view_width, view_height, 0, 0);
@@ -2804,7 +2804,7 @@ static void lesstif_notify_mark_change(pcb_bool changes_complete)
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		pcb_draw_mark();
+		pcb_draw_mark(1);
 		pixmap = save_pixmap;
 	}
 

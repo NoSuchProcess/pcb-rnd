@@ -956,7 +956,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 	ghid_gl_invalidate_current_gc();
 
 	pcb_draw_attached(0);
-	pcb_draw_mark();
+	pcb_draw_mark(0);
 	drawgl_flush();
 
 	ghid_gl_show_crosshair(TRUE);

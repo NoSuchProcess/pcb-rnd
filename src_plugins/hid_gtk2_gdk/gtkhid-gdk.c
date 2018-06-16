@@ -1164,7 +1164,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	/* In some cases we are called with the mark still off */
 	if (priv->mark_invalidate_depth == 0)
-		pcb_draw_mark();
+		pcb_draw_mark(0);
 
 	draw_lead_user(priv);
 
@@ -1266,7 +1266,7 @@ static void ghid_gdk_notify_mark_change(pcb_bool changes_complete)
 	}
 
 	if (priv->mark_invalidate_depth == 0)
-		pcb_draw_mark();
+		pcb_draw_mark(0);
 
 	if (!changes_complete) {
 		priv->mark_invalidate_depth++;
