@@ -735,7 +735,7 @@ static void draw_crosshair(gint x, gint y, gint z)
 	prev = pcb_crosshair.shape;
 }
 
-void ghid_gl_show_crosshair(gboolean paint_new_location)
+static void ghid_gl_show_crosshair(gboolean paint_new_location)
 {
 	gint x, y, z;
 	static int done_once = 0;
@@ -767,7 +767,7 @@ void ghid_gl_show_crosshair(gboolean paint_new_location)
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
-void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
+static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 {
 	GHidPort * port = vport;
 	render_priv_t *priv;
@@ -789,7 +789,7 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 	gtk2_gl_hid.thindraw_pcb_polygon = ghid_gl_thindraw_pcb_polygon;
 }
 
-void ghid_gl_shutdown_renderer(void * p)
+static void ghid_gl_shutdown_renderer(void *p)
 {
 	GHidPort *port = p;
 
@@ -797,7 +797,7 @@ void ghid_gl_shutdown_renderer(void * p)
 	port->render_priv = NULL;
 }
 
-void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
+static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 {
 	GHidPort *port = port_;
 	render_priv_t *priv = port->render_priv;
@@ -805,7 +805,7 @@ void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
 	gtk_widget_set_gl_capability(widget, priv->glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
 }
 
-void ghid_gl_drawing_area_configure_hook(void * port)
+static void ghid_gl_drawing_area_configure_hook(void *port)
 {
 	static int done_once = 0;
 	GHidPort *p = port;
@@ -828,7 +828,7 @@ void ghid_gl_drawing_area_configure_hook(void * port)
 	}
 }
 
-gboolean ghid_gl_start_drawing(GHidPort * port)
+static gboolean ghid_gl_start_drawing(GHidPort *port)
 {
 	GtkWidget *widget = port->drawing_area;
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
@@ -843,7 +843,7 @@ gboolean ghid_gl_start_drawing(GHidPort * port)
 	return TRUE;
 }
 
-void ghid_gl_end_drawing(GHidPort * port)
+static void ghid_gl_end_drawing(GHidPort *port)
 {
 	GtkWidget *widget = port->drawing_area;
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
@@ -859,11 +859,11 @@ void ghid_gl_end_drawing(GHidPort * port)
 	gdk_gl_drawable_gl_end(pGlDrawable);
 }
 
-void ghid_gl_screen_update(void)
+static void ghid_gl_screen_update(void)
 {
 }
 
-gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev, void *vport)
+static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	GHidPort * port = vport;
 	render_priv_t *priv = port->render_priv;
@@ -969,7 +969,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
  * obvious why it helps, but somehow fiddling with the GL context here solves
  * the issue. The problem appears to have been fixed in recent mesa versions.
  */
-void ghid_gl_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
+static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
