@@ -553,9 +553,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 
-	if (strcmp(name, "erase") == 0) {
-	}
-	else if (strcmp(name, "drill") == 0) {
+	if (strcmp(name, "drill") == 0) {
 		gdk_gc_set_foreground(gc->pixel_gc, &priv->offlimits_color);
 	}
 	else {

@@ -473,11 +473,7 @@ static void svg_set_color(pcb_hid_gc_t gc, const char *name)
 		name = "#ffffff";
 		gc->drill = 1;
 	}
-	else if (strcmp(name, "erase") == 0) {
-/*		name = "#ffffff";
-		gc->erase = 1;*/
-	}
-	else if (drawing_mask)
+	if (drawing_mask)
 		name = mask_color;
 	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
 		return;

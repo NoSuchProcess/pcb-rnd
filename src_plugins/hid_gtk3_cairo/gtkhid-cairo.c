@@ -706,12 +706,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 	//if (gport->colormap == 0)
 	//  gport->colormap = gtk_widget_get_colormap(gport->top_window);
 
-	if (strcmp(name, "erase") == 0) {
-		copy_color(&gc->color, &priv->bg_color);
-		//gdk_cairo_set_source_rgba(cr, &priv->bg_color);
-		//gdk_gc_set_foreground(gc->gc, &gport->bg_color);
-	}
-	else if (strcmp(name, "drill") == 0) {
+	if (strcmp(name, "drill") == 0) {
 		copy_color(&gc->color, &priv->offlimits_color);
 		//gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
 		//gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);

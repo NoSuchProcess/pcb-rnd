@@ -893,12 +893,7 @@ static void gerber_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, cons
 
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name)
 {
-	if (strcmp(name, "erase") == 0) {
-		gc->color = 1;
-		gc->erase = 1;
-		gc->drill = 0;
-	}
-	else if (strcmp(name, "drill") == 0) {
+	if (strcmp(name, "drill") == 0) {
 		gc->color = 1;
 		gc->erase = 0;
 		gc->drill = 1;

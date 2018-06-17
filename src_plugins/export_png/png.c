@@ -1409,9 +1409,6 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 		cval.ptr = gc->color;
 		pcb_hid_cache_color(1, name, &cval, &color_cache);
 	}
-	else if (strcmp(name, "erase") == 0) {
-		gc->color = black; /* safe to remove */
-	}
 	else {
 		fprintf(stderr, "WE SHOULD NOT BE HERE!!!\n");
 		gc->color = black;

@@ -393,13 +393,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
-	if (strcmp(gc->colorname, "erase") == 0) {
-		r = priv->bg_color.red / 65535.;
-		g = priv->bg_color.green / 65535.;
-		b = priv->bg_color.blue / 65535.;
-		a = 1.0;
-	}
-	else if (strcmp(gc->colorname, "drill") == 0) {
+	if (strcmp(gc->colorname, "drill") == 0) {
 		r = priv->offlimits_color.red / 65535.;
 		g = priv->offlimits_color.green / 65535.;
 		b = priv->offlimits_color.blue / 65535.;

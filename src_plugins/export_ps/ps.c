@@ -980,7 +980,7 @@ static void ps_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 0;
 	}
-	else if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
+	else if (strcmp(name, "drill") == 0) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 1;
 	}

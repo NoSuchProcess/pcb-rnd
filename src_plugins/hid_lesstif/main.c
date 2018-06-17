@@ -2966,11 +2966,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->colorname = pcb_strdup(name);
 	}
 
-	if (strcmp(name, "erase") == 0) {
-		gc->color = bgcolor;
-		gc->erase = 1;
-	}
-	else if (strcmp(name, "drill") == 0) {
+	if (strcmp(name, "drill") == 0) {
 		gc->color = offlimit_color;
 		gc->erase = 0;
 	}

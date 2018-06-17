@@ -442,11 +442,6 @@ static void eps_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->erase = 1;
 		return;
 	}
-	if (strcmp(name, "erase") == 0) {
-		gc->color = 0xffffff;
-		gc->erase = fast_erase ? 0 : 1;
-		return;
-	}
 	if (strcmp(name, "drill") == 0) {
 		gc->color = 0xffffff;
 		gc->erase = 0;

@@ -607,12 +607,6 @@ static void gcode_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->erase = 0;
 		return;
 	}
-	if (!strcmp(name, "erase")) {
-		/* FIXME -- should be background, not white */
-		gc->color = white;
-		gc->erase = 1;
-		return;
-	}
 	gc->color = black;
 	gc->erase = 0;
 	return;
