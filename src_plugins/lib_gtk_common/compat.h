@@ -100,6 +100,11 @@ static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 	return gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 }
 
+static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
+{
+	return gtk_trunctext_new(str);
+}
+
 #define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->draw = (gboolean (*)(GtkWidget *, cairo_t *))val
 typedef cairo_t pcb_gtk_expose_t;
 
@@ -239,6 +244,14 @@ static inline void gtkc_combo_box_text_remove(GtkWidget *combo, gint position)
 static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 {
 	return gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+}
+
+static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
+{
+	GtkWidget *w = gtk_label_new(str);
+	gtk_widget_set_size_request(w, 1, 1);
+
+	return w;
 }
 
 #define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val

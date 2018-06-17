@@ -35,19 +35,6 @@ typedef struct _GtkTrunctextClass GtkTrunctextClass;
 GtkTrunctext *gtk_trunctext_new(const gchar *str);
 
 #include "compat.h"
-/* To be included in compat.h */
-#ifdef PCB_GTK3
-static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
-{
-	return gtk_trunctext_new(str);
-}
-#else
-/* GTK2 */
-static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
-{
-	return gtk_label_new(str);
-}
-#endif
 
 /* GtkTrunctext is a subclass of GtkLabel */
 #define TYPE_GTK_TRUNCTEXT (gtk_trunctext_get_type ())
