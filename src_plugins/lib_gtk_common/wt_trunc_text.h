@@ -34,7 +34,7 @@ typedef struct _GtkTrunctext GtkTrunctext;
 typedef struct _GtkTrunctextClass GtkTrunctextClass;
 GtkTrunctext *gtk_trunctext_new(const gchar *str);
 
-#include "lib_gtk_common/compat.h"
+#include "compat.h"
 /* To be included in compat.h */
 #ifdef PCB_GTK3
 static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
