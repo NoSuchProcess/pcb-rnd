@@ -638,7 +638,7 @@ void ghid_gl_notify_mark_change(pcb_bool changes_complete)
 	ghid_gl_invalidate_all();
 }
 
-static void draw_right_cross(gint x, gint y, gint z)
+static void draw_right_cross(GLint x, GLint y, GLint z)
 {
 	glVertex3i(x, 0, z);
 	glVertex3i(x, PCB->MaxHeight, z);
