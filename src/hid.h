@@ -287,12 +287,9 @@ struct pcb_hid_s {
 	void (*render_burst)(pcb_burst_op_t op, const pcb_box_t *screen);
 
 	/* Sets a color.  Names can be like "red" or "#rrggbb" or special
-	   names like "erase".  *Always* use the "erase" color for removing
-	   ink (like polygon reliefs or thermals), as you cannot rely on
-	   knowing the background color or special needs of the HID.  Always
-	   use the "drill" color to draw holes.  You may assume this is
-	   cheap enough to call inside the redraw callback, but not cheap
-	   enough to call for each item drawn. */
+	   names like "drill". Always use the "drill" color to draw holes.
+	   You may assume this is cheap enough to call inside the redraw
+	   callback, but not cheap enough to call for each item drawn. */
 	void (*set_color)(pcb_hid_gc_t gc, const char *name);
 
 	/* Sets the line style.  While calling this is cheap, calling it with

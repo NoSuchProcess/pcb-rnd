@@ -847,7 +847,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	else
 		pcb_draw_out.direct = 1;
 
-	hid->set_color(pcb_draw_out.pmGC, "erase");
+	hid->set_color(pcb_draw_out.pmGC, "#00FFFF");
 	hid->set_color(pcb_draw_out.drillGC, "drill");
 	hid->set_color(pcb_draw_out.padGC, conf_core.appearance.color.pin);
 	hid->set_color(pcb_draw_out.backpadGC, conf_core.appearance.color.invisible_objects);
