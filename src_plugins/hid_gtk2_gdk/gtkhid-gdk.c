@@ -642,16 +642,14 @@ static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 	ghid_gdk_set_color(gc, gc->colorname);
 
 	/* If not in direct mode then select the correct drawables so that the sketch and clip
-	 * drawables are not drawn to in XOR mode
-	 */
-	if(!priv->direct)	{
+	 * drawables are not drawn to in XOR mode */
+	if (!priv->direct) {
 		/* If xor mode then draw directly to the base drawable */
-		if(xor_mask) {
+		if (xor_mask) {
 			priv->out_pixel = priv->base_pixel;
 			priv->out_clip = NULL;
 		}
-		/* If not in direct mode then draw to the sketch and clip drawables */
-		else
+		else /* If not in direct mode then draw to the sketch and clip drawables */
 			ghid_sketch_setup(priv);
 	}
 }
