@@ -231,8 +231,9 @@ static inline void ghid_gdk_draw_grid_global(void)
 	if (n == 0)
 		return;
 	for (y = y1; y <= y2; y += grd) {
+		int vy = Vy(y);
 		for (i = 0; i < n; i++)
-			points[i].y = Vy(y);
+			points[i].y = vy;
 		gdk_draw_points(priv->out_pixel, priv->grid_gc, points, n);
 	}
 }
