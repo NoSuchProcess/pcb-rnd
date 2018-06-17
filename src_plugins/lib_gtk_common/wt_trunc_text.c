@@ -71,13 +71,11 @@ static void gtk_trunctext_class_init(GtkTrunctextClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
-#ifdef PCB_GTK3
 	widget_class->get_preferred_width = gtk_trunctext_get_preferred_width;
 	widget_class->get_preferred_height = gtk_trunctext_get_preferred_width;
 	widget_class->get_preferred_width_for_height = gtk_trunctext_get_preferred_width_for_height;
 	widget_class->get_preferred_height_for_width = gtk_trunctext_get_preferred_width_for_height;
 	widget_class->get_preferred_height_and_baseline_for_width = gtk_trunctext_get_preferred_height_and_baseline_for_width;
-#endif
 
 	gtk_trunctext_parent_class = g_type_class_peek_parent(klass);
 }
