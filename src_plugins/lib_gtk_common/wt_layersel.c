@@ -502,7 +502,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	gtk_box_pack_start(GTK_BOX(lsg->grp_open), lsg->layers, TRUE, TRUE, 0);
 
 	/* install group name - vertical (for when the group is open) */
-	vlabel = gtk_label_new(gname);
+	vlabel = gtkc_trunctext_new(gname);
 	gtk_label_set_angle(GTK_LABEL(vlabel), 90);
 	gtk_box_pack_start(GTK_BOX(gn_vert), vlabel, TRUE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(vlabel), 0, 1);
