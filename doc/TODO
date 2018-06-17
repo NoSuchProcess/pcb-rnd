@@ -11,8 +11,6 @@
 	- allow padstack xor draw to draw all shapes on all layers
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
 - feautres/cleanup: hid:
-	- "erase" color:
-		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
 		- holes_after should be set to 1 everywhere, then removed -> breaks gerber
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
 
