@@ -394,6 +394,7 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	pcb_undo_add_obj_to_flag((void *)obj);
+	pcb_draw_obj(obj);
 	PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, ctx->flag, obj);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
