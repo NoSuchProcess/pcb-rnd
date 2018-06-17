@@ -15,7 +15,6 @@
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
 		- holes_after should be set to 1 everywhere, then removed -> breaks gerber
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
-- bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
 
 
 2. For later releases ===============================================================================
@@ -340,3 +339,5 @@ FEATURES
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
 - miter bug;  miter crosses SMT pads under certain conditions [report: celem/miloh] 
+- bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk [report:Evan]
+	-> it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap; it would be too expensive to calculate what else to redraw
