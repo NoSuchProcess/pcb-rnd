@@ -51,8 +51,6 @@ save countdictstack mark newpath /showpage {} def /setpagedevice {pop} def
 0.00000 setlinewidth
 1 1 1 setrgbcolor
 0.25000 0.07500 0.01968 c
-% Layer plated-drill group -1 drill 1 mask 0
-0.25000 0.07500 0.01968 c
 % Layer topsilk group 1 drill 0 mask 0
 gsave
 0 0 0 setrgbcolor
@@ -82,6 +80,12 @@ nclip
 0.10000 0.22500 0.10000 0.12500 t
 grestore
 % Layer bottomsilk group 12 drill 0 mask 0
+gsave
+% Layer plated-drill group -1 drill 1 mask 0
+0.00000 setlinewidth
+1 1 1 setrgbcolor
+0.25000 0.07500 0.01968 c
+grestore
 showpage
 %%EndDocument
 %%Trailer

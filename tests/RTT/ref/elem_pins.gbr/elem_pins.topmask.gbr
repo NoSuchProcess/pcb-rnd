@@ -1,4 +1,4 @@
-G04 start of page 7 for group 2 layer_idx 9 *
+G04 start of page 6 for group 2 layer_idx 9 *
 G04 Title: pins with different shapes, top_mask *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,16 +9,16 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNTOPMASK*%
-%ADD25C,0.0860*%
-%ADD24C,0.0001*%
-G54D24*G36*
+%ADD24C,0.0860*%
+%ADD23C,0.0001*%
+G54D23*G36*
 X3200Y41800D02*X11800D01*
 Y33200D01*
 X3200D01*
 Y41800D01*
 G37*
-G54D25*X37500Y37500D03*
-G54D24*G36*
+G54D24*X37500Y37500D03*
+G54D23*G36*
 X16100Y19281D02*X11062Y21800D01*
 X5719D01*
 X3200Y19281D01*
