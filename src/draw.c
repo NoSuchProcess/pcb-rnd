@@ -388,8 +388,6 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 	if (pcb_gui->gui)
 		pcb_draw_ppv(conf_core.editor.show_solder_side ? solder : component, drawn_area);
-	else if (!pcb_gui->holes_after)
-		DrawEverything_holes(side_copper_grp, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 
 	/* Draw the solder mask if turned on */
@@ -415,8 +413,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 		}
 	}
 
-	if (pcb_gui->holes_after)
-	{
+	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area); 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 		DrawEverything_holes(side_copper_grp, drawn_area);
