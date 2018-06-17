@@ -823,7 +823,6 @@ int pplg_init_export_openems(void)
 	openems_hid.name = "openems";
 	openems_hid.description = "OpenEMS exporter";
 	openems_hid.exporter = 1;
-	openems_hid.holes_after = 1;
 
 	openems_hid.get_export_options = openems_get_export_options;
 	openems_hid.do_export = openems_do_export;

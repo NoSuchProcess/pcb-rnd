@@ -673,7 +673,6 @@ int pplg_init_export_openscad(void)
 	openscad_hid.name = "openscad";
 	openscad_hid.description = "OpenSCAD exporter";
 	openscad_hid.exporter = 1;
-	openscad_hid.holes_after = 1;
 
 	openscad_hid.get_export_options = openscad_get_export_options;
 	openscad_hid.do_export = openscad_do_export;

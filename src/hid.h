@@ -210,11 +210,6 @@ struct pcb_hid_s {
 	   use render in normal mode, gerber renders in inverse mode. */
 	unsigned mask_invert:1;
 
-
-	/* If set, draws holes after copper, silk and mask, to make sure it
-	   punches through everything. */
-	unsigned holes_after:1;
-
 	/* lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
 	   gtk only allows negative drawing.
 	   using the mask is to get rat transparency */

@@ -494,7 +494,6 @@ int pplg_init_export_dxf(void)
 	dxf_hid.name = "dxf";
 	dxf_hid.description = "Drawing eXchange Format exporter";
 	dxf_hid.exporter = 1;
-	dxf_hid.holes_after = 1;
 
 	dxf_hid.get_export_options = dxf_get_export_options;
 	dxf_hid.do_export = dxf_do_export;

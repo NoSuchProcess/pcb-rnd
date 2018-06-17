@@ -1169,8 +1169,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 
 	hid->set_drawing_mode = hidgl_set_drawing_mode;
 	hid->render_burst = ghid_gl_render_burst;
-
-	hid->holes_after = 1;
 	}
 }
 

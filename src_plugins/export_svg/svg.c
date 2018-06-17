@@ -819,7 +819,6 @@ int pplg_init_export_svg(void)
 	svg_hid.name = "svg";
 	svg_hid.description = "Scalable Vector Graphics export";
 	svg_hid.exporter = 1;
-	svg_hid.holes_after = 1;
 
 	svg_hid.get_export_options = svg_get_export_options;
 	svg_hid.do_export = svg_do_export;
