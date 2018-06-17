@@ -646,9 +646,9 @@ static void draw_right_cross(gint x, gint y, gint z)
 	glVertex3i(PCB->MaxWidth, y, z);
 }
 
-static void draw_slanted_cross(gint x, gint y, gint z)
+static void draw_slanted_cross(GLint x, GLint y, GLint z)
 {
-	gint x0, y0, x1, y1;
+	GLint x0, y0, x1, y1;
 
 	x0 = x + (PCB->MaxHeight - y);
 	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
@@ -673,9 +673,9 @@ static void draw_slanted_cross(gint x, gint y, gint z)
 	glVertex3i(x1, y1, z);
 }
 
-static void draw_dozen_cross(gint x, gint y, gint z)
+static void draw_dozen_cross(GLint x, GLint y, GLint z)
 {
-	gint x0, y0, x1, y1;
+	GLint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
 
 	x0 = x + (PCB->MaxHeight - y) / tan60;
@@ -723,7 +723,7 @@ static void draw_dozen_cross(gint x, gint y, gint z)
 	glVertex3i(x1, y1, z);
 }
 
-static void draw_crosshair(gint x, gint y, gint z)
+static void draw_crosshair(GLint x, GLint y, GLint z)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
@@ -737,7 +737,7 @@ static void draw_crosshair(gint x, gint y, gint z)
 
 static void ghid_gl_show_crosshair(gboolean paint_new_location)
 {
-	gint x, y, z;
+	GLint x, y, z;
 	static int done_once = 0;
 	static GdkColor cross_color;
 
