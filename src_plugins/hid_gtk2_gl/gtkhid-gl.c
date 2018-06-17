@@ -723,7 +723,7 @@ static void draw_dozen_cross(GLint x, GLint y, GLint z)
 	glVertex3i(x1, y1, z);
 }
 
-static void draw_crosshair(GLint x, GLint y, GLint z)
+static void pcb_gl_draw_crosshair(GLint x, GLint y, GLint z)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
@@ -760,7 +760,7 @@ static void ghid_gl_show_crosshair(gboolean paint_new_location)
 
 	if (x >= 0 && paint_new_location) {
 		glBegin(GL_LINES);
-		draw_crosshair(x, y, z);
+		pcb_gl_draw_crosshair(x, y, z);
 		glEnd();
 	}
 
