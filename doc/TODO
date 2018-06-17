@@ -8,11 +8,7 @@
 		- draw with a slightly thicker background, in normal mode, skip xor
 	- option 3:
 		- implement both option 1 and 2 and add a config setting that selects which one to do
-	- allow padstack xor draw to draw all shapes on all layers
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
-- feautres/cleanup: hid:
-		- holes should be drawn below silk and mask (maybe this could be a config setting)
-
 
 2. For later releases ===============================================================================
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
@@ -239,6 +235,11 @@ eagle:
 	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
 - feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade] 
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
+- feautres/cleanup: hid:
+		- holes should be drawn below silk and mask (maybe this could be a config setting)
+- redefine xor rendering to be compositing?
+	- if so: allow padstack xor draw to draw all shapes on all layers
+
 
 3. Long term ===============================================================================
 
