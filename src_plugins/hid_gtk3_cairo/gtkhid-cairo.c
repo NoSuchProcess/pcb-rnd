@@ -1379,8 +1379,8 @@ static void show_crosshair(gboolean paint_new_location)
 #warning gtk3 TODO:FIXME: when CrossColor changed from config
 	//  map_color_string(conf_core.appearance.color.cross, &cross_color);
 	//}
-	x = DRAW_X(&gport->view, gport->view.crosshair_x);
-	y = DRAW_Y(&gport->view, gport->view.crosshair_y);
+	x = Vx(&gport->view, gport->view.crosshair_x);
+	y = Vy(&gport->view, gport->view.crosshair_y);
 
 	//gdk_gc_set_foreground(xor_gc, &cross_color);
 
