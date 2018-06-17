@@ -9,6 +9,12 @@
 	- option 3:
 		- implement both option 1 and 2 and add a config setting that selects which one to do
 	- BUG: GL: When a padstack is selected, both the padstack and the padstack mark are drawn in the selection colour. The mark becomes invisible because the GL HID does not support XOR. [report: Ade]
+- BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
+- BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
+- BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
+- BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
+- feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade] 
+- BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 
 2. For later releases ===============================================================================
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
@@ -22,9 +28,6 @@
 	- mask needs some tuning too
 	- check on all callers; io_pcb already has a workaround for the clearance problem, nothing for the mask
 	- load from old pcb and save to old format (pcb, old lihata, check other users too), load again and compare the values
-- BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
-- BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
-- BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
 opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
@@ -208,7 +211,6 @@ eagle:
 	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - feature req: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-- BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
 - BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
@@ -233,8 +235,6 @@ eagle:
 		- need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
-- feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade] 
-- BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - feautres/cleanup: hid:
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
 - redefine xor rendering to be compositing?
