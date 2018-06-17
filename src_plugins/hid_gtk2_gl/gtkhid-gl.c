@@ -108,7 +108,7 @@ static void start_subcomposite(void)
 	render_priv_t *priv = gport->render_priv;
 	int stencil_bit;
 
-	/* Flush out any existing geoemtry to be rendered */
+	/* Flush out any existing geometry to be rendered */
 	hidgl_flush_triangles();
 
 	glEnable(GL_STENCIL_TEST);		/* Enable Stencil test */
@@ -125,7 +125,7 @@ static void end_subcomposite(void)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	/* Flush out any existing geoemtry to be rendered */
+	/* Flush out any existing geometry to be rendered */
 	hidgl_flush_triangles();
 
 	hidgl_return_stencil_bit(priv->subcomposite_stencil_bit);	/* Relinquish any bitplane we previously used */
@@ -291,7 +291,7 @@ static void ghid_gl_draw_bg_image(void)
 		glGenTextures(1, &texture_handle);
 		glBindTexture(GL_TEXTURE_2D, texture_handle);
 
-		/* XXX: We should proabbly determine what the maxmimum texture supported is,
+		/* XXX: We should probably determine what the maximum texture supported is,
 		 *      and if our image is larger, shrink it down using GDK pixbuf routines
 		 *      rather than having it fail below.
 		 */
@@ -458,9 +458,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		return;
 
 
-	/* We need to flush the draw buffer when changing colour so that new primtives
+	/* We need to flush the draw buffer when changing colour so that new primitives
 	 * don't get merged. This actually isn't a problem with the colour but due to 
-	 * way that the final render pass iterates through the primtive buffer in 
+	 * way that the final render pass iterates through the primitive buffer in 
 	 * reverse order. If the new primitives are merged with previous ones then they
 	 * will be drawn in the wrong order.
 	 */
@@ -1103,7 +1103,7 @@ static void draw_lead_user(render_priv_t * priv)
 	glColor3f(LEAD_USER_COLOR_R, LEAD_USER_COLOR_G, LEAD_USER_COLOR_B);
 
 
-	/* arcs at the approrpriate radii */
+	/* arcs at the appropriate radii */
 
 	for (i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
 		if (radius < width)
