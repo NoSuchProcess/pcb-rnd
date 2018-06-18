@@ -542,21 +542,21 @@ static int use_gc(pcb_hid_gc_t gc)
 }
 
 
-void ghid_gl_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ghid_gl_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	USE_GC(gc);
 
 	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, gport->view.coord_per_px);
 }
 
-void ghid_gl_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void ghid_gl_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	USE_GC(gc);
 
 	hidgl_draw_arc(gc->width, cx, cy, xradius, yradius, start_angle, delta_angle, gport->view.coord_per_px);
 }
 
-void ghid_gl_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ghid_gl_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	USE_GC(gc);
 
@@ -564,7 +564,7 @@ void ghid_gl_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 }
 
 
-void ghid_gl_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void ghid_gl_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	USE_GC(gc);
 
@@ -572,28 +572,28 @@ void ghid_gl_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 }
 
 
-void ghid_gl_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void ghid_gl_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 {
 	USE_GC(gc);
 
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
-void ghid_gl_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void ghid_gl_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	USE_GC(gc);
 
 	hidgl_fill_polygon_offs(n_coords, x, y, dx, dy);
 }
 
-void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
+static void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
 {
 	USE_GC(gc);
 
 	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px);
 }
 
-void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
+static void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
 {
 	pcb_dhlp_thindraw_pcb_polygon(gc, poly, clip_box);
 	/* Disable thindraw poly filling until it is fixed. The poly fill overwrites lines and
@@ -605,7 +605,7 @@ void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_
 	*/
 }
 
-void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	USE_GC(gc);
 
@@ -623,7 +623,7 @@ void ghid_gl_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top,
 	ghid_gl_invalidate_all();
 }
 
-void ghid_gl_notify_crosshair_change(pcb_bool changes_complete)
+static void ghid_gl_notify_crosshair_change(pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -633,7 +633,7 @@ void ghid_gl_notify_crosshair_change(pcb_bool changes_complete)
 	ghid_gl_invalidate_all();
 }
 
-void ghid_gl_notify_mark_change(pcb_bool changes_complete)
+static void ghid_gl_notify_mark_change(pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -728,7 +728,7 @@ static void pcb_gl_draw_dozen_cross(GLint x, GLint y, GLint z)
 	glVertex3i(x1, y1, z);
 }
 
-static void pcb_gl_draw_crosshair(GLint x, GLint y, GLint z)
+void pcb_gl_draw_crosshair(GLint x, GLint y, GLint z)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
@@ -986,7 +986,7 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 	return;
 }
 
-gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
 /*	GdkWindow *window = gtk_widget_get_window(widget);*/
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
