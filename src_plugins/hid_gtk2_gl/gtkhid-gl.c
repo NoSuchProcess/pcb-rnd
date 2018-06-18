@@ -270,6 +270,33 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
+void pcb_gl_draw_texture(GLuint texture_handle)
+{
+	glBindTexture(GL_TEXTURE_2D, texture_handle);
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glEnable(GL_TEXTURE_2D);
+
+	/* Render a quad with the background as a texture */
+
+	glBegin(GL_QUADS);
+	glTexCoord2d(0., 0.);
+	glVertex3i(0, 0, 0);
+	glTexCoord2d(1., 0.);
+	glVertex3i(PCB->MaxWidth, 0, 0);
+	glTexCoord2d(1., 1.);
+	glVertex3i(PCB->MaxWidth, PCB->MaxHeight, 0);
+	glTexCoord2d(0., 1.);
+	glVertex3i(0, PCB->MaxHeight, 0);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+}
+
 static void ghid_gl_draw_bg_image(void)
 {
 	static GLuint texture_handle = 0;
@@ -299,29 +326,7 @@ static void ghid_gl_draw_bg_image(void)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
 	}
 
-	glBindTexture(GL_TEXTURE_2D, texture_handle);
-
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glEnable(GL_TEXTURE_2D);
-
-	/* Render a quad with the background as a texture */
-
-	glBegin(GL_QUADS);
-	glTexCoord2d(0., 0.);
-	glVertex3i(0, 0, 0);
-	glTexCoord2d(1., 0.);
-	glVertex3i(PCB->MaxWidth, 0, 0);
-	glTexCoord2d(1., 1.);
-	glVertex3i(PCB->MaxWidth, PCB->MaxHeight, 0);
-	glTexCoord2d(0., 1.);
-	glVertex3i(0, PCB->MaxHeight, 0);
-	glEnd();
-
-	glDisable(GL_TEXTURE_2D);
+	pcb_gl_draw_texture(texture_handle);
 }
 
 	/* Config helper functions for when the user changes color preferences.
