@@ -366,6 +366,7 @@ void pcb_tool_line_draw_attached(void)
 				pcb_crosshair.X, pcb_crosshair.Y,
 				pcb_crosshair.X, pcb_crosshair.Y, 
 				conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
+			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 		}
 	}
 }
