@@ -638,7 +638,7 @@ void ghid_gl_notify_mark_change(pcb_bool changes_complete)
 	ghid_gl_invalidate_all();
 }
 
-static void draw_right_cross(GLint x, GLint y, GLint z)
+static void pcb_gl_draw_right_cross(GLint x, GLint y, GLint z)
 {
 	glVertex3i(x, 0, z);
 	glVertex3i(x, PCB->MaxHeight, z);
@@ -646,7 +646,7 @@ static void draw_right_cross(GLint x, GLint y, GLint z)
 	glVertex3i(PCB->MaxWidth, y, z);
 }
 
-static void draw_slanted_cross(GLint x, GLint y, GLint z)
+static void pcb_gl_draw_slanted_cross(GLint x, GLint y, GLint z)
 {
 	GLint x0, y0, x1, y1;
 
@@ -673,7 +673,7 @@ static void draw_slanted_cross(GLint x, GLint y, GLint z)
 	glVertex3i(x1, y1, z);
 }
 
-static void draw_dozen_cross(GLint x, GLint y, GLint z)
+static void pcb_gl_draw_dozen_cross(GLint x, GLint y, GLint z)
 {
 	GLint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
@@ -727,11 +727,11 @@ static void pcb_gl_draw_crosshair(GLint x, GLint y, GLint z)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
-	draw_right_cross(x, y, z);
+	pcb_gl_draw_right_cross(x, y, z);
 	if (prev == pcb_ch_shape_union_jack)
-		draw_slanted_cross(x, y, z);
+		pcb_gl_draw_slanted_cross(x, y, z);
 	if (prev == pcb_ch_shape_dozen)
-		draw_dozen_cross(x, y, z);
+		pcb_gl_draw_dozen_cross(x, y, z);
 	prev = pcb_crosshair.shape;
 }
 
