@@ -52,6 +52,14 @@ static void kbd_input_signals_connect(void *obj)
 	ghidgui->key_release_handler = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
 }
 
+static void kbd_input_signals_disconnect(void *obj, gulong handler_id)
+{
+	if (handler_id)
+		g_signal_handler_disconnect(G_OBJECT(obj), handler_id);
+
+	handler_id = 0;
+}
+
 	/* Connect and disconnect just the signals a g_main_loop() will need.
 	   |  Cursor and motion events still need to be handled by the top level
 	   |  loop, so don't connect/reconnect these.
@@ -74,8 +82,7 @@ void ghid_interface_input_signals_connect(void)
 
 void ghid_interface_input_signals_disconnect(void)
 {
-	if (ghidgui->button_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_press_handler);
+	kbd_input_signals_disconnect(gport->drawing_area, ghidgui->button_press_handler);
 
 	if (ghidgui->button_release_handler)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_release_handler);
@@ -86,7 +93,7 @@ void ghid_interface_input_signals_disconnect(void)
 	if (ghidgui->key_release_handler)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_release_handler);
 
-	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
+  ghidgui->button_release_handler = 0;
 	ghidgui->key_press_handler = ghidgui->key_release_handler = 0;
 }
 
