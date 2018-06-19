@@ -21,6 +21,7 @@
 - BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
 
 2. For later releases ===============================================================================
+- BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
 	- if a short consists of terminals only, do not even start the algo, just mark the terminals
 	- after that if there are too many shorted networks left, revert to the dump algorithm
