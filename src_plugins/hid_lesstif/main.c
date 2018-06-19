@@ -435,8 +435,9 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int pcb_act_Zoom(int argc, const char **argv)
+static int pcb_act_Zoom(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	const char *vp;
 	double v;
@@ -480,6 +481,7 @@ static int pcb_act_Zoom(int argc, const char **argv)
 		break;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 
@@ -507,8 +509,9 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int pcb_act_ZoomTo(int argc, const char **argv)
+static int pcb_act_ZoomTo(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x1, y1, x2, y2;
 	pcb_bool succ;
 
@@ -534,12 +537,14 @@ static int pcb_act_ZoomTo(int argc, const char **argv)
 	zoom_win(x1, y1, x2, y2);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static int pan_thumb_mode;
 
-static int pcb_act_Pan(int argc, const char **argv)
+static int pcb_act_Pan(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	int mode;
 
@@ -556,6 +561,7 @@ static int pcb_act_Pan(int argc, const char **argv)
 	Pan(mode, Vx(x), Vy(y));
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r)";
@@ -610,8 +616,9 @@ static int group_showing(int g, int *c)
 }
 
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
-static int pcb_act_SwapSides(int argc, const char **argv)
+static int pcb_act_SwapSides(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
@@ -686,6 +693,7 @@ static int pcb_act_SwapSides(int argc, const char **argv)
 	}
 	lesstif_invalidate_all();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static Widget m_cmd = 0, m_cmd_label;
@@ -767,12 +775,14 @@ before.
 
 %end-doc */
 
-static int pcb_act_Command(int argc, const char **argv)
+static int pcb_act_Command(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Benchmark[] = "Benchmark()";
@@ -787,8 +797,9 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static int pcb_act_Benchmark(int argc, const char **argv)
+static int pcb_act_Benchmark(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int i = 0;
 	time_t start, end;
 	pcb_hid_expose_ctx_t ctx;
@@ -819,10 +830,12 @@ static int pcb_act_Benchmark(int argc, const char **argv)
 
 	main_pixmap = save_main;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_Center(int argc, const char **argv)
+static int pcb_act_Center(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 
 	pcb_hid_get_coords("Click on a location to center", &x, &y);
@@ -837,6 +850,7 @@ static int pcb_act_Center(int argc, const char **argv)
 	   though.  */
 	XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t lesstif_main_action_list[] = {

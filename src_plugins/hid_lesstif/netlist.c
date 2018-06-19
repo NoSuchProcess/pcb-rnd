@@ -373,8 +373,9 @@ static const char pcb_acth_LesstifNetlistShow[] = "Selects the given pinname or 
 
 %end-doc */
 
-static int pcb_act_LesstifNetlistShow(int argc, const char **argv)
+static int pcb_act_LesstifNetlistShow(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (build_netlist_dialog())
 		return 0;
 
@@ -424,6 +425,7 @@ static int pcb_act_LesstifNetlistShow(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 void lesstif_show_netlist()

@@ -60,7 +60,7 @@
 
 conf_import_sch_t conf_import_sch;
 
-extern int pcb_act_ExecuteFile(int argc, const char **argv);
+extern int pcb_act_ExecuteFile(int oargc, const char **oargv);
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_Import[] =
@@ -178,8 +178,9 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static int pcb_act_Import(int argc, const char **argv)
+static int pcb_act_Import(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *mode;
 	const char **sources = NULL;
 	int nsources = 0;
@@ -457,6 +458,7 @@ static int pcb_act_Import(int argc, const char **argv)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Leaving pcb_act_Import  ===\n");
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char *import_sch_cookie = "import_sch plugin";

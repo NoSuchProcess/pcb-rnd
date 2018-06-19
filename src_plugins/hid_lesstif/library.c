@@ -168,11 +168,13 @@ Deprecated.
 
 %end-doc */
 
-static int pcb_act_LibraryShow(int argc, const char **argv)
+static int pcb_act_LibraryShow(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (build_library_dialog())
 		return 0;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 void lesstif_show_library()

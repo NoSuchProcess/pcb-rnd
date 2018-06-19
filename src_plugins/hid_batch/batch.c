@@ -89,14 +89,17 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		prompt = pcb_strdup("no-board");
 }
 
-static int pcb_act_help(int argc, const char **argv)
+static int pcb_act_help(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_print_actions();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_info(int argc, const char **argv)
+static int pcb_act_info(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int i, j;
 	if (!PCB || !PCB->Data || !PCB->Filename) {
 		printf("No PCB loaded.\n");
@@ -112,6 +115,7 @@ static int pcb_act_info(int argc, const char **argv)
 		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].name);
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t batch_action_list[] = {

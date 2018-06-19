@@ -310,8 +310,9 @@ static const char pcb_acth_AdjustStyle[] = "Displays the route style adjustment 
 
 %end-doc */
 
-static int pcb_act_AdjustStyle(int argc, const char **argv)
+static int pcb_act_AdjustStyle(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if ((!mainwind) || (PCB->RouteStyle.array == NULL))
 		return 1;
 	if (style_dialog == 0) {
@@ -371,6 +372,7 @@ static int pcb_act_AdjustStyle(int argc, const char **argv)
 	}
 	XtManageChild(style_dialog);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])

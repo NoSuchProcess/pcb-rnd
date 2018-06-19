@@ -120,8 +120,9 @@ called with that filename.
 
 %end-doc */
 
-static int pcb_act_Load(int argc, const char **argv)
+static int pcb_act_Load(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function;
 	char *name;
 	XmString xmname, pattern;
@@ -164,6 +165,7 @@ static int pcb_act_Load(int argc, const char **argv)
 	XtFree(name);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_LoadVendor[] = "LoadVendor()";
@@ -178,8 +180,9 @@ load that vendor file.
 
 %end-doc */
 
-static int pcb_act_LoadVendor(int argc, const char **argv)
+static int pcb_act_LoadVendor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	char *name;
 	XmString xmname, pattern;
 
@@ -214,6 +217,7 @@ static int pcb_act_LoadVendor(int argc, const char **argv)
 	XtFree(name);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
@@ -230,8 +234,9 @@ called with that filename.
 
 %end-doc */
 
-static int pcb_act_Save(int argc, const char **argv)
+static int pcb_act_Save(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function;
 	char *name;
 	XmString xmname, pattern;
@@ -287,6 +292,7 @@ static int pcb_act_Save(int argc, const char **argv)
 	XtFree(name);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -454,13 +460,15 @@ int lesstif_confirm_dialog(const char *msg, ...)
 	return ok;
 }
 
-static int pcb_act_ConfirmAction(int argc, const char **argv)
+static int pcb_act_ConfirmAction(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int rv = lesstif_confirm_dialog(argc > 0 ? argv[0] : 0,
 																	argc > 1 ? argv[1] : 0,
 																	argc > 2 ? argv[2] : 0,
 																	0);
 	return rv;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -577,12 +585,14 @@ user's stdout.
 
 %end-doc */
 
-static int pcb_act_PromptFor(int argc, const char **argv)
+static int pcb_act_PromptFor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	char *rv = lesstif_prompt_for(argc > 0 ? argv[0] : 0,
 																argc > 1 ? argv[1] : 0);
 	printf("rv = `%s'\n", rv);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -1275,8 +1285,9 @@ Open the netlist window.
 
 %end-doc */
 
-static int pcb_act_DoWindows(int argc, const char **argv)
+static int pcb_act_DoWindows(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *a = argc == 1 ? argv[0] : "";
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
@@ -1296,6 +1307,7 @@ static int pcb_act_DoWindows(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -1311,8 +1323,9 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int pcb_act_About(int argc, const char **argv)
+static int pcb_act_About(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	static Widget about = 0;
 	if (!about) {
 		XmString xs;
@@ -1326,6 +1339,7 @@ static int pcb_act_About(int argc, const char **argv)
 	}
 	wait_for_dialog(about);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -1341,8 +1355,9 @@ options, and print the layout.
 
 %end-doc */
 
-static int pcb_act_Print(int argc, const char **argv)
+static int pcb_act_Print(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer;
 	pcb_hid_attr_val_t *vals;
@@ -1362,6 +1377,7 @@ static int pcb_act_Print(int argc, const char **argv)
 	printer->do_export(vals);
 	free(vals);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_ExportGUI[] = "ExportGUI()";
@@ -1375,8 +1391,9 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static int pcb_act_ExportGUI(int argc, const char **argv)
+static int pcb_act_ExportGUI(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	static Widget selector = 0;
 	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer, **hids;
@@ -1443,6 +1460,7 @@ static int pcb_act_ExportGUI(int argc, const char **argv)
 	free(vals);
 	pcb_exporter = NULL;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -1545,8 +1563,9 @@ The units are determined by the default display units.
 
 %end-doc */
 
-static int pcb_act_AdjustSizes(int argc, const char **argv)
+static int pcb_act_AdjustSizes(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (!sizes_dialog) {
 		Widget inf, sep;
 
@@ -1613,6 +1632,7 @@ static int pcb_act_AdjustSizes(int argc, const char **argv)
 	lesstif_sizes_reset();
 	XtManageChild(sizes_dialog);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -1639,18 +1659,21 @@ See @ref{ChangeName Action}.
 %end-doc */
 
 extern void lesstif_show_layergrp_edit(void);
-static int pcb_act_EditLayerGroups(int argc, const char **argv)
+static int pcb_act_EditLayerGroups(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	lesstif_show_layergrp_edit();
 	return 1;
+	PCB_OLD_ACT_END;
 }
 
 
 static const char pcb_acts_fontsel[] = "EditLayerGroups()";
 static const char pcb_acth_fontsel[] = "Let the user change fonts";
 extern void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type);
-static int pcb_act_fontsel(int argc, const char **argv)
+static int pcb_act_fontsel(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc > 1)
 		PCB_ACT_FAIL(fontsel);
 
@@ -1671,6 +1694,7 @@ static int pcb_act_fontsel(int argc, const char **argv)
 	else
 		lesstif_show_fontsel_edit(NULL, NULL, 0);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -1983,8 +2007,9 @@ future imports.
 
 %end-doc */
 
-static int pcb_act_ImportGUI(int argc, const char **argv)
+static int pcb_act_ImportGUI(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	static int I_am_recursing = 0;
 	static XmString xms_sch = 0, xms_import = 0;
 	int rv;
@@ -2051,6 +2076,7 @@ static int pcb_act_ImportGUI(int argc, const char **argv)
 	I_am_recursing = 0;
 
 	return rv;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */

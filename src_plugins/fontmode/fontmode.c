@@ -100,8 +100,9 @@ static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t ox, pcb_c
 	pcb_poly_invalidate_draw(layer, np);
 }
 
-static int pcb_act_FontEdit(int argc, const char **argv)
+static int pcb_act_FontEdit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
@@ -229,6 +230,7 @@ static int pcb_act_FontEdit(int argc, const char **argv)
 		pcb_line_new_merge(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_fontsave[] = "FontSave()";
@@ -238,8 +240,9 @@ static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.
 
 %end-doc */
 
-static int pcb_act_FontSave(int argc, const char **argv)
+static int pcb_act_FontSave(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	int i;
@@ -352,6 +355,7 @@ static int pcb_act_FontSave(int argc, const char **argv)
 	pcb_hid_actionl("SaveFontTo", NULL);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t fontmode_action_list[] = {

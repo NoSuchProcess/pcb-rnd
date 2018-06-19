@@ -149,8 +149,9 @@ static int hpgl_load(const char *fname)
 
 static const char pcb_acts_LoadHpglFrom[] = "LoadHpglFrom(filename)";
 static const char pcb_acth_LoadHpglFrom[] = "Loads the specified hpgl plot file to the current buffer";
-int pcb_act_LoadHpglFrom(int argc, const char **argv)
+int pcb_act_LoadHpglFrom(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 
@@ -169,6 +170,7 @@ int pcb_act_LoadHpglFrom(int argc, const char **argv)
 	}
 
 	return hpgl_load(fname);
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t hpgl_action_list[] = {
