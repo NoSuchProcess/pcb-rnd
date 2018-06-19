@@ -66,8 +66,9 @@ off are automatically deleted.
 
 %end-doc */
 
-static int pcb_act_MorphPolygon(int argc, const char **argv)
+static int pcb_act_MorphPolygon(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
@@ -99,6 +100,7 @@ static int pcb_act_MorphPolygon(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -129,8 +131,9 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 %end-doc */
 
-static int pcb_act_Polygon(int argc, const char **argv)
+static int pcb_act_Polygon(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && ((conf_core.editor.mode == PCB_MODE_POLYGON) || (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE))) {
 		pcb_notify_crosshair_change(pcb_false);
@@ -153,6 +156,7 @@ static int pcb_act_Polygon(int argc, const char **argv)
 		pcb_notify_crosshair_change(pcb_true);
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

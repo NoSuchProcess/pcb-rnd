@@ -70,8 +70,9 @@ pcb, a subcircuit, or a layer.
 %end-doc */
 
 
-static int pcb_act_Attributes(int argc, const char **argv)
+static int pcb_act_Attributes(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	const char *layername = PCB_ACTION_ARG(1);
 	char *buf;
@@ -155,6 +156,7 @@ static int pcb_act_Attributes(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -225,8 +227,9 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	}
 }
 
-static int pcb_act_DisperseElements(int argc, const char **argv)
+static int pcb_act_DisperseElements(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, bad = 0;
@@ -276,6 +279,7 @@ static int pcb_act_DisperseElements(int argc, const char **argv)
 	pcb_board_set_changed_flag(pcb_true);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 #undef GAP
@@ -296,8 +300,9 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static int pcb_act_Flip(int argc, const char **argv)
+static int pcb_act_Flip(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	const char *function = PCB_ACTION_ARG(0);
 	void *ptrtmp;
@@ -332,6 +337,7 @@ static int pcb_act_Flip(int argc, const char **argv)
 	}
 
 	PCB_ACT_FAIL(Flip);
+	PCB_OLD_ACT_END;
 }
 /* --------------------------------------------------------------------------- */
 
@@ -349,8 +355,9 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static int pcb_act_MoveObject(int argc, const char **argv)
+static int pcb_act_MoveObject(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *x_str = PCB_ACTION_ARG(0);
 	const char *y_str = PCB_ACTION_ARG(1);
 	const char *units = PCB_ACTION_ARG(2);
@@ -381,6 +388,7 @@ static int pcb_act_MoveObject(int argc, const char **argv)
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	pcb_board_set_changed_flag(pcb_true);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -397,8 +405,9 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static int pcb_act_MoveToCurrentLayer(int argc, const char **argv)
+static int pcb_act_MoveToCurrentLayer(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
@@ -442,6 +451,7 @@ static int pcb_act_MoveToCurrentLayer(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------- */
@@ -498,8 +508,9 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 	return strcmp(got_name, expect_name);
 }
 
-static int pcb_act_ElementList(int argc, const char **argv)
+static int pcb_act_ElementList(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
 	const char *refdes, *value, *footprint;
 	const char *args[3];
@@ -689,6 +700,7 @@ static int pcb_act_ElementList(int argc, const char **argv)
 	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------- */
@@ -704,8 +716,9 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static int pcb_act_ElementSetAttr(int argc, const char **argv)
+static int pcb_act_ElementSetAttr(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
 
@@ -729,6 +742,7 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv)
 	else
 		pcb_attribute_remove(&sc->Attributes, name);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -752,8 +766,9 @@ autorouter.
 
 %end-doc */
 
-static int pcb_act_RipUp(int argc, const char **argv)
+static int pcb_act_RipUp(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_bool changed = pcb_false;
 
@@ -819,16 +834,19 @@ static int pcb_act_RipUp(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------------  */
 
 static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
 static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
-static int pcb_act_MinMaskGap(int argc, const char **argv)
+static int pcb_act_MinMaskGap(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
 	return 1;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------------  */
@@ -898,8 +916,9 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 	PCB_ENDALL_LOOP;
 }
 
-static int pcb_act_MinClearGap(int argc, const char **argv)
+static int pcb_act_MinClearGap(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
 	const char *units = PCB_ACTION_ARG(2);
@@ -923,6 +942,7 @@ static int pcb_act_MinClearGap(int argc, const char **argv)
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -979,8 +999,9 @@ Creates a new layer.
 
 %end-doc */
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-int pcb_act_MoveLayer(int argc, const char **argv)
+int pcb_act_MoveLayer(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int old_index, new_index;
 
 	if (argc != 2) {
@@ -1047,6 +1068,7 @@ int pcb_act_MoveLayer(int argc, const char **argv)
 		return 1;
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_layer_t *pick_layer(const char *user_text)
@@ -1063,8 +1085,9 @@ static pcb_layer_t *pick_layer(const char *user_text)
 
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
 static const char pcb_acth_CreateText[] = "Create a new text object";
-static int pcb_act_CreateText(int argc, const char **argv)
+static int pcb_act_CreateText(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	pcb_layer_t *ly;
 	int fid = 0, dir = 0, scale = 0;
@@ -1100,6 +1123,7 @@ static int pcb_act_CreateText(int argc, const char **argv)
 	pcb_text_new(ly, pcb_font(PCB, fid, 1), x, y, dir, scale, argv[6], pcb_no_flags());
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_subc[] =
@@ -1107,8 +1131,9 @@ static const char pcb_acts_subc[] =
 	"subc(loose, on|off|toggle|check)\n"
 	;
 static const char pcb_acth_subc[] = "Various operations on subc";
-static int pcb_act_subc(int argc, const char **argv)
+static int pcb_act_subc(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc == 0)
 		PCB_ACT_FAIL(subc);
 	switch (pcb_funchash_get(argv[0], NULL)) {
@@ -1200,6 +1225,7 @@ static int pcb_act_subc(int argc, const char **argv)
 			break;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Rotate90[] = "pcb_move_obj(steps)";
@@ -1211,8 +1237,9 @@ Rotates the object under the mouse pointer by 90 degree @code{steps}.
 
 %end-doc */
 
-static int pcb_act_Rotate90(int argc, const char **argv)
+static int pcb_act_Rotate90(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *ssteps = PCB_ACTION_ARG(0);
 	int steps = atoi(ssteps);
 	pcb_coord_t x, y;
@@ -1229,6 +1256,7 @@ static int pcb_act_Rotate90(int argc, const char **argv)
 	pcb_screen_obj_rotate90(x, y, steps);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t object_action_list[] = {

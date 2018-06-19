@@ -236,8 +236,9 @@ static const char pcb_acts_Brave[] =
 	"Brave()\n"
 	"Brave(setting, on|off)\n";
 static const char pcb_acth_Brave[] = "Changes brave settings.";
-static int pcb_act_Brave(int argc, const char **argv)
+static int pcb_act_Brave(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	desc_t *d;
 	if (argc == 0)
 		return brave_interact();
@@ -257,6 +258,7 @@ static int pcb_act_Brave(int argc, const char **argv)
 	pcb_message(PCB_MSG_INFO, "Brave setting: %s in %s\n", argv[0], (pcb_brave & d->bit) ? "on" : "off");
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t brave_action_list[] = {

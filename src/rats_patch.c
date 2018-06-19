@@ -382,8 +382,9 @@ static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
 
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
-static int pcb_act_ReplaceFootprint(int argc, const char **argv)
+static int pcb_act_ReplaceFootprint(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *fpname;
 	int found = 0, len;
 	pcb_subc_t *news, *placed;
@@ -460,6 +461,7 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv)
 	}
 	PCB_END_LOOP;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_SavePatch[] = "SavePatch(filename)";
@@ -469,8 +471,9 @@ static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation
 /* %start-doc actions SavePatch
 Save netlist patch for back annotation.
 %end-doc */
-static int pcb_act_SavePatch(int argc, const char **argv)
+static int pcb_act_SavePatch(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *fn;
 	FILE *f;
 
@@ -507,6 +510,7 @@ static int pcb_act_SavePatch(int argc, const char **argv)
 	pcb_ratspatch_fexport(PCB, f, 0);
 	fclose(f);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t rats_patch_action_list[] = {

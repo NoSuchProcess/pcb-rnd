@@ -66,8 +66,9 @@ static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 
-static int pcb_act_ManagePlugins(int argc, const char **argv)
+static int pcb_act_ManagePlugins(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pup_plugin_t *p;
 	int nump = 0, numb = 0;
 	gds_t str;
@@ -112,6 +113,7 @@ static int pcb_act_ManagePlugins(int argc, const char **argv)
 	pcb_gui->report_dialog("Manage plugins", str.array);
 	gds_uninit(&str);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

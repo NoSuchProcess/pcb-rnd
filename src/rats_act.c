@@ -76,8 +76,9 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static int pcb_act_AddRats(int argc, const char **argv)
+static int pcb_act_AddRats(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_rat_t *shorty;
 	float len, small;
@@ -120,6 +121,7 @@ static int pcb_act_AddRats(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -151,8 +153,9 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static int pcb_act_Connection(int argc, const char **argv)
+static int pcb_act_Connection(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
@@ -189,6 +192,7 @@ static int pcb_act_Connection(int argc, const char **argv)
 	}
 
 	PCB_ACT_FAIL(Connection);
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -201,8 +205,9 @@ static const char pcb_acth_DeleteRats[] = "Delete rat lines.";
 
 %end-doc */
 
-static int pcb_act_DeleteRats(int argc, const char **argv)
+static int pcb_act_DeleteRats(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		if (conf_core.temp.rat_warn)
@@ -220,6 +225,7 @@ static int pcb_act_DeleteRats(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

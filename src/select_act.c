@@ -85,8 +85,9 @@ numbered paste buffer.
 
 %end-doc */
 
-static int pcb_act_Select(int argc, const char **argv)
+static int pcb_act_Select(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) { /* select objects by their names */
@@ -166,6 +167,7 @@ static int pcb_act_Select(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -192,8 +194,9 @@ Unselect all connections with the ``found'' flag set.
 
 %end-doc */
 
-static int pcb_act_Unselect(int argc, const char **argv)
+static int pcb_act_Unselect(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
@@ -247,6 +250,7 @@ static int pcb_act_Unselect(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t select_action_list[] = {

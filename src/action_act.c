@@ -55,8 +55,10 @@ Lines starting with @code{#} are ignored.
 
 %end-doc */
 
-int pcb_act_ExecuteFile(int argc, const char **argv)
+int pcb_act_ExecuteFile(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
+
 	FILE *fp;
 	const char *fname;
 	char line[256];
@@ -107,6 +109,7 @@ int pcb_act_ExecuteFile(int argc, const char **argv)
 	}
 	fclose(fp);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */

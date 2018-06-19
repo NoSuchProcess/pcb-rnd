@@ -50,8 +50,9 @@ static const char pcb_acth_Delete[] = "Delete stuff.";
 
 %end-doc */
 
-static int pcb_act_Delete(int argc, const char **argv)
+static int pcb_act_Delete(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	int id = pcb_funchash_get(function, NULL);
 
@@ -82,6 +83,7 @@ static int pcb_act_Delete(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -94,11 +96,13 @@ static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
 
 %end-doc */
 
-static int pcb_act_RemoveSelected(int argc, const char **argv)
+static int pcb_act_RemoveSelected(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (pcb_remove_selected())
 		pcb_board_set_changed_flag(pcb_true);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

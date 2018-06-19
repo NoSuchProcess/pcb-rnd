@@ -53,8 +53,9 @@ static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
 	return res;
 }
 
-static int pcb_act_Conf(int argc, const char **argv)
+static int pcb_act_Conf(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *cmd = argc > 0 ? argv[0] : 0;
 
 	if ((PCB_NSTRCMP(cmd, "set") == 0) || (PCB_NSTRCMP(cmd, "delta") == 0)) {
@@ -217,20 +218,24 @@ static int pcb_act_Conf(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /*------------ get/chk (check flag actions for menus) ------------------*/
 static const char GetStyle_syntax[] = "GetStyle()" ;
 static const char GetStyle_help[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
-static int pcb_act_GetStyle(int argc, const char **argv)
+static int pcb_act_GetStyle(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	PCB_OLD_ACT_END;
 }
 
 static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
 static const char ChkMode_help[] = "Return 1 if the currently selected mode is the expected_mode";
-static int pcb_act_ChkMode(int argc, const char **argv)
+static int pcb_act_ChkMode(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 #warning cleanup TODO: convert this to a compile-time hash; or make the toolbar configurable from the menu file
 	struct {
 		const char *name;
@@ -264,6 +269,7 @@ static int pcb_act_ChkMode(int argc, const char **argv)
 	pcb_message(PCB_MSG_ERROR, "Unknown mode in ChkMode(): %s\n", argv[1]);
 	abort();
 	return -1;
+	PCB_OLD_ACT_END;
 }
 
 
@@ -272,19 +278,22 @@ static const char ChkGridSize_syntax[] =
 	"ChkGridSize(none)\n"
 	;
 static const char ChkGridSize_help[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
-static int pcb_act_ChkGridSize(int argc, const char **argv)
+static int pcb_act_ChkGridSize(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	assert(argc == 1);
 	if (strcmp(argv[0], "none") == 0)
 		return PCB->Grid <= 300;
 
 	return (PCB->Grid == pcb_get_value_ex(argv[0], NULL, NULL, NULL, NULL, NULL));
+	PCB_OLD_ACT_END;
 }
 
 static const char ChkSubcID_syntax[] = "ChkSubcID(pattern)\n";
 static const char ChkSubcID_help[] = "Return 1 if currently shown subc ID matches the requested pattern";
-static int pcb_act_ChkSubcID(int argc, const char **argv)
+static int pcb_act_ChkSubcID(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *have = conf_core.editor.subc_id, *expected;
 
 	if (have == NULL) have = "";
@@ -292,24 +301,29 @@ static int pcb_act_ChkSubcID(int argc, const char **argv)
 	else expected = "";
 
 	return strcmp(expected, have) == 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
 static const char ChkGridUnits_help[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
-static int pcb_act_ChkGridUnits(int argc, const char **argv)
+static int pcb_act_ChkGridUnits(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	assert(argc == 1);
 	return strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char ChkBuffer_syntax[] = "ChkBuffer(idx)";
 static const char ChkBuffer_help[] = "Return 1 if currently selected buffer's index matches idx";
-static int pcb_act_ChkBuffer(int argc, const char **argv)
+static int pcb_act_ChkBuffer(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int expected = argv[0][0] - '0';
 	assert(argc == 1);
 
 	return (conf_core.editor.buffer_number + 1) == expected;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t conf_action_list[] = {

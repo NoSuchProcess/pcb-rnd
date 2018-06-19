@@ -57,10 +57,12 @@ static const char pcb_acts_PrintActions[] = "PrintActions()";
 
 static const char pcb_acth_PrintActions[] = "Print all actions available.";
 
-int pcb_act_PrintActions(int argc, const char **argv)
+int pcb_act_PrintActions(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_print_actions();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 /* --------------------------------------------------------------------------- */
 
@@ -68,10 +70,12 @@ static const char pcb_acts_DumpActions[] = "DumpActions()";
 
 static const char pcb_acth_DumpActions[] = "Dump all actions available.";
 
-int pcb_act_DumpActions(int argc, const char **argv)
+int pcb_act_DumpActions(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_dump_actions();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* print usage lines */
@@ -160,8 +164,9 @@ static int help_invoc(void)
 	return 0;
 }
 
-int pcb_act_PrintUsage(int argc, const char **argv)
+int pcb_act_PrintUsage(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	u("");
 	if (argc > 0) {
 		pcb_hid_t **hl = pcb_hid_enumerate();
@@ -184,6 +189,7 @@ int pcb_act_PrintUsage(int argc, const char **argv)
 	else
 		help0();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 
@@ -192,10 +198,12 @@ static const char pcb_acts_PrintVersion[] = "PrintVersion()";
 
 static const char pcb_acth_PrintVersion[] = "Print version.";
 
-int pcb_act_PrintVersion(int argc, const char **argv)
+int pcb_act_PrintVersion(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	printf("pcb-rnd version %s rev %s\n", PCB_VERSION, PCB_REVISION);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -203,8 +211,9 @@ static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
 
 static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
 
-int pcb_act_PrintCopyright(int argc, const char **argv)
+int pcb_act_PrintCopyright(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	printf("\n"
 				 "                COPYRIGHT for the original pcb program:\n\n"
 				 "    PCB, interactive printed circuit board design\n"
@@ -225,6 +234,7 @@ int pcb_act_PrintCopyright(int argc, const char **argv)
 				 "    along with this program; if not, write to the Free Software\n"
 				 "    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.\n\n");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -245,8 +255,9 @@ static void print_list(const conflist_t *cl)
 	printf("\"\n");
 }
 
-int pcb_act_PrintPaths(int argc, const char **argv)
+int pcb_act_PrintPaths(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	htsp_entry_t *e;
 	conf_fields_foreach(e) {
 		conf_native_t *n = e->value;
@@ -257,6 +268,7 @@ int pcb_act_PrintPaths(int argc, const char **argv)
 	printf("rc/library_search_paths          ="); print_list(&conf_core.rc.library_search_paths);
 	printf("rc/library_shell                 = \"%s\"\n", conf_core.rc.library_shell);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -273,13 +285,15 @@ static void print_cat(pcb_file_loaded_t *cat)
 	}
 }
 
-int pcb_act_PrintFiles(int argc, const char **argv)
+int pcb_act_PrintFiles(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	htsp_entry_t *e;
 	printf("# Data files loaded\n");
 	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e))
 		print_cat(e->value);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -287,8 +301,9 @@ static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
 
 static const char pcb_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
 
-int pcb_act_DumpPlugins(int argc, const char **argv)
+int pcb_act_DumpPlugins(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pup_plugin_t *p;
 	const pup_buildin_t **bu;
 	int n;
@@ -306,6 +321,7 @@ int pcb_act_DumpPlugins(int argc, const char **argv)
 			printf("unloaded buildin\t%s\t1\t0\t0\t<builtin>\n", (*bu)->name);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 
@@ -313,13 +329,15 @@ static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
 
 static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a format digestable by scripts.";
 
-int pcb_act_DumpPluginDirs(int argc, const char **argv)
+int pcb_act_DumpPluginDirs(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	char **p;
 	for(p = pcb_pup_paths; *p != NULL; p++)
 		printf("%s\n", *p);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_DumpObjFlags[] = "DumpObjFlags()";
@@ -329,8 +347,9 @@ static void dumpoflg(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb)
 	printf("	%lx	%s	%s\n", flg, fb->name, fb->help);
 }
 
-int pcb_act_DumpObjFlags(int argc, const char **argv)
+int pcb_act_DumpObjFlags(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	unsigned long ot, max = PCB_OBJ_CLASS_REAL + 1;
 
 	for(ot = 1; ot < max; ot <<= 1) {
@@ -342,12 +361,14 @@ int pcb_act_DumpObjFlags(int argc, const char **argv)
 		pcb_strflg_map(0x7fffffff, ot, NULL, dumpoflg);
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_System[] = "System(shell_cmd)";
 static const char pcb_acth_System[] = "Run shell command";
-int pcb_act_System(int argc, const char **argv)
+int pcb_act_System(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	char tmp[128];
 	if (argc < 1)
 		return 1;
@@ -358,6 +379,7 @@ int pcb_act_System(int argc, const char **argv)
 	pcb_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
 	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", CURRENT->name, 1);
 	return pcb_system(argv[0]);
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */

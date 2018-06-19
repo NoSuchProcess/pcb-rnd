@@ -87,8 +87,9 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-int pcb_act_Atomic(int argc, const char **argv)
+int pcb_act_Atomic(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc != 1)
 		PCB_ACT_FAIL(Atomic);
 
@@ -110,6 +111,7 @@ int pcb_act_Atomic(int argc, const char **argv)
 		break;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -133,8 +135,9 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-int pcb_act_Undo(int argc, const char **argv)
+int pcb_act_Undo(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
 		pcb_notify_crosshair_change(pcb_false);
@@ -152,6 +155,7 @@ int pcb_act_Undo(int argc, const char **argv)
 	}
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -175,14 +179,16 @@ three "undone" lines.
 
 %end-doc */
 
-int pcb_act_Redo(int argc, const char **argv)
+int pcb_act_Redo(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_notify_crosshair_change(pcb_false);
 	if (pcb_tool_redo_act())
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

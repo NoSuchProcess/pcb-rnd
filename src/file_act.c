@@ -64,8 +64,9 @@ Runs the given command, which is a system executable.
 
 %end-doc */
 
-static int pcb_act_ExecCommand(int argc, const char **argv)
+static int pcb_act_ExecCommand(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *command;
 
 	if (argc < 1) {
@@ -77,6 +78,7 @@ static int pcb_act_ExecCommand(int argc, const char **argv)
 	if (pcb_system(command))
 		return 1;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -116,8 +118,9 @@ you may have made.
 
 %end-doc */
 
-static int pcb_act_LoadFrom(int argc, const char **argv)
+static int pcb_act_LoadFrom(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function, *name, *format = NULL;
 
 	if (argc < 2)
@@ -165,6 +168,7 @@ static int pcb_act_LoadFrom(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -179,8 +183,9 @@ If a name is not given, one is prompted for.
 
 %end-doc */
 
-static int pcb_act_New(int argc, const char **argv)
+static int pcb_act_New(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *argument_name = PCB_ACTION_ARG(0);
 	char *name = NULL;
 
@@ -217,14 +222,17 @@ static int pcb_act_New(int argc, const char **argv)
 		return 0;
 	}
 	return 1;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
 static const char pcb_acts_normalize[] = "Normalize()";
 static const char pcb_acth_normalize[] = "Move all objects within the drawing area, align the drawing to 0;0";
-static int pcb_act_normalize(int argc, const char **argv)
+static int pcb_act_normalize(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_board_normalize(PCB);
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -261,8 +269,9 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static int pcb_act_SaveTo(int argc, const char **argv)
+static int pcb_act_SaveTo(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function;
 	const char *name;
 	const char *fmt = NULL;
@@ -347,6 +356,7 @@ static int pcb_act_SaveTo(int argc, const char **argv)
 	}
 
 	PCB_ACT_FAIL(SaveTo);
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -362,8 +372,9 @@ save) before quitting.
 
 %end-doc */
 
-static int pcb_act_Quit(int argc, const char **argv)
+static int pcb_act_Quit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *force = PCB_ACTION_ARG(0);
 	if (force && pcb_strcasecmp(force, "force") == 0) {
 		PCB->Changed = 0;
@@ -372,14 +383,16 @@ static int pcb_act_Quit(int argc, const char **argv)
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
 	return 1;
+	PCB_OLD_ACT_END;
 }
 
 
 /* --------------------------------------------------------------------------- */
 static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
 static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
-static int pcb_act_Export(int argc, const char **argv)
+static int pcb_act_Export(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc < 1) {
 		pcb_message(PCB_MSG_ERROR, "Export() needs at least one argument, the name of the export plugin\n");
 		return 1;
@@ -401,14 +414,17 @@ static int pcb_act_Export(int argc, const char **argv)
 
 	pcb_exporter = NULL;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Backup[] = "Backup()";
 static const char pcb_acth_Backup[] = "Backup the current layout - save using the same method that the timed backup function uses";
-static int pcb_act_Backup(int argc, const char **argv)
+static int pcb_act_Backup(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_backup();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t file_action_list[] = {
