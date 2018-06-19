@@ -640,7 +640,10 @@ void pcb_hid_actions_uninit(void);
 	int argc = oargc; \
 	const char **argv = oargv
 
-#define PCB_OLD_ACT_END }
+#define PCB_OLD_ACT_END \
+	(void)argc; \
+	(void)argv; \
+}
 
 
 #endif
