@@ -634,4 +634,13 @@ extern int pcb_pixel_slop;
 void pcb_hid_actions_init(void);
 void pcb_hid_actions_uninit(void);
 
+/* temporary hack for smooth upgrade to fungw based actions */
+#define PCB_OLD_ACT_BEGIN \
+{ \
+	int argc = oargc; \
+	const char **argv = oargv
+
+#define PCB_OLD_ACT_END }
+
+
 #endif
