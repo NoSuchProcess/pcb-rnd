@@ -117,8 +117,9 @@ static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 #define set_visited(obj) htpi_set(&visited, ((void *)(obj)), 1)
 #define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
-static int pcb_act_smartdisperse(int argc, const char **argv)
+static int pcb_act_smartdisperse(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = ARG(0);
 	pcb_netlist_t *Nets;
 	htpi_t visited;
@@ -233,6 +234,7 @@ static int pcb_act_smartdisperse(int argc, const char **argv)
 	pcb_board_set_changed_flag(1);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t smartdisperse_action_list[] = {

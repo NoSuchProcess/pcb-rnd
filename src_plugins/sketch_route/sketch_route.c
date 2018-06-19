@@ -35,9 +35,11 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 static const char pcb_acts_skroute[] = "skroute(TODO)";
 static const char pcb_acth_skroute[] = "TODO";
-int pcb_act_skroute(int argc, const char **argv)
+int pcb_act_skroute(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t sketch_route_action_list[] = {

@@ -78,8 +78,9 @@ static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 %end-doc */
 
-static int pcb_act_Help(int argc, const char **argv)
+static int pcb_act_Help(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
 					"  pcb_act_()   execute an action command (too numerous to list)\n"
 					"              see the manual for the list of action commands\n"
@@ -92,6 +93,7 @@ static int pcb_act_Help(int argc, const char **argv)
 					"  rn [file]   read in a net-list file\n"
 					"  s  [file]   save layout\n" "  w  [file]   save layout\n" "  wq [file]   save layout and quit\n");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -112,8 +114,9 @@ will popup.
 
 %end-doc */
 
-static int pcb_act_LoadLayout(int argc, const char **argv)
+static int pcb_act_LoadLayout(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *filename, *format = NULL;
 
 	switch (argc) {
@@ -131,6 +134,7 @@ static int pcb_act_LoadLayout(int argc, const char **argv)
 	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to override layout data?", 0))
 		pcb_load_pcb(filename, format, pcb_true, 0);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -148,8 +152,9 @@ element loader.  If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int pcb_act_LoadElementToBuffer(int argc, const char **argv)
+static int pcb_act_LoadElementToBuffer(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *filename;
 
 	switch (argc) {
@@ -164,6 +169,7 @@ static int pcb_act_LoadElementToBuffer(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -182,8 +188,9 @@ If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int pcb_act_LoadLayoutToBuffer(int argc, const char **argv)
+static int pcb_act_LoadLayoutToBuffer(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *filename, *format = NULL;
 
 	switch (argc) {
@@ -200,6 +207,7 @@ static int pcb_act_LoadLayoutToBuffer(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -217,11 +225,13 @@ save) before quitting.
 
 %end-doc */
 
-static int pcb_act_Quit(int argc, const char **argv)
+static int pcb_act_Quit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_ReallyQuit[] = "q!";
@@ -237,10 +247,12 @@ confirmation.
 
 %end-doc */
 
-static int pcb_act_ReallyQuit(int argc, const char **argv)
+static int pcb_act_ReallyQuit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_quit_app();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -263,8 +275,9 @@ for verifying the board layout (which is also accomplished by the
 
 %end-doc */
 
-static int pcb_act_LoadNetlist(int argc, const char **argv)
+static int pcb_act_LoadNetlist(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *filename;
 
 	switch (argc) {
@@ -281,6 +294,7 @@ static int pcb_act_LoadNetlist(int argc, const char **argv)
 	PCB->Netlistname = pcb_strdup_strip_wspace(filename);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -309,8 +323,9 @@ and has the same functionality as @code{s}.
 
 %end-doc */
 
-static int pcb_act_SaveLayout(int argc, const char **argv)
+static int pcb_act_SaveLayout(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	switch (argc) {
 	case 0:
 		if (PCB->Filename) {
@@ -336,6 +351,7 @@ static int pcb_act_SaveLayout(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -353,11 +369,13 @@ has the same functionality as @code{s} combined with @code{q}.
 
 %end-doc */
 
-static int pcb_act_SaveLayoutAndQuit(int argc, const char **argv)
+static int pcb_act_SaveLayoutAndQuit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (!pcb_act_SaveLayout(argc, argv))
 		return pcb_act_Quit(0, 0);
 	return 1;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */

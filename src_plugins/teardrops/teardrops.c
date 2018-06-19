@@ -248,8 +248,9 @@ static void check_pstk(pcb_pstk_t *ps)
 	}
 }
 
-static int pcb_act_teardrops(int argc, const char **argv)
+static int pcb_act_teardrops(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_box_t *b;
 	pcb_rtree_it_t it;
 	new_arcs = 0;
@@ -264,6 +265,7 @@ static int pcb_act_teardrops(int argc, const char **argv)
 		pcb_undo_inc_serial();
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t teardrops_action_list[] = {

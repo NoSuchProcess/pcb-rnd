@@ -121,11 +121,13 @@ This will modify all of your drill holes to match the list of allowed
 sizes for your vendor.
 %end-doc */
 
-int pcb_act_ApplyVendor(int argc, const char **argv)
+int pcb_act_ApplyVendor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_event(PCB_EVENT_BUSY, NULL);
 	apply_vendor_map();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -142,12 +144,14 @@ static const char unload_vendor_help[] = "Unloads the current vendor drill mappi
 
 %end-doc */
 
-int pcb_act_UnloadVendor(int argc, const char **argv)
+int pcb_act_UnloadVendor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	cached_drill = -1;
 
 	vendor_free_all();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -170,8 +174,9 @@ be prompted to enter one.
 
 %end-doc */
 
-int pcb_act_LoadVendorFrom(int argc, const char **argv)
+int pcb_act_LoadVendorFrom(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 	const char *sval;
@@ -314,6 +319,7 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv)
 		free((char*)fname);
 	lht_dom_uninit(doc);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static int apply_vendor_pstk1(pcb_pstk_t *pstk, pcb_cardinal_t *tot)
