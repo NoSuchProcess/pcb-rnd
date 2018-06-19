@@ -59,8 +59,9 @@ static const char dump_conf_help[] = "Perform various operations on the configur
 
 extern lht_doc_t *conf_main_root[];
 extern lht_doc_t *conf_plug_root[];
-static int pcb_act_DumpConf(int argc, const char **argv)
+static int pcb_act_DumpConf(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *cmd = argc > 0 ? argv[0] : NULL;
 
 	if (PCB_NSTRCMP(cmd, "native") == 0) {
@@ -104,6 +105,7 @@ static int pcb_act_DumpConf(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char eval_conf_syntax[] =
@@ -112,8 +114,9 @@ static const char eval_conf_syntax[] =
 
 static const char eval_conf_help[] = "Perform various operations on the configuration tree.";
 
-static int pcb_act_EvalConf(int argc, const char **argv)
+static int pcb_act_EvalConf(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *path = argc > 0 ? argv[0] : NULL;
 	conf_native_t *nat;
 	int role;
@@ -157,6 +160,7 @@ static int pcb_act_EvalConf(int argc, const char **argv)
 	conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char dump_layers_syntax[] =
@@ -166,8 +170,9 @@ static const char dump_layers_syntax[] =
 static const char dump_layers_help[] = "Print info about each layer";
 
 extern lht_doc_t *conf_main_root[];
-static int pcb_act_DumpLayers(int argc, const char **argv)
+static int pcb_act_DumpLayers(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int g, n, used;
 	pcb_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
@@ -239,6 +244,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 
@@ -262,8 +268,9 @@ static void print_font(pcb_font_t *f, const char *prefix)
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";
 static const char dump_fonts_help[] = "Print info about fonts";
-static int pcb_act_DumpFonts(int argc, const char **argv)
+static int pcb_act_DumpFonts(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	printf("Font summary:\n");
 	print_font(&PCB->fontkit.dflt, " Default");
 	if (PCB->fontkit.hash_inited) {
@@ -274,17 +281,20 @@ static int pcb_act_DumpFonts(int argc, const char **argv)
 	else
 		printf(" <no extra font loaded>\n");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 #ifndef NDEBUG
 extern void undo_dump(void);
 static const char dump_undo_syntax[] = "dumpfonts()\n";
 static const char dump_undo_help[] = "Print info about fonts";
-static int pcb_act_DumpUndo(int argc, const char **argv)
+static int pcb_act_DumpUndo(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	printf("Undo:\n");
 	undo_dump();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 #endif
 
@@ -335,21 +345,25 @@ static void dump_data(pcb_data_t *data, dd_flags what, int ind, const char *pare
 
 static const char dump_data_syntax[] = "dumpdata()\n";
 static const char dump_data_help[] = "Dump an aspect of the data";
-static int pcb_act_DumpData(int argc, const char **argv)
+static int pcb_act_DumpData(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	dd_flags what = DD_DRC | DD_COPPER_ONLY;
 	printf("DumpData:\n");
 	dump_data(PCB->Data, what, 0, NULL);
 	printf("\n");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char integrity_syntax[] = "integrity()\n";
 static const char integrity_help[] = "perform integrirty check on the current board and generate errors if needed";
-static int pcb_act_integrity(int argc, const char **argv)
+static int pcb_act_integrity(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_check_integrity(PCB);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
@@ -369,8 +383,9 @@ static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
 
 static const char dumpflags_syntax[] = "dumpflags([fmt])\n";
 static const char dumpflags_help[] = "dump flags, optionally using the format string provided by the user";
-static int pcb_act_dumpflags(int argc, const char **argv)
+static int pcb_act_dumpflags(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int n;
 	const char *default_fmt = "%m (%M %N) for %t:\n  %H\n";
 	const char *fmt;
@@ -388,6 +403,7 @@ static int pcb_act_dumpflags(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -404,10 +420,12 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
-static int pcb_act_d1(int argc, const char **argv)
+static int pcb_act_d1(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	printf("D1!\n");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 #define	PCB_FORCECOLOR_TYPES        \
@@ -415,8 +433,9 @@ static int pcb_act_d1(int argc, const char **argv)
 
 static const char forcecolor_syntax[] = "forcecolor(#RRGGBB)\n";
 static const char forcecolor_help[] = "change selected objects' color to #RRGGBB, reset if does not start with '#'";
-static int pcb_act_forcecolor(int argc, const char **argv)
+static int pcb_act_forcecolor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -429,6 +448,7 @@ static int pcb_act_forcecolor(int argc, const char **argv)
 		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t diag_action_list[] = {

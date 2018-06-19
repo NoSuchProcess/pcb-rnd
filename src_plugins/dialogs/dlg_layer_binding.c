@@ -188,8 +188,9 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
 static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
-static int pcb_act_LayerBinding(int argc, const char **argv)
+static int pcb_act_LayerBinding(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	lb_ctx_t ctx;
 	int num_copper;
 	pcb_hid_attr_val_t val;
@@ -304,4 +305,5 @@ static int pcb_act_LayerBinding(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }

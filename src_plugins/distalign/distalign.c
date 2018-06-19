@@ -255,8 +255,9 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  * Defaults are Marks, First.
  */
 static const char pcb_acts_align[] = "Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-static int pcb_act_align(int argc, const char **argv)
+static int pcb_act_align(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int dir;
 	int point;
 	int reference;
@@ -358,6 +359,7 @@ static int pcb_act_align(int argc, const char **argv)
 	}
 	free_subcs_by_pos();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /*
@@ -377,8 +379,9 @@ static int pcb_act_align(int argc, const char **argv)
  * before they were distributed.
  */
 static const char pcb_acts_distribute[] = "Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-static int pcb_act_distribute(int argc, const char **argv)
+static int pcb_act_distribute(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int dir;
 	int point;
 	int refa, refb;
@@ -531,6 +534,7 @@ static int pcb_act_distribute(int argc, const char **argv)
 	}
 	free_subcs_by_pos();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t distalign_action_list[] = {

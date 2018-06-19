@@ -2491,8 +2491,9 @@ RF losses and trace length.
 
 %end-doc */
 
-static int pcb_act_DJopt(int argc, const char **argv)
+static int pcb_act_DJopt(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *arg = argc > 0 ? argv[0] : NULL;
 	int layn, saved = 0;
 	corner_s *c;
@@ -2613,6 +2614,7 @@ static int pcb_act_DJopt(int argc, const char **argv)
 	if (saved)
 		pcb_undo_inc_serial();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t djopt_action_list[] = {

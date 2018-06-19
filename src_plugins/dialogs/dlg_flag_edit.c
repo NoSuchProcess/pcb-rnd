@@ -75,8 +75,9 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 static const char pcb_acts_FlagEdit[] = "FlagEdit(object)\n";
 static const char pcb_acth_FlagEdit[] = "Change the layer binding.";
-static int pcb_act_FlagEdit(int argc, const char **argv)
+static int pcb_act_FlagEdit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	fe_ctx_t ctx;
 	pcb_hid_attr_val_t val;
 	int type;
@@ -135,4 +136,5 @@ static int pcb_act_FlagEdit(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }

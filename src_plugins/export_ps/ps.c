@@ -1448,10 +1448,12 @@ static void ps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 
-static int pcb_act_PSCalib(int argc, const char **argv)
+static int pcb_act_PSCalib(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	ps_calibrate(0.0, 0.0);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t hidps_action_list[] = {

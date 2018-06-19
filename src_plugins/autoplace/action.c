@@ -51,14 +51,16 @@ connecting them are minimized.  Note that you cannot undo this.
 
 %end-doc */
 
-static int pcb_act_AutoPlaceSelected(int argc, const char **argv)
+static int pcb_act_AutoPlaceSelected(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_event(PCB_EVENT_BUSY, NULL);
 	if (pcb_gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
 		if (AutoPlaceSelected())
 			pcb_board_set_changed_flag(pcb_true);
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char *autoplace_cookie = "autoplace plugin";

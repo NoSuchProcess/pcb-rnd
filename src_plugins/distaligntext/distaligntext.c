@@ -273,8 +273,9 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  *
  * Defaults are Lefts/Tops, First */
 static const char pcb_acts_aligntext[] = "AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-static int pcb_act_aligntext(int argc, const char **argv)
+static int pcb_act_aligntext(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int dir;
 	int point;
 	int reference;
@@ -415,6 +416,7 @@ static int pcb_act_aligntext(int argc, const char **argv)
 	}
 	free_texts_by_pos();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
@@ -430,8 +432,9 @@ static int pcb_act_aligntext(int argc, const char **argv)
    Distributed texts always retain the same relative order they had
    before they were distributed. */
 static const char pcb_acts_distributetext[] = "DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-static int pcb_act_distributetext(int argc, const char **argv)
+static int pcb_act_distributetext(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int dir;
 	int point;
 	int refa, refb;
@@ -594,6 +597,7 @@ static int pcb_act_distributetext(int argc, const char **argv)
 	}
 	free_texts_by_pos();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t distaligntext_action_list[] = {

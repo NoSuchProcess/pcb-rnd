@@ -166,8 +166,9 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	PCB_END_LOOP;
 }
 
-static int pcb_act_boardflip(int argc, const char **argv)
+static int pcb_act_boardflip(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int h = PCB->MaxHeight;
 	int sides = 0;
 
@@ -176,6 +177,7 @@ static int pcb_act_boardflip(int argc, const char **argv)
 	printf("argc %d argv %s sides %d\n", argc, argc > 0 ? argv[0] : "", sides);
 	pcb_flip_data(PCB->Data, pcb_false, pcb_true, 0, h, sides);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

@@ -597,8 +597,9 @@ static int openscad_usage(const char *topic)
 
 static const char pcb_acts_scad_export_poly[] = "ScadExportPoly(filename)\n";
 static const char pcb_acth_scad_export_poly[] = "exports all selected polygons to an openscad script; only the outmost contour of each poly is exported";
-static int pcb_act_scad_export_poly(int argc, const char **argv)
+static int pcb_act_scad_export_poly(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	FILE *f;
 
 	if (argc <= 0) {
@@ -641,6 +642,7 @@ static int pcb_act_scad_export_poly(int argc, const char **argv)
 
 	fclose(f);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

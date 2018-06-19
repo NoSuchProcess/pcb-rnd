@@ -69,8 +69,9 @@ responsive.
 
 %end-doc */
 
-static int pcb_act_AutoRoute(int argc, const char **argv)
+static int pcb_act_AutoRoute(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_event(PCB_EVENT_BUSY, NULL);
 	if (function) {								/* one parameter */
@@ -84,6 +85,7 @@ static int pcb_act_AutoRoute(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char *autoroute_cookie = "autoroute plugin";
