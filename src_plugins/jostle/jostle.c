@@ -469,8 +469,9 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 }
 
 static const char pcb_acts_jostle[] = "Jostle(diameter)";
-static int pcb_act_jostle(int argc, const char **argv)
+static int pcb_act_jostle(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	pcb_bool rel;
 	pcb_polyarea_t *expand;
@@ -516,6 +517,7 @@ static int pcb_act_jostle(int argc, const char **argv)
 	pcb_board_set_changed_flag(pcb_true);
 	pcb_undo_inc_serial();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t jostle_action_list[] = {

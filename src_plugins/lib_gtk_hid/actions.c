@@ -70,21 +70,24 @@ Opens the window which allows editing of the route styles.
 
 %end-doc */
 
-static int pcb_act_AdjustStyle(int argc, const char **argv)
+static int pcb_act_AdjustStyle(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc > 1)
 		PCB_ACT_FAIL(AdjustStyle);
 
   pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
 
 static const char pcb_acts_fontsel[] = "FontSel()\n";
 static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
-static int pcb_act_fontsel(int argc, const char **argv)
+static int pcb_act_fontsel(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc > 1)
 		PCB_ACT_FAIL(fontsel);
 
@@ -105,14 +108,17 @@ static int pcb_act_fontsel(int argc, const char **argv)
 	else
 		pcb_gtk_dlg_fontsel(&ghidgui->common, NULL, NULL, 0, 0);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
 
-static int pcb_act_Command(int argc, const char **argv)
+static int pcb_act_Command(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -124,9 +130,9 @@ int pcb_gtk_act_print_(int argc, const char **argv)
 
 /* ------------------------------------------------------------ */
 
-static int pcb_act_ExportGUI(int argc, const char **argv)
+static int pcb_act_ExportGUI(int oargc, const char **oargv)
 {
-
+	PCB_OLD_ACT_BEGIN;
 	/* check if layout is empty */
 	if (!pcb_data_is_empty(PCB->Data)) {
 		ghid_dialog_export(ghid_port.top_window);
@@ -135,12 +141,14 @@ static int pcb_act_ExportGUI(int argc, const char **argv)
 		pcb_gui->log(_("Can't export empty layout"));
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
 
-static int pcb_act_Benchmark(int argc, const char **argv)
+static int pcb_act_Benchmark(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int i = 0;
 	time_t start, end;
 	GdkDisplay *display;
@@ -162,6 +170,7 @@ static int pcb_act_Benchmark(int argc, const char **argv)
 	printf(_("%g redraws per second\n"), i / 10.0);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -209,8 +218,9 @@ Open the advanced search window.
 
 %end-doc */
 
-static int pcb_act_DoWindows(int argc, const char **argv)
+static int pcb_act_DoWindows(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *a = argc >= 1 ? argv[0] : "";
 	gboolean raise = TRUE;
 
@@ -249,6 +259,7 @@ static int pcb_act_DoWindows(int argc, const char **argv)
 	}
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -264,8 +275,9 @@ This just pops up the specified menu.  The menu must have been defined
 in the popups subtree in the menu lht file.
 
 %end-doc */
-static int pcb_act_Popup(int argc, const char **argv)
+static int pcb_act_Popup(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	GtkWidget *menu = NULL;
 	char name[256];
 	const char *tn = NULL;
@@ -327,6 +339,7 @@ static int pcb_act_Popup(int argc, const char **argv)
 		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -334,21 +347,26 @@ static const char pcb_acts_SaveWinGeo[] = "SaveWindowGeometry()";
 
 static const char pcb_acth_SaveWinGeo[] = N_("Saves window geometry in the config.\n");
 
-static int pcb_act_SaveWinGeo(int argc, const char **argv)
+static int pcb_act_SaveWinGeo(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	ghid_wgeo_save(1, 0);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 
 /* ------------------------------------------------------------ */
-static int pcb_act_Zoom(int argc, const char **argv)
+static int pcb_act_Zoom(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_gtk_zoom(&gport->view, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_Center(int argc, const char **argv)
+static int pcb_act_Center(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	int offset_x, offset_y, pointer_x, pointer_y;
 	GdkDisplay *display = gdk_display_get_default();
@@ -360,10 +378,12 @@ static int pcb_act_Center(int argc, const char **argv)
 	pcb_gtk_act_center(&gport->view, argc, argv, x, y, offset_x, offset_y, &pointer_x, &pointer_y);
 	gdk_display_warp_pointer(display, screen, pointer_x, pointer_y);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_SwapSides(int argc, const char **argv)
+static int pcb_act_SwapSides(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int res, oa;
 
 	/* ugly workaround: turn off gui refreshes until the swap finishes to avoid triggering more events that may lead to infinite loop */
@@ -374,48 +394,63 @@ static int pcb_act_SwapSides(int argc, const char **argv)
 
 	ghidgui->hid_active = oa;
 	return res;
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_Scroll(int argc, const char **argv)
+static int pcb_act_Scroll(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (ghidgui == NULL)
 		return 0;
 
 	return pcb_gtk_act_scroll(&gport->view, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_Pan(int argc, const char **argv)
+static int pcb_act_Pan(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (ghidgui == NULL)
 		return 0;
 
 	return pcb_gtk_act_pan(&gport->view, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_NetlistShow(int argc, const char **argv)
+static int pcb_act_NetlistShow(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_gtk_act_netlistshow(&ghidgui->common, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_NetlistPresent(int argc, const char **argv)
+static int pcb_act_NetlistPresent(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_gtk_act_netlistpresent(&ghidgui->common, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
 
-static int pcb_act_load(int argc, const char **argv)
+static int pcb_act_load(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_gtk_act_load(ghid_port.top_window, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_save(int argc, const char **argv)
+static int pcb_act_save(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_gtk_act_save(ghid_port.top_window, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_importgui(int argc, const char **argv)
+static int pcb_act_importgui(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv);
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------
@@ -437,10 +472,12 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int pcb_act_About(int argc, const char **argv)
+static int pcb_act_About(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_gtk_dlg_about(gport->top_window);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -453,10 +490,12 @@ Pop up the gui that edits the layer groups (layer stackup).
 
 %end-doc */
 
-static int pcb_act_EditLayerGroups(int argc, const char **argv)
+static int pcb_act_EditLayerGroups(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *args[] = {"Preferences", "1", "User PoV/Layers"};
 	return pcb_act_DoWindows(sizeof(args)/sizeof(args[0]), args);
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */

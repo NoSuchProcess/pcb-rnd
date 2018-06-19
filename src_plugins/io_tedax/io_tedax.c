@@ -64,8 +64,9 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 
 static const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
-static int pcb_act_Savetedax(int argc, const char **argv)
+static int pcb_act_Savetedax(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *fname, *type = argv[0];
 	if (argc < 1)
 		PCB_ACT_FAIL(Savetedax);
@@ -76,6 +77,7 @@ static int pcb_act_Savetedax(int argc, const char **argv)
 		return tedax_fp_save(PCB->Data, argv[1]);
 
 	PCB_ACT_FAIL(Savetedax);
+	PCB_OLD_ACT_END;
 }
 
 #define gen_load(type, fname) \
@@ -96,8 +98,9 @@ do { \
 
 static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(type, filename)";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file. Type can be: netlist or footprint.";
-static int pcb_act_LoadtedaxFrom(int argc, const char **argv)
+static int pcb_act_LoadtedaxFrom(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	const char *fname, *type = argv[0];
 
 	if (argc < 1)
@@ -114,6 +117,7 @@ static int pcb_act_LoadtedaxFrom(int argc, const char **argv)
 		return tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0);
 	}
 	PCB_ACT_FAIL(Savetedax);
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t tedax_action_list[] = {

@@ -316,8 +316,9 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
 const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";
-int pcb_act_topoly(int argc, const char **argv)
+int pcb_act_topoly(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	void *r1, *r2, *r3;
 
 	if (argc == 0) {
@@ -340,4 +341,5 @@ int pcb_act_topoly(int argc, const char **argv)
 
 	pcb_topoly_conn(PCB, r2, 0);
 	return 0;
+	PCB_OLD_ACT_END;
 }
