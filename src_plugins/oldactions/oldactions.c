@@ -115,11 +115,13 @@ static void dump_lib_any(int level, pcb_fplibrary_t *l)
 }
 
 
-static int pcb_act_DumpLibrary(int argc, const char **argv)
+static int pcb_act_DumpLibrary(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	dump_lib_any(0, &pcb_library);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------------
@@ -130,10 +132,12 @@ static const char pcb_acts_Bell[] = "Bell()";
 
 static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.g. beep the speaker).";
 
-static int pcb_act_Bell(int argc, const char **argv)
+static int pcb_act_Bell(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_gui->beep();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -161,8 +165,9 @@ on one.
 
 %end-doc */
 
-static int pcb_act_Debug(int argc, const char **argv)
+static int pcb_act_Debug(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	int i;
 	printf("Debug:");
@@ -171,6 +176,7 @@ static int pcb_act_Debug(int argc, const char **argv)
 	pcb_hid_get_coords("Click X,Y for Debug", &x, &y);
 	pcb_printf(" x,y %$mD\n", x, y);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_return[] = "Return(0|1)";
@@ -184,9 +190,11 @@ passed a 1, does nothing but pretends to fail.
 
 %end-doc */
 
-static int pcb_act_Return(int argc, const char **argv)
+static int pcb_act_Return(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	return atoi(argv[0]);
+	PCB_OLD_ACT_END;
 }
 
 
@@ -208,10 +216,12 @@ optimize hand-routed traces also.
 
 
 
-int pcb_act_djopt_set_auto_only(int argc, const char **argv)
+int pcb_act_djopt_set_auto_only(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -234,10 +244,12 @@ loaded first.
 
 %end-doc */
 
-int pcb_act_ToggleVendor(int argc, const char **argv)
+int pcb_act_ToggleVendor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -260,10 +272,12 @@ loaded first.
 
 %end-doc */
 
-int pcb_act_EnableVendor(int argc, const char **argv)
+int pcb_act_EnableVendor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -284,14 +298,17 @@ specified in the currently loaded vendor drill table.
 
 %end-doc */
 
-int pcb_act_DisableVendor(int argc, const char **argv)
+int pcb_act_DisableVendor(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
-int pcb_act_ListRotations(int argc, const char **argv)
+int pcb_act_ListRotations(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		double rot;
@@ -303,6 +320,7 @@ int pcb_act_ListRotations(int argc, const char **argv)
 	}
 	PCB_END_LOOP;
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

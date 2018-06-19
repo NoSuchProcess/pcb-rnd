@@ -89,8 +89,9 @@ static pcb_poly_t *find_enclosing_poly(pcb_poly_t *inner_poly)
 }
 
 
-static int pcb_act_polystitch(int argc, const char **argv)
+static int pcb_act_polystitch(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	pcb_poly_t *inner_poly, *outer_poly;
 
@@ -119,6 +120,7 @@ static int pcb_act_polystitch(int argc, const char **argv)
 		}
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t polystitch_action_list[] = {

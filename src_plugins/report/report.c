@@ -145,8 +145,9 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static int pcb_act_report_dialog(int argc, const char **argv)
+static int pcb_act_report_dialog(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
 	char *report = NULL;
@@ -382,6 +383,7 @@ static int pcb_act_report_dialog(int argc, const char **argv)
 	free(report);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static int report_found_pins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -790,8 +792,9 @@ units
 
 %end-doc */
 
-static int pcb_act_report(int argc, const char **argv)
+static int pcb_act_report(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
@@ -823,6 +826,7 @@ static int pcb_act_report(int argc, const char **argv)
 	else
 		PCB_AFAIL(report);
 	return 1;
+	PCB_OLD_ACT_END;
 }
 
 pcb_hid_action_t report_action_list[] = {

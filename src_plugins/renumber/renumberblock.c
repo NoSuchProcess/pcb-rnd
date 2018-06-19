@@ -33,8 +33,9 @@
 #include "change.h"
 #include "conf_core.h"
 
-int pcb_act_RenumberBlock(int argc, const char **argv)
+int pcb_act_RenumberBlock(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	char num_buf[15];
 	int old_base, new_base;
 
@@ -76,10 +77,12 @@ int pcb_act_RenumberBlock(int argc, const char **argv)
 	PCB_END_LOOP;
 	pcb_undo_inc_serial();
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
-int pcb_act_RenumberBuffer(int argc, const char **argv)
+int pcb_act_RenumberBuffer(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	char num_buf[15];
 	int old_base, new_base;
 
@@ -119,4 +122,5 @@ int pcb_act_RenumberBuffer(int argc, const char **argv)
 	PCB_END_LOOP;
 
 	return 0;
+	PCB_OLD_ACT_END;
 }

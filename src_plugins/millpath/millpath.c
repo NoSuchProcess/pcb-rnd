@@ -45,11 +45,13 @@ static pcb_tlp_tools_t tools = { sizeof(tool_dias)/sizeof(tool_dias[0]), tool_di
 
 static const char pcb_acts_mill[] = "mill()";
 static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper";
-int pcb_act_mill(int argc, const char **argv)
+int pcb_act_mill(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
 	ctx.tools = &tools;
 	return pcb_tlp_mill_copper_layer(&ctx, CURRENT);
+	PCB_OLD_ACT_END;
 }
 
 

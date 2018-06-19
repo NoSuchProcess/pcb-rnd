@@ -264,8 +264,9 @@ static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_
 	return accumulate;
 }
 
-static int pcb_act_polycombine(int argc, const char **argv)
+static int pcb_act_polycombine(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_polyarea_t *res;
 	pcb_bool forward;
 	pcb_polyarea_t *np;
@@ -333,6 +334,7 @@ static int pcb_act_polycombine(int argc, const char **argv)
 	pcb_draw();
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_action_t polycombine_action_list[] = {

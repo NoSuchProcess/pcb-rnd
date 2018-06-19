@@ -41,8 +41,9 @@ extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char pcb_acts_propedit[] = "propedit()";
 static const char pcb_acth_propedit[] = "Run the property editor";
-int pcb_act_propedit(int argc, const char **argv)
+int pcb_act_propedit(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
 	pcb_layer_t *ly = NULL;
@@ -116,12 +117,14 @@ int pcb_act_propedit(int argc, const char **argv)
 	pcb_gui->propedit_end(&ctx);
 	pcb_props_uninit(ctx.core_props);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_propset[] = "propset(name, value)";
 static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value";
-int pcb_act_propset(int argc, const char **argv)
+int pcb_act_propset(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int res;
 /*
 	if (argc != 2)
@@ -130,6 +133,7 @@ int pcb_act_propset(int argc, const char **argv)
 	res = pcb_propsel_set(argv[0], argv[1]);
 	printf("res=%d\n", res);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static const char *propedit_cookie = "propedit";
