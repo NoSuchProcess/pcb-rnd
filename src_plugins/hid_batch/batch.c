@@ -137,14 +137,14 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 	else
 		interactive = 0;
 
-	if (interactive) {
+	if ((interactive) && (!pcb_nogui_quiet)) {
 		printf("Entering %s version %s batch mode.\n", PCB_PACKAGE, PCB_VERSION);
 		printf("See http://repo.hu/projects/pcb-rnd for project information\n");
 	}
 
 	batch_stay = 1;
 	while (batch_stay) {
-		if (interactive) {
+		if ((interactive) && (!pcb_nogui_quiet)) {
 			printf("%s> ", prompt);
 			fflush(stdout);
 		}
