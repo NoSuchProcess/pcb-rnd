@@ -17,7 +17,7 @@
 	-> non-bug
 - feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade] 
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
-- BUG: r17384 broke: after a command entry (using the embedded command line) all key events are doubled [report: miloh]
++ BUG: r17384 broke: after a command entry (using the embedded command line) all key events are doubled [report: miloh]
 - BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
 
 2. For later releases ===============================================================================
