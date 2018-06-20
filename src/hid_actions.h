@@ -9,12 +9,12 @@ void pcb_dump_actions(void);
 
 const pcb_hid_action_t *pcb_hid_find_action(const char *name);
 
-extern void pcb_hid_remove_actions(const pcb_hid_action_t * a, int n);
-extern void pcb_hid_remove_action(const pcb_hid_action_t * a);
+extern void pcb_hid_remove_actions(const pcb_hid_action_t *a, int n);
+extern void pcb_hid_remove_action(const pcb_hid_action_t *a);
 extern void pcb_hid_remove_actions_by_cookie(const char *cookie);
 
 int pcb_hid_action(const char *action_);
-int pcb_hid_actionl(const char *action_, ...);	/* NULL terminated */
+int pcb_hid_actionl(const char *action_, ...); /* NULL terminated */
 int pcb_hid_actionv(const char *action_, int argc_, const char **argv_);
 int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv);
 

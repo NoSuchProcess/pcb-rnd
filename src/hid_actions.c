@@ -28,7 +28,7 @@ typedef struct {
 	const pcb_hid_action_t *action;
 } hid_cookie_action_t;
 
-void pcb_hid_register_actions(const pcb_hid_action_t * a, int n, const char *cookie, int copy)
+void pcb_hid_register_actions(const pcb_hid_action_t *a, int n, const char *cookie, int copy)
 {
 	int i;
 	hid_cookie_action_t *ca;
@@ -52,12 +52,12 @@ void pcb_hid_register_actions(const pcb_hid_action_t * a, int n, const char *coo
 	}
 }
 
-void pcb_hid_register_action(const pcb_hid_action_t * a, const char *cookie, int copy)
+void pcb_hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy)
 {
 	pcb_hid_register_actions(a, 1, cookie, copy);
 }
 
-void pcb_hid_remove_actions(const pcb_hid_action_t * a, int n)
+void pcb_hid_remove_actions(const pcb_hid_action_t *a, int n)
 {
 	int i;
 
@@ -90,7 +90,7 @@ void pcb_hid_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-void pcb_hid_remove_action(const pcb_hid_action_t * a)
+void pcb_hid_remove_action(const pcb_hid_action_t *a)
 {
 	htsp_entry_t *e;
 
