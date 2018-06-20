@@ -15,6 +15,7 @@
 #include "plugin_3state.h"
 
 #include "../src_3rd/puplug/scconfig_hooks.h"
+#include "../src_3rd/libfungw/scconfig_hooks.h"
 
 int want_intl = 0, want_coord_bits;
 
@@ -235,6 +236,7 @@ int hook_postinit()
 	db_mkdir("/local/pcb");
 
 	pup_hook_postinit();
+	fungw_hook_postinit();
 
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
@@ -298,6 +300,7 @@ int hook_postarg()
 int hook_detect_host()
 {
 	pup_hook_detect_host();
+	fungw_hook_detect_host();
 
 	require("fstools/ar",  0, 1);
 	require("fstools/mkdir", 0, 1);
@@ -385,6 +388,10 @@ int hook_detect_target()
 	require("libs/math/rint/*",  0, 0);
 	require("libs/math/round/*",  0, 0);
 	require("libs/userpass/getpwuid/*",  0, 0);
+	require("libs/script/fungw/*",  0, 0);
+
+	if (!istrue(get("libs/script/fungw/presents")))
+		fungw_hook_detect_target();
 
 	if (require("libs/time/usleep/*",  0, 0) && require("libs/time/Sleep/*",  0, 0)) {
 		report_repeat("\nERROR: can not find usleep() or Sleep() - no idea how to sleep ms.\n\n");
@@ -858,6 +865,8 @@ int hook_generate()
 	put("/local/apiver", apiver);
 	put("/local/pup/sccbox", "../../scconfig/sccbox");
 
+	printf("\n");
+
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
@@ -873,6 +882,9 @@ int hook_generate()
 		gpmi_config();
 
 	generr |= pup_hook_generate("../src_3rd/puplug");
+
+	if (!istrue(get("libs/script/fungw/presents")))
+		generr |= fungw_hook_generate("../src_3rd/libfungw");
 
 
 	if (!generr) {

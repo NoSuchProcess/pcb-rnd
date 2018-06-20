@@ -7,7 +7,33 @@ append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
+put /local/pcb/OBJS {}
 put /tmpasm/OFS { }
+
+if ?libs/script/fungw/presents
+then
+	append /local/pcb/CFLAGS libs/script/fungw/cflags
+	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
+else
+# no system installed fungw means we need to use local genht
+	append /local/pcb/OBJS [@
+	../src_3rd/genht/hash.o
+	../src_3rd/genht/htsp.o
+	../src_3rd/genht/htss.o
+	../src_3rd/genht/htsi.o
+	../src_3rd/genht/htpi.o
+	../src_3rd/genht/htip.o
+	../src_3rd/genht/htpp.o
+	@]
+# local compilation of fungw objects
+	append /local/pcb/OBJS [@
+	../src_3rd/libfungw/fungw.o
+	../src_3rd/libfungw/fungw_conv.o
+	../src_3rd/libfungw/fungw_ptr.o
+	../src_3rd/libfungw/fungw_debug.o
+	../src_3rd/libfungw/fungw_call.o
+	@]
+end
 
 # These files are to be generated before make dep is run
 put /local/pcb/DEPDEPS { conf_core_fields.h conf_internal.c generated_lists.h }
@@ -22,7 +48,7 @@ put /local/pcb/OBJS_C99 [@
 	fptr_cast.o
 @]
 
-put /local/pcb/OBJS [@
+append /local/pcb/OBJS [@
 	action_helper.o
 	action_act.o
 	attrib.o
@@ -181,13 +207,6 @@ put /local/pcb/OBJS [@
 	../src_3rd/liblihata/tree_table.o
 	../src_3rd/liblihata/tree_symlink.o
 	../src_3rd/liblihata/tree_path.o
-	../src_3rd/genht/hash.o
-	../src_3rd/genht/htsp.o
-	../src_3rd/genht/htss.o
-	../src_3rd/genht/htsi.o
-	../src_3rd/genht/htpi.o
-	../src_3rd/genht/htip.o
-	../src_3rd/genht/htpp.o
 	../src_3rd/liblhtpers/lhtpers.o
 	../src_3rd/genvector/gds_char.o
 	../src_3rd/genvector/vtp0.o
