@@ -9,8 +9,6 @@
 #include "compat_nls.h"
 #include "conf_core.h"
 
-int pcb_nogui_quiet = 0;
-
 /* This is the "gui" that is installed at startup, and is used when
    there is no other real GUI to use.  For the most part, it just
    stops the application from (1) crashing randomly, and (2) doing
@@ -276,7 +274,7 @@ static int nogui_confirm_dialog(const char *msg, ...)
 	pcb_bool valid_answer = pcb_false;
 	va_list args;
 
-	if (pcb_nogui_quiet)
+	if (conf_core.rc.quiet)
 		return 1;
 
 	do {
@@ -317,7 +315,7 @@ static char *nogui_prompt_for(const char *msg, const char *default_string)
 {
 	char *answer;
 
-	if (pcb_nogui_quiet)
+	if (conf_core.rc.quiet)
 		return pcb_strdup("");
 
 	if (default_string)
@@ -339,7 +337,7 @@ static char *nogui_fileselect(const char *title, const char *descr,
 {
 	char *answer;
 
-	if (pcb_nogui_quiet)
+	if (conf_core.rc.quiet)
 		return pcb_strdup("");
 
 	if (default_file)
@@ -394,7 +392,7 @@ static void nogui_beep(void)
 static int nogui_progress(int so_far, int total, const char *message)
 {
 	static int on = 0;
-	if (pcb_nogui_quiet)
+	if (conf_core.rc.quiet)
 		return 0;
 	if (message == NULL) {
 		if ((on) && (conf_core.rc.verbose >= PCB_MSG_INFO))
