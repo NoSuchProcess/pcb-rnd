@@ -7,10 +7,6 @@
 void pcb_print_actions(void);
 void pcb_dump_actions(void);
 
-
-/* HID internal interfaces.  These may ONLY be called from the HID
-   modules, not from the common PCB code.  */
-
 const pcb_hid_action_t *pcb_hid_find_action(const char *name);
 
 extern void pcb_hid_remove_actions(const pcb_hid_action_t * a, int n);
