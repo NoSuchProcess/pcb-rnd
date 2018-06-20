@@ -1,4 +1,9 @@
 0. For the upcoming release ===============================================================================
+- fungw action transition:
+	- rename hid_actions.[ch] to action.[ch]
+	- replace the int/char** argv action API with fungw functions in core
+	- figure/decide how fungw objects should be registered from plugins, where plugin actions should end up
+	- replace the int/char** argv action API with fungw functions in plugins
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
