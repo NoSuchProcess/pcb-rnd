@@ -13,6 +13,7 @@
 #include "plugins.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "conf_core.h"
 
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
@@ -25,16 +26,6 @@ static const char *batch_cookie = "batch HID";
 static void batch_begin(void);
 static void batch_end(void);
 
-extern int pcb_nogui_quiet; /* from the nogui "HID" */
-
-static pcb_hid_attribute_t batch_attribute_list[] = {
-	{"quiet", "do not ask questions (answer them with dummy strings)",
-		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &pcb_nogui_quiet},
-#define HA_quiet 0
-};
-
-PCB_REGISTER_ATTRIBUTES(batch_attribute_list, batch_cookie)
-
 /* This is a text-line "batch" HID, which exists for scripting and
    non-GUI needs.  */
 
@@ -45,14 +36,13 @@ typedef struct hid_gc_s {
 static pcb_hid_attribute_t *batch_get_export_options(int *n_ret)
 {
 	if (n_ret != NULL)
-		*n_ret = sizeof(batch_attribute_list) / sizeof(pcb_hid_attribute_t);
-	return batch_attribute_list;
+		*n_ret = 0;
+	return NULL;
 }
 
 static int batch_usage(const char *topic)
 {
-	fprintf(stderr, "\nbatch GUI command line arguments:\n\n");
-	pcb_hid_usage(batch_attribute_list, sizeof(batch_attribute_list) / sizeof(batch_attribute_list[0]));
+	fprintf(stderr, "\nbatch GUI command line arguments: none\n\n");
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui batch [options]\n");
 	return 0;
 }
@@ -141,14 +131,14 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 	else
 		interactive = 0;
 
-	if ((interactive) && (!pcb_nogui_quiet)) {
+	if ((interactive) && (!conf_core.rc.quiet)) {
 		printf("Entering %s version %s batch mode.\n", PCB_PACKAGE, PCB_VERSION);
 		printf("See http://repo.hu/projects/pcb-rnd for project information\n");
 	}
 
 	batch_stay = 1;
 	while (batch_stay) {
-		if ((interactive) && (!pcb_nogui_quiet)) {
+		if ((interactive) && (!conf_core.rc.quiet)) {
 			printf("%s> ", prompt);
 			fflush(stdout);
 		}
@@ -352,14 +342,6 @@ static void batch_propedit_add_stat(void *pe, const char *propname, void *propct
 
 #include "dolists.h"
 
-static int batch_attrs_regd = 0;
-static void batch_reg_attrs(void)
-{
-	if (!batch_attrs_regd)
-		PCB_REGISTER_ATTRIBUTES(batch_attribute_list, batch_cookie);
-	batch_attrs_regd = 1;
-}
-
 static pcb_hid_t batch_hid;
 
 int pplg_check_ver_hid_batch(int ver_needed) { return 0; }
@@ -430,7 +412,6 @@ int pplg_init_hid_batch(void)
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
 
 	pcb_hid_register_hid(&batch_hid);
-	batch_reg_attrs();
 	return 0;
 }
 
