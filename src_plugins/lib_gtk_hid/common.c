@@ -46,14 +46,22 @@ void ghid_note_event_location(GdkEventButton *ev)
 	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 }
 
-static void kbd_input_signals_connect(void *obj)
+static void kbd_input_signals_connect(int idx, void *obj)
 {
-	ghidgui->key_press_handler = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
-	ghidgui->key_release_handler = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
+	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
+	ghidgui->key_release_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
 }
 
-static void kbd_input_signals_disconnect(void *obj, gulong handler_id)
+static void kbd_input_signals_disconnect(int idx, void *obj)
 {
+	if (ghidgui->key_press_handler[idx] != 0) {
+		g_signal_handler_disconnect(G_OBJECT(obj), ghidgui->key_press_handler[idx]);
+		ghidgui->key_press_handler[idx] = 0;
+	}
+	if (ghidgui->key_release_handler[idx] != 0) {
+		g_signal_handler_disconnect(G_OBJECT(obj), ghidgui->key_release_handler[idx]);
+		ghidgui->key_release_handler[idx] = 0;
+	}
 }
 
 	/* Connect and disconnect just the signals a g_main_loop() will need.
@@ -69,29 +77,28 @@ void ghid_interface_input_signals_connect(void)
 {
 	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
 	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
-	kbd_input_signals_connect(gport->drawing_area);
-	kbd_input_signals_connect(ghidgui->topwin.layer_selector);
-	kbd_input_signals_connect(ghidgui->topwin.route_style_selector);
-	kbd_input_signals_connect(ghidgui->topwin.left_toolbar);
-	kbd_input_signals_connect(ghidgui->topwin.cps.grid_units_button);
+	kbd_input_signals_connect(0, gport->drawing_area);
+	kbd_input_signals_connect(1, ghidgui->topwin.layer_selector);
+	kbd_input_signals_connect(2, ghidgui->topwin.route_style_selector);
+	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
+	kbd_input_signals_connect(4, ghidgui->topwin.cps.grid_units_button);
 }
 
 void ghid_interface_input_signals_disconnect(void)
 {
+	kbd_input_signals_disconnect(0, gport->drawing_area);
+	kbd_input_signals_disconnect(1, ghidgui->topwin.layer_selector);
+	kbd_input_signals_disconnect(2, ghidgui->topwin.route_style_selector);
+	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
+	kbd_input_signals_disconnect(4, ghidgui->topwin.cps.grid_units_button);
+
 	if (ghidgui->button_press_handler != 0)
 		g_signal_handler_disconnect(G_OBJECT(gport->drawing_area), ghidgui->button_press_handler);
 
 	if (ghidgui->button_release_handler != 0)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_release_handler);
 
-	if (ghidgui->key_press_handler != 0)
-		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_press_handler);
-
-	if (ghidgui->key_release_handler != 0)
-		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_release_handler);
-
 	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
-	ghidgui->key_press_handler = ghidgui->key_release_handler = 0;
 }
 
 int ghid_shift_is_pressed()

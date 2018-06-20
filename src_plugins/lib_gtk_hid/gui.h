@@ -66,7 +66,7 @@ struct GhidGui_s {
 	int hid_active; /* 1 if the currently running hid (pcb_gui) is us */
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
-	gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
+	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];
 };
 
 /* The output viewport */
