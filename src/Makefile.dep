@@ -1161,8 +1161,10 @@
  vtpadstack_t.h layer.h pcb-printf.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h compat_misc.h event.h hid_draw_helpers.h \
- hid_nogui.h hid_actions.h hid_init.h hid_attrib.h dolists.h
+ ../src_3rd/puplug/error.h compat_misc.h event.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
+ hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h hid_attrib.h \
+ dolists.h
 ../src_plugins/hid_gtk2_gdk/gtkhid-gdk.o: \
  ../src_plugins/hid_gtk2_gdk/gtkhid-gdk.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -5130,6 +5132,22 @@
  ../src_3rd/genvector/vts0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
+../src_3rd/libfungw/fungw.o: ../src_3rd/libfungw/fungw.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h ../src_3rd/genht/hash.h
+../src_3rd/libfungw/fungw_call.o: ../src_3rd/libfungw/fungw_call.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+../src_3rd/libfungw/fungw_conv.o: ../src_3rd/libfungw/fungw_conv.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
+ ../src_3rd/libfungw/fungw_conv.h
+../src_3rd/libfungw/fungw_debug.o: ../src_3rd/libfungw/fungw_debug.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+../src_3rd/libfungw/fungw_ptr.o: ../src_3rd/libfungw/fungw_ptr.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
 ../src_3rd/liblhtpers/lhtpers.o: ../src_3rd/liblhtpers/lhtpers.c \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  ../src_3rd/liblhtpers/lhtpers.h ../src_3rd/liblihata/dom.h \
