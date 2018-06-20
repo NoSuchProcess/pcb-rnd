@@ -81,13 +81,13 @@ void ghid_interface_input_signals_disconnect(void)
 	if (ghidgui->button_press_handler != 0)
 		g_signal_handler_disconnect(G_OBJECT(gport->drawing_area), ghidgui->button_press_handler);
 
-	if (ghidgui->button_release_handler)
+	if (ghidgui->button_release_handler != 0)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_release_handler);
 
-	if (ghidgui->key_press_handler)
+	if (ghidgui->key_press_handler != 0)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_press_handler);
 
-	if (ghidgui->key_release_handler)
+	if (ghidgui->key_release_handler != 0)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_release_handler);
 
 	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
