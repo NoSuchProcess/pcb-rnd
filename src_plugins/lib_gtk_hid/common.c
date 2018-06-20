@@ -56,8 +56,6 @@ static void kbd_input_signals_disconnect(void *obj, gulong handler_id)
 {
 	if (handler_id != 0)
 		g_signal_handler_disconnect(G_OBJECT(obj), handler_id);
-
-	handler_id = 0;
 }
 
 	/* Connect and disconnect just the signals a g_main_loop() will need.
