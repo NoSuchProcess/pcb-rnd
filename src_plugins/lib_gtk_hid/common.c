@@ -93,7 +93,7 @@ void ghid_interface_input_signals_disconnect(void)
 	if (ghidgui->key_release_handler)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_release_handler);
 
-  ghidgui->button_release_handler = 0;
+	ghidgui->button_release_handler = 0;
 	ghidgui->key_press_handler = ghidgui->key_release_handler = 0;
 }
 
