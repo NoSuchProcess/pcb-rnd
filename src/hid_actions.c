@@ -329,7 +329,7 @@ another:
 	 * we only have an action name, so invoke the action
 	 * with no parameters or event.
 	 */
-	if (*sp == NULL) {
+	if (*sp == '\0') {
 		retcode = pcb_hid_actionv(aname, 0, 0);
 		goto cleanup;
 	}
