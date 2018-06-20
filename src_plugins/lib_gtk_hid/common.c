@@ -54,8 +54,6 @@ static void kbd_input_signals_connect(void *obj)
 
 static void kbd_input_signals_disconnect(void *obj, gulong handler_id)
 {
-	if (handler_id != 0)
-		g_signal_handler_disconnect(G_OBJECT(obj), handler_id);
 }
 
 	/* Connect and disconnect just the signals a g_main_loop() will need.
@@ -80,7 +78,8 @@ void ghid_interface_input_signals_connect(void)
 
 void ghid_interface_input_signals_disconnect(void)
 {
-	kbd_input_signals_disconnect(gport->drawing_area, ghidgui->button_press_handler);
+	if (ghidgui->button_press_handler != 0)
+		g_signal_handler_disconnect(G_OBJECT(gport->drawing_area), ghidgui->button_press_handler);
 
 	if (ghidgui->button_release_handler)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_release_handler);
@@ -91,7 +90,7 @@ void ghid_interface_input_signals_disconnect(void)
 	if (ghidgui->key_release_handler)
 		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_release_handler);
 
-	ghidgui->button_release_handler = 0;
+	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
 	ghidgui->key_press_handler = ghidgui->key_release_handler = 0;
 }
 
