@@ -226,11 +226,11 @@ int pcb_hid_actionv(const char *name, int argc, const char **argv)
 {
 	const pcb_hid_action_t *a;
 
-	if (!name)
+	if (name == NULL)
 		return 1;
 
 	a = pcb_hid_find_action(name);
-	if (!a) {
+	if (a == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);
 		for (i = 0; i < argc; i++)
@@ -299,7 +299,7 @@ another:
 	 * we only have an action name, so invoke the action
 	 * with no parameters or event.
 	 */
-	if (!*sp) {
+	if (*sp == NULL) {
 		retcode = pcb_hid_actionv(aname, 0, 0);
 		goto cleanup;
 	}
