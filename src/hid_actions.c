@@ -434,31 +434,3 @@ void pcb_hid_actions_uninit(void)
 	all_actions = NULL;
 }
 
-/* trick for the doc extractor */
-#define static
-
-/* %start-doc actions 00macros
-
-@macro hidaction
-
-This is one of a number of actions which are part of the HID
-interface.  The core functions use these actions to tell the current
-GUI when to change the presented information in response to changes
-that the GUI may not know about.  The user normally does not invoke
-these directly.
-
-@end macro
-
-%end-doc */
-
-static const char layerschanged_syntax[] = "LayersChanged()";
-static const char layerschanged_help[] = "Tells the GUI that the layers have changed.";
-
-/* %start-doc actions LayersChanged
-
-This includes layer names, colors, stacking order, visibility, etc.
-
-@hidaction
-
-%end-doc */
-
