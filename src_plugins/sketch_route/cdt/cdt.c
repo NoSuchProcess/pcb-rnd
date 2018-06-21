@@ -147,6 +147,11 @@ static void remove_triangle(cdt_t *cdt, triangle_t *t)
 		for (j = 0; j < 2; j++)
 			if (t->e[i]->adj_t[j] == t)
 				t->e[i]->adj_t[j] = NULL;
+		for (j = 0; j < 3; j++) {
+			triangle_t *adj_t = t->adj_t[i];
+			if (adj_t != NULL && adj_t->adj_t[j] == t)
+				adj_t->adj_t[j] = NULL;
+		}
 	}
 
 	for(i = 0; i < vttriangle_len(&cdt->triangles); i++) {
