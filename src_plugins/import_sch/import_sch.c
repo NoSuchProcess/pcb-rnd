@@ -291,7 +291,7 @@ static int pcb_act_Import(int oargc, const char **oargv)
 		char *dot, *slash, *bslash;
 
 		if (!pcbname)
-			return pcb_hid_action("ImportGUI");
+			return pcb_action("ImportGUI");
 
 		schname = (char *) malloc(strlen(pcbname) + 5);
 		strcpy(schname, pcbname);
@@ -307,7 +307,7 @@ static int pcb_act_Import(int oargc, const char **oargv)
 		strcat(schname, ".sch");
 
 		if (access(schname, F_OK))
-			return pcb_hid_action("ImportGUI");
+			return pcb_action("ImportGUI");
 
 		sources = (const char **) malloc(2 * sizeof(char *));
 		sources[0] = schname;
@@ -473,7 +473,7 @@ int pplg_check_ver_import_sch(int ver_needed) { return 0; }
 
 void pplg_uninit_import_sch(void)
 {
-	pcb_hid_remove_actions_by_cookie(import_sch_cookie);
+	pcb_remove_actions_by_cookie(import_sch_cookie);
 	conf_unreg_fields("plugins/import_sch/");
 }
 

@@ -55,7 +55,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 		status = g_io_channel_read_line(source, &str, &len, &term, &err);
 		switch (status) {
 		case G_IO_STATUS_NORMAL:
-			pcb_hid_parse_actions(str);
+			pcb_parse_actions(str);
 			g_free(str);
 			break;
 

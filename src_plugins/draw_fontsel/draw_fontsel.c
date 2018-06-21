@@ -213,13 +213,13 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 				return 1;
 			}
 			else if ((ymm >= font_new_y1) && (ymm <= font_new_y2)) {
-				pcb_hid_actionl("LoadFontFrom", NULL); /* modal, blocking */
+				pcb_actionl("LoadFontFrom", NULL); /* modal, blocking */
 				return 1;
 			}
 			else if ((ymm >= font_replace_y1) && (ymm <= font_replace_y2)) {
 				char file[1] = "", id[5];
 				pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
-				pcb_hid_actionl("LoadFontFrom", file, id, NULL); /* modal, blocking */
+				pcb_actionl("LoadFontFrom", file, id, NULL); /* modal, blocking */
 				return 1;
 			}
 			else if ((ymm >= font_del_y1) && (ymm <= font_del_y2)) {

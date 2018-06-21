@@ -90,7 +90,7 @@ static void sym_flush(symattr_t *sattr)
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "protel autotrax: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
-			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+			pcb_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
 	free(sattr->refdes);
 	sattr->refdes = NULL;
@@ -928,7 +928,7 @@ static int rdax_net(read_state_t *st, FILE *FP)
 					s = line;
 					rtrim(s);
 					if (line != NULL && netname != NULL) {
-						pcb_hid_actionl("Netlist", "Add", netname, line, NULL);
+						pcb_actionl("Netlist", "Add", netname, line, NULL);
 					}
 				}
 			}
@@ -1124,9 +1124,9 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 			}
 			else if (strncmp(s, "NETDEF", 6) == 0) {
 				if (netdefs == 0) {
-					pcb_hid_actionl("ElementList", "start", NULL);
-					pcb_hid_actionl("Netlist", "Freeze", NULL);
-					pcb_hid_actionl("Netlist", "Clear", NULL);
+					pcb_actionl("ElementList", "start", NULL);
+					pcb_actionl("Netlist", "Freeze", NULL);
+					pcb_actionl("Netlist", "Clear", NULL);
 				}
 				netdefs |= 1;
 				rdax_net(&st, FP);
@@ -1147,9 +1147,9 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		}
 	}
 	if (netdefs) {
-		pcb_hid_actionl("Netlist", "Sort", NULL);
-		pcb_hid_actionl("Netlist", "Thaw", NULL);
-		pcb_hid_actionl("ElementList", "Done", NULL);
+		pcb_actionl("Netlist", "Sort", NULL);
+		pcb_actionl("Netlist", "Thaw", NULL);
+		pcb_actionl("ElementList", "Done", NULL);
 	}
 	fclose(FP);
 	box = pcb_data_bbox(&board_size, Ptr->Data, pcb_false);

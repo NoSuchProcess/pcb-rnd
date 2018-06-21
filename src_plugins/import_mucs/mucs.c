@@ -161,7 +161,7 @@ int pplg_check_ver_import_mucs(int ver_needed) { return 0; }
 
 void pplg_uninit_import_mucs(void)
 {
-	pcb_hid_remove_actions_by_cookie(mucs_cookie);
+	pcb_remove_actions_by_cookie(mucs_cookie);
 }
 
 #include "dolists.h"

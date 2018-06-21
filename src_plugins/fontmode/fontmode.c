@@ -117,7 +117,7 @@ static int pcb_act_FontEdit(int oargc, const char **oargv)
 		return 1;
 	}
 
-	if (pcb_hid_actionl("New", "Font", 0))
+	if (pcb_actionl("New", "Font", 0))
 		return 1;
 
 #warning TODO do we need to change design.bloat here?
@@ -352,7 +352,7 @@ static int pcb_act_FontSave(int oargc, const char **oargv)
 	}
 
 	pcb_font_set_info(font);
-	pcb_hid_actionl("SaveFontTo", NULL);
+	pcb_actionl("SaveFontTo", NULL);
 
 	return 0;
 	PCB_OLD_ACT_END;
@@ -371,7 +371,7 @@ int pplg_check_ver_fontmode(int ver_needed) { return 0; }
 
 void pplg_uninit_fontmode(void)
 {
-	pcb_hid_remove_actions_by_cookie(fontmode_cookie);
+	pcb_remove_actions_by_cookie(fontmode_cookie);
 }
 
 #include "dolists.h"

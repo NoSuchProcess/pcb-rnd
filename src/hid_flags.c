@@ -69,7 +69,7 @@ int pcb_hid_get_flag(const char *name)
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
-			a = pcb_hid_find_action(buff);
+			a = pcb_find_action(buff);
 			if (!a) {
 				pcb_message(PCB_MSG_ERROR, "hid_get_flag: no action %s\n", name);
 				return -1;
@@ -97,11 +97,11 @@ int pcb_hid_get_flag(const char *name)
 				buff[len] = '\0';
 				argv[0] = buff;
 				argv[1] = NULL;
-				return pcb_hid_actionv_(a, len > 0, argv);
+				return pcb_actionv_(a, len > 0, argv);
 			}
 			else {
 				/* slower but more generic way */
-				return pcb_hid_parse_command(name);
+				return pcb_parse_command(name);
 			}
 		}
 		else {

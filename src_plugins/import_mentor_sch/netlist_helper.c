@@ -256,7 +256,7 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 		if (value == NULL) value = "";
 
 		/* create elemet */
-		pcb_hid_actionl("ElementList", "Need", refdes, footprint, value, NULL);
+		pcb_actionl("ElementList", "Need", refdes, footprint, value, NULL);
 /*		printf("Elem '%s' -> %s:%s:%s\n", ectx->id, refdes, footprint, value);*/
 	}
 	else
@@ -296,7 +296,7 @@ void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *p
 		pcb_message(PCB_MSG_ERROR, "nethelper: can't resolve refdes of part %s\n", part);
 	}
 	pcb_snprintf(term, sizeof(term), "%s-%s", refdes, pin);
-	pcb_hid_actionl("Netlist", "Add",  nctx->netname, term, NULL);
+	pcb_actionl("Netlist", "Add",  nctx->netname, term, NULL);
 }
 
 void nethlp_net_destroy(nethlp_net_ctx_t *nctx)

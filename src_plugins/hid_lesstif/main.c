@@ -705,7 +705,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	case XmCR_ACTIVATE:
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
-		pcb_hid_parse_command(s);
+		pcb_parse_command(s);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 	case XmCR_LOSING_FOCUS:
@@ -1911,7 +1911,7 @@ pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmVa
 
 static void mainwind_delete_cb()
 {
-	pcb_hid_action("Quit");
+	pcb_action("Quit");
 }
 
 static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
@@ -1924,7 +1924,7 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 
 	if (nbytes) {
 		buf[nbytes] = '\0';
-		pcb_hid_parse_actions(buf);
+		pcb_parse_actions(buf);
 	}
 }
 
@@ -3992,7 +3992,7 @@ static void lesstif_begin(void)
 
 static void lesstif_end(void)
 {
-	pcb_hid_remove_actions_by_cookie(lesstif_cookie);
+	pcb_remove_actions_by_cookie(lesstif_cookie);
 	pcb_hid_remove_attributes_by_cookie(lesstif_cookie);
 	lesstif_active = 0;
 }

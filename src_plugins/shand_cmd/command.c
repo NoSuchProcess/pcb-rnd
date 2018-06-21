@@ -401,7 +401,7 @@ int pplg_check_ver_shand_cmd(int ver_needed) { return 0; }
 
 void pplg_uninit_shand_cmd(void)
 {
-	pcb_hid_remove_actions_by_cookie(shand_cmd_cookie);
+	pcb_remove_actions_by_cookie(shand_cmd_cookie);
 }
 
 #include "dolists.h"

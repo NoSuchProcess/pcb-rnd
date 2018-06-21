@@ -810,7 +810,7 @@ static void dialog_cb(GtkDialog * dlg, gint response_id, gpointer * data)
 	case GTK_RESPONSE_APPLY:
 		script = gtk_entry_get_text(GTK_ENTRY(sdlg.expr));
 		act = gtkc_combo_box_text_get_active_text(sdlg.action);
-		pcb_hid_actionl("query", act, script, NULL);
+		pcb_actionl("query", act, script, NULL);
 		break;
 	case GTK_RESPONSE_CLOSE:
 		gtk_widget_destroy(GTK_WIDGET(dlg));
@@ -826,7 +826,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 	const char **s;
 	int ver;
 
-	ver = pcb_hid_actionl("query", "version", NULL);
+	ver = pcb_actionl("query", "version", NULL);
 	if (ver < 0100) {
 		sdlg.window = NULL;
 		pcb_message(PCB_MSG_ERROR, "The query plugin is not avaialble, can not do advanced search.\n");

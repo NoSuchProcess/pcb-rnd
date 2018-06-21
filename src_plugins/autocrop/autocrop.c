@@ -84,7 +84,7 @@ int pplg_check_ver_autocrop(int ver_needed) { return 0; }
 
 void pplg_uninit_autocrop(void)
 {
-	pcb_hid_remove_actions_by_cookie(autocrop_cookie);
+	pcb_remove_actions_by_cookie(autocrop_cookie);
 }
 
 #include "dolists.h"

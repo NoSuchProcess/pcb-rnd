@@ -128,7 +128,7 @@ static int pcb_act_Load(int oargc, const char **oargv)
 	XmString xmname, pattern;
 
 	if (argc > 1)
-		return pcb_hid_actionv("LoadFrom", argc, argv);
+		return pcb_actionv("LoadFrom", argc, argv);
 
 	function = argc ? argv[0] : "Layout";
 
@@ -160,7 +160,7 @@ static int pcb_act_Load(int oargc, const char **oargv)
 
 	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
 
-	pcb_hid_actionl("LoadFrom", function, name, NULL);
+	pcb_actionl("LoadFrom", function, name, NULL);
 
 	XtFree(name);
 
@@ -187,7 +187,7 @@ static int pcb_act_LoadVendor(int oargc, const char **oargv)
 	XmString xmname, pattern;
 
 	if (argc > 0)
-		return pcb_hid_actionv("LoadVendorFrom", argc, argv);
+		return pcb_actionv("LoadVendorFrom", argc, argv);
 
 	setup_fsb_dialog();
 
@@ -212,7 +212,7 @@ static int pcb_act_LoadVendor(int oargc, const char **oargv)
 
 	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
 
-	pcb_hid_actionl("LoadVendorFrom", name, NULL);
+	pcb_actionl("LoadVendorFrom", name, NULL);
 
 	XtFree(name);
 
@@ -242,13 +242,13 @@ static int pcb_act_Save(int oargc, const char **oargv)
 	XmString xmname, pattern;
 
 	if (argc > 1)
-		pcb_hid_actionv("SaveTo", argc, argv);
+		pcb_actionv("SaveTo", argc, argv);
 
 	function = argc ? argv[0] : "Layout";
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
-			return pcb_hid_actionl("SaveTo", "Layout", NULL);
+			return pcb_actionl("SaveTo", "Layout", NULL);
 
 	setup_fsb_dialog();
 
@@ -276,7 +276,7 @@ static int pcb_act_Save(int oargc, const char **oargv)
 	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0)
-		pcb_hid_actionl("PasteBuffer", "Save", name, NULL);
+		pcb_actionl("PasteBuffer", "Save", name, NULL);
 	else {
 		/*
 		 * if we got this far and the function is Layout, then
@@ -285,9 +285,9 @@ static int pcb_act_Save(int oargc, const char **oargv)
 		 * just obtained.
 		 */
 		if (pcb_strcasecmp(function, "Layout") == 0)
-			pcb_hid_actionl("SaveTo", "LayoutAs", name, NULL);
+			pcb_actionl("SaveTo", "LayoutAs", name, NULL);
 		else
-			pcb_hid_actionl("SaveTo", function, name, NULL);
+			pcb_actionl("SaveTo", function, name, NULL);
 	}
 	XtFree(name);
 
@@ -2072,7 +2072,7 @@ static int pcb_act_ImportGUI(int oargc, const char **oargv)
 
 
 	I_am_recursing = 1;
-	rv = pcb_hid_action("Import");
+	rv = pcb_action("Import");
 	I_am_recursing = 0;
 
 	return rv;

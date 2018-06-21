@@ -65,13 +65,13 @@ void pcb_tool_poly_notify_mode(void)
 
 	/* check if this is the last point of a polygon */
 	if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-		pcb_hid_actionl("Polygon", "Close", NULL);
+		pcb_actionl("Polygon", "Close", NULL);
 		return;
 	}
 
 	/* Someone clicking twice on the same point ('doubleclick'): close polygon */
 	if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-		pcb_hid_actionl("Polygon", "Close", NULL);
+		pcb_actionl("Polygon", "Close", NULL);
 		return;
 	}
 

@@ -137,7 +137,7 @@ static int hpgl_load(const char *fname)
 			pcb_message(PCB_MSG_ERROR, "Error loading HP-GL: could not load any object from %s\n", fname);
 			return 0;
 		}
-		pcb_hid_actionl("mode", "pastebuffer", NULL);
+		pcb_actionl("mode", "pastebuffer", NULL);
 		return 0;
 	}
 
@@ -183,7 +183,7 @@ int pplg_check_ver_import_hpgl(int ver_needed) { return 0; }
 
 void pplg_uninit_import_hpgl(void)
 {
-	pcb_hid_remove_actions_by_cookie(hpgl_cookie);
+	pcb_remove_actions_by_cookie(hpgl_cookie);
 }
 
 #include "dolists.h"

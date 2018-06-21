@@ -386,8 +386,8 @@ padstack_t *hyp_pstk_by_name(char *padstack_name)
 void hyp_netlist_begin()
 {
 	/* clear netlist */
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
 	return;
 }
 
@@ -401,7 +401,7 @@ void hyp_netlist_add(char *device_name, char *pin_name)
 
 	if ((net_name != NULL) && (device_name != NULL) && (pin_name != NULL)) {
 		pcb_snprintf(conn, sizeof(conn), "%s-%s", device_name, pin_name);
-		pcb_hid_actionl("Netlist", "Add", net_name, conn, NULL);
+		pcb_actionl("Netlist", "Add", net_name, conn, NULL);
 	}
 	return;
 }
@@ -409,8 +409,8 @@ void hyp_netlist_add(char *device_name, char *pin_name)
 void hyp_netlist_end()
 {
 	/* sort netlist */
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	pcb_actionl("Netlist", "Sort", NULL);
+	pcb_actionl("Netlist", "Thaw", NULL);
 	return;
 }
 

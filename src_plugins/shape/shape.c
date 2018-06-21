@@ -495,7 +495,7 @@ int pplg_check_ver_shape(int ver_needed) { return 0; }
 void pplg_uninit_shape(void)
 {
 	pcb_event_unbind_allcookie(pcb_shape_cookie);
-	pcb_hid_remove_actions_by_cookie(pcb_shape_cookie);
+	pcb_remove_actions_by_cookie(pcb_shape_cookie);
 }
 
 

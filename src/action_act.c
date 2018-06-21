@@ -98,7 +98,7 @@ int pcb_act_ExecuteFile(int oargc, const char **oargv)
 
 		if (*sp && *sp != '#') {
 			/*pcb_message("%s : line %-3d : \"%s\"\n", fname, n, sp); */
-			pcb_hid_parse_actions(sp);
+			pcb_parse_actions(sp);
 		}
 	}
 

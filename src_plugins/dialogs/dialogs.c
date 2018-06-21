@@ -58,7 +58,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
-	pcb_hid_remove_actions_by_cookie(dialogs_cookie);
+	pcb_remove_actions_by_cookie(dialogs_cookie);
 }
 
 #include "dolists.h"

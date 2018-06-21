@@ -295,7 +295,7 @@ int pplg_check_ver_query(int ver_needed) { return 0; }
 
 void pplg_uninit_query(void)
 {
-	pcb_hid_remove_actions_by_cookie(query_cookie);
+	pcb_remove_actions_by_cookie(query_cookie);
 	pcb_qry_fnc_destroy();
 }
 

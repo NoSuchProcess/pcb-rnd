@@ -355,7 +355,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 			   that happened before the cancel */
 			norefresh = 1;
 			g_object_set(library_window->preview, "element-data", NULL, NULL);
-			pcb_hid_actionl("PasteBuffer", "clear", NULL);
+			pcb_actionl("PasteBuffer", "clear", NULL);
 		}
 		else
 			gtk_entry_set_text(library_window->entry_filter, name);

@@ -813,7 +813,7 @@ static int pcb_act_PasteBuffer(int oargc, const char **oargv)
 				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
-			pcb_hid_actionl("RemoveSelected", NULL);
+			pcb_actionl("RemoveSelected", NULL);
 			break;
 
 			/* converts buffer contents into a subcircuit */

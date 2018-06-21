@@ -806,7 +806,7 @@ int pplg_check_ver_export_openems(int ver_needed) { return 0; }
 
 void pplg_uninit_export_openems(void)
 {
-	pcb_hid_remove_actions_by_cookie(openems_cookie);
+	pcb_remove_actions_by_cookie(openems_cookie);
 	pcb_hid_remove_attributes_by_cookie(openems_cookie);
 }
 

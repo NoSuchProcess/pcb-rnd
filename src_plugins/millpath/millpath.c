@@ -65,7 +65,7 @@ int pplg_check_ver_millpath(int ver_needed) { return 0; }
 
 void pplg_uninit_millpath(void)
 {
-	pcb_hid_remove_actions_by_cookie(pcb_millpath_cookie);
+	pcb_remove_actions_by_cookie(pcb_millpath_cookie);
 }
 
 

@@ -338,7 +338,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 				if (want_net && (netname_valid(netname))) {
 					char tn[36];
 					sprintf(tn, "%s-%s", refdes, term);
-					pcb_hid_actionl("Netlist", "Add",  netname, tn, NULL);
+					pcb_actionl("Netlist", "Add",  netname, tn, NULL);
 				}
 				break;
 			case '9': /* EOF */
@@ -400,15 +400,15 @@ int pcb_act_LoadIpc356From(int oargc, const char **oargv)
 	}
 
 	if (want_net) {
-		pcb_hid_actionl("Netlist", "Freeze", NULL);
-		pcb_hid_actionl("Netlist", "Clear", NULL);
+		pcb_actionl("Netlist", "Freeze", NULL);
+		pcb_actionl("Netlist", "Clear", NULL);
 	}
 
 	res = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
-		pcb_hid_actionl("Netlist", "Sort", NULL);
-		pcb_hid_actionl("Netlist", "Thaw", NULL);
+		pcb_actionl("Netlist", "Sort", NULL);
+		pcb_actionl("Netlist", "Thaw", NULL);
 	}
 
 	fclose(f);
@@ -438,7 +438,7 @@ int pplg_check_ver_import_ipcd356(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ipcd356(void)
 {
-	pcb_hid_remove_actions_by_cookie(ipcd356_cookie);
+	pcb_remove_actions_by_cookie(ipcd356_cookie);
 }
 
 #include "dolists.h"

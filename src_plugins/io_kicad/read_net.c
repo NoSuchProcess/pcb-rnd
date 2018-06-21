@@ -98,7 +98,7 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 	}
 
 	/* Load the elements */
-	pcb_hid_actionl("ElementList", "start", NULL);
+	pcb_actionl("ElementList", "start", NULL);
 
 	for(c = components->children; c != NULL; c = c->next) {
 		const char *ref = NULL, *value = NULL, *footprint = NULL;
@@ -117,15 +117,15 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 			pcb_message(PCB_MSG_WARNING, "eechema: ignoring component %s with no footprint\n", ref);
 			continue;
 		}
-		pcb_hid_actionl("ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
+		pcb_actionl("ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
 	}
 
-	pcb_hid_actionl("ElementList", "Done", NULL);
+	pcb_actionl("ElementList", "Done", NULL);
 
 	/* Load the netlist */
 
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
 
 	for(net = nets->children; net != NULL; net = net->next) {
 		const char *netname = NULL, *code = NULL, *name = NULL, *footprint = NULL;
@@ -164,13 +164,13 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 					continue;
 				}
 				pcb_snprintf(refpin, sizeof(refpin), "%s-%s", ref, pin);
-				pcb_hid_actionl("Netlist", "Add",  netname, refpin, NULL);
+				pcb_actionl("Netlist", "Add",  netname, refpin, NULL);
 			}
 		}
 	}
 
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	pcb_actionl("Netlist", "Sort", NULL);
+	pcb_actionl("Netlist", "Thaw", NULL);
 
 	return 0;
 }

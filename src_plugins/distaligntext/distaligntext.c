@@ -613,7 +613,7 @@ int pplg_check_ver_distaligntext(int ver_needed) { return 0; }
 
 void pplg_uninit_distaligntext(void)
 {
-	pcb_hid_remove_actions_by_cookie(distaligntext_cookie);
+	pcb_remove_actions_by_cookie(distaligntext_cookie);
 }
 
 #include "dolists.h"

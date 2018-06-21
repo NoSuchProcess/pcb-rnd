@@ -421,7 +421,7 @@ int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_remote(void)
 {
-/*	pcb_hid_remove_actions_by_cookie(remote_cookie);*/
+/*	pcb_remove_actions_by_cookie(remote_cookie);*/
 	pcb_event_unbind_allcookie(remote_cookie);
 }
 

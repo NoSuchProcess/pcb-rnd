@@ -246,7 +246,7 @@ void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
  */
 static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 {
-	pcb_hid_action("Quit");
+	pcb_action("Quit");
 
 	/*
 	 * Return TRUE to keep our app running.  A FALSE here would let the

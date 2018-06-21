@@ -34,11 +34,11 @@ int pcb_hid_cfg_action(const lht_node_t *node)
 		return -1;
 	switch(node->type) {
 		case LHT_TEXT:
-			return pcb_hid_parse_actions(node->data.text.value);
+			return pcb_parse_actions(node->data.text.value);
 		case LHT_LIST:
 			for(node = node->data.list.first; node != NULL; node = node->next) {
 				if (node->type == LHT_TEXT) {
-					if (pcb_hid_parse_actions(node->data.text.value) != 0)
+					if (pcb_parse_actions(node->data.text.value) != 0)
 						return -1;
 				}
 				else

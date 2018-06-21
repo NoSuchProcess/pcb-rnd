@@ -54,7 +54,7 @@ static char *prompt = NULL;
 
 static void uninit_batch(void)
 {
-	pcb_hid_remove_actions_by_cookie(batch_cookie);
+	pcb_remove_actions_by_cookie(batch_cookie);
 	pcb_event_unbind_allcookie(batch_cookie);
 	if (prompt != NULL) {
 		free(prompt);
@@ -146,7 +146,7 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 			uninit_batch();
 			goto quit;
 		}
-		pcb_hid_parse_command(line);
+		pcb_parse_command(line);
 	}
 
 	quit:;
@@ -423,6 +423,6 @@ static void batch_begin(void)
 
 static void batch_end(void)
 {
-	pcb_hid_remove_actions_by_cookie(batch_cookie);
+	pcb_remove_actions_by_cookie(batch_cookie);
 }
 

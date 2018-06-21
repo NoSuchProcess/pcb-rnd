@@ -701,7 +701,7 @@ int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
 void pplg_uninit_vendordrill(void)
 {
 	pcb_event_unbind_allcookie(vendor_cookie);
-	pcb_hid_remove_actions_by_cookie(vendor_cookie);
+	pcb_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
 	conf_unreg_fields("plugins/vendor/");
 }

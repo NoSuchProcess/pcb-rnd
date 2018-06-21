@@ -2096,7 +2096,7 @@ static int pcb_act_GlobalPuller(int oargc, const char **oargv)
 
 	printf("optimizing...\n");
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
-	/* pcb_hid_actionl("djopt", "puller", 0); */
+	/* pcb_actionl("djopt", "puller", 0); */
 
 	cflg = pcb_layergrp_flags(PCB, pcb_layer_get_group_(CURRENT));
 	current_is_solder = (cflg & PCB_LYT_BOTTOM);
@@ -2208,7 +2208,7 @@ int pplg_check_ver_puller(int ver_needed) { return 0; }
 
 void pplg_uninit_puller(void)
 {
-	pcb_hid_remove_actions_by_cookie(puller_cookie);
+	pcb_remove_actions_by_cookie(puller_cookie);
 }
 
 #include "dolists.h"

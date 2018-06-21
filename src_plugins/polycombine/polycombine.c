@@ -349,7 +349,7 @@ int pplg_check_ver_polycombine(int ver_needed) { return 0; }
 
 void pplg_uninit_polycombine(void)
 {
-	pcb_hid_remove_actions_by_cookie(polycombine_cookie);
+	pcb_remove_actions_by_cookie(polycombine_cookie);
 }
 
 #include "dolists.h"

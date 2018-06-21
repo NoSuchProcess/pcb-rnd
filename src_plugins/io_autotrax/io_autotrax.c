@@ -66,7 +66,7 @@ int pplg_check_ver_io_autotrax(int ver_needed) { return 0; }
 
 void pplg_uninit_io_autotrax(void)
 {
-	pcb_hid_remove_actions_by_cookie(autotrax_cookie);
+	pcb_remove_actions_by_cookie(autotrax_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
 }
 

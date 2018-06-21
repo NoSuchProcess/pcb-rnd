@@ -474,7 +474,7 @@ int pplg_check_ver_diag(int ver_needed) { return 0; }
 
 void pplg_uninit_diag(void)
 {
-	pcb_hid_remove_actions_by_cookie(diag_cookie);
+	pcb_remove_actions_by_cookie(diag_cookie);
 	conf_unreg_fields("plugins/diag/");
 	pcb_event_unbind_allcookie(diag_cookie);
 }

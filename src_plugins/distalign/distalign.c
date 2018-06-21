@@ -550,7 +550,7 @@ int pplg_check_ver_distalign(int ver_needed) { return 0; }
 
 void pplg_uninit_distalign(void)
 {
-	pcb_hid_remove_actions_by_cookie(distalign_cookie);
+	pcb_remove_actions_by_cookie(distalign_cookie);
 }
 
 #include "dolists.h"

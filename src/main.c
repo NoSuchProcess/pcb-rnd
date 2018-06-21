@@ -574,7 +574,7 @@ int main(int argc, char *argv[])
 	conf_update(NULL, -1);
 
 	if (main_action != NULL) {
-		int res = pcb_hid_parse_command(main_action);
+		int res = pcb_parse_command(main_action);
 		if ((res != 0) && (main_action_hint != NULL))
 			fprintf(stderr, "\nHint: %s\n", main_action_hint);
 		exit(res);
@@ -623,11 +623,11 @@ int main(int argc, char *argv[])
 
 	if (conf_core.rc.script_filename) {
 		pcb_message(PCB_MSG_INFO, _("Executing startup script file %s\n"), conf_core.rc.script_filename);
-		pcb_hid_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
+		pcb_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
 		pcb_message(PCB_MSG_INFO, _("Executing startup action %s\n"), conf_core.rc.action_string);
-		pcb_hid_parse_actions(conf_core.rc.action_string);
+		pcb_parse_actions(conf_core.rc.action_string);
 	}
 
 	if (pcb_gui->printer || pcb_gui->exporter) {

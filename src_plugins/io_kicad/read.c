@@ -1052,7 +1052,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
 			id = pcb_layer_create(st->pcb, gid, lname);
 /*printf("------------------------------ layer=%s\n", lname);
-pcb_hid_actionl("dumpcsect", NULL);*/
+pcb_actionl("dumpcsect", NULL);*/
 			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {

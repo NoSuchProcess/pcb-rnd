@@ -237,7 +237,7 @@ int pplg_check_ver_gpmi(int ver_needed)
 void pplg_uninit_gpmi(void)
 {
 	pcb_event_unbind_allcookie(gpmi_cookie);
-	pcb_hid_remove_actions_by_cookie(gpmi_cookie);
+	pcb_remove_actions_by_cookie(gpmi_cookie);
 	hid_gpmi_script_info_uninit();
 	gpmi_pkg_unload(pkg_scripts);
 	gpmi_uninit();

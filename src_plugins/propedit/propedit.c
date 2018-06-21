@@ -149,7 +149,7 @@ int pplg_check_ver_propedit(int ver_needed) { return 0; }
 
 void pplg_uninit_propedit(void)
 {
-	pcb_hid_remove_actions_by_cookie(propedit_cookie);
+	pcb_remove_actions_by_cookie(propedit_cookie);
 }
 
 #include "dolists.h"

@@ -100,7 +100,7 @@ int pplg_check_ver_autoroute(int ver_needed) { return 0; }
 
 void pplg_uninit_autoroute(void)
 {
-	pcb_hid_remove_actions_by_cookie(autoroute_cookie);
+	pcb_remove_actions_by_cookie(autoroute_cookie);
 }
 
 #include "dolists.h"

@@ -39,9 +39,9 @@ static void grid_units_button_cb(GtkWidget * widget, gpointer data)
 {
 	/* Button only toggles between mm and mil */
 	if (conf_core.editor.grid_unit == get_unit_struct("mm"))
-		pcb_hid_actionl("SetUnits", "mil", NULL);
+		pcb_actionl("SetUnits", "mil", NULL);
 	else
-		pcb_hid_actionl("SetUnits", "mm", NULL);
+		pcb_actionl("SetUnits", "mm", NULL);
 }
 
 /*

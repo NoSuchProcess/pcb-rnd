@@ -105,7 +105,7 @@ int pplg_check_ver_acompnet(int ver_needed) { return 0; }
 
 void pplg_uninit_acompnet(void)
 {
-	pcb_hid_remove_actions_by_cookie(acompnet_cookie);
+	pcb_remove_actions_by_cookie(acompnet_cookie);
 	pcb_uilayer_free_all_cookie(acompnet_cookie);
 }
 

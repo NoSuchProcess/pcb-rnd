@@ -60,7 +60,7 @@ static int pcb_stroke_exec(const char *seq)
 	int idx;
 
 	conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
-		if ((strcmp(seq, item->name) == 0) && (pcb_hid_parse_actions(item->val.string[0]) == 0))
+		if ((strcmp(seq, item->name) == 0) && (pcb_parse_actions(item->val.string[0]) == 0))
 			return 0;
 	}
 	if (conf_stroke.plugins.stroke.warn4unknown)
@@ -113,7 +113,7 @@ static int pcb_act_stroke(int oargc, const char **oargv)
 	else if (pcb_strcasecmp(argv[0], "zoom") == 0) {
 		char tmp[256];
 		pcb_snprintf(tmp, sizeof(tmp), "ZoomTo(%$mm, %$mm, %$mm, %$mm)", stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y);
-		pcb_hid_parse_command(tmp);
+		pcb_parse_command(tmp);
 	}
 	else if (pcb_strcasecmp(argv[0], "stopline") == 0) {
 		if (conf_core.editor.mode == PCB_MODE_LINE)
@@ -143,7 +143,7 @@ int pplg_uninit_stroke(void)
 {
 	conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
 	conf_unreg_fields("plugins/stroke/");
-	pcb_hid_remove_actions_by_cookie(pcb_stroke_cookie);
+	pcb_remove_actions_by_cookie(pcb_stroke_cookie);
 	return 0;
 }
 

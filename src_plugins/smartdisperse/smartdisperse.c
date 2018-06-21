@@ -249,7 +249,7 @@ int pplg_check_ver_smartdisperse(int ver_needed) { return 0; }
 
 void pplg_uninit_smartdisperse(void)
 {
-	pcb_hid_remove_actions_by_cookie(smartdisperse_cookie);
+	pcb_remove_actions_by_cookie(smartdisperse_cookie);
 }
 
 #include "dolists.h"

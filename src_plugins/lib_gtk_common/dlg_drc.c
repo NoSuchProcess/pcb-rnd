@@ -84,7 +84,7 @@ static void drc_refresh_cb(GtkButton *button, gpointer data)
 
 	p->num_violations = 0;
 	gtk_container_foreach(GTK_CONTAINER(p->drc_vbox), destroy_widget, NULL);
-	pcb_hid_actionl("DRC", NULL);
+	pcb_actionl("DRC", NULL);
 }
 
 static void drc_destroy_cb(GtkWidget * widget, gpointer data)

@@ -59,7 +59,7 @@ void pcb_tool_lock_notify_mode(void)
 
 		DrawSubc(subc);
 		pcb_draw();
-		pcb_hid_actionl("Report", "Subc", NULL);
+		pcb_actionl("Report", "Subc", NULL);
 	}
 	else if (type != PCB_OBJ_VOID) {
 		pcb_text_t *thing = (pcb_text_t *) ptr3;
@@ -71,7 +71,7 @@ void pcb_tool_lock_notify_mode(void)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 			pcb_draw();
 		}
-		pcb_hid_actionl("Report", "Object", NULL);
+		pcb_actionl("Report", "Object", NULL);
 	}
 }
 

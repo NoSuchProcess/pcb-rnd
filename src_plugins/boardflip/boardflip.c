@@ -193,7 +193,7 @@ int pplg_check_ver_boardflip(int ver_needed) { return 0; }
 
 void pplg_uninit_boardflip(void)
 {
-	pcb_hid_remove_actions_by_cookie(boardflip_cookie);
+	pcb_remove_actions_by_cookie(boardflip_cookie);
 }
 
 #include "dolists.h"

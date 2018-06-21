@@ -247,7 +247,7 @@ static int ev_lyr_select_virt(pcb_gtk_ls_lyr_t *lsl, int do_select)
 		return -1; /* can not be selected */
 
 	if (do_select)
-		pcb_hid_actionl("SelectLayer", ml->select_name, NULL);
+		pcb_actionl("SelectLayer", ml->select_name, NULL);
 
 	b = (pcb_bool *)((char *)PCB + ml->sel_offs);
 	return *b;
@@ -274,7 +274,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 		case 3:
 			if (lsg->grp != &lsg->ls->grp_virt) {
 				pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
-				pcb_hid_actionl("Popup", "group", NULL);
+				pcb_actionl("Popup", "group", NULL);
 			}
 			break;
 	}
@@ -289,11 +289,11 @@ static void layer_popup(pcb_gtk_layersel_t *ls, int button, pcb_layer_id_t lid, 
 	if (lid < 0) {
 		if ((g != NULL) && (g != &ls->grp_virt)) {
 			pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, g);
-			pcb_hid_actionl("Popup", "group", NULL);
+			pcb_actionl("Popup", "group", NULL);
 		}
 	}
 	else
-		pcb_hid_actionl("Popup", "layer", NULL);
+		pcb_actionl("Popup", "layer", NULL);
 }
 
 static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_lyr_t *lsl)
@@ -369,7 +369,7 @@ static gboolean group_any_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 		case 3:
 			if (lsg->grp != &lsg->ls->grp_virt) {
 				pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
-				pcb_hid_actionl("Popup", "group", NULL);
+				pcb_actionl("Popup", "group", NULL);
 			}
 			break;
 	}

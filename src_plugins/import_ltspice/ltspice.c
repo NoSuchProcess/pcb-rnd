@@ -85,7 +85,7 @@ static void sym_flush(symattr_t *sattr)
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
-			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+			pcb_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
@@ -99,7 +99,7 @@ static int ltspice_parse_asc(FILE *fa)
 
 	memset(&sattr, 0, sizeof(sattr));
 
-	pcb_hid_actionl("ElementList", "start", NULL);
+	pcb_actionl("ElementList", "start", NULL);
 
 	while(fgets(line, sizeof(line), fa) != NULL) {
 		char *s;
@@ -193,7 +193,7 @@ static int ltspice_parse_asc(FILE *fa)
 		}
 	}
 	sym_flush(&sattr);
-	pcb_hid_actionl("ElementList", "Done", NULL);
+	pcb_actionl("ElementList", "Done", NULL);
 	return 0;
 }
 
@@ -201,8 +201,8 @@ static int ltspice_parse_net(FILE *fn)
 {
 	char line[1024];
 
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
@@ -216,13 +216,13 @@ static int ltspice_parse_net(FILE *fn)
 			int n;
 			for(n = 2; n < argc; n++) {
 /*				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);*/
-				pcb_hid_actionl("Netlist", "Add",  argv[1], argv[n], NULL);
+				pcb_actionl("Netlist", "Add",  argv[1], argv[n], NULL);
 			}
 		}
 	}
 
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	pcb_actionl("Netlist", "Sort", NULL);
+	pcb_actionl("Netlist", "Thaw", NULL);
 
 	return 0;
 }
@@ -321,7 +321,7 @@ int pplg_check_ver_import_ltspice(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ltspice(void)
 {
-	pcb_hid_remove_actions_by_cookie(ltspice_cookie);
+	pcb_remove_actions_by_cookie(ltspice_cookie);
 }
 
 #include "dolists.h"

@@ -135,7 +135,7 @@ int pplg_check_ver_polystitch(int ver_needed) { return 0; }
 
 void pplg_uninit_polystitch(void)
 {
-	pcb_hid_remove_actions_by_cookie(polystitch_cookie);
+	pcb_remove_actions_by_cookie(polystitch_cookie);
 }
 
 #include "dolists.h"

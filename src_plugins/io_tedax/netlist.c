@@ -72,8 +72,8 @@ static int tedax_parse_net(FILE *fn)
 
 	htsp_init(&fps, strhash, strkeyeq);
 
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
 
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if ((argc == 3) && (strcmp(argv[0], "footprint") == 0)) {
@@ -87,16 +87,16 @@ static int tedax_parse_net(FILE *fn)
 		else if ((argc == 4) && (strcmp(argv[0], "conn") == 0)) {
 			char id[512];
 			sprintf(id, "%s-%s", argv[2], argv[3]);
-			pcb_hid_actionl("Netlist", "Add",  argv[1], id, NULL);
+			pcb_actionl("Netlist", "Add",  argv[1], id, NULL);
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
 			break;
 	}
 
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	pcb_actionl("Netlist", "Sort", NULL);
+	pcb_actionl("Netlist", "Thaw", NULL);
 
-	pcb_hid_actionl("ElementList", "start", NULL);
+	pcb_actionl("ElementList", "start", NULL);
 	for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
 		fp_t *fp = e->value;
 
@@ -104,7 +104,7 @@ static int tedax_parse_net(FILE *fn)
 		if (fp->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
 		else
-			pcb_hid_actionl("ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
+			pcb_actionl("ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
 
 		free(e->key);
 		free(fp->value);
@@ -112,7 +112,7 @@ static int tedax_parse_net(FILE *fn)
 		free(fp);
 	}
 
-	pcb_hid_actionl("ElementList", "Done", NULL);
+	pcb_actionl("ElementList", "Done", NULL);
 
 	htsp_uninit(&fps);
 

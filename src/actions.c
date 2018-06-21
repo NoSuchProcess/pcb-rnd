@@ -87,7 +87,7 @@ void pcb_hid_register_action(const pcb_hid_action_t *a, const char *cookie, int 
 	pcb_hid_register_actions(a, 1, cookie, copy);
 }
 
-void pcb_hid_remove_actions(const pcb_hid_action_t *a, int n)
+void pcb_remove_actions(const pcb_hid_action_t *a, int n)
 {
 	int i;
 
@@ -102,7 +102,7 @@ void pcb_hid_remove_actions(const pcb_hid_action_t *a, int n)
 	}
 }
 
-void pcb_hid_remove_actions_by_cookie(const char *cookie)
+void pcb_remove_actions_by_cookie(const char *cookie)
 {
 	htsp_entry_t *e;
 
@@ -120,7 +120,7 @@ void pcb_hid_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-void pcb_hid_remove_action(const pcb_hid_action_t *a)
+void pcb_remove_action(const pcb_hid_action_t *a)
 {
 	htsp_entry_t *e;
 
@@ -134,7 +134,7 @@ void pcb_hid_remove_action(const pcb_hid_action_t *a)
 	}
 }
 
-const pcb_hid_action_t *pcb_hid_find_action(const char *name)
+const pcb_hid_action_t *pcb_find_action(const char *name)
 {
 	hid_cookie_action_t *ca;
 
@@ -213,12 +213,12 @@ void pcb_dump_actions(void)
 	}
 }
 
-int pcb_hid_action(const char *name)
+int pcb_action(const char *name)
 {
-	return pcb_hid_actionv(name, 0, 0);
+	return pcb_actionv(name, 0, 0);
 }
 
-int pcb_hid_actionl(const char *name, ...)
+int pcb_actionl(const char *name, ...)
 {
 	const char *argv[20];
 	int argc = 0;
@@ -229,10 +229,10 @@ int pcb_hid_actionl(const char *name, ...)
 	while ((arg = va_arg(ap, char *)) != 0)
 		argv[argc++] = arg;
 	va_end(ap);
-	return pcb_hid_actionv(name, argc, argv);
+	return pcb_actionv(name, argc, argv);
 }
 
-int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
+int pcb_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 {
 	int i, ret;
 	const pcb_hid_action_t *old_action;
@@ -252,14 +252,14 @@ int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 	return ret;
 }
 
-int pcb_hid_actionv(const char *name, int argc, const char **argv)
+int pcb_actionv(const char *name, int argc, const char **argv)
 {
 	const pcb_hid_action_t *a;
 
 	if (name == NULL)
 		return 1;
 
-	a = pcb_hid_find_action(name);
+	a = pcb_find_action(name);
 	if (a == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);
@@ -268,7 +268,7 @@ int pcb_hid_actionv(const char *name, int argc, const char **argv)
 		pcb_message(PCB_MSG_ERROR, ")\n");
 		return 1;
 	}
-	return pcb_hid_actionv_(a, argc, argv);
+	return pcb_actionv_(a, argc, argv);
 }
 
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
@@ -330,7 +330,7 @@ another:
 	 * with no parameters or event.
 	 */
 	if (*sp == '\0') {
-		retcode = pcb_hid_actionv(aname, 0, 0);
+		retcode = pcb_actionv(aname, 0, 0);
 		goto cleanup;
 	}
 
@@ -353,7 +353,7 @@ another:
 		 * ","
 		 */
 		if (!maybe_empty && ((parens && *sp == ')') || (!parens && !*sp))) {
-			retcode = pcb_hid_actionv(aname, num, list);
+			retcode = pcb_actionv(aname, num, list);
 			if (retcode)
 				goto cleanup;
 
@@ -429,13 +429,13 @@ cleanup:
 	return retcode;
 }
 
-int pcb_hid_parse_command(const char *str_)
+int pcb_parse_command(const char *str_)
 {
 	pcb_event(PCB_EVENT_CLI_ENTER, "s", str_);
 	return hid_parse_actionstring(str_, pcb_false);
 }
 
-int pcb_hid_parse_actions(const char *str_)
+int pcb_parse_actions(const char *str_)
 {
 	return hid_parse_actionstring(str_, pcb_true);
 }

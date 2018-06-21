@@ -93,7 +93,7 @@ int pcb_gtk_dlg_confirm_close(GtkWidget *top_window)
 	switch (pcb_gtk_dlg_message(str, GTK_WINDOW(top_window))) {
 		case GTK_RESPONSE_YES:
 		{
-			if (pcb_hid_actionl("Save", NULL)) {	/* Save failed */
+			if (pcb_actionl("Save", NULL)) {	/* Save failed */
 				return 0;								/* Cancel */
 			}
 			else {

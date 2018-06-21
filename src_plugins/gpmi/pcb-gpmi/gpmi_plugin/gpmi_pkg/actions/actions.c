@@ -56,7 +56,7 @@ static int action_cb(int argc, const char **argv)
 static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 {
 	acontext_t *ctx = cl->argv[0].p;
-	pcb_hid_remove_action(&ctx->action);
+	pcb_remove_action(&ctx->action);
 	free((char *)ctx->action.name);
 	free((char *)ctx->action.description);
 	free((char *)ctx->action.syntax);
@@ -86,7 +86,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 int action(const char *cmdline)
 {
-	return pcb_hid_parse_command(cmdline);
+	return pcb_parse_command(cmdline);
 }
 
 void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)

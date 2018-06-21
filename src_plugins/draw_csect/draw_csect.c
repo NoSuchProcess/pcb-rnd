@@ -748,7 +748,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				if (lactive >= 0) {
 					char tmp[32];
 					sprintf(tmp, "%ld", lactive);
-					pcb_hid_actionl("MoveLayer", tmp, "-1", NULL);
+					pcb_actionl("MoveLayer", tmp, "-1", NULL);
 				}
 				drag_dellayer = 0;
 				lactive = -1;
@@ -814,13 +814,13 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			lid = get_layer_coords(x, y);
 			if (lid >= 0) {
 				pcb_layervis_change_group_vis(lid, 1, 1);
-				pcb_hid_actionl("Popup", "layer", NULL);
+				pcb_actionl("Popup", "layer", NULL);
 			}
 			else if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
 				pcb_coord_t tmp;
 				pcb_actd_EditGroup_gid = get_group_coords(y, &tmp, &tmp);
 				if (pcb_actd_EditGroup_gid >= 0)
-					pcb_hid_actionl("Popup", "group", NULL);
+					pcb_actionl("Popup", "group", NULL);
 			}
 			break;
 
@@ -888,7 +888,7 @@ int pplg_check_ver_draw_csect(int ver_needed) { return 0; }
 
 void pplg_uninit_draw_csect(void)
 {
-	pcb_hid_remove_actions_by_cookie(draw_csect_cookie);
+	pcb_remove_actions_by_cookie(draw_csect_cookie);
 }
 
 #include "dolists.h"

@@ -381,7 +381,7 @@ int pplg_check_ver_renumber(int ver_needed) { return 0; }
 
 void pplg_uninit_renumber(void)
 {
-	pcb_hid_remove_actions_by_cookie(renumber_cookie);
+	pcb_remove_actions_by_cookie(renumber_cookie);
 }
 
 PCB_REGISTER_ACTIONS(renumber_action_list, renumber_cookie)

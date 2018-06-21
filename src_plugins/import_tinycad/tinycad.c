@@ -73,7 +73,7 @@ static void sym_flush(symattr_t *sattr)
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
-			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+			pcb_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
@@ -88,9 +88,9 @@ static int tinycad_parse_net(FILE *fn)
 
 	memset(&sattr, 0, sizeof(sattr));
 
-	pcb_hid_actionl("ElementList", "start", NULL);
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
+	pcb_actionl("ElementList", "start", NULL);
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
@@ -119,7 +119,7 @@ static int tinycad_parse_net(FILE *fn)
 				if (sep != NULL) {
 					*sep = '-';
 /*					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);*/
-					pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);
+					pcb_actionl("Netlist", "Add",  argv[2], curr, NULL);
 				}
 			}
 		}
@@ -145,9 +145,9 @@ static int tinycad_parse_net(FILE *fn)
 
 	sym_flush(&sattr);
 
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
-	pcb_hid_actionl("ElementList", "Done", NULL);
+	pcb_actionl("Netlist", "Sort", NULL);
+	pcb_actionl("Netlist", "Thaw", NULL);
+	pcb_actionl("ElementList", "Done", NULL);
 
 	return 0;
 }
@@ -206,7 +206,7 @@ int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 
 void pplg_uninit_import_tinycad(void)
 {
-	pcb_hid_remove_actions_by_cookie(tinycad_cookie);
+	pcb_remove_actions_by_cookie(tinycad_cookie);
 }
 
 #include "dolists.h"

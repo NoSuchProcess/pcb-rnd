@@ -52,7 +52,7 @@ int pplg_check_ver_io_mentor_cell(int ver_needed) { return 0; }
 
 void pplg_uninit_io_mentor_cell(void)
 {
-	pcb_hid_remove_actions_by_cookie(mentor_cell_cookie);
+	pcb_remove_actions_by_cookie(mentor_cell_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_mentor_cell);
 }
 

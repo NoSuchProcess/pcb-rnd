@@ -76,7 +76,7 @@ int pcb_gtk_act_load(GtkWidget *top_window, int argc, const char **argv)
 
 	/* we've been given the file name */
 	if (argc > 1)
-		return pcb_hid_actionv("LoadFrom", argc, argv);
+		return pcb_actionv("LoadFrom", argc, argv);
 
 	function = argc ? argv[0] : "Layout";
 
@@ -97,7 +97,7 @@ int pcb_gtk_act_load(GtkWidget *top_window, int argc, const char **argv)
 	if (name) {
 		if (conf_core.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
-		pcb_hid_actionl("LoadFrom", function, name, NULL);
+		pcb_actionl("LoadFrom", function, name, NULL);
 		g_free(name);
 	}
 
@@ -133,13 +133,13 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv)
 		current_dir = dup_cwd();
 
 	if (argc > 1)
-		return pcb_hid_actionv("SaveTo", argc, argv);
+		return pcb_actionv("SaveTo", argc, argv);
 
 	function = argc ? argv[0] : "Layout";
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
-			return pcb_hid_actionl("SaveTo", "Layout", NULL);
+			return pcb_actionl("SaveTo", "Layout", NULL);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 		int num_fmts, n;
@@ -232,7 +232,7 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv)
 			fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, name);
 
 		if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-			pcb_hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
+			pcb_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
 
 		}
 		else {
@@ -246,9 +246,9 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv)
 			if (fmt_param != NULL)
 				sfmt = avail.plug[fmt]->description;
 			if (pcb_strcasecmp(function, "Layout") == 0)
-				pcb_hid_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
+				pcb_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
 			else
-				pcb_hid_actionl("SaveTo", function, name, sfmt, NULL);
+				pcb_actionl("SaveTo", function, name, sfmt, NULL);
 		}
 		g_free(name);
 		pcb_io_list_free(&avail);
@@ -287,7 +287,7 @@ int pcb_gtk_act_importgui(GtkWidget *top_window, int argc, const char **argv)
 	free(name);
 
 	I_am_recursing = 1;
-	rv = pcb_hid_action("Import");
+	rv = pcb_action("Import");
 	I_am_recursing = 0;
 
 	return rv;

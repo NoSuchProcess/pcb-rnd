@@ -542,6 +542,6 @@ void pcb_gtk_action_reg(void)
 
 void pcb_gtk_action_unreg(void)
 {
-	pcb_hid_remove_actions_by_cookie(ghid_act_cookie);
+	pcb_remove_actions_by_cookie(ghid_act_cookie);
 	pcb_hid_remove_attributes_by_cookie(ghid_act_cookie);
 }
