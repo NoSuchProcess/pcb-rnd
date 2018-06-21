@@ -6,10 +6,11 @@ cdt_t cdt;
 
 int main(void)
 {
+	point_t *p;
 	int i;
 	clock_t t;
-	//cdt_init(&cdt, 1000, 1000, 5000, 5000);
-	cdt_init(&cdt, 0, 0, 100000, 100000);
+	cdt_init(&cdt, 1000, 1000, 5000, 5000);
+	/*cdt_init(&cdt, 0, 0, 100000, 100000);*/
 
 	/*
 	cdt_insert_point(&cdt, 2500, 3000);
@@ -39,6 +40,7 @@ int main(void)
 	cdt_insert_point(&cdt, 3200, 2700);
 	*/
 
+	/*
 	srand(time(NULL));
 	t = clock();
 	for (i = 0; i < 1000; i++) {
@@ -46,7 +48,20 @@ int main(void)
 	}
 	t = clock() - t;
 	fprintf(stderr, "Triangulation time: %f\n", ((float)t)/CLOCKS_PER_SEC);
+	*/
 
+	/* octagon */
+	cdt_insert_point(&cdt, 4000, 3000);
+	cdt_insert_point(&cdt, 3700, 3700);
+	cdt_insert_point(&cdt, 3000, 4000);
+	cdt_insert_point(&cdt, 2300, 3700);
+	cdt_insert_point(&cdt, 2000, 3000);
+	cdt_insert_point(&cdt, 2300, 2300);
+	cdt_insert_point(&cdt, 3000, 2000);
+	cdt_insert_point(&cdt, 3700, 2300);
+
+	p = cdt_insert_point(&cdt, 3000, 3000);
+	cdt_delete_point(&cdt, p);
 
 	if (cdt_check_delaunay(&cdt))
 		fprintf(stderr, "delaunay\n");
