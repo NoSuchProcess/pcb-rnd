@@ -52,7 +52,6 @@ int pplg_check_ver_sketch_route(int ver_needed) { return 0; }
 
 void pplg_uninit_sketch_route(void)
 {
-	pcb_event_unbind_allcookie(pcb_sketch_route_cookie);
 	pcb_remove_actions_by_cookie(pcb_sketch_route_cookie);
 }
 
