@@ -2,6 +2,7 @@
 #define PCB_ACTIONS_H
 
 #include "hid.h"
+#include <libfungw/fungw.h>
 
 struct pcb_action_s {
 	const char *name; /* action command name */
@@ -9,6 +10,9 @@ struct pcb_action_s {
 	const char *description;/* Short description (help text) */
 	const char *syntax; /* Full allowed syntax; use \n to separate lines.  */
 };
+
+extern fgw_ctx_t pcb_fgw;
+
 
 extern void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy);
 

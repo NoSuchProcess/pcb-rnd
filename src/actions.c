@@ -440,9 +440,11 @@ int pcb_parse_actions(const char *str_)
 	return hid_parse_actionstring(str_, pcb_true);
 }
 
+fgw_ctx_t pcb_fgw;
+
 void pcb_actions_init(void)
 {
-
+	fgw_init(&pcb_fgw, "pcb-rnd");
 }
 
 void pcb_actions_uninit(void)
@@ -462,5 +464,8 @@ void pcb_actions_uninit(void)
 
 	htsp_free(all_actions);
 	all_actions = NULL;
+
+	fgw_uninit(&pcb_fgw);
+	fgw_atexit();
 }
 
