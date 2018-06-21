@@ -56,9 +56,9 @@ void GVT(destructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem);
 #include <genvector/genvector_undef.h>
 
 #define VTPOINT_FOREACH(_loop_item_, _vt_) do { \
-  int _i_; \
-  for (_i_ = 0; _i_ < vtpoint_len(_vt_); _i_++) { \
-    point_t *_loop_item_ = (_vt_)->array[_i_];
+	int _i_; \
+	for (_i_ = 0; _i_ < vtpoint_len(_vt_); _i_++) { \
+		point_t *_loop_item_ = (_vt_)->array[_i_];
 
 #define VTPOINT_FOREACH_END() \
 	} \

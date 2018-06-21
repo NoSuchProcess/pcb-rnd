@@ -57,9 +57,9 @@ void GVT(destructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem);
 #include <genvector/genvector_undef.h>
 
 #define VTEDGE_FOREACH(_loop_item_, _vt_) do { \
-  int _i_; \
-  for (_i_ = 0; _i_ < vtedge_len(_vt_); _i_++) { \
-    edge_t *_loop_item_ = (_vt_)->array[_i_];
+	int _i_; \
+	for (_i_ = 0; _i_ < vtedge_len(_vt_); _i_++) { \
+		edge_t *_loop_item_ = (_vt_)->array[_i_];
 
 #define VTEDGE_FOREACH_END() \
 	} \
