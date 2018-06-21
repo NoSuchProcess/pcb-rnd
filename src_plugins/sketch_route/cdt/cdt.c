@@ -344,6 +344,11 @@ void dump_edgelist(edgelist_node_t *list)
 }
 #endif
 
+static void triangulate_polygon(edgelist_node_t *polygon)
+{
+
+}
+
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 {
 	pos_t pos = {x, y};
@@ -403,6 +408,35 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 	new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
 
 	return new_p;
+}
+
+void cdt_delete_point(cdt_t *cdt, point_t *p)
+{
+	edgelist_node_t *polygon_edges;
+	int i;
+
+	/* find opposite edges of adjacent triangles and add them to the polygon */
+	TRIANGLELIST_FOREACH(t, p->adj_triangles)
+		i = 0;
+		while(i < 3) {
+			edge_t *edge_of_triangle = t->e[i];
+			EDGELIST_FOREACH(edge_of_point, p->adj_edges)
+				if (edge_of_point == edge_of_triangle)
+					goto next_i;
+			EDGELIST_FOREACH_END();
+			polygon_edges = edgelist_prepend(polygon_edges, &edge_of_triangle);
+			break;
+next_i:
+			i++;
+		}
+	TRIANGLELIST_FOREACH_END();
+
+	/* remove adjacent edges */
+	EDGELIST_FOREACH(e, p->adj_edges)
+		remove_edge(cdt, e);
+	EDGELIST_FOREACH_END();
+
+	triangulate_polygon(polygon_edges);
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
