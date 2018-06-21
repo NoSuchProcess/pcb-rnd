@@ -59,7 +59,7 @@ pcb_plugin_dir_t *pcb_plugin_dir_first = NULL, *pcb_plugin_dir_last = NULL;
 void pcb_hid_init()
 {
 	char *tmp;
-	pcb_hid_actions_init();
+	pcb_actions_init();
 
 	/* Setup a "nogui" default HID */
 	pcb_gui = pcb_hid_nogui_get_hid();
@@ -110,7 +110,7 @@ void pcb_hid_uninit(void)
 
 	pup_uninit(&pcb_pup);
 
-	pcb_hid_actions_uninit();
+	pcb_actions_uninit();
 	pcb_hid_attributes_uninit();
 
 	for(pd = pcb_plugin_dir_first; pd != NULL; pd = next) {

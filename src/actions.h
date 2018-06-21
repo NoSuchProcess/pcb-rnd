@@ -22,15 +22,15 @@ struct pcb_hid_action_s {
 	const char *syntax;
 };
 
-extern void pcb_hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
+extern void pcb_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
 
-extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
+extern void pcb_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
 #define PCB_REGISTER_ACTIONS(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
-{ pcb_hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
+{ pcb_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 /* Inits and uninits the whole action framework */
-void pcb_hid_actions_init(void);
-void pcb_hid_actions_uninit(void);
+void pcb_actions_init(void);
+void pcb_actions_uninit(void);
 
 /* These are called from main_act.c */
 void pcb_print_actions(void);

@@ -1775,3 +1775,7 @@ pcb_hid_actionv -> pcb_actionv
 pcb_hid_actionv_ -> pcb_actionv_
 pcb_hid_parse_command -> pcb_parse_command
 pcb_hid_parse_actions -> pcb_parse_actions
+pcb_hid_register_action -> pcb_register_action
+pcb_hid_register_actions -> pcb_register_actions
+pcb_hid_actions_uninit -> pcb_actions_uninit
+pcb_hid_actions_init -> pcb_actions_init
