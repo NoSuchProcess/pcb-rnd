@@ -72,7 +72,7 @@ static int pcb_act_autocrop(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t autocrop_action_list[] = {
+static pcb_action_t autocrop_action_list[] = {
 	{"autocrop", pcb_act_autocrop, pcb_acth_autocrop, pcb_acts_autocrop}
 };
 

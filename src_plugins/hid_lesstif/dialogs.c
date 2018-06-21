@@ -2081,7 +2081,7 @@ static int pcb_act_ImportGUI(int oargc, const char **oargv)
 
 /* ------------------------------------------------------------ */
 
-pcb_hid_action_t lesstif_dialog_action_list[] = {
+pcb_action_t lesstif_dialog_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
 	{"LoadVendor", pcb_act_LoadVendor, pcb_acth_LoadVendor, pcb_acts_LoadVendor},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},

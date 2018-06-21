@@ -123,7 +123,7 @@ static int pcb_act_polystitch(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t polystitch_action_list[] = {
+static pcb_action_t polystitch_action_list[] = {
 	{"PolyStitch", pcb_act_polystitch, NULL, NULL}
 };
 

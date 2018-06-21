@@ -50,7 +50,7 @@ int io_kicad_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 	return 100;
 }
 
-pcb_hid_action_t eeschema_action_list[] = {
+pcb_action_t eeschema_action_list[] = {
 	{"LoadEeschemaFrom", pcb_act_LoadeeschemaFrom, pcb_acth_LoadeeschemaFrom, pcb_acts_LoadeeschemaFrom}
 };
 

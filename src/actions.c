@@ -43,7 +43,7 @@
 #include "compat_nls.h"
 
 static htsp_t *all_actions = NULL;
-const pcb_hid_action_t *pcb_current_action = NULL;
+const pcb_action_t *pcb_current_action = NULL;
 
 static const char *check_action_name(const char *s)
 {
@@ -55,10 +55,10 @@ static const char *check_action_name(const char *s)
 
 typedef struct {
 	const char *cookie;
-	const pcb_hid_action_t *action;
+	const pcb_action_t *action;
 } hid_cookie_action_t;
 
-void pcb_register_actions(const pcb_hid_action_t *a, int n, const char *cookie, int copy)
+void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie, int copy)
 {
 	int i;
 	hid_cookie_action_t *ca;
@@ -82,12 +82,12 @@ void pcb_register_actions(const pcb_hid_action_t *a, int n, const char *cookie, 
 	}
 }
 
-void pcb_register_action(const pcb_hid_action_t *a, const char *cookie, int copy)
+void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy)
 {
 	pcb_register_actions(a, 1, cookie, copy);
 }
 
-void pcb_remove_actions(const pcb_hid_action_t *a, int n)
+void pcb_remove_actions(const pcb_action_t *a, int n)
 {
 	int i;
 
@@ -120,7 +120,7 @@ void pcb_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-void pcb_remove_action(const pcb_hid_action_t *a)
+void pcb_remove_action(const pcb_action_t *a)
 {
 	htsp_entry_t *e;
 
@@ -134,7 +134,7 @@ void pcb_remove_action(const pcb_hid_action_t *a)
 	}
 }
 
-const pcb_hid_action_t *pcb_find_action(const char *name)
+const pcb_action_t *pcb_find_action(const char *name)
 {
 	hid_cookie_action_t *ca;
 
@@ -232,10 +232,10 @@ int pcb_actionl(const char *name, ...)
 	return pcb_actionv(name, argc, argv);
 }
 
-int pcb_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
+int pcb_actionv_(const pcb_action_t *a, int argc, const char **argv)
 {
 	int i, ret;
-	const pcb_hid_action_t *old_action;
+	const pcb_action_t *old_action;
 
 	if (conf_core.rc.verbose) {
 		printf("Action: \033[34m%s(", a->name);
@@ -254,7 +254,7 @@ int pcb_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 
 int pcb_actionv(const char *name, int argc, const char **argv)
 {
-	const pcb_hid_action_t *a;
+	const pcb_action_t *a;
 
 	if (name == NULL)
 		return 1;

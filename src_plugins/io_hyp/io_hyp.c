@@ -117,7 +117,7 @@ int pcb_act_LoadhypFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t hyp_action_list[] = {
+pcb_action_t hyp_action_list[] = {
 	{"LoadhypFrom", pcb_act_LoadhypFrom, load_hyp_help, load_hyp_syntax}
 };
 

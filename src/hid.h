@@ -591,9 +591,9 @@ extern pcb_hid_t *pcb_next_gui;
    do the exporting. The GUI HIDs set and unset this var.*/
 extern pcb_hid_t *pcb_exporter;
 
-/* This is either NULL or points to the current pcb_hid_action_t that is being
+/* This is either NULL or points to the current pcb_action_t that is being
    called. The action launcher sets and unsets this variable. */
-extern const pcb_hid_action_t *pcb_current_action;
+extern const pcb_action_t *pcb_current_action;
 
 /* The GUI may set this to be approximately the PCB size of a pixel,
    to allow for near-misses in selection and changes in drawing items

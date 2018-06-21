@@ -160,7 +160,7 @@ static int pcb_act_Polygon(int oargc, const char **oargv)
 }
 
 
-pcb_hid_action_t polygon_action_list[] = {
+pcb_action_t polygon_action_list[] = {
 	{"MorphPolygon", pcb_act_MorphPolygon, pcb_acth_MorphPolygon, morphpcb_polygon_syntax},
 	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_polygon_syntax}
 };

@@ -537,7 +537,7 @@ static int pcb_act_distribute(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t distalign_action_list[] = {
+static pcb_action_t distalign_action_list[] = {
 	{"distribute", pcb_act_distribute, "Distribute subcircuits", pcb_acts_distribute},
 	{"align", pcb_act_align, "Align subcircuits", pcb_acts_align}
 };

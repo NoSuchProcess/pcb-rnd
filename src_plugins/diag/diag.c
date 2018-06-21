@@ -451,7 +451,7 @@ static int pcb_act_forcecolor(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t diag_action_list[] = {
+pcb_action_t diag_action_list[] = {
 	{"dumpconf", pcb_act_DumpConf, dump_conf_help, dump_conf_syntax},
 	{"dumplayers", pcb_act_DumpLayers, dump_layers_help, dump_layers_syntax},
 	{"dumpfonts", pcb_act_DumpFonts, dump_fonts_help, dump_fonts_syntax},

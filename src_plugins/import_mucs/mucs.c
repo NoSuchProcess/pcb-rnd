@@ -151,7 +151,7 @@ int pcb_act_LoadMucsFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t mucs_action_list[] = {
+pcb_action_t mucs_action_list[] = {
 	{"LoadMucsFrom", pcb_act_LoadMucsFrom, pcb_acth_LoadMucsFrom, pcb_acts_LoadMucsFrom}
 };
 

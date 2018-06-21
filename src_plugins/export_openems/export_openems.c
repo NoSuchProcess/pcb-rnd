@@ -794,7 +794,7 @@ static int openems_usage(const char *topic)
 	return 0;
 }
 
-static pcb_hid_action_t openems_action_list[] = {
+static pcb_action_t openems_action_list[] = {
 	{"mesh", pcb_act_mesh, pcb_acth_mesh, pcb_acts_mesh}
 };
 

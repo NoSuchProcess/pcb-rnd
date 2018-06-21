@@ -514,7 +514,7 @@ static int pcb_act_SavePatch(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t rats_patch_action_list[] = {
+pcb_action_t rats_patch_action_list[] = {
 	{"ReplaceFootprint", pcb_act_ReplaceFootprint, pcb_acth_ReplaceFootprint, pcb_acts_ReplaceFootprint},
 	{"SavePatch", pcb_act_SavePatch, pcb_acth_SavePatch, pcb_acts_SavePatch}
 };

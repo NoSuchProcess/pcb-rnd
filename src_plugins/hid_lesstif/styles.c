@@ -400,7 +400,7 @@ void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 	return;
 }
 
-pcb_hid_action_t lesstif_styles_action_list[] = {
+pcb_action_t lesstif_styles_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
 };
 

@@ -138,7 +138,7 @@ int pcb_act_propset(int oargc, const char **oargv)
 
 static const char *propedit_cookie = "propedit";
 
-pcb_hid_action_t propedit_action_list[] = {
+pcb_action_t propedit_action_list[] = {
 	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
 	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset}
 };

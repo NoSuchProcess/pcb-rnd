@@ -281,7 +281,7 @@ int pcb_act_LoadMentorFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t mentor_sch_action_list[] = {
+pcb_action_t mentor_sch_action_list[] = {
 	{"LoadMentorFrom", pcb_act_LoadMentorFrom, pcb_acth_Loadmentor_schFrom, pcb_acts_Loadmentor_schFrom}
 };
 

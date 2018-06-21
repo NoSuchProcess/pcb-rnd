@@ -1259,7 +1259,7 @@ static int pcb_act_Rotate90(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t object_action_list[] = {
+pcb_action_t object_action_list[] = {
 	{"Attributes", pcb_act_Attributes, pcb_acth_Attributes, pcb_acts_Attributes},
 	{"DisperseElements", pcb_act_DisperseElements, pcb_acth_DisperseElements, pcb_acts_DisperseElements},
 	{"Flip", pcb_act_Flip, pcb_acth_Flip, pcb_acts_Flip},

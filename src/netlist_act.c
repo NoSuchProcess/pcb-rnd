@@ -369,7 +369,7 @@ static int pcb_act_Netlist(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t netlist_action_list[] = {
+pcb_action_t netlist_action_list[] = {
 	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist}
 };

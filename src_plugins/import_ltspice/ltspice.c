@@ -311,7 +311,7 @@ int pcb_act_LoadLtspiceFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t ltspice_action_list[] = {
+pcb_action_t ltspice_action_list[] = {
 	{"LoadLtspiceFrom", pcb_act_LoadLtspiceFrom, pcb_acth_LoadLtspiceFrom, pcb_acts_LoadLtspiceFrom}
 };
 

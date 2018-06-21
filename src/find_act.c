@@ -77,7 +77,7 @@ static int pcb_act_DRCheck(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t find_action_list[] = {
+pcb_action_t find_action_list[] = {
 	{"DRC", pcb_act_DRCheck, drc_help, drc_syntax}
 };
 

@@ -120,7 +120,7 @@ static int pcb_act_LoadtedaxFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t tedax_action_list[] = {
+pcb_action_t tedax_action_list[] = {
 	{"LoadTedaxFrom", pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
 	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
 };

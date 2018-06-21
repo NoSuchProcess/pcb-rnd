@@ -196,7 +196,7 @@ int pcb_act_LoadtinycadFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t tinycad_action_list[] = {
+pcb_action_t tinycad_action_list[] = {
 	{"LoadTinycadFrom", pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
 

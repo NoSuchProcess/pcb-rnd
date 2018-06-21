@@ -1167,7 +1167,7 @@ static int pcb_act_ChangeRadius(int oargc, const char **oargv)
 
 /* --------------------------------------------------------------------------- */
 
-pcb_hid_action_t change_action_list[] = {
+pcb_action_t change_action_list[] = {
 	{"ChangeAngle", pcb_act_ChangeAngle, pcb_acth_ChangeAngle, pcb_acts_ChangeAngle},
 	{"ChangeClearSize", pcb_act_ChangeClearSize, pcb_acth_ChangeClearSize, pcb_acts_ChangeClearSize},
 	{"ChangeDrillSize", pcb_act_Change2ndSize, changedrillsize_help, changedrillsize_syntax},

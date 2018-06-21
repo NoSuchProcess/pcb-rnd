@@ -324,7 +324,7 @@ int pcb_act_ListRotations(int oargc, const char **oargv)
 }
 
 
-pcb_hid_action_t oldactions_action_list[] = {
+pcb_action_t oldactions_action_list[] = {
 	{"DumpLibrary", pcb_act_DumpLibrary, pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
 	{"Bell", pcb_act_Bell, pcb_acth_Bell, pcb_acts_Bell},
 	{"Debug", pcb_act_Debug, pcb_acth_debug, pcb_acts_debug},

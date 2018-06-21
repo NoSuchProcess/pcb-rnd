@@ -1456,7 +1456,7 @@ static int pcb_act_PSCalib(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t hidps_action_list[] = {
+pcb_action_t hidps_action_list[] = {
 	{"pscalib", pcb_act_PSCalib}
 };
 

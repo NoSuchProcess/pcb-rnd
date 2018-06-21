@@ -336,7 +336,7 @@ int pcb_act_LoadDsnFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t dsn_action_list[] = {
+pcb_action_t dsn_action_list[] = {
 	{"LoadDsnFrom", pcb_act_LoadDsnFrom, load_dsn_help, load_dsn_syntax}
 };
 

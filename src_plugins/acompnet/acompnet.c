@@ -93,7 +93,7 @@ static int pcb_act_acompnet(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t acompnet_action_list[] = {
+pcb_action_t acompnet_action_list[] = {
 	{"acompnet", pcb_act_acompnet, pcb_acth_acompnet, pcb_acts_acompnet},
 };
 

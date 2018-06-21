@@ -291,7 +291,7 @@ static int pcb_act_extedit(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t extedit_action_list[] = {
+static pcb_action_t extedit_action_list[] = {
 	{"extedit", pcb_act_extedit, pcb_acts_extedit, pcb_acth_extedit}
 };
 

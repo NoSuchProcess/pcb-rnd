@@ -173,7 +173,7 @@ int pcb_act_LoadHpglFrom(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t hpgl_action_list[] = {
+pcb_action_t hpgl_action_list[] = {
 	{"LoadHpglFrom", pcb_act_LoadHpglFrom, pcb_acth_LoadHpglFrom, pcb_acts_LoadHpglFrom}
 };
 

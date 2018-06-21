@@ -384,7 +384,7 @@ int pcb_act_System(int oargc, const char **oargv)
 
 /* --------------------------------------------------------------------------- */
 
-pcb_hid_action_t main_action_list[] = {
+pcb_action_t main_action_list[] = {
 	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
 	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
 	{"PrintUsage", pcb_act_PrintUsage, pcb_acth_PrintUsage, pcb_acts_PrintUsage},

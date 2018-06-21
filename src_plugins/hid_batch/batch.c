@@ -108,7 +108,7 @@ static int pcb_act_info(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t batch_action_list[] = {
+pcb_action_t batch_action_list[] = {
 	{"Help", pcb_act_help},
 	{"Info", pcb_act_info}
 };

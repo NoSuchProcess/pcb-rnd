@@ -434,7 +434,7 @@ void lesstif_show_netlist()
 	XtManageChild(netlist_dialog);
 }
 
-pcb_hid_action_t lesstif_netlist_action_list[] = {
+pcb_action_t lesstif_netlist_action_list[] = {
 	{"NetlistShow", pcb_act_LesstifNetlistShow, pcb_acth_LesstifNetlistShow, pcb_acts_LesstifNetlistShow}
 };
 

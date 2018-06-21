@@ -161,7 +161,7 @@ int pcb_act_save_font_to(int oargc, const char **oargv)
 }
 
 
-pcb_hid_action_t font_action_list[] = {
+pcb_action_t font_action_list[] = {
 	{"LoadFontFrom", pcb_act_load_font_from, pcb_acth_load_font_from, pcb_acts_load_font_from},
 	{"SaveFontTo", pcb_act_save_font_to, pcb_acth_save_font_to, pcb_acts_save_font_to}
 };

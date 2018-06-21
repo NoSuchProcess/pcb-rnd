@@ -158,7 +158,7 @@ int pcb_act_padstackplace(int oargc, const char **oargv)
 
 /* --------------------------------------------------------------------------- */
 
-pcb_hid_action_t padstack_action_list[] = {
+pcb_action_t padstack_action_list[] = {
 	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
 	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}
 };

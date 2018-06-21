@@ -481,7 +481,7 @@ int pcb_act_circle(int oargc, const char **oargv)
 
 #include "shape_dialog.c"
 
-pcb_hid_action_t shape_action_list[] = {
+pcb_action_t shape_action_list[] = {
 	{"regpoly", pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
 	{"roundrect", pcb_act_roundrect, pcb_acth_roundrect, pcb_acts_roundrect},
 	{"circle", pcb_act_circle, pcb_acth_circle, pcb_acts_circle},

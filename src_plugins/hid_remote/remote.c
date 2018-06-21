@@ -44,7 +44,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 }
 
 
-/*pcb_hid_action_t remote_action_list[] = {
+/*pcb_action_t remote_action_list[] = {
 };
 
 PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/

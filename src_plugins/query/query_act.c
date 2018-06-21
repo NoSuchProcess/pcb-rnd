@@ -182,7 +182,7 @@ static int pcb_act_query(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t query_action_list[] = {
+pcb_action_t query_action_list[] = {
 	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query}
 };
 

@@ -463,7 +463,7 @@ static int pcb_act_Import(int oargc, const char **oargv)
 
 static const char *import_sch_cookie = "import_sch plugin";
 
-pcb_hid_action_t import_sch_action_list[] = {
+pcb_action_t import_sch_action_list[] = {
 	{"Import", pcb_act_Import, pcb_acth_Import, pcb_acts_Import}
 };
 

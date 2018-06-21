@@ -193,7 +193,7 @@ int pcb_act_Redo(int oargc, const char **oargv)
 }
 
 
-pcb_hid_action_t undo_action_list[] = {
+pcb_action_t undo_action_list[] = {
 	{"Atomic", pcb_act_Atomic, pcb_acth_Atomic, pcb_acts_Atomic},
 	{"Undo", pcb_act_Undo, pcb_acth_Undo, pcb_acts_Undo},
 	{"Redo", pcb_act_Redo, pcb_acth_Redo, pcb_acts_Redo}

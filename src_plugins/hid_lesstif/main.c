@@ -853,7 +853,7 @@ static int pcb_act_Center(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t lesstif_main_action_list[] = {
+pcb_action_t lesstif_main_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
 	{"ZoomTo", pcb_act_ZoomTo, pcb_acth_ZoomTo, pcb_acts_ZoomTo},
 	{"Pan", pcb_act_Pan, pcb_acth_Zoom, pcb_acts_Zoom},

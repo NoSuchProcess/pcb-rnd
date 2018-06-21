@@ -500,7 +500,7 @@ static int pcb_act_PolyOffs(int oargc, const char **oargv)
 }
 
 
-static pcb_hid_action_t polyhelp_action_list[] = {
+static pcb_action_t polyhelp_action_list[] = {
 	{"PolyHatch", pcb_act_PolyHatch, pcb_acth_PolyHatch, pcb_acts_PolyHatch},
 	{"PolyOffs", pcb_act_PolyOffs, pcb_acth_PolyOffs, pcb_acts_PolyOffs},
 	{"ToPoly", pcb_act_topoly, pcb_acth_topoly, pcb_acts_topoly}

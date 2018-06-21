@@ -500,14 +500,14 @@ static int pcb_act_EditLayerGroups(int oargc, const char **oargv)
 
 /* ------------------------------------------------------------ */
 
-pcb_hid_action_t ghid_menu_action_list[] = {
+pcb_action_t ghid_menu_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle},
 	{"fontsel", pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
 
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
-pcb_hid_action_t ghid_main_action_list[] = {
+pcb_action_t ghid_main_action_list[] = {
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Benchmark", pcb_act_Benchmark},
 	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},

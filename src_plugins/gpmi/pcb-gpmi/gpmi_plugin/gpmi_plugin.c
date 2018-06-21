@@ -138,7 +138,7 @@ static int action_gpmi_rehash(int argc, const char **argv)
 
 static void register_actions()
 {
-	static pcb_hid_action_t act1, act2;
+	static pcb_action_t act1, act2;
 
 	act1.name           = "gpmi_scripts";
 	act1.description    = "Manage gpmi scripts";

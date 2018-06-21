@@ -337,7 +337,7 @@ static int pcb_act_polycombine(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t polycombine_action_list[] = {
+static pcb_action_t polycombine_action_list[] = {
 	{"PolyCombine", pcb_act_polycombine, NULL, NULL}
 };
 

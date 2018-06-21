@@ -181,7 +181,7 @@ static int pcb_act_boardflip(int oargc, const char **oargv)
 }
 
 
-static pcb_hid_action_t boardflip_action_list[] = {
+static pcb_action_t boardflip_action_list[] = {
 	{"BoardFlip", pcb_act_boardflip, NULL, NULL}
 };
 

@@ -520,7 +520,7 @@ static int pcb_act_jostle(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t jostle_action_list[] = {
+static pcb_action_t jostle_action_list[] = {
 	{"jostle", pcb_act_jostle, "Move lines out of the way", pcb_acts_jostle}
 };
 

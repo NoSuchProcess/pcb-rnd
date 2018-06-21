@@ -262,7 +262,7 @@ static int pcb_act_Brave(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t brave_action_list[] = {
+pcb_action_t brave_action_list[] = {
 	{"Brave", pcb_act_Brave, pcb_acth_Brave, pcb_acts_Brave}
 };
 

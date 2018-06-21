@@ -326,7 +326,7 @@ static int pcb_act_ChkBuffer(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t conf_action_list[] = {
+pcb_action_t conf_action_list[] = {
 	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
 	{"GetStyle", pcb_act_GetStyle, GetStyle_help, GetStyle_syntax},
 	{"ChkMode", pcb_act_ChkMode, ChkMode_help, ChkMode_syntax},

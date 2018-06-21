@@ -600,7 +600,7 @@ static int pcb_act_distributetext(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t distaligntext_action_list[] = {
+static pcb_action_t distaligntext_action_list[] = {
 	{"distributetext", pcb_act_distributetext, "Distribute Text Elements", pcb_acts_distributetext},
 	{"aligntext", pcb_act_aligntext, "Align Text Elements", pcb_acts_aligntext}
 };

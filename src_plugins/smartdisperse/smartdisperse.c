@@ -237,7 +237,7 @@ static int pcb_act_smartdisperse(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t smartdisperse_action_list[] = {
+static pcb_action_t smartdisperse_action_list[] = {
 	{"smartdisperse", pcb_act_smartdisperse, NULL, NULL}
 };
 

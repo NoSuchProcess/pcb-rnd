@@ -42,7 +42,7 @@ int pcb_act_skroute(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t sketch_route_action_list[] = {
+pcb_action_t sketch_route_action_list[] = {
 	{"skroute", pcb_act_skroute, pcb_acth_skroute, pcb_acts_skroute}
 };
 

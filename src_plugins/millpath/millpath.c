@@ -55,7 +55,7 @@ int pcb_act_mill(int oargc, const char **oargv)
 }
 
 
-pcb_hid_action_t millpath_action_list[] = {
+pcb_action_t millpath_action_list[] = {
 	{"mill", pcb_act_mill, pcb_acth_mill, pcb_acts_mill}
 };
 

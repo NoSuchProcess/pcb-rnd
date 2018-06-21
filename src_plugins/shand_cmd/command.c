@@ -380,7 +380,7 @@ static int pcb_act_SaveLayoutAndQuit(int oargc, const char **oargv)
 
 /* --------------------------------------------------------------------------- */
 
-pcb_hid_action_t shand_cmd_action_list[] = {
+pcb_action_t shand_cmd_action_list[] = {
 	{"h", pcb_act_Help, pcb_acth_Help, pcb_acts_Help},
 	{"l", pcb_act_LoadLayout, pcb_acth_LoadLayout, pcb_acts_LoadLayout},
 	{"le", pcb_act_LoadElementToBuffer, pcb_acth_LoadElementToBuffer, pcb_acts_LoadElementToBuffer},

@@ -829,7 +829,7 @@ static int pcb_act_report(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t report_action_list[] = {
+pcb_action_t report_action_list[] = {
 	{"ReportObject", pcb_act_report_dialog, pcb_acth_reportdialog, pcb_acts_reportdialog},
 	{"Report", pcb_act_report, report_help, report_syntax}
 };

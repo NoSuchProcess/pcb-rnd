@@ -42,7 +42,7 @@
 #include "dlg_padstack.c"
 #include "dlg_about.c"
 
-pcb_hid_action_t dialogs_action_list[] = {
+pcb_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
 	{"LayerBinding", pcb_act_LayerBinding, pcb_acth_LayerBinding, pcb_acts_LayerBinding},
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},

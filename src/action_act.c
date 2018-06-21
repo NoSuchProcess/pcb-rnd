@@ -114,7 +114,7 @@ int pcb_act_ExecuteFile(int oargc, const char **oargv)
 
 /* --------------------------------------------------------------------------- */
 
-pcb_hid_action_t action_action_list[] = {
+pcb_action_t action_action_list[] = {
 	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 

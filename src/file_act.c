@@ -427,7 +427,7 @@ static int pcb_act_Backup(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-pcb_hid_action_t file_action_list[] = {
+pcb_action_t file_action_list[] = {
 	{"ExecCommand", pcb_act_ExecCommand, pcb_acth_ExecCommand, pcb_acts_ExecCommand},
 	{"Backup", pcb_act_Backup, pcb_acth_Backup, pcb_acts_Backup},
 	{"Export", pcb_act_Export, pcb_acth_Export, pcb_acts_Export},

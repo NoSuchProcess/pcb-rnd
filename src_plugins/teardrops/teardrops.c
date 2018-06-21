@@ -268,7 +268,7 @@ static int pcb_act_teardrops(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_hid_action_t teardrops_action_list[] = {
+static pcb_action_t teardrops_action_list[] = {
 	{"Teardrops", pcb_act_teardrops, NULL, NULL}
 };
 

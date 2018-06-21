@@ -229,7 +229,7 @@ static int pcb_act_DeleteRats(int oargc, const char **oargv)
 }
 
 
-pcb_hid_action_t rats_action_list[] = {
+pcb_action_t rats_action_list[] = {
 	{"AddRats", pcb_act_AddRats, pcb_acth_AddRats, pcb_acts_AddRats},
 	{"Connection", pcb_act_Connection, pcb_acth_Connection, pcb_acts_Connection},
 	{"DeleteRats", pcb_act_DeleteRats, pcb_acth_DeleteRats, pcb_acts_DeleteRats}
