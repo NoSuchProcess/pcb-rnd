@@ -1765,3 +1765,13 @@ XORDrawBuffer -> pcb_xordraw_buffer
 XORDrawMoveOrCopy -> pcb_xordraw_movecopy
 XORDrawInsertPointObject -> pcb_xordraw_insert_pt_obj
 XORDrawSubc -> pcb_xordraw_subc
+pcb_hid_find_action -> pcb_find_action
+pcb_hid_remove_actions -> pcb_remove_actions
+pcb_hid_remove_action -> pcb_remove_action
+pcb_hid_remove_actions_by_cookie -> pcb_remove_actions_by_cookie
+pcb_hid_action -> pcb_action
+pcb_hid_actionl -> pcb_actionl
+pcb_hid_actionv -> pcb_actionv
+pcb_hid_actionv_ -> pcb_actionv_
+pcb_hid_parse_command -> pcb_parse_command
+pcb_hid_parse_actions -> pcb_parse_actions
