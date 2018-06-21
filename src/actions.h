@@ -3,23 +3,11 @@
 
 #include "hid.h"
 
-/* This is used to register the action callbacks (for menus and
-   whatnot).  HID assumes the following actions are available for its
-   use:
-	SaveAs(filename);
-	Quit();
-*/
 struct pcb_action_s {
-	/* This is matched against action names in the GUI configuration */
-	const char *name;
-	/* Called when the action is triggered.  If this function returns
-	   non-zero, no further actions will be invoked for this key/mouse
-	   event.  */
-	int (*trigger_cb)(int argc, const char **argv);
-	/* Short description that sometimes accompanies the name.  */
-	const char *description;
-	/* Full allowed syntax; use \n to separate lines.  */
-	const char *syntax;
+	const char *name; /* action command name */
+	int (*trigger_cb)(int argc, const char **argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
+	const char *description;/* Short description (help text) */
+	const char *syntax; /* Full allowed syntax; use \n to separate lines.  */
 };
 
 extern void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy);
