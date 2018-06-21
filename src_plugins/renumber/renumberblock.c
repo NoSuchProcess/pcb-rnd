@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "board.h"
+#include "actions.h"
 #include "data.h"
 #include "hid.h"
 #include "rtree.h"

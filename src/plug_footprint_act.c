@@ -28,7 +28,7 @@
  */
 
 #include "config.h"
-#include "hid.h"
+#include "actions.h"
 #include "plug_footprint.h"
 
 static const char pcb_acts_fp_rehash[] = "fp_rehash()" ;

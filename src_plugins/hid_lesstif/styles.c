@@ -12,6 +12,7 @@
 #include "data.h"
 #include "pcb-printf.h"
 
+#include "actions.h"
 #include "hid.h"
 #include "lesstif.h"
 #include "hid_flags.h"

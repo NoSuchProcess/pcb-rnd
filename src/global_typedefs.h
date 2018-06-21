@@ -65,6 +65,8 @@ typedef struct pcb_hid_cfg_s pcb_hid_cfg_t;
 typedef unsigned int pcb_cardinal_t;
 typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */
 
+typedef struct pcb_hid_action_s pcb_hid_action_t;
+
 #include "pcb_bool.h"
 
 #include "unit.h"

@@ -1,7 +1,36 @@
-#ifndef PCB_HID_ACTIONS_H
-#define PCB_HID_ACTIONS_H
+#ifndef PCB_ACTIONS_H
+#define PCB_ACTIONS_H
 
 #include "hid.h"
+
+/* This is used to register the action callbacks (for menus and
+   whatnot).  HID assumes the following actions are available for its
+   use:
+	SaveAs(filename);
+	Quit();
+*/
+struct pcb_hid_action_s {
+	/* This is matched against action names in the GUI configuration */
+	const char *name;
+	/* Called when the action is triggered.  If this function returns
+	   non-zero, no further actions will be invoked for this key/mouse
+	   event.  */
+	int (*trigger_cb)(int argc, const char **argv);
+	/* Short description that sometimes accompanies the name.  */
+	const char *description;
+	/* Full allowed syntax; use \n to separate lines.  */
+	const char *syntax;
+};
+
+extern void pcb_hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
+
+extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
+#define PCB_REGISTER_ACTIONS(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
+{ pcb_hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
+
+/* Inits and uninits the whole action framework */
+void pcb_hid_actions_init(void);
+void pcb_hid_actions_uninit(void);
 
 /* These are called from main_act.c */
 void pcb_print_actions(void);
@@ -33,5 +62,16 @@ int pcb_parse_actions(const char *str_);
 /* If the mouse cursor is in the drawin area, set x;y silently and return;
    else show msg and let the user click in the drawing area */
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
+
+/* temporary hack for smooth upgrade to fungw based actions */
+#define PCB_OLD_ACT_BEGIN \
+{ \
+	int argc = oargc; \
+	const char **argv = oargv
+
+#define PCB_OLD_ACT_END \
+	(void)argc; \
+	(void)argv; \
+}
 
 #endif

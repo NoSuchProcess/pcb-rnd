@@ -37,6 +37,7 @@
    and provides a dl-compat layer on windows. Also solves the opendir related
    includes. */
 #include "plugins.h"
+#include "actions.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "misc_util.h"

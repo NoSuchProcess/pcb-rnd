@@ -26,10 +26,10 @@
 
 #include "config.h"
 #include "board.h"
+#include "actions.h"
 #include "conf_core.h"
 #include "route_style.h"
 #include "error.h"
-#include "hid.h"
 #include "tool.h"
 #include "macro.h"
 

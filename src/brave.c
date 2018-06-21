@@ -32,6 +32,7 @@
 #include <genvector/gds_char.h>
 
 #include "brave.h"
+#include "actions.h"
 #include "conf_core.h"
 #include "conf_hid.h"
 #include "compat_misc.h"

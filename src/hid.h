@@ -87,36 +87,6 @@ typedef struct hid_gc_s *pcb_hid_gc_t;
 
 #define PCB_HIDCONCAT(a,b) a##b
 
-/* This is used to register the action callbacks (for menus and
-   whatnot).  HID assumes the following actions are available for its
-   use:
-	SaveAs(filename);
-	Quit();
-*/
-typedef struct {
-	/* This is matched against action names in the GUI configuration */
-	const char *name;
-	/* Called when the action is triggered.  If this function returns
-	   non-zero, no further actions will be invoked for this key/mouse
-	   event.  */
-	int (*trigger_cb)(int argc, const char **argv);
-	/* Short description that sometimes accompanies the name.  */
-	const char *description;
-	/* Full allowed syntax; use \n to separate lines.  */
-	const char *syntax;
-} pcb_hid_action_t;
-
-extern void pcb_hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
-
-extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
-#define PCB_REGISTER_ACTIONS(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
-{ pcb_hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
-
-/* Note that PCB expects the GUI to provide the following actions:
-
-   LibraryChanged()
- */
-
 /* File Watch flags */
 /* Based upon those in dbus/dbus-connection.h */
 typedef enum {
@@ -629,21 +599,5 @@ extern const pcb_hid_action_t *pcb_current_action;
    to allow for near-misses in selection and changes in drawing items
    smaller than a screen pixel.  */
 extern int pcb_pixel_slop;
-
-/* Inits and uninits the whole action framework */
-void pcb_hid_actions_init(void);
-void pcb_hid_actions_uninit(void);
-
-/* temporary hack for smooth upgrade to fungw based actions */
-#define PCB_OLD_ACT_BEGIN \
-{ \
-	int argc = oargc; \
-	const char **argv = oargv
-
-#define PCB_OLD_ACT_END \
-	(void)argc; \
-	(void)argv; \
-}
-
 
 #endif

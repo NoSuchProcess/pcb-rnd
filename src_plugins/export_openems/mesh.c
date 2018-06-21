@@ -29,6 +29,7 @@
 #include "mesh.h"
 #include "layer.h"
 #include "layer_ui.h"
+#include "actions.h"
 #include "board.h"
 #include "data.h"
 #include "hid_dad.h"

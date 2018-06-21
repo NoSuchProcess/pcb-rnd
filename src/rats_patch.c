@@ -29,6 +29,7 @@
 #include "genht/hash.h"
 
 #include "config.h"
+#include "actions.h"
 #include "data.h"
 #include "error.h"
 #include "copy.h"

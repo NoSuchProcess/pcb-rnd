@@ -35,6 +35,7 @@
 #include "conf_core.h"
 
 #include "board.h"
+#include "actions.h"
 #include "data.h"
 #include "action_helper.h"
 #include "error.h"

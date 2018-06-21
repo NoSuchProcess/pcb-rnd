@@ -32,7 +32,7 @@
 #include "config.h"
 #include "genvector/gds_char.h"
 #include "compat_misc.h"
-#include "hid.h"
+#include "actions.h"
 
 unsigned long pcb_api_ver = PCB_API_VER;
 

@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
+#include "actions.h"
 #include "query.h"
 #include "query_y.h"
 #include "query_exec.h"

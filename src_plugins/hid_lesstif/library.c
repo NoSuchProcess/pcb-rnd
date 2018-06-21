@@ -10,6 +10,7 @@
 
 #include "compat_misc.h"
 #include "data.h"
+#include "actions.h"
 #include "buffer.h"
 #include <genvector/vtp0.h>
 #include "plug_footprint.h"

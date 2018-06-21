@@ -32,6 +32,7 @@
  *
  */
 #include "config.h"
+#include "actions.h"
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"

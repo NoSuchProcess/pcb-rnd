@@ -26,7 +26,7 @@
 #include "config.h"
 #include <stdlib.h>
 #include "board.h"
-#include "hid.h"
+#include "actions.h"
 #include "error.h"
 #include "font.h"
 #include "action_helper.h"
