@@ -14,9 +14,8 @@ struct pcb_action_s {
 extern fgw_ctx_t pcb_fgw;
 
 
-extern void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy);
-
-extern void pcb_register_actions(const pcb_action_t *a, int, const char *cookie, int copy);
+void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy);
+void pcb_register_actions(const pcb_action_t *a, int, const char *cookie, int copy);
 #define PCB_REGISTER_ACTIONS(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
 { pcb_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
