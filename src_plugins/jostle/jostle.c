@@ -30,7 +30,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "layer.h"
 #include "conf_core.h"
 #include "misc_util.h"

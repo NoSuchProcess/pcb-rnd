@@ -36,7 +36,7 @@
 
 #include "board.h"
 #include "crosshair.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 
 #include "bu_text_view.h"

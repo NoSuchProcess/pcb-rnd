@@ -49,7 +49,7 @@
 #include "safe_fs.h"
 #include "rotate.h"
 #include "../src_plugins/boardflip/boardflip.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"

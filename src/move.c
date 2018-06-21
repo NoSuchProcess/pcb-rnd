@@ -39,7 +39,7 @@
 #include "select.h"
 #include "undo.h"
 #include "event.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "obj_arc_op.h"
 #include "obj_line_op.h"

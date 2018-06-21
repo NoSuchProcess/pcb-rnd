@@ -39,7 +39,7 @@
 #include "hid.h"
 #include "action_helper.h"
 #include "compat_misc.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "plugins.h"
 #include "rtree.h"
 

@@ -47,7 +47,7 @@
 #include "pcb-printf.h"
 #include "remove.h"
 #include "rats.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "import_sch_conf.h"
 #include "misc_util.h"
 #include "compat_nls.h"

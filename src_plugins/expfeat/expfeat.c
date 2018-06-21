@@ -32,7 +32,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 
 static const char pcb_acts_ExpFeatTmp[] = "ExpFeatTmp(...)";

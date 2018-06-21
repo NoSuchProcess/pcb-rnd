@@ -29,7 +29,7 @@
 #include "config.h"
 #include "bu_cursor_pos.h"
 #include "conf_core.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "crosshair.h"
 #include "misc_util.h"
 #include "compat_nls.h"

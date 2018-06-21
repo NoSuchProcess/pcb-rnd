@@ -71,7 +71,7 @@
 #include "undo.h"
 #include "layer.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "obj_pstk_inlines.h"

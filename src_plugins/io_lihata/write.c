@@ -40,7 +40,7 @@
 #include "flag_str.h"
 #include "compat_misc.h"
 #include "rats_patch.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "misc_util.h"
 #include "macro.h"
 #include "layer.h"

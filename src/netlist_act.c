@@ -41,7 +41,7 @@
 #include "board.h"
 #include "error.h"
 #include "plug_io.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "netlist.h"

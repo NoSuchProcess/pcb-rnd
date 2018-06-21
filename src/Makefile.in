@@ -49,6 +49,7 @@ put /local/pcb/OBJS_C99 [@
 @]
 
 append /local/pcb/OBJS [@
+	actions.o
 	action_helper.o
 	action_act.o
 	attrib.o
@@ -84,7 +85,7 @@ append /local/pcb/OBJS [@
 	grid.o
 	gui_act.o
 	heap.o
-	hid_actions.o
+
 	hid_attrib.o
 	hid_cfg.o
 	hid_cfg_action.o

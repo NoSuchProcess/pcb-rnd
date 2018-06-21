@@ -36,7 +36,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 39
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -223,13 +223,8 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 /* %if-not-reentrant */
-extern yy_size_t hyyleng;
+extern int hyyleng;
 /* %endif */
 
 /* %if-c-only */
@@ -256,13 +251,6 @@ extern FILE *hyyin, *hyyout;
                     if ( hyytext[yyl] == '\n' )\
                         --hyylineno;\
             }while(0)
-    #define YY_LINENO_REWIND_TO(dst) \
-            do {\
-                const char *p;\
-                for ( p = yy_cp-1; p >= (dst); --p)\
-                    if ( *p == '\n' )\
-                        --hyylineno;\
-            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -279,6 +267,11 @@ extern FILE *hyyin, *hyyout;
 	while ( 0 )
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
+
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -302,7 +295,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -386,8 +379,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when hyytext is formed. */
 static char yy_hold_char;
-static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
-yy_size_t hyyleng;
+static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+int hyyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -418,7 +411,7 @@ static void hyy_init_buffer (YY_BUFFER_STATE b,FILE *file  );
 
 YY_BUFFER_STATE hyy_scan_buffer (char *base,yy_size_t size  );
 YY_BUFFER_STATE hyy_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE hyy_scan_bytes (yyconst char *bytes,yy_size_t len  );
+YY_BUFFER_STATE hyy_scan_bytes (yyconst char *bytes,int len  );
 
 /* %endif */
 
@@ -453,7 +446,7 @@ void hyyfree (void *  );
 /* %% [1.0] hyytext/hyyin/hyyout/yy_state_type/hyylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define hyywrap() 1
+#define hyywrap(n) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
@@ -470,8 +463,6 @@ int hyylineno = 1;
 
 extern char *hyytext;
 #define yytext_ptr hyytext
-
-/* %% [1.5] DFA */
 
 /* %if-c-only Standard (non-C++) definition */
 
@@ -2050,7 +2041,7 @@ int section = -1;
 /* all variables used in assignments */
 /* an unquoted string with spaces is terminated by the next assignment or the end of line */
 /* an empty string is terminated by the next assignment, a ')' or a '}' */
-#line 2054 "hyp_l.c"
+#line 2045 "hyp_l.c"
 
 #define INITIAL 0
 #define STATE_STRING 1
@@ -2107,7 +2098,7 @@ FILE *hyyget_out (void );
 
 void hyyset_out  (FILE * out_str  );
 
-yy_size_t hyyget_leng (void );
+int hyyget_leng (void );
 
 char *hyyget_text (void );
 
@@ -2195,7 +2186,7 @@ static int input (void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		int n; \
+		size_t n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( hyyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -2208,7 +2199,7 @@ static int input (void );
 	else \
 		{ \
 		errno=0; \
-		while ( (result = fread(buf, 1, (yy_size_t) max_size, hyyin)) == 0 && ferror(hyyin)) \
+		while ( (result = fread(buf, 1, max_size, hyyin))==0 && ferror(hyyin)) \
 			{ \
 			if( errno != EINTR) \
 				{ \
@@ -2304,6 +2295,13 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
+/* %% [7.0] user's declarations go here */
+#line 139 "hyp_l.l"
+
+
+ /* When in STATE_COMMENT skip all comment until next right brace */
+#line 2304 "hyp_l.c"
+
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -2344,14 +2342,6 @@ YY_DECL
 		hyy_load_buffer_state( );
 		}
 
-	{
-/* %% [7.0] user's declarations go here */
-#line 139 "hyp_l.l"
-
-
- /* When in STATE_COMMENT skip all comment until next right brace */
-#line 2354 "hyp_l.c"
-
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
 /* %% [8.0] yymore()-related code goes here */
@@ -2375,7 +2365,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
+			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
@@ -2414,7 +2404,7 @@ find_rule: /* we branch to this label when backing up */
 
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
-			yy_size_t yyl;
+			int yyl;
 			for ( yyl = 0; yyl < hyyleng; ++yyl )
 				if ( hyytext[yyl] == '\n' )
 					   
@@ -3388,7 +3378,7 @@ YY_RULE_SETUP
 #line 400 "hyp_l.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3392 "hyp_l.c"
+#line 3382 "hyp_l.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3518,7 +3508,6 @@ YY_FATAL_ERROR( "flex scanner jammed" );
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-	} /* end of user's declarations */
 } /* end of hyylex */
 /* %ok-for-header */
 
@@ -3602,7 +3591,7 @@ static int yy_get_next_buffer (void)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), num_to_read );
+			(yy_n_chars), (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -3706,7 +3695,7 @@ static int yy_get_next_buffer (void)
 	if ( ! yy_is_jam )
 		*(yy_state_ptr)++ = yy_current_state;
 
-		return yy_is_jam ? 0 : yy_current_state;
+	return yy_is_jam ? 0 : yy_current_state;
 }
 
 /* %if-c-only */
@@ -3726,7 +3715,7 @@ static int yy_get_next_buffer (void)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = (yy_n_chars) + 2;
+		register int number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -3788,7 +3777,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -3977,6 +3966,17 @@ static void hyy_load_buffer_state  (void)
 	hyyfree((void *) b  );
 }
 
+/* %if-c-only */
+
+#ifndef __cplusplus
+extern int isatty (int );
+#endif /* __cplusplus */
+    
+/* %endif */
+
+/* %if-c++-only */
+/* %endif */
+
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
  * such as during a hyyrestart() or at EOF.
@@ -4119,7 +4119,7 @@ static void hyyensure_buffer_stack (void)
 /* %if-c++-only */
 /* %endif */
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -4222,12 +4222,12 @@ YY_BUFFER_STATE hyy_scan_string (yyconst char * yystr )
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE hyy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len )
+YY_BUFFER_STATE hyy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	yy_size_t i;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -4318,7 +4318,7 @@ FILE *hyyget_out  (void)
 /** Get the length of the current token.
  * 
  */
-yy_size_t hyyget_leng  (void)
+int hyyget_leng  (void)
 {
         return hyyleng;
 }
@@ -4498,7 +4498,7 @@ void hyyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 399 "hyp_l.l"
+#line 400 "hyp_l.l"
 
 
 

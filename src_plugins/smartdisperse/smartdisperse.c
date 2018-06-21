@@ -36,7 +36,7 @@
 #include "draw.h"
 #include "plugins.h"
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"

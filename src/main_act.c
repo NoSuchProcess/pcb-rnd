@@ -41,7 +41,7 @@
 #include "crosshair.h"
 #include "compat_misc.h"
 #include "layer.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_init.h"
 #include "conf_core.h"
 #include "plugins.h"

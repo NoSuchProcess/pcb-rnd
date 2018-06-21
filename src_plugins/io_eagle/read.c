@@ -38,7 +38,7 @@
 #include "error.h"
 #include "polygon.h"
 #include "rtree.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "trparse.h"
 #include "trparse_xml.h"

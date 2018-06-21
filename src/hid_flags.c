@@ -37,7 +37,7 @@
 #include "genht/hash.h"
 #include "genht/htsp.h"
 #include "error.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 int pcb_hid_get_flag(const char *name)
 {

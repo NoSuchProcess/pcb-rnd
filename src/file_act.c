@@ -45,7 +45,7 @@
 #include "draw.h"
 #include "find.h"
 #include "search.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "hid_init.h"

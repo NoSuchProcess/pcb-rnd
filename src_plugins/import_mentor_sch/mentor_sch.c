@@ -40,7 +40,7 @@
 #include <gensexpr/gsxl.h>
 
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "plugins.h"
 #include "hid.h"
 #include "mentor_sch_conf.h"

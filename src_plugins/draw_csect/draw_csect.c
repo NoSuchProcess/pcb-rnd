@@ -34,7 +34,7 @@
 #include "plugins.h"
 #include "stub_draw.h"
 #include "compat_misc.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "event.h"
 #include "layer_vis.h"
 

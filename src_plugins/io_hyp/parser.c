@@ -33,7 +33,7 @@
 #include "data.h"
 #include "search.h"
 #include "rotate.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "plug_io.h"
 #include "compat_misc.h"
 #include "safe_fs.h"

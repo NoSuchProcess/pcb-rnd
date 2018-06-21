@@ -30,7 +30,7 @@
 
 #include "action_helper.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include "board.h"
 #include "buffer.h"

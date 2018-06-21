@@ -6,7 +6,7 @@
 #include "src/hid.h"
 #include "src/error.h"
 #include "actions.h"
-#include "src/hid_actions.h"
+#include "src/actions.h"
 #include "src/compat_misc.h"
 #include "src/crosshair.h"
 #include "../../gpmi_plugin.h"

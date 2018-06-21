@@ -20,7 +20,7 @@
 #include "hid.h"
 #include "lesstif.h"
 #include "hid_attrib.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_init.h"
 #include "stdarg.h"
 #include "misc_util.h"

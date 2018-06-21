@@ -36,7 +36,7 @@
 #include "conf_core.h"
 
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "rotate.h"
 #include "tool.h"
 

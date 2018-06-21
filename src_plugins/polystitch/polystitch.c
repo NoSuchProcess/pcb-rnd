@@ -33,7 +33,7 @@
 #include "draw.h"
 #include "polygon.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
 

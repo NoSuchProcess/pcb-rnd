@@ -30,7 +30,7 @@
 #include "plugins.h"
 #include "macro.h"
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)

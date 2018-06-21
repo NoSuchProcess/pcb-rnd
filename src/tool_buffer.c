@@ -40,7 +40,7 @@
 #include "buffer.h"
 #include "compat_misc.h"
 #include "data.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "rtree.h"
 #include "search.h"
 #include "tool.h"

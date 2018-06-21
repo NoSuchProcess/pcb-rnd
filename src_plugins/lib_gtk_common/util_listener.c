@@ -34,7 +34,7 @@
 #include <gio/gio.h>
 
 #include "hid.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 
 static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gpointer data)

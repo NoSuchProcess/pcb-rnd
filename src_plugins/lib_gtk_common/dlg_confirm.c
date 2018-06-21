@@ -30,7 +30,7 @@
 #include "dlg_confirm.h"
 #include "compat_nls.h"
 #include "board.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include "compat.h"
 

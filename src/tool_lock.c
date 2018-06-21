@@ -39,7 +39,7 @@
 #include "change.h"
 #include "data.h"
 #include "draw.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "search.h"
 #include "tool.h"
 #include "tool_lock.h"

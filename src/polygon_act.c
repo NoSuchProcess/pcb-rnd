@@ -46,7 +46,7 @@
 #include "crosshair.h"
 #include "compat_nls.h"
 #include "tool.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include "obj_poly.h"
 

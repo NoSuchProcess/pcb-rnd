@@ -38,7 +38,7 @@
 #include "board.h"
 #include "compat_nls.h"
 #include "event.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "undo.h"
 #include "remove.h"
 #include "search.h"

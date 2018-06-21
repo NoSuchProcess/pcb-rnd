@@ -39,7 +39,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "plug_footprint.h"
 #include "obj_subc.h"
 #include "macro.h"

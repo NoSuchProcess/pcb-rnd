@@ -37,7 +37,7 @@
 
 #include "action_helper.h"
 #include "crosshair.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "polygon.h"
 #include "tool.h"
 

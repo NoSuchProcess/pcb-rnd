@@ -28,7 +28,7 @@
 
 #include "action_helper.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";

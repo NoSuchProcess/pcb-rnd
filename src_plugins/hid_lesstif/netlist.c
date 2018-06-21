@@ -20,7 +20,7 @@
 #include "event.h"
 
 #include "hid.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "lesstif.h"
 #include "stdarg.h"
 

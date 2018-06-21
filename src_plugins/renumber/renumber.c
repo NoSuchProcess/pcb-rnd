@@ -40,7 +40,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

@@ -50,7 +50,7 @@
 #include "hid_attrib.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 
 static const char pcb_acts_Select[] =

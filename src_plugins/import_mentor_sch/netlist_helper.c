@@ -37,7 +37,7 @@
 #include "compat_misc.h"
 #include "pcb-printf.h"
 #include "error.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "safe_fs.h"
 
 

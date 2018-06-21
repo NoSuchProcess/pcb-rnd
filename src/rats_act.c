@@ -44,7 +44,7 @@
 #include "funchash_core.h"
 #include "compat_nls.h"
 #include "obj_rat.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include "rats.h"
 #include "draw.h"

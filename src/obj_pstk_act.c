@@ -33,7 +33,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";

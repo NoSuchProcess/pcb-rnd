@@ -41,7 +41,7 @@
 #include "hid_color.h"
 #include "hid_extents.h"
 #include "hid_flags.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "stdarg.h"
 #include "grid.h"
 #include "misc_util.h"

@@ -47,7 +47,7 @@
 #include "board.h"
 #include "crosshair.h"
 #include "pcb-printf.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "action_helper.h"
 #include "compat_nls.h"
 #include "compat_misc.h"

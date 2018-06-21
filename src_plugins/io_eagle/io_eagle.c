@@ -33,7 +33,7 @@
 #include "plug_io.h"
 #include "read.h"
 #include "read_dru.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 static pcb_plug_io_t io_eagle_xml, io_eagle_bin, io_eagle_dru;
 static const char *eagle_cookie = "eagle plugin";

@@ -41,7 +41,7 @@
 #include "draw.h"
 #include "select.h"
 #include "undo.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 #include "macro.h"
 #include "obj_pstk_op.h"

@@ -54,7 +54,7 @@
 #include "remove.h"
 #include "paths.h"
 #include "rats_patch.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_flags.h"
 #include "pcb-printf.h"
 #include "plugins.h"

@@ -43,7 +43,7 @@
 #include "obj_pstk_inlines.h"
 
 #include "hid.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_nogui.h"
 #include "hid_helper.h"
 #include "hid_flags.h"

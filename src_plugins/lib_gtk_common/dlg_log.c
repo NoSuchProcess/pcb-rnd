@@ -40,7 +40,7 @@
 #include "conf_hid.h"
 
 #include "pcb-printf.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 
 #include "win_place.h"

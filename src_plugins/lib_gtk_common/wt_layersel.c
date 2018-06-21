@@ -39,7 +39,7 @@
 #include "data.h"
 #include "event.h"
 #include "conf_core.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "math_helper.h"
 
 #include "wt_layersel.h"

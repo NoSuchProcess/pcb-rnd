@@ -71,7 +71,7 @@
 #include "undo.h"
 #include "rats.h"
 #include "plug_io.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "layer.h"

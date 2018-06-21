@@ -66,7 +66,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "pcb_minuid.h"
 #include "tool.h"
 
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_init.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

@@ -37,7 +37,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "hid_init.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "query.h"
 #include "fptr_cast.h"

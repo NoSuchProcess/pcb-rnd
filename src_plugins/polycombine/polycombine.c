@@ -33,7 +33,7 @@
 #include "draw.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "obj_poly.h"
 
 static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *forward)

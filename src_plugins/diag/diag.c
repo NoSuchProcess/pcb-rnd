@@ -35,7 +35,7 @@
 #include "layer.h"
 #include "diag_conf.h"
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "plugins.h"
 #include "conf.h"
 #include "error.h"

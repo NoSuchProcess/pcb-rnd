@@ -34,7 +34,7 @@
 #include "rtree.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "boardflip.h"
 

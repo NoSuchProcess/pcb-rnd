@@ -31,7 +31,7 @@
 
 #include "unit.h"
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "error.h"
 #include "conf_core.h"
 #include "board.h"

@@ -31,7 +31,7 @@
 #include "plugins.h"
 #include "plug_io.h"
 #include "read.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 static pcb_plug_io_t io_mentor_cell;
 static const char *mentor_cell_cookie = "mentor_cell plugin";

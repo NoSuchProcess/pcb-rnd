@@ -40,7 +40,7 @@
 #include "buffer.h"
 #include "crosshair.h"
 #include "data.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "remove.h"
 #include "search.h"
 #include "select.h"

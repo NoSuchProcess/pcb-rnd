@@ -35,7 +35,7 @@
 #include "config.h"
 #include "autoplace.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 #include "board.h"
 #include "event.h"

@@ -38,7 +38,7 @@
 
 #include "error.h"
 #include "event.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 

@@ -52,7 +52,7 @@
 #include "undo.h"
 #include "pcb-printf.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "event.h"
 #include "polygon.h"

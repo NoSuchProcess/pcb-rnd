@@ -35,7 +35,7 @@
 #include "data.h"
 #include "draw.h"
 #include "undo.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "plugins.h"
 
 static const char pcb_acth_autocrop[] = "Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned";

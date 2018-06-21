@@ -31,7 +31,7 @@
 #include "config.h"
 #include "props.h"
 #include "propsel.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "pcb-printf.h"
 #include "error.h"
 

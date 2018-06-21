@@ -25,7 +25,7 @@
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_flags.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

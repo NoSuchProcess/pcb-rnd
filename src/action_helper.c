@@ -54,7 +54,7 @@
 #include "undo.h"
 #include "stub_stroke.h"
 #include "funchash_core.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "event.h"

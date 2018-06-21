@@ -34,7 +34,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "unit.h"
 #include "plugins.h"
 #include "stub_stroke.h"

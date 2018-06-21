@@ -54,7 +54,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "misc_util.h"
 #include "report_conf.h"
 #include "compat_misc.h"

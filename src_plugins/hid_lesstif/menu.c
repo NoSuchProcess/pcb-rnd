@@ -21,7 +21,7 @@
 #include "conf_hid.h"
 #include "lesstif.h"
 #include "paths.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_flags.h"
 #include "stdarg.h"
 #include "event.h"

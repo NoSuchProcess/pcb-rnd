@@ -51,7 +51,7 @@
 #include "compat_misc.h"
 #include "plugins.h"
 #include "hid_flags.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "djopt_conf.h"
 #include "obj_line.h"
 #include "event.h"

@@ -31,7 +31,7 @@
 #include "conf_core.h"
 #include "plug_io.h"
 #include "compat_misc.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "paths.h"
 #include "rtree.h"
 #include "undo.h"

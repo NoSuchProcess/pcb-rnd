@@ -47,7 +47,7 @@ static const char *polyhelp_cookie = "lib_polyhelp";
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "hid_attrib.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 {

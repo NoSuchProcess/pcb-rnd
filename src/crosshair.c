@@ -37,7 +37,7 @@
 #include "draw_wireframe.h"
 #include "search.h"
 #include "polygon.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_inlines.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

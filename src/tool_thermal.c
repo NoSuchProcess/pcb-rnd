@@ -38,7 +38,7 @@
 #include "board.h"
 #include "change.h"
 #include "data.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "obj_pstk.h"
 #include "search.h"
 #include "thermal.h"

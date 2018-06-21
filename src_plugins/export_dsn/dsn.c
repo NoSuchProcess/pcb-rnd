@@ -60,7 +60,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "hid.h"
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_helper.h"

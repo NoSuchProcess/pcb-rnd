@@ -66,7 +66,7 @@
 #include "plug_footprint.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include <gdk/gdkkeysyms.h>
 

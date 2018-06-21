@@ -46,7 +46,7 @@
 #include "plugins.h"
 #include "action_helper.h"
 #include "hid_flags.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_cfg.h"
 #include "vendor_conf.h"
 #include "compat_misc.h"

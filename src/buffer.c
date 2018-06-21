@@ -57,7 +57,7 @@
 #include "layer_grp.h"
 #include "event.h"
 #include "safe_fs.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 static pcb_opfunc_t AddBufferFunctions = {
 	pcb_lineop_add_to_buffer,

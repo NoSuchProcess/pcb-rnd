@@ -38,7 +38,7 @@
 #include "action_helper.h"
 #include "compat_nls.h"
 #include "crosshair.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "polygon.h"
 #include "search.h"
 #include "tool.h"

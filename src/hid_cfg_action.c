@@ -26,7 +26,7 @@
 
 #include "config.h"
 #include "hid_cfg_action.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 int pcb_hid_cfg_action(const lht_node_t *node)
 {

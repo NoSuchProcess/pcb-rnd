@@ -36,7 +36,7 @@
 #include "plug_io.h"
 #include "write.h"
 #include "read.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #include "board.h"
 #include "netlist.h"

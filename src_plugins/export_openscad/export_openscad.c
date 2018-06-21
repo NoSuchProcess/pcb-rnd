@@ -53,7 +53,7 @@
 #include "hid_draw_helpers.h"
 
 #include "hid_init.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "hid_helper.h"

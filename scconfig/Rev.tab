@@ -1,3 +1,4 @@
+17436	configure	renamed hid_actions.[ch]
 17426	configure	introduce new 3rd party lib dep: fungw
 17304	configure	new plugin: expfeat for experimental features
 17216	configure	rendering optimizations: gl inlining

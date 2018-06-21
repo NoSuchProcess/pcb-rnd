@@ -40,7 +40,7 @@
 #include "compat_nls.h"
 #include "data.h"
 #include "draw.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "tool.h"
 #include "undo.h"
 

@@ -34,7 +34,7 @@
 
 #include "act_fileio.h"
 
-#include "hid_actions.h"
+#include "actions.h"
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "plug_footprint.h"

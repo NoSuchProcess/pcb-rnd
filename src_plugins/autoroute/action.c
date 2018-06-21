@@ -36,7 +36,7 @@
 #include "autoroute.h"
 #include "action_helper.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "event.h"
 
 /* action routines for the autorouter

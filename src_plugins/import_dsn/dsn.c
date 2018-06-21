@@ -41,7 +41,7 @@
 #include "safe_fs.h"
 
 #include "action_helper.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid.h"
 #include "plugins.h"
 

@@ -35,7 +35,7 @@
 #include <genlist/gendlist.h>
 #include <genvector/gds_char.h>
 #include "compat_misc.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "compat_nls.h"
 #include "misc_util.h"
 #include "pcb-printf.h"

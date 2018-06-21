@@ -58,7 +58,7 @@
 #include "compat_misc.h"
 #include "paths.h"
 #include "rats_patch.h"
-#include "hid_actions.h"
+#include "actions.h"
 #include "hid_flags.h"
 #include "flag_str.h"
 #include "attribs.h"

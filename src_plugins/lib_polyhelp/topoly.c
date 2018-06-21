@@ -40,7 +40,7 @@
 #include "polygon.h"
 #include "search.h"
 #include "hid.h"
-#include "hid_actions.h"
+#include "actions.h"
 
 #define VALID_TYPE(obj) (((obj)->type == PCB_OBJ_ARC)  || ((obj)->type == PCB_OBJ_LINE))
 #define CONT_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC)
