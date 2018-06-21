@@ -143,10 +143,13 @@ static void remove_triangle(cdt_t *cdt, triangle_t *t)
 	int i, j;
 
 	for (i = 0; i < 3; i++) {
+		/* disconnect adjacent points */
 		t->p[i]->adj_triangles = trianglelist_remove_item(t->p[i]->adj_triangles, &t);
+		/* disconnect adjacent edges */
 		for (j = 0; j < 2; j++)
 			if (t->e[i]->adj_t[j] == t)
 				t->e[i]->adj_t[j] = NULL;
+		/* disconnect adjacent triangles */
 		for (j = 0; j < 3; j++) {
 			triangle_t *adj_t = t->adj_t[i];
 			if (adj_t != NULL && adj_t->adj_t[j] == t)
@@ -154,6 +157,7 @@ static void remove_triangle(cdt_t *cdt, triangle_t *t)
 		}
 	}
 
+	/* remove triangle */
 	for(i = 0; i < vttriangle_len(&cdt->triangles); i++) {
 		if (cdt->triangles.array[i] == t) {
 			vttriangle_remove(&cdt->triangles, i, 1);
@@ -168,12 +172,15 @@ static void remove_edge(cdt_t *cdt, edge_t *e)
 
 	assert(e != NULL);
 
+	/* disconnect adjacent triangles */
 	for (i = 0; i < 2; i++)
 		if (e->adj_t[i])
 			remove_triangle(cdt, e->adj_t[i]);
+	/* disconnect endpoints */
 	for (i = 0; i < 2; i++)
 		e->endp[i]->adj_edges = edgelist_remove_item(e->endp[i]->adj_edges, &e);
 
+	/* remove edge */
 	for(i = 0; i < vtedge_len(&cdt->edges); i++) {
 		if (cdt->edges.array[i] == e) {
 			vtedge_remove(&cdt->edges, i, 1);
