@@ -344,9 +344,41 @@ void dump_edgelist(edgelist_node_t *list)
 }
 #endif
 
+static void order_edges_adjacently(edgelist_node_t *edges, edgelist_node_t **edges_ordered, pointlist_node_t **points_ordered)
+{
+	pointlist_node_t *plist_ordered = NULL;
+	edgelist_node_t *elist_ordered = NULL;
+	edge_t *e1 = edges->item;
+	point_t *p = e1->endp[0];
+	int i = 1;
+	plist_ordered = pointlist_prepend(plist_ordered, &p);
+	elist_ordered = edgelist_prepend(elist_ordered, &e1);
+	edges = edgelist_remove_front(edges);
+
+	while (edges != NULL) {
+		p = e1->endp[i];
+		EDGELIST_FOREACH(e2, edges)
+			if (e2->endp[0] == p || e2->endp[1] == p) {
+				plist_ordered = pointlist_prepend(plist_ordered, &p);
+				elist_ordered = edgelist_prepend(elist_ordered, &e2);
+				edges = edgelist_remove(edges, _node_);
+				i = e2->endp[0] == p ? 1 : 0;
+				e1 = e2;
+				break;
+			}
+		EDGELIST_FOREACH_END();
+	}
+
+	*edges_ordered = elist_ordered;
+	*points_ordered = plist_ordered;
+}
+
 static void triangulate_polygon(edgelist_node_t *polygon)
 {
+	edgelist_node_t *polygon_edges;
+	pointlist_node_t *polygon_points;
 
+	order_edges_adjacently(polygon, &polygon_edges, &polygon_points);
 }
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
