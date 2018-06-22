@@ -30,7 +30,6 @@ void pcb_dump_actions(void);
 const pcb_action_t *pcb_find_action(const char *name);
 
 void pcb_remove_actions(const pcb_action_t *a, int n);
-void pcb_remove_action(const pcb_action_t *a);
 void pcb_remove_actions_by_cookie(const char *cookie);
 
 int pcb_action(const char *action_);

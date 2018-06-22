@@ -42,8 +42,10 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-static htsp_t *all_actions = NULL;
 const pcb_action_t *pcb_current_action = NULL;
+
+fgw_ctx_t pcb_fgw;
+fgw_obj_t *pcb_fgw_obj;
 
 static const char *check_action_name(const char *s)
 {
@@ -62,23 +64,24 @@ void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie, int 
 {
 	int i;
 	hid_cookie_action_t *ca;
-
-	if (all_actions == NULL)
-		all_actions = htsp_alloc(strhash_case, strkeyeq_case);
+	fgw_func_t *f;
 
 	for (i = 0; i < n; i++) {
 		if (check_action_name(a[i].name)) {
 			pcb_message(PCB_MSG_ERROR, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
 			continue;
 		}
-		if (htsp_get(all_actions, a[i].name) != NULL) {
-			pcb_message(PCB_MSG_ERROR, _("ERROR! Invalid action name, " "action \"%s\" is already registered.\n"), a[i].name);
-			continue;
-		}
 		ca = malloc(sizeof(hid_cookie_action_t));
 		ca->cookie = cookie;
 		ca->action = a+i;
-		htsp_set(all_actions, pcb_strdup(a[i].name), ca);
+		f = fgw_func_reg(pcb_fgw_obj, a[i].name, a[i].trigger_cb);
+		if (f == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
+			free(ca);
+			continue;
+		}
+		else
+			f->reg_data = ca;
 	}
 }
 
@@ -87,18 +90,24 @@ void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy)
 	pcb_register_actions(a, 1, cookie, copy);
 }
 
+static void pcb_remove_action(fgw_func_t *f)
+{
+	hid_cookie_action_t *ca = f->reg_data;
+	fgw_func_unreg(pcb_fgw_obj, f->name);
+	free(ca);
+}
+
 void pcb_remove_actions(const pcb_action_t *a, int n)
 {
 	int i;
 
-	if (all_actions == NULL)
-		return;
-
 	for (i = 0; i < n; i++) {
-		htsp_entry_t *e;
-		e = htsp_popentry(all_actions, a[i].name);
-		free(e->key);
-		free(e->value);
+		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, a[i].name);
+		if (f == NULL) {
+			pcb_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
+			continue;
+		}
+		pcb_remove_action(f);
 	}
 }
 
@@ -106,48 +115,30 @@ void pcb_remove_actions_by_cookie(const char *cookie)
 {
 	htsp_entry_t *e;
 
-	if (all_actions == NULL)
-		return;
-
 	/* Slow linear search - probably OK, this will run only on uninit */
-	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
-		hid_cookie_action_t *ca = e->value;
-		if (ca->cookie == cookie) {
-			htsp_pop(all_actions, e->key);
-			free(e->key);
-			free(e->value);
-		}
-	}
-}
-
-void pcb_remove_action(const pcb_action_t *a)
-{
-	htsp_entry_t *e;
-
-	if (all_actions == NULL)
-		return;
-
-	e = htsp_popentry(all_actions, a->name);
-	if (e != NULL) {
-		free(e->key);
-		free(e->value);
+	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+		fgw_func_t *f = e->value;
+		hid_cookie_action_t *ca = f->reg_data;
+		if (ca->cookie == cookie)
+			pcb_remove_action(f);
 	}
 }
 
 const pcb_action_t *pcb_find_action(const char *name)
 {
+	fgw_func_t *f;
 	hid_cookie_action_t *ca;
 
-	if ((name == NULL) && (all_actions == NULL))
-		return 0;
+	if (name == NULL)
+		return NULL;
 
-	ca = htsp_get(all_actions, (char *) name);
-
-	if (ca)
-		return ca->action;
-
-	pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
-	return 0;
+	f = fgw_func_lookup(&pcb_fgw, name);
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
+		return NULL;
+	}
+	ca = f->reg_data;
+	return ca->action;
 }
 
 void pcb_print_actions()
@@ -155,8 +146,9 @@ void pcb_print_actions()
 	htsp_entry_t *e;
 
 	fprintf(stderr, "Registered Actions:\n");
-	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
-		hid_cookie_action_t *ca = e->value;
+	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+		fgw_func_t *f = e->value;
+		hid_cookie_action_t *ca = f->reg_data;
 		if (ca->action->description)
 			fprintf(stderr, "  %s - %s\n", ca->action->name, ca->action->description);
 		else
@@ -199,8 +191,9 @@ void pcb_dump_actions(void)
 	htsp_entry_t *e;
 
 	fprintf(stderr, "Registered Actions:\n");
-	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
-		hid_cookie_action_t *ca = e->value;
+	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+		fgw_func_t *f = e->value;
+		hid_cookie_action_t *ca = f->reg_data;
 		const char *desc = ca->action->description;
 		const char *synt = ca->action->syntax;
 
@@ -440,31 +433,26 @@ int pcb_parse_actions(const char *str_)
 	return hid_parse_actionstring(str_, pcb_true);
 }
 
-fgw_ctx_t pcb_fgw;
 
 void pcb_actions_init(void)
 {
 	fgw_init(&pcb_fgw, "pcb-rnd");
+	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
 }
 
 void pcb_actions_uninit(void)
 {
 	htsp_entry_t *e;
 
-	if (all_actions == NULL)
-		return;
-
-	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
+	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = e->value;
 		if (ca->cookie != NULL)
 			fprintf(stderr, "ERROR: hid_actions_uninit: action '%s' with cookie '%s' left registered, check your plugins!\n", e->key, ca->cookie);
-		free(e->key);
-		free(e->value);
+		pcb_remove_action(f);
 	}
 
-	htsp_free(all_actions);
-	all_actions = NULL;
-
+	fgw_obj_unreg(&pcb_fgw, pcb_fgw_obj);
 	fgw_uninit(&pcb_fgw);
 	fgw_atexit();
 }

@@ -276,6 +276,7 @@ void pcb_main_uninit(void)
 	pcb_plugin_uninit();
 	pcb_file_loaded_uninit();
 	pcb_import_uninit();
+	pcb_actions_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
@@ -498,6 +499,7 @@ int main(int argc, char *argv[])
 	pcb_text_init();
 	pcb_tool_init();
 
+	pcb_actions_init();
 	pup_init(&pcb_pup);
 	pcb_pup.error_stack_enable = 1;
 	pup_buildin_load(&pcb_pup, pup_buildins);
