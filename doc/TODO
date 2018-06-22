@@ -1,7 +1,6 @@
 0. For the upcoming release ===============================================================================
 - fungw action transition:
 	- replace the int/char** argv action API with fungw functions in core
-	- figure/decide how fungw objects should be registered from plugins, where plugin actions should end up
 	- replace the int/char** argv action API with fungw functions in plugins
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
