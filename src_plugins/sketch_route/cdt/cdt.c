@@ -362,6 +362,8 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 {
 	edgelist_node_t *polygon_edges;
 	pointlist_node_t *polygon_points, *current_point_node;
+	point_t *p[3];
+	int i;
 
 	order_edges_adjacently(polygon, &polygon_edges, &polygon_points);
 	assert(edgelist_length(polygon_edges) >= 3);
@@ -430,6 +432,13 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 skip:
 		EDGELIST_FOREACH_END();
 	}
+
+	/* create triangle from the remaining edges */
+	for (i = 0; i < 3; i++) {
+		p[i] = polygon_points->item;
+		polygon_points = pointlist_remove_front(polygon_points);
+	}
+	new_triangle(cdt, p[0], p[1], p[2]);
 }
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
