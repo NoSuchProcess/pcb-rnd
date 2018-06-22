@@ -466,20 +466,12 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 		if (!adj_e->is_constrained && adj_t != NULL)
 			check_adjacent_triangle(adj_t, adj_e, new_p, &region);
 	}
-#ifdef DEBUG
-	fprintf(stderr, "edges_to_remove:\n");
-	dump_edgelist(region.edges_to_remove);
-#endif
 	remove_triangle(cdt, enclosing_triangle);
 	EDGELIST_FOREACH(e, region.edges_to_remove)
 		remove_edge(cdt, e);
 	EDGELIST_FOREACH_END();
 
 	order_edges_adjacently(region.border_edges, NULL, &points_to_attach);
-#ifdef DEBUG
-	fprintf(stderr, "points_to_attach:\n");
-	dump_pointlist(points_to_attach);
-#endif
 	prev_point_node = points_to_attach;
 	new_edge(cdt, points_to_attach->item, new_p, 0);
 	POINTLIST_FOREACH(p, points_to_attach->next)
