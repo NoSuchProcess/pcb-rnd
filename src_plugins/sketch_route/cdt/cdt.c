@@ -412,6 +412,8 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 				pnode = current_point_node->next;
 				polygon_points = pointlist_remove(polygon_points, current_point_node);
 				current_point_node = pnode;
+
+				i++; /* one edge less to check */
 			}
 		}
 	}
