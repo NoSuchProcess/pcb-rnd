@@ -69,7 +69,8 @@ int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *r
 				else
 					current = NULL;
 			}
-			cb(user_ctx, &res, current);
+			if (current != NULL)
+				cb(user_ctx, &res, current);
 		}
 		else
 			errs++;
