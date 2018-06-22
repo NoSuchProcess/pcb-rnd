@@ -14,7 +14,7 @@
 
 #include "cdt.h"
 
-//#define DEBUG
+/*#define DEBUG*/
 
 #define LEFTPOINT(p1, p2) ((p1)->pos.x < (p2)->pos.x || ((p1)->pos.x == (p2)->pos.x && (p1)->pos.y > (p2)->pos.y))
 
@@ -288,31 +288,6 @@ static void check_adjacent_triangle(triangle_t *adj_t, edge_t *adj_e, point_t *n
 	}
 }
 
-static pointlist_node_t *order_border_points_adjacently(edgelist_node_t *border)
-{
-	pointlist_node_t *plist_ordered = NULL;
-	edge_t *e1 = border->item;
-	point_t *p = e1->endp[0];
-	int i = 1;
-	plist_ordered = pointlist_prepend(plist_ordered, &p);
-	border = edgelist_remove_front(border);
-
-	while (border != NULL) {
-		p = e1->endp[i];
-		EDGELIST_FOREACH(e2, border)
-			if (e2->endp[0] == p || e2->endp[1] == p) {
-				plist_ordered = pointlist_prepend(plist_ordered, &p);
-				border = edgelist_remove(border, _node_);
-				i = e2->endp[0] == p ? 1 : 0;
-				e1 = e2;
-				break;
-			}
-		EDGELIST_FOREACH_END();
-	}
-
-	return plist_ordered;
-}
-
 #ifdef DEBUG
 void dump_pointlist(pointlist_node_t *list)
 {
@@ -351,16 +326,20 @@ static void order_edges_adjacently(edgelist_node_t *edges, edgelist_node_t **edg
 	edge_t *e1 = edges->item;
 	point_t *p = e1->endp[0];
 	int i = 1;
-	plist_ordered = pointlist_prepend(plist_ordered, &p);
-	elist_ordered = edgelist_prepend(elist_ordered, &e1);
+	if (points_ordered != NULL)
+		plist_ordered = pointlist_prepend(plist_ordered, &p);
+	if (edges_ordered != NULL)
+		elist_ordered = edgelist_prepend(elist_ordered, &e1);
 	edges = edgelist_remove_front(edges);
 
 	while (edges != NULL) {
 		p = e1->endp[i];
 		EDGELIST_FOREACH(e2, edges)
 			if (e2->endp[0] == p || e2->endp[1] == p) {
-				plist_ordered = pointlist_prepend(plist_ordered, &p);
-				elist_ordered = edgelist_prepend(elist_ordered, &e2);
+				if (points_ordered != NULL)
+					plist_ordered = pointlist_prepend(plist_ordered, &p);
+				if (edges_ordered != NULL)
+					elist_ordered = edgelist_prepend(elist_ordered, &e2);
 				edges = edgelist_remove(edges, _node_);
 				i = e2->endp[0] == p ? 1 : 0;
 				e1 = e2;
@@ -369,8 +348,10 @@ static void order_edges_adjacently(edgelist_node_t *edges, edgelist_node_t **edg
 		EDGELIST_FOREACH_END();
 	}
 
-	*edges_ordered = elist_ordered;
-	*points_ordered = plist_ordered;
+	if (points_ordered != NULL)
+		*points_ordered = plist_ordered;
+	if (edges_ordered != NULL)
+		*edges_ordered = elist_ordered;
 }
 
 static void triangulate_polygon(edgelist_node_t *polygon)
@@ -424,7 +405,7 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 		remove_edge(cdt, e);
 	EDGELIST_FOREACH_END();
 
-	points_to_attach = order_border_points_adjacently(region.border_edges);
+	order_edges_adjacently(region.border_edges, NULL, &points_to_attach);
 #ifdef DEBUG
 	printf("points_to_attach:\n");
 	dump_pointlist(points_to_attach);
