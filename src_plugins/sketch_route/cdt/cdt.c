@@ -323,27 +323,21 @@ void dump_edgelist(edgelist_node_t *list)
 }
 #endif
 
-static void order_edges_adjacently(edgelist_node_t *edges, edgelist_node_t **edges_ordered, pointlist_node_t **points_ordered)
+static pointlist_node_t *order_edges_adjacently(edgelist_node_t *edges)
 {
 	pointlist_node_t *plist_ordered = NULL;
-	edgelist_node_t *elist_ordered = NULL;
 	edge_t *e1 = edges->item;
 	point_t *p = e1->endp[0];
 	int i = 1;
-	if (points_ordered != NULL)
-		plist_ordered = pointlist_prepend(plist_ordered, &p);
-	if (edges_ordered != NULL)
-		elist_ordered = edgelist_prepend(elist_ordered, &e1);
+
+	plist_ordered = pointlist_prepend(plist_ordered, &p);
 	edges = edgelist_remove_front(edges);
 
 	while (edges != NULL) {
 		p = e1->endp[i];
 		EDGELIST_FOREACH(e2, edges)
 			if (e2->endp[0] == p || e2->endp[1] == p) {
-				if (points_ordered != NULL)
-					plist_ordered = pointlist_prepend(plist_ordered, &p);
-				if (edges_ordered != NULL)
-					elist_ordered = edgelist_prepend(elist_ordered, &e2);
+				plist_ordered = pointlist_prepend(plist_ordered, &p);
 				edges = edgelist_remove(edges, _node_);
 				i = e2->endp[0] == p ? 1 : 0;
 				e1 = e2;
@@ -352,31 +346,26 @@ static void order_edges_adjacently(edgelist_node_t *edges, edgelist_node_t **edg
 		EDGELIST_FOREACH_END();
 	}
 
-	if (points_ordered != NULL)
-		*points_ordered = plist_ordered;
-	if (edges_ordered != NULL)
-		*edges_ordered = elist_ordered;
+	return plist_ordered;
 }
 
 static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 {
-	edgelist_node_t *polygon_edges;
 	pointlist_node_t *polygon_points, *current_point_node;
 	point_t *p[3];
+	int skip;
 	int i;
 
-	order_edges_adjacently(polygon, &polygon_edges, &polygon_points);
-	assert(edgelist_length(polygon_edges) >= 3);
+	polygon_points = order_edges_adjacently(polygon);
+	assert(pointlist_length(polygon_points) >= 3);
 
-	while (edgelist_length(polygon_edges) > 3) {
+	while (pointlist_length(polygon_points) > 3) {
 		current_point_node = polygon_points;
 
-		EDGELIST_FOREACH(e, polygon_edges)
+		for(i = 0; i < pointlist_length(polygon_points); i++) {
 			triangle_t candidate_t;
-			edge_t candidate_e, *new_e;
-			edgelist_node_t *enode;
+			edge_t candidate_e;
 			pointlist_node_t *pnode;
-			(void) e; /* not used (only _node_ used, see EDGELIST_FOREACH) */
 
 			candidate_t.p[0] = current_point_node->item;
 			candidate_e.endp[0] = candidate_t.p[0];
@@ -391,18 +380,19 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 				candidate_t.p[2] = current_point_node->next->item;
 			candidate_e.endp[1] = candidate_t.p[2];
 
+			skip = 0;
 			/* case 1: another point of the polygon violates the circle criterion */
 			POINTLIST_FOREACH(p, polygon_points)
 				if (p != candidate_t.p[0] && p != candidate_t.p[1] && p != candidate_t.p[2])
 					if (is_point_in_circumcircle(p, &candidate_t))
-						goto skip;
+						skip = 1;
 			POINTLIST_FOREACH_END();
 
 			/* case 2: edge to be added already exists */
 			EDGELIST_FOREACH(e1, candidate_e.endp[0]->adj_edges)
 				EDGELIST_FOREACH(e2, candidate_e.endp[1]->adj_edges)
 					if (e1 == e2)
-						goto skip;
+						skip = 1;
 				EDGELIST_FOREACH_END();
 			EDGELIST_FOREACH_END();
 
@@ -411,26 +401,19 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 				if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
 						&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2]))
 					if(EDGES_INTERSECT(&candidate_e, e))
-						goto skip;
+						skip = 1;
 			EDGELIST_FOREACH_END();
 
-			new_e = new_edge(cdt, candidate_e.endp[0], candidate_e.endp[1], 0);
-			new_triangle(cdt, candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]);
+			if (!skip) {
+				new_edge(cdt, candidate_e.endp[0], candidate_e.endp[1], 0);
+				new_triangle(cdt, candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]);
 
-			/* update polygon: replace 2 old edges with the new one; remove the point now covered by the new edge */
-			if (_node_->next == NULL)
-				polygon_edges = edgelist_remove_front(polygon_edges); /* wrap around */
-			else
-				polygon_edges = edgelist_remove(polygon_edges, _node_->next);
-			enode = edgelist_insert_after(_node_, &new_e);
-			polygon_edges = edgelist_remove(polygon_edges, _node_);
-			_node_ = enode;
-
-			pnode = current_point_node->next;
-			polygon_points = pointlist_remove(polygon_points, current_point_node);
-			current_point_node = pnode;
-skip:
-		EDGELIST_FOREACH_END();
+				/* update polygon: remove the point now covered by the new edge */
+				pnode = current_point_node->next;
+				polygon_points = pointlist_remove(polygon_points, current_point_node);
+				current_point_node = pnode;
+			}
+		}
 	}
 
 	/* create triangle from the remaining edges */
@@ -480,7 +463,7 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 		remove_edge(cdt, e);
 	EDGELIST_FOREACH_END();
 
-	order_edges_adjacently(region.border_edges, NULL, &points_to_attach);
+	points_to_attach = order_edges_adjacently(region.border_edges);
 	prev_point_node = points_to_attach;
 	new_edge(cdt, points_to_attach->item, new_p, 0);
 	POINTLIST_FOREACH(p, points_to_attach->next)
