@@ -60,7 +60,7 @@ static const char *check_action_name(const char *s)
 	return NULL;
 }
 
-void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie, int copy)
+void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
 {
 	int i;
 	hid_cookie_action_t *ca;
@@ -85,9 +85,9 @@ void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie, int 
 	}
 }
 
-void pcb_register_action(const pcb_action_t *a, const char *cookie, int copy)
+void pcb_register_action(const pcb_action_t *a, const char *cookie)
 {
-	pcb_register_actions(a, 1, cookie, copy);
+	pcb_register_actions(a, 1, cookie);
 }
 
 static void pcb_remove_action(fgw_func_t *f)

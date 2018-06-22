@@ -144,13 +144,13 @@ static void register_actions()
 	act1.description    = "Manage gpmi scripts";
 	act1.syntax         = "TODO";
 	act1.trigger_cb     = action_gpmi_scripts;
-	pcb_register_action(&act1, gpmi_cookie, 0);
+	pcb_register_action(&act1, gpmi_cookie);
 
 	act2.name           = "rehash";
 	act2.description    = "Reload all gpmi scripts";
 	act2.syntax         = "TODO";
 	act2.trigger_cb     = action_gpmi_rehash;
-	pcb_register_action(&act2, gpmi_cookie, 0);
+	pcb_register_action(&act2, gpmi_cookie);
 }
 
 static gpmi_package *pkg_scripts = NULL;
