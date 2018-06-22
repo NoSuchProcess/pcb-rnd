@@ -70,7 +70,7 @@ pcb, a subcircuit, or a layer.
 %end-doc */
 
 
-static fgw_error_t pcb_act_Attributes(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Attributes(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -227,7 +227,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	}
 }
 
-static fgw_error_t pcb_act_DisperseElements(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -300,7 +300,7 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Flip(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Flip(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -355,7 +355,7 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static fgw_error_t pcb_act_MoveObject(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MoveObject(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *x_str = PCB_ACTION_ARG(0);
@@ -405,7 +405,7 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static fgw_error_t pcb_act_MoveToCurrentLayer(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -508,12 +508,12 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 	return strcmp(got_name, expect_name);
 }
 
-static fgw_error_t pcb_act_ElementList(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
 	const char *refdes, *value, *footprint;
-	const char *args[3];
+	fgw_arg_t res, args[4];
 	const char *function = argv[0];
 	int fx, fy, fs;
 
@@ -561,9 +561,15 @@ static fgw_error_t pcb_act_ElementList(int oargc, const char **oargv)
 	footprint = PCB_ACTION_ARG(1);
 	value = PCB_ACTION_ARG(2);
 
-	args[0] = footprint;
-	args[1] = refdes;
-	args[2] = value;
+	args[0].type = FGW_FUNC;
+	args[0].val.func = NULL;
+	args[1].type = FGW_STR;
+	args[1].val.str = (char *)footprint;
+	args[2].type = FGW_STR;
+	args[2].val.str = (char *)refdes;
+	args[3].type = FGW_STR;
+	args[3].val.str = (char *)value;
+	argc = 4;
 
 	/* turn of flip to avoid mirror/rotat confusion */
 	fx = conf_core.editor.view.flip_x;
@@ -588,7 +594,7 @@ static fgw_error_t pcb_act_ElementList(int oargc, const char **oargv)
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (pcb_act_LoadFootprint(argc, args)) {
+		if (pcb_act_LoadFootprint(&res, argc, args)) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -629,7 +635,7 @@ static fgw_error_t pcb_act_ElementList(int oargc, const char **oargv)
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
-		if (pcb_act_LoadFootprint(argc, args) != 0) {
+		if (pcb_act_LoadFootprint(&res, argc, args) != 0) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -716,7 +722,7 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ElementSetAttr(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
@@ -766,7 +772,7 @@ autorouter.
 
 %end-doc */
 
-static fgw_error_t pcb_act_RipUp(int oargc, const char **oargv)
+static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -841,7 +847,7 @@ static fgw_error_t pcb_act_RipUp(int oargc, const char **oargv)
 
 static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
 static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
-static fgw_error_t pcb_act_MinMaskGap(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
@@ -916,7 +922,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 	PCB_ENDALL_LOOP;
 }
 
-static fgw_error_t pcb_act_MinClearGap(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -999,7 +1005,7 @@ Creates a new layer.
 
 %end-doc */
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-fgw_error_t pcb_act_MoveLayer(int oargc, const char **oargv)
+fgw_error_t pcb_act_MoveLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int old_index, new_index;
@@ -1085,7 +1091,7 @@ static pcb_layer_t *pick_layer(const char *user_text)
 
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
 static const char pcb_acth_CreateText[] = "Create a new text object";
-static fgw_error_t pcb_act_CreateText(int oargc, const char **oargv)
+static fgw_error_t pcb_act_CreateText(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -1131,7 +1137,7 @@ static const char pcb_acts_subc[] =
 	"subc(loose, on|off|toggle|check)\n"
 	;
 static const char pcb_acth_subc[] = "Various operations on subc";
-static fgw_error_t pcb_act_subc(int oargc, const char **oargv)
+static fgw_error_t pcb_act_subc(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (argc == 0)
@@ -1237,7 +1243,7 @@ Rotates the object under the mouse pointer by 90 degree @code{steps}.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Rotate90(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Rotate90(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *ssteps = PCB_ACTION_ARG(0);

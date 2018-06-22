@@ -31,7 +31,7 @@ const char *action_arg(int argn)
 }
 
 
-static fgw_error_t pcb_act_action_cb(int oargc, const char **oargv)
+static fgw_error_t pcb_act_action_cb(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	acontext_t *ctx = (acontext_t *)pcb_current_action;

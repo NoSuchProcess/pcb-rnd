@@ -34,7 +34,7 @@ typedef struct {
 
 extern const char pcb_acts_mesh[];
 extern const char pcb_acth_mesh[];
-fgw_error_t pcb_act_mesh(int argc, const char **argv);
+fgw_error_t pcb_act_mesh(fgw_arg_t *res, int oargc, fgw_arg_t *oargv);
 
 /* Get one of the configured meshes */
 pcb_mesh_t *pcb_mesg_get(const char *name);

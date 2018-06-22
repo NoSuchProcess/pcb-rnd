@@ -120,7 +120,7 @@ called with that filename.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Load(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Load(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function;
@@ -180,7 +180,7 @@ load that vendor file.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadVendor(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LoadVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	char *name;
@@ -234,7 +234,7 @@ called with that filename.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Save(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Save(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function;
@@ -460,7 +460,7 @@ int lesstif_confirm_dialog(const char *msg, ...)
 	return ok;
 }
 
-static fgw_error_t pcb_act_ConfirmAction(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ConfirmAction(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int rv = lesstif_confirm_dialog(argc > 0 ? argv[0] : 0,
@@ -585,7 +585,7 @@ user's stdout.
 
 %end-doc */
 
-static fgw_error_t pcb_act_PromptFor(int oargc, const char **oargv)
+static fgw_error_t pcb_act_PromptFor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	char *rv = lesstif_prompt_for(argc > 0 ? argv[0] : 0,
@@ -1285,7 +1285,7 @@ Open the netlist window.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DoWindows(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DoWindows(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *a = argc == 1 ? argv[0] : "";
@@ -1323,7 +1323,7 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static fgw_error_t pcb_act_About(int oargc, const char **oargv)
+static fgw_error_t pcb_act_About(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	static Widget about = 0;
@@ -1355,7 +1355,7 @@ options, and print the layout.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Print(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Print(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_hid_attribute_t *opts;
@@ -1391,7 +1391,7 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ExportGUI(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	static Widget selector = 0;
@@ -1563,7 +1563,7 @@ The units are determined by the default display units.
 
 %end-doc */
 
-static fgw_error_t pcb_act_AdjustSizes(int oargc, const char **oargv)
+static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (!sizes_dialog) {
@@ -1659,7 +1659,7 @@ See @ref{ChangeName Action}.
 %end-doc */
 
 extern void lesstif_show_layergrp_edit(void);
-static fgw_error_t pcb_act_EditLayerGroups(int oargc, const char **oargv)
+static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	lesstif_show_layergrp_edit();
@@ -1671,7 +1671,7 @@ static fgw_error_t pcb_act_EditLayerGroups(int oargc, const char **oargv)
 static const char pcb_acts_fontsel[] = "EditLayerGroups()";
 static const char pcb_acth_fontsel[] = "Let the user change fonts";
 extern void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type);
-static fgw_error_t pcb_act_fontsel(int oargc, const char **oargv)
+static fgw_error_t pcb_act_fontsel(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (argc > 1)
@@ -2007,7 +2007,7 @@ future imports.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ImportGUI(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	static int I_am_recursing = 0;

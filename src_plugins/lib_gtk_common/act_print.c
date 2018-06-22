@@ -43,7 +43,7 @@
 
 const char pcb_gtk_acts_print[] = "Print()";
 const char pcb_gtk_acth_print[] = N_("Print the layout.");
-fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, int oargc, const char **oargv)
+fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_hid_t **hids;

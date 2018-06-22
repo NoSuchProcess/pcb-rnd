@@ -53,7 +53,7 @@ not the current style settings.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DRCheck(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DRCheck(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int count;

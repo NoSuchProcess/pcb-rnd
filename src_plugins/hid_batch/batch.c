@@ -79,7 +79,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		prompt = pcb_strdup("no-board");
 }
 
-static fgw_error_t pcb_act_help(int oargc, const char **oargv)
+static fgw_error_t pcb_act_help(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_print_actions();
@@ -87,7 +87,7 @@ static fgw_error_t pcb_act_help(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static fgw_error_t pcb_act_info(int oargc, const char **oargv)
+static fgw_error_t pcb_act_info(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int i, j;

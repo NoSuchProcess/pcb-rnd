@@ -57,9 +57,10 @@ int pcb_hid_get_flag(const char *name)
 	}
 	else {
 		const char *end, *s;
-		const char *argv[2];
+		fgw_arg_t res, argv[2];
 		if (cp != NULL) {
 			const pcb_action_t *a;
+			fgw_func_t *f;
 			char buff[256];
 			int len, multiarg;
 			len = cp - name;
@@ -69,7 +70,7 @@ int pcb_hid_get_flag(const char *name)
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
-			a = pcb_find_action(buff);
+			a = pcb_find_action(buff, &f);
 			if (!a) {
 				pcb_message(PCB_MSG_ERROR, "hid_get_flag: no action %s\n", name);
 				return -1;
@@ -95,9 +96,15 @@ int pcb_hid_get_flag(const char *name)
 				len = end - cp;
 				memcpy(buff, cp, len);
 				buff[len] = '\0';
-				argv[0] = buff;
-				argv[1] = NULL;
-				return pcb_actionv_(a, len > 0, argv);
+				argv[0].type = FGW_FUNC;
+				argv[0].val.func = f;
+				argv[1].type = FGW_STR;
+				argv[1].val.str = buff;
+				res.type = FGW_INVALID;
+				if (pcb_actionv_(f, &res, (len > 0) ? 2 : 1, argv) != 0)
+					return -1;
+				fgw_argv_conv(&pcb_fgw, &res, FGW_INT);
+				return res.val.nat_int;
 			}
 			else {
 				/* slower but more generic way */

@@ -166,7 +166,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	PCB_END_LOOP;
 }
 
-static fgw_error_t pcb_act_boardflip(int oargc, const char **oargv)
+static fgw_error_t pcb_act_boardflip(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int h = PCB->MaxHeight;

@@ -168,7 +168,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 static const char pcb_acts_extedit[] = "extedit(object|selected, [interactive|method])\n";
 static const char pcb_acth_extedit[] = "Invoke an external program to edit a specific part of the current board.";
-static fgw_error_t pcb_act_extedit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_extedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	long type;

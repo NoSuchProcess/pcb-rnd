@@ -364,7 +364,7 @@ currently within the window already.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, int oargc, const char **oargv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
+fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
 {
 	PCB_OLD_ACT_BEGIN;
 	int widget_x, widget_y;
@@ -499,7 +499,7 @@ default is given, div=40.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int oargc, const char **oargv)
+fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	gdouble dx = 0.0, dy = 0.0;
@@ -539,7 +539,7 @@ Mode = 0.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, int oargc, const char **oargv)
+fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int mode;

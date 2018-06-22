@@ -2491,7 +2491,7 @@ RF losses and trace length.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DJopt(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DJopt(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *arg = argc > 0 ? argv[0] : NULL;

@@ -38,7 +38,7 @@
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";
 
-fgw_error_t pcb_act_padstackconvert(int oargc, const char **oargv)
+fgw_error_t pcb_act_padstackconvert(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -107,7 +107,7 @@ fgw_error_t pcb_act_padstackconvert(int oargc, const char **oargv)
 static const char pcb_acts_padstackplace[] = "PadstackPlace([proto_id|default], [x, y])";
 static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
 
-fgw_error_t pcb_act_padstackplace(int oargc, const char **oargv)
+fgw_error_t pcb_act_padstackplace(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_cardinal_t pid;

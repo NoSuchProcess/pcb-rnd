@@ -97,7 +97,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *v, int argc, const char **argv);
 
 extern const char pcb_acts_center[];
 extern const char pcb_acth_center[];
-fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, int oargc, const char **oargv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y);
+fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y);
 
 extern const char pcb_acts_swapsides[];
 extern const char pcb_acth_swapsides[];
@@ -105,11 +105,11 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv);
 
 extern const char pcb_acts_scroll[];
 extern const char pcb_acth_scroll[];
-fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int oargc, const char **oargv);
+fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
 extern const char pcb_acts_pan[];
 extern const char pcb_acth_pan[];
-fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, int oargc, const char **oargv);
+fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 

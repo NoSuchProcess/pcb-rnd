@@ -58,7 +58,7 @@ static char *dup_cwd()
 	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
 }
 
-fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, int oargc, const char **oargv)
+fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function;
@@ -120,7 +120,7 @@ called with that filename.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, int oargc, const char **oargv)
+fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function;
@@ -267,7 +267,7 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, int oargc, const char **oarg
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
 const char pcb_gtk_acth_importgui[] = N_("Asks user which schematics to import into PCB.\n");
-fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, int oargc, const char **oargv)
+fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	char *name = NULL;

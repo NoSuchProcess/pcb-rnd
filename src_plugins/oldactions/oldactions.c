@@ -115,7 +115,7 @@ static void dump_lib_any(int level, pcb_fplibrary_t *l)
 }
 
 
-static fgw_error_t pcb_act_DumpLibrary(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DumpLibrary(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	dump_lib_any(0, &pcb_library);
@@ -132,7 +132,7 @@ static const char pcb_acts_Bell[] = "Bell()";
 
 static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.g. beep the speaker).";
 
-static fgw_error_t pcb_act_Bell(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Bell(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_gui->beep();
@@ -165,7 +165,7 @@ on one.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Debug(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Debug(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -190,7 +190,7 @@ passed a 1, does nothing but pretends to fail.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Return(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Return(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	return atoi(argv[0]);
@@ -216,7 +216,7 @@ optimize hand-routed traces also.
 
 
 
-fgw_error_t pcb_act_djopt_set_auto_only(int oargc, const char **oargv)
+fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
@@ -244,7 +244,7 @@ loaded first.
 
 %end-doc */
 
-fgw_error_t pcb_act_ToggleVendor(int oargc, const char **oargv)
+fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
@@ -272,7 +272,7 @@ loaded first.
 
 %end-doc */
 
-fgw_error_t pcb_act_EnableVendor(int oargc, const char **oargv)
+fgw_error_t pcb_act_EnableVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
@@ -298,7 +298,7 @@ specified in the currently loaded vendor drill table.
 
 %end-doc */
 
-fgw_error_t pcb_act_DisableVendor(int oargc, const char **oargv)
+fgw_error_t pcb_act_DisableVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
@@ -306,7 +306,7 @@ fgw_error_t pcb_act_DisableVendor(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-fgw_error_t pcb_act_ListRotations(int oargc, const char **oargv)
+fgw_error_t pcb_act_ListRotations(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	PCB_SUBC_LOOP(PCB->Data);

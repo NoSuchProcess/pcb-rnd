@@ -234,7 +234,7 @@ updates the GUI.
 
 typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
 
-static fgw_error_t pcb_act_Netlist(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Netlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	NFunc func;

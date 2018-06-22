@@ -1448,7 +1448,7 @@ static void ps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 
-static fgw_error_t pcb_act_PSCalib(int oargc, const char **oargv)
+static fgw_error_t pcb_act_PSCalib(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	ps_calibrate(0.0, 0.0);

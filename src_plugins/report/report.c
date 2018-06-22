@@ -145,7 +145,7 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static fgw_error_t pcb_act_report_dialog(int oargc, const char **oargv)
+static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	void *ptr1, *ptr2, *ptr3;
@@ -792,7 +792,7 @@ units
 
 %end-doc */
 
-static fgw_error_t pcb_act_report(int oargc, const char **oargv)
+static fgw_error_t pcb_act_report(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -800,11 +800,11 @@ static fgw_error_t pcb_act_report(int oargc, const char **oargv)
 		AUSAGE(report);
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_hid_get_coords("Click on an object", &x, &y);
-		return pcb_act_report_dialog(argc, argv);
+		return pcb_act_report_dialog(ores, oargc, oargv);
 	}
 	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
 		pcb_hid_get_coords("Click on a subcircuit", &x, &y);
-		return pcb_act_report_dialog(argc, argv);
+		return pcb_act_report_dialog(ores, oargc, oargv);
 	}
 
 	pcb_hid_get_coords("Click on object to report on", &x, &y);

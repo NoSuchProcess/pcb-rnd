@@ -88,7 +88,7 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-fgw_error_t pcb_act_Atomic(int oargc, const char **oargv)
+fgw_error_t pcb_act_Atomic(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (argc != 1)
@@ -136,7 +136,7 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-fgw_error_t pcb_act_Undo(int oargc, const char **oargv)
+fgw_error_t pcb_act_Undo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -180,7 +180,7 @@ three "undone" lines.
 
 %end-doc */
 
-fgw_error_t pcb_act_Redo(int oargc, const char **oargv)
+fgw_error_t pcb_act_Redo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_notify_crosshair_change(pcb_false);

@@ -78,7 +78,7 @@ static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 %end-doc */
 
-static fgw_error_t pcb_act_Help(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Help(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
@@ -114,7 +114,7 @@ will popup.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadLayout(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *filename, *format = NULL;
@@ -152,7 +152,7 @@ element loader.  If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadElementToBuffer(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *filename;
@@ -188,7 +188,7 @@ If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadLayoutToBuffer(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *filename, *format = NULL;
@@ -225,7 +225,7 @@ save) before quitting.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Quit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Quit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
@@ -247,7 +247,7 @@ confirmation.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ReallyQuit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_quit_app();
@@ -275,7 +275,7 @@ for verifying the board layout (which is also accomplished by the
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadNetlist(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *filename;
@@ -323,7 +323,7 @@ and has the same functionality as @code{s}.
 
 %end-doc */
 
-static fgw_error_t pcb_act_SaveLayout(int oargc, const char **oargv)
+static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	switch (argc) {
@@ -369,13 +369,11 @@ has the same functionality as @code{s} combined with @code{q}.
 
 %end-doc */
 
-static fgw_error_t pcb_act_SaveLayoutAndQuit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (!pcb_act_SaveLayout(argc, argv))
-		return pcb_act_Quit(0, 0);
+	if (!pcb_act_SaveLayout(res, argc, argv))
+		return pcb_act_Quit(res, argc, argv);
 	return 1;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */

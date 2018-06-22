@@ -84,7 +84,7 @@ static void cmd_reload(const char *name)
 	}
 }
 
-static fgw_error_t pcb_act_gpmi_scripts(int oargc, const char **oargv)
+static fgw_error_t pcb_act_gpmi_scripts(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (argc == 0) {
@@ -132,7 +132,7 @@ static fgw_error_t pcb_act_gpmi_scripts(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static fgw_error_t pcb_act_gpmi_rehash(int oargc, const char **oargv)
+static fgw_error_t pcb_act_gpmi_rehash(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	cmd_reload(NULL);

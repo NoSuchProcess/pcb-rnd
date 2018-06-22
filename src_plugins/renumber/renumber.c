@@ -70,7 +70,7 @@ static const char *or_empty(const char *s)
 	return s;
 }
 
-static fgw_error_t pcb_act_Renumber(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_bool changed = pcb_false;
@@ -365,8 +365,8 @@ static fgw_error_t pcb_act_Renumber(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-fgw_error_t pcb_act_RenumberBlock(int oargc, const char **oargv);
-fgw_error_t pcb_act_RenumberBuffer(int oargc, const char **oargv);
+fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+fgw_error_t pcb_act_RenumberBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
 
 static const char *renumber_cookie = "renumber plugin";

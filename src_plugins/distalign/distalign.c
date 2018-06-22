@@ -255,7 +255,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  * Defaults are Marks, First.
  */
 static const char pcb_acts_align[] = "Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-static fgw_error_t pcb_act_align(int oargc, const char **oargv)
+static fgw_error_t pcb_act_align(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int dir;
@@ -379,7 +379,7 @@ static fgw_error_t pcb_act_align(int oargc, const char **oargv)
  * before they were distributed.
  */
 static const char pcb_acts_distribute[] = "Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-static fgw_error_t pcb_act_distribute(int oargc, const char **oargv)
+static fgw_error_t pcb_act_distribute(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int dir;

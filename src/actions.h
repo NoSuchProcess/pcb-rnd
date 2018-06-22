@@ -6,7 +6,7 @@
 
 struct pcb_action_s {
 	const char *name; /* action command name */
-	fgw_error_t (*trigger_cb)(int argc, const char **argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
+	fgw_error_t (*trigger_cb)(fgw_arg_t *ores, int argc, fgw_arg_t *argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
 	const char *description;/* Short description (help text) */
 	const char *syntax; /* Full allowed syntax; use \n to separate lines.  */
 };
@@ -27,7 +27,7 @@ void pcb_actions_uninit(void);
 void pcb_print_actions(void);
 void pcb_dump_actions(void);
 
-const pcb_action_t *pcb_find_action(const char *name);
+const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out);
 
 void pcb_remove_actions(const pcb_action_t *a, int n);
 void pcb_remove_actions_by_cookie(const char *cookie);
@@ -35,7 +35,7 @@ void pcb_remove_actions_by_cookie(const char *cookie);
 int pcb_action(const char *action_);
 int pcb_actionl(const char *action_, ...); /* NULL terminated */
 int pcb_actionv(const char *action_, int argc_, const char **argv_);
-int pcb_actionv_(const pcb_action_t *a, int argc, const char **argv);
+fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 /* Parse the given command string into action calls, and call
    hid_actionv for each action found.  Accepts both "action(arg1,
@@ -53,11 +53,27 @@ int pcb_parse_actions(const char *str_);
    else show msg and let the user click in the drawing area */
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
 
+#define PCB_ACTION_MAX_ARGS 16
+
+PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
+{
+	int n;
+	for(n = 1; n < oargc; n++) {
+		if (fgw_argv_conv(&pcb_fgw, &oargv[n], FGW_STR) == 0)
+			argv[n-1] = oargv[n].val.str;
+		else
+			argv[n-1] = "";
+	}
+	argv[n] = NULL;
+	return oargc - 1;
+}
+
 /* temporary hack for smooth upgrade to fungw based actions */
 #define PCB_OLD_ACT_BEGIN \
 { \
-	int argc = oargc; \
-	const char **argv = oargv
+	char *argv__[PCB_ACTION_MAX_ARGS]; \
+	const char **argv = (const char **)argv__; \
+	int argc = pcb_old_act_begin_conv(oargc, oargv, argv__)
 
 #define PCB_OLD_ACT_END \
 	(void)argc; \

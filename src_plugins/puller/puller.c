@@ -355,7 +355,7 @@ arc-line intersection was moved to.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Puller(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t Ux, Uy;
@@ -2078,7 +2078,7 @@ static void trace_print_lines_arcs(void)
 }
 #endif
 
-static fgw_error_t pcb_act_GlobalPuller(int oargc, const char **oargv)
+static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int select_flags = 0;

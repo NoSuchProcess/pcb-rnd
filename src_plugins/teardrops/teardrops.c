@@ -248,7 +248,7 @@ static void check_pstk(pcb_pstk_t *ps)
 	}
 }
 
-static fgw_error_t pcb_act_teardrops(int oargc, const char **oargv)
+static fgw_error_t pcb_act_teardrops(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_box_t *b;

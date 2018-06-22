@@ -64,7 +64,7 @@ Runs the given command, which is a system executable.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ExecCommand(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ExecCommand(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *command;
@@ -118,7 +118,7 @@ you may have made.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadFrom(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LoadFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function, *name, *format = NULL;
@@ -183,7 +183,7 @@ If a name is not given, one is prompted for.
 
 %end-doc */
 
-static fgw_error_t pcb_act_New(int oargc, const char **oargv)
+static fgw_error_t pcb_act_New(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *argument_name = PCB_ACTION_ARG(0);
@@ -228,7 +228,7 @@ static fgw_error_t pcb_act_New(int oargc, const char **oargv)
 /* --------------------------------------------------------------------------- */
 static const char pcb_acts_normalize[] = "Normalize()";
 static const char pcb_acth_normalize[] = "Move all objects within the drawing area, align the drawing to 0;0";
-static fgw_error_t pcb_act_normalize(int oargc, const char **oargv)
+static fgw_error_t pcb_act_normalize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	return pcb_board_normalize(PCB);
@@ -269,7 +269,7 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static fgw_error_t pcb_act_SaveTo(int oargc, const char **oargv)
+static fgw_error_t pcb_act_SaveTo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function;
@@ -372,7 +372,7 @@ save) before quitting.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Quit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Quit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *force = PCB_ACTION_ARG(0);
@@ -390,7 +390,7 @@ static fgw_error_t pcb_act_Quit(int oargc, const char **oargv)
 /* --------------------------------------------------------------------------- */
 static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
 static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
-static fgw_error_t pcb_act_Export(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Export(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (argc < 1) {
@@ -419,7 +419,7 @@ static fgw_error_t pcb_act_Export(int oargc, const char **oargv)
 
 static const char pcb_acts_Backup[] = "Backup()";
 static const char pcb_acth_Backup[] = "Backup the current layout - save using the same method that the timed backup function uses";
-static fgw_error_t pcb_act_Backup(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Backup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_backup();

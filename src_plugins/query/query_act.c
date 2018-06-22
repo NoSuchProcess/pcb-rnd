@@ -117,7 +117,7 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 	return pcb_qry_run(prg, cb, user_ctx);
 }
 
-static fgw_error_t pcb_act_query(int oargc, const char **oargv)
+static fgw_error_t pcb_act_query(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *cmd = argc > 0 ? argv[0] : 0;

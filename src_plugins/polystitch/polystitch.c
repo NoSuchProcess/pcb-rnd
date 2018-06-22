@@ -89,7 +89,7 @@ static pcb_poly_t *find_enclosing_poly(pcb_poly_t *inner_poly)
 }
 
 
-static fgw_error_t pcb_act_polystitch(int oargc, const char **oargv)
+static fgw_error_t pcb_act_polystitch(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;

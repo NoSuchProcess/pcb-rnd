@@ -124,7 +124,7 @@ void pcb_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-const pcb_action_t *pcb_find_action(const char *name)
+const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
 {
 	fgw_func_t *f;
 	hid_cookie_action_t *ca;
@@ -138,6 +138,8 @@ const pcb_action_t *pcb_find_action(const char *name)
 		return NULL;
 	}
 	ca = f->reg_data;
+	if (f_out != NULL)
+		*f_out = f;
 	return ca->action;
 }
 
@@ -225,43 +227,62 @@ int pcb_actionl(const char *name, ...)
 	return pcb_actionv(name, argc, argv);
 }
 
-int pcb_actionv_(const pcb_action_t *a, int argc, const char **argv)
+fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int i, ret;
+	fgw_error_t ret;
+	int i;
 	const pcb_action_t *old_action;
+	hid_cookie_action_t *ca = f->reg_data;
 
 	if (conf_core.rc.verbose) {
-		printf("Action: \033[34m%s(", a->name);
+		printf("Action: \033[34m%s(", f->name);
 		for (i = 0; i < argc; i++)
-			printf("%s%s", i ? "," : "", argv[i]);
+			printf("%s%s", i ? "," : "", (argv[i].type & FGW_STR) == FGW_STR ? argv[i].val.str : "<non-str>");
 		printf(")\033[0m\n");
 	}
 
 	old_action = pcb_current_action;
-	pcb_current_action = a;
-	ret = pcb_current_action->trigger_cb(argc, argv);
+	pcb_current_action = ca->action;
+	ret = pcb_current_action->trigger_cb(res, argc, argv);
 	pcb_current_action = old_action;
 
 	return ret;
 }
 
-int pcb_actionv(const char *name, int argc, const char **argv)
+int pcb_actionv(const char *name, int argc, const char **argsv)
 {
-	const pcb_action_t *a;
+	fgw_func_t *f;
+	fgw_arg_t res, argv[PCB_ACTION_MAX_ARGS+1];
+	int n;
 
 	if (name == NULL)
 		return 1;
 
-	a = pcb_find_action(name);
-	if (a == NULL) {
+	if (argc >= PCB_ACTION_MAX_ARGS) {
+		pcb_message(PCB_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, PCB_ACTION_MAX_ARGS);
+		return 1;
+	}
+
+	f = fgw_func_lookup(&pcb_fgw, name);
+	if (f == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);
 		for (i = 0; i < argc; i++)
-			pcb_message(PCB_MSG_ERROR, "%s%s", i ? ", " : "", argv[i]);
+			pcb_message(PCB_MSG_ERROR, "%s%s", i ? ", " : "", argsv[i]);
 		pcb_message(PCB_MSG_ERROR, ")\n");
 		return 1;
 	}
-	return pcb_actionv_(a, argc, argv);
+	argv[0].type = FGW_FUNC;
+	argv[0].val.func = f;
+	for(n = 0; n < argc; n++) {
+		argv[n+1].type = FGW_STR;
+		argv[n+1].val.str = (char *)argsv[n];
+	}
+	res.type = FGW_INVALID;
+	if (pcb_actionv_(f, &res, argc+1, argv) != 0)
+		return -1;
+	fgw_argv_conv(&pcb_fgw, &res, FGW_INT);
+	return res.val.nat_int;
 }
 
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)

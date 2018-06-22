@@ -149,7 +149,7 @@ static int hpgl_load(const char *fname)
 
 static const char pcb_acts_LoadHpglFrom[] = "LoadHpglFrom(filename)";
 static const char pcb_acth_LoadHpglFrom[] = "Loads the specified hpgl plot file to the current buffer";
-fgw_error_t pcb_act_LoadHpglFrom(int oargc, const char **oargv)
+fgw_error_t pcb_act_LoadHpglFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;

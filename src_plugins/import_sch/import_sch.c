@@ -60,7 +60,7 @@
 
 conf_import_sch_t conf_import_sch;
 
-extern fgw_error_t pcb_act_ExecuteFile(int oargc, const char **oargv);
+extern fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_Import[] =
@@ -178,12 +178,13 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static fgw_error_t pcb_act_Import(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *mode;
 	const char **sources = NULL;
 	int nsources = 0;
+	fgw_arg_t res;
 
 	if (conf_import_sch.plugins.import_sch.verbose)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Entering pcb_act_Import  ===\n");
@@ -360,9 +361,7 @@ static fgw_error_t pcb_act_Import(int oargc, const char **oargv)
 		if (conf_import_sch.plugins.import_sch.verbose)
 			pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
 
-		cmd[0] = tmpfile;
-		cmd[1] = NULL;
-		pcb_act_ExecuteFile(1, cmd);
+		fgw_vcall(&pcb_fgw, &res, "ExecuteFile", FGW_STR, tmpfile, 0);
 
 		for(i = 0; i < nsources; i++)
 			free((char *) cmd[8 + i]);
@@ -436,9 +435,7 @@ static fgw_error_t pcb_act_Import(int oargc, const char **oargv)
 			return 1;
 		}
 
-		cmd[0] = tmpfile;
-		cmd[1] = NULL;
-		pcb_act_ExecuteFile(1, cmd);
+		fgw_vcall(&pcb_fgw, &res, "ExecuteFile", FGW_STR, tmpfile, 0);
 
 		free((char*)cmd[2]);
 		free((char*)cmd[3]);

@@ -68,7 +68,7 @@ static void pcb_dlg_foo(whatever args) <<<- edit this
 
 static const char pcb_acts_Foo[] = "Foo(object)\n"; <<<- edit this
 static const char pcb_acth_Foo[] = ""; <<<- edit this
-static fgw_error_t pcb_act_Foo(int oargc, const char **oargv) <<<- edit this
+static fgw_error_t pcb_act_Foo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv) <<<- edit this
 {
 	return 0;
 }
