@@ -9,6 +9,8 @@ int main(void)
 	point_t *p;
 	int i;
 	clock_t t;
+	pointlist_node_t *p_violations = NULL;
+
 	cdt_init(&cdt, 1000, 1000, 5000, 5000);
 	/*cdt_init(&cdt, 0, 0, 100000, 100000);*/
 
@@ -63,9 +65,9 @@ int main(void)
 	p = cdt_insert_point(&cdt, 3000, 3000);
 	cdt_delete_point(&cdt, p);
 
-	if (cdt_check_delaunay(&cdt))
+	if (cdt_check_delaunay(&cdt, &p_violations, NULL))
 		fprintf(stderr, "delaunay\n");
 	else
 		fprintf(stderr, "not delaunay\n");
-	cdt_dump_animator(&cdt, 0);
+	cdt_dump_animator(&cdt, 0, p_violations, NULL);
 }

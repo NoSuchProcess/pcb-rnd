@@ -544,7 +544,7 @@ static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 	*r = sqrt((d2*d2)/(d1*d1) + (d3*d3)/(d1*d1) + 4*d4/d1)/2;
 }
 
-void cdt_dump_animator(cdt_t *cdt, int show_circles)
+void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations)
 {
 	int last_c = 0;
 	int triangle_num = 0;
@@ -572,21 +572,43 @@ void cdt_dump_animator(cdt_t *cdt, int show_circles)
 		triangle_num++;
 	VTTRIANGLE_FOREACH_END();
 
+	printf("color red\n");
+	if (point_violations) {
+		POINTLIST_FOREACH(p, point_violations)
+			printf("circle %d %d 50 10\n", p->pos.x, p->pos.y);
+		POINTLIST_FOREACH_END();
+	}
+
+	printf("color darkred\n");
+	if (triangle_violations) {
+		TRIANGLELIST_FOREACH(t, triangle_violations)
+			pos_t pos;
+			int r;
+			circumcircle(t, &pos, &r);
+			printf("circle %d %d %d 50\n", pos.x, pos.y, r);
+		TRIANGLELIST_FOREACH_END();
+	}
+
 	printf("flush\n");
 	fprintf(stderr, "triangle num: %d\n", triangle_num);
 }
 
-int cdt_check_delaunay(cdt_t *cdt)
+int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations)
 {
+	int delaunay = 1;
 	VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
 		VTPOINT_FOREACH(point, &cdt->points)
 			if (is_point_in_circumcircle(point, triangle)
 					&& point != triangle->p[0]
 					&& point != triangle->p[1]
 					&& point != triangle->p[2]) {
-				return 0;
+				delaunay = 0;
+				if (point_violations != NULL)
+					*point_violations = pointlist_prepend(*point_violations, &point);
+				if (triangle_violations != NULL)
+					*triangle_violations = trianglelist_prepend(*triangle_violations, &triangle);
 			}
 		VTPOINT_FOREACH_END();
 	VTTRIANGLE_FOREACH_END();
-	return 1;
+	return delaunay;
 }

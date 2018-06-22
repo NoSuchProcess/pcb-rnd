@@ -35,7 +35,7 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2);
 void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge);
 void unconstrain(cdt_t *cdt, edge_t *edge);
 
-int cdt_check_delaunay(cdt_t *cdt);
-void cdt_dump_animator(cdt_t *cdt, int show_circles);
+int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations);
+void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations);
 
 #endif
