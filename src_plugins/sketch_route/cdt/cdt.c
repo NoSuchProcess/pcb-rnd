@@ -520,6 +520,14 @@ next_i:
 		remove_edge(cdt, e);
 	EDGELIST_FOREACH_END();
 
+	/* remove point */
+	for(i = 0; i < vtpoint_len(&cdt->points); i++) {
+		if (cdt->points.array[i] == p) {
+			vtpoint_remove(&cdt->points, i, 1);
+			break;
+		}
+	}
+
 	triangulate_polygon(cdt, polygon_edges);
 }
 
