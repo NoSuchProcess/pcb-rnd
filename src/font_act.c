@@ -38,7 +38,7 @@
 static const char pcb_acts_load_font_from[] = "LoadFontFrom([file, id])";
 static const char pcb_acth_load_font_from[] = "Load PCB font from a file";
 
-int pcb_act_load_font_from(int oargc, const char **oargv)
+fgw_error_t pcb_act_load_font_from(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *fname, *sid;
@@ -105,7 +105,7 @@ int pcb_act_load_font_from(int oargc, const char **oargv)
 static const char pcb_acts_save_font_to[] = "SaveFontTo([file, id])";
 static const char pcb_acth_save_font_to[] = "Save PCB font to a file";
 
-int pcb_act_save_font_to(int oargc, const char **oargv)
+fgw_error_t pcb_act_save_font_to(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *fname, *sid;

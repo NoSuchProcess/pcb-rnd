@@ -29,6 +29,7 @@
 
 #include "board.h"
 #include "obj_common.h"
+#include <libfungw/fungw.h>
 
 typedef enum pcb_topoly_e {
 	PCB_TOPOLY_KEEP_ORIG = 1,   /* keep original objects */
@@ -45,6 +46,6 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb);
 
 extern const char pcb_acts_topoly[];
 extern const char pcb_acth_topoly[];
-int pcb_act_topoly(int oargc, const char **oargv);
+fgw_error_t pcb_act_topoly(int oargc, const char **oargv);
 
 #endif

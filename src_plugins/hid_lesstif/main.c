@@ -435,7 +435,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int pcb_act_Zoom(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Zoom(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -509,7 +509,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int pcb_act_ZoomTo(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ZoomTo(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x1, y1, x2, y2;
@@ -542,7 +542,7 @@ static int pcb_act_ZoomTo(int oargc, const char **oargv)
 
 static int pan_thumb_mode;
 
-static int pcb_act_Pan(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Pan(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -616,7 +616,7 @@ static int group_showing(int g, int *c)
 }
 
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
-static int pcb_act_SwapSides(int oargc, const char **oargv)
+static fgw_error_t pcb_act_SwapSides(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int old_shown_side = conf_core.editor.show_solder_side;
@@ -775,7 +775,7 @@ before.
 
 %end-doc */
 
-static int pcb_act_Command(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Command(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	XtManageChild(m_cmd_label);
@@ -797,7 +797,7 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static int pcb_act_Benchmark(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Benchmark(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int i = 0;
@@ -833,7 +833,7 @@ static int pcb_act_Benchmark(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-static int pcb_act_Center(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Center(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;

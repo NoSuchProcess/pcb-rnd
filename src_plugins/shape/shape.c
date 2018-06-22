@@ -315,7 +315,7 @@ static pcb_bool parse2coords(const char *arg, pcb_coord_t *rx, pcb_coord_t *ry)
 
 static const char pcb_acts_regpoly[] = "regpoly([where,] corners, radius [,rotation])";
 static const char pcb_acth_regpoly[] = "Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.";
-int pcb_act_regpoly(int oargc, const char **oargv)
+fgw_error_t pcb_act_regpoly(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	double rot = 0;
@@ -374,7 +374,7 @@ int pcb_act_regpoly(int oargc, const char **oargv)
 
 static const char pcb_acts_roundrect[] = "roundrect([where,] width[;height] [,rx[;ry] [,rotation]])";
 static const char pcb_acth_roundrect[] = "Generate a rectangle with round corners";
-int pcb_act_roundrect(int oargc, const char **oargv)
+fgw_error_t pcb_act_roundrect(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int a;
@@ -437,7 +437,7 @@ int pcb_act_roundrect(int oargc, const char **oargv)
 
 static const char pcb_acts_circle[] = "circle([where,] diameter)";
 static const char pcb_acth_circle[] = "Generate a filled circle (zero length round cap line)";
-int pcb_act_circle(int oargc, const char **oargv)
+fgw_error_t pcb_act_circle(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int a;

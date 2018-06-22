@@ -55,7 +55,7 @@ Lines starting with @code{#} are ignored.
 
 %end-doc */
 
-int pcb_act_ExecuteFile(int oargc, const char **oargv)
+fgw_error_t pcb_act_ExecuteFile(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 

@@ -34,7 +34,7 @@
 #include "change.h"
 #include "conf_core.h"
 
-int pcb_act_RenumberBlock(int oargc, const char **oargv)
+fgw_error_t pcb_act_RenumberBlock(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	char num_buf[15];
@@ -81,7 +81,7 @@ int pcb_act_RenumberBlock(int oargc, const char **oargv)
 	PCB_OLD_ACT_END;
 }
 
-int pcb_act_RenumberBuffer(int oargc, const char **oargv)
+fgw_error_t pcb_act_RenumberBuffer(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	char num_buf[15];

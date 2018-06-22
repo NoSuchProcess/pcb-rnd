@@ -59,7 +59,7 @@ static const char dump_conf_help[] = "Perform various operations on the configur
 
 extern lht_doc_t *conf_main_root[];
 extern lht_doc_t *conf_plug_root[];
-static int pcb_act_DumpConf(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DumpConf(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *cmd = argc > 0 ? argv[0] : NULL;
@@ -114,7 +114,7 @@ static const char eval_conf_syntax[] =
 
 static const char eval_conf_help[] = "Perform various operations on the configuration tree.";
 
-static int pcb_act_EvalConf(int oargc, const char **oargv)
+static fgw_error_t pcb_act_EvalConf(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *path = argc > 0 ? argv[0] : NULL;
@@ -170,7 +170,7 @@ static const char dump_layers_syntax[] =
 static const char dump_layers_help[] = "Print info about each layer";
 
 extern lht_doc_t *conf_main_root[];
-static int pcb_act_DumpLayers(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DumpLayers(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int g, n, used;
@@ -268,7 +268,7 @@ static void print_font(pcb_font_t *f, const char *prefix)
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";
 static const char dump_fonts_help[] = "Print info about fonts";
-static int pcb_act_DumpFonts(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DumpFonts(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	printf("Font summary:\n");
@@ -288,7 +288,7 @@ static int pcb_act_DumpFonts(int oargc, const char **oargv)
 extern void undo_dump(void);
 static const char dump_undo_syntax[] = "dumpfonts()\n";
 static const char dump_undo_help[] = "Print info about fonts";
-static int pcb_act_DumpUndo(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DumpUndo(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	printf("Undo:\n");
@@ -345,7 +345,7 @@ static void dump_data(pcb_data_t *data, dd_flags what, int ind, const char *pare
 
 static const char dump_data_syntax[] = "dumpdata()\n";
 static const char dump_data_help[] = "Dump an aspect of the data";
-static int pcb_act_DumpData(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DumpData(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	dd_flags what = DD_DRC | DD_COPPER_ONLY;
@@ -358,7 +358,7 @@ static int pcb_act_DumpData(int oargc, const char **oargv)
 
 static const char integrity_syntax[] = "integrity()\n";
 static const char integrity_help[] = "perform integrirty check on the current board and generate errors if needed";
-static int pcb_act_integrity(int oargc, const char **oargv)
+static fgw_error_t pcb_act_integrity(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_check_integrity(PCB);
@@ -383,7 +383,7 @@ static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
 
 static const char dumpflags_syntax[] = "dumpflags([fmt])\n";
 static const char dumpflags_help[] = "dump flags, optionally using the format string provided by the user";
-static int pcb_act_dumpflags(int oargc, const char **oargv)
+static fgw_error_t pcb_act_dumpflags(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int n;
@@ -420,7 +420,7 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
-static int pcb_act_d1(int oargc, const char **oargv)
+static fgw_error_t pcb_act_d1(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	printf("D1!\n");
@@ -433,7 +433,7 @@ static int pcb_act_d1(int oargc, const char **oargv)
 
 static const char forcecolor_syntax[] = "forcecolor(#RRGGBB)\n";
 static const char forcecolor_help[] = "change selected objects' color to #RRGGBB, reset if does not start with '#'";
-static int pcb_act_forcecolor(int oargc, const char **oargv)
+static fgw_error_t pcb_act_forcecolor(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;

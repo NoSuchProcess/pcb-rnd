@@ -169,7 +169,7 @@ Deprecated.
 
 %end-doc */
 
-static int pcb_act_LibraryShow(int oargc, const char **oargv)
+static fgw_error_t pcb_act_LibraryShow(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (build_library_dialog())

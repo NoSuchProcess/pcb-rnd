@@ -117,7 +117,7 @@ static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 #define set_visited(obj) htpi_set(&visited, ((void *)(obj)), 1)
 #define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
-static int pcb_act_smartdisperse(int oargc, const char **oargv)
+static fgw_error_t pcb_act_smartdisperse(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = ARG(0);

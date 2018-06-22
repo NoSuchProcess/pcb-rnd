@@ -41,7 +41,7 @@ extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char pcb_acts_propedit[] = "propedit()";
 static const char pcb_acth_propedit[] = "Run the property editor";
-int pcb_act_propedit(int oargc, const char **oargv)
+fgw_error_t pcb_act_propedit(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pe_ctx_t ctx;
@@ -122,7 +122,7 @@ int pcb_act_propedit(int oargc, const char **oargv)
 
 static const char pcb_acts_propset[] = "propset(name, value)";
 static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value";
-int pcb_act_propset(int oargc, const char **oargv)
+fgw_error_t pcb_act_propset(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int res;

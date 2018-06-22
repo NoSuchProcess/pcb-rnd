@@ -36,6 +36,6 @@
 
 #include "config.h"
 
-int pcb_act_DJopt(int, char **, pcb_coord_t, pcb_coord_t);
+fgw_error_t pcb_act_DJopt(int, char **, pcb_coord_t, pcb_coord_t);
 int djopt_set_auto_only(int, char **, pcb_coord_t, pcb_coord_t);
 #endif

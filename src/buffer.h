@@ -32,6 +32,7 @@
 #define PCB_BUFFER_H
 
 #include "obj_common.h"
+#include <libfungw/fungw.h>
 
 struct pcb_buffer_s {								/* information about the paste buffer */
 	pcb_coord_t X, Y;										/* offset */
@@ -81,7 +82,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 
 
 /* This action is called from ActionElementAddIf() */
-int pcb_act_LoadFootprint(int argc, const char **argv);
+fgw_error_t pcb_act_LoadFootprint(int argc, const char **argv);
 
 /* pastes the contents of the buffer to the layout. Only visible objects
    are handled by the routine. */

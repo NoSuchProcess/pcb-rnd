@@ -311,7 +311,7 @@ static const char pcb_acth_AdjustStyle[] = "Displays the route style adjustment 
 
 %end-doc */
 
-static int pcb_act_AdjustStyle(int oargc, const char **oargv)
+static fgw_error_t pcb_act_AdjustStyle(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if ((!mainwind) || (PCB->RouteStyle.array == NULL))

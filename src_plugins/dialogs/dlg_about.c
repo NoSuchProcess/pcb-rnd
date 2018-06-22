@@ -59,7 +59,7 @@ static void pcb_dlg_about(void)
 
 static const char pcb_acts_About[] = "About()\n";
 static const char pcb_acth_About[] = "Present the about box";
-static int pcb_act_About(int oargc, const char **oargv)
+static fgw_error_t pcb_act_About(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_dlg_about();

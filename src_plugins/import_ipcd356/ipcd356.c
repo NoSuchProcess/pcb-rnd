@@ -355,7 +355,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 
 static const char pcb_acts_LoadIpc356From[] = "LoadIpc356From(filename, [nonet], [nopad], [nosubc])";
 static const char pcb_acth_LoadIpc356From[] = "Loads the specified IPC356-D netlist";
-int pcb_act_LoadIpc356From(int oargc, const char **oargv)
+fgw_error_t pcb_act_LoadIpc356From(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	FILE *f;

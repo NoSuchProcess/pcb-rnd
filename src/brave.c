@@ -237,7 +237,7 @@ static const char pcb_acts_Brave[] =
 	"Brave()\n"
 	"Brave(setting, on|off)\n";
 static const char pcb_acth_Brave[] = "Changes brave settings.";
-static int pcb_act_Brave(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Brave(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	desc_t *d;

@@ -145,7 +145,7 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static int pcb_act_report_dialog(int oargc, const char **oargv)
+static fgw_error_t pcb_act_report_dialog(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	void *ptr1, *ptr2, *ptr3;
@@ -792,7 +792,7 @@ units
 
 %end-doc */
 
-static int pcb_act_report(int oargc, const char **oargv)
+static fgw_error_t pcb_act_report(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;

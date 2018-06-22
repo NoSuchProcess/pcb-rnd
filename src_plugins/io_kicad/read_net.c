@@ -216,7 +216,7 @@ static int eeschema_load(const char *fname_net)
 
 const char pcb_acts_LoadeeschemaFrom[] = "LoadEeschemaFrom(filename)";
 const char pcb_acth_LoadeeschemaFrom[] = "Loads the specified eeschema .net file - the netlist must be an s-expression.";
-int pcb_act_LoadeeschemaFrom(int oargc, const char **oargv)
+fgw_error_t pcb_act_LoadeeschemaFrom(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;

@@ -579,7 +579,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
-static int pcb_act_PadstackEdit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_PadstackEdit(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int n, target_tab = -1;

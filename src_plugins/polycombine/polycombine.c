@@ -264,7 +264,7 @@ static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_
 	return accumulate;
 }
 
-static int pcb_act_polycombine(int oargc, const char **oargv)
+static fgw_error_t pcb_act_polycombine(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_polyarea_t *res;

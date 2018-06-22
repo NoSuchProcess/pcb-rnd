@@ -51,7 +51,7 @@ connecting them are minimized.  Note that you cannot undo this.
 
 %end-doc */
 
-static int pcb_act_AutoPlaceSelected(int oargc, const char **oargv)
+static fgw_error_t pcb_act_AutoPlaceSelected(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_event(PCB_EVENT_BUSY, NULL);

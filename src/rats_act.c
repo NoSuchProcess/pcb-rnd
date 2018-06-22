@@ -76,7 +76,7 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static int pcb_act_AddRats(int oargc, const char **oargv)
+static fgw_error_t pcb_act_AddRats(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -153,7 +153,7 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static int pcb_act_Connection(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Connection(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -205,7 +205,7 @@ static const char pcb_acth_DeleteRats[] = "Delete rat lines.";
 
 %end-doc */
 
-static int pcb_act_DeleteRats(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DeleteRats(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);

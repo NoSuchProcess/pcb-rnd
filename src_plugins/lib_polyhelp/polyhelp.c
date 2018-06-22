@@ -363,7 +363,7 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 
 static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [hvcp])\nPolyHatch(interactive)\n";
 static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly";
-static int pcb_act_PolyHatch(int oargc, const char **oargv)
+static fgw_error_t pcb_act_PolyHatch(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t period = 0;
@@ -470,7 +470,7 @@ static int pcb_act_PolyHatch(int oargc, const char **oargv)
 
 static const char pcb_acts_PolyOffs[] = "PolyOffs(offset)\n";
 static const char pcb_acth_PolyOffs[] = "replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer";
-static int pcb_act_PolyOffs(int oargc, const char **oargv)
+static fgw_error_t pcb_act_PolyOffs(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t offs;

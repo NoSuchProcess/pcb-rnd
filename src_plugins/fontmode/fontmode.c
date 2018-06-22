@@ -100,7 +100,7 @@ static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t ox, pcb_c
 	pcb_poly_invalidate_draw(layer, np);
 }
 
-static int pcb_act_FontEdit(int oargc, const char **oargv)
+static fgw_error_t pcb_act_FontEdit(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_font_t *font;
@@ -240,7 +240,7 @@ static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.
 
 %end-doc */
 
-static int pcb_act_FontSave(int oargc, const char **oargv)
+static fgw_error_t pcb_act_FontSave(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_font_t *font;

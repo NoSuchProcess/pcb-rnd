@@ -243,7 +243,7 @@ static double dist_lp(int x1, int y1, int x2, int y2, int px, int py)
 
 /*****************************************************************************/
 /*                                                                           */
-/*                       Single Point pcb_act_Puller                                 */
+/*                       Single Pofgw_error_t pcb_act_Puller                                 */
 /*                                                                           */
 /*****************************************************************************/
 
@@ -355,7 +355,7 @@ arc-line intersection was moved to.
 
 %end-doc */
 
-static int pcb_act_Puller(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Puller(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t Ux, Uy;
@@ -2078,7 +2078,7 @@ static void trace_print_lines_arcs(void)
 }
 #endif
 
-static int pcb_act_GlobalPuller(int oargc, const char **oargv)
+static fgw_error_t pcb_act_GlobalPuller(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int select_flags = 0;

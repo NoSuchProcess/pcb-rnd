@@ -66,7 +66,7 @@ off are automatically deleted.
 
 %end-doc */
 
-static int pcb_act_MorphPolygon(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MorphPolygon(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -131,7 +131,7 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 %end-doc */
 
-static int pcb_act_Polygon(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Polygon(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);

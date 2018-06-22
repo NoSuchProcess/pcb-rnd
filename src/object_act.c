@@ -70,7 +70,7 @@ pcb, a subcircuit, or a layer.
 %end-doc */
 
 
-static int pcb_act_Attributes(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Attributes(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -227,7 +227,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	}
 }
 
-static int pcb_act_DisperseElements(int oargc, const char **oargv)
+static fgw_error_t pcb_act_DisperseElements(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -300,7 +300,7 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static int pcb_act_Flip(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Flip(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -355,7 +355,7 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static int pcb_act_MoveObject(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MoveObject(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *x_str = PCB_ACTION_ARG(0);
@@ -405,7 +405,7 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static int pcb_act_MoveToCurrentLayer(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MoveToCurrentLayer(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -508,7 +508,7 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 	return strcmp(got_name, expect_name);
 }
 
-static int pcb_act_ElementList(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ElementList(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
@@ -716,7 +716,7 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static int pcb_act_ElementSetAttr(int oargc, const char **oargv)
+static fgw_error_t pcb_act_ElementSetAttr(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
@@ -766,7 +766,7 @@ autorouter.
 
 %end-doc */
 
-static int pcb_act_RipUp(int oargc, const char **oargv)
+static fgw_error_t pcb_act_RipUp(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -841,7 +841,7 @@ static int pcb_act_RipUp(int oargc, const char **oargv)
 
 static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
 static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
-static int pcb_act_MinMaskGap(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MinMaskGap(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
@@ -916,7 +916,7 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 	PCB_ENDALL_LOOP;
 }
 
-static int pcb_act_MinClearGap(int oargc, const char **oargv)
+static fgw_error_t pcb_act_MinClearGap(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);
@@ -999,7 +999,7 @@ Creates a new layer.
 
 %end-doc */
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-int pcb_act_MoveLayer(int oargc, const char **oargv)
+fgw_error_t pcb_act_MoveLayer(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	int old_index, new_index;
@@ -1085,7 +1085,7 @@ static pcb_layer_t *pick_layer(const char *user_text)
 
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
 static const char pcb_acth_CreateText[] = "Create a new text object";
-static int pcb_act_CreateText(int oargc, const char **oargv)
+static fgw_error_t pcb_act_CreateText(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
@@ -1131,7 +1131,7 @@ static const char pcb_acts_subc[] =
 	"subc(loose, on|off|toggle|check)\n"
 	;
 static const char pcb_acth_subc[] = "Various operations on subc";
-static int pcb_act_subc(int oargc, const char **oargv)
+static fgw_error_t pcb_act_subc(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	if (argc == 0)
@@ -1237,7 +1237,7 @@ Rotates the object under the mouse pointer by 90 degree @code{steps}.
 
 %end-doc */
 
-static int pcb_act_Rotate90(int oargc, const char **oargv)
+static fgw_error_t pcb_act_Rotate90(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *ssteps = PCB_ACTION_ARG(0);

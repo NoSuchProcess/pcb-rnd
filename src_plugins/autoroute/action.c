@@ -69,7 +69,7 @@ responsive.
 
 %end-doc */
 
-static int pcb_act_AutoRoute(int oargc, const char **oargv)
+static fgw_error_t pcb_act_AutoRoute(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = PCB_ACTION_ARG(0);

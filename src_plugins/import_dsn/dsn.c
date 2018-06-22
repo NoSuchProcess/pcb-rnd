@@ -206,7 +206,7 @@ static const char load_dsn_syntax[] = "LoadDsnFrom(filename)";
 
 static const char load_dsn_help[] = "Loads the specified routed dsn file.";
 
-int pcb_act_LoadDsnFrom(int oargc, const char **oargv)
+fgw_error_t pcb_act_LoadDsnFrom(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;

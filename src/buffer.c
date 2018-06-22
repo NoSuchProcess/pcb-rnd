@@ -169,7 +169,7 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-int pcb_act_LoadFootprint(int oargc, const char **oargv)
+fgw_error_t pcb_act_LoadFootprint(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *name = PCB_ACTION_ARG(0);
@@ -364,7 +364,7 @@ angle is given, the user is prompted for one.
 
 %end-doc */
 
-int pcb_act_FreeRotateBuffer(int oargc, const char **oargv)
+fgw_error_t pcb_act_FreeRotateBuffer(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *angle_s;
@@ -761,7 +761,7 @@ Selects the given buffer to be the current paste buffer.
 @end table
 
 %end-doc */
-static int pcb_act_PasteBuffer(int oargc, const char **oargv)
+static fgw_error_t pcb_act_PasteBuffer(int oargc, const char **oargv)
 {
 	PCB_OLD_ACT_BEGIN;
 	const char *function = argc ? argv[0] : "";

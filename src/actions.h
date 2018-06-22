@@ -6,7 +6,7 @@
 
 struct pcb_action_s {
 	const char *name; /* action command name */
-	int (*trigger_cb)(int argc, const char **argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
+	fgw_error_t (*trigger_cb)(int argc, const char **argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
 	const char *description;/* Short description (help text) */
 	const char *syntax; /* Full allowed syntax; use \n to separate lines.  */
 };
