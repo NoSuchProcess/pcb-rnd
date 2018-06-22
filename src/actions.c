@@ -47,6 +47,11 @@ const pcb_action_t *pcb_current_action = NULL;
 fgw_ctx_t pcb_fgw;
 fgw_obj_t *pcb_fgw_obj;
 
+typedef struct {
+	const char *cookie;
+	const pcb_action_t *action;
+} hid_cookie_action_t;
+
 static const char *check_action_name(const char *s)
 {
 	while (*s)
@@ -54,11 +59,6 @@ static const char *check_action_name(const char *s)
 			return (s - 1);
 	return NULL;
 }
-
-typedef struct {
-	const char *cookie;
-	const pcb_action_t *action;
-} hid_cookie_action_t;
 
 void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie, int copy)
 {
