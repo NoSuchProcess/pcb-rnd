@@ -296,29 +296,29 @@ static void check_adjacent_triangle(triangle_t *adj_t, edge_t *adj_e, point_t *n
 void dump_pointlist(pointlist_node_t *list)
 {
 	POINTLIST_FOREACH(p, list)
-		printf("\t{pos=(%d, %d) adj_t=(", p->pos.x, p->pos.y);
+		fprintf(stderr, "\t{pos=(%d, %d) adj_t=(", p->pos.x, p->pos.y);
 		TRIANGLELIST_FOREACH(t, p->adj_triangles)
-			printf("%p", t);
+			fprintf(stderr, "%p", t);
 			if(_node_->next != NULL)
-				printf(", ");
+				fprintf(stderr, ", ");
 		TRIANGLELIST_FOREACH_END();
-		printf(") adj_e=(");
+		fprintf(stderr, ") adj_e=(");
 		EDGELIST_FOREACH(t, p->adj_edges)
-			printf("%p", t);
+			fprintf(stderr, "%p", t);
 			if(_node_->next != NULL)
-				printf(", ");
+				fprintf(stderr, ", ");
 		EDGELIST_FOREACH_END();
-		printf(")}\n");
+		fprintf(stderr, ")}\n");
 	POINTLIST_FOREACH_END();
 }
 
 void dump_edgelist(edgelist_node_t *list)
 {
 	EDGELIST_FOREACH(e, list)
-		printf("\t{endp1=(%p (pos=(%d, %d))) endp2=(%p (pos=(%d, %d))) adj_t=(",
-				e->endp[0], e->endp[0]->pos.x, e->endp[0]->pos.y, e->endp[1], e->endp[1]->pos.x, e->endp[1]->pos.y);
-		printf("%p, %p)", e->adj_t[0], e->adj_t[1]);
-		printf(" %s}\n", e->is_constrained ? "constrained" : "");
+		fprintf(stderr, "\t{endp1=(%p (pos=(%d, %d))) endp2=(%p (pos=(%d, %d))) adj_t=(",
+						e->endp[0], e->endp[0]->pos.x, e->endp[0]->pos.y, e->endp[1], e->endp[1]->pos.x, e->endp[1]->pos.y);
+		fprintf(stderr, "%p, %p)", e->adj_t[0], e->adj_t[1]);
+		fprintf(stderr, " %s}\n", e->is_constrained ? "constrained" : "");
 	EDGELIST_FOREACH_END();
 }
 #endif
@@ -467,7 +467,7 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 			check_adjacent_triangle(adj_t, adj_e, new_p, &region);
 	}
 #ifdef DEBUG
-	printf("edges_to_remove:\n");
+	fprintf(stderr, "edges_to_remove:\n");
 	dump_edgelist(region.edges_to_remove);
 #endif
 	remove_triangle(cdt, enclosing_triangle);
@@ -477,7 +477,7 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 
 	order_edges_adjacently(region.border_edges, NULL, &points_to_attach);
 #ifdef DEBUG
-	printf("points_to_attach:\n");
+	fprintf(stderr, "points_to_attach:\n");
 	dump_pointlist(points_to_attach);
 #endif
 	prev_point_node = points_to_attach;
