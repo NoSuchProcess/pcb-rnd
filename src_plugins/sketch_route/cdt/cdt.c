@@ -418,8 +418,7 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 				polygon_edges = edgelist_remove_front(polygon_edges); /* wrap around */
 			else
 				polygon_edges = edgelist_remove(polygon_edges, _node_->next);
-			edgelist_insert_after(_node_, &new_e);
-			enode = _node_->next;
+			enode = edgelist_insert_after(_node_, &new_e);
 			polygon_edges = edgelist_remove(polygon_edges, _node_);
 			_node_ = enode;
 
