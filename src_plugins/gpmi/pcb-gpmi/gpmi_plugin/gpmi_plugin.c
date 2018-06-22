@@ -84,8 +84,9 @@ static void cmd_reload(const char *name)
 	}
 }
 
-static int action_gpmi_scripts(int argc, const char **argv)
+static fgw_error_t pcb_act_gpmi_scripts(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	if (argc == 0) {
 		gpmi_hid_manage_scripts();
 		return 0;
@@ -128,12 +129,15 @@ static int action_gpmi_scripts(int argc, const char **argv)
 		return 1;
 	}
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
-static int action_gpmi_rehash(int argc, const char **argv)
+static fgw_error_t pcb_act_gpmi_rehash(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	cmd_reload(NULL);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static void register_actions()
@@ -143,13 +147,13 @@ static void register_actions()
 	act1.name           = "gpmi_scripts";
 	act1.description    = "Manage gpmi scripts";
 	act1.syntax         = "TODO";
-	act1.trigger_cb     = action_gpmi_scripts;
+	act1.trigger_cb     = pcb_act_gpmi_scripts;
 	pcb_register_action(&act1, gpmi_cookie);
 
 	act2.name           = "rehash";
 	act2.description    = "Reload all gpmi scripts";
 	act2.syntax         = "TODO";
-	act2.trigger_cb     = action_gpmi_rehash;
+	act2.trigger_cb     = pcb_act_gpmi_rehash;
 	pcb_register_action(&act2, gpmi_cookie);
 }
 
