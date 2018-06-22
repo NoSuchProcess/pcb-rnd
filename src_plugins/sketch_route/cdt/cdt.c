@@ -550,18 +550,18 @@ void cdt_dump_animator(cdt_t *cdt, int show_circles)
 			last_c = edge->is_constrained;
 		}
 		printf("line %d %d %d %d\n", edge->endp[0]->pos.x, edge->endp[0]->pos.y, edge->endp[1]->pos.x, edge->endp[1]->pos.y);
-		triangle_num++;
 	VTEDGE_FOREACH_END();
 
-	if (show_circles) {
-		printf("color green\n");
-		VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
-			pos_t pos;
-			int r;
+	printf("color green\n");
+	VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
+		pos_t pos;
+		int r;
+		if (show_circles) {
 			circumcircle(triangle, &pos, &r);
 			printf("circle %d %d %d 50\n", pos.x, pos.y, r);
-		VTTRIANGLE_FOREACH_END();
-	}
+		}
+		triangle_num++;
+	VTTRIANGLE_FOREACH_END();
 
 	printf("flush\n");
 	fprintf(stderr, "triangle num: %d\n", triangle_num);
