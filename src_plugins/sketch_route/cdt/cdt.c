@@ -496,7 +496,7 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 
 void cdt_delete_point(cdt_t *cdt, point_t *p)
 {
-	edgelist_node_t *polygon_edges;
+	edgelist_node_t *polygon_edges = NULL;
 	int i;
 
 	/* find opposite edges of adjacent triangles and add them to the polygon */
