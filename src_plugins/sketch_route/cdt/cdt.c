@@ -353,7 +353,6 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 {
 	pointlist_node_t *polygon_points, *current_point_node;
 	point_t *p[3];
-	int skip;
 	int i;
 
 	polygon_points = order_edges_adjacently(polygon);
@@ -361,8 +360,8 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 
 	while (pointlist_length(polygon_points) > 3) {
 		current_point_node = polygon_points;
-
-		for(i = 0; i < pointlist_length(polygon_points); i++) {
+		i = 0;
+		while(i < pointlist_length(polygon_points)) {
 			triangle_t candidate_t;
 			edge_t candidate_e;
 			pointlist_node_t *pnode;
@@ -380,19 +379,18 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 				candidate_t.p[2] = current_point_node->next->item;
 			candidate_e.endp[1] = candidate_t.p[2];
 
-			skip = 0;
 			/* case 1: another point of the polygon violates the circle criterion */
 			POINTLIST_FOREACH(p, polygon_points)
 				if (p != candidate_t.p[0] && p != candidate_t.p[1] && p != candidate_t.p[2])
 					if (is_point_in_circumcircle(p, &candidate_t))
-						skip = 1;
+						goto skip;
 			POINTLIST_FOREACH_END();
 
 			/* case 2: edge to be added already exists */
 			EDGELIST_FOREACH(e1, candidate_e.endp[0]->adj_edges)
 				EDGELIST_FOREACH(e2, candidate_e.endp[1]->adj_edges)
 					if (e1 == e2)
-						skip = 1;
+						goto skip;
 				EDGELIST_FOREACH_END();
 			EDGELIST_FOREACH_END();
 
@@ -401,20 +399,20 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 				if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
 						&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2]))
 					if(EDGES_INTERSECT(&candidate_e, e))
-						skip = 1;
+						goto skip;
 			EDGELIST_FOREACH_END();
 
-			if (!skip) {
-				new_edge(cdt, candidate_e.endp[0], candidate_e.endp[1], 0);
-				new_triangle(cdt, candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]);
+			new_edge(cdt, candidate_e.endp[0], candidate_e.endp[1], 0);
+			new_triangle(cdt, candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]);
 
-				/* update polygon: remove the point now covered by the new edge */
-				pnode = current_point_node->next;
-				polygon_points = pointlist_remove(polygon_points, current_point_node);
-				current_point_node = pnode;
+			/* update polygon: remove the point now covered by the new edge */
+			pnode = current_point_node->next;
+			polygon_points = pointlist_remove(polygon_points, current_point_node);
+			current_point_node = pnode;
 
-				i++; /* one edge less to check */
-			}
+			i++; /* one edge less to check */
+skip:
+			i++;
 		}
 	}
 
