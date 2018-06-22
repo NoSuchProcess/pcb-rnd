@@ -1,11 +1,9 @@
 0. For the upcoming release ===============================================================================
 - fungw action transition:
-	- case sensitivity - fgw_vcall()?
-	- callers should check the return value from res:
-		- pcb_act_LoadFootprint
-		- pcb_act_SaveLayout
-	- retest import_sch
 	- free res and args after fgw_vcall() and pcb_actionv_()
+	- doc:
+		- case insensitivity
+		- how to call actions from code
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
@@ -255,6 +253,9 @@ eagle:
 
 
 3. Long term ===============================================================================
+- BUG: draw a lare padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk, after the 6th via some via rings will disappear [report: James]
+	-> reason: order of padstack shape rendering is random
+	-> we should probably render large objects first then smaller ones
 
 Lesstif:
 	- the notebook widget is not portable; detect it from scconfig and provide some hackish alternative if not found [report: rqsall]
