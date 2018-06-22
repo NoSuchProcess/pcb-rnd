@@ -14,7 +14,7 @@
 
 #include "cdt.h"
 
-/*#define DEBUG*/
+#define DEBUG
 
 #define LEFTPOINT(p1, p2) ((p1)->pos.x < (p2)->pos.x || ((p1)->pos.x == (p2)->pos.x && (p1)->pos.y > (p2)->pos.y))
 
@@ -406,8 +406,10 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 
 			/* case 3: edge to be added intersects an existing edge */
 			EDGELIST_FOREACH(e, candidate_t.p[1]->adj_edges)
-				if(EDGES_INTERSECT(&candidate_e, e))
-					goto skip;
+				if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
+						&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2]))
+					if(EDGES_INTERSECT(&candidate_e, e))
+						goto skip;
 			EDGELIST_FOREACH_END();
 
 			new_e = new_edge(cdt, candidate_e.endp[0], candidate_e.endp[1], 0);
