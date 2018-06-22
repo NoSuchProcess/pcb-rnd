@@ -42,6 +42,8 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
+#define PCB_ACTION_NAME_MAX 128
+
 const pcb_action_t *pcb_current_action = NULL;
 
 fgw_ctx_t pcb_fgw;
@@ -60,6 +62,26 @@ static const char *check_action_name(const char *s)
 	return NULL;
 }
 
+static char *make_action_name(char *out, const char *inp, int inp_len)
+{
+	char *s;
+
+	if (inp_len >= PCB_ACTION_NAME_MAX) {
+		*out = '\0';
+		return out;
+	}
+
+	memcpy(out, inp, inp_len+1);
+	for(s = out; *s != '\0'; s++)
+		*s = tolower(*s);
+	return out;
+}
+
+static char *aname(char *out, const char *inp)
+{
+	return make_action_name(out, inp, strlen(inp));
+}
+
 void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
 {
 	int i;
@@ -67,14 +89,25 @@ void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
 	fgw_func_t *f;
 
 	for (i = 0; i < n; i++) {
+		char fn[PCB_ACTION_NAME_MAX];
+		int len;
+
 		if (check_action_name(a[i].name)) {
 			pcb_message(PCB_MSG_ERROR, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
 			continue;
 		}
+		len = strlen(a[i].name);
+		if (len >= sizeof(fn)) {
+			pcb_message(PCB_MSG_ERROR, "Invalid action name: \"%s\" (too long).\n", a[i].name);
+			continue;
+		}
+
 		ca = malloc(sizeof(hid_cookie_action_t));
 		ca->cookie = cookie;
 		ca->action = a+i;
-		f = fgw_func_reg(pcb_fgw_obj, a[i].name, a[i].trigger_cb);
+
+		make_action_name(fn, a[i].name, len);
+		f = fgw_func_reg(pcb_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
 			free(ca);
@@ -100,9 +133,10 @@ static void pcb_remove_action(fgw_func_t *f)
 void pcb_remove_actions(const pcb_action_t *a, int n)
 {
 	int i;
+	char fn[PCB_ACTION_NAME_MAX];
 
 	for (i = 0; i < n; i++) {
-		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, a[i].name);
+		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, aname(fn, a[i].name));
 		if (f == NULL) {
 			pcb_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
@@ -128,11 +162,12 @@ const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
 {
 	fgw_func_t *f;
 	hid_cookie_action_t *ca;
+	char fn[PCB_ACTION_NAME_MAX];
 
 	if (name == NULL)
 		return NULL;
 
-	f = fgw_func_lookup(&pcb_fgw, name);
+	f = fgw_func_lookup(&pcb_fgw, aname(fn, name));
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
@@ -254,6 +289,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 	fgw_func_t *f;
 	fgw_arg_t res, argv[PCB_ACTION_MAX_ARGS+1];
 	int n;
+	char fn[PCB_ACTION_NAME_MAX];
 
 	if (name == NULL)
 		return 1;
@@ -263,7 +299,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 		return 1;
 	}
 
-	f = fgw_func_lookup(&pcb_fgw, name);
+	f = fgw_func_lookup(&pcb_fgw, aname(fn, name));
 	if (f == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);
