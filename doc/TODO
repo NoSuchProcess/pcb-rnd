@@ -1,7 +1,5 @@
 0. For the upcoming release ===============================================================================
 - fungw action transition:
-	- replace the int/char** argv action API with fungw functions in core
-	- replace the int/char** argv action API with fungw functions in plugins
 	- case sensitivity - fgw_vcall()?
 	- callers should check the return value from res:
 		- pcb_act_LoadFootprint
