@@ -29,8 +29,8 @@ static double orientation(point_t *p1, point_t *p2, point_t *p3)
 }
 
 #define EDGES_INTERSECT(e1, e2) \
-	(orientation((e1)->endp[0], (e1)->endp[1], (e2)->endp[0]) != orientation((e1)->endp[0], (e1)->endp[1], (e2)->endp[1]) \
-	&& orientation((e2)->endp[0], (e2)->endp[1], (e1)->endp[0]) != orientation((e2)->endp[0], (e2)->endp[1], (e1)->endp[1]))
+	(ORIENT_CCW((e1)->endp[0], (e1)->endp[1], (e2)->endp[0]) != ORIENT_CCW((e1)->endp[0], (e1)->endp[1], (e2)->endp[1]) \
+	&& ORIENT_CCW((e2)->endp[0], (e2)->endp[1], (e1)->endp[0]) != ORIENT_CCW((e2)->endp[0], (e2)->endp[1], (e1)->endp[1]))
 
 
 static point_t *new_point(cdt_t *cdt, pos_t pos)
