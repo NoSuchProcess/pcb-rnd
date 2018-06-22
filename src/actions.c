@@ -113,8 +113,7 @@ void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
 			free(ca);
 			continue;
 		}
-		else
-			f->reg_data = ca;
+		f->reg_data = ca;
 	}
 }
 
