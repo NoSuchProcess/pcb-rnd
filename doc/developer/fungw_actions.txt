@@ -1,0 +1,25 @@
+Actions implemented as fungw functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+All pcb-rnd actions are fungw functions by now. This helps the code to do
+all the data type conversions easier, save a few conversions where we
+don't need conversions. More importantly, this makes a more seamless
+integration between user scripts and C code, whether scripts are calling
+C actions or the user is executing script defined actions.
+
+To stay compatible with the old action mechanism, the current version
+applies the following restrictions:
+
+- we have only one large fungw object (pcb_fgw_obj) that hosts all
+  functions; this emulates the old central hash of functions
+
+- before a function enters the object or a function is looked up in the
+  object, the function name is converted to lowercase; this emulates the
+  case intensity of the old action system, which is still essential for
+  the user interface (GUI or CLI command entry and menu).
+
+- temporarily, for the transition, there are two helper macros
+  PCB_OLD_ACT_BEGIN and PCB_OLD_ACT_END that can wrap old function
+  code, converting all arguments to a char **argv. Such old actions
+  should return non-zero on error, while the value of ores will always be
+  FGW_INT/0. New action code shall NOT use the compatibility API.
