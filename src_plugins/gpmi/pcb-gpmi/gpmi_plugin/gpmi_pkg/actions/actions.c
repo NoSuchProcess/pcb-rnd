@@ -31,8 +31,9 @@ const char *action_arg(int argn)
 }
 
 
-static int action_cb(int argc, const char **argv)
+static fgw_error_t pcb_act_action_cb(int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	acontext_t *ctx = (acontext_t *)pcb_current_action;
 	int action_argc_old;
 	const char **action_argv_old;
@@ -51,6 +52,7 @@ static int action_cb(int argc, const char **argv)
 	action_argv = action_argv_old;
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
@@ -71,7 +73,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 	ctx->action.name           = pcb_strdup(name);
 	ctx->action.description    = pcb_strdup(description);
 	ctx->action.syntax         = pcb_strdup(syntax);
-	ctx->action.trigger_cb     = action_cb;
+	ctx->action.trigger_cb     = pcb_act_action_cb;
 	ctx->name                  = pcb_strdup(name);
 	ctx->module                = gpmi_get_current_module();
 	ctx->next                  = NULL;
