@@ -538,6 +538,7 @@ static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 void cdt_dump_animator(cdt_t *cdt, int show_circles)
 {
 	int last_c = 0;
+	int triangle_num = 0;
 	printf("frame\n");
 	printf("scale 0.9\n");
 	printf("viewport %f %f - %f %f\n", (double)cdt->bbox_tl.x - 1.0, (double)cdt->bbox_tl.y - 1.0, (double)cdt->bbox_br.x + 1.0, (double)cdt->bbox_br.y  + 1.0);
@@ -549,6 +550,7 @@ void cdt_dump_animator(cdt_t *cdt, int show_circles)
 			last_c = edge->is_constrained;
 		}
 		printf("line %d %d %d %d\n", edge->endp[0]->pos.x, edge->endp[0]->pos.y, edge->endp[1]->pos.x, edge->endp[1]->pos.y);
+		triangle_num++;
 	VTEDGE_FOREACH_END();
 
 	if (show_circles) {
@@ -562,6 +564,7 @@ void cdt_dump_animator(cdt_t *cdt, int show_circles)
 	}
 
 	printf("flush\n");
+	fprintf(stderr, "triangle num: %d\n", triangle_num);
 }
 
 int cdt_check_delaunay(cdt_t *cdt)
