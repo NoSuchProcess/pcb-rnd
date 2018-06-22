@@ -364,8 +364,9 @@ currently within the window already.
 
 %end-doc */
 
-int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
+fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, int oargc, const char **oargv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
 {
+	PCB_OLD_ACT_BEGIN;
 	int widget_x, widget_y;
 
 	if (argc != 0)
@@ -389,6 +390,7 @@ int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	*out_pointer_y = offset_y + widget_y;
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -497,8 +499,9 @@ default is given, div=40.
 
 %end-doc */
 
-int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv)
+fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	gdouble dx = 0.0, dy = 0.0;
 	int div = 40;
 
@@ -522,6 +525,7 @@ int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv)
 	pcb_gtk_pan_view_rel(vw, dx, dy);
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
@@ -535,8 +539,9 @@ Mode = 0.
 
 %end-doc */
 
-int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv)
+fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	int mode;
 
 	if (argc != 1 && argc != 2)
@@ -553,6 +558,7 @@ int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv)
 	vw->panning = mode;
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 

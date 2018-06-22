@@ -32,6 +32,7 @@
 #include "act_print.h"
 
 #include "board.h"
+#include "actions.h"
 #include "hid.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
@@ -42,8 +43,9 @@
 
 const char pcb_gtk_acts_print[] = "Print()";
 const char pcb_gtk_acth_print[] = N_("Print the layout.");
-int pcb_gtk_act_print(GtkWidget *top_window, int argc, const char **argv)
+fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_hid_t **hids;
 	int i;
 	pcb_hid_t *printer = NULL;
@@ -67,5 +69,6 @@ int pcb_gtk_act_print(GtkWidget *top_window, int argc, const char **argv)
 		pcb_gui->log(_("Can't print empty layout"));
 
 	return 0;
+	PCB_OLD_ACT_END;
 }
 

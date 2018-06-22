@@ -123,9 +123,9 @@ static fgw_error_t pcb_act_Command(int oargc, const char **oargv)
 
 /* ------------------------------------------------------------ */
 
-int pcb_gtk_act_print_(int argc, const char **argv)
+fgw_error_t  pcb_gtk_act_print_(int oargc, const char **oargv)
 {
-	return pcb_gtk_act_print(gport->top_window, argc, argv);
+	return pcb_gtk_act_print(gport->top_window, oargc, oargv);
 }
 
 /* ------------------------------------------------------------ */
@@ -399,58 +399,44 @@ static fgw_error_t pcb_act_SwapSides(int oargc, const char **oargv)
 
 static fgw_error_t pcb_act_Scroll(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (ghidgui == NULL)
 		return 0;
 
-	return pcb_gtk_act_scroll(&gport->view, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_scroll(&gport->view, oargc, oargv);
 }
 
 static fgw_error_t pcb_act_Pan(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (ghidgui == NULL)
 		return 0;
 
-	return pcb_gtk_act_pan(&gport->view, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_pan(&gport->view, oargc, oargv);
 }
 
 static fgw_error_t pcb_act_NetlistShow(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_gtk_act_netlistshow(&ghidgui->common, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_netlistshow(&ghidgui->common, oargc, oargv);
 }
 
 static fgw_error_t pcb_act_NetlistPresent(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_gtk_act_netlistpresent(&ghidgui->common, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_netlistpresent(&ghidgui->common, oargc, oargv);
 }
 
 
 static fgw_error_t pcb_act_load(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_gtk_act_load(ghid_port.top_window, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_load(ghid_port.top_window, oargc, oargv);
 }
 
 static fgw_error_t pcb_act_save(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_gtk_act_save(ghid_port.top_window, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_save(ghid_port.top_window, oargc, oargv);
 }
 
 static fgw_error_t pcb_act_importgui(int oargc, const char **oargv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv);
-	PCB_OLD_ACT_END;
+	return pcb_gtk_act_importgui(ghid_port.top_window, oargc, oargv);
 }
 
 /* ------------------------------------------------------------

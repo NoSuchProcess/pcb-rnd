@@ -915,18 +915,22 @@ void pcb_gtk_netlist_changed(pcb_gtk_common_t *com, void *user_data, int argc, p
 
 const char pcb_gtk_acts_netlistshow[] = "NetlistShow(pinname|netname)";
 const char pcb_gtk_acth_netlistshow[] = "Selects the given pinname or netname in the netlist window. Does not show the window if it isn't already shown.";
-gint pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int argc, const char **argv)
+fgw_error_t pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	ghid_netlist_window_create(com);
 	if (argc > 0)
 		ghid_netlist_highlight_node(com, argv[0]);
 	return 0;
+	PCB_OLD_ACT_END;
 }
 
 const char pcb_gtk_acts_netlistpresent[] = "NetlistPresent()";
 const char pcb_gtk_acth_netlistpresent[] = "Presents the netlist window.";
-gint pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int argc, const char **argv)
+fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int oargc, const char **oargv)
 {
+	PCB_OLD_ACT_BEGIN;
 	pcb_gtk_dlg_netlist_show(com, TRUE);
 	return 0;
+	PCB_OLD_ACT_END;
 }

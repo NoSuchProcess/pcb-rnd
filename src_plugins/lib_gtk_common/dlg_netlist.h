@@ -1,6 +1,7 @@
 #ifndef PCB_GTK_DLG_NETLIST_H
 #define PCB_GTK_DLG_NETLIST_H
 
+#include <libfungw/fungw.h>
 #include "pcb_bool.h"
 #include "unit.h"
 #include "event.h"
@@ -18,10 +19,10 @@ void pcb_gtk_netlist_changed(pcb_gtk_common_t *com, void *user_data, int argc, p
 /* Actions */
 extern const char pcb_gtk_acts_netlistshow[];
 extern const char pcb_gtk_acth_netlistshow[];
-gint pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int argc, const char **argv);
+fgw_error_t pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int oargc, const char **oargv);
 
 extern const char pcb_gtk_acts_netlistpresent[];
 extern const char pcb_gtk_acth_netlistpresent[];
-gint pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int argc, const char **argv);
+fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int oargc, const char **oargv);
 
 #endif /* PCB_GTK_DLG_NETLIST_H */
