@@ -594,7 +594,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (pcb_act_LoadFootprint(&res, argc, args)) {
+		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &res, argc, args) != 0) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -635,7 +635,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
-		if (pcb_act_LoadFootprint(&res, argc, args) != 0) {
+		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &res, argc, args) != 0) {
 			number_of_footprints_not_found++;
 			return 1;
 		}

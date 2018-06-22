@@ -55,6 +55,24 @@ void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
 
 #define PCB_ACTION_MAX_ARGS 16
 
+/* Return 0 on success after an action call */
+PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
+{
+	if (ret != 0)
+		return -1;
+
+	if (fgw_argv_conv(&pcb_fgw, res, FGW_INT) != 0)
+		return -1;
+
+	return res->val.nat_int;
+}
+
+/* Call an action function directly, bypassing fungw; evaluates to an int
+   that is 0 on success */
+#define PCB_ACT_CALL_C(func, res, argc, argv) \
+	pcb_act_result(res, func(res, argc, argv))
+
+/* temporary hack for smooth upgrade to fungw based actions */
 PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 {
 	int n;
@@ -68,7 +86,6 @@ PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 	return oargc - 1;
 }
 
-/* temporary hack for smooth upgrade to fungw based actions */
 #define PCB_OLD_ACT_BEGIN \
 { \
 	char *argv__[PCB_ACTION_MAX_ARGS]; \
