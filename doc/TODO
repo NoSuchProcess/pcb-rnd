@@ -24,6 +24,7 @@
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 + BUG: r17384 broke: after a command entry (using the embedded command line) all key events are doubled [report: miloh]
 - BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
+- feature: query() should be able to search for object flags [report: James]
 
 2. For later releases ===============================================================================
 - BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
