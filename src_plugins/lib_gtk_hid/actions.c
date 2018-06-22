@@ -475,7 +475,7 @@ Pop up the gui that edits the layer groups (layer stackup).
 
 static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	return fgw_vcall(&pcb_fgw, res, "DoWindows", FGW_STR, "Preferences", FGW_STR, "1", FGW_STR, "User PoV/Layers", 0);
+	return fgw_vcall(&pcb_fgw, res, "dowindows", FGW_STR, "Preferences", FGW_STR, "1", FGW_STR, "User PoV/Layers", 0);
 }
 
 /* ------------------------------------------------------------ */
