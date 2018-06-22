@@ -253,7 +253,7 @@ eagle:
 
 
 3. Long term ===============================================================================
-- BUG: draw a lare padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk, after the 6th via some via rings will disappear [report: James]
+- BUG: draw a lare padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
 	-> reason: order of padstack shape rendering is random
 	-> we should probably render large objects first then smaller ones
 
