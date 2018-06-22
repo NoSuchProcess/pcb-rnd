@@ -129,8 +129,11 @@ static fgw_error_t pcb_act_query(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		return -1;
 	}
 
-	if (strcmp(cmd, "version") == 0)
-		return 0100; /* 1.0 */
+	if (strcmp(cmd, "version") == 0) {
+		ores->type = FGW_INT;
+		ores->val.nat_int = 0100; /* 1.0 */
+		return 0;
+	}
 
 	if (strcmp(cmd, "dump") == 0) {
 		pcb_qry_node_t *prg = NULL;
