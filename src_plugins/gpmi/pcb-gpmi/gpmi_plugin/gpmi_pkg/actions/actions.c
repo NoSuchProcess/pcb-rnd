@@ -56,7 +56,7 @@ static int action_cb(int argc, const char **argv)
 static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 {
 	acontext_t *ctx = cl->argv[0].p;
-	pcb_remove_action(&ctx->action);
+	pcb_remove_actions(&ctx->action, 1);
 	free((char *)ctx->action.name);
 	free((char *)ctx->action.description);
 	free((char *)ctx->action.syntax);
