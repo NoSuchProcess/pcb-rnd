@@ -502,7 +502,7 @@ void pcb_actions_uninit(void)
 
 	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
-		hid_cookie_action_t *ca = e->value;
+		hid_cookie_action_t *ca = f->reg_data;
 		if (ca->cookie != NULL)
 			fprintf(stderr, "ERROR: hid_actions_uninit: action '%s' with cookie '%s' left registered, check your plugins!\n", e->key, ca->cookie);
 		pcb_remove_action(f);
