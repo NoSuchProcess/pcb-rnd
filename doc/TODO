@@ -1,8 +1,7 @@
 0. For the upcoming release ===============================================================================
 - fungw action transition:
-	- free res and args after fgw_vcall() and pcb_actionv_()
+	- loose subc {m k s} (broken action return value?)
 	- doc:
-		- case insensitivity
 		- how to call actions from code
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
