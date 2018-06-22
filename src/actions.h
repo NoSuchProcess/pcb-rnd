@@ -87,6 +87,8 @@ PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 }
 
 #define PCB_OLD_ACT_BEGIN \
+ores->type = FGW_INT; \
+ores->val.nat_int = 0; \
 { \
 	char *argv__[PCB_ACTION_MAX_ARGS]; \
 	const char **argv = (const char **)argv__; \
