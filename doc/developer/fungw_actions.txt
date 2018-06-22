@@ -23,3 +23,7 @@ applies the following restrictions:
   code, converting all arguments to a char **argv. Such old actions
   should return non-zero on error, while the value of ores will always be
   FGW_INT/0. New action code shall NOT use the compatibility API.
+
+- a single action call will result in a single fungw function call; that
+  is, the fungw function that serves the action is free to convert any
+  of the arguments.
