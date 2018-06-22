@@ -490,20 +490,6 @@ li:pcb-rnd-subcircuit-v4 {
         clearline = 1
        }
       }
-      ha:text.448 {
-       scale = 100
-       ha:attributes {
-       }
-       direction = 0
-       x = 2.04in
-       y = 1.93in
-       string = %a.parent.refdes%
-       fid = 0
-       ha:flags {
-        dyntext = 1
-        floater = 1
-       }
-      }
      }
      ha:combining {
       auto = 1
