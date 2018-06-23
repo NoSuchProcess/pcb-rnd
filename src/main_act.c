@@ -57,12 +57,11 @@ static const char pcb_acts_PrintActions[] = "PrintActions()";
 
 static const char pcb_acth_PrintActions[] = "Print all actions available.";
 
-fgw_error_t pcb_act_PrintActions(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_print_actions();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 /* --------------------------------------------------------------------------- */
 
@@ -70,12 +69,11 @@ static const char pcb_acts_DumpActions[] = "DumpActions()";
 
 static const char pcb_acth_DumpActions[] = "Dump all actions available.";
 
-fgw_error_t pcb_act_DumpActions(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_dump_actions();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* print usage lines */
