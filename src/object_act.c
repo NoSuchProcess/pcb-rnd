@@ -822,16 +822,6 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 /* ---------------------------------------------------------------------------  */
 
-static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
-static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
-static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
-	return 1;
-}
-
-/* ---------------------------------------------------------------------------  */
-
 static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
 
 static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
@@ -1252,7 +1242,6 @@ pcb_action_t object_action_list[] = {
 	{"ElementList", pcb_act_ElementList, pcb_acth_ElementList, pcb_acts_ElementList},
 	{"ElementSetAttr", pcb_act_ElementSetAttr, pcb_acth_ElementSetAttr, pcb_acts_ElementSetAttr},
 	{"RipUp", pcb_act_RipUp, pcb_acth_RipUp, pcb_acts_RipUp},
-	{"MinMaskGap", pcb_act_MinMaskGap, pcb_acth_MinMaskGap, pcb_acts_MinMaskGap},
 	{"MinClearGap", pcb_act_MinClearGap, pcb_acth_MinClearGap, pcb_acts_MinClearGap},
 	{"MoveLayer", pcb_act_MoveLayer, movelayer_help, movelayer_syntax},
 	{"subc", pcb_act_subc, pcb_acth_subc, pcb_acts_subc},

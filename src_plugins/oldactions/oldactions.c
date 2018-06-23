@@ -368,7 +368,13 @@ static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *res, int argc, fgw_arg_t *a
 static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
-	return 0;
+	return 1;
+}
+
+static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
+	return 1;
 }
 
 pcb_action_t oldactions_action_list[] = {
@@ -386,8 +392,10 @@ pcb_action_t oldactions_action_list[] = {
 	{"NetlistChanged", pcb_act_NetlistChanged, pcb_acth_NetlistChanged, pcb_acts_NetlistChanged},
 	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
 	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
+
 	/* deprecated actions */
-	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0}
+	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0},
+	{"MinMaskGap", pcb_act_MinMaskGap, 0, 0}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";
