@@ -1180,31 +1180,6 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
-static const char pcb_acth_NetlistChanged[] = "Tells the GUI that the netlist has changed.";
-static fgw_error_t pcb_act_NetlistChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_netlist_changed(0);
-	return 0;
-}
-
-
-static const char pcb_acts_RouteStylesChanged[] = "RouteStylesChanged()";
-static const char pcb_acth_RouteStylesChanged[] = "Tells the GUI that the routing styles have changed.";
-static fgw_error_t pcb_act_RouteStylesChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-	return 0;
-}
-
-static const char pcb_acts_LibraryChanged[] = "LibraryChanged()";
-static const char pcb_acth_LibraryChanged[] = "Tells the GUI that the libraries have changed.";
-static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
-	return 0;
-}
-
 static const char pcb_acts_cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
 static const char pcb_acth_cursor[] = "Move the cursor.";
 /* %start-doc actions Cursor
@@ -1932,9 +1907,6 @@ pcb_action_t gui_action_list[] = {
 	{"SwitchHID", pcb_act_SwitchHID, pcb_acth_SwitchHID, pcb_acts_SwitchHID},
 	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
 	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
-	{"NetlistChanged", pcb_act_NetlistChanged, pcb_acth_NetlistChanged, pcb_acts_NetlistChanged},
-	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
-	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
 	{"Cursor", pcb_act_Cursor, pcb_acth_cursor, pcb_acts_cursor},
 	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},

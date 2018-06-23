@@ -34,6 +34,7 @@
 #include "config.h"
 #include "conf.h"
 #include "data.h"
+#include "event.h"
 #include "action_helper.h"
 #include "change.h"
 #include "error.h"
@@ -337,6 +338,31 @@ static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
+static const char pcb_acth_NetlistChanged[] = "Tells the GUI that the netlist has changed.";
+static fgw_error_t pcb_act_NetlistChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_netlist_changed(0);
+	return 0;
+}
+
+
+static const char pcb_acts_RouteStylesChanged[] = "RouteStylesChanged()";
+static const char pcb_acth_RouteStylesChanged[] = "Tells the GUI that the routing styles have changed.";
+static fgw_error_t pcb_act_RouteStylesChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	return 0;
+}
+
+static const char pcb_acts_LibraryChanged[] = "LibraryChanged()";
+static const char pcb_acth_LibraryChanged[] = "Tells the GUI that the libraries have changed.";
+static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+	return 0;
+}
+
 /*** deprecated ***/
 
 static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -357,6 +383,9 @@ pcb_action_t oldactions_action_list[] = {
 	{"DisableVendor", pcb_act_DisableVendor, pcb_acth_disable_vendor, pcb_acts_disable_vendor},
 	{"ListRotations", pcb_act_ListRotations, 0, 0},
 	{"PCBChanged", pcb_act_PCBChanged, pcb_acth_PCBChanged, pcb_acts_PCBChanged},
+	{"NetlistChanged", pcb_act_NetlistChanged, pcb_acth_NetlistChanged, pcb_acts_NetlistChanged},
+	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
+	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
 	/* deprecated actions */
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0}
 };
