@@ -1155,24 +1155,29 @@ static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* This action is provided for CLI convenience */
 static const char pcb_acts_FullScreen[] = "pcb_act_FullScreen(on|off|toggle)\n";
-
 static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full screen";
 
-static fgw_error_t pcb_act_FullScreen(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *op = argv == NULL ? NULL : argv[0];
+	int id = -2;
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FullScreen, id = argv[1].val.nat_keyword);
 
-	if ((op == NULL) || (strcmp(op, "toggle") == 0))
-		conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
-	else if (strcmp(op, "on") == 0)
-		conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
-	else if (strcmp(op, "off") == 0)
-		conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
-
-
+	PCB_ACT_IRES(0);
+	switch(id) {
+		case -2:
+		case F_Toggle:
+			conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
+			break;
+		case F_On:
+			conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
+			break;
+		case F_Off:
+			conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
+			break;
+		default:
+			PCB_ACT_FAIL(FullScreen);
+	}
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_PCBChanged[] = "PCBChanged([revert])";
