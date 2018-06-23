@@ -565,7 +565,10 @@ first_triangle_found:
 edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 {
 	edge_t *e;
+	triangle_t *t;
 	trianglelist_node_t *triangles;
+	pointlist_node_t *left_polygon = NULL, *right_polygon = NULL;
+	int i;
 
 	/* edge already exists - just constrain it */
 	e = get_edge_from_points(p1, p2);
@@ -574,12 +577,46 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 		return e;
 	}
 
-	/* find intersecting edges and remove them, creating a polygon */
+	/* find intersecting edges and remove them */
 	triangles = triangles_intersecting_line(p1, p2);
+	t = triangles->item;
+	triangles = trianglelist_remove_front(triangles);
+	left_polygon = pointlist_prepend(left_polygon, &p2);	/* triangle list begins from p2 */
+	right_polygon = pointlist_prepend(right_polygon, &p2);
+	for (i = 0; i < 3; i++)
+		if (t->p[i] != p2) {
+			if (ORIENT_CCW(p1, p2, t->p[i]))
+				left_polygon = pointlist_prepend(left_polygon, &t->p[i]);
+			else
+				right_polygon = pointlist_prepend(right_polygon, &t->p[i]);
+		}
 
-	/* add new edge, splitting the polygon into 2 parts */
+	while (triangles->next != NULL) {
+		t = triangles->item;
+		triangles = trianglelist_remove_front(triangles);
+		e = get_edge_from_points(left_polygon->item, right_polygon->item);
+		for (i = 0; i < 3; i++)
+			if (t->p[i] != left_polygon->item && t->p[i] != right_polygon->item) {
+				if (ORIENT_CCW(p1, p2, t->p[i]))
+					left_polygon = pointlist_prepend(left_polygon, &t->p[i]);
+				else
+					right_polygon = pointlist_prepend(right_polygon, &t->p[i]);
+			}
+		remove_edge(cdt, e);
+	}
+	triangles = trianglelist_remove_front(triangles);
+	remove_edge(cdt, get_edge_from_points(left_polygon->item, right_polygon->item));
+	left_polygon = pointlist_prepend(left_polygon, &p1);
+	right_polygon = pointlist_prepend(right_polygon, &p1);
 
-	/* triangulate the polygons */
+	/* add new edge */
+	e = new_edge(cdt, p1, p2, 1);
+
+	/* triangulate the created polygons */
+	triangulate_polygon(cdt, left_polygon);
+	triangulate_polygon(cdt, right_polygon);
+
+	return e;
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
