@@ -560,14 +560,8 @@ Restores the tool to the last saved tool.
 
 static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (argc != 2) {
-		PCB_ACT_FAIL(Mode);
-		return FGW_ERR_ARGC;
-	}
-	if (fgw_argv_conv(&pcb_fgw, &argv[1], FGW_KEYWORD) != 0) {
-		PCB_ACT_FAIL(Mode);
-		return FGW_ERR_ARG_CONV;
-	}
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Display, ;);
 
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	pcb_tool_note.X = pcb_crosshair.X;
