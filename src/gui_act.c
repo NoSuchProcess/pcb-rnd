@@ -1182,33 +1182,27 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
 static const char pcb_acth_NetlistChanged[] = "Tells the GUI that the netlist has changed.";
-static fgw_error_t pcb_act_NetlistChanged(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_NetlistChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_netlist_changed(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
 static const char pcb_acts_RouteStylesChanged[] = "RouteStylesChanged()";
 static const char pcb_acth_RouteStylesChanged[] = "Tells the GUI that the routing styles have changed.";
-static fgw_error_t pcb_act_RouteStylesChanged(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_RouteStylesChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_LibraryChanged[] = "LibraryChanged()";
 static const char pcb_acth_LibraryChanged[] = "Tells the GUI that the libraries have changed.";
-static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
