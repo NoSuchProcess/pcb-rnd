@@ -33,6 +33,7 @@
 
 #include "brave.h"
 #include "actions.h"
+#include "action_helper.h"
 #include "conf_core.h"
 #include "conf_hid.h"
 #include "compat_misc.h"
@@ -237,29 +238,30 @@ static const char pcb_acts_Brave[] =
 	"Brave()\n"
 	"Brave(setting, on|off)\n";
 static const char pcb_acth_Brave[] = "Changes brave settings.";
-static fgw_error_t pcb_act_Brave(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Brave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	desc_t *d;
-	if (argc == 0)
-		return brave_interact();
-
-	/* look up */
-	if (argc > 0) {
-		d = find_by_name(argv[0]);
-		if (d == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Unknown brave setting: %s\n", argv[0]);
-			return -1;
-		}
+	const char *name, *op;
+	if (argc <= 1) {
+		PCB_ACT_IRES(brave_interact());
+		return 0;
 	}
 
-	if (argc > 1)
-		brave_set(d->bit, (pcb_strcasecmp(argv[1], "on") == 0));
+	/* look up */
+	PCB_ACT_CONVARG(1, FGW_STR, Brave, name = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, Brave, op = argv[2].val.str);
+	d = find_by_name(name);
+	if (d == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Unknown brave setting: %s\n", name);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+	brave_set(d->bit, (pcb_strcasecmp(op, "on") == 0));
 
-	pcb_message(PCB_MSG_INFO, "Brave setting: %s in %s\n", argv[0], (pcb_brave & d->bit) ? "on" : "off");
+	pcb_message(PCB_MSG_INFO, "Brave setting: %s in %s\n", name, (pcb_brave & d->bit) ? "on" : "off");
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t brave_action_list[] = {
