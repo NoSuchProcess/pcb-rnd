@@ -6,7 +6,8 @@ cdt_t cdt;
 
 int main(void)
 {
-	point_t *p;
+	point_t *p, *p1, *p2;
+	edge_t *e;
 	int i;
 	clock_t t;
 	pointlist_node_t *p_violations = NULL;
@@ -68,6 +69,7 @@ int main(void)
 	*/
 
 	/* concave poly */
+	/*
 	cdt_insert_point(&cdt, 2000, 4000);
 	cdt_insert_point(&cdt, 3000, 3500);
 	cdt_insert_point(&cdt, 4000, 4000);
@@ -76,6 +78,19 @@ int main(void)
 
 	p = cdt_insert_point(&cdt, 3000, 3000);
 	cdt_delete_point(&cdt, p);
+	*/
+
+	/* constrained edge */
+	p1 = cdt_insert_point(&cdt, 1500, 3000);
+	cdt_insert_point(&cdt, 2000, 3500);
+	cdt_insert_point(&cdt, 2500, 2500);
+	cdt_insert_point(&cdt, 3000, 3500);
+	cdt_insert_point(&cdt, 3500, 2500);
+	cdt_insert_point(&cdt, 4000, 3500);
+	p2 = cdt_insert_point(&cdt, 4500, 3000);
+
+	e = cdt_insert_constrained_edge(&cdt, p1, p2);
+
 
 	if (cdt_check_delaunay(&cdt, &p_violations, NULL))
 		fprintf(stderr, "delaunay\n");
