@@ -1548,28 +1548,34 @@ visible if it is not already visible
 
 %end-doc */
 
-static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_layer_id_t lid;
 	const pcb_menu_layers_t *ml;
-	
+	char *name;
 
-	if (pcb_strcasecmp(argv[0], "silk") == 0) {
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_STR, selectlayer, name = argv[1].val.str);
+
+	if (pcb_strcasecmp(name, "silk") == 0) {
 		PCB->RatDraw = 0;
-		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
+		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0) {
 			pcb_layervis_change_group_vis(lid, 1, 1);
-		else
+		}
+		else {
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
+			PCB_ACT_IRES(-1);
+		}
 		return 0;
 	}
 
-	ml = pcb_menu_layer_find(argv[0]);
+	ml = pcb_menu_layer_find(name);
 	if (ml != NULL) {
 		pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
 		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
 		if (ml->sel_offs == 0) {
 			pcb_message(PCB_MSG_ERROR, "Virtual layer '%s' (%s) can not be selected\n", ml->name, ml->abbrev);
+			PCB_ACT_IRES(-1);
 			return 0;
 		}
 		*s = *v = 1;
@@ -1578,11 +1584,10 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	}
 
 	PCB->RatDraw = 0;
-	pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
+	pcb_layervis_change_group_vis(atoi(name)-1, 1, 1);
 	pcb_gui->invalidate_all();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 const char pcb_acts_chklayer[] = "ChkLayer(layerid)";
