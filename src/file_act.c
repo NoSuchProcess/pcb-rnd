@@ -54,10 +54,7 @@
 #include "safe_fs.h"
 #include "tool.h"
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])";
-
 static const char pcb_acth_LoadFrom[] = "Load layout data from a file.";
 
 /* %start-doc actions LoadFrom
@@ -147,10 +144,7 @@ static fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_New[] = "New([name])";
-
 static const char pcb_acth_New[] = "Starts a new layout.";
 
 /* %start-doc actions New
@@ -212,12 +206,10 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_SaveTo[] =
 	"SaveTo(Layout|LayoutAs,filename,[fmt])\n"
 	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename,[fmt])";
-
 static const char pcb_acth_SaveTo[] = "Saves data to a file.";
 
 /* %start-doc actions SaveTo
@@ -334,10 +326,7 @@ static fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_FAIL(SaveTo);
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Quit[] = "Quit()";
-
 static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 
 /* %start-doc actions Quit
@@ -362,7 +351,6 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-/* --------------------------------------------------------------------------- */
 static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
 static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
 static fgw_error_t pcb_act_Export(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
