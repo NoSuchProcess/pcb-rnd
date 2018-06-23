@@ -249,21 +249,17 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 /* --------------------------------------------------------------------------- */
 static const char changehold_syntax[] = "ChangeHole(ToggleObject|Object|SelectedVias|Selected)";
 static const char changehold_help[] = "Changes the hole flag of objects. Not supported anymore; use the propery editor.";
-static fgw_error_t pcb_act_ChangeHole(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeHole(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
-	PCB_OLD_ACT_END;
 }
 static const char pcb_acts_ChangePaste[] = "ChangePaste(ToggleObject|Object|SelectedPads|Selected)";
 static const char pcb_acth_ChangePaste[] = "Changes the no paste flag of objects. Not supported anymore.";
-static fgw_error_t pcb_act_ChangePaste(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangePaste(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
 	return 1;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
