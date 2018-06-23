@@ -283,18 +283,18 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Flip(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
-	const char *function = PCB_ACTION_ARG(0);
+	int id;
 	void *ptrtmp;
-	int err = 0;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = argv[1].val.nat_keyword);
+	PCB_ACT_IRES(0);
 
 	pcb_hid_get_coords("Click on Object or Flip Point", &x, &y);
 
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	switch(id) {
 		case F_Object:
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
@@ -312,15 +312,9 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			pcb_draw();
 			break;
 		default:
-			err = 1;
-			break;
-		}
-		if (!err)
-			return 0;
+			PCB_ACT_FAIL(Flip);
 	}
-
-	PCB_ACT_FAIL(Flip);
-	PCB_OLD_ACT_END;
+	return 0;
 }
 /* --------------------------------------------------------------------------- */
 
