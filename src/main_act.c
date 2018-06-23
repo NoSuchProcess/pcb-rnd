@@ -186,11 +186,8 @@ fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-/* --------------------------------------------------------------------------- */
 static const char pcb_acts_PrintVersion[] = "PrintVersion()";
-
 static const char pcb_acth_PrintVersion[] = "Print version.";
-
 fgw_error_t pcb_act_PrintVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("pcb-rnd version %s rev %s\n", PCB_VERSION, PCB_REVISION);
@@ -198,11 +195,8 @@ fgw_error_t pcb_act_PrintVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
 static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
-
 static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
-
 fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("\n"
