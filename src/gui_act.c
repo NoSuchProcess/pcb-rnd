@@ -841,21 +841,20 @@ followed by a newline.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Message(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int i;
 
-	if (argc < 1)
+	if (argc < 2)
 		PCB_ACT_FAIL(Message);
 
-	for (i = 0; i < argc; i++) {
-		pcb_message(PCB_MSG_INFO, argv[i]);
+	for (i = 1; i < argc; i++) {
+		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, ;);
+		pcb_message(PCB_MSG_INFO, argv[i].val.str);
 		pcb_message(PCB_MSG_INFO, "\n");
 	}
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
