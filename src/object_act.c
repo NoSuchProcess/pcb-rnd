@@ -1207,12 +1207,13 @@ Rotates the object under the mouse pointer by 90 degree @code{steps}.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Rotate90(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *ssteps = PCB_ACTION_ARG(0);
-	int steps = atoi(ssteps);
+	int steps;
 	pcb_coord_t x, y;
+
+	PCB_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
+	PCB_ACT_IRES(0);
 
 	pcb_hid_get_coords("Select an Object", &x, &y);
 
@@ -1226,7 +1227,6 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	pcb_screen_obj_rotate90(x, y, steps);
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t object_action_list[] = {
