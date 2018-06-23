@@ -49,6 +49,10 @@ int pcb_funchash_set_table(pcb_funchash_table_t *table, int numelem, const char 
 /* Remove all keys inserted for a cookie */
 void pcb_funchash_remove_cookie(const char *cookie);
 
+/* Slow linear search to look up the key text for an ID (for debugging) */
+const char *pcb_funchash_reverse(int id);
+
+
 /* Init-uninit the hash */
 void pcb_funchash_init(void);
 void pcb_funchash_uninit(void);

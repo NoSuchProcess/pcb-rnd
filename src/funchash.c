@@ -140,3 +140,16 @@ int pcb_funchash_set_table(pcb_funchash_table_t *table, int numelem, const char 
 
 	return rv;
 }
+
+const char *pcb_funchash_reverse(int id)
+{
+	htpi_entry_t *e;
+
+	for (e = htpi_first(funchash); e; e = htpi_next(funchash, e)) {
+		if (e->value == id) {
+			fh_key_t *k = e->key;
+			return k->key;
+		}
+	}
+	return NULL;
+}
