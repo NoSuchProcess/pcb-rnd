@@ -204,14 +204,15 @@ static const char pcb_acth_DeleteRats[] = "Delete rat lines.";
 
 %end-doc */
 
-static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		if (conf_core.temp.rat_warn)
-			pcb_clear_warnings();
-		switch (pcb_funchash_get(function, NULL)) {
+	int op;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, DeleteRats, op = argv[1].val.nat_keyword);
+
+	if (conf_core.temp.rat_warn)
+		pcb_clear_warnings();
+	switch(op) {
 		case F_AllRats:
 			if (pcb_rats_destroy(pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
@@ -221,10 +222,13 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			if (pcb_rats_destroy(pcb_true))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
-		}
+
+		default:
+			PCB_ACT_FAIL(DeleteRats);
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
