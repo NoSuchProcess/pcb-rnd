@@ -191,12 +191,11 @@ static const char pcb_acts_PrintVersion[] = "PrintVersion()";
 
 static const char pcb_acth_PrintVersion[] = "Print version.";
 
-fgw_error_t pcb_act_PrintVersion(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	printf("pcb-rnd version %s rev %s\n", PCB_VERSION, PCB_REVISION);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -204,9 +203,8 @@ static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
 
 static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
 
-fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	printf("\n"
 				 "                COPYRIGHT for the original pcb program:\n\n"
 				 "    PCB, interactive printed circuit board design\n"
@@ -226,8 +224,8 @@ fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	printf("    You should have received a copy of the GNU General Public License\n"
 				 "    along with this program; if not, write to the Free Software\n"
 				 "    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.\n\n");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
