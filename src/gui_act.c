@@ -556,17 +556,22 @@ Restores the tool to the last saved tool.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Mode(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
+	if (argc != 2) {
+		PCB_ACT_FAIL(Mode);
+		return FGW_ERR_ARGC;
+	}
+	if (fgw_argv_conv(&pcb_fgw, &argv[1], FGW_KEYWORD) != 0) {
+		PCB_ACT_FAIL(Mode);
+		return FGW_ERR_ARG_CONV;
+	}
 
-	if (function) {
 		/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 		pcb_tool_note.X = pcb_crosshair.X;
 		pcb_tool_note.Y = pcb_crosshair.Y;
 		pcb_notify_crosshair_change(pcb_false);
-		switch (pcb_funchash_get(function, NULL)) {
+		switch (argv[1].val.nat_keyword) {
 		case F_Arc:
 			pcb_tool_select_by_id(PCB_MODE_ARC);
 			break;
@@ -746,10 +751,6 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 		pcb_notify_crosshair_change(pcb_true);
 		return 0;
-	}
-
-	PCB_ACT_FAIL(Mode);
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------- */
