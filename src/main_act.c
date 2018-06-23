@@ -217,11 +217,8 @@ fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
 static const char pcb_acts_PrintPaths[] = "PrintPaths()";
-
 static const char pcb_acth_PrintPaths[] = "Print full paths and search paths.";
-
 static void print_list(const conflist_t *cl)
 {
 	int n;
@@ -234,7 +231,6 @@ static void print_list(const conflist_t *cl)
 	}
 	printf("\"\n");
 }
-
 fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	htsp_entry_t *e;
@@ -250,10 +246,9 @@ fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
+
 static const char pcb_acts_PrintFiles[] = "PrintFiles()";
 static const char pcb_acth_PrintFiles[] = "Print files currently loaded.";
-
 static void print_cat(pcb_file_loaded_t *cat)
 {
 	htsp_entry_t *e;
@@ -263,7 +258,6 @@ static void print_cat(pcb_file_loaded_t *cat)
 		printf(" %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
 	}
 }
-
 fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	htsp_entry_t *e;
@@ -274,14 +268,10 @@ fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
 static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
-
 static const char pcb_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
-
-fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pup_plugin_t *p;
 	const pup_buildin_t **bu;
 	int n;
@@ -298,24 +288,21 @@ fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		if (pup_lookup(&pcb_pup, (*bu)->name) == NULL)
 			printf("unloaded buildin\t%s\t1\t0\t0\t<builtin>\n", (*bu)->name);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
 static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
-
 static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a format digestable by scripts.";
-
-fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	char **p;
 	for(p = pcb_pup_paths; *p != NULL; p++)
 		printf("%s\n", *p);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_DumpObjFlags[] = "DumpObjFlags()";
@@ -324,7 +311,6 @@ static void dumpoflg(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb)
 {
 	printf("	%lx	%s	%s\n", flg, fb->name, fb->help);
 }
-
 fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
@@ -359,8 +345,6 @@ fgw_error_t pcb_act_System(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	return pcb_system(argv[0]);
 	PCB_OLD_ACT_END;
 }
-
-/* --------------------------------------------------------------------------- */
 
 pcb_action_t main_action_list[] = {
 	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
