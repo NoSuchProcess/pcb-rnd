@@ -88,13 +88,12 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-fgw_error_t pcb_act_Atomic(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc != 1)
-		PCB_ACT_FAIL(Atomic);
+	int op;
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = argv[1].val.nat_keyword);
 
-	switch (pcb_funchash_get(argv[0], NULL)) {
+	switch (op) {
 	case F_Save:
 		pcb_undo_save_serial();
 		break;
@@ -110,9 +109,13 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		if (pcb_bumped)
 			pcb_undo_inc_serial();
 		break;
+	default:
+		pcb_message(PCB_MSG_ERROR, "Invalid argument for Atomic()\n");
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
