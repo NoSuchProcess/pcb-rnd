@@ -2174,6 +2174,8 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 			}
 		}
 
+	pcb_hid_parse_command_line(argc, argv);
+
 	/* redefine lesstif_colormap, if requested via "-install" */
 	if (use_private_colormap) {
 		lesstif_colormap = XCopyColormapAndFree(display, lesstif_colormap);
