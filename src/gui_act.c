@@ -224,19 +224,18 @@ static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_sha
 }
 
 extern pcb_opfunc_t ChgFlagFunctions;
-static fgw_error_t pcb_act_Display(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function, *str_dir;
+	const char *str_dir = NULL;
 	int id;
 	int err = 0;
 
-	function = PCB_ACTION_ARG(0);
-	str_dir = PCB_ACTION_ARG(1);
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Display, id = argv[1].val.nat_keyword);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Display, str_dir = argv[2].val.str);
 
-	id = pcb_funchash_get(function, NULL);
 	if (id == F_SubcID) { /* change the displayed name of subcircuits */
-		if (argc > 0)
+		if (argc > 1)
 			conf_set(CFR_DESIGN, "editor/subc_id", -1, str_dir, POL_OVERWRITE);
 		else
 			conf_set(CFR_DESIGN, "editor/subc_id", -1, "", POL_OVERWRITE);
@@ -246,7 +245,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		return 0;
 	}
 
-	if (function && (!str_dir || !*str_dir)) {
+	if (!str_dir || !*str_dir) {
 		switch (id) {
 
 			/* redraw layout */
@@ -473,12 +472,16 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			err = 1;
 		}
 	}
-	else if (function && str_dir) {
-		switch (pcb_funchash_get(function, NULL)) {
+	else if (str_dir) {
+		switch(id) {
 		case F_ToggleGrid:
-			if (argc > 2) {
-				PCB->GridOffsetX = pcb_get_value(argv[1], NULL, NULL, NULL);
-				PCB->GridOffsetY = pcb_get_value(argv[2], NULL, NULL, NULL);
+			if (argc > 3) {
+				if (fgw_argv_conv(&pcb_fgw, &argv[3], FGW_KEYWORD) != 0) {
+					PCB_ACT_FAIL(Display);
+					return FGW_ERR_ARG_CONV;
+				}
+				PCB->GridOffsetX = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
+				PCB->GridOffsetY = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
 				if (conf_core.editor.draw_grid)
 					pcb_redraw();
 			}
@@ -494,7 +497,6 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		return 0;
 
 	PCB_ACT_FAIL(Display);
-	PCB_OLD_ACT_END;
 }
 /* --------------------------------------------------------------------------- */
 
