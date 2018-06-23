@@ -311,9 +311,8 @@ static void dumpoflg(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb)
 {
 	printf("	%lx	%s	%s\n", flg, fb->name, fb->help);
 }
-fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	unsigned long ot, max = PCB_OBJ_CLASS_REAL + 1;
 
 	for(ot = 1; ot < max; ot <<= 1) {
@@ -324,8 +323,9 @@ fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		printf("%s\n", name);
 		pcb_strflg_map(0x7fffffff, ot, NULL, dumpoflg);
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_System[] = "System(shell_cmd)";
