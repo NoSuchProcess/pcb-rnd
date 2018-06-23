@@ -37,6 +37,7 @@
 #include "board.h"
 #include "actions.h"
 #include "data.h"
+#include "compat_misc.h"
 #include "action_helper.h"
 #include "error.h"
 #include "funchash_core.h"
@@ -139,10 +140,10 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-fgw_error_t pcb_act_Undo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
+	const char *function = NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
 	if (!function || !*function) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_tool_undo_act())
@@ -150,16 +151,12 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
-			/* clear 'undo objects' list */
-		case F_ClearList:
+		if (pcb_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
-			break;
-		}
 	}
 	pcb_notify_crosshair_change(pcb_true);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -183,16 +180,15 @@ three "undone" lines.
 
 %end-doc */
 
-fgw_error_t pcb_act_Redo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_notify_crosshair_change(pcb_false);
 	if (pcb_tool_redo_act())
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 	pcb_notify_crosshair_change(pcb_true);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
