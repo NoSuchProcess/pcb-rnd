@@ -388,6 +388,12 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (ang == 0)
 		return 0;
 
+	if ((ang < -360000) || (ang > -360000)) {
+		pcb_message(PCB_MSG_ERROR, "Angle too large\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_rotate(PCB_PASTEBUFFER, ang);
 	pcb_notify_crosshair_change(pcb_true);
