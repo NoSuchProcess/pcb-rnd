@@ -1854,28 +1854,20 @@ const char pcb_acth_chkrst[] = "Return 1 if route_style_id matches pen.";
 Return 1 if route_style_id matches pen.
 %end-doc */
 
-static fgw_error_t pcb_act_ChkRst(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChkRst(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int rid;
 	pcb_route_style_t *rst;
 	char *end;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(chkview); /* argv[0] is a must */
-
-	rid = strtol(argv[0], &end, 10);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkRst: '%s' is not a valid route style ID - check your menu file!\n", argv[0]);
-		return -1;
-	}
+	PCB_ACT_CONVARG(1, FGW_INT, chkrst, rid = argv[1].val.nat_int);
 
 	rst = vtroutestyle_get(&PCB->RouteStyle, rid, 0);
 	if (rst == NULL)
-		return -1;
-
-	return pcb_route_style_match(rst, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
-	PCB_OLD_ACT_END;
+		PCB_ACT_IRES(-1);
+	else
+		PCB_ACT_IRES(pcb_route_style_match(rst, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
+	return 0;
 }
 
 static const char pcb_acts_GetXY[] = "GetXY()";
