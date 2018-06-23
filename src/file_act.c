@@ -206,11 +206,10 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* --------------------------------------------------------------------------- */
 static const char pcb_acts_normalize[] = "Normalize()";
 static const char pcb_acth_normalize[] = "Move all objects within the drawing area, align the drawing to 0;0";
-static fgw_error_t pcb_act_normalize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_board_normalize(PCB);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(pcb_board_normalize(PCB));
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
