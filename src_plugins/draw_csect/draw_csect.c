@@ -834,9 +834,8 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 static const char pcb_acts_dump_csect[] = "DumpCsect()";
 static const char pcb_acth_dump_csect[] = "Print the cross-section of the board (layer stack)";
 
-static fgw_error_t pcb_act_dump_csect(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_dump_csect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_layergrp_id_t gid;
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
@@ -871,8 +870,8 @@ static fgw_error_t pcb_act_dump_csect(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 				printf("         *** broken layer-to-group cross reference: %ld\n", l->meta.real.grp);
 		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char *draw_csect_cookie = "draw_csect";
