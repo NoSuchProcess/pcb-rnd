@@ -379,15 +379,12 @@ static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 1;
 }
 
-static const char changehold_syntax[] = "ChangeHole(ToggleObject|Object|SelectedVias|Selected)";
-static const char changehold_help[] = "Changes the hole flag of objects. Not supported anymore; use the propery editor.";
 static fgw_error_t pcb_act_ChangeHole(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "ChangeHole: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
-static const char pcb_acts_ChangePaste[] = "ChangePaste(ToggleObject|Object|SelectedPads|Selected)";
-static const char pcb_acth_ChangePaste[] = "Changes the no paste flag of objects. Not supported anymore.";
+
 static fgw_error_t pcb_act_ChangePaste(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "ChangePaste: deprecated feature; use padstackedit() instead\n");
@@ -450,7 +447,7 @@ pcb_action_t oldactions_action_list[] = {
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0},
 	{"MinMaskGap", pcb_act_MinMaskGap, 0, 0},
 	{"ChangeHole", pcb_act_ChangeHole, 0, 0},
-	{"ChangePaste", pcb_act_ChangePaste, pcb_acth_ChangePaste, pcb_acts_ChangePaste},
+	{"ChangePaste", pcb_act_ChangePaste, 0, 0},
 	{"ChangeSquare", pcb_act_ChangeSquare, 0, 0},
 	{"ChangeOctagon", pcb_act_ChangeOctagon, 0, 0},
 	{"ClearSquare", pcb_act_ClearSquare, 0, 0},
