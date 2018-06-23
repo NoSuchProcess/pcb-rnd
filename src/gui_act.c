@@ -968,35 +968,42 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_CreateMenu[] = "CreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)";
+static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, mnemonic, accel, tooltip, cookie)";
 static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 
 /* %start-doc actions RouteStyle
 
 %end-doc */
 
-static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
-		return 1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
-	if (argc > 0) {
+	PCB_ACT_CONVARG(1, FGW_STR, CreateMenu, ;);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
+	PCB_ACT_MAY_CONVARG(5, FGW_STR, CreateMenu, ;);
+	PCB_ACT_MAY_CONVARG(6, FGW_STR, CreateMenu, ;);
+
+	if (argc > 1) {
 		pcb_menu_prop_t props;
 		memset(&props, 0, sizeof(props));
-		props.action = (argc > 1) ? argv[1] : NULL;
-		props.mnemonic = (argc > 2) ? argv[2] : NULL;
-		props.accel = (argc > 3) ? argv[3] : NULL;
-		props.tip = (argc > 4) ? argv[4] : NULL;
-		props.cookie = (argc > 5) ? argv[5] : NULL;
-		pcb_gui->create_menu(argv[0], &props);
+		props.action = (argc > 2) ? argv[2].val.str : NULL;
+		props.mnemonic = (argc > 3) ? argv[3].val.str : NULL;
+		props.accel = (argc > 4) ? argv[4].val.str : NULL;
+		props.tip = (argc > 5) ? argv[5].val.str : NULL;
+		props.cookie = (argc > 6) ? argv[6].val.str : NULL;
+		pcb_gui->create_menu(argv[1].val.str, &props);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
 	PCB_ACT_FAIL(CreateMenu);
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
