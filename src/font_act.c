@@ -38,17 +38,16 @@
 static const char pcb_acts_load_font_from[] = "LoadFontFrom([file, id])";
 static const char pcb_acth_load_font_from[] = "Load PCB font from a file";
 
-fgw_error_t pcb_act_load_font_from(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *fname, *sid;
+	const char *fname = NULL, *sid = NULL;
 	static char *default_file = NULL;
 	pcb_font_id_t fid, dst_fid = -1;
 	pcb_font_t *fnt;
-	int res;
+	int r;
 
-	fname = (argc > 0) ? argv[0] : NULL;
-	sid = (argc > 1) ? argv[1] : NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[1].val.str);
 
 	if (sid != NULL) {
 		char *end;
@@ -83,9 +82,9 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		return 1;
 	}
 	
-	res = pcb_parse_font(fnt, fname);
+	r = pcb_parse_font(fnt, fname);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", fnt->id);
-	if (res != 0) {
+	if (r != 0) {
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
 		pcb_del_font(&PCB->fontkit, fnt->id);
 		return 1;
@@ -98,7 +97,6 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	fid = dst_fid == 0 ? 0 : fnt->id;
 	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
