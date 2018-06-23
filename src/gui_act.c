@@ -1840,7 +1840,6 @@ static fgw_error_t pcb_act_ChkRst(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int rid;
 	pcb_route_style_t *rst;
-	char *end;
 
 	PCB_ACT_CONVARG(1, FGW_INT, chkrst, rid = argv[1].val.nat_int);
 
