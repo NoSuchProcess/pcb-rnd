@@ -514,6 +514,24 @@ next_i:
 	triangulate_polygon(cdt, polygon_edges);
 }
 
+edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
+{
+	edge_t *e;
+
+	/* edge already exists - just constrain it */
+	e = get_edge_from_points(p1, p2);
+	if (e != NULL) {
+		e->is_constrained = 1;
+		return e;
+	}
+
+	/* find intersecting edges and remove them, creating a polygon */
+
+	/* add new edge, splitting the polygon into 2 parts */
+
+	/* triangulate the polygons */
+}
+
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 {
 	coord_t x1 = t->p[0]->pos.x, x2 = t->p[1]->pos.x, x3 = t->p[2]->pos.x;
