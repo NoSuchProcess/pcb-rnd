@@ -42,6 +42,7 @@
 #include "compat_misc.h"
 #include "layer.h"
 #include "actions.h"
+#include "action_helper.h"
 #include "hid_init.h"
 #include "conf_core.h"
 #include "plugins.h"
@@ -154,32 +155,34 @@ static int help_invoc(void)
 	return 0;
 }
 
-fgw_error_t pcb_act_PrintUsage(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *topic = NULL, *subt = NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, PrintUsage, topic = argv[1].val.str);
+	PCB_ACT_IRES(0);
+
 	u("");
-	if (argc > 0) {
+	if (topic != NULL) {
 		pcb_hid_t **hl = pcb_hid_enumerate();
 		int i;
 
-		if (strcmp(argv[0], "invocation") == 0)  return help_invoc();
-		if (strcmp(argv[0], "main") == 0)        return help_main();
+		if (strcmp(topic, "invocation") == 0)  return help_invoc();
+		if (strcmp(topic, "main") == 0)        return help_main();
 
 		for (i = 0; hl[i]; i++) {
-			if ((hl[i]->usage != NULL) && (strcmp(argv[0], hl[i]->name) == 0)) {
-				if (argc > 1)
-					return hl[i]->usage(argv[1]);
-				else
-					return hl[i]->usage(NULL);
+			if ((hl[i]->usage != NULL) && (strcmp(topic, hl[i]->name) == 0)) {
+				PCB_ACT_MAY_CONVARG(2, FGW_STR, PrintUsage, subt = argv[2].val.str);
+				PCB_ACT_IRES(hl[i]->usage(subt));
+				return 0;
 			}
 		}
-		fprintf(stderr, "No help available for %s\n", argv[0]);
-		return -1;
+		fprintf(stderr, "No help available for %s\n", topic);
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 	else
 		help0();
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
