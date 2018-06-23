@@ -53,6 +53,7 @@ int main(void)
 	*/
 
 	/* octagon */
+	/*
 	cdt_insert_point(&cdt, 4000, 3000);
 	cdt_insert_point(&cdt, 3700, 3700);
 	cdt_insert_point(&cdt, 3000, 4000);
@@ -61,6 +62,17 @@ int main(void)
 	cdt_insert_point(&cdt, 2300, 2300);
 	cdt_insert_point(&cdt, 3000, 2000);
 	cdt_insert_point(&cdt, 3700, 2300);
+
+	p = cdt_insert_point(&cdt, 3000, 3000);
+	cdt_delete_point(&cdt, p);
+	*/
+
+	/* concave poly */
+	cdt_insert_point(&cdt, 2000, 4000);
+	cdt_insert_point(&cdt, 3000, 3500);
+	cdt_insert_point(&cdt, 4000, 4000);
+	cdt_insert_point(&cdt, 4000, 2000);
+	cdt_insert_point(&cdt, 2000, 2000);
 
 	p = cdt_insert_point(&cdt, 3000, 3000);
 	cdt_delete_point(&cdt, p);
