@@ -1779,18 +1779,18 @@ Sets the display units to millimeters.
 
 %end-doc */
 
-static fgw_error_t pcb_act_SetUnits(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const pcb_unit_t *new_unit;
-	if (argc == 0)
-		return 0;
+	const char *name;
 
-	new_unit = get_unit_struct(argv[0]);
+	PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
+	PCB_ACT_IRES(0);
+
+	new_unit = get_unit_struct(name);
 	pcb_board_set_unit(PCB, new_unit);
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_grid[] =
