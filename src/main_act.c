@@ -359,7 +359,8 @@ pcb_action_t main_action_list[] = {
 	{"DumpPlugins", pcb_act_DumpPlugins, pcb_acth_DumpPlugins, pcb_acts_DumpPlugins},
 	{"DumpPluginDirs", pcb_act_DumpPluginDirs, pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs},
 	{"DumpObjFlags", pcb_act_DumpObjFlags, pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags},
-	{"System", pcb_act_System, pcb_acth_System, pcb_acts_System}
+	{"System", pcb_act_System, pcb_acth_System, pcb_acts_System},
+	{"ExecCommand", pcb_act_System, pcb_acth_System, pcb_acts_System}
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)

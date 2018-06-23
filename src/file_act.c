@@ -53,34 +53,6 @@
 #include "safe_fs.h"
 #include "tool.h"
 
-/* ---------------------------------------------------------------- */
-static const char pcb_acts_ExecCommand[] = "ExecCommand(command)";
-
-static const char pcb_acth_ExecCommand[] = "Runs a command.";
-
-/* %start-doc actions execcommand
-
-Runs the given command, which is a system executable.
-
-%end-doc */
-
-static fgw_error_t pcb_act_ExecCommand(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
-{
-	PCB_OLD_ACT_BEGIN;
-	const char *command;
-
-	if (argc < 1) {
-		PCB_ACT_FAIL(ExecCommand);
-	}
-
-	command = PCB_ACTION_ARG(0);
-
-	if (pcb_system(command))
-		return 1;
-	return 0;
-	PCB_OLD_ACT_END;
-}
-
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])";
@@ -428,7 +400,6 @@ static fgw_error_t pcb_act_Backup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 }
 
 pcb_action_t file_action_list[] = {
-	{"ExecCommand", pcb_act_ExecCommand, pcb_acth_ExecCommand, pcb_acts_ExecCommand},
 	{"Backup", pcb_act_Backup, pcb_acth_Backup, pcb_acts_Backup},
 	{"Export", pcb_act_Export, pcb_acth_Export, pcb_acts_Export},
 	{"LoadFrom", pcb_act_LoadFrom, pcb_acth_LoadFrom, pcb_acts_LoadFrom},
