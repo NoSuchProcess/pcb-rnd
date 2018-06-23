@@ -382,12 +382,14 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	int id;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = argv[1].val.nat_keyword);
+	PCB_ACT_IRES(0);
+
+	switch(id) {
 		case F_Object:
 			{
 				pcb_coord_t x, y;
@@ -425,10 +427,8 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *ores, int oargc, fgw_ar
 			if (pcb_move_selected_objs_to_layer(CURRENT))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
-		}
 	}
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------- */
