@@ -77,7 +77,41 @@ PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
 #define PCB_ACT_CALL_C(func, res, argc, argv) \
 	pcb_act_result(res, func(res, argc, argv))
 
-/* temporary hack for smooth upgrade to fungw based actions */
+/* Require argument idx to exist and convert it to type; on success, also execute stmt */
+#define PCB_ACT_CONVARG(idx, type, aname, stmt) \
+do { \
+	if (argc <= idx) { \
+		PCB_ACT_FAIL(aname); \
+		return FGW_ERR_ARGC; \
+	} \
+	if (fgw_argv_conv(&pcb_fgw, &argv[idx], type) != 0) { \
+		PCB_ACT_FAIL(aname); \
+		return FGW_ERR_ARG_CONV; \
+	} \
+	{ stmt; } \
+} while(0)
+
+/* If argument idx exists, convert it to type; on success, also execute stmt */
+#define PCB_ACT_MAY_CONVARG(idx, type, aname, stmt) \
+do { \
+	if (argc > idx) { \
+		if (fgw_argv_conv(&pcb_fgw, &argv[idx], type) != 0) { \
+			PCB_ACT_FAIL(aname); \
+			return FGW_ERR_ARG_CONV; \
+		} \
+		{ stmt; } \
+	} \
+} while(0)
+
+/* Set integer res value */
+#define PCB_ACT_IRES(v) \
+do { \
+	res->type = FGW_INT; \
+	res->val.nat_int = v; \
+} while(0)
+
+
+/*** temporary hack for smooth upgrade to fungw based actions ***/
 PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 {
 	int n;
