@@ -1629,24 +1629,26 @@ the same as a special layer, the layer is chosen over the special layer.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ToggleView(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_layer_id_t lid;
+	const char *name;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(toggleview); /* argv[0] is a must */
+	PCB_ACT_CONVARG(1, FGW_STR, toggleview, name = argv[1].val.str);
+	PCB_ACT_IRES(0);
 
-	if (pcb_strcasecmp(argv[0], "all") == 0) {
+	if (pcb_strcasecmp(name, "all") == 0) {
 		pcb_bool_op_t open = PCB_BOOL_PRESERVE, vis = PCB_BOOL_PRESERVE, user = PCB_BOOL_PRESERVE;
-		if (argc < 3)
-			PCB_ACT_FAIL(toggleview);
-		user = pcb_str2boolop(argv[2]);
+		const char *cmd, *suser;
+		PCB_ACT_CONVARG(2, FGW_STR, toggleview, cmd = argv[2].val.str);
+		PCB_ACT_CONVARG(3, FGW_STR, toggleview, suser = argv[3].val.str);
+
+		user = pcb_str2boolop(suser);
 		if (user == PCB_BOOL_INVALID)
 			PCB_ACT_FAIL(toggleview);
-		if (pcb_strcasecmp(argv[1], "open") == 0)
+		if (pcb_strcasecmp(cmd, "open") == 0)
 			open = user;
-		else if (pcb_strcasecmp(argv[1], "vis") == 0)
+		else if (pcb_strcasecmp(cmd, "vis") == 0)
 			vis = user;
 		else
 			PCB_ACT_FAIL(toggleview);
@@ -1655,27 +1657,28 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 		return 0;
 	}
-	else if (pcb_strcasecmp(argv[0], "silk") == 0) {
+	else if (pcb_strcasecmp(name, "silk") == 0) {
 		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(lid, -1, 0);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
-	else if ((pcb_strcasecmp(argv[0], "padstacks") == 0) || (pcb_strcasecmp(argv[0], "vias") == 0) || (pcb_strcasecmp(argv[0], "pins") == 0) || (pcb_strcasecmp(argv[0], "pads") == 0)) {
+	else if ((pcb_strcasecmp(name, "padstacks") == 0) || (pcb_strcasecmp(name, "vias") == 0) || (pcb_strcasecmp(name, "pins") == 0) || (pcb_strcasecmp(name, "pads") == 0)) {
 		PCB->pstk_on = !PCB->pstk_on;
 		pcb_gui->invalidate_all();
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
-	else if (pcb_strcasecmp(argv[0], "BackSide") == 0) {
+	else if (pcb_strcasecmp(name, "BackSide") == 0) {
 		PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
 		pcb_gui->invalidate_all();
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
-	else if (strncmp(argv[0], "ui:", 3) == 0) {
-		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(argv[0]+3), 0);
+	else if (strncmp(name, "ui:", 3) == 0) {
+		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(name+3), 0);
 		if (ly == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid ui layer id: '%s'\n", argv[0]);
-			return -1;
+			pcb_message(PCB_MSG_ERROR, "Invalid ui layer id: '%s'\n", name);
+			PCB_ACT_IRES(-1);
+			return 0;
 		}
 		ly->meta.real.vis = !ly->meta.real.vis;
 		pcb_gui->invalidate_all();
@@ -1683,7 +1686,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	}
 	else {
 		char *end;
-		int id = strtol(argv[0], &end, 10) - 1;
+		int id = strtol(name, &end, 10) - 1;
 		if (*end == '\0') { /* integer layer */
 			pcb_layervis_change_group_vis(id, -1, 0);
 			pcb_gui->invalidate_all();
@@ -1691,7 +1694,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			return 0;
 		}
 		else { /* virtual menu layer */
-			const pcb_menu_layers_t *ml = pcb_menu_layer_find(argv[0]);
+			const pcb_menu_layers_t *ml = pcb_menu_layer_find(name);
 			if (ml != NULL) {
 				pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
 				*v = !(*v);
@@ -1699,12 +1702,12 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 				pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 				return 0;
 			}
-			pcb_message(PCB_MSG_ERROR, "Invalid layer id: '%s'\n", argv[0]);
+			pcb_message(PCB_MSG_ERROR, "Invalid layer id: '%s'\n", name);
 		}
 	}
 
-	return 1;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(1);
+	return 0;
 }
 
 const char pcb_acts_chkview[] = "ChkView(layerid)\n";
