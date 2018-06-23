@@ -323,6 +323,22 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	PCB_OLD_ACT_END;
 }
 
+static const char pcb_acts_PCBChanged[] = "PCBChanged([revert])";
+static const char pcb_acth_PCBChanged[] =
+	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
+	"parameter can be used as a hint to the GUI that the same design is being"
+	"reloaded, and that it might keep some viewport settings";
+static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *rv = NULL;
+	PCB_ACT_IRES(0);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
+	pcb_board_changed((rv != NULL) && (pcb_strcasecmp(rv, "revert") == 0));
+	return 0;
+}
+
+/*** deprecated ***/
+
 static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
@@ -340,6 +356,7 @@ pcb_action_t oldactions_action_list[] = {
 	{"EnableVendor", pcb_act_EnableVendor, pcb_acth_enable_vendor, pcb_acts_enable_vendor},
 	{"DisableVendor", pcb_act_DisableVendor, pcb_acth_disable_vendor, pcb_acts_disable_vendor},
 	{"ListRotations", pcb_act_ListRotations, 0, 0},
+	{"PCBChanged", pcb_act_PCBChanged, pcb_acth_PCBChanged, pcb_acts_PCBChanged},
 	/* deprecated actions */
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0}
 };

@@ -1180,20 +1180,6 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_PCBChanged[] = "PCBChanged([revert])";
-static const char pcb_acth_PCBChanged[] =
-	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
-	"parameter can be used as a hint to the GUI that the same design is being"
-	"reloaded, and that it might keep some viewport settings";
-static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *rv = NULL;
-	PCB_ACT_IRES(0);
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
-	pcb_board_changed((rv != NULL) && (pcb_strcasecmp(rv, "revert") == 0));
-	return 0;
-}
-
 static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
 static const char pcb_acth_NetlistChanged[] = "Tells the GUI that the netlist has changed.";
 static fgw_error_t pcb_act_NetlistChanged(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
@@ -1947,7 +1933,6 @@ pcb_action_t gui_action_list[] = {
 	{"SwitchHID", pcb_act_SwitchHID, pcb_acth_SwitchHID, pcb_acts_SwitchHID},
 	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
 	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
-	{"PCBChanged", pcb_act_PCBChanged, pcb_acth_PCBChanged, pcb_acts_PCBChanged},
 	{"NetlistChanged", pcb_act_NetlistChanged, pcb_acth_NetlistChanged, pcb_acts_NetlistChanged},
 	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
 	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
