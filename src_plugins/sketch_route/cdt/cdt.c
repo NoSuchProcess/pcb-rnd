@@ -28,9 +28,8 @@ static double orientation(point_t *p1, point_t *p2, point_t *p3)
 				 - ((double)p2->pos.x - (double)p1->pos.x) * ((double)p3->pos.y - (double)p2->pos.y);
 }
 
-#define EDGES_INTERSECT(e1, e2) \
-	(ORIENT_CCW((e1)->endp[0], (e1)->endp[1], (e2)->endp[0]) != ORIENT_CCW((e1)->endp[0], (e1)->endp[1], (e2)->endp[1]) \
-	&& ORIENT_CCW((e2)->endp[0], (e2)->endp[1], (e1)->endp[0]) != ORIENT_CCW((e2)->endp[0], (e2)->endp[1], (e1)->endp[1]))
+#define LINES_INTERSECT(p1, q1, p2, q2) \
+	(ORIENT_CCW(p1, q1, p2) != ORIENT_CCW(p1, q1, q2) && ORIENT_CCW(p2, q2, p1) != ORIENT_CCW(p2, q2, q1))
 
 
 static point_t *new_point(cdt_t *cdt, pos_t pos)
@@ -396,7 +395,7 @@ static void triangulate_polygon(cdt_t *cdt, edgelist_node_t *polygon)
 		EDGELIST_FOREACH(e, candidate_t.p[1]->adj_edges)
 			if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
 					&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2]))
-				if(EDGES_INTERSECT(&candidate_e, e))
+				if(LINES_INTERSECT(candidate_e.endp[0], candidate_e.endp[1], e->endp[0], e->endp[1]))
 					goto skip;
 		EDGELIST_FOREACH_END();
 
