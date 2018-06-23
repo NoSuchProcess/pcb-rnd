@@ -58,9 +58,9 @@
 #include "actions.h"
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
-
 static const char pcb_acth_Attributes[] =
-	"Let the user edit the attributes of the layout, current or given\n" "layer, or selected subcircuit.";
+	"Let the user edit the attributes of the layout, current or given\n"
+	"layer, or selected subcircuit.";
 
 /* %start-doc actions Attributes
 
@@ -68,7 +68,6 @@ This just pops up a dialog letting the user edit the attributes of the
 pcb, a subcircuit, or a layer.
 
 %end-doc */
-
 
 static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
