@@ -821,11 +821,8 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 }
 
 /* ---------------------------------------------------------------------------  */
-
 static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
-
 static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
-
 /* %start-doc actions MinClearGap
 
 Checks all specified objects, and increases the polygon clearance if
@@ -833,7 +830,6 @@ needed to ensure a minimum distance between their edges and the
 polygon edges.
 
 %end-doc */
-
 static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 {
 	PCB_SUBC_LOOP(data);
