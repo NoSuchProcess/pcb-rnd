@@ -771,23 +771,27 @@ Selects the given buffer to be the current paste buffer.
 @end table
 
 %end-doc */
-static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = argc ? argv[0] : "";
-	const char *sbufnum = argc > 1 ? argv[1] : "";
-	const char *fmt = argc > 2 ? argv[2] : NULL;
-	const char *forces = argc > 3 ? argv[3] : NULL;
-	const char *name;
+	int op, force;
+	const char *sbufnum = "", *fmt = NULL, *forces = NULL, *name, *tmp;
 	static char *default_file = NULL;
 	pcb_bool free_name = pcb_false;
-	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 	static int stack[32];
 	static int sp = 0;
+	int number;
+
+	PCB_ACT_CONVARG(1, FGW_STR, PasteBuffer, tmp = argv[1].val.str);
+	number = atoi(tmp);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, PasteBuffer, op = argv[1].val.nat_keyword);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, PasteBuffer, sbufnum = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, PasteBuffer, fmt = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, PasteBuffer, forces = argv[4].val.str);
+
+	force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
 	pcb_notify_crosshair_change(pcb_false);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	switch (op) {
 			/* clear contents of paste buffer */
 		case F_Clear:
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
@@ -868,7 +872,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 			}
 
 			else
-				name = argv[1];
+				name = sbufnum;
 
 			{
 				FILE *exist;
@@ -891,18 +895,18 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 				static pcb_coord_t oldx = 0, oldy = 0;
 				pcb_coord_t x, y;
 				pcb_bool absolute;
-				if (argc == 1) {
+				if (argc == 2) {
 					x = y = 0;
 				}
-				else if (strcmp(argv[1], "crosshair") == 0) {
+				else if (strcmp(sbufnum, "crosshair") == 0) {
 					x = pcb_crosshair.X;
 					y = pcb_crosshair.Y;
 				}
-				else if (argc == 3 || argc == 4) {
-					x = pcb_get_value(PCB_ACTION_ARG(1), PCB_ACTION_ARG(3), &absolute, NULL);
+				else if (argc == 4 || argc == 5) {
+					x = pcb_get_value(sbufnum, forces, &absolute, NULL);
 					if (!absolute)
 						x += oldx;
-					y = pcb_get_value(PCB_ACTION_ARG(2), PCB_ACTION_ARG(3), &absolute, NULL);
+					y = pcb_get_value(fmt, forces, &absolute, NULL);
 					if (!absolute)
 						y += oldy;
 				}
@@ -929,22 +933,22 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 			/* set number */
 		default:
 			{
-				int number = atoi(function);
+				
 
 				/* correct number */
 				if (number)
 					pcb_buffer_set_number(number - 1);
 			}
-		}
 	}
 
 	pcb_notify_crosshair_change(pcb_true);
+	PCB_ACT_IRES(0);
 	return 0;
 
 	error:;
 	pcb_notify_crosshair_change(pcb_true);
-	return 1;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(-1);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
