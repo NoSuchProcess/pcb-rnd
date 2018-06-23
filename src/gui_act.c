@@ -1128,15 +1128,17 @@ Switch to another HID.
 
 %end-doc */
 
-static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	pcb_hid_t *ng = pcb_hid_find_gui(argv[0]);
+	pcb_hid_t *ng;
 	int chg;
 
+	PCB_ACT_CONVARG(1, FGW_STR, SwitchHID, ;);
+	ng = pcb_hid_find_gui(argv[1].val.str);
 	if (ng == NULL) {
 		pcb_message(PCB_MSG_ERROR, "No such HID.");
-		return 1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
 	pcb_next_gui = ng;
@@ -1144,8 +1146,8 @@ static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	pcb_quit_app();
 	PCB->Changed = chg;
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
