@@ -848,6 +848,7 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc < 2)
 		PCB_ACT_FAIL(Message);
 
+	PCB_ACT_IRES(0);
 	for (i = 1; i < argc; i++) {
 		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, ;);
 		pcb_message(PCB_MSG_INFO, argv[i].val.str);
@@ -930,15 +931,16 @@ static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style in
 
 %end-doc */
 
-static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *str = PCB_ACTION_ARG(0);
+	char *end;
+	const char *str = NULL;
 	pcb_route_style_t *rts;
 	int number;
 
-	if (str) {
-		char *end;
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
+
 		number = strtol(str, &end, 10);
 
 		if (*end != '\0') { /* if not an integer, find by name */
@@ -960,11 +962,12 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
 			pcb_board_set_clearance(rts->Clearance);
 		}
-		else
+		else {
+			PCB_ACT_IRES(-1);
 			pcb_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
-	}
+		}
+
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
