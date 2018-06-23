@@ -118,6 +118,9 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
 			}
 			break;
+
+		default:
+			PCB_ACT_FAIL(AddRats);
 	}
 	PCB_ACT_IRES(0);
 	return 0;
@@ -191,6 +194,8 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		default:
 			PCB_ACT_FAIL(Connection);
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
