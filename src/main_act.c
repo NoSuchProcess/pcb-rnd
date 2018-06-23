@@ -235,9 +235,8 @@ static void print_list(const conflist_t *cl)
 	printf("\"\n");
 }
 
-fgw_error_t pcb_act_PrintPaths(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	htsp_entry_t *e;
 	conf_fields_foreach(e) {
 		conf_native_t *n = e->value;
@@ -247,8 +246,8 @@ fgw_error_t pcb_act_PrintPaths(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	printf("rc/default_font_file             ="); print_list(&conf_core.rc.default_font_file);
 	printf("rc/library_search_paths          ="); print_list(&conf_core.rc.library_search_paths);
 	printf("rc/library_shell                 = \"%s\"\n", conf_core.rc.library_shell);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -265,15 +264,14 @@ static void print_cat(pcb_file_loaded_t *cat)
 	}
 }
 
-fgw_error_t pcb_act_PrintFiles(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	htsp_entry_t *e;
 	printf("# Data files loaded\n");
 	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e))
 		print_cat(e->value);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
