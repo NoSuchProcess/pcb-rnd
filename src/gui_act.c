@@ -1567,45 +1567,49 @@ Returns 1 if the specified layer is the active layer.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
+	const char *name;
 	const pcb_menu_layers_t *ml;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(chklayer); /* argv[0] is a must */
+	PCB_ACT_CONVARG(1, FGW_STR, chklayer, name = argv[1].val.str);
 
-	lid = strtol(argv[0], &end, 10);
+	lid = strtol(name, &end, 10);
 	if (*end != '\0') {
-		ml = pcb_menu_layer_find(argv[0]);
+		ml = pcb_menu_layer_find(name);
 		if (ml != NULL) {
 			if (ml->sel_offs != 0) {
 				pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
-				return *s;
+				PCB_ACT_IRES(*s);
 			}
-			return -1;
+			else
+				PCB_ACT_IRES(-1);
+			return 0;
 		}
 		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
-		return -1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
 	/* if any virtual is selected, do not accept CURRENT as selected */
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++) {
 		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
-		if ((ml->sel_offs != 0) && (*s))
+		if ((ml->sel_offs != 0) && (*s)) {
+			PCB_ACT_IRES(0);
 			return 0;
+		}
 	}
 
 	lid--;
 	ly = pcb_get_layer(PCB->Data, lid);
 	if (ly == NULL)
-		return -1;
-
-	return ly == CURRENT;
-	PCB_OLD_ACT_END;
+		PCB_ACT_IRES(-1);
+	else
+		PCB_ACT_IRES(ly == CURRENT);
+	return 0;
 }
 
 
