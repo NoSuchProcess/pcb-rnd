@@ -923,9 +923,9 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_RouteStyle[] = "RouteStyle(1|2|3|4)";
+static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name)";
 
-static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style into the current sizes.";
+static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style into the current pen.";
 
 /* %start-doc actions RouteStyle
 
