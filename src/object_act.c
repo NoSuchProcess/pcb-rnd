@@ -1150,8 +1150,11 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				PCB->loose_subc = 1;
 			else if (strcmp(argv[1], "off") == 0)
 				PCB->loose_subc = 0;
-			else if (strcmp(argv[1], "check") == 0)
-				return PCB->loose_subc;
+			else if (strcmp(argv[1], "check") == 0) {
+				ores->type = FGW_INT;
+				ores->val.nat_int = PCB->loose_subc;
+				return 0;
+			}
 			else {
 				PCB_ACT_FAIL(subc);
 				return 1;
