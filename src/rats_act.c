@@ -76,17 +76,17 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static fgw_error_t pcb_act_AddRats(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
+	int op;
 	pcb_rat_t *shorty;
 	float len, small;
 
-	if (function) {
-		if (conf_core.temp.rat_warn)
-			pcb_clear_warnings();
-		switch (pcb_funchash_get(function, NULL)) {
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, AddRats, op = argv[1].val.nat_keyword);
+
+	if (conf_core.temp.rat_warn)
+		pcb_clear_warnings();
+	switch (op) {
 		case F_AllRats:
 			if (pcb_rat_add_all(pcb_false, NULL))
 				pcb_board_set_changed_flag(pcb_true);
@@ -118,10 +118,9 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
 			}
 			break;
-		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
