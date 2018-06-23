@@ -1011,31 +1011,32 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path|cookie)";
 static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
 
-/* %start-doc actions RouteStyle
+/* %start-doc actions RemoveMenu
 
 %end-doc */
 
-static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
-		return 1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
 	if (pcb_gui->remove_menu == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
-		return 1;
-	}
-
-	if (argc > 0) {
-		if (pcb_gui->remove_menu(argv[0]) != 0)
-			pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
+		PCB_ACT_IRES(-1);
 		return 0;
 	}
 
-	PCB_ACT_FAIL(RemoveMenu);
-	PCB_OLD_ACT_END;
+	PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
+	if (pcb_gui->remove_menu(argv[1].val.str) != 0) {
+		pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
+		PCB_ACT_IRES(-1);
+	}
+	else
+		PCB_ACT_IRES(0);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
