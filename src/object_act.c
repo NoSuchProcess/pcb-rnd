@@ -226,18 +226,15 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	}
 }
 
-static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
 	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
-	int all = 0, bad = 0;
+	int all = 0, id;
 
-	if (!function || !*function) {
-		bad = 1;
-	}
-	else {
-		switch (pcb_funchash_get(function, NULL)) {
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = argv[1].val.nat_keyword);
+	PCB_ACT_IRES(0);
+
+	switch(id) {
 		case F_All:
 			all = 1;
 			break;
@@ -247,12 +244,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *ores, int oargc, fgw_arg_
 			break;
 
 		default:
-			bad = 1;
-		}
-	}
-
-	if (bad) {
-		PCB_ACT_FAIL(DisperseElements);
+			PCB_ACT_FAIL(DisperseElements);
 	}
 
 	pcb_draw_inhibit_inc();
@@ -278,7 +270,6 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *ores, int oargc, fgw_arg_
 	pcb_board_set_changed_flag(pcb_true);
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 #undef GAP
