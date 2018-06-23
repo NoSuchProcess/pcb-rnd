@@ -50,25 +50,17 @@
 #include "flag_str.h"
 #include "obj_common.h"
 
-
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_PrintActions[] = "PrintActions()";
-
 static const char pcb_acth_PrintActions[] = "Print all actions available.";
-
 fgw_error_t pcb_act_PrintActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_print_actions();
 	PCB_ACT_IRES(0);
 	return 0;
 }
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_DumpActions[] = "DumpActions()";
-
 static const char pcb_acth_DumpActions[] = "Dump all actions available.";
-
 fgw_error_t pcb_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_dump_actions();
