@@ -70,22 +70,22 @@ pcb, a subcircuit, or a layer.
 %end-doc */
 
 
-static fgw_error_t pcb_act_Attributes(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *layername = PCB_ACTION_ARG(1);
+	int id;
+	const char *layername;
 	char *buf;
 
-	if (!function)
-		PCB_ACT_FAIL(Attributes);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = argv[1].val.nat_keyword);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
+	PCB_ACT_IRES(0);
 
 	if (!pcb_gui->edit_attributes) {
 		pcb_message(PCB_MSG_ERROR, _("This GUI doesn't support Attribute Editing\n"));
-		return 1;
+		return FGW_ERR_UNKNOWN;
 	}
 
-	switch (pcb_funchash_get(function, NULL)) {
+	switch(id) {
 	case F_Layout:
 		{
 			pcb_gui->edit_attributes("Layout Attributes", &(PCB->Attributes));
@@ -137,7 +137,8 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 					s = (pcb_subc_t *)ptrtmp;
 				else {
 					pcb_message(PCB_MSG_ERROR, _("No subcircuit found there\n"));
-					return 1;
+					PCB_ACT_IRES(-1);
+					return 0;
 				}
 			}
 
@@ -156,7 +157,6 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	}
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
