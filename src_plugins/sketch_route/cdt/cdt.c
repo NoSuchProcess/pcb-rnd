@@ -320,6 +320,16 @@ void dump_edgelist(edgelist_node_t *list)
 		fprintf(stderr, " %s}\n", e->is_constrained ? "constrained" : "");
 	EDGELIST_FOREACH_END();
 }
+
+void dump_trianglelist(trianglelist_node_t *list)
+{
+	TRIANGLELIST_FOREACH(t, list)
+		fprintf(stderr, "\t{p1=(%d, %d) p2=(%d, %d) p3=(%d, %d)",
+						t->p[0]->pos.x, t->p[0]->pos.y, t->p[1]->pos.x, t->p[1]->pos.y, t->p[2]->pos.x, t->p[2]->pos.y);
+		fprintf(stderr, " adj_e=(%p, %p, %p)", t->e[0], t->e[1], t->e[2]);
+		fprintf(stderr, " adj_t=(%p, %p, %p)}\n", t->adj_t[0], t->adj_t[1], t->adj_t[2]);
+	TRIANGLELIST_FOREACH_END();
+}
 #endif
 
 static pointlist_node_t *order_edges_adjacently(edgelist_node_t *edges)
