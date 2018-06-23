@@ -371,7 +371,7 @@ has the same functionality as @code{s} combined with @code{q}.
 
 static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (!pcb_act_SaveLayout(res, argc, argv))
+	if (PCB_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) != 0)
 		return pcb_act_Quit(res, argc, argv);
 	return 1;
 }
