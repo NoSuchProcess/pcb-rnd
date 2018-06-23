@@ -859,25 +859,6 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_ToggleHideName[] = "ToggleHideName(Object|SelectedElements)";
-
-static const char pcb_acth_ToggleHideName[] = "Toggles the visibility of subcircuit names.";
-
-/* %start-doc actions ToggleHideName
-
-If names are hidden you won't see them on the screen and they will not
-appear on the silk layer when you print the layout.
-
-%end-doc */
-
-static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_MarkCrosshair[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
 
 static const char pcb_acth_MarkCrosshair[] = "Set/Reset the pcb_crosshair mark.";
@@ -1945,7 +1926,6 @@ pcb_action_t gui_action_list[] = {
 	{"MarkCrosshair", pcb_act_MarkCrosshair, pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair},
 	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message},
 	{"Mode", pcb_act_Mode, pcb_acth_Mode, pcb_acts_Mode},
-	{"ToggleHideName", pcb_act_ToggleHideName, pcb_acth_ToggleHideName, pcb_acts_ToggleHideName},
 	{"SetSame", pcb_act_SetSame, pcb_acth_SetSame, pcb_acts_SetSame},
 	{"RouteStyle", pcb_act_RouteStyle, pcb_acth_RouteStyle, pcb_acts_RouteStyle},
 	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},

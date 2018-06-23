@@ -323,6 +323,11 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	PCB_OLD_ACT_END;
 }
 
+static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
+	return 0;
+}
 
 pcb_action_t oldactions_action_list[] = {
 	{"DumpLibrary", pcb_act_DumpLibrary, pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
@@ -334,7 +339,9 @@ pcb_action_t oldactions_action_list[] = {
 	{"ToggleVendor", pcb_act_ToggleVendor, pcb_acth_toggle_vendor, pcb_acts_toggle_vendor},
 	{"EnableVendor", pcb_act_EnableVendor, pcb_acth_enable_vendor, pcb_acts_enable_vendor},
 	{"DisableVendor", pcb_act_DisableVendor, pcb_acth_disable_vendor, pcb_acts_disable_vendor},
-	{"ListRotations", pcb_act_ListRotations, 0, 0}
+	{"ListRotations", pcb_act_ListRotations, 0, 0},
+	/* deprecated actions */
+	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";
