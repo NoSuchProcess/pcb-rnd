@@ -158,7 +158,9 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 /*		printf("iseq: %s %s==%s %d\n", path, nval.array, val, res);*/
 		gds_uninit(&nval);
 
-		return res;
+		ores->type = FGW_INT;
+		ores->val.nat_int = res;
+		return 0;
 	}
 
 	else if (PCB_NSTRCMP(cmd, "toggle") == 0) {
@@ -282,10 +284,14 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 {
 	PCB_OLD_ACT_BEGIN;
 	assert(argc == 1);
-	if (strcmp(argv[0], "none") == 0)
-		return PCB->Grid <= 300;
+		ores->type = FGW_INT;
+	if (strcmp(argv[0], "none") == 0) {
+		ores->val.nat_int = (PCB->Grid <= 300);
+		return 0;
+	}
 
-	return (PCB->Grid == pcb_get_value_ex(argv[0], NULL, NULL, NULL, NULL, NULL));
+	ores->val.nat_int = (PCB->Grid == pcb_get_value_ex(argv[0], NULL, NULL, NULL, NULL, NULL));
+	return 0;
 	PCB_OLD_ACT_END;
 }
 
@@ -300,7 +306,9 @@ static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	if (argc > 0) expected = argv[0];
 	else expected = "";
 
-	return strcmp(expected, have) == 0;
+	ores->type = FGW_INT;
+	ores->val.nat_int = (strcmp(expected, have) == 0);
+	return 0;
 	PCB_OLD_ACT_END;
 }
 
@@ -310,7 +318,9 @@ static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 {
 	PCB_OLD_ACT_BEGIN;
 	assert(argc == 1);
-	return strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0;
+	ores->type = FGW_INT;
+	ores->val.nat_int = (strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0);
+	return 0;
 	PCB_OLD_ACT_END;
 }
 
@@ -322,7 +332,9 @@ static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	int expected = argv[0][0] - '0';
 	assert(argc == 1);
 
-	return (conf_core.editor.buffer_number + 1) == expected;
+	ores->type = FGW_INT;
+	ores->val.nat_int = ((conf_core.editor.buffer_number + 1) == expected);
+	return 0;
 	PCB_OLD_ACT_END;
 }
 
