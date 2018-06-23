@@ -750,7 +750,6 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_CycleDrag[] = "CycleDrag()\n";
-
 static const char pcb_acth_CycleDrag[] = "Cycle through which object is being dragged";
 
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
@@ -760,7 +759,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
 
-	if (pcb_crosshair.drags == NULL) 
+	if (pcb_crosshair.drags == NULL)
 		return 0;
 
 	do {
