@@ -152,12 +152,13 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Connection(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	int op;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Connection, op = argv[1].val.nat_keyword);
+
+	switch(op) {
 		case F_Find:
 			{
 				pcb_coord_t x, y;
@@ -186,12 +187,11 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 				pcb_draw();
 			}
 			break;
-		}
-		return 0;
-	}
 
-	PCB_ACT_FAIL(Connection);
-	PCB_OLD_ACT_END;
+		default:
+			PCB_ACT_FAIL(Connection);
+	}
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
