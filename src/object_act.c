@@ -824,12 +824,10 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
 static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads. Not supported anymore.";
-static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
 	return 1;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------------  */
