@@ -601,6 +601,7 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 					left_polygon = pointlist_prepend(left_polygon, &t->p[i]);
 				else
 					right_polygon = pointlist_prepend(right_polygon, &t->p[i]);
+				break;
 			}
 		remove_edge(cdt, e);
 	}
