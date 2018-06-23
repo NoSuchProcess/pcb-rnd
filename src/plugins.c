@@ -66,9 +66,8 @@ static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 
-static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pup_plugin_t *p;
 	int nump = 0, numb = 0;
 	gds_t str;
@@ -112,8 +111,8 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *ores, int oargc, fgw_arg_t *
 	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
 	pcb_gui->report_dialog("Manage plugins", str.array);
 	gds_uninit(&str);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
