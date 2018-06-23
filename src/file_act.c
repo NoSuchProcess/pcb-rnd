@@ -347,18 +347,18 @@ save) before quitting.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Quit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *force = PCB_ACTION_ARG(0);
-	if (force && pcb_strcasecmp(force, "force") == 0) {
-		PCB->Changed = 0;
+	const char *force = NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
+
+	if ((force != NULL) && (pcb_strcasecmp(force, "force") == 0))
 		exit(0);
-	}
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
-	return 1;
-	PCB_OLD_ACT_END;
+
+	PCB_ACT_IRES(-1);
+	return 0;
 }
 
 
