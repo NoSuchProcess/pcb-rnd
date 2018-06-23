@@ -877,11 +877,18 @@ cursor location.
 
 %end-doc */
 
-static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (!function || !*function) {
+	int id = -2;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, Display, id = argv[1].val.nat_keyword);
+
+	if (id == -1) { /* invalid */
+		PCB_ACT_FAIL(MarkCrosshair);
+		return FGW_ERR_ARGV_TYPE;
+	}
+	else if (id == -2) { /* empty */
 		if (pcb_marked.status) {
 			pcb_notify_mark_change(pcb_false);
 			pcb_marked.status = pcb_false;
@@ -899,7 +906,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *ores, int oargc, fgw_arg_t *
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
-	else if (pcb_funchash_get(function, NULL) == F_Center) {
+	else if (id == F_Center) {
 		pcb_notify_mark_change(pcb_false);
 		pcb_marked.status = pcb_true;
 		if (conf_core.editor.marker_snaps) {
@@ -911,7 +918,6 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *ores, int oargc, fgw_arg_t *
 		pcb_notify_mark_change(pcb_true);
 	}
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
