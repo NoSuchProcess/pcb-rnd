@@ -753,12 +753,12 @@ static const char pcb_acts_CycleDrag[] = "CycleDrag()\n";
 static const char pcb_acth_CycleDrag[] = "Cycle through which object is being dragged";
 
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
-static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
 
+	PCB_ACT_IRES(0);
 	if (pcb_crosshair.drags == NULL)
 		return 0;
 
@@ -816,12 +816,12 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 
 	} while (over <= 1);
 
-	return -1;
+	PCB_ACT_IRES(-1);
+	return 0;
 	switched:;
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 #undef close_enough
