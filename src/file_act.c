@@ -246,94 +246,92 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static fgw_error_t pcb_act_SaveTo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function;
-	const char *name;
+	int op;
+	const char *name = NULL;
 	const char *fmt = NULL;
 
-	if (argc < 1)
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = argv[1].val.nat_keyword);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, SaveTo, name = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveTo, fmt = argv[3].val.str);
+	PCB_ACT_IRES(0);
+
+	if ((op != F_Layout) && (name == NULL))
 		PCB_ACT_FAIL(SaveTo);
 
-	function = argv[0];
-	name = argv[1];
-
-	if (pcb_strcasecmp(function, "Layout") == 0) {
-		if (argc != 1) {
-			pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
-			return -1;
-		}
-		if (pcb_save_pcb(PCB->Filename, NULL) == 0)
-			pcb_board_set_changed_flag(pcb_false);
-		if (pcb_gui->notify_filename_changed != NULL)
-			pcb_gui->notify_filename_changed();
-		return 0;
-	}
-
-	if ((argc != 2) && (argc != 3))
-		PCB_ACT_FAIL(SaveTo);
-
-	if (argc >= 3)
-		fmt = argv[2];
-
-	if (pcb_strcasecmp(function, "LayoutAs") == 0) {
-		if (pcb_save_pcb(name, fmt) == 0) {
-			pcb_board_set_changed_flag(pcb_false);
-			free(PCB->Filename);
-			PCB->Filename = pcb_strdup(name);
+	switch(op) {
+		case F_Layout:
+			if (argc != 2) {
+				pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
+				return FGW_ERR_ARGC;
+			}
+			if (pcb_save_pcb(PCB->Filename, NULL) == 0)
+				pcb_board_set_changed_flag(pcb_false);
 			if (pcb_gui->notify_filename_changed != NULL)
 				pcb_gui->notify_filename_changed();
-		}
-		return 0;
-	}
+			return 0;
 
-	if (pcb_strcasecmp(function, "AllConnections") == 0) {
-		FILE *fp;
-		pcb_bool result;
-		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-			pcb_lookup_conns_to_all_elements(fp);
-			fclose(fp);
-			pcb_board_set_changed_flag(pcb_true);
-		}
-		return 0;
-	}
-
-	if (pcb_strcasecmp(function, "AllUnusedPins") == 0) {
-		FILE *fp;
-		pcb_bool result;
-		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-			pcb_lookup_unused_pins(fp);
-			fclose(fp);
-			pcb_board_set_changed_flag(pcb_true);
-		}
-		return 0;
-	}
-
-	if (pcb_strcasecmp(function, "ElementConnections") == 0) {
-		void *ptrtmp;
-		FILE *fp;
-		pcb_bool result;
-		pcb_coord_t x, y;
-
-		pcb_hid_get_coords("Click on an element", &x, &y);
-		if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
-			pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
-			if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-				pcb_lookup_subc_conns(subc, fp);
-				fclose(fp);
-				pcb_board_set_changed_flag(pcb_true);
+		case F_LayoutAs:
+			if (pcb_save_pcb(name, fmt) == 0) {
+				pcb_board_set_changed_flag(pcb_false);
+				free(PCB->Filename);
+				PCB->Filename = pcb_strdup(name);
+				if (pcb_gui->notify_filename_changed != NULL)
+					pcb_gui->notify_filename_changed();
 			}
-		}
-		return 0;
-	}
+			return 0;
 
-	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-		return pcb_save_buffer_elements(name, fmt);
+		case F_AllConnections:
+			{
+				FILE *fp;
+				pcb_bool result;
+				if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
+					pcb_lookup_conns_to_all_elements(fp);
+					fclose(fp);
+					pcb_board_set_changed_flag(pcb_true);
+				}
+				return 0;
+			}
+
+		case F_AllUnusedPins:
+			{
+				FILE *fp;
+				pcb_bool result;
+				if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
+					pcb_lookup_unused_pins(fp);
+					fclose(fp);
+					pcb_board_set_changed_flag(pcb_true);
+				}
+				return 0;
+			}
+
+		case F_ElementConnections:
+		case F_SubcConnections:
+			{
+				void *ptrtmp;
+				FILE *fp;
+				pcb_bool result;
+				pcb_coord_t x, y;
+
+				pcb_hid_get_coords("Click on an element", &x, &y);
+				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
+					pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
+					if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
+						pcb_lookup_subc_conns(subc, fp);
+						fclose(fp);
+						pcb_board_set_changed_flag(pcb_true);
+					}
+				}
+				return 0;
+			}
+
+		case F_PasteBuffer:
+			PCB_ACT_IRES(pcb_save_buffer_elements(name, fmt));
+			return 0;
 	}
 
 	PCB_ACT_FAIL(SaveTo);
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
