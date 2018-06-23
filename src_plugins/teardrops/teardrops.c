@@ -248,9 +248,8 @@ static void check_pstk(pcb_pstk_t *ps)
 	}
 }
 
-static fgw_error_t pcb_act_teardrops(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_box_t *b;
 	pcb_rtree_it_t it;
 	new_arcs = 0;
@@ -264,8 +263,8 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	if (new_arcs)
 		pcb_undo_inc_serial();
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_action_t teardrops_action_list[] = {
