@@ -33,7 +33,6 @@
 
 #include <ctype.h>
 
-#include <genht/hash.h>
 #include <genht/htsp.h>
 #include <libfungw/fungw_conv.h>
 
