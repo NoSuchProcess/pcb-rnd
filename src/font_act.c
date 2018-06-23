@@ -96,6 +96,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 	fid = dst_fid == 0 ? 0 : fnt->id;
 	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
@@ -103,17 +104,16 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_save_font_to[] = "SaveFontTo([file, id])";
 static const char pcb_acth_save_font_to[] = "Save PCB font to a file";
 
-fgw_error_t pcb_act_save_font_to(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *fname, *sid;
+	const char *fname = NULL, *sid = NULL;
 	static char *default_file = NULL;
 	pcb_font_id_t fid;
 	pcb_font_t *fnt;
-	int res;
+	int r;
 
-	fname = (argc > 0) ? argv[0] : NULL;
-	sid = (argc > 1) ? argv[1] : NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[1].val.str);
 
 	if (sid != NULL) {
 		char *end;
@@ -148,14 +148,14 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 	}
 
-	res = pcb_write_font(fnt, fname, "lihata");
-	if (res != 0) {
+	r = pcb_write_font(fnt, fname, "lihata");
+	if (r != 0) {
 		pcb_message(PCB_MSG_ERROR, "SaveFontTo(): failed to save font to %s\n", fname);
 		return 1;
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
