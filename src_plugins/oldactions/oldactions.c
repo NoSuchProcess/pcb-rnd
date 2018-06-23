@@ -118,13 +118,12 @@ static void dump_lib_any(int level, pcb_fplibrary_t *l)
 }
 
 
-static fgw_error_t pcb_act_DumpLibrary(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DumpLibrary(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	dump_lib_any(0, &pcb_library);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------------
@@ -135,12 +134,11 @@ static const char pcb_acts_Bell[] = "Bell()";
 
 static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.g. beep the speaker).";
 
-static fgw_error_t pcb_act_Bell(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Bell(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_gui->beep();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -168,18 +166,20 @@ on one.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Debug(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	int i;
 	printf("Debug:");
-	for (i = 0; i < argc; i++)
-		printf(" [%d] `%s'", i, argv[i]);
+	for (i = 1; i < argc; i++) {
+		const char *s;
+		PCB_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
+		printf(" [%d] `%s'", i, s);
+	}
 	pcb_hid_get_coords("Click X,Y for Debug", &x, &y);
 	pcb_printf(" x,y %$mD\n", x, y);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_return[] = "Return(0|1)";
@@ -193,11 +193,12 @@ passed a 1, does nothing but pretends to fail.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Return(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Return(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return atoi(argv[0]);
-	PCB_OLD_ACT_END;
+	int rv;
+	PCB_ACT_CONVARG(1, FGW_INT, return, rv = argv[1].val.nat_int);
+	PCB_ACT_IRES(rv);
+	return 0;
 }
 
 
@@ -219,12 +220,11 @@ optimize hand-routed traces also.
 
 
 
-fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -247,12 +247,11 @@ loaded first.
 
 %end-doc */
 
-fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -275,12 +274,11 @@ loaded first.
 
 %end-doc */
 
-fgw_error_t pcb_act_EnableVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_EnableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
@@ -301,17 +299,15 @@ specified in the currently loaded vendor drill table.
 
 %end-doc */
 
-fgw_error_t pcb_act_DisableVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_DisableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
-fgw_error_t pcb_act_ListRotations(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_ListRotations(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		double rot;
@@ -322,8 +318,8 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			pcb_message(PCB_MSG_INFO, "<unknown> %s\n", refdes);
 	}
 	PCB_END_LOOP;
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_PCBChanged[] = "PCBChanged([revert])";
