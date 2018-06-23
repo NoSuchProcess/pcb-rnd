@@ -392,6 +392,41 @@ static fgw_error_t pcb_act_ChangePaste(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 1;
 }
 
+static fgw_error_t pcb_act_ChangeSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "ChangeSquare: deprecated feature; use padstackedit() instead\n");
+	return 1;
+}
+
+static fgw_error_t pcb_act_SetSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "SetSquare: deprecated feature; use padstackedit() instead\n");
+	return 1;
+}
+
+static fgw_error_t pcb_act_ClearSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "ClearSquare: deprecated feature; use padstackedit() instead\n");
+	return 1;
+}
+
+static fgw_error_t pcb_act_ChangeOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "ChangeOctagon: deprecated feature; use padstackedit() instead\n");
+	return 1;
+}
+
+static fgw_error_t pcb_act_SetOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "SetOctagon: deprecated feature; use padstackedit() instead\n");
+	return 1;
+}
+
+static fgw_error_t pcb_act_ClearOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "ClearOctagon: deprecated feature; use padstackedit() instead\n");
+	return 1;
+}
 
 pcb_action_t oldactions_action_list[] = {
 	{"DumpLibrary", pcb_act_DumpLibrary, pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
@@ -413,7 +448,13 @@ pcb_action_t oldactions_action_list[] = {
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0},
 	{"MinMaskGap", pcb_act_MinMaskGap, 0, 0},
 	{"ChangeHole", pcb_act_ChangeHole, 0, 0},
-	{"ChangePaste", pcb_act_ChangePaste, pcb_acth_ChangePaste, pcb_acts_ChangePaste}
+	{"ChangePaste", pcb_act_ChangePaste, pcb_acth_ChangePaste, pcb_acts_ChangePaste},
+	{"ChangeSquare", pcb_act_ChangeSquare, 0, 0},
+	{"ChangeOctagon", pcb_act_ChangeOctagon, 0, 0},
+	{"ClearSquare", pcb_act_ClearSquare, 0, 0},
+	{"ClearOctagon", pcb_act_ClearOctagon, 0, 0},
+	{"SetSquare", pcb_act_SetSquare, 0, 0},
+	{"SetOctagon", pcb_act_SetOctagon, 0, 0}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";

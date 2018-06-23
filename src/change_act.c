@@ -703,57 +703,8 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *ores, int oargc, fgw_arg_t
 	PCB_OLD_ACT_END;
 }
 
-#warning padstack TODO: remove the next few?
-/* --------------------------------------------------------------------------- */
-
-static const char pcb_acts_ChangeSquare[] = "ChangeSquare(ToggleObject)\n" "ChangeSquare(SelectedElements|SelectedPins)\n" "ChangeSquare(Selected|SelectedObjects)";
-static const char pcb_acth_ChangeSquare[] = "Changes the square flag of pins and pads. Not supported anymore.";
-static fgw_error_t pcb_act_ChangeSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-static const char pcb_acts_SetSquare[] = "SetSquare(ToggleObject|SelectedElements|SelectedPins)";
-static const char pcb_acth_SetSquare[] = "sets the square-flag of objects. Not supported anymore.";
-static fgw_error_t pcb_act_SetSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-
-static const char pcb_acts_ClearSquare[] = "ClearSquare(ToggleObject|SelectedElements|SelectedPins)";
-static const char pcb_acth_ClearSquare[] = "Clears the square-flag of pins and pads. Not supported anymore.";
-static fgw_error_t pcb_act_ClearSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-static const char pcb_acts_ChangeOctagon[] = "ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)\n" "ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)";
-static const char pcb_acth_ChangeOctagon[] = "Changes the octagon-flag of pins and vias. Not supported anymore.";
-static fgw_error_t pcb_act_ChangeOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-static const char pcb_acts_SetOctagon[] = "SetOctagon(Object|ToggleObject|SelectedElements|Selected)";
-static const char pcb_acth_SetOctagon[] = "Sets the octagon-flag of objects. Not supported anymore.";
-static fgw_error_t pcb_act_SetOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-static const char pcb_acts_ClearOctagon[] = "ClearOctagon(ToggleObject|Object|SelectedObjects|Selected)\n" "ClearOctagon(SelectedElements|SelectedPins|SelectedVias)";
-static const char pcb_acth_ClearOctagon[] = "Clears the octagon-flag of pins and vias. Not supported anymore.";
-static fgw_error_t pcb_act_ClearOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-
-/* -------------------------------------------------------------------------- */
 
 static const char pcb_acts_SetThermal[] = "SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)";
-
 static const char pcb_acth_SetThermal[] =
 	"Set the thermal (on the current layer) of padstacks to the given style.\n"
 	"Style = 0 means no thermal.\n"
@@ -1146,13 +1097,7 @@ pcb_action_t change_action_list[] = {
 	{"ChangeSize", pcb_act_ChangeSize, pcb_acth_ChangeSize, pcb_acts_ChangeSize},
 	{"ChangeSizes", pcb_act_ChangeSizes, pcb_acth_ChangeSizes, pcb_acts_ChangeSizes},
 	{"ChangeNonetlist", pcb_act_ChangeNonetlist, pcb_acth_ChangeNonetlist, pcb_acts_ChangeNonetlist},
-	{"ChangeSquare", pcb_act_ChangeSquare, pcb_acth_ChangeSquare, pcb_acts_ChangeSquare},
-	{"ChangeOctagon", pcb_act_ChangeOctagon, pcb_acth_ChangeOctagon, pcb_acts_ChangeOctagon},
 	{"ChangeFlag", pcb_act_ChangeFlag, pcb_acth_ChangeFlag, pcb_acts_ChangeFlag},
-	{"ClearSquare", pcb_act_ClearSquare, pcb_acth_ClearSquare, pcb_acts_ClearSquare},
-	{"ClearOctagon", pcb_act_ClearOctagon, pcb_acth_ClearOctagon, pcb_acts_ClearOctagon},
-	{"SetSquare", pcb_act_SetSquare, pcb_acth_SetSquare, pcb_acts_SetSquare},
-	{"SetOctagon", pcb_act_SetOctagon, pcb_acth_SetOctagon, pcb_acts_SetOctagon},
 	{"SetThermal", pcb_act_SetThermal, pcb_acth_SetThermal, pcb_acts_SetThermal},
 	{"SetValue", pcb_act_SetValue, pcb_acth_SetValue, pcb_acts_SetValue},
 	{"SetFlag", pcb_act_SetFlag, pcb_acth_SetFlag, pcb_acts_SetFlag},
