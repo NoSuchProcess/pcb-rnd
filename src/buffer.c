@@ -495,7 +495,6 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 #warning layer TODO: revise this code for the generic physical layer support; move this code to layer*.c
 	if (pcb->LayerGroups.grp[cgroup].len == pcb->LayerGroups.grp[sgroup].len) {
 		for (j = k = 0; j < pcb->LayerGroups.grp[sgroup].len; j++) {
-			int t1, t2;
 			pcb_layer_id_t cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
 			pcb_layer_id_t snumber = pcb->LayerGroups.grp[sgroup].lid[j];
 
