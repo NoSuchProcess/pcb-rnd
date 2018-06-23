@@ -394,12 +394,11 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 static const char pcb_acts_Backup[] = "Backup()";
 static const char pcb_acth_Backup[] = "Backup the current layout - save using the same method that the timed backup function uses";
-static fgw_error_t pcb_act_Backup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Backup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_backup();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t file_action_list[] = {
