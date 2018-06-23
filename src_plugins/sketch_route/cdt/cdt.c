@@ -513,9 +513,47 @@ next_i:
 	triangulate_polygon(cdt, polygon_edges);
 }
 
+static trianglelist_node_t *triangles_intersecting_line(point_t *p1, point_t *p2)
+{
+	trianglelist_node_t *triangles = NULL;
+	triangle_t *next_t = NULL;
+	edge_t *adj_e;
+	int i;
+
+	/* find first triangle */
+	TRIANGLELIST_FOREACH(t, p1->adj_triangles)
+		for (i = 0; i < 3; i++)
+			if (t->e[i]->endp[0] != p1 && t->e[i]->endp[1] != p1) /* opposite edge */
+				if (LINES_INTERSECT(p1, p2, t->e[i]->endp[0], t->e[i]->endp[1])) {
+					adj_e = t->e[i];
+					next_t = adj_e->adj_t[0] != t ? adj_e->adj_t[0] : adj_e->adj_t[1];
+					triangles = trianglelist_prepend(triangles, &t);
+					goto first_triangle_found;
+				}
+	TRIANGLELIST_FOREACH_END();
+
+first_triangle_found:
+	assert(next_t != NULL);
+
+	/* follow the path */
+	while (next_t->p[0] != p2 && next_t->p[1] != p2 && next_t->p[3] != p2) {
+		triangle_t *t = next_t;
+		for (i = 0; i < 3; i++)
+			if (t->e[i] != adj_e && LINES_INTERSECT(p1, p2, t->e[i]->endp[0], t->e[i]->endp[1])) {
+				adj_e = t->e[i];
+				next_t = adj_e->adj_t[0] != t ? adj_e->adj_t[0] : adj_e->adj_t[1];
+				triangles = trianglelist_prepend(triangles, &t);
+			}
+	}
+
+	triangles = trianglelist_prepend(triangles, &next_t);
+	return triangles;
+}
+
 edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 {
 	edge_t *e;
+	trianglelist_node_t *triangles;
 
 	/* edge already exists - just constrain it */
 	e = get_edge_from_points(p1, p2);
@@ -525,6 +563,7 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 	}
 
 	/* find intersecting edges and remove them, creating a polygon */
+	triangles = triangles_intersecting_line(p1, p2);
 
 	/* add new edge, splitting the polygon into 2 parts */
 
