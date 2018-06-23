@@ -247,22 +247,6 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 }
 
 /* --------------------------------------------------------------------------- */
-static const char changehold_syntax[] = "ChangeHole(ToggleObject|Object|SelectedVias|Selected)";
-static const char changehold_help[] = "Changes the hole flag of objects. Not supported anymore; use the propery editor.";
-static fgw_error_t pcb_act_ChangeHole(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-static const char pcb_acts_ChangePaste[] = "ChangePaste(ToggleObject|Object|SelectedPads|Selected)";
-static const char pcb_acth_ChangePaste[] = "Changes the no paste flag of objects. Not supported anymore.";
-static fgw_error_t pcb_act_ChangePaste(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_message(PCB_MSG_ERROR, "Feature not supported with padstacks.\n");
-	return 1;
-}
-
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_ChangeSizes[] =
 	"ChangeSizes(Object, delta|style)\n"
@@ -1167,10 +1151,8 @@ pcb_action_t change_action_list[] = {
 	{"ChangeAngle", pcb_act_ChangeAngle, pcb_acth_ChangeAngle, pcb_acts_ChangeAngle},
 	{"ChangeClearSize", pcb_act_ChangeClearSize, pcb_acth_ChangeClearSize, pcb_acts_ChangeClearSize},
 	{"ChangeDrillSize", pcb_act_Change2ndSize, changedrillsize_help, changedrillsize_syntax},
-	{"ChangeHole", pcb_act_ChangeHole, changehold_help, changehold_syntax},
 	{"ChangeJoin", pcb_act_ChangeJoin, pcb_acth_ChangeJoin, pcb_acts_ChangeJoin},
 	{"ChangeName", pcb_act_ChangeName, pcb_acth_ChangeName, pcb_acts_ChangeName},
-	{"ChangePaste", pcb_act_ChangePaste, pcb_acth_ChangePaste, pcb_acts_ChangePaste},
 	{"ChangePinName", pcb_act_ChangePinName, pcb_acth_ChangePinName, pcb_acts_ChangePinName},
 	{"ChangeRadius", pcb_act_ChangeRadius, pcb_acth_ChangeRadius, pcb_acts_ChangeRadius},
 	{"ChangeSize", pcb_act_ChangeSize, pcb_acth_ChangeSize, pcb_acts_ChangeSize},
