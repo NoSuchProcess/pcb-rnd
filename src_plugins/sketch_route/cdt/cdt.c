@@ -543,6 +543,7 @@ first_triangle_found:
 				adj_e = t->e[i];
 				next_t = adj_e->adj_t[0] != t ? adj_e->adj_t[0] : adj_e->adj_t[1];
 				triangles = trianglelist_prepend(triangles, &t);
+				break;
 			}
 	}
 
