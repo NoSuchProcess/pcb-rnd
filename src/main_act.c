@@ -330,20 +330,22 @@ fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_System[] = "System(shell_cmd)";
 static const char pcb_acth_System[] = "Run shell command";
-fgw_error_t pcb_act_System(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	char tmp[128];
-	if (argc < 1)
-		return 1;
+	const char *cmd;
+
+	PCB_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
+	PCB_ACT_IRES(0);
+
 	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->Filename == NULL ? "" : PCB->Filename, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
 	pcb_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
 	pcb_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
 	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", CURRENT->name, 1);
-	return pcb_system(argv[0]);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(pcb_system(cmd));
+	return 0;
 }
 
 pcb_action_t main_action_list[] = {
