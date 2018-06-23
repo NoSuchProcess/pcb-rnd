@@ -169,30 +169,33 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *name = PCB_ACTION_ARG(0);
-	const char *refdes = PCB_ACTION_ARG(1);
-	const char *value = PCB_ACTION_ARG(2);
+	const char *name, *refdes = NULL, *value = NULL;
 	pcb_subc_t *s;
 	pcb_cardinal_t len;
 
-	if (!name)
-		PCB_ACT_FAIL(LoadFootprint);
+	
+	PCB_ACT_CONVARG(1, FGW_STR, LoadFootprint, name = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadFootprint, refdes = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFootprint, value = argv[3].val.str);
 
-	if (!pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, NULL))
-		return 1;
+	if (!pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, NULL)) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
 
 	len = pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
 
 	if (len == 0) {
 		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", name);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	if (len > 1) {
 		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", name);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	s = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
@@ -200,8 +203,8 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_attribute_put(&s->Attributes, "footprint", name);
 	pcb_attribute_put(&s->Attributes, "value", value);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
