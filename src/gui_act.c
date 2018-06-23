@@ -924,13 +924,10 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name)";
-
 static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style into the current pen.";
-
 /* %start-doc actions RouteStyle
 
 %end-doc */
-
 static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *end;
@@ -941,32 +938,31 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	PCB_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
 
-		number = strtol(str, &end, 10);
+	number = strtol(str, &end, 10);
 
-		if (*end != '\0') { /* if not an integer, find by name */
-			int n;
-			number = -1;
-			for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
-				rts = &PCB->RouteStyle.array[n];
-				if (pcb_strcasecmp(rts->name, str) == 0) {
-					number = n + 1;
-					break;
-				}
+	if (*end != '\0') { /* if not an integer, find by name */
+		int n;
+		number = -1;
+		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
+			rts = &PCB->RouteStyle.array[n];
+			if (pcb_strcasecmp(rts->name, str) == 0) {
+				number = n + 1;
+				break;
 			}
 		}
+	}
 
-		if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
-			rts = &PCB->RouteStyle.array[number - 1];
-			pcb_board_set_line_width(rts->Thick);
-			pcb_board_set_via_size(rts->Diameter, pcb_true);
-			pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
-			pcb_board_set_clearance(rts->Clearance);
-		}
-		else {
-			PCB_ACT_IRES(-1);
-			pcb_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
-		}
-
+	if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
+		rts = &PCB->RouteStyle.array[number - 1];
+		pcb_board_set_line_width(rts->Thick);
+		pcb_board_set_via_size(rts->Diameter, pcb_true);
+		pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
+		pcb_board_set_clearance(rts->Clearance);
+	}
+	else {
+		PCB_ACT_IRES(-1);
+		pcb_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
+	}
 	return 0;
 }
 
