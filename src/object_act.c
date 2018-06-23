@@ -235,16 +235,9 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	PCB_ACT_IRES(0);
 
 	switch(id) {
-		case F_All:
-			all = 1;
-			break;
-
-		case F_Selected:
-			all = 0;
-			break;
-
-		default:
-			PCB_ACT_FAIL(DisperseElements);
+		case F_All:      all = 1; break;
+		case F_Selected: all = 0; break;
+		default:         PCB_ACT_FAIL(DisperseElements);
 	}
 
 	pcb_draw_inhibit_inc();
