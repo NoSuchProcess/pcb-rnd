@@ -35,12 +35,14 @@
 
 #include <genht/hash.h>
 #include <genht/htsp.h>
+#include <libfungw/fungw_conv.h>
 
 #include "error.h"
 #include "event.h"
 #include "actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "funchash.h"
 
 #define PCB_ACTION_NAME_MAX 128
 
@@ -489,11 +491,59 @@ int pcb_parse_actions(const char *str_)
 	return hid_parse_actionstring(str_, pcb_true);
 }
 
+/*** custom fungw types ***/
+#define conv_str2kw(dst, src) dst = pcb_funchash_get(src, NULL)
+
+static int keyword_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_KEYWORD) { /* convert to keyword */
+		long tmp;
+		switch(FGW_BASE_TYPE(arg->type)) {
+			ARG_CONV_CASE_LONG(tmp, conv_err)
+			ARG_CONV_CASE_LLONG(tmp, conv_err)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_err)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_err)
+			ARG_CONV_CASE_STR(tmp, conv_str2kw)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+		}
+		arg->type = FGW_KEYWORD;
+		arg->val.nat_keyword = tmp;
+		return 0;
+	}
+	if (arg->type == FGW_KEYWORD) { /* convert from keyword */
+		long tmp = arg->val.nat_keyword;
+		switch(target) {
+			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+			case FGW_STR:
+				arg->val.str = (char *)pcb_funchash_reverse(tmp);
+				arg->type = FGW_STR;
+				return 0;
+		}
+		arg->type = target;
+		return 0;
+	}
+	fprintf(stderr, "Neither side of the conversion is keyword\n");
+	abort();
+}
+
+
 
 void pcb_actions_init(void)
 {
 	fgw_init(&pcb_fgw, "pcb-rnd");
 	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_argv_conv) != FGW_KEYWORD) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
+		abort();
+	}
 }
 
 void pcb_actions_uninit(void)

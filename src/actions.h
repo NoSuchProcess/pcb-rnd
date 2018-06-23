@@ -13,6 +13,11 @@ struct pcb_action_s {
 
 extern fgw_ctx_t pcb_fgw;
 
+typedef enum {
+	FGW_KEYWORD_ = FGW_CUSTOM
+} pcb_fgw_types_e;
+#define nat_keyword nat_long
+#define FGW_KEYWORD ((fgw_type_t)FGW_KEYWORD_)
 
 void pcb_register_action(const pcb_action_t *a, const char *cookie);
 void pcb_register_actions(const pcb_action_t *a, int, const char *cookie);
