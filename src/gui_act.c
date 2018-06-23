@@ -1105,12 +1105,14 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 
 	default:
-		return 1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 	if (layer != CURRENT) {
 		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
 		pcb_redraw();
 	}
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
