@@ -1710,44 +1710,48 @@ const char pcb_acth_chkview[] = "Return 1 if layerid is visible.";
 Return 1 if layerid is visible. Intended for meu item 'checked' fields.
 %end-doc */
 
-static fgw_error_t pcb_act_ChkView(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
+	const char *name;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(chkview); /* argv[0] is a must */
+	PCB_ACT_CONVARG(1, FGW_STR, chkview, name = argv[1].val.str);
 
-	if (strncmp(argv[0], "ui:", 3) == 0) {
-		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(argv[0]+3), 0);
-		if (ly == NULL)
-			return -1;
-		return ly->meta.real.vis;
+	if (strncmp(name, "ui:", 3) == 0) {
+		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(name+3), 0);
+		if (ly == NULL) {
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+		PCB_ACT_IRES(ly->meta.real.vis);
+		return 0;
 	}
 
-	lid = strtol(argv[0], &end, 10);
+	lid = strtol(name, &end, 10);
 
 	if (*end != '\0') {
-		const pcb_menu_layers_t *ml = pcb_menu_layer_find(argv[0]);
+		const pcb_menu_layers_t *ml = pcb_menu_layer_find(name);
 
 		if (ml != NULL) {
 			pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
 			return *v;
 		}
 
-		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
-		return -1;
+		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", name);
+		return FGW_ERR_ARGV_TYPE;
 	}
 
 	lid--;
 	ly = pcb_get_layer(PCB->Data, lid);
-	if (ly == NULL)
-		return -1;
+	if (ly == NULL) {
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
 
-	return ly->meta.real.vis;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(ly->meta.real.vis);
+	return 0;
 }
 
 
