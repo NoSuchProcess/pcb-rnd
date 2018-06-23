@@ -373,7 +373,7 @@ static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_ERROR, "Feature not supported; use padstackedit()\n");
+	pcb_message(PCB_MSG_ERROR, "MinMaskGap: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
