@@ -190,7 +190,7 @@ static const char pcb_acts_PrintVersion[] = "PrintVersion()";
 static const char pcb_acth_PrintVersion[] = "Print version.";
 fgw_error_t pcb_act_PrintVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	printf("pcb-rnd version %s rev %s\n", PCB_VERSION, PCB_REVISION);
+	printf("%s\n", pcb_get_info_program());
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -199,14 +199,9 @@ static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
 static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
 fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	printf("\n"
-				 "                COPYRIGHT for the original pcb program:\n\n"
-				 "    PCB, interactive printed circuit board design\n"
-				 "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
-				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n");
-	printf("                COPYRIGHT for %s (pcb-rnd) version %s:\n"
-				 "    pcb-rnd, originally fork of PCB \n"
-				 "    Copyright (C) 2013,2014,2015,2016,2017,2018 Tibor 'Igor2' Palinkas\n\n", Progname, PCB_VERSION);
+	printf("%s\n", pcb_get_info_copyright());
+	printf("%s\n", pcb_get_info_license());
+
 	printf("    This program is free software; you can redistribute it and/or modify\n"
 				 "    it under the terms of the GNU General Public License as published by\n"
 				 "    the Free Software Foundation; either version 2 of the License, or\n"
