@@ -1185,13 +1185,13 @@ static const char pcb_acth_PCBChanged[] =
 	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
 	"parameter can be used as a hint to the GUI that the same design is being"
 	"reloaded, and that it might keep some viewport settings";
-static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *rv = argv == NULL ? NULL : argv[0];
+	const char *rv = NULL;
+	PCB_ACT_IRES(0);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
 	pcb_board_changed((rv != NULL) && (pcb_strcasecmp(rv, "revert") == 0));
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
