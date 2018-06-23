@@ -80,7 +80,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 
 	if (!pcb_gui->edit_attributes) {
-		pcb_message(PCB_MSG_ERROR, _("This GUI doesn't support Attribute Editing\n"));
+		pcb_message(PCB_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
 		return FGW_ERR_UNKNOWN;
 	}
 
@@ -103,7 +103,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						break;
 					}
 				if (layer == NULL) {
-					pcb_message(PCB_MSG_ERROR, _("No layer named %s\n"), layername);
+					pcb_message(PCB_MSG_ERROR, "No layer named %s\n", layername);
 					return 1;
 				}
 			}
@@ -125,17 +125,17 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			PCB_END_LOOP;
 			if (n_found > 1) {
-				pcb_message(PCB_MSG_ERROR, _("Too many subcircuits selected\n"));
+				pcb_message(PCB_MSG_ERROR, "Too many subcircuits selected\n");
 				return 1;
 			}
 			if (n_found == 0) {
 				pcb_coord_t x, y;
 				void *ptrtmp;
-				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
+				pcb_hid_get_coords("Click on a subcircuit", &x, &y);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
-					pcb_message(PCB_MSG_ERROR, _("No subcircuit found there\n"));
+					pcb_message(PCB_MSG_ERROR, "No subcircuit found there\n");
 					PCB_ACT_IRES(-1);
 					return 0;
 				}
