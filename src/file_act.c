@@ -35,6 +35,7 @@
 #include "board.h"
 #include "build_run.h"
 #include "conf_core.h"
+#include "funchash_core.h"
 #include "data.h"
 #include "buffer.h"
 #include "action_helper.h"
@@ -55,7 +56,7 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])";
+static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])";
 
 static const char pcb_acth_LoadFrom[] = "Load layout data from a file.";
 
@@ -90,57 +91,60 @@ you may have made.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function, *name, *format = NULL;
+	const char *name, *format = NULL;
+	int op;
 
-	if (argc < 2)
-		PCB_ACT_FAIL(LoadFrom);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(2, FGW_STR, LoadFrom, name = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFrom, format = argv[3].val.str);
 
-	function = argv[0];
-	name = argv[1];
-	if (argc > 2)
-		format = argv[2];
+	switch(op) {
+		case F_ElementToBuffer:
+		case F_Element:
+		case F_SubcToBuffer:
+		case F_Subcircuit:
+		case F_Footprint:
+			pcb_notify_crosshair_change(pcb_false);
+			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
+				pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+			pcb_notify_crosshair_change(pcb_true);
+			break;
 
-	if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
-		pcb_notify_crosshair_change(pcb_false);
-		if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
-		pcb_notify_crosshair_change(pcb_true);
+		case F_LayoutToBuffer:
+			pcb_notify_crosshair_change(pcb_false);
+			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
+				pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+			pcb_notify_crosshair_change(pcb_true);
+			break;
+
+		case F_Layout:
+			if (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override layout data?"), 0))
+				pcb_load_pcb(name, format, pcb_true, 0);
+			break;
+
+		case F_Netlist:
+			if (PCB->Netlistname)
+				free(PCB->Netlistname);
+			PCB->Netlistname = pcb_strdup_strip_wspace(name);
+			{
+				int i;
+				for (i = 0; i < PCB_NUM_NETLISTS; i++)
+					pcb_lib_free(&(PCB->NetlistLib[i]));
+			}
+			if (!pcb_import_netlist(PCB->Netlistname))
+				pcb_netlist_changed(1);
+			break;
+
+		case F_Revert:
+			if (PCB->Filename && (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override changes?"), 0)))
+				pcb_revert_pcb();
+			break;
 	}
 
-	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
-		pcb_notify_crosshair_change(pcb_false);
-		if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
-		pcb_notify_crosshair_change(pcb_true);
-	}
-
-	else if (pcb_strcasecmp(function, "Layout") == 0) {
-		if (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override layout data?"), 0))
-			pcb_load_pcb(name, format, pcb_true, 0);
-	}
-
-	else if (pcb_strcasecmp(function, "Netlist") == 0) {
-		if (PCB->Netlistname)
-			free(PCB->Netlistname);
-		PCB->Netlistname = pcb_strdup_strip_wspace(name);
-		{
-			int i;
-			for (i = 0; i < PCB_NUM_NETLISTS; i++)
-				pcb_lib_free(&(PCB->NetlistLib[i]));
-		}
-		if (!pcb_import_netlist(PCB->Netlistname))
-			pcb_netlist_changed(1);
-	}
-	else if (pcb_strcasecmp(function, "Revert") == 0 && PCB->Filename
-					 && (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override changes?"), 0))) {
-		pcb_revert_pcb();
-	}
-
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
