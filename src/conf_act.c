@@ -265,8 +265,11 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	};
 	assert(argc == 1);
 	for(m = modes; m->name != NULL; m++) {
-		if (strcmp(m->name, argv[0]) == 0)
-			return conf_core.editor.mode == m->mode;
+		if (strcmp(m->name, argv[0]) == 0) {
+			ores->type = FGW_INT;
+			ores->val.nat_int = (conf_core.editor.mode == m->mode);
+			return 0;
+		}
 	}
 	pcb_message(PCB_MSG_ERROR, "Unknown mode in ChkMode(): %s\n", argv[1]);
 	abort();
