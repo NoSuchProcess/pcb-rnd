@@ -1068,9 +1068,8 @@ static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole,
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);
 }
 
-static fgw_error_t pcb_act_SetSame(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -1113,7 +1112,6 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		pcb_redraw();
 	}
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
