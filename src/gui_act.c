@@ -1797,36 +1797,36 @@ static const char pcb_acts_grid[] =
 	"grid(set, [name:]size[@offs][!unit])\n"
 	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n";
 static const char pcb_acth_grid[] = "Set the grid.";
-static fgw_error_t pcb_act_grid(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc == 0)
-		return 0;
+	const char *op, *a;
 
-	if (strcmp(argv[0], "set") == 0) {
+	PCB_ACT_CONVARG(1, FGW_STR, grid, op = argv[1].val.str);
+	PCB_ACT_IRES(0);
+
+	if (strcmp(op, "set") == 0) {
 		pcb_grid_t dst;
-		if ((argc < 2) || !pcb_grid_parse(&dst, argv[1]))
+		PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
+		if (!pcb_grid_parse(&dst, a))
 			PCB_ACT_FAIL(grid);
 		pcb_grid_set(PCB, &dst);
 		pcb_grid_free(&dst);
 	}
-	else if ((strcmp(argv[0], "up") == 0) || (strcmp(argv[0], "+") == 0))
+	else if ((strcmp(op, "up") == 0) || (strcmp(op, "+") == 0))
 		pcb_grid_list_step(+1);
-	else if ((strcmp(argv[0], "down") == 0) || (strcmp(argv[0], "-") == 0))
+	else if ((strcmp(op, "down") == 0) || (strcmp(op, "-") == 0))
 		pcb_grid_list_step(-1);
-	else if (strcmp(argv[0], "idx") == 0) {
-		if (argc < 2)
-			PCB_ACT_FAIL(grid);
-		pcb_grid_list_jump(atoi(argv[1]));
+	else if (strcmp(op, "idx") == 0) {
+		PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
+		pcb_grid_list_jump(atoi(a));
 	}
-	else if (argv[0][0] == '#') {
-		pcb_grid_list_jump(atoi(argv[0]+1));
+	else if (op[0] == '#') {
+		pcb_grid_list_jump(atoi(op+1));
 	}
 	else
 		PCB_ACT_FAIL(grid);
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 const char pcb_acts_chkrst[] = "ChkRst(route_style_id)\n";
