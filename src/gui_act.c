@@ -567,190 +567,189 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return FGW_ERR_ARG_CONV;
 	}
 
-		/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
-		pcb_tool_note.X = pcb_crosshair.X;
-		pcb_tool_note.Y = pcb_crosshair.Y;
-		pcb_notify_crosshair_change(pcb_false);
-		switch (argv[1].val.nat_keyword) {
-		case F_Arc:
-			pcb_tool_select_by_id(PCB_MODE_ARC);
-			break;
-		case F_Arrow:
-			pcb_tool_select_by_id(PCB_MODE_ARROW);
-			break;
-		case F_Copy:
-			pcb_tool_select_by_id(PCB_MODE_COPY);
-			break;
-		case F_InsertPoint:
-			pcb_tool_select_by_id(PCB_MODE_INSERT_POINT);
-			break;
-		case F_Line:
-			pcb_tool_select_by_id(PCB_MODE_LINE);
-			break;
-		case F_Lock:
-			pcb_tool_select_by_id(PCB_MODE_LOCK);
-			break;
-		case F_Move:
-			pcb_tool_select_by_id(PCB_MODE_MOVE);
-			break;
-		case F_None:
+	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
+	pcb_tool_note.X = pcb_crosshair.X;
+	pcb_tool_note.Y = pcb_crosshair.Y;
+	pcb_notify_crosshair_change(pcb_false);
+	switch (argv[1].val.nat_keyword) {
+	case F_Arc:
+		pcb_tool_select_by_id(PCB_MODE_ARC);
+		break;
+	case F_Arrow:
+		pcb_tool_select_by_id(PCB_MODE_ARROW);
+		break;
+	case F_Copy:
+		pcb_tool_select_by_id(PCB_MODE_COPY);
+		break;
+	case F_InsertPoint:
+		pcb_tool_select_by_id(PCB_MODE_INSERT_POINT);
+		break;
+	case F_Line:
+		pcb_tool_select_by_id(PCB_MODE_LINE);
+		break;
+	case F_Lock:
+		pcb_tool_select_by_id(PCB_MODE_LOCK);
+		break;
+	case F_Move:
+		pcb_tool_select_by_id(PCB_MODE_MOVE);
+		break;
+	case F_None:
+		pcb_tool_select_by_id(PCB_MODE_NO);
+		break;
+	case F_Cancel:
+		{
+			int saved_mode = conf_core.editor.mode;
 			pcb_tool_select_by_id(PCB_MODE_NO);
-			break;
-		case F_Cancel:
-			{
-				int saved_mode = conf_core.editor.mode;
+			pcb_tool_select_by_id(saved_mode);
+		}
+		break;
+	case F_Escape:
+		{
+			switch (conf_core.editor.mode) {
+			case PCB_MODE_VIA:
+			case PCB_MODE_PASTE_BUFFER:
+			case PCB_MODE_TEXT:
+			case PCB_MODE_ROTATE:
+			case PCB_MODE_REMOVE:
+			case PCB_MODE_MOVE:
+			case PCB_MODE_COPY:
+			case PCB_MODE_INSERT_POINT:
+			case PCB_MODE_RUBBERBAND_MOVE:
+			case PCB_MODE_THERMAL:
+			case PCB_MODE_LOCK:
 				pcb_tool_select_by_id(PCB_MODE_NO);
-				pcb_tool_select_by_id(saved_mode);
-			}
-			break;
-		case F_Escape:
-			{
-				switch (conf_core.editor.mode) {
-				case PCB_MODE_VIA:
-				case PCB_MODE_PASTE_BUFFER:
-				case PCB_MODE_TEXT:
-				case PCB_MODE_ROTATE:
-				case PCB_MODE_REMOVE:
-				case PCB_MODE_MOVE:
-				case PCB_MODE_COPY:
-				case PCB_MODE_INSERT_POINT:
-				case PCB_MODE_RUBBERBAND_MOVE:
-				case PCB_MODE_THERMAL:
-				case PCB_MODE_LOCK:
-					pcb_tool_select_by_id(PCB_MODE_NO);
+				pcb_tool_select_by_id(PCB_MODE_ARROW);
+				pcb_tool_note.Hit = pcb_tool_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
+				break;
+
+			case PCB_MODE_LINE:
+				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST) {
 					pcb_tool_select_by_id(PCB_MODE_ARROW);
-					pcb_tool_note.Hit = pcb_tool_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
-					break;
-
-				case PCB_MODE_LINE:
-					if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-						pcb_tool_select_by_id(PCB_MODE_ARROW);
-					else {
-						pcb_tool_select_by_id(PCB_MODE_NO);
-						pcb_tool_select_by_id(PCB_MODE_LINE);
-					}
-					break;
-
-				case PCB_MODE_RECTANGLE:
-					if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
-						pcb_tool_select_by_id(PCB_MODE_ARROW);
-					else {
-						pcb_tool_select_by_id(PCB_MODE_NO);
-						pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
-					}
-					break;
-
-				case PCB_MODE_POLYGON:
-					if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-						pcb_tool_select_by_id(PCB_MODE_ARROW);
-					else {
-						pcb_tool_select_by_id(PCB_MODE_NO);
-						pcb_tool_select_by_id(PCB_MODE_POLYGON);
-					}
-					break;
-
-				case PCB_MODE_POLYGON_HOLE:
-					if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-						pcb_tool_select_by_id(PCB_MODE_ARROW);
-					else {
-						pcb_tool_select_by_id(PCB_MODE_NO);
-						pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
-					}
-					break;
-
-				case PCB_MODE_ARC:
-					if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
-						pcb_tool_select_by_id(PCB_MODE_ARROW);
-					else {
-						pcb_tool_select_by_id(PCB_MODE_NO);
-						pcb_tool_select_by_id(PCB_MODE_ARC);
-					}
-					break;
-
-				case PCB_MODE_ARROW:
-					break;
-
-				default:
-					break;
 				}
-			}
-			break;
+				else {
+					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_LINE);
+				}
+				break;
 
-		case F_Notify:
-			pcb_notify_mode();
-			break;
-		case F_PasteBuffer:
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
-			break;
-		case F_Polygon:
-			pcb_tool_select_by_id(PCB_MODE_POLYGON);
-			break;
-		case F_PolygonHole:
-			pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
-			break;
-		case F_Release:
-			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish() == 0)) {
-				/* Ugly hack: returning 1 here will break execution of the
-				   action script, so actions after this one could do things
-				   that would be executed only after non-recognized gestures */
-				pcb_release_mode();
-				return 1;
-			}
-			pcb_release_mode();
-			break;
-		case F_Remove:
-			pcb_tool_select_by_id(PCB_MODE_REMOVE);
-			break;
-		case F_Rectangle:
-			pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
-			break;
-		case F_Rotate:
-			pcb_tool_select_by_id(PCB_MODE_ROTATE);
-			break;
-		case F_Stroke:
-			if (conf_core.editor.enable_stroke) {
-				pcb_stub_stroke_start();
+			case PCB_MODE_RECTANGLE:
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
+				else {
+					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
+				}
+				break;
+
+			case PCB_MODE_POLYGON:
+				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
+				else {
+					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_POLYGON);
+				}
+				break;
+
+			case PCB_MODE_POLYGON_HOLE:
+				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
+				else {
+					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
+				}
+				break;
+
+			case PCB_MODE_ARC:
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
+				else {
+					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_ARC);
+				}
+				break;
+
+			case PCB_MODE_ARROW:
+				break;
+
+			default:
 				break;
 			}
-			/* Handle middle mouse button restarts of drawing mode.  If not in
-			   |  a drawing mode, middle mouse button will select objects.
-			 */
-			if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
-				pcb_tool_select_by_id(PCB_MODE_LINE);
-			}
-			else if (conf_core.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-				pcb_tool_select_by_id(PCB_MODE_ARC);
-			else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-				pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
-			else if (conf_core.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-				pcb_tool_select_by_id(PCB_MODE_POLYGON);
-			else {
-				pcb_tool_save();
-				pcb_tool_is_saved = pcb_true;
-				pcb_tool_select_by_id(PCB_MODE_ARROW);
-				pcb_notify_mode();
-			}
-			break;
-		case F_Text:
-			pcb_tool_select_by_id(PCB_MODE_TEXT);
-			break;
-		case F_Thermal:
-			pcb_tool_select_by_id(PCB_MODE_THERMAL);
-			break;
-		case F_Via:
-			pcb_tool_select_by_id(PCB_MODE_VIA);
-			break;
+		}
+		break;
 
-		case F_Restore:						/* restore the last saved tool */
-			pcb_tool_restore();
-			break;
-
-		case F_Save:								/* save currently selected tool */
-			pcb_tool_save();
+	case F_Notify:
+		pcb_notify_mode();
+		break;
+	case F_PasteBuffer:
+		pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+		break;
+	case F_Polygon:
+		pcb_tool_select_by_id(PCB_MODE_POLYGON);
+		break;
+	case F_PolygonHole:
+		pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
+		break;
+	case F_Release:
+		if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish() == 0)) {
+			/* Ugly hack: returning 1 here will break execution of the
+			   action script, so actions after this one could do things
+			   that would be executed only after non-recognized gestures */
+			pcb_release_mode();
+			return 1;
+		}
+		pcb_release_mode();
+		break;
+	case F_Remove:
+		pcb_tool_select_by_id(PCB_MODE_REMOVE);
+		break;
+	case F_Rectangle:
+		pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
+		break;
+	case F_Rotate:
+		pcb_tool_select_by_id(PCB_MODE_ROTATE);
+		break;
+	case F_Stroke:
+		if (conf_core.editor.enable_stroke) {
+			pcb_stub_stroke_start();
 			break;
 		}
-		pcb_notify_crosshair_change(pcb_true);
-		return 0;
+		/* Handle middle mouse button restarts of drawing mode.
+		   If not in a drawing mode, middle mouse button will select objects. */
+		if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+			pcb_tool_select_by_id(PCB_MODE_LINE);
+		else if (conf_core.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
+			pcb_tool_select_by_id(PCB_MODE_ARC);
+		else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
+			pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
+		else if (conf_core.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+			pcb_tool_select_by_id(PCB_MODE_POLYGON);
+		else {
+			pcb_tool_save();
+			pcb_tool_is_saved = pcb_true;
+			pcb_tool_select_by_id(PCB_MODE_ARROW);
+			pcb_notify_mode();
+		}
+		break;
+	case F_Text:
+		pcb_tool_select_by_id(PCB_MODE_TEXT);
+		break;
+	case F_Thermal:
+		pcb_tool_select_by_id(PCB_MODE_THERMAL);
+		break;
+	case F_Via:
+		pcb_tool_select_by_id(PCB_MODE_VIA);
+		break;
+
+	case F_Restore: /* restore the last saved tool */
+		pcb_tool_restore();
+		break;
+
+	case F_Save: /* save currently selected tool */
+		pcb_tool_save();
+		break;
+	}
+	pcb_notify_crosshair_change(pcb_true);
+	return 0;
 }
 
 /* ---------------------------------------------------------------- */
