@@ -1858,13 +1858,14 @@ static const char pcb_acth_GetXY[] = "Get a coordinate.";
 Prompts the user for a coordinate, if one is not already selected.
 
 %end-doc */
-static fgw_error_t pcb_act_GetXY(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
-	pcb_hid_get_coords(argv[0], &x, &y);
+	const char *msg = "Click to enter a coordinate.";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
+	PCB_ACT_IRES(0);
+	pcb_hid_get_coords(msg, &x, &y);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_hid_attribute_t printer_calibrate_attrs[] = {
