@@ -269,7 +269,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 
 /* -------------------------------------------------------------------------- */
 
-static const char pcb_acts_Flip[] = "Flip(Object|Selected|SelectedElements)";
+static const char pcb_acts_Flip[] = "Flip(Object|Selected)";
 
 static const char pcb_acth_Flip[] = "Flip a subcircuit to the opposite side of the board.";
 
