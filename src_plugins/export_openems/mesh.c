@@ -895,10 +895,9 @@ int pcb_mesh_interactive(void)
 
 const char pcb_acts_mesh[] = "mesh()";
 const char pcb_acth_mesh[] = "generate a mesh for simulation";
-fgw_error_t pcb_act_mesh(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_mesh(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_mesh_interactive();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
