@@ -159,11 +159,12 @@ If a name is not given, one is prompted for.
 
 %end-doc */
 
-static fgw_error_t pcb_act_New(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *argument_name = PCB_ACTION_ARG(0);
+	const char *argument_name = NULL;
 	char *name = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
 	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to clear layout data?", 0)) {
 		if (argument_name)
@@ -195,10 +196,11 @@ static fgw_error_t pcb_act_New(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		pcb_redraw();
 		pcb_board_changed(0);
 		pcb_notify_crosshair_change(pcb_true);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
-	return 1;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(-1);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
