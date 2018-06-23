@@ -53,9 +53,8 @@ not the current style settings.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DRCheck(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int count;
 
 	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
@@ -73,8 +72,9 @@ static fgw_error_t pcb_act_DRCheck(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		else
 			pcb_message(PCB_MSG_INFO, _("Aborted DRC after %d design rule errors.\n"), -count);
 	}
+
+	PCB_ACT_IRES(count);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t find_action_list[] = {
