@@ -367,24 +367,31 @@ angle is given, the user is prompted for one.
 
 %end-doc */
 
-fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *angle_s;
+	const char *angle_s = NULL;
+	double ang;
 
-	if (argc < 1)
-		angle_s = pcb_gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
-	else
-		angle_s = argv[0];
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = argv[1].val.str);
+	PCB_ACT_IRES(0);
 
 	if (angle_s == NULL)
+		angle_s = pcb_gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
+
+	if ((angle_s == NULL) || (*angle_s == '\0')) {
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	PCB_ACT_IRES(0);
+	ang = strtod(angle_s, 0);
+	if (ang == 0)
 		return 0;
 
 	pcb_notify_crosshair_change(pcb_false);
-	pcb_buffer_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
+	pcb_buffer_rotate(PCB_PASTEBUFFER, ang);
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 void pcb_init_buffers(pcb_board_t *pcb)
