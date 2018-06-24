@@ -66,8 +66,8 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *ores, int oargc, fgw_arg_t *
 static const char pcb_acts_ChangeClearSize[] =
 	"ChangeClearSize(Object, delta|style)\n"
 	"ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)\n"
-	"ChangeClearSize(SelectedLines|SelectedArcs, delta|style)\n" "ChangeClearSize(Selected|SelectedObjects, delta|style)";
-
+	"ChangeClearSize(SelectedLines|SelectedArcs, delta|style)\n"
+	"ChangeClearSize(Selected|SelectedObjects, delta|style)";
 static const char pcb_acth_ChangeClearSize[] = "Changes the clearance size of objects.";
 
 /* %start-doc actions ChangeClearSize
