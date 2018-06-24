@@ -264,10 +264,9 @@ static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_
 	return accumulate;
 }
 
-static fgw_error_t pcb_act_polycombine(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	pcb_polyarea_t *res;
+	pcb_polyarea_t *rs;
 	pcb_bool forward;
 	pcb_polyarea_t *np;
 /*  bool outer;
@@ -309,7 +308,7 @@ static fgw_error_t pcb_act_polycombine(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	PCB_ENDALL_LOOP;
 
 	/* Now perform a traversal of the tree, computing a polygon */
-	res = compute_polygon_recursive(root, NULL);
+	rs = compute_polygon_recursive(root, NULL);
 
 	pcb_undo_save_serial();
 
@@ -328,13 +327,13 @@ static fgw_error_t pcb_act_polycombine(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	PCB_ENDALL_LOOP;
 
 	/* Now de-construct the resulting polygon into raw PCB polygons */
-	pcb_poly_to_polygons_on_layer(PCB->Data, Layer, res, pcb_strflg_board_s2f("clearpoly", NULL));
+	pcb_poly_to_polygons_on_layer(PCB->Data, Layer, rs, pcb_strflg_board_s2f("clearpoly", NULL));
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	pcb_draw();
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_action_t polycombine_action_list[] = {
