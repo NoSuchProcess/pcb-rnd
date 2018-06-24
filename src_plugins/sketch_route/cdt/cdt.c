@@ -71,7 +71,7 @@ static edge_t *get_edge_from_points(point_t *p1, point_t *p2)
 	return NULL;
 }
 
-static void order_triangle_points_ccw(point_t **p1, point_t **p2, point_t **p3, edge_t **e1, edge_t **e2, edge_t **e3)
+static void order_triangle_points_ccw(point_t **p1, point_t **p2, point_t **p3)
 {
 	pointlist_node_t *points = NULL;
 	points = pointlist_prepend(points, p1);
@@ -93,12 +93,6 @@ static void order_triangle_points_ccw(point_t **p1, point_t **p2, point_t **p3, 
 	}
 	points = pointlist_remove_front(points);
 	points = pointlist_remove_front(points);
-
-	*e1 = get_edge_from_points(*p1, *p2);
-	*e2 = get_edge_from_points(*p2, *p3);
-	*e3 = get_edge_from_points(*p3, *p1);
-
-	assert(*e1 != NULL && *e2 != NULL && *e3 != NULL);
 }
 
 static triangle_t *new_triangle(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p3)
@@ -107,8 +101,8 @@ static triangle_t *new_triangle(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p
 	triangle_t *t = *vttriangle_alloc_append(&cdt->triangles, 1);
 
 	assert(!ORIENT_COLLINEAR(p1, p2, p3));	/* points cannot be colinear */
-	order_triangle_points_ccw(&p1, &p2, &p3, &e1, &e2, &e3);
 
+	order_triangle_points_ccw(&p1, &p2, &p3);
 	t->p[0] = p1;
 	t->p[1] = p2;
 	t->p[2] = p3;
@@ -116,6 +110,10 @@ static triangle_t *new_triangle(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p
 	p2->adj_triangles = trianglelist_prepend(p2->adj_triangles, &t);
 	p3->adj_triangles = trianglelist_prepend(p3->adj_triangles, &t);
 
+	e1 = get_edge_from_points(p1, p2);
+	e2 = get_edge_from_points(p2, p3);
+	e3 = get_edge_from_points(p3, p1);
+	assert(e1 != NULL && e2 != NULL && e3 != NULL);
 	t->e[0] = e1;
 	t->e[1] = e2;
 	t->e[2] = e3;
