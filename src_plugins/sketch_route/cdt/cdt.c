@@ -387,6 +387,9 @@ static void triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon)
 			candidate_t.p[2] = current_point_node->next->item;
 		candidate_e.endp[1] = candidate_t.p[2];
 
+		if (ORIENT_COLLINEAR(candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]))
+			goto skip;
+
 		/* case 1: another point of the polygon violates the circle criterion */
 		POINTLIST_FOREACH(p, polygon)
 			if (p != candidate_t.p[0] && p != candidate_t.p[1] && p != candidate_t.p[2])
