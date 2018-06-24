@@ -106,27 +106,18 @@ will popup.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *filename, *format = NULL;
 
-	switch (argc) {
-	case 2:
-		format = argv[1];
-	case 1: /* filename is passed in commandline */
-		filename = argv[0];
-		break;
-
-	default: /* usage */
-		pcb_message(PCB_MSG_ERROR, "Usage: l [name]\n  loads layout data\n");
-		return 1;
-	}
+	PCB_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
 
 	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to override layout data?", 0))
 		pcb_load_pcb(filename, format, pcb_true, 0);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_LoadElementToBuffer[] = "le [name]";
@@ -141,24 +132,17 @@ element loader.  If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *filename;
 
-	switch (argc) {
-	case 1:											/* filename is passed in commandline */
-		filename = argv[0];
-		if (filename && pcb_buffer_load_footprint(PCB_PASTEBUFFER, filename, NULL))
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
-		break;
+	PCB_ACT_CONVARG(1, FGW_STR, LoadElementToBuffer, filename = argv[1].val.str);
 
-	default:											/* usage */
-		pcb_message(PCB_MSG_ERROR, pcb_false, "Usage: le [name]\n  loads element (subcircuit, footprint) data to buffer\n");
-		return 1;
-	}
+	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, filename, NULL))
+		pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_LoadLayoutToBuffer[] = "m [name]";
@@ -174,26 +158,18 @@ If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *filename, *format = NULL;
 
-	switch (argc) {
-	case 2:
-		format = argv[1];
-	case 1:  /* filename is passed in commandline */
-		filename = argv[0];
-		if (filename && pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, filename, format))
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
-		break;
+	PCB_ACT_CONVARG(1, FGW_STR, LoadLayoutToBuffer, filename = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayoutToBuffer, format = argv[2].val.str);
 
-	default:  /* usage */
-		pcb_message(PCB_MSG_ERROR, "Usage: m [name]\n  loads layout data to buffer\n");
-		return 1;
-	}
+	if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, filename, format))
+		pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Quit[] = "q";
