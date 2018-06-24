@@ -15,12 +15,15 @@ extern fgw_ctx_t pcb_fgw;
 
 typedef enum {
 	FGW_KEYWORD_ = FGW_CUSTOM,
-	FGW_COORD_
+	FGW_COORD_,
+	FGW_LAYER_
 } pcb_fgw_types_e;
 #define nat_keyword nat_int
 #define fgw_coord(arg) (*(pcb_coord_t *)(&((arg)->val.custom.c)))
+#define fgw_layer(arg) ((arg)->val.nat_long)
 #define FGW_KEYWORD ((fgw_type_t)FGW_KEYWORD_)
 #define FGW_COORD   ((fgw_type_t)FGW_COORD_)
+#define FGW_LAYER   ((fgw_type_t)FGW_LAYER_)
 
 void pcb_register_action(const pcb_action_t *a, const char *cookie);
 void pcb_register_actions(const pcb_action_t *a, int, const char *cookie);

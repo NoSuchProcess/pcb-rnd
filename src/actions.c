@@ -36,12 +36,14 @@
 #include <genht/htsp.h>
 #include <libfungw/fungw_conv.h>
 
+#include "board.h"
 #include "error.h"
 #include "event.h"
 #include "actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "funchash.h"
+#include "layer.h"
 
 #define PCB_ACTION_NAME_MAX 128
 
@@ -581,6 +583,54 @@ static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+#define conv_str2layer(dst, src) \
+do { \
+	pcb_layer_id_t lid = pcb_layer_str2id(PCB->Data, src); \
+	if (lid < 0) \
+		return -1; \
+	dst = lid; \
+} while(0)
+
+static int layer_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_LAYER) { /* convert to keyword */
+		pcb_layer_id_t tmp;
+		switch(FGW_BASE_TYPE(arg->type)) {
+			ARG_CONV_CASE_LONG(tmp, conv_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_assign)
+			ARG_CONV_CASE_STR(tmp, conv_str2layer)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+		}
+		arg->type = FGW_LAYER;
+		fgw_layer(arg) = tmp;
+		return 0;
+	}
+	if (arg->type == FGW_KEYWORD) { /* convert from keyword */
+		pcb_coord_t tmp = fgw_coord(arg);
+		switch(target) {
+			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+			case FGW_STR:
+				arg->val.str = (char *)pcb_strdup_printf("#%ld", (long)tmp);
+				arg->type = FGW_STR | FGW_DYN;
+				return 0;
+		}
+		arg->type = target;
+		return 0;
+	}
+	fprintf(stderr, "Neither side of the conversion is layer\n");
+	abort();
+}
+
 
 void pcb_actions_init(void)
 {
@@ -592,6 +642,10 @@ void pcb_actions_init(void)
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_argv_conv) != FGW_COORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_argv_conv) != FGW_LAYER) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
 		abort();
 	}
 }
