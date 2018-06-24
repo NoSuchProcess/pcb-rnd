@@ -51,8 +51,6 @@
 #include "misc_util.h"
 #include "tool.h"
 
-/* ---------------------------------------------------------------------- */
-
 /*  %start-doc actions 00macros
 
 @macro colonaction
@@ -66,10 +64,7 @@ is documented for that purpose.
 
 %end-doc */
 
-/* ---------------------------------------------------------------------- */
-
 static const char pcb_acts_Help[] = "h";
-
 static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 /* %start-doc actions h
@@ -96,10 +91,7 @@ static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-
 static const char pcb_acts_LoadLayout[] = "l [name] [format]";
-
 static const char pcb_acth_LoadLayout[] = "Loads layout data.";
 
 /* %start-doc actions l
@@ -137,10 +129,7 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_LoadElementToBuffer[] = "le [name]";
-
 static const char pcb_acth_LoadElementToBuffer[] = "Loads an element (subcircuit, footprint) into the current buffer.";
 
 /* %start-doc actions le
@@ -172,10 +161,7 @@ static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *ores, int oargc, fgw_a
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_LoadLayoutToBuffer[] = "m [name]";
-
 static const char pcb_acth_LoadLayoutToBuffer[] = "Loads a layout into the current buffer.";
 
 /* %start-doc actions m
@@ -210,10 +196,7 @@ static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *ores, int oargc, fgw_ar
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Quit[] = "q";
-
 static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 
 /* %start-doc actions q
@@ -235,7 +218,6 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 }
 
 static const char pcb_acts_ReallyQuit[] = "q!";
-
 static const char pcb_acth_ReallyQuit[] = "Quits the application without confirming.";
 
 /* %start-doc actions q!
@@ -255,10 +237,7 @@ static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	PCB_OLD_ACT_END;
 }
 
-/* ---------------------------------------------------------------------- */
-
 static const char pcb_acts_LoadNetlist[] = "rn [name]";
-
 static const char pcb_acth_LoadNetlist[] = "Reads netlist.";
 
 /* %start-doc actions rn
@@ -297,10 +276,7 @@ static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	PCB_OLD_ACT_END;
 }
 
-/* ---------------------------------------------------------------------- */
-
 static const char pcb_acts_SaveLayout[] = "s [name]\nw [name]";
-
 static const char pcb_acth_SaveLayout[] = "Saves layout data.";
 
 /* %start-doc actions s
@@ -354,10 +330,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_SaveLayoutAndQuit[] = "wq";
-
 static const char pcb_acth_SaveLayoutAndQuit[] = "Saves the layout data and quits.";
 
 /* %start-doc actions wq
@@ -375,8 +348,6 @@ static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t
 		return pcb_act_Quit(res, argc, argv);
 	return 1;
 }
-
-/* --------------------------------------------------------------------------- */
 
 pcb_action_t shand_cmd_action_list[] = {
 	{"h", pcb_act_Help, pcb_acth_Help, pcb_acts_Help},
