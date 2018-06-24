@@ -406,11 +406,15 @@ static void triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon)
 		EDGELIST_FOREACH_END();
 
 		/* case 3: edge to be added intersects an existing edge */
+		/* case 4: a point adjacent to the current_point is in the candidate triangle */
 		EDGELIST_FOREACH(e, candidate_t.p[1]->adj_edges)
 			if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
-					&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2]))
-				if(LINES_INTERSECT(candidate_e.endp[0], candidate_e.endp[1], e->endp[0], e->endp[1]))
+					&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2])) {
+				if (LINES_INTERSECT(candidate_e.endp[0], candidate_e.endp[1], e->endp[0], e->endp[1]))
 					goto skip;
+				if (is_point_in_triangle(e->endp[0] != candidate_t.p[1] ? e->endp[0] : e->endp[1], &candidate_t))
+					goto skip;
+			}
 		EDGELIST_FOREACH_END();
 
 		new_edge(cdt, candidate_e.endp[0], candidate_e.endp[1], 0);
