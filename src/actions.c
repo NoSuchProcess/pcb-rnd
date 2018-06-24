@@ -533,6 +533,53 @@ static int keyword_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+#define conv_str2coord(dst, src) \
+do { \
+	pcb_bool succ; \
+	dst = pcb_get_value(src, NULL, NULL, &succ); \
+	if (!succ) \
+		return -1; \
+} while(0)
+
+static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_COORD) { /* convert to keyword */
+		pcb_coord_t tmp;
+		switch(FGW_BASE_TYPE(arg->type)) {
+			ARG_CONV_CASE_LONG(tmp, conv_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_assign)
+			ARG_CONV_CASE_STR(tmp, conv_str2coord)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+		}
+		arg->type = FGW_COORD;
+		fgw_coord(arg) = tmp;
+		return 0;
+	}
+	if (arg->type == FGW_KEYWORD) { /* convert from keyword */
+		pcb_coord_t tmp = fgw_coord(arg);
+		switch(target) {
+			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+			case FGW_STR:
+				arg->val.str = (char *)pcb_strdup_printf("%.08$mH", tmp);
+				arg->type = FGW_STR | FGW_DYN;
+				return 0;
+		}
+		arg->type = target;
+		return 0;
+	}
+	fprintf(stderr, "Neither side of the conversion is coord\n");
+	abort();
+}
 
 
 void pcb_actions_init(void)
@@ -541,6 +588,10 @@ void pcb_actions_init(void)
 	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_argv_conv) != FGW_KEYWORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_argv_conv) != FGW_COORD) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
 }
