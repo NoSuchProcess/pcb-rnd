@@ -75,7 +75,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *layername;
 	char *buf;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
 	PCB_ACT_IRES(0);
 
@@ -231,7 +231,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, id;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = fgw_keyword(&argv[1]));
 	PCB_ACT_IRES(0);
 
 	switch(id) {
@@ -289,7 +289,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int id;
 	void *ptrtmp;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = fgw_keyword(&argv[1]));
 	PCB_ACT_IRES(0);
 
 	pcb_hid_get_coords("Click on Object or Flip Point", &x, &y);
@@ -386,7 +386,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 {
 	int id;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = fgw_keyword(&argv[1]));
 	PCB_ACT_IRES(0);
 
 	switch(id) {

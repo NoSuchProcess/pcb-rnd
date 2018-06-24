@@ -82,7 +82,7 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_rat_t *shorty;
 	float len, small;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, AddRats, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, AddRats, op = fgw_keyword(&argv[1]));
 
 	if (conf_core.temp.rat_warn)
 		pcb_clear_warnings();
@@ -159,7 +159,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Connection, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Connection, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Find:
@@ -213,7 +213,7 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, DeleteRats, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, DeleteRats, op = fgw_keyword(&argv[1]));
 
 	if (conf_core.temp.rat_warn)
 		pcb_clear_warnings();

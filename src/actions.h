@@ -19,7 +19,7 @@ typedef enum {
 	FGW_LAYERID_,
 	FGW_LAYER_
 } pcb_fgw_types_e;
-#define nat_keyword nat_int
+#define fgw_keyword(arg) ((arg)->val.nat_int)
 #define fgw_coord(arg) (*(pcb_coord_t *)(&((arg)->val.custom.c)))
 #define fgw_layerid(arg) ((arg)->val.nat_long)
 #define fgw_layer(arg) ((arg)->val.ptr_void)

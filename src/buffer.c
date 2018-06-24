@@ -788,7 +788,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	PCB_ACT_CONVARG(1, FGW_STR, PasteBuffer, tmp = argv[1].val.str);
 	number = atoi(tmp);
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, PasteBuffer, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, PasteBuffer, op = fgw_keyword(&argv[1]));
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, PasteBuffer, sbufnum = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, PasteBuffer, fmt = argv[3].val.str);
 	PCB_ACT_MAY_CONVARG(4, FGW_STR, PasteBuffer, forces = argv[4].val.str);

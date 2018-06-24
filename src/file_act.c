@@ -93,7 +93,7 @@ static fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name, *format = NULL;
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = fgw_keyword(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_STR, LoadFrom, name = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFrom, format = argv[3].val.str);
 
@@ -244,7 +244,7 @@ static fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name = NULL;
 	const char *fmt = NULL;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = fgw_keyword(&argv[1]));
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, SaveTo, name = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveTo, fmt = argv[3].val.str);
 	PCB_ACT_IRES(0);

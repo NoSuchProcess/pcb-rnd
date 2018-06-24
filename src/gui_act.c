@@ -231,7 +231,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int err = 0;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Display, id = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Display, id = fgw_keyword(&argv[1]));
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, Display, str_dir = argv[2].val.str);
 
 	if (id == F_SubcID) { /* change the displayed name of subcircuits */
@@ -567,7 +567,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_tool_note.X = pcb_crosshair.X;
 	pcb_tool_note.Y = pcb_crosshair.Y;
 	pcb_notify_crosshair_change(pcb_false);
-	switch (argv[1].val.nat_keyword) {
+	switch(fgw_keyword(&argv[1])) {
 	case F_Arc:
 		pcb_tool_select_by_id(PCB_MODE_ARC);
 		break;
@@ -883,7 +883,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	int id = -2;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, Display, id = argv[1].val.nat_keyword);
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, Display, id = fgw_keyword(&argv[1]));
 
 	if (id == -1) { /* invalid */
 		PCB_ACT_FAIL(MarkCrosshair);
@@ -1160,7 +1160,7 @@ static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full sc
 static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int id = -2;
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FullScreen, id = argv[1].val.nat_keyword);
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FullScreen, id = fgw_keyword(&argv[1]));
 
 	PCB_ACT_IRES(0);
 	switch(id) {

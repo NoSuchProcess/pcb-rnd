@@ -511,11 +511,11 @@ static int keyword_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 			ARG_CONV_CASE_INVALID(tmp, conv_err)
 		}
 		arg->type = FGW_KEYWORD;
-		arg->val.nat_keyword = tmp;
+		fgw_keyword(arg) = tmp;
 		return 0;
 	}
 	if (arg->type == FGW_KEYWORD) { /* convert from keyword */
-		long tmp = arg->val.nat_keyword;
+		long tmp = fgw_keyword(arg);
 		switch(target) {
 			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
 			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)

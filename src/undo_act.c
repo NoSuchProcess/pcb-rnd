@@ -92,7 +92,7 @@ Does a Restore if there was nothing to undo, else does a Close.
 fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = argv[1].val.nat_keyword);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = fgw_keyword(&argv[1]));
 
 	switch (op) {
 	case F_Save:
