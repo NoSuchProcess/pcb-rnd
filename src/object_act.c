@@ -1052,45 +1052,42 @@ static pcb_layer_t *pick_layer(const char *user_text)
 
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
 static const char pcb_acth_CreateText[] = "Create a new text object";
-static fgw_error_t pcb_act_CreateText(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *lyname, *txt;
 	pcb_coord_t x, y;
 	pcb_layer_t *ly;
-	int fid = 0, dir = 0, scale = 0;
-	pcb_bool succ;
+	int fid, dir, scale;
+	pcb_text_t *t;
 
-	if (argc != 7)
-		PCB_ACT_FAIL(CreateText);
+	PCB_ACT_CONVARG(1, FGW_STR, CreateText, lyname = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
+	PCB_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
+	PCB_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
+	PCB_ACT_CONVARG(5, FGW_INT, CreateText, dir = argv[5].val.nat_int);
+	PCB_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
+	PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
 
-	ly = pick_layer(argv[0]);
+	ly = pick_layer(lyname);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Unknown layer %s", argv[0]);
+		pcb_message(PCB_MSG_ERROR, "Unknown layer %s\n", lyname);
 		return 1;
 	}
 
-	fid = atoi(argv[1]);
-	x = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mm", &succ);
-	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "Invalid X coord %s", argv[2]);
-		return 1;
-	}
-	y = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mm", &succ);
-	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "Invalid Y coord %s", argv[3]);
-		return 1;
-	}
-	dir = atoi(argv[4]);
-	scale = atoi(argv[5]);
 	if (scale < 1) {
-		pcb_message(PCB_MSG_ERROR, "Invalid scale coord %s", argv[5]);
+		pcb_message(PCB_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
 		return 1;
 	}
 
-	pcb_text_new(ly, pcb_font(PCB, fid, 1), x, y, dir, scale, argv[6], pcb_no_flags());
+	if ((dir < 0) || (dir > 3)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid direction (must be 0, 1, 2 or 3)\n");
+		return 1;
+	}
 
+	t = pcb_text_new(ly, pcb_font(PCB, fid, 1), x, y, dir, scale, txt, pcb_no_flags());
+	res->type = FGW_LONG;
+	res->val.nat_long = (t == NULL ? -1 : t->ID);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_subc[] =
