@@ -656,7 +656,14 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id)
 
 pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
 {
-
+	char *end;
+	pcb_layer_id_t id;
+	if (*str == '#') {
+		id = strtol(str+1, &end, 10);
+		if ((*end == '\0') && (id >= 0) && (id < data->LayerN))
+			return id;
+	}
+	return -1;
 }
 
 

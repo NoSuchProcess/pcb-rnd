@@ -1038,29 +1038,18 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	PCB_OLD_ACT_END;
 }
 
-static pcb_layer_t *pick_layer(const char *user_text)
-{
-	char *end;
-	pcb_layer_id_t id;
-	if (*user_text == '#') {
-		id = strtol(user_text+1, &end, 10);
-		if (*end == '\0')
-			return pcb_get_layer(PCB->Data, id);
-	}
-	return NULL;
-}
-
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
 static const char pcb_acth_CreateText[] = "Create a new text object";
 static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *lyname, *txt;
+	pcb_layer_id_t lid;
+	const char *txt;
 	pcb_coord_t x, y;
 	pcb_layer_t *ly;
 	int fid, dir, scale;
 	pcb_text_t *t;
 
-	PCB_ACT_CONVARG(1, FGW_STR, CreateText, lyname = argv[1].val.str);
+	PCB_ACT_CONVARG(1, FGW_LAYERID, CreateText, lid = fgw_layerid(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
 	PCB_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
 	PCB_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
@@ -1068,9 +1057,9 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
 	PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
 
-	ly = pick_layer(lyname);
+	ly = pcb_get_layer(PCB->Data, lid);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Unknown layer %s\n", lyname);
+		pcb_message(PCB_MSG_ERROR, "Unknown layer\n");
 		return 1;
 	}
 
