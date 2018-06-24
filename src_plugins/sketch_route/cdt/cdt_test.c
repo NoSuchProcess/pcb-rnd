@@ -81,6 +81,7 @@ int main(void)
 	*/
 
 	/* constrained edge */
+	/*
 	p1 = cdt_insert_point(&cdt, 1500, 3000);
 	cdt_insert_point(&cdt, 2000, 3500);
 	cdt_insert_point(&cdt, 2500, 2500);
@@ -88,6 +89,21 @@ int main(void)
 	cdt_insert_point(&cdt, 3500, 2500);
 	cdt_insert_point(&cdt, 4000, 3500);
 	p2 = cdt_insert_point(&cdt, 4500, 3000);
+
+	e = cdt_insert_constrained_edge(&cdt, p1, p2);
+	*/
+
+	/* constrained edge 2 */
+	p1 = cdt_insert_point(&cdt, 1500, 3800);
+	cdt_insert_point(&cdt, 2700, 3000);
+	cdt_insert_point(&cdt, 2800, 3000);
+	cdt_insert_point(&cdt, 2900, 3000);
+	cdt_insert_point(&cdt, 3000, 3000);
+	cdt_insert_point(&cdt, 3100, 3000);
+	cdt_insert_point(&cdt, 3200, 3000);
+	cdt_insert_point(&cdt, 3300, 3000);
+	p2 = cdt_insert_point(&cdt, 4500, 3800);
+	cdt_insert_point(&cdt, 3000, 4800);
 
 	e = cdt_insert_constrained_edge(&cdt, p1, p2);
 
