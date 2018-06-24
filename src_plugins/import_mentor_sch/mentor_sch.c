@@ -257,13 +257,12 @@ static int mentor_sch_load(const char *fname_net)
 
 static const char pcb_acts_Loadmentor_schFrom[] = "LoadMentorFrom(filename)";
 static const char pcb_acth_Loadmentor_schFrom[] = "Loads the specified Mentor Graphics Design Capture schematics flat .edf file.";
-fgw_error_t pcb_act_LoadMentorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadMentorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Loadmentor_schFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load mentor edf netlist file...",
@@ -277,8 +276,8 @@ fgw_error_t pcb_act_LoadMentorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 	}
 
+	PCB_ACT_IRES(0);
 	return mentor_sch_load(fname);
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t mentor_sch_action_list[] = {
