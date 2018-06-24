@@ -6890,8 +6890,8 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/hash.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h error.h drc.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h data.h crosshair.h vtonpoint.h route.h buffer.h \
- obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/genht/htpp.h action_helper.h data.h crosshair.h vtonpoint.h \
+ route.h buffer.h obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
