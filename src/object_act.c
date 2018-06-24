@@ -1042,26 +1042,19 @@ static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direc
 static const char pcb_acth_CreateText[] = "Create a new text object";
 static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layer_id_t lid;
 	const char *txt;
 	pcb_coord_t x, y;
 	pcb_layer_t *ly;
 	int fid, dir, scale;
 	pcb_text_t *t;
 
-	PCB_ACT_CONVARG(1, FGW_LAYERID, CreateText, lid = fgw_layerid(&argv[1]));
+	PCB_ACT_CONVARG(1, FGW_LAYER, CreateText, ly = fgw_layer(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
 	PCB_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
 	PCB_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
 	PCB_ACT_CONVARG(5, FGW_INT, CreateText, dir = argv[5].val.nat_int);
 	PCB_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
 	PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
-
-	ly = pcb_get_layer(PCB->Data, lid);
-	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Unknown layer\n");
-		return 1;
-	}
 
 	if (scale < 1) {
 		pcb_message(PCB_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
