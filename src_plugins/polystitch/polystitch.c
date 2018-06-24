@@ -89,9 +89,8 @@ static pcb_poly_t *find_enclosing_poly(pcb_poly_t *inner_poly)
 }
 
 
-static fgw_error_t pcb_act_polystitch(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	pcb_poly_t *inner_poly, *outer_poly;
 
@@ -119,8 +118,8 @@ static fgw_error_t pcb_act_polystitch(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			pcb_poly_remove(inner_poly->parent.layer, inner_poly);
 		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_action_t polystitch_action_list[] = {
