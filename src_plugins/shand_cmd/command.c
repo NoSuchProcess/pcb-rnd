@@ -228,26 +228,18 @@ for verifying the board layout (which is also accomplished by the
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *filename;
 
-	switch (argc) {
-	case 1:											/* filename is passed in commandline */
-		filename = argv[0];
-		break;
+	PCB_ACT_CONVARG(1, FGW_STR, LoadNetlist, filename = argv[1].val.str);
 
-	default:											/* usage */
-		pcb_message(PCB_MSG_ERROR, "Usage: rn [name]\n  reads in a netlist file\n");
-		return 1;
-	}
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
 	PCB->Netlistname = pcb_strdup_strip_wspace(filename);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_SaveLayout[] = "s [name]\nw [name]";
