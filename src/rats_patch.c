@@ -469,19 +469,19 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 }
 
 static const char pcb_acts_SavePatch[] = "SavePatch(filename)";
-
 static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation.";
 
 /* %start-doc actions SavePatch
 Save netlist patch for back annotation.
 %end-doc */
-static fgw_error_t pcb_act_SavePatch(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *fn;
+	const char *fn = NULL;
 	FILE *f;
 
-	if (argc < 1) {
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
+
+	if (fn == NULL) {
 		char *default_file;
 
 		if (PCB->Filename != NULL) {
@@ -504,17 +504,18 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 
 		free(default_file);
 	}
-	else
-		fn = argv[0];
+
 	f = pcb_fopen(fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open netlist patch file %s for writing\n", fn);
-		return 1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 	pcb_ratspatch_fexport(PCB, f, 0);
 	fclose(f);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t rats_patch_action_list[] = {
