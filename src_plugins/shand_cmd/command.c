@@ -184,13 +184,12 @@ save) before quitting.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Quit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_ReallyQuit[] = "q!";
@@ -205,12 +204,11 @@ confirmation.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_quit_app();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_LoadNetlist[] = "rn [name]";
