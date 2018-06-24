@@ -266,15 +266,14 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 
 static const char pcb_acts_LoadLtspiceFrom[] = "LoadLtspiceFrom(filename)";
 static const char pcb_acth_LoadLtspiceFrom[] = "Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.";
-fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL, *end;
 	char *fname_asc, *fname_net, *fname_base;
 	static char *default_file = NULL;
-	int res;
+	int rs;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadLtspiceFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load ltspice net+asc file pair...",
@@ -302,13 +301,13 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	fname_asc = pcb_strdup_printf("%s.asc", fname_base);
 	free(fname_base);
 
-	res = ltspice_load(fname_net, fname_asc);
+	rs = ltspice_load(fname_net, fname_asc);
 
 	free(fname_asc);
 	free(fname_net);
 
-	return res;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(rs);
+	return 0;
 }
 
 pcb_action_t ltspice_action_list[] = {
