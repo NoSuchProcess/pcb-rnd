@@ -420,12 +420,11 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
-static fgw_error_t pcb_act_d1(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	printf("D1!\n");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 #define	PCB_FORCECOLOR_TYPES        \
