@@ -418,11 +418,10 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
-static const char d1_syntax[] = "d1()\n";
-static const char d1_help[] = "debug action for development";
+static const char pcb_acts_d1[] = "d1()\n";
+static const char pcb_acth_d1[] = "debug action for development";
 static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	printf("D1!\n");
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -459,7 +458,7 @@ pcb_action_t diag_action_list[] = {
 	{"dumpundo", pcb_act_DumpUndo, dump_undo_help, dump_undo_syntax},
 #endif
 	{"EvalConf", pcb_act_EvalConf, eval_conf_help, eval_conf_syntax},
-	{"d1", pcb_act_d1, d1_help, d1_syntax},
+	{"d1", pcb_act_d1, pcb_acth_d1, pcb_acts_d1},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, dumpflags_help, dumpflags_syntax},
 	{"forcecolor", pcb_act_forcecolor, forcecolor_help, forcecolor_syntax}
