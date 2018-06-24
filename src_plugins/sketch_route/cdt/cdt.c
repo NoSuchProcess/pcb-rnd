@@ -627,8 +627,8 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 {
-	coord_t x1 = t->p[0]->pos.x, x2 = t->p[1]->pos.x, x3 = t->p[2]->pos.x;
-	coord_t y1 = t->p[0]->pos.y, y2 = t->p[1]->pos.y, y3 = t->p[2]->pos.y;
+	double x1 = t->p[0]->pos.x, x2 = t->p[1]->pos.x, x3 = t->p[2]->pos.x;
+	double y1 = t->p[0]->pos.y, y2 = t->p[1]->pos.y, y3 = t->p[2]->pos.y;
 	double d1, d2, d3, d4;
 	double n1, n2, n3;
 
