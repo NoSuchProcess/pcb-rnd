@@ -30,6 +30,7 @@
 
 #include "config.h"
 #include "actions.h"
+#include "action_helper.h"
 #include "data.h"
 #include "error.h"
 #include "copy.h"
@@ -380,13 +381,11 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 
 
 static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
-
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
-static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *fpname;
+	const char *fpname = NULL;
 	int found = 0, len;
 	pcb_subc_t *news, *placed;
 
@@ -402,30 +401,33 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *ores, int oargc, fgw_arg_
 
 	if (!(found)) {
 		pcb_message(PCB_MSG_ERROR, "ReplaceFootprint works on selected subcircuits with refdes, please select subcircuits first!\n");
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	/* fetch the name of the new footprint */
-	if (argc == 0) {
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ReplaceFootprint, fpname = argv[1].val.str);
+	if (fpname == NULL) {
 		fpname = pcb_gui->prompt_for("Footprint name", "");
 		if (fpname == NULL) {
 			pcb_message(PCB_MSG_ERROR, "No footprint name supplied\n");
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 	}
-	else
-		fpname = argv[0];
 
 	/* check if the footprint is available */
 	pcb_buffer_load_footprint(&pcb_buffers[PCB_MAX_BUFFER-1], fpname, NULL);
 	len = pcb_subclist_length(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 	if (len == 0) {
 		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", fpname);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	if (len > 1) {
 		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", fpname);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 
@@ -461,8 +463,9 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *ores, int oargc, fgw_arg_
 		pcb_subc_remove(subc);
 	}
 	PCB_END_LOOP;
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_SavePatch[] = "SavePatch(filename)";
