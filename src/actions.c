@@ -37,6 +37,7 @@
 #include <libfungw/fungw_conv.h>
 
 #include "board.h"
+#include "data.h"
 #include "error.h"
 #include "event.h"
 #include "actions.h"
@@ -609,7 +610,7 @@ static int layerid_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 		fgw_layerid(arg) = tmp;
 		return 0;
 	}
-	if (arg->type == FGW_KEYWORD) { /* convert from layer id */
+	if (arg->type == FGW_LAYERID) { /* convert from layer id */
 		pcb_layer_id_t tmp = fgw_layerid(arg);
 		switch(target) {
 			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
@@ -631,6 +632,42 @@ static int layerid_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+static int layer_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_LAYER) { /* convert to layer */
+		pcb_layer_id_t lid;
+		if (layerid_argv_conv(ctx, arg, FGW_LAYERID) != 0)
+			return -1;
+		lid = fgw_layerid(arg);
+		arg->val.ptr_void = pcb_get_layer(PCB->Data, lid);
+		if (arg->val.ptr_void == NULL) {
+			arg->type = FGW_INVALID;
+			return -1;
+		}
+		arg->type = FGW_LAYER;
+		return 0;
+	}
+	if (arg->type == FGW_LAYER) { /* convert from layer */
+		pcb_layer_id_t lid;
+		pcb_layer_t *ly = arg->val.ptr_void;
+		pcb_data_t *data;
+		if (ly == NULL)
+			return -1;
+		data = ly->parent.data;
+		lid = ly - data->Layer;
+		if ((lid >= 0) && (lid < data->LayerN)) {
+			arg->type = FGW_LAYERID;
+			arg->val.nat_long = lid;
+			if (layerid_argv_conv(ctx, arg, target) != 0)
+				return -1;
+			return 0;
+		}
+		return -1;
+	}
+	fprintf(stderr, "Neither side of the conversion is layer\n");
+	abort();
+}
+
 
 void pcb_actions_init(void)
 {
@@ -646,6 +683,10 @@ void pcb_actions_init(void)
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_argv_conv) != FGW_LAYERID) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERID\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_argv_conv) != FGW_LAYER) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
 		abort();
 	}
 }
