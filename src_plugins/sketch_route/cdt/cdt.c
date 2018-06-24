@@ -105,6 +105,8 @@ static triangle_t *new_triangle(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p
 	edge_t *e1, *e2, *e3;
 	triangle_t *t = *vttriangle_alloc_append(&cdt->triangles, 1);
 
+	assert((p1->pos.x != p2->pos.x || p2->pos.x != p3->pos.x)
+				 && (p1->pos.y != p2->pos.y || p2->pos.y != p3->pos.x));	/* points cannot be colinear */
 	order_triangle_points_ccw(&p1, &p2, &p3, &e1, &e2, &e3);
 
 	t->p[0] = p1;
