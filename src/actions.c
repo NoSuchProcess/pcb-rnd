@@ -536,10 +536,11 @@ static int keyword_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+char *fgw_str2coord_unit = NULL;
 #define conv_str2coord(dst, src) \
 do { \
 	pcb_bool succ; \
-	dst = pcb_get_value(src, NULL, NULL, &succ); \
+	dst = pcb_get_value_ex(src, NULL, NULL, NULL, fgw_str2coord_unit, &succ); \
 	if (!succ) \
 		return -1; \
 } while(0)

@@ -120,6 +120,17 @@ do { \
 } while(0)
 
 
+/*** The default unit to use when a coord value doesn't have its own unit ***/
+extern char *fgw_str2coord_unit; /* saved is char * too */
+#define fgw_str2coord_unit_set(saved, newval) \
+do { \
+	saved = fgw_str2coord_unit; \
+	fgw_str2coord_unit = newval; \
+} while(0)
+
+#define fgw_str2coord_unit_restore(saved) \
+	fgw_str2coord_unit = saved
+
 /*** temporary hack for smooth upgrade to fungw based actions ***/
 PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 {
