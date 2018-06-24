@@ -654,6 +654,12 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id)
 	return NULL;
 }
 
+pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
+{
+
+}
+
+
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	/* we can't link non-existing trees - make sure src does have the trees initialized */
