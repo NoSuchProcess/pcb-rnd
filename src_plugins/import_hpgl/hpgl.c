@@ -149,13 +149,12 @@ static int hpgl_load(const char *fname)
 
 static const char pcb_acts_LoadHpglFrom[] = "LoadHpglFrom(filename)";
 static const char pcb_acth_LoadHpglFrom[] = "Loads the specified hpgl plot file to the current buffer";
-fgw_error_t pcb_act_LoadHpglFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadHpglFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadHpglFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load HP-GL file...",
@@ -169,8 +168,8 @@ fgw_error_t pcb_act_LoadHpglFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 	}
 
+	PCB_ACT_IRES(0);
 	return hpgl_load(fname);
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t hpgl_action_list[] = {
