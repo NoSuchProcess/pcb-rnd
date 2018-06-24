@@ -27,3 +27,19 @@ applies the following restrictions:
 - a single action call will result in a single fungw function call; that
   is, the fungw function that serves the action is free to convert any
   of the arguments.
+
+TODO:
+static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *saved;
+	pcb_coord_t c;
+
+	fgw_str2coord_unit_set(saved, "cm");
+	PCB_ACT_CONVARG(1, FGW_COORD, d1, c = fgw_coord(&argv[1]));
+	fgw_str2coord_unit_restore(saved);
+
+	printf("D1: %ld\n", (long)c);
+	pcb_printf("%$mm\n", c);
+	PCB_ACT_IRES(0);
+	return 0;
+}
