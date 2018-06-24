@@ -80,9 +80,7 @@ static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
-					"  pcb_act_()   execute an action command (too numerous to list)\n"
-					"              see the manual for the list of action commands\n"
+	pcb_message(PCB_MSG_INFO, "following shorthand commands are supported:\n"
 					"  h           display this help message\n"
 					"  l  [file]   load layout\n"
 					"  le [file]   load element to buffer\n"
