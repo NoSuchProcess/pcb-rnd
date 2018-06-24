@@ -5368,13 +5368,14 @@ actions.o: actions.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h \
- ../src_3rd/libfungw/fungw_conv.h error.h event.h actions.h hid.h drc.h \
- attrib.h layer.h obj_arc_list.h obj_common.h flag.h data_parent.h \
- obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/libfungw/fungw_conv.h board.h vtroutestyle.h attrib.h layer.h \
+ obj_arc_list.h obj_common.h flag.h data_parent.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
+ obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
- layer_grp.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- compat_misc.h compat_nls.h funchash.h
+ layer_grp.h library.h rats_patch.h error.h event.h actions.h hid.h drc.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h compat_misc.h \
+ compat_nls.h funchash.h
 attrib.o: attrib.c ../config.h compat_misc.h attrib.h
 board.o: board.c ../config.h board.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -5414,9 +5415,9 @@ brave.o: brave.c ../config.h ../src_3rd/genvector/gds_char.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
  layer_grp.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/genvector/vtp0.h list_conf.h conf_hid.h compat_misc.h \
- hid_dad.h hid_attrib.h
+ action_helper.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ conf_hid.h compat_misc.h hid_dad.h hid_attrib.h
 buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7492,8 +7493,8 @@ undo_act.o: undo_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h action_helper.h \
- funchash_core.h funchash.h funchash_core_list.h undo.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h compat_misc.h \
+ action_helper.h funchash_core.h funchash.h funchash_core_list.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h undo_act.h search.h rats.h \
  netlist.h route_style.h obj_line_draw.h tool.h
 undo_old.o: undo_old.c ../config.h ../src_3rd/libuundo/uundo.h board.h \
