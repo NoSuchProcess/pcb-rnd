@@ -546,7 +546,7 @@ do { \
 
 static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
-	if (target == FGW_COORD) { /* convert to keyword */
+	if (target == FGW_COORD) { /* convert to coord */
 		pcb_coord_t tmp;
 		switch(FGW_BASE_TYPE(arg->type)) {
 			ARG_CONV_CASE_LONG(tmp, conv_assign)
@@ -562,7 +562,7 @@ static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 		fgw_coord(arg) = tmp;
 		return 0;
 	}
-	if (arg->type == FGW_KEYWORD) { /* convert from keyword */
+	if (arg->type == FGW_COORD) { /* convert from coord */
 		pcb_coord_t tmp = fgw_coord(arg);
 		switch(target) {
 			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
