@@ -78,9 +78,8 @@ static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 %end-doc */
 
-static fgw_error_t pcb_act_Help(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
 					"  pcb_act_()   execute an action command (too numerous to list)\n"
 					"              see the manual for the list of action commands\n"
@@ -92,8 +91,8 @@ static fgw_error_t pcb_act_Help(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 					"  q!          quits without save warning\n"
 					"  rn [file]   read in a net-list file\n"
 					"  s  [file]   save layout\n" "  w  [file]   save layout\n" "  wq [file]   save layout and quit\n");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
