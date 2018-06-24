@@ -583,7 +583,7 @@ static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
-#define conv_str2layer(dst, src) \
+#define conv_str2layerid(dst, src) \
 do { \
 	pcb_layer_id_t lid = pcb_layer_str2id(PCB->Data, src); \
 	if (lid < 0) \
@@ -591,26 +591,26 @@ do { \
 	dst = lid; \
 } while(0)
 
-static int layer_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+static int layerid_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
-	if (target == FGW_LAYER) { /* convert to keyword */
+	if (target == FGW_LAYERID) { /* convert to layer id */
 		pcb_layer_id_t tmp;
 		switch(FGW_BASE_TYPE(arg->type)) {
 			ARG_CONV_CASE_LONG(tmp, conv_assign)
 			ARG_CONV_CASE_LLONG(tmp, conv_assign)
 			ARG_CONV_CASE_DOUBLE(tmp, conv_assign)
 			ARG_CONV_CASE_LDOUBLE(tmp, conv_assign)
-			ARG_CONV_CASE_STR(tmp, conv_str2layer)
+			ARG_CONV_CASE_STR(tmp, conv_str2layerid)
 			ARG_CONV_CASE_PTR(tmp, conv_err)
 			ARG_CONV_CASE_CLASS(tmp, conv_err)
 			ARG_CONV_CASE_INVALID(tmp, conv_err)
 		}
-		arg->type = FGW_LAYER;
-		fgw_layer(arg) = tmp;
+		arg->type = FGW_LAYERID;
+		fgw_layerid(arg) = tmp;
 		return 0;
 	}
-	if (arg->type == FGW_KEYWORD) { /* convert from keyword */
-		pcb_coord_t tmp = fgw_coord(arg);
+	if (arg->type == FGW_KEYWORD) { /* convert from layer id */
+		pcb_layer_id_t tmp = fgw_layerid(arg);
 		switch(target) {
 			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
 			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)
@@ -627,7 +627,7 @@ static int layer_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 		arg->type = target;
 		return 0;
 	}
-	fprintf(stderr, "Neither side of the conversion is layer\n");
+	fprintf(stderr, "Neither side of the conversion is layer id\n");
 	abort();
 }
 
@@ -644,8 +644,8 @@ void pcb_actions_init(void)
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_argv_conv) != FGW_LAYER) {
-		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_argv_conv) != FGW_LAYERID) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERID\n");
 		abort();
 	}
 }
