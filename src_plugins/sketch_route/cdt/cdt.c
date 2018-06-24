@@ -408,9 +408,11 @@ static void triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon)
 		EDGELIST_FOREACH(e, candidate_t.p[1]->adj_edges)
 			if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
 					&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2])) {
+				triangle_t ord_t = { {candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]} };
 				if (LINES_INTERSECT(candidate_e.endp[0], candidate_e.endp[1], e->endp[0], e->endp[1]))
 					goto skip;
-				if (is_point_in_triangle(e->endp[0] != candidate_t.p[1] ? e->endp[0] : e->endp[1], &candidate_t))
+				order_triangle_points_ccw(&ord_t.p[0], &ord_t.p[1], &ord_t.p[2]);
+				if (is_point_in_triangle(e->endp[0] != candidate_t.p[1] ? e->endp[0] : e->endp[1], &ord_t))
 					goto skip;
 			}
 		EDGELIST_FOREACH_END();
