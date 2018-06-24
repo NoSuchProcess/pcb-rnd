@@ -265,35 +265,32 @@ and has the same functionality as @code{s}.
 
 %end-doc */
 
-static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	switch (argc) {
-	case 0:
+	const char *filename = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, SaveLayout, filename = argv[1].val.str);
+
+	if (filename == NULL) {
 		if (PCB->Filename) {
 			if (pcb_save_pcb(PCB->Filename, NULL) == 0)
 				pcb_board_set_changed_flag(pcb_false);
 		}
 		else
 			pcb_message(PCB_MSG_ERROR, "No filename to save to yet\n");
-		break;
-
-	case 1:
-		if (pcb_save_pcb(argv[0], NULL) == 0) {
+	}
+	else {
+		if (pcb_save_pcb(filename, NULL) == 0) {
 			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->Filename);
-			PCB->Filename = pcb_strdup(argv[0]);
+			PCB->Filename = pcb_strdup(filename);
 			if (pcb_gui->notify_filename_changed != NULL)
 				pcb_gui->notify_filename_changed();
 		}
-		break;
-
-	default:
-		pcb_message(PCB_MSG_ERROR, "Usage: s [name] | w [name]\n  saves layout data\n");
-		return 1;
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_SaveLayoutAndQuit[] = "wq";
@@ -310,9 +307,11 @@ has the same functionality as @code{s} combined with @code{q}.
 
 static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (PCB_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) != 0)
+	if (PCB_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) == 0)
 		return pcb_act_Quit(res, argc, argv);
-	return 1;
+
+	PCB_ACT_IRES(1);
+	return 0;
 }
 
 pcb_action_t shand_cmd_action_list[] = {
