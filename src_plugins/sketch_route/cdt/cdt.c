@@ -547,7 +547,7 @@ first_triangle_found:
 	assert(next_t != NULL);
 
 	/* follow the path */
-	while (next_t->p[0] != p2 && next_t->p[1] != p2 && next_t->p[3] != p2) {
+	while (next_t->p[0] != p2 && next_t->p[1] != p2 && next_t->p[2] != p2) {
 		triangle_t *t = next_t;
 		for (i = 0; i < 3; i++)
 			if (t->e[i] != adj_e && LINES_INTERSECT(p1, p2, t->e[i]->endp[0], t->e[i]->endp[1])) {
