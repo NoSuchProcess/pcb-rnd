@@ -80,15 +80,18 @@ static const char pcb_acth_Help[] = "Print a help message for commands.";
 
 static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_INFO, "following shorthand commands are supported:\n"
-					"  h           display this help message\n"
-					"  l  [file]   load layout\n"
-					"  le [file]   load element to buffer\n"
-					"  m  [file]   load layout to buffer (merge)\n"
-					"  q           quits the application\n"
-					"  q!          quits without save warning\n"
-					"  rn [file]   read in a net-list file\n"
-					"  s  [file]   save layout\n" "  w  [file]   save layout\n" "  wq [file]   save layout and quit\n");
+	pcb_message(PCB_MSG_INFO,
+		"following shorthand commands are supported:\n"
+		"  h           display this help message\n"
+		"  l  [file]   load layout\n"
+		"  le [file]   load element to buffer\n"
+		"  m  [file]   load layout to buffer (merge)\n"
+		"  q           quits the application\n"
+		"  q!          quits without save warning\n"
+		"  rn [file]   read in a net-list file\n"
+		"  s  [file]   save layout\n"
+		"  w  [file]   save layout\n"
+		"  wq [file]   save layout and quit\n");
 	PCB_ACT_IRES(0);
 	return 0;
 }
