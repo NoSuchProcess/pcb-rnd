@@ -48,6 +48,7 @@
 #include "action_helper.h"
 #include "macro.h"
 #include "grid.h"
+#include "stub_stroke.h"
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
@@ -1136,3 +1137,13 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 	}
 }
 
+void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
+{
+	if (pcb_mid_stroke)
+		pcb_stub_stroke_record(ev_x, ev_y);
+	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
+		/* update object position and cursor location */
+		pcb_adjust_attached_objects();
+		pcb_notify_crosshair_change(pcb_true);
+	}
+}

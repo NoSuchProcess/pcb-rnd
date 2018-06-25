@@ -50,7 +50,6 @@
 #include "search.h"
 #include "select.h"
 #include "undo.h"
-#include "stub_stroke.h"
 #include "funchash_core.h"
 #include "actions.h"
 #include "compat_misc.h"
@@ -144,15 +143,4 @@ void pcb_notify_mode(void)
 		pcb_clear_warnings();
 	pcb_tool_notify_mode();
 	pcb_draw();
-}
-
-void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
-{
-	if (pcb_mid_stroke)
-		pcb_stub_stroke_record(ev_x, ev_y);
-	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
-		/* update object position and cursor location */
-		pcb_adjust_attached_objects();
-		pcb_notify_crosshair_change(pcb_true);
-	}
 }
