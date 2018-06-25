@@ -632,7 +632,8 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 {
 	pointlist_node_t *polygon = NULL;
-	retriangulation_region_t region = {NULL, NULL};
+	edgelist_node_t *border_edges = NULL;
+	int invalid_edge_found;
 	int i, j;
 
 	assert(edge->is_constrained);
@@ -640,15 +641,44 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 	/* initial polygon */
 	polygon = pointlist_prepend(polygon, &edge->endp[0]);
 	polygon = pointlist_prepend(polygon, &edge->endp[1]);
-	for (i = 0; i < 2; i++)
-		for(j = 0; j < 3; j++)
-			if (edge->adj_t[i]->p[j] != edge->endp[0] && edge->adj_t[i]->p[j] != edge->endp[1]) {
+	for (i = 0; i < 2; i++) {
+		triangle_t *t = edge->adj_t[i];
+		for(j = 0; j < 3; j++) {
+			if (t->p[j] != edge->endp[0] && t->p[j] != edge->endp[1])
 				polygon = pointlist_prepend(polygon, &edge->adj_t[i]->p[j]);
-				break;
-			}
+			if (t->e[j] != edge)
+				border_edges = edgelist_prepend(border_edges, &t->e[j]);
+		}
+	}
+	remove_edge(cdt, edge);
 
-	/* find invalid edges */
+	/* find invalid edges and remove them */
+	do {
+		invalid_edge_found = 0;
+		EDGELIST_FOREACH(e, border_edges)
+			triangle_t *t = e->adj_t[0] != NULL ? e->adj_t[0] : e->adj_t[1];
+			edgelist_node_t *e_node = _node_;
+			POINTLIST_FOREACH(p, polygon)
+				if (is_point_in_circumcircle(p, t)) {
+					for (i = 0; i < 3; i++) {
+						if (t->p[i] != edge->endp[0] && t->p[i] != edge->endp[1])
+							polygon = pointlist_prepend(polygon, &t->p[i]);
+						if (t->e[i] != e)
+							border_edges = edgelist_prepend(border_edges, &t->e[i]);
+					}
+					border_edges = edgelist_remove(border_edges, e_node);
+					remove_edge(cdt, e);
+					invalid_edge_found = 1;
+					break;
+				}
+			POINTLIST_FOREACH_END();
+		EDGELIST_FOREACH_END();
+	} while (invalid_edge_found);
+	/* free(polygon) */
 
+	/* triangulate the resultant polygon */
+	polygon = order_edges_adjacently(border_edges);
+	triangulate_polygon(cdt, polygon);
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
