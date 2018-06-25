@@ -50,8 +50,6 @@ put /local/pcb/OBJS_C99 [@
 
 append /local/pcb/OBJS [@
 	actions.o
-	action_helper.o
-	action_act.o
 	attrib.o
 	board.o
 	box.o
@@ -235,7 +233,7 @@ put /local/pcb/OBJS_UTIL [@
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
-	action_act.c buffer.c brave.c change_act.c conf_act.c file_act.c find_act.c
+	buffer.c brave.c change_act.c conf_act.c file_act.c find_act.c
 	gui_act.c main_act.c netlist_act.c font_act.c object_act.c
 	obj_pstk_act.c plugins.c polygon_act.c plug_footprint_act.c rats_act.c
 	rats_patch.c remove_act.c select_act.c undo_act.c
