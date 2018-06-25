@@ -659,6 +659,7 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 			triangle_t *t = e->adj_t[0] != NULL ? e->adj_t[0] : e->adj_t[1];
 			edgelist_node_t *e_node = _node_;
 			if (!e->is_constrained) {
+				assert(t != NULL);
 				POINTLIST_FOREACH(p, polygon)
 					if (is_point_in_circumcircle(p, t)) {
 						for (i = 0; i < 3; i++) {
