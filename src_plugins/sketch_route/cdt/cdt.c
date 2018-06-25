@@ -629,6 +629,28 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 	return e;
 }
 
+void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
+{
+	pointlist_node_t *polygon = NULL;
+	edgelist_node_t *border_edges
+	int i, j;
+
+	assert(edge->is_constrained);
+
+	/* initial polygon */
+	polygon = pointlist_prepend(polygon, &edge->endp[0]);
+	polygon = pointlist_prepend(polygon, &edge->endp[1]);
+	for (i = 0; i < 2; i++)
+		for(j = 0; j < 3; j++)
+			if (edge->adj_t[i]->p[j] != edge->endp[0] && edge->adj_t[i]->p[j] != edge->endp[1]) {
+				polygon = pointlist_prepend(polygon, &edge->adj_t[i]->p[j]);
+				break;
+			}
+
+	/* find invalid edges */
+
+}
+
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 {
 	double x1 = t->p[0]->pos.x, x2 = t->p[1]->pos.x, x3 = t->p[2]->pos.x;
