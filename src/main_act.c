@@ -36,6 +36,11 @@
 
 #include "config.h"
 
+#include <stdio.h>
+#include "config.h"
+
+#include "undo.h"
+#include "compat_nls.h"
 #include "board.h"
 #include "data.h"
 #include "crosshair.h"
@@ -348,6 +353,65 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ExecuteFile[] = "ExecuteFile(filename)";
+static const char pcb_acth_ExecuteFile[] = "Run actions from the given file.";
+/* %start-doc actions ExecuteFile
+
+Lines starting with @code{#} are ignored.
+
+%end-doc */
+fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	FILE *fp;
+	const char *fname;
+	char line[256];
+	int n = 0;
+	char *sp;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
+
+	if ((fp = pcb_fopen(fname, "r")) == NULL) {
+		fprintf(stderr, _("Could not open actions file \"%s\".\n"), fname);
+		return 1;
+	}
+
+	defer_updates = 1;
+	defer_needs_update = 0;
+	while (fgets(line, sizeof(line), fp) != NULL) {
+		n++;
+		sp = line;
+
+		/* eat the trailing newline */
+		while (*sp && *sp != '\r' && *sp != '\n')
+			sp++;
+		*sp = '\0';
+
+		/* eat leading spaces and tabs */
+		sp = line;
+		while (*sp && (*sp == ' ' || *sp == '\t'))
+			sp++;
+
+		/*
+		 * if we have anything left and its not a comment line
+		 * then execute it
+		 */
+
+		if (*sp && *sp != '#') {
+			/*pcb_message("%s : line %-3d : \"%s\"\n", fname, n, sp); */
+			pcb_parse_actions(sp);
+		}
+	}
+
+	defer_updates = 0;
+	if (defer_needs_update) {
+		pcb_undo_inc_serial();
+		pcb_gui->invalidate_all();
+	}
+	fclose(fp);
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t main_action_list[] = {
 	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
 	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
@@ -360,7 +424,8 @@ pcb_action_t main_action_list[] = {
 	{"DumpPluginDirs", pcb_act_DumpPluginDirs, pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs},
 	{"DumpObjFlags", pcb_act_DumpObjFlags, pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags},
 	{"System", pcb_act_System, pcb_acth_System, pcb_acts_System},
-	{"ExecCommand", pcb_act_System, pcb_acth_System, pcb_acts_System}
+	{"ExecCommand", pcb_act_System, pcb_acth_System, pcb_acts_System},
+	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)
