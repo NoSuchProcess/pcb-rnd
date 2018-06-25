@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 
-#include "action_helper.h"
 #include "error.h"
 #include "pcb-printf.h"
 #include "plugins.h"

@@ -38,7 +38,6 @@
 #include "actions.h"
 #include "data.h"
 #include "compat_misc.h"
-#include "action_helper.h"
 #include "error.h"
 #include "funchash_core.h"
 

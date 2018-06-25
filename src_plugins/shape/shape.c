@@ -28,7 +28,6 @@
 
 #include "shape.h"
 
-#include "action_helper.h"
 #include "plugins.h"
 #include "actions.h"
 

@@ -31,7 +31,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "action_helper.h"
 #include "buffer.h"
 #include "board.h"
 #include "copy.h"

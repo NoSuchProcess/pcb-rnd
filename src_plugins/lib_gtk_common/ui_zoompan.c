@@ -30,7 +30,6 @@
 #include "ui_zoompan.h"
 
 #include "unit.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "error.h"
 #include "conf_core.h"

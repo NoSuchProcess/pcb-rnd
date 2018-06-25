@@ -38,7 +38,6 @@
 #include "funchash_core.h"
 #include "data.h"
 #include "buffer.h"
-#include "action_helper.h"
 
 #include "plug_io.h"
 #include "plug_import.h"

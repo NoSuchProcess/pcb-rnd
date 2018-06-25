@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "action_helper.h"
 #include "compat_nls.h"
 #include "hid.h"
 #include "hid_draw_helpers.h"

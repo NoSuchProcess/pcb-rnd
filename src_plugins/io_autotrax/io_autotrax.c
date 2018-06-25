@@ -43,7 +43,6 @@
 #include "conf_core.h"
 #include "buffer.h"
 #include "hid.h"
-#include "action_helper.h"
 #include "compat_misc.h"
 
 static pcb_plug_io_t io_autotrax;

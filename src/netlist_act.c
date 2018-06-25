@@ -36,7 +36,6 @@
 #include <ctype.h>
 #include <genregex/regex_sei.h>
 
-#include "action_helper.h"
 #include "funchash_core.h"
 #include "data.h"
 #include "board.h"

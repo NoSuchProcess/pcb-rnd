@@ -33,7 +33,6 @@
  */
 #include "config.h"
 #include "data.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "tool.h"
 #include "remove.h"

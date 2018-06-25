@@ -34,7 +34,6 @@
 #include "flag_str.h"
 #include "layer.h"
 #include "diag_conf.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "plugins.h"
 #include "conf.h"

@@ -34,7 +34,6 @@
 #include "config.h"
 #include "conf.h"
 #include "data.h"
-#include "action_helper.h"
 #include "change.h"
 #include "error.h"
 #include "undo.h"

@@ -30,7 +30,6 @@
 
 #include <stroke.h>
 
-#include "action_helper.h"
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"

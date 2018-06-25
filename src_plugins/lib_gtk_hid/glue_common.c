@@ -2,7 +2,6 @@
 
 #include "glue_common.h"
 
-#include "action_helper.h"
 #include "tool.h"
 
 #include "gui.h"

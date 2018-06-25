@@ -43,7 +43,6 @@
 #include "funchash_core.h"
 
 #include "board.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "change.h"
 #include "draw.h"

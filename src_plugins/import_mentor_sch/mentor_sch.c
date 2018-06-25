@@ -39,7 +39,6 @@
 #include "compat_misc.h"
 #include <gensexpr/gsxl.h>
 
-#include "action_helper.h"
 #include "actions.h"
 #include "plugins.h"
 #include "hid.h"

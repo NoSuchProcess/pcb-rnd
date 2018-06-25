@@ -37,7 +37,6 @@
 
 #include "conf_core.h"
 #include "hid.h"
-#include "action_helper.h"
 #include "compat_misc.h"
 #include "actions.h"
 #include "plugins.h"

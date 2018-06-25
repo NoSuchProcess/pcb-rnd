@@ -33,7 +33,6 @@
 
 #include "brave.h"
 #include "actions.h"
-#include "action_helper.h"
 #include "conf_core.h"
 #include "conf_hid.h"
 #include "compat_misc.h"

@@ -27,7 +27,6 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "search.h"
-#include "action_helper.h"
 #include "change.h"
 
 static int ok;

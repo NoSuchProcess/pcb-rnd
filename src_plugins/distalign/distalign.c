@@ -29,7 +29,6 @@
 #include "draw.h"
 #include "plugins.h"
 #include "macro.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "compat_misc.h"
 

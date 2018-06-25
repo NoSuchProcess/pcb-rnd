@@ -36,7 +36,6 @@
 
 #include "data.h"
 #include "board.h"
-#include "action_helper.h"
 #include "tool.h"
 #include "change.h"
 #include "error.h"

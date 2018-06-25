@@ -48,7 +48,6 @@
 #include "compat_misc.h"
 #include "layer.h"
 #include "actions.h"
-#include "action_helper.h"
 #include "hid_init.h"
 #include "conf_core.h"
 #include "plugins.h"

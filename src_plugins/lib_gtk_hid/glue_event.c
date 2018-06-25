@@ -1,7 +1,6 @@
 #include "common.h"
 #include "event.h"
 #include "gui.h"
-#include "action_helper.h"
 #include "conf_core.h"
 #include "tool.h"
 #include "../src_plugins/lib_gtk_common/dlg_netlist.h"

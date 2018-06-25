@@ -18,7 +18,6 @@
 #include <setjmp.h>
 
 #include "data.h"
-#include "action_helper.h"
 #include "crosshair.h"
 #include "conf_hid.h"
 #include "layer.h"

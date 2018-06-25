@@ -40,7 +40,6 @@
 #include "polygon.h"
 #include "safe_fs.h"
 
-#include "action_helper.h"
 #include "actions.h"
 #include "hid.h"
 #include "plugins.h"

@@ -29,7 +29,6 @@
 #include "actions.h"
 #include "error.h"
 #include "font.h"
-#include "action_helper.h"
 #include "conf_core.h"
 #include "plug_io.h"
 #include "event.h"

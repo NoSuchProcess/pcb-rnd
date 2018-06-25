@@ -30,7 +30,6 @@
 #include "layer.h"
 #include "layer_ui.h"
 /*#include "acompnet_conf.h"*/
-#include "action_helper.h"
 #include "actions.h"
 #include "plugins.h"
 #include "conf.h"

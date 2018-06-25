@@ -35,7 +35,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "action_helper.h"
 #include "crosshair.h"
 #include "actions.h"
 #include "polygon.h"

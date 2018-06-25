@@ -35,7 +35,6 @@
 #include "move.h"
 #include "draw.h"
 #include "plugins.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "compat_nls.h"
 #include "obj_subc.h"

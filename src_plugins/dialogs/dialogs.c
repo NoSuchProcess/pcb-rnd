@@ -32,7 +32,6 @@
 #include "hid_attrib.h"
 #include "actions.h"
 #include "hid_dad.h"
-#include "action_helper.h"
 #include "plugins.h"
 
 /* include them all for static inlines */

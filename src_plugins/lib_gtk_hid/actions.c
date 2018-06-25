@@ -34,7 +34,6 @@
 #include "data.h"
 #include "search.h"
 #include "change.h"
-#include "action_helper.h"
 #include "hid_attrib.h"
 #include "../src/actions.h"
 #include "compat_nls.h"

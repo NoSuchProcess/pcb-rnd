@@ -41,7 +41,6 @@
 #include "compat_misc.h"
 #include "safe_fs.h"
 
-#include "action_helper.h"
 #include "actions.h"
 #include "plugins.h"
 #include "hid.h"

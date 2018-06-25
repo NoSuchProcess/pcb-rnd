@@ -53,7 +53,6 @@
 #include "draw.h"
 #include "pcb-printf.h"
 #include "plugins.h"
-#include "action_helper.h"
 #include "actions.h"
 #include "misc_util.h"
 #include "report_conf.h"

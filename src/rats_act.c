@@ -36,7 +36,6 @@
 
 #include "board.h"
 #include "data.h"
-#include "action_helper.h"
 #include "error.h"
 #include "undo.h"
 #include "find.h"

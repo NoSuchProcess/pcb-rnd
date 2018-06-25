@@ -29,7 +29,6 @@
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 
-#include "action_helper.h"
 #include "funchash_core.h"
 #include "board.h"
 #include "conf_core.h"

@@ -37,7 +37,6 @@
 #include "in_mouse.h"
 
 #include "board.h"
-#include "action_helper.h"
 #include "crosshair.h"
 #include "conf_core.h"
 #include "undo.h"

@@ -45,7 +45,6 @@
 #include "find.h"
 #include "undo.h"
 #include "event.h"
-#include "action_helper.h"
 #include "macro.h"
 #include "grid.h"
 #include "stub_stroke.h"
