@@ -84,8 +84,10 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, AddRats, op = fgw_keyword(&argv[1]));
 
-	if (conf_core.temp.rat_warn)
+	if (conf_core.temp.rat_warn) {
 		pcb_clear_warnings();
+		pcb_draw();
+	}
 	switch (op) {
 		case F_AllRats:
 			if (pcb_rat_add_all(pcb_false, NULL))
@@ -215,8 +217,10 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, DeleteRats, op = fgw_keyword(&argv[1]));
 
-	if (conf_core.temp.rat_warn)
+	if (conf_core.temp.rat_warn) {
 		pcb_clear_warnings();
+		pcb_draw();
+	}
 	switch(op) {
 		case F_AllRats:
 			if (pcb_rats_destroy(pcb_false))
