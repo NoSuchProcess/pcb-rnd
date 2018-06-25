@@ -631,7 +631,6 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		{
 			/* replace with subc */
 			pcb_subc_t *psc;
-
 			psc = pcb_subclist_first(&(PCB_PASTEBUFFER->Data->subc));
 			if (psc != NULL) {
 				pcb_coord_t pcx = 0, pcy = 0;

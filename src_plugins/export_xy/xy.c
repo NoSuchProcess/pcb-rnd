@@ -682,6 +682,10 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
 		if (pcb_subc_get_side(subc, &bott) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
 
+		ctx.theta = -ctx.theta;
+		if (ctx.theta == -0)
+			ctx.theta = 0;
+	
 		xy_translate(&ctx, &ctx.x, &ctx.y);
 
 		ctx.subc = subc;

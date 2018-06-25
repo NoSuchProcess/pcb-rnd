@@ -84,7 +84,7 @@ static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, 
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
 		if (rot != 0) {
-			pcb_append_printf(&model_calls, "	%srotate([0,0,%f])\n", tab, -rot);
+			pcb_append_printf(&model_calls, "	%srotate([0,0,%f])\n", tab, rot);
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
 		if (transf != NULL) {
