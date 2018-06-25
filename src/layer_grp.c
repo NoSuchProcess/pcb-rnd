@@ -44,6 +44,7 @@ do { \
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
 		if ((pcb_gui != NULL) && (pcb_exporter == NULL)) \
 			pcb_gui->invalidate_all(); \
+		pcb_board_set_changed_flag(pcb_true); \
 	} \
 } while(0)
 
