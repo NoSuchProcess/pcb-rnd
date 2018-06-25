@@ -30,6 +30,7 @@
 #include "obj_pstk_inlines.h"
 
 #include "action_helper.h"
+#include "funchash_core.h"
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
@@ -37,25 +38,20 @@
 
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";
-
-fgw_error_t pcb_act_padstackconvert(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	int op;
 	pcb_coord_t x, y;
 	pcb_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(padstackconvert);
-	if (strcmp(argv[0], "selected") == 0) {
-		if (argc > 2) {
-			pcb_bool s1, s2;
-			x = pcb_get_value(argv[1], "mil", NULL, &s1);
-			y = pcb_get_value(argv[2], "mil", NULL, &s2);
-			if (!s1 || !s2) {
-				pcb_message(PCB_MSG_ERROR, "Error in coordinate format\n");
-				return -1;
-			}
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
+		case F_Selected:
+		if (argc > 3) {
+			PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
+			PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 		}
 		else {
 			pcb_hid_get_coords("Click at padstack origin", &x, &y);
@@ -72,9 +68,8 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 			p->parent = PCB_PASTEBUFFER->Data;
 			pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 		}
-	}
-	else if (strcmp(argv[0], "buffer") == 0) {
-
+		break;
+		case F_Buffer:
 		pid = pcb_pstk_conv_buffer(0);
 
 		if (pid != PCB_PADSTACK_INVALID) {
@@ -87,9 +82,10 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 			p->parent = PCB_PASTEBUFFER->Data;
 			pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 		}
+		break;
+		default:
+			PCB_ACT_FAIL(padstackconvert);
 	}
-	else
-		PCB_ACT_FAIL(padstackconvert);
 
 	if (pid != PCB_PADSTACK_INVALID) {
 		pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
@@ -100,41 +96,39 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	else
 		pcb_message(PCB_MSG_ERROR, "(failed to convert to padstack)\n", pid);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_padstackplace[] = "PadstackPlace([proto_id|default], [x, y])";
 static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
-
-fgw_error_t pcb_act_padstackplace(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *pids = NULL;
 	pcb_cardinal_t pid;
 	pcb_pstk_t *ps;
 	pcb_coord_t x, y;
 
-	if (argc > 2) {
-		pcb_bool s1, s2;
-		x = pcb_get_value(argv[1], "mil", NULL, &s1);
-		y = pcb_get_value(argv[2], "mil", NULL, &s2);
-		if (!s1 || !s2) {
-			pcb_message(PCB_MSG_ERROR, "Error in coordinate format\n");
-			return -1;
-		}
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, padstackplace, pids = argv[1].val.str);
+
+	if (argc > 3) {
+		PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
+		PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 	}
 	else {
+		pcb_hid_get_coords("Click at padstack origin", &x, &y);
+		/* rather use the snapped corsshair coords */
 		x = pcb_crosshair.X;
 		y = pcb_crosshair.Y;
 	}
 
-	if ((argc <= 0) || (strcmp(argv[0], "default") == 0)) {
+	if ((pids == NULL) || (strcmp(pids, "default") == 0)) {
 #warning padstack TODO: style default proto
 		pid = 0;
 	}
 	else {
 		char *end;
-		pid = strtol(argv[0], &end, 10);
+		pid = strtol(pids, &end, 10);
 		if (*end != '\0') {
 			pcb_message(PCB_MSG_ERROR, "Error in proto ID format: need an integer\n");
 			return -1;
@@ -152,8 +146,8 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		return -1;
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
