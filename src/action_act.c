@@ -55,20 +55,15 @@ Lines starting with @code{#} are ignored.
 
 %end-doc */
 
-fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-
 	FILE *fp;
 	const char *fname;
 	char line[256];
 	int n = 0;
 	char *sp;
 
-	if (argc != 1)
-		PCB_ACT_FAIL(ExecuteFile);
-
-	fname = argv[0];
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
 
 	if ((fp = pcb_fopen(fname, "r")) == NULL) {
 		fprintf(stderr, _("Could not open actions file \"%s\".\n"), fname);
@@ -108,8 +103,8 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		pcb_gui->invalidate_all();
 	}
 	fclose(fp);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
