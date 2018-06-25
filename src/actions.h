@@ -119,6 +119,7 @@ do { \
 	res->val.nat_int = v; \
 } while(0)
 
+#define PCB_ACT_FAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
 
 /*** The default unit to use when a coord value doesn't have its own unit ***/
 extern char *fgw_str2coord_unit; /* saved is char * too */
@@ -157,5 +158,13 @@ ores->val.nat_int = 0; \
 	(void)argc; \
 	(void)argv; \
 }
+
+/* ---------------------------------------------------------------------------
+ * Macros called by various action routines to show usage or to report
+ * a syntax error and fail
+ */
+#define PCB_AFAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return FGW_ERR_ARG_CONV; }
+
+#define PCB_ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
 #endif
