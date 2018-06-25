@@ -2,18 +2,31 @@
 #include <time.h>
 #include "cdt.h"
 
+#define ORIENT_CCW(a, b, c) (orientation(a, b, c) < 0)
+#define ORIENT_CW(a, b, c) (orientation(a, b, c) > 0)
+/* TODO: check epsilon for collinear case? */
+#define ORIENT_COLLINEAR(a, b, c) (orientation(a, b, c) == 0)
+#define ORIENT_CCW_CL(a, b, c) (orientation(a, b, c) <= 0)
+static double orientation(point_t *p1, point_t *p2, point_t *p3)
+{
+	return ((double)p2->pos.y - (double)p1->pos.y) * ((double)p3->pos.x - (double)p2->pos.x)
+				 - ((double)p2->pos.x - (double)p1->pos.x) * ((double)p3->pos.y - (double)p2->pos.y);
+}
+#define LINES_INTERSECT(p1, q1, p2, q2) \
+	(ORIENT_CCW(p1, q1, p2) != ORIENT_CCW(p1, q1, q2) && ORIENT_CCW(p2, q2, p1) != ORIENT_CCW(p2, q2, q1))
+
 cdt_t cdt;
 
 int main(void)
 {
 	point_t *p, *p1, *p2, *pd[1000];
-	edge_t *e;
-	int i;
+	edge_t *e, *ed[500];
+	int i, j, e_num;
 	clock_t t;
 	pointlist_node_t *p_violations = NULL;
 
-	cdt_init(&cdt, 1000, 1000, 5000, 5000);
-	/*cdt_init(&cdt, 0, 0, 100000, 100000);*/
+	//cdt_init(&cdt, 1000, 1000, 5000, 5000);
+	cdt_init(&cdt, 0, 0, 100000, 100000);
 
 	/*
 	cdt_insert_point(&cdt, 2500, 3000);
@@ -91,6 +104,7 @@ int main(void)
 	p2 = cdt_insert_point(&cdt, 4500, 3000);
 
 	e = cdt_insert_constrained_edge(&cdt, p1, p2);
+	cdt_delete_constrained_edge(&cdt, e);
 	*/
 
 	/* constrained edge 2 */
@@ -133,6 +147,7 @@ int main(void)
 	*/
 
 	/* delete constrained edge */
+	/*
 	p1 = cdt_insert_point(&cdt, 1500, 3000);
 	cdt_insert_point(&cdt, 2000, 3500);
 	cdt_insert_point(&cdt, 1900, 2500);
@@ -149,6 +164,28 @@ int main(void)
 
 	e = cdt_insert_constrained_edge(&cdt, p1, p2);
 	cdt_delete_constrained_edge(&cdt, e);
+	*/
+
+	srand(time(NULL));
+	e_num = 0;
+	for (i = 0; i < 100; i++) {
+		int isect = 0;
+		p1 = cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
+		p2 = cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
+		for (j = 0; j < e_num; j++)
+			if (LINES_INTERSECT(p1, p2, ed[j]->endp[0], ed[j]->endp[1])) {
+				isect = 1;
+				break;
+			}
+		if (!isect) {
+			ed[e_num] = cdt_insert_constrained_edge(&cdt, p1, p2);
+			e_num++;
+		}
+	}
+	for (i = 0; i < e_num; i++) {
+		fprintf(stderr, "deleting edge (%d, %d) - (%d, %d)\n", ed[i]->endp[0]->pos.x, ed[i]->endp[0]->pos.y, ed[i]->endp[1]->pos.x, ed[i]->endp[1]->pos.y);
+		cdt_delete_constrained_edge(&cdt, ed[i]);
+	}
 
 	if (cdt_check_delaunay(&cdt, &p_violations, NULL))
 		fprintf(stderr, "delaunay\n");
