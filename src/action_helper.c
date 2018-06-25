@@ -32,8 +32,6 @@
  *
  */
 
-/* action routines for output window */
-
 #include "config.h"
 
 #include "conf_core.h"
@@ -68,61 +66,8 @@
 
 #include "tool.h"
 
-/* %start-doc actions 00delta
-
-Many actions take a @code{delta} parameter as the last parameter,
-which is an amount to change something.  That @code{delta} may include
-units, as an additional parameter, such as @code{Action(Object,5,mm)}.
-If no units are specified, the default is PCB's native units
-(currently 1/100 mil).  Also, if the delta is prefixed by @code{+} or
-@code{-}, the size is increased or decreased by that amount.
-Otherwise, the size size is set to the given amount.
-
-@example
-Action(Object,5,mil)
-Action(Object,+0.5,mm)
-Action(Object,-1)
-@end example
-
-Actions which take a @code{delta} parameter which do not accept all
-these options will specify what they do take.
-
-%end-doc */
-
-/* %start-doc actions 00objects
-
-Many actions act on indicated objects on the board.  They will have
-parameters like @code{ToggleObject} or @code{SelectedVias} to indicate
-what group of objects they act on.  Unless otherwise specified, these
-parameters are defined as follows:
-
-@table @code
-
-@item Object
-@itemx ToggleObject
-Affects the object under the mouse pointer.  If this action is invoked
-from a menu or script, the user will be prompted to click on an
-object, which is then the object affected.
-
-@item Selected
-@itemx SelectedObjects
-
-Affects all objects which are currently selected.  At least, all
-selected objects for which the given action makes sense.
-
-@item SelectedPins
-@itemx SelectedVias
-@itemx Selected@var{Type}
-@itemx @i{etc}
-Affects all objects which are both selected and of the @var{Type} specified.
-
-@end table
-
-%end-doc */
-
 int defer_updates = 0;
 int defer_needs_update = 0;
-
 
 void pcb_clear_warnings()
 {
