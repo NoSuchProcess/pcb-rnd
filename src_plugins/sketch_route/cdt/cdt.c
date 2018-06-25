@@ -265,9 +265,9 @@ static int is_point_in_triangle(point_t *p, triangle_t *t)
 typedef struct {
 	edgelist_node_t *border_edges;
 	edgelist_node_t *edges_to_remove;
-} point_insert_region_t;
+} retriangulation_region_t;
 
-static void check_adjacent_triangle(triangle_t *adj_t, edge_t *adj_e, point_t *new_p, point_insert_region_t *region)
+static void check_adjacent_triangle(triangle_t *adj_t, edge_t *adj_e, point_t *new_p, retriangulation_region_t *region)
 {
 	int i;
 
@@ -445,7 +445,7 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 	pos_t pos = {x, y};
 	point_t *new_p;
 	triangle_t *enclosing_triangle = NULL;
-	point_insert_region_t region = {NULL, NULL};
+	retriangulation_region_t region = {NULL, NULL};
 	pointlist_node_t *points_to_attach, *prev_point_node;
 	int i;
 
@@ -632,7 +632,7 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 {
 	pointlist_node_t *polygon = NULL;
-	edgelist_node_t *border_edges
+	retriangulation_region_t region = {NULL, NULL};
 	int i, j;
 
 	assert(edge->is_constrained);
