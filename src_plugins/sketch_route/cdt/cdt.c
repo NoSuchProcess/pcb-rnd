@@ -658,20 +658,22 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 		EDGELIST_FOREACH(e, border_edges)
 			triangle_t *t = e->adj_t[0] != NULL ? e->adj_t[0] : e->adj_t[1];
 			edgelist_node_t *e_node = _node_;
-			POINTLIST_FOREACH(p, polygon)
-				if (is_point_in_circumcircle(p, t)) {
-					for (i = 0; i < 3; i++) {
-						if (t->p[i] != edge->endp[0] && t->p[i] != edge->endp[1])
-							polygon = pointlist_prepend(polygon, &t->p[i]);
-						if (t->e[i] != e)
-							border_edges = edgelist_prepend(border_edges, &t->e[i]);
+			if (!e->is_constrained) {
+				POINTLIST_FOREACH(p, polygon)
+					if (is_point_in_circumcircle(p, t)) {
+						for (i = 0; i < 3; i++) {
+							if (t->p[i] != edge->endp[0] && t->p[i] != edge->endp[1])
+								polygon = pointlist_prepend(polygon, &t->p[i]);
+							if (t->e[i] != e)
+								border_edges = edgelist_prepend(border_edges, &t->e[i]);
+						}
+						border_edges = edgelist_remove(border_edges, e_node);
+						remove_edge(cdt, e);
+						invalid_edge_found = 1;
+						break;
 					}
-					border_edges = edgelist_remove(border_edges, e_node);
-					remove_edge(cdt, e);
-					invalid_edge_found = 1;
-					break;
-				}
-			POINTLIST_FOREACH_END();
+				POINTLIST_FOREACH_END();
+			}
 		EDGELIST_FOREACH_END();
 	} while (invalid_edge_found);
 	/* free(polygon) */
