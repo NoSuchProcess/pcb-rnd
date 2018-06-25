@@ -6,7 +6,7 @@ cdt_t cdt;
 
 int main(void)
 {
-	point_t *p, *p1, *p2, *pd[500];
+	point_t *p, *p1, *p2, *pd[1000];
 	edge_t *e;
 	int i;
 	clock_t t;
@@ -109,17 +109,17 @@ int main(void)
 	e = cdt_insert_constrained_edge(&cdt, p1, p2);
 	*/
 
-	/*
-	for (i = 0; i < 500; i++) {
+	srand(time(NULL));
+	for (i = 0; i < 1000; i++) {
 		cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
 		pd[i] = cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
 	}
-	for (i = 0; i < 500; i++) {
+	for (i = 0; i < 1000; i++) {
 		cdt_delete_point(&cdt, pd[i]);
 	}
-	*/
 
 	/* tricky case for triangulate_polygon */
+	/*
 	p = cdt_insert_point(&cdt, 98347, 51060);
 	cdt_insert_point(&cdt, 92086, 47852);
 	cdt_insert_point(&cdt, 95806, 44000);
@@ -128,6 +128,7 @@ int main(void)
 	cdt_insert_point(&cdt, 94000, 45300);
 
 	cdt_delete_point(&cdt, p);
+	*/
 
 	if (cdt_check_delaunay(&cdt, &p_violations, NULL))
 		fprintf(stderr, "delaunay\n");
