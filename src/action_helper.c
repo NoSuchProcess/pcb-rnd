@@ -65,9 +65,6 @@
 
 #include "tool.h"
 
-int defer_updates = 0;
-int defer_needs_update = 0;
-
 void pcb_clear_warnings()
 {
 	pcb_rtree_it_t it;

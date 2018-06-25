@@ -53,6 +53,8 @@
 #include "obj_text_op.h"
 #include "obj_subc_op.h"
 
+int defer_updates = 0;
+int defer_needs_update = 0;
 
 pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,

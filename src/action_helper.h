@@ -37,12 +37,6 @@ void pcb_adjust_attached_objects(void);
 
 #define PCB_ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
-
-extern int defer_updates;
-extern int defer_needs_update;
-
-
-
 /* does what's appropriate for the current mode setting (when clicked). This
    normally means creation of an object at the current crosshair location.
    new created objects are added to the create undo list of course */

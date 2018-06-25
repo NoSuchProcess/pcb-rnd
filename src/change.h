@@ -37,6 +37,8 @@
 #include "pcb_bool.h"
 #include "unit.h"
 
+extern int defer_updates, defer_needs_update;
+
 #define	PCB_CHANGENAME_TYPES        \
 	(PCB_OBJ_PSTK | PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_LINE | \
 	PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART | PCB_OBJ_SUBC)
