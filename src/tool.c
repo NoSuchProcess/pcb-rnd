@@ -393,3 +393,22 @@ static void default_tool_unreg(void)
 	pcb_tool_unreg_by_cookie(pcb_tool_cookie);
 }
 
+
+/*** old helpers ***/
+void pcb_release_mode(void)
+{
+	pcb_tool_release_mode();
+
+	if (pcb_tool_is_saved)
+		pcb_tool_restore();
+	pcb_tool_is_saved = pcb_false;
+	pcb_draw();
+}
+
+void pcb_notify_mode(void)
+{
+	if (conf_core.temp.rat_warn)
+		pcb_clear_warnings();
+	pcb_tool_notify_mode();
+	pcb_draw();
+}

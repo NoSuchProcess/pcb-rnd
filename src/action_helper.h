@@ -33,15 +33,9 @@
 
 #define PCB_ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
-/* does what's appropriate for the current mode setting (when clicked). This
-   normally means creation of an object at the current crosshair location.
-   new created objects are added to the create undo list of course */
-void pcb_notify_mode(void);
 
 /* Clear warning color from pins/pads */
 void pcb_clear_warnings(void);
-
-void pcb_release_mode(void);
 
 /* ---------------------------------------------------------------------------
  * Macros called by various action routines to show usage or to report
