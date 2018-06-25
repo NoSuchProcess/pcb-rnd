@@ -37,6 +37,7 @@
 #include <genregex/regex_sei.h>
 
 #include "action_helper.h"
+#include "funchash_core.h"
 #include "data.h"
 #include "board.h"
 #include "error.h"
@@ -234,84 +235,74 @@ updates the GUI.
 
 typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
 
-static fgw_error_t pcb_act_Netlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	NFunc func;
-	int i, j;
+	const char *a1 = NULL, *a2 = NULL;
+	int op, i, j;
 	pcb_lib_menu_t *net;
 	pcb_lib_entry_t *pin;
 	int net_found = 0;
 	int pin_found = 0;
 	int use_re = 0;
 	re_sei_t *regex;
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, a1 = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, Netlist, a2 = argv[3].val.str);
+	PCB_ACT_IRES(0);
 
 	if (!PCB)
 		return 1;
-	if (argc == 0) {
-		pcb_message(PCB_MSG_ERROR, pcb_acts_Netlist);
-		return 1;
-	}
-	if (pcb_strcasecmp(argv[0], "find") == 0)
-		func = pcb_netlist_find;
-	else if (pcb_strcasecmp(argv[0], "select") == 0)
-		func = pcb_netlist_select;
-	else if (pcb_strcasecmp(argv[0], "rats") == 0)
-		func = pcb_netlist_rats;
-	else if (pcb_strcasecmp(argv[0], "norats") == 0)
-		func = pcb_netlist_norats;
-	else if (pcb_strcasecmp(argv[0], "clear") == 0) {
-		func = pcb_netlist_clear;
-		if (argc == 1) {
-			pcb_netlist_clear(NULL, NULL);
+
+	switch(op) {
+		case F_Find: func = pcb_netlist_find; break;
+		case F_Select: func = pcb_netlist_select; break;
+		case F_Rats: func = pcb_netlist_rats; break;
+		case F_NoRats: func = pcb_netlist_norats; break;
+		case F_Style: func = (NFunc) pcb_netlist_style; break;
+		case F_Swap: return pcb_netlist_swap(); break;
+		case F_Clear:
+			func = pcb_netlist_clear;
+			if (argc == 2) {
+				pcb_netlist_clear(NULL, NULL);
+				return 0;
+			}
+			break;
+		case F_Add:
+			/* Add is different, because the net/pin won't already exist.  */
+			return pcb_netlist_add(0, a1, a2);
+		case F_Sort:
+			pcb_sort_netlist();
+			pcb_ratspatch_make_edited(PCB);
 			return 0;
-		}
-	}
-	else if (pcb_strcasecmp(argv[0], "style") == 0)
-		func = (NFunc) pcb_netlist_style;
-	else if (pcb_strcasecmp(argv[0], "swap") == 0)
-		return pcb_netlist_swap();
-	else if (pcb_strcasecmp(argv[0], "add") == 0) {
-		/* Add is different, because the net/pin won't already exist.  */
-		return pcb_netlist_add(0, PCB_ACTION_ARG(1), PCB_ACTION_ARG(2));
-	}
-	else if (pcb_strcasecmp(argv[0], "sort") == 0) {
-		pcb_sort_netlist();
-		pcb_ratspatch_make_edited(PCB);
-		return 0;
-	}
-	else if (pcb_strcasecmp(argv[0], "freeze") == 0) {
-		PCB->netlist_frozen++;
-		return 0;
-	}
-	else if (pcb_strcasecmp(argv[0], "thaw") == 0) {
-		if (PCB->netlist_frozen > 0) {
-			PCB->netlist_frozen--;
+		case F_Freeze:
+			PCB->netlist_frozen++;
+			return 0;
+		case F_Thaw:
+			if (PCB->netlist_frozen > 0) {
+				PCB->netlist_frozen--;
+				if (PCB->netlist_needs_update)
+					pcb_netlist_changed(0);
+			}
+			return 0;
+		case F_ForceThaw:
+			PCB->netlist_frozen = 0;
 			if (PCB->netlist_needs_update)
 				pcb_netlist_changed(0);
-		}
-		return 0;
-	}
-	else if (pcb_strcasecmp(argv[0], "forcethaw") == 0) {
-		PCB->netlist_frozen = 0;
-		if (PCB->netlist_needs_update)
-			pcb_netlist_changed(0);
-		return 0;
-	}
-	else {
-		pcb_message(PCB_MSG_ERROR, pcb_acts_Netlist);
-		return 1;
+			return 0;
+		default:
+			PCB_ACT_FAIL(Netlist);
 	}
 
-	if (argc > 1) {
+	if (argc > 2) {
 		use_re = 1;
 		for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; i++) {
 			net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
-			if (pcb_strcasecmp(argv[1], net->Name + 2) == 0)
+			if (pcb_strcasecmp(a1, net->Name + 2) == 0)
 				use_re = 0;
 		}
 		if (use_re) {
-			regex = re_sei_comp(argv[1]);
+			regex = re_sei_comp(a1);
 			if (re_sei_errno(regex) != 0) {
 				pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 				re_sei_free(regex);
@@ -330,7 +321,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 					continue;
 			}
 			else {
-				if (pcb_strcasecmp(net->Name + 2, argv[1]))
+				if (pcb_strcasecmp(net->Name + 2, a1))
 					continue;
 			}
 		}
@@ -338,13 +329,13 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 		pin = 0;
 		if (func == (NFunc) pcb_netlist_style) {
-			pcb_netlist_style(net, PCB_ACTION_ARG(2));
+			pcb_netlist_style(net, a2);
 		}
-		else if (argc > 2) {
-			int l = strlen(argv[2]);
+		else if (argc > 3) {
+			int l = strlen(a2);
 			for (j = net->EntryN - 1; j >= 0; j--)
-				if (pcb_strcasecmp(net->Entry[j].ListEntry, argv[2]) == 0
-						|| (pcb_strncasecmp(net->Entry[j].ListEntry, argv[2], l) == 0 && net->Entry[j].ListEntry[l] == '-')) {
+				if (pcb_strcasecmp(net->Entry[j].ListEntry, a2) == 0
+						|| (pcb_strncasecmp(net->Entry[j].ListEntry, a2, l) == 0 && net->Entry[j].ListEntry[l] == '-')) {
 					pin = net->Entry + j;
 					pin_found = 1;
 					func(net, pin);
@@ -354,19 +345,18 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			func(net, 0);
 	}
 
-	if (argc > 2 && !pin_found) {
-		pcb_gui->log("Net %s has no pin %s\n", argv[1], argv[2]);
+	if (argc > 3 && !pin_found) {
+		pcb_gui->log("Net %s has no pin %s\n", a1, a2);
 		return 1;
 	}
 	else if (!net_found) {
-		pcb_gui->log("No net named %s\n", argv[1]);
+		pcb_gui->log("No net named %s\n", a1);
 	}
 
 	if (use_re)
 		re_sei_free(regex);
 
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t netlist_action_list[] = {
