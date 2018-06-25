@@ -1240,7 +1240,7 @@ static void mod_changed(XKeyEvent * e, int set)
 	if (panning)
 		Pan(2, e->x, e->y);
 	pcb_event_move_crosshair(Px(e->x), Py(e->y));
-	pcb_adjust_attached_objects();
+	pcb_tool_adjust_attached_objects();
 	pcb_notify_crosshair_change(pcb_true);
 	in_move_event = 0;
 }

@@ -61,6 +61,7 @@
 #include "hid_attrib.h"
 #include "operation.h"
 #include "obj_subc_op.h"
+#include "tool.h"
 
 #define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY
 
@@ -257,7 +258,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
 			conf_toggle_editor(all_direction_lines);
-			pcb_adjust_attached_objects();
+			pcb_tool_adjust_attached_objects();
 			break;
 
 		case F_CycleClip:
@@ -269,7 +270,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else {
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
-			pcb_adjust_attached_objects();
+			pcb_tool_adjust_attached_objects();
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 

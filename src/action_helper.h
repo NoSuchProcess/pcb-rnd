@@ -31,10 +31,6 @@
 
 #include "global_typedefs.h"
 
-
-/* adjusts the objects which are to be created like attached lines... */
-void pcb_adjust_attached_objects(void);
-
 #define PCB_ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
 /* does what's appropriate for the current mode setting (when clicked). This

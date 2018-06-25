@@ -129,11 +129,6 @@ void pcb_release_mode(void)
 	pcb_draw();
 }
 
-void pcb_adjust_attached_objects(void)
-{
-	pcb_tool_adjust_attached_objects();
-}
-
 void pcb_notify_mode(void)
 {
 	if (conf_core.temp.rat_warn)

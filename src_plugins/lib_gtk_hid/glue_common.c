@@ -3,6 +3,7 @@
 #include "glue_common.h"
 
 #include "action_helper.h"
+#include "tool.h"
 
 #include "gui.h"
 #include "render.h"
@@ -153,7 +154,7 @@ static void ghid_port_button_press_main(void)
 
 static void ghid_port_button_release_main(void)
 {
-	pcb_adjust_attached_objects();
+	pcb_tool_adjust_attached_objects();
 	ghid_invalidate_all();
 
 	ghid_window_set_name_label(PCB->Name);

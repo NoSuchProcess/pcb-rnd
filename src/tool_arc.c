@@ -57,7 +57,7 @@ void pcb_tool_arc_init(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
-		pcb_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects();
 	}
 	pcb_notify_crosshair_change(pcb_true);
 }
@@ -180,7 +180,7 @@ pcb_bool pcb_tool_arc_undo_act(void)
 		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
-		pcb_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects();
 		if (--pcb_added_lines == 0)
 			pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 	}
