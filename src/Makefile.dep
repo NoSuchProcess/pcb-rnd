@@ -84,7 +84,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h error.h drc.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h event.h dolists.h
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h event.h \
+ funchash_core.h funchash.h funchash_core_list.h dolists.h
 ../src_plugins/autoroute/autoroute.o: \
  ../src_plugins/autoroute/autoroute.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -146,7 +147,8 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
- compat_misc.h ../src_plugins/boardflip/boardflip.h unit.h dolists.h
+ compat_misc.h ../src_plugins/boardflip/boardflip.h unit.h \
+ funchash_core.h funchash.h funchash_core_list.h dolists.h
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
  board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -174,7 +176,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h event.h \
  ../src_plugins/diag/integrity.h hid.h hid_attrib.h hid_dad.h \
  compat_misc.h hid_attrib.h search.h rats.h netlist.h route_style.h \
- macro.h dolists.h ../src_plugins/diag/diag_conf_fields.h
+ macro.h funchash_core.h funchash.h funchash_core_list.h dolists.h \
+ ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
