@@ -45,48 +45,46 @@
 #include "hid_dad.h"
 #include "search.h"
 #include "macro.h"
+#include "funchash_core.h"
 
 conf_diag_t conf_diag;
 
-static const char dump_conf_syntax[] =
+static const char pcb_acts_DumpConf[] =
 	"dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout\n"
 	"dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree\n"
-
 	;
-
-static const char dump_conf_help[] = "Perform various operations on the configuration tree.";
+static const char pcb_acth_DumpConf[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_main_root[];
 extern lht_doc_t *conf_plug_root[];
-static fgw_error_t pcb_act_DumpConf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *cmd = argc > 0 ? argv[0] : NULL;
+	int op;
 
-	if (PCB_NSTRCMP(cmd, "native") == 0) {
-		int verbose;
-		const char *prefix = "";
-		if (argc > 1)
-			verbose = atoi(argv[1]);
-		if (argc > 2)
-			prefix = argv[2];
-		conf_dump(stdout, prefix, verbose, NULL);
-	}
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, DumpConf, op = fgw_keyword(&argv[1]));
 
-	else if (PCB_NSTRCMP(cmd, "lihata") == 0) {
-		conf_role_t role;
-		const char *prefix = "";
-		if (argc <= 1) {
-			pcb_message(PCB_MSG_ERROR, "conf(dumplht) needs a role\n");
-			return 1;
+	switch(op) {
+		case F_Native:
+		{
+			int verbose = 0;
+			const char *prefix = "";
+			PCB_ACT_MAY_CONVARG(2, FGW_INT, DumpConf, verbose = argv[2].val.nat_int);
+			PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
+			conf_dump(stdout, prefix, verbose, NULL);
 		}
-		role = conf_role_parse(argv[1]);
+		break;
+		case F_Lihata:
+		{
+		conf_role_t role;
+		const char *srole, *prefix = "";
+		PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
+		role = conf_role_parse(srole);
 		if (role == CFR_invalid) {
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
-		if (argc > 2)
-			prefix = argv[2];
 		if (conf_main_root[role] != NULL) {
 			printf("%s### main\n", prefix);
 			if (conf_main_root[role] != NULL)
@@ -97,14 +95,15 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 		}
 		else
 			printf("%s <empty>\n", prefix);
+		}
+		break;
+		default:
+			PCB_ACT_FAIL(DumpConf);
+			return 1;
 	}
 
-	else {
-		pcb_message(PCB_MSG_ERROR, "Invalid conf command '%s'\n", argv[0]);
-		return 1;
-	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char eval_conf_syntax[] =
@@ -449,7 +448,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 }
 
 pcb_action_t diag_action_list[] = {
-	{"dumpconf", pcb_act_DumpConf, dump_conf_help, dump_conf_syntax},
+	{"dumpconf", pcb_act_DumpConf, pcb_acth_DumpConf, pcb_acts_DumpConf},
 	{"dumplayers", pcb_act_DumpLayers, dump_layers_help, dump_layers_syntax},
 	{"dumpfonts", pcb_act_DumpFonts, dump_fonts_help, dump_fonts_syntax},
 	{"dumpdata", pcb_act_DumpData, dump_data_help, dump_data_syntax},
