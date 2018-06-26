@@ -280,13 +280,12 @@ static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 extern void undo_dump(void);
 static const char dump_undo_syntax[] = "dumpfonts()\n";
 static const char dump_undo_help[] = "Print info about fonts";
-static fgw_error_t pcb_act_DumpUndo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DumpUndo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	printf("Undo:\n");
 	undo_dump();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 #endif
 
