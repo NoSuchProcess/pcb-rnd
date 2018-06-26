@@ -181,8 +181,12 @@ int main(void)
 	p2 = cdt_insert_point(&cdt, 4500, 3000);
 	ed[1] = cdt_insert_constrained_edge(&cdt, p1, p2);
 
+	p2 = cdt_insert_point(&cdt, 3500, 3500);
+	ed[2] = cdt_insert_constrained_edge(&cdt, p1, p2);
+
 	cdt_delete_constrained_edge(&cdt, ed[0]);
 	cdt_delete_constrained_edge(&cdt, ed[1]);
+	cdt_delete_constrained_edge(&cdt, ed[2]);
 
 	/*
 	srand(time(NULL));
