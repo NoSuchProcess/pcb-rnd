@@ -348,12 +348,11 @@ static fgw_error_t pcb_act_DumpData(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char integrity_syntax[] = "integrity()\n";
 static const char integrity_help[] = "perform integrirty check on the current board and generate errors if needed";
-static fgw_error_t pcb_act_integrity(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_integrity(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_check_integrity(PCB);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
