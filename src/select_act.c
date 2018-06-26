@@ -190,12 +190,12 @@ Unselect all connections with the ``found'' flag set.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Unselect(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	int op;
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Unselect, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
 
 			/* all objects in block */
 		case F_Block:
@@ -243,10 +243,9 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 			PCB_ACT_FAIL(Unselect);
 			break;
 
-		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t select_action_list[] = {
