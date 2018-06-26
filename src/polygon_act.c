@@ -49,7 +49,7 @@
 
 #include "obj_poly.h"
 
-static const char morphpcb_polygon_syntax[] = "pcb_poly_morph(Object|Selected)";
+static const char pcb_acts_MorphPolygon[] = "pcb_poly_morph(Object|Selected)";
 static const char pcb_acth_MorphPolygon[] = "Converts dead polygon islands into separate polygons.";
 
 /* %start-doc actions MorphPolygon
@@ -62,12 +62,13 @@ off are automatically deleted.
 
 %end-doc */
 
-static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	int op;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, MorphPolygon, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
 		case F_Object:
 			{
 				pcb_coord_t x, y;
@@ -93,10 +94,9 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 			pcb_draw();
 			pcb_undo_inc_serial();
 			break;
-		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_polygon_syntax[] = "Polygon(Close|CloseHole|PreviousPoint)";
@@ -154,7 +154,7 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 
 pcb_action_t polygon_action_list[] = {
-	{"MorphPolygon", pcb_act_MorphPolygon, pcb_acth_MorphPolygon, morphpcb_polygon_syntax},
+	{"MorphPolygon", pcb_act_MorphPolygon, pcb_acth_MorphPolygon, pcb_acts_MorphPolygon},
 	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_polygon_syntax}
 };
 
