@@ -341,7 +341,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID) {
-		pcb_message(PCB_MSG_ERROR, _("Nothing found under crosshair\n"));
+		pcb_message(PCB_MSG_ERROR, "Nothing found under crosshair\n");
 		return 1;
 	}
 	if (absolute1)
