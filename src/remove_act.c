@@ -89,13 +89,12 @@ static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
 
 %end-doc */
 
-static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (pcb_remove_selected())
 		pcb_board_set_changed_flag(pcb_true);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
