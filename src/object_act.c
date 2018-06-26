@@ -890,8 +890,8 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	PCB_OLD_ACT_END;
 }
 
-static const char movelayer_syntax[] = "MoveLayer(old,new)";
-static const char movelayer_help[] = "Moves/Creates/Deletes Layers.";
+static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)";
+static const char pcb_acth_MoveLayer[] = "Moves/Creates/Deletes Layers.";
 
 /* %start-doc actions MoveLayer
 
@@ -941,59 +941,64 @@ Creates a new layer.
 
 %end-doc */
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-fgw_error_t pcb_act_MoveLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *a0, *a1;
 	int old_index, new_index;
 
-	if (argc != 2) {
-		pcb_message(PCB_MSG_ERROR, "Usage; MoveLayer(old,new)");
-		return 1;
-	}
+	PCB_ACT_CONVARG(1, FGW_STR, MoveLayer, a0 = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, MoveLayer, a1 = argv[2].val.str);
 
-	if (strcmp(argv[0], "c") == 0)
+	if (strcmp(a0, "c") == 0)
 		old_index = INDEXOFCURRENT;
 	else
-		old_index = atoi(argv[0]);
+		old_index = atoi(a0);
 
-	if (strcmp(argv[1], "c") == 0) {
+	if (strcmp(a1, "c") == 0) {
 		new_index = INDEXOFCURRENT;
 		if (new_index < 0)
 			new_index = 0;
 	}
-	else if (strcmp(argv[1], "gi") == 0) {
-		return pcb_layer_move(PCB, -1, 0, pcb_actd_EditGroup_gid);
+	else if (strcmp(a1, "gi") == 0) {
+		PCB_ACT_IRES(pcb_layer_move(PCB, -1, 0, pcb_actd_EditGroup_gid));
+		return 0;
 	}
-	else if (strcmp(argv[1], "ga") == 0) {
-		return pcb_layer_move(PCB, -1, 1, pcb_actd_EditGroup_gid);
+	else if (strcmp(a1, "ga") == 0) {
+		PCB_ACT_IRES(pcb_layer_move(PCB, -1, 1, pcb_actd_EditGroup_gid));
+		return 0;
 	}
-	else if (strcmp(argv[1], "up") == 0) {
+	else if (strcmp(a1, "up") == 0) {
 		new_index = INDEXOFCURRENT - 1;
-		if (new_index < 0)
-			return 1;
+		if (new_index < 0) {
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 	}
-	else if (strcmp(argv[1], "down") == 0) {
+	else if (strcmp(a1, "down") == 0) {
 		new_index = INDEXOFCURRENT + 1;
-		if (new_index >= pcb_max_layer)
-			return 1;
+		if (new_index >= pcb_max_layer) {
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 	}
-	else if (strncmp(argv[1], "step", 4) == 0) {
+	else if (strncmp(a1, "step", 4) == 0) {
 		pcb_layer_t *l = CURRENT;
 		pcb_layergrp_t *g = pcb_get_layergrp(PCB, l->meta.real.grp);
 		if (g == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Invalid layer group\n");
 			return 1;
 		}
-		switch(argv[1][4]) {
+		switch(a1[4]) {
 			case '+': return pcb_layergrp_step_layer(PCB, g, pcb_layer_id(PCB->Data, l), +1); break;
 			case '-': return pcb_layergrp_step_layer(PCB, g, pcb_layer_id(PCB->Data, l), -1); break;
 		}
 		pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	else
-		new_index = atoi(argv[1]);
+		new_index = atoi(a1);
 
 	if (new_index < 0) {
 		if (pcb_layer_flags(PCB, old_index) & PCB_LYT_SILK) {
@@ -1001,16 +1006,14 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			pcb_layergrp_t *g = pcb_get_layergrp(PCB, l->meta.real.grp);
 			if (g->len == 1) {
 				pcb_message(PCB_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
-				return 1;
+				PCB_ACT_IRES(1);
+				return 0;
 			}
 		}
 	}
 
-	if (pcb_layer_move(PCB, old_index, new_index, -1))
-		return 1;
-
+	PCB_ACT_IRES(pcb_layer_move(PCB, old_index, new_index, -1));
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
@@ -1193,7 +1196,7 @@ pcb_action_t object_action_list[] = {
 	{"ElementSetAttr", pcb_act_ElementSetAttr, pcb_acth_ElementSetAttr, pcb_acts_ElementSetAttr},
 	{"RipUp", pcb_act_RipUp, pcb_acth_RipUp, pcb_acts_RipUp},
 	{"MinClearGap", pcb_act_MinClearGap, pcb_acth_MinClearGap, pcb_acts_MinClearGap},
-	{"MoveLayer", pcb_act_MoveLayer, movelayer_help, movelayer_syntax},
+	{"MoveLayer", pcb_act_MoveLayer, pcb_acth_MoveLayer, pcb_acts_MoveLayer},
 	{"subc", pcb_act_subc, pcb_acth_subc, pcb_acts_subc},
 	{"CreateText", pcb_act_CreateText, pcb_acth_CreateText, pcb_acts_CreateText},
 	{"Rotate90", pcb_act_Rotate90, pcb_acth_Rotate90, pcb_acts_Rotate90}
