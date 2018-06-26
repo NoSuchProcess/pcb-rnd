@@ -37,6 +37,7 @@
 #include "plugins.h"
 #include "actions.h"
 #include "event.h"
+#include "funchash_core.h"
 
 /* action routines for the autorouter
  */
@@ -68,23 +69,30 @@ responsive.
 
 %end-doc */
 
-static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
+	int op;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, AutoRoute, op = fgw_keyword(&argv[1]));
+
 	pcb_event(PCB_EVENT_BUSY, NULL);
-	if (function) {								/* one parameter */
-		if (strcmp(function, "AllRats") == 0) {
+	switch(op) {
+		case F_AllRats:
+		case F_All:
 			if (AutoRoute(pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
-		}
-		else if ((strcmp(function, "SelectedRats") == 0) || (strcmp(function, "Selected") == 0)) {
+			break;
+		case F_SelectedRats:
+		case F_Selected:
 			if (AutoRoute(pcb_true))
 				pcb_board_set_changed_flag(pcb_true);
-		}
+			break;
+		default:
+			PCB_ACT_FAIL(AutoRoute);
+			return 1;
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char *autoroute_cookie = "autoroute plugin";
