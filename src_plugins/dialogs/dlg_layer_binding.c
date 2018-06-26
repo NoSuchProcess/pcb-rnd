@@ -188,16 +188,17 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
 static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
-static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	int op = F_Object;
 	lb_ctx_t ctx;
 	int num_copper;
 	pcb_hid_attr_val_t val;
 
 	memset(&ctx, 0, sizeof(ctx));
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, LayerBinding, op = fgw_keyword(&argv[1]));
 
-	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+	if (op = F_Object) {
 		pcb_coord_t x, y;
 		int type;
 		void *ptr1, *ptr2, *ptr3;
@@ -210,12 +211,12 @@ static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 		ctx.subc = ptr2;
 		ctx.data = ctx.subc->data;
 	}
-	else if (pcb_strcasecmp(argv[0], "selected") == 0) {
+	else if (op == F_Selected) {
 #warning subc TODO
 		pcb_message(PCB_MSG_ERROR, "TODO\n");
 		return 1;
 	}
-	else if (pcb_strcasecmp(argv[0], "buffer") == 0) {
+	else if (op == F_Buffer) {
 		ctx.data = PCB_PASTEBUFFER->Data;
 	}
 	else
@@ -304,6 +305,6 @@ static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 		free(ctx.layer_names);
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
