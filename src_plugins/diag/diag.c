@@ -261,9 +261,8 @@ static void print_font(pcb_font_t *f, const char *prefix)
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";
 static const char dump_fonts_help[] = "Print info about fonts";
-static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	printf("Font summary:\n");
 	print_font(&PCB->fontkit.dflt, " Default");
 	if (PCB->fontkit.hash_inited) {
@@ -273,8 +272,8 @@ static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	}
 	else
 		printf(" <no extra font loaded>\n");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 #ifndef NDEBUG
