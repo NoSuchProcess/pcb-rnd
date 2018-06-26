@@ -1055,27 +1055,23 @@ static const char pcb_acts_subc[] =
 	"subc(loose, on|off|toggle|check)\n"
 	;
 static const char pcb_acth_subc[] = "Various operations on subc";
-static fgw_error_t pcb_act_subc(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc == 0)
-		PCB_ACT_FAIL(subc);
-	switch (pcb_funchash_get(argv[0], NULL)) {
+	int op1, op2 = -2;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, subc, op1 = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, subc, op2 = fgw_keyword(&argv[2]));
+	PCB_ACT_IRES(0);
+
+	switch(op1) {
 		case F_Loose:
-			if ((argc < 2) || (strcmp(argv[1], "toggle") == 0))
-				PCB->loose_subc = !PCB->loose_subc;
-			else if (strcmp(argv[1], "on") == 0)
-				PCB->loose_subc = 1;
-			else if (strcmp(argv[1], "off") == 0)
-				PCB->loose_subc = 0;
-			else if (strcmp(argv[1], "check") == 0) {
-				ores->type = FGW_INT;
-				ores->val.nat_int = PCB->loose_subc;
-				return 0;
-			}
-			else {
-				PCB_ACT_FAIL(subc);
-				return 1;
+			switch(op2) {
+				case -2:
+				case F_Toggle: PCB->loose_subc = !PCB->loose_subc; break;
+				case F_On:     PCB->loose_subc = 1; break;
+				case F_Off:    PCB->loose_subc = 0; break;
+				case F_Check:  PCB_ACT_IRES(PCB->loose_subc); return 0;
+				default:       PCB_ACT_FAIL(subc); return 1;
 			}
 			/* have to manually trigger the update as it is not a conf item */
 			if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
@@ -1087,11 +1083,11 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				gdl_iterator_t it;
 				pcb_subc_t *sc;
 
-				if (argc < 1) {
-				
+				switch(op2) {
+					case -2: break;
+					case F_Selected: selected_only = 1; break;
+					default:         PCB_ACT_FAIL(subc); return 1;
 				}
-				else if (strcmp(argv[1], "selected") == 0)
-					selected_only = 1;
 
 				polylist_foreach(&PCB->Data->subc, &it, sc) {
 					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
@@ -1112,12 +1108,11 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 				gds_init(&str);
 				htip_init(&hash2scs, longhash, longkeyeq);
-				if (argc < 1) {
-				
+				switch(op2) {
+					case -2: break;
+					case F_Selected: selected_only = 1; break;
+					default:         PCB_ACT_FAIL(subc); return 1;
 				}
-				else if (strcmp(argv[1], "selected") == 0)
-					selected_only = 1;
-
 				polylist_foreach(&PCB->Data->subc, &it, sc) {
 					unsigned int hash;
 					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
@@ -1151,8 +1146,8 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			}
 			break;
 	}
+
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Rotate90[] = "pcb_move_obj(steps)";
