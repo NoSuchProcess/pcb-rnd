@@ -28,6 +28,7 @@
 #include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
 #include "operation.h"
+#include "funchash_core.h"
 
 typedef struct pse_proto_layer_s {
 	const char *name;
@@ -577,19 +578,22 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */
 }
 
-static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
+static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object, [tab])\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
-static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	int n, target_tab = -1;
+	int op = F_Object, n, target_tab = -1;
 	pse_t pse;
 	const char *tabs[] = { "this instance", "prototype", "generate common geometry", NULL };
 	PCB_DAD_DECL(dlg);
 
 	memset(&pse, 0, sizeof(pse));
 
-	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, PadstackEdit, op = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_INT, PadstackEdit, target_tab = argv[2].val.nat_int);
+	PCB_ACT_IRES(0);
+
+	if (op == F_Object) {
 		pcb_coord_t x, y;
 		void *ptr1, *ptr2 = NULL, *ptr3;
 		long type;
@@ -597,15 +601,13 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 		type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_PSTK) {
 			pcb_message(PCB_MSG_ERROR, "Need a padstack.\n");
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 		pse.ps = ptr2;
 	}
 	else
 		PCB_ACT_FAIL(PadstackEdit);
-
-	if (argc > 0)
-		target_tab = atoi(argv[1]);
 
 	pse.pcb = pcb_data_get_top(pse.ps->parent.data);
 	if (pse.pcb == NULL)
@@ -787,7 +789,7 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 	free(pse.attrs[pse.prname].default_val.str_value);
 
 	PCB_DAD_FREE(dlg);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
