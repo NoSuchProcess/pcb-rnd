@@ -56,7 +56,6 @@ static const char pcb_acts_Select[] =
 	"Select(Object|ToggleObject)\n"
 	"Select(All|Block|Connection)\n"
 	"Select(Convert)";
-
 static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 
 /* %start-doc actions Select
@@ -171,9 +170,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_Unselect[] =
-	"Unselect(All|Block|Connection)\n";
-
+static const char pcb_acts_Unselect[] = "Unselect(All|Block|Connection)\n";
 static const char pcb_acth_Unselect[] = "Unselects the object at the pointer location or the specified objects.";
 
 /* %start-doc actions Unselect
