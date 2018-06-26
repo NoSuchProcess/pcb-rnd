@@ -33,6 +33,7 @@
 #include "actions.h"
 #include "hid_dad.h"
 #include "plugins.h"
+#include "funchash_core.h"
 
 /* include them all for static inlines */
 #include "dlg_test.c"

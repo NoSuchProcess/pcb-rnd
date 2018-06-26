@@ -75,16 +75,18 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 static const char pcb_acts_FlagEdit[] = "FlagEdit(object)\n";
 static const char pcb_acth_FlagEdit[] = "Change the layer binding.";
-static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	int op = F_Object;
 	fe_ctx_t ctx;
 	pcb_hid_attr_val_t val;
 	int type;
 
 	memset(&ctx, 0, sizeof(ctx));
 
-	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FlagEdit, op = fgw_keyword(&argv[1]));
+
+	if (op == F_Object) {
 		pcb_coord_t x, y;
 		void *ptr1, *ptr2, *ptr3;
 		pcb_hid_get_coords("Click on object to change flags of", &x, &y);
@@ -135,6 +137,6 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 		PCB_DAD_FREE(dlg);
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }

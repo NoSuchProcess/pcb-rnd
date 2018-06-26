@@ -28,7 +28,6 @@
 #include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
 #include "operation.h"
-#include "funchash_core.h"
 
 typedef struct pse_proto_layer_s {
 	const char *name;
