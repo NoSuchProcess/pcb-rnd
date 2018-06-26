@@ -729,14 +729,14 @@ autorouter.
 
 %end-doc */
 
-static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
+	int op;
 	pcb_bool changed = pcb_false;
 
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
 		case F_All:
 			PCB_LINE_ALL_LOOP(PCB->Data);
 			{
@@ -794,10 +794,9 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
-		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
