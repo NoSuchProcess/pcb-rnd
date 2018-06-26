@@ -37,6 +37,7 @@
 #include "actions.h"
 #include "compat_misc.h"
 #include "boardflip.h"
+#include "funchash_core.h"
 
 #define XFLIP(v) (v) = ((flip_x ? -(v) : (v)) + xo)
 #define YFLIP(v) (v) = ((flip_y ? -(v) : (v)) + yo)
@@ -166,23 +167,23 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	PCB_END_LOOP;
 }
 
-static fgw_error_t pcb_act_boardflip(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_boardflip[] = "BoardFlip([sides])";
+static const char pcb_acth_boardflip[] = "Mirror the board over the x axis, optionally mirroring sides as well.";
+static fgw_error_t pcb_act_boardflip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	int op = -2;
 	int h = PCB->MaxHeight;
-	int sides = 0;
 
-	if (argc > 0 && pcb_strcasecmp(argv[0], "sides") == 0)
-		sides = 1;
-	printf("argc %d argv %s sides %d\n", argc, argc > 0 ? argv[0] : "", sides);
-	pcb_flip_data(PCB->Data, pcb_false, pcb_true, 0, h, sides);
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, boardflip, op = fgw_keyword(&argv[1]));
+
+	pcb_flip_data(PCB->Data, pcb_false, pcb_true, 0, h, (op == F_Sides));
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
 static pcb_action_t boardflip_action_list[] = {
-	{"BoardFlip", pcb_act_boardflip, NULL, NULL}
+	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip}
 };
 
 char *boardflip_cookie = "boardflip plugin";
