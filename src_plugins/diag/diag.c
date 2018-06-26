@@ -157,21 +157,19 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char dump_layers_syntax[] =
-	"dumplayers([all])\n"
-	;
-
-static const char dump_layers_help[] = "Print info about each layer";
+static const char pcb_acts_DumpLayers[] = "dumplayers([all])\n";
+static const char pcb_acth_DumpLayers[] = "Print info about each layer";
 
 extern lht_doc_t *conf_main_root[];
-static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	int g, n, used;
+	int op = -2, g, n, used;
 	pcb_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
-	if ((argc > 0) && (strcmp(argv[0], "all") == 0)) {
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, DumpLayers, op = fgw_keyword(&argv[1]));
+
+	if (op == F_All) {
 		printf("Per group:\n");
 		for(g = 0; g < PCB->LayerGroups.len; g++) {
 			pcb_layergrp_t *grp = &PCB->LayerGroups.grp[g];
@@ -206,6 +204,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			}
 		}
 
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
@@ -237,8 +236,8 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 		}
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
@@ -445,7 +444,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 
 pcb_action_t diag_action_list[] = {
 	{"dumpconf", pcb_act_DumpConf, pcb_acth_DumpConf, pcb_acts_DumpConf},
-	{"dumplayers", pcb_act_DumpLayers, dump_layers_help, dump_layers_syntax},
+	{"dumplayers", pcb_act_DumpLayers, pcb_acth_DumpLayers, pcb_acts_DumpLayers},
 	{"dumpfonts", pcb_act_DumpFonts, dump_fonts_help, dump_fonts_syntax},
 	{"dumpdata", pcb_act_DumpData, dump_data_help, dump_data_syntax},
 #ifndef NDEBUG
