@@ -136,6 +136,8 @@ do { \
 PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 {
 	int n;
+	for(n = 0; n < PCB_ACTION_MAX_ARGS; n++)
+		argv[n] = NULL;
 	for(n = 1; n < oargc; n++) {
 		if (fgw_argv_conv(&pcb_fgw, &oargv[n], FGW_STR) == 0)
 			argv[n-1] = oargv[n].val.str;
