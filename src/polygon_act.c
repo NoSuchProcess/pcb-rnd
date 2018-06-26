@@ -99,7 +99,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-static const char pcb_polygon_syntax[] = "Polygon(Close|CloseHole|PreviousPoint)";
+static const char pcb_acts_Polygon[] = "Polygon(Close|CloseHole|PreviousPoint)";
 static const char pcb_acth_Polygon[] = "Some polygon related stuff.";
 
 /* %start-doc actions Polygon
@@ -124,13 +124,15 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Polygon(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function && ((conf_core.editor.mode == PCB_MODE_POLYGON) || (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE))) {
+	int op;
+	
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
+
+	if ((argc > 1) && ((conf_core.editor.mode == PCB_MODE_POLYGON) || (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE))) {
 		pcb_notify_crosshair_change(pcb_false);
-		switch (pcb_funchash_get(function, NULL)) {
+		switch(op) {
 			/* close open polygon if possible */
 		case F_Close:
 			pcb_polygon_close_poly();
@@ -148,14 +150,14 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 		pcb_notify_crosshair_change(pcb_true);
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
 pcb_action_t polygon_action_list[] = {
 	{"MorphPolygon", pcb_act_MorphPolygon, pcb_acth_MorphPolygon, pcb_acts_MorphPolygon},
-	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_polygon_syntax}
+	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_acts_Polygon}
 };
 
 PCB_REGISTER_ACTIONS(polygon_action_list, NULL)
