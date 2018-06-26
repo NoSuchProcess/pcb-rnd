@@ -226,11 +226,10 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 /*------------ get/chk (check flag actions for menus) ------------------*/
 static const char GetStyle_syntax[] = "GetStyle()" ;
 static const char GetStyle_help[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
-static fgw_error_t pcb_act_GetStyle(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
+	return 0;
 }
 
 static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
