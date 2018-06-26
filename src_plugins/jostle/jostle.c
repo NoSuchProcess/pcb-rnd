@@ -469,27 +469,18 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 }
 
 static const char pcb_acts_jostle[] = "Jostle(diameter)";
-static fgw_error_t pcb_act_jostle(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acth_jostle[] = "Make room by moving wires away.";
+static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	pcb_bool rel;
 	pcb_polyarea_t *expand;
-	float value;
+	float value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
 	struct info info;
 	int found;
 
-	if (argc == 2) {
-		pcb_bool succ;
-		value = pcb_get_value(ARG(0), ARG(1), &rel, &succ);
-		if (!succ) {
-			pcb_message(PCB_MSG_ERROR, "Failed to convert size\n");
-			return -1;
-		}
-	}
-	else {
-		value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
-	}
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, jostle, value = fgw_keyword(&argv[1]));
+
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
 	fprintf(stderr, "%d, %d, %f\n", (int) x, (int) y, value);
@@ -516,12 +507,13 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	} while (found);
 	pcb_board_set_changed_flag(pcb_true);
 	pcb_undo_inc_serial();
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_action_t jostle_action_list[] = {
-	{"jostle", pcb_act_jostle, "Move lines out of the way", pcb_acts_jostle}
+	{"jostle", pcb_act_jostle, pcb_acth_jostle, pcb_acts_jostle}
 };
 
 char *jostle_cookie = "jostle plugin";
