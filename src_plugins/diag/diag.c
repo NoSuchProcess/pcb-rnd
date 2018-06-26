@@ -370,19 +370,15 @@ static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
 	return 0;
 }
 
-static const char dumpflags_syntax[] = "dumpflags([fmt])\n";
-static const char dumpflags_help[] = "dump flags, optionally using the format string provided by the user";
-static fgw_error_t pcb_act_dumpflags(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_dumpflags[] = "dumpflags([fmt])\n";
+static const char pcb_acth_dumpflags[] = "dump flags, optionally using the format string provided by the user";
+static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int n;
 	const char *default_fmt = "%m (%M %N) for %t:\n  %H\n";
-	const char *fmt;
+	const char *fmt = default_fmt;
 
-	if (argc > 0)
-		fmt = argv[0];
-	else
-		fmt = default_fmt;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, dumpflags, fmt = argv[1].val.str);
 
 	for(n = 0; n < pcb_object_flagbits_len; n++) {
 		char *tmp;
@@ -391,8 +387,8 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		free(tmp);
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -449,7 +445,7 @@ pcb_action_t diag_action_list[] = {
 	{"EvalConf", pcb_act_EvalConf, pcb_acth_EvalConf, pcb_acts_EvalConf},
 	{"d1", pcb_act_d1, pcb_acth_d1, pcb_acts_d1},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
-	{"dumpflags", pcb_act_dumpflags, dumpflags_help, dumpflags_syntax},
+	{"dumpflags", pcb_act_dumpflags, pcb_acth_dumpflags, pcb_acts_dumpflags},
 	{"forcecolor", pcb_act_forcecolor, forcecolor_help, forcecolor_syntax}
 };
 
