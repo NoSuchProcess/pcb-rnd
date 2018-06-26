@@ -157,10 +157,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_DisperseElements[] = "DisperseElements(All|Selected)";
-
 static const char pcb_acth_DisperseElements[] = "Disperses subcircuits.";
 
 /* %start-doc actions DisperseElements
@@ -266,10 +263,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 
 #undef GAP
 
-/* -------------------------------------------------------------------------- */
-
 static const char pcb_acts_Flip[] = "Flip(Object|Selected)";
-
 static const char pcb_acth_Flip[] = "Flip a subcircuit to the opposite side of the board.";
 
 /* %start-doc actions Flip
@@ -315,10 +309,8 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	return 0;
 }
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_MoveObject[] = "pcb_move_obj(X,Y,dim)";
-
 static const char pcb_acth_MoveObject[] = "Moves the object under the crosshair.";
 
 /* %start-doc actions MoveObject
@@ -367,10 +359,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_MoveToCurrentLayer[] = "MoveToCurrentLayer(Object|SelectedObjects)";
-
 static const char pcb_acth_MoveToCurrentLayer[] = "Moves objects to the current layer.";
 
 /* %start-doc actions MoveToCurrentLayer
@@ -430,9 +419,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 	return 0;
 }
 
-/* ---------------------------------------------------------------- */
 static const char pcb_acts_ElementList[] = "ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)";
-
 static const char pcb_acth_ElementList[] = "Adds the given element if it doesn't already exist.";
 
 /* %start-doc actions elementlist
@@ -684,9 +671,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	PCB_OLD_ACT_END;
 }
 
-/* ---------------------------------------------------------------- */
 static const char pcb_acts_ElementSetAttr[] = "ElementSetAttr(refdes,name[,value])";
-
 static const char pcb_acth_ElementSetAttr[] = "Sets or clears an element-specific attribute.";
 
 /* %start-doc actions elementsetattr
@@ -726,10 +711,7 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *ores, int oargc, fgw_arg_t 
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_RipUp[] = "RipUp(All|Selected|Element)";
-
 static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks";
 
 /* %start-doc actions RipUp
@@ -818,7 +800,6 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	PCB_OLD_ACT_END;
 }
 
-/* ---------------------------------------------------------------------------  */
 static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
 static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
 /* %start-doc actions MinClearGap
@@ -910,10 +891,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char movelayer_syntax[] = "MoveLayer(old,new)";
-
 static const char movelayer_help[] = "Moves/Creates/Deletes Layers.";
 
 /* %start-doc actions MoveLayer
