@@ -84,12 +84,12 @@ numbered paste buffer.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Select(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) { /* select objects by their names */
+	int op;
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Select, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
 
 			/* select a single object */
 		case F_ToggleObject:
@@ -163,10 +163,10 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		default:
 			PCB_ACT_FAIL(Select);
 			break;
-		}
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
