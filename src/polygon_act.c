@@ -49,10 +49,7 @@
 
 #include "obj_poly.h"
 
-/* --------------------------------------------------------------------------- */
-
 static const char morphpcb_polygon_syntax[] = "pcb_poly_morph(Object|Selected)";
-
 static const char pcb_acth_MorphPolygon[] = "Converts dead polygon islands into separate polygons.";
 
 /* %start-doc actions MorphPolygon
@@ -102,10 +99,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 	PCB_OLD_ACT_END;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_polygon_syntax[] = "Polygon(Close|CloseHole|PreviousPoint)";
-
 static const char pcb_acth_Polygon[] = "Some polygon related stuff.";
 
 /* %start-doc actions Polygon
