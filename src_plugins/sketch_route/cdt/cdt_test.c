@@ -25,8 +25,8 @@ int main(void)
 	clock_t t;
 	pointlist_node_t *p_violations = NULL;
 
-	//cdt_init(&cdt, 1000, 1000, 5000, 5000);
-	cdt_init(&cdt, 0, 0, 100000, 100000);
+	cdt_init(&cdt, 1000, 1000, 5000, 5000);
+	//cdt_init(&cdt, 0, 0, 100000, 100000);
 
 	/*
 	cdt_insert_point(&cdt, 2500, 3000);
@@ -166,6 +166,25 @@ int main(void)
 	cdt_delete_constrained_edge(&cdt, e);
 	*/
 
+	/* delete 2 constrained edges */
+	p1 = cdt_insert_point(&cdt, 2400, 1500);
+	cdt_insert_point(&cdt, 2200, 3500);
+	cdt_insert_point(&cdt, 2200, 2000);
+	p2 = cdt_insert_point(&cdt, 2400, 4000);
+	ed[0] = cdt_insert_constrained_edge(&cdt, p1, p2);
+
+	p1 = cdt_insert_point(&cdt, 2500, 3000);
+	cdt_insert_point(&cdt, 3000, 2800);
+	cdt_insert_point(&cdt, 3500, 2800);
+	cdt_insert_point(&cdt, 2800, 3200);
+	cdt_insert_point(&cdt, 3500, 3200);
+	p2 = cdt_insert_point(&cdt, 4500, 3000);
+	ed[1] = cdt_insert_constrained_edge(&cdt, p1, p2);
+
+	cdt_delete_constrained_edge(&cdt, ed[0]);
+	cdt_delete_constrained_edge(&cdt, ed[1]);
+
+	/*
 	srand(time(NULL));
 	e_num = 0;
 	for (i = 0; i < 100; i++) {
@@ -186,6 +205,7 @@ int main(void)
 		fprintf(stderr, "deleting edge (%d, %d) - (%d, %d)\n", ed[i]->endp[0]->pos.x, ed[i]->endp[0]->pos.y, ed[i]->endp[1]->pos.x, ed[i]->endp[1]->pos.y);
 		cdt_delete_constrained_edge(&cdt, ed[i]);
 	}
+	*/
 
 	if (cdt_check_delaunay(&cdt, &p_violations, NULL))
 		fprintf(stderr, "delaunay\n");
