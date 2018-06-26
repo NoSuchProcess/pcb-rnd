@@ -106,28 +106,24 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char eval_conf_syntax[] =
+static const char pcb_acts_EvalConf[] =
 	"EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database\n"
 	;
+static const char pcb_acth_EvalConf[] = "Perform various operations on the configuration tree.";
 
-static const char eval_conf_help[] = "Perform various operations on the configuration tree.";
-
-static fgw_error_t pcb_act_EvalConf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *path = argc > 0 ? argv[0] : NULL;
+	const char *path;
 	conf_native_t *nat;
 	int role;
 
-	if (path == NULL) {
-		pcb_message(PCB_MSG_ERROR, "EvalConf needs a path\n");
-		return 1;
-	}
+	PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
 
 	nat = conf_get_field(path);
 	if (nat == NULL) {
 		pcb_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
-		return 1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
 	printf("Conf node %s\n", path);
@@ -157,8 +153,8 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	printf(" Native:\n");
 	conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char dump_layers_syntax[] =
@@ -455,7 +451,7 @@ pcb_action_t diag_action_list[] = {
 #ifndef NDEBUG
 	{"dumpundo", pcb_act_DumpUndo, dump_undo_help, dump_undo_syntax},
 #endif
-	{"EvalConf", pcb_act_EvalConf, eval_conf_help, eval_conf_syntax},
+	{"EvalConf", pcb_act_EvalConf, pcb_acth_EvalConf, pcb_acts_EvalConf},
 	{"d1", pcb_act_d1, pcb_acth_d1, pcb_acts_d1},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, dumpflags_help, dumpflags_syntax},
