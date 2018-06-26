@@ -38,9 +38,8 @@ static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static int attr_idx, attr_idx2;
-static fgw_error_t pcb_act_dlg_test(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *vals[] = { "foo", "bar", "baz", NULL };
 	const char *tabs[] = { "original test", "new test", NULL };
 
@@ -86,8 +85,9 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	PCB_DAD_AUTORUN(ctx.dlg, "dlg_test", "attribute dialog test", &ctx);
 
 	PCB_DAD_FREE(ctx.dlg);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
