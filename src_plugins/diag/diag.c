@@ -336,15 +336,14 @@ static void dump_data(pcb_data_t *data, dd_flags what, int ind, const char *pare
 
 static const char dump_data_syntax[] = "dumpdata()\n";
 static const char dump_data_help[] = "Dump an aspect of the data";
-static fgw_error_t pcb_act_DumpData(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DumpData(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	dd_flags what = DD_DRC | DD_COPPER_ONLY;
 	printf("DumpData:\n");
 	dump_data(PCB->Data, what, 0, NULL);
 	printf("\n");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char integrity_syntax[] = "integrity()\n";
