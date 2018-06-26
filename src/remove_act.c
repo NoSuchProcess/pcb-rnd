@@ -39,8 +39,6 @@
 #include "board.h"
 #include "funchash_core.h"
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Delete[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
 static const char pcb_acth_Delete[] = "Delete stuff.";
 
@@ -84,10 +82,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_RemoveSelected[] = "pcb_remove_selected()";
-
 static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
 
 /* %start-doc actions RemoveSelected
