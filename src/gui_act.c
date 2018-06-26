@@ -1889,17 +1889,16 @@ the measurements in, so that future printouts will be more precise.
 
 %end-doc */
 
-fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 
 	if (pcb_attribute_dialog(printer_calibrate_attrs, 3, printer_calibrate_values, "Printer Calibration Values", "Enter calibration values for your printer", NULL))
 		return 1;
 	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t gui_action_list[] = {
