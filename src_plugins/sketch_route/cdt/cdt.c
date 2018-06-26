@@ -633,6 +633,7 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 {
 	pointlist_node_t *polygon = NULL;
 	edgelist_node_t *border_edges = NULL;
+	edgelist_node_t *constrained_edges_within_scope = NULL;
 	int invalid_edge_found;
 	int i, j;
 
@@ -658,8 +659,7 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 		EDGELIST_FOREACH(e, border_edges)
 			triangle_t *t = e->adj_t[0] != NULL ? e->adj_t[0] : e->adj_t[1];
 			edgelist_node_t *e_node = _node_;
-			if (!e->is_constrained) {
-				assert(t != NULL);
+			if (t != NULL) {
 				POINTLIST_FOREACH(p, polygon)
 					if (p != t->p[0] && p != t->p[1] && p != t->p[2] && is_point_in_circumcircle(p, t)) {
 						for (i = 0; i < 3; i++) {
@@ -668,8 +668,15 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 							if (t->e[i] != e)
 								border_edges = edgelist_prepend(border_edges, &t->e[i]);
 						}
+						if (e->is_constrained) {	/* don't remove constrained edges - only detach them */
+							constrained_edges_within_scope = edgelist_prepend(constrained_edges_within_scope, &e);
+							for (i = 0; i < 2; i++)
+								e->endp[i]->adj_edges = edgelist_remove_item(e->endp[i]->adj_edges, &e);
+							remove_triangle(cdt, t);
+						}
+						else
+							remove_edge(cdt, e);
 						border_edges = edgelist_remove(border_edges, e_node);
-						remove_edge(cdt, e);
 						invalid_edge_found = 1;
 						break;
 					}
@@ -679,9 +686,30 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 	} while (invalid_edge_found);
 	/* free(polygon) */
 
+	/* check for duplicated edges in the border and remove them */
+	EDGELIST_FOREACH(e1, border_edges)
+		edgelist_node_t *e1_node = _node_;
+		int remove = 0;
+		EDGELIST_FOREACH(e2, e1_node->next)
+			if (e1 == e2) {
+				border_edges = edgelist_remove(border_edges, _node_);
+				remove = 1;
+				break;
+			}
+		EDGELIST_FOREACH_END();
+		if (remove) {
+			_node_ = _node_->next;
+			border_edges = edgelist_remove(border_edges, e1_node);
+			continue;
+		}
+	EDGELIST_FOREACH_END();
+
 	/* triangulate the resultant polygon */
 	polygon = order_edges_adjacently(border_edges);
 	triangulate_polygon(cdt, polygon);
+
+	/* reattach constrained edges */
+
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
