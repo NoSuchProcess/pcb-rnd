@@ -42,25 +42,24 @@
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_Delete[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
-
 static const char pcb_acth_Delete[] = "Delete stuff.";
 
 /* %start-doc actions Delete
 
 %end-doc */
 
-static fgw_error_t pcb_act_Delete(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	int id = pcb_funchash_get(function, NULL);
+	int id;
 
-	if (id == -1) {								/* no arg */
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Delete, id = fgw_keyword(&argv[1]));
+
+	if (id == -1) { /* no arg */
 		if (pcb_remove_selected() == pcb_false)
 			id = F_Object;
 	}
 
-	switch (id) {
+	switch(id) {
 	case F_Object:
 		pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y);
 		pcb_tool_save();
@@ -81,8 +80,8 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		break;
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
