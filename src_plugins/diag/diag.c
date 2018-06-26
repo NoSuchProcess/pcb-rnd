@@ -414,24 +414,25 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 #define	PCB_FORCECOLOR_TYPES        \
 	(PCB_OBJ_PSTK | PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART | PCB_OBJ_SUBC | PCB_OBJ_RAT)
 
-static const char forcecolor_syntax[] = "forcecolor(#RRGGBB)\n";
-static const char forcecolor_help[] = "change selected objects' color to #RRGGBB, reset if does not start with '#'";
-static fgw_error_t pcb_act_forcecolor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_forcecolor[] = "forcecolor(#RRGGBB)\n";
+static const char pcb_acth_forcecolor[] = "change selected objects' color to #RRGGBB, reset if does not start with '#'";
+static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 	int type;
 	void *ptr1, *ptr2, *ptr3;
+	const char *new_color;
 
-	const char *new_color = PCB_ACTION_ARG(0);
+	PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
 	pcb_hid_get_coords("Click on object to change", &x, &y);
 
 	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
 		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t diag_action_list[] = {
@@ -446,7 +447,7 @@ pcb_action_t diag_action_list[] = {
 	{"d1", pcb_act_d1, pcb_acth_d1, pcb_acts_d1},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, pcb_acth_dumpflags, pcb_acts_dumpflags},
-	{"forcecolor", pcb_act_forcecolor, forcecolor_help, forcecolor_syntax}
+	{"forcecolor", pcb_act_forcecolor, pcb_acth_forcecolor, pcb_acts_forcecolor}
 };
 
 static const char *diag_cookie = "diag plugin";
