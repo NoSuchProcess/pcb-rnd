@@ -257,6 +257,17 @@ void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coo
 	init_bbox(cdt, bbox_x1, bbox_y1, bbox_x2, bbox_y2);
 }
 
+void cdt_free(cdt_t *cdt)
+{
+	vttriangle_uninit(&cdt->triangles);
+	vtedge_uninit(&cdt->edges);
+	VTPOINT_FOREACH(p, &cdt->points)
+		trianglelist_free(p->adj_triangles);
+		edgelist_free(p->adj_edges);
+	VTPOINT_FOREACH_END();
+	vtpoint_uninit(&cdt->points);
+}
+
 static int is_point_in_triangle(point_t *p, triangle_t *t)
 {
 	return ORIENT_CCW_CL(t->p[0], t->p[1], p) && ORIENT_CCW_CL(t->p[1], t->p[2], p) && ORIENT_CCW_CL(t->p[2], t->p[0], p);

@@ -28,6 +28,7 @@ typedef struct {
 
 
 void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coord_t bbox_y2);
+void cdt_free(cdt_t *cdt);
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y);
 void cdt_delete_point(cdt_t *cdt, point_t *p);	/* any edge adjecent to this point cannot be constrained */
