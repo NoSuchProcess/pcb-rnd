@@ -697,27 +697,25 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 					}
 				POINTLIST_FOREACH_END();
 			}
+			else { /* triangle beyond a border edge was removed earlier - the edge should be removed too */
+				for (i = 0; i < 2; i++) /* check if the edge is not bbox of the triangulation */
+					if ((e->endp[i]->pos.x == cdt->bbox_tl.x && e->endp[i]->pos.y == cdt->bbox_tl.y)
+							|| (e->endp[i]->pos.x == cdt->bbox_br.x && e->endp[i]->pos.y == cdt->bbox_br.y))
+						goto next_edge;
+				assert(e->is_constrained);
+				border_edges = edgelist_remove_item(border_edges, &e);
+				border_edges = edgelist_remove_item(border_edges, &e);
+				constrained_edges_within_scope = edgelist_prepend(constrained_edges_within_scope, &e);
+				for (i = 0; i < 2; i++) {
+					e->endp[i]->adj_edges = edgelist_remove_item(e->endp[i]->adj_edges, &e); /* detach the edge */
+					if (e->endp[i]->adj_edges == NULL) /* remove isolated point from points of polygon */
+						polygon = pointlist_remove_item(polygon, &e->endp[i]);
+				}
+			}
+next_edge:
 		EDGELIST_FOREACH_END();
 	} while (invalid_edge_found);
 	/* free(polygon) */
-
-	/* check for duplicated edges in the border and remove them */
-	EDGELIST_FOREACH(e1, border_edges)
-		edgelist_node_t *e1_node = _node_;
-		int remove = 0;
-		EDGELIST_FOREACH(e2, e1_node->next)
-			if (e1 == e2) {
-				border_edges = edgelist_remove(border_edges, _node_);
-				remove = 1;
-				break;
-			}
-		EDGELIST_FOREACH_END();
-		if (remove) {
-			_node_ = _node_->next;
-			border_edges = edgelist_remove(border_edges, e1_node);
-			continue;
-		}
-	EDGELIST_FOREACH_END();
 
 	/* triangulate the resultant polygon */
 	polygon = order_edges_adjacently(border_edges);
