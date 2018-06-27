@@ -217,5 +217,6 @@ int main(void)
 	else
 		fprintf(stderr, "not delaunay\n");
 	cdt_dump_animator(&cdt, 0, p_violations, NULL);
+	pointlist_free(p_violations);
 	cdt_free(&cdt);
 }

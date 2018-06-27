@@ -536,7 +536,9 @@ next_i:
 	/* remove adjacent edges */
 	EDGELIST_FOREACH(e, p->adj_edges)
 		assert(e->is_constrained == 0);
+		_node_ = _node_->next;
 		remove_edge(cdt, e);
+		continue;
 	EDGELIST_FOREACH_END();
 
 	/* remove point */
