@@ -688,8 +688,10 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			break;
 		case POL_OVERWRITE:
 			/* overwrite the whole list: make it empty then append new elements */
-			while((i = conflist_first(dest->val.list)) != NULL)
+			while((i = conflist_first(dest->val.list)) != NULL) {
 				conflist_remove(i);
+				free(i);
+			}
 			/* fall through */
 		case POL_APPEND:
 			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
