@@ -224,8 +224,8 @@
  compat_misc.h hid_attrib.h pcb-printf.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/dialogs/dlg_test.c \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h funchash_core.h \
+ funchash.h funchash_core_list.h ../src_plugins/dialogs/dlg_test.c \
  ../src_plugins/dialogs/dlg_layer_binding.c board.h vtroutestyle.h \
  library.h rats_patch.h board.h data.h crosshair.h vtonpoint.h route.h \
  buffer.h obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
@@ -6132,8 +6132,9 @@ main.o: main.c ../config.h ../src_3rd/libminuid/libminuid.h board.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h build_run.h flag_str.h plugins.h \
  ../src_3rd/puplug/error.h plug_footprint.h vtlibrary.h plug_import.h \
- event.h funchash.h conf_core.h layer_vis.h pcb_minuid.h tool.h actions.h \
- hid_init.h compat_misc.h compat_nls.h dolists.h generated_lists.h
+ event.h funchash.h conf_core.h layer_vis.h layer_ui.h pcb_minuid.h \
+ tool.h actions.h hid_init.h compat_misc.h compat_nls.h dolists.h \
+ generated_lists.h
 main_act.o: main_act.c ../config.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h library.h global_typedefs.h pcb_bool.h unit.h obj_common.h \
  flag.h globalconst.h attrib.h data_parent.h compat_nls.h change.h \
