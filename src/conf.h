@@ -388,4 +388,6 @@ lht_node_t *conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int cr
 void conf_reg_file(const char *path, const char *intern);
 void conf_unreg_file(const char *path, const char *intern);
 
+void pcb_conf_files_uninit(void);
+
 #endif

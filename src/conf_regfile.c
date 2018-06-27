@@ -40,6 +40,16 @@ static void conf_files_init(void)
 	conf_files_inited = 1;
 }
 
+void pcb_conf_files_uninit(void)
+{
+	htsi_entry_t *e;
+	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e))
+		free(e->key);
+	htsi_uninit(&conf_files);
+	htsi_uninit(&conf_interns);
+	conf_files_inited = 0;
+}
+
 void conf_reg_file(const char *path, const char *intern)
 {
 	htsi_entry_t *e;

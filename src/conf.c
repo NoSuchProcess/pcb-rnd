@@ -2056,6 +2056,7 @@ void conf_uninit(void)
 	htsp_free(conf_fields);
 
 	vmst_uninit(&merge_subtree);
+	pcb_conf_files_uninit();
 }
 
 void conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...)
