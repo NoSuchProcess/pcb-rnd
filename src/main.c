@@ -147,7 +147,7 @@ static void InitPaths(char *argv0)
 
 	if (haspath) {
 #ifndef NO_BINDIR_HEURISTICS
-		bindir = pcb_strdup(pcb_lrealpath(argv0));
+		bindir = pcb_lrealpath(argv0);
 #endif
 		found_bindir = 1;
 	}
