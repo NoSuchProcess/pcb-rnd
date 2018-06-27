@@ -746,7 +746,7 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 	gds_t str;
 	va_list args;
 
-	gds_init(&str);
+	memset(&str, 0, sizeof(str)); /* can't use gds_init, it'd allocate str.array */
 	va_start(args, fmt);
 
 	str.array = string;
