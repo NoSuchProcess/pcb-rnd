@@ -1,0 +1,23 @@
+Why pcb-rnd plusings are in /usr/lib/ and not /usr/lib64/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On a 64 bit system where both 32 bit and 64 bit software needs to be run
+a separate set of 32 and 64 bit libraries are kept for two reasons:
+
+1. You may want to install both the 32 and the 64 bit version of the
+same lib (e.g. libc) without interference.
+
+2. You want the dynamic linker to find the right one for your app; so
+when linking a 32 bit app, you want to look only for 32 bit libs and
+when linking a 64 bit app, you want to look only for 64 bit libs.
+Linking means the dynamic linker's automatic run when a dynamic linked
+executable is started up.
+
+What we do in our plugin dir is neither of those. We never want to have
+both 32 and 64 bit pcb-rnds live side by side on a 64 bit system. And
+these .so files are never read by the dynamic linker on executable
+startup. The only one way they are loaded is by explicit path, using
+dlopen, from within pcb-rnd. Because they are plugins, not general
+purpose shared libs. So it is safe to put them in a common lib/, we do
+not need to install them in different libdirs per system.
+
