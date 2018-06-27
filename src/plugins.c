@@ -61,11 +61,8 @@ void pcb_plugin_uninit(void)
 }
 
 
-/* ---------------------------------------------------------------- */
 static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
-
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
-
 static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pup_plugin_t *p;
