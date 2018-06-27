@@ -724,7 +724,17 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 	triangulate_polygon(cdt, polygon);
 
 	/* reattach constrained edges */
-
+	EDGELIST_FOREACH(e, constrained_edges_within_scope)
+		pointlist_node_t *left_polygon, *right_polygon;
+		for (i = 0; i < 2; i++)
+			if (e->endp[i]->adj_edges == NULL)	/* a point has been isolated */
+				insert_point_(cdt, e->endp[i]);
+		insert_constrained_edge_(cdt, e->endp[0], e->endp[1], &left_polygon, &right_polygon);
+		for (i = 0; i < 2; i++)
+			e->endp[i]->adj_edges = edgelist_prepend(e->endp[i]->adj_edges, &e); /* reattach the edge to the endpoints */
+		triangulate_polygon(cdt, left_polygon);
+		triangulate_polygon(cdt, right_polygon);
+	EDGELIST_FOREACH_END();
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
