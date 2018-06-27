@@ -576,20 +576,13 @@ first_triangle_found:
 	return triangles;
 }
 
-edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
+static void insert_constrained_edge_(cdt_t *cdt, point_t *p1, point_t *p2, pointlist_node_t **left_poly, pointlist_node_t **right_poly)
 {
 	edge_t *e;
 	triangle_t *t;
 	trianglelist_node_t *triangles;
 	pointlist_node_t *left_polygon = NULL, *right_polygon = NULL;
 	int i;
-
-	/* edge already exists - just constrain it */
-	e = get_edge_from_points(p1, p2);
-	if (e != NULL) {
-		e->is_constrained = 1;
-		return e;
-	}
 
 	/* find intersecting edges and remove them */
 	triangles = triangles_intersecting_line(p1, p2);
@@ -623,6 +616,23 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 	remove_edge(cdt, get_edge_from_points(left_polygon->item, right_polygon->item));
 	left_polygon = pointlist_prepend(left_polygon, &p1);
 	right_polygon = pointlist_prepend(right_polygon, &p1);
+	*left_poly = left_polygon;
+	*right_poly = right_polygon;
+}
+
+edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
+{
+	edge_t *e;
+	pointlist_node_t *left_polygon, *right_polygon;
+
+	/* edge already exists - just constrain it */
+	e = get_edge_from_points(p1, p2);
+	if (e != NULL) {
+		e->is_constrained = 1;
+		return e;
+	}
+
+	insert_constrained_edge_(cdt, p1, p2, &left_polygon, &right_polygon);
 
 	/* add new edge */
 	e = new_edge(cdt, p1, p2, 1);
