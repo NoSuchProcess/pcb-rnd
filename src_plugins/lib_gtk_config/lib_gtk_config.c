@@ -45,6 +45,7 @@ int pplg_check_ver_lib_gtk_config(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_gtk_config(void)
 {
+	conf_hid_unreg(lib_gtk_config_cookie);
 	conf_unreg_fields("plugins/hid_gtk/");
 }
 
