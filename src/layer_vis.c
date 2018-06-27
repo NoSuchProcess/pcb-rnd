@@ -337,4 +337,5 @@ void pcb_layer_vis_init(void)
 void pcb_layer_vis_uninit(void)
 {
 	pcb_event_unbind_allcookie(layer_vis_cookie);
+	conf_hid_unreg(layer_vis_cookie);
 }
