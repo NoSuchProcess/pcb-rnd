@@ -440,21 +440,12 @@ skip:
 	new_triangle(cdt, p[0], p[1], p[2]);
 }
 
-point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
+static void insert_point_(cdt_t *cdt, point_t *new_p)
 {
-	pos_t pos = {x, y};
-	point_t *new_p;
 	triangle_t *enclosing_triangle = NULL;
 	retriangulation_region_t region = {NULL, NULL};
 	pointlist_node_t *points_to_attach, *prev_point_node;
 	int i;
-
-	VTPOINT_FOREACH(p, &cdt->points)
-		if (p->pos.x == pos.x && p->pos.y == pos.y)	/* point in the same pos already exists */
-			return p;
-	VTPOINT_FOREACH_END();
-
-	new_p = new_point(cdt, pos);
 
 	/* find enclosing triangle */
 	VTTRIANGLE_FOREACH(t, &cdt->triangles)
@@ -489,6 +480,20 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 		prev_point_node = _node_;
 	POINTLIST_FOREACH_END();
 	new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
+}
+
+point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
+{
+	pos_t pos = {x, y};
+	point_t *new_p;
+
+	VTPOINT_FOREACH(p, &cdt->points)
+		if (p->pos.x == pos.x && p->pos.y == pos.y)	/* point in the same pos already exists */
+			return p;
+	VTPOINT_FOREACH_END();
+
+	new_p = new_point(cdt, pos);
+	insert_point_(cdt, new_p);
 
 	return new_p;
 }
