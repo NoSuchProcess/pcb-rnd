@@ -73,8 +73,12 @@ void pcb_hid_init()
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	pcb_plugin_add_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	pcb_plugin_add_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL));
+	tmp = pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	pcb_plugin_add_dir(tmp);
+	free(tmp);
+	tmp = pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+	pcb_plugin_add_dir(tmp);
+	free(tmp);
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
