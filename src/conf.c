@@ -1203,6 +1203,7 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	node->hash_path   = path;
 	node->flags       = flags;
 	vtp0_init(&(node->hid_data));
+	vtp0_init(&(node->hid_callbacks));
 
 	htsp_set(conf_fields, (char *)path, node);
 }
@@ -1218,6 +1219,7 @@ void conf_free_native(conf_native_t *node)
 	}
 
 	vtp0_uninit(&(node->hid_data));
+	vtp0_uninit(&(node->hid_callbacks));
 	free(node->prop);
 	free(node);
 }
