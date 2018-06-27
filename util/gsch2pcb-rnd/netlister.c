@@ -32,11 +32,7 @@
 #include "../src/paths.h"
 #include "../src/conf.h"
 #include "../src/conf_core.h"
-/*#include "../src_3rd/qparse/qparse.h"*/
 #include "../config.h"
-/*#include "../src/error.h"*/
-/*#include "../src/plugins.h"
-#include "../src/plug_footprint.h"*/
 #include "../src/compat_misc.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
