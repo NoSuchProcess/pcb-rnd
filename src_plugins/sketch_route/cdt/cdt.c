@@ -649,7 +649,7 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 	pointlist_node_t *polygon = NULL;
 	edgelist_node_t *border_edges = NULL;
 	edgelist_node_t *constrained_edges_within_scope = NULL;
-	int invalid_edge;
+	pointlist_node_t *isolated_points = NULL;
 	int i, j;
 
 	assert(edge->is_constrained);
@@ -672,7 +672,7 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 	EDGELIST_FOREACH(e, border_edges)
 		triangle_t *t = e->adj_t[0] != NULL ? e->adj_t[0] : e->adj_t[1];
 		edgelist_node_t *e_node = _node_;
-		invalid_edge = 0;
+		int invalid_edge = 0;
 		if (t != NULL) {
 			POINTLIST_FOREACH(p, polygon)
 				if (p != t->p[0] && p != t->p[1] && p != t->p[2] && is_point_in_circumcircle(p, t)) {
@@ -697,19 +697,26 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 			POINTLIST_FOREACH_END();
 		}
 		else { /* triangle beyond a border edge was removed earlier - the edge should be removed too */
+			point_t *endp[2] = {e->endp[0], e->endp[1]};
 			for (i = 0; i < 2; i++) /* check if the edge is not bbox of the triangulation */
 				if ((e->endp[i]->pos.x == cdt->bbox_tl.x && e->endp[i]->pos.y == cdt->bbox_tl.y)
 						|| (e->endp[i]->pos.x == cdt->bbox_br.x && e->endp[i]->pos.y == cdt->bbox_br.y))
 					goto next_edge;
-			assert(e->is_constrained);
 			border_edges = edgelist_remove(border_edges, e_node);
 			border_edges = edgelist_remove_item(border_edges, &e);
 			invalid_edge = 1; /* TODO: the loop doesn't have to start from the beginning, but border removal should preserve current node */
-			constrained_edges_within_scope = edgelist_prepend(constrained_edges_within_scope, &e);
+			if (e->is_constrained) {
+				constrained_edges_within_scope = edgelist_prepend(constrained_edges_within_scope, &e);
+				for (i = 0; i < 2; i++)
+					endp[i]->adj_edges = edgelist_remove_item(endp[i]->adj_edges, &e); /* detach the edge */
+			}
+			else
+				remove_edge(cdt, e);
 			for (i = 0; i < 2; i++) {
-				e->endp[i]->adj_edges = edgelist_remove_item(e->endp[i]->adj_edges, &e); /* detach the edge */
-				if (e->endp[i]->adj_edges == NULL) /* remove isolated point from points of polygon */
-					polygon = pointlist_remove_item(polygon, &e->endp[i]);
+				if (endp[i]->adj_edges == NULL) { /* isolated point */
+					polygon = pointlist_remove_item(polygon, &endp[i]);
+					isolated_points = pointlist_prepend(isolated_points, &endp[i]);
+				}
 			}
 		}
 		if (invalid_edge) {
@@ -724,18 +731,20 @@ next_edge:
 	polygon = order_edges_adjacently(border_edges);
 	triangulate_polygon(cdt, polygon);
 
-	/* reattach constrained edges */
+	/* reattach isolated points and constrained edges */
+	POINTLIST_FOREACH(p, isolated_points)
+		insert_point_(cdt, p);
+	POINTLIST_FOREACH_END();
+	/* free(isolated_points) */
 	EDGELIST_FOREACH(e, constrained_edges_within_scope)
 		pointlist_node_t *left_polygon, *right_polygon;
-		for (i = 0; i < 2; i++)
-			if (e->endp[i]->adj_edges == NULL)	/* a point has been isolated */
-				insert_point_(cdt, e->endp[i]);
 		insert_constrained_edge_(cdt, e->endp[0], e->endp[1], &left_polygon, &right_polygon);
 		for (i = 0; i < 2; i++)
 			e->endp[i]->adj_edges = edgelist_prepend(e->endp[i]->adj_edges, &e); /* reattach the edge to the endpoints */
 		triangulate_polygon(cdt, left_polygon);
 		triangulate_polygon(cdt, right_polygon);
 	EDGELIST_FOREACH_END();
+	/* free(constrained_edges_within_scope) */
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
