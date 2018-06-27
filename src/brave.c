@@ -282,3 +282,8 @@ void pcb_brave_init(void)
 		conf_hid_set_cb(n, brave_conf_id, &cbs);
 	}
 }
+
+void pcb_brave_uninit(void)
+{
+	conf_hid_unreg(brave_cookie);
+}

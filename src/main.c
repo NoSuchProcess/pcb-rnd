@@ -246,6 +246,8 @@ static char **hid_argv_orig;
 
 void pcb_main_uninit(void)
 {
+	pcb_brave_uninit();
+
 	if (conf_isdirty(CFR_USER))
 		conf_save_file(NULL, NULL, CFR_USER, NULL);
 
