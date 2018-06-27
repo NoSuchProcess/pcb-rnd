@@ -262,7 +262,7 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 	if (template == NULL)
 		return NULL;
 
-	gds_init(&s);
+	memset(&s, 0, sizeof(s)); /* shouldn't do gds_init() here, pcb_subst_append() will do that */
 
 	if (pcb_subst_append(&s, template, cb, ctx, flags, extra_room) == 0)
 		return s.array;
