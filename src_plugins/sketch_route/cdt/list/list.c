@@ -82,7 +82,7 @@ void LST(free)(LST(node_t) *list)
 {
 	LST(node_t) *node, *next_node;
 	if (list == NULL)
-		return NULL;
+		return;
   for (node = list, next_node = node->next; next_node != NULL; node = next_node, next_node = next_node->next)
 		free(node);
 	free(node);

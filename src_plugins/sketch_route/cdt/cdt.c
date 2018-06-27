@@ -469,6 +469,7 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 	EDGELIST_FOREACH(e, region.edges_to_remove)
 		remove_edge(cdt, e);
 	EDGELIST_FOREACH_END();
+	edgelist_free(region.edges_to_remove);
 
 	points_to_attach = order_edges_adjacently(region.border_edges);
 	prev_point_node = points_to_attach;
@@ -480,6 +481,7 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 		prev_point_node = _node_;
 	POINTLIST_FOREACH_END();
 	new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
+	pointlist_free(points_to_attach);
 }
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
@@ -725,7 +727,7 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 		}
 next_edge:
 	EDGELIST_FOREACH_END();
-	/* free(polygon) */
+	pointlist_free(polygon);
 
 	/* triangulate the resultant polygon */
 	polygon = order_edges_adjacently(border_edges);
@@ -735,7 +737,7 @@ next_edge:
 	POINTLIST_FOREACH(p, isolated_points)
 		insert_point_(cdt, p);
 	POINTLIST_FOREACH_END();
-	/* free(isolated_points) */
+	pointlist_free(isolated_points);
 	EDGELIST_FOREACH(e, constrained_edges_within_scope)
 		pointlist_node_t *left_polygon, *right_polygon;
 		insert_constrained_edge_(cdt, e->endp[0], e->endp[1], &left_polygon, &right_polygon);
@@ -744,7 +746,7 @@ next_edge:
 		triangulate_polygon(cdt, left_polygon);
 		triangulate_polygon(cdt, right_polygon);
 	EDGELIST_FOREACH_END();
-	/* free(constrained_edges_within_scope) */
+	edgelist_free(constrained_edges_within_scope);
 }
 
 static void circumcircle(const triangle_t *t, pos_t *p, int *r)
