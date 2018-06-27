@@ -62,6 +62,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "conf_core.h"
 #include <genvector/vtp0.h>
 #include "layer_vis.h"
+#include "layer_ui.h"
 #include "obj_text.h"
 #include "pcb_minuid.h"
 #include "tool.h"
@@ -277,6 +278,7 @@ void pcb_main_uninit(void)
 	pcb_file_loaded_uninit();
 	pcb_import_uninit();
 	pcb_actions_uninit();
+	pcb_uilayer_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)

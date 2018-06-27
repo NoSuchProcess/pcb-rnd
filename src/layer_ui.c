@@ -96,3 +96,7 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
+void pcb_uilayer_uninit(void)
+{
+	vtlayer_uninit(&pcb_uilayer);
+}

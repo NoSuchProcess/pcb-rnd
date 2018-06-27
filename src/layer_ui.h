@@ -50,5 +50,7 @@ extern vtlayer_t pcb_uilayer;
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color);
 void pcb_uilayer_free(pcb_layer_t *l);
 void pcb_uilayer_free_all_cookie(const char *cookie);
+void pcb_uilayer_uninit(void);
+
 
 
