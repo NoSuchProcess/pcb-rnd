@@ -1095,29 +1095,12 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 	pcb_cardinal_t n;
 	const char *paths[] = {
 		"design/groups",
-		"design/default_layer_name",
 		NULL
 	};
-
 
 	config_layers_apply();
 	s = make_layer_group_string(&PCB->LayerGroups);
 
-	/* change default layer names to the current ones in dest */
-	for (n = 0; n < pcb_max_layer; n++) {
-		pcb_layer_t *layer;
-		char lnp[128];
-		lht_node_t *nd;
-		sprintf(lnp, "design/default_layer_name[%d]", n);
-		nd = conf_lht_get_at(ctx->dst_role, lnp, 1);
-		layer = &PCB->Data->Layer[n];
-		if (strcmp(layer->name, nd->data.text.value) != 0) {
-			free(nd->data.text.value);
-			nd->data.text.value = pcb_strdup(layer->name);
-			conf_makedirty(ctx->dst_role);
-		}
-	}
-	conf_update("design/default_layer_name", -1);
 	conf_set(CFR_DESIGN, "design/groups", -1, s, POL_OVERWRITE);
 	g_free(s);
 	config_any_replace(ctx, paths);

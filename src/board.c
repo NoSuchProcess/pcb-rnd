@@ -50,11 +50,6 @@ void pcb_board_free(pcb_board_t * pcb)
 	if (pcb == NULL)
 		return;
 
-	for(i = 0; i < PCB_MAX_LAYER; i++) { /* have to free all: for boards, even unused layer names are strdup'd - pcb_data_free() won't handle this */
-		free(pcb->Data->Layer[i].name);
-		pcb->Data->Layer[i].name = NULL;
-	}
-
 	free(pcb->Name);
 	free(pcb->Filename);
 	free(pcb->PrintFilename);
@@ -102,9 +97,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->MaxHeight = ptr->MaxWidth = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;
-
-	for (i = 0; i < PCB_MAX_LAYER; i++)
-		ptr->Data->Layer[i].name = pcb_strdup(conf_core.design.default_layer_name[i]);
 
 	pcb_font_create_default(ptr);
 

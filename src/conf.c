@@ -1122,25 +1122,6 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	lht_node_t *dln;
 	const char *pc, *try;
 
-	/* get the lihata node for design/default_layer_name */
-	conf_load_as(CFR_INTERNAL, conf_internal, 1);
-	dln = conf_lht_get_at(CFR_INTERNAL, "design/default_layer_name", 1);
-	assert(dln != NULL);
-	assert(dln->type == LHT_LIST);
-	dln = dln->data.list.first;
-
-	/* Set up default layer names - make sure there are enough layers (over the hardwired ones, if any) */
-	for (i = 0; i < PCB_MAX_LAYER; i++) {
-		char buf[20];
-		if (dln == NULL) {
-			sprintf(buf, "signal%d", i + 1);
-			if (conf_set_dry(CFR_INTERNAL, "design/default_layer_name", i, buf, POL_OVERWRITE, 0) != 0)
-				printf("Can't set layer name\n");
-		}
-		else
-			dln = dln->next;
-	}
-
 	/* load config files */
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
 	conf_load_as(CFR_USER, conf_user_fn, 0);
