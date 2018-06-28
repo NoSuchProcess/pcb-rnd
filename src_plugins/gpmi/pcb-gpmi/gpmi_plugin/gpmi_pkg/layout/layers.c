@@ -104,7 +104,7 @@ layer_id_t layer_list_any(multiple layer_type_t flags, int idx)
 
 layer_id_t uilayer_alloc(const char *name, const char *color)
 {
-	pcb_layer_t *l = pcb_uilayer_alloc("script", pcb_strdup(name), pcb_strdup(color));
+	pcb_layer_t *l = pcb_uilayer_alloc("script", name, pcb_strdup(color));
 	if (l == NULL)
 		return -1;
 	return pcb_layer_id(PCB->Data, l);

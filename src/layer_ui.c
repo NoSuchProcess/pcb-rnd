@@ -32,6 +32,7 @@
 #include "config.h"
 #include "layer.h"
 #include "event.h"
+#include "compat_misc.h"
 #define GVT_DONT_UNDEF
 #include "layer_ui.h"
 #include <genvector/genvector_impl.c>
@@ -58,7 +59,7 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 found:;
 	l->meta.real.cookie = cookie;
 	l->meta.real.color = color;
-	l->name = name;
+	l->name = pcb_strdup(name);
 	l->meta.real.vis = 1;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
