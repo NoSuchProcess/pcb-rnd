@@ -85,13 +85,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->RatDraw = pcb_false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
-						/* this is the most useful starting point for now */
-
 	ptr->Grid = conf_core.editor.grid;
-	save = PCB;
-	PCB = ptr;
-	pcb_layer_parse_group_string(ptr, conf_core.design.groups, PCB_MAX_LAYER, 0);
-	PCB = save;
 
 	ptr->Zoom = conf_core.editor.zoom;
 	ptr->MaxHeight = ptr->MaxWidth = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
