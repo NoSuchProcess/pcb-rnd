@@ -154,8 +154,6 @@ typedef struct {
 		CFT_STRING fab_author;                  /* Full name of author for FAB drawings */
 		CFT_STRING initial_layer_stack;         /* deprecated. */
 
-		CFT_STRING routes;                 /* string with route styles */
-
 		CFT_COORD paste_adjust;            /* Adjust paste thickness */
 	} design;
 
