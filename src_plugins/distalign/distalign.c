@@ -390,7 +390,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 	int changed = 0;
 	int i;
 
-	if (argc < 1 || argc == 3 || argc > 4) {
+	if (argc < 1 || argc == 3 || argc > 5) {
 		PCB_ACT_FAIL(distribute);
 	}
 	/* parse direction arg */
