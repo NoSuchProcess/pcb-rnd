@@ -18,5 +18,5 @@ void GVT(destructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem)
   free(*elem);
 }
 
-#include <list/list.c>
+#include "list/list.c"
 #include <genvector/genvector_impl.c>
