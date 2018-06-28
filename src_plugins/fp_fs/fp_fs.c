@@ -231,8 +231,10 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	pcb_path_resolve(working_, &working, 0);
 
 	/* Return error if the root is not a directory, to give other fp_ plugins a chance */
-	if ((is_root) && (!pcb_is_dir(working)))
+	if ((is_root) && (!pcb_is_dir(working))) {
+		free(working);
 		return -1;
+	}
 
 	if (strcmp(subdir, ".") == 0)
 		visible_subdir = toppath;
