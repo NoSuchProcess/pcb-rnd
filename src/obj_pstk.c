@@ -443,7 +443,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 
 	mark2 = mark*2;
 	if (mark2 < pcb_gui->coord_per_pix)
-		return;
+		return PCB_R_DIR_FOUND_CONTINUE;
 
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
