@@ -473,7 +473,6 @@ static const char pcb_acth_jostle[] = "Make room by moving wires away.";
 static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
-	pcb_bool rel;
 	pcb_polyarea_t *expand;
 	float value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
 	struct info info;
