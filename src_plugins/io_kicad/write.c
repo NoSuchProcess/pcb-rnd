@@ -698,7 +698,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 		}
 
 #warning TODO: we should probably do unm_name() on the refdes, not on footprint-name?
-#warning TODO: the unique name makes no sense if we override it with unknown - if the unique name is NULL, it's more likely a save-incompatibility error
+#warning TODO: the unique name makes no sense if we override it with unknown - if the unique name is NULL, it is more likely a save-incompatibility error
 		currentElementName = unm_name(&group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
 		if (currentElementName == NULL) {
 			currentElementName = "unknown";

@@ -1908,7 +1908,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					}
 					else if (m->str != NULL && strcmp("layers", m->str) == 0) {
-#warning TODO: rather pass this subtree directly to the shape generator code so it doesn't need to guess the layers
+#warning TODO: rather pass this subtree directly to the shape generator code so it does not need to guess the layers
 						if (SMD) { /* skip testing for pins */
 							SEEN_NO_DUP(featureTally, 2);
 							smd_side = 0;

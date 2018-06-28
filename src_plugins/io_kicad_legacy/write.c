@@ -655,7 +655,7 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 		return -1;
 	}
 
-#warning TODO: don't hardwire dates
+#warning TODO: no hardwiring of dates
 	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", FP);
 	fputs("Units mm\n", FP);
 	fputs("$INDEX\n", FP);

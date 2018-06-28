@@ -1037,7 +1037,7 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 		double ang, dx, dy;
 		pcb_coord_t ax, ay, d;
 
-#warning TODO: elliptical arc: rewrite this as it doesn't work properly on extreme cases
+#warning TODO: elliptical arc: rewrite this, as it does not work properly on extreme cases
 		dy = (double)(Y - Arc->Y) / (double)Arc->Height;
 		dx = (double)(X - Arc->X) / (double)Arc->Width;
 		ang = -atan2(dy, dx);
