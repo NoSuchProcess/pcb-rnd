@@ -1,6 +1,10 @@
 put /local/pcb/mod {sketch_route}
 append /local/pcb/mod/OBJS [@
  $(PLUGDIR)/sketch_route/sketch_route.o
+ $(PLUGDIR)/sketch_route/cdt/cdt.o
+ $(PLUGDIR)/sketch_route/cdt/edge.o
+ $(PLUGDIR)/sketch_route/cdt/point.o
+ $(PLUGDIR)/sketch_route/cdt/triangle.o
 @]
 
 switch /local/pcb/sketch_route/controls
