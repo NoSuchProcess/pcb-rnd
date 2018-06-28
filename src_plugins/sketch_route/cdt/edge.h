@@ -20,7 +20,7 @@ typedef edge_t* edge_ptr_t;
 #define LST(x) edgelist_ ## x
 #define LST_ITEM_T edge_ptr_t
 
-#include <list/list.h>
+#include "list/list.h"
 
 #ifndef LST_DONT_UNDEF
 	#undef LST

@@ -19,7 +19,7 @@ typedef point_t* point_ptr_t;
 #define LST(x) pointlist_ ## x
 #define LST_ITEM_T point_t*
 
-#include <list/list.h>
+#include "list/list.h"
 
 #ifndef LST_DONT_UNDEF
 	#undef LST
