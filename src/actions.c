@@ -585,6 +585,66 @@ static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+#define conv_str2coords(dst, src) \
+do { \
+	pcb_bool succ, abso; \
+	dst.c[0] = pcb_get_value_ex(src, NULL, &abso, NULL, fgw_str2coord_unit, &succ); \
+	if (!succ) \
+		return -1; \
+	dst.len = 1; \
+	dst.absolute[0] = abso; \
+} while(0)
+
+
+
+#define conv_loadcoords(dst, src) \
+do { \
+	dst.len = 1; \
+	dst.absolute[0] = 1; \
+	dst.c[0] = src; \
+} while(0)
+
+static int coords_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_COORDS) { /* convert to coord */
+		fgw_coords_t tmp;
+		switch(FGW_BASE_TYPE(arg->type)) {
+			ARG_CONV_CASE_LONG(tmp, conv_loadcoords)
+			ARG_CONV_CASE_LLONG(tmp, conv_loadcoords)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_loadcoords)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_loadcoords)
+			ARG_CONV_CASE_STR(tmp, conv_str2coords)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+		}
+		arg->type = FGW_COORDS | FGW_DYN;
+		fgw_coords(arg) = malloc(sizeof(tmp));
+		memcpy(fgw_coords(arg), &tmp, sizeof(tmp));
+		return 0;
+	}
+	if (arg->type == FGW_COORDS) { /* convert from coord */
+		fgw_coords_t *tmp = fgw_coords(arg);
+		switch(target) {
+			ARG_CONV_CASE_LONG(tmp, conv_err)
+			ARG_CONV_CASE_LLONG(tmp, conv_err)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_err)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_err)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+			case FGW_STR:
+				arg->val.str = (char *)pcb_strdup_printf("%.08$mH", tmp);
+				arg->type = FGW_STR | FGW_DYN;
+				return 0;
+		}
+		arg->type = target;
+		return 0;
+	}
+	fprintf(stderr, "Neither side of the conversion is coords\n");
+	abort();
+}
+
 #define conv_str2layerid(dst, src) \
 do { \
 	pcb_layer_id_t lid = pcb_layer_str2id(PCB->Data, src); \
@@ -680,6 +740,10 @@ void pcb_actions_init(void)
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_argv_conv) != FGW_COORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_argv_conv) != FGW_COORDS) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORDS\n");
 		abort();
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_argv_conv) != FGW_LAYERID) {

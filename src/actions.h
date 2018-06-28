@@ -13,18 +13,27 @@ struct pcb_action_s {
 
 extern fgw_ctx_t pcb_fgw;
 
+typedef struct fgw_coords_s {
+	int len;
+	pcb_coord_t c[4];
+	char absolute[4];
+} fgw_coords_t;
+
 typedef enum {
 	FGW_KEYWORD_ = FGW_CUSTOM,
 	FGW_COORD_,
+	FGW_COORDS_,
 	FGW_LAYERID_,
 	FGW_LAYER_
 } pcb_fgw_types_e;
 #define fgw_keyword(arg) ((arg)->val.nat_int)
 #define fgw_coord(arg) (*(pcb_coord_t *)(&((arg)->val.custom.c)))
+#define fgw_coords(arg) ((arg)->val.ptr_void)
 #define fgw_layerid(arg) ((arg)->val.nat_long)
 #define fgw_layer(arg) ((arg)->val.ptr_void)
 #define FGW_KEYWORD ((fgw_type_t)FGW_KEYWORD_)
 #define FGW_COORD   ((fgw_type_t)FGW_COORD_)
+#define FGW_COORDS  ((fgw_type_t)FGW_COORDS_)
 #define FGW_LAYERID  ((fgw_type_t)FGW_LAYERID_)
 #define FGW_LAYER  ((fgw_type_t)FGW_LAYER_)
 
