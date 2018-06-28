@@ -127,7 +127,6 @@ li:pcb-rnd-conf-v1 {
 #			poly_isle_area = 0
 #			background_image = {}
 #			fab_author = {}
-			routes = {}
 			paste_adjust = 0
 		} # design
 
