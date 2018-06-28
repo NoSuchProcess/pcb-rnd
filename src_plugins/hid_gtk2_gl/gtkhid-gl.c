@@ -42,9 +42,9 @@ static pcb_coord_t grid_local_x = 0, grid_local_y = 0, grid_local_radius = 0;
 
 typedef struct render_priv_s {
 	GdkGLConfig *				glconfig;
-	GdkColor 						bg_color;
-	GdkColor 						offlimits_color;
-	GdkColor 						grid_color;
+	pcb_gtk_color_t			bg_color;
+	pcb_gtk_color_t			offlimits_color;
+	pcb_gtk_color_t			grid_color;
 	pcb_bool 						trans_lines;
 	pcb_bool 						in_context;
 	int 								subcomposite_stencil_bit;
@@ -365,9 +365,9 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 
 typedef struct {
 	int color_set;
-	GdkColor color;
+	pcb_gtk_color_t color;
 	int xor_set;
-	GdkColor xor_color;
+	pcb_gtk_color_t xor_color;
 	double red;
 	double green;
 	double blue;
@@ -744,7 +744,7 @@ static void ghid_gl_show_crosshair(gboolean paint_new_location)
 {
 	GLint x, y, z;
 	static int done_once = 0;
-	static GdkColor cross_color;
+	static pcb_gtk_color_t cross_color;
 
 	if (!paint_new_location)
 		return;
