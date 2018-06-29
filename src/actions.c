@@ -734,23 +734,23 @@ void pcb_actions_init(void)
 {
 	fgw_init(&pcb_fgw, "pcb-rnd");
 	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv) != FGW_KEYWORD) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_arg_conv) != FGW_COORD) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_arg_conv, NULL) != FGW_COORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_arg_conv) != FGW_COORDS) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_arg_conv, NULL) != FGW_COORDS) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORDS\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_arg_conv) != FGW_LAYERID) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_arg_conv, NULL) != FGW_LAYERID) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERID\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_arg_conv) != FGW_LAYER) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_arg_conv, NULL) != FGW_LAYER) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
 		abort();
 	}
