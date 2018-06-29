@@ -320,7 +320,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 	res.type = FGW_INVALID;
 	if (pcb_actionv_(f, &res, argc+1, argv) != 0)
 		return -1;
-	fgw_argv_conv(&pcb_fgw, &res, FGW_INT);
+	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
 	return res.val.nat_int;
 }
 
@@ -496,7 +496,7 @@ int pcb_parse_actions(const char *str_)
 /*** custom fungw types ***/
 #define conv_str2kw(dst, src) dst = pcb_funchash_get(src, NULL)
 
-static int keyword_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+static int keyword_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_KEYWORD) { /* convert to keyword */
 		long tmp;
@@ -545,7 +545,7 @@ do { \
 		return -1; \
 } while(0)
 
-static int coord_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+static int coord_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_COORD) { /* convert to coord */
 		pcb_coord_t tmp;
@@ -604,7 +604,7 @@ do { \
 	dst.c[0] = src; \
 } while(0)
 
-static int coords_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+static int coords_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_COORDS) { /* convert to coord */
 		fgw_coords_t tmp;
@@ -653,7 +653,7 @@ do { \
 	dst = lid; \
 } while(0)
 
-static int layerid_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+static int layerid_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_LAYERID) { /* convert to layer id */
 		pcb_layer_id_t tmp;
@@ -693,11 +693,11 @@ static int layerid_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
-static int layer_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+static int layer_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_LAYER) { /* convert to layer */
 		pcb_layer_id_t lid;
-		if (layerid_argv_conv(ctx, arg, FGW_LAYERID) != 0)
+		if (layerid_arg_conv(ctx, arg, FGW_LAYERID) != 0)
 			return -1;
 		lid = fgw_layerid(arg);
 		arg->val.ptr_void = pcb_get_layer(PCB->Data, lid);
@@ -719,7 +719,7 @@ static int layer_argv_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 		if ((lid >= 0) && (lid < data->LayerN)) {
 			arg->type = FGW_LAYERID;
 			arg->val.nat_long = lid;
-			if (layerid_argv_conv(ctx, arg, target) != 0)
+			if (layerid_arg_conv(ctx, arg, target) != 0)
 				return -1;
 			return 0;
 		}
@@ -734,23 +734,23 @@ void pcb_actions_init(void)
 {
 	fgw_init(&pcb_fgw, "pcb-rnd");
 	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_argv_conv) != FGW_KEYWORD) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv) != FGW_KEYWORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_argv_conv) != FGW_COORD) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_arg_conv) != FGW_COORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_argv_conv) != FGW_COORDS) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_arg_conv) != FGW_COORDS) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORDS\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_argv_conv) != FGW_LAYERID) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_arg_conv) != FGW_LAYERID) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERID\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_argv_conv) != FGW_LAYER) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_arg_conv) != FGW_LAYER) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
 		abort();
 	}

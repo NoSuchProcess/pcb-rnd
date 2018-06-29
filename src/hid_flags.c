@@ -103,7 +103,7 @@ int pcb_hid_get_flag(const char *name)
 				res.type = FGW_INVALID;
 				if (pcb_actionv_(f, &res, (len > 0) ? 2 : 1, argv) != 0)
 					return -1;
-				fgw_argv_conv(&pcb_fgw, &res, FGW_INT);
+				fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
 				return res.val.nat_int;
 			}
 			else {

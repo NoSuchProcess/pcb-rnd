@@ -84,7 +84,7 @@ PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
 	if (ret != 0)
 		return -1;
 
-	if (fgw_argv_conv(&pcb_fgw, res, FGW_INT) != 0)
+	if (fgw_arg_conv(&pcb_fgw, res, FGW_INT) != 0)
 		return -1;
 
 	return res->val.nat_int;
@@ -102,7 +102,7 @@ do { \
 		PCB_ACT_FAIL(aname); \
 		return FGW_ERR_ARGC; \
 	} \
-	if (fgw_argv_conv(&pcb_fgw, &argv[idx], type) != 0) { \
+	if (fgw_arg_conv(&pcb_fgw, &argv[idx], type) != 0) { \
 		PCB_ACT_FAIL(aname); \
 		return FGW_ERR_ARG_CONV; \
 	} \
@@ -113,7 +113,7 @@ do { \
 #define PCB_ACT_MAY_CONVARG(idx, type, aname, stmt) \
 do { \
 	if (argc > idx) { \
-		if (fgw_argv_conv(&pcb_fgw, &argv[idx], type) != 0) { \
+		if (fgw_arg_conv(&pcb_fgw, &argv[idx], type) != 0) { \
 			PCB_ACT_FAIL(aname); \
 			return FGW_ERR_ARG_CONV; \
 		} \
@@ -148,7 +148,7 @@ PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
 	for(n = 0; n < PCB_ACTION_MAX_ARGS; n++)
 		argv[n] = NULL;
 	for(n = 1; n < oargc; n++) {
-		if (fgw_argv_conv(&pcb_fgw, &oargv[n], FGW_STR) == 0)
+		if (fgw_arg_conv(&pcb_fgw, &oargv[n], FGW_STR) == 0)
 			argv[n-1] = oargv[n].val.str;
 		else
 			argv[n-1] = "";

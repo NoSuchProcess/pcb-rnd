@@ -476,7 +476,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(id) {
 		case F_ToggleGrid:
 			if (argc > 3) {
-				if (fgw_argv_conv(&pcb_fgw, &argv[3], FGW_KEYWORD) != 0) {
+				if (fgw_arg_conv(&pcb_fgw, &argv[3], FGW_KEYWORD) != 0) {
 					PCB_ACT_FAIL(Display);
 					return FGW_ERR_ARG_CONV;
 				}
