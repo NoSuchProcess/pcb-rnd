@@ -282,6 +282,7 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	old_action = pcb_current_action;
 	pcb_current_action = ca->action;
 	ret = pcb_current_action->trigger_cb(res, argc, argv);
+	fgw_argv_free(&pcb_fgw, argc, argv);
 	pcb_current_action = old_action;
 
 	return ret;
@@ -645,6 +646,14 @@ static int coords_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+static int coords_arg_free(fgw_ctx_t *ctx, fgw_arg_t *arg)
+{
+	assert(arg->type == FGW_COORDS | FGW_DYN);
+	free(arg->val.ptr_void);
+	return 0;
+}
+
+
 #define conv_str2layerid(dst, src) \
 do { \
 	pcb_layer_id_t lid = pcb_layer_str2id(PCB->Data, src); \
@@ -742,7 +751,7 @@ void pcb_actions_init(void)
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_arg_conv, NULL) != FGW_COORDS) {
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_arg_conv, coords_arg_free) != FGW_COORDS) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORDS\n");
 		abort();
 	}
