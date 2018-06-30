@@ -171,18 +171,22 @@ cleared.  If the value is 1, the flag is set.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *flag = PCB_ACTION_ARG(1);
-	int value = argc > 2 ? atoi(argv[2]) : -1;
+	const char *function;
+	const char *flag;
+	int value;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ChangeFlag, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, ChangeFlag, flag = argv[2].val.str);
+	PCB_ACT_CONVARG(2, FGW_INT, ChangeFlag, value = argv[3].val.nat_int);
+
 	if (value != 0 && value != 1)
 		PCB_ACT_FAIL(ChangeFlag);
 
 	ChangeFlag(function, flag, value, "ChangeFlag");
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
