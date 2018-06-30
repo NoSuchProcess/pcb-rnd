@@ -908,27 +908,26 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
 
-		/* special case: can't convert with pcb_get_value() */
-		if ((fnc_id == F_Grid) && ((val[0] == '*') || (val[0] == '/'))) {
-			double d;
-			char *end;
+	/* special case: can't convert with pcb_get_value() */
+	if ((fnc_id == F_Grid) && ((val[0] == '*') || (val[0] == '/'))) {
+		double d;
+		char *end;
 
-			d = strtod(val+1, &end);
-			if ((*end != '\0') || (d <= 0)) {
-				pcb_message(PCB_MSG_ERROR, "SetValue: Invalid multiplier/divider for grid set: needs to be a positive number\n");
-				return 1;
-			}
-			pcb_grid_inval();
-			if (val[0] == '*')
-				pcb_board_set_grid(pcb_round(PCB->Grid * d), pcb_false, 0, 0);
-			else
-				pcb_board_set_grid(pcb_round(PCB->Grid / d), pcb_false, 0, 0);
+		d = strtod(val+1, &end);
+		if ((*end != '\0') || (d <= 0)) {
+			pcb_message(PCB_MSG_ERROR, "SetValue: Invalid multiplier/divider for grid set: needs to be a positive number\n");
+			return 1;
 		}
+		pcb_grid_inval();
+		if (val[0] == '*')
+			pcb_board_set_grid(pcb_round(PCB->Grid * d), pcb_false, 0, 0);
+		else
+			pcb_board_set_grid(pcb_round(PCB->Grid / d), pcb_false, 0, 0);
+	}
 
-		value = pcb_get_value(val, units, &absolute, NULL);
+	value = pcb_get_value(val, units, &absolute, NULL);
 
-		switch (fnc_id) {
-
+	switch(fnc_id) {
 		case F_Grid:
 			pcb_grid_inval();
 			if (absolute)
@@ -959,11 +958,11 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		default:
 			err = 1;
 			break;
-		}
-		if (!err) {
-			PCB_ACT_IRES(0);
-			return 0;
-		}
+	}
+	if (!err) {
+		PCB_ACT_IRES(0);
+		return 0;
+	}
 
 	PCB_ACT_FAIL(SetValue);
 }
@@ -997,24 +996,24 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		return -1;
 	}
 
-		if (funcid == F_Object) {
-			pcb_coord_t x, y;
-			pcb_hid_get_coords("Click on object to change angle of", &x, &y);
-			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
-		}
+	if (funcid == F_Object) {
+		pcb_coord_t x, y;
+		pcb_hid_get_coords("Click on object to change angle of", &x, &y);
+		type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+	}
 
-		{ /* convert angle from string */
-			char *end;
-			while(isspace(*delta)) delta++;
-			value = strtod(delta, &end);
-			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
-				return -1;
-			}
-			absolute = ((*delta != '-') && (*delta != '+'));
+	{ /* convert angle from string */
+		char *end;
+		while(isspace(*delta)) delta++;
+		value = strtod(delta, &end);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
+			return -1;
 		}
-		
-		switch (funcid) {
+		absolute = ((*delta != '-') && (*delta != '+'));
+	}
+	
+	switch(funcid) {
 		case F_Object:
 			{
 				if (type != PCB_OBJ_VOID) {
@@ -1038,7 +1037,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (pcb_chg_selected_angle(PCB_CHANGESIZE_TYPES, which, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
-		}
+	}
 
 	PCB_ACT_IRES(0);
 	return 0;
