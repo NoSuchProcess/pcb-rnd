@@ -393,10 +393,10 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char changedrillsize_syntax[] =
+static const char pcb_acts_Change2ndSize[] =
 	"ChangeDrillSize(Object, delta|style)\n" "ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)";
 
-static const char changedrillsize_help[] = "Changes the drilling hole size of objects.";
+static const char pcb_acth_Change2ndSize[] = "Changes the drilling hole size of objects.";
 
 /* %start-doc actions ChangeDrillSize
 
@@ -412,9 +412,9 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_bool absolute;
 	pcb_coord_t value;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, Change2ndSize, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, Change2ndSize, delta = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, Change2ndSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
@@ -1102,7 +1102,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 pcb_action_t change_action_list[] = {
 	{"ChangeAngle", pcb_act_ChangeAngle, pcb_acth_ChangeAngle, pcb_acts_ChangeAngle},
 	{"ChangeClearSize", pcb_act_ChangeClearSize, pcb_acth_ChangeClearSize, pcb_acts_ChangeClearSize},
-	{"ChangeDrillSize", pcb_act_Change2ndSize, changedrillsize_help, changedrillsize_syntax},
+	{"ChangeDrillSize", pcb_act_Change2ndSize, pcb_acth_Change2ndSize, pcb_acts_Change2ndSize},
 	{"ChangeJoin", pcb_act_ChangeJoin, pcb_acth_ChangeJoin, pcb_acts_ChangeJoin},
 	{"ChangeName", pcb_act_ChangeName, pcb_acth_ChangeName, pcb_acts_ChangeName},
 	{"ChangePinName", pcb_act_ChangePinName, pcb_acth_ChangePinName, pcb_acts_ChangePinName},
