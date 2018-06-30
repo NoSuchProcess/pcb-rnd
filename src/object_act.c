@@ -680,24 +680,19 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
 
-	if (argc < 2) {
-		PCB_ACT_FAIL(ElementSetAttr);
-	}
-
-	refdes = argv[0];
-	name = argv[1];
-	value = PCB_ACTION_ARG(2);
-
+	PCB_ACT_CONVARG(1, FGW_STR, ElementList, refdes = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, ElementList, name = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, ElementList, value = argv[3].val.str);
 
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
 	if (sc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
+		PCB_ACT_IRES(1);
 		return 0;
 	}
 
@@ -705,8 +700,9 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *ores, int oargc, fgw_arg_t 
 		pcb_attribute_put(&sc->Attributes, name, value);
 	else
 		pcb_attribute_remove(&sc->Attributes, name);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_RipUp[] = "RipUp(All|Selected|Element)";
