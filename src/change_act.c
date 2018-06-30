@@ -304,16 +304,19 @@ changes the width of the silk layer lines and arcs for this element.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *delta = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
+	const char *function;
+	const char *delta;
+	const char *units = NULL;
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	pcb_coord_t value;
 	int type = PCB_OBJ_VOID, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
 
 
 	if (function && delta) {
@@ -325,7 +328,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
-		if (strcmp(argv[1], "style") == 0) {
+		if (strcmp(delta, "style") == 0) {
 			if (pcb_get_style_size(funcid, &value, type, 0) != 0)
 				return 1;
 			absolute = 1;
@@ -383,8 +386,9 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			break;
 		}
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
