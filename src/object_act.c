@@ -310,7 +310,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_MoveObject[] = "pcb_move_obj(X,Y,dim)";
+static const char pcb_acts_MoveObject[] = "pcb_move_obj(X,Y,[units])";
 static const char pcb_acth_MoveObject[] = "Moves the object under the crosshair.";
 
 /* %start-doc actions MoveObject
@@ -318,45 +318,49 @@ static const char pcb_acth_MoveObject[] = "Moves the object under the crosshair.
 The @code{X} and @code{Y} are treated like @code{delta} is for many
 other objects.  For each, if it's prefixed by @code{+} or @code{-},
 then that amount is relative.  Otherwise, it's absolute.  Units can be
-@code{mil} or @code{mm}; if unspecified, units are PCB's internal
-units, currently 1/100 mil.
+@code{mil} or @code{mm} and is used when X and Y have no unit specified.
+If no unit unspecified in coords or units, nanometer is assumed.
 
 %end-doc */
 
-static fgw_error_t pcb_act_MoveObject(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *x_str = PCB_ACTION_ARG(0);
-	const char *y_str = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
-	pcb_coord_t nx, ny, x, y;
-	pcb_bool absolute1, absolute2;
+	char *units = NULL, *saved;
+	fgw_coords_t *nx, *ny;
+	pcb_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	pcb_hid_get_coords("Select an Object", &x, &y);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, MoveObject, units = argv[3].val.str);
+	fgw_str2coord_unit_set(saved, units);
+	PCB_ACT_CONVARG(1, FGW_COORDS, MoveObject, nx = fgw_coords(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_COORDS, MoveObject, ny = fgw_coords(&argv[2]));
+	fgw_str2coord_unit_restore(saved);
 
-	ny = pcb_get_value(y_str, units, &absolute1, NULL);
-	nx = pcb_get_value(x_str, units, &absolute2, NULL);
+
+	pcb_hid_get_coords("Select an Object", &x, &y);
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID) {
 		pcb_message(PCB_MSG_ERROR, "Nothing found under crosshair\n");
 		return 1;
 	}
-	if (absolute1)
-		nx -= pcb_crosshair.X;
-	if (absolute2)
-		ny -= pcb_crosshair.Y;
+
+	if (nx->absolute[0])
+		nx->c[0] -= pcb_crosshair.X;
+	if (ny->absolute[0])
+		ny->c[0] -= pcb_crosshair.Y;
+
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 	if (type == PCB_OBJ_SUBC)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
-	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
+	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx->c[0], ny->c[0]);
 	pcb_board_set_changed_flag(pcb_true);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_MoveToCurrentLayer[] = "MoveToCurrentLayer(Object|SelectedObjects)";
