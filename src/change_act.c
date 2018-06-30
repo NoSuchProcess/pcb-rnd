@@ -626,12 +626,13 @@ polygon, insulating them from each other.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	int op;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -661,10 +662,13 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			if (pcb_chg_selected_join(PCB_CHANGEJOIN_TYPES))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
-		}
+
+		default:
+			return FGW_ERR_ARG_CONV;
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
