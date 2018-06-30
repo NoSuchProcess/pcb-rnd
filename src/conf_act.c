@@ -236,7 +236,7 @@ static const char pcb_acts_ChkMode[] = "ChkMode(expected_mode)" ;
 static const char pcb_acth_ChkMode[] = "Return 1 if the currently selected mode is the expected_mode";
 static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char *dst;
+	const char *dst;
 	pcb_toolid_t id;
 
 	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
