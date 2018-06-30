@@ -260,7 +260,7 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	const char *dst;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
 
 	if (strcmp(dst, "none") == 0) {
 		PCB_ACT_IRES(PCB->Grid <= 300);
@@ -279,7 +279,7 @@ static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (have == NULL) have = "";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkMode, expected = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkSubcID, expected = argv[1].val.str);
 
 	PCB_ACT_IRES(strcmp(expected, have) == 0);
 	return 0;
