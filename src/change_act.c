@@ -77,18 +77,21 @@ changes the polygon clearance.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *delta = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
+	const char *function;
+	const char *delta = NULL;
+	const char *units = NULL;
 	pcb_bool absolute;
 	pcb_coord_t value;
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_coord_t x, y;
 	int got_coords = 0;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ChangeClearSize, function = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ChangeClearSize, delta = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeClearSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
@@ -99,7 +102,7 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *ores, int oargc, fgw_arg_t
 			type = pcb_search_screen(x, y, PCB_CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
-		if (strcmp(argv[1], "style") == 0) {
+		if (strcmp(delta, "style") == 0) {
 			if (!got_coords) {
 				pcb_hid_get_coords(_("Select an Object"), &x, &y);
 				got_coords = 1;
@@ -107,8 +110,10 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *ores, int oargc, fgw_arg_t
 
 			if ((type == PCB_OBJ_VOID) || (type == PCB_OBJ_POLY))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
 				type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
-			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
-				return 1;
+			if (pcb_get_style_size(funcid, &value, type, 2) != 0) {
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
 			absolute = 1;
 			value *= 2;
 		}
@@ -143,8 +148,8 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *ores, int oargc, fgw_arg_t
 			break;
 		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
