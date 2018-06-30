@@ -821,14 +821,18 @@ SetFlag(SelectedPins,thermal)
 
 %end-doc */
 
-static fgw_error_t pcb_act_SetFlag(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SetFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *flag = PCB_ACTION_ARG(1);
+	const char *function;
+	const char *flag;
+
+	PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
+
 	ChangeFlag(function, flag, 1, "SetFlag");
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -852,14 +856,18 @@ ClrFlag(SelectedLines,join)
 
 %end-doc */
 
-static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *flag = PCB_ACTION_ARG(1);
+	const char *function;
+	const char *flag;
+
+	PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
+
 	ChangeFlag(function, flag, 0, "ClrFlag");
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
