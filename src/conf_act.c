@@ -285,16 +285,14 @@ static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
-static const char ChkGridUnits_help[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
-static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_ChkGridUnits[] = "ChkGridUnits(expected)";
+static const char pcb_acth_ChkGridUnits[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
+static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	assert(argc == 1);
-	ores->type = FGW_INT;
-	ores->val.nat_int = (strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0);
+	const char *expected;
+	PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
+	PCB_ACT_IRES(strcmp(conf_core.editor.grid_unit->suffix, expected) == 0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char ChkBuffer_syntax[] = "ChkBuffer(idx)";
@@ -317,7 +315,7 @@ pcb_action_t conf_action_list[] = {
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
 	{"ChkSubcID", pcb_act_ChkSubcID, pcb_acth_ChkSubcID, pcb_acts_ChkSubcID},
-	{"ChkGridUnits", pcb_act_ChkGridUnits, ChkGridUnits_help, ChkGridUnits_syntax},
+	{"ChkGridUnits", pcb_act_ChkGridUnits, pcb_acth_ChkGridUnits, pcb_acts_ChkGridUnits},
 	{"ChkBuffer", pcb_act_ChkBuffer, ChkBuffer_help, ChkBuffer_syntax}
 };
 
