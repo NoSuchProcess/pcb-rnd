@@ -1180,8 +1180,8 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
-static const char pcb_acth_cursor[] = "Move the cursor.";
+static const char pcb_acts_Cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
+static const char pcb_acth_Cursor[] = "Move the cursor.";
 /* %start-doc actions Cursor
 
 This action moves the mouse cursor.  Unlike other actions which take
@@ -1217,9 +1217,8 @@ The values are percentages of the board size.  Thus, a move of
 
 %end-doc */
 
-static fgw_error_t pcb_act_Cursor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
 		{"view", 0, PCB_UNIT_PERCENT},
@@ -1232,9 +1231,10 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		{"board", 0, PCB_UNIT_PERCENT},
 		{"", 0, 0}
 	};
-	int pan_warp = HID_SC_DO_NOTHING;
+	int op, pan_warp = HID_SC_DO_NOTHING;
 	double dx, dy;
 	pcb_coord_t view_width, view_height;
+	const char *a1, *a2, *a3;
 
 	extra_units_x[0].scale = PCB->Grid;
 	extra_units_x[2].scale = PCB->MaxWidth;
@@ -1247,20 +1247,22 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	extra_units_x[1].scale = view_width;
 	extra_units_y[1].scale = view_height;
 
-	if (argc != 4)
-		PCB_ACT_FAIL(cursor);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Cursor, op = fgw_keyword(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_STR, Cursor, a1 = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, Cursor, a2 = argv[3].val.str);
+	PCB_ACT_CONVARG(4, FGW_STR, Cursor, a3 = argv[4].val.str);
 
-	if (pcb_strcasecmp(argv[0], "pan") == 0)
+	if (op == F_Pan)
 		pan_warp = HID_SC_PAN_VIEWPORT;
-	else if (pcb_strcasecmp(argv[0], "warp") == 0)
+	else if (op == F_Warp)
 		pan_warp = HID_SC_WARP_POINTER;
 	else
-		PCB_ACT_FAIL(cursor);
+		PCB_ACT_FAIL(Cursor);
 
-	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "", NULL);
+	dx = pcb_get_value_ex(a1, a3, NULL, extra_units_x, "", NULL);
 	if (conf_core.editor.view.flip_x)
 		dx = -dx;
-	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "", NULL);
+	dy = pcb_get_value_ex(a2, a3, NULL, extra_units_y, "", NULL);
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 	
@@ -1281,8 +1283,8 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
 	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
@@ -1917,7 +1919,7 @@ pcb_action_t gui_action_list[] = {
 	{"SwitchHID", pcb_act_SwitchHID, pcb_acth_SwitchHID, pcb_acts_SwitchHID},
 	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
 	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
-	{"Cursor", pcb_act_Cursor, pcb_acth_cursor, pcb_acts_cursor},
+	{"Cursor", pcb_act_Cursor, pcb_acth_Cursor, pcb_acts_Cursor},
 	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
