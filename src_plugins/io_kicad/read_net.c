@@ -215,13 +215,12 @@ static int eeschema_load(const char *fname_net)
 
 const char pcb_acts_LoadeeschemaFrom[] = "LoadEeschemaFrom(filename)";
 const char pcb_acth_LoadeeschemaFrom[] = "Loads the specified eeschema .net file - the netlist must be an s-expression.";
-fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadeeschemaFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load eeschema netlist file...",
@@ -235,7 +234,7 @@ fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		}
 	}
 
-	return eeschema_load(fname);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(eeschema_load(fname));
+	return 0;
 }
 
