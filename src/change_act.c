@@ -546,17 +546,16 @@ Changes the name of the currently active layer.
 
 %end-doc */
 
-fgw_error_t pcb_act_ChangeName(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
+	int op;
 	char *name;
 	int pinnum;
 	pcb_objtype_t type;
 
-	if (function) {
-		switch (pcb_funchash_get(function, NULL)) {
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
 
+	switch(op) {
 		/* change the refdes of a subcircuit */
 		case F_Subc:
 		{
@@ -602,10 +601,13 @@ fgw_error_t pcb_act_ChangeName(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			else
 				free(name);
 			break;
-		}
+
+		default:
+			return FGW_ERR_ARG_CONV;
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
