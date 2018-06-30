@@ -402,17 +402,19 @@ static const char changedrillsize_help[] = "Changes the drilling hole size of ob
 
 %end-doc */
 
-static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *delta = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
+	const char *function;
+	const char *delta;
+	const char *units = NULL;
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
-
 	pcb_bool absolute;
 	pcb_coord_t value;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
@@ -423,7 +425,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *ores, int oargc, fgw_arg_t *
 			type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
-		if (strcmp(argv[1], "style") == 0) {
+		if (strcmp(delta, "style") == 0) {
 			if (pcb_get_style_size(funcid, &value, type, 1) != 0)
 				return 1;
 			absolute = 1;
@@ -455,8 +457,8 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *ores, int oargc, fgw_arg_t *
 			break;
 		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------------  */
