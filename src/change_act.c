@@ -479,19 +479,14 @@ ChangePinName(U3, 7, VCC)
 
 %end-doc */
 
-static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
 
-	if (argc != 3) {
-		PCB_ACT_FAIL(ChangePinName);
-	}
-
-	refdes = argv[0];
-	pinnum = argv[1];
-	pinname = argv[2];
+	PCB_ACT_CONVARG(1, FGW_STR, ChangePinName, refdes = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, ChangePinName, pinnum = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, ChangePinName, pinname = argv[3].val.str);
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
@@ -524,8 +519,8 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *ores, int oargc, fgw_arg_t *
 		}
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
