@@ -65,29 +65,31 @@ int io_hyp_fmt(pcb_plug_io_t * ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 
 
 
-static const char load_hyp_syntax[] = "LoadhypFrom(filename[, \"debug\"]...)";
+static const char pcb_acts_LoadhypFrom[] = "LoadhypFrom(filename[, \"debug\"]...)";
 
-static const char load_hyp_help[] = "Loads the specified Hyperlynx file.";
+static const char pcb_acth_LoadhypFrom[] = "Loads the specified Hyperlynx file.";
 
-fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	int debug = 0;
-	int i = 0;
 	pcb_bool_t retval;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadhypFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(_("Load .hyp file..."),
 																_("Picks a hyperlynx file to load.\n"), "default.hyp", ".hyp", "hyp", HID_FILESELECT_READ);
 	}
 
-	if (fname == NULL)
-		return 1;
+	if (fname == NULL) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
 
-
+#warning TODO: rewrite this - this is very unpcb-rnd
+#if 0
+	int i = 0;
 	/* 
 	 * debug level.
 	 * one "debug" argument: hyperlynx logging.
@@ -97,6 +99,7 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	for (i = 0; i < argc; i++)
 		debug += (strcmp(argv[i], "debug") == 0);
+#endif
 
 	if (debug > 0)
 		pcb_message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
@@ -109,15 +112,12 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
 
-	if (retval)
-		PCB_AFAIL(load_hyp);
-
+	PCB_ACT_IRES(retval);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t hyp_action_list[] = {
-	{"LoadhypFrom", pcb_act_LoadhypFrom, load_hyp_help, load_hyp_syntax}
+	{"LoadhypFrom", pcb_act_LoadhypFrom, pcb_acth_LoadhypFrom, pcb_acts_LoadhypFrom}
 };
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
