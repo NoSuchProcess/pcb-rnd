@@ -342,7 +342,6 @@ ha:{
 				ha:Loose subcircuits (no subc lock) = { a={<key>m; <key>k; <key>s}; checked=subc(loose, check); action=subc(loose, toggle); update_on={} }
 				ha:Tool {
 					li:submenu {
-						ha:None           = { checked=ChkMode(none);            action=Mode(None); update_on={editor/mode} }
 						ha:Via            = { checked=ChkMode(via);         li:a={{<key>t;<key>v};{<Key>F1};}; action=Mode(Via); update_on={editor/mode} }
 						ha:Line           = { checked=ChkMode(line);        li:a={{<key>t;<key>l};{<Key>F2};}; action=Mode(Line); update_on={editor/mode} }
 						ha:Arc            = { checked=ChkMode(arc);         li:a={{<key>t;<key>a};{<Key>F3};}; action=Mode(Arc); update_on={editor/mode} }
