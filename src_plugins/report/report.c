@@ -144,18 +144,19 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
-	char *report = NULL;
+	char *op = NULL, *report = NULL;
 	pcb_subc_t *subc;
 	pcb_coord_t x, y;
 	pcb_hid_get_coords("Click on object to report on", &x, &y);
 
-	if ((argv != NULL) && (argv[0] != NULL)) {
-		if (pcb_strncasecmp(argv[0], "Subc", 4) == 0)
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
+
+	if (op != NULL) {
+		if (pcb_strncasecmp(op, "Subc", 4) == 0)
 			type = PCB_OBJ_SUBC;
 	}
 	type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3);
@@ -172,6 +173,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
+				PCB_ACT_IRES(0);
 				return 0;
 			}
 #endif
@@ -199,6 +201,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->line_tree, 0);
+				PCB_ACT_IRES(0);
 				return 0;
 			}
 #endif
@@ -225,6 +228,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->rat_tree, 0);
+				PCB_ACT_IRES(0);
 				return 0;
 			}
 #endif
@@ -283,6 +287,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->polygon_tree, 0);
+				PCB_ACT_IRES(0);
 				return 0;
 			}
 #endif
@@ -322,6 +327,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->subc_tree, 0);
+				PCB_ACT_IRES(0);
 				return 0;
 			}
 #endif
@@ -342,6 +348,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 		if (pcb_gui->shift_is_pressed()) {
 			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 			pcb_r_dump_tree(layer->text_tree, 0);
+			PCB_ACT_IRES(0);
 			return 0;
 		}
 #endif
@@ -367,7 +374,8 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 
 	if ((report == NULL) || (*report == '\0')) {
 		pcb_message(PCB_MSG_INFO, _("Nothing found to report on\n"));
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	/* create dialog box */
@@ -381,8 +389,8 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *ores, int oargc, fgw_arg_t *
 	pcb_gui->report_dialog("Report", report);
 	free(report);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static int report_found_pins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
