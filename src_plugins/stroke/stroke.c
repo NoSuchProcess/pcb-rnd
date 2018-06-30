@@ -98,23 +98,24 @@ static void pcb_stroke_start(void)
 
 static const char pcb_acts_stroke[] = "stroke(gesture, seq)";
 static const char pcb_acth_stroke[] = "Various gesture recognition related functions";
-static fgw_error_t pcb_act_stroke(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc < 1)
-		PCB_ACT_FAIL(stroke);
+	const char *cmd, *arg = NULL;
 
-	if (strcmp(argv[0], "gesture") == 0) {
-		if (argc < 2)
+	PCB_ACT_CONVARG(1, FGW_STR, stroke,  cmd = argv[1].val.str);
+
+	if (strcmp(cmd, "gesture") == 0) {
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
+		if (arg == NULL)
 			PCB_ACT_FAIL(stroke);
-		pcb_stroke_exec(argv[1]);
+		pcb_stroke_exec(arg);
 	}
-	else if (pcb_strcasecmp(argv[0], "zoom") == 0) {
+	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
 		char tmp[256];
 		pcb_snprintf(tmp, sizeof(tmp), "ZoomTo(%$mm, %$mm, %$mm, %$mm)", stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y);
 		pcb_parse_command(tmp);
 	}
-	else if (pcb_strcasecmp(argv[0], "stopline") == 0) {
+	else if (pcb_strcasecmp(cmd, "stopline") == 0) {
 		if (conf_core.editor.mode == PCB_MODE_LINE)
 			pcb_tool_select_by_id(PCB_MODE_LINE);
 		else if (conf_core.editor.mode == PCB_MODE_POLYGON)
@@ -124,8 +125,9 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 	else
 		PCB_ACT_FAIL(stroke);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /*** administration ***/
