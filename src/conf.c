@@ -1122,6 +1122,10 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	lht_node_t *dln;
 	const char *pc, *try;
 
+	/* the ultimate fallback: all essential values are built in the executable
+	   on a low priority */
+	conf_load_as(CFR_INTERNAL, conf_internal, 1);
+
 	/* load config files */
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
 	conf_load_as(CFR_USER, conf_user_fn, 0);
