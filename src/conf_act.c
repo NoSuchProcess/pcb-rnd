@@ -224,8 +224,8 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 }
 
 /*------------ get/chk (check flag actions for menus) ------------------*/
-static const char GetStyle_syntax[] = "GetStyle()" ;
-static const char GetStyle_help[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
+static const char pcb_acts_GetStyle[] = "GetStyle()" ;
+static const char pcb_acth_GetStyle[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
 static fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_ACT_IRES(pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
@@ -307,7 +307,7 @@ static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 pcb_action_t conf_action_list[] = {
 	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
-	{"GetStyle", pcb_act_GetStyle, GetStyle_help, GetStyle_syntax},
+	{"GetStyle", pcb_act_GetStyle, pcb_acth_GetStyle, pcb_acts_GetStyle},
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
 	{"ChkSubcID", pcb_act_ChkSubcID, pcb_acth_ChkSubcID, pcb_acts_ChkSubcID},
