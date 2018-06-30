@@ -171,13 +171,12 @@ static int tinycad_load(const char *fname_net)
 
 static const char pcb_acts_LoadtinycadFrom[] = "LoadTinycadFrom(filename)";
 static const char pcb_acth_LoadtinycadFrom[] = "Loads the specified tinycad .net file - the netlist must be tinycad netlist output.";
-fgw_error_t pcb_act_LoadtinycadFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadtinycadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadtinycadFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load tinycad netlist file...",
@@ -191,8 +190,8 @@ fgw_error_t pcb_act_LoadtinycadFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 		}
 	}
 
+	PCB_ACT_IRES(0);
 	return tinycad_load(fname);
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t tinycad_action_list[] = {
