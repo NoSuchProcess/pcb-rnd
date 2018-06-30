@@ -270,20 +270,19 @@ Call pcb_act_ChangeSize, ActionChangeDrillSize and pcb_act_ChangeClearSize
 with the same arguments. If any of them did not fail, return success.
 %end-doc */
 
-static fgw_error_t pcb_act_ChangeSizes(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	fgw_error_t a, b, c;
 	pcb_undo_save_serial();
-	a = pcb_act_ChangeSize(ores, oargc, oargv);
+	a = pcb_act_ChangeSize(res, argc, argv);
 	pcb_undo_restore_serial();
-	b = pcb_act_Change2ndSize(ores, oargc, oargv);
+	b = pcb_act_Change2ndSize(res, argc, argv);
 	pcb_undo_restore_serial();
-	c = pcb_act_ChangeClearSize(ores, oargc, oargv);
+	c = pcb_act_ChangeClearSize(res, argc, argv);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
-	return !(!a || !b || !c);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(!(!a || !b || !c));
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
