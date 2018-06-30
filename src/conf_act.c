@@ -271,21 +271,18 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
-static const char ChkSubcID_syntax[] = "ChkSubcID(pattern)\n";
-static const char ChkSubcID_help[] = "Return 1 if currently shown subc ID matches the requested pattern";
-static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_ChkSubcID[] = "ChkSubcID(pattern)\n";
+static const char pcb_acth_ChkSubcID[] = "Return 1 if currently shown subc ID matches the requested pattern";
+static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *have = conf_core.editor.subc_id, *expected;
+	const char *have = conf_core.editor.subc_id, *expected = "";
 
 	if (have == NULL) have = "";
-	if (argc > 0) expected = argv[0];
-	else expected = "";
 
-	ores->type = FGW_INT;
-	ores->val.nat_int = (strcmp(expected, have) == 0);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkMode, expected = argv[1].val.str);
+
+	PCB_ACT_IRES(strcmp(expected, have) == 0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
@@ -319,7 +316,7 @@ pcb_action_t conf_action_list[] = {
 	{"GetStyle", pcb_act_GetStyle, GetStyle_help, GetStyle_syntax},
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
-	{"ChkSubcID", pcb_act_ChkSubcID, ChkSubcID_help, ChkSubcID_syntax},
+	{"ChkSubcID", pcb_act_ChkSubcID, pcb_acth_ChkSubcID, pcb_acts_ChkSubcID},
 	{"ChkGridUnits", pcb_act_ChkGridUnits, ChkGridUnits_help, ChkGridUnits_syntax},
 	{"ChkBuffer", pcb_act_ChkBuffer, ChkBuffer_help, ChkBuffer_syntax}
 };
