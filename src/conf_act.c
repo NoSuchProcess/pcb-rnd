@@ -232,11 +232,10 @@ static fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
-static const char ChkMode_help[] = "Return 1 if the currently selected mode is the expected_mode";
-static fgw_error_t pcb_act_ChkMode(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_ChkMode[] = "ChkMode(expected_mode)" ;
+static const char pcb_acth_ChkMode[] = "Return 1 if the currently selected mode is the expected_mode";
+static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 #warning cleanup TODO: convert this to a compile-time hash; or make the toolbar configurable from the menu file
 	struct {
 		const char *name;
@@ -262,18 +261,18 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		{"via", PCB_MODE_VIA},
 		{NULL, 0}
 	};
-	assert(argc == 1);
+	char *dst;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
+
 	for(m = modes; m->name != NULL; m++) {
-		if (strcmp(m->name, argv[0]) == 0) {
-			ores->type = FGW_INT;
-			ores->val.nat_int = (conf_core.editor.mode == m->mode);
+		if (strcmp(m->name, dst) == 0) {
+			PCB_ACT_IRES(conf_core.editor.mode == m->mode);
 			return 0;
 		}
 	}
 	pcb_message(PCB_MSG_ERROR, "Unknown mode in ChkMode(): %s\n", argv[1]);
 	abort();
-	return -1;
-	PCB_OLD_ACT_END;
 }
 
 
@@ -343,7 +342,7 @@ static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 pcb_action_t conf_action_list[] = {
 	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
 	{"GetStyle", pcb_act_GetStyle, GetStyle_help, GetStyle_syntax},
-	{"ChkMode", pcb_act_ChkMode, ChkMode_help, ChkMode_syntax},
+	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, ChkGridSize_help, ChkGridSize_syntax},
 	{"ChkSubcID", pcb_act_ChkSubcID, ChkSubcID_help, ChkSubcID_syntax},
 	{"ChkGridUnits", pcb_act_ChkGridUnits, ChkGridUnits_help, ChkGridUnits_syntax},
