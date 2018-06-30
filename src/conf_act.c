@@ -250,24 +250,24 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char ChkGridSize_syntax[] =
+static const char pcb_acts_ChkGridSize[] =
 	"ChkGridSize(expected_size)\n"
 	"ChkGridSize(none)\n"
 	;
-static const char ChkGridSize_help[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
-static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acth_ChkGridSize[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
+static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	assert(argc == 1);
-		ores->type = FGW_INT;
-	if (strcmp(argv[0], "none") == 0) {
-		ores->val.nat_int = (PCB->Grid <= 300);
+	const char *dst;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
+
+	if (strcmp(dst, "none") == 0) {
+		PCB_ACT_IRES(PCB->Grid <= 300);
 		return 0;
 	}
 
-	ores->val.nat_int = (PCB->Grid == pcb_get_value_ex(argv[0], NULL, NULL, NULL, NULL, NULL));
+	PCB_ACT_IRES(PCB->Grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char ChkSubcID_syntax[] = "ChkSubcID(pattern)\n";
@@ -317,7 +317,7 @@ pcb_action_t conf_action_list[] = {
 	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
 	{"GetStyle", pcb_act_GetStyle, GetStyle_help, GetStyle_syntax},
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
-	{"ChkGridSize", pcb_act_ChkGridSize, ChkGridSize_help, ChkGridSize_syntax},
+	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
 	{"ChkSubcID", pcb_act_ChkSubcID, ChkSubcID_help, ChkSubcID_syntax},
 	{"ChkGridUnits", pcb_act_ChkGridUnits, ChkGridUnits_help, ChkGridUnits_syntax},
 	{"ChkBuffer", pcb_act_ChkBuffer, ChkBuffer_help, ChkBuffer_syntax}
