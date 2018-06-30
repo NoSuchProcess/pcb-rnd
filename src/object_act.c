@@ -475,20 +475,21 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 	return strcmp(got_name, expect_name);
 }
 
-static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	int op;
 	pcb_subc_t *sc;
 	const char *refdes, *value, *footprint;
-	fgw_arg_t res, args[4];
-	const char *function = argv[0];
+	fgw_arg_t rs, args[4];
 	int fx, fy, fs;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ElementList, op = fgw_keyword(&argv[1]));
 
 #ifdef DEBUG
 	printf("Entered pcb_act_ElementList, executing function %s\n", function);
 #endif
 
-	if (pcb_strcasecmp(function, "start") == 0) {
+	if (op == F_Start) {
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, subc);
@@ -498,7 +499,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		return 0;
 	}
 
-	if (pcb_strcasecmp(function, "done") == 0) {
+	if (op == F_Done) {
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, subc)) {
@@ -515,27 +516,18 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		return 0;
 	}
 
-	if (pcb_strcasecmp(function, "need") != 0)
+	if (op != F_Need)
 		PCB_ACT_FAIL(ElementList);
 
-	if (argc != 4)
-		PCB_ACT_FAIL(ElementList);
-
-	argc--;
-	argv++;
-
-	refdes = PCB_ACTION_ARG(0);
-	footprint = PCB_ACTION_ARG(1);
-	value = PCB_ACTION_ARG(2);
+	PCB_ACT_CONVARG(2, FGW_STR, ElementList, refdes = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, ElementList, footprint = argv[3].val.str);
+	PCB_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
 
 	args[0].type = FGW_FUNC;
 	args[0].val.func = NULL;
-	args[1].type = FGW_STR;
-	args[1].val.str = (char *)footprint;
-	args[2].type = FGW_STR;
-	args[2].val.str = (char *)refdes;
-	args[3].type = FGW_STR;
-	args[3].val.str = (char *)value;
+	args[1] = argv[3];
+	args[2] = argv[2];
+	args[3] = argv[4];
 	argc = 4;
 
 	/* turn of flip to avoid mirror/rotat confusion */
@@ -561,9 +553,10 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &res, argc, args) != 0) {
+		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &rs, argc, args) != 0) {
 			number_of_footprints_not_found++;
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		nx = PCB->MaxWidth / 2;
@@ -602,9 +595,10 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
-		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &res, argc, args) != 0) {
+		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &rs, argc, args) != 0) {
 			number_of_footprints_not_found++;
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		{
@@ -671,8 +665,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	conf_force_set_bool(conf_core.editor.view.flip_y, fy);
 	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_ElementSetAttr[] = "ElementSetAttr(refdes,name[,value])";
