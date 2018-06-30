@@ -855,18 +855,19 @@ static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
 	PCB_ENDALL_LOOP;
 }
 
-static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *delta = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
+	const char *function;
+	const char *delta = NULL;
+	const char *units = NULL;
 	pcb_bool absolute;
 	pcb_coord_t value;
 	int flags;
 
-	if (!function)
-		return 1;
+	PCB_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
+
 	if (pcb_strcasecmp(function, "Selected") == 0)
 		flags = PCB_FLAG_SELECTED;
 	else {
@@ -880,8 +881,8 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	minclr(PCB->Data, value, flags);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)";
