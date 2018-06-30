@@ -750,15 +750,17 @@ Padstacks may have thermals whether or not there is a polygon available
 to connect with. However, they will have no effect without the polygon.
 %end-doc */
 
-static fgw_error_t pcb_act_SetThermal(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *style = PCB_ACTION_ARG(1);
+	const char *function;
+	const char *style;
 	void *ptr1, *ptr2, *ptr3;
 	int type, kind;
 	int err = 0;
 	pcb_coord_t gx, gy;
+
+	PCB_ACT_CONVARG(1, FGW_STR, SetThermal, function = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
 
 	if (function && *function && style && *style) {
 		pcb_bool absolute;
@@ -788,12 +790,13 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *ores, int oargc, fgw_arg_t *oar
 			}
 		else
 			err = 1;
-		if (!err)
+		if (!err) {
+			PCB_ACT_IRES(0);
 			return 0;
+		}
 	}
 
 	PCB_ACT_FAIL(SetThermal);
-	PCB_OLD_ACT_END;
 }
 
 
