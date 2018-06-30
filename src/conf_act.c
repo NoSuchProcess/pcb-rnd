@@ -247,6 +247,7 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	PCB_ACT_IRES(-1);
+	return 0;
 }
 
 
