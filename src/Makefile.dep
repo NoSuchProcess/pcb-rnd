@@ -5166,7 +5166,7 @@
  ../src_3rd/genht/htpp.h unit.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h stub_stroke.h tool.h \
+ ../src_3rd/puplug/error.h stub_stroke.h compat_misc.h tool.h \
  ../src_plugins/stroke/conf_internal.c \
  ../src_plugins/stroke/stroke_conf.h conf.h dolists.h \
  ../src_plugins/stroke/stroke_conf_fields.h
