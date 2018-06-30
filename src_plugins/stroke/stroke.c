@@ -37,6 +37,7 @@
 #include "unit.h"
 #include "plugins.h"
 #include "stub_stroke.h"
+#include "compat_misc.h"
 #include "tool.h"
 
 #include "../src_plugins/stroke/conf_internal.c"
