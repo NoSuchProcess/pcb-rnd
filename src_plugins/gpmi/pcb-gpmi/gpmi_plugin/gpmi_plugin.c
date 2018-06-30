@@ -83,61 +83,71 @@ static void cmd_reload(const char *name)
 			hid_gpmi_reload_module(i);
 	}
 }
-
-static fgw_error_t pcb_act_gpmi_scripts(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_gpmi_scripts[] = "TODO";
+static const char pcb_acth_gpmi_scripts[] = "Manage gpmi scripts";
+static fgw_error_t pcb_act_gpmi_scripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc == 0) {
+	const char *cmd = NULL, *arg = NULL, *arg2 = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, gpmi_scripts, cmd = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, gpmi_scripts, arg = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, gpmi_scripts, arg2 = argv[3].val.str);
+
+	if (cmd == NULL) {
 		gpmi_hid_manage_scripts();
+		PCB_ACT_IRES(0);
 		return 0;
 	}
-	if (pcb_strcasecmp(argv[0], "reload") == 0) {
-		if (argc > 1)
-			cmd_reload(argv[1]);
+	if (pcb_strcasecmp(cmd, "reload") == 0) {
+		if (arg != NULL)
+			cmd_reload(arg);
 		else
 			cmd_reload(NULL);
 	}
-	else if (pcb_strcasecmp(argv[0], "load") == 0) {
-		if (argc == 3) {
-			if (hid_gpmi_load_module(NULL, argv[1], argv[2], NULL) == NULL)
-				pcb_message(PCB_MSG_ERROR, "Failed to load %s %s\n", argv[1], argv[2]);
+	else if (pcb_strcasecmp(cmd, "load") == 0) {
+		if (arg2 != NULL) {
+			if (hid_gpmi_load_module(NULL, arg, arg2, NULL) == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Failed to load %s %s\n", arg, arg2);
+				PCB_ACT_IRES(1);
+				return 0;
+			}
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "Invalid number of arguments for load\n");
+			return FGW_ERR_ARGC;
 	}
-	else if (pcb_strcasecmp(argv[0], "unload") == 0) {
-		if (argc == 2) {
-			hid_gpmi_script_info_t *i = hid_gpmi_lookup(argv[1]);
+	else if (pcb_strcasecmp(cmd, "unload") == 0) {
+		if (argc == 3) {
+			hid_gpmi_script_info_t *i = hid_gpmi_lookup(arg);
 			if (i != NULL) {
 				if (gpmi_hid_script_unload(i) != 0) {
-					pcb_message(PCB_MSG_ERROR, "Failed to unload %s\n", argv[1]);
-					return 1;
+					pcb_message(PCB_MSG_ERROR, "Failed to unload %s\n", arg);
+					PCB_ACT_IRES(1);
+					return 0;
 				}
 			}
 			else {
-				pcb_message(PCB_MSG_ERROR, "Failed to unload %s: not loaded\n", argv[1]);
-				return 1;
+				pcb_message(PCB_MSG_ERROR, "Failed to unload %s: not loaded\n", arg);
+				PCB_ACT_IRES(1);
+				return 0;
 			}
 		}
-		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid number of arguments for unload\n");
-			return 1;
-		}
+		else
+			return FGW_ERR_ARGC;
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid arguments in gpmi_scripts()\n");
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
-static fgw_error_t pcb_act_gpmi_rehash(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_gpmi_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	cmd_reload(NULL);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static void register_actions()
@@ -145,8 +155,8 @@ static void register_actions()
 	static pcb_action_t act1, act2;
 
 	act1.name           = "gpmi_scripts";
-	act1.description    = "Manage gpmi scripts";
-	act1.syntax         = "TODO";
+	act1.description    = pcb_acth_gpmi_scripts;
+	act1.syntax         = pcb_acts_gpmi_scripts;
 	act1.trigger_cb     = pcb_act_gpmi_scripts;
 	pcb_register_action(&act1, gpmi_cookie);
 
