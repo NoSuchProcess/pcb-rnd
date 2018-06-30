@@ -5067,6 +5067,43 @@
  event.h math_helper.h obj_poly.h obj_poly_draw.h rotate.h compat_misc.h \
  tool.h ../src_plugins/shape/shape_dialog.c hid_dad.h hid_attrib.h \
  dolists.h
+../src_plugins/sketch_route/cdt/cdt.o: \
+ ../src_plugins/sketch_route/cdt/cdt.c \
+ ../src_plugins/sketch_route/cdt/cdt.h \
+ ../src_plugins/sketch_route/cdt/typedefs.h \
+ ../src_plugins/sketch_route/cdt/point.h \
+ ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_plugins/sketch_route/cdt/edge.h \
+ ../src_plugins/sketch_route/cdt/triangle.h
+../src_plugins/sketch_route/cdt/edge.o: \
+ ../src_plugins/sketch_route/cdt/edge.c \
+ ../src_plugins/sketch_route/cdt/edge.h \
+ ../src_plugins/sketch_route/cdt/typedefs.h \
+ ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/genvector/genvector_impl.c
+../src_plugins/sketch_route/cdt/point.o: \
+ ../src_plugins/sketch_route/cdt/point.c \
+ ../src_plugins/sketch_route/cdt/point.h \
+ ../src_plugins/sketch_route/cdt/typedefs.h \
+ ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/genvector/genvector_impl.c
+../src_plugins/sketch_route/cdt/triangle.o: \
+ ../src_plugins/sketch_route/cdt/triangle.c \
+ ../src_plugins/sketch_route/cdt/triangle.h \
+ ../src_plugins/sketch_route/cdt/typedefs.h \
+ ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/genvector/genvector_impl.c
 ../src_plugins/sketch_route/sketch_route.o: \
  ../src_plugins/sketch_route/sketch_route.c ../config.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -5520,7 +5557,8 @@ conf_act.o: conf_act.c ../config.h board.h global_typedefs.h pcb_bool.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h error.h drc.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h route_style.h tool.h macro.h
+ list_conf.h funchash_core.h funchash.h funchash_core_list.h \
+ route_style.h tool.h macro.h
 conf_core.o: conf_core.c ../config.h conf.h global_typedefs.h pcb_bool.h \
  unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6072,7 +6110,7 @@ layer_ui.o: layer_ui.c ../config.h layer.h globalconst.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h box.h math_helper.h move.h \
  misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h event.h layer_ui.h \
+ ../src_3rd/genvector/genvector_undef.h event.h compat_misc.h layer_ui.h \
  ../src_3rd/genvector/genvector_impl.c
 layer_vis.o: layer_vis.c ../config.h board.h global_typedefs.h pcb_bool.h \
  unit.h vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
