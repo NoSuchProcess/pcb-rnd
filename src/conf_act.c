@@ -28,6 +28,7 @@
 #include "board.h"
 #include "actions.h"
 #include "conf_core.h"
+#include "funchash_core.h"
 #include "route_style.h"
 #include "error.h"
 #include "tool.h"
@@ -53,55 +54,61 @@ static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
 	return res;
 }
 
-static fgw_error_t pcb_act_Conf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *cmd = argc > 0 ? argv[0] : 0;
+	int op;
+	const char *a1, *a2, *a3, *a4;
 
-	if ((PCB_NSTRCMP(cmd, "set") == 0) || (PCB_NSTRCMP(cmd, "delta") == 0)) {
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Conf, a1 = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, Conf, a2 = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, Conf, a3 = argv[4].val.str);
+	PCB_ACT_MAY_CONVARG(5, FGW_STR, Conf, a4 = argv[5].val.str);
+
+	if ((op == F_Set) || (op == F_Delta)) {
 		const char *path, *val;
 		char valbuff[128];
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
-		int res;
+		int rs;
 
-		if (argc < 3) {
+		if (argc < 4) {
 			pcb_message(PCB_MSG_ERROR, "conf(set) needs at least two arguments");
-			return 1;
-		}
-		if (argc > 3) {
-			role = conf_role_parse(argv[3]);
-			if (role == CFR_invalid) {
-				pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", argv[3]);
-				return 1;
-			}
+			return FGW_ERR_ARGC;
 		}
 		if (argc > 4) {
-			pol = conf_policy_parse(argv[4]);
-			if (pol == POL_invalid) {
-				pcb_message(PCB_MSG_ERROR, "Invalid policy: '%s'", argv[4]);
-				return 1;
+			role = conf_role_parse(a3);
+			if (role == CFR_invalid) {
+				pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", a3);
+				return FGW_ERR_ARG_CONV;
 			}
 		}
-		path = argv[1];
-		val = argv[2];
+		if (argc > 5) {
+			pol = conf_policy_parse(a4);
+			if (pol == POL_invalid) {
+				pcb_message(PCB_MSG_ERROR, "Invalid policy: '%s'", a4);
+				return FGW_ERR_ARG_CONV;
+			}
+		}
+		path = a1;
+		val = a2;
 
-		if (cmd[0] == 'd') {
+		if (op == F_Delta) {
 			double d;
 			char *end;
-			conf_native_t *n = conf_get_field(argv[1]);
+			conf_native_t *n = conf_get_field(a1);
 
 			if (n == 0) {
 				pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': no such path\n", argv[1]);
-				return 1;
+				return FGW_ERR_ARG_CONV;
 			}
 
 			switch(n->type) {
 				case CFN_REAL:
 					d = strtod(val, &end);
 					if (*end != '\0') {
-						pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", argv[1]);
-						return 1;
+						pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", a1);
+						return FGW_ERR_ARG_CONV;
 					}
 					d += *n->val.real;
 					sprintf(valbuff, "%f", d);
@@ -110,82 +117,81 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				case CFN_COORD:
 				case CFN_INTEGER:
 				default:
-					pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': not a numeric item\n", argv[1]);
-					return 1;
+					pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': not a numeric item\n", a1);
+					return FGW_ERR_ARG_CONV;
 			}
 		}
 
 		if (role == CFR_invalid) {
-			conf_native_t *n = conf_get_field(argv[1]);
+			conf_native_t *n = conf_get_field(a1);
 			if (n == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", argv[1]);
-				return 1;
+				pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
+				return FGW_ERR_ARG_CONV;
 			}
-			res = conf_set_native(n, 0, val);
-			conf_update(argv[1], 0);
+			rs = conf_set_native(n, 0, val);
+			conf_update(a1, 0);
 		}
 		else
-			res = conf_set(role, path, -1, val, pol);
+			rs = conf_set(role, path, -1, val, pol);
 
-		if (res != 0) {
+		if (rs != 0) {
 			pcb_message(PCB_MSG_ERROR, "conf(set) failed.\n");
-			return 1;
+			return FGW_ERR_UNKNOWN;
 		}
 	}
 
-	else if (PCB_NSTRCMP(cmd, "iseq") == 0) {
+	else if (op == F_Iseq) {
 		const char *path, *val;
-		int res;
+		int rs;
 		gds_t nval;
 		conf_native_t *n;
 
-		if (argc != 3) {
+		if (argc != 4) {
 			pcb_message(PCB_MSG_ERROR, "conf(iseq) needs two arguments");
-			return -1;
+			return FGW_ERR_ARGC;
 		}
-		path = argv[1];
-		val = argv[2];
+		path = a1;
+		val = a2;
 
-		n = conf_get_field(argv[1]);
+		n = conf_get_field(a1);
 		if (n == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
-			return -1;
+			return FGW_ERR_ARG_CONV;
 		}
 
 		gds_init(&nval);
 		conf_print_native_field(conf_iseq_pf, &nval, 0, &n->val, n->type, NULL, 0);
-		res = !strcmp(nval.array, val);
-/*		printf("iseq: %s %s==%s %d\n", path, nval.array, val, res);*/
+		rs = !strcmp(nval.array, val);
+/*		printf("iseq: %s %s==%s %d\n", path, nval.array, val, rs);*/
 		gds_uninit(&nval);
 
-		ores->type = FGW_INT;
-		ores->val.nat_int = res;
+		PCB_ACT_IRES(rs);
 		return 0;
 	}
 
-	else if (PCB_NSTRCMP(cmd, "toggle") == 0) {
-		conf_native_t *n = conf_get_field(argv[1]);
+	else if (op == F_Toggle) {
+		conf_native_t *n = conf_get_field(a1);
 		const char *new_value;
 		conf_role_t role = CFR_invalid;
 		int res;
 
 		if (n == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", argv[1]);
-			return 1;
+			pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
+			return FGW_ERR_UNKNOWN;
 		}
 		if (n->type != CFN_BOOLEAN) {
-			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': not a boolean\n", argv[1]);
-			return 1;
+			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': not a boolean\n", a1);
+			return FGW_ERR_UNKNOWN;
 		}
 		if (n->used != 1) {
-			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': array size should be 1, not %d\n", argv[1], n->used);
-			return 1;
+			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': array size should be 1, not %d\n", a1, n->used);
+			return FGW_ERR_UNKNOWN;
 		}
-		if (argc > 2) {
-			role = conf_role_parse(argv[2]);
+		if (argc > 3) {
+			role = conf_role_parse(a2);
 			if (role == CFR_invalid) {
-				pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", argv[2]);
-				return 1;
+				pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", a2);
+				return FGW_ERR_ARG_CONV;
 			}
 		}
 		if (n->val.boolean[0])
@@ -195,32 +201,33 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		if (role == CFR_invalid)
 			res = conf_set_native(n, 0, new_value);
 		else
-			res = conf_set(role, argv[1], -1, new_value, POL_OVERWRITE);
+			res = conf_set(role, a1, -1, new_value, POL_OVERWRITE);
 
 		if (res != 0) {
-			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", argv[1]);
-			return 1;
+			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", a1);
+			return FGW_ERR_UNKNOWN;
 		}
-		conf_update(argv[1], -1);
+		conf_update(a1, -1);
 	}
 
-	else if (PCB_NSTRCMP(cmd, "reset") == 0) {
+	else if (op == F_Reset) {
 		conf_role_t role;
-		role = conf_role_parse(argv[1]);
+		role = conf_role_parse(a1);
 		if (role == CFR_invalid) {
-			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", argv[1]);
-			return 1;
+			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", a1);
+			return FGW_ERR_ARG_CONV;
 		}
 		conf_reset(role, "<action>");
-		conf_update(argv[1], -1);
+		conf_update(a1, -1);
 	}
 
 	else {
-		pcb_message(PCB_MSG_ERROR, "Invalid conf command '%s'\n", argv[0]);
-		return 1;
+		pcb_message(PCB_MSG_ERROR, "Invalid conf command\n");
+		return FGW_ERR_ARG_CONV;
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /*------------ get/chk (check flag actions for menus) ------------------*/
