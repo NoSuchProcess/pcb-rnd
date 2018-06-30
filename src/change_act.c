@@ -1050,17 +1050,20 @@ static const char pcb_acts_ChangeRadius[] =
 	"ChangeRadius(SelectedObjects|Selected, width|x|height|y|both, delta)\n"
 	"ChangeRadius(SelectedArcs, width|x|height|y|both, delta)\n";
 static const char pcb_acth_ChangeRadius[] = "Changes the width or height (radius) of an arc.";
-static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *prim  = PCB_ACTION_ARG(1);
-	const char *delta = PCB_ACTION_ARG(2);
-	const char *units = PCB_ACTION_ARG(3);
+	const char *prim;
+	const char *delta;
+	const char *units;
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	double value;
-	int type = PCB_OBJ_VOID, which;
+	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeRadius, funcid = fgw_keyword(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_STR, ChangeRadius, prim = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, ChangeRadius, delta = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, ChangeRadius, units = argv[4].val.str);
 
 	if ((pcb_strcasecmp(prim, "width") == 0) || (pcb_strcasecmp(prim, "x") == 0)) which = 0;
 	else if ((pcb_strcasecmp(prim, "height") == 0) || (pcb_strcasecmp(prim, "y") == 0)) which = 1;
@@ -1070,18 +1073,15 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 		return -1;
 	}
 
-	if (function && delta) {
-		int funcid = pcb_funchash_get(function, NULL);
+	if (funcid == F_Object) {
+		pcb_coord_t x, y;
+		pcb_hid_get_coords("Click on object to change radius of", &x, &y);
+		type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+	}
 
-		if (funcid == F_Object) {
-			pcb_coord_t x, y;
-			pcb_hid_get_coords("Click on object to change radius of", &x, &y);
-			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
-		}
+	value = pcb_get_value(delta, units, &absolute, NULL);
 
-		value = pcb_get_value(delta, units, &absolute, NULL);
-
-		switch (funcid) {
+	switch(funcid) {
 		case F_Object:
 			{
 				if (type != PCB_OBJ_VOID) {
@@ -1105,10 +1105,10 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 			if (pcb_chg_selected_radius(PCB_CHANGESIZE_TYPES, which, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
-		}
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
