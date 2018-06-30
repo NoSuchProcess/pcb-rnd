@@ -160,7 +160,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			type = PCB_OBJ_SUBC;
 	}
 	type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3);
-	if (type == PCB_OBJ_VOID)
+	if ((type == PCB_OBJ_VOID) && (op == NULL))
 		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_OBJ_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
