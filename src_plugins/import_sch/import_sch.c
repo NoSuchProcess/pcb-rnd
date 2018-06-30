@@ -177,29 +177,31 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *mode;
+	const char *mode = NULL;
 	const char **sources = NULL;
-	int nsources = 0;
-	fgw_arg_t res;
+	int start, nsources = 0;
+	fgw_arg_t rs;
 
 	if (conf_import_sch.plugins.import_sch.verbose)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Entering pcb_act_Import  ===\n");
 
 
-	mode = PCB_ACTION_ARG(0);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Import, mode = argv[1].val.str);
 
 	if (mode && pcb_strcasecmp(mode, "setdisperse") == 0) {
-		const char *ds, *units;
+		const char *ds = NULL, *units = NULL;
 		char buf[50];
+		int ds_alloced = 0;
 
-		ds = PCB_ACTION_ARG(1);
-		units = PCB_ACTION_ARG(2);
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, Import, ds = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, Import, units = argv[3].val.str);
+
 		if (!ds) {
 			const char *as = pcb_attrib_get(PCB, "import::disperse");
 			ds = pcb_gui->prompt_for(_("Enter dispersion:"), as ? as : "0");
+			ds_alloced = 1;
 		}
 		if (units) {
 			sprintf(buf, "%s%s", ds, units);
@@ -207,19 +209,20 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 		else
 			pcb_attrib_put(PCB, "import::disperse", ds);
-		if (PCB_ACTION_ARG(1) == NULL)
+		if (ds_alloced)
 			free((char*)ds);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
 	if (mode && pcb_strcasecmp(mode, "setnewpoint") == 0) {
-		const char *xs, *ys, *units;
+		const char *xs = NULL, *ys = NULL, *units = NULL;
 		pcb_coord_t x, y;
 		char buf[50];
 
-		xs = PCB_ACTION_ARG(1);
-		ys = PCB_ACTION_ARG(2);
-		units = PCB_ACTION_ARG(3);
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, Import, xs = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, Import, ys = argv[3].val.str);
+		PCB_ACT_MAY_CONVARG(4, FGW_STR, Import, units = argv[4].val.str);
 
 		if (!xs) {
 			pcb_hid_get_coords(_("Click on a location"), &x, &y);
@@ -227,6 +230,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		else if (pcb_strcasecmp(xs, "center") == 0) {
 			pcb_attrib_remove(PCB, "import::newX");
 			pcb_attrib_remove(PCB, "import::newY");
+			PCB_ACT_IRES(0);
 			return 0;
 		}
 		else if (pcb_strcasecmp(xs, "mark") == 0) {
@@ -241,13 +245,15 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, _("Bad syntax for Import(setnewpoint)"));
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		pcb_sprintf(buf, "%$ms", x);
 		pcb_attrib_put(PCB, "import::newX", buf);
 		pcb_sprintf(buf, "%$ms", y);
 		pcb_attrib_put(PCB, "import::newY", buf);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
@@ -256,29 +262,36 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	if (!mode)
 		mode = "gnetlist";
 
-	if (argc > 1) {
-		sources = argv + 1;
-		nsources = argc - 1;
+	if (argc > 2) {
+		start = 1;
+		nsources = argc - 2;
 	}
+	else
+		start = 0;
 
-	if (!sources) {
+	if (nsources > 0) {
 		char sname[40];
 		char *src;
+		int n;
 
 		nsources = -1;
+		n = 0;
 		do {
 			nsources++;
 			sprintf(sname, "import::src%d", nsources);
-			src = pcb_attrib_get(PCB, sname);
+			PCB_ACT_CONVARG(start+n, FGW_STR, Import, src = argv[start+n].val.str);
+			n++;
 		} while (src);
 
 		if (nsources > 0) {
 			sources = (const char **) malloc((nsources + 1) * sizeof(char *));
 			nsources = -1;
+			n = 0;
 			do {
 				nsources++;
 				sprintf(sname, "import::src%d", nsources);
-				src = pcb_attrib_get(PCB, sname);
+				PCB_ACT_CONVARG(start+n, FGW_STR, Import, src = argv[start+n].val.str);
+				n++;
 				sources[nsources] = src;
 			} while (src);
 		}
@@ -290,8 +303,10 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		char *schname;
 		char *dot, *slash, *bslash;
 
-		if (!pcbname)
-			return pcb_action("ImportGUI");
+		if (!pcbname) {
+			PCB_ACT_IRES(pcb_action("ImportGUI"));
+			return 0;
+		}
 
 		schname = (char *) malloc(strlen(pcbname) + 5);
 		strcpy(schname, pcbname);
@@ -306,8 +321,10 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			*dot = 0;
 		strcat(schname, ".sch");
 
-		if (access(schname, F_OK))
-			return pcb_action("ImportGUI");
+		if (access(schname, F_OK)) {
+			PCB_ACT_IRES(pcb_action("ImportGUI"));
+			return 0;
+		}
 
 		sources = (const char **) malloc(2 * sizeof(char *));
 		sources[0] = schname;
@@ -322,12 +339,14 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 		if (tmpfile == NULL) {
 			pcb_message(PCB_MSG_ERROR, _("Could not create temp file"));
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		if ((conf_import_sch.plugins.import_sch.gnetlist_program == NULL) || (*conf_import_sch.plugins.import_sch.gnetlist_program == '\0')) {
 			pcb_message(PCB_MSG_ERROR, _("No gnetlist program configured, can not import. Please fill in configuration setting plugins/import_sch/gnetlist_program\n"));
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		cmd = (const char **) malloc((9 + nsources) * sizeof(char *));
@@ -354,13 +373,14 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			for(i = 0; i < nsources; i++)
 				free((char *) cmd[8 + i]);
 			unlink(tmpfile);
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		if (conf_import_sch.plugins.import_sch.verbose)
 			pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
 
-		fgw_vcall(&pcb_fgw, &res, "executefile", FGW_STR, tmpfile, 0);
+		fgw_vcall(&pcb_fgw, &rs, "executefile", FGW_STR, tmpfile, 0);
 
 		for(i = 0; i < nsources; i++)
 			free((char *) cmd[8 + i]);
@@ -387,7 +407,8 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 		if ((conf_import_sch.plugins.import_sch.make_program == NULL) || (*conf_import_sch.plugins.import_sch.make_program == '\0')) {
 			pcb_message(PCB_MSG_ERROR, _("No make program configured, can not import. Please fill in configuration setting plugins/import_sch/make_program\n"));
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
 		if (user_outfile)
@@ -396,7 +417,8 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			tmpfile = pcb_tempfile_name_new("gnetlist_output");
 			if (tmpfile == NULL) {
 				pcb_message(PCB_MSG_ERROR, _("Could not create temp file"));
-				return 1;
+				PCB_ACT_IRES(1);
+				return 0;
 			}
 			must_free_tmpfile = 1;
 		}
@@ -431,10 +453,11 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 			free((char*)cmd[2]);
 			free((char*)cmd[3]);
 			free((char*)cmd[4]);
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 
-		fgw_vcall(&pcb_fgw, &res, "executefile", FGW_STR, tmpfile, 0);
+		fgw_vcall(&pcb_fgw, &rs, "executefile", FGW_STR, tmpfile, 0);
 
 		free((char*)cmd[2]);
 		free((char*)cmd[3]);
@@ -444,7 +467,8 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, _("Unknown import mode: %s\n"), mode);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	pcb_rats_destroy(pcb_false);
@@ -453,8 +477,8 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	if (conf_import_sch.plugins.import_sch.verbose)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Leaving pcb_act_Import  ===\n");
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char *import_sch_cookie = "import_sch plugin";
