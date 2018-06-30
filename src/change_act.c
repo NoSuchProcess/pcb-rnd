@@ -895,18 +895,18 @@ Changes the size of new text.
 
 %end-doc */
 
-static fgw_error_t pcb_act_SetValue(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *val = PCB_ACTION_ARG(1);
-	const char *units = PCB_ACTION_ARG(2);
+	int fnc_id;
+	const char *val;
+	const char *units = NULL;
 	pcb_bool absolute;								/* flag for 'absolute' value */
 	double value;
 	int err = 0;
 
-	if (function && val) {
-		int fnc_id = pcb_funchash_get(function, NULL);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
 
 		/* special case: can't convert with pcb_get_value() */
 		if ((fnc_id == F_Grid) && ((val[0] == '*') || (val[0] == '/'))) {
@@ -960,12 +960,12 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 			err = 1;
 			break;
 		}
-		if (!err)
+		if (!err) {
+			PCB_ACT_IRES(0);
 			return 0;
-	}
+		}
 
 	PCB_ACT_FAIL(SetValue);
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
