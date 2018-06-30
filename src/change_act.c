@@ -975,16 +975,19 @@ static const char pcb_acts_ChangeAngle[] =
 	"ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)\n"
 	"ChangeAngle(SelectedArcs, start|delta|both, delta)\n";
 static const char pcb_acth_ChangeAngle[] = "Changes the start angle, delta angle or both angles of an arc.";
-static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = PCB_ACTION_ARG(0);
-	const char *prim  = PCB_ACTION_ARG(1);
-	const char *delta = PCB_ACTION_ARG(2);
+	const char *prim;
+	const char *delta;
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	double value;
-	int type = PCB_OBJ_VOID, which;
+	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeAngle, funcid = fgw_keyword(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_STR, ChangeAngle, prim = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, ChangeAngle, delta = argv[3].val.str);
+
 
 	if (pcb_strcasecmp(prim, "start") == 0) which = 0;
 	else if (pcb_strcasecmp(prim, "delta") == 0) which = 1;
@@ -993,9 +996,6 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
 		return -1;
 	}
-
-	if (function && delta) {
-		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			pcb_coord_t x, y;
@@ -1039,9 +1039,9 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
-	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* --------------------------------------------------------------------------- */
