@@ -236,43 +236,17 @@ static const char pcb_acts_ChkMode[] = "ChkMode(expected_mode)" ;
 static const char pcb_acth_ChkMode[] = "Return 1 if the currently selected mode is the expected_mode";
 static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-#warning cleanup TODO: convert this to a compile-time hash; or make the toolbar configurable from the menu file
-	struct {
-		const char *name;
-		int mode;
-	} *m, modes[] = {
-		{"none", PCB_MODE_NO},
-		{"arc", PCB_MODE_ARC},
-		{"arrow", PCB_MODE_ARROW},
-		{"copy", PCB_MODE_COPY},
-		{"insertpoint", PCB_MODE_INSERT_POINT},
-		{"line", PCB_MODE_LINE},
-		{"lock", PCB_MODE_LOCK},
-		{"move", PCB_MODE_MOVE},
-		{"pastebuffer", PCB_MODE_PASTE_BUFFER},
-		{"polygon", PCB_MODE_POLYGON},
-		{"polygonhole", PCB_MODE_POLYGON_HOLE},
-		{"rectangle", PCB_MODE_RECTANGLE},
-		{"remove", PCB_MODE_REMOVE},
-		{"rotate", PCB_MODE_ROTATE},
-		{"rubberbandmove", PCB_MODE_RUBBERBAND_MOVE},
-		{"text", PCB_MODE_TEXT},
-		{"thermal", PCB_MODE_THERMAL},
-		{"via", PCB_MODE_VIA},
-		{NULL, 0}
-	};
 	char *dst;
+	pcb_toolid_t id;
 
 	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
 
-	for(m = modes; m->name != NULL; m++) {
-		if (strcmp(m->name, dst) == 0) {
-			PCB_ACT_IRES(conf_core.editor.mode == m->mode);
-			return 0;
-		}
+	id = pcb_tool_lookup(dst);
+	if (id >= 0) {
+		PCB_ACT_IRES(conf_core.editor.mode == id);
+		return 0;
 	}
-	pcb_message(PCB_MSG_ERROR, "Unknown mode in ChkMode(): %s\n", argv[1]);
-	abort();
+	PCB_ACT_IRES(-1);
 }
 
 
