@@ -128,18 +128,15 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_propset[] = "propset(name, value)";
 static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value";
-fgw_error_t pcb_act_propset(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	int res;
-/*
-	if (argc != 2)
-*/
-	printf("argc=%d '%s'\n", argc, argv[0]);
-	res = pcb_propsel_set(argv[0], argv[1]);
-	printf("res=%d\n", res);
+	const char *name, *val;
+
+	PCB_ACT_CONVARG(1, FGW_STR, propset, name = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
+
+	PCB_ACT_IRES(pcb_propsel_set(name, val));
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char *propedit_cookie = "propedit";
