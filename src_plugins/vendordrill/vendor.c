@@ -142,14 +142,13 @@ static const char unload_vendor_help[] = "Unloads the current vendor drill mappi
 
 %end-doc */
 
-fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	cached_drill = -1;
 
 	vendor_free_all();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ************************************************************ */
