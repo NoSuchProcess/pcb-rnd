@@ -354,11 +354,10 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 
 static const char pcb_acts_shape[] = "shape()";
 static const char pcb_acth_shape[] = "Interactive shape generator.";
-fgw_error_t pcb_act_shape(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_shape(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_shape_dialog(PCB, PCB_PASTEBUFFER->Data, pcb_shape_current_layer, pcb_false);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
