@@ -41,9 +41,8 @@ extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char pcb_acts_propedit[] = "propedit()";
 static const char pcb_acth_propedit[] = "Run the property editor";
-fgw_error_t pcb_act_propedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
 	pcb_layer_t *ly = NULL;
@@ -51,9 +50,11 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_layer_id_t lid;
 	pcb_layergrp_id_t gid;
 
+	PCB_ACT_IRES(1);
+
 	if ((pcb_gui == NULL) || (pcb_gui->propedit_start == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Error: there's no GUI or the active GUI can't edit properties.\n");
-		return 1;
+		return 0;
 	}
 
 	ctx.core_props = pcb_props_init();
@@ -63,34 +64,38 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		PCB->LayerGroups.grp[gid].propedit = 0;
 	propedit_board = 0;
 
-	if (argc > 0) {
+	if (argc > 1) {
 		int n;
-		for(n = 0; n < argc; n++) {
-			if (strcmp(argv[n], "board") == 0) {
+		for(n = 1; n < argc; n++) {
+			char *op;
+
+			PCB_ACT_CONVARG(1, FGW_STR, propedit, op = argv[1].val.str);
+
+			if (strcmp(op, "board") == 0) {
 				propedit_board = 1;
 			}
-			else if (strcmp(argv[n], "layers") == 0) {
+			else if (strcmp(op, "layers") == 0) {
 				for(lid = 0; lid < PCB->Data->LayerN; lid++)
 					PCB->Data->Layer[lid].propedit = 1;
 			}
-			else if (strncmp(argv[n], "layer:", 6) == 0) {
-				const char *id = argv[n]+6;
+			else if (strncmp(op, "layer:", 6) == 0) {
+				const char *id = op+6;
 				if (strcmp(id, "current") == 0)
 					ly = CURRENT;
 				else
 					ly = pcb_get_layer(PCB->Data, atoi(id));
 				if (ly == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Invalid layer index %s\n", argv[n]);
+					pcb_message(PCB_MSG_ERROR, "Invalid layer index %s\n", op);
 					goto err;
 				}
 				ly->propedit = 1;
 			}
-			if (strcmp(argv[n], "layer_groups") == 0) {
+			if (strcmp(op, "layer_groups") == 0) {
 				for(gid = 0; gid < PCB->LayerGroups.len; gid++)
 					PCB->LayerGroups.grp[gid].propedit = 1;
 			}
-			else if (strncmp(argv[n], "layer_group:", 12) == 0) {
-				const char *id = argv[n]+12;
+			else if (strncmp(op, "layer_group:", 12) == 0) {
+				const char *id = op+12;
 				if (strcmp(id, "current") == 0) {
 					lg = pcb_get_layergrp(PCB, pcb_actd_EditGroup_gid);
 					if ((lg == NULL) && (CURRENT != NULL) && (!CURRENT->is_bound))
@@ -99,7 +104,7 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 				else
 					lg = pcb_get_layergrp(PCB, atoi(id));
 				if (lg == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Invalid layer group index %s\n", argv[n]);
+					pcb_message(PCB_MSG_ERROR, "Invalid layer group index %s\n", op);
 					goto err;
 				}
 				lg->propedit = 1;
@@ -113,11 +118,12 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	for (pe = htsp_first(ctx.core_props); pe; pe = htsp_next(ctx.core_props, pe))
 		propedit_ins_prop(&ctx, pe);
 
+	PCB_ACT_IRES(0);
+
 	err:;
 	pcb_gui->propedit_end(&ctx);
 	pcb_props_uninit(ctx.core_props);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_propset[] = "propset(name, value)";
