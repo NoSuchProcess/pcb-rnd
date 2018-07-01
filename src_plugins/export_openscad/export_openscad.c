@@ -597,18 +597,16 @@ static int openscad_usage(const char *topic)
 
 static const char pcb_acts_scad_export_poly[] = "ScadExportPoly(filename)\n";
 static const char pcb_acth_scad_export_poly[] = "exports all selected polygons to an openscad script; only the outmost contour of each poly is exported";
-static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	FILE *f;
+	const char *name;
 
-	if (argc <= 0) {
-		pcb_message(PCB_MSG_ERROR, "Need a file name to export to.\n");
-		return -1;
-	}
-	f = pcb_fopen(argv[0], "w");
+	PCB_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
+
+	f = pcb_fopen(name, "w");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", argv[0]);
+		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
 		return -1;
 	}
 
@@ -642,7 +640,6 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *ores, int oargc, fgw_arg_
 
 	fclose(f);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
