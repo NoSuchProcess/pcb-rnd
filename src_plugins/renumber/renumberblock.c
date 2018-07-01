@@ -34,19 +34,16 @@
 #include "change.h"
 #include "conf_core.h"
 
-fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+const char pcb_acts_RenumberBlock[] = "RenumberBlock(old_base,new_base)\n";
+const char pcb_acth_RenumberBlock[] = "TODO";
+
+fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	char num_buf[15];
 	int old_base, new_base;
 
-	if (argc < 2) {
-		pcb_message(PCB_MSG_ERROR, "Usage: RenumberBlock oldnum newnum");
-		return 1;
-	}
-
-	old_base = atoi(argv[0]);
-	new_base = atoi(argv[1]);
+	PCB_ACT_CONVARG(1, FGW_INT, RenumberBlock, old_base = argv[1].val.nat_int);
+	PCB_ACT_CONVARG(2, FGW_INT, RenumberBlock, new_base = argv[2].val.nat_int);
 
 	conf_set_editor(name_on_pcb, 1);
 
@@ -77,8 +74,8 @@ fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 	PCB_END_LOOP;
 	pcb_undo_inc_serial();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 fgw_error_t pcb_act_RenumberBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
