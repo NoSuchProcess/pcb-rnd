@@ -39,6 +39,7 @@
 #include "compat_nls.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"
+#include "funchash_core.h"
 
 #define GAP 10000
 static pcb_coord_t minx;
@@ -109,37 +110,32 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 
 #define IS_IN_SUBC(CONN)  (pcb_obj_parent_subc((CONN)->obj) != NULL)
 
-#define ARG(n) (argc > (n) ? argv[n] : 0)
-
-static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
-
 #define set_visited(obj) htpi_set(&visited, ((void *)(obj)), 1)
 #define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
-static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_smartdisperse[] = "SmartDisperse([All|Selected])";
+static const char pcb_acth_smartdisperse[] = "TODO";
+static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function = ARG(0);
+	int op = -2;
 	pcb_netlist_t *Nets;
 	htpi_t visited;
 	int all;
 
-	if (!function) {
-		all = 1;
-	}
-	else if (strcmp(function, "All") == 0) {
-		all = 1;
-	}
-	else if (strcmp(function, "Selected") == 0) {
-		all = 0;
-	}
-	else {
-		PCB_AFAIL(smartdisperse);
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, smartdisperse, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
+		case -2:
+		case F_All: all = 1; break;
+		case F_Selected: all = 0; break;
+		default:
+			PCB_ACT_FAIL(smartdisperse);
 	}
 
 	Nets = pcb_rat_proc_netlist(&PCB->NetlistLib[0]);
 	if (!Nets) {
 		pcb_message(PCB_MSG_ERROR, _("Can't use SmartDisperse because no netlist is loaded.\n"));
+		PCB_ACT_IRES(1);
 		return 0;
 	}
 
@@ -232,12 +228,12 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *ores, int oargc, fgw_arg_t *
 	pcb_redraw();
 	pcb_board_set_changed_flag(1);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_action_t smartdisperse_action_list[] = {
-	{"smartdisperse", pcb_act_smartdisperse, NULL, NULL}
+	{"smartdisperse", pcb_act_smartdisperse, pcb_acth_smartdisperse, pcb_acts_smartdisperse}
 };
 
 char *smartdisperse_cookie = "smartdisperse plugin";
