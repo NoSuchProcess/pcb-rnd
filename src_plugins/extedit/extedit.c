@@ -167,9 +167,9 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 static const char pcb_acts_extedit[] = "extedit(object|selected, [interactive|method])\n";
 static const char pcb_acth_extedit[] = "Invoke an external program to edit a specific part of the current board.";
-static fgw_error_t pcb_act_extedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *cmd = NULL, *method = NULL;
 	long type;
 	void *ptr1, *ptr2, *ptr3;
 	extedit_method_t *mth = NULL;
@@ -177,49 +177,58 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	int ret = 1;
 	FILE *f;
 
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, extedit, cmd = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, extedit, method = argv[2].val.str);
+
 	/* pick up the object to edit */
-	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "object") == 0)) {
 		pcb_coord_t x, y;
 		pcb_hid_get_coords("Click on object to edit", &x, &y);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 	}
-	else if ((argc > 0) && (pcb_strcasecmp(argv[0], "selected") == 0)) {
+	else if ((argc > 1) && (pcb_strcasecmp(cmd, "selected") == 0)) {
 #warning TODO
 		pcb_message(PCB_MSG_ERROR, "\"Selected\" not supported yet\n");
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Wrong 1st argument '%s'\n", argv[0]);
-		return 1;
+		pcb_message(PCB_MSG_ERROR, "Wrong 1st argument '%s'\n", cmd);
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	/* determine the method */
-	if (argc > 1) {
+	if (argc > 2) {
 		for(mth = methods; mth->name != NULL; mth++) {
-			if (pcb_strcasecmp(mth->name, argv[1]) == 0)
+			if (pcb_strcasecmp(mth->name, method) == 0)
 				break;
 		}
 		if (mth->name == NULL) {
-			pcb_message(PCB_MSG_ERROR, "unknown method '%s'; available methods:\n", argv[1]);
+			pcb_message(PCB_MSG_ERROR, "unknown method '%s'; available methods:\n", method);
 			for(mth = methods; mth->name != NULL; mth++) {
 				if (mth != methods)
 					pcb_message(PCB_MSG_ERROR, ", ", mth->name);
 				pcb_message(PCB_MSG_ERROR, "%s", mth->name);
 			}
 			pcb_message(PCB_MSG_ERROR, "\n");
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 	}
 	if (mth == NULL) {
 		mth = extedit_interactive();
-		if (mth == NULL) /* no method selected */
-			return 1;
+		if (mth == NULL) { /* no method selected */
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 	}
 
 	tmp_fn = pcb_tempfile_name_new("extedit");
 	if (tmp_fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	/* export */
@@ -286,8 +295,8 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	quit1:;
 	pcb_tempfile_unlink(tmp_fn);
 	quit0:;
-	return ret;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(ret);
+	return 0;
 }
 
 static pcb_action_t extedit_action_list[] = {
