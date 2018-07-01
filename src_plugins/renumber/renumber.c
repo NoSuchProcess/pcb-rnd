@@ -69,9 +69,8 @@ static const char *or_empty(const char *s)
 	return s;
 }
 
-static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_bool changed = pcb_false;
 	pcb_subc_t **subc_list;
 	pcb_subc_t **locked_subc_list;
@@ -80,7 +79,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	unsigned int tmpi;
 	size_t sz;
 	char *tmps;
-	const char *name;
+	const char *name = NULL;
 	FILE *out;
 	static char *default_file = NULL;
 	size_t cnt_list_sz = 100;
@@ -93,7 +92,9 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	int ok;
 	pcb_bool free_name = pcb_false;
 
-	if (argc < 1) {
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
+
+	if (name == NULL) {
 		/*
 		 * We deal with the case where name already exists in this
 		 * function so the GUI doesn't need to deal with it
@@ -105,8 +106,6 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 
 		free_name = pcb_true;
 	}
-	else
-		name = argv[0];
 
 	if (default_file) {
 		free(default_file);
@@ -122,6 +121,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 		if (!pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0)) {
 			if (free_name && name)
 				free((char*)name);
+			PCB_ACT_IRES(1);
 			return 0;
 		}
 	}
@@ -130,7 +130,8 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 		pcb_message(PCB_MSG_ERROR, _("Could not open %s\n"), name);
 		if (free_name && name)
 			free((char*)name);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	if (free_name && name)
@@ -360,8 +361,8 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 	free(ox_list);
 	free(oy_list);
 	free(cnt_list);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
