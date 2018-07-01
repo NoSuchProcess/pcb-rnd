@@ -368,6 +368,9 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 extern const char pcb_acts_RenumberBlock[];
 extern const char pcb_acth_RenumberBlock[];
 fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+
+extern const char pcb_acts_RenumberBuffer[];
+extern const char pcb_acth_RenumberBuffer[];
 fgw_error_t pcb_act_RenumberBuffer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
 
@@ -376,7 +379,7 @@ static const char *renumber_cookie = "renumber plugin";
 pcb_action_t renumber_action_list[] = {
 	{"Renumber", pcb_act_Renumber, pcb_acth_Renumber, pcb_acts_Renumber},
 	{"RenumberBlock", pcb_act_RenumberBlock, pcb_acth_RenumberBlock, pcb_acts_RenumberBlock},
-	{"RenumberBuffer", pcb_act_RenumberBuffer, NULL, NULL}
+	{"RenumberBuffer", pcb_act_RenumberBuffer, pcb_acth_RenumberBuffer, pcb_acts_RenumberBuffer}
 };
 
 int pplg_check_ver_renumber(int ver_needed) { return 0; }
