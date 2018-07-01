@@ -153,9 +153,9 @@ fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* ************************************************************ */
 
-static const char load_vendor_syntax[] = "LoadVendorFrom(filename)";
+static const char pcb_acts_LoadVendorFrom[] = "LoadVendorFrom(filename)";
 
-static const char load_vendor_help[] = "Loads the specified vendor lihata file.";
+static const char pcb_acth_LoadVendorFrom[] = "Loads the specified vendor lihata file.";
 
 /* %start-doc actions LoadVendorFrom
 
@@ -171,9 +171,8 @@ be prompted to enter one.
 
 %end-doc */
 
-fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	static char *default_file = NULL;
 	const char *sval;
@@ -183,7 +182,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	cached_drill = -1;
 
-	fname = argc ? argv[0] : NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadVendorFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect(_("Load Vendor Resource File..."),
@@ -191,8 +190,10 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 															"This file can contain drc settings for a\n"
 															"particular vendor as well as a list of\n"
 															"predefined drills which are allowed."), default_file, ".res", "vendor", HID_FILESELECT_READ);
-		if (fname == NULL)
-			return 1;
+		if (fname == NULL) {
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 
 		free_fname = pcb_true;
 
@@ -209,7 +210,8 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	doc = pcb_hid_cfg_load_lht(fname);
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_ERROR, _("Could not load vendor resource file \"%s\"\n"), fname);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	/* figure out the vendor name, if specified */
@@ -315,8 +317,8 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	if (free_fname)
 		free((char*)fname);
 	lht_dom_uninit(doc);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static int apply_vendor_pstk1(pcb_pstk_t *pstk, pcb_cardinal_t *tot)
@@ -649,7 +651,7 @@ static const char *vendor_cookie = "vendor drill mapping";
 pcb_action_t vendor_action_list[] = {
 	{"ApplyVendor", pcb_act_ApplyVendor, apply_vendor_help, apply_vendor_syntax},
 	{"UnloadVendor", pcb_act_UnloadVendor, unload_vendor_help, unload_vendor_syntax},
-	{"LoadVendorFrom", pcb_act_LoadVendorFrom, load_vendor_help, load_vendor_syntax}
+	{"LoadVendorFrom", pcb_act_LoadVendorFrom, pcb_acth_LoadVendorFrom, pcb_acts_LoadVendorFrom}
 };
 
 PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
