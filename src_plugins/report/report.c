@@ -68,10 +68,12 @@
 
 conf_report_t conf_report;
 
-#define AUSAGE(x) pcb_message(PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
+static const char pcb_acts_Report[] = "Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])";
+static const char pcb_acth_Report[] = "Produce various report.";
+
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
-static int report_drills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_drill_info_t *AllDrills;
 	pcb_cardinal_t n;
@@ -393,7 +395,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static int report_found_pins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	gds_t list;
 	int col = 0;
@@ -461,7 +463,7 @@ static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
 	return length;
 }
 
-static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int ni, found, want_undo;
 
@@ -496,8 +498,11 @@ static int report_all_net_lengths(int argc, const char **argv, pcb_coord_t x, pc
 		free(ename);
 		if (term != NULL) {
 			char buf[50];
-			const char *units_name = argv[0];
+			const char *units_name;
 			pcb_coord_t length;
+			pcb_coord_t x = 0, y = 0;
+
+			PCB_ACT_CONVARG(1, FGW_STR, Report, units_name = argv[2].val.str);
 
 			pcb_obj_center(term, &x, &y);
 
@@ -557,7 +562,7 @@ static const char *net_name_found(pcb_board_t *pcb)
 	return NULL;
 }
 
-static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_coord_t length = 0;
 	int found = 0, want_undo, ret;
@@ -600,7 +605,7 @@ static int report_net_length_(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return ret;
 }
 
-static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y, int split)
+static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int split)
 {
 
 	if (split) {
@@ -608,7 +613,7 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		pcb_line_t *l;
 		pcb_layer_t *ly;
 		int type;
-		pcb_coord_t ox, oy;
+		pcb_coord_t ox, oy, x, y;
 
 		pcb_hid_get_coords("Click on a copper line", &x, &y);
 
@@ -636,7 +641,7 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
-		report_net_length_(argc, argv, x, y);
+		report_net_length_(res, argc, argv, x, y);
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		l->Point1.X = ox; l->Point1.Y = oy;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
@@ -644,7 +649,7 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		ox = l->Point2.X; oy = l->Point2.Y; l->Point2.X = x; l->Point2.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
-		report_net_length_(argc, argv, x, y);
+		report_net_length_(res, argc, argv, x, y);
 		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)l);
 		l->Point2.X = ox; l->Point2.Y = oy;
 		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)l);
@@ -654,13 +659,14 @@ static int report_net_length(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		return 0;
 	}
 	else {
-/*		pcb_hid_get_coords("Click on a connection", &x, &y);*/
-		return report_net_length_(argc, argv, x, y);
+		pcb_coord_t x, y;
+		pcb_hid_get_coords("Click on a network", &x, &y);
+		return report_net_length_(res, argc, argv, x, y);
 	}
 }
 
 
-static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coord_t y)
+static int report_net_length_by_name(const char *tofind)
 {
 	char *netname = 0;
 	pcb_coord_t length = 0;
@@ -670,6 +676,7 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 	int net_found = 0;
 	int use_re = 0;
 	re_sei_t *regex;
+	pcb_coord_t x, y;
 
 	if (!PCB)
 		return 1;
@@ -763,12 +770,8 @@ static int report_net_length_by_name(const char *tofind, pcb_coord_t x, pcb_coor
 
 /* ---------------------------------------------------------------------------
  * reports on an object
- * syntax:
  */
 
-static const char report_syntax[] = "Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])";
-
-static const char report_help[] = "Produce various report.";
 
 /* %start-doc actions Report
 
@@ -799,46 +802,45 @@ units
 
 %end-doc */
 
-static fgw_error_t pcb_act_report(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *cmd, *name;
 	pcb_coord_t x, y;
-	if ((argc < 1) || (argc > 2))
-		AUSAGE(report);
-	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
+
+	PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
+
+	if (pcb_strcasecmp(cmd, "Object") == 0) {
 		pcb_hid_get_coords("Click on an object", &x, &y);
-		return pcb_act_report_dialog(ores, oargc, oargv);
+		return pcb_act_report_dialog(res, argc, argv);
 	}
-	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
+	else if (pcb_strncasecmp(cmd, "Subc", 4) == 0) {
 		pcb_hid_get_coords("Click on a subcircuit", &x, &y);
-		return pcb_act_report_dialog(ores, oargc, oargv);
+		return pcb_act_report_dialog(res, argc, argv);
 	}
 
 	pcb_hid_get_coords("Click on object to report on", &x, &y);
 
-	if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
-		return report_drills(argc - 1, argv + 1, x, y);
-	else if (pcb_strcasecmp(argv[0], "FoundPins") == 0)
-		return report_found_pins(argc - 1, argv + 1, x, y);
-	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 1))
-		return report_net_length(argc - 1, argv + 1, x, y, 0);
-	else if ((pcb_strcasecmp(argv[0], "NetLengthTo") == 0) && (argc == 1))
-		return report_net_length(argc - 1, argv + 1, x, y, 1);
-	else if (pcb_strcasecmp(argv[0], "AllNetLengths") == 0)
-		return report_all_net_lengths(argc - 1, argv + 1, x, y);
-	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 2))
-		return report_net_length_by_name(argv[1], x, y);
-	else if (argc == 2)
-		AUSAGE(report);
-	else
-		PCB_AFAIL(report);
-	return 1;
-	PCB_OLD_ACT_END;
+	if (pcb_strcasecmp(cmd, "DrillReport") == 0)
+		return report_drills(res, argc, argv);
+	else if (pcb_strcasecmp(cmd, "FoundPins") == 0)
+		return report_found_pins(res, argc, argv);
+	else if ((pcb_strcasecmp(cmd, "NetLength") == 0) && (argc == 2))
+		return report_net_length(res, argc, argv, 0);
+	else if ((pcb_strcasecmp(cmd, "NetLengthTo") == 0) && (argc == 2))
+		return report_net_length(res, argc, argv, 1);
+	else if (pcb_strcasecmp(cmd, "AllNetLengths") == 0)
+		return report_all_net_lengths(res, argc, argv);
+	else if (pcb_strcasecmp(cmd, "NetLength") == 0) {
+		PCB_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
+		return report_net_length_by_name(name);
+	}
+
+	PCB_ACT_FAIL(Report);
 }
 
 pcb_action_t report_action_list[] = {
 	{"ReportObject", pcb_act_report_dialog, pcb_acth_reportdialog, pcb_acts_reportdialog},
-	{"Report", pcb_act_report, report_help, report_syntax}
+	{"Report", pcb_act_Report, pcb_acth_Report, pcb_acts_Report}
 };
 
 static const char *report_cookie = "report plugin";
