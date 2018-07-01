@@ -265,6 +265,28 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 	return stack->grp+where+1;
 }
 
+static void pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, int omit_substrate)
+{
+	pcb_layer_stack_t *stack = &pcb->LayerGroups;
+
+	stack->len += room;
+
+	stack->grp[bl].name = pcb_strdup("Intern");
+	stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
+	stack->grp[bl].valid = 1;
+	stack->grp[bl].parent_type = PCB_PARENT_BOARD;
+	stack->grp[bl].parent.board = pcb;
+	stack->grp[bl].type = PCB_OBJ_LAYERGRP;
+	bl++;
+	if (!omit_substrate) {
+		stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+		stack->grp[bl].valid = 1;
+		stack->grp[bl].parent_type = PCB_PARENT_BOARD;
+		stack->grp[bl].parent.board = pcb;
+		stack->grp[bl].type = PCB_OBJ_LAYERGRP;
+	}
+}
+
 static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
@@ -281,27 +303,18 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 			/* insert a new internal layer: move existing layers to make room */
 			for(n = stack->len-1; n >= bl; n--)
 				pcb_layergrp_move_onto(pcb, n+room, n);
-
-			stack->len += room;
-
-			stack->grp[bl].name = pcb_strdup("Intern");
-			stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
-			stack->grp[bl].valid = 1;
-			stack->grp[bl].parent_type = PCB_PARENT_BOARD;
-			stack->grp[bl].parent.board = pcb;
-			stack->grp[bl].type = PCB_OBJ_LAYERGRP;
-			bl++;
-			if (!omit_substrate) {
-				stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
-				stack->grp[bl].valid = 1;
-			stack->grp[bl].parent_type = PCB_PARENT_BOARD;
-			stack->grp[bl].parent.board = pcb;
-			stack->grp[bl].type = PCB_OBJ_LAYERGRP;
-			}
+			
+			pcb_get_grp_new_intern_insert(pcb, room, bl, omit_substrate);
 			return &stack->grp[bl-1];
 		}
 	}
-	return NULL;
+
+#if 0
+	/* bottom copper did not exist - insert at the end */
+	bl = stack->len;
+	pcb_get_grp_new_intern_insert(pcb, room, bl, omit_substrate);
+#endif
+	return &stack->grp[bl-1];
 }
 
 pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id)
