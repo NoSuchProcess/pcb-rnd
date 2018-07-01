@@ -310,11 +310,9 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 		}
 	}
 
-#if 1
 	/* bottom copper did not exist - insert at the end */
 	bl = stack->len;
 	pcb_get_grp_new_intern_insert(pcb, room, bl, omit_substrate);
-#endif
 	return &stack->grp[bl];
 }
 
