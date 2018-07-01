@@ -201,24 +201,22 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 }
 
-static const char load_dsn_syntax[] = "LoadDsnFrom(filename)";
+static const char pcb_acts_LoadDsnFrom[] = "LoadDsnFrom(filename)";
+static const char pcb_acth_LoadDsnFrom[] = "Loads the specified routed dsn file.";
 
-static const char load_dsn_help[] = "Loads the specified routed dsn file.";
-
-fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *fname = NULL;
 	pcb_coord_t clear;
 	FILE *f;
 	gsxl_dom_t dom;
 	int c, seek_quote = 1;
 	long int nlines = 0, nvias = 0;
-	gsx_parse_res_t res;
+	gsx_parse_res_t rs;
 	gsxl_node_t *wiring, *w, *routes, *nout, *n;
 	dsn_type_t type;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(
@@ -240,20 +238,20 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	dom.parse.line_comment_char = '#';
 	do {
 		c = fgetc(f);
-		res = gsxl_parse_char(&dom, c);
+		rs = gsxl_parse_char(&dom, c);
 
 		/* Workaround: skip the unbalanced '"' in string_quote */
 		if (seek_quote && (dom.parse.used == 12) && (strncmp(dom.parse.atom, "string_quote", dom.parse.used) == 0)) {
 			do {
 				c = fgetc(f);
 			} while((c != ')') && (c != EOF));
-			res = gsxl_parse_char(&dom, ')');
+			rs = gsxl_parse_char(&dom, ')');
 			seek_quote = 0;
 		}
-	} while(res == GSX_RES_NEXT);
+	} while(rs == GSX_RES_NEXT);
 	fclose(f);
 
-	if (res != GSX_RES_EOE) {
+	if (rs != GSX_RES_EOE) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: parse error in %s at %d:%d\n", fname, dom.parse.line, dom.parse.col);
 		goto error;
 	}
@@ -327,16 +325,18 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_message(PCB_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
 
 	gsxl_uninit(&dom);
+	PCB_ACT_IRES(0);
 	return 0;
 
 	error:;
 	gsxl_uninit(&dom);
+
+	PCB_ACT_IRES(-1);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t dsn_action_list[] = {
-	{"LoadDsnFrom", pcb_act_LoadDsnFrom, load_dsn_help, load_dsn_syntax}
+	{"LoadDsnFrom", pcb_act_LoadDsnFrom, pcb_acth_LoadDsnFrom, pcb_acts_LoadDsnFrom}
 };
 
 PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
