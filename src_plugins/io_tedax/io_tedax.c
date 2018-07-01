@@ -96,28 +96,26 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(type, filename)";
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|footprint, filename)";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file. Type can be: netlist or footprint.";
-static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *fname, *type = argv[0];
+	const char *fname = NULL, *type;
 
-	if (argc < 1)
-		PCB_ACT_FAIL(Savetedax);
-
-	fname = (argc > 1) ? argv[1] : NULL;
+	PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
 
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
-		return tedax_net_load(fname);
+		PCB_ACT_IRES(tedax_net_load(fname));
+		return 0;
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
 		gen_load(footprint, fname);
-		return tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0);
+		PCB_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0));
+		return 0;
 	}
 	PCB_ACT_FAIL(Savetedax);
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t tedax_action_list[] = {
