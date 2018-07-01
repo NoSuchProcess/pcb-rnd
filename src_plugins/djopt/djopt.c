@@ -2491,12 +2491,13 @@ RF losses and trace length.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DJopt(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *arg = argc > 0 ? argv[0] : NULL;
+	const char *arg = NULL;
 	int layn, saved = 0;
 	corner_s *c;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DJopt, arg = argv[1].val.str);
 
 #ifdef ENDIF
 	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
@@ -2613,8 +2614,9 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	check(0, 0);
 	if (saved)
 		pcb_undo_inc_serial();
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t djopt_action_list[] = {
