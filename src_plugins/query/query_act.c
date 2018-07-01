@@ -117,30 +117,28 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 	return pcb_qry_run(prg, cb, user_ctx);
 }
 
-static fgw_error_t pcb_act_query(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *cmd = argc > 0 ? argv[0] : 0;
+	const char *cmd, *arg = NULL;
 	select_t sel;
 
 	sel.cnt = 0;
 
-	if (cmd == NULL) {
-		return -1;
-	}
+	PCB_ACT_CONVARG(1, FGW_STR, query, cmd = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 
 	if (strcmp(cmd, "version") == 0) {
-		ores->type = FGW_INT;
-		ores->val.nat_int = 0100; /* 1.0 */
+		PCB_ACT_IRES(0100); /* 1.0 */
 		return 0;
 	}
 
 	if (strcmp(cmd, "dump") == 0) {
 		pcb_qry_node_t *prg = NULL;
-		printf("Script dump: '%s'\n", argv[1]);
-		pcb_qry_set_input(argv[1]);
+		printf("Script dump: '%s'\n", arg);
+		pcb_qry_set_input(arg);
 		qry_parse(&prg);
 		pcb_qry_dump_tree(" ", prg);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
@@ -149,40 +147,43 @@ static fgw_error_t pcb_act_query(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		eval_stat_t st;
 
 		memset(&st, 0, sizeof(st));
-		printf("Script eval: '%s'\n", argv[1]);
-		errs = run_script(argv[1], eval_cb, &st);
+		printf("Script eval: '%s'\n", arg);
+		errs = run_script(arg, eval_cb, &st);
 
 		if (errs < 0)
 			printf("Failed to run the query\n");
 		else
 			printf("eval statistics: true=%d false=%d errors=%d\n", st.trues, st.falses, errs);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
 	if (strcmp(cmd, "select") == 0) {
 		sel.how = PCB_CHGFLG_SET;
-		if (run_script(argv[1], select_cb, &sel) < 0)
+		if (run_script(arg, select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
 			pcb_redraw();
 		}
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
 	if (strcmp(cmd, "unselect") == 0) {
 		sel.how = PCB_CHGFLG_CLEAR;
-		if (run_script(argv[1], select_cb, &sel) < 0)
+		if (run_script(arg, select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
 			pcb_redraw();
 		}
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 
-	return -1;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(-1);
+	return 0;
 }
 
 pcb_action_t query_action_list[] = {
