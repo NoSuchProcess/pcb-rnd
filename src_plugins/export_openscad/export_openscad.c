@@ -607,7 +607,8 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 	f = pcb_fopen(name, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
-		return -1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
 
@@ -639,6 +640,8 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 	} PCB_ENDALL_LOOP;
 
 	fclose(f);
+
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
