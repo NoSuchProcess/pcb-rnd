@@ -354,24 +354,25 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 
 static const char pcb_acts_LoadIpc356From[] = "LoadIpc356From(filename, [nonet], [nopad], [nosubc])";
 static const char pcb_acth_LoadIpc356From[] = "Loads the specified IPC356-D netlist";
-fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	FILE *f;
 	static char *default_file = NULL;
-	const char *fname;
-	int res, n, want_subc = 1, want_net = 1, want_pads = 1;
+	const char *fname = NULL;
+	int rs, n, want_subc = 1, want_net = 1, want_pads = 1;
 	htsp_t subcs, *scs = NULL;
 	htsp_entry_t *e;
 
-	fname = argc ? argv[0] : 0;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadIpc356From, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect("Load IPC-D-356 netlist...",
 			"Pick an IPC-D-356 netlist file.\n",
 			default_file, ".net", "ipcd356", HID_FILESELECT_READ);
-		if (fname == NULL)
-			return 1;
+		if (fname == NULL) {
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
@@ -380,14 +381,17 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	f = pcb_fopen(fname, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", argv[0]);
-		return 1;
+		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fname);
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
-	for(n = 1; n < argc; n++) {
-		if (strcmp(argv[n], "nonet") == 0) want_net = 0;
-		if (strcmp(argv[n], "nopad") == 0) want_pads = 0;
-		if (strcmp(argv[n], "nosubc") == 0) want_subc = 0;
+	for(n = 2; n < argc; n++) {
+		const char *s;
+		PCB_ACT_MAY_CONVARG(n, FGW_STR, LoadIpc356From, s = argv[n].val.str);
+		if (strcmp(s, "nonet") == 0) want_net = 0;
+		if (strcmp(s, "nopad") == 0) want_pads = 0;
+		if (strcmp(s, "nosubc") == 0) want_subc = 0;
 	}
 
 	if (!want_pads)
@@ -403,7 +407,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		pcb_actionl("Netlist", "Clear", NULL);
 	}
 
-	res = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
+	rs = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
 		pcb_actionl("Netlist", "Sort", NULL);
@@ -424,8 +428,9 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		}
 		htsp_uninit(&subcs);
 	}
-	return res;
-	PCB_OLD_ACT_END;
+
+	PCB_ACT_IRES(rs);
+	return 0;
 }
 
 pcb_action_t import_ipcd356_action_list[] = {
