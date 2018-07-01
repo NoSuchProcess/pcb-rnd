@@ -287,7 +287,7 @@ static void pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, in
 	}
 }
 
-static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate)
+static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate, int force_end)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	int bl, n;
@@ -297,6 +297,7 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 		return NULL;
 
 	/* seek the bottom copper layer */
+	if (!force_end)
 	for(bl = stack->len; bl >= 0; bl--) {
 		if ((stack->grp[bl].ltype & PCB_LYT_BOTTOM) && (stack->grp[bl].ltype & PCB_LYT_COPPER)) {
 
@@ -330,7 +331,7 @@ pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id)
 	}
 
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_(pcb, 0);
+	g = pcb_get_grp_new_intern_(pcb, 0, 0);
 	inhibit_notify--;
 	if (g != NULL) {
 		g->intern_id = intern_id;
@@ -343,7 +344,7 @@ pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb)
 {
 	pcb_layergrp_t *g;
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_(pcb, 1);
+	g = pcb_get_grp_new_intern_(pcb, 1, 0);
 	inhibit_notify--;
 	NOTIFY(pcb);
 	return g;
@@ -887,17 +888,18 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 		const char *name;
 		pcb_layer_type_t lyt;
 		pcb_layer_combining_t comb;
+		int force_end;
 	} lmap_t;
 	const lmap_t *m, lmap[] = {
-		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO},
-		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO},
-		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO},
-		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0},
-		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
-		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0},
-		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO},
-		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO},
-		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO},
+		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO, 0},
+		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO, 0},
+		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO, 0},
+		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0, 0},
+		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0},
+		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0},
+		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO, 1},
+		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO, 1},
+		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO, 1},
 		{NULL, 0}
 	};
 	pcb_layergrp_t *grp;
@@ -910,7 +912,7 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 			free(grp->name);
 		}
 		else {
-			grp = pcb_get_grp_new_intern_(pcb, 1);
+			grp = pcb_get_grp_new_intern_(pcb, 1, m->force_end);
 			gid = grp - pcb->LayerGroups.grp;
 			grp->ltype = m->lyt;
 		}
