@@ -305,16 +305,16 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 				pcb_layergrp_move_onto(pcb, n+room, n);
 			
 			pcb_get_grp_new_intern_insert(pcb, room, bl, omit_substrate);
-			return &stack->grp[bl-1];
+			return &stack->grp[bl];
 		}
 	}
 
-#if 0
+#if 1
 	/* bottom copper did not exist - insert at the end */
 	bl = stack->len;
 	pcb_get_grp_new_intern_insert(pcb, room, bl, omit_substrate);
 #endif
-	return &stack->grp[bl-1];
+	return &stack->grp[bl];
 }
 
 pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id)
@@ -903,13 +903,14 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 	pcb_layergrp_t *grp;
 	pcb_layergrp_id_t gid;
 
+	inhibit_notify++;
 	for(m = lmap; m->name != NULL; m++) {
 		if (pcb_layergrp_list(pcb, m->lyt, &gid, 1) == 1) {
 			grp = &pcb->LayerGroups.grp[gid];
 			free(grp->name);
 		}
 		else {
-			grp = pcb_get_grp_new_misc(pcb);
+			grp = pcb_get_grp_new_intern_(pcb, 1);
 			gid = grp - pcb->LayerGroups.grp;
 			grp->ltype = m->lyt;
 		}
@@ -922,6 +923,8 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 			}
 		}
 	}
+	inhibit_notify--;
+	NOTIFY(pcb);
 }
 
 
