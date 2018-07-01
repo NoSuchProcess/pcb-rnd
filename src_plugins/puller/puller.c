@@ -75,6 +75,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "obj_pstk_inlines.h"
+#include "funchash_core.h"
 #include "search.h"
 #include "find.h"
 
@@ -355,9 +356,8 @@ arc-line intersection was moved to.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t Ux, Uy;
 	double arc_angle, base_angle;
 #if TRACE1
@@ -368,9 +368,12 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	pcb_hid_get_coords("Click on a line-arc intersection or line segment", &Ux, &Uy);
 
-	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y))
-		if (!find_pair(Ux, Uy))
+	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y)) {
+		if (!find_pair(Ux, Uy)) {
+			PCB_ACT_IRES(1);
 			return 0;
+		}
+	}
 
 	if (within(the_line->Point1.X, the_line->Point1.Y, x, y, the_line->Thickness)) {
 		ex = the_line->Point2.X;
@@ -384,7 +387,8 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 #if TRACE1
 		printf("Line endpoint not at cursor\n");
 #endif
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	ex = the_line->Point1.X;
 	ey = the_line->Point1.Y;
@@ -398,14 +402,16 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 #if TRACE1
 		printf("arc not endpoints\n");
 #endif
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	if (within(cx, cy, ex, ey, the_arc->Width * 2)) {
 #if TRACE1
 		printf("line ends inside arc\n");
 #endif
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	if (the_arc->Delta > 0)
@@ -453,8 +459,8 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_gui->invalidate_all();
 	pcb_undo_inc_serial();
 
-	return 1;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(0);
+	return 0;
 }
 
 /*****************************************************************************/
@@ -463,7 +469,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 /*                                                                           */
 /*****************************************************************************/
 
-static const char pcb_acts_GlobalPuller[] = "pcb_act_GlobalPuller()";
+static const char pcb_acts_GlobalPuller[] = "pcb_act_GlobalPuller([Found|Selected])";
 
 static const char pcb_acth_GlobalPuller[] = "Pull all traces tight.";
 
@@ -2078,23 +2084,25 @@ static void trace_print_lines_arcs(void)
 }
 #endif
 
-static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	int select_flags = 0;
+	int op = -2, select_flags = 0;
 	unsigned int cflg;
 
 	setbuf(stdout, 0);
 	nloops = 0;
 	npulled = 0;
-	printf("puller! %s\n", argc > 0 ? argv[0] : "");
 
-	if (argc > 0 && pcb_strcasecmp(argv[0], "selected") == 0)
-		select_flags = PCB_FLAG_SELECTED;
-	if (argc > 0 && pcb_strcasecmp(argv[0], "found") == 0)
-		select_flags = PCB_FLAG_FOUND;
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, GlobalPuller, op = fgw_keyword(&argv[1]));
 
-	printf("optimizing...\n");
+	switch(op) {
+		case F_Selected: select_flags = PCB_FLAG_SELECTED; break;
+		case F_Found:    select_flags = PCB_FLAG_FOUND; break;
+		case -2: select_flags = 0; break;
+		default:
+			PCB_ACT_FAIL(GlobalPuller);
+	}
+
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
 	/* pcb_actionl("djopt", "puller", 0); */
 
@@ -2185,8 +2193,8 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 	g_hash_table_unref(arcs);
 
 	pcb_undo_inc_serial();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /*****************************************************************************/
