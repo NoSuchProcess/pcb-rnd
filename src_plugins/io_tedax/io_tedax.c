@@ -61,22 +61,23 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 
-static const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
+static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
-static fgw_error_t pcb_act_Savetedax(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *fname, *type = argv[0];
-	if (argc < 1)
-		PCB_ACT_FAIL(Savetedax);
+	const char *fname = NULL, *type;
 
-	fname = (argc > 1) ? argv[1] : NULL;
+	PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
 
-	if (pcb_strcasecmp(type, "board-footprints") == 0)
-		return tedax_fp_save(PCB->Data, argv[1]);
+	if (pcb_strcasecmp(type, "board-footprints") == 0) {
+		PCB_ACT_IRES(tedax_fp_save(PCB->Data, fname));
+		return 0;
+	}
 
 	PCB_ACT_FAIL(Savetedax);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(1);
+	return 0;
 }
 
 #define gen_load(type, fname) \
