@@ -179,12 +179,10 @@ fgw_error_t pcb_gtk_act_logshowonappend(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, logshowonappend, a = argv[1].val.str);
 
-	if (tolower(*a) == 't') {
+	if (tolower(*a) == 't')
 		log_show_on_append = TRUE;
-	}
-	else if (tolower(*a) == 'f') {
+	else if (tolower(*a) == 'f')
 		log_show_on_append = FALSE;
-	}
 
 	PCB_ACT_IRES(0);
 	return 0;
