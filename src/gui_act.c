@@ -1400,42 +1400,45 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 pcb_layergrp_id_t pcb_actd_EditGroup_gid = -1;
 static const char pcb_acts_EditGroup[] = "Editgroup([@group], [name=text|type=+bit|type=-bit])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditGroup[] = "Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.";
-static fgw_error_t pcb_act_EditGroup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layergrp_t *g = NULL;
 
 #warning layer TODO: rewrite this with DAD in two versions (bound and unbound)
 	if (CURRENT->is_bound) {
 		pcb_message(PCB_MSG_ERROR, "Can't edit bound layers yet\n");
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	if (CURRENT != NULL)
 		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
 
-	for(n = 0; n < argc; n++) {
-		if (!explicit && (*argv[n] == '@')) {
+	for(n = 1; n < argc; n++) {
+		const char *arg;
+		PCB_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
+		if (!explicit && (*arg == '@')) {
 			pcb_layergrp_id_t gid;
-			if (argv[n][1] == '\0')
+			if (arg[1] == '\0')
 				gid = pcb_actd_EditGroup_gid;
 			else
-				gid = pcb_layergrp_by_name(PCB, argv[n]+1);
+				gid = pcb_layergrp_by_name(PCB, arg+1);
 			if (gid < 0) {
-				pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", argv[n]+1);
-				return 1;
+				pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", arg+1);
+				PCB_ACT_IRES(1);
+				return 0;
 			}
 			g = pcb_get_layergrp(PCB, gid);
 			explicit = 1;
 		}
-		else if (strncmp(argv[n], "name=", 5) == 0) {
+		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
-			ret |= pcb_layergrp_rename_(g, pcb_strdup(argv[n]+5));
+			ret |= pcb_layergrp_rename_(g, pcb_strdup(arg+5));
 			pcb_board_set_changed_flag(pcb_true);
 		}
-		else if (strncmp(argv[n], "type=", 5) == 0) {
-			const char *sbit = argv[n]+5;
+		else if (strncmp(arg, "type=", 5) == 0) {
+			const char *sbit = arg+5;
 			pcb_layer_type_t bit = pcb_layer_type_str2bit(sbit+1);
 			if (bit == 0) {
 				if (strcmp(sbit+1, "anything") == 0) bit = PCB_LYT_ANYTHING;
@@ -1443,7 +1446,8 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 			}
 			if (bit == 0) {
 				pcb_message(PCB_MSG_ERROR, "Unknown type bit %s\n", sbit+1);
-				return 1;
+				PCB_ACT_IRES(1);
+				return 0;
 			}
 			switch(*sbit) {
 				case '+': g->ltype |= bit; break;
@@ -1452,15 +1456,16 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 			interactive = 0;
 			pcb_board_set_changed_flag(pcb_true);
 		}
-		else if (strncmp(argv[n], "attrib", 6) == 0) {
+		else if (strncmp(arg, "attrib", 6) == 0) {
 			char *key, *val;
 			interactive = 0;
 			n++;
 			if (n >= argc) {
-				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", argv[n]+1);
-				return 1;
+				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
+				PCB_ACT_IRES(1);
+				return 0;
 			}
-			key = pcb_strdup(argv[n]);
+			key = pcb_strdup(arg);
 			val = strchr(key, '=');
 			if (val != NULL) {
 				*val = '\0';
@@ -1475,7 +1480,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 			free(key);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid EditGroup() command: %s\n", argv[n]);
+			pcb_message(PCB_MSG_ERROR, "Invalid EditGroup() command: %s\n", arg);
 			PCB_ACT_FAIL(EditLayer);
 		}
 	}
@@ -1505,8 +1510,8 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	}
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	PCB_ACT_IRES(0);
 	return ret;
-	PCB_OLD_ACT_END;
 }
 
 
