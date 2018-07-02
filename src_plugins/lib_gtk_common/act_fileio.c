@@ -36,7 +36,6 @@
 
 #include "actions.h"
 #include "conf_core.h"
-#include "compat_nls.h"
 #include "plug_footprint.h"
 #include "compat_misc.h"
 #include "conf_core.h"
@@ -84,17 +83,17 @@ fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *res, int argc, fg
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, load, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Netlist") == 0) {
-		name = ghid_dialog_file_select_open(top_window, _("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
+		name = ghid_dialog_file_select_open(top_window, "Load netlist file", &current_netlist_dir, conf_core.rc.file_path);
 	}
 	else if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		gchar *path = (gchar *) pcb_fp_default_search_path();
-		name = ghid_dialog_file_select_open(top_window, _("Load element to buffer"), &current_element_dir, path);
+		name = ghid_dialog_file_select_open(top_window, "Load element to buffer", &current_element_dir, path);
 	}
 	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
-		name = ghid_dialog_file_select_open(top_window, _("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);
+		name = ghid_dialog_file_select_open(top_window, "Load layout file to buffer", &current_layout_dir, conf_core.rc.file_path);
 	}
 	else if (pcb_strcasecmp(function, "Layout") == 0) {
-		name = ghid_dialog_file_select_open(top_window, _("Load layout file"), &current_layout_dir, conf_core.rc.file_path);
+		name = ghid_dialog_file_select_open(top_window, "Load layout file", &current_layout_dir, conf_core.rc.file_path);
 	}
 
 	if (name) {
@@ -110,7 +109,7 @@ fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *res, int argc, fg
 
 #warning TODO: this should be more or less common with lesstif
 const char pcb_gtk_acts_save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
-const char pcb_gtk_acth_save[] = N_("Save layout and/or element data to a user-selected file.");
+const char pcb_gtk_acth_save[] = "Save layout and/or element data to a user-selected file.";
 
 /* %start-doc actions Save
 
@@ -148,7 +147,7 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 		int num_fmts, n;
-		prompt = _("Save element as");
+		prompt = "Save element as";
 		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
 		if (num_fmts > 0) {
 			const char *default_pattern = conf_core.rc.save_fp_fmt;
@@ -199,7 +198,7 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 	}
 	else {
 		int num_fmts, n;
-		prompt = _("Save layout as");
+		prompt = "Save layout as";
 		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
 		if (num_fmts > 0) {
 			formats_param = (const char **) avail.digest;
@@ -268,7 +267,7 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 }
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
-const char pcb_gtk_acth_importgui[] = N_("Asks user which schematics to import into PCB.\n");
+const char pcb_gtk_acth_importgui[] = "Asks user which schematics to import into PCB.\n";
 fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
@@ -284,7 +283,7 @@ fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *ores, int oa
 		return 1;
 
 
-	name = ghid_dialog_file_select_open(top_window, _("Load schematics"), &current_layout_dir, conf_core.rc.file_path);
+	name = ghid_dialog_file_select_open(top_window, "Load schematics", &current_layout_dir, conf_core.rc.file_path);
 
 #ifdef DEBUG
 	printf("File selected = %s\n", name);
