@@ -399,11 +399,11 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_FAIL(distribute);
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, align, a0 = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, align, a1 = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, align, a2 = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, align, a3 = argv[4].val.str);
-	PCB_ACT_MAY_CONVARG(5, FGW_STR, align, a4 = argv[5].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, distribute, a0 = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, distribute, a1 = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, distribute, a2 = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, distribute, a3 = argv[4].val.str);
+	PCB_ACT_MAY_CONVARG(5, FGW_STR, distribute, a4 = argv[5].val.str);
 
 
 	/* parse direction arg */
