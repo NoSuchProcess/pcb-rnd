@@ -474,22 +474,11 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_PolyOffs[] = "PolyOffs(offset)\n";
 static const char pcb_acth_PolyOffs[] = "replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer";
-static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t offs;
-	pcb_bool succ;
 
-	if (argc <= 0) {
-		pcb_message(PCB_MSG_ERROR, "Need an offs value \n");
-		return -1;
-	}
-
-	offs = pcb_get_value(argv[0], NULL, NULL, &succ);
-	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "Invalid offs value - must be a distance\n");
-		return -1;
-	}
+	PCB_ACT_CONVARG(1, FGW_COORD, PolyOffs, offs = fgw_coord(&argv[1]));
 
 	PCB_POLY_ALL_LOOP(PCB->Data); {
 		pcb_poly_t *p;
@@ -499,8 +488,9 @@ static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv
 		p = pcb_poly_new_from_poly(CURRENT, polygon, offs, polygon->Clearance, polygon->Flags);
 		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
 	} PCB_ENDALL_LOOP;
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
