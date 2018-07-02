@@ -58,9 +58,11 @@ static char *dup_cwd()
 	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
 }
 
-fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_load[] = "TODO";
+static const char pcb_acth_load[] = "TODO";
+extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	const char *function;
 	char *name = NULL;
 
@@ -76,10 +78,10 @@ fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 		current_netlist_dir = dup_cwd();
 
 	/* we've been given the file name */
-	if (argc > 1)
-		return pcb_actionv("LoadFrom", argc, argv);
+	if (argc > 2)
+		return PCB_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
 
-	function = argc ? argv[0] : "Layout";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, load, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Netlist") == 0) {
 		name = ghid_dialog_file_select_open(top_window, _("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
@@ -102,8 +104,8 @@ fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 		g_free(name);
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 #warning TODO: this should be more or less common with lesstif
