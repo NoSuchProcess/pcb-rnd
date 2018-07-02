@@ -795,9 +795,8 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Benchmark(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int i = 0;
 	time_t start, end;
 	pcb_hid_expose_ctx_t ctx;
@@ -827,8 +826,8 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	printf("%g redraws per second\n", i / 10.0);
 
 	main_pixmap = save_main;
+	PCB_ACT_DRES(i/10.0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static fgw_error_t pcb_act_Center(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
