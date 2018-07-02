@@ -128,6 +128,13 @@ do { \
 	res->val.nat_int = v; \
 } while(0)
 
+/* Set double res value */
+#define PCB_ACT_DRES(v) \
+do { \
+	res->type = FGW_DOUBLE; \
+	res->val.nat_double = v; \
+} while(0)
+
 #define PCB_ACT_FAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
 
 /*** The default unit to use when a coord value doesn't have its own unit ***/
