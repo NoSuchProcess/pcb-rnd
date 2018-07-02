@@ -605,9 +605,9 @@ static int group_showing(int g, int *c)
 }
 
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
-static fgw_error_t pcb_act_SwapSides(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *op = NULL;
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
@@ -621,8 +621,10 @@ static fgw_error_t pcb_act_SwapSides(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
 		comp_showing = group_showing(comp_group, &comp_layer);
 
-	if (argc > 0) {
-		switch (argv[0][0]) {
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, SwapSides, op = argv[1].val.str);
+
+	if (op != NULL) {
+		switch (op[0]) {
 		case 'h':
 		case 'H':
 			conf_toggle_editor_("view/flip_x", view.flip_x);
@@ -681,8 +683,8 @@ static fgw_error_t pcb_act_SwapSides(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		}
 	}
 	lesstif_invalidate_all();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static Widget m_cmd = 0, m_cmd_label;
