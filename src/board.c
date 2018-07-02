@@ -73,8 +73,7 @@ void pcb_board_free(pcb_board_t * pcb)
 /* creates a new PCB */
 pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 {
-	pcb_board_t *ptr, *save;
-	int i;
+	pcb_board_t *ptr;
 
 	/* allocate memory, switch all layers on and copy resources */
 	ptr = calloc(1, sizeof(pcb_board_t));
