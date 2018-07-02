@@ -1092,7 +1092,6 @@ static void config_layers_apply(void)
 void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	gchar *s;
-	pcb_cardinal_t n;
 	const char *paths[] = {
 		"design/groups",
 		NULL
