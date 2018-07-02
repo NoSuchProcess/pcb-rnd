@@ -28,7 +28,51 @@
 
 #include "plugins.h"
 #include "actions.h"
+#include "board.h"
+#include "data.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 
+#include "cdt/cdt.h"
+
+
+typedef struct {
+	cdt_t *cdt;
+} sketch_t;
+
+sketch_t sketch; /* TODO: should be created dynamically for each copper layer */
+
+static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
+{
+	sk->cdt = malloc(sizeof(cdt_t));
+	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	PCB_PADSTACK_LOOP(PCB->Data);
+	{
+		if (pcb_pstk_shape_at(PCB, padstack, layer) != NULL) {
+			cdt_insert_point(sk->cdt, padstack->x, padstack->y);
+		}
+	}
+	PCB_END_LOOP;
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		PCB_PADSTACK_LOOP(subc->data);
+		{
+			if (pcb_pstk_shape_at(PCB, padstack, layer) != NULL) {
+				cdt_insert_point(sk->cdt, padstack->x, padstack->y);
+			}
+		}
+		PCB_END_LOOP;
+	}
+	PCB_END_LOOP;
+}
+
+static void sketch_free(sketch_t *sk)
+{
+	if (sk->cdt != NULL) {
+		cdt_free(sk->cdt);
+		free(sk->cdt);
+	}
+}
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
@@ -36,6 +80,9 @@ static const char pcb_acts_skretriangulate[] = "skretriangulate()";
 static const char pcb_acth_skretriangulate[] = "Construct a new CDT on the current layer";
 fgw_error_t pcb_act_skretriangulate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	sketch_free(&sketch);
+	sketch_create_for_layer(&sketch, CURRENT);
+
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -59,6 +106,8 @@ int pplg_init_sketch_route(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
+
+	sketch.cdt = NULL;
 
 	return 0;
 }
