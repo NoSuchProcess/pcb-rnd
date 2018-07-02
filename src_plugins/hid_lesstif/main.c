@@ -525,26 +525,32 @@ static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int pan_thumb_mode;
 
-static fgw_error_t pcb_act_Pan(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_Pan[] = "Pan([thumb], mode)";
+static const char pcb_acth_Pan[] = "TODO";
+
+static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *a0, *a1;
 	pcb_coord_t x, y;
 	int mode;
 
 	pcb_hid_get_coords("Click on a place to pan", &x, &y);
 
-	if (argc == 2) {
-		pan_thumb_mode = (pcb_strcasecmp(argv[0], "thumb") == 0) ? 1 : 0;
-		mode = atoi(argv[1]);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Pan, a0 = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Pan, a1 = argv[2].val.str);
+
+	if (argc == 3) {
+		pan_thumb_mode = (pcb_strcasecmp(a0, "thumb") == 0) ? 1 : 0;
+		mode = atoi(a1);
 	}
 	else {
 		pan_thumb_mode = 0;
-		mode = atoi(argv[0]);
+		mode = atoi(a0);
 	}
 	Pan(mode, Vx(x), Vy(y));
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r)";
@@ -836,7 +842,7 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 pcb_action_t lesstif_main_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
 	{"ZoomTo", pcb_act_ZoomTo, pcb_acth_ZoomTo, pcb_acts_ZoomTo},
-	{"Pan", pcb_act_Pan, pcb_acth_Zoom, pcb_acts_Zoom},
+	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
 	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark},
