@@ -43,3 +43,8 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+converting coords with absolute:
+	fgw_coords_t *crd;
+	PCB_ACT_CONVARG(1, FGW_COORDS, d1, crd = fgw_coords(&argv[1]));
+
