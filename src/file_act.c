@@ -352,31 +352,40 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
 static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
-static fgw_error_t pcb_act_Export(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	char *args[128];
+	int n;
+
 	if (argc < 1) {
 		pcb_message(PCB_MSG_ERROR, "Export() needs at least one argument, the name of the export plugin\n");
 		return 1;
 	}
 
-	pcb_exporter = pcb_hid_find_exporter(argv[0]);
+	if (argc > sizeof(args)/sizeof(args[0])) {
+		pcb_message(PCB_MSG_ERROR, "Export(): too many arguments\n");
+		return 1;
+	}
+
+	for(n = 1; n < argc; n++)
+		PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
+
+	pcb_exporter = pcb_hid_find_exporter(args[0]);
 	if (pcb_exporter == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", argv[0]);
 		return 1;
 	}
 
 	/* remove the name of the exporter */
-	argc--;
-	argv++;
+	argc-=2;
 
 	/* call the exporter */
-	pcb_exporter->parse_arguments(&argc, (char ***)&argv);
+	pcb_exporter->parse_arguments(&argc, (char ***)(args+1));
 	pcb_exporter->do_export(NULL);
 
 	pcb_exporter = NULL;
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_Backup[] = "Backup()";
