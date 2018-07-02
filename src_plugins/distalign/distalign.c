@@ -385,7 +385,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_distribute[] = "Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
 static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *a0, *a1, *a2, *a3, *a4;
+	const char *a0, *a1, *a2 = NULL, *a3 = NULL, *a4 = NULL;
 	int dir;
 	int point;
 	int refa, refb;
