@@ -85,22 +85,7 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	return 0;
 }
 
-static const char pcb_acth_LoadScript[] = "Load a fungw script";
-static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])";
-static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *id, *fn, *lang = NULL;
-	PCB_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
-
-	PCB_ACT_IRES(script_load(id, fn, lang));
-	return 0;
-}
-
-static pcb_action_t script_action_list[] = {
-	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript}
-};
+#include "script_act.c"
 
 char *script_cookie = "script plugin";
 
