@@ -87,7 +87,7 @@ you may have made.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *name, *format = NULL;
 	int op;
@@ -237,7 +237,7 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	const char *name = NULL;
