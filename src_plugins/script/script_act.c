@@ -40,6 +40,18 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acth_UnloadScript[] = "Unload a fungw script";
+static const char pcb_acts_UnloadScript[] = "UnloadScript(id)";
+static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *id = NULL;
+	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+
+	PCB_ACT_IRES(script_unload(id));
+	return 0;
+}
+
 static pcb_action_t script_action_list[] = {
-	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript}
+	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
+	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript}
 };
