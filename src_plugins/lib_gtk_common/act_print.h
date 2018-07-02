@@ -7,5 +7,5 @@ fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *ores, int oargc,
 
 extern const char pcb_gtk_acts_printcalibrate[];
 extern const char pcb_gtk_acth_printcalibrate[];
-fgw_error_t pcb_gtk_act_printcalibrate(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+fgw_error_t pcb_gtk_act_printcalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
