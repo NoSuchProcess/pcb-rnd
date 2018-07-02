@@ -1395,9 +1395,8 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	static Widget selector = 0;
 	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer, **hids;
@@ -1448,8 +1447,10 @@ static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 
 	i = wait_for_dialog(selector);
 
-	if (i <= 0)
-		return 1;
+	if (i <= 0) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
 	printer = hids[i - 1];
 
 	pcb_exporter = printer;
@@ -1458,13 +1459,14 @@ static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
 	if (lesstif_attribute_dialog(opts, n, vals, "Export", NULL, NULL)) {
 		free(vals);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	printer->do_export(vals);
 	free(vals);
 	pcb_exporter = NULL;
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
