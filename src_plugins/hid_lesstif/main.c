@@ -830,9 +830,8 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static fgw_error_t pcb_act_Center(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
 
 	pcb_hid_get_coords("Click on a location to center", &x, &y);
@@ -846,8 +845,8 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	   currently within the window already.  Watch out for edges,
 	   though.  */
 	XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 pcb_action_t lesstif_main_action_list[] = {
