@@ -156,7 +156,7 @@ void pcb_remove_actions_by_cookie(const char *cookie)
 	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
-		if (ca->cookie == cookie)
+		if ((ca != NULL) && (ca->cookie == cookie))
 			pcb_remove_action(f);
 	}
 }
@@ -279,11 +279,19 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 		printf(")\033[0m\n");
 	}
 
-	old_action = pcb_current_action;
-	pcb_current_action = ca->action;
-	ret = pcb_current_action->trigger_cb(res, argc, argv);
+	if (ca != NULL) {
+		/* pcb-rnd action with a lot of metadata */
+		old_action = pcb_current_action;
+		pcb_current_action = ca->action;
+		ret = pcb_current_action->trigger_cb(res, argc, argv);
+		pcb_current_action = old_action;
+	}
+	else {
+		/* direct call, no metadata */
+		ret = f->func(res, argc, argv);
+	}
+
 	fgw_argv_free(&pcb_fgw, argc, argv);
-	pcb_current_action = old_action;
 
 	return ret;
 }
