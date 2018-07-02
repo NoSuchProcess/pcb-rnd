@@ -20,7 +20,7 @@ echo '
 pcb-rnd uses fungw for embedded scripting. This allows pcb-rnd to be
 scripted in 10+ turing complete scripting languages, including awk, tcl,
 python, perl, lua, some lisp dialects, etc. Embedded scripts run within
-pcb-rnd (in the same process, same addres space), having full access
+pcb-rnd (in the same process, same address space), having full access
 to the action infrastructure:
  - embedded scripts can declare new actions that are accessible from
    menu, from the command line and from other embedded scripts
