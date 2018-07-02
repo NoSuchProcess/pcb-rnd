@@ -507,35 +507,20 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x1, y1, x2, y2;
 	pcb_bool succ;
 
-	if (argc != 4)
-		return -1;
-
-	x1 = pcb_get_value(argv[0], NULL, NULL, &succ);
-	if (!succ)
-		return -1;
-
-	y1 = pcb_get_value(argv[1], NULL, NULL, &succ);
-	if (!succ)
-		return -1;
-
-	x2 = pcb_get_value(argv[2], NULL, NULL, &succ);
-	if (!succ)
-		return -1;
-
-	y2 = pcb_get_value(argv[3], NULL, NULL, &succ);
-	if (!succ)
-		return -1;
+	PCB_ACT_CONVARG(1, FGW_COORD, ZoomTo, x1 = fgw_coord(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_COORD, ZoomTo, y1 = fgw_coord(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_COORD, ZoomTo, x2 = fgw_coord(&argv[3]));
+	PCB_ACT_CONVARG(4, FGW_COORD, ZoomTo, y2 = fgw_coord(&argv[4]));
 
 	zoom_win(x1, y1, x2, y2);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static int pan_thumb_mode;
