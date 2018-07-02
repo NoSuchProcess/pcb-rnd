@@ -169,13 +169,10 @@ Deprecated.
 
 %end-doc */
 
-static fgw_error_t pcb_act_LibraryShow(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LibraryShow(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (build_library_dialog())
-		return 0;
+	PCB_ACT_IRES(build_library_dialog());
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 void lesstif_show_library()
