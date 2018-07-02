@@ -496,33 +496,30 @@ default is given, div=40.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *op;
 	gdouble dx = 0.0, dy = 0.0;
 	int div = 40;
 
-	if (argc != 1 && argc != 2)
-		PCB_ACT_FAIL(scroll);
+	PCB_ACT_CONVARG(1, FGW_STR, scroll, op = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_INT, scroll, div = argv[2].val.nat_int);
 
-	if (argc == 2)
-		div = atoi(argv[1]);
-
-	if (pcb_strcasecmp(argv[0], "up") == 0)
+	if (pcb_strcasecmp(op, "up") == 0)
 		dy = -vw->height / div;
-	else if (pcb_strcasecmp(argv[0], "down") == 0)
+	else if (pcb_strcasecmp(op, "down") == 0)
 		dy = vw->height / div;
-	else if (pcb_strcasecmp(argv[0], "right") == 0)
+	else if (pcb_strcasecmp(op, "right") == 0)
 		dx = vw->width / div;
-	else if (pcb_strcasecmp(argv[0], "left") == 0)
+	else if (pcb_strcasecmp(op, "left") == 0)
 		dx = -vw->width / div;
 	else
 		PCB_ACT_FAIL(scroll);
 
 	pcb_gtk_pan_view_rel(vw, dx, dy);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */

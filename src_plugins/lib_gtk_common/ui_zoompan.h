@@ -105,7 +105,7 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv);
 
 extern const char pcb_acts_scroll[];
 extern const char pcb_acth_scroll[];
-fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 extern const char pcb_acts_pan[];
 extern const char pcb_acth_pan[];
