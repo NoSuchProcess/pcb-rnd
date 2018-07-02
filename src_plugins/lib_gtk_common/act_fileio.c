@@ -120,26 +120,26 @@ user is prompted for a filename to save, and then @code{SaveTo} is
 called with that filename.
 
 %end-doc */
-
-fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function;
+	const char *function = "Layout";
 	char *name, *name_in = NULL;
 	const char *prompt;
 	pcb_io_formats_t avail;
 	const char **formats_param = NULL, **extensions_param = NULL;
 	int fmt, *fmt_param = NULL;
+	const char *pcb_acts_save = pcb_gtk_acts_save;
 
 	static gchar *current_dir = NULL;
 
 	if (!current_dir)
 		current_dir = dup_cwd();
 
-	if (argc > 1)
-		return pcb_actionv("SaveTo", argc, argv);
+	if (argc > 2)
+		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
-	function = argc ? argv[0] : "Layout";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, save, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
@@ -193,7 +193,8 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
-			return -1;
+			PCB_ACT_IRES(-1);
+			return 0;
 		}
 	}
 	else {
@@ -216,7 +217,8 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
-			return -1;
+			PCB_ACT_IRES(-1);
+			return 0;
 		}
 	}
 
@@ -259,11 +261,12 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *ores, int oargc, 
 	}
 	else {
 		pcb_io_list_free(&avail);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
