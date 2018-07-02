@@ -42,7 +42,7 @@
 #include "dlg_print.h"
 
 const char pcb_gtk_acts_print[] = "Print()";
-const char pcb_gtk_acth_print[] = N_("Print the layout.");
+const char pcb_gtk_acth_print[] = "Print the layout.";
 fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_hid_t **hids;
@@ -56,7 +56,7 @@ fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *res, int argc, f
 	}
 
 	if (printer == NULL) {
-		pcb_gui->log(_("Can't find a suitable printer HID"));
+		pcb_gui->log("Can't find a suitable printer HID");
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
@@ -66,7 +66,7 @@ fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *res, int argc, f
 		ghid_dialog_print(printer, NULL, top_window);
 	}
 	else
-		pcb_gui->log(_("Can't print empty layout"));
+		pcb_gui->log("Can't print empty layout");
 
 	PCB_ACT_IRES(0);
 	return 0;
