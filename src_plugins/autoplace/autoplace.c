@@ -361,7 +361,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		minx = maxx = n->Connection[0].X;
 		miny = maxy = n->Connection[0].Y;
 		thegroup = n->Connection[0].group;
-		allpads = pstk_ispad(n->Connection[0].obj);
+		allpads = pstk_ispad((pcb_pstk_t *)n->Connection[0].obj);
 		allsameside = pcb_true;
 		for (j = 1; j < n->ConnectionN; j++) {
 			pcb_connection_t *c = &(n->Connection[j]);
@@ -369,7 +369,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_MAKE_MAX(maxx, c->X);
 			PCB_MAKE_MIN(miny, c->Y);
 			PCB_MAKE_MAX(maxy, c->Y);
-			if (!pstk_ispad(c->obj))
+			if (!pstk_ispad((pcb_pstk_t *)c->obj))
 				allpads = pcb_false;
 			if (c->group != thegroup)
 				allsameside = pcb_false;
