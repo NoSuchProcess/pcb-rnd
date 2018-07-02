@@ -434,11 +434,10 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Zoom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_coord_t x, y;
-	const char *vp;
+	const char *vp, *ovp;
 	double v;
 
 	pcb_hid_get_coords("Click on a place to zoom in", &x, &y);
@@ -455,7 +454,7 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		zoom_max();
 		return 0;
 	}
-	vp = argv[0];
+	PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
 	if (pcb_strcasecmp(vp, "toggle") == 0) {
 		zoom_toggle(x, y);
 		return 0;
@@ -467,7 +466,7 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_setlocale(LC_ALL, "");
 	if (v <= 0)
 		return 1;
-	switch (argv[0][0]) {
+	switch (ovp[0]) {
 	case '-':
 		zoom_by(1 / v, x, y);
 		break;
@@ -479,8 +478,8 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		zoom_to(v, x, y);
 		break;
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
