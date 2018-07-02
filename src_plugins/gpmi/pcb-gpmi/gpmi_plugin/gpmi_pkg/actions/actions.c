@@ -30,6 +30,34 @@ const char *action_arg(int argn)
 	return action_argv[argn];
 }
 
+/*** temporary hack for smooth upgrade to fungw based actions ***/
+PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
+{
+	int n;
+	for(n = 0; n < PCB_ACTION_MAX_ARGS; n++)
+		argv[n] = NULL;
+	for(n = 1; n < oargc; n++) {
+		if (fgw_arg_conv(&pcb_fgw, &oargv[n], FGW_STR) == 0)
+			argv[n-1] = oargv[n].val.str;
+		else
+			argv[n-1] = "";
+	}
+	argv[n] = NULL;
+	return oargc - 1;
+}
+
+#define PCB_OLD_ACT_BEGIN \
+ores->type = FGW_INT; \
+ores->val.nat_int = 0; \
+{ \
+	char *argv__[PCB_ACTION_MAX_ARGS]; \
+	const char **argv = (const char **)argv__; \
+	int argc = pcb_old_act_begin_conv(oargc, oargv, argv__)
+
+#define PCB_OLD_ACT_END \
+	(void)argc; \
+	(void)argv; \
+}
 
 static fgw_error_t pcb_act_action_cb(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {

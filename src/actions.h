@@ -148,35 +148,6 @@ do { \
 #define fgw_str2coord_unit_restore(saved) \
 	fgw_str2coord_unit = saved
 
-/*** temporary hack for smooth upgrade to fungw based actions ***/
-PCB_INLINE int pcb_old_act_begin_conv(int oargc, fgw_arg_t *oargv, char **argv)
-{
-	int n;
-	for(n = 0; n < PCB_ACTION_MAX_ARGS; n++)
-		argv[n] = NULL;
-	for(n = 1; n < oargc; n++) {
-		if (fgw_arg_conv(&pcb_fgw, &oargv[n], FGW_STR) == 0)
-			argv[n-1] = oargv[n].val.str;
-		else
-			argv[n-1] = "";
-	}
-	argv[n] = NULL;
-	return oargc - 1;
-}
-
-#define PCB_OLD_ACT_BEGIN \
-ores->type = FGW_INT; \
-ores->val.nat_int = 0; \
-{ \
-	char *argv__[PCB_ACTION_MAX_ARGS]; \
-	const char **argv = (const char **)argv__; \
-	int argc = pcb_old_act_begin_conv(oargc, oargv, argv__)
-
-#define PCB_OLD_ACT_END \
-	(void)argc; \
-	(void)argv; \
-}
-
 /* ---------------------------------------------------------------------------
  * Macros called by various action routines to show usage or to report
  * a syntax error and fail
