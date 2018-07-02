@@ -587,14 +587,15 @@ user's stdout.
 
 %end-doc */
 
-static fgw_error_t pcb_act_PromptFor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	char *rv = lesstif_prompt_for(argc > 0 ? argv[0] : 0,
-																argc > 1 ? argv[1] : 0);
-	printf("rv = `%s'\n", rv);
+	const char *a0 = NULL, *a1 = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, PromptFor, a0 = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, PromptFor, a1 = argv[2].val.str);
+
+	PCB_ACT_IRES(lesstif_prompt_for(a0, a1));
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
