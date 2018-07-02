@@ -35,7 +35,6 @@
 #include "conf_core.h"
 #include "board.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "draw.h"
 #include "data.h"
 #include "layer_vis.h"
@@ -238,7 +237,7 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 
 const char pcb_acts_zoom[] = "Zoom()\n" "Zoom(factor)\n" "Zoom(x1, y1, x2, y2)\n";
 
-const char pcb_acth_zoom[] = N_("Various zoom factor changes.");
+const char pcb_acth_zoom[] = "Various zoom factor changes.";
 
 /* %start-doc actions Zoom
 Changes the zoom (magnification) of the view of the board.  If no
@@ -354,7 +353,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv)
 /* ------------------------------------------------------------ */
 
 const char pcb_acts_center[] = "Center()\n";
-const char pcb_acth_center[] = N_("Moves the pointer to the center of the window.");
+const char pcb_acth_center[] = "Moves the pointer to the center of the window.";
 
 /* %start-doc actions Center
 
@@ -394,7 +393,7 @@ fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, f
 
 /* ---------------------------------------------------------------------- */
 const char pcb_acts_swapsides[] = "SwapSides(|v|h|r)";
-const char pcb_acth_swapsides[] = N_("Swaps the side of the board you're looking at.");
+const char pcb_acth_swapsides[] = "Swaps the side of the board you're looking at.";
 
 /* %start-doc actions SwapSides
 
@@ -484,7 +483,7 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv)
 
 /* ------------------------------------------------------------ */
 const char pcb_acts_scroll[] = "Scroll(up|down|left|right, [div])";
-const char pcb_acth_scroll[] = N_("Scroll the viewport.");
+const char pcb_acth_scroll[] = "Scroll the viewport.";
 
 /* % start-doc actions Scroll
 
@@ -529,7 +528,7 @@ fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, f
 
 /* ------------------------------------------------------------ */
 const char pcb_acts_pan[] = "Pan([thumb], Mode)";
-const char pcb_acth_pan[] = N_("Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n");
+const char pcb_acth_pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n";
 
 /* %start-doc actions Pan
 
@@ -551,7 +550,7 @@ fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_
 	}
 	else {
 		mode = atoi(argv[1]);
-		pcb_message(PCB_MSG_WARNING, _("The gtk gui currently ignores the optional first argument to the Pan action.\nFeel free to provide patches.\n"));
+		pcb_message(PCB_MSG_WARNING, "The gtk gui currently ignores the optional first argument to the Pan action.\nFeel free to provide patches.\n");
 	}
 
 	vw->panning = mode;
