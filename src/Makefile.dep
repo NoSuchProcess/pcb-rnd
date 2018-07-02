@@ -2898,14 +2898,14 @@
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer_grp.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h compat_nls.h plug_footprint.h vtlibrary.h compat_misc.h \
- board.h vtroutestyle.h library.h rats_patch.h board.h data.h crosshair.h \
+ list_conf.h plug_footprint.h vtlibrary.h compat_misc.h board.h \
+ vtroutestyle.h library.h rats_patch.h board.h data.h crosshair.h \
  vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/lib_gtk_common/dlg_file_chooser.h plug_io.h \
+ ../src_plugins/lib_gtk_common/dlg_file_chooser.h compat_nls.h plug_io.h \
  ../src_plugins/lib_gtk_common/util_str.h
 ../src_plugins/lib_gtk_common/act_print.o: \
  ../src_plugins/lib_gtk_common/act_print.c ../config.h \
@@ -3641,8 +3641,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h actions.h error.h \
  conf_core.h board.h vtroutestyle.h library.h rats_patch.h board.h \
- compat_misc.h compat_nls.h draw.h data.h crosshair.h vtonpoint.h route.h \
- buffer.h obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
+ compat_misc.h draw.h data.h crosshair.h vtonpoint.h route.h buffer.h \
+ obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
@@ -4716,8 +4716,9 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h misc_util.h \
- compat_misc.h obj_pstk_inlines.h data.h thermal.h search.h rats.h \
- netlist.h route_style.h find.h dolists.h
+ compat_misc.h obj_pstk_inlines.h data.h thermal.h funchash_core.h \
+ funchash.h funchash_core_list.h search.h rats.h netlist.h route_style.h \
+ find.h dolists.h
 ../src_plugins/query/basic_fnc.o: ../src_plugins/query/basic_fnc.c \
  ../config.h data.h globalconst.h global_typedefs.h pcb_bool.h unit.h \
  layer.h attrib.h obj_arc_list.h obj_common.h flag.h data_parent.h \
@@ -5146,7 +5147,8 @@
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
- compat_nls.h obj_subc.h obj_subc_parent.h data.h dolists.h
+ compat_nls.h obj_subc.h obj_subc_parent.h data.h funchash_core.h \
+ funchash.h funchash_core_list.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
  ../config.h board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
