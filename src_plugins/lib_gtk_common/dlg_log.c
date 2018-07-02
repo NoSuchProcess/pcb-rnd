@@ -171,10 +171,13 @@ static void ghid_log_append_string(enum pcb_message_level level, gchar *s, int h
 
 const char pcb_gtk_acts_logshowonappend[] = "LogShowOnAppend(true|false)";
 const char pcb_gtk_acth_logshowonappend[] = "If true, the log window will be shown whenever something is appended to it. If false, the log will still be updated, but the window won't be shown.";
-fgw_error_t pcb_gtk_act_logshowonappend(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_gtk_act_logshowonappend(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *a = argc == 1 ? argv[0] : "";
+	const char *a = "";
+	const char *pcb_acts_logshowonappend = pcb_gtk_acts_logshowonappend;
+	const char *pcb_acth_logshowonappend = pcb_gtk_acth_logshowonappend;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, logshowonappend, a = argv[1].val.str);
 
 	if (tolower(*a) == 't') {
 		log_show_on_append = TRUE;
@@ -182,8 +185,9 @@ fgw_error_t pcb_gtk_act_logshowonappend(fgw_arg_t *ores, int oargc, fgw_arg_t *o
 	else if (tolower(*a) == 'f') {
 		log_show_on_append = FALSE;
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 void pcb_gtk_dlg_log_show(pcb_bool raise)
