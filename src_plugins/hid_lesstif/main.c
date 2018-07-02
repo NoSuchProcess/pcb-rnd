@@ -510,7 +510,6 @@ Note that zoom factors of zero are silently ignored.
 static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x1, y1, x2, y2;
-	pcb_bool succ;
 
 	PCB_ACT_CONVARG(1, FGW_COORD, ZoomTo, x1 = fgw_coord(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_COORD, ZoomTo, y1 = fgw_coord(&argv[2]));
