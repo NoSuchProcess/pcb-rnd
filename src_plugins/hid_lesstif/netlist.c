@@ -373,16 +373,21 @@ static const char pcb_acth_LesstifNetlistShow[] = "Selects the given pinname or 
 
 %end-doc */
 
-static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (build_netlist_dialog())
-		return 0;
+		const char *nn;
 
-	if (argc == 1) {
+	if (build_netlist_dialog()) {
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+		PCB_ACT_CONVARG(1, FGW_STR, LesstifNetlistShow, nn = argv[1].val.str);
+
+	if (argc == 2) {
 		pcb_lib_menu_t *net;
 
-		net = pcb_netnode_to_netname(argv[0]);
+		net = pcb_netnode_to_netname(nn);
 		if (net) {
 			XmString item;
 			int vis = 0;
@@ -394,7 +399,7 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *ores, int oargc, fgw_ar
 			XmStringFree(item);
 
 			/* Now the netnode_list has the right contents */
-			item = XmStringCreatePCB(argv[0]);
+			item = XmStringCreatePCB(nn);
 			XmListSelectItem(netnode_list, item, False);
 
 			/*
@@ -413,7 +418,7 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *ores, int oargc, fgw_ar
 		}
 		else {
 			/* Try the argument as a netname */
-			net = pcb_netname_to_netname(argv[0]);
+			net = pcb_netname_to_netname(nn);
 			if (net) {
 				XmString item;
 
@@ -424,8 +429,8 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *ores, int oargc, fgw_ar
 			}
 		}
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 void lesstif_show_netlist()
