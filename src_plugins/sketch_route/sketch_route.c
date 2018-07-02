@@ -40,7 +40,7 @@ typedef struct {
 	cdt_t *cdt;
 } sketch_t;
 
-sketch_t sketch; /* TODO: should be created dynamically for each copper layer */
+static sketch_t sketch; /* TODO: should be created dynamically for each copper layer */
 
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
@@ -71,6 +71,7 @@ static void sketch_free(sketch_t *sk)
 	if (sk->cdt != NULL) {
 		cdt_free(sk->cdt);
 		free(sk->cdt);
+		sk->cdt = NULL;
 	}
 }
 
@@ -98,6 +99,7 @@ int pplg_check_ver_sketch_route(int ver_needed) { return 0; }
 void pplg_uninit_sketch_route(void)
 {
 	pcb_remove_actions_by_cookie(pcb_sketch_route_cookie);
+	sketch_free(&sketch);
 }
 
 
