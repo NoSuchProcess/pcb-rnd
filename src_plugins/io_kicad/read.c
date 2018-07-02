@@ -1133,7 +1133,7 @@ static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
 
 	if (pcb_strcasecmp(kicad_name, "Edge.Cuts") == 0) lyt |= PCB_LYT_OUTLINE;
 	else if (kicad_name[1] == '.') {
-		char *ln = kicad_name + 2;
+		const char *ln = kicad_name + 2;
 		if (pcb_strcasecmp(ln, "SilkS") == 0) lyt |= PCB_LYT_SILK;
 		else if (pcb_strcasecmp(ln, "Mask") == 0) lyt |= PCB_LYT_MASK;
 		else if (pcb_strcasecmp(ln, "Paste") == 0) lyt |= PCB_LYT_PASTE;

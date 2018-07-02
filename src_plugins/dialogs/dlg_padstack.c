@@ -174,7 +174,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	}
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str_value, s);
 
-	free(pse->attrs[pse->prname].default_val.str_value);
+	free((char *)pse->attrs[pse->prname].default_val.str_value);
 	pse->attrs[pse->prname].default_val.str_value = NULL;
 	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str_value, pcb_strdup(proto->name == NULL ? "" : proto->name));
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
@@ -785,7 +785,7 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		PCB_DAD_SET_VALUE(dlg_hid_ctx, pse.tab, int_value, target_tab);
 	PCB_DAD_RUN(dlg);
 
-	free(pse.attrs[pse.prname].default_val.str_value);
+	free((char *)pse.attrs[pse.prname].default_val.str_value);
 
 	PCB_DAD_FREE(dlg);
 	PCB_ACT_IRES(0);
