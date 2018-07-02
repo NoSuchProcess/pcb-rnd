@@ -10,4 +10,4 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *res, int argc, fg
 
 extern const char pcb_gtk_acts_importgui[];
 extern const char pcb_gtk_acth_importgui[];
-fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv);

@@ -271,9 +271,8 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *res, int argc, fg
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
 const char pcb_gtk_acth_importgui[] = "Asks user which schematics to import into PCB.\n";
-fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	char *name = NULL;
 	static gchar *current_layout_dir = NULL;
 	static int I_am_recursing = 0;
@@ -300,5 +299,4 @@ fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *ores, int oa
 	I_am_recursing = 0;
 
 	return rv;
-	PCB_OLD_ACT_END;
 }
