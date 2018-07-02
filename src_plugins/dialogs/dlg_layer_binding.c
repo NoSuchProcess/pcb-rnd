@@ -198,7 +198,7 @@ static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	memset(&ctx, 0, sizeof(ctx));
 	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, LayerBinding, op = fgw_keyword(&argv[1]));
 
-	if (op = F_Object) {
+	if (op == F_Object) {
 		pcb_coord_t x, y;
 		int type;
 		void *ptr1, *ptr2, *ptr3;
