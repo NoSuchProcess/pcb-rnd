@@ -1,0 +1,58 @@
+1. Action scripting
+~~~~~~~~~~~~~~~~~~~
+Action scripting is the builtin, non-turing-complete way of giving pcb-rnd
+commands. On the GUI it's usually the ':' key that pops up the command line.
+Most HIDs support the --listen argument that makes pcb-rnd also read commands
+on the stdin.
+
+The batch HID always reads commands on stdin (without --listen). Automated
+pcb-rnd runs from shell is possible using a script like:
+
+echo '
+	action1()
+	action2()
+	...
+' | pcb-rnd --gui batch
+
+
+2. Embedded scripting
+~~~~~~~~~~~~~~~~~~~~~
+pcb-rnd uses fungw for embedded scripting. This allows pcb-rnd to be
+scripted in 10+ turing complete scripting languages, including awk, tcl,
+python, perl, lua, some lisp dialects, etc. Embedded scripts run within
+pcb-rnd (in the same process, same addres space), having full access
+to the action infrastructure:
+ - embedded scripts can declare new actions that are accessible from
+   menu, from the command line and from other embedded scripts
+ - embedded scripts can execute actions (defined by pcb-rnd or other
+   embedded scripts)
+
+Requirements:
+ 1. download and install fungw - svn://repo.hu/pcb-rnd/fungw
+ 2. at the moment fungw must be installed as root, into /usr/local/ or /usr (TODO)
+    during configuration, make sure all relevant scripting languages are found
+ 3. reconfigure and recompile pcb-rnd so that it uses the system-installed
+    version of fungw instead of the local, no-script version
+ 4. later on if a new scripting language is required, reconfigure,
+    recompile and reinstall fungw - no pcb-rnd recompilation is needed as
+    long as the system-installed fungw version is not upgraded
+
+Usage
+
+ Run action
+
+  LoadScript(id, filename, language)
+
+ where id is an arbitrary text ID. The ID is used for referencing the script
+ once it is loaded. The filename should be a full path (CWD is pcb-rnd's
+ CWD). Language must be one of the languages configured in step 2 above.
+
+ Once the script is loaded, it is accessible by calling the actions it
+ registered using the standard fgw_func_reg() mechanism.
+
+ Scripts can be unloaded using the action
+
+  UnloadScript(id)
+
+
+
