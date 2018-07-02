@@ -311,11 +311,13 @@ static const char pcb_acth_AdjustStyle[] = "Displays the route style adjustment 
 
 %end-doc */
 
-static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if ((!mainwind) || (PCB->RouteStyle.array == NULL))
-		return 1;
+	if ((!mainwind) || (PCB->RouteStyle.array == NULL)) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
 	if (style_dialog == 0) {
 		int i;
 
@@ -372,8 +374,8 @@ static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 		update_style_buttons();
 	}
 	XtManageChild(style_dialog);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
