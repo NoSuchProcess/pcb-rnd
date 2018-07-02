@@ -216,14 +216,17 @@ Open the advanced search window.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DoWindows(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *a = argc >= 1 ? argv[0] : "";
+	const char *a = "", *b = NULL, *c = NULL;
 	gboolean raise = TRUE;
 
-	if (argc >= 2) {
-		char c = tolower((argv[1])[0]);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, DoWindows, b = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, DoWindows, c = argv[3].val.str);
+
+	if (b != NULL) {
+		char c = tolower(b[0]);
 		if ((c == 'n') || (c == 'f') || (c == '0'))
 			raise = FALSE;
 	}
@@ -242,8 +245,8 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		pcb_gtk_config_window_show(&ghidgui->common, raise);
 		/* The 3rd argument will be the path (as a text string, not numbers) to select, once dialog is opened */
-		if (argc >= 3) {
-			pcb_gtk_config_set_cursor(argv[2]);
+		if (c != NULL) {
+			pcb_gtk_config_set_cursor(c);
 		}
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
@@ -256,8 +259,8 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		PCB_ACT_FAIL(DoWindows);
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
