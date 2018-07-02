@@ -19,12 +19,14 @@ typedef edge_t* edge_ptr_t;
 /* List */
 #define LST(x) edgelist_ ## x
 #define LST_ITEM_T edge_ptr_t
+#define LST_DONT_TYPEDEF_NODE
 
 #include "list/list.h"
 
 #ifndef LST_DONT_UNDEF
 	#undef LST
 	#undef LST_ITEM_T
+	#undef LST_DONT_TYPEDEF_NODE
 #endif
 
 #define EDGELIST_FOREACH(_loop_item_, _list_) do { \

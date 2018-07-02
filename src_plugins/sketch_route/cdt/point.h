@@ -17,13 +17,15 @@ typedef point_t* point_ptr_t;
 
 /* List */
 #define LST(x) pointlist_ ## x
-#define LST_ITEM_T point_t*
+#define LST_ITEM_T point_ptr_t
+#define LST_DONT_TYPEDEF_NODE
 
 #include "list/list.h"
 
 #ifndef LST_DONT_UNDEF
 	#undef LST
 	#undef LST_ITEM_T
+	#undef LST_DONT_TYPEDEF_NODE
 #endif
 
 #define POINTLIST_FOREACH(_loop_item_, _list_) do { \
