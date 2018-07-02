@@ -358,7 +358,7 @@ static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* ------------------------------------------------------------ */
 static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_ACT_IRES(pcb_gtk_zoom(&gport->view, argc, argv));
+	PCB_ACT_IRES(pcb_gtk_act_zoom(&gport->view, res, argc, argv));
 	return 0;
 }
 

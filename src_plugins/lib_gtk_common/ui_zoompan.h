@@ -93,7 +93,7 @@ pcb_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int even
 
 extern const char pcb_acts_zoom[];
 extern const char pcb_acth_zoom[];
-int pcb_gtk_zoom(pcb_gtk_view_t *v, int argc, const char **argv);
+fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *v, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 extern const char pcb_acts_center[];
 extern const char pcb_acth_center[];

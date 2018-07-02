@@ -283,45 +283,34 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv)
+fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *vp;
 	double v;
 	pcb_coord_t x, y;
 
-	if (argc < 1) {
+	if (argc < 2) {
 		pcb_gtk_zoom_view_fit(vw);
 		return 0;
 	}
 
-	if (argc == 4) {
+	if (argc == 5) {
 		pcb_coord_t x1, y1, x2, y2;
-		pcb_bool succ;
 
-		x1 = pcb_get_value(argv[0], NULL, NULL, &succ);
-		if (!succ)
-			PCB_ACT_FAIL(zoom);
-
-		y1 = pcb_get_value(argv[1], NULL, NULL, &succ);
-		if (!succ)
-			PCB_ACT_FAIL(zoom);
-
-		x2 = pcb_get_value(argv[2], NULL, NULL, &succ);
-		if (!succ)
-			PCB_ACT_FAIL(zoom);
-
-		y2 = pcb_get_value(argv[3], NULL, NULL, &succ);
-		if (!succ)
-			PCB_ACT_FAIL(zoom);
+		PCB_ACT_CONVARG(1, FGW_COORD, zoom, x1 = fgw_coord(&argv[1]));
+		PCB_ACT_CONVARG(2, FGW_COORD, zoom, y1 = fgw_coord(&argv[2]));
+		PCB_ACT_CONVARG(3, FGW_COORD, zoom, x2 = fgw_coord(&argv[3]));
+		PCB_ACT_CONVARG(4, FGW_COORD, zoom, y2 = fgw_coord(&argv[4]));
 
 		pcb_gtk_zoom_view_win_side(vw, x1, y1, x2, y2);
 		return 0;
 	}
 
-	if (argc > 1)
+	if (argc > 2)
 		PCB_ACT_FAIL(zoom);
 
-	vp = argv[0];
+	PCB_ACT_CONVARG(1, FGW_STR, zoom, vp = argv[1].val.str);
+
 	if (*vp == '?') {
 		pcb_message(PCB_MSG_INFO, "Current gtk zoom level: %f\n", vw->coord_per_px);
 		return 0;
@@ -334,7 +323,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv)
 		return 1;
 
 	pcb_hid_get_coords("Select zoom center", &x, &y);
-	switch (argv[0][0]) {
+	switch (vp[0]) {
 	case '-':
 		pcb_gtk_zoom_view_rel(vw, x, y, 1 / v);
 		break;
@@ -347,6 +336,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv)
 		break;
 	}
 
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
