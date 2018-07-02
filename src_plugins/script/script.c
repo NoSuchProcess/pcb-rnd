@@ -32,17 +32,29 @@
 #include <stdlib.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <puplug/puplug.h>
 
 #include "actions.h"
 #include "plugins.h"
 #include "error.h"
 #include "compat_misc.h"
+#include "pcb-printf.h"
+#include "globalconst.h"
 
 typedef struct {
 	char *id, *fn, *lang;
+	pup_plugin_t lib;
 } script_t;
 
-htsp_t scripts; /* ID->script_t */
+static htsp_t scripts; /* ID->script_t */
+
+static pup_context_t script_pup;
+
+static const char *script_pup_paths[] = {
+	"/usr/local/lib/puplug",
+	"/usr/lib/puplug",
+	NULL
+};
 
 static void script_unload_entry(htsp_entry_t *e)
 {
@@ -65,6 +77,7 @@ static int script_unload(const char *id)
 
 static int script_load(const char *id, const char *fn, const char *lang)
 {
+	char name[PCB_PATH_MAX];
 	script_t *s;
 	if (htsp_has(&scripts, id)) {
 		pcb_message(PCB_MSG_ERROR, "Can not load script %s from file %s: ID already in use\n", id, fn);
@@ -77,7 +90,16 @@ static int script_load(const char *id, const char *fn, const char *lang)
 		return -1;
 	}
 
+	pcb_snprintf(name, sizeof(name), "fungw_%s.pup", lang);
+
 	s = calloc(1, sizeof(s));
+
+	if (pup_load_pup_file(&script_pup, script_pup_paths, &s->lib, name) != 0) {
+		free(s);
+		pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
+		return -1;
+	}
+
 	s->id = pcb_strdup(id);
 	s->fn = pcb_strdup(fn);
 	s->lang = pcb_strdup(lang);
@@ -111,6 +133,7 @@ void pplg_uninit_script(void)
 		script_unload_entry(e);
 
 	htsp_uninit(&scripts);
+	pup_uninit(&script_pup);
 }
 
 #include "dolists.h"
@@ -119,5 +142,7 @@ int pplg_init_script(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(script_action_list, script_cookie);
 	htsp_init(&scripts, strhash, strkeyeq);
+	pup_init(&script_pup);
+
 	return 0;
 }
