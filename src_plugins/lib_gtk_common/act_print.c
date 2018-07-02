@@ -43,9 +43,8 @@
 
 const char pcb_gtk_acts_print[] = "Print()";
 const char pcb_gtk_acth_print[] = N_("Print the layout.");
-fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_hid_t **hids;
 	int i;
 	pcb_hid_t *printer = NULL;
@@ -58,7 +57,8 @@ fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *ores, int oargc,
 
 	if (printer == NULL) {
 		pcb_gui->log(_("Can't find a suitable printer HID"));
-		return -1;
+		PCB_ACT_IRES(-1);
+		return 0;
 	}
 
 	/* check if layout is empty */
@@ -68,7 +68,7 @@ fgw_error_t pcb_gtk_act_print(GtkWidget *top_window, fgw_arg_t *ores, int oargc,
 	else
 		pcb_gui->log(_("Can't print empty layout"));
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
