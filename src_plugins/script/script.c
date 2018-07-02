@@ -43,7 +43,7 @@
 
 typedef struct {
 	char *id, *fn, *lang;
-	pup_plugin_t lib;
+	pup_plugin_t *pup;
 } script_t;
 
 static htsp_t scripts; /* ID->script_t */
@@ -59,6 +59,7 @@ static const char *script_pup_paths[] = {
 static void script_unload_entry(htsp_entry_t *e)
 {
 	script_t *s = (script_t *)e->value;
+	pup_unload(&script_pup, s->pup, NULL);
 	free(s->id);
 	free(s->fn);
 	free(s);
@@ -78,7 +79,10 @@ static int script_unload(const char *id)
 static int script_load(const char *id, const char *fn, const char *lang)
 {
 	char name[PCB_PATH_MAX];
+	pup_plugin_t *pup;
 	script_t *s;
+	int st;
+
 	if (htsp_has(&scripts, id)) {
 		pcb_message(PCB_MSG_ERROR, "Can not load script %s from file %s: ID already in use\n", id, fn);
 		return -1;
@@ -90,16 +94,18 @@ static int script_load(const char *id, const char *fn, const char *lang)
 		return -1;
 	}
 
-	pcb_snprintf(name, sizeof(name), "fungw_%s.pup", lang);
+	pcb_snprintf(name, sizeof(name), "fungw_%s", lang);
 
-	s = calloc(1, sizeof(s));
 
-	if (pup_load_pup_file(&script_pup, script_pup_paths, &s->lib, name) != 0) {
-		free(s);
+
+	pup = pup_load(&script_pup, script_pup_paths, name, 0, &st);
+	if (pup == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
 		return -1;
 	}
 
+	s = calloc(1, sizeof(script_t));
+	s->pup = pup;
 	s->id = pcb_strdup(id);
 	s->fn = pcb_strdup(fn);
 	s->lang = pcb_strdup(lang);
