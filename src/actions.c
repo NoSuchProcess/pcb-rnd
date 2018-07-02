@@ -648,7 +648,7 @@ static int coords_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 
 static int coords_arg_free(fgw_ctx_t *ctx, fgw_arg_t *arg)
 {
-	assert(arg->type == FGW_COORDS | FGW_DYN);
+	assert(arg->type == (FGW_COORDS | FGW_DYN));
 	free(arg->val.ptr_void);
 	return 0;
 }
