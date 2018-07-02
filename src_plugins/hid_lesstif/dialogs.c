@@ -168,58 +168,6 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_LoadVendor[] = "LoadVendor()";
-
-static const char pcb_acth_LoadVendor[] = "Loads a user-selected vendor resource file.";
-
-/* %start-doc actions LoadVendor
-
-The user is prompted for a file to load, and then
-@code{LoadVendorFrom} is called (@pxref{LoadVendorFrom Action}) to
-load that vendor file.
-
-%end-doc */
-extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
-static fgw_error_t pcb_act_LoadVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
-{
-	PCB_OLD_ACT_BEGIN;
-	char *name;
-	XmString xmname, pattern;
-
-	if (argc > 0)
-		return pcb_actionv("LoadVendorFrom", argc, argv);
-
-	setup_fsb_dialog();
-
-	pattern = xms_vend;
-
-	stdarg_n = 0;
-	stdarg(XmNtitle, "Load Vendor");
-	XtSetValues(XtParent(fsb), stdarg_args, stdarg_n);
-
-	stdarg_n = 0;
-	stdarg(XmNpattern, pattern);
-	stdarg(XmNmustMatch, True);
-	stdarg(XmNselectionLabelString, xms_loadv);
-	XtSetValues(fsb, stdarg_args, stdarg_n);
-
-	if (!wait_for_dialog(fsb))
-		return 1;
-
-	stdarg_n = 0;
-	stdarg(XmNdirSpec, &xmname);
-	XtGetValues(fsb, stdarg_args, stdarg_n);
-
-	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
-
-	pcb_actionl("LoadVendorFrom", name, NULL);
-
-	XtFree(name);
-
-	return 0;
-	PCB_OLD_ACT_END;
-}
-
 static const char pcb_acts_Save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
 
 static const char pcb_acth_Save[] = "Save layout data to a user-selected file.";
@@ -2088,7 +2036,6 @@ static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 pcb_action_t lesstif_dialog_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
-	{"LoadVendor", pcb_act_LoadVendor, pcb_acth_LoadVendor, pcb_acts_LoadVendor},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
