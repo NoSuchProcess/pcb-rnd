@@ -62,7 +62,7 @@ static const char pcb_acth_load[] = "TODO";
 extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *function;
+	const char *function = "Layout";
 	char *name = NULL;
 
 	static gchar *current_element_dir = NULL;
