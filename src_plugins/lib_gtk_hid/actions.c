@@ -381,20 +381,18 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return e;
 }
 
-static fgw_error_t pcb_act_SwapSides(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	int res, oa;
+	int rv, oa;
 
 	/* ugly workaround: turn off gui refreshes until the swap finishes to avoid triggering more events that may lead to infinite loop */
 	oa = ghidgui->hid_active;
 	ghidgui->hid_active = 0;
 
-	res = pcb_gtk_swap_sides(&gport->view, argc, argv);
+	rv = pcb_gtk_swap_sides(&gport->view, res, argc, argv);
 
 	ghidgui->hid_active = oa;
-	return res;
-	PCB_OLD_ACT_END;
+	return rv;
 }
 
 static fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)

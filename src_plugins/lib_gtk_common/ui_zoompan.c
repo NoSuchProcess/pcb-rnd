@@ -418,7 +418,7 @@ side'' of the board.
 %end-doc */
 
 
-int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv)
+fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
@@ -431,8 +431,10 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv)
 		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->meta.real.vis;
 
 	pcb_draw_inhibit_inc();
-	if (argc > 0) {
-		switch (argv[0][0]) {
+	if (argc > 1) {
+		const char *a;
+		PCB_ACT_CONVARG(1, FGW_STR, swapsides, a = argv[1].val.str);
+		switch (a[0]) {
 		case 'h':
 		case 'H':
 			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_false);
@@ -467,6 +469,7 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv)
 
 	vw->com->invalidate_all();
 
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
