@@ -529,10 +529,10 @@ fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_ar
 
 	switch(argc) {
 		case 2:
-			PCB_ACT_CONVARG(1, FGW_INT, pan, mode = argv[1].val.str);
+			PCB_ACT_CONVARG(1, FGW_INT, pan, mode = argv[1].val.nat_int);
 			break;
 		case 3:
-			PCB_ACT_CONVARG(2, FGW_INT, pan, mode = argv[2].val.str);
+			PCB_ACT_CONVARG(2, FGW_INT, pan, mode = argv[2].val.nat_int);
 			pcb_message(PCB_MSG_WARNING, "The gtk gui currently ignores the optional first argument to the Pan action.\nFeel free to provide patches.\n");
 			PCB_ACT_IRES(1);
 			return 0;
