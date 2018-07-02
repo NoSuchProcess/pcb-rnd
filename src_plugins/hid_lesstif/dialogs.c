@@ -1288,10 +1288,10 @@ Open the netlist window.
 
 %end-doc */
 
-static fgw_error_t pcb_act_DoWindows(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *a = argc == 1 ? argv[0] : "";
+	const char *a = "";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
@@ -1306,11 +1306,12 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		lesstif_show_netlist();
 	}
 	else {
-		lesstif_log("Usage: DoWindows(1|2|3|4|Layout|Library|Log|Netlist)");
+		PCB_ACT_FAIL(DoWindows);
+		PCB_ACT_IRES(1);
 		return 1;
 	}
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
