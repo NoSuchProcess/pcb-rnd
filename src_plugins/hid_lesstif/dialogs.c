@@ -1675,14 +1675,15 @@ static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *
 static const char pcb_acts_fontsel[] = "EditLayerGroups()";
 static const char pcb_acth_fontsel[] = "Let the user change fonts";
 extern void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type);
-static fgw_error_t pcb_act_fontsel(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc > 1)
+	if (argc > 2)
 		PCB_ACT_FAIL(fontsel);
 
-	if (argc > 0) {
-		if (pcb_strcasecmp(argv[0], "Object") == 0) {
+	if (argc > 1) {
+		const char *op;
+		PCB_ACT_CONVARG(1, FGW_STR, fontsel, op = argv[1].val.str);
+		if (pcb_strcasecmp(op, "Object") == 0) {
 			pcb_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
@@ -1697,8 +1698,8 @@ static fgw_error_t pcb_act_fontsel(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 	else
 		lesstif_show_fontsel_edit(NULL, NULL, 0);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
