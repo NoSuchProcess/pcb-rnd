@@ -356,11 +356,10 @@ static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 /* ------------------------------------------------------------ */
-static fgw_error_t pcb_act_Zoom(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	return pcb_gtk_zoom(&gport->view, argc, argv);
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(pcb_gtk_zoom(&gport->view, argc, argv));
+	return 0;
 }
 
 static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
