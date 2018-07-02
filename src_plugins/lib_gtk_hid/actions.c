@@ -82,14 +82,16 @@ static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 static const char pcb_acts_fontsel[] = "FontSel()\n";
 static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
-static fgw_error_t pcb_act_fontsel(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	if (argc > 1)
+	const char *op = NULL;
+	if (argc > 2)
 		PCB_ACT_FAIL(fontsel);
 
-	if (argc > 0) {
-		if (pcb_strcasecmp(argv[0], "Object") == 0) {
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, fontsel, op = argv[1].val.str);
+
+	if (op != NULL) {
+		if (pcb_strcasecmp(op, "Object") == 0) {
 			pcb_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
@@ -104,8 +106,9 @@ static fgw_error_t pcb_act_fontsel(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 	else
 		pcb_gtk_dlg_fontsel(&ghidgui->common, NULL, NULL, 0, 0);
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
