@@ -37,8 +37,6 @@
 #include "macro.h"
 #include "compat_misc.h"
 
-#define ARG(n) (argc > (n) ? argv[n] : 0)
-
 enum {
 	K_X,
 	K_Y,
@@ -272,9 +270,9 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  *
  * Defaults are Lefts/Tops, First */
 static const char pcb_acts_aligntext[] = "AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
-static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_aligntext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *a0, *a1, *a2, *a3;
 	int dir;
 	int point;
 	int reference;
@@ -283,11 +281,17 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	pcb_coord_t p, dp, dx, dy;
 	int changed = 0;
 
-	if (argc < 1 || argc > 4) {
+	if (argc < 2 || argc > 5) {
 		PCB_ACT_FAIL(aligntext);
 	}
+
+	PCB_ACT_CONVARG(1, FGW_STR, aligntext, a0 = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, aligntext, a1 = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, aligntext, a2 = argv[3].val.str);
+	PCB_ACT_CONVARG(4, FGW_STR, aligntext, a3 = argv[4].val.str);
+
 	/* parse direction arg */
-	switch ((dir = keyword(ARG(0)))) {
+	switch ((dir = keyword(a0))) {
 	case K_X:
 	case K_Y:
 		break;
@@ -295,7 +299,7 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		PCB_ACT_FAIL(aligntext);
 	}
 	/* parse point (within each element) which will be aligned */
-	switch ((point = keyword(ARG(1)))) {
+	switch ((point = keyword(a1))) {
 	case K_Centers:
 		break;
 	case K_Lefts:
@@ -322,7 +326,7 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		PCB_ACT_FAIL(aligntext);
 	}
 	/* parse reference which will determine alignment coordinates */
-	switch ((reference = keyword(ARG(2)))) {
+	switch ((reference = keyword(a2))) {
 	case K_First:
 	case K_Last:
 	case K_Average:
@@ -335,7 +339,7 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		PCB_ACT_FAIL(aligntext);
 	}
 	/* optionally work off the grid (solar cells!) */
-	switch (keyword(ARG(3))) {
+	switch (keyword(a3)) {
 	case K_Gridless:
 		gridless = 1;
 		break;
@@ -414,8 +418,8 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		pcb_board_set_changed_flag(pcb_true);
 	}
 	free_texts_by_pos();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
@@ -431,9 +435,9 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
    Distributed texts always retain the same relative order they had
    before they were distributed. */
 static const char pcb_acts_distributetext[] = "DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
-static fgw_error_t pcb_act_distributetext(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_distributetext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *a0, *a1, *a2 = NULL, *a3 = NULL, *a4 = NULL;
 	int dir;
 	int point;
 	int refa, refb;
@@ -443,19 +447,28 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *ores, int oargc, fgw_arg_t 
 	int changed = 0;
 	int i;
 
-	if (argc < 1 || argc == 3 || argc > 4) {
+	if (argc < 2 || argc == 4 || argc > 5) {
 		PCB_ACT_FAIL(distributetext);
 	}
+
+	PCB_ACT_CONVARG(1, FGW_STR, distributetext, a0 = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, distributetext, a1 = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, distributetext, a2 = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, distributetext, a3 = argv[4].val.str);
+	PCB_ACT_MAY_CONVARG(5, FGW_STR, distributetext, a4 = argv[5].val.str);
+
 	/* parse direction arg */
-	switch ((dir = keyword(ARG(0)))) {
+	switch ((dir = keyword(a0))) {
 	case K_X:
 	case K_Y:
 		break;
 	default:
 		PCB_ACT_FAIL(distributetext);
 	}
+
+
 	/* parse point (within each element) which will be distributed */
-	switch ((point = keyword(ARG(1)))) {
+	switch ((point = keyword(a1))) {
 	case K_Centers:
 	case K_Gaps:
 		break;
@@ -483,7 +496,7 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *ores, int oargc, fgw_arg_t 
 		PCB_ACT_FAIL(distributetext);
 	}
 	/* parse reference which will determine first distribution coordinate */
-	switch ((refa = keyword(ARG(2)))) {
+	switch ((refa = keyword(a2))) {
 	case K_First:
 	case K_Last:
 	case K_Average:
@@ -496,7 +509,7 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *ores, int oargc, fgw_arg_t 
 		PCB_ACT_FAIL(distributetext);
 	}
 	/* parse reference which will determine final distribution coordinate */
-	switch ((refb = keyword(ARG(3)))) {
+	switch ((refb = keyword(a3))) {
 	case K_First:
 	case K_Last:
 	case K_Average:
@@ -512,7 +525,7 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *ores, int oargc, fgw_arg_t 
 		PCB_ACT_FAIL(distributetext);
 	}
 	/* optionally work off the grid (solar cells!) */
-	switch (keyword(ARG(4))) {
+	switch (keyword(a4)) {
 	case K_Gridless:
 		gridless = 1;
 		break;
@@ -595,8 +608,8 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *ores, int oargc, fgw_arg_t 
 		pcb_board_set_changed_flag(pcb_true);
 	}
 	free_texts_by_pos();
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static pcb_action_t distaligntext_action_list[] = {
