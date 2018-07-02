@@ -23,6 +23,6 @@ fgw_error_t pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, fgw_arg_t *ores, int 
 
 extern const char pcb_gtk_acts_netlistpresent[];
 extern const char pcb_gtk_acth_netlistpresent[];
-fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 #endif /* PCB_GTK_DLG_NETLIST_H */

@@ -927,10 +927,9 @@ fgw_error_t pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, fgw_arg_t *ores, int 
 
 const char pcb_gtk_acts_netlistpresent[] = "NetlistPresent()";
 const char pcb_gtk_acth_netlistpresent[] = "Presents the netlist window.";
-fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_gtk_dlg_netlist_show(com, TRUE);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
