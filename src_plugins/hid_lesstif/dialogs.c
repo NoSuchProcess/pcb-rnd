@@ -2012,9 +2012,8 @@ future imports.
 
 %end-doc */
 
-static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	static int I_am_recursing = 0;
 	static XmString xms_sch = 0, xms_import = 0;
 	int rv;
@@ -2080,8 +2079,8 @@ static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	rv = pcb_action("Import");
 	I_am_recursing = 0;
 
-	return rv;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(rv);
+	return 0;
 }
 
 /* ------------------------------------------------------------ */
