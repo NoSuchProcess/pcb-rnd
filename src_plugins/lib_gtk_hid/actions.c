@@ -276,26 +276,27 @@ This just pops up the specified menu.  The menu must have been defined
 in the popups subtree in the menu lht file.
 
 %end-doc */
-static fgw_error_t pcb_act_Popup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	GtkWidget *menu = NULL;
 	char name[256];
-	const char *tn = NULL;
-
+	const char *tn = NULL, *a0, *a1 = NULL;
 	enum {
 		CTX_NONE,
 		CTX_OBJ_TYPE
 	} ctx_sens = CTX_NONE;
 
-	if (argc != 1 && argc != 2)
+	if (argc != 2 && argc != 3)
 		PCB_ACT_FAIL(Popup);
 
-	if (argc == 2) {
-		if (strcmp(argv[1], "obj-type") == 0) ctx_sens = CTX_OBJ_TYPE;
+	PCB_ACT_CONVARG(1, FGW_STR, Popup, a0 = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Popup, a1 = argv[2].val.str);
+
+	if (argc == 3) {
+		if (strcmp(a1, "obj-type") == 0) ctx_sens = CTX_OBJ_TYPE;
 	}
 
-	if (strlen(argv[0]) < sizeof(name) - 32) {
+	if (strlen(a0) < sizeof(name) - 32) {
 		lht_node_t *menu_node;
 		switch(ctx_sens) {
 			case CTX_OBJ_TYPE:
@@ -311,17 +312,17 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 					else
 						tn = pcb_obj_type_name(type);
 
-					sprintf(name, "/popups/%s-%s", argv[0], tn);
+					sprintf(name, "/popups/%s-%s", a0, tn);
 					menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
 
 					if (menu_node == NULL) {
-						sprintf(name, "/popups/%s-misc", argv[0]);
+						sprintf(name, "/popups/%s-misc", a0);
 						menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
 					}
 				}
 				break;
 			case CTX_NONE:
-				sprintf(name, "/popups/%s", argv[0]);
+				sprintf(name, "/popups/%s", a0);
 				menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
 				break;
 				
@@ -331,16 +332,18 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 
 	if (!GTK_IS_MENU(menu)) {
-		pcb_message(PCB_MSG_ERROR, _("The specified popup menu \"%s\" (context: '%s') has not been defined.\n"), argv[0], (tn == NULL ? "" : tn));
-		return 1;
+		pcb_message(PCB_MSG_ERROR, _("The specified popup menu \"%s\" (context: '%s') has not been defined.\n"), a0, (tn == NULL ? "" : tn));
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	else {
 		ghidgui->topwin.in_popup = TRUE;
 		gtk_widget_grab_focus(ghid_port.drawing_area);
 		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
 	}
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
