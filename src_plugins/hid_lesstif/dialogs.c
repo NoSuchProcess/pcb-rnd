@@ -1358,9 +1358,8 @@ options, and print the layout.
 
 %end-doc */
 
-static fgw_error_t pcb_act_Print(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer;
 	pcb_hid_attr_val_t *vals;
@@ -1369,18 +1368,20 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	printer = pcb_hid_find_printer();
 	if (!printer) {
 		lesstif_confirm_dialog("No printer?", "Oh well", 0);
-		return 1;
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 	opts = printer->get_export_options(&n);
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
 	if (lesstif_attribute_dialog(opts, n, vals, "Print", "", NULL)) {
 		free(vals);
+		PCB_ACT_IRES(1);
 		return 1;
 	}
 	printer->do_export(vals);
 	free(vals);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_ExportGUI[] = "ExportGUI()";
