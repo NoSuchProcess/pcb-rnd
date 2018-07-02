@@ -49,6 +49,7 @@ typedef point_t* point_ptr_t;
 #define GVT_SET_NEW_BYTES_TO 0
 #define GVT_ELEM_CONSTRUCTOR
 #define GVT_ELEM_DESTRUCTOR
+#define GVT_ELEM_COPY
 
 #include <genvector/genvector_impl.h>
 #define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)

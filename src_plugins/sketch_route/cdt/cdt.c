@@ -244,15 +244,18 @@ static void init_bbox(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox
 
 void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coord_t bbox_y2)
 {
-	vtpoint_init(&cdt->points);
 	cdt->points.elem_constructor = vtpoint_constructor;
 	cdt->points.elem_destructor = vtpoint_destructor;
-	vtedge_init(&cdt->edges);
+	cdt->points.elem_copy = NULL;
+	vtpoint_init(&cdt->points);
 	cdt->edges.elem_constructor = vtedge_constructor;
 	cdt->edges.elem_destructor = vtedge_destructor;
-	vttriangle_init(&cdt->triangles);
+	cdt->edges.elem_copy = NULL;
+	vtedge_init(&cdt->edges);
 	cdt->triangles.elem_constructor = vttriangle_constructor;
 	cdt->triangles.elem_destructor = vttriangle_destructor;
+	cdt->triangles.elem_copy = NULL;
+	vttriangle_init(&cdt->triangles);
 
 	init_bbox(cdt, bbox_x1, bbox_y1, bbox_x2, bbox_y2);
 }
