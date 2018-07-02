@@ -345,15 +345,13 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 /* ------------------------------------------------------------ */
 static const char pcb_acts_SaveWinGeo[] = "SaveWindowGeometry()";
-
 static const char pcb_acth_SaveWinGeo[] = N_("Saves window geometry in the config.\n");
 
-static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	ghid_wgeo_save(1, 0);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 
