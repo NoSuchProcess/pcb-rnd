@@ -30,15 +30,71 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 
 #include "actions.h"
 #include "plugins.h"
+#include "error.h"
+#include "compat_misc.h"
+
+typedef struct {
+	char *id, *fn, *lang;
+} script_t;
+
+htsp_t scripts; /* ID->script_t */
+
+static void script_unload_entry(htsp_entry_t *e)
+{
+	script_t *s = (script_t *)e->value;
+	free(s->id);
+	free(s->fn);
+	free(s);
+	e->key = NULL;
+	htsp_delentry(&scripts, e);
+}
+
+static int script_unload(const char *id)
+{
+	htsp_entry_t *e = htsp_getentry(&scripts, id);
+	if (e == NULL)
+		return -1;
+	script_unload_entry(e);
+	return 0;
+}
+
+static int script_load(const char *id, const char *fn, const char *lang)
+{
+	script_t *s;
+	if (htsp_has(&scripts, id)) {
+		pcb_message(PCB_MSG_ERROR, "Can not load script %s from file %s: ID already in use\n", id, fn);
+		return -1;
+	}
+
+	if (lang == NULL) {
+#warning TODO: guess
+		pcb_message(PCB_MSG_ERROR, "Can not load script %s from file %s: failed to guess language from file name\n", id, fn);
+		return -1;
+	}
+
+	s = calloc(1, sizeof(s));
+	s->id = pcb_strdup(id);
+	s->fn = pcb_strdup(fn);
+	s->lang = pcb_strdup(lang);
+	htsp_set(&scripts, s->id, s);
+	return 0;
+}
 
 static const char pcb_acth_LoadScript[] = "Load a fungw script";
-static const char pcb_acts_LoadScript[] = "LoadScript(filename, [id], [language])";
+static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])";
 static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_ACT_IRES(0);
+	const char *id, *fn, *lang = NULL;
+	PCB_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
+
+	PCB_ACT_IRES(script_load(id, fn, lang));
 	return 0;
 }
 
@@ -54,7 +110,12 @@ int pplg_check_ver_script(int ver_needed) { return 0; }
 
 void pplg_uninit_script(void)
 {
+	htsp_entry_t *e;
 	pcb_remove_actions_by_cookie(script_cookie);
+	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e))
+		script_unload_entry(e);
+
+	htsp_uninit(&scripts);
 }
 
 #include "dolists.h"
@@ -62,5 +123,6 @@ int pplg_init_script(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(script_action_list, script_cookie);
+	htsp_init(&scripts, strhash, strkeyeq);
 	return 0;
 }
