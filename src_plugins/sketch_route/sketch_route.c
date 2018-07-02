@@ -32,16 +32,16 @@
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
-static const char pcb_acts_skroute[] = "skroute(TODO)";
-static const char pcb_acth_skroute[] = "TODO";
-fgw_error_t pcb_act_skroute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acts_skretriangulate[] = "skretriangulate()";
+static const char pcb_acth_skretriangulate[] = "Construct a new CDT on the current layer";
+fgw_error_t pcb_act_skretriangulate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_ACT_IRES(0);
 	return 0;
 }
 
 pcb_action_t sketch_route_action_list[] = {
-	{"skroute", pcb_act_skroute, pcb_acth_skroute, pcb_acts_skroute}
+	{"skretriangulate", pcb_act_skretriangulate, pcb_acth_skretriangulate, pcb_acts_skretriangulate}
 };
 
 PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
