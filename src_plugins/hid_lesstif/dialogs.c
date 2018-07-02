@@ -1569,9 +1569,8 @@ The units are determined by the default display units.
 
 %end-doc */
 
-static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	if (!sizes_dialog) {
 		Widget inf, sep;
 
@@ -1637,8 +1636,8 @@ static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *ores, int oargc, fgw_arg_t *oa
 	}
 	lesstif_sizes_reset();
 	XtManageChild(sizes_dialog);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
