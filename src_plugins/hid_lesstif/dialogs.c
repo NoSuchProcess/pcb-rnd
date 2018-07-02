@@ -118,18 +118,17 @@ user is prompted for a filename to load, and then @code{LoadFrom} is
 called with that filename.
 
 %end-doc */
-
-static fgw_error_t pcb_act_Load(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function;
+	const char *function = "Layout";
 	char *name;
 	XmString xmname, pattern;
 
-	if (argc > 1)
-		return pcb_actionv("LoadFrom", argc, argv);
+	if (argc > 2)
+		return PCB_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
 
-	function = argc ? argv[0] : "Layout";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
 	setup_fsb_dialog();
 
@@ -150,8 +149,10 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	stdarg(XmNselectionLabelString, xms_load);
 	XtSetValues(fsb, stdarg_args, stdarg_n);
 
-	if (!wait_for_dialog(fsb))
-		return 1;
+	if (!wait_for_dialog(fsb)) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
 
 	stdarg_n = 0;
 	stdarg(XmNdirSpec, &xmname);
@@ -163,8 +164,8 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	XtFree(name);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_LoadVendor[] = "LoadVendor()";
@@ -178,7 +179,7 @@ The user is prompted for a file to load, and then
 load that vendor file.
 
 %end-doc */
-
+extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 static fgw_error_t pcb_act_LoadVendor(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	PCB_OLD_ACT_BEGIN;
