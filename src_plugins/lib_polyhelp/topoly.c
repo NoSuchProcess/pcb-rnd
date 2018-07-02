@@ -316,30 +316,34 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
 const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";
-fgw_error_t pcb_act_topoly(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *op = NULL;
 	void *r1, *r2, *r3;
 
-	if (argc == 0) {
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, topoly, op = argv[1].val.str);
+
+	if (op == NULL) {
 		pcb_coord_t x, y;
 		pcb_hid_get_coords("Click on a line or arc of the contour loop", &x, &y);
 		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
 			pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 	}
-	if (argc > 0) {
-		if (strcmp(argv[0], "outline") == 0) {
+	else {
+		if (strcmp(op, "outline") == 0) {
 			r2 = pcb_topoly_find_1st_outline(PCB);
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid first argument\n");
-			return 1;
+			PCB_ACT_IRES(1);
+			return 0;
 		}
 	}
 
 	pcb_topoly_conn(PCB, r2, 0);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
