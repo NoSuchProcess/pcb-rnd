@@ -44,6 +44,7 @@
 typedef struct {
 	char *id, *fn, *lang;
 	pup_plugin_t *pup;
+	fgw_obj_t *obj;
 } script_t;
 
 static htsp_t scripts; /* ID->script_t */
@@ -59,6 +60,7 @@ static const char *script_pup_paths[] = {
 static void script_unload_entry(htsp_entry_t *e)
 {
 	script_t *s = (script_t *)e->value;
+	fgw_obj_unreg(&pcb_fgw, s->obj);
 	pup_unload(&script_pup, s->pup, NULL);
 	free(s->id);
 	free(s->fn);
@@ -110,6 +112,9 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	s->fn = pcb_strdup(fn);
 	s->lang = pcb_strdup(lang);
 	htsp_set(&scripts, s->id, s);
+
+	s->obj = fgw_obj_new(&pcb_fgw, s->id, s->lang, s->fn, NULL);
+
 	return 0;
 }
 
