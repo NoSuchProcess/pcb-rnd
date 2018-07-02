@@ -75,6 +75,7 @@ static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		PCB_ACT_FAIL(AdjustStyle);
 
 	pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
@@ -116,6 +117,7 @@ static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
@@ -143,9 +145,8 @@ static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* ------------------------------------------------------------ */
 
-static fgw_error_t pcb_act_Benchmark(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int i = 0;
 	time_t start, end;
 	GdkDisplay *display;
@@ -166,8 +167,8 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 
 	printf(_("%g redraws per second\n"), i / 10.0);
 
+	PCB_ACT_DRES(i/10.0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
