@@ -760,7 +760,7 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 
 	/* avoid snapping to an object if it is in the same subc */
 	if ((snapo != NULL) && (conf_core.editor.mode == PCB_MODE_MOVE) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
-		pcb_any_obj_t *parent = pcb_obj_parent_subc(snapo);
+		pcb_any_obj_t *parent = (pcb_any_obj_t *)pcb_obj_parent_subc(snapo);
 		int n;
 		pcb_cardinal_t parent_id = snapo->ID;
 		if (parent != NULL)
