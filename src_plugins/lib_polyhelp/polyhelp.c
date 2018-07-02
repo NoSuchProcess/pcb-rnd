@@ -363,15 +363,18 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 
 static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [hvcp])\nPolyHatch(interactive)\n";
 static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly";
-static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
+	const char *op, *arg = NULL;
 	pcb_coord_t period = 0;
 	pcb_cpoly_hatchdir_t dir = 0;
 	pcb_flag_t flg;
 	int want_contour = 0, want_poly = 0, cont_specd = 0;
 
-	if ((argc > 0) && (pcb_strcasecmp(argv[0], "interactive") == 0)) {
+	PCB_ACT_CONVARG(1, FGW_STR, PolyHatch, op = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, PolyHatch, arg = argv[2].val.str);
+
+	if (pcb_strcasecmp(op, "interactive") == 0) {
 		pcb_hid_attribute_t attrs[5];
 #define nattr sizeof(attrs)/sizeof(attrs[0])
 		static pcb_hid_attr_val_t results[nattr] = { {0}, {1}, {1}, {1}, {1} };
@@ -416,20 +419,20 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		flg = pcb_flag_make(results[4].int_value ? PCB_FLAG_CLEARLINE : 0);
 	}
 	else {
-		if (argc > 0) {
+		if (op != NULL) {
 			pcb_bool succ;
-			period = pcb_get_value(argv[0], NULL, NULL, &succ);
+			period = pcb_get_value(op, NULL, NULL, &succ);
 			if (!succ) {
 				pcb_message(PCB_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
 				return -1;
 			}
 		}
 
-		if (argc > 1) {
-			if (strchr(argv[1], 'c')) want_contour = 1;
-			if (strchr(argv[1], 'p')) want_poly = 1;
-			if (strchr(argv[1], 'h')) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
-			if (strchr(argv[1], 'v')) dir |= PCB_CPOLY_HATCH_VERTICAL;
+		if (arg != NULL) {
+			if (strchr(arg, 'c')) want_contour = 1;
+			if (strchr(arg, 'p')) want_poly = 1;
+			if (strchr(arg, 'h')) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
+			if (strchr(arg, 'v')) dir |= PCB_CPOLY_HATCH_VERTICAL;
 			cont_specd = 1;
 		}
 
@@ -464,8 +467,9 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 		}
 		pcb_cpoly_hatch_lines(CURRENT, polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 	} PCB_ENDALL_LOOP;
+
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 static const char pcb_acts_PolyOffs[] = "PolyOffs(offset)\n";
