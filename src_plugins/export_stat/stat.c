@@ -366,8 +366,8 @@ int pplg_check_ver_export_stat(int ver_needed) { return 0; }
 
 void pplg_uninit_export_stat(void)
 {
-	free(stat_attribute_list[HA_first_ver].default_val.str_value);
-	free(stat_attribute_list[HA_license].default_val.str_value);
+	free((char *)stat_attribute_list[HA_first_ver].default_val.str_value);
+	free((char *)stat_attribute_list[HA_license].default_val.str_value);
 	stat_attribute_list[HA_first_ver].default_val.str_value = NULL;
 	stat_attribute_list[HA_license].default_val.str_value = NULL;
 }
