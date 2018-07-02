@@ -85,6 +85,16 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	return 0;
 }
 
+void script_list(const char *pat)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
+		script_t *s = (script_t *)e->value;
+		if ((pat == NULL) || (*pat == '\0'))
+			pcb_message(PCB_MSG_INFO, "id=%s fn=%s lang=%s\n", s->id, s->fn, s->lang);
+	}
+}
+
 #include "script_act.c"
 
 char *script_cookie = "script plugin";

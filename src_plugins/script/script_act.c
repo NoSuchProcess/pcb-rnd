@@ -51,7 +51,21 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
+static const char pcb_acth_ListScripts[] = "List a fungw script";
+static const char pcb_acts_ListScripts[] = "ListScripts([pat])";
+static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *pat = NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ListScripts, pat = argv[1].val.str);
+
+	script_list(pat);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static pcb_action_t script_action_list[] = {
 	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
-	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript}
+	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
+	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts}
 };
