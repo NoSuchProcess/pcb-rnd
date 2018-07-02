@@ -308,13 +308,13 @@ void dump_pointlist(pointlist_node_t *list)
 	POINTLIST_FOREACH(p, list)
 		fprintf(stderr, "\t{pos=(%d, %d) adj_t=(", p->pos.x, p->pos.y);
 		TRIANGLELIST_FOREACH(t, p->adj_triangles)
-			fprintf(stderr, "%p", t);
+			fprintf(stderr, "%p", (void*)t);
 			if(_node_->next != NULL)
 				fprintf(stderr, ", ");
 		TRIANGLELIST_FOREACH_END();
 		fprintf(stderr, ") adj_e=(");
 		EDGELIST_FOREACH(t, p->adj_edges)
-			fprintf(stderr, "%p", t);
+			fprintf(stderr, "%p", (void*)t);
 			if(_node_->next != NULL)
 				fprintf(stderr, ", ");
 		EDGELIST_FOREACH_END();
@@ -326,8 +326,8 @@ void dump_edgelist(edgelist_node_t *list)
 {
 	EDGELIST_FOREACH(e, list)
 		fprintf(stderr, "\t{endp1=(%p (pos=(%d, %d))) endp2=(%p (pos=(%d, %d))) adj_t=(",
-						e->endp[0], e->endp[0]->pos.x, e->endp[0]->pos.y, e->endp[1], e->endp[1]->pos.x, e->endp[1]->pos.y);
-		fprintf(stderr, "%p, %p)", e->adj_t[0], e->adj_t[1]);
+						(void*)e->endp[0], e->endp[0]->pos.x, e->endp[0]->pos.y, (void*)e->endp[1], e->endp[1]->pos.x, e->endp[1]->pos.y);
+		fprintf(stderr, "%p, %p)", (void*)e->adj_t[0], (void*)e->adj_t[1]);
 		fprintf(stderr, " %s}\n", e->is_constrained ? "constrained" : "");
 	EDGELIST_FOREACH_END();
 }
@@ -337,8 +337,8 @@ void dump_trianglelist(trianglelist_node_t *list)
 	TRIANGLELIST_FOREACH(t, list)
 		fprintf(stderr, "\t{p1=(%d, %d) p2=(%d, %d) p3=(%d, %d)",
 						t->p[0]->pos.x, t->p[0]->pos.y, t->p[1]->pos.x, t->p[1]->pos.y, t->p[2]->pos.x, t->p[2]->pos.y);
-		fprintf(stderr, " adj_e=(%p, %p, %p)", t->e[0], t->e[1], t->e[2]);
-		fprintf(stderr, " adj_t=(%p, %p, %p)}\n", t->adj_t[0], t->adj_t[1], t->adj_t[2]);
+		fprintf(stderr, " adj_e=(%p, %p, %p)", (void*)t->e[0], (void*)t->e[1], (void*)t->e[2]);
+		fprintf(stderr, " adj_t=(%p, %p, %p)}\n", (void*)t->adj_t[0], (void*)t->adj_t[1], (void*)t->adj_t[2]);
 	TRIANGLELIST_FOREACH_END();
 }
 #endif
