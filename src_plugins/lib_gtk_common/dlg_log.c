@@ -175,7 +175,6 @@ fgw_error_t pcb_gtk_act_logshowonappend(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	const char *a = "";
 	const char *pcb_acts_logshowonappend = pcb_gtk_acts_logshowonappend;
-	const char *pcb_acth_logshowonappend = pcb_gtk_acth_logshowonappend;
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, logshowonappend, a = argv[1].val.str);
 

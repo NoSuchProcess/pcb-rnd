@@ -919,7 +919,6 @@ fgw_error_t pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, fgw_arg_t *res, int a
 {
 	const char *op;
 	const char *pcb_acts_netlistshow = pcb_gtk_acts_netlistshow;
-	const char *pcb_acth_netlistshow = pcb_gtk_acth_netlistshow;
 
 	PCB_ACT_CONVARG(1, FGW_STR, netlistshow, op = argv[1].val.str);
 	ghid_netlist_window_create(com);
