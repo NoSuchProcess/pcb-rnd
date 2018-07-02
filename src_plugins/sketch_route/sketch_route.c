@@ -47,6 +47,13 @@ typedef struct {
 static sketch_t sketch; /* TODO: should be created dynamically for each copper layer */
 
 
+static void sketch_draw_cdt(sketch_t *sk)
+{
+	VTEDGE_FOREACH(e, &sk->cdt->edges)
+		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, e->endp[0]->pos.y, e->endp[1]->pos.x, e->endp[1]->pos.y, 1, 0, pcb_no_flags());
+	VTEDGE_FOREACH_END();
+}
+
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
 	sk->cdt = malloc(sizeof(cdt_t));
@@ -71,6 +78,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	PCB_END_LOOP;
 
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, "CDT", layer->meta.real.color);
+	sketch_draw_cdt(sk);
 }
 
 static void sketch_free(sketch_t *sk)
