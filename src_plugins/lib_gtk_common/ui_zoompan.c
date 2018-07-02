@@ -285,7 +285,7 @@ Note that zoom factors of zero are silently ignored.
 
 fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *vp;
+	const char *vp, *ovp;
 	double v;
 	pcb_coord_t x, y;
 
@@ -309,7 +309,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 	if (argc > 2)
 		PCB_ACT_FAIL(zoom);
 
-	PCB_ACT_CONVARG(1, FGW_STR, zoom, vp = argv[1].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, zoom, ovp = vp = argv[1].val.str);
 
 	if (*vp == '?') {
 		pcb_message(PCB_MSG_INFO, "Current gtk zoom level: %f\n", vw->coord_per_px);
@@ -323,7 +323,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 		return 1;
 
 	pcb_hid_get_coords("Select zoom center", &x, &y);
-	switch (vp[0]) {
+	switch (ovp[0]) {
 	case '-':
 		pcb_gtk_zoom_view_rel(vw, x, y, 1 / v);
 		break;
