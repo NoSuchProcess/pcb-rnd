@@ -459,15 +459,18 @@ int lesstif_confirm_dialog(const char *msg, ...)
 	return ok;
 }
 
-static fgw_error_t pcb_act_ConfirmAction(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_ConfirmAction[] = "TODO";
+static const char pcb_acth_ConfirmAction[] = "TODO";
+static fgw_error_t pcb_act_ConfirmAction(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	int rv = lesstif_confirm_dialog(argc > 0 ? argv[0] : 0,
-																	argc > 1 ? argv[1] : 0,
-																	argc > 2 ? argv[2] : 0,
-																	0);
-	return rv;
-	PCB_OLD_ACT_END;
+	const char *a0 = NULL, *a1 = NULL, *a2 = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ConfirmAction, a0 = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ConfirmAction, a1 = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, ConfirmAction, a2 = argv[3].val.str);
+
+	PCB_ACT_IRES(lesstif_confirm_dialog(a0, a1, a2, 0));
+	return 0;
 }
 
 /* ------------------------------------------------------------ */
@@ -2086,7 +2089,7 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
-	{"Confirm", pcb_act_ConfirmAction},
+	{"Confirm", pcb_act_ConfirmAction, pcb_acth_ConfirmAction, pcb_acts_ConfirmAction},
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
