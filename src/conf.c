@@ -1118,8 +1118,6 @@ lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 
 void conf_load_all(const char *project_fn, const char *pcb_fn)
 {
-	int i;
-	lht_node_t *dln;
 	const char *pc, *try;
 
 	/* the ultimate fallback: all essential values are built in the executable
