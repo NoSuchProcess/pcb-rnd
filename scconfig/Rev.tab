@@ -1,3 +1,4 @@
+17960	configure	script plugin
 17691	configure	action code cleanup
 17436	configure	renamed hid_actions.[ch]
 17426	configure	introduce new 3rd party lib dep: fungw

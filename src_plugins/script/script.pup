@@ -1,0 +1,7 @@
+$class feature
+$short fungw turing complete scripting
+$long Load and execute scripts written in any language supported by fungw
+$package (core)
+$state WIP
+default disable
+autoload 1
