@@ -32,15 +32,20 @@
 #include "data.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "layer_ui.h"
 
 #include "cdt/cdt.h"
 
 
+const char *pcb_sketch_route_cookie = "sketch_route plugin";
+
 typedef struct {
 	cdt_t *cdt;
+	pcb_layer_t *ui_layer_cdt;
 } sketch_t;
 
 static sketch_t sketch; /* TODO: should be created dynamically for each copper layer */
+
 
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
@@ -64,6 +69,8 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+
+	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, "CDT", layer->meta.real.color);
 }
 
 static void sketch_free(sketch_t *sk)
@@ -73,9 +80,12 @@ static void sketch_free(sketch_t *sk)
 		free(sk->cdt);
 		sk->cdt = NULL;
 	}
+	if (sk->ui_layer_cdt != NULL) {
+		pcb_uilayer_free(sk->ui_layer_cdt);
+		sk->ui_layer_cdt = NULL;
+	}
 }
 
-const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 static const char pcb_acts_skretriangulate[] = "skretriangulate()";
 static const char pcb_acth_skretriangulate[] = "Construct a new CDT on the current layer";
@@ -109,7 +119,7 @@ int pplg_init_sketch_route(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
 
-	sketch.cdt = NULL;
+	memset(&sketch, 0, sizeof(sketch_t));
 
 	return 0;
 }
