@@ -533,26 +533,27 @@ Mode = 0.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int mode;
 
-	if (argc != 1 && argc != 2)
-		PCB_ACT_FAIL(pan);
-
-	if (argc == 1) {
-		mode = atoi(argv[0]);
-	}
-	else {
-		mode = atoi(argv[1]);
-		pcb_message(PCB_MSG_WARNING, "The gtk gui currently ignores the optional first argument to the Pan action.\nFeel free to provide patches.\n");
+	switch(argc) {
+		case 2:
+			PCB_ACT_CONVARG(1, FGW_INT, pan, mode = argv[1].val.str);
+			break;
+		case 3:
+			PCB_ACT_CONVARG(2, FGW_INT, pan, mode = argv[2].val.str);
+			pcb_message(PCB_MSG_WARNING, "The gtk gui currently ignores the optional first argument to the Pan action.\nFeel free to provide patches.\n");
+			PCB_ACT_IRES(1);
+			return 0;
+		default:
+			PCB_ACT_FAIL(pan);
 	}
 
 	vw->panning = mode;
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 

@@ -109,7 +109,7 @@ fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 
 extern const char pcb_acts_pan[];
 extern const char pcb_acth_pan[];
-fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
+fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 
