@@ -419,9 +419,12 @@ static void triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon)
 		EDGELIST_FOREACH(e, candidate_t.p[1]->adj_edges)
 			if (e != get_edge_from_points(candidate_t.p[0], candidate_t.p[1])
 					&& e != get_edge_from_points(candidate_t.p[1], candidate_t.p[2])) {
-				triangle_t ord_t = { {candidate_t.p[0], candidate_t.p[1], candidate_t.p[2]} };
+				triangle_t ord_t;
 				if (LINES_INTERSECT(candidate_e.endp[0], candidate_e.endp[1], e->endp[0], e->endp[1]))
 					goto skip;
+				ord_t.p[0] = candidate_t.p[0];
+				ord_t.p[1] = candidate_t.p[1];
+				ord_t.p[2] = candidate_t.p[2];
 				order_triangle_points_ccw(&ord_t.p[0], &ord_t.p[1], &ord_t.p[2]);
 				if (is_point_in_triangle(e->endp[0] != candidate_t.p[1] ? e->endp[0] : e->endp[1], &ord_t))
 					goto skip;
@@ -497,9 +500,11 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 {
-	pos_t pos = {x, y};
+	pos_t pos;
 	point_t *new_p;
 
+	pos.x = x;
+	pos.y = y;
 	VTPOINT_FOREACH(p, &cdt->points)
 		if (p->pos.x == pos.x && p->pos.y == pos.y)	/* point in the same pos already exists */
 			return p;
@@ -712,7 +717,9 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge)
 			POINTLIST_FOREACH_END();
 		}
 		else { /* triangle beyond a border edge was removed earlier - the edge should be removed too */
-			point_t *endp[2] = {e->endp[0], e->endp[1]};
+			point_t *endp[2];
+			endp[0] = e->endp[0];
+			endp[1] = e->endp[1];
 			for (i = 0; i < 2; i++) /* check if the edge is not bbox of the triangulation */
 				if ((e->endp[i]->pos.x == cdt->bbox_tl.x && e->endp[i]->pos.y == cdt->bbox_tl.y)
 						|| (e->endp[i]->pos.x == cdt->bbox_br.x && e->endp[i]->pos.y == cdt->bbox_br.y))
