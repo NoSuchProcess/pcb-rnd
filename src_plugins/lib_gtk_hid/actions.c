@@ -128,9 +128,8 @@ fgw_error_t pcb_gtk_act_print_(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* ------------------------------------------------------------ */
 
-static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	/* check if layout is empty */
 	if (!pcb_data_is_empty(PCB->Data)) {
 		ghid_dialog_export(ghid_port.top_window);
@@ -138,8 +137,8 @@ static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	else
 		pcb_gui->log(_("Can't export empty layout"));
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
