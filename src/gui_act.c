@@ -1292,52 +1292,53 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_EditLayer[] = "Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditLayer[] = "Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.";
-static fgw_error_t pcb_act_EditLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layer_t *ly = CURRENT;
 
-	for(n = 0; n < argc; n++) {
-		if (!explicit && (*argv[n] == '@')) {
-			pcb_layer_id_t lid = pcb_layer_by_name(PCB->Data, argv[n]+1);
+	for(n = 1; n < argc; n++) {
+		const char *arg;
+		PCB_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
+		if (!explicit && (*arg == '@')) {
+			pcb_layer_id_t lid = pcb_layer_by_name(PCB->Data, arg+1);
 			if (lid < 0) {
-				pcb_message(PCB_MSG_ERROR, "Can't find layer named %s\n", argv[n]+1);
+				pcb_message(PCB_MSG_ERROR, "Can't find layer named %s\n", arg+1);
 				return 1;
 			}
 			ly = pcb_get_layer(PCB->Data, lid);
 			explicit = 1;
 		}
-		else if (strncmp(argv[n], "name=", 5) == 0) {
+		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
-			ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
+			ret |= pcb_layer_rename_(ly, pcb_strdup(arg+5));
 			pcb_board_set_changed_flag(pcb_true);
 		}
-		else if (strncmp(argv[n], "auto=", 5) == 0) {
+		else if (strncmp(arg, "auto=", 5) == 0) {
 			interactive = 0;
-			if (istrue(argv[n]+5))
+			if (istrue(arg+5))
 				ly->comb |= PCB_LYC_AUTO;
 			else
 				ly->comb &= ~PCB_LYC_AUTO;
 			pcb_board_set_changed_flag(pcb_true);
 		}
-		else if (strncmp(argv[n], "sub=", 4) == 0) {
+		else if (strncmp(arg, "sub=", 4) == 0) {
 			interactive = 0;
-			if (istrue(argv[n]+4))
+			if (istrue(arg+4))
 				ly->comb |= PCB_LYC_SUB;
 			else
 				ly->comb &= ~PCB_LYC_SUB;
 			pcb_board_set_changed_flag(pcb_true);
 		}
-		else if (strncmp(argv[n], "attrib", 6) == 0) {
+		else if (strncmp(arg, "attrib", 6) == 0) {
 			char *key, *val;
 			interactive = 0;
 			n++;
 			if (n >= argc) {
-				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", argv[n]+1);
+				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
 				return 1;
 			}
-			key = pcb_strdup(argv[n]);
+			key = pcb_strdup(arg);
 			val = strchr(key, '=');
 			if (val != NULL) {
 				*val = '\0';
@@ -1353,7 +1354,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid EditLayer() command: %s\n", argv[n]);
+			pcb_message(PCB_MSG_ERROR, "Invalid EditLayer() command: %s\n", arg);
 			PCB_ACT_FAIL(EditLayer);
 		}
 	}
@@ -1392,8 +1393,8 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *ores, int oargc, fgw_arg_t *oarg
 	}
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	PCB_ACT_IRES(0);
 	return ret;
-	PCB_OLD_ACT_END;
 }
 
 pcb_layergrp_id_t pcb_actd_EditGroup_gid = -1;
