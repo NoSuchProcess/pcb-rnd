@@ -1664,12 +1664,11 @@ See @ref{ChangeName Action}.
 %end-doc */
 
 extern void lesstif_show_layergrp_edit(void);
-static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	lesstif_show_layergrp_edit();
-	return 1;
-	PCB_OLD_ACT_END;
+	PCB_ACT_IRES(0);
+	return 0;
 }
 
 
