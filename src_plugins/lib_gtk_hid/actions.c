@@ -455,12 +455,11 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static fgw_error_t pcb_act_About(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_About(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
 	pcb_gtk_dlg_about(gport->top_window);
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
