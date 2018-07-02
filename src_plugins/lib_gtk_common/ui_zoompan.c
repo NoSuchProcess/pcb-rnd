@@ -362,12 +362,11 @@ currently within the window already.
 
 %end-doc */
 
-fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, fgw_arg_t *oargv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
+fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
 {
-	PCB_OLD_ACT_BEGIN;
 	int widget_x, widget_y;
 
-	if (argc != 0)
+	if (argc != 1)
 		PCB_ACT_FAIL(center);
 
 	/* Aim to put the given x, y PCB coordinates in the center of the widget */
@@ -387,8 +386,8 @@ fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *ores, int oargc, f
 	*out_pointer_x = offset_x + widget_x;
 	*out_pointer_y = offset_y + widget_y;
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ---------------------------------------------------------------------- */
