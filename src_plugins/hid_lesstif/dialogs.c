@@ -181,18 +181,17 @@ user is prompted for a filename to save, and then @code{SaveTo} is
 called with that filename.
 
 %end-doc */
-
-static fgw_error_t pcb_act_Save(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_OLD_ACT_BEGIN;
-	const char *function;
+	const char *function = "Layout";
 	char *name;
 	XmString xmname, pattern;
 
-	if (argc > 1)
-		pcb_actionv("SaveTo", argc, argv);
+	if (argc > 2)
+		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
-	function = argc ? argv[0] : "Layout";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
@@ -214,8 +213,10 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	stdarg(XmNselectionLabelString, xms_save);
 	XtSetValues(fsb, stdarg_args, stdarg_n);
 
-	if (!wait_for_dialog(fsb))
-		return 1;
+	if (!wait_for_dialog(fsb)) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
 
 	stdarg_n = 0;
 	stdarg(XmNdirSpec, &xmname);
@@ -239,8 +240,8 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 	XtFree(name);
 
+	PCB_ACT_IRES(0);
 	return 0;
-	PCB_OLD_ACT_END;
 }
 
 /* ------------------------------------------------------------ */
