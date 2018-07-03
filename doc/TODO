@@ -29,6 +29,15 @@
 - feature: query() should be able to search for object flags [report: James]
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
+- feature: property editor should deal with flags
+- feature: buffer: break up padstack, just like breaking up subcircuits
+- cleanup: layer color rewrite:
+	- depends on lihata v5 layer color save/load
+	- use only one selected color, not layer based, in the config
+	- grep for layer TODO, hardwired layer colors
+	- always use the stored per layer color
+	- use the config color only if a new layer is created or loaded without known color
+	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
 
 2. For later releases ===============================================================================
 - BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
@@ -62,13 +71,6 @@ opengl:
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - outline layer creation:
 	- currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
-- layer color rewrite:
-	- depends on lihata v5 layer color save/load
-	- use only one selected color, not layer based, in the config
-	- grep for layer TODO, hardwired layer colors
-	- always use the stored per layer color
-	- use the config color only if a new layer is created or loaded without known color
-	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - feature: an action for switching layer to current side; see also ML/1955 [report: James]
 - DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
@@ -96,10 +98,8 @@ opengl:
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
-- buffer: break up padstack, just like breaking up subcircuits
 - feature: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
-- feature: property editor should deal with flags
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - propedit revamp:
 	- move the property editor out from gtk, using the DAD, into propedit
@@ -213,8 +213,7 @@ eagle:
 - query & advanced search
 	- search expr wizard should pick up the expression from the button when clicked
 	- field accessors:
-		- pad area
-		- pin area
+		- terminal (heavy and light) area
 		- line (and pad) length and length^2
 	- make a run on a large board, speed test, with -O0 and -O3:
 		- iteration speed (a simple @)
