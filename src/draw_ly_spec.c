@@ -42,14 +42,19 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
+	pcb_layer_t *ly = NULL;
 
 	pcb_layergrp_list(PCB, PCB_LYT_PASTE | side_lyt, &gid, 1);
 
+	cctx.grp = pcb_get_layergrp(PCB, gid);
+
+	if (cctx.grp->len > 0)
+		ly = pcb_get_layer(PCB->Data, cctx.grp->lid[0]);
+
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
-	cctx.grp = pcb_get_layergrp(PCB, gid);
 	cctx.gid = gid;
-	cctx.color = conf_core.appearance.color.paste;
+	cctx.color = ly != NULL ? ly->meta.real.color : conf_core.appearance.color.paste;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
@@ -75,14 +80,20 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
+	pcb_layer_t *ly = NULL;
 
 	pcb_layergrp_list(PCB, PCB_LYT_MASK | side_lyt, &gid, 1);
 
+	cctx.grp = pcb_get_layergrp(PCB, gid);
+
+	if (cctx.grp->len > 0)
+		ly = pcb_get_layer(PCB->Data, cctx.grp->lid[0]);
+
 	cctx.pcb = PCB;
 	cctx.screen = screen;
-	cctx.grp = pcb_get_layergrp(PCB, gid);
+
 	cctx.gid = gid;
-	cctx.color = conf_core.appearance.color.mask;
+	cctx.color = ly != NULL ? ly->meta.real.color : conf_core.appearance.color.mask;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = pcb_gui->mask_invert;
 
