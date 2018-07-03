@@ -899,7 +899,17 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	}
 	else {
 		/* real */
+		lht_node_t *nclr;
 		ly->name = pcb_strdup(grp->name);
+		nclr = hash_get(grp, "color", 1);
+		if ((nclr != NULL) && (nclr->type != LHT_INVALID_TYPE)) {
+			if (rdver < 5)
+				iolht_warn(nclr, 1, "layer color was not supprted before lihata board v5 (reading from v%d)\n", rdver);
+			if (nclr->type == LHT_TEXT)
+				ly->meta.real.color = pcb_strdup(nclr->data.text.value);
+			else
+				iolht_warn(nclr, 1, "Ignoring color: text node required\n");
+		}
 		parse_bool(&ly->meta.real.vis, hash_get(grp, "visible", 1));
 		if (pcb != NULL) {
 			int grp_id;
