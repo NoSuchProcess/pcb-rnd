@@ -119,7 +119,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 			pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 			pcb_bool vis;                  /* visible flag */
 			const char *color;             /* color */
-			const char *selected_color;
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 		} real;

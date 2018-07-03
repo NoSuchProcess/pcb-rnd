@@ -153,6 +153,7 @@ li:pcb-rnd-conf-v1 {
 				background = {#e5e5e5}
 				crosshair = {#ff0000}
 				cross = {#cdcd00}
+				selected = {#00ffff}
 				via = {#7f7f7f}
 				via_selected = {#00ffff}
 				pin = {#4d4d4d}
@@ -183,18 +184,6 @@ li:pcb-rnd-conf-v1 {
 					{#228b22};
 					{#8b2323}; {#3a5fcd}; {#104e8b}; {#cd3700}; {#548b54};
 					{#8b7355};
-				}
-				li:layer_selected = {
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff};
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff};
-					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
-					{#00ffff};
 				}
 				warn = {#ff8000}
 				mask = {#ff0000}

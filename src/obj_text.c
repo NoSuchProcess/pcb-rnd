@@ -1080,7 +1080,7 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 			pcb_gui->set_color(pcb_draw_out.fgGC, color);
 		}
 		else
-			pcb_gui->set_color(pcb_draw_out.fgGC, layer->meta.real.selected_color);
+			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.selected);
 	}
 	else if (PCB_HAS_COLOROVERRIDE(text)) {
 		pcb_gui->set_color(pcb_draw_out.fgGC, text->override_color);

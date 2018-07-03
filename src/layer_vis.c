@@ -299,10 +299,8 @@ static void pcb_layer_confchg_color(conf_native_t *cfg, int arr_idx)
 {
 	if (PCB != NULL) {
 		pcb_layer_t *lp = pcb_get_layer(PCB->Data, arr_idx);
-		if (lp != NULL) {
+		if (lp != NULL)
 			lp->meta.real.color = conf_core.appearance.color.layer[arr_idx];
-			lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[arr_idx];
-		}
 	}
 }
 
@@ -312,8 +310,7 @@ void pcb_layer_vis_init(void)
 {
 	conf_native_t *n_mask = conf_get_field("editor/show_mask");
 	conf_native_t *n_c1 = conf_get_field("appearance/color/layer");
-	conf_native_t *n_c2 = conf_get_field("appearance/color/layer_selected");
-	static conf_hid_callbacks_t cbs_mask, cbs_c1, cbs_c2;
+	static conf_hid_callbacks_t cbs_mask, cbs_c1;
 
 	layer_vis_conf_id = conf_hid_reg(layer_vis_cookie, NULL);
 
@@ -324,12 +321,8 @@ void pcb_layer_vis_init(void)
 	}
 
 	memset(&cbs_c1, 0, sizeof(conf_hid_callbacks_t));
-	memset(&cbs_c2, 0, sizeof(conf_hid_callbacks_t));
 	cbs_c1.val_change_post = pcb_layer_confchg_color;
-	cbs_c2.val_change_post = pcb_layer_confchg_color;
 	conf_hid_set_cb(n_c1, layer_vis_conf_id, &cbs_c1);
-	conf_hid_set_cb(n_c2, layer_vis_conf_id, &cbs_c2);
-
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }

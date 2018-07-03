@@ -1165,12 +1165,12 @@ typedef struct {
 static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 {
 	pcb_gtk_color_t new_color;
-	const char *str, *lcpath = "appearance/color/layer", *lspath = "appearance/color/layer_selected";
+	const char *str, *lcpath = "appearance/color/layer";
 
 	gtkc_color_button_get_color(button, &new_color);
 	str = ci->com->get_color_name(&new_color);
 
-	if ((strcmp(ci->cfg->hash_path, lcpath) == 0) || (strcmp(ci->cfg->hash_path, lspath) == 0)) {
+	if (strcmp(ci->cfg->hash_path, lcpath) == 0) {
 		/* if the design color list is empty, we should create it and copy
 		   all current colors. If we don't, and conf_set() does it for items
 		   lower than ci->idx, it will create all colors with empty string value,
@@ -1246,7 +1246,7 @@ void config_colors_tab_create_scalar(pcb_gtk_common_t *com, GtkWidget *parent_vb
 	conf_fields_foreach(e) {
 		conf_native_t *cfg = e->value;
 		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR) && (cfg->array_size == 1)) {
-			int is_selected = (strstr(e->key, "_selected") != NULL);
+			int is_selected = (strstr(e->key, "_selected") != NULL) || (strcmp(e->key + strlen(e->key) - 8, "selected") == 0);
 			if (is_selected == selected)
 				config_color_button_create(com, parent_vbox, cfg, 0);
 		}
@@ -1314,7 +1314,6 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 
 	config_colors_tab_create_scalar(com, vbox, "appearance/color", 1);
 
-	config_colors_tab_create_array(com, vbox, "appearance/color/layer_selected");
 	config_user_role_section(com, config_colors_vbox, config_colors_save, 0);
 
 	gtk_widget_show_all(config_colors_vbox);

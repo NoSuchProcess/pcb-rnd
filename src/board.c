@@ -160,10 +160,8 @@ void pcb_layer_colors_from_conf(pcb_board_t *ptr)
 	int i;
 
 	/* copy default settings */
-	for (i = 0; i < PCB_MAX_LAYER; i++) {
+	for (i = 0; i < PCB_MAX_LAYER; i++)
 		ptr->Data->Layer[i].meta.real.color = conf_core.appearance.color.layer[i];
-		ptr->Data->Layer[i].meta.real.selected_color = conf_core.appearance.color.layer_selected[i];
-	}
 }
 
 typedef struct {

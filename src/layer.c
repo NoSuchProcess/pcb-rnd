@@ -492,7 +492,6 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->meta.real.vis = 1;
 	lp->name = pcb_strdup("New Layer");
 	lp->meta.real.color = conf_core.appearance.color.layer[idx];
-	lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[idx];
 	if ((gid >= 0) && (pcb->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
 		switch((pcb->LayerGroups.grp[gid].ltype) & PCB_LYT_ANYTHING) {
 			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;

@@ -180,6 +180,7 @@ typedef struct {
 			CFT_COLOR background;	/* background and cursor color ... */
 			CFT_COLOR crosshair;							/* different object colors */
 			CFT_COLOR cross;
+			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;
 			CFT_COLOR via_selected;
 			CFT_COLOR pin;
@@ -200,7 +201,6 @@ typedef struct {
 			CFT_COLOR off_limit;
 			CFT_COLOR grid;
 			CFT_COLOR layer[PCB_MAX_LAYER];
-			CFT_COLOR layer_selected[PCB_MAX_LAYER];
 			CFT_COLOR warn;
 			CFT_COLOR mask;
 			CFT_COLOR paste;

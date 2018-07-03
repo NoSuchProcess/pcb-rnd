@@ -1067,7 +1067,7 @@ static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box
 		if (layer->is_bound)
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 		else
-			color = layer->meta.real.selected_color;
+			color = conf_core.appearance.color.selected;
 	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
 		color = conf_core.appearance.color.connected;

@@ -1044,7 +1044,7 @@ static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_g
 			if (layer->is_bound)
 				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 			else
-				color = layer->meta.real.selected_color;
+				color = conf_core.appearance.color.selected;
 		}
 		else
 			color = conf_core.appearance.color.connected;

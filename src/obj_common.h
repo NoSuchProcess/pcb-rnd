@@ -218,7 +218,7 @@ do { \
 			lid = g->lid[0]; \
 		if ((lid >= 0) && (lid <= PCB_MAX_LAYER)) { \
 			if (sel) \
-				dst = conf_core.appearance.color.layer_selected[lid]; \
+				dst = conf_core.appearance.color.selected; \
 			else \
 				dst = conf_core.appearance.color.layer[lid]; \
 			break; \

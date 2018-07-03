@@ -896,7 +896,7 @@ static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gf
 			if (layer->is_bound)
 				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 			else
-				color = layer->meta.real.selected_color;
+				color = conf_core.appearance.color.selected;
 		}
 		else
 			color = conf_core.appearance.color.connected;
