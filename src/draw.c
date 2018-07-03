@@ -309,6 +309,7 @@ static void draw_pins_and_pads(const pcb_box_t *drawn_area, pcb_layergrp_id_t co
  */
 static void DrawEverything(const pcb_box_t *drawn_area)
 {
+	char *old_silk_color;
 	int i, ngroups, slk_len;
 	pcb_layergrp_id_t component, solder, slk[16], gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
@@ -317,7 +318,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
 
-	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
+	old_silk_color = PCB->Data->BACKSILKLAYER.meta.real.color;
 	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
 
 	pcb_gui->render_burst(PCB_HID_BURST_START, drawn_area);
@@ -448,6 +449,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 
 	finish:;
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
+	PCB->Data->BACKSILKLAYER.meta.real.color = old_silk_color;
 }
 
 static void pcb_draw_pstks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current, pcb_layer_combining_t comb)
