@@ -37,6 +37,7 @@
 	- always use the stored per layer color
 	- use the config color only if a new layer is created or loaded without known color
 	- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
+	- remove conf color.element - use the color of the layer
 
 2. For later releases ===============================================================================
 - BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
