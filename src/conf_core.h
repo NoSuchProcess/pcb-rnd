@@ -175,7 +175,6 @@ typedef struct {
 			CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
 		} loglevels;
 		struct color {
-			CFT_COLOR black;
 			CFT_COLOR white;
 			CFT_COLOR background;            /* background and cursor color ... */
 			CFT_COLOR crosshair;             /* different object colors */

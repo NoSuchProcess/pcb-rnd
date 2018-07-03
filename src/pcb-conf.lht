@@ -148,7 +148,6 @@ li:pcb-rnd-conf-v1 {
 				error_popup    = true
 			}
 			ha:color {
-				black = {#000000}
 				white = {#ffffff}
 				background = {#e5e5e5}
 				crosshair = {#ff0000}
