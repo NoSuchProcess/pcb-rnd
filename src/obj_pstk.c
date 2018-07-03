@@ -298,7 +298,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt)
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
 				color = conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
-				color = conf_core.appearance.color.via_selected;
+				color = conf_core.appearance.color.selected;
 			else
 				color = conf_core.appearance.color.connected;
 
