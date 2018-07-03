@@ -148,11 +148,11 @@ typedef struct {
 		CFT_COORD min_slk;
 		CFT_COORD min_drill;
 		CFT_COORD min_ring;
-		CFT_INTEGER text_scale;   /* text scaling in % */
+		CFT_INTEGER text_scale;            /* text scaling in % */
 		CFT_INTEGER text_font_id;
-		CFT_REAL poly_isle_area;  /* polygon min area */
-		CFT_STRING fab_author;                  /* Full name of author for FAB drawings */
-		CFT_STRING initial_layer_stack;         /* deprecated. */
+		CFT_REAL poly_isle_area;           /* polygon min area */
+		CFT_STRING fab_author;             /* Full name of author for FAB drawings */
+		CFT_STRING initial_layer_stack;    /* deprecated. */
 
 		CFT_COORD paste_adjust;            /* Adjust paste thickness */
 	} design;
@@ -177,8 +177,8 @@ typedef struct {
 		struct color {
 			CFT_COLOR black;
 			CFT_COLOR white;
-			CFT_COLOR background;	/* background and cursor color ... */
-			CFT_COLOR crosshair;							/* different object colors */
+			CFT_COLOR background;            /* background and cursor color ... */
+			CFT_COLOR crosshair;             /* different object colors */
 			CFT_COLOR cross;
 			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;
