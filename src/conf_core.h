@@ -183,7 +183,6 @@ typedef struct {
 			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;
 			CFT_COLOR pin;
-			CFT_COLOR pin_selected;
 			CFT_COLOR pin_name;
 			CFT_COLOR element;
 			CFT_COLOR element_nonetlist;

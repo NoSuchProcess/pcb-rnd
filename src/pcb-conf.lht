@@ -156,7 +156,6 @@ li:pcb-rnd-conf-v1 {
 				selected = {#00ffff}
 				via = {#7f7f7f}
 				pin = {#4d4d4d}
-				pin_selected = {#00ffff}
 				pin_name = {#ff0000}
 				element = {#000000}
 				element_nonetlist = {#777777}

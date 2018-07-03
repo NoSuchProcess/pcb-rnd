@@ -848,7 +848,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	hid->set_color(pcb_draw_out.drillGC, "drill");
 	hid->set_color(pcb_draw_out.padGC, conf_core.appearance.color.pin);
 	hid->set_color(pcb_draw_out.backpadGC, conf_core.appearance.color.invisible_objects);
-	hid->set_color(pcb_draw_out.padselGC, conf_core.appearance.color.pin_selected);
+	hid->set_color(pcb_draw_out.padselGC, conf_core.appearance.color.selected);
 	pcb_hid_set_line_width(pcb_draw_out.backpadGC, -1);
 	pcb_hid_set_line_cap(pcb_draw_out.backpadGC, pcb_cap_square);
 	pcb_hid_set_line_width(pcb_draw_out.padselGC, -1);
