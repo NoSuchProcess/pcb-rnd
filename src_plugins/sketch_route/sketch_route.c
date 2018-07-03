@@ -34,6 +34,7 @@
 #include "obj_line_list.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "pcb-printf.h"
 #include "search.h"
 #include "tool.h"
 #include "layer_ui.h"
@@ -45,6 +46,7 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 typedef struct {
 	cdt_t *cdt;
+	htsp_t terminals; /* key - terminal name; value - cdt point */
 	pcb_layer_t *ui_layer_cdt;
 } sketch_t;
 
@@ -61,7 +63,9 @@ static void sketch_draw_cdt(sketch_t *sk)
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
 	sk->cdt = malloc(sizeof(cdt_t));
+	htsp_init(&sk->terminals, strhash, strkeyeq);
 	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
 		if (pcb_pstk_shape_at(PCB, padstack, layer) != NULL) {
@@ -74,7 +78,13 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 		PCB_PADSTACK_LOOP(subc->data);
 		{
 			if (pcb_pstk_shape_at(PCB, padstack, layer) != NULL) {
-				cdt_insert_point(sk->cdt, padstack->x, padstack->y);
+				point_t *point;
+				char *termname;
+				point = cdt_insert_point(sk->cdt, padstack->x, padstack->y);
+				if (padstack->term != NULL) {
+					termname = pcb_strdup_printf("%s-%s", subc->refdes, padstack->term);
+					htsp_insert(&sk->terminals, termname, point);
+				}
 			}
 		}
 		PCB_END_LOOP;
@@ -87,6 +97,8 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 
 static void sketch_free(sketch_t *sk)
 {
+	htsp_entry_t *e;
+
 	if (sk->cdt != NULL) {
 		cdt_free(sk->cdt);
 		free(sk->cdt);
@@ -96,6 +108,11 @@ static void sketch_free(sketch_t *sk)
 		pcb_uilayer_free(sk->ui_layer_cdt);
 		sk->ui_layer_cdt = NULL;
 	}
+	for (e = htsp_first(&sk->terminals); e; e = htsp_next(&sk->terminals, e)) {
+		htsp_delentry(&sk->terminals, e);
+		free(e->key);
+	}
+	htsp_uninit(&sk->terminals);
 }
 
 /*** sketch line tool ***/
@@ -108,7 +125,6 @@ void tool_skline_uninit(void)
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_notify_crosshair_change(pcb_true);
 }
-
 
 void tool_skline_notify_mode(void)
 {
