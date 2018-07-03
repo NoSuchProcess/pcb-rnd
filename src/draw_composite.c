@@ -135,10 +135,10 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 		}
 
 		{
-			const char *old_color = l->meta.real.color;
+			char *old_color = l->meta.real.color;
 			pcb_hid_gc_t old_fg = pcb_draw_out.fgGC;
 			pcb_draw_out.fgGC = pcb_draw_out.pmGC;
-			l->meta.real.color = ctx->color;
+			l->meta.real.color = (char *)ctx->color;
 			if (l->comb & PCB_LYC_AUTO)
 				draw_auto(ctx, auto_data);
 			pcb_draw_layer(l, ctx->screen);
