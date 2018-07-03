@@ -29,9 +29,13 @@
 #include "plugins.h"
 #include "actions.h"
 #include "board.h"
+#include "compat_nls.h"
 #include "data.h"
+#include "obj_line_list.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "search.h"
+#include "tool.h"
 #include "layer_ui.h"
 
 #include "cdt/cdt.h"
@@ -94,7 +98,85 @@ static void sketch_free(sketch_t *sk)
 	}
 }
 
+/*** sketch line tool ***/
+pcb_attached_line_t attached_line; /* temporary */
 
+void tool_skline_uninit(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+}
+
+
+void tool_skline_notify_mode(void)
+{
+	int type;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_any_obj_t *term_obj;
+	switch (pcb_crosshair.AttachedObject.State) {
+	case PCB_CH_STATE_FIRST:
+		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+
+		if (type != PCB_OBJ_VOID) {
+			term_obj = ptr2;
+			if (term_obj->term == NULL) {
+				pcb_message(PCB_MSG_WARNING, _("Sketch lines can be only drawn from a terminal\n"));
+				break;
+			}
+			else {
+				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE;
+				attached_line.Point1.X = (term_obj->BoundingBox.X1 + term_obj->BoundingBox.X2)/2;
+				attached_line.Point1.Y = (term_obj->BoundingBox.Y1 + term_obj->BoundingBox.Y2)/2;
+				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
+			}
+		}
+		break;
+
+	case PCB_CH_STATE_SECOND:
+		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		break;
+	}
+}
+
+void tool_skline_adjust_attached_objects(void)
+{
+	attached_line.Point2.X = pcb_crosshair.X;
+	attached_line.Point2.Y = pcb_crosshair.Y;
+}
+
+static void tool_skline_draw_attached(void)
+{
+	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
+		pcb_gui->draw_line(pcb_crosshair.GC, attached_line.Point1.X, attached_line.Point1.Y,
+																				 attached_line.Point2.X, attached_line.Point2.Y);
+	}
+}
+
+pcb_bool tool_skline_undo_act(void)
+{
+	/* TODO */
+	return pcb_false;
+}
+
+static pcb_tool_t tool_skline = {
+	"skline", NULL, 100,
+	NULL,
+	tool_skline_uninit,
+	tool_skline_notify_mode,
+	NULL,
+	tool_skline_adjust_attached_objects,
+	tool_skline_draw_attached,
+	tool_skline_undo_act,
+	NULL,
+
+	pcb_false
+};
+
+
+/*** actions ***/
 static const char pcb_acts_skretriangulate[] = "skretriangulate()";
 static const char pcb_acth_skretriangulate[] = "Construct a new CDT on the current layer";
 fgw_error_t pcb_act_skretriangulate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -106,8 +188,19 @@ fgw_error_t pcb_act_skretriangulate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_skline[] = "skline()";
+static const char pcb_acth_skline[] = "Tool for drawing sketch lines";
+fgw_error_t pcb_act_skline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_tool_select_by_name("skline");
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t sketch_route_action_list[] = {
-	{"skretriangulate", pcb_act_skretriangulate, pcb_acth_skretriangulate, pcb_acts_skretriangulate}
+	{"skretriangulate", pcb_act_skretriangulate, pcb_acth_skretriangulate, pcb_acts_skretriangulate},
+	{"skline", pcb_act_skline, pcb_acth_skline, pcb_acts_skline}
 };
 
 PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
@@ -117,6 +210,7 @@ int pplg_check_ver_sketch_route(int ver_needed) { return 0; }
 void pplg_uninit_sketch_route(void)
 {
 	pcb_remove_actions_by_cookie(pcb_sketch_route_cookie);
+	pcb_tool_unreg_by_cookie(pcb_sketch_route_cookie); /* should be done before pcb_tool_uninit, somehow */
 	sketch_free(&sketch);
 }
 
@@ -128,6 +222,7 @@ int pplg_init_sketch_route(void)
 	PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
 
 	memset(&sketch, 0, sizeof(sketch_t));
+	pcb_tool_reg(&tool_skline, pcb_sketch_route_cookie);
 
 	return 0;
 }
