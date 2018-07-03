@@ -158,7 +158,6 @@ li:pcb-rnd-conf-v1 {
 				pin = {#4d4d4d}
 				pin_name = {#ff0000}
 				element = {#000000}
-				element_nonetlist = {#777777}
 				subc = {#CC0000}
 				subc_nonetlist = {#551111}
 				padstackmark = {#CC0000}
