@@ -165,7 +165,6 @@ li:pcb-rnd-conf-v1 {
 				rat = {#b8860b}
 				invisible_objects = {#cccccc}
 				invisible_mark = {#cccccc}
-				rat_selected = {#00ffff}
 				connected = {#00ff00}
 				off_limit = {#cccccc}
 				grid = {#ff0000}

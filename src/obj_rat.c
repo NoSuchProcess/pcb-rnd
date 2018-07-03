@@ -217,7 +217,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
-			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.rat_selected);
+			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.selected);
 		else
 			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.connected);
 	}

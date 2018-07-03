@@ -192,7 +192,6 @@ typedef struct {
 			CFT_COLOR rat;
 			CFT_COLOR invisible_objects;
 			CFT_COLOR invisible_mark;
-			CFT_COLOR rat_selected;
 			CFT_COLOR connected;
 			CFT_COLOR off_limit;
 			CFT_COLOR grid;
