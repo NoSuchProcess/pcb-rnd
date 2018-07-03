@@ -294,22 +294,11 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
-
-static void pcb_layer_confchg_color(conf_native_t *cfg, int arr_idx)
-{
-	if (PCB != NULL) {
-		pcb_layer_t *lp = pcb_get_layer(PCB->Data, arr_idx);
-		if (lp != NULL)
-			lp->meta.real.color = conf_core.appearance.color.layer[arr_idx];
-	}
-}
-
 static const char *layer_vis_cookie = "core_layer_vis";
 
 void pcb_layer_vis_init(void)
 {
 	conf_native_t *n_mask = conf_get_field("editor/show_mask");
-	conf_native_t *n_c1 = conf_get_field("appearance/color/layer");
 	static conf_hid_callbacks_t cbs_mask, cbs_c1;
 
 	layer_vis_conf_id = conf_hid_reg(layer_vis_cookie, NULL);
@@ -319,10 +308,6 @@ void pcb_layer_vis_init(void)
 		cbs_mask.val_change_post = layer_vis_chg_mask;
 		conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
 	}
-
-	memset(&cbs_c1, 0, sizeof(conf_hid_callbacks_t));
-	cbs_c1.val_change_post = pcb_layer_confchg_color;
-	conf_hid_set_cb(n_c1, layer_vis_conf_id, &cbs_c1);
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }
