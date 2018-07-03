@@ -182,19 +182,19 @@ typedef struct {
 			CFT_COLOR via;                   /* non-terminal padstack shape on current layer */
 			CFT_COLOR pin;                   /* terminal padstack shape on current layer */
 			CFT_COLOR pin_name;              /* on-screen terminal number/name labels */
-			CFT_COLOR element;               /* shown side silk color */
 			CFT_COLOR subc;                  /* on-screen subcircuit marks */
 			CFT_COLOR subc_nonetlist;        /* on-screen subcircuit marks for subcircuits with the nonetlist flag */
 			CFT_COLOR padstackmark;          /* on-screen center mark cross for padstacks */
 			CFT_COLOR rat;                   /* on-screen rat lines */
 			CFT_COLOR invisible_objects;     /* other-side objects and padstack shapes on non-current layer */
 			CFT_COLOR connected;             /* 'connected' highlight (galvanic connections found) */
+			CFT_COLOR warn;                  /* warning highlight (e.g. object found to cause a short) */
 			CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
 			CFT_COLOR grid;                  /* on-screen grid */
 			CFT_COLOR layer[PCB_MAX_LAYER];  /* default layer colors; when a new layer is created, a color from this list is assigned initially */
-			CFT_COLOR warn;                  /* warning highlight (e.g. object found to cause a short) */
-			CFT_COLOR mask;
-			CFT_COLOR paste;
+			CFT_COLOR mask;                  /* default mask layer color (when a new mask layer is created) */
+			CFT_COLOR paste;                 /* default paste layer color (when a new paste layer is created) */
+			CFT_COLOR element;               /* default silk layer color (when a new silk layer is created) */
 		} color;
 		struct pinout {
 			CFT_INTEGER name_length;
