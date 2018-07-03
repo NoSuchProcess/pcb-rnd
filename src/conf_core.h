@@ -188,7 +188,6 @@ typedef struct {
 			CFT_COLOR padstackmark;          /* on-screen center mark cross for padstacks */
 			CFT_COLOR rat;                   /* on-screen rat lines */
 			CFT_COLOR invisible_objects;     /* other-side objects and padstack shapes on non-current layer */
-			CFT_COLOR invisible_mark;
 			CFT_COLOR connected;             /* 'connected' highlight (galvanic connections found) */
 			CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
 			CFT_COLOR grid;                  /* on-screen grid */

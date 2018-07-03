@@ -161,7 +161,6 @@ li:pcb-rnd-conf-v1 {
 				padstackmark = {#CC0000}
 				rat = {#b8860b}
 				invisible_objects = {#cccccc}
-				invisible_mark = {#cccccc}
 				connected = {#00ff00}
 				off_limit = {#cccccc}
 				grid = {#ff0000}
