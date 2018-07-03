@@ -397,28 +397,21 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 }
 
 /*** Row builder ***/
-#warning layer TODO: hardwired layer colors
-#define hardwired_colors(typ) \
-do { \
-	unsigned long __typ__ = (typ); \
-	if (__typ__ & PCB_LYT_SILK)   return conf_core.appearance.color.element; \
-	if (__typ__ & PCB_LYT_MASK)   return conf_core.appearance.color.mask; \
-	if (__typ__ & PCB_LYT_PASTE)  return conf_core.appearance.color.paste; \
-} while (0)
-
 static const char *lyr_color(pcb_layer_id_t lid)
 {
-	if (lid < 0) return "#aaaa00";
-	hardwired_colors(pcb_layer_flags(PCB, lid));
-	return conf_core.appearance.color.layer[lid] == NULL ? "#aaaa00" : conf_core.appearance.color.layer[lid];
+	const char *clr = "#aaaa00";
+	pcb_layer_t *ly = pcb_get_layer(PCB->Data, lid);
+
+	if (ly != NULL)
+		clr = ly->meta.real.color;
+
+	return clr;
 }
 
 static const char * const grp_color(pcb_layergrp_t *g)
 {
-	hardwired_colors(g->ltype);
-	/* normal mechanism: first layer's color or yellow */
-	if (g->len == 0) return "#ffff00";
-	return lyr_color(g->lid[0]);
+	/* normal mechanism: first layer's color or default by type */
+	return pcb_layer_default_color(g->len > 0 ? g->lid[0] : 0, g->ltype);
 }
 
 /* Create a hbox with on/off visibility boxes packed in, pointers returned in *on, *off */
