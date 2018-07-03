@@ -187,7 +187,6 @@ typedef struct {
 			CFT_COLOR element;
 			CFT_COLOR element_nonetlist;
 			CFT_COLOR subc;
-			CFT_COLOR subc_selected;
 			CFT_COLOR subc_nonetlist;
 			CFT_COLOR padstackmark;          /* color of the center mark cross for padstacks */
 			CFT_COLOR rat;
