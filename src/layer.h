@@ -249,6 +249,9 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 /* Return the name of a layer (resolving the true name of virtual layers too) */
 const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 
+/* Return the default color for a new layer from the config */
+const char *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
+
 /* Rename an existing layer by idx */
 int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname);
 

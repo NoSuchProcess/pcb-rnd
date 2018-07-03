@@ -484,6 +484,20 @@ void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 		ar->link.parent = &dst->Arc.lst;
 }
 
+const char *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
+{
+	const int clrs = sizeof(conf_core.appearance.color.layer) / sizeof(conf_core.appearance.color.layer[0]);
+
+	if (lyt & PCB_LYT_MASK)
+		return conf_core.appearance.color.mask;
+	if (lyt & PCB_LYT_PASTE)
+		return conf_core.appearance.color.paste;
+	if (lyt & PCB_LYT_SILK)
+		return conf_core.appearance.color.element;
+
+	return conf_core.appearance.color.layer[idx % clrs];
+}
+
 /* Initialize a new layer with safe initial values */
 static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid, pcb_data_t *parent)
 {
@@ -491,7 +505,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->meta.real.grp = gid;
 	lp->meta.real.vis = 1;
 	lp->name = pcb_strdup("New Layer");
-	lp->meta.real.color = conf_core.appearance.color.layer[idx];
+	lp->meta.real.color = pcb_layer_default_color(idx, (gid >= 0) ? pcb->LayerGroups.grp[gid].ltype : 0);
 	if ((gid >= 0) && (pcb->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
 		switch((pcb->LayerGroups.grp[gid].ltype) & PCB_LYT_ANYTHING) {
 			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;

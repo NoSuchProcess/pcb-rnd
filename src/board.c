@@ -39,6 +39,7 @@
 #include "event.h"
 #include "safe_fs.h"
 #include "tool.h"
+#include "layer.h"
 
 
 pcb_board_t *PCB;
@@ -161,7 +162,7 @@ void pcb_layer_colors_from_conf(pcb_board_t *ptr)
 
 	/* copy default settings */
 	for (i = 0; i < PCB_MAX_LAYER; i++)
-		ptr->Data->Layer[i].meta.real.color = conf_core.appearance.color.layer[i];
+		ptr->Data->Layer[i].meta.real.color = pcb_layer_default_color(i, pcb_layer_flags(ptr, i));
 }
 
 typedef struct {
