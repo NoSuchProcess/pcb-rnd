@@ -147,6 +147,7 @@ void pcb_layer_free(pcb_layer_t *layer)
 			pcb_r_destroy_tree(&layer->text_tree);
 		if (layer->polygon_tree)
 			pcb_r_destroy_tree(&layer->polygon_tree);
+		free(layer->meta.real.color);
 	}
 	free((char *)layer->name);
 	memset(layer, 0, sizeof(pcb_layer_t));
@@ -505,7 +506,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->meta.real.grp = gid;
 	lp->meta.real.vis = 1;
 	lp->name = pcb_strdup("New Layer");
-	lp->meta.real.color = pcb_layer_default_color(idx, (gid >= 0) ? pcb->LayerGroups.grp[gid].ltype : 0);
+	lp->meta.real.color = pcb_strdup(pcb_layer_default_color(idx, (gid >= 0) ? pcb->LayerGroups.grp[gid].ltype : 0));
 	if ((gid >= 0) && (pcb->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
 		switch((pcb->LayerGroups.grp[gid].ltype) & PCB_LYT_ANYTHING) {
 			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;

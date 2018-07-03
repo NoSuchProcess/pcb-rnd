@@ -58,7 +58,7 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 	l = vtlayer_alloc_append(&pcb_uilayer, 1);
 found:;
 	l->meta.real.cookie = cookie;
-	l->meta.real.color = color;
+	l->meta.real.color = pcb_strdup(color);
 	l->name = pcb_strdup(name);
 	l->meta.real.vis = 1;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
