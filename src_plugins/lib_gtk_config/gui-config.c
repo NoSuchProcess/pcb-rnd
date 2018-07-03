@@ -1238,18 +1238,15 @@ void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int i
 	}
 }
 
-void config_colors_tab_create_scalar(pcb_gtk_common_t *com, GtkWidget *parent_vbox, const char *path_prefix, int selected)
+void config_colors_tab_create_scalar(pcb_gtk_common_t *com, GtkWidget *parent_vbox, const char *path_prefix)
 {
 	htsp_entry_t *e;
 	int pl = strlen(path_prefix);
 
 	conf_fields_foreach(e) {
 		conf_native_t *cfg = e->value;
-		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR) && (cfg->array_size == 1)) {
-			int is_selected = (strstr(e->key, "_selected") != NULL) || (strcmp(e->key + strlen(e->key) - 8, "selected") == 0);
-			if (is_selected == selected)
-				config_color_button_create(com, parent_vbox, cfg, 0);
-		}
+		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR) && (cfg->array_size == 1))
+			config_color_button_create(com, parent_vbox, cfg, 0);
 	}
 }
 
@@ -1294,7 +1291,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	config_colors_tab_create_scalar(com, vbox, "appearance/color", 0);
+	config_colors_tab_create_scalar(com, vbox, "appearance/color");
 
 	/* ---- Layer colors ---- */
 	expander = gtk_expander_new(_("Layer colors"));
@@ -1304,15 +1301,6 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
 	config_colors_tab_create_array(com, vbox, "appearance/color/layer");
-
-	/* ---- Selected colors ---- */
-	expander = gtk_expander_new(_("Selected colors"));
-	gtk_box_pack_start(GTK_BOX(scrolled_vbox), expander, FALSE, FALSE, 2);
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(expander), vbox);
-	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
-
-	config_colors_tab_create_scalar(com, vbox, "appearance/color", 1);
 
 	config_user_role_section(com, config_colors_vbox, config_colors_save, 0);
 
