@@ -34,6 +34,8 @@
 #include "conf_core.h"
 #include "data.h"
 #include "actions.h"
+#include "search.h"
+#include "data_list.h"
 
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";
@@ -99,6 +101,65 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_padstackbreakup[] = "PadstackBreakup(buffer|selected|objet)";
+static const char pcb_acth_padstackbreakup[] = "Break up a padstack into one non-padstack object per layer type (the hole is ignored)";
+fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op;
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
+	PCB_ACT_IRES(-1);
+
+	switch(op) {
+		case F_Object:
+			{
+				void *ptr1, *ptr2, *ptr3;
+				pcb_pstk_t *ps;
+				pcb_objtype_t type;
+				pcb_coord_t x, y;
+				
+				pcb_hid_get_coords("Select a padstack to break up", &x, &y);
+				if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
+					pcb_message(PCB_MSG_ERROR, "Need a padstack under the cursor\n");
+					break;
+				}
+				ps = (pcb_pstk_t *)ptr2;
+				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *)ps)) {
+					pcb_message(PCB_MSG_ERROR, "Sorry, that padstack is locked\n");
+					break;
+				}
+				PCB_ACT_IRES(pcb_pstk_proto_breakup(PCB->Data, ps, 1));
+			}
+			break;
+		case F_Selected:
+			{
+				pcb_cardinal_t n;
+				int ret = 0;
+				vtp0_t objs;
+				pcb_any_obj_t **o;
+
+				vtp0_init(&objs);
+				pcb_data_list_by_flag(PCB->Data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
+				for(n = 0, o = (pcb_any_obj_t **)objs.array; n < vtp0_len(&objs); n++,o++)
+					ret |= pcb_pstk_proto_breakup(PCB->Data, (pcb_pstk_t *)*o, 1);
+				PCB_ACT_IRES(ret);
+				vtp0_uninit(&objs);
+			}
+			break;
+		case F_Buffer:
+			{
+				int ret = 0;
+				PCB_PADSTACK_LOOP(PCB_PASTEBUFFER->Data) {
+					ret |= pcb_pstk_proto_breakup(PCB_PASTEBUFFER->Data, padstack, 1);
+				} PCB_END_LOOP;
+				PCB_ACT_IRES(ret);
+			}
+			break;
+		default:
+			PCB_ACT_FAIL(padstackbreakup);
+	}
+	return 0;
+}
+
 static const char pcb_acts_padstackplace[] = "PadstackPlace([proto_id|default], [x, y])";
 static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
 fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -153,6 +214,7 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 pcb_action_t padstack_action_list[] = {
 	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
+	{"PadstackBreakup", pcb_act_padstackbreakup, pcb_acth_padstackbreakup, pcb_acts_padstackbreakup},
 	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}
 };
 
