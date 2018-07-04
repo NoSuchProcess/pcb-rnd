@@ -123,16 +123,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 			pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
 			pcb_layer_type_t lyt = pcb_layer_flags_(l);
 
-#warning layer TODO: hardwired layer colors
-			if (lyt & PCB_LYT_SILK)
-				props.background = conf_core.appearance.color.element;
-			else if (lyt & PCB_LYT_MASK)
-				props.background = conf_core.appearance.color.mask;
-			else if (lyt & PCB_LYT_PASTE)
-				props.background = conf_core.appearance.color.paste;
-			else
-				props.background = conf_core.appearance.color.layer[lid];
-
+			props.background = l->meta.real.color;
 			props.foreground = conf_core.appearance.color.background;
 			props.checked = chk;
 			if (ctx->view) {
