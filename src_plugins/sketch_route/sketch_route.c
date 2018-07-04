@@ -171,7 +171,7 @@ void tool_skline_notify_mode(void)
 	pcb_any_obj_t *term_obj;
 	switch (pcb_crosshair.AttachedObject.State) {
 	case PCB_CH_STATE_FIRST:
-		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
 
 		if (type != PCB_OBJ_VOID) {
 			term_obj = ptr2;
