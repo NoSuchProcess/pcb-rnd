@@ -161,6 +161,11 @@ static void sketch_uninit(sketch_t *sk)
 }
 
 
+static sketch_t *sketches_get_sketch_at_layer(pcb_layer_t *layer)
+{
+	return htip_getentry(&sketches, pcb_layer_id(PCB->Data, layer))->value;
+}
+
 static void sketches_init()
 {
 	pcb_layer_id_t lid[PCB_MAX_LAYER];
