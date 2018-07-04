@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../default.css">
+</head>
+<body>
+<h1> pcb-rnd - user manual appendix </h1>
+
+<h2> 9.4 Layer colors</h2>
+<p>
+Each layer has its own layer color. Starting with lihata board v5, the
+layer color is saved to and loaded from board files. Layers retrain their
+color even when they are moved within or between layer groups.
+<p>
+In parallel to this mechanism, there is a set of <i>default</i> colors
+defined in the conf subsystem: a set of default copper layer colors and
+specific default colors for paste, mask and silk layers.
+<p>
+There are only two cases when the default colors from the config subsystem
+are used:
+<ul>
+<li>
+When a new layer is created or a layer without color specified is loaded
+from a file or when a layer is loaded from a file format that does not
+support per layer color, a default color is assigned from the config,
+depending on the layer type. 
+
+<li>
+When an object needs to be displayed out of the board, e.g. in the footprint
+preview window of the library dialog
+</ul>
+<p>
+Composite rendering: positive layers are always rendered using their own
+layer color (e.g. it is possible to define two silk layers in the top silk
+group with two different colors, and the silk drawing on screen will have
+two colors). A negative layer's color is normally invisible, thus does not
+matter, because objects of a negative layer are removing pixels, not drawing
+them.
+<p>
+When a composite layer group is rendered with the first layer being negative
+(typical for mask), the rendering code needs to apply a fill that covers
+the whole board, so the negative layer objects can cut out from that fill. The
+color of this fill is the color of the first layer.
+
+</body>
+</html>
