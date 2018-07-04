@@ -205,10 +205,17 @@ do { \
 		pcb_layergrp_t *g; \
 		pcb_layergrp_id_t grp = -1; \
 		if (layer->meta.bound.type & PCB_LYT_SILK) { \
-			if (sel) \
+			if (sel) {\
 				dst = conf_core.appearance.color.selected; \
-			else \
-				dst = conf_core.appearance.color.element; \
+			} \
+			else {\
+				if (layer != NULL) { \
+					pcb_layer_t *ly = pcb_layer_get_real(layer); \
+					dst = ly->meta.real.color; \
+				} \
+				else \
+					dst = conf_core.appearance.color.element; \
+			} \
 			break; \
 		} \
 		else if (layer->meta.bound.type & PCB_LYT_COPPER) \
@@ -220,9 +227,8 @@ do { \
 			if (sel) \
 				dst = conf_core.appearance.color.selected; \
 			else {\
-				pcb_layer_t *ly; \
 				if (layer != NULL) { \
-					ly = pcb_layer_get_real(layer); \
+					pcb_layer_t *ly = pcb_layer_get_real(layer); \
 					dst = ly->meta.real.color; \
 				} \
 				else \
