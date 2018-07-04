@@ -290,7 +290,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src)
 {
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(src);
-	int n;
+	int n, i;
 	pcb_layer_type_t lyt, filt = (PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE);
 
 	if (ts == NULL)
@@ -340,8 +340,8 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 					break;
 			case PCB_PSSH_POLY:
 				p = pcb_poly_new(ly, clr, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
-				for(n = 0; n < shp->data.poly.len; n++)
-					pcb_poly_point_new(p, src->x + shp->data.poly.x[n], src->y + shp->data.poly.y[n]);
+				for(i = 0; i < shp->data.poly.len; i++)
+					pcb_poly_point_new(p, src->x + shp->data.poly.x[i], src->y + shp->data.poly.y[i]);
 				pcb_add_poly_on_layer(ly, p);
 				break;
 		}
