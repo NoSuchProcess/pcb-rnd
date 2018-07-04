@@ -152,8 +152,7 @@ void tool_skline_notify_mode(void)
 			}
 			else {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE;
-				attached_line.Point1.X = (term_obj->BoundingBox.X1 + term_obj->BoundingBox.X2)/2;
-				attached_line.Point1.Y = (term_obj->BoundingBox.Y1 + term_obj->BoundingBox.Y2)/2;
+				pcb_obj_center(term_obj, &attached.line.Point1.X, &attached.line.Point1.Y);
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
 		}
@@ -168,15 +167,15 @@ void tool_skline_notify_mode(void)
 
 void tool_skline_adjust_attached_objects(void)
 {
-	attached_line.Point2.X = pcb_crosshair.X;
-	attached_line.Point2.Y = pcb_crosshair.Y;
+	attached.line.Point2.X = pcb_crosshair.X;
+	attached.line.Point2.Y = pcb_crosshair.Y;
 }
 
 static void tool_skline_draw_attached(void)
 {
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-		pcb_gui->draw_line(pcb_crosshair.GC, attached_line.Point1.X, attached_line.Point1.Y,
-																				 attached_line.Point2.X, attached_line.Point2.Y);
+		pcb_gui->draw_line(pcb_crosshair.GC, attached.line.Point1.X, attached.line.Point1.Y,
+																				 attached.line.Point2.X, attached.line.Point2.Y);
 	}
 }
 
