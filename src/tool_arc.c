@@ -143,21 +143,21 @@ void pcb_tool_arc_draw_attached(void)
 		}
 	}
 	else {
-    /* Draw a circle (0 length line) to show where the arc will start when placed */
-    if(CURRENT)
-      pcb_gui->set_color(pcb_crosshair.GC,CURRENT->meta.real.color);
+		/* Draw a circle (0 length line) to show where the arc will start when placed */
+		if(CURRENT)
+			pcb_gui->set_color(pcb_crosshair.GC,CURRENT->meta.real.color);
 
-    pcb_draw_wireframe_line(pcb_crosshair.GC,
-                            pcb_crosshair.X, pcb_crosshair.Y,
-                            pcb_crosshair.X, pcb_crosshair.Y,
-                            conf_core.design.line_thickness,0 );
+		pcb_draw_wireframe_line(pcb_crosshair.GC,
+			pcb_crosshair.X, pcb_crosshair.Y,
+			pcb_crosshair.X, pcb_crosshair.Y,
+			conf_core.design.line_thickness, 0);
 
-    if(conf_core.editor.show_drc) {
-      pcb_gui->set_color(pcb_crosshair.GC,conf_core.appearance.color.cross);
-      pcb_draw_wireframe_line(pcb_crosshair.GC,
-                              pcb_crosshair.X, pcb_crosshair.Y,
-                              pcb_crosshair.X, pcb_crosshair.Y,
-                              conf_core.design.line_thickness + (2 * conf_core.design.bloat),0 );	
+		if(conf_core.editor.show_drc) {
+			pcb_gui->set_color(pcb_crosshair.GC,conf_core.appearance.color.cross);
+			pcb_draw_wireframe_line(pcb_crosshair.GC,
+				pcb_crosshair.X, pcb_crosshair.Y,
+				pcb_crosshair.X, pcb_crosshair.Y,
+				conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
 			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 		}
 	}
