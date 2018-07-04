@@ -25,6 +25,8 @@
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
 - feature: property editor should deal with flags
 - feature: buffer: break up padstack, just like breaking up subcircuits
+	- doesn't work with buffer (layer messup?)
+	- doesn't set term
 + BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
 
 2. For later releases ===============================================================================
