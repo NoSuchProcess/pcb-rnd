@@ -42,6 +42,8 @@
 #include "layer_ui.h"
 
 #include "cdt/cdt.h"
+#include <genht/htip.h>
+#include <genht/htpp.h>
 
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
@@ -53,7 +55,7 @@ typedef struct {
 
 typedef struct {
 	cdt_t *cdt;
-	htsp_t terminals; /* key - terminal name; value - cdt point */
+	htpp_t terminals; /* key - terminal object; value - cdt point */
 	pcb_layer_t *ui_layer_cdt;
 } sketch_t;
 
@@ -98,10 +100,8 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 
 	if (obj->term != NULL) {
 		pcb_subc_t *subc = pcb_obj_parent_subc(obj);
-		if (subc != NULL) {
-			char *termname = pcb_strdup_printf("%s-%s", subc->refdes, obj->term);
-			htsp_insert(&i->sk->terminals, termname, point);
-		}
+		if (subc != NULL && subc->refdes != NULL)
+			htpp_insert(&i->sk->terminals, obj, point);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -114,7 +114,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	char name[256];
 
 	sk->cdt = malloc(sizeof(cdt_t));
-	htsp_init(&sk->terminals, strhash, strkeyeq);
+	htpp_init(&sk->terminals, ptrhash, ptrkeyeq);
 	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
 
@@ -142,8 +142,6 @@ static sketch_t *sketch_alloc()
 
 static void sketch_uninit(sketch_t *sk)
 {
-	htsp_entry_t *e;
-
 	if (sk->cdt != NULL) {
 		cdt_free(sk->cdt);
 		free(sk->cdt);
@@ -153,11 +151,7 @@ static void sketch_uninit(sketch_t *sk)
 		pcb_uilayer_free(sk->ui_layer_cdt);
 		sk->ui_layer_cdt = NULL;
 	}
-	for (e = htsp_first(&sk->terminals); e; e = htsp_next(&sk->terminals, e)) {
-		htsp_delentry(&sk->terminals, e);
-		free(e->key);
-	}
-	htsp_uninit(&sk->terminals);
+	htpp_uninit(&sk->terminals);
 }
 
 
