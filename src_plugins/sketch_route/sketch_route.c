@@ -34,6 +34,7 @@
 #include "obj_line_list.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "obj_subc_parent.h"
 #include "pcb-printf.h"
 #include "search.h"
 #include "tool.h"
@@ -65,36 +66,64 @@ static void sketch_draw_cdt(sketch_t *sk)
 	VTEDGE_FOREACH_END();
 }
 
+struct search_info {
+	pcb_layer_t *layer;
+	sketch_t *sk;
+};
+
+static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
+{
+	pcb_any_obj_t *obj = (pcb_any_obj_t *) box;
+	struct search_info *i = (struct search_info *) cl;
+	point_t *point;
+
+	if (obj->type == PCB_OBJ_PSTK) {
+		pcb_pstk_t *pstk = (pcb_pstk_t *) obj;
+		if (pcb_pstk_shape_at(PCB, pstk, i->layer) == NULL)
+			return PCB_R_DIR_NOT_FOUND;
+		point = cdt_insert_point(i->sk->cdt, pstk->x, pstk->y);
+	}
+	/* temporary: if a non-padstack obj is _not_ a terminal, then don't triangulate it */
+	/* long term (for non-terminal objects):
+	 * - lines should be triangulated on their endpoints and constrained
+	 * - polygons should be triangulated on vertices and edges constrained
+	 * - texts - same as polygons for their bbox
+	 * - arcs - same as polygons for their bbox */
+	else if (obj->term != NULL) {
+		coord_t cx, cy;
+		pcb_obj_center(obj, &cx, &cy);
+		point = cdt_insert_point(i->sk->cdt, cx, cy);
+	}
+
+	if (obj->term != NULL) {
+		pcb_subc_t *subc = pcb_obj_parent_subc(obj);
+		if (subc != NULL) {
+			char *termname = pcb_strdup_printf("%s-%s", subc->refdes, obj->term);
+			htsp_insert(&i->sk->terminals, termname, point);
+		}
+	}
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
+	pcb_box_t bbox;
+	struct search_info info;
+
 	sk->cdt = malloc(sizeof(cdt_t));
 	htsp_init(&sk->terminals, strhash, strkeyeq);
 	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
 
-	PCB_PADSTACK_LOOP(PCB->Data);
-	{
-		if (pcb_pstk_shape_at(PCB, padstack, layer) != NULL) {
-			cdt_insert_point(sk->cdt, padstack->x, padstack->y);
-		}
-	}
-	PCB_END_LOOP;
-	PCB_SUBC_LOOP(PCB->Data);
-	{
-		PCB_PADSTACK_LOOP(subc->data);
-		{
-			if (pcb_pstk_shape_at(PCB, padstack, layer) != NULL) {
-				point_t *point;
-				char *termname;
-				point = cdt_insert_point(sk->cdt, padstack->x, padstack->y);
-				if (padstack->term != NULL) {
-					termname = pcb_strdup_printf("%s-%s", subc->refdes, padstack->term);
-					htsp_insert(&sk->terminals, termname, point);
-				}
-			}
-		}
-		PCB_END_LOOP;
-	}
-	PCB_END_LOOP;
+	/* TODO: triangulation should be done per layer group basis, not for each layer */
+	info.layer = layer;
+	info.sk = sk;
+	pcb_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	pcb_r_search(layer->line_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	pcb_r_search(layer->text_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	pcb_r_search(layer->polygon_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	pcb_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
 
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, "CDT", layer->meta.real.color);
 	sketch_draw_cdt(sk);
