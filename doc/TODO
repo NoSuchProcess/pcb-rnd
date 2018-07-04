@@ -30,12 +30,7 @@
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
 - feature: property editor should deal with flags
 - feature: buffer: break up padstack, just like breaking up subcircuits
-- cleanup: layer color rewrite:
-	- defaults:
-		- use the config color only if a new layer is created or loaded without known color
-		- conf color.paste and color.mask should be used only when setting up a new layer
-		- conf color.element - only for new silks
-		- BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
++ BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
 
 2. For later releases ===============================================================================
 - BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
