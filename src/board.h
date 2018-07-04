@@ -114,9 +114,10 @@ pcb_board_t *pcb_board_new(int inhibit_events);
 /* Called after PCB->Data->LayerN is set.  Returns non-zero on error */
 int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults);
 
-/* Perhaps PCB should internally just use the Settings colors?  For now,
- * use this to set PCB colors so the config can reassign PCB colors. */
-void pcb_layer_colors_from_conf(pcb_board_t *);
+/* Set the color field of each layer that does not yet have an explicit
+   color, from the config, using default colors per layer type. If
+   force is non-zero, overwrite even existing colors. */
+void pcb_layer_colors_from_conf(pcb_board_t *pcb, int force);
 
 /* counts the number of plated and unplated holes in the design within
    a given area of the board. To count for the whole board, pass NULL

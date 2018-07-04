@@ -152,17 +152,17 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 {
 	/* copy default settings */
-	pcb_layer_colors_from_conf(pcb);
+	pcb_layer_colors_from_conf(pcb, 0);
 	return 0;
 }
 
-void pcb_layer_colors_from_conf(pcb_board_t *ptr)
+void pcb_layer_colors_from_conf(pcb_board_t *ptr, int force)
 {
 	int i;
 
 	/* copy default settings */
 	for (i = 0; i < PCB_MAX_LAYER; i++)
-		if ((ptr->Data->Layer[i].meta.real.color == NULL) || (ptr->Data->Layer[i].meta.real.color[0] == '\0')) {
+		if (force || (ptr->Data->Layer[i].meta.real.color == NULL) || (ptr->Data->Layer[i].meta.real.color[0] == '\0')) {
 			free(ptr->Data->Layer[i].meta.real.color);
 			ptr->Data->Layer[i].meta.real.color = pcb_strdup(pcb_layer_default_color(i, pcb_layer_flags(ptr, i)));
 		}
