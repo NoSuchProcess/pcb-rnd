@@ -219,8 +219,15 @@ do { \
 		if ((lid >= 0) && (lid <= PCB_MAX_LAYER)) { \
 			if (sel) \
 				dst = conf_core.appearance.color.selected; \
-			else \
-				dst = conf_core.appearance.color.layer[lid]; \
+			else {\
+				pcb_layer_t *ly = pcb_get_layer(PCB->Data, lid); \
+				if (ly != NULL) { \
+					ly = pcb_layer_get_real(ly); \
+					dst = ly->meta.real.color; \
+				} \
+				else \
+					dst = conf_core.appearance.color.layer[lid]; \
+			} \
 			break; \
 		} \
 	} \
