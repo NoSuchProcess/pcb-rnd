@@ -1,10 +1,5 @@
 0. For the upcoming release ===============================================================================
-- fungw action transition:
-	- introduce advanced coord type (coord pair for return and relative bits, etc)
-	- check who should free fgw_args after a call, to avoid memleak
-	- funchash.h should not be included directly in action code
-	- doc:
-		- how to call actions from code (helper macros)
+- fungw action doc: how to call actions from code (helper macros)
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
