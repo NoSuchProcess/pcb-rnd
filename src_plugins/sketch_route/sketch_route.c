@@ -62,6 +62,11 @@ typedef struct {
 static htip_t sketches;
 
 
+static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
+{
+	return htpp_getentry(&sk->terminals, term)->value;
+}
+
 static void sketch_draw_cdt(sketch_t *sk)
 {
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
