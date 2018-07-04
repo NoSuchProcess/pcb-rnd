@@ -211,7 +211,10 @@ do { \
 			else {\
 				if (layer != NULL) { \
 					pcb_layer_t *ly = pcb_layer_get_real(layer); \
-					dst = ly->meta.real.color; \
+					if (ly != NULL) \
+						dst = ly->meta.real.color; \
+					else \
+						dst = conf_core.appearance.color.element; \
 				} \
 				else \
 					dst = conf_core.appearance.color.element; \
@@ -229,7 +232,10 @@ do { \
 			else {\
 				if (layer != NULL) { \
 					pcb_layer_t *ly = pcb_layer_get_real(layer); \
-					dst = ly->meta.real.color; \
+					if (ly != NULL) \
+						dst = ly->meta.real.color; \
+					else \
+						dst = conf_core.appearance.color.layer[lid]; \
 				} \
 				else \
 					dst = conf_core.appearance.color.layer[lid]; \
