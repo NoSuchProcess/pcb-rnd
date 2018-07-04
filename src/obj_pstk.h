@@ -125,6 +125,10 @@ pcb_cardinal_t pcb_pstk_conv_buffer(int quiet);
    them into shapes of the dst proto. Does not remove input objects. */
 int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy);
 
+/* Break up src into discrete non-pstk objects placed in dst, one object
+   per layer type. The hole is ignored. If remove_src is true, also remove
+   src padstack. */
+int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src);
 
 /* free fields of a proto (not freeing the proto itself, not removing it from lists */
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst);

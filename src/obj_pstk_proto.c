@@ -287,6 +287,12 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	return ret;
 }
 
+int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src)
+{
+
+	return -1;
+}
+
 int pcb_pstk_proto_conv_selection(pcb_board_t *pcb, pcb_pstk_proto_t *dst, int quiet, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret;
