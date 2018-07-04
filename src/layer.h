@@ -252,11 +252,13 @@ const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 /* Return the default color for a new layer from the config */
 const char *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
 
-/* Rename an existing layer by idx */
+/* Rename/recolor an existing layer by idx */
 int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname);
+int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor);
 
-/* changes the name of a layer; memory has to be already allocated */
+/* changes the name/color of a layer; string has to be allocated by the caller (pcb_strdup) */
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
+int pcb_layer_recolor_(pcb_layer_t *Layer, char *color);
 
 
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is

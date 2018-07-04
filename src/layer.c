@@ -444,6 +444,21 @@ int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname)
 	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname));
 }
 
+int pcb_layer_recolor_(pcb_layer_t *Layer, char *color)
+{
+	if (Layer->is_bound)
+		return -1;
+	free(Layer->meta.real.color);
+	Layer->meta.real.color = color;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	return 0;
+}
+
+int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color)
+{
+	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(color));
+}
+
 #undef APPEND
 
 static int is_last_top_copper_layer(pcb_board_t *pcb, int layer)
