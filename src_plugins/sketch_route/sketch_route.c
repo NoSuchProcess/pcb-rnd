@@ -121,7 +121,11 @@ static void sketch_free(sketch_t *sk)
 }
 
 /*** sketch line tool ***/
-pcb_attached_line_t attached_line; /* temporary */
+struct {
+	pcb_attached_line_t line;
+	trianglelist_node_t corridor;
+	wire_t wire;
+} attached;
 
 void tool_skline_uninit(void)
 {
