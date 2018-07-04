@@ -292,6 +292,7 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(src);
 	int n, i;
 	pcb_layer_type_t lyt, filt = (PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE);
+	pcb_any_obj_t *no;
 
 	if (ts == NULL)
 		return -1;
@@ -327,13 +328,13 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 		clr = src->Clearance == 0 ? shp->clearance : src->Clearance;
 		switch(shp->shape) {
 			case PCB_PSSH_CIRC:
-				pcb_line_new(ly,
+				no = (pcb_any_obj_t *)pcb_line_new(ly,
 					src->x + shp->data.circ.x, src->y + shp->data.circ.y,
 					src->x + shp->data.circ.x, src->y + shp->data.circ.y,
 					shp->data.circ.dia, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
 					break;
 			case PCB_PSSH_LINE:
-				pcb_line_new(ly,
+				no = (pcb_any_obj_t *)pcb_line_new(ly,
 					src->x + shp->data.line.x1, src->y + shp->data.line.y1,
 					src->x + shp->data.line.x2, src->y + shp->data.line.y2,
 					shp->data.circ.dia, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -343,8 +344,14 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 				for(i = 0; i < shp->data.poly.len; i++)
 					pcb_poly_point_new(p, src->x + shp->data.poly.x[i], src->y + shp->data.poly.y[i]);
 				pcb_add_poly_on_layer(ly, p);
+				no = (pcb_any_obj_t *)p;
 				break;
+			default:
+				assert(!"invalid shape");
+				continue;
 		}
+		if (src->term != NULL)
+			pcb_attribute_put(&no->Attributes, "term", src->term);
 	}
 
 	if (remove_src) {
