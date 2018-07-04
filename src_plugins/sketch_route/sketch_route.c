@@ -45,6 +45,11 @@
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 typedef struct {
+	pcb_lib_menu_t *net;
+	pointlist_node_t *points;
+} wire_t;
+
+typedef struct {
 	cdt_t *cdt;
 	htsp_t terminals; /* key - terminal name; value - cdt point */
 	pcb_layer_t *ui_layer_cdt;
