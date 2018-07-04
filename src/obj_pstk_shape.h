@@ -34,7 +34,7 @@
 typedef struct pcb_pstk_poly_s {
 	unsigned int len;             /* number of points in polygon */
 	pcb_coord_t *x;               /* ordered list of points, X coord */
-	pcb_coord_t *y;               /* ordered list of points, X coord */
+	pcb_coord_t *y;               /* ordered list of points, Y coord */
 	pcb_polyarea_t *pa;           /* cache for the poly code */
 } pcb_pstk_poly_t;
 
