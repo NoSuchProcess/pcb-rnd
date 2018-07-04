@@ -307,8 +307,10 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 			ly = &dst->Layer[lid];
 			lyt = pcb_layer_flags_(ly);
 			if ((lyt & shp->layer_mask) == shp->layer_mask) {
-				if (shp->comb == ly->comb)
+				if (shp->comb == ly->comb) {
 					ly1 = ly;
+					break;
+				}
 				else
 					ly2 = ly;
 			}
