@@ -429,6 +429,8 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	/* parse the root */
 	res = parse_root(&ctx);
 
+	pcb_layer_colors_from_conf(pcb, 1);
+
 	err:;
 	dump(ctx.root);
 	destroy(ctx.root);
