@@ -118,13 +118,8 @@ static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int ent
 	map_add_prop(ctx, "p/layer/name", String, layer->name);
 	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
 	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
-#warning layer TODO: when hardwired layer colors are gone make color selection possible
-#if 0
-	if (!layer->is_bound) {
-		map_add_prop(ctx, "p/layer/color", int, layer->meta.real.color);
-		map_add_prop(ctx, "p/layer/selected_color", int, layer->meta.real.selected_color);
-	}
-#endif
+	if (!layer->is_bound)
+		map_add_prop(ctx, "p/layer/color", String, layer->meta.real.color);
 	map_attr(ctx, &layer->Attributes);
 	return 0;
 }
@@ -337,6 +332,9 @@ static int set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int ent
 
 	if ((strcmp(pn, "name") == 0) &&
 	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE0;
+
+	if ((strcmp(pn, "color") == 0) &&
+	    (pcb_layer_recolor_(layer, pcb_strdup(st->value)) == 0)) DONE0;
 
 	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
 	return 0;
