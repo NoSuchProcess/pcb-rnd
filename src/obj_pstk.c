@@ -284,13 +284,17 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 /*** draw ***/
 
-static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt)
+static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, pcb_layer_t *ly1)
 {
 	char *color, *layer_color = NULL;
 	char buf[sizeof("#XXXXXX")];
 
-	if (lyt & PCB_LYT_PASTE)
-		layer_color = conf_core.appearance.color.paste;
+	if ((lyt & PCB_LYT_PASTE) || (lyt & PCB_LYT_MASK) || (lyt & PCB_LYT_SILK)) {
+		if (ly1 == NULL)
+			layer_color = pcb_layer_default_color(0, lyt);
+		else
+			layer_color = ly1->meta.real.color;
+	}
 
 	if (ps->term == NULL) {
 		/* normal via, not a terminal */
@@ -414,9 +418,9 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 
 	if (shape != NULL) {
 		if (grp == NULL)
-			set_ps_color(ps, ctx->is_current, ctx->shape_mask);
+			set_ps_color(ps, ctx->is_current, ctx->shape_mask, ctx->layer1);
 		else
-			set_ps_color(ps, ctx->is_current, grp->ltype);
+			set_ps_color(ps, ctx->is_current, grp->ltype, ctx->layer1);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_pstk_draw_shape_thin(pcb_draw_out.fgGC, ps, shape);

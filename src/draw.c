@@ -454,11 +454,16 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 
 static void pcb_draw_pstks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current, pcb_layer_combining_t comb)
 {
+	pcb_layergrp_t *g = PCB->LayerGroups.grp + group;
 	pcb_pstk_draw_t ctx;
 	ctx.pcb = PCB;
 	ctx.gid = group;
 	ctx.is_current = is_current;
 	ctx.comb = comb;
+	if (g->len > 0)
+		ctx.layer1 = pcb_get_layer(PCB->Data, g->lid[0]);
+	else
+		ctx.layer1 = NULL;
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
 }
 
