@@ -75,7 +75,6 @@ opengl:
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 - find.c rewrite:
 	- a new "report(NetLength)" should not care about netlists but depend on find.c only
-	- BUG: GTK layers:  move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h) [report: Ade]:
 	- netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 - feature: lesstif does not allow "save as" in non alien format [report: erich]
@@ -298,7 +297,7 @@ FEATURES
 - the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
-- bug: layer menu: the bottom silk screen icon color changes from gray-black to brown when any layer is selected. [report:Evan]
++ bug: layer menu: the bottom silk screen icon color changes from gray-black to brown when any layer is selected. [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
