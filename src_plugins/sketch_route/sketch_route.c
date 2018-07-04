@@ -31,6 +31,7 @@
 #include "board.h"
 #include "compat_nls.h"
 #include "data.h"
+#include "event.h"
 #include "obj_line_list.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
@@ -127,7 +128,9 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 
 	pcb_snprintf(name, sizeof(name), "%s: CDT", layer->name);
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
+	sk->ui_layer_cdt->meta.real.vis = pcb_false;
 	sketch_draw_cdt(sk);
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
 static sketch_t *sketch_alloc()
