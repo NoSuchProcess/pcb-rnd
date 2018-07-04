@@ -347,6 +347,12 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 		}
 	}
 
+	if (remove_src) {
+		if (src->parent.data->padstack_tree != NULL)
+			pcb_r_delete_entry(src->parent.data->padstack_tree, (pcb_box_t *)src);
+		pcb_pstk_free(src);
+	}
+
 	return -1;
 }
 
