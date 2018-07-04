@@ -1094,4 +1094,6 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 	   when they got loaded */
 	subclist_foreach(&pcb->Data->subc, &it, sc)
 		pcb_subc_rebind(pcb, sc);
+
+	pcb_layer_colors_from_conf(pcb, 1);
 }
