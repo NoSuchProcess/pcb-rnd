@@ -56,7 +56,7 @@ typedef struct {
 	pcb_layer_t *ui_layer_cdt;
 } sketch_t;
 
-static sketch_t sketch; /* TODO: should be created dynamically for each copper layer */
+static htip_t sketches;
 
 
 static void sketch_draw_cdt(sketch_t *sk)
@@ -110,13 +110,13 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
 	pcb_box_t bbox;
 	struct search_info info;
+	char name[256];
 
 	sk->cdt = malloc(sizeof(cdt_t));
 	htsp_init(&sk->terminals, strhash, strkeyeq);
 	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
 
-	/* TODO: triangulation should be done per layer group basis, not for each layer */
 	info.layer = layer;
 	info.sk = sk;
 	pcb_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);
@@ -125,11 +125,19 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	pcb_r_search(layer->polygon_tree, &bbox, NULL, r_search_cb, &info, NULL);
 	pcb_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
 
-	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, "CDT", layer->meta.real.color);
+	pcb_snprintf(name, sizeof(name), "%s: CDT", layer->name);
+	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
 	sketch_draw_cdt(sk);
 }
 
-static void sketch_free(sketch_t *sk)
+static sketch_t *sketch_alloc()
+{
+	sketch_t *new_sk;
+	new_sk = calloc(1, sizeof(sketch_t));
+	return new_sk;
+}
+
+static void sketch_uninit(sketch_t *sk)
 {
 	htsp_entry_t *e;
 
@@ -148,6 +156,34 @@ static void sketch_free(sketch_t *sk)
 	}
 	htsp_uninit(&sk->terminals);
 }
+
+
+static void sketches_init()
+{
+	pcb_layer_id_t lid[PCB_MAX_LAYER];
+	int i, num;
+
+	num = pcb_layer_list(PCB, PCB_LYT_COPPER, lid, PCB_MAX_LAYER);
+	htip_init(&sketches, longhash, longkeyeq);
+	for (i = 0; i < num; i++) {
+		sketch_t *sk = sketch_alloc();
+		sketch_create_for_layer(sk, pcb_get_layer(PCB->Data, lid[i]));
+		htip_insert(&sketches, lid[i], sk);
+	}
+}
+
+static void sketches_uninit()
+{
+	htip_entry_t *e;
+
+	for (e = htip_first(&sketches); e; e = htip_next(&sketches, e)) {
+		sketch_uninit(e->value);
+		free(e->value);
+		htip_delentry(&sketches, e);
+	}
+	htip_uninit(&sketches);
+}
+
 
 /*** sketch line tool ***/
 struct {
@@ -231,11 +267,11 @@ static pcb_tool_t tool_skline = {
 
 /*** actions ***/
 static const char pcb_acts_skretriangulate[] = "skretriangulate()";
-static const char pcb_acth_skretriangulate[] = "Construct a new CDT on the current layer";
+static const char pcb_acth_skretriangulate[] = "Reconstruct CDT on all layer groups";
 fgw_error_t pcb_act_skretriangulate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	sketch_free(&sketch);
-	sketch_create_for_layer(&sketch, CURRENT);
+	sketches_uninit();
+	sketches_init();
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -264,7 +300,7 @@ void pplg_uninit_sketch_route(void)
 {
 	pcb_remove_actions_by_cookie(pcb_sketch_route_cookie);
 	pcb_tool_unreg_by_cookie(pcb_sketch_route_cookie); /* should be done before pcb_tool_uninit, somehow */
-	sketch_free(&sketch);
+	sketches_uninit();
 }
 
 
@@ -274,7 +310,6 @@ int pplg_init_sketch_route(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
 
-	memset(&sketch, 0, sizeof(sketch_t));
 	pcb_tool_reg(&tool_skline, pcb_sketch_route_cookie);
 
 	return 0;
