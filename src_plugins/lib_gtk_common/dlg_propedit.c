@@ -309,9 +309,10 @@ static void prop_preview_init(void)
 	pcb_font_create_default(&preview_pcb);
 	preview_pcb.pstk_on = 1;
 
-	for (n = 0; n < pcb_max_layer; n++) {
+	for (n = 0; n < 2; n++) {
+		preview_pcb.Data->Layer[n].is_bound = 0;
 		preview_pcb.Data->Layer[n].meta.real.vis = 1;
-		preview_pcb.Data->Layer[n].meta.real.color = pcb_strdup(PCB->Data->Layer[n].meta.real.color);
+		preview_pcb.Data->Layer[n].meta.real.color = pcb_strdup(old_pcb->Data->Layer[n].meta.real.color);
 		preview_pcb.Data->Layer[n].name = pcb_strdup("preview dummy");
 		
 	}
