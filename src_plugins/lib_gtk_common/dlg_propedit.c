@@ -306,7 +306,6 @@ static void prop_preview_init(void)
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
 	preview_pcb.Data = pcb_buffer_new(&preview_pcb);
 	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(1000);
-	pcb_layer_colors_from_conf(&preview_pcb);
 	pcb_font_create_default(&preview_pcb);
 	preview_pcb.pstk_on = 1;
 

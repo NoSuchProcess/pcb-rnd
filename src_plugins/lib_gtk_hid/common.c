@@ -160,12 +160,6 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
 
-	/* FIXME - if a layer is moved it should retain its color.  But layers
-	   |  currently can't do that because color info is not saved in the
-	   |  pcb file.  So this makes a moved layer change its color to reflect
-	   |  the way it will be when the pcb is reloaded.
-	 */
-	pcb_layer_colors_from_conf(PCB);
 	return;
 }
 
