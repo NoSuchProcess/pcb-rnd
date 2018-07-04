@@ -381,6 +381,7 @@ ha:{
 				ha:Convert selection to subcircuit        = { a={<key>s; <key>c; <key>s;} action=Select(ConvertSubc) }
 				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
 				ha:Break selection subcircuits to pieces  = { a={<key>s; <key>b; <key>s}; li:action={PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop);} }
+				ha:Break selection padstack to pieces     = { a={<key>s; <key>b; <key>p}; action=PadstackBreakup(selected) }
 				ha:Change selected objects {
 					li:submenu {
 						ha:Lines -10 mil     = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
@@ -414,6 +415,7 @@ ha:{
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
 				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
+				ha:Break buffer padstacks to pieces = { a={<key>b;<key>s;<key>p};  action=PadstackBreakup(buffer) }
 				ha:Save buffer subcircuits to file = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer) }
 				ha:Layer bindings...               = { a={<key>b;<key>b;}; action=LayerBinding(buffer) }
 
@@ -647,6 +649,7 @@ ha:{
 				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove padstack        { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
+				ha:Break up padstack      { action=PadstackBreakup(object) }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
 			}
 		}
