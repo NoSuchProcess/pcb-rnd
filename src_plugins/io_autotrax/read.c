@@ -1174,6 +1174,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	pcb_layer_auto_fixup(Ptr);
 
 	pcb_board_normalize(Ptr);
+	pcb_layer_colors_from_conf(Ptr, 1);
 
 	return readres;
 }
