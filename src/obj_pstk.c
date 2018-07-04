@@ -286,7 +286,7 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, pcb_layer_t *ly1)
 {
-	char *color, *layer_color = NULL;
+	const char *color, *layer_color = NULL;
 	char buf[sizeof("#XXXXXX")];
 
 	if ((lyt & PCB_LYT_PASTE) || (lyt & PCB_LYT_MASK) || (lyt & PCB_LYT_SILK)) {
