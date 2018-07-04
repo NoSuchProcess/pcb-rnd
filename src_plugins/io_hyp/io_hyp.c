@@ -148,6 +148,7 @@ int io_hyp_read_pcb(pcb_plug_io_t * ctx, pcb_board_t * pcb, const char *Filename
 {
 	int res = hyp_parse(pcb->Data, Filename, 0);
 	pcb_layer_auto_fixup(pcb);
+	pcb_layer_colors_from_conf(pcb, 1);
 	return res;
 }
 
