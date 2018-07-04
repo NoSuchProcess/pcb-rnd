@@ -244,9 +244,9 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 				}
 				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
 			}
-		pcb_gui->end_layer();
 		if (have_canvas)
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+		pcb_gui->end_layer();
 	}
 }
 
