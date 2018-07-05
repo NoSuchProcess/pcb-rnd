@@ -74,6 +74,11 @@ static void sketch_draw_cdt(sketch_t *sk)
 	VTEDGE_FOREACH_END();
 }
 
+static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
+{
+	/* TODO */
+}
+
 struct search_info {
 	pcb_layer_t *layer;
 	sketch_t *sk;
@@ -194,14 +199,65 @@ static void sketches_uninit()
 
 /*** sketch line tool ***/
 struct {
+	pcb_any_obj_t *start_term;
+	pcb_lib_menu_t *net;
 	pcb_attached_line_t line;
 	trianglelist_node_t corridor;
 	wire_t wire;
-} attached;
+	sketch_t *sketch;
+} attached_path = {0};
+
+static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
+{
+	point_t *start_p;
+
+	attached_path.sketch = sketches_get_sketch_at_layer(layer);
+	start_p = sketch_get_point_at_terminal(attached_path.sketch, start_term);
+	attached_path.start_term = start_term;
+	attached_path.net = pcb_netlist_find_net4term(PCB, start_term);
+	if (attached_path.net == NULL)
+		return pcb_false;
+	pcb_obj_center(start_term, &attached_path.line.Point1.X, &attached_path.line.Point1.Y);
+
+	/* TODO */
+
+	return pcb_true;
+}
+
+static void attached_path_uninit()
+{
+	/* TODO */
+}
+
+static pcb_bool attached_path_add_point(pcb_coord_t x, pcb_coord_t y)
+{
+	/* TODO */
+	return pcb_false;
+}
+
+static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
+{
+	pcb_subc_t *subc = pcb_obj_parent_subc(end_term);
+	int i;
+
+	if(end_term != attached_path.start_term && subc != NULL) {
+		char termname[128];
+		pcb_snprintf(termname, sizeof(termname), "%s-%s", subc->refdes, end_term->term);
+		for (i = 0; i < attached_path.net->EntryN; i++) {
+			if (strcmp(attached_path.net->Entry[i].ListEntry, termname) == 0) {
+				/* TODO */
+				sketch_insert_wire(attached_path.sketch, &attached_path.wire);
+				return pcb_true;
+			}
+		}
+	}
+	return pcb_false;
+}
 
 void tool_skline_uninit(void)
 {
 	pcb_notify_crosshair_change(pcb_false);
+	attached_path_uninit();
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_notify_crosshair_change(pcb_true);
@@ -212,42 +268,61 @@ void tool_skline_notify_mode(void)
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_any_obj_t *term_obj;
+
 	switch (pcb_crosshair.AttachedObject.State) {
 	case PCB_CH_STATE_FIRST:
 		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
-
+		/* TODO: check if an object is on the current layer */
 		if (type != PCB_OBJ_VOID) {
 			term_obj = ptr2;
-			if (term_obj->term == NULL) {
-				pcb_message(PCB_MSG_WARNING, _("Sketch lines can be only drawn from a terminal\n"));
-				break;
-			}
-			else {
+			if (term_obj->term != NULL
+					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, CURRENT) != NULL)
+							|| type != PCB_OBJ_PSTK)
+					&& attached_path_init(CURRENT, term_obj)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE;
-				pcb_obj_center(term_obj, &attached.line.Point1.X, &attached.line.Point1.Y);
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
+			else
+				pcb_message(PCB_MSG_WARNING, _("Sketch lines can be only drawn from a terminal\n"));
 		}
 		break;
 
 	case PCB_CH_STATE_SECOND:
-		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
-		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
+		/* TODO: check if an object is on the current layer */
+		if (type != PCB_OBJ_VOID) {
+			term_obj = ptr2;
+			if (term_obj->term != NULL
+					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, CURRENT) != NULL)
+							|| type != PCB_OBJ_PSTK)) {
+				if (attached_path_finish(term_obj) == pcb_true) {
+					attached_path_uninit();
+					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+				} else {
+					pcb_message(PCB_MSG_WARNING, _("Cannot finish placing wire at this terminal\n"));
+					pcb_message(PCB_MSG_WARNING, _("(the terminal does not belong to the routed net or is the starting terminal)\n"));
+				}
+			}
+		} else {
+			if (attached_path_add_point(pcb_tool_note.X, pcb_tool_note.Y) == pcb_false)
+				pcb_message(PCB_MSG_WARNING, _("Cannot route the wire this way\n"));
+		}
 		break;
 	}
 }
 
 void tool_skline_adjust_attached_objects(void)
 {
-	attached.line.Point2.X = pcb_crosshair.X;
-	attached.line.Point2.Y = pcb_crosshair.Y;
+	attached_path.line.Point2.X = pcb_crosshair.X;
+	attached_path.line.Point2.Y = pcb_crosshair.Y;
 }
 
 static void tool_skline_draw_attached(void)
 {
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-		pcb_gui->draw_line(pcb_crosshair.GC, attached.line.Point1.X, attached.line.Point1.Y,
-																				 attached.line.Point2.X, attached.line.Point2.Y);
+		pcb_gui->draw_line(pcb_crosshair.GC, attached_path.line.Point1.X, attached_path.line.Point1.Y,
+																				 attached_path.line.Point2.X, attached_path.line.Point2.Y);
 	}
 }
 
