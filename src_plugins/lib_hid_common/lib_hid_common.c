@@ -31,6 +31,7 @@
 #include "grid_menu.h"
 #include "layer_menu.h"
 #include "routest_menu.h"
+#include "util.c"
 
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *layer_cookie = "lib_hid_common/layer";
