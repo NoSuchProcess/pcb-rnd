@@ -294,6 +294,27 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
+pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)
+{
+	int n;
+	/* find the last used match on stack first */
+	for(n = 0; n < PCB_MAX_LAYER; n++) {
+		pcb_layer_id_t lid = pcb_layer_stack[n];
+		pcb_layer_type_t lyt = pcb_layer_flags(PCB, lid);
+		if ((lyt & target) == target)
+			return lid;
+	}
+
+	/* if no match, find any matching layer */
+	for(n = 0; n < PCB_MAX_LAYER; n++) {
+		pcb_layer_type_t lyt = pcb_layer_flags(PCB, n);
+		if ((lyt & target) == target)
+			return n;
+	}
+
+	return -1;
+}
+
 static const char *layer_vis_cookie = "core_layer_vis";
 
 void pcb_layer_vis_init(void)

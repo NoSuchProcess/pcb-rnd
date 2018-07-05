@@ -47,6 +47,9 @@ void pcb_layervis_save_stack(void);
 /* restores the layerstack setting */
 void pcb_layervis_restore_stack(void);
 
+/* Return the last used layer (or if none, any layer) that matches target type */
+pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target);
+
 /* (un)init config watches and events to keep layers in sync */
 void pcb_layer_vis_init(void);
 void pcb_layer_vis_uninit(void);
