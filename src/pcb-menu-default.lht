@@ -236,7 +236,6 @@ ha:{
 					li:submenu {
 						ha:Zoom In 20%            = { m=Z; li:a={{<Key>z;<Key>z;}; {<char>+};} action=Zoom(-1.2) }
 						ha:Zoom Out 20%           = { m=O; li:a={{<Key>z;<Key>x;}; {<char>-};} action=Zoom(+1.2) }
-						ha:Zoom Extents           = {      li:a={{<Key>z;<Key>e;}; {<key>v;<key>f};}; m=M; action=Zoom() }
 						ha:Zoom In 2X             = { action=Zoom(-2) }
 						ha:Zoom Out 2X            = { action=Zoom(+2) }
 						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
@@ -248,6 +247,10 @@ ha:{
 						ha:Zoom to 10mil/px       = { action={Zoom(=10mil)} }
 						ha:Zoom In 20% and center = { m=Z; li:action={Zoom(-1.2); Center()} }
 						ha:Zoom Out 20% and center= { m=O; li:action={Zoom(+1.2); Center()} }
+						-
+						ha:Zoom Extents           = {      li:a={{<Key>z;<Key>e;}; {<key>v;<key>f};}; m=M; action=Zoom() }
+						ha:Zoom to selection      = {      a={<Key>z;<Key>s;}; action=ZoomTo(selected) }
+						ha:Zoom to found          = {      a={<Key>z;<Key>f;}; action=ZoomTo(found) }
 						-
 						ha:Flip up/down           = { checked=editor/view/flip_y; a=<Key>Tab; action=SwapSides(V) }
 						ha:Flip left/right        = { checked=editor/view/flip_x; a=Shift<Key>Tab; action=SwapSides(H) }
