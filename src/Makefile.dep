@@ -3647,7 +3647,8 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer_vis.h \
- ../src_plugins/lib_gtk_common/bu_status_line.h
+ ../src_plugins/lib_gtk_common/bu_status_line.h \
+ ../src_plugins/lib_gtk_common/../lib_hid_common/util.h
 ../src_plugins/lib_gtk_common/util_block_hook.o: \
  ../src_plugins/lib_gtk_common/util_block_hook.c ../config.h \
  ../src_plugins/lib_gtk_common/util_block_hook.h hid.h \
@@ -4260,7 +4261,19 @@
  ../src_3rd/genlist/gendlist.h error.h \
  ../src_plugins/lib_hid_common/grid_menu.h conf.h event.h \
  ../src_plugins/lib_hid_common/layer_menu.h \
- ../src_plugins/lib_hid_common/routest_menu.h
+ ../src_plugins/lib_hid_common/routest_menu.h \
+ ../src_plugins/lib_hid_common/util.c \
+ ../src_plugins/lib_hid_common/util.h data.h globalconst.h layer.h \
+ attrib.h obj_arc_list.h obj_common.h flag.h data_parent.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
+ obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
+ crosshair.h vtonpoint.h hid.h drc.h layer_grp.h route.h buffer.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
 ../src_plugins/lib_hid_common/routest_menu.o: \
  ../src_plugins/lib_hid_common/routest_menu.c ../config.h board.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -5146,9 +5159,10 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h obj_line_list.h obj_pstk.h obj_pstk_inlines.h data.h \
- thermal.h pcb-printf.h search.h rats.h netlist.h route_style.h tool.h \
- layer_ui.h ../src_plugins/sketch_route/cdt/cdt.h \
+ vtpadstack_t.h event.h obj_line_list.h obj_pstk.h obj_pstk_inlines.h \
+ data.h thermal.h obj_subc_parent.h pcb-printf.h search.h rats.h \
+ netlist.h route_style.h tool.h layer_ui.h \
+ ../src_plugins/sketch_route/cdt/cdt.h \
  ../src_plugins/sketch_route/cdt/typedefs.h \
  ../src_plugins/sketch_route/cdt/point.h \
  ../src_plugins/sketch_route/cdt/list/list.h \
@@ -6497,7 +6511,8 @@ obj_pstk_act.o: obj_pstk_act.c ../config.h obj_pstk.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h vtpadstack.h thermal.h \
  funchash_core.h funchash.h funchash_core_list.h conf_core.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h actions.h
+ pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h actions.h \
+ search.h rats.h netlist.h route_style.h data_list.h
 obj_pstk_list.o: obj_pstk_list.c obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
