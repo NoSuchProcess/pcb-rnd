@@ -626,13 +626,15 @@ static int group_showing(int g, int *c)
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
 static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *op = NULL;
+	const char *op = NULL, *b;
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	int comp_layer;
 	int solder_layer;
 	int comp_showing = 0, solder_showing = 0;
+	pcb_layer_id_t lid;
+	pcb_layer_type_t lyt;
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
 		solder_showing = group_showing(solder_group, &solder_layer);
@@ -641,6 +643,7 @@ static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		comp_showing = group_showing(comp_group, &comp_layer);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, SwapSides, op = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
 
 	if (op != NULL) {
 		switch (op[0]) {
@@ -660,6 +663,16 @@ static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		default:
 			return 1;
 		}
+
+		switch (b[0]) {
+			case 'S':
+			case 's':
+				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
+				lid = pcb_layer_vis_last_lyt(lyt);
+				if (lid >= 0)
+					pcb_layervis_change_group_vis(lid, 1, 1);
+		}
+
 		/* SwapSides will swap this */
 		conf_set_editor(show_solder_side, (conf_core.editor.view.flip_x == conf_core.editor.view.flip_y));
 	}
