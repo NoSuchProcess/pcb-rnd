@@ -30,7 +30,7 @@
 #include "data_it.h"
 #include "flag.h"
 
-pcb_cardinal_t pcb_get_selection_bbox(pcb_box_t *dst, const pcb_data_t *data)
+static pcb_cardinal_t pcb_get_bbox_by_flag(pcb_box_t *dst, const pcb_data_t *data, pcb_flag_values_t flg)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
@@ -40,10 +40,20 @@ pcb_cardinal_t pcb_get_selection_bbox(pcb_box_t *dst, const pcb_data_t *data)
 	dst->X2 = dst->Y2 = -PCB_MAX_COORD;
 
 	for(o = pcb_data_first(&it, (pcb_data_t *)data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+		if (!PCB_FLAG_TEST(flg, o))
 			continue;
 		cnt++;
 		pcb_box_bump_box(dst, &o->BoundingBox);
 	}
 	return cnt;
+}
+
+pcb_cardinal_t pcb_get_selection_bbox(pcb_box_t *dst, const pcb_data_t *data)
+{
+	return pcb_get_bbox_by_flag(dst, data, PCB_FLAG_SELECTED);
+}
+
+pcb_cardinal_t pcb_get_found_bbox(pcb_box_t *dst, const pcb_data_t *data)
+{
+	return pcb_get_bbox_by_flag(dst, data, PCB_FLAG_FOUND);
 }
