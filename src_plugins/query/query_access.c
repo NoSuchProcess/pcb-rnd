@@ -329,6 +329,12 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 	return field_layer_from_ptr(PCB->Data->Layer+id, fld, res);
 }
 
+static double pcb_line_len2(pcb_line_t *l)
+{
+	double x = l->Point1.X - l->Point2.X;
+	double y = l->Point1.Y - l->Point2.Y;
+	return x*x + y*y;
+}
 
 static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
@@ -362,10 +368,7 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_clearance:  PCB_QRY_RET_INT(res, l->Clearance);
 		case query_fields_length:
 			{
-				double x = l->Point1.X - l->Point2.X;
-				double y = l->Point1.Y - l->Point2.Y;
-				double len = sqrt(x*x + y*y);
-				PCB_QRY_RET_INT(res, ((pcb_coord_t)len));
+				PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(sqrt(pcb_line_len2(l)))));
 			}
 			break;
 		default:;
