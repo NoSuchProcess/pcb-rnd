@@ -225,6 +225,9 @@ int pcb_layer_comb_map(pcb_layer_combining_t type, void *ctx, void (*cb)(void *c
 pcb_layer_type_t pcb_layer_type_str2bit(const char *name);
 pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name);
 
+/* return the name of a type bit; type should have only one bit set */
+const char *pcb_layer_type_bit2str(pcb_layer_type_t type);
+
 /* Various fixes for old/plain/flat layer stack imports vs. composite layers */
 void pcb_layer_auto_fixup(pcb_board_t *pcb);
 
