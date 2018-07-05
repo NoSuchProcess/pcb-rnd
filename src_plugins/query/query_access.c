@@ -264,7 +264,6 @@ do { \
 			case query_fields_y2:     PCB_QRY_RET_INT(res, obj->BoundingBox.Y2); \
 			case query_fields_width:  PCB_QRY_RET_INT(res, obj->BoundingBox.X2 - obj->BoundingBox.X1); \
 			case query_fields_height: PCB_QRY_RET_INT(res, obj->BoundingBox.Y2 - obj->BoundingBox.Y1); \
-			case query_fields_area:   PCB_QRY_RET_DBL(res, (double)(obj->BoundingBox.Y2 - obj->BoundingBox.Y1) * (double)(obj->BoundingBox.X2 - obj->BoundingBox.X1)); \
 			default:; \
 		} \
 		PCB_QRY_RET_INV(res); \
@@ -487,6 +486,7 @@ static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_scale:    PCB_QRY_RET_INT(res, t->Scale);
 		case query_fields_rotation: PCB_QRY_RET_INT(res, t->Direction);
 		case query_fields_string:   PCB_QRY_RET_STR(res, t->TextString);
+		case query_fields_area:     PCB_QRY_RET_DBL(res, (double)(t->BoundingBox.Y2 - t->BoundingBox.Y1) * (double)(t->BoundingBox.X2 - t->BoundingBox.X1));
 		default:;
 	}
 
@@ -518,6 +518,7 @@ static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	switch(fh1) {
 		case query_fields_points: PCB_QRY_RET_INT(res, p->PointN);
+		case query_fields_area:   PCB_QRY_RET_DBL(res, (double)(p->BoundingBox.Y2 - p->BoundingBox.Y1) * (double)(p->BoundingBox.X2 - p->BoundingBox.X1));
 		default:;
 	}
 
@@ -629,7 +630,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_smirror:   PCB_QRY_RET_INT(res, p->smirror);
 		case query_fields_plated:    PCB_QRY_RET_INT(res, (proto->hdia > 0) && proto->hplated);
 		case query_fields_hole:      PCB_QRY_RET_INT(res, proto->hdia);
-
+		case query_fields_area:      PCB_QRY_RET_DBL(res, (double)(p->BoundingBox.Y2 - p->BoundingBox.Y1) * (double)(p->BoundingBox.X2 - p->BoundingBox.X1));
 		default:;
 	}
 
@@ -673,6 +674,7 @@ static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_rotation:     pcb_subc_get_rotation(p, &rot); PCB_QRY_RET_DBL(res, rot);
 		case query_fields_side:         pcb_subc_get_side(p, &on_bottom); PCB_QRY_RET_SIDE(res, on_bottom);
 		case query_fields_refdes:       PCB_QRY_RET_STR(res, p->refdes);
+		case query_fields_area:         PCB_QRY_RET_DBL(res, (double)(p->BoundingBox.Y2 - p->BoundingBox.Y1) * (double)(p->BoundingBox.X2 - p->BoundingBox.X1));
 		default:;
 	}
 	PCB_QRY_RET_INV(res);
