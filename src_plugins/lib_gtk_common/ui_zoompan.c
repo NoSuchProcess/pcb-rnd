@@ -452,8 +452,12 @@ fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 
 	pcb_draw_inhibit_inc();
 	if (argc > 1) {
-		const char *a;
+		const char *a, *b;
+		pcb_layer_id_t lid;
+		pcb_layer_type_t lyt;
+
 		PCB_ACT_CONVARG(1, FGW_STR, swapsides, a = argv[1].val.str);
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, swapsides, b = argv[2].val.str);
 		switch (a[0]) {
 		case 'h':
 		case 'H':
@@ -471,6 +475,14 @@ fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 		default:
 			pcb_draw_inhibit_dec();
 			return 1;
+		}
+		switch (b[0]) {
+			case 'S':
+			case 's':
+				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
+				lid = pcb_layer_vis_last_lyt(lyt);
+				if (lid >= 0)
+					pcb_layervis_change_group_vis(lid, 1, 1);
 		}
 	}
 
