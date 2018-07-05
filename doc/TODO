@@ -1,4 +1,5 @@
 0. For the upcoming release ===============================================================================
++ BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
 - fungw action doc: how to call actions from code (helper macros)
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
@@ -39,7 +40,7 @@
 - cleanup: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
-- BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
+
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
 	- if a short consists of terminals only, do not even start the algo, just mark the terminals
 	- after that if there are too many shorted networks left, revert to the dump algorithm
