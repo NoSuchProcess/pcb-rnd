@@ -233,7 +233,7 @@ PCB_INLINE double pcb_dist2_to_box(const pcb_cheap_point_t * p, const pcb_box_t 
 
 
 /* Modify dst to include src */
-PCB_INLINE void pcb_box_bump_box(pcb_box_t *dst, pcb_box_t *src)
+PCB_INLINE void pcb_box_bump_box(pcb_box_t *dst, const pcb_box_t *src)
 {
 	if (src->X1 < dst->X1) dst->X1 = src->X1;
 	if (src->Y1 < dst->Y1) dst->Y1 = src->Y1;
