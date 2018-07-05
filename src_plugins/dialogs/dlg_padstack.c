@@ -629,7 +629,7 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 					PCB_DAD_LABEL(dlg, "Clearance");
 					PCB_DAD_COORD(dlg, "");
 						pse.clearance = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, 1);
+						PCB_DAD_MINVAL(dlg, 0);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
 						PCB_DAD_HELP(dlg, "global clearance (affects all layers)");
