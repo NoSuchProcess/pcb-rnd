@@ -40,6 +40,8 @@
 #include "layer_vis.h"
 #include "bu_status_line.h"
 
+#include "../lib_hid_common/util.h"
+
 double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 {
 	double min_zoom, max_zoom, max_zoom_w, max_zoom_h, out_zoom;
@@ -310,6 +312,16 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 		PCB_ACT_FAIL(zoom);
 
 	PCB_ACT_CONVARG(1, FGW_STR, zoom, ovp = vp = argv[1].val.str);
+
+	if (pcb_strcasecmp(vp, "selected") == 0) {
+		pcb_box_t sb;
+		if (pcb_get_selection_bbox(&sb, PCB->Data) > 0) {
+pcb_printf("%mm;%mm %mm;%mm\n", sb.X1, sb.Y1, sb.X2, sb.Y2);
+			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2);
+		}
+		else
+			pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+	}
 
 	if (*vp == '?') {
 		pcb_message(PCB_MSG_INFO, "Current gtk zoom level: %f\n", vw->coord_per_px);
