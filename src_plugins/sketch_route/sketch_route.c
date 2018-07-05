@@ -235,15 +235,32 @@ static void sketches_uninit()
 struct {
 	pcb_any_obj_t *start_term;
 	pcb_lib_menu_t *net;
-	pcb_attached_line_t line;
+	vtp0_t lines;
 	trianglelist_node_t corridor;
 	wire_t wire;
 	sketch_t *sketch;
 } attached_path = {0};
 
+static pcb_attached_line_t *attached_path_new_line()
+{
+	pcb_attached_line_t *new_l = calloc(1, sizeof(pcb_attached_line_t));
+	vtp0_append(&attached_path.lines, new_l);
+	return new_l;
+}
+
+static void attached_path_next_line()
+{
+	int last = vtp0_len(&attached_path.lines) - 1;
+	pcb_attached_line_t *next_l = attached_path_new_line();
+	if (last >= 0)
+		next_l->Point1 = ((pcb_attached_line_t *) attached_path.lines.array[last])->Point2;
+	tool_skline_adjust_attached_objects();
+}
+
 static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
 {
 	point_t *start_p;
+	pcb_attached_line_t *start_l;
 
 	attached_path.sketch = sketches_get_sketch_at_layer(layer);
 	start_p = sketch_get_point_at_terminal(attached_path.sketch, start_term);
@@ -251,7 +268,10 @@ static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term
 	attached_path.net = pcb_netlist_find_net4term(PCB, start_term);
 	if (attached_path.net == NULL)
 		return pcb_false;
-	pcb_obj_center(start_term, &attached_path.line.Point1.X, &attached_path.line.Point1.Y);
+	vtp0_init(&attached_path.lines);
+	start_l = attached_path_new_line();
+	pcb_obj_center(start_term, &start_l->Point1.X, &start_l->Point1.Y);
+	tool_skline_adjust_attached_objects();
 
 	/* TODO */
 
@@ -260,13 +280,17 @@ static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term
 
 static void attached_path_uninit()
 {
-	/* TODO */
+	int i;
+	for (i = 0; i < vtp0_len(&attached_path.lines); i++)
+		free(attached_path.lines.array[i]);
+	vtp0_uninit(&attached_path.lines);
 }
 
 static pcb_bool attached_path_add_point(pcb_coord_t x, pcb_coord_t y)
 {
 	/* TODO */
-	return pcb_false;
+	attached_path_next_line();
+	return pcb_true;
 }
 
 static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
@@ -348,15 +372,22 @@ void tool_skline_notify_mode(void)
 
 void tool_skline_adjust_attached_objects(void)
 {
-	attached_path.line.Point2.X = pcb_crosshair.X;
-	attached_path.line.Point2.Y = pcb_crosshair.Y;
+	int last = vtp0_len(&attached_path.lines) - 1;
+	if (last >= 0) {
+		((pcb_attached_line_t *) attached_path.lines.array[last])->Point2.X = pcb_crosshair.X;
+		((pcb_attached_line_t *) attached_path.lines.array[last])->Point2.Y = pcb_crosshair.Y;
+	}
 }
 
 static void tool_skline_draw_attached(void)
 {
+	int i;
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-		pcb_gui->draw_line(pcb_crosshair.GC, attached_path.line.Point1.X, attached_path.line.Point1.Y,
-																				 attached_path.line.Point2.X, attached_path.line.Point2.Y);
+		for (i = 0; i < vtp0_len(&attached_path.lines); i++) {
+			pcb_point_t *p1 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point1;
+			pcb_point_t *p2 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point2;
+			pcb_gui->draw_line(pcb_crosshair.GC, p1->X, p1->Y, p2->X, p2->Y);
+		}
 	}
 }
 
