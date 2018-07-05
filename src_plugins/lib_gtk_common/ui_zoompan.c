@@ -322,6 +322,15 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 		return 0;
 	}
 
+	if (pcb_strcasecmp(vp, "found") == 0) {
+		pcb_box_t sb;
+		if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
+			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2);
+		else
+			pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
+		return 0;
+	}
+
 	if (*vp == '?') {
 		pcb_message(PCB_MSG_INFO, "Current gtk zoom level: %f\n", vw->coord_per_px);
 		return 0;
