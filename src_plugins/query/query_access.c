@@ -372,6 +372,16 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_length2:
 			PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(pcb_line_len2(l))));
 			break;
+		case query_fields_area:
+			{
+				double th = l->Thickness;
+				double len = pcb_round(sqrt(pcb_line_len2(l)));
+				if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
+					PCB_QRY_RET_DBL(res, (len+th) * th);
+				else
+					PCB_QRY_RET_DBL(res, len * th + th*th/4*M_PI);
+				break;
+			}
 		default:;
 	}
 
