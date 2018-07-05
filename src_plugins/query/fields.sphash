@@ -35,6 +35,7 @@ type
 area
 refdes
 length
+length2
 xmirror
 smirror
 plated
