@@ -21,20 +21,33 @@
 - BUG: SaveFontTo (on the default font) attempts tos ave invalid lht notes (placeholders) [report: Igor2]
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
-- feature: query() should be able to search for object flags [report: James]
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
-- feature: property editor should deal with flags
 + BUG: if a new silk layer is inserted before the top silk, it gets the wrong color (when objects are drawn) and even ruins the original top silk's object color [report: Vuokko]
+- scconfig: use scconfig's cquote isntead of the local copy
+- feature: query() should be able to search for object flags [report: James]
+- feature: property editor should deal with flags
+- rewrite the preview API:
+	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
+	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
+	- ... but there also should be an option for going with board flip (drc view)
+- feature: fp_wget cache dir configurable [report: agaran]
+- biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
+	- unify how output files are accessed/checked: confirmation on overwrite
+- query & advanced search field accessors:
+	- terminal (heavy and light) area
+	- line (and pad) length and length^2
 
 2. For later releases ===============================================================================
+- cleanup: remove mnemonic from the menu system
+	- check the central code and struct fields
+	- remove "m=" fields from the menu lihata files
 - BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
 	- if a short consists of terminals only, do not even start the algo, just mark the terminals
 	- after that if there are too many shorted networks left, revert to the dump algorithm
 - BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
 - BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
-- scconfig: use scconfig's cquote isntead of the local copy
 - BUG: pcb_pstk_export_compat_pad() - round trip fails [report: igor2]
 	- may need to double clearance value
 	- mask needs some tuning too
@@ -50,10 +63,6 @@ opengl:
 	- text
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- rewrite the preview API:
-	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
-	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
-	- ... but there also should be an option for going with board flip (drc view)
 - route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
@@ -97,9 +106,7 @@ opengl:
 	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
 	- global conf setting for label text size [report: Ade]
 	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- feature: fp_wget cache dir configurable [report: agaran]
-- feature in subc/term:
-	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
+- feature in subc/term: new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - fontsel: ttf import?
 - library window: allow long tags and long location text to split
@@ -149,22 +156,14 @@ eagle:
 - eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 - layer groups from config (e.g. CLI) is ignored
 - io_pcb: new, optional "layer tag" field in mainline's file format
-- biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
-	- unify how output files are accessed/checked: confirmation on overwrite
 - fp_board: extend the API so that the element can be presented without saving to a file
-- cleanup: remove mnemonic from the menu system
-	- check the central code and struct fields
-	- remove "m=" fields from the menu lihata files
-- SUBC missing features:
-	- manual layer binding (reuse csect?)
-- core lib splitup:
-	- gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
+- SUBC missing features: manual layer binding (reuse csect?)
 - res/menu:
 	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
 	- re-add dynamic menus after a gui change:
 		- either remember dynamic menus in a separate list so they can be rebuilt
 		- or provide hooks and let plugins deal with it
-	- gpmi: auto-remove menus by cookie (TODO#2)
+	- fungw: auto-remove menus by cookie (TODO#2)
 	- load new res on the fly (replace the menu system):
 		- low level reload code (re-add the dynamic menus too!)
 		- action to reload if file name is known
@@ -199,9 +198,6 @@ eagle:
 	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file. [report: Alain]
 - query & advanced search
 	- search expr wizard should pick up the expression from the button when clicked
-	- field accessors:
-		- terminal (heavy and light) area
-		- line (and pad) length and length^2
 	- make a run on a large board, speed test, with -O0 and -O3:
 		- iteration speed (a simple @)
 		- eval speed (a simple @ with a lot of constants in an expr)
@@ -344,3 +340,5 @@ FEATURES
 - miter bug;  miter crosses SMT pads under certain conditions [report: celem/miloh] 
 - bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk [report:Evan]
 	-> it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap; it would be too expensive to calculate what else to redraw
+- core lib splitup:
+	- gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
