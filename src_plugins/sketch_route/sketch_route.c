@@ -236,6 +236,8 @@ static void sketches_uninit()
 
 
 /*** sketch line tool ***/
+static void tool_skline_adjust_attached_objects(void);
+
 struct {
 	pcb_any_obj_t *start_term;
 	pcb_lib_menu_t *net;
@@ -316,7 +318,7 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 	return pcb_false;
 }
 
-void tool_skline_uninit(void)
+static void tool_skline_uninit(void)
 {
 	pcb_notify_crosshair_change(pcb_false);
 	attached_path_uninit();
@@ -325,7 +327,7 @@ void tool_skline_uninit(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-void tool_skline_notify_mode(void)
+static void tool_skline_notify_mode(void)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -374,7 +376,7 @@ void tool_skline_notify_mode(void)
 	}
 }
 
-void tool_skline_adjust_attached_objects(void)
+static void tool_skline_adjust_attached_objects(void)
 {
 	int last = vtp0_len(&attached_path.lines) - 1;
 	if (last >= 0) {
