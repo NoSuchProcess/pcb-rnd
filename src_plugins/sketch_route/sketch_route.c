@@ -49,9 +49,43 @@
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 typedef struct {
-	pcb_lib_menu_t *net;
-	pointlist_node_t *points;
+	point_t *p;
+	int side;	/* 0 - on the left side; 1 - on the right side of a wire */
+} sided_point_t;
+
+typedef struct {
+	int point_num;
+	int point_max;
+	sided_point_t *points;
 } wire_t;
+
+#define WIRE_POINTS_STEP 10
+
+void wire_init(wire_t *w) {
+	w->point_num = 0;
+	w->point_max = WIRE_POINTS_STEP;
+	w->points = malloc(WIRE_POINTS_STEP*sizeof(sided_point_t));
+}
+
+void wire_uninit(wire_t *w)
+{
+	free(w->points);
+}
+
+void wire_push_point(wire_t *w, sided_point_t *sp) {
+	w->points[w->point_num].p = sp->p;
+	w->points[w->point_num].side = sp->side;
+	if (++w->point_num >= w->point_max) {
+		w->point_max += WIRE_POINTS_STEP;
+		w->points = realloc(w->points, w->point_max*sizeof(sided_point_t));
+	}
+}
+
+void wire_pop_point(wire_t *w) {
+	if(w->point_num > 0)
+		w->point_num--;
+}
+
 
 typedef struct {
 	cdt_t *cdt;
