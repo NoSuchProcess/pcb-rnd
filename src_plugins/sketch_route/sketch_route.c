@@ -50,7 +50,11 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 typedef struct {
 	point_t *p;
-	int side;	/* 0 - on the left side; 1 - on the right side of a wire */
+	enum {
+		SIDE_LEFT = -1,
+		SIDE_TERM = 0,
+		SIDE_RIGHT = 1
+	} side;
 } sided_point_t;
 
 typedef struct {
