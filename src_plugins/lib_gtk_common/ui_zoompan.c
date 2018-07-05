@@ -401,7 +401,7 @@ fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 }
 
 /* ---------------------------------------------------------------------- */
-const char pcb_acts_swapsides[] = "SwapSides(|v|h|r)";
+const char pcb_acts_swapsides[] = "SwapSides(|v|h|r, [S])";
 const char pcb_acth_swapsides[] = "Swaps the side of the board you're looking at.";
 
 /* %start-doc actions SwapSides
