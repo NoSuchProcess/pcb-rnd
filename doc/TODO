@@ -33,9 +33,6 @@
 - feature: fp_wget cache dir configurable [report: agaran]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- unify how output files are accessed/checked: confirmation on overwrite
-- query & advanced search field accessors:
-	- terminal (heavy and light) area
-	- line (and pad) length and length^2
 
 2. For later releases ===============================================================================
 - fungw: DAD dialog: mini parser from text
