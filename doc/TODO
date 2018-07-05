@@ -1,4 +1,5 @@
 0. For the upcoming release ===============================================================================
++ feature: an action for switching layer to current side; see also ML/1955 [report: James]
 + BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
 - fungw action doc: how to call actions from code (helper macros)
 - XOR rendering upgrade: [report: pstuge]
@@ -40,7 +41,6 @@
 - cleanup: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
-
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
 	- if a short consists of terminals only, do not even start the algo, just mark the terminals
 	- after that if there are too many shorted networks left, revert to the dump algorithm
@@ -67,7 +67,6 @@ opengl:
 - outline layer creation:
 	- currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
-- feature: an action for switching layer to current side; see also ML/1955 [report: James]
 - DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
 	- io infra for save incompatibility note with DRC list
