@@ -518,7 +518,8 @@ static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	switch(fh1) {
 		case query_fields_points: PCB_QRY_RET_INT(res, p->PointN);
-		case query_fields_area:   PCB_QRY_RET_DBL(res, (double)(p->BoundingBox.Y2 - p->BoundingBox.Y1) * (double)(p->BoundingBox.X2 - p->BoundingBox.X1));
+		case query_fields_area:
+			PCB_QRY_RET_DBL(res, p->Clipped->contours->area);
 		default:;
 	}
 
