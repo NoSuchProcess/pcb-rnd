@@ -261,7 +261,6 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
-	pcb_tool_uninit();
 	pcb_hid_uninit();
 	pcb_text_uninit();
 	pcb_layer_vis_uninit();
@@ -277,6 +276,7 @@ void pcb_main_uninit(void)
 	conf_uninit();
 	pcb_io_uninit();
 	pcb_plugin_uninit();
+	pcb_tool_uninit();
 	pcb_file_loaded_uninit();
 	pcb_import_uninit();
 	pcb_actions_uninit();
