@@ -50,6 +50,7 @@
 #include "tool.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
+#include "../src_plugins/lib_hid_common/util.h"
 
 #include <sys/poll.h>
 
@@ -510,6 +511,17 @@ Note that zoom factors of zero are silently ignored.
 static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x1, y1, x2, y2;
+
+	if ((argc > 1) && ((argv[1].type & FGW_STR) == FGW_STR)) {
+		if (pcb_strcasecmp(argv[1].val.str, "selected") == 0) {
+			pcb_box_t sb;
+			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
+				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2);
+			else
+				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+			return 0;
+		}
+	}
 
 	PCB_ACT_CONVARG(1, FGW_COORD, ZoomTo, x1 = fgw_coord(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_COORD, ZoomTo, y1 = fgw_coord(&argv[2]));
