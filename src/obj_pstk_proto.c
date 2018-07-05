@@ -322,8 +322,15 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 		ly = ly1;
 		if (ly == NULL) ly = ly2;
 		if (ly == NULL) ly = ly3;
-		if (ly == NULL)
+		if (ly == NULL) {
+			const char *locs, *mats;
+			locs = pcb_layer_type_bit2str(lyt & PCB_LYT_ANYWHERE);
+			mats = pcb_layer_type_bit2str(lyt & PCB_LYT_ANYTHING);
+			if (locs == NULL) locs = "<unknown loc>";
+			if (mats == NULL) mats = "<unknown material>";
+			pcb_message(PCB_MSG_WARNING, "Can not create shape on %s %s\n", locs, mats);
 			continue;
+		}
 
 		clr = src->Clearance == 0 ? shp->clearance : src->Clearance;
 		switch(shp->shape) {
