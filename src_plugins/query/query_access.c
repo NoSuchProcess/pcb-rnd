@@ -389,6 +389,13 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	PCB_QRY_RET_INV(res);
 }
 
+static double pcb_arc_len(pcb_arc_t *a)
+{
+#warning TODO: this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/CalcII/ArcLength.aspx
+	double r = (a->Width + a->Height)/2;
+	return r * M_PI / 180.0 * a->Delta;
+}
+
 static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_arc_t *a = (pcb_arc_t *)obj;
@@ -430,11 +437,12 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		case query_fields_thickness: PCB_QRY_RET_INT(res, a->Thickness);
 		case query_fields_clearance: PCB_QRY_RET_INT(res, a->Clearance);
 		case query_fields_length:
+			PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(pcb_arc_len(a))));
+			break;
+		case query_fields_length2:
 			{
-#warning TODO: this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/CalcII/ArcLength.aspx
-				double r = (a->Width + a->Height)/2;
-				double len = r * M_PI / 180.0 * a->Delta;
-				PCB_QRY_RET_INT(res, ((pcb_coord_t)len));
+				double l = pcb_arc_len(a);
+				PCB_QRY_RET_DBL(res, l*l);
 			}
 			break;
 		default:;
