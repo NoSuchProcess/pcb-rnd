@@ -521,6 +521,14 @@ static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 			return 0;
 		}
+		if (pcb_strcasecmp(argv[1].val.str, "found") == 0) {
+			pcb_box_t sb;
+			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
+				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2);
+			else
+				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing is found\n");
+			return 0;
+		}
 	}
 
 	PCB_ACT_CONVARG(1, FGW_COORD, ZoomTo, x1 = fgw_coord(&argv[1]));
