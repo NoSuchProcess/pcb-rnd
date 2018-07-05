@@ -319,6 +319,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+		return 0;
 	}
 
 	if (*vp == '?') {
