@@ -445,6 +445,13 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 				PCB_QRY_RET_DBL(res, l*l);
 			}
 			break;
+		case query_fields_area:
+			{
+				double th = a->Thickness;
+				double len = pcb_arc_len(a);
+				PCB_QRY_RET_DBL(res, len * th + th*th/4*M_PI); /* approx */
+			}
+			break;
 		default:;
 	}
 
