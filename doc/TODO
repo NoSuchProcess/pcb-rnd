@@ -40,7 +40,7 @@
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
 	- if a short consists of terminals only, do not even start the algo, just mark the terminals
 	- after that if there are too many shorted networks left, revert to the dump algorithm
-- BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
++ BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
 - BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 - BUG: pcb_pstk_export_compat_pad() - round trip fails [report: igor2]
 	- may need to double clearance value
