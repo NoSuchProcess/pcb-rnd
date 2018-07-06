@@ -504,6 +504,10 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_DATA_CONST:       PCB_QRY_RET_INT(res, node->precomp.cnst);
 		case PCBQ_DATA_INVALID:     PCB_QRY_RET_INV(res);
 
+		case PCBQ_FLAG:
+			pcb_trace("flag check!\n");
+			PCB_QRY_RET_INT(res, 42);
+
 		/* not yet implemented: */
 		case PCBQ_RULE:
 

@@ -48,6 +48,7 @@ list            { return T_LIST; }
 invalid         { return T_INVALID; }
 p[.]            { return T_FLD_P; }
 a[.]            { return T_FLD_A; }
+flag[.]         { return T_FLD_FLAG; }
 
 "LINE_POINT"    { qry_lval.n = make_constant(yytext, PCB_OBJ_LINE_POINT); return T_CONST; }
 "POLY_POINT"    { qry_lval.n = make_constant(yytext, PCB_OBJ_POLY_POINT); return T_CONST; }

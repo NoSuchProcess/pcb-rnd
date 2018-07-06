@@ -52,19 +52,20 @@ extern int qry_debug;
     T_INVALID = 262,
     T_FLD_P = 263,
     T_FLD_A = 264,
-    T_OR = 265,
-    T_AND = 266,
-    T_EQ = 267,
-    T_NEQ = 268,
-    T_GTEQ = 269,
-    T_LTEQ = 270,
-    T_NL = 271,
-    T_UNIT = 272,
-    T_STR = 273,
-    T_QSTR = 274,
-    T_INT = 275,
-    T_DBL = 276,
-    T_CONST = 277
+    T_FLD_FLAG = 265,
+    T_OR = 266,
+    T_AND = 267,
+    T_EQ = 268,
+    T_NEQ = 269,
+    T_GTEQ = 270,
+    T_LTEQ = 271,
+    T_NL = 272,
+    T_UNIT = 273,
+    T_STR = 274,
+    T_QSTR = 275,
+    T_INT = 276,
+    T_DBL = 277,
+    T_CONST = 278
   };
 #endif
 
@@ -73,7 +74,7 @@ extern int qry_debug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 99 "query_y.y" /* yacc.c:1909  */
+#line 118 "query_y.y" /* yacc.c:1909  */
 
 	char *s;
 	pcb_coord_t c;
@@ -81,7 +82,7 @@ union YYSTYPE
 	const pcb_unit_t *u;
 	pcb_qry_node_t *n;
 
-#line 85 "query_y.h" /* yacc.c:1909  */
+#line 86 "query_y.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

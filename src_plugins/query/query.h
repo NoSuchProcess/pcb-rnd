@@ -33,6 +33,7 @@
 #include "fields_sphash.h"
 #include "obj_common.h"
 #include "layer.h"
+#include "flag_str.h"
 
 typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;
@@ -90,6 +91,7 @@ typedef enum {
 	PCBQ_VAR,
 	PCBQ_FNAME,
 	PCBQ_FCALL,
+	PCBQ_FLAG,         /* leaf */
 
 	PCBQ_DATA_COORD,   /* leaf */
 	PCBQ_DATA_DOUBLE,  /* leaf */
@@ -124,6 +126,7 @@ struct pcb_qry_node_s {
 		pcb_qry_val_t result;       /* of pure functions and subtrees */
 		re_se_t *regex;
 		long cnst;                  /* named constant */
+		pcb_flag_bits_t *flg;
 	} precomp;
 };
 

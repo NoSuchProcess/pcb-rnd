@@ -33,6 +33,7 @@
 #include "query.h"
 #include "query_l.h"
 #include "compat_misc.h"
+#include "flag_str.h"
 #include "fields_sphash.h"
 
 #define UNIT_CONV(dst, negative, val, unit) \
@@ -90,6 +91,24 @@ static pcb_qry_node_t *make_regex_free(char *str)
 }
 
 
+static pcb_qry_node_t *make_flag_free(char *str)
+{
+	const pcb_flag_bits_t *i = pcb_strflg_name(str, 0x7FFFFFFF);
+	pcb_qry_node_t *nd;
+
+	if (i == NULL) {
+		yyerror("Unknown flag");
+		free(str);
+		return NULL;
+	}
+
+	nd = pcb_qry_n_alloc(PCBQ_DATA_FLAG);
+	nd->precomp.flg = i;
+	free(str);
+	return nd;
+}
+
+
 %}
 
 %name-prefix "qry_"
@@ -104,7 +123,7 @@ static pcb_qry_node_t *make_regex_free(char *str)
 	pcb_qry_node_t *n;
 }
 
-%token     T_LET T_ASSERT T_RULE T_LIST T_INVALID T_FLD_P T_FLD_A
+%token     T_LET T_ASSERT T_RULE T_LIST T_INVALID T_FLD_P T_FLD_A T_FLD_FLAG
 %token     T_OR T_AND T_EQ T_NEQ T_GTEQ T_LTEQ
 %token     T_NL
 %token <u> T_UNIT
@@ -128,7 +147,7 @@ static pcb_qry_node_t *make_regex_free(char *str)
 %left '('
 
 %type <n> number fields attribs var fname fcall fargs words string_literal
-%type <n> expr exprs program_expr program_rules rule
+%type <n> expr exprs program_expr program_rules rule flg
 %type <u> maybe_unit
 
 %%
@@ -228,6 +247,7 @@ fields:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); }
 	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); $$->next = $3; }
 	| T_FLD_P fields         { $$ = $2; /* just ignore .p. */ }
+	| T_FLD_P T_FLD_FLAG T_STR { $$ = make_flag_free($3); }
 	| T_FLD_A attribs        { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = pcb_strdup("a"); $$->precomp.fld = query_fields_sphash("a"); $$->next = $2; }
 	;
 
