@@ -452,7 +452,7 @@ fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 
 	pcb_draw_inhibit_inc();
 	if (argc > 1) {
-		const char *a, *b;
+		const char *a, *b = "";
 		pcb_layer_id_t lid;
 		pcb_layer_type_t lyt;
 
