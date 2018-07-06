@@ -79,6 +79,7 @@ static expr_wizard_op_t op_tab[] = {
 
 static const char *right_const_objtype[] = { "POINT", "LINE", "TEXT", "POLYGON", "ARC", "RAT", "NET", "LAYER", NULL };
 static const char *right_const_yesno[] = {"YES", "NO", NULL};
+static const char *right_const_10[] = {"1", "0", NULL};
 static const char *right_const_layerpos[] = {"TOP", "BOTTOM", "INTERNAL", NULL};
 static const char *right_const_layertype[] = {"COPPER", "SILK", "MASK", "PASTE", "OUTLINE" , NULL};
 static const char *right_const_side[] = {"TOP", "BOTTOM", NULL};
@@ -86,6 +87,7 @@ static const char *right_const_side[] = {"TOP", "BOTTOM", NULL};
 enum {
 	RC_OBJTYPE,
 	RC_YESNO,
+	RC_10,
 	RC_LAYERPOS,
 	RC_LAYERTYPE,
 	RC_SIDE
@@ -94,6 +96,7 @@ enum {
 static expr_wizard_op_t right_const_tab[] = {
 	{right_const_objtype, NULL},
 	{right_const_yesno, NULL},
+	{right_const_10, NULL},
 	{right_const_layerpos, NULL},
 	{right_const_layertype, NULL},
 	{right_const_side, NULL},
@@ -175,6 +178,24 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.subc.refdes",     "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.subc.footprint",  "a.footprint",      &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.subc.value",      "a.value",          &op_tab[OPS_STR], RIGHT_STR, NULL},
+
+	{NULL,                "flag",             NULL,             0, NULL},
+	{"@.p.flag.found",    "found",            &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.hole",     "hole",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.clearpoly","clearpoly",        &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.clearline","clearline",        &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.selected", "selected",         &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.onsolder", "onsolder",         &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.auto",     "auto",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.warn",     "warn",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.drc",      "drc",              &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.lock",     "lock",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.fullpoly", "fullpoly",         &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.nonetlist","nonetlist",        &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.termname", "termname",         &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.clearpolypoly","clearpolypoly",&op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.p.dyntext","dyntext",          &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
+	{"@.p.flag.p.floater","floater",          &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_10]},
 
 	{NULL, NULL, NULL, 0, NULL}
 };
