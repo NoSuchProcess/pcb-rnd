@@ -4702,7 +4702,7 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h ../src_plugins/propedit/props.h global_typedefs.h \
  ../src_plugins/propedit/propsel.h change.h board.h vtroutestyle.h \
- library.h rats_patch.h misc_util.h compat_misc.h undo.h \
+ library.h rats_patch.h misc_util.h flag_str.h compat_misc.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h rotate.h compat_misc.h \
  obj_pstk_inlines.h data.h thermal.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
