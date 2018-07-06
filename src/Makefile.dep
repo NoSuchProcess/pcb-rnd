@@ -4757,7 +4757,7 @@
  ../src_plugins/query/query.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h ../src_plugins/query/query_exec.h
+ obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h
 ../src_plugins/query/fields_sphash.o: \
  ../src_plugins/query/fields_sphash.c
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
@@ -4788,7 +4788,7 @@
  compat_misc.h ../src_plugins/query/query.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h fptr_cast.h
+ obj_common.h layer.h flag_str.h fptr_cast.h
 ../src_plugins/query/query_access.o: ../src_plugins/query/query_access.c \
  ../config.h math_helper.h compat_misc.h board.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -4813,7 +4813,7 @@
  ../src_plugins/query/query.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h ../src_plugins/query/query_exec.h \
+ obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
  obj_pstk_inlines.h data.h thermal.h obj_subc_parent.h
 ../src_plugins/query/query_act.o: ../src_plugins/query/query_act.c \
  ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
@@ -4832,7 +4832,7 @@
  ../src_plugins/query/query.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
- ../src_plugins/query/fields_sphash.h obj_common.h layer.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
  ../src_plugins/query/query_y.h ../src_plugins/query/query_exec.h draw.h \
  select.h operation.h board.h vtroutestyle.h library.h rats_patch.h \
  board.h macro.h dolists.h
@@ -4858,7 +4858,7 @@
  vtpadstack_t.h ../src_plugins/query/query.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h ../src_plugins/query/query_exec.h \
+ obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/query_access.h pcb-printf.h
 ../src_plugins/query/query_l.o: ../src_plugins/query/query_l.c unit.h \
  ../config.h ../src_plugins/query/query.h ../src_3rd/genvector/vtp0.h \
@@ -4873,8 +4873,8 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
- ../src_3rd/genvector/gds_char.h ../src_plugins/query/query_y.h \
- compat_misc.h
+ ../src_3rd/genvector/gds_char.h flag_str.h \
+ ../src_plugins/query/query_y.h compat_misc.h
 ../src_plugins/query/query_y.o: ../src_plugins/query/query_y.c unit.h \
  ../config.h ../src_plugins/query/query.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -4888,8 +4888,8 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
- ../src_3rd/genvector/gds_char.h ../src_plugins/query/query_l.h \
- compat_misc.h
+ ../src_3rd/genvector/gds_char.h flag_str.h \
+ ../src_plugins/query/query_l.h compat_misc.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
