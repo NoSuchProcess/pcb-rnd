@@ -175,7 +175,7 @@ void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pc
 }
 
 /* Side-correct version - long term this will be kept and the other is removed */
-static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
 {
 	double xf, yf;
 
@@ -190,6 +190,10 @@ static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_co
 	v->y0 = SIDE_Y(conf_core.editor.view.flip_y ? y2 : y1);
 
 	pcb_gtk_pan_common(v);
+	if (setch) {
+		pcb_crosshair_move_absolute((x1+x2)/2, (y1+y2)/2);
+		pcb_notify_crosshair_change(pcb_true);
+	}
 }
 
 void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v)
@@ -304,7 +308,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 		PCB_ACT_CONVARG(3, FGW_COORD, zoom, x2 = fgw_coord(&argv[3]));
 		PCB_ACT_CONVARG(4, FGW_COORD, zoom, y2 = fgw_coord(&argv[4]));
 
-		pcb_gtk_zoom_view_win_side(vw, x1, y1, x2, y2);
+		pcb_gtk_zoom_view_win_side(vw, x1, y1, x2, y2, 1);
 		return 0;
 	}
 
@@ -316,7 +320,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 	if (pcb_strcasecmp(vp, "selected") == 0) {
 		pcb_box_t sb;
 		if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2);
+			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 		return 0;
@@ -325,7 +329,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 	if (pcb_strcasecmp(vp, "found") == 0) {
 		pcb_box_t sb;
 		if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2);
+			pcb_gtk_zoom_view_win_side(vw, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
 		return 0;
