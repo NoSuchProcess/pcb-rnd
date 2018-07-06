@@ -1,6 +1,14 @@
 0. For the upcoming release ===============================================================================
++ BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
++ bug: layer menu: the bottom silk screen icon color changes from gray-black to brown when any layer is selected. [report:Evan]
 + feature: an action for switching layer to current side; see also ML/1955 [report: James]
 + BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
++ BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
++ BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
++ BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
++ feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade]
+	+ -> actions ZoomTo(selected) and ZoomTo(found)
+	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
@@ -10,15 +18,9 @@
 		- draw with a slightly thicker background, in normal mode, skip xor
 	- option 3:
 		- implement both option 1 and 2 and add a config setting that selects which one to do
-+ BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
-+ BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
 - BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 	-> need per plugin menus and/or implement local grid in lesstif
-+ BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
 	-> non-bug
-+ feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade]
-	+ -> actions ZoomTo(selected) and ZoomTo(found)
-	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
@@ -40,7 +42,6 @@
 - BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
 	- if a short consists of terminals only, do not even start the algo, just mark the terminals
 	- after that if there are too many shorted networks left, revert to the dump algorithm
-+ BUG: right click context menu doesn't pop up the padstack menu when padstac is part of a subc [report: Evan]
 - BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 - BUG: pcb_pstk_export_compat_pad() - round trip fails [report: igor2]
 	- may need to double clearance value
@@ -278,7 +279,6 @@ FEATURES
 - the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
-+ bug: layer menu: the bottom silk screen icon color changes from gray-black to brown when any layer is selected. [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
