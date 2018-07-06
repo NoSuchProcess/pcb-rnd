@@ -34,7 +34,8 @@
 
 static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
 {
-	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
+	if (PCB->pstk_on)
+		pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
 }
 
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
@@ -72,7 +73,8 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 /******** mask ********/
 static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 {
-	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
+	if (PCB->pstk_on)
+		pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
 }
 
 static void pcb_draw_mask(int side, const pcb_box_t *screen)
@@ -115,7 +117,8 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 
 static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 {
-	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
+	if (PCB->pstk_on)
+		pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
 }
 
 static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
