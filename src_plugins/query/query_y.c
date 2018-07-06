@@ -170,7 +170,7 @@ static pcb_qry_node_t *make_flag_free(char *str)
 	pcb_qry_node_t *nd;
 
 	if (i == NULL) {
-		yyerror("Unknown flag");
+		yyerror(NULL, "Unknown flag");
 		free(str);
 		return NULL;
 	}
