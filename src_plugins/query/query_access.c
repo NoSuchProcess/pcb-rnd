@@ -717,6 +717,18 @@ static int field_subc_obj(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t
 
 /***/
 
+static int pcb_qry_obj_flag(pcb_any_obj_t *obj, pcb_qry_node_t *nflg, pcb_qry_val_t *res)
+{
+	if (obj == NULL)
+		return -1;
+
+	if ((nflg->precomp.flg->object_types & obj->type) != obj->type) {
+		/* flag not applicable on object type */
+		PCB_QRY_RET_INV(res);
+	}
+	PCB_QRY_RET_INT(res, 1);
+}
+
 int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_any_obj_t *obj;
@@ -725,6 +737,9 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 	if (objval->type != PCBQ_VT_OBJ)
 		return -1;
 	obj = objval->data.obj;
+
+	if (fld->type == PCBQ_FLAG)
+		return pcb_qry_obj_flag(obj, fld, res);
 
 	fld2hash_req(fh1, fld, 0);
 
