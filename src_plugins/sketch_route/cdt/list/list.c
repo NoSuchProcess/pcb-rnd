@@ -68,6 +68,17 @@ LST(node_t) *LST(remove_item)(LST(node_t) *list, LST_ITEM_T *item)
 	return list;
 }
 
+LST(node_t) *LST(find)(LST(node_t) *list, LST_ITEM_T *item)
+{
+	LST(node_t) *node;
+  for (node = list; node != NULL; node = node->next) {
+		if (LST(compare_func)(&node->item, item)) {
+			return node;
+		}
+	}
+	return NULL;
+}
+
 size_t LST(length)(LST(node_t) *list)
 {
 	size_t len = 0;
