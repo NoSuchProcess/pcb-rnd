@@ -214,7 +214,8 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 	}
 	else {
 		name = pcb_connection_name(ptr2);
-		pcb_actionl("NetlistShow", name, NULL);
+		if (name != NULL)
+			pcb_actionl("NetlistShow", name, NULL);
 	}
 
 	TheFlag = which_flag;
