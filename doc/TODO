@@ -20,7 +20,6 @@
 	-> non-bug
 + feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade]
 	+ -> actions ZoomTo(selected) and ZoomTo(found)
-- BUG: SaveFontTo (on the default font) attempts tos ave invalid lht notes (placeholders) [report: Igor2]
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
