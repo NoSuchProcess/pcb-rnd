@@ -626,7 +626,7 @@ static int group_showing(int g, int *c)
 #warning TODO: ui_zoomplan.c does the same, maybe make the code common?
 static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *op = NULL, *b;
+	const char *op = NULL, *b = "";
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
