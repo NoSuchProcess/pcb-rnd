@@ -1,6 +1,8 @@
 Actions implemented as fungw functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+1. Intro
+
 All pcb-rnd actions are fungw functions by now. This helps the code to do
 all the data type conversions easier, save a few conversions where we
 don't need conversions. More importantly, this makes a more seamless
@@ -28,23 +30,58 @@ applies the following restrictions:
   is, the fungw function that serves the action is free to convert any
   of the arguments.
 
-TODO:
-static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+2. converting arguments
+
+Arguments are normally converted using PCB_ACT_CONVARG(); the last
+argument is a statement that can make the value assignment to a local
+variable if the conversion was succesful. For example fetching the 2nd
+argument into a local coord:
+
 {
-	char *saved;
 	pcb_coord_t c;
+	PCB_ACT_CONVARG(2, FGW_COORD, ActioName, c = fgw_coord(&argv[2]));
+}
 
-	fgw_str2coord_unit_set(saved, "cm");
-	PCB_ACT_CONVARG(1, FGW_COORD, d1, c = fgw_coord(&argv[1]));
-	fgw_str2coord_unit_restore(saved);
+If conversion fails or the argument is not available, the macro returns
+from the function with error. Anoter variant of the macro called
+PCB_ACT_MAY_CONVARG() omits the error-return part, allowing the code
+to have optional arguments.
 
-	printf("D1: %ld\n", (long)c);
-	pcb_printf("%$mm\n", c);
+When the coordinate conversion needs to keep extra info, e.g. whether
+the coordinate was specified in absolute or relative, the special type
+fgw_coords_t shall be used:
+
+{
+	fgw_coords_t *crd;
+	PCB_ACT_CONVARG(1, FGW_COORDS, d1, crd = fgw_coords(&argv[1]));
+}
+
+
+3. returning
+
+An action function has two return values: the C function return value
+and the "res" argument. If the action could not start executing code
+because of a calling error, e.g. there are not enough arguments or
+arguments can not be converted or the function is invoked out-of-context,
+it should retrun a fungw error using the C return value. This indicates
+that performing the call itself failed.
+
+Else, if actual action code runs, the C return value should be 0 and the
+res argument should be loaded with the return value of the action. This
+indicates that the call took place, the action was executed and the conclusion
+is stored in res. The semantic of the result is action-specifiec. The common
+convention is returning int, 0 meaning success. The shortnad for this:
+
+{
 	PCB_ACT_IRES(0);
 	return 0;
 }
 
-converting coords with absolute:
-	fgw_coords_t *crd;
-	PCB_ACT_CONVARG(1, FGW_COORDS, d1, crd = fgw_coords(&argv[1]));
+PCB_ACT_IRES() loads res with type and value. There are other similar,
+type-specific macros available.
 
+4. multi-call
+
+Currently pcb-rnd does not depend on fungw's multi-call, thus actions are
+free to convert their arguments - the same arguments will not be reused in
+other actions.
