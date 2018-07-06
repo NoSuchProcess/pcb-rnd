@@ -307,6 +307,7 @@ static void attached_path_uninit()
 		free(attached_path.lines.array[i]);
 	vtp0_uninit(&attached_path.lines);
 	edgelist_free(attached_path.visited_edges);
+	attached_path.visited_edges = NULL;
 }
 
 static pcb_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
