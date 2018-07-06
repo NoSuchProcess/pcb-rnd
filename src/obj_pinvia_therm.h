@@ -26,15 +26,8 @@
  *
  */
 
-/* thermal on pins/vias
- *
- * Thermals are normal lines on the layout. The only thing unique
- * about them is that they have the PCB_FLAG_USETHERMAL set so that they
- * can be identified as thermals. It is handy for pcb to automatically
- * make adjustments to the thermals when the user performs certain
- * operations, and the functions in thermal.h help implement that.
- */
-
+/* Thermal on padstacks are modified forms of the clearance cutout so that
+   the padstack has galvanic connection to the sorrunding polygon. */
 #ifndef	PCB_PINVIA_THERMAL_H
 #define	PCB_PINVIA_THERMAL_H
 
