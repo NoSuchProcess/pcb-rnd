@@ -85,3 +85,45 @@ type-specific macros available.
 Currently pcb-rnd does not depend on fungw's multi-call, thus actions are
 free to convert their arguments - the same arguments will not be reused in
 other actions.
+
+5. calling an action from another action
+
+There are two common cases: wrapping/dispatching and invoking.
+
+In the wrap/dispatch setup an outer action is called that does not alter
+the arguments (not even converting them!), but has to call another action
+with exactly the same arguments. This can be done by using the macro
+PCB_ACT_CALL_C().
+
+When an action code needs to invoke another action, there are three ways
+doing it.
+
+5.1. string call
+
+The slow, string parsing way using pcb_actionl() or the more
+efficient direct call.
+
+
+5.2. direct C call
+
+Direct C function call is possible only if both the caller and callee
+actions are in core, or are in the same plugin. Before the direct call
+the caller needs to set up a fungw argv array and after the call the
+array members need to be free'd using fgw_argv_free() to avoid
+leaking argument memory. This needs to be done even if the caller did
+not allocate any memory for argv members - the callee can allocate memory
+by converting arguments.
+
+5.3. indirect C call
+
+Call pcb_find_action() to get an fgw_func_t * to the action - this holds
+the C function pointer. Set up argv, make sure argv[0] is set up to be
+the target function:
+
+  fgw_func_t *fn = pcb_find_action(...);
+  argv[0].type = FGW_FUNC;
+  argv[0].val.func = fn;
+
+Call pcb_actionv_() with fn and the arguments. Always call fgw_argv_free()
+afterward. Also call fgw_arg_free() on the res.
+
