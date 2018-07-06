@@ -38,4 +38,19 @@ void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge);
 int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations);
 void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations);
 
+
+#define ORIENT_CCW(a, b, c) (orientation(a, b, c) < 0)
+#define ORIENT_CW(a, b, c) (orientation(a, b, c) > 0)
+/* TODO: check epsilon for collinear case? */
+#define ORIENT_COLLINEAR(a, b, c) (orientation(a, b, c) == 0)
+#define ORIENT_CCW_CL(a, b, c) (orientation(a, b, c) <= 0)
+static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
+{
+	return ((double)p2->pos.y - (double)p1->pos.y) * ((double)p3->pos.x - (double)p2->pos.x)
+				 - ((double)p2->pos.x - (double)p1->pos.x) * ((double)p3->pos.y - (double)p2->pos.y);
+}
+
+#define LINES_INTERSECT(p1, q1, p2, q2) \
+	(ORIENT_CCW(p1, q1, p2) != ORIENT_CCW(p1, q1, q2) && ORIENT_CCW(p2, q2, p1) != ORIENT_CCW(p2, q2, q1))
+
 #endif
