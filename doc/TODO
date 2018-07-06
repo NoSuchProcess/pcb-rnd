@@ -28,15 +28,15 @@
 - scconfig: use scconfig's cquote isntead of the local copy
 - feature: query() should be able to search for object flags [report: James]
 - feature: property editor should deal with flags
-- rewrite the preview API:
-	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
-	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
-	- ... but there also should be an option for going with board flip (drc view)
 - feature: fp_wget cache dir configurable [report: agaran]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- unify how output files are accessed/checked: confirmation on overwrite
 
 2. For later releases ===============================================================================
+- rewrite the preview API:
+	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
+	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
+	- ... but there also should be an option for going with board flip (drc view)
 - fungw: DAD dialog: mini parser from text
 - cleanup: remove mnemonic from the menu system
 	- check the central code and struct fields
