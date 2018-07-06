@@ -74,7 +74,8 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_DATA_STRING",
 	"PCBQ_DATA_REGEX",
 	"PCBQ_DATA_CONST",
-	"PCBQ_DATA_INVALID"
+	"PCBQ_DATA_INVALID",
+	"PCBQ_DATA_LYTC"
 };
 
 char *pcb_query_sprint_val(pcb_qry_val_t *val)
