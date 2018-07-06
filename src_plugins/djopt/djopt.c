@@ -2557,10 +2557,6 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (conf_djopt.plugins.djopt.auto_only && !autorouted(line))
 				continue;
 
-			/* don't mess with thermals */
-			if (PCB_FLAG_TEST(PCB_FLAG_USETHERMAL, line))
-				continue;
-
 			if (line->Point1.X == line->Point2.X && line->Point1.Y == line->Point2.Y) {
 				pcb_line_destroy(layer, line);
 				continue;
