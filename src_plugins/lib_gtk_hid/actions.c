@@ -305,7 +305,9 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
 					pcb_hid_get_coords("context sensitive popup: select object", &x, &y);
-					type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
+					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
+					if (type == 0)
+						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
 
 					if (type == 0)
 						tn = "none";
