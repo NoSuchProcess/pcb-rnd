@@ -1,7 +1,6 @@
 0. For the upcoming release ===============================================================================
 + feature: an action for switching layer to current side; see also ML/1955 [report: James]
 + BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
-- fungw action doc: how to call actions from code (helper macros)
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
