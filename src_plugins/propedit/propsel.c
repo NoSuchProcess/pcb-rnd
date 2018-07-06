@@ -31,6 +31,7 @@
 #include "propsel.h"
 #include "change.h"
 #include "misc_util.h"
+#include "flag_str.h"
 #include "compat_misc.h"
 #include "undo.h"
 #include "rotate.h"
@@ -95,7 +96,21 @@ static void map_attr(void *ctx, const pcb_attribute_list_t *list)
 
 static void map_common(void *ctx, pcb_any_obj_t *obj)
 {
-#warning TODO: flags
+	unsigned long bit;
+	char name[256], *end;
+
+	strcpy(name, "p/flags/");
+	end = name + 8;
+	for(bit = 1; bit < (1<<31); bit <<= 1) {
+		const pcb_flag_bits_t *i;
+		if ((bit == PCB_FLAG_SELECTED) || (bit == PCB_FLAG_RUBBEREND))
+			continue;
+		i = pcb_strflg_1bit(bit, obj->type);
+		if (i == NULL)
+			continue;
+		strcpy(end, i->name);
+		map_add_prop(ctx, name, int, PCB_FLAG_TEST(bit, obj));
+	}
 }
 
 static int map_board_cb(void *ctx, pcb_board_t *pcb)
@@ -278,10 +293,17 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 
 #define DONE { st->set_cnt++; pcb_undo_restore_serial(); return; }
 #define DONE0 { st->set_cnt++; pcb_undo_restore_serial(); return 0; }
+#define DONE1 { st->set_cnt++; pcb_undo_restore_serial(); return 1; }
 
-static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
+static int set_common(set_ctx_t *st, pcb_board_t *pcb, pcb_any_obj_t *obj)
 {
-#warning TODO: flags
+	const pcb_flag_bits_t *i = pcb_strflg_name(st->name + 8, obj->type);
+
+	if (i != NULL) {
+		pcb_flag_change(pcb, st->c ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, i->mask, obj->type, obj->parent.any, obj, obj);
+		DONE1;
+	}
+
 	return 0;
 }
 
@@ -373,7 +395,7 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 		return;
 	}
 
-	if (set_common(st, (pcb_any_obj_t *)line)) return;
+	if (set_common(st, pcb, (pcb_any_obj_t *)line)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    pcb_chg_obj_1st_size(PCB_OBJ_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
@@ -394,7 +416,7 @@ static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 		return;
 	}
 
-	if (set_common(st, (pcb_any_obj_t *)arc)) return;
+	if (set_common(st, pcb, (pcb_any_obj_t *)arc)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    pcb_chg_obj_1st_size(PCB_OBJ_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
@@ -430,7 +452,7 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 		return;
 	}
 
-	if (set_common(st, (pcb_any_obj_t *)text)) return;
+	if (set_common(st, pcb, (pcb_any_obj_t *)text)) return;
 
 	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
 	    pcb_chg_obj_size(type, layer_or_element, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
@@ -469,7 +491,7 @@ static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_pol
 
 	set_chk_skip(st, poly);
 
-	if (set_common(st, (pcb_any_obj_t *)poly)) return;
+	if (set_common(st, pcb, (pcb_any_obj_t *)poly)) return;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
 	    pcb_chg_obj_clear_size(PCB_OBJ_POLY, layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
@@ -495,7 +517,7 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 		return;
 	}
 
-	if (set_common(st, (pcb_any_obj_t *)ps)) return;
+	if (set_common(st, pcb, (pcb_any_obj_t *)ps)) return;
 
 	ca = i = (st->c != 0);
 	proto = pcb_pstk_get_proto(ps);
@@ -558,7 +580,7 @@ static void set_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *ssubc)
 
 	set_chk_skip(st, ssubc);
 
-	if (set_common(st, (pcb_any_obj_t *)ssubc)) return;
+	if (set_common(st, pcb, (pcb_any_obj_t *)ssubc)) return;
 
 	if (st->is_attr) {
 		set_attr(st, &ssubc->Attributes);
@@ -574,7 +596,7 @@ static int set_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
 #define MAYBE_PROP(trc, prefix, cb) \
-	(((ctx.is_attr) || (trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
+	(((ctx.is_attr) || (trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (strncmp(prop, "p/flags/", 8) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
 
 #define MAYBE_ATTR(cb) \
 	((ctx.is_attr) ? (cb) : NULL)
