@@ -799,7 +799,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 			return pcb_intersect_line_arc(&tmp, arc);
 		}
 		case PCB_PSSH_CIRC:
-			pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->x, shape->data.circ.dia/2, arc);
+			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, arc);
 			break;
 	}
 	return pcb_false;
