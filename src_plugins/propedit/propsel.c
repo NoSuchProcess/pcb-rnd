@@ -101,7 +101,7 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 
 	strcpy(name, "p/flags/");
 	end = name + 8;
-	for(bit = 1; bit < (1<<31); bit <<= 1) {
+	for(bit = 1; bit < (1UL<<31); bit <<= 1) {
 		const pcb_flag_bits_t *i;
 		if ((bit == PCB_FLAG_SELECTED) || (bit == PCB_FLAG_RUBBEREND))
 			continue;
