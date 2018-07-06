@@ -379,6 +379,7 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 static void pcb_pstk_draw_shape_thin(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	int n;
+	pcb_hid_set_line_cap(gc, pcb_cap_round);
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
 			for(n = 1; n < shape->data.poly.len; n++)
