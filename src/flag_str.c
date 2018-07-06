@@ -83,7 +83,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_EDGE2),         N("edge2"),         PCB_OBJ_ANY, "For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)", 0, 1},
 	{FN(PCB_FLAG_FULLPOLY),      N("fullpoly"),      PCB_OBJ_POLY, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).", 0, 0},
 	{FN(PCB_FLAG_NOPASTE),       N("nopaste"),       0, "Pad should not receive solderpaste.  This is to support fiducials", 0, 0},
-	{FN(PCB_FLAG_NONETLIST),     N("nonetlist"),     PCB_OBJ_ANY, "subcircuit is not on the netlist and should not interfere with the netlist ", 0, 0},
+	{FN(PCB_FLAG_NONETLIST),     N("nonetlist"),     PCB_OBJ_SUBC, "subcircuit is not on the netlist and should not interfere with the netlist ", 0, 0},
 	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT | PCB_OBJ_PSTK | PCB_OBJ_SUBC, "when set the names of pins are shown.", 0, 0},
 	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_OBJ_POLY, "For polygons, apply clearance to nearby polygons", 0, 0},
 	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_OBJ_TEXT, "For text: dynamic string (substitute %patterns%)", 0, 0},
