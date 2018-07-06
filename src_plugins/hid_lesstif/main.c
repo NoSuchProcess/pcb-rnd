@@ -243,7 +243,7 @@ static pcb_composite_op_t lesstif_drawing_mode = 0;
 
 static void zoom_max();
 static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
-static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch);
 static void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y);
 static void zoom_toggle(pcb_coord_t x, pcb_coord_t y);
 static void pinout_callback(Widget, PreviewData *, XmDrawingAreaCallbackStruct *);
@@ -516,7 +516,7 @@ static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_strcasecmp(argv[1].val.str, "selected") == 0) {
 			pcb_box_t sb;
 			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2);
+				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
 				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 			return 0;
@@ -524,7 +524,7 @@ static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_strcasecmp(argv[1].val.str, "found") == 0) {
 			pcb_box_t sb;
 			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2);
+				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
 				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing is found\n");
 			return 0;
@@ -536,7 +536,7 @@ static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(3, FGW_COORD, ZoomTo, x2 = fgw_coord(&argv[3]));
 	PCB_ACT_CONVARG(4, FGW_COORD, ZoomTo, y2 = fgw_coord(&argv[4]));
 
-	zoom_win(x1, y1, x2, y2);
+	zoom_win(x1, y1, x2, y2, 1);
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -1148,7 +1148,7 @@ static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 	lesstif_pan_fixup();
 }
 
-static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
 {
 	pcb_coord_t w = x2 - x1, h = y2 - y1;
 	double new_zoom = w / view_width;
@@ -1167,6 +1167,8 @@ static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 	view_top_y = y1;
 
 	lesstif_pan_fixup();
+	if (setch)
+		pcb_crosshair_move_absolute((x1+x2)/2, (y1+y2)/2);
 }
 
 static void zoom_toggle(pcb_coord_t x, pcb_coord_t y)
