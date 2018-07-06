@@ -1493,6 +1493,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-font-v1");
 	lht_dom_list_append(doc->root, build_font(font));
 
+	clean_invalid(doc->root);
 	res = lht_dom_export(doc->root, f, "");
 
 	fclose(f);
