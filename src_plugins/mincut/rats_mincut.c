@@ -315,6 +315,10 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	pcb_reset_found_pins_vias_pads(pcb_false);
 	pcb_restore_find_flag();
 
+	for(i = 0; i < g->n; i++)
+		free(g->node2name[i]);
+	gr_free(g);
+
 	pcb_find_callback = old_cb;
 	return bad_gr;
 }
