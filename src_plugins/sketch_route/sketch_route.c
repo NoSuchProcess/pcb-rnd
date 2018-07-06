@@ -76,9 +76,9 @@ void wire_uninit(wire_t *w)
 	free(w->points);
 }
 
-void wire_push_point(wire_t *w, sided_point_t *sp) {
-	w->points[w->point_num].p = sp->p;
-	w->points[w->point_num].side = sp->side;
+void wire_push_point(wire_t *w, point_t *p, int side) {
+	w->points[w->point_num].p = p;
+	w->points[w->point_num].side = side;
 	if (++w->point_num >= w->point_max) {
 		w->point_max += WIRE_POINTS_STEP;
 		w->points = realloc(w->points, w->point_max*sizeof(sided_point_t));
@@ -110,6 +110,17 @@ static void sketch_draw_cdt(sketch_t *sk)
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
 		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, e->endp[0]->pos.y, e->endp[1]->pos.x, e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
+}
+
+static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
+{
+	/* TODO */
+	return pcb_true;
+}
+
+static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
+{
+	/* TODO */
 }
 
 static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
@@ -242,8 +253,10 @@ struct {
 	pcb_any_obj_t *start_term;
 	pcb_lib_menu_t *net;
 	vtp0_t lines;
-	trianglelist_node_t corridor;
-	wire_t wire;
+	point_t *start_p;
+	edgelist_node_t *visited_edges;
+	triangle_t *current_t;
+	wire_t corridor;
 	sketch_t *sketch;
 } attached_path = {0};
 
@@ -265,21 +278,24 @@ static void attached_path_next_line()
 
 static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
 {
-	point_t *start_p;
 	pcb_attached_line_t *start_l;
 
 	attached_path.sketch = sketches_get_sketch_at_layer(layer);
-	start_p = sketch_get_point_at_terminal(attached_path.sketch, start_term);
 	attached_path.start_term = start_term;
 	attached_path.net = pcb_netlist_find_net4term(PCB, start_term);
 	if (attached_path.net == NULL)
 		return pcb_false;
+
 	vtp0_init(&attached_path.lines);
 	start_l = attached_path_new_line();
 	pcb_obj_center(start_term, &start_l->Point1.X, &start_l->Point1.Y);
 	tool_skline_adjust_attached_objects();
 
-	/* TODO */
+	attached_path.start_p = sketch_get_point_at_terminal(attached_path.sketch, start_term);
+	attached_path.current_t = NULL;
+	attached_path.visited_edges = NULL;
+	wire_init(&attached_path.corridor);
+	wire_push_point(&attached_path.corridor, attached_path.start_p, SIDE_TERM);
 
 	return pcb_true;
 }
@@ -290,13 +306,106 @@ static void attached_path_uninit()
 	for (i = 0; i < vtp0_len(&attached_path.lines); i++)
 		free(attached_path.lines.array[i]);
 	vtp0_uninit(&attached_path.lines);
+	edgelist_free(attached_path.visited_edges);
 }
 
-static pcb_bool attached_path_add_point(pcb_coord_t x, pcb_coord_t y)
+static pcb_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
 {
+	point_t p, q;
+	p.pos.x = line->Point1.X;
+	p.pos.y = line->Point1.Y;
+	q.pos.x = line->Point2.X;
+	q.pos.y = line->Point2.Y;
+	return LINES_INTERSECT(&p, &q, edge->endp[0], edge->endp[1]);
+}
+
+static pcb_bool attached_path_next_point(point_t *end_p)
+{
+	int last = vtp0_len(&attached_path.lines) - 1;
+	pcb_attached_line_t *attached_line = attached_path.lines.array[last];
+	edge_t *entrance_e = NULL;
+	wire_t corridor_ops;
+	int i;
+
+	wire_init(&corridor_ops);
+#define RETURN(r) do { \
+	wire_uninit(&corridor_ops); \
+	return (r); \
+} while (0)
+
+	/* special case: end point is in the current triangle (or next to start point) */
 	/* TODO */
+
+	/* move along the attached line to find intersecting triangles which form a corridor */
+	while(1) {
+		if (attached_path.current_t == NULL) { /* we haven't left the first triangle yet */
+			TRIANGLELIST_FOREACH(t, attached_path.start_p->adj_triangles)
+				for (i = 0; i < 3; i++)
+					if (t->e[i]->endp[0] != attached_path.start_p && t->e[i]->endp[1] != attached_path.start_p
+							&& t->e[i] != entrance_e && line_intersects_edge(attached_line, t->e[i])) {
+						if (sketch_check_path(attached_path.start_p, NULL, t->e[i], NULL) == pcb_false)
+							RETURN(pcb_false);
+						attached_path.current_t = t->adj_t[i];
+						wire_push_point(&corridor_ops, t->p[i], SIDE_RIGHT);
+						wire_push_point(&corridor_ops, t->p[(i+1)%3], SIDE_LEFT);
+						entrance_e = t->e[i];
+						attached_path.visited_edges = edgelist_prepend(attached_path.visited_edges, &entrance_e);
+						goto next_triangle;
+					}
+			TRIANGLELIST_FOREACH_END();
+		}
+		else { /* next triangle in the corridor */
+			triangle_t *t = attached_path.current_t;
+			for (i = 0; i < 3; i++) {
+				if (t->e[i] != entrance_e && line_intersects_edge(attached_line, t->e[i])) {
+					edge_t *last_entrance_e = attached_path.visited_edges->item;
+					entrance_e = t->e[i];
+					attached_path.current_t = t->adj_t[i];
+					if (t->e[i] != last_entrance_e) { /* going forward */
+						if (sketch_check_path(NULL, attached_path.visited_edges->item, t->e[i], NULL) == pcb_false)
+							RETURN(pcb_false);
+						wire_push_point(&corridor_ops,
+														t->p[t->e[(i+2)%3] == last_entrance_e ? (i+1)%3 : i],
+														t->e[(i+1)%3] == last_entrance_e ? SIDE_RIGHT : SIDE_LEFT);
+						attached_path.visited_edges = edgelist_prepend(attached_path.visited_edges, &entrance_e);
+
+						if (attached_path.current_t->p[(i+2)%3] == end_p) { /* entering last triangle? */
+							if (sketch_check_path(NULL, entrance_e, NULL, end_p) == pcb_false)
+								RETURN(pcb_false);
+							wire_push_point(&corridor_ops, end_p, SIDE_TERM);
+							goto end;
+						}
+
+						goto next_triangle;
+					}
+					else { /* going backward */
+						attached_path.visited_edges = edgelist_remove_front(attached_path.visited_edges);
+						wire_push_point(&corridor_ops, NULL, 0); /* NULL means to remove point */
+						if (attached_path.visited_edges == NULL) { /* came back to the first triangle */
+							wire_push_point(&corridor_ops, NULL, 0);
+							attached_path.current_t = NULL;
+						}
+						goto next_triangle;
+					}
+				}
+			}
+		}
+		break;
+next_triangle:
+		continue;
+	}
+
+end:
+	/* apply evaluated points additions/removals */
+	for (i = 0; i < corridor_ops.point_num; i++) {
+		if (corridor_ops.points[i].p != NULL)
+			wire_push_point(&attached_path.corridor, corridor_ops.points[i].p, corridor_ops.points[i].side);
+		else
+			wire_pop_point(&attached_path.corridor);
+	}
 	attached_path_next_line();
 	return pcb_true;
+#undef RETURN
 }
 
 static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
@@ -309,8 +418,13 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 		pcb_snprintf(termname, sizeof(termname), "%s-%s", subc->refdes, end_term->term);
 		for (i = 0; i < attached_path.net->EntryN; i++) {
 			if (strcmp(attached_path.net->Entry[i].ListEntry, termname) == 0) {
-				/* TODO */
-				sketch_insert_wire(attached_path.sketch, &attached_path.wire);
+				point_t *end_p;
+				wire_t *wire;
+				end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
+				if (attached_path_next_point(end_p) == pcb_false)
+					return pcb_false;
+				sketch_find_shortest_path(&attached_path.corridor, &wire);
+				sketch_insert_wire(attached_path.sketch, wire);
 				return pcb_true;
 			}
 		}
@@ -369,7 +483,7 @@ static void tool_skline_notify_mode(void)
 				}
 			}
 		} else {
-			if (attached_path_add_point(pcb_tool_note.X, pcb_tool_note.Y) == pcb_false)
+			if (attached_path_next_point(NULL) == pcb_false)
 				pcb_message(PCB_MSG_WARNING, _("Cannot route the wire this way\n"));
 		}
 		break;
