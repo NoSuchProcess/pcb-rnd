@@ -116,7 +116,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	gr_t *g;
 	void *S, *T;
 	int *solution;
-	int i, maxedges;
+	int i, maxedges, nonterms = 0;
 	int bad_gr = 0;
 
 	if (!conf_mincut.plugins.mincut.enable)
@@ -179,7 +179,17 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 			s = pcb_strdup_printf("%s #%ld", typ, n->to->ID);
 
 		g->node2name[n->gid] = s;
+		if ((o->term == NULL) && (o->type != PCB_OBJ_RAT))
+			nonterms++;
 	}
+
+	/* Shortcut: do not even attempt to do the mincut if there are no objects
+	   between S and T that could be cut. This is a typical case when a lot of
+	   parts are thrown on the board with overlapping terminals after an initial
+	   import sch. */
+	if (nonterms < 1)
+		bad_gr = 1;
+
 	g->node2name[0] = pcb_strdup("S");
 	g->node2name[1] = pcb_strdup("T");
 
