@@ -25,7 +25,6 @@
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
 - scconfig: use scconfig's cquote isntead of the local copy
 - feature: query() should be able to search for object flags [report: James]
-- feature: property editor should deal with flags
 - feature: fp_wget cache dir configurable [report: agaran]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- unify how output files are accessed/checked: confirmation on overwrite
