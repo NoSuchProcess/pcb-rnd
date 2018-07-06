@@ -102,7 +102,7 @@ static pcb_qry_node_t *make_flag_free(char *str)
 		return NULL;
 	}
 
-	nd = pcb_qry_n_alloc(PCBQ_DATA_FLAG);
+	nd = pcb_qry_n_alloc(PCBQ_FLAG);
 	nd->precomp.flg = i;
 	free(str);
 	return nd;
