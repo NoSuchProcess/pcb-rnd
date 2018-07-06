@@ -561,6 +561,17 @@ const pcb_flag_bits_t *pcb_strflg_1bit(unsigned long bit, int object_type)
 	return NULL;
 }
 
+const pcb_flag_bits_t *pcb_strflg_name(const char *name, int object_type)
+{
+	int i, n_flagbits = PCB_ENTRIES(pcb_object_flagbits);;
+	for (i = 0; i < n_flagbits; i++) {
+		unsigned long my_obj_typs = pcb_object_flagbits[i].object_types;
+		if ((my_obj_typs & object_type) && (!pcb_object_flagbits[i].omit_list) && (strcmp(pcb_object_flagbits[i].name, name) == 0))
+			return &pcb_object_flagbits[i];
+	}
+	return NULL;
+}
+
 void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb))
 {
 	int n, i, n_flagbits = PCB_ENTRIES(pcb_object_flagbits);
