@@ -726,7 +726,7 @@ static int pcb_qry_obj_flag(pcb_any_obj_t *obj, pcb_qry_node_t *nflg, pcb_qry_va
 		/* flag not applicable on object type */
 		PCB_QRY_RET_INV(res);
 	}
-	PCB_QRY_RET_INT(res, 1);
+	PCB_QRY_RET_INT(res, PCB_FLAG_TEST(nflg->precomp.flg->mask, obj));
 }
 
 int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
