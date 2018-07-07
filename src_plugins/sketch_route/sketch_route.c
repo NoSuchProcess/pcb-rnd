@@ -175,7 +175,9 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 
 static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 {
-	/* TODO */
+	wire_t *new_w = *vtwire_alloc_append(&sk->wires, 1);
+	wire_copy(new_w, wire);
+	/* TODO: supplement points' data in cdt with the new wire */
 }
 
 struct search_info {
