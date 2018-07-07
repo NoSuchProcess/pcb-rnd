@@ -24,7 +24,8 @@
 	-> need per plugin menus and/or implement local grid in lesstif
 	-> non-bug
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
-- BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
++ BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
+	-> not a bug: GUI actions are registered only when the gui is activated; this can't be done differently because different GUIs will register the same actions
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
 - feature: fp_wget cache dir configurable [report: agaran]
