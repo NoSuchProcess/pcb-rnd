@@ -317,6 +317,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 
 	for(i = 0; i < g->n; i++)
 		free(g->node2name[i]);
+	free(g->node2name);
 	gr_free(g);
 
 	pcb_find_callback = old_cb;
