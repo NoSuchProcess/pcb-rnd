@@ -95,7 +95,8 @@ src/util/sccbox.o: src/util/sccbox.c
 sccbox: src/util/sccbox.o
 	$(CC) $(LDFLAGS) -o sccbox src/util/sccbox.o
 
-cquote: cquote.c
+cquote: src/util/cquote.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o cquote src/util/cquote.c
 
 clean:
 	-rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o cquote core src/util/sccbox.o
