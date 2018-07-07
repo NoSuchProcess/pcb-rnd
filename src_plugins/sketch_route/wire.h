@@ -33,6 +33,7 @@ void wire_init(wire_t *w);
 void wire_uninit(wire_t *w);
 void wire_push_point(wire_t *w, point_t *p, int side);
 void wire_pop_point(wire_t *w);
+void wire_copy(wire_t *dst, wire_t *src);
 void wire_print(wire_t *w, const char *tab);
 
 
