@@ -171,14 +171,18 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 			while (left.point_num > b
 						 && ORIENT_CW(left.points[left.point_num-2].p, left.points[left.point_num-1].p, p)) {
 				wire_pop_point(&left);
+#ifdef SK_DEBUG
 				printf("\tpop left point\n");
+#endif
 			}
 
 			while (right.point_num > b
 						 && !ORIENT_CCW(right.points[b-1].p, right.points[b].p, p)) {
 				wire_push_point(&left, right.points[b].p, right.points[b].side);
 				b++;
+#ifdef SK_DEBUG
 				printf("\tswitch to right (b=%i)\n", b);
+#endif
 			}
 
 			wire_push_point(&left, p, side);
@@ -187,22 +191,28 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 			while (right.point_num > b
 						 && ORIENT_CCW(right.points[right.point_num-2].p, right.points[right.point_num-1].p, p)) {
 				wire_pop_point(&right);
+#ifdef SK_DEBUG
 				printf("\tpop right point\n");
+#endif
 			}
 
 			while (left.point_num > b
 						 && !ORIENT_CW(left.points[b-1].p, left.points[b].p, p)) {
 				wire_push_point(&right, left.points[b].p, left.points[b].side);
 				b++;
+#ifdef SK_DEBUG
 				printf("\tswitch to left (b=%i)\n", b);
+#endif
 			}
 
 			wire_push_point(&right, p, side);
 		}
 	}
 
+#ifdef SK_DEBUG
 	printf("\npath:\n");
 	wire_print(&left, "\t");
+#endif
 
 	wire_uninit(&right);
 	*path = &left;
