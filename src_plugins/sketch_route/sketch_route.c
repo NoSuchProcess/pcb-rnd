@@ -61,6 +61,7 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 typedef struct {
 	cdt_t *cdt;
 	htpp_t terminals; /* key - terminal object; value - cdt point */
+	vtwire_t wires;
 	pcb_layer_t *ui_layer_cdt;
 } sketch_t;
 
@@ -222,10 +223,11 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	char name[256];
 
 	sk->cdt = malloc(sizeof(cdt_t));
-	htpp_init(&sk->terminals, ptrhash, ptrkeyeq);
 	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, -PCB->MaxHeight);
-	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
+	htpp_init(&sk->terminals, ptrhash, ptrkeyeq);
+	vtwire_init(&sk->wires);
 
+	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
 	info.layer = layer;
 	info.sk = sk;
 	pcb_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);
@@ -255,11 +257,12 @@ static void sketch_uninit(sketch_t *sk)
 		free(sk->cdt);
 		sk->cdt = NULL;
 	}
+	vtwire_uninit(&sk->wires);
+	htpp_uninit(&sk->terminals);
 	if (sk->ui_layer_cdt != NULL) {
 		pcb_uilayer_free(sk->ui_layer_cdt);
 		sk->ui_layer_cdt = NULL;
 	}
-	htpp_uninit(&sk->terminals);
 }
 
 
