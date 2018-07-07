@@ -227,6 +227,9 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	sk->cdt = malloc(sizeof(cdt_t));
 	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, -PCB->MaxHeight);
 	htpp_init(&sk->terminals, ptrhash, ptrkeyeq);
+	sk->wires.elem_constructor = vtwire_constructor;
+	sk->wires.elem_destructor = vtwire_destructor;
+	sk->wires.elem_copy = NULL;
 	vtwire_init(&sk->wires);
 
 	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
