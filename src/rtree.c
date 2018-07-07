@@ -49,6 +49,7 @@ pcb_rtree_t *pcb_r_create_tree(void)
 void pcb_r_destroy_tree(pcb_rtree_t **tree)
 {
 	pcb_rtree_uninit(*tree);
+	free(*tree);
 	*tree = NULL;
 }
 
