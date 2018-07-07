@@ -51,6 +51,8 @@
 #include <genht/htip.h>
 #include <genht/htpp.h>
 
+#define SK_DEBUG
+
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
@@ -82,7 +84,8 @@ void wire_uninit(wire_t *w)
 	free(w->points);
 }
 
-void wire_push_point(wire_t *w, point_t *p, int side) {
+void wire_push_point(wire_t *w, point_t *p, int side)
+{
 	w->points[w->point_num].p = p;
 	w->points[w->point_num].side = side;
 	if (++w->point_num >= w->point_max) {
@@ -91,9 +94,18 @@ void wire_push_point(wire_t *w, point_t *p, int side) {
 	}
 }
 
-void wire_pop_point(wire_t *w) {
+void wire_pop_point(wire_t *w)
+{
 	if(w->point_num > 0)
 		w->point_num--;
+}
+
+void wire_print(wire_t *w, const char *tab)
+{
+	int i;
+	for (i = 0; i < w->point_num; i++)
+		pcb_printf("%sP%i: (%mm,%mm) %s\n", tab, i, w->points[i].p->pos.x, -w->points[i].p->pos.y,
+							 w->points[i].side == SIDE_LEFT ? "LEFT" : w->points[i].side == SIDE_RIGHT ? "RIGHT" : "TERM");
 }
 
 
@@ -138,22 +150,38 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 	wire_push_point(&left, corridor->points[0].p, SIDE_TERM);
 	wire_push_point(&right, corridor->points[0].p, SIDE_TERM);
 
+#ifdef SK_DEBUG
+	printf("finding path through corridor:\n");
+	wire_print(corridor, "");
+#endif
+
 	for (i = 1, b = 1; i < corridor->point_num; i++) {
 		point_t *p = corridor->points[i].p;
 		int side = corridor->points[i].side;
 		int last_i;
 
+#ifdef SK_DEBUG
+		printf("\ncorridor point %i\n", i);
+		printf("left points:\n");
+		wire_print(&left, "\t");
+		printf("right points:\n");
+		wire_print(&right, "\t");
+#endif
+
 		if (side & SIDE_LEFT) {
 			last_i = left.point_num-1;
 			while (left.point_num > b
-						 && ORIENT_CW(left.points[last_i-1].p, left.points[last_i].p, p))
+						 && ORIENT_CW(left.points[last_i-1].p, left.points[last_i].p, p)) {
 				wire_pop_point(&left);
+				printf("\tpop left point\n");
+			}
 
 			last_i = right.point_num-1;
 			while (right.point_num > b
 						 && !ORIENT_CCW(right.points[b-1].p, right.points[b].p, p)) {
 				wire_push_point(&left, right.points[b].p, right.points[b].side);
 				b++;
+				printf("\tswitch to right (b=%i)\n", b);
 			}
 
 			wire_push_point(&left, p, side);
@@ -161,14 +189,17 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 		else {
 			last_i = right.point_num-1;
 			while (right.point_num > b
-						 && ORIENT_CCW(right.points[last_i-1].p, right.points[last_i].p, p))
+						 && ORIENT_CCW(right.points[last_i-1].p, right.points[last_i].p, p)) {
 				wire_pop_point(&right);
+				printf("\tpop right point\n");
+			}
 
 			last_i = left.point_num-1;
 			while (left.point_num > b
 						 && !ORIENT_CW(left.points[b-1].p, left.points[b].p, p)) {
 				wire_push_point(&right, left.points[b].p, left.points[b].side);
 				b++;
+				printf("\tswitch to left (b=%i)\n", b);
 			}
 
 			wire_push_point(&right, p, side);
