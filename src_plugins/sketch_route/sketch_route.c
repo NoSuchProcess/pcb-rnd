@@ -320,7 +320,7 @@ static pcb_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
 	return LINES_INTERSECT(&p, &q, edge->endp[0], edge->endp[1]);
 }
 
-static pcb_bool attached_path_next_point()
+static pcb_bool attached_path_next_point(point_t *end_p)
 {
 	int last = vtp0_len(&attached_path.lines) - 1;
 	pcb_attached_line_t *attached_line = attached_path.lines.array[last];
@@ -385,6 +385,12 @@ next_triangle:
 		continue;
 	}
 
+	if (end_p != NULL) { /* connecting to the last point? */
+		if (sketch_check_path(NULL, attached_path.visited_edges->item, NULL, end_p) == pcb_false)
+			RETURN(pcb_false);
+		wire_push_point(&corridor_ops, end_p, SIDE_TERM);
+	}
+
 	/* apply evaluated points additions/removals */
 	for (i = 0; i < corridor_ops.point_num; i++) {
 		if (corridor_ops.points[i].p != NULL)
@@ -410,10 +416,9 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 				point_t *end_p;
 				wire_t *wire;
 
-				if (attached_path_next_point() == pcb_false)
-					return pcb_false;
 				end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
-				wire_push_point(&attached_path.corridor, end_p, SIDE_TERM);
+				if (attached_path_next_point(end_p) == pcb_false)
+					return pcb_false;
 
 				sketch_find_shortest_path(&attached_path.corridor, &wire);
 				sketch_insert_wire(attached_path.sketch, wire);
