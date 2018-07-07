@@ -114,7 +114,7 @@ static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
 static void sketch_draw_cdt(sketch_t *sk)
 {
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
-		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, e->endp[0]->pos.y, e->endp[1]->pos.x, e->endp[1]->pos.y, 1, 0, pcb_no_flags());
+		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
 }
 
@@ -199,7 +199,7 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 		pcb_pstk_t *pstk = (pcb_pstk_t *) obj;
 		if (pcb_pstk_shape_at(PCB, pstk, i->layer) == NULL)
 			return PCB_R_DIR_NOT_FOUND;
-		point = cdt_insert_point(i->sk->cdt, pstk->x, pstk->y);
+		point = cdt_insert_point(i->sk->cdt, pstk->x, -pstk->y);
 	}
 	/* temporary: if a non-padstack obj is _not_ a terminal, then don't triangulate it */
 	/* long term (for non-terminal objects):
@@ -210,7 +210,7 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 	else if (obj->term != NULL) {
 		coord_t cx, cy;
 		pcb_obj_center(obj, &cx, &cy);
-		point = cdt_insert_point(i->sk->cdt, cx, cy);
+		point = cdt_insert_point(i->sk->cdt, cx, -cy);
 	}
 
 	if (obj->term != NULL) {
@@ -230,7 +230,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 
 	sk->cdt = malloc(sizeof(cdt_t));
 	htpp_init(&sk->terminals, ptrhash, ptrkeyeq);
-	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, -PCB->MaxHeight);
 	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
 
 	info.layer = layer;
@@ -370,9 +370,9 @@ static pcb_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
 {
 	point_t p, q;
 	p.pos.x = line->Point1.X;
-	p.pos.y = line->Point1.Y;
+	p.pos.y = -line->Point1.Y;
 	q.pos.x = line->Point2.X;
-	q.pos.y = line->Point2.Y;
+	q.pos.y = -line->Point2.Y;
 	return LINES_INTERSECT(&p, &q, edge->endp[0], edge->endp[1]);
 }
 
