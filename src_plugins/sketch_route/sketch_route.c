@@ -478,6 +478,7 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 
 				sketch_find_shortest_path(&attached_path.corridor, &wire);
 				sketch_insert_wire(attached_path.sketch, wire);
+				wire_uninit(wire);
 				return pcb_true;
 			}
 		}
