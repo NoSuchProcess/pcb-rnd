@@ -24,6 +24,12 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* Literature:
+ * [1] C E Leiserson and F M Maley. 1985. Algorithms for routing and testing routability of planar VLSI layouts.
+ *     In Proceedings of the seventeenth annual ACM symposium on Theory of computing (STOC '85).
+ *     ACM, New York, NY, USA, 69-78. DOI=http://dx.doi.org/10.1145/22145.22153
+ */
+
 #include "config.h"
 
 #include "plugins.h"
@@ -51,9 +57,9 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 typedef struct {
 	point_t *p;
 	enum {
-		SIDE_LEFT = -1,
-		SIDE_TERM = 0,
-		SIDE_RIGHT = 1
+		SIDE_LEFT = (1<<0),
+		SIDE_RIGHT = (1<<1),
+		SIDE_TERM = (1<<1)|(1<<0)
 	} side;
 } sided_point_t;
 
@@ -120,7 +126,57 @@ static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e,
 
 static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 {
-	/* TODO */
+	/* the algorithm is described in [1] */
+	static wire_t left;
+	wire_t right;
+	int i, b;
+
+	assert(corridor->points[0].side == SIDE_TERM && corridor->points[corridor->point_num-1].side == SIDE_TERM);
+
+	wire_init(&left);
+	wire_init(&right);
+	wire_push_point(&left, corridor->points[0].p, SIDE_TERM);
+	wire_push_point(&right, corridor->points[0].p, SIDE_TERM);
+
+	for (i = 1, b = 1; i < corridor->point_num; i++) {
+		point_t *p = corridor->points[i].p;
+		int side = corridor->points[i].side;
+		int last_i;
+
+		if (side & SIDE_LEFT) {
+			last_i = left.point_num-1;
+			while (left.point_num > b
+						 && ORIENT_CW(left.points[last_i-1].p, left.points[last_i].p, p))
+				wire_pop_point(&left);
+
+			last_i = right.point_num-1;
+			while (right.point_num > b
+						 && !ORIENT_CCW(right.points[b-1].p, right.points[b].p, p)) {
+				wire_push_point(&left, right.points[b].p, right.points[b].side);
+				b++;
+			}
+
+			wire_push_point(&left, p, side);
+		}
+		else {
+			last_i = right.point_num-1;
+			while (right.point_num > b
+						 && ORIENT_CCW(right.points[last_i-1].p, right.points[last_i].p, p))
+				wire_pop_point(&right);
+
+			last_i = left.point_num-1;
+			while (left.point_num > b
+						 && !ORIENT_CW(left.points[b-1].p, left.points[b].p, p)) {
+				wire_push_point(&right, left.points[b].p, left.points[b].side);
+				b++;
+			}
+
+			wire_push_point(&right, p, side);
+		}
+	}
+
+	wire_uninit(&right);
+	*path = &left;
 }
 
 static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
