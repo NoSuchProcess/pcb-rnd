@@ -184,7 +184,9 @@ void pcb_layout_lookup_uninit(void)
 		PolygonList[i].Data = NULL;
 	}
 	free(RatList.Data);
+	free(PadstackList.Data);
 	RatList.Data = NULL;
+	PadstackList.Data = NULL;
 }
 
 /* allocates memory for component related stacks ...
