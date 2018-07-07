@@ -209,6 +209,11 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 		}
 	}
 
+	if (left.points[left.point_num-1].p == left.points[left.point_num-2].p) {
+		wire_pop_point(&left);
+		left.points[left.point_num-1].side = SIDE_TERM;
+	}
+
 #ifdef SK_DEBUG
 	printf("\npath:\n");
 	wire_print(&left, "\t");
