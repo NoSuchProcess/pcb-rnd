@@ -47,6 +47,7 @@
 #include "tool.h"
 #include "layer_ui.h"
 
+#include "wire.h"
 #include "cdt/cdt.h"
 #include <genht/htip.h>
 #include <genht/htpp.h>
@@ -55,58 +56,6 @@
 
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
-
-typedef struct {
-	point_t *p;
-	enum {
-		SIDE_LEFT = (1<<0),
-		SIDE_RIGHT = (1<<1),
-		SIDE_TERM = (1<<1)|(1<<0)
-	} side;
-} sided_point_t;
-
-typedef struct {
-	int point_num;
-	int point_max;
-	sided_point_t *points;
-} wire_t;
-
-#define WIRE_POINTS_STEP 10
-
-void wire_init(wire_t *w) {
-	w->point_num = 0;
-	w->point_max = WIRE_POINTS_STEP;
-	w->points = malloc(WIRE_POINTS_STEP*sizeof(sided_point_t));
-}
-
-void wire_uninit(wire_t *w)
-{
-	free(w->points);
-}
-
-void wire_push_point(wire_t *w, point_t *p, int side)
-{
-	w->points[w->point_num].p = p;
-	w->points[w->point_num].side = side;
-	if (++w->point_num >= w->point_max) {
-		w->point_max += WIRE_POINTS_STEP;
-		w->points = realloc(w->points, w->point_max*sizeof(sided_point_t));
-	}
-}
-
-void wire_pop_point(wire_t *w)
-{
-	if(w->point_num > 0)
-		w->point_num--;
-}
-
-void wire_print(wire_t *w, const char *tab)
-{
-	int i;
-	for (i = 0; i < w->point_num; i++)
-		pcb_printf("%sP%i: (%mm,%mm) %s\n", tab, i, w->points[i].p->pos.x, -w->points[i].p->pos.y,
-							 w->points[i].side == SIDE_LEFT ? "LEFT" : w->points[i].side == SIDE_RIGHT ? "RIGHT" : "TERM");
-}
 
 
 typedef struct {
