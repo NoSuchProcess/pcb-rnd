@@ -282,7 +282,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 						widget = gtk_label_new(*tb_st->val.tabbed.tablab);
 						tb_st->val.tabbed.tablab++;
 					}
-					else 
+					else
 						widget = NULL;
 					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, widget);
 					break;
