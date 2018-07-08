@@ -9,7 +9,7 @@ void wire_init(wire_t *w)
 {
 	w->point_num = 0;
 	w->point_max = WIRE_POINTS_STEP;
-	w->points = malloc(WIRE_POINTS_STEP*sizeof(sided_point_t));
+	w->points = malloc(WIRE_POINTS_STEP*sizeof(wire_point_t));
 }
 
 void wire_uninit(wire_t *w)
@@ -23,7 +23,7 @@ void wire_push_point(wire_t *w, point_t *p, int side)
 	w->points[w->point_num].side = side;
 	if (++w->point_num >= w->point_max) {
 		w->point_max += WIRE_POINTS_STEP;
-		w->points = realloc(w->points, w->point_max*sizeof(sided_point_t));
+		w->points = realloc(w->points, w->point_max*sizeof(wire_point_t));
 	}
 }
 
@@ -37,8 +37,8 @@ void wire_copy(wire_t *dst, wire_t *src)
 {
   dst->point_max = src->point_max;
   dst->point_num = src->point_num;
-  dst->points = realloc(dst->points, src->point_max*sizeof(sided_point_t));
-  memcpy(dst->points, src->points, src->point_num*sizeof(sided_point_t));
+  dst->points = realloc(dst->points, src->point_max*sizeof(wire_point_t));
+  memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
 }
 
 void wire_print(wire_t *w, const char *tab)

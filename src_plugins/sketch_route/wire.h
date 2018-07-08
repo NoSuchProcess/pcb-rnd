@@ -19,12 +19,12 @@ typedef struct {
 		SIDE_RIGHT = (1<<1),
 		SIDE_TERM = (1<<1)|(1<<0)
 	} side;
-} sided_point_t;
+} wire_point_t;
 
 typedef struct {
 	int point_num;
 	int point_max;
-	sided_point_t *points;
+	wire_point_t *points;
 } wire_t;
 
 typedef wire_t* wire_ptr_t;
