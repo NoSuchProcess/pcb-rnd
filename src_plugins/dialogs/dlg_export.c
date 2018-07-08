@@ -130,6 +130,10 @@ static void pcb_dlg_export(void)
 			pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
 			export_ctx.numa[n] = numa;
 			export_ctx.ea[n] = attrs;
+			if (numa < 1) {
+				PCB_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
+				continue;
+			}
 			PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
 				PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LABEL);
 				for(i = 0; i < numa; i++) {
