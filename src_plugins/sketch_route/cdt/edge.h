@@ -11,6 +11,7 @@ struct edge_s {
 	triangle_t *adj_t[2];
 
 	int is_constrained;
+	void *data;
 };
 
 typedef edge_t* edge_ptr_t;

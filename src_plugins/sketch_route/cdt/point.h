@@ -10,6 +10,8 @@ struct point_s {
 	pos_t pos;
 	edgelist_node_t *adj_edges;
 	trianglelist_node_t *adj_triangles;
+
+	void *data;
 };
 
 typedef point_t* point_ptr_t;
