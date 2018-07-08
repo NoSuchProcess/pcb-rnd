@@ -1,6 +1,7 @@
 #include "pcb-printf.h"
 
 #define GVT_DONT_UNDEF
+#define LST_DONT_UNDEF
 #include "wire.h"
 
 #define WIRE_POINTS_STEP 10
@@ -49,6 +50,11 @@ void wire_print(wire_t *w, const char *tab)
 							 w->points[i].side == SIDE_LEFT ? "LEFT" : w->points[i].side == SIDE_RIGHT ? "RIGHT" : "TERM");
 }
 
+static int LST(compare_func)(LST_ITEM_T *a, LST_ITEM_T *b)
+{
+  return *a == *b;
+}
+
 int GVT(constructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem)
 {
   *elem = malloc(sizeof(**elem));
@@ -64,4 +70,5 @@ void GVT(destructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem)
   free(*elem);
 }
 
+#include "cdt/list/list.c"
 #include <genvector/genvector_impl.c>
