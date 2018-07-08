@@ -868,11 +868,18 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			attr_dlg_tb_t tb;
 
 			stdarg_n = 0;
-			stdarg(XmNbackPagePlacement, XmTOP_RIGHT);
+			if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
+				stdarg(XmNbackPagePlacement, XmBOTTOM_LEFT);
+				stdarg(XmNorientation, XmHORIZONTAL);
+			}
+			else {
+				stdarg(XmNbackPagePlacement, XmTOP_RIGHT);
+				stdarg(XmNorientation, XmVERTICAL);
+			}
 			stdarg(XmNbackPageNumber, 1);
 			stdarg(XmNbackPageSize, 1);
 			stdarg(XmNbindingType, XmNONE);
-			stdarg(XmNorientation, XmVERTICAL);
+
 
 			stdarg(XmNleftAttachment, XmATTACH_FORM);
 			stdarg(XmNtopAttachment, XmATTACH_FORM);
