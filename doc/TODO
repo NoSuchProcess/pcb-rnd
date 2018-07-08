@@ -135,7 +135,6 @@ opengl:
 	- maybe other conf settings too?
 - pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
 - layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-- layer groups from config (e.g. CLI) is ignored
 - io_pcb: new, optional "layer tag" field in mainline's file format
 - fp_board: extend the API so that the element can be presented without saving to a file
 - SUBC missing features: manual layer binding (reuse csect?)
