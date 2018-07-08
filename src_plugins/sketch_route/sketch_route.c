@@ -86,6 +86,16 @@ static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e,
 	return pcb_true;
 }
 
+#ifdef SK_DEBUG
+static void wire_print(wire_t *w, const char *tab)
+{
+	int i;
+	for (i = 0; i < w->point_num; i++)
+		pcb_printf("%sP%i: (%mm,%mm) %s\n", tab, i, w->points[i].p->pos.x, -w->points[i].p->pos.y,
+							 w->points[i].side == SIDE_LEFT ? "LEFT" : w->points[i].side == SIDE_RIGHT ? "RIGHT" : "TERM");
+}
+#endif
+
 static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 {
 	/* the algorithm is described in [1] */

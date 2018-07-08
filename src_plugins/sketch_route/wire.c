@@ -42,14 +42,6 @@ void wire_copy(wire_t *dst, wire_t *src)
   memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
 }
 
-void wire_print(wire_t *w, const char *tab)
-{
-	int i;
-	for (i = 0; i < w->point_num; i++)
-		pcb_printf("%sP%i: (%mm,%mm) %s\n", tab, i, w->points[i].p->pos.x, -w->points[i].p->pos.y,
-							 w->points[i].side == SIDE_LEFT ? "LEFT" : w->points[i].side == SIDE_RIGHT ? "RIGHT" : "TERM");
-}
-
 static int LST(compare_func)(LST_ITEM_T *a, LST_ITEM_T *b)
 {
   return *a == *b;

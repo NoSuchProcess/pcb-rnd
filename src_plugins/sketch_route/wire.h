@@ -4,15 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(GVT_DONT_UNDEF) && defined(LST_DONT_UNDEF)
-  #undef GVT_DONT_UNDEF
-  #undef LST_DONT_UNDEF
-  #include "cdt/point.h"
-  #define GVT_DONT_UNDEF
-  #define LST_DONT_UNDEF
-#else
-  #include "cdt/typedefs.h"
-#endif
+#include "cdt/typedefs.h"
 
 typedef struct wirelist_node_s wirelist_node_t;
 
@@ -39,7 +31,6 @@ void wire_uninit(wire_t *w);
 void wire_push_point(wire_t *w, point_t *p, int side);
 void wire_pop_point(wire_t *w);
 void wire_copy(wire_t *dst, wire_t *src);
-void wire_print(wire_t *w, const char *tab);
 
 
 /* List */
