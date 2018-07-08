@@ -263,7 +263,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		if (ctx->attrs[j].type == PCB_HATT_END)
 			break;
 
-		/* if we are willing a table, allocate parent boxes in row-major */
+		/* if we are filling a table, allocate parent boxes in row-major */
 		if (tb_st != NULL) {
 			switch(tb_st->type) {
 				case TB_TABLE:
