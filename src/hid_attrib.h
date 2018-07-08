@@ -33,7 +33,8 @@ typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_FRAME       = 1,  /* box/table has a visible frame around it */
 	PCB_HATF_LABEL       = 2,  /* direct children print label */
 	PCB_HATF_SCROLL      = 4,  /* box/table is scrollable */
-	PCB_HATF_HIDE_TABLAB = 8   /* hide tab labes of a TABBED - the tab mechanism works, but tab names are not displayed and are not clickable */
+	PCB_HATF_HIDE_TABLAB = 8,  /* hide tab labes of a TABBED - the tab mechanism works, but tab names are not displayed and are not clickable */
+	PCB_HATF_LEFT_TAB    = 16  /* display tab labels of TABBED on the left instead of on top (default) */
 } pcb_hatt_compflags_t;
 
 typedef enum pcb_hids_e {
