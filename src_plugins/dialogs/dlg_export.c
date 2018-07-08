@@ -33,6 +33,7 @@ typedef struct{
 
 	pcb_hid_t **hid;
 	const char **tab_name;
+	int *first_attr;
 	int tabs, len;
 } export_ctx_t;
 
@@ -44,6 +45,7 @@ static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx->hid);
 	free(ctx->tab_name);
+	free(ctx->first_attr);
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -64,6 +66,7 @@ static void pcb_dlg_export(void)
 
 	export_ctx.tab_name = malloc(sizeof(char *) * (export_ctx.len+1));
 	export_ctx.hid = malloc(sizeof(pcb_hid_t *) * (export_ctx.len));
+	export_ctx.first_attr = malloc(sizeof(int) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
 		if (!hids[n]->exporter)
@@ -79,8 +82,14 @@ static void pcb_dlg_export(void)
 		PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
 		export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
 		for(n = 0; n < export_ctx.len; n++) {
+			int numa;
+			pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
 			PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-				PCB_DAD_LABEL(export_ctx.dlg, "content");
+				for(i = 0; i < numa; i++) {
+					if (i == 0)
+						export_ctx.first_attr[n] = PCB_DAD_CURRENT(export_ctx.dlg);
+					PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+				}
 			PCB_DAD_END(export_ctx.dlg);
 		}
 	PCB_DAD_END(export_ctx.dlg);
