@@ -59,6 +59,13 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 
 typedef struct {
+	/* second list used in the corner case: two subsequent wire segments are collinear;
+	 * wires could be then attached both on the left and on the right side of the point */
+	wirelist_node_t *attached_wires[2];
+	wirelist_node_t *terminal_wires;
+} pointdata_t;
+
+typedef struct {
 	cdt_t *cdt;
 	htpp_t terminals; /* key - terminal object; value - cdt point */
 	vtwire_t wires;
