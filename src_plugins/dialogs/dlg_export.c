@@ -85,6 +85,7 @@ static void pcb_dlg_export(void)
 			int numa;
 			pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
 			PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
+				PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LABEL);
 				for(i = 0; i < numa; i++) {
 					if (i == 0)
 						export_ctx.first_attr[n] = PCB_DAD_CURRENT(export_ctx.dlg);
