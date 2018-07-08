@@ -105,6 +105,11 @@ static void pcb_dlg_export(void)
 		export_ctx.len++;
 	}
 
+	if (export_ctx.len == 0) {
+		pcb_message(PCB_MSG_ERROR, "Can not export: there are no export plugins available\n");
+		return;
+	}
+
 	export_ctx.tab_name = malloc(sizeof(char *) * (export_ctx.len+1));
 	export_ctx.hid = malloc(sizeof(pcb_hid_t *) * (export_ctx.len));
 	export_ctx.first_attr = malloc(sizeof(int) * (export_ctx.len));
