@@ -139,7 +139,7 @@ static void pcb_dlg_export(void)
 				}
 				PCB_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */
 				PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
-					PCB_DAD_LABEL(export_ctx.dlg, "Save attributes and export: ");
+					PCB_DAD_LABEL(export_ctx.dlg, "Apply attributes and export: ");
 					PCB_DAD_BUTTON(export_ctx.dlg, "Export!");
 						export_ctx.button[n] = PCB_DAD_CURRENT(export_ctx.dlg);
 						PCB_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
