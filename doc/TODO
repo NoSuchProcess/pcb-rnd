@@ -19,6 +19,8 @@
 		- draw with a slightly thicker background, in normal mode, skip xor
 	- option 3:
 		- implement both option 1 and 2 and add a config setting that selects which one to do
+	- redefine xor rendering to be compositing?
+		- if so: allow padstack xor draw to draw all shapes on all layers
 - BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 	-> need per plugin menus and/or implement local grid in lesstif
 	-> non-bug
@@ -40,7 +42,6 @@
 - cleanup: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
-- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 - BUG: pcb_pstk_export_compat_pad() - round trip fails [report: igor2]
 	- may need to double clearance value
 	- mask needs some tuning too
@@ -111,10 +112,6 @@ opengl:
 	- Layer group changes are not marked in the title bar; Evan's test case:
 	  make any change in the layer group screen, return to the main screen, no * will be added in the title bar in front of the file name.
 	- do not require top and bottom silk (also grep for TODO #tbs)
-eagle:
-	- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
-	- BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
-	- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
 		- allow GTK to handle keys in preview
 		- use the zoompan engine for the zooming. Modifiy API if necessary
@@ -138,12 +135,6 @@ eagle:
 	- maybe other conf settings too?
 - pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
 - layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-- layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
-- eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
-- eagle rectangle parsing should generate a rectangular feature, not a four line rectangular outline [erich]
-- eagle XML wire elements need to have "curve" attribute processed, if present. i.e. arcs. Can see translate2geda for hints [report: erich]
-- eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
-- eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 - layer groups from config (e.g. CLI) is ignored
 - io_pcb: new, optional "layer tag" field in mainline's file format
 - fp_board: extend the API so that the element can be presented without saving to a file
@@ -198,7 +189,6 @@ eagle:
 	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - feature req: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-- BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - BUG: gtk: preferences/user POV/sizes is not in sync with preferences/config POV/ [report: Alain]
@@ -224,9 +214,24 @@ eagle:
 	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
 - feautres/cleanup: hid:
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
-- redefine xor rendering to be compositing?
-	- if so: allow padstack xor draw to draw all shapes on all layers
-
+- I/O bugs:
+	- kicad:
+		- BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
+	- eagle:
+		- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
+		- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
+		- BUG: valgrind shows memory leaks relating to binary load. See bug_files/e-motoren.lbr [report: erich]
+		- BUG: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: erich]
+		- layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
+		- eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
+		- eagle rectangle parsing should generate a rectangular feature, not a four line rectangular outline [erich]
+		- eagle XML wire elements need to have "curve" attribute processed, if present. i.e. arcs. Can see translate2geda for hints [report: erich]
+		- eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
+		- eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
+		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
+		- bin: need to refine naming of library (.lbr) elements in loaded .lbr files; any text names in the binary tree, if starting with ASCII 127, sequentially reference strings in the text block which comes immediately after the board/design tree. In later eagle binary versions, the text block seems to become a node of the tree, but a node of arbitrary length, not 24 bytes, with length of block still encoded in first few bytes. 
+		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
+		- bin: layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
@@ -238,14 +243,6 @@ Lesstif:
 
 GTK2:
 	- next_gui: keep them open, hide
-
-Eagle binary:
-	- padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
-	- need to refine naming of library (.lbr) elements in loaded .lbr files; any text names in the binary tree, if starting with ASCII 127, sequentially reference strings in the text block which comes immediately after the board/design tree. In later eagle binary versions, the text block seems to become a node of the tree, but a node of arbitrary length, not 24 bytes, with length of block still encoded in first few bytes. 
-	- need to add support for non top silk (tPlace), tDocu and top copper text in read.c
-	- layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
-
-
 
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
