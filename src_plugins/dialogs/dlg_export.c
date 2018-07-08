@@ -31,13 +31,51 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 
+	int tabs, len;
+
+	/* per exporter data */
 	pcb_hid_t **hid;
 	const char **tab_name;
-	int *first_attr;
-	int tabs, len;
+	int *first_attr;          /* widget ID of the first attribute for a specific exporter */
+	int *button;              /* widget ID of the export button for a specific exporter */
+	int *numa;                /* number of exporter attributes */
+	pcb_hid_attribute_t **ea; /* original exporter attribute arrays */
 } export_ctx_t;
 
 export_ctx_t export_ctx;
+
+static pcb_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
+{
+	pcb_hid_attr_val_t *r;
+	int n, numa = export_ctx->numa[id];
+	pcb_hid_attribute_t *attrs = export_ctx->ea[id];
+
+	r = malloc(sizeof(pcb_hid_attr_val_t) * numa);
+
+	for(n = 0; n < numa; n++) {
+		int src = export_ctx->first_attr[id] + n;
+		memcpy(&r[n], &(export_ctx->dlg[src].default_val), sizeof(pcb_hid_attr_val_t));
+	}
+	return r;
+}
+
+static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	export_ctx_t *export_ctx = caller_data;
+	int h, wid, i;
+	wid = attr - export_ctx->dlg;
+	for(h = 0; h < export_ctx->len; h++) {
+		if (export_ctx->button[h] == wid) {
+			pcb_hid_attr_val_t *results = get_results(export_ctx, h);
+			export_ctx->hid[h]->do_export(results);
+			free(results);
+			pcb_message(PCB_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
+			return;
+		}
+	}
+
+	pcb_message(PCB_MSG_ERROR, "Internal error: can not find which exporter to call\n");
+}
 
 static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -46,6 +84,9 @@ static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx->hid);
 	free(ctx->tab_name);
 	free(ctx->first_attr);
+	free(ctx->button);
+	free(ctx->numa);
+	free(ctx->ea);
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -67,6 +108,9 @@ static void pcb_dlg_export(void)
 	export_ctx.tab_name = malloc(sizeof(char *) * (export_ctx.len+1));
 	export_ctx.hid = malloc(sizeof(pcb_hid_t *) * (export_ctx.len));
 	export_ctx.first_attr = malloc(sizeof(int) * (export_ctx.len));
+	export_ctx.button = malloc(sizeof(int) * (export_ctx.len));
+	export_ctx.numa = malloc(sizeof(int) * (export_ctx.len));
+	export_ctx.ea = malloc(sizeof(pcb_hid_attribute_t *) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
 		if (!hids[n]->exporter)
@@ -84,13 +128,23 @@ static void pcb_dlg_export(void)
 		for(n = 0; n < export_ctx.len; n++) {
 			int numa;
 			pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
+			export_ctx.numa[n] = numa;
+			export_ctx.ea[n] = attrs;
 			PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
 				PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LABEL);
 				for(i = 0; i < numa; i++) {
+					PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
 					if (i == 0)
 						export_ctx.first_attr[n] = PCB_DAD_CURRENT(export_ctx.dlg);
-					PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
 				}
+				PCB_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */
+				PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
+					PCB_DAD_LABEL(export_ctx.dlg, "Save attributes and export: ");
+					PCB_DAD_BUTTON(export_ctx.dlg, "Export!");
+						export_ctx.button[n] = PCB_DAD_CURRENT(export_ctx.dlg);
+						PCB_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
+				PCB_DAD_END(export_ctx.dlg);
+				PCB_DAD_CURRENT(export_ctx.dlg);
 			PCB_DAD_END(export_ctx.dlg);
 		}
 	PCB_DAD_END(export_ctx.dlg);
