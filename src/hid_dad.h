@@ -153,6 +153,13 @@ do { \
 	table[table ## _len - 1].default_val.str_value = text; \
 } while(0)
 
+#define PCB_DAD_DUP_ATTR(table, attr) \
+do { \
+	PCB_DAD_ALLOC(table, 0); \
+	memcpy(&table[table ## _len-1], (attr), sizeof(pcb_hid_attribute_t)); \
+} while(0)
+
+
 /* Set properties of the current item */
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, max_val, val)
