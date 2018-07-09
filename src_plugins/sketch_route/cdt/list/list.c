@@ -89,6 +89,18 @@ size_t LST(length)(LST(node_t) *list)
 	return len;
 }
 
+int LST(get_index)(LST(node_t) *list, LST(node_t) *node)
+{
+	int i;
+	if (list == NULL)
+		return -1;
+	for (i = 0; list != node && list != NULL; list = list->next)
+		i++;
+	if (list == NULL)
+		return -1;
+	return i;
+}
+
 void LST(free)(LST(node_t) *list)
 {
 	LST(node_t) *node, *next_node;
