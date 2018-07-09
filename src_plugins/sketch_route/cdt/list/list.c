@@ -24,6 +24,11 @@ LST(node_t) *LST(insert_after)(LST(node_t) *node, LST_ITEM_T *item)
 	return new_node;
 }
 
+LST(node_t) *LST(insert_after_nth)(LST(node_t) *list, int n, LST_ITEM_T *item)
+{
+	return LST(insert_after)(LST(nth)(list, n), item);
+}
+
 LST(node_t) *LST(remove_front)(LST(node_t) *list)
 {
 	LST(node_t) *new_head;
