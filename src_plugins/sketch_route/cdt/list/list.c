@@ -79,6 +79,14 @@ LST(node_t) *LST(find)(LST(node_t) *list, LST_ITEM_T *item)
 	return NULL;
 }
 
+LST(node_t) *LST(nth)(LST(node_t) *list, int n)
+{
+	int i;
+  for (i = 0; i < n && list != NULL; i++)
+		list = list->next;
+	return list;
+}
+
 size_t LST(length)(LST(node_t) *list)
 {
 	size_t len = 0;
