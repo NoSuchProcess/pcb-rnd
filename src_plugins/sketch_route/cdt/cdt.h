@@ -39,6 +39,8 @@ int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, triangle
 void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations);
 
 
+edge_t *get_edge_from_points(point_t *p1, point_t *p2);
+
 #define ORIENT_CCW(a, b, c) (orientation(a, b, c) < 0)
 #define ORIENT_CW(a, b, c) (orientation(a, b, c) > 0)
 /* TODO: check epsilon for collinear case? */

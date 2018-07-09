@@ -46,7 +46,7 @@ static edge_t *new_edge(cdt_t *cdt, point_t *p1, point_t *p2, int constrain)
 	return e;
 }
 
-static edge_t *get_edge_from_points(point_t *p1, point_t *p2)
+edge_t *get_edge_from_points(point_t *p1, point_t *p2)
 {
 	EDGELIST_FOREACH(e1, p1->adj_edges)
 		EDGELIST_FOREACH(e2, p2->adj_edges)
