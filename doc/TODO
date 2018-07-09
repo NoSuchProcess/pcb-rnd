@@ -28,12 +28,14 @@
 + BUG: actions in src_plugins/lib_gtk_hid/actions.c aren't dumped with show actions or dump actions [report: miloh]
 	-> not a bug: GUI actions are registered only when the gui is activated; this can't be done differently because different GUIs will register the same actions
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
-- BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well [report: Ade]
+- BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well. (Propose that right-click should not select object) [report: Ade]
 - feature: fp_wget cache dir configurable [report: agaran]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- remove the old gtk-only export menu code
 	- unify how output files are accessed/checked: confirmation on overwrite
-
+- BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
+- BUG: Locked objects can be moved when selected. [Report: Ade]
+ 
 2. For later releases ===============================================================================
 - rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
