@@ -534,9 +534,9 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 
 	/* install layers */
 	if (grp->len == 0) {
-		char * const clr = grp_color(grp);
+		const char * const clr = grp_color(grp);
 		char *name = pcb_strdup_printf("<%s>", lsg->grp->name);
-		GtkWidget *wl = build_layer(lsg, &lsg->layer[0], name, -1, &clr);
+		GtkWidget *wl = build_layer(lsg, &lsg->layer[0], name, -1, (char *const *)&clr);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
 		lsg->layer[0].lid = -1;
 		lsg->layer[0].ev_selected = ev_lyr_no_select;
