@@ -1019,6 +1019,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	double xz, yz, vw, vh;
 	double xr, yr, wr, hr;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
+	pcb_gl_color_t bg_c;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1065,6 +1066,8 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 		hr = allocation.height;
 	}
 
+	gtk2gl_color(&bg_c, &priv->bg_color);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1081,7 +1084,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
 	glEnable(GL_STENCIL_TEST);
-	glClearColor(priv->bg_color.red / 65535., priv->bg_color.green / 65535., priv->bg_color.blue / 65535., 1.);
+	glClearColor(bg_c.red, bg_c.green, bg_c.blue, 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
