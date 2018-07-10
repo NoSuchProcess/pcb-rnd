@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2> CAM support </h2>
+<p>
+The purpose of the CAM support is to provide an unified interface to export a
+a board in different file formats, using different exporter plugins. The
+interface consists a CLI layer (each export plugin's "cam" option) and
+an optional GUI (the CAM plugin).
+
+<h3> CAM export support in each other plugins </h3>
+<p>
+Each CAM-plugin-compatible exporter plugin offers an option called "cam".
+The syntax and capabilities are the same for all exporter's cam option.
+<p>
+The syntax is:
+<pre>
+outfile=layergrp[,layergrp,...][;opt][;opt...]
+</pre>
+<p>
+where:
+<ul>
+	<li> outfile is the output file name (unlatered by the code)
+	<li> layergrp: one or more layer group definitions separated by comma (see below)
+	<li> optionally a list of exporter options in the same format as on direct command line (e.g. --verbose); when there's overlap on any state/definition between opts and CAM operation, the effect of the opt is ignored
+</ul>
+Syntax of the layer group definition:
+layer group name
+(TODO: optionally prefixed with + or - for polarity and something for bloat/shrink)
+
+<h3> CAM plugin </h3>
+<p>
+The CAM plugin is a way to manage output "jobs": collections of cam export
+settings for reproducing export packages in various formats.
+
+</body>
+</html>
