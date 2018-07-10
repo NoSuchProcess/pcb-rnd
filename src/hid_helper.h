@@ -22,4 +22,18 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
    Returns dest. */
 void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory);
 
+/*** CAM API ***/
+typedef struct pcb_cam_s {
+	/* public */
+	const char *fn;
+	pcb_bool active;
+	
+	/* private/internal/cache */
+	char *inst;
+	pcb_board_t *pcb;
+} pcb_cam_t;
+
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
+void pcb_cam_end(pcb_cam_t *dst);
+
 #endif

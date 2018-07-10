@@ -138,3 +138,85 @@ void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * file
 
 	free(pf);
 }
+
+/* remove leading and trailing whitespace */
+static char *strip(char *s)
+{
+	char *end;
+	while(isspace(*s)) s++;
+	end = s + strlen(s) - 1;
+	while((end >= s) && (isspace(*end))) {
+		*end = '\0';
+		end--;
+	}
+	return s;
+}
+
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
+{
+	char *curr, *next, *opts;
+
+	if (src == NULL)
+		return 0;
+
+	memset(dst, 0, sizeof(pcb_cam_t));
+	dst->pcb = pcb;
+	dst->inst = pcb_strdup(src);
+
+	/* Syntax: fn=layergrp,layergrp,layergrp;--opt=val;--opt=val */
+	/* parse: get file name name */
+	next = strchr(dst->inst, '=');
+	if (next == NULL) {
+		pcb_message(PCB_MSG_ERROR, "CAM rule missing '='\n");
+		goto err;
+	}
+	*next = '\0';
+	next++;
+	dst->fn = strip(dst->inst);
+pcb_trace("CAM FN='%s'\n", dst->fn);
+
+	while(isspace(*next))
+		next++;
+
+	/* split off opts from layers */
+	opts = strchr(next, ';');
+	if (opts != NULL) {
+		*opts = '\0';
+		opts++;
+	}
+
+	/* parse layers */
+	for(curr = next; curr != NULL; curr = next) {
+		next = strchr(curr, ',');
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+		}
+		curr = strip(curr);
+pcb_trace(" layer='%s'\n", curr);
+	}
+
+	/* parse options */
+	for(curr = opts; curr != NULL; curr = next) {
+		next = strchr(curr, ';');
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+		}
+		curr = strip(curr);
+pcb_trace(" opt='%s'\n", curr);
+	}
+
+	dst->active = 1;
+	return 0;
+	err:;
+	free(dst->inst);
+	dst->inst = NULL;
+	return -1;
+}
+
+void pcb_cam_end(pcb_cam_t *dst)
+{
+	free(dst->inst);
+}
+
