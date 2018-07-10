@@ -320,7 +320,7 @@ static const char *layer_vis_cookie = "core_layer_vis";
 void pcb_layer_vis_init(void)
 {
 	conf_native_t *n_mask = conf_get_field("editor/show_mask");
-	static conf_hid_callbacks_t cbs_mask, cbs_c1;
+	static conf_hid_callbacks_t cbs_mask;
 
 	layer_vis_conf_id = conf_hid_reg(layer_vis_cookie, NULL);
 
