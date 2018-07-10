@@ -868,16 +868,28 @@ static void ghid_gl_screen_update(void)
 {
 }
 
+/* alpha component is not part of GdkColor structure. Can't derive it from GTK2 pcb_gtk_color_t */
+static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
+{
+	gl_c->red   = gtk_c->red   / 65535.;
+	gl_c->green = gtk_c->green / 65535.;
+	gl_c->blue  = gtk_c->blue  / 65535.;
+}
+
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	GHidPort * port = vport;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
+	pcb_gl_color_t off_c, bg_c;
 
 	gtk_widget_get_allocation(widget, &allocation);
 
 	ghid_gl_start_drawing(port);
+
+	gtk2gl_color(&off_c, &priv->offlimits_color);
+	gtk2gl_color(&bg_c,  &priv->bg_color);
 
 	hidgl_init();
 
@@ -909,8 +921,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
 	glEnable(GL_STENCIL_TEST);
-	glClearColor(priv->offlimits_color.red / 65535.,
-							 priv->offlimits_color.green / 65535., priv->offlimits_color.blue / 65535., 1.);
+	glClearColor(off_c.red, off_c.green, off_c.blue, 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -931,7 +942,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
-	glColor3f(priv->bg_color.red / 65535., priv->bg_color.green / 65535., priv->bg_color.blue / 65535.);
+	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
 
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
