@@ -48,7 +48,6 @@ static pcb_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 {
 	pcb_hid_attr_val_t *r;
 	int n, numa = export_ctx->numa[id];
-	pcb_hid_attribute_t *attrs = export_ctx->ea[id];
 
 	r = malloc(sizeof(pcb_hid_attr_val_t) * numa);
 
@@ -62,7 +61,7 @@ static pcb_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	export_ctx_t *export_ctx = caller_data;
-	int h, wid, i;
+	int h, wid;
 	wid = attr - export_ctx->dlg;
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
