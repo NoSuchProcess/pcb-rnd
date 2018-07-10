@@ -868,6 +868,48 @@ static void ghid_gl_screen_update(void)
 {
 }
 
+/* Settles background color + inital GL configuration, to allow further drawing in GL area.
+    (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
+    The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area.
+ */
+static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, pcb_gl_color_t *bg_c)
+{
+	hidgl_init();
+
+	/* If we don't have any stencil bits available,
+	   we can't use the hidgl polygon drawing routine */
+	/* TODO: We could use the GLU tessellator though */
+	if (stencilgl_bit_count() == 0)
+		hid->fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glViewport(0, 0, w, h);
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(xr, yr, wr, hr);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, w, h, 0, 0, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -Z_NEAR);
+
+	glEnable(GL_STENCIL_TEST);
+	glClearColor(bg_c->red, bg_c->green, bg_c->blue, 1.);
+	glStencilMask(~0);
+	glClearStencil(0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	stencilgl_reset_stencil_usage();
+
+	/* Disable the stencil test until we need it - otherwise it gets dirty */
+	glDisable(GL_STENCIL_TEST);
+	glStencilMask(0);
+	glStencilFunc(GL_ALWAYS, 0, 0);
+}
+
 /* alpha component is not part of GdkColor structure. Can't derive it from GTK2 pcb_gtk_color_t */
 static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
 {
@@ -901,42 +943,8 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	gtk2gl_color(&off_c, &priv->offlimits_color);
 	gtk2gl_color(&bg_c,  &priv->bg_color);
 
-	hidgl_init();
-
-	/* If we don't have any stencil bits available,
-	   we can't use the hidgl polygon drawing routine */
-	/* TODO: We could use the GLU tessellator though */
-	if (stencilgl_bit_count() == 0)
-		gtk2_gl_hid.fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, allocation.width, allocation.height);
-
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, allocation.width, allocation.height, 0, 0, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
-
-	glEnable(GL_STENCIL_TEST);
-	glClearColor(off_c.red, off_c.green, off_c.blue, 1.);
-	glStencilMask(~0);
-	glClearStencil(0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	stencilgl_reset_stencil_usage();
-
-	/* Disable the stencil test until we need it - otherwise it gets dirty */
-	glDisable(GL_STENCIL_TEST);
-	glStencilMask(0);
-	glStencilFunc(GL_ALWAYS, 0, 0);
-
-	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
+	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height,
+				ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
 
 	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
 					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px,
@@ -944,6 +952,8 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
 							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
+	/* Draw PCB background, before PCB primitives */
+	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
 	glVertex3i(PCB->MaxWidth, 0, 0);
