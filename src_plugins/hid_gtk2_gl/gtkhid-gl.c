@@ -924,12 +924,6 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px,
-					 ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
-							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
-
 	glEnable(GL_STENCIL_TEST);
 	glClearColor(off_c.red, off_c.green, off_c.blue, 1.);
 	glStencilMask(~0);
@@ -943,6 +937,12 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	glStencilFunc(GL_ALWAYS, 0, 0);
 
 	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
+
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
+					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px,
+					 ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
+	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
+							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
