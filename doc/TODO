@@ -35,7 +35,8 @@
 	- unify how output files are accessed/checked: confirmation on overwrite
 - BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
- 
+- BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
+
 2. For later releases ===============================================================================
 - rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
