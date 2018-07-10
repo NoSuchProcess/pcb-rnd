@@ -31,7 +31,6 @@
 #include "config.h"
 #include "opengl.h"
 
-/* GL color, defined as floats */
 typedef struct pcb_gl_color_s {
 	GLfloat red;
 	GLfloat green;
