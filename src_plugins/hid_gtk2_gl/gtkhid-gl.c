@@ -888,6 +888,16 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	ghid_gl_start_drawing(port);
 
+	ctx.view.X1 = MIN(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
+	ctx.view.X2 = MAX(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
+	ctx.view.Y1 = MIN(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
+	ctx.view.Y2 = MAX(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
+
+	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
+
 	gtk2gl_color(&off_c, &priv->offlimits_color);
 	gtk2gl_color(&bg_c,  &priv->bg_color);
 
@@ -931,16 +941,6 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	glDisable(GL_STENCIL_TEST);
 	glStencilMask(0);
 	glStencilFunc(GL_ALWAYS, 0, 0);
-
-	ctx.view.X1 = MIN(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
-	ctx.view.X2 = MAX(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
-	ctx.view.Y1 = MIN(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
-	ctx.view.Y2 = MAX(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
-
-	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
-	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
-	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
-	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
 	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
 
