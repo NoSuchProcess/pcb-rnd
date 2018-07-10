@@ -1017,6 +1017,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
+	double xr, yr, wr, hr;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
 
 	vw = ctx->view.X2 - ctx->view.X1;
@@ -1052,16 +1053,25 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	}
 	gport->render_priv->in_context = pcb_true;
 
+	if (ev) {
+		xr = ev->area.x;
+		yr = allocation.height - ev->area.height - ev->area.y;
+		wr = ev->area.width;
+		hr = ev->area.height;
+	}
+	else {
+		xr = yr = 0;
+		wr = allocation.width;
+		hr = allocation.height;
+	}
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glViewport(0, 0, allocation.width, allocation.height);
 
 	glEnable(GL_SCISSOR_TEST);
-	if (ev)
-		glScissor(ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height);
-	else
-		glScissor(0, 0, allocation.width, allocation.height);
+	glScissor(xr, yr, wr, hr);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
