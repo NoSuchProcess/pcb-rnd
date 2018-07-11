@@ -664,6 +664,11 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	conf_update(NULL, -1); /* resotre forced sets */
 
 	pcb_cam_end(&gerber_cam);
+
+	/* in cam mode we have f still open */
+	maybe_close_f(f);
+	f = NULL;
+
 }
 
 static int gerber_parse_arguments(int *argc, char ***argv)
@@ -776,15 +781,20 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		if (aptr_list->count == 0 && !all_layers)
 			return 0;
 
-		maybe_close_f(f);
-		f = NULL;
+		if (!gerber_cam.active) {
+			/* in cam mode we reuse f */
+			maybe_close_f(f);
+			f = NULL;
+		}
 
 		pagecount++;
 		assign_file_suffix(filesuff, group, layer, flags);
-		f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
-		if (f == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
-			return 1;
+		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
+			f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
+			if (f == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
+				return 1;
+			}
 		}
 
 		was_drill = is_drill;
