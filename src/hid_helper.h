@@ -44,7 +44,11 @@ void pcb_cam_end(pcb_cam_t *dst);
 #define pcb_cam_set_layer_group(cam, group, flags) \
 do { \
 	pcb_cam_t *__cam__ = (cam); \
-	if ((__cam__->active) && (!__cam__->grp_vis[group])) \
+	if (!__cam__->active) \
+		break; \
+	if ((group) == -1) \
+		return 0; \
+	if (!__cam__->grp_vis[(group)]) \
 		return 0; \
 } while(0)
 
