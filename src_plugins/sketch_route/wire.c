@@ -1,4 +1,4 @@
-#include "pcb-printf.h"
+#include <assert.h>
 
 #define GVT_DONT_UNDEF
 #define LST_DONT_UNDEF
@@ -42,7 +42,7 @@ void wire_copy(wire_t *dst, wire_t *src)
   memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
 }
 
-int wire_is_node_connected_with_point(wire_t *w, wirelist_node_t *node, point_t *p)
+static int node_index(wire_t *w, wirelist_node_t *node)
 {
   int i;
   for (i = 0; i < w->point_num; i++) {
@@ -50,12 +50,29 @@ int wire_is_node_connected_with_point(wire_t *w, wirelist_node_t *node, point_t 
       break;
   }
   if (i == w->point_num)
+    return -1;
+  return i;
+}
+
+int wire_is_node_connected_with_point(wirelist_node_t *node, point_t *p)
+{
+  wire_t *w = node->item;
+  int i = node_index(w, node);
+  if (i == -1)
     return 0;
   if (i == 0)
     return w->points[1].p == p;
   if (i == w->point_num - 1)
     return w->points[w->point_num - 2].p == p;
   return (w->points[i - 1].p == p) || (w->points[i + 1].p == p);
+}
+
+int wire_is_coincident_at_node(wirelist_node_t *node, point_t *p1, point_t *p2)
+{
+  wire_t *w = node->item;
+  int i = node_index(w, node);
+  assert(i != -1 && i != 0 && i != w->point_num - 1);
+  return (w->points[i - 1].p == p1 && w->points[i + 1].p == p2);
 }
 
 static int LST(compare_func)(LST_ITEM_T *a, LST_ITEM_T *b)

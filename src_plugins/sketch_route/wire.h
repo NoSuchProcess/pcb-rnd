@@ -32,7 +32,8 @@ void wire_push_point(wire_t *w, point_t *p, int side);
 void wire_pop_point(wire_t *w);
 void wire_copy(wire_t *dst, wire_t *src);
 
-int wire_is_node_connected_with_point(wire_t *w, wirelist_node_t *node, point_t *p);
+int wire_is_node_connected_with_point(wirelist_node_t *node, point_t *p);
+int wire_is_coincident_at_node(wirelist_node_t *node, point_t *p1, point_t *p2);
 
 
 /* List */
