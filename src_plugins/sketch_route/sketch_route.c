@@ -59,9 +59,12 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 
 typedef struct {
-	/* second list used in the corner case: two subsequent wire segments are collinear;
-	 * wires could be then attached both on the left and on the right side of the point */
+	/* these wirelists are ordered outside-to-inside */
+	/* two lists are used in corner case: when two subsequent wire segments are collinear and
+	 * wires are attached both on the left and on the right side of the point */
+	/* uturn wirelist is used when a wire turns back at a point */
 	wirelist_node_t *attached_wires[2];
+	wirelist_node_t *uturn_wires;
 	wirelist_node_t *terminal_wires;
 } pointdata_t;
 
@@ -190,11 +193,166 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 	*path = &left;
 }
 
+#define check_wires(wlist) do { \
+	WIRELIST_FOREACH(w, (wlist)); \
+		(void) w; \
+		if (wire_is_node_connected_with_point(_node_, wp->p)) \
+			n++; \
+	WIRELIST_FOREACH_END(); \
+} while(0)
+
+static int count_all_wires_coming_from_adjacent_point(pointdata_t *adj_pd, wire_point_t *wp)
+{
+	int n = 0;
+	check_wires(adj_pd->attached_wires[0]);
+	check_wires(adj_pd->attached_wires[1]);
+	check_wires(adj_pd->terminal_wires);
+	return n;
+}
+
+static int count_wires_coming_from_previous_point(wire_point_t *prev_wp, wire_point_t *wp, int list_num)
+{
+	wirelist_node_t *prev_list, *prev_list2, *prev_list_term;
+	int n;
+
+	prev_list = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num];
+	prev_list2 = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num^1];
+	prev_list_term = ((pointdata_t *) prev_wp->p->data)->terminal_wires;
+
+	if (prev_wp->side == wp->side) /* case 1: the wire was on the same side at the previous point */
+		n = wirelist_get_index(prev_list, prev_wp->wire_node);
+	else if (prev_wp->side == SIDE_TERM) /* case 2: previous point was a terminal */
+		n = wirelist_length(prev_list);
+	else { /* case 3: the wire was on an other side of the previous point */
+		n = wirelist_length(prev_list);
+		check_wires(prev_list_term);
+		n += (wirelist_length(prev_list2) - 1) - wirelist_get_index(prev_list2, prev_wp->wire_node);
+	}
+	return n;
+}
+
+static int count_uturn_wires_coming_from_previous_point(wire_point_t *prev_wp, wire_point_t *wp, int list_num)
+{
+	wirelist_node_t *list, *prev_list;
+	int n;
+
+	list = ((pointdata_t *) wp->p->data)->attached_wires[list_num];
+	prev_list = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num];
+
+	n = wirelist_get_index(prev_list, prev_wp->wire_node);
+	n -= wirelist_length(list);
+
+	return n;
+}
+#undef check_wires
+
+static void insert_wire_at_point(wire_point_t *wp, wire_t *w, wirelist_node_t **list, int n)
+{
+	if (n == -1) {
+		*list = wirelist_prepend(*list, &w);
+		wp->wire_node = *list;
+	}
+	else
+		wp->wire_node = wirelist_insert_after_nth(*list, n, &w);
+}
+
 static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 {
-	wire_t *new_w = *vtwire_alloc_append(&sk->wires, 1);
+	wire_t *new_w;
+	int i;
+
+	new_w = *vtwire_alloc_append(&sk->wires, 1);
 	wire_copy(new_w, wire);
-	/* TODO: supplement points' data in cdt with the new wire */
+
+	assert(new_w->point_num >= 2);
+	for (i = 0; i < new_w->point_num; i++) {
+		wire_point_t *wp = &new_w->points[i];
+		wire_point_t *prev_wp = &new_w->points[i-1];
+		wire_point_t *next_wp = &new_w->points[i+1];
+		pointdata_t *pd;
+
+		if (wp->p->data == NULL)
+			wp->p->data = calloc(1, sizeof(pointdata_t));
+		pd = wp->p->data;
+
+		if (i == 0) { /* first point */
+			assert(wp->side == SIDE_TERM);
+			cdt_insert_constrained_edge(sk->cdt, wp->p, next_wp->p);
+			insert_wire_at_point(wp, new_w, &pd->terminal_wires, -1);
+		}
+		else if (i == new_w->point_num - 1) { /* last point */
+			assert(wp->side == SIDE_TERM);
+			insert_wire_at_point(wp, new_w, &pd->terminal_wires, -1);
+		}
+		else { /* middle point */
+			assert(wp->side != SIDE_TERM);
+
+			cdt_insert_constrained_edge(sk->cdt, wp->p, next_wp->p);
+
+			if (ORIENT_COLLINEAR(prev_wp->p, wp->p, next_wp->p)) { /* collinear case */
+				edge_t *prev_e = get_edge_from_points(prev_wp->p, wp->p);
+				edge_t *e = get_edge_from_points(wp->p, next_wp->p);
+				int list_num, n;
+
+				assert(prev_e->endp[1] == e->endp[0] || prev_e->endp[0] == e->endp[1]);
+				list_num = ((prev_e->endp[1] == wp->p) ^ (wp->side == SIDE_RIGHT) ? 1 : 0);
+
+				if (prev_e != e) { /* 3 subsequent points collinear */
+					/* check if there was a wire, already attached to this point, that doesn't go through the same points
+					 * as the new wire and is on the opposite wirelist at this point */
+					if (pd->attached_wires[list_num^1] != NULL
+							&& !wire_is_coincident_at_node(pd->attached_wires[list_num^1], prev_wp->p, next_wp->p)) {
+						assert(pd->attached_wires[list_num] == NULL);
+						pd->attached_wires[list_num] = pd->attached_wires[list_num^1];
+						pd->attached_wires[list_num^1] = NULL;
+					}
+
+					/* find node to insert the new wire in the attached wirelist:
+					 * - determine index of the last wire attached to the previous point
+					 *   before the new wire as n (-1 if no wires attached to the previous point)
+					 * - insert the new wire in the current point's wirelist after n-th position */
+					n = -1;
+					n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
+					insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
+				}
+				else { /* U-turn */
+					assert((prev_wp->side == wp->side) && (wp->side == next_wp->side));
+
+					/* find node to insert the new wire in the U-turn wirelist:
+					 * - determine index of the wire in the previous attached wirelist
+					 * - subtract wires from the current attached wirelist;
+					 *   the result is the position in current U-turn wirelist */
+					n = -1;
+					n += count_uturn_wires_coming_from_previous_point(prev_wp, wp, list_num);
+					insert_wire_at_point(wp, new_w, &pd->uturn_wires, n);
+				}
+			}
+			else { /* not collinear case */
+				int list_num, n;
+
+				list_num = pd->attached_wires[1] != NULL ? 1 : 0;
+				assert(pd->attached_wires[list_num^1] == NULL);
+
+				/* find node to insert the new wire in the attached wirelist:
+				 * - find point's adjacent edges which have greater angle between subsequent segments
+				 *   than the new wire's edge (ie. are placed externally)
+				 * - count wires at all these edges and proper wires at the new wire's edge as n
+				 * - insert the new wire in the current point's wirelist after n-th position */
+				n = -1;
+				EDGELIST_FOREACH(e, wp->p->adj_edges)
+					point_t *adj_p = EDGE_OTHER_POINT(e, wp->p);
+					if (e->is_constrained
+							&& (wp->side == SIDE_RIGHT ? ORIENT_CCW(prev_wp->p, wp->p, adj_p) : ORIENT_CW(prev_wp->p, wp->p, adj_p))) {
+						pointdata_t *adj_pd = adj_p->data;
+						assert(adj_pd != NULL);
+						n += count_all_wires_coming_from_adjacent_point(adj_pd, wp);
+					}
+				EDGELIST_FOREACH_END();
+				n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
+				insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
+			}
+		}
+	}
 }
 
 struct search_info {
@@ -275,6 +433,14 @@ static sketch_t *sketch_alloc()
 static void sketch_uninit(sketch_t *sk)
 {
 	if (sk->cdt != NULL) {
+		VTPOINT_FOREACH(p, &sk->cdt->points)
+			pointdata_t *pd = p->data;
+			wirelist_free(pd->terminal_wires);
+			wirelist_free(pd->uturn_wires);
+			wirelist_free(pd->attached_wires[0]);
+			wirelist_free(pd->attached_wires[1]);
+			free(pd);
+		VTPOINT_FOREACH_END();
 		cdt_free(sk->cdt);
 		free(sk->cdt);
 		sk->cdt = NULL;
