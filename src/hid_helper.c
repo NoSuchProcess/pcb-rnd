@@ -221,6 +221,7 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 		if (pcb->LayerGroups.grp[gid].len <= 0)
 			continue;
 		pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+		dst->grp_vis[gid] = 1;
 	}
 
 	/* parse options */
