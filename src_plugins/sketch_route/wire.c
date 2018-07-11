@@ -42,6 +42,22 @@ void wire_copy(wire_t *dst, wire_t *src)
   memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
 }
 
+int wire_is_node_connected_with_point(wire_t *w, wirelist_node_t *node, point_t *p)
+{
+  int i;
+  for (i = 0; i < w->point_num; i++) {
+    if (w->points[i].wire_node == node)
+      break;
+  }
+  if (i == w->point_num)
+    return 0;
+  if (i == 0)
+    return w->points[1].p == p;
+  if (i == w->point_num - 1)
+    return w->points[w->point_num - 2].p == p;
+  return (w->points[i - 1].p == p) || (w->points[i + 1].p == p);
+}
+
 static int LST(compare_func)(LST_ITEM_T *a, LST_ITEM_T *b)
 {
   return *a == *b;

@@ -32,6 +32,8 @@ void wire_push_point(wire_t *w, point_t *p, int side);
 void wire_pop_point(wire_t *w);
 void wire_copy(wire_t *dst, wire_t *src);
 
+int wire_is_node_connected_with_point(wire_t *w, wirelist_node_t *node, point_t *p);
+
 
 /* List */
 #define LST(x) wirelist_ ## x
