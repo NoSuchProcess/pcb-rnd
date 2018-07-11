@@ -55,4 +55,7 @@ static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
 #define LINES_INTERSECT(p1, q1, p2, q2) \
 	(ORIENT_CCW(p1, q1, p2) != ORIENT_CCW(p1, q1, q2) && ORIENT_CCW(p2, q2, p1) != ORIENT_CCW(p2, q2, q1))
 
+#define EDGE_OTHER_POINT(edge, point) \
+	((edge)->endp[0] != (point) ? (edge)->endp[0] : (edge)->endp[1])
+
 #endif
