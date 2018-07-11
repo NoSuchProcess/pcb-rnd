@@ -304,9 +304,6 @@ static void draw_pins_and_pads(const pcb_box_t *drawn_area, pcb_layergrp_id_t co
 }
 
 
-/* ---------------------------------------------------------------------------
- * initializes some identifiers for a new zoom factor and redraws whole screen
- */
 static void DrawEverything(const pcb_box_t *drawn_area)
 {
 	char *old_silk_color;
