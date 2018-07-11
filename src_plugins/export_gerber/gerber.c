@@ -44,6 +44,8 @@ const char *gerber_cookie = "gerber HID";
 #	error SUFF_LEN needs at least PCB_DERIVE_FN_SUFF_LEN
 #endif
 
+pcb_cam_t gerber_cam;
+
 static pcb_hid_attribute_t *gerber_get_export_options(int *n);
 static void gerber_do_export(pcb_hid_attr_val_t * options);
 static int gerber_parse_arguments(int *argc, char ***argv);
@@ -339,6 +341,10 @@ Print file names and aperture counts on stdout.
 	{"cross-sect", "Export the cross section layer",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cross_sect 5
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 6
 };
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
@@ -594,6 +600,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		options = gerber_values;
 	}
 
+	pcb_cam_begin(PCB, &gerber_cam, options[HA_cam].str_value, gerber_options, NUM_OPTIONS, options);
+
 	fnbase = options[HA_gerberfile].str_value;
 	if (!fnbase)
 		fnbase = "pcb-out";
@@ -619,7 +627,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	strcat(filename, ".");
 	filesuff = filename + strlen(filename);
 
-	pcb_hid_save_and_show_layer_ons(save_ons);
+	if (!gerber_cam.active)
+		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
@@ -649,8 +658,11 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	maybe_close_f(f);
 	f = NULL;
-	pcb_hid_restore_layer_ons(save_ons);
+	if (!gerber_cam.active)
+		pcb_hid_restore_layer_ons(save_ons);
 	conf_update(NULL, -1); /* resotre forced sets */
+
+	pcb_cam_end(&gerber_cam);
 }
 
 static int gerber_parse_arguments(int *argc, char ***argv)
@@ -675,6 +687,8 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	int want_outline;
 	char *cp;
 	const char *group_name;
+
+	pcb_cam_set_layer_group(&gerber_cam, group, flags);
 
 	if (flags & PCB_LYT_UI)
 		return 0;
