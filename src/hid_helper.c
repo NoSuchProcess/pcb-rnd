@@ -245,8 +245,11 @@ pcb_trace(" opt='%s'\n", curr);
 
 void pcb_cam_end(pcb_cam_t *dst)
 {
-	layervis_restore(dst);
 	free(dst->inst);
+	dst->inst = NULL;
+	if (!dst->active)
+		return;
+	layervis_restore(dst);
 	dst->active = 0;
 }
 
