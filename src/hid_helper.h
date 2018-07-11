@@ -27,6 +27,7 @@ typedef struct pcb_cam_s {
 	/* public */
 	const char *fn;
 	pcb_bool active;
+	int grp_vis[PCB_MAX_LAYERGRP]; /* whether a layer group should be rendered */
 
 	/* private/internal/cache */
 	char *inst;
@@ -36,5 +37,15 @@ typedef struct pcb_cam_s {
 
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
 void pcb_cam_end(pcb_cam_t *dst);
+
+/* Shall be the first rule in a cam capable exporter's set_layer_group()
+   callback: decides not to draw a layer group in cam mode if the
+   group is not scheduled for export */
+#define pcb_cam_set_layer_group(cam, group, flags) \
+do { \
+	pcb_cam_t *__cam__ = (cam); \
+	if ((__cam__->active) && (!__cam__->grp_vis[group])) \
+		return 0; \
+} while(0)
 
 #endif
