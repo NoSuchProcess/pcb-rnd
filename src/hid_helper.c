@@ -34,6 +34,7 @@
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "compat_misc.h"
+#include "layer_vis.h"
 #include "plug_io.h"
 
 char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style)
@@ -152,6 +153,22 @@ static char *strip(char *s)
 	return s;
 }
 
+static void layervis_save_and_reset(pcb_cam_t *cam)
+{
+	pcb_layer_id_t n;
+	for(n = 0; n < cam->pcb->Data->LayerN; n++) {
+		cam->orig_vis[n] = cam->pcb->Data->Layer[n].meta.real.vis;
+		cam->pcb->Data->Layer[n].meta.real.vis = 0;
+	}
+}
+
+static void layervis_restore(pcb_cam_t *cam)
+{
+	pcb_layer_id_t n;
+	for(n = 0; n < cam->pcb->Data->LayerN; n++)
+		cam->pcb->Data->Layer[n].meta.real.vis = cam->orig_vis[n];
+}
+
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
 	char *curr, *next, *opts;
@@ -162,6 +179,8 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 	memset(dst, 0, sizeof(pcb_cam_t));
 	dst->pcb = pcb;
 	dst->inst = pcb_strdup(src);
+	layervis_save_and_reset(dst);
+
 
 	/* Syntax: fn=layergrp,layergrp,layergrp;--opt=val;--opt=val */
 	/* parse: get file name name */
@@ -187,13 +206,21 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
+		pcb_layergrp_id_t gid;
 		next = strchr(curr, ',');
 		if (next != NULL) {
 			*next = '\0';
 			next++;
 		}
 		curr = strip(curr);
-pcb_trace(" layer='%s'\n", curr);
+		gid = pcb_layergrp_by_name(pcb, curr);
+		if (gid < 0) {
+			pcb_message(PCB_MSG_ERROR, "CAM rule: no such layer group '%s'\n", curr);
+			goto err;
+		}
+		if (pcb->LayerGroups.grp[gid].len <= 0)
+			continue;
+		pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 	}
 
 	/* parse options */
@@ -210,6 +237,7 @@ pcb_trace(" opt='%s'\n", curr);
 	dst->active = 1;
 	return 0;
 	err:;
+	layervis_restore(dst);
 	free(dst->inst);
 	dst->inst = NULL;
 	return -1;
@@ -217,6 +245,7 @@ pcb_trace(" opt='%s'\n", curr);
 
 void pcb_cam_end(pcb_cam_t *dst)
 {
+	layervis_restore(dst);
 	free(dst->inst);
 }
 

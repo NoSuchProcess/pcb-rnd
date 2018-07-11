@@ -27,10 +27,11 @@ typedef struct pcb_cam_s {
 	/* public */
 	const char *fn;
 	pcb_bool active;
-	
+
 	/* private/internal/cache */
 	char *inst;
 	pcb_board_t *pcb;
+	int orig_vis[PCB_MAX_LAYER]; /* backup of the original layer visibility */
 } pcb_cam_t;
 
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
