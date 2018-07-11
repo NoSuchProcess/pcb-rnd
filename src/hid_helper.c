@@ -247,5 +247,6 @@ void pcb_cam_end(pcb_cam_t *dst)
 {
 	layervis_restore(dst);
 	free(dst->inst);
+	dst->active = 0;
 }
 
