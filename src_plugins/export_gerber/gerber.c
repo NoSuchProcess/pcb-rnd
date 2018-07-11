@@ -790,7 +790,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		pagecount++;
 		assign_file_suffix(filesuff, group, layer, flags);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
-			f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
+			f = pcb_fopen(gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
 			if (f == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 				return 1;
