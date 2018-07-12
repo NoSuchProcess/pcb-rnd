@@ -171,7 +171,7 @@ static void layervis_restore(pcb_cam_t *cam)
 
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
-	char *curr, *next, *opts;
+	char *curr, *next;
 
 	if (src == NULL)
 		return 0;
@@ -197,13 +197,6 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 	while(isspace(*next))
 		next++;
 
-	/* split off opts from layers */
-	opts = strchr(next, ';');
-	if (opts != NULL) {
-		*opts = '\0';
-		opts++;
-	}
-
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
 		pcb_layergrp_id_t gid;
@@ -222,17 +215,6 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			continue;
 		pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 		dst->grp_vis[gid] = 1;
-	}
-
-	/* parse options */
-	for(curr = opts; curr != NULL; curr = next) {
-		next = strchr(curr, ';');
-		if (next != NULL) {
-			*next = '\0';
-			next++;
-		}
-		curr = strip(curr);
-pcb_trace(" opt='%s'\n", curr);
 	}
 
 	dst->active = 1;
