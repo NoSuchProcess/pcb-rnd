@@ -206,9 +206,16 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			next++;
 		}
 		curr = strip(curr);
-		gid = pcb_layergrp_by_name(pcb, curr);
-		if (gid < 0) {
-			pcb_message(PCB_MSG_ERROR, "CAM rule: no such layer group '%s'\n", curr);
+		if (*curr == '@') {
+			curr++;
+			gid = pcb_layergrp_by_name(pcb, curr);
+			if (gid < 0) {
+				pcb_message(PCB_MSG_ERROR, "CAM rule: no such layer group '%s'\n", curr);
+				goto err;
+			}
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "layer group not found: '%s'\n", curr);
 			goto err;
 		}
 		if (pcb->LayerGroups.grp[gid].len <= 0)
