@@ -38,6 +38,7 @@
 #include "compat_nls.h"
 #include "data.h"
 #include "event.h"
+#include "list_common.h"
 #include "obj_line_list.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
@@ -83,8 +84,9 @@ static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
 	return htpp_getentry(&sk->terminals, term)->value;
 }
 
-static void sketch_draw_cdt(sketch_t *sk)
+static void sketch_update_cdt_layer(sketch_t *sk)
 {
+	list_map0(&sk->ui_layer_cdt->Line, pcb_line_t, pcb_line_free);
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
 		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
@@ -419,7 +421,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	pcb_snprintf(name, sizeof(name), "%s: CDT", layer->name);
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
 	sk->ui_layer_cdt->meta.real.vis = pcb_false;
-	sketch_draw_cdt(sk);
+	sketch_update_cdt_layer(sk);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
