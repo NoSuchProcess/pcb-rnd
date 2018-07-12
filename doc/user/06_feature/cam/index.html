@@ -14,7 +14,7 @@ interface consists a CLI layer (each export plugin's "cam" option) and
 an optional GUI (the CAM plugin).
 
 <h3> CAM export support in each other plugins </h3>
-<p>
+<p id="cli">
 Each CAM-plugin-compatible exporter plugin offers an option called "cam".
 The syntax and capabilities are the same for all exporter's cam option.
 <p>
@@ -36,7 +36,37 @@ layer group name
 <h3> CAM plugin </h3>
 <p>
 The CAM plugin is a way to manage output "jobs": collections of cam export
-settings for reproducing export packages in various formats.
+settings for reproducing export packages in various formats. 
+<p>
+...
+<p>
+A job is a script that contains zero or more export directives, separated
+by semicolons or newlines. An export directive is one of these:
+<pre>
+prefix=path
+plugin=name[,option=value][,option=value,...]
+outfile=layergrp[,layergrp,...]
+</pre>
+<p>
+The prefix directive sets up a file name prefix that is active until the
+next prefix directive or end of the script. Before the first prefix directive
+the prefix is an empty string. Any outfile will be prefixed with the current
+prefix. (It is sort of a 'mkdir -p path; cd path' in the shell sense.)
+<p>
+The plugin directive selects a plugin and sets plugin specific options.
+The plugin and options are active until the next plugin directive or the
+end of the script. The first outfile directive must be preceeded by a
+plugin directive.
+<p>
+The outfile directive has the same syntax as the cam argment for each
+cam-capable exporter, <a href="#cli">see above</a>.
+<p>
+For example:
+<pre>
+TODO
+</pre>
+
+
 
 </body>
 </html>
