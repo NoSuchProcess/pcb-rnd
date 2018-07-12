@@ -207,6 +207,7 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 		}
 		curr = strip(curr);
 		if (*curr == '@') {
+			/* named layer */
 			curr++;
 			gid = pcb_layergrp_by_name(pcb, curr);
 			if (gid < 0) {
@@ -215,7 +216,36 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			}
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "layer group not found: '%s'\n", curr);
+			/* by layer type */
+			int offs = 0, has_offs = 0;
+			char *soffs, *end, *nxt, *cur;
+			pcb_layer_type_t lyt = 0, l;
+
+			soffs = strchr(curr, ':');
+			if (soffs != NULL) {
+				*soffs = '\0';
+				offs = strtol(soffs+1, &end, 10);
+				if (*end != '\0') {
+					pcb_message(PCB_MSG_ERROR, "CAM rule: invalid offset '%s'\n", soffs);
+					goto err;
+				}
+				has_offs = 1;
+			}
+			for(cur = curr; cur != NULL; cur = nxt) {
+				nxt = strchr(cur, '-');
+				if (nxt != NULL) {
+					*nxt = '\0';
+					nxt++;
+				}
+				l = pcb_layer_type_str2bit(cur);
+				if (l == 0) {
+					pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer type '%s'\n", cur);
+					goto err;
+				}
+				lyt |= l;
+			}
+
+			pcb_message(PCB_MSG_ERROR, "layer group not found: '%s' %x offs=%d has=%d\n", curr, lyt, offs, has_offs);
 			goto err;
 		}
 		if (pcb->LayerGroups.grp[gid].len <= 0)
