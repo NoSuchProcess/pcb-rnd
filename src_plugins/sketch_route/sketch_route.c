@@ -74,6 +74,7 @@ typedef struct {
 	htpp_t terminals; /* key - terminal object; value - cdt point */
 	vtwire_t wires;
 	pcb_layer_t *ui_layer_cdt;
+	pcb_layer_t *ui_layer_erbs;
 } sketch_t;
 
 static htip_t sketches;
@@ -90,6 +91,11 @@ static void sketch_update_cdt_layer(sketch_t *sk)
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
 		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
+}
+
+static void sketch_update_erbs_layer(sketch_t *sk, wire_t *new_w)
+{
+	/* TODO */
 }
 
 static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
@@ -422,6 +428,8 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
 	sk->ui_layer_cdt->meta.real.vis = pcb_false;
 	sketch_update_cdt_layer(sk);
+	pcb_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
+	sk->ui_layer_erbs = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
@@ -449,10 +457,7 @@ static void sketch_uninit(sketch_t *sk)
 	}
 	vtwire_uninit(&sk->wires);
 	htpp_uninit(&sk->terminals);
-	if (sk->ui_layer_cdt != NULL) {
-		pcb_uilayer_free(sk->ui_layer_cdt);
-		sk->ui_layer_cdt = NULL;
-	}
+	pcb_uilayer_free_all_cookie(pcb_sketch_route_cookie);
 }
 
 
