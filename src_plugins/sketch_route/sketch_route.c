@@ -445,11 +445,13 @@ static void sketch_uninit(sketch_t *sk)
 	if (sk->cdt != NULL) {
 		VTPOINT_FOREACH(p, &sk->cdt->points)
 			pointdata_t *pd = p->data;
-			wirelist_free(pd->terminal_wires);
-			wirelist_free(pd->uturn_wires);
-			wirelist_free(pd->attached_wires[0]);
-			wirelist_free(pd->attached_wires[1]);
-			free(pd);
+			if (pd != NULL) {
+				wirelist_free(pd->terminal_wires);
+				wirelist_free(pd->uturn_wires);
+				wirelist_free(pd->attached_wires[0]);
+				wirelist_free(pd->attached_wires[1]);
+				free(pd);
+			}
 		VTPOINT_FOREACH_END();
 		cdt_free(sk->cdt);
 		free(sk->cdt);
