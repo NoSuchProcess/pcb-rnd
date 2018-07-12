@@ -50,7 +50,7 @@ do { \
 
 /* the logics behind pcb_cam_set_layer_group(); returns non-zero if the macro
    should return (and skip the current group) */
-pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned int flags);
+int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned int flags);
 
 
 #endif
