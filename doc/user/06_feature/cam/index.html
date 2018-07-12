@@ -30,7 +30,12 @@ where:
 	<li> optionally a list of exporter options in the same format as on direct command line (e.g. --verbose); when there's overlap on any state/definition between opts and CAM operation, the effect of the opt is ignored
 </ul>
 Syntax of the layer group definition:
-layer group name
+<ul>
+	<li> @layername (e.g. "@top_copper" if the group's name is <i>top_copper</i>)
+	<li> location-type (e.g. "top-copper" for any layer group that is copper and is on the top side)
+	<li> type:offs (e.g. "copper:+2" means the second copper layer group from the top, "copper:-3" means the third copper layer group from the bottom)
+</ul>
+<p>
 (TODO: optionally prefixed with + or - for polarity and something for bloat/shrink)
 
 <h3> CAM plugin </h3>
