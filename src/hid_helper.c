@@ -169,6 +169,41 @@ static void layervis_restore(pcb_cam_t *cam)
 		cam->pcb->Data->Layer[n].meta.real.vis = cam->orig_vis[n];
 }
 
+static int parse_layer_type(char *type, pcb_layer_type_t *lyt, int *offs, int *has_offs)
+{
+	char *soffs, *end, *nxt, *cur;
+	pcb_layer_type_t l;
+
+	*lyt = 0;
+	*offs = *has_offs = 0;
+
+	soffs = strchr(type, ':');
+	if (soffs != NULL) {
+		*soffs = '\0';
+		*offs = strtol(soffs+1, &end, 10);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid offset '%s'\n", soffs);
+			return 1;
+		}
+		*has_offs = 1;
+	}
+
+	for(cur = type; cur != NULL; cur = nxt) {
+		nxt = strchr(cur, '-');
+		if (nxt != NULL) {
+			*nxt = '\0';
+			nxt++;
+		}
+		l = pcb_layer_type_str2bit(cur);
+		if (l == 0) {
+			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer type '%s'\n", cur);
+			return 1;
+		}
+		(*lyt) |= l;
+	}
+	return 0;
+}
+
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
 	char *curr, *next;
@@ -200,6 +235,7 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
 		pcb_layergrp_id_t gid;
+
 		next = strchr(curr, ',');
 		if (next != NULL) {
 			*next = '\0';
@@ -217,33 +253,11 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 		}
 		else {
 			/* by layer type */
-			int offs = 0, has_offs = 0;
-			char *soffs, *end, *nxt, *cur;
-			pcb_layer_type_t lyt = 0, l;
+			int offs, has_offs;
+			pcb_layer_type_t lyt;
 
-			soffs = strchr(curr, ':');
-			if (soffs != NULL) {
-				*soffs = '\0';
-				offs = strtol(soffs+1, &end, 10);
-				if (*end != '\0') {
-					pcb_message(PCB_MSG_ERROR, "CAM rule: invalid offset '%s'\n", soffs);
-					goto err;
-				}
-				has_offs = 1;
-			}
-			for(cur = curr; cur != NULL; cur = nxt) {
-				nxt = strchr(cur, '-');
-				if (nxt != NULL) {
-					*nxt = '\0';
-					nxt++;
-				}
-				l = pcb_layer_type_str2bit(cur);
-				if (l == 0) {
-					pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer type '%s'\n", cur);
-					goto err;
-				}
-				lyt |= l;
-			}
+			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
+				goto err;
 
 			pcb_message(PCB_MSG_ERROR, "layer group not found: '%s' %x offs=%d has=%d\n", curr, lyt, offs, has_offs);
 			goto err;
