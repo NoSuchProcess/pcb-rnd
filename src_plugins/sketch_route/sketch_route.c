@@ -114,7 +114,7 @@ static void wire_print(wire_t *w, const char *tab)
 }
 #endif
 
-static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
+static wire_t *sketch_find_shortest_path(wire_t *corridor)
 {
 	/* the algorithm is described in [1] */
 	static wire_t left;
@@ -198,7 +198,7 @@ static void sketch_find_shortest_path(wire_t *corridor, wire_t **path)
 #endif
 
 	wire_uninit(&right);
-	*path = &left;
+	return &left;
 }
 
 #define check_wires(wlist) do { \
@@ -664,15 +664,15 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 		for (i = 0; i < attached_path.net->EntryN; i++) {
 			if (strcmp(attached_path.net->Entry[i].ListEntry, termname) == 0) {
 				point_t *end_p;
-				wire_t *wire;
+				wire_t *path;
 
 				end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
 				if (attached_path_next_point(end_p) == pcb_false)
 					return pcb_false;
 
-				sketch_find_shortest_path(&attached_path.corridor, &wire);
-				sketch_insert_wire(attached_path.sketch, wire);
-				wire_uninit(wire);
+				path = sketch_find_shortest_path(&attached_path.corridor);
+				sketch_insert_wire(attached_path.sketch, path);
+				wire_uninit(path);
 				return pcb_true;
 			}
 		}
