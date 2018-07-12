@@ -38,18 +38,19 @@ typedef struct pcb_cam_s {
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
 void pcb_cam_end(pcb_cam_t *dst);
 
+
 /* Shall be the first rule in a cam capable exporter's set_layer_group()
    callback: decides not to draw a layer group in cam mode if the
    group is not scheduled for export */
 #define pcb_cam_set_layer_group(cam, group, flags) \
 do { \
-	pcb_cam_t *__cam__ = (cam); \
-	if (!__cam__->active) \
-		break; \
-	if ((group) == -1) \
-		return 0; \
-	if (!__cam__->grp_vis[(group)]) \
+	if (pcb_cam_set_layer_group_(cam, group, flags)) \
 		return 0; \
 } while(0)
+
+/* the logics behind pcb_cam_set_layer_group(); returns non-zero if the macro
+   should return (and skip the current group) */
+pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned int flags);
+
 
 #endif

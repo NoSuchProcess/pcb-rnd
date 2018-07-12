@@ -236,3 +236,15 @@ void pcb_cam_end(pcb_cam_t *dst)
 	dst->active = 0;
 }
 
+
+pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned int flags)
+{
+	if (!cam->active)
+		return 0;
+	if (group == -1)
+		return 1;
+	if (!cam->grp_vis[group])
+		return 1;
+	return 0;
+}
+
