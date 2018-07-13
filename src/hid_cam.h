@@ -2,7 +2,6 @@
 #define PCB_HID_HELPER_H
 
 #include "layer.h"
-#include "attrib.h"
 #include "hid_attrib.h"
 
 /*** CAM API ***/
