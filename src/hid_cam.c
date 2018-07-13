@@ -320,7 +320,7 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned i
 	const pcb_virt_layer_t *vl;
 
 	if (!cam->active)
-		return 0;
+		return -1;
 
 	vl = pcb_vlayer_get_first(flags);
 	if (vl == NULL) {
