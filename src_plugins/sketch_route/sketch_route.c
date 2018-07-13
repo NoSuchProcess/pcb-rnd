@@ -669,6 +669,8 @@ next_triangle:
 		EDGELIST_FOREACH_END();
 		for (i = 0; i < n; i++)
 			wire_pop_point(&attached_path.corridor);
+		if (attached_path.corridor.points[attached_path.corridor.point_num - 1].p == end_p)
+			wire_pop_point(&attached_path.corridor);
 		wire_push_point(&attached_path.corridor, end_p, SIDE_TERM);
 	}
 
