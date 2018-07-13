@@ -234,7 +234,6 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
-		pcb_layergrp_id_t gid;
 
 		next = strchr(curr, ',');
 		if (next != NULL) {
@@ -244,17 +243,23 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 		curr = strip(curr);
 		if (*curr == '@') {
 			/* named layer */
+			pcb_layergrp_id_t gid;
 			curr++;
 			gid = pcb_layergrp_by_name(pcb, curr);
 			if (gid < 0) {
 				pcb_message(PCB_MSG_ERROR, "CAM rule: no such layer group '%s'\n", curr);
 				goto err;
 			}
+			if (pcb->LayerGroups.grp[gid].len <= 0)
+				continue;
+			pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+			dst->grp_vis[gid] = 1;
 		}
 		else {
 			/* by layer type */
 			int offs, has_offs;
 			pcb_layer_type_t lyt;
+			pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
 				goto err;
@@ -262,10 +267,6 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			pcb_message(PCB_MSG_ERROR, "layer group not found: '%s' %x offs=%d has=%d\n", curr, lyt, offs, has_offs);
 			goto err;
 		}
-		if (pcb->LayerGroups.grp[gid].len <= 0)
-			continue;
-		pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
-		dst->grp_vis[gid] = 1;
 	}
 
 	dst->active = 1;
