@@ -72,6 +72,8 @@ static pcb_hid_t png_hid;
 
 const char *png_cookie = "png HID";
 
+static pcb_cam_t png_cam;
+
 static void *color_cache = NULL;
 static void *brush_cache = NULL;
 
@@ -435,6 +437,10 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, silk_colour_names, 0},
 #define HA_photo_silk_colour 16
 
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 17
+
 	{"ben-mode", ATTR_UNDOCUMENTED,
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_ben_mode 11
@@ -444,8 +450,9 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 #define HA_ben_flip_x 12
 
 	{"ben-flip-y", ATTR_UNDOCUMENTED,
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_ben_flip_y 13
+
 };
 
 #define NUM_OPTIONS (sizeof(png_attribute_list)/sizeof(png_attribute_list[0]))
@@ -779,6 +786,8 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		options = png_values;
 	}
 
+	pcb_cam_begin(PCB, &png_cam, options[HA_cam].str_value, png_attribute_list, NUM_OPTIONS, options);
+
 	if (options[HA_photo_mode].int_value || options[HA_ben_mode].int_value) {
 		photo_mode = 1;
 		options[HA_mono].int_value = 1;
@@ -915,7 +924,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
-	f = pcb_fopen(filename, "wb");
+	f = pcb_fopen(png_cam.active ? png_cam.fn : filename, "wb");
 	if (!f) {
 		perror(filename);
 		return;
@@ -923,12 +932,12 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 	png_hid.force_compositing = !!photo_mode;
 
-	if (!options[HA_as_shown].int_value)
+	if ((!png_cam.active) && (!options[HA_as_shown].int_value))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	png_hid_export_to_file(f, options);
 
-	if (!options[HA_as_shown].int_value)
+	if ((!png_cam.active) && (!options[HA_as_shown].int_value))
 		pcb_hid_restore_layer_ons(save_ons);
 
 	if (photo_mode) {
@@ -1167,6 +1176,9 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	png_free_cache();
 	free(white);
 	free(black);
+
+	if (pcb_cam_end(&png_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
 static int png_parse_arguments(int *argc, char ***argv)
@@ -1258,11 +1270,16 @@ static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	if (flags & PCB_LYT_NOEXPORT)
-		return 0;
+	pcb_cam_set_layer_group(&png_cam, group, flags);
 
-	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS) || (flags & PCB_LYT_CSECT))
-		return 0;
+
+	if (!png_cam.active) {
+		if (flags & PCB_LYT_NOEXPORT)
+			return 0;
+
+		if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS) || (flags & PCB_LYT_CSECT))
+			return 0;
+	}
 
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	is_mask = (flags & PCB_LYT_MASK);
