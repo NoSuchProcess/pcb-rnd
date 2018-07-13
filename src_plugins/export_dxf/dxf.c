@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,6 +66,9 @@ static const char *layer_names[] = {
 static pcb_hid_t dxf_hid;
 
 const char *dxf_cookie = "dxf HID";
+
+static pcb_cam_t dxf_cam;
+
 
 typedef struct {
 	FILE *f;
@@ -184,6 +187,10 @@ Draw drill contour with thin line
 	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
 #define HA_drill_contour 6
 
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 7
+
 };
 
 #define NUM_OPTIONS (sizeof(dxf_attribute_list)/sizeof(dxf_attribute_list[0]))
@@ -275,11 +282,13 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 		options = dxf_values;
 	}
 
+	pcb_cam_begin(PCB, &dxf_cam, options[HA_cam].str_value, dxf_attribute_list, NUM_OPTIONS, options);
+
 	filename = options[HA_dxffile].str_value;
 	if (!filename)
 		filename = "pcb.dxf";
 
-	dxf_ctx.f = pcb_fopen(filename, "wb");
+	dxf_ctx.f = pcb_fopen(dxf_cam.active ? dxf_cam.fn : filename, "wb");
 	if (!dxf_ctx.f) {
 		perror(filename);
 		return;
@@ -309,16 +318,21 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
 		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
 
-	pcb_hid_save_and_show_layer_ons(save_ons);
+	if (!dxf_cam.active)
+		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	dxf_hid_export_to_file(&dxf_ctx, options);
 
-	pcb_hid_restore_layer_ons(save_ons);
+	if (!dxf_cam.active)
+		pcb_hid_restore_layer_ons(save_ons);
 
 	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "footer", insert_ftr, &err) != 0)
 		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
 
 	fclose(dxf_ctx.f);
+
+	if (pcb_cam_end(&dxf_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
 static int dxf_parse_arguments(int *argc, char ***argv)
@@ -332,8 +346,12 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	if (flags & PCB_LYT_INVIS)
-		return 0;
+	pcb_cam_set_layer_group(&dxf_cam, group, flags);
+
+	if (!dxf_cam.active) {
+		if (flags & PCB_LYT_INVIS)
+			return 0;
+	}
 
 	dxf_ctx.force_thin = 0;
 
