@@ -50,6 +50,8 @@ static void eps_calibrate(double xval, double yval);
 static void eps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action);
 /*----------------------------------------------------------------------------*/
 
+static pcb_cam_t eps_cam;
+
 typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
@@ -129,6 +131,11 @@ Limit the bounds of the EPS file to the visible items.
 	{"only-visible", "Limit the bounds of the EPS file to the visible items",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_only_visible 4
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 5
+
 };
 
 #define NUM_OPTIONS (sizeof(eps_attribute_list)/sizeof(eps_attribute_list[0]))
@@ -319,23 +326,28 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 		options = eps_values;
 	}
 
+	pcb_cam_begin(PCB, &eps_cam, options[HA_cam].str_value, eps_attribute_list, NUM_OPTIONS, options);
+
 	filename = options[HA_psfile].str_value;
 	if (!filename)
 		filename = "pcb-out.eps";
 
-	f = pcb_fopen(filename, "w");
+	f = pcb_fopen(eps_cam.active ? eps_cam.fn : filename, "w");
 	if (!f) {
 		perror(filename);
 		return;
 	}
 
-	if (!options[HA_as_shown].int_value)
+	if ((!eps_cam.active) && (!options[HA_as_shown].int_value))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 	eps_hid_export_to_file(f, options);
-	if (!options[HA_as_shown].int_value)
+	if ((!eps_cam.active) && (!options[HA_as_shown].int_value))
 		pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);
+
+	if (pcb_cam_end(&eps_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
 static int eps_parse_arguments(int *argc, char ***argv)
@@ -356,14 +368,18 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	if (flags & PCB_LYT_NOEXPORT)
-		return 0;
+	pcb_cam_set_layer_group(&eps_cam, group, flags);
 
-	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_CSECT) || (flags & PCB_LYT_INVIS))
-		return 0;
+	if (!eps_cam.active) {
+		if (flags & PCB_LYT_NOEXPORT)
+			return 0;
 
-	if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && (flags & PCB_LYT_OUTLINE))
-		return 0;
+		if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_CSECT) || (flags & PCB_LYT_INVIS))
+			return 0;
+
+		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && (flags & PCB_LYT_OUTLINE))
+			return 0;
+	}
 
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	is_mask = (flags & PCB_LYT_MASK);
