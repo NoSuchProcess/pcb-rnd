@@ -355,9 +355,21 @@ Print file name and scale on printout.
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_legend 17
 
+/* %start-doc options "91 Postscript Export"
+@ftable @code
+@cindex show-toc
+@item --show-toc
+Generate Table of Contents
+@end ftable
+%end-doc
+*/
+	{"show-toc", "Print Table of Content",
+	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_toc 18
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 18
+#define HA_cam 19
 
 };
 
@@ -655,7 +667,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.exps.view.X2 = PCB->MaxWidth;
 	global.exps.view.Y2 = PCB->MaxHeight;
 
-	if (!global.multi_file) {
+	if ((!global.multi_file) && (options[HA_toc].int_value)) {
 		/* %%Page DSC requires both a label and an ordinal */
 		fprintf(the_file, "%%%%Page: TableOfContents 1\n");
 		fprintf(the_file, "/Times-Roman findfont 24 scalefont setfont\n");
