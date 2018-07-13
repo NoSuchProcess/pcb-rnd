@@ -1,6 +1,10 @@
 #ifndef PCB_HID_HELPER_H
 #define PCB_HID_HELPER_H
 
+#include "layer.h"
+#include "attrib.h"
+#include "hid_attrib.h"
+
 /* maximum size of a derived suffix */
 #define PCB_DERIVE_FN_SUFF_LEN 20
 
