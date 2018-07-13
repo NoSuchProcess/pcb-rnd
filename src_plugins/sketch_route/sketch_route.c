@@ -687,6 +687,12 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 	return pcb_false;
 }
 
+static void tool_skline_init(void)
+{
+	if (htip_length(&sketches) == 0)
+		sketches_init();
+}
+
 static void tool_skline_uninit(void)
 {
 	pcb_notify_crosshair_change(pcb_false);
@@ -774,7 +780,7 @@ pcb_bool tool_skline_undo_act(void)
 
 static pcb_tool_t tool_skline = {
 	"skline", NULL, 100,
-	NULL,
+	tool_skline_init,
 	tool_skline_uninit,
 	tool_skline_notify_mode,
 	NULL,
