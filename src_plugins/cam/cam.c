@@ -34,20 +34,31 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "plugins.h"
+#include "cam_conf.h"
+#include "../src_plugins/cam/conf_internal.c"
+
 
 static const char *cam_cookie = "cam exporter";
+
+conf_cam_t conf_cam;
+#define CAM_CONF_FN "cam.conf"
 
 
 int pplg_check_ver_cam(int ver_needed) { return 0; }
 
 void pplg_uninit_cam(void)
 {
-	pcb_hid_remove_attributes_by_cookie(cam_cookie);
+	conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
+	conf_unreg_fields("plugins/cam/");
 }
 
 int pplg_init_cam(void)
 {
 	PCB_API_CHK_VER;
+	conf_reg_file(CAM_CONF_FN, cam_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
+#include "cam_conf_fields.h"
 
 	return 0;
 }
