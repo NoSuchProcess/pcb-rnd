@@ -141,6 +141,8 @@ static MediaType media_data[] = {
 #undef MARGINX
 #undef MARGINY
 
+static pcb_cam_t ps_cam;
+
 pcb_hid_attribute_t ps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -352,6 +354,11 @@ Print file name and scale on printout.
 	{"show-legend", "Print file name and scale on printout",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_legend 17
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 18
+
 };
 
 #define NUM_OPTIONS (sizeof(ps_attribute_list)/sizeof(ps_attribute_list[0]))
@@ -686,31 +693,42 @@ static void ps_do_export(pcb_hid_attr_val_t * options)
 		options = global.ps_values;
 	}
 
+	pcb_cam_begin(PCB, &ps_cam, options[HA_cam].str_value, ps_attribute_list, NUM_OPTIONS, options);
+
 	global.filename = options[HA_psfile].str_value;
 	if (!global.filename)
 		global.filename = "pcb-out.ps";
 
-	global.multi_file = options[HA_multifile].int_value;
+	/* cam mode shall result in a single file, no matter what other attributes say */
+	if (ps_cam.active)
+		global.multi_file = 0;
+	else
+		global.multi_file = options[HA_multifile].int_value;
 
 	if (global.multi_file)
 		fh = 0;
 	else {
-		fh = psopen(global.filename, "toc");
+		fh = psopen(ps_cam.active ? ps_cam.fn : global.filename, "toc");
 		if (!fh) {
 			perror(global.filename);
 			return;
 		}
 	}
 
-	pcb_hid_save_and_show_layer_ons(save_ons);
+	if (!ps_cam.active)
+		pcb_hid_save_and_show_layer_ons(save_ons);
 	ps_hid_export_to_file(fh, options);
-	pcb_hid_restore_layer_ons(save_ons);
+	if (!ps_cam.active)
+		pcb_hid_restore_layer_ons(save_ons);
 
 	global.multi_file = 0;
 	if (fh) {
 		ps_end_file(fh);
 		fclose(fh);
 	}
+
+	if (pcb_cam_end(&ps_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
 static int ps_parse_arguments(int *argc, char ***argv)
@@ -753,23 +771,28 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 		return 0;
 	}
 
-	if (flags & PCB_LYT_NOEXPORT)
-		return 0;
 
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	if (is_empty)
-		return 0;
+	pcb_cam_set_layer_group(&ps_cam, group, flags);
 
-	if ((group >= 0) && pcb_layergrp_is_empty(PCB, group))
-		return 0;
+	if (!ps_cam.active) {
+		if (flags & PCB_LYT_NOEXPORT)
+			return 0;
 
-	if (flags & PCB_LYT_INVIS)
-		return 0;
+		if (is_empty)
+			return 0;
 
-	if (flags & PCB_LYT_CSECT) /* not yet finished */
-		return 0;
+		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group))
+			return 0;
+
+		if (flags & PCB_LYT_INVIS)
+			return 0;
+
+		if (flags & PCB_LYT_CSECT) /* not yet finished */
+			return 0;
+	}
 
 
 	name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
