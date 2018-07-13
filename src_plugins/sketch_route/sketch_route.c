@@ -638,7 +638,11 @@ next_triangle:
 	}
 
 	if (end_p != NULL) { /* connecting to the last point? */
-		if (sketch_check_path(NULL, attached_path.visited_edges->item, NULL, end_p) == pcb_false)
+		if (attached_path.visited_edges == NULL) {
+			if (sketch_check_path(attached_path.start_p, NULL, NULL, end_p) == pcb_false)
+				RETURN(pcb_false);
+		}
+		else if (sketch_check_path(NULL, attached_path.visited_edges->item, NULL, end_p) == pcb_false)
 			RETURN(pcb_false);
 		wire_push_point(&corridor_ops, end_p, SIDE_TERM);
 	}
