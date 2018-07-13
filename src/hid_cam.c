@@ -207,7 +207,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 {
 	char *curr, *next;
 
-	if (src == NULL)
+	if ((src == NULL) || (*src == '\0'))
 		return 0;
 
 	memset(dst, 0, sizeof(pcb_cam_t));
