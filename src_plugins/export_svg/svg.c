@@ -66,6 +66,7 @@ static pcb_hid_t svg_hid;
 
 const char *svg_cookie = "svg HID";
 
+static pcb_cam_t svg_cam;
 
 typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
@@ -170,8 +171,12 @@ Flip board, look at it from the bottom side
 %end-doc
 */
 	{"flip", "Flip board",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0}
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_flip 3
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
+#define HA_cam 4
 };
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
@@ -291,11 +296,13 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 		options = svg_values;
 	}
 
+	pcb_cam_begin(PCB, &svg_cam, options[HA_cam].str_value, svg_attribute_list, NUM_OPTIONS, options);
+
 	filename = options[HA_svgfile].str_value;
 	if (!filename)
 		filename = "pcb.svg";
 
-	f = pcb_fopen(filename, "wb");
+	f = pcb_fopen(svg_cam.active ? svg_cam.fn : filename, "wb");
 	if (!f) {
 		perror(filename);
 		return;
@@ -317,11 +324,13 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	y2 += PCB_MM_TO_COORD(5);
 	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 
-	pcb_hid_save_and_show_layer_ons(save_ons);
+	if (!svg_cam.active)
+		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	svg_hid_export_to_file(f, options);
 
-	pcb_hid_restore_layer_ons(save_ons);
+	if (!svg_cam.active)
+		pcb_hid_restore_layer_ons(save_ons);
 
 	while(group_open) {
 		group_close();
@@ -331,6 +340,9 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "</svg>\n");
 	fclose(f);
 	f = NULL;
+
+	if (pcb_cam_end(&svg_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
 static int svg_parse_arguments(int *argc, char ***argv)
@@ -346,12 +358,16 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	if (flags & PCB_LYT_INVIS)
-		return 0;
+	pcb_cam_set_layer_group(&svg_cam, group, flags);
 
-	if (flags & PCB_LYT_MASK) {
-		if ((!photo_mode) && (!PCB->LayerGroups.grp[group].vis))
-			return 0; /* not in photo mode or not visible */
+	if (!svg_cam.active) {
+		if (flags & PCB_LYT_INVIS)
+			return 0;
+
+		if (flags & PCB_LYT_MASK) {
+			if ((!photo_mode) && (!PCB->LayerGroups.grp[group].vis))
+				return 0; /* not in photo mode or not visible */
+		}
 	}
 
 	switch(flags & PCB_LYT_ANYTHING) {
