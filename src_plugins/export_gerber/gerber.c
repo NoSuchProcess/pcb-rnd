@@ -694,6 +694,10 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	char *cp;
 	const char *group_name;
 
+	/* before cam lets this happen... */
+	if (flags & PCB_LYT_ASSY)
+		return 0;
+
 	pcb_cam_set_layer_group(&gerber_cam, group, flags);
 
 	if (flags & PCB_LYT_UI)
