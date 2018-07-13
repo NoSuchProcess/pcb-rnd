@@ -73,8 +73,12 @@ typedef struct {
 	cdt_t *cdt;
 	htpp_t terminals; /* key - terminal object; value - cdt point */
 	vtwire_t wires;
+	/*
 	pcb_layer_t *ui_layer_cdt;
 	pcb_layer_t *ui_layer_erbs;
+	*/
+	int ui_layer_cdt;
+	int ui_layer_erbs;
 } sketch_t;
 
 static htip_t sketches;
@@ -87,11 +91,12 @@ static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
 
 static void sketch_update_cdt_layer(sketch_t *sk)
 {
-	list_map0(&sk->ui_layer_cdt->Line, pcb_line_t, pcb_line_free);
-	if (sk->ui_layer_cdt->line_tree)
-		pcb_r_destroy_tree(&sk->ui_layer_cdt->line_tree);
+	list_map0(&pcb_uilayer.array[sk->ui_layer_cdt].Line, pcb_line_t, pcb_line_free);
+	if (pcb_uilayer.array[sk->ui_layer_cdt].line_tree)
+		pcb_r_destroy_tree(&pcb_uilayer.array[sk->ui_layer_cdt].line_tree);
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
-		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
+		pcb_line_new(&pcb_uilayer.array[sk->ui_layer_cdt],
+								 e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
 }
 
@@ -402,6 +407,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
 	pcb_box_t bbox;
 	struct search_info info;
+	pcb_layer_t *ui_layer;
 	char name[256];
 
 	sk->cdt = malloc(sizeof(cdt_t));
@@ -422,11 +428,14 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	pcb_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
 
 	pcb_snprintf(name, sizeof(name), "%s: CDT", layer->name);
-	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
-	sk->ui_layer_cdt->meta.real.vis = pcb_false;
+	sk->ui_layer_cdt = pcb_uilayer.used;
+	ui_layer = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
+	ui_layer->meta.real.vis = pcb_false;
 	sketch_update_cdt_layer(sk);
+
+	sk->ui_layer_erbs = pcb_uilayer.used;
 	pcb_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
-	sk->ui_layer_erbs = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
+	pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
