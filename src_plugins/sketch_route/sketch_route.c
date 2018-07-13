@@ -88,6 +88,8 @@ static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
 static void sketch_update_cdt_layer(sketch_t *sk)
 {
 	list_map0(&sk->ui_layer_cdt->Line, pcb_line_t, pcb_line_free);
+	if (sk->ui_layer_cdt->line_tree)
+		pcb_r_destroy_tree(&sk->ui_layer_cdt->line_tree);
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
 		pcb_line_new(sk->ui_layer_cdt, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
