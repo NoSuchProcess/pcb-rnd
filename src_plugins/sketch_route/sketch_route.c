@@ -189,11 +189,6 @@ static wire_t *sketch_find_shortest_path(wire_t *corridor)
 		}
 	}
 
-	if (left.points[left.point_num-1].p == left.points[left.point_num-2].p) {
-		wire_pop_point(&left);
-		left.points[left.point_num-1].side = SIDE_TERM;
-	}
-
 #ifdef SK_DEBUG
 	printf("\npath:\n");
 	wire_print(&left, "\t");
@@ -654,6 +649,20 @@ next_triangle:
 		else
 			wire_pop_point(&attached_path.corridor);
 	}
+
+	/* remove unwanted points which could be encountered around the end point */
+	if (end_p != NULL) {
+		int i, n = 0;
+		wire_pop_point(&attached_path.corridor); /* temporarily remove the end point */
+		EDGELIST_FOREACH(e, attached_path.visited_edges)
+			if (e->endp[0] == end_p || e->endp[1] == end_p)
+				n++; else break;
+		EDGELIST_FOREACH_END();
+		for (i = 0; i < n; i++)
+			wire_pop_point(&attached_path.corridor);
+		wire_push_point(&attached_path.corridor, end_p, SIDE_TERM);
+	}
+
 	attached_path_next_line();
 	return pcb_true;
 #undef RETURN
