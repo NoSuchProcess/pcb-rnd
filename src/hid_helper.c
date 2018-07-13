@@ -259,7 +259,6 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			/* by layer type */
 			int offs, has_offs;
 			pcb_layer_type_t lyt;
-			pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 			pcb_virt_layer_t *vl;
 
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
@@ -267,6 +266,26 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 
 			vl = pcb_vlayer_get_first(lyt);
 			if (vl == NULL) {
+				pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
+				int n, len = pcb_layergrp_list(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]));
+				if (has_offs) {
+					if (offs < 0)
+						offs = len - offs;
+					else
+						offs--;
+					if ((offs >= 0) && (offs < len)) {
+						pcb_layergrp_id_t gid = gids[offs];
+						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+						dst->grp_vis[gid] = 1;
+					}
+				}
+				else {
+					for(n = 0; n < len; n++) {
+						pcb_layergrp_id_t gid = gids[n];
+						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+						dst->grp_vis[gid] = 1;
+					}
+				}
 				
 			}
 			else {
