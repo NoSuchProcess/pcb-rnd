@@ -16,7 +16,7 @@
 	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
 	- export_gerber: add a true gerber drill output
 	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
-	- invent a generic API for both the drill attrib config table and gerber suffixes
+	- invent a generic API for both the drill attrib config table
 	- implement a CAM plugin that can drive multiple exporters with all options configured
 	- remove the gerber->drill dep and ask users to use the CAM instead
 	- move the hackish gerber layer suffix functions into CAM configs
