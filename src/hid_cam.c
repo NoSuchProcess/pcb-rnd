@@ -258,7 +258,7 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			/* by layer type */
 			int offs, has_offs;
 			pcb_layer_type_t lyt;
-			pcb_virt_layer_t *vl;
+			const pcb_virt_layer_t *vl;
 
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
 				goto err;
@@ -317,7 +317,7 @@ int pcb_cam_end(pcb_cam_t *dst)
 
 int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned int flags)
 {
-	pcb_virt_layer_t *vl;
+	const pcb_virt_layer_t *vl;
 
 	if (!cam->active)
 		return 0;
