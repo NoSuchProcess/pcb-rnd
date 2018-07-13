@@ -308,7 +308,7 @@ int pcb_cam_end(pcb_cam_t *dst)
 	free(dst->inst);
 	dst->inst = NULL;
 	if (!dst->active)
-		return;
+		return 0;
 	layervis_restore(dst);
 	dst->active = 0;
 	return dst->exported_grps;
