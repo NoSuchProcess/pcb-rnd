@@ -367,9 +367,23 @@ Generate Table of Contents
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_toc 18
 
+
+/* %start-doc options "91 Postscript Export"
+@ftable @code
+@cindex single-page
+@item --single-page
+Merge all drawings on a single page
+@end ftable
+%end-doc
+*/
+	{"single-page", "Merge all drawings on a single page",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_single_page 19
+
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 19
+#define HA_cam 20
 
 };
 
@@ -402,6 +416,7 @@ static struct {
 	int media_idx;
 	pcb_bool drillcopper;
 	pcb_bool legend;
+	pcb_bool single_page;
 
 	pcb_layer_t *outline_layer;
 
@@ -630,6 +645,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.calibration_y = options[HA_ycalib].real_value;
 	global.drillcopper = options[HA_drillcopper].int_value;
 	global.legend = options[HA_legend].int_value;
+	global.single_page = options[HA_single_page].int_value;
 
 	if (the_file)
 		ps_start_file(the_file);
@@ -777,6 +793,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 	static int lastgroup = -1;
 	time_t currenttime;
 	const char *name;
+	int newpage;
 
 	if (is_empty == -1) {
 		lastgroup = -1;
@@ -834,13 +851,16 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 
 			global.pagecount++;
 			lastgroup = group;
-			fprintf(global.f, "(%d.) tocp\n", global.pagecount);
+			fprintf(global.f, "(%d.) tocp\n", global.single_page ? 2 : global.pagecount);
 		}
 		fprintf(global.f, "(%s) toc\n", name);
 		return 0;
 	}
 
-	if (group < 0 || group != lastgroup) {
+	newpage = (group < 0 || group != lastgroup);
+	if ((global.pagecount > 1) && global.single_page)
+		newpage = 0;
+	if (newpage) {
 		double boffset;
 		int mirror_this = 0;
 		lastgroup = group;
