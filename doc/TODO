@@ -11,7 +11,6 @@
 	+ -> actions ZoomTo(selected) and ZoomTo(found)
 	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
 - CAM:
-	- rename hid_helper to hid_cam
 	- mark old default per layer file name generation obsolete
 	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
 	- export_gerber: add a true gerber drill output
@@ -46,6 +45,7 @@
 - BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 - BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
+- BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 
 2. For later releases ===============================================================================
 - rewrite the preview API:
