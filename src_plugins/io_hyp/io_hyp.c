@@ -39,7 +39,6 @@
 #include "actions.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_cam.h"
 #include "plugins.h"
 #include "event.h"
 #include "plug_io.h"
