@@ -10,6 +10,16 @@
 + feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade]
 	+ -> actions ZoomTo(selected) and ZoomTo(found)
 	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
+- CAM:
+	- rename hid_helper to hid_cam
+	- mark old default per layer file name generation obsolete
+	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
+	- export_gerber: add a true gerber drill output
+	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
+	- invent a generic API for both the drill attrib config table and gerber suffixes
+	- implement a CAM plugin that can drive multiple exporters with all options configured
+	- remove the gerber->drill dep and ask users to use the CAM instead
+	- move the hackish gerber layer suffix functions into CAM configs
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
@@ -255,16 +265,6 @@ FEATURES
 - BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: igor2, miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
-- CAM:
-	- rename hid_helper to hid_cam
-	- mark old default per layer file name generation obsolete
-	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
-	- export_gerber: add a true gerber drill output
-	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
-	- invent a generic API for both the drill attrib config table and gerber suffixes
-	- implement a CAM plugin that can drive multiple exporters with all options configured
-	- remove the gerber->drill dep and ask users to use the CAM instead
-	- move the hackish gerber layer suffix functions into CAM configs
 - BUG: main.c: SIGPIPE - detect it (needed for popen)
 - advanced grid settings:
 	- keep two lists of preferred grid sizes, one in mil, one in mm
