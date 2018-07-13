@@ -32,11 +32,32 @@ where:
 Syntax of the layer group definition:
 <ul>
 	<li> @layername (e.g. "@top_copper" if the group's name is <i>top_copper</i>)
-	<li> location-type (e.g. "top-copper" for any layer group that is copper and is on the top side)
+	<li> location-material (e.g. "top-copper" for any layer group that is copper and is on the top side)
+	<li> type[-type...] (more generally: a list of layer type flags)
 	<li> type:offs (e.g. "copper:+2" means the second copper layer group from the top, "copper:-3" means the third copper layer group from the bottom; offs is counted from 1, +1 meaning top outer layer, -1 meaning bottom outer layer)
 </ul>
 <p>
 (TODO: optionally prefixed with + or - for polarity and something for bloat/shrink)
+<p>
+Examples:
+<table border=1 cellspacing=0>
+	<tr> <th> directive
+	     <th> explanation
+	<tr> <td> bot.gbr=@bottom_copper,@bottom_silk
+	     <td> export layer groups called bottom_copper and bottom_silk (by group name)
+	<tr> <td> asm=top-assy
+	     <td> export the top assembly group, by type
+	<tr> <td> fabrication.ps=fab
+	     <td> export any fab layer group, by type
+	<tr> <td> gnd=copper:2
+	     <td> export the second copper layer group from the top (the first internal copper layer group under the top copper layer group, if it is a multilayer board; for 2 layer boards this will be the bottom copper layer group)
+	<tr> <td> gnd=intern-copper:1
+	     <td> similar to the above, but addresses the first internal copper layer group explicitly so it can not end up being the bottom copper layer group
+	<tr> <td> pwr=copper:-2
+	     <td> export the second copper layer group from the bottom (the first internal copper layer group above the bottom copper layer group, if it is a multilayer board; for 2 layer boards this will be the top copper layer group)
+	<tr> <td> gnd=intern-copper:-1
+	     <td> similar to the above, but addresses the last internal copper layer group explicitly so it can not end up being the top copper layer group
+</table>
 
 <h3> CAM plugin </h3>
 <p>
