@@ -288,7 +288,7 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 	return -1;
 }
 
-void pcb_cam_end(pcb_cam_t *dst)
+int pcb_cam_end(pcb_cam_t *dst)
 {
 	free(dst->inst);
 	dst->inst = NULL;
@@ -296,6 +296,7 @@ void pcb_cam_end(pcb_cam_t *dst)
 		return;
 	layervis_restore(dst);
 	dst->active = 0;
+	return dst->exported_grps;
 }
 
 
@@ -316,9 +317,11 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, unsigned i
 	}
 	else {
 		int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
-		return !cam->vgrp_vis[vid];
+		if (!cam->vgrp_vis[vid])
+			return 1;
 	}
 
+	cam->exported_grps++;
 	return 0;
 }
 

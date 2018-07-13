@@ -34,10 +34,14 @@ typedef struct pcb_cam_s {
 	char *inst;
 	pcb_board_t *pcb;
 	int orig_vis[PCB_MAX_LAYER]; /* backup of the original layer visibility */
+	int exported_grps;
 } pcb_cam_t;
 
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
-void pcb_cam_end(pcb_cam_t *dst);
+
+/* Finish cam export, free all memory, mark cam export inactive and report
+   the number of layer groups exported */
+int pcb_cam_end(pcb_cam_t *dst);
 
 
 /* Shall be the first rule in a cam capable exporter's set_layer_group()
