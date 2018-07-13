@@ -45,7 +45,7 @@
 #include "hid.h"
 #include "actions.h"
 #include "hid_nogui.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "hid_flags.h"
 #include "hid_attrib.h"
 #include "hid_init.h"

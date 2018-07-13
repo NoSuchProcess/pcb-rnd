@@ -15,7 +15,7 @@
 #include "draw.h"
 #include "pcb-printf.h"
 #include "plugins.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "safe_fs.h"
 
 #include "hid.h"

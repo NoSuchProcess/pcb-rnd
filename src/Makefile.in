@@ -88,11 +88,11 @@ append /local/pcb/OBJS [@
 	hid_cfg.o
 	hid_cfg_action.o
 	hid_cfg_input.o
+	hid_cam.o
 	hid_color.o
 	hid_draw_helpers.o
 	hid_extents.o
 	hid_flags.o
-	hid_helper.o
 	hid_init.o
 	hid_nogui.o
 	ht_subc.o

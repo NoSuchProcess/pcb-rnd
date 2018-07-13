@@ -35,7 +35,7 @@
 #include "lesstif.h"
 #include "hid_cfg_input.h"
 #include "hid_attrib.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "hid_init.h"
 #include "hid_color.h"
 #include "hid_extents.h"

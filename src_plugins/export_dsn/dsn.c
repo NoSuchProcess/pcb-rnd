@@ -63,7 +63,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "actions.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "plugins.h"
 #include "obj_line.h"
 #include "obj_pstk_inlines.h"

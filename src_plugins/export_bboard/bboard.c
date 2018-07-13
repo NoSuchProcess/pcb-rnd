@@ -60,7 +60,7 @@
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "hid_init.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 
 #include <cairo.h>
 

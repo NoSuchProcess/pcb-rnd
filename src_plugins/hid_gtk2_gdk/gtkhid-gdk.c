@@ -9,7 +9,7 @@
 #include "grid.h"
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "hid_color.h"
 
 #include "../src_plugins/lib_gtk_hid/gui.h"

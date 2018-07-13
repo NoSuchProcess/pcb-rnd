@@ -53,7 +53,7 @@
 #include "error.h"
 #include "data.h"
 #include "rats.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "layer.h"
 #include "compat_misc.h"
 #include "safe_fs.h"

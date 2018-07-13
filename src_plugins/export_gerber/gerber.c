@@ -20,7 +20,7 @@
 #include "layer.h"
 #include "pcb-printf.h"
 #include "plugins.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
 #include "macro.h"

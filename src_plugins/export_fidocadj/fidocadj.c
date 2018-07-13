@@ -58,7 +58,7 @@
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
-#include "hid_helper.h"
+#include "hid_cam.h"
 #include "hid_flags.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
