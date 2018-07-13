@@ -267,15 +267,12 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 
 			vl = pcb_vlayer_get_first(lyt);
 			if (vl == NULL) {
-			
+				
 			}
 			else {
 				int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
 				dst->vgrp_vis[vid] = 1;
 			}
-
-			pcb_message(PCB_MSG_ERROR, "layer group not found: '%s' %x offs=%d has=%d\n", curr, lyt, offs, has_offs);
-/*			goto err;*/
 		}
 	}
 
