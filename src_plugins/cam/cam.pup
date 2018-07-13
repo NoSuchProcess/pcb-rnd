@@ -1,0 +1,7 @@
+$class export
+$short cam/job based export
+$long Configurable output job based batch exporting
+$state WIP
+$package export
+default disable
+autoload 1
