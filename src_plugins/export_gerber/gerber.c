@@ -663,7 +663,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		pcb_hid_restore_layer_ons(save_ons);
 	conf_update(NULL, -1); /* resotre forced sets */
 
-	pcb_cam_end(&gerber_cam);
+	if (pcb_cam_end(&gerber_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 
 	/* in cam mode we have f still open */
 	maybe_close_f(f);
