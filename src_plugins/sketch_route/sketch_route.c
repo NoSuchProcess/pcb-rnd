@@ -81,6 +81,16 @@ typedef struct {
 	spoke_t spokes[4];
 } pointdata_t;
 
+void pointdata_create(point_t *p, pcb_any_obj_t *obj)
+{
+	pointdata_t *pd;
+	assert(p->data == NULL);
+	p->data = calloc(1, sizeof(pointdata_t));
+	pd = p->data;
+	pd->obj = obj;
+}
+
+
 typedef struct {
 	cdt_t *cdt;
 	htpp_t terminals; /* key - terminal object; value - cdt point */
@@ -390,8 +400,7 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 		if (pcb_pstk_shape_at(PCB, pstk, i->layer) == NULL)
 			return PCB_R_DIR_NOT_FOUND;
 		point = cdt_insert_point(i->sk->cdt, pstk->x, -pstk->y);
-		point->data = calloc(1, sizeof(pointdata_t));
-		((pointdata_t *) point->data)->obj = obj;
+		pointdata_create(point, obj);
 	}
 	/* temporary: if a non-padstack obj is _not_ a terminal, then don't triangulate it */
 	/* long term (for non-terminal objects):
@@ -403,8 +412,7 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 		coord_t cx, cy;
 		pcb_obj_center(obj, &cx, &cy);
 		point = cdt_insert_point(i->sk->cdt, cx, -cy);
-		point->data = calloc(1, sizeof(pointdata_t));
-		((pointdata_t *) point->data)->obj = obj;
+		pointdata_create(point, obj);
 	}
 
 	if (obj->term != NULL) {
