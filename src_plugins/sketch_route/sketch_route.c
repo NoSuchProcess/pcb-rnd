@@ -64,7 +64,7 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 struct spoke_s {
 	pcb_box_t bbox;
 	vtp0_t slots;
-  point_t p;
+  point_t *p;
 };
 
 typedef struct {
