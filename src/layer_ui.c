@@ -96,7 +96,7 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 	int n;
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *l = pcb_uilayers.array[n];
-		if (l->meta.real.cookie == cookie)
+		if ((l != NULL) && (l->meta.real.cookie == cookie))
 			pcb_uilayer_free_(l, n);
 	}
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
