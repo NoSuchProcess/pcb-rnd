@@ -761,11 +761,12 @@ static void tool_skline_notify_mode(void)
 					pcb_message(PCB_MSG_WARNING, _("Cannot finish placing wire at this terminal\n"));
 					pcb_message(PCB_MSG_WARNING, _("(the terminal does not belong to the routed net or is the starting terminal)\n"));
 				}
+				break;
 			}
-		} else {
-			if (attached_path_next_point(NULL) == pcb_false)
-				pcb_message(PCB_MSG_WARNING, _("Cannot route the wire this way\n"));
 		}
+		if (attached_path_next_point(NULL) == pcb_false)
+			pcb_message(PCB_MSG_WARNING, _("Cannot route the wire this way\n"));
+
 		break;
 	}
 }
