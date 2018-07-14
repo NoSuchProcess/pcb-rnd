@@ -35,7 +35,7 @@
 	- unify how output files are accessed/checked: confirmation on overwrite
 - BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
-- BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
++ BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 
 2. For later releases ===============================================================================
