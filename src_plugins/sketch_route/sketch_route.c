@@ -378,6 +378,8 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 		if (pcb_pstk_shape_at(PCB, pstk, i->layer) == NULL)
 			return PCB_R_DIR_NOT_FOUND;
 		point = cdt_insert_point(i->sk->cdt, pstk->x, -pstk->y);
+		point->data = calloc(1, sizeof(pointdata_t));
+		((pointdata_t *) point->data)->obj = obj;
 	}
 	/* temporary: if a non-padstack obj is _not_ a terminal, then don't triangulate it */
 	/* long term (for non-terminal objects):
@@ -389,10 +391,9 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 		coord_t cx, cy;
 		pcb_obj_center(obj, &cx, &cy);
 		point = cdt_insert_point(i->sk->cdt, cx, -cy);
+		point->data = calloc(1, sizeof(pointdata_t));
+		((pointdata_t *) point->data)->obj = obj;
 	}
-
-	point->data = calloc(1, sizeof(pointdata_t));
-	((pointdata_t *) point->data)->obj = obj;
 
 	if (obj->term != NULL) {
 		pcb_subc_t *subc = pcb_obj_parent_subc(obj);
