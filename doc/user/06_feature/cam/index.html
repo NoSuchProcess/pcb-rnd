@@ -69,10 +69,15 @@ settings for reproducing export packages in various formats.
 A job is a script that contains zero or more export directives, separated
 by semicolons or newlines. An export directive is one of these:
 <pre>
+desc text
 prefix path
 plugin name [--option value] [--option value] ...
 write outfile=layergrp[,layergrp,...]
 </pre>
+<p>
+desc is a free form one-liner that describes what the job is for. Multiple
+desc directives may be present (to bypass the limitation that the text can
+not contain newlines).
 <p>
 The prefix directive sets up a file name prefix that is active until the
 next prefix directive or end of the script. Before the first prefix directive
@@ -101,6 +106,7 @@ li:pcb-rnd-conf-v1 {
 			ha:cam {
 				li:jobs {
 					doc_png {
+						desc export top and bottom copper and silk in 600 DPI pngs
 						prefix doc/
 						plugin png --dpi 600
 						write top.png=top-copper,top-silk
