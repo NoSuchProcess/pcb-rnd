@@ -440,7 +440,7 @@ static void make_sortable(GtkTreeModel * liststore)
 
 GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_common_t *com)
 {
-	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label;
+	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *scrolled_win;
 	GtkWidget *hbx, *dummy, *box_val_edit, *prv;
 	GtkCellRenderer *renderer;
 	GtkWidget *content_area;
@@ -462,15 +462,22 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	vbox_tree = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_win), vbox_tree, TRUE, TRUE, 4);
 	vbox_edit = gtkc_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_win), vbox_edit, TRUE, TRUE, 4);
+	gtk_box_pack_start(GTK_BOX(hbox_win), vbox_edit, FALSE, FALSE, 4);
 
 /***** LEFT *****/
 
 	label = gtk_label_new("Properties");
 	gtk_box_pack_start(GTK_BOX(vbox_tree), label, FALSE, FALSE, 4);
 
+	scrolled_win = GTK_WIDGET(g_object_new(GTK_TYPE_SCROLLED_WINDOW,
+		"hscrollbar-policy", GTK_POLICY_AUTOMATIC,
+		"vscrollbar-policy", GTK_POLICY_AUTOMATIC,
+		"shadow-type", GTK_SHADOW_ETCHED_IN,
+		NULL));
+	gtk_box_pack_start(GTK_BOX(vbox_tree), scrolled_win, TRUE, TRUE, 0);
+
 	dlg->tree = gtk_tree_view_new();
-	gtk_box_pack_start(GTK_BOX(vbox_tree), dlg->tree, FALSE, TRUE, 4);
+	gtk_container_add(GTK_CONTAINER(scrolled_win), dlg->tree);
 
 	GType ty[5];
 
@@ -487,13 +494,9 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	hdr_add(dlg, "max", 3);
 	hdr_add(dlg, "avg", 4);
 
-	/* dummy box to eat up vertical space */
-	hbx = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, TRUE, TRUE, 4);
-
 	/* list manipulation */
 	hbx = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, FALSE, TRUE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, FALSE, FALSE, 4);
 
 	dlg->remove = gtk_button_new_with_label("Remove attribute");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->remove, FALSE, TRUE, 4);
