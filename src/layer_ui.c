@@ -68,6 +68,8 @@ found:;
 	l->meta.real.color = pcb_strdup(color);
 	l->name = pcb_strdup(name);
 	l->meta.real.vis = 1;
+	l->parent_type = PCB_PARENT_UI;
+	l->parent.any = NULL;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
 }

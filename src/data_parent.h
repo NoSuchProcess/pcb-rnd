@@ -35,7 +35,8 @@ typedef enum pcb_parenttype_e {
 	PCB_PARENT_LAYER,        /* object is on a layer */
 	PCB_PARENT_SUBC,         /* object is part of a subcircuit */
 	PCB_PARENT_DATA,         /* global objects like via */
-	PCB_PARENT_BOARD         /* directly under a board (typical for pcb_data_t of a board) */
+	PCB_PARENT_BOARD,        /* directly under a board (typical for pcb_data_t of a board) */
+	PCB_PARENT_UI            /* parent of UI layers */
 } pcb_parenttype_t;
 
 /* class is e.g. PCB_OBJ_CLASS_OBJ */

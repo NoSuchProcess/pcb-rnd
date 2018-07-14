@@ -89,6 +89,7 @@ PCB_INLINE pcb_bool_t pcb_obj_is_under(pcb_any_obj_t *obj, pcb_data_t *data)
 		switch(obj->parent_type) {
 			case PCB_PARENT_INVALID: return pcb_false;
 			case PCB_PARENT_BOARD:   return pcb_false;
+			case PCB_PARENT_UI:      return pcb_false; /* shouldn't happen */
 			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent.data == data) return pcb_true; break;
 			case PCB_PARENT_SUBC:    if (obj->parent.subc->data == data) return pcb_true; break;
 			case PCB_PARENT_DATA:    if (obj->parent.data == data) return pcb_true; break;
