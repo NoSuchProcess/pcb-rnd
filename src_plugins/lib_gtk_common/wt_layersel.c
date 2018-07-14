@@ -599,7 +599,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_ui;
 		int g;
 
-		ls->grp_ui.len = vtp0_len(&pcb_uilayer);
+		ls->grp_ui.len = vtp0_len(&pcb_uilayers);
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_ui.len);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "UI", 0, &ls->grp_ui), FALSE, FALSE, 0);
 
