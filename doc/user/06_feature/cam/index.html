@@ -77,7 +77,9 @@ write outfile=layergrp[,layergrp,...]
 The prefix directive sets up a file name prefix that is active until the
 next prefix directive or end of the script. Before the first prefix directive
 the prefix is an empty string. Any outfile will be prefixed with the current
-prefix. (It is sort of a 'mkdir -p path; cd path' in the shell sense.)
+prefix. If the prefix contains at least one path separator, the directories
+it refers to are also created. (It is sort of a 'mkdir -p path; cd path'
+in the shell sense.)
 <p>
 The plugin directive selects a plugin and sets plugin specific options.
 The plugin and options are active until the next plugin directive or the
@@ -89,9 +91,32 @@ cam-capable exporter, <a href="#cli">see above</a>. Each write is a call
 to an exporter the same way as if pcb-rnd was called with --cam and -x
 with the exporter and options taken from the last plugin directive.
 <p>
-For example:
+For example, the following config tree defines a job called <i>doc_png</i>
+that generates two 600 DPI images from the sides of the board, copper and
+silk combined, all in the doc/ dir (that is created if necessary):
 <pre>
-TODO
+li:pcb-rnd-conf-v1 {
+	ha:overwrite {
+		ha:plugins {
+			ha:cam {
+				li:jobs {
+					doc_png {
+						prefix doc/
+						plugin png --dpi 600
+						write top.png=top-copper,top-silk
+						write bottom.png=bottom-copper,bottom-silk
+					}
+				}
+			}
+		}
+	}
+}
+</pre>
+<p>
+Once the above subtree is loaded in the config, the following action triggers
+the export:
+<pre>
+cam(call, doc_png)
 </pre>
 
 
