@@ -76,6 +76,9 @@ typedef struct {
 	wirelist_node_t *attached_wires[2];
 	wirelist_node_t *uturn_wires;
 	wirelist_node_t *terminal_wires;
+	/* spokes provide sufficient spacing of wires from objects;
+	 * there are 4 spokes for each of the directions: 45, 135, 225, 315 deg */
+	spoke_t spokes[4];
 } pointdata_t;
 
 typedef struct {
