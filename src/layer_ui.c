@@ -71,9 +71,11 @@ found:;
 	return l;
 }
 
-static void pcb_uilayer_free_(pcb_layer_t *l)
+static void pcb_uilayer_free_(pcb_layer_t *l, long idx)
 {
 	pcb_layer_free(l);
+	free(l);
+	pcb_uilayers.array[idx] = NULL;
 }
 
 void pcb_uilayer_free(pcb_layer_t *ly)
@@ -82,8 +84,7 @@ void pcb_uilayer_free(pcb_layer_t *ly)
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *l = pcb_uilayers.array[n];
 		if (l == ly) {
-			pcb_uilayer_free_(l);
-			pcb_uilayers.array[n] = NULL;
+			pcb_uilayer_free_(l, n);
 			break;
 		}
 	}
@@ -96,8 +97,8 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *l = pcb_uilayers.array[n];
 		if (l->meta.real.cookie == cookie) {
-			pcb_uilayer_free_(l);
-			pcb_uilayers.array[n] = NULL;
+			pcb_uilayer_free_(l, n);
+
 		}
 	}
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
