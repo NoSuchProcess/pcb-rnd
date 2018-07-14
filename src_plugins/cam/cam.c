@@ -70,6 +70,13 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 		free(ctx->prefix);
 		ctx->prefix = pcb_strdup(arg);
 	}
+	else if (strcmp(cmd, "write") == 0) {
+		if (ctx->exporter == NULL) {
+			pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
+			return -1;
+		}
+		return -1;
+	}
 	else if (strcmp(cmd, "plugin") == 0) {
 		char *argv_[128];
 		char **argv = argv_;
