@@ -82,6 +82,7 @@ typedef struct {
 	cdt_t *cdt;
 	htpp_t terminals; /* key - terminal object; value - cdt point */
 	vtwire_t wires;
+	vtewire_t ewires;
 	pcb_layer_t *ui_layer_cdt;
 	pcb_layer_t *ui_layer_erbs;
 } sketch_t;
@@ -425,6 +426,10 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	sk->wires.elem_destructor = vtwire_destructor;
 	sk->wires.elem_copy = NULL;
 	vtwire_init(&sk->wires);
+	sk->ewires.elem_constructor = vtewire_constructor;
+	sk->ewires.elem_destructor = vtewire_destructor;
+	sk->ewires.elem_copy = NULL;
+	vtewire_init(&sk->ewires);
 
 	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
 	info.layer = layer;
@@ -470,6 +475,7 @@ static void sketch_uninit(sketch_t *sk)
 		sk->cdt = NULL;
 	}
 	vtwire_uninit(&sk->wires);
+	vtewire_uninit(&sk->ewires);
 	htpp_uninit(&sk->terminals);
 	pcb_uilayer_free(sk->ui_layer_cdt);
 	pcb_uilayer_free(sk->ui_layer_erbs);
