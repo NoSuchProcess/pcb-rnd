@@ -53,7 +53,7 @@ typedef struct {
 
 static void cam_init_inst(cam_ctx_t *ctx)
 {
-	memset(ctx, 0, sizeof(ctx));
+	memset(ctx, 0, sizeof(cam_ctx_t));
 }
 
 static void cam_uninit_inst(cam_ctx_t *ctx)
