@@ -217,7 +217,7 @@ static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 
 static int vis_ui(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 {
-	pcb_layer_t *l = &pcb_uilayer.array[lsl->vis_ui_idx];
+	pcb_layer_t *l = pcb_uilayers.array[lsl->vis_ui_idx];
 	if (toggle)
 		l->meta.real.vis = !l->meta.real.vis;
 	*is_on = l->meta.real.vis;
@@ -595,18 +595,19 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		build_group_finish(lsg);
 	}
 
-	if (vtlayer_len(&pcb_uilayer) > 0) { /* UI layers */
+	if (vtp0_len(&pcb_uilayers) > 0) { /* UI layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_ui;
 		int g;
 
-		ls->grp_ui.len = vtlayer_len(&pcb_uilayer);
+		ls->grp_ui.len = vtp0_len(&pcb_uilayer);
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_ui.len);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "UI", 0, &ls->grp_ui), FALSE, FALSE, 0);
 
-		for(g = n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
-			if (pcb_uilayer.array[n].name == NULL)
+		for(g = n = 0; n < vtp0_len(&pcb_uilayers); n++) {
+			pcb_layer_t *ly = pcb_uilayers.array[n];
+			if ((ly == NULL) || (ly->name == NULL))
 				continue;
-			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].name, -1, &pcb_uilayer.array[n].meta.real.color), FALSE, FALSE, 1);
+			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], ly->name, -1, &ly->meta.real.color), FALSE, FALSE, 1);
 			lsg->layer[g].ev_selected = ev_lyr_no_select;
 			lsg->layer[g].ev_vis = vis_ui;
 			lsg->layer[g].vis_ui_idx = n;
