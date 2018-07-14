@@ -34,6 +34,7 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "plugins.h"
+#include "actions.h"
 #include "cam_conf.h"
 #include "../src_plugins/cam/conf_internal.c"
 
@@ -43,6 +44,20 @@ static const char *cam_cookie = "cam exporter";
 conf_cam_t conf_cam;
 #define CAM_CONF_FN "cam.conf"
 
+static const char pcb_acts_cam[] = "cam(...)";
+static const char pcb_acth_cam[] = "Export jobs for feeding cam processes";
+static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
+
+static pcb_action_t cam_action_list[] = {
+	{"cam", pcb_act_cam, pcb_acth_cam, pcb_acts_cam}
+};
+
+PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
 
 int pplg_check_ver_cam(int ver_needed) { return 0; }
 
@@ -50,8 +65,10 @@ void pplg_uninit_cam(void)
 {
 	conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
 	conf_unreg_fields("plugins/cam/");
+	pcb_remove_actions_by_cookie(cam_cookie);
 }
 
+#include "dolists.h"
 int pplg_init_cam(void)
 {
 	PCB_API_CHK_VER;
@@ -59,6 +76,8 @@ int pplg_init_cam(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
 #include "cam_conf_fields.h"
+
+	PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
 
 	return 0;
 }
