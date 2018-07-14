@@ -47,8 +47,12 @@ conf_cam_t conf_cam;
 #define CAM_CONF_FN "cam.conf"
 
 typedef struct {
-	char *prefix;
+	char *prefix;            /* strdup'd file name prefix from the last prefix command */
 	pcb_hid_t *exporter;
+
+	char *args;              /* strdup'd argument string from the last plugin command - already split up */
+	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
+	int argc;
 } cam_ctx_t;
 
 static void cam_init_inst(cam_ctx_t *ctx)
@@ -59,28 +63,36 @@ static void cam_init_inst(cam_ctx_t *ctx)
 static void cam_uninit_inst(cam_ctx_t *ctx)
 {
 	free(ctx->prefix);
+	free(ctx->args);
 }
 
 static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 {
 	cam_ctx_t *ctx = ctx_;
 	char *curr, *next;
+	char **argv = ctx->argv;
+
 
 	if (strcmp(cmd, "prefix") == 0) {
 		free(ctx->prefix);
 		ctx->prefix = pcb_strdup(arg);
 	}
 	else if (strcmp(cmd, "write") == 0) {
+		int argc = ctx->argc;
 		if (ctx->exporter == NULL) {
 			pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
+			return -1;
+		}
+
+		ctx->argv[0] = "--cam";
+		ctx->argv[1] = arg;
+		if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
+			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
 			return -1;
 		}
 		return -1;
 	}
 	else if (strcmp(cmd, "plugin") == 0) {
-		char *argv_[128];
-		char **argv = argv_;
-		int argc = 0;
 		curr = strpbrk(arg, " \t");
 		if (curr != NULL) {
 			*curr = '\0';
@@ -91,9 +103,11 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 			pcb_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
 			return -1;
 		}
-
+		free(ctx->args);
+		curr = ctx->args = pcb_strdup(curr);
+		ctx->argc = 2; /* [0] and [1] are reserved for the --cam argument */
 		for(; curr != NULL; curr = next) {
-			if (argc >= (sizeof(argv_) / sizeof(argv_[0]))) {
+			if (ctx->argc >= (sizeof(ctx->argv) / sizeof(ctx->argv[0]))) {
 				pcb_message(PCB_MSG_ERROR, "cam: too many arguments for plugin '%s'\n", arg);
 				return -1;
 			}
@@ -105,15 +119,11 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 			}
 			if (*curr == '\0')
 				continue;
-			argv[argc] = curr;
-			argc++;
+			argv[ctx->argc] = curr;
+			ctx->argc++;
 			
 		}
-		argv[argc] = NULL;
-		if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
-			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
-			return -1;
-		}
+		argv[ctx->argc] = NULL;
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
