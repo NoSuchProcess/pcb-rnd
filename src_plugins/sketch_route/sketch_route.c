@@ -463,7 +463,8 @@ static void sketch_uninit(sketch_t *sk)
 	}
 	vtwire_uninit(&sk->wires);
 	htpp_uninit(&sk->terminals);
-	pcb_uilayer_free_all_cookie(pcb_sketch_route_cookie);
+	pcb_uilayer_free(sk->ui_layer_cdt);
+	pcb_uilayer_free(sk->ui_layer_erbs);
 }
 
 
