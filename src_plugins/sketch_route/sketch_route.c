@@ -55,6 +55,7 @@
 #include "cdt/cdt.h"
 #include <genht/htip.h>
 #include <genht/htpp.h>
+#include <genvector/vtp0.h>
 
 #define SK_DEBUG
 
@@ -84,10 +85,21 @@ typedef struct {
 void pointdata_create(point_t *p, pcb_any_obj_t *obj)
 {
 	pointdata_t *pd;
+	int i;
+
 	assert(p->data == NULL);
 	p->data = calloc(1, sizeof(pointdata_t));
 	pd = p->data;
 	pd->obj = obj;
+
+	for (i = 0; i < 4; i++) {
+		/* TODO:
+		spoke_bbox(&pd->spokes[i].bbox, i);
+		pcb_r_insert_entry(spoke_tree, &pd->spokes[i]);
+		*/
+		vtp0_init(&pd->spokes[i].slots);
+		pd->spokes[i].p = p;
+	}
 }
 
 
