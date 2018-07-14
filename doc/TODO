@@ -10,9 +10,6 @@
 + feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade]
 	+ -> actions ZoomTo(selected) and ZoomTo(found)
 	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
-- CAM:
-	- implement a CAM plugin that can drive multiple exporters with all options configured
-	- move the hackish gerber layer suffix functions into CAM configs
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
 		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
@@ -56,6 +53,7 @@
 	- check on all callers; io_pcb already has a workaround for the clearance problem, nothing for the mask
 	- load from old pcb and save to old format (pcb, old lihata, check other users too), load again and compare the values
 - CAM:
+	- move the hackish gerber layer suffix functions into CAM configs
 	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
 	- export_gerber: add a true gerber drill output
 	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
