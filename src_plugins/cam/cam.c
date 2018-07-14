@@ -36,6 +36,7 @@
 #include "plugins.h"
 #include "actions.h"
 #include "cam_conf.h"
+#include "compat_misc.h"
 #include "../src_plugins/cam/conf_internal.c"
 
 
@@ -44,11 +45,81 @@ static const char *cam_cookie = "cam exporter";
 conf_cam_t conf_cam;
 #define CAM_CONF_FN "cam.conf"
 
-static const char pcb_acts_cam[] = "cam(...)";
+static int cam_exec_inst(char *cmd, char *arg)
+{
+	printf("inst: '%s' '%s'\n", cmd, arg);
+	return 0;
+}
+
+/* Parse and execute a script */
+static int cam_exec(const char *script_in, int (*exec)(char *cmd, char *arg))
+{
+	char *arg, *curr, *next, *script = pcb_strdup(script_in);
+	int res = 0;
+
+	for(curr = script; curr != NULL; curr = next) {
+		while(isspace(*curr)) curr++;
+		next = strpbrk(curr, ";\r\n");
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+		}
+		if (*curr == '\0')
+			continue;
+		arg = strpbrk(curr, " \t");
+		if (arg != NULL) {
+			*arg = '\0';
+			arg++;
+		}
+		res |= exec(curr, arg);
+	}
+
+	free(script);
+	return res;
+}
+
+/* look up a job by name in the config */
+static const char *cam_find_job(const char *job)
+{
+	conf_listitem_t *j;
+	int idx;
+
+	conf_loop_list(&conf_cam.plugins.cam.jobs, j, idx)
+		if (strcmp(j->name, job) == 0)
+			return j->payload;
+
+	return NULL;
+}
+
+/* execute the instructions of a job specified by name */
+static int cam_call(const char *job)
+{
+	const char *script = cam_find_job(job);
+	
+	if (script != NULL)
+		return cam_exec(script, cam_exec_inst);
+
+	pcb_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
+	return -1;
+}
+
+
+static const char pcb_acts_cam[] = "cam(exec, script)\ncam(call, jobname)";
 static const char pcb_acth_cam[] = "Export jobs for feeding cam processes";
 static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_ACT_IRES(0);
+	const char *cmd, *arg;
+	int rs = -1;
+
+	PCB_ACT_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
+
+	if (pcb_strcasecmp(cmd, "exec") == 0)
+		rs = cam_exec(arg, cam_exec_inst);
+	else if (pcb_strcasecmp(cmd, "call") == 0)
+		rs = cam_call(arg);
+
+	PCB_ACT_IRES(rs);
 	return 0;
 }
 
