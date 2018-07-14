@@ -33,16 +33,20 @@
 #include "layer.h"
 #include "event.h"
 #include "compat_misc.h"
+#include "genvector/vtp0.h"
 #define GVT_DONT_UNDEF
 #include "layer_ui.h"
 #include <genvector/genvector_impl.c>
 
 vtlayer_t pcb_uilayer;
+vtp0_t pcb_uilayers;
+
 
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color)
 {
 	int n;
 	pcb_layer_t *l;
+	void **p;
 
 	if (cookie == NULL)
 		return NULL;
@@ -56,6 +60,8 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 	}
 
 	l = vtlayer_alloc_append(&pcb_uilayer, 1);
+	p = vtp0_alloc_append(&pcb_uilayers, 1);
+	*p = l;
 found:;
 	l->meta.real.cookie = cookie;
 	l->meta.real.color = pcb_strdup(color);
@@ -97,4 +103,5 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 void pcb_uilayer_uninit(void)
 {
 	vtlayer_uninit(&pcb_uilayer);
+	vtp0_uninit(&pcb_uilayers);
 }

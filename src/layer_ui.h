@@ -28,8 +28,15 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef PCB_LAYER_UI_H
+#define PCB_LAYER_UI_H
+
 /* Virtual layers for UI and debug */
 #include "layer.h"
+
+#include "genvector/vtp0.h"
+extern vtp0_t pcb_uilayers;
+
 
 /* layer vector:  Elem=pcb_layer_t *; init=0 */
 #define GVT(x) vtlayer_ ## x
@@ -47,10 +54,10 @@
 /* list of all UI layers */
 extern vtlayer_t pcb_uilayer;
 
+
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color);
 void pcb_uilayer_free(pcb_layer_t *l);
 void pcb_uilayer_free_all_cookie(const char *cookie);
 void pcb_uilayer_uninit(void);
 
-
-
+#endif
