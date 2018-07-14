@@ -48,6 +48,7 @@ conf_cam_t conf_cam;
 
 typedef struct {
 	char *prefix;
+	pcb_hid_t *exporter;
 } cam_ctx_t;
 
 static void cam_init_inst(cam_ctx_t *ctx)
@@ -63,9 +64,49 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 {
 	cam_ctx_t *ctx = ctx_;
+	char *curr, *next;
+
 	if (strcmp(cmd, "prefix") == 0) {
 		free(ctx->prefix);
 		ctx->prefix = pcb_strdup(arg);
+	}
+	else if (strcmp(cmd, "plugin") == 0) {
+		char *argv_[128];
+		char **argv = argv_;
+		int argc = 0;
+		curr = strpbrk(arg, " \t");
+		if (curr != NULL) {
+			*curr = '\0';
+			curr++;
+		}
+		ctx->exporter = pcb_hid_find_exporter(arg);
+		if (ctx->exporter == NULL) {
+			pcb_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
+			return -1;
+		}
+
+		for(; curr != NULL; curr = next) {
+			if (argc >= (sizeof(argv_) / sizeof(argv_[0]))) {
+				pcb_message(PCB_MSG_ERROR, "cam: too many arguments for plugin '%s'\n", arg);
+				return -1;
+			}
+			while(isspace(*curr)) curr++;
+			next = strpbrk(curr, " \t");
+			if (next != NULL) {
+				*next = '\0';
+				next++;
+			}
+			if (*curr == '\0')
+				continue;
+			argv[argc] = curr;
+			argc++;
+			
+		}
+		argv[argc] = NULL;
+		if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
+			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
+			return -1;
+		}
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
