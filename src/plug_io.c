@@ -890,6 +890,7 @@ void pcb_backup(void)
 {
 	char *filename = NULL;
 	const char *fmt = NULL;
+	pcb_plug_io_t *orig;
 
 	if (PCB && PCB->Filename) {
 		filename = (char *) malloc(sizeof(char) * (strlen(PCB->Filename) + 2));
@@ -910,7 +911,11 @@ void pcb_backup(void)
 
 	if ((conf_core.rc.backup_format != NULL) && (strcmp(conf_core.rc.backup_format, "original") != 0))
 		fmt = conf_core.rc.backup_format;
+
+	orig = PCB->Data->loader;
 	pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false);
+	PCB->Data->loader = orig;
+
 	free(filename);
 }
 
