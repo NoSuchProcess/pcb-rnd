@@ -85,12 +85,12 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 
 
 	if (Layer & PCB_LYT_UI) {
-		if (On < 0)
-			On = !pcb_uilayer.array[Layer].meta.real.vis;
-		Layer &= ~(PCB_LYT_UI | PCB_LYT_VIRTUAL);
-		if (Layer >= vtlayer_len(&pcb_uilayer))
+		pcb_layer_t *ly = pcb_uilayer_get(Layer);
+		if (ly == NULL)
 			return 0;
-		pcb_uilayer.array[Layer].meta.real.vis = On;
+		if (On < 0)
+			On = !ly->meta.real.vis;
+		ly->meta.real.vis = On;
 		changed = 1;
 		goto done;
 	}

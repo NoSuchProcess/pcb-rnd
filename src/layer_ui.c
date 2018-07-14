@@ -114,7 +114,8 @@ pcb_layer_t *pcb_uilayer_get(long ui_ly_id)
 {
 	void **p;
 #warning TODO: switch to unique IDs
-	p = vtp0_get(&pcb_uilayers, ui_ly_id, 0);
+
+	p = vtp0_get(&pcb_uilayers, (ui_ly_id & (PCB_LYT_UI-1)), 0);
 	if (p == NULL)
 		return NULL;
 	return (pcb_layer_t *)(*p);
