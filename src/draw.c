@@ -221,13 +221,13 @@ static void draw_virtual_layers(const pcb_box_t *drawn_area)
 static void draw_ui_layers(const pcb_box_t *drawn_area)
 {
 	int i;
-	pcb_layer_t *first;
+	pcb_layer_t *first, *ly;
 
 	/* find the first ui layer in use */
 	first = NULL;
-	for(i = 0; i < vtlayer_len(&pcb_uilayer); i++) {
-		if (pcb_uilayer.array[i].meta.real.cookie != NULL) {
-			first = pcb_uilayer.array+i;
+	for(i = 0; i < vtp0_len(&pcb_uilayers); i++) {
+		if (pcb_uilayers.array[i] != NULL) {
+			first = pcb_uilayers.array[i];
 			break;
 		}
 	}
@@ -235,15 +235,17 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 	/* if there's any UI layer, try to draw them */
 	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0)) {
 		int have_canvas = 0;
-		for(i = 0; i < vtlayer_len(&pcb_uilayer); i++)
-			if ((pcb_uilayer.array[i].meta.real.cookie != NULL) && (pcb_uilayer.array[i].meta.real.vis)) {
+		for(i = 0; i < vtp0_len(&pcb_uilayers); i++) {
+			ly = pcb_uilayers.array[i];
+			if ((ly != NULL) && (ly->meta.real.vis)) {
 				if (!have_canvas) {
 					pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 					pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 					have_canvas = 1;
 				}
-				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
+				pcb_draw_layer(ly, drawn_area);
 			}
+		}
 		if (have_canvas)
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 		pcb_gui->end_layer();
