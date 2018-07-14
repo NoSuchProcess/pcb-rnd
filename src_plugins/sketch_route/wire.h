@@ -5,16 +5,13 @@
 #include <string.h>
 
 #include "cdt/typedefs.h"
+#include "sktypedefs.h"
 
 typedef struct wirelist_node_s wirelist_node_t;
 
 typedef struct {
 	point_t *p;
-	enum {
-		SIDE_LEFT = (1<<0),
-		SIDE_RIGHT = (1<<1),
-		SIDE_TERM = (1<<1)|(1<<0)
-	} side;
+	side_t side;
   wirelist_node_t *wire_node;
 } wire_point_t;
 

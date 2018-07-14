@@ -48,7 +48,10 @@
 #include "tool.h"
 #include "layer_ui.h"
 
+#include "sktypedefs.h"
 #include "wire.h"
+#include "ewire.h"
+#include "ewire_point.h"
 #include "cdt/cdt.h"
 #include <genht/htip.h>
 #include <genht/htpp.h>
@@ -58,6 +61,11 @@
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
+struct spoke_s {
+	pcb_box_t bbox;
+	vtp0_t slots;
+  point_t p;
+};
 
 typedef struct {
 	pcb_any_obj_t *obj;
