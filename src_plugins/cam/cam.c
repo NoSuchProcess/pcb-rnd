@@ -90,7 +90,8 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
 			return -1;
 		}
-		return -1;
+		ctx->exporter->do_export(0);
+		return 0;
 	}
 	else if (strcmp(cmd, "plugin") == 0) {
 		curr = strpbrk(arg, " \t");
