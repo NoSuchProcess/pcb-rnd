@@ -51,10 +51,11 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 	if (cookie == NULL)
 		return NULL;
 
-	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
-		l = &pcb_uilayer.array[n];
-		if (l->meta.real.cookie == NULL) {
-			l->meta.real.cookie = cookie;
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
+		l = pcb_uilayers.array[n];
+		if (l == NULL) {
+			l = vtlayer_alloc_append(&pcb_uilayer, 1);
+			pcb_uilayers.array[n] = l;
 			goto found;
 		}
 	}
@@ -79,8 +80,8 @@ static void pcb_uilayer_free_(pcb_layer_t *l)
 void pcb_uilayer_free(pcb_layer_t *ly)
 {
 	int n;
-	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
-		pcb_layer_t *l = &pcb_uilayer.array[n];
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
+		pcb_layer_t *l = pcb_uilayers.array[n];
 		if (l == ly) {
 			pcb_uilayer_free_(l);
 			break;
@@ -92,8 +93,8 @@ void pcb_uilayer_free(pcb_layer_t *ly)
 void pcb_uilayer_free_all_cookie(const char *cookie)
 {
 	int n;
-	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
-		pcb_layer_t *l = &pcb_uilayer.array[n];
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
+		pcb_layer_t *l = pcb_uilayers.array[n];
 		if (l->meta.real.cookie == cookie)
 			pcb_uilayer_free_(l);
 	}
