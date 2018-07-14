@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <genvector/gds_char.h>
 
 #include "hid_cam.h"
 #include "hid_attrib.h"
@@ -53,6 +54,8 @@ typedef struct {
 	char *args;              /* strdup'd argument string from the last plugin command - already split up */
 	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
 	int argc;
+
+	gds_t tmp;
 } cam_ctx_t;
 
 static void cam_init_inst(cam_ctx_t *ctx)
@@ -64,6 +67,7 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 {
 	free(ctx->prefix);
 	free(ctx->args);
+	gds_uninit(&ctx->tmp);
 }
 
 static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
@@ -84,8 +88,14 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 			return -1;
 		}
 
+		/* build the --cam args using the prefix */
 		ctx->argv[0] = "--cam";
-		ctx->argv[1] = arg;
+		gds_truncate(&ctx->tmp, 0);
+		if (ctx->prefix != NULL)
+			gds_append_str(&ctx->tmp, ctx->prefix);
+		gds_append_str(&ctx->tmp, arg);
+		ctx->argv[1] = ctx->tmp.array;
+
 		if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
 			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
 			return -1;
