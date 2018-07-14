@@ -68,16 +68,17 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	end++;
 
 	/* ui layers; have to go reverse to keep order because this will insert items */
-	if ((ctx->view) && (vtlayer_len(&pcb_uilayer) > 0)) {
-		for(idx = vtlayer_len(&pcb_uilayer)-1; idx >= 0; idx--) {
-			if (pcb_uilayer.array[idx].name == NULL)
+	if ((ctx->view) && (vtp0_len(&pcb_uilayers) > 0)) {
+		for(idx = vtp0_len(&pcb_uilayers)-1; idx >= 0; idx--) {
+			pcb_layer_t *ly = pcb_uilayers.array[idx];
+			if ((ly == NULL) || (ly->name == NULL))
 				continue;
 
 			props.checked = chk;
 			sprintf(act, "ToggleView(ui:%d)", idx);
 			sprintf(chk, "ChkView(ui:%d)", idx);
 
-			pcb_snprintf(end, len_avail, "  %s", pcb_uilayer.array[idx].name);
+			pcb_snprintf(end, len_avail, "  %s", ly->name);
 			pcb_gui->create_menu(path, &props);
 		}
 
