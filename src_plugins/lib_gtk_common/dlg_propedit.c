@@ -518,11 +518,11 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	p->view.coord_per_px = PCB_MIL_TO_COORD(2.5);
 	pcb_gtk_zoom_post(&p->view);
 
-	gtk_widget_set_size_request(prv, 200, 200);
+	gtk_widget_set_size_request(prv, 150, 150);
 
 	gtk_box_pack_start(GTK_BOX(vbox_edit), prv, TRUE, TRUE, 4);
 
-	label = gtk_label_new("Change property of all objects");
+	label = gtk_label_new("Change property\nof all objects");
 	gtk_box_pack_start(GTK_BOX(vbox_edit), label, FALSE, TRUE, 4);
 
 	g_signal_connect(G_OBJECT(dlg->tree), "cursor-changed", G_CALLBACK(list_cursor_changed_cb), dlg);
