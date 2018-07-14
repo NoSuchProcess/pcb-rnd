@@ -84,8 +84,10 @@ The plugin and options are active until the next plugin directive or the
 end of the script. The first outfile directive must be preceeded by a
 plugin directive.
 <p>
-The outfile directive has the same syntax as the cam argument for each
-cam-capable exporter, <a href="#cli">see above</a>.
+The write directive argument has the same syntax as the cam argument for each
+cam-capable exporter, <a href="#cli">see above</a>. Each write is a call
+to an exporter the same way as if pcb-rnd was called with --cam and -x
+with the exporter and options taken from the last plugin directive.
 <p>
 For example:
 <pre>
