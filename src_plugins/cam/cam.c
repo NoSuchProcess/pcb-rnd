@@ -39,6 +39,7 @@
 #include "actions.h"
 #include "cam_conf.h"
 #include "compat_misc.h"
+#include "compat_fs.h"
 #include "../src_plugins/cam/conf_internal.c"
 
 
@@ -78,8 +79,28 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 
 
 	if (strcmp(cmd, "prefix") == 0) {
+		char *end;
+
 		free(ctx->prefix);
 		ctx->prefix = pcb_strdup(arg);
+
+		/* mkdir -p if there's a path sep in the prefix */
+		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
+		if (end == NULL)
+			return 0;
+		*end = '\0';
+
+		for(curr = arg; curr != NULL; curr = next) {
+			next = strrchr(curr, PCB_DIR_SEPARATOR_C);
+			if (next != NULL)
+				*next = '\0';
+			pcb_mkdir(arg, 0755);
+			if (next != NULL) {
+				*next = PCB_DIR_SEPARATOR_C;
+				next++;
+			}
+		}
+
 	}
 	else if (strcmp(cmd, "write") == 0) {
 		int argc = ctx->argc;
