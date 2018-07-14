@@ -32,28 +32,12 @@
 #define PCB_LAYER_UI_H
 
 /* Virtual layers for UI and debug */
-#include "layer.h"
+#include "global_typedefs.h"
 
 #include "genvector/vtp0.h"
+
+/* list of all UI layers - each item is a persistent pointer to a layer struct */
 extern vtp0_t pcb_uilayers;
-
-
-/* layer vector:  Elem=pcb_layer_t *; init=0 */
-#define GVT(x) vtlayer_ ## x
-#define GVT_ELEM_TYPE pcb_layer_t
-#define GVT_SIZE_TYPE size_t
-#define GVT_DOUBLING_THRS 64
-#define GVT_START_SIZE 64
-#define GVT_FUNC
-#define GVT_SET_NEW_BYTES_TO 0
-#include <genvector/genvector_impl.h>
-#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
-#define GVT_FREE(vect, ptr)           free(ptr)
-#include <genvector/genvector_undef.h>
-
-/* list of all UI layers */
-extern vtlayer_t pcb_uilayer;
-
 
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color);
 void pcb_uilayer_free(pcb_layer_t *l);

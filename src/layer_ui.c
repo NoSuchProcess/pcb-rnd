@@ -34,11 +34,8 @@
 #include "event.h"
 #include "compat_misc.h"
 #include "genvector/vtp0.h"
-#define GVT_DONT_UNDEF
 #include "layer_ui.h"
-#include <genvector/genvector_impl.c>
 
-vtlayer_t pcb_uilayer;
 vtp0_t pcb_uilayers;
 
 
@@ -54,13 +51,13 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		l = pcb_uilayers.array[n];
 		if (l == NULL) {
-			l = vtlayer_alloc_append(&pcb_uilayer, 1);
+			l = calloc(sizeof(pcb_layer_t), 1);
 			pcb_uilayers.array[n] = l;
 			goto found;
 		}
 	}
 
-	l = vtlayer_alloc_append(&pcb_uilayer, 1);
+	l = calloc(sizeof(pcb_layer_t), 1);
 	p = vtp0_alloc_append(&pcb_uilayers, 1);
 	*p = l;
 found:;
@@ -108,16 +105,12 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 
 void pcb_uilayer_uninit(void)
 {
-	vtlayer_uninit(&pcb_uilayer);
 	vtp0_uninit(&pcb_uilayers);
 }
 
 pcb_layer_t *pcb_uilayer_get(long ui_ly_id)
 {
-	void **p;
-#warning TODO: switch to unique IDs
-
-	p = vtp0_get(&pcb_uilayers, (ui_ly_id & (PCB_LYT_UI-1)), 0);
+	void **p = vtp0_get(&pcb_uilayers, (ui_ly_id & (PCB_LYT_UI-1)), 0);
 	if (p == NULL)
 		return NULL;
 	return (pcb_layer_t *)(*p);
