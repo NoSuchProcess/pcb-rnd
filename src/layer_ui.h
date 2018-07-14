@@ -61,5 +61,6 @@ void pcb_uilayer_free_all_cookie(const char *cookie);
 void pcb_uilayer_uninit(void);
 
 pcb_layer_t *pcb_uilayer_get(long ui_ly_id);
+long pcb_uilayer_get_id(pcb_layer_t *ly);
 
 #endif

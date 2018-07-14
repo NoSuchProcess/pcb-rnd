@@ -122,3 +122,12 @@ pcb_layer_t *pcb_uilayer_get(long ui_ly_id)
 		return NULL;
 	return (pcb_layer_t *)(*p);
 }
+
+long pcb_uilayer_get_id(pcb_layer_t *ly)
+{
+	int n;
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++)
+		if (pcb_uilayers.array[n] == ly)
+			return (long)n | PCB_LYT_UI;
+	return -1;
+}

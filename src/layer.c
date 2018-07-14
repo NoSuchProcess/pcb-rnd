@@ -228,8 +228,8 @@ pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
 
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 {
-	if ((Layer >= pcb_uilayer.array) && (Layer < pcb_uilayer.array + vtlayer_len(&pcb_uilayer)))
-		return (Layer - pcb_uilayer.array) | PCB_LYT_UI;
+	if (Layer->parent_type == PCB_PARENT_UI)
+		return pcb_uilayer_get_id(Layer);
 
 	if (Layer->parent.data != Data) {
 		/* the only case this makes sense is when we are resolving a bound layer */
@@ -676,11 +676,8 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id)
 {
 	if ((id >= 0) && (id < data->LayerN))
 		return &data->Layer[id];
-	if (id & PCB_LYT_UI) {
-		id &= ~(PCB_LYT_VIRTUAL | PCB_LYT_UI);
-		if ((id >= 0) && (id < vtlayer_len(&pcb_uilayer)))
-			return &(pcb_uilayer.array[id]);
-	}
+	if (id & PCB_LYT_UI)
+		return pcb_uilayer_get(id);
 	return NULL;
 }
 
