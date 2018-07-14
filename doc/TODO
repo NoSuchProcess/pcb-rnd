@@ -11,13 +11,7 @@
 	+ -> actions ZoomTo(selected) and ZoomTo(found)
 	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
 - CAM:
-	- mark old default per layer file name generation obsolete
-	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
-	- export_gerber: add a true gerber drill output
-	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
-	- invent a generic API for both the drill attrib config table
 	- implement a CAM plugin that can drive multiple exporters with all options configured
-	- remove the gerber->drill dep and ask users to use the CAM instead
 	- move the hackish gerber layer suffix functions into CAM configs
 - XOR rendering upgrade: [report: pstuge]
 	- option 1: composite solution:
@@ -61,6 +55,12 @@
 	- mask needs some tuning too
 	- check on all callers; io_pcb already has a workaround for the clearance problem, nothing for the mask
 	- load from old pcb and save to old format (pcb, old lihata, check other users too), load again and compare the values
+- CAM:
+	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
+	- export_gerber: add a true gerber drill output
+	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
+	- invent a generic API for both the drill attrib config table
+	- remove the gerber->drill dep and ask users to use the CAM instead
 opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
