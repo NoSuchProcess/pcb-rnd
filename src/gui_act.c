@@ -1682,7 +1682,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else if (strncmp(name, "ui:", 3) == 0) {
-		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(name+3), 0);
+		pcb_layer_t *ly = pcb_uilayer_get(atoi(name+3));
 		if (ly == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Invalid ui layer id: '%s'\n", name);
 			PCB_ACT_IRES(-1);
@@ -1735,7 +1735,7 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, chkview, name = argv[1].val.str);
 
 	if (strncmp(name, "ui:", 3) == 0) {
-		pcb_layer_t *ly = vtlayer_get(&pcb_uilayer, atoi(name+3), 0);
+		pcb_layer_t *ly = pcb_uilayer_get(atoi(name+3));
 		if (ly == NULL) {
 			PCB_ACT_IRES(-1);
 			return 0;
