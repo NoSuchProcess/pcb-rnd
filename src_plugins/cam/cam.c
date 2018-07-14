@@ -102,6 +102,9 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 		}
 
 	}
+	else if (strcmp(cmd, "desc") == 0) {
+		/* ignore */
+	}
 	else if (strcmp(cmd, "write") == 0) {
 		int argc = ctx->argc;
 		if (ctx->exporter == NULL) {
