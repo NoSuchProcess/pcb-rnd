@@ -475,6 +475,7 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 		"shadow-type", GTK_SHADOW_ETCHED_IN,
 		NULL));
 	gtk_box_pack_start(GTK_BOX(vbox_tree), scrolled_win, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(scrolled_win, 500, 150); /* enlarge the window initially */
 
 	dlg->tree = gtk_tree_view_new();
 	gtk_container_add(GTK_CONTAINER(scrolled_win), dlg->tree);
@@ -562,6 +563,8 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 
 	/* Runs the dialog */
 	gtk_widget_show_all(window);
+
+	gtk_widget_set_size_request(scrolled_win, 100, 100); /* allow resizing to smaller */
 
 	return window;
 }
