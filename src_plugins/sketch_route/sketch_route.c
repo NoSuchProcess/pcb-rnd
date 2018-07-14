@@ -60,6 +60,7 @@ const char *pcb_sketch_route_cookie = "sketch_route plugin";
 
 
 typedef struct {
+	pcb_any_obj_t *obj;
 	/* these wirelists are ordered outside-to-inside */
 	/* two lists are used in corner case: when two subsequent wire segments are collinear and
 	 * wires are attached both on the left and on the right side of the point */
@@ -278,9 +279,8 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 		wire_point_t *next_wp = &new_w->points[i+1];
 		pointdata_t *pd;
 
-		if (wp->p->data == NULL)
-			wp->p->data = calloc(1, sizeof(pointdata_t));
 		pd = wp->p->data;
+		assert(pd != NULL);
 
 		if (i == 0) { /* first point */
 			assert(wp->side == SIDE_TERM);
@@ -390,6 +390,9 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 		pcb_obj_center(obj, &cx, &cy);
 		point = cdt_insert_point(i->sk->cdt, cx, -cy);
 	}
+
+	point->data = calloc(1, sizeof(pointdata_t));
+	((pointdata_t *) point->data)->obj = obj;
 
 	if (obj->term != NULL) {
 		pcb_subc_t *subc = pcb_obj_parent_subc(obj);
