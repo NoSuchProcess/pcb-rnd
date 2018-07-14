@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <ctype.h>
 
 #include "hid_cam.h"
 #include "hid_attrib.h"
@@ -45,14 +46,36 @@ static const char *cam_cookie = "cam exporter";
 conf_cam_t conf_cam;
 #define CAM_CONF_FN "cam.conf"
 
-static int cam_exec_inst(char *cmd, char *arg)
+typedef struct {
+	char *prefix;
+} cam_ctx_t;
+
+static void cam_init_inst(cam_ctx_t *ctx)
 {
-	printf("inst: '%s' '%s'\n", cmd, arg);
+	memset(ctx, 0, sizeof(ctx));
+}
+
+static void cam_uninit_inst(cam_ctx_t *ctx)
+{
+	free(ctx->prefix);
+}
+
+static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
+{
+	cam_ctx_t *ctx = ctx_;
+	if (strcmp(cmd, "prefix") == 0) {
+		free(ctx->prefix);
+		ctx->prefix = pcb_strdup(arg);
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
+		return -1;
+	}
 	return 0;
 }
 
 /* Parse and execute a script */
-static int cam_exec(const char *script_in, int (*exec)(char *cmd, char *arg))
+static int cam_exec(const char *script_in, int (*exec)(void *ctx, char *cmd, char *arg), void *ctx)
 {
 	char *arg, *curr, *next, *script = pcb_strdup(script_in);
 	int res = 0;
@@ -71,7 +94,7 @@ static int cam_exec(const char *script_in, int (*exec)(char *cmd, char *arg))
 			*arg = '\0';
 			arg++;
 		}
-		res |= exec(curr, arg);
+		res |= exec(ctx, curr, arg);
 	}
 
 	free(script);
@@ -95,9 +118,17 @@ static const char *cam_find_job(const char *job)
 static int cam_call(const char *job)
 {
 	const char *script = cam_find_job(job);
-	
-	if (script != NULL)
-		return cam_exec(script, cam_exec_inst);
+
+	if (script != NULL) {
+		int res;
+		cam_ctx_t ctx;
+
+
+		cam_init_inst(&ctx);
+		res = cam_exec(script, cam_exec_inst, &ctx);
+		cam_uninit_inst(&ctx);
+		return res;
+	}
 
 	pcb_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
 	return -1;
@@ -114,8 +145,13 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
 
-	if (pcb_strcasecmp(cmd, "exec") == 0)
-		rs = cam_exec(arg, cam_exec_inst);
+	if (pcb_strcasecmp(cmd, "exec") == 0) {
+		cam_ctx_t ctx;
+
+		cam_init_inst(&ctx);
+		rs = cam_exec(arg, cam_exec_inst, &ctx);
+		cam_uninit_inst(&ctx);
+	}
 	else if (pcb_strcasecmp(cmd, "call") == 0)
 		rs = cam_call(arg);
 
