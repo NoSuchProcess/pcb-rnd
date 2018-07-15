@@ -48,10 +48,6 @@ char *pcb_get_info_comments(void);
 /* Returns a string that has a bunch of information about the options selected at compile time. */
 char *pcb_get_info_compile_options(void);
 
-/* Returns a string that has a bunch of information about this copy of pcb.
-   Can be used for things like "about" dialog boxes. */
-char *pcb_get_infostr(void);
-
 /* Author's name: either from the config system (typically from the design) or
    as a last resort from the OS */
 const char *pcb_author(void);

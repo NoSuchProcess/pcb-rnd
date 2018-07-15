@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
  *  pcb-rnd Copyright (C) 2017,2018 Alain Vigne
+ *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -208,32 +209,6 @@ char *pcb_get_info_license(void)
 		gds_append_str(&info, "pcb-rnd is licensed under the terms of the GNU\n");
 		gds_append_str(&info, "General Public License version 2\n");
 		gds_append_str(&info, "See the COPYING file for more information\n\n");
-	}
-	return info.array;
-}
-
-char *pcb_get_infostr(void)
-{
-	static gds_t info;
-	static int first_time = 1;
-	char *tmp;
-
-	if (first_time) {
-		first_time = 0;
-		gds_init(&info);
-
-		tmp = pcb_get_info_program();
-		gds_append_str(&info, tmp);
-		tmp = pcb_get_info_copyright();
-		gds_append_str(&info, tmp);
-		gds_append_str(&info, "\n\n");
-		tmp = pcb_get_info_license();
-		gds_append_str(&info, tmp);
-		tmp = pcb_get_info_websites(NULL);
-		gds_append_str(&info, tmp);
-
-		tmp = pcb_get_info_compile_options();
-		gds_append_str(&info, tmp);
 	}
 	return info.array;
 }
