@@ -59,4 +59,8 @@ static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
 #define EDGE_OTHER_POINT(edge, point) \
 	((edge)->endp[0] != (point) ? (edge)->endp[0] : (edge)->endp[1])
 
+#define DIST2(p, q) \
+	(((double)((p)->pos.x - (q)->pos.x) * (double)((p)->pos.x - (p)->pos.x)) \
+	 + ((double)((p)->pos.y - (q)->pos.y) * (double)((p)->pos.y - (p)->pos.y)))
+
 #endif
