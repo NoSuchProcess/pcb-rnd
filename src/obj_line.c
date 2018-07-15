@@ -261,19 +261,25 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line);
 }
 
-/* sets the bounding box of a line */
-void pcb_line_bbox(pcb_line_t *Line)
+static void pcb_line_bbox_(const pcb_line_t *Line, pcb_box_t *dst, int mini)
 {
-	pcb_coord_t width = (Line->Thickness + Line->Clearance + 1) / 2;
+	pcb_coord_t width = mini ? (Line->Thickness + 1) / 2 : (Line->Thickness + Line->Clearance + 1) / 2;
 
 	/* Adjust for our discrete polygon approximation */
 	width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
 
-	Line->BoundingBox.X1 = MIN(Line->Point1.X, Line->Point2.X) - width;
-	Line->BoundingBox.X2 = MAX(Line->Point1.X, Line->Point2.X) + width;
-	Line->BoundingBox.Y1 = MIN(Line->Point1.Y, Line->Point2.Y) - width;
-	Line->BoundingBox.Y2 = MAX(Line->Point1.Y, Line->Point2.Y) + width;
-	pcb_close_box(&Line->BoundingBox);
+	dst->X1 = MIN(Line->Point1.X, Line->Point2.X) - width;
+	dst->X2 = MAX(Line->Point1.X, Line->Point2.X) + width;
+	dst->Y1 = MIN(Line->Point1.Y, Line->Point2.Y) - width;
+	dst->Y2 = MAX(Line->Point1.Y, Line->Point2.Y) + width;
+	pcb_close_box(dst);
+}
+
+/* sets the bounding box of a line */
+void pcb_line_bbox(pcb_line_t *Line)
+{
+	pcb_line_bbox_(Line, &Line->BoundingBox, 0);
+	pcb_line_bbox_(Line, &Line->bbox_naked, 1);
 	pcb_set_point_bounding_box(&Line->Point1);
 	pcb_set_point_bounding_box(&Line->Point2);
 }
