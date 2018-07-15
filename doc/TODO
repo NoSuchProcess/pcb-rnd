@@ -124,8 +124,6 @@
 	- catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
-	- Layer group changes are not marked in the title bar; Evan's test case:
-	  make any change in the layer group screen, return to the main screen, no * will be added in the title bar in front of the file name.
 	- do not require top and bottom silk (also grep for TODO #tbs)
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
 		- allow GTK to handle keys in preview
