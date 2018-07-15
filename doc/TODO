@@ -42,9 +42,6 @@
 	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
 	- global conf setting for label text size [report: Ade]
 	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- self contained
-	+ PrintFiles: print where the actual files are coming from, including if the font came from embedded/internal
-	- DAD dialog box version of that - or just a tab in the about box
 
 2. For later releases ===============================================================================
 - rewrite the preview API:
