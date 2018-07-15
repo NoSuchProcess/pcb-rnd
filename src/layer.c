@@ -425,6 +425,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 		pcb->Data->Layer[id].meta.real.vis = pcb->Data->Layer[pcb->LayerGroups.grp[grp].lid[0]].meta.real.vis;
 	}
 	pcb->Data->Layer[id].meta.real.grp = grp;
+	pcb->Data->Layer[id].meta.real.color = pcb_strdup(pcb_layer_default_color(id, (grp < 0) ? 0 : pcb->LayerGroups.grp[grp].ltype));
 
 	pcb->Data->Layer[id].parent_type = PCB_PARENT_DATA;
 	pcb->Data->Layer[id].parent.data = pcb->Data;
