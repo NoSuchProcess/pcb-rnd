@@ -258,7 +258,7 @@
  route_style.h ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h \
  change.h ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
  operation.h obj_pstk_inlines.h data.h thermal.h operation.h \
- ../src_plugins/dialogs/dlg_about.c build_run.h \
+ ../src_plugins/dialogs/dlg_about.c build_run.h pcb-printf.h \
  ../src_plugins/dialogs/dlg_export.c hid_init.h dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h \
