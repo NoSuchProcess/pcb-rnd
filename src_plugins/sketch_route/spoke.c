@@ -62,3 +62,8 @@ void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x
 		break;
 	}
 }
+
+void spoke_set_slot(spoke_t *sp, int slot_num, ewire_t *ew)
+{
+	vtp0_set(&sp->slots, slot_num, ew);
+}

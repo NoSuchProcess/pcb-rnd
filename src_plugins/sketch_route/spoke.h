@@ -3,6 +3,7 @@
 
 #include "sktypedefs.h"
 #include "obj_common.h"
+#include "ewire.h"
 #include "cdt/point.h"
 
 #include <genvector/vtp0.h>
@@ -25,6 +26,9 @@ struct spoke_s {
 
 void spoke_init(spoke_t *sp, spoke_dir_t dir, point_t *p);
 void spoke_uninit(spoke_t *sp);
+
 void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x, pcb_coord_t *y);
+
+void spoke_set_slot(spoke_t *sp, int slot_num, ewire_t *ew);
 
 #endif
