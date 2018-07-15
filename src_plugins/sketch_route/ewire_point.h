@@ -7,7 +7,7 @@
 #include "sktypedefs.h"
 
 typedef struct{
-	spoke_t *sp;
+	spoke_t *sp; /* set this to cdt point in case of terminal (side = SIDE_TERM) */
 	side_t side;
 	int sp_slot;
 } ewire_point_t;
