@@ -143,6 +143,7 @@ static pcb_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 void pcb_arc_bbox(pcb_arc_t *Arc)
 {
 	Arc->BoundingBox = pcb_arc_bbox_(Arc, 0);
+	Arc->bbox_naked  = pcb_arc_bbox_(Arc, 1);
 }
 
 
