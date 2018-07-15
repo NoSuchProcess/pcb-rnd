@@ -43,18 +43,37 @@ static void about_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pcb_dlg_about(void)
 {
+	const char *tabs[] = { "About pcb-rnd", "Options", "Paths", "License", NULL };
 	if (about_ctx.active)
 		return;
 
-	PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-	PCB_DAD_LABEL(about_ctx.dlg, "About...");
+	PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
+		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
+			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_copyright());
+			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_websites(NULL));
+		PCB_DAD_END(about_ctx.dlg);
+
+		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_compile_options());
+		PCB_DAD_END(about_ctx.dlg);
+
+
+		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+			PCB_DAD_LABEL(about_ctx.dlg, "TODO");
+		PCB_DAD_END(about_ctx.dlg);
+
+		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_license());
+		PCB_DAD_END(about_ctx.dlg);
+
 	PCB_DAD_END(about_ctx.dlg);
 
 	/* set up the context */
 	about_ctx.active = 1;
 
 	/* this is the modal version - please consider using the non-modal version */
-	PCB_DAD_NEW(about_ctx.dlg, "EDIT THIS", "EDIT THIS", &about_ctx, pcb_false, about_close_cb);
+	PCB_DAD_NEW(about_ctx.dlg, "About pcb-rnd", "About", &about_ctx, pcb_false, about_close_cb);
 }
 
 static const char pcb_acts_About[] = "About()\n";
