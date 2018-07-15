@@ -86,13 +86,22 @@ static pcb_opfunc_t MoveBufferFunctions = {
 
 int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 {
-	pcb_box_t tmp, *box = pcb_data_bbox(&tmp, Buffer->Data, pcb_false);
-
-	if (box) {
+	pcb_box_t tmp, *box;
+	int res = 0;
+	
+	box = pcb_data_bbox(&tmp, Buffer->Data, pcb_false);
+	if (box)
 		Buffer->BoundingBox = *box;
-		return 0;
-	}
-	return -1;
+	else
+		res = -1;
+
+	box = pcb_data_bbox_naked(&tmp, Buffer->Data, pcb_false);
+	if (box)
+		Buffer->bbox_naked = *box;
+	else
+		res = -1;
+
+	return res;
 }
 
 static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_bool bind)
