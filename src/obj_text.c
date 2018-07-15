@@ -275,8 +275,8 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 			for(arc = arclist_first(&symbol[*s].arcs); arc != NULL; arc = arclist_next(arc)) {
 				pcb_arc_bbox(arc);
-				maxx = MAX(maxx, arc->BoundingBox.X2);
-				maxy = MAX(maxy, arc->BoundingBox.X2);
+				maxx = MAX(maxx, arc->bbox_naked.X2);
+				maxy = MAX(maxy, arc->bbox_naked.X2);
 			}
 
 			for(poly = polylist_first(&symbol[*s].polys); poly != NULL; poly = polylist_next(poly)) {
@@ -320,27 +320,28 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	 */
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
-		Text->BoundingBox.X1 = Text->X + minx;
-		Text->BoundingBox.Y1 = Text->Y - miny;
-		Text->BoundingBox.X2 = Text->X + maxx;
-		Text->BoundingBox.Y2 = Text->Y - maxy;
-		pcb_box_rotate90(&Text->BoundingBox, Text->X, Text->Y, (4 - Text->Direction) & 0x03);
+		Text->bbox_naked.X1 = Text->X + minx;
+		Text->bbox_naked.Y1 = Text->Y - miny;
+		Text->bbox_naked.X2 = Text->X + maxx;
+		Text->bbox_naked.Y2 = Text->Y - maxy;
+		pcb_box_rotate90(&Text->bbox_naked, Text->X, Text->Y, (4 - Text->Direction) & 0x03);
 	}
 	else {
-		Text->BoundingBox.X1 = Text->X + minx;
-		Text->BoundingBox.Y1 = Text->Y + miny;
-		Text->BoundingBox.X2 = Text->X + maxx;
-		Text->BoundingBox.Y2 = Text->Y + maxy;
-		pcb_box_rotate90(&Text->BoundingBox, Text->X, Text->Y, Text->Direction);
+		Text->bbox_naked.X1 = Text->X + minx;
+		Text->bbox_naked.Y1 = Text->Y + miny;
+		Text->bbox_naked.X2 = Text->X + maxx;
+		Text->bbox_naked.Y2 = Text->Y + maxy;
+		pcb_box_rotate90(&Text->bbox_naked, Text->X, Text->Y, Text->Direction);
 	}
 
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too
 	 */
-	Text->BoundingBox.X1 -= conf_core.design.bloat;
-	Text->BoundingBox.Y1 -= conf_core.design.bloat;
-	Text->BoundingBox.X2 += conf_core.design.bloat;
-	Text->BoundingBox.Y2 += conf_core.design.bloat;
+	Text->BoundingBox.X1 = Text->bbox_naked.X1 - conf_core.design.bloat;
+	Text->BoundingBox.Y1 = Text->bbox_naked.Y1 - conf_core.design.bloat;
+	Text->BoundingBox.X2 = Text->bbox_naked.X2 + conf_core.design.bloat;
+	Text->BoundingBox.Y2 = Text->bbox_naked.Y2 + conf_core.design.bloat;
+	pcb_close_box(&Text->bbox_naked);
 	pcb_close_box(&Text->BoundingBox);
 	pcb_text_free_str(Text, rendered);
 }
