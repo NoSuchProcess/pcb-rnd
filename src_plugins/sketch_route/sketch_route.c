@@ -750,6 +750,8 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 					return pcb_false;
 
 				path = sketch_find_shortest_path(&attached_path.corridor);
+				path->thickness = conf_core.design.line_thickness;
+				path->clearance = conf_core.design.clearance;
 				sketch_insert_wire(attached_path.sketch, path);
 				sketch_update_cdt_layer(attached_path.sketch);
 				wire_uninit(path);
