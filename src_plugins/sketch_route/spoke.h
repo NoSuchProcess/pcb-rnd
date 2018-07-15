@@ -1,6 +1,7 @@
 #ifndef SPOKE_H
 #define SPOKE_H
 
+#include "sktypedefs.h"
 #include "obj_common.h"
 #include "cdt/point.h"
 
@@ -20,5 +21,8 @@ struct spoke_s {
 	vtp0_t slots;
   point_t *p;
 };
+
+
+void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x, pcb_coord_t *y);
 
 #endif
