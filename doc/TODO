@@ -37,6 +37,15 @@
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
+- feature: currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
+- feature: padstack label smarter print [report: Ade]
+	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
+	- global conf setting for label text size [report: Ade]
+	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
+- make the new export dialog the default, remove the old ones
+- self contained
+	+ PrintFiles: print where the actual files are coming from, including if the font came from embedded/internal
+	- DAD dialog box version of that
 
 2. For later releases ===============================================================================
 - rewrite the preview API:
@@ -59,7 +68,7 @@
 	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
 	- invent a generic API for both the drill attrib config table
 	- remove the gerber->drill dep and ask users to use the CAM instead
-opengl:
+- opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
@@ -72,8 +81,6 @@ opengl:
 - route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- outline layer creation:
-	- currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
@@ -106,10 +113,6 @@ opengl:
 	- test under lesstif
 	- remove Attribute()
 - DEL: retire the nelma plugin - nelma is unfinished and not maintained
-- feature: padstack label smarter print [report: Ade]
-	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
-	- global conf setting for label text size [report: Ade]
-	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - feature in subc/term: new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - fontsel: ttf import?
@@ -175,10 +178,7 @@ opengl:
 			- replace ignore_refdes, ignore_value and ignore_descr with genvector
 	- mods:
 		- gpmi (and other buildins/plugins) not showing up in the about box
-- self contained
-	+ PrintFiles: print where the actual files are coming from, including if the font came from embedded/internal
-	- dialog box version
-	- project specific menus from extra lihata files - maybe from project.lht
+- feature: project specific menus from extra lihata files - maybe from project.lht
 - vendor drill plugin:
 	- check if we want to keep vendor name
 - Lihata persistent save:
@@ -188,6 +188,7 @@ opengl:
 	- keep numeric format: test all
 	- keep unknown subtrees
 	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file. [report: Alain]
+	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - query & advanced search
 	- search expr wizard should pick up the expression from the button when clicked
 	- make a run on a large board, speed test, with -O0 and -O3:
@@ -211,8 +212,6 @@ opengl:
 	- remove via geometry from route style
 	- remove real layer visible flag (UI is always reset)
 	- add text object line width factor
-- new lihata persistence lib:
-	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - parent subc update:
 	- inhibit mechanism to speed things up:
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
