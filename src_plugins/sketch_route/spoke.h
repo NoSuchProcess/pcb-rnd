@@ -15,6 +15,7 @@ typedef enum {
 } spoke_dir_t;
 
 struct spoke_s {
+  spoke_dir_t dir;
 	pcb_box_t bbox;
 	vtp0_t slots;
   point_t *p;
