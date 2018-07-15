@@ -431,6 +431,9 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	pcb->Data->Layer[id].parent.data = pcb->Data;
 	pcb->Data->Layer[id].type = PCB_OBJ_LAYER;
 
+	if (pcb == PCB)
+		pcb_board_set_changed_flag(1);
+
 	return id;
 }
 
