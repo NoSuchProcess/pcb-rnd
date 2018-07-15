@@ -43,6 +43,7 @@ edge_t *get_edge_from_points(point_t *p1, point_t *p2);
 
 #define ORIENT_CCW(a, b, c) (orientation(a, b, c) < 0)
 #define ORIENT_CW(a, b, c) (orientation(a, b, c) > 0)
+#define ORIENT(dir, a, b, c) ((dir) ? ORIENT_CW(a, b, c) : ORIENT_CCW(a, b, c))
 /* TODO: check epsilon for collinear case? */
 #define ORIENT_COLLINEAR(a, b, c) (orientation(a, b, c) == 0)
 #define ORIENT_CCW_CL(a, b, c) (orientation(a, b, c) <= 0)
