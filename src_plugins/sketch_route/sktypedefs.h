@@ -8,6 +8,7 @@ typedef enum {
 } side_t;
 
 typedef struct spoke_s spoke_t;
+typedef struct pointdata_s pointdata_t;
 typedef struct wirelist_node_s wirelist_node_t;
 
 #endif

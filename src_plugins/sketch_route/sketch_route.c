@@ -53,6 +53,7 @@
 #include "wire.h"
 #include "ewire.h"
 #include "ewire_point.h"
+#include "pointdata.h"
 #include "spoke.h"
 #include "cdt/cdt.h"
 #include <genht/htip.h>
@@ -63,61 +64,6 @@
 
 
 const char *pcb_sketch_route_cookie = "sketch_route plugin";
-
-
-typedef struct {
-	pcb_any_obj_t *obj;
-	/* these wirelists are ordered outside-to-inside */
-	/* two lists are used in corner case: when two subsequent wire segments are collinear and
-	 * wires are attached both on the left and on the right side of the point */
-	/* uturn wirelist is used when a wire turns back at a point */
-	wirelist_node_t *attached_wires[2];
-	wirelist_node_t *uturn_wires;
-	wirelist_node_t *terminal_wires;
-	/* spokes provide sufficient spacing of wires from objects;
-	 * there are 4 spokes for each of the directions: 45, 135, 225, 315 deg */
-	spoke_t spokes[4];
-} pointdata_t;
-
-void pointdata_create(point_t *p, pcb_any_obj_t *obj)
-{
-	pointdata_t *pd;
-	int i;
-
-	assert(p->data == NULL);
-	p->data = calloc(1, sizeof(pointdata_t));
-	pd = p->data;
-	pd->obj = obj;
-
-	for (i = 0; i < 4; i++) {
-		/* TODO:
-		spoke_bbox(&pd->spokes[i].bbox, i);
-		pcb_r_insert_entry(spoke_tree, &pd->spokes[i]);
-		*/
-		vtp0_init(&pd->spokes[i].slots);
-		pd->spokes[i].p = p;
-	}
-}
-
-void pointdata_free(point_t *p)
-{
-	pointdata_t *pd = p->data;
-	int i;
-
-	if (pd != NULL) {
-		wirelist_free(pd->terminal_wires);
-		wirelist_free(pd->uturn_wires);
-		wirelist_free(pd->attached_wires[0]);
-		wirelist_free(pd->attached_wires[1]);
-		for (i = 0; i < 4; i++) {
-			/* TODO:
-			pcb_r_delete_entry(spoke_tree, &pd->spokes[i]);
-			*/
-			vtp0_uninit(&pd->spokes[i].slots);
-		}
-		free(pd);
-	}
-}
 
 
 typedef struct {
