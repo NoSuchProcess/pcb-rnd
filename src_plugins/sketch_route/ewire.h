@@ -9,6 +9,7 @@
 #ifdef GVT_DONT_UNDEF
 	#undef GVT_DONT_UNDEF
 	#include "ewire_point.h"
+	#include "wire.h"
 	#define GVT_DONT_UNDEF
 #else
 	#include "ewire_point.h"
@@ -16,8 +17,7 @@
 
 typedef struct {
 	vtewire_point_t points;
-	pcb_coord_t thickness;
-	pcb_coord_t clearance;
+	wire_t *wire;
 } ewire_t;
 
 typedef ewire_t* ewire_ptr_t;
