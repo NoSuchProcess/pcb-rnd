@@ -46,7 +46,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
-#include "../src_plugins/lib_gtk_common/dlg_about.h"
 #include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
@@ -446,26 +445,6 @@ static fgw_error_t pcb_act_importgui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
  */
 
 /* ------------------------------------------------------------ */
-static const char pcb_acts_About[] = "About()";
-
-static const char pcb_acth_About[] = N_("Tell the user about this version of PCB.");
-
-/* %start-doc actions About
-
-This just pops up a dialog telling the user which version of
-@code{pcb} they're running.
-
-%end-doc */
-
-
-static fgw_error_t pcb_act_About(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_gtk_dlg_about(gport->top_window);
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 static const char pcb_acts_EditLayerGroups[] = "EditLayerGroups()";
 static const char pcb_acth_EditLayerGroups[] = N_("Pop up the gui that edits the layer groups (layer stackup).");
 
@@ -490,7 +469,6 @@ pcb_action_t ghid_menu_action_list[] = {
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
 pcb_action_t ghid_main_action_list[] = {
-	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Benchmark", pcb_act_Benchmark},
 	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
 	{"Command", pcb_act_Command},

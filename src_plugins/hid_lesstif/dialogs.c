@@ -1272,37 +1272,6 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 /* ------------------------------------------------------------ */
-static const char pcb_acts_About[] = "About()";
-
-static const char pcb_acth_About[] = "Tell the user about this version of PCB.";
-
-/* %start-doc actions About
-
-This just pops up a dialog telling the user which version of
-@code{pcb} they're running.
-
-%end-doc */
-
-
-static fgw_error_t pcb_act_About(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	static Widget about = 0;
-	if (!about) {
-		XmString xs;
-		stdarg_n = 0;
-		xs = XmStringCreatePCB(pcb_get_infostr());
-		stdarg(XmNmessageString, xs);
-		stdarg(XmNtitle, "About pcb-rnd");
-		about = XmCreateInformationDialog(mainwind, XmStrCast("about"), stdarg_args, stdarg_n);
-		XtUnmanageChild(XmMessageBoxGetChild(about, XmDIALOG_CANCEL_BUTTON));
-		XtUnmanageChild(XmMessageBoxGetChild(about, XmDIALOG_HELP_BUTTON));
-	}
-	wait_for_dialog(about);
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 
 static const char pcb_acts_Print[] = "Print()";
 
@@ -2048,7 +2017,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
 	{"Confirm", pcb_act_ConfirmAction, pcb_acth_ConfirmAction, pcb_acts_ConfirmAction},
-	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},

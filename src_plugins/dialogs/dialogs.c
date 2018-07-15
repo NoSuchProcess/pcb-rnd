@@ -48,7 +48,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"LayerBinding", pcb_act_LayerBinding, pcb_acth_LayerBinding, pcb_acts_LayerBinding},
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
-	{"About2", pcb_act_About, pcb_acth_About, pcb_acts_About},
+	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"ExportGUI2", pcb_act_ExportGUI2, pcb_acth_ExportGUI2, pcb_acts_ExportGUI2}
 };
 
