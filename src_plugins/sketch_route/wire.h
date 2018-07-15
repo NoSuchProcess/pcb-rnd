@@ -8,7 +8,6 @@
 #include "cdt/typedefs.h"
 #include "sktypedefs.h"
 
-typedef struct wirelist_node_s wirelist_node_t;
 
 typedef struct {
 	point_t *p;
