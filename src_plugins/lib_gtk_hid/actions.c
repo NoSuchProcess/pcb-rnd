@@ -43,7 +43,6 @@
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/wt_layersel.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
-#include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_drc.h"
@@ -125,21 +124,6 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 fgw_error_t pcb_gtk_act_print_(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return pcb_gtk_act_print(gport->top_window, res, argc, argv);
-}
-
-/* ------------------------------------------------------------ */
-
-static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	/* check if layout is empty */
-	if (!pcb_data_is_empty(PCB->Data)) {
-		ghid_dialog_export(ghid_port.top_window);
-	}
-	else
-		pcb_gui->log(_("Can't export empty layout"));
-
-	PCB_ACT_IRES(0);
-	return 0;
 }
 
 /* ------------------------------------------------------------ */
@@ -474,7 +458,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
-	{"ExportGUI", pcb_act_ExportGUI},
 	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
 	{"Load", pcb_act_load },
 	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},

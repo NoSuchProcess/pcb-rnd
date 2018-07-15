@@ -1310,91 +1310,6 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_ExportGUI[] = "ExportGUI()";
-
-static const char pcb_acth_ExportGUI[] = "Export the layout. Export is configured using dialog a box.";
-
-/* %start-doc actions Export
-
-Prompts the user for an exporter to use.  Then, prompts the user for
-that exporter's options, and exports the layout.
-
-%end-doc */
-
-static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	static Widget selector = 0;
-	pcb_hid_attribute_t *opts;
-	pcb_hid_t *printer, **hids;
-	pcb_hid_attr_val_t *vals;
-	int n, i, count;
-	Widget prev = 0;
-	Widget w;
-
-	hids = pcb_hid_enumerate();
-
-	if (!selector) {
-		stdarg_n = 0;
-		stdarg(XmNtitle, "Export HIDs");
-		selector = create_form_ok_dialog("export", 0, NULL, NULL);
-		count = 0;
-		for (i = 0; hids[i]; i++) {
-			if (hids[i]->exporter) {
-				stdarg_n = 0;
-				if (prev) {
-					stdarg(XmNtopAttachment, XmATTACH_WIDGET);
-					stdarg(XmNtopWidget, prev);
-				}
-				else {
-					stdarg(XmNtopAttachment, XmATTACH_FORM);
-				}
-				stdarg(XmNrightAttachment, XmATTACH_FORM);
-				stdarg(XmNleftAttachment, XmATTACH_FORM);
-				w = XmCreatePushButton(selector, (char *) hids[i]->name, stdarg_args, stdarg_n);
-				XtManageChild(w);
-				XtAddCallback(w, XmNactivateCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) ((size_t) i + 1));
-				prev = w;
-				count++;
-			}
-		}
-		if (count == 0) {
-			Widget label;
-			stdarg_n = 0;
-			stdarg(XmNlabelString, XmStringCreatePCB("No exporter found. Check your plugins!"));
-			stdarg(XmNtopAttachment, XmATTACH_FORM);
-			stdarg(XmNrightAttachment, XmATTACH_FORM);
-			stdarg(XmNleftAttachment, XmATTACH_FORM);
-			label = XmCreateLabel(selector, XmStrCast("label"), stdarg_args, stdarg_n);
-			XtManageChild(label);
-		}
-		selector = XtParent(selector);
-	}
-
-
-	i = wait_for_dialog(selector);
-
-	if (i <= 0) {
-		PCB_ACT_IRES(1);
-		return 0;
-	}
-	printer = hids[i - 1];
-
-	pcb_exporter = printer;
-
-	opts = printer->get_export_options(&n);
-	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
-	if (lesstif_attribute_dialog(opts, n, vals, "Export", NULL, NULL)) {
-		free(vals);
-		PCB_ACT_IRES(1);
-		return 0;
-	}
-	printer->do_export(vals);
-	free(vals);
-	pcb_exporter = NULL;
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 static Widget sizes_dialog = 0;
@@ -2018,7 +1933,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
 	{"Confirm", pcb_act_ConfirmAction, pcb_acth_ConfirmAction, pcb_acts_ConfirmAction},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
-	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
 	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
 	{"FontSel", pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel},

@@ -163,9 +163,9 @@ static void pcb_dlg_export(void)
 	PCB_DAD_NEW(export_ctx.dlg, "Export", "Export in various formats", &export_ctx, pcb_false, export_close_cb);
 }
 
-static const char pcb_acts_ExportGUI2[] = "ExportGUI2()\n";
-static const char pcb_acth_ExportGUI2[] = "Open the export dialog.";
-static fgw_error_t pcb_act_ExportGUI2(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static const char pcb_acts_ExportGUI[] = "ExportGUI()\n";
+static const char pcb_acth_ExportGUI[] = "Open the export dialog.";
+static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	pcb_dlg_export();
 	return 0;
