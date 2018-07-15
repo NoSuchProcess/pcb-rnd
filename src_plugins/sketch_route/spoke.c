@@ -5,6 +5,25 @@
 #include "pointdata.h"
 #include "wire.h"
 
+
+void spoke_init(spoke_t *sp, spoke_dir_t dir, point_t *p)
+{
+	vtp0_init(&sp->slots);
+	sp->p = p;
+	/* TODO:
+	spoke_bbox(sp);
+	pcb_r_insert_entry(spoke_tree, sp);
+	*/
+}
+
+void spoke_uninit(spoke_t *sp)
+{
+	/* TODO:
+	pcb_r_delete_entry(spoke_tree, &pd->spokes[i]);
+	*/
+	vtp0_uninit(&sp->slots);
+}
+
 void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_box_t *obj_bbox = &((pointdata_t *) sp->p->data)->obj->BoundingBox;

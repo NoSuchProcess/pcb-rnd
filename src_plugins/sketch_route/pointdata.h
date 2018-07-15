@@ -15,7 +15,7 @@ struct pointdata_s {
 	wirelist_node_t *terminal_wires;
 	/* spokes provide sufficient spacing of wires from objects;
 	 * there are 4 spokes for each of the directions: 45, 135, 225, 315 deg */
-	spoke_t spokes[4];
+	spoke_t spoke[4];
 };
 
 void pointdata_create(point_t *p, pcb_any_obj_t *obj);

@@ -12,14 +12,8 @@ void pointdata_create(point_t *p, pcb_any_obj_t *obj)
 	pd = p->data;
 	pd->obj = obj;
 
-	for (i = 0; i < 4; i++) {
-		/* TODO:
-		spoke_bbox(&pd->spokes[i].bbox, i);
-		pcb_r_insert_entry(spoke_tree, &pd->spokes[i]);
-		*/
-		vtp0_init(&pd->spokes[i].slots);
-		pd->spokes[i].p = p;
-	}
+	for (i = 0; i < 4; i++)
+		spoke_init(&pd->spoke[i], i, p);
 }
 
 void pointdata_free(point_t *p)
@@ -32,12 +26,8 @@ void pointdata_free(point_t *p)
 		wirelist_free(pd->uturn_wires);
 		wirelist_free(pd->attached_wires[0]);
 		wirelist_free(pd->attached_wires[1]);
-		for (i = 0; i < 4; i++) {
-			/* TODO:
-			pcb_r_delete_entry(spoke_tree, &pd->spokes[i]);
-			*/
-			vtp0_uninit(&pd->spokes[i].slots);
-		}
+		for (i = 0; i < 4; i++)
+			spoke_uninit(&pd->spoke[i]);
 		free(pd);
 	}
 }
