@@ -36,6 +36,7 @@
 #include "actions.h"
 #include "board.h"
 #include "compat_nls.h"
+#include "conf_core.h"
 #include "data.h"
 #include "event.h"
 #include "list_common.h"
