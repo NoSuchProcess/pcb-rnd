@@ -171,6 +171,7 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, pcb_bool copper_only)
 void pcb_pstk_bbox(pcb_pstk_t *ps)
 {
 	pcb_pstk_bbox_(&ps->BoundingBox, ps, pcb_false);
+	pcb_pstk_bbox_(&ps->bbox_naked, ps, pcb_true);
 }
 
 void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps)
