@@ -146,6 +146,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	pcb_objtype_t        type; \
 	pcb_parenttype_t     parent_type; \
 	pcb_parent_t         parent; \
+	pcb_box_t            bbox_naked; \
 	pcb_attribute_list_t Attributes \
 
 #define PCB_ANY_PRIMITIVE_FIELDS \
