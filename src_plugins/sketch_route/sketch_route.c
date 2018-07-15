@@ -105,11 +105,19 @@ void pointdata_create(point_t *p, pcb_any_obj_t *obj)
 void pointdata_free(point_t *p)
 {
 	pointdata_t *pd = p->data;
+	int i;
+
 	if (pd != NULL) {
 		wirelist_free(pd->terminal_wires);
 		wirelist_free(pd->uturn_wires);
 		wirelist_free(pd->attached_wires[0]);
 		wirelist_free(pd->attached_wires[1]);
+		for (i = 0; i < 4; i++) {
+			/* TODO:
+			pcb_r_delete_entry(spoke_tree, &pd->spokes[i]);
+			*/
+			vtp0_uninit(&pd->spokes[i].slots);
+		}
 		free(pd);
 	}
 }
