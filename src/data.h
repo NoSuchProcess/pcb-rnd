@@ -123,6 +123,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *);
 /* gets minimum and maximum coordinates
  * returns NULL if layout is empty */
 pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters);
+pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters);
 
 /* Make sure all layers of data has their .parent field pointing to the data */
 void pcb_data_set_layer_parents(pcb_data_t *data);
