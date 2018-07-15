@@ -4,6 +4,7 @@ append /local/pcb/mod/OBJS [@
  $(PLUGDIR)/sketch_route/wire.o
  $(PLUGDIR)/sketch_route/ewire.o
  $(PLUGDIR)/sketch_route/ewire_point.o
+ $(PLUGDIR)/sketch_route/spoke.o
  $(PLUGDIR)/sketch_route/cdt/cdt.o
  $(PLUGDIR)/sketch_route/cdt/edge.o
  $(PLUGDIR)/sketch_route/cdt/point.o
