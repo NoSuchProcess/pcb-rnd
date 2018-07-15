@@ -31,8 +31,8 @@
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well. (Propose that right-click should not select object) [report: Ade]
 - feature: fp_wget cache dir configurable [report: agaran]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
+	- make the new export dialog the default
 	- remove the old gtk-only export menu code
-	- unify how output files are accessed/checked: confirmation on overwrite
 - BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
@@ -42,10 +42,9 @@
 	- rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
 	- global conf setting for label text size [report: Ade]
 	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- make the new export dialog the default, remove the old ones
 - self contained
 	+ PrintFiles: print where the actual files are coming from, including if the font came from embedded/internal
-	- DAD dialog box version of that
+	- DAD dialog box version of that - or just a tab in the about box
 
 2. For later releases ===============================================================================
 - rewrite the preview API:
@@ -68,6 +67,7 @@
 	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
 	- invent a generic API for both the drill attrib config table
 	- remove the gerber->drill dep and ask users to use the CAM instead
+	- unify how output files are accessed/checked: confirmation on overwrite
 - opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
