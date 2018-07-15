@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #include "sktypedefs.h"
 #ifdef GVT_DONT_UNDEF
 	#undef GVT_DONT_UNDEF
@@ -15,7 +16,8 @@
 
 typedef struct {
 	vtewire_point_t points;
-	int thickness;
+	pcb_coord_t thickness;
+	pcb_coord_t clearance;
 } ewire_t;
 
 typedef ewire_t* ewire_ptr_t;
