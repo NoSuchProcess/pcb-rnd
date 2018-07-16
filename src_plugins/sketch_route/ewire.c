@@ -11,17 +11,18 @@ void ewire_uninit(ewire_t *ew)
 	vtewire_point_uninit(&ew->points);
 }
 
-void ewire_append_point(ewire_t *ew, spoke_t *sp, side_t side, int sp_slot)
+void ewire_append_point(ewire_t *ew, spoke_t *sp, side_t side, int sp_slot, wirelist_node_t *w_node)
 {
-	ewire_insert_point(ew, ew->points.used-1, sp, side, sp_slot);
+	ewire_insert_point(ew, ew->points.used-1, sp, side, sp_slot, w_node);
 }
 
-void ewire_insert_point(ewire_t *ew, int after_i, spoke_t *sp, side_t side, int sp_slot)
+void ewire_insert_point(ewire_t *ew, int after_i, spoke_t *sp, side_t side, int sp_slot, wirelist_node_t *w_node)
 {
 	ewire_point_t *ewp = vtewire_point_alloc_append(&ew->points, 1);
 	ewp->sp = sp;
 	ewp->side = side;
 	ewp->sp_slot = sp_slot;
+	ewp->w_node = w_node;
 }
 
 void ewire_remove_point(ewire_t *ew, int i)
