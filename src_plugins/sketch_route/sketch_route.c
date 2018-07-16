@@ -96,9 +96,24 @@ static void sketch_update_cdt_layer(sketch_t *sk)
 	VTEDGE_FOREACH_END();
 }
 
-static void sketch_update_erbs_layer(sketch_t *sk, wire_t *new_w)
+static void sketch_update_erbs_layer(sketch_t *sk)
 {
-	/* TODO */
+	pcb_layer_t *l = sk->ui_layer_erbs;
+	pcb_coord_t px, py, qx, qy;
+	int i;
+
+	list_map0(&l->Line, pcb_line_t, pcb_line_free);
+	if (l->line_tree)
+		pcb_r_destroy_tree(&l->line_tree);
+	VTEWIRE_FOREACH(ew, &sk->ewires)
+		ewire_point_t *ewp = &ew->points.array[0];
+		spoke_pos_at_slot(ewp->sp, ewp->sp_slot, &px, &py);
+		for (i = 1; i < vtewire_point_len(&ew->points); i++) {
+			ewp = &ew->points.array[i];
+			spoke_pos_at_slot(ewp->sp, ewp->sp_slot, &qx, &qy);
+			pcb_line_new(l, px, py, qx, qy, ew->wire->thickness, ew->wire->clearance, pcb_no_flags());
+		}
+	VTEWIRE_FOREACH_END();
 }
 
 static void sketch_validate_erbs(sketch_t *sk, ewire_t *ew)
@@ -229,6 +244,21 @@ repeat_current_point:
 		ewire_append_point(new_ew, (spoke_t *) w->points[w->point_num-1].p, SIDE_TERM, 0, w->points[w->point_num-1].wire_node);
 		return new_ew;
 	}
+}
+
+static void sketch_update_erbs(sketch_t *sk)
+{
+	int i;
+
+	vtewire_uninit(&sk->ewires);
+	VTPOINT_FOREACH(p, &sk->cdt->points)
+		for (i = 0; i < 4; i++)
+			spoke_uninit(&((pointdata_t *)(p->data))->spoke[i]);
+	VTPOINT_FOREACH_END();
+
+	VTWIRE_FOREACH(w, &sk->wires)
+		sketch_insert_ewire(sk, w);
+	VTWIRE_FOREACH_END();
 }
 
 static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
@@ -827,6 +857,8 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 				path->clearance = conf_core.design.clearance;
 				sketch_insert_wire(attached_path.sketch, path);
 				sketch_update_cdt_layer(attached_path.sketch);
+				sketch_update_erbs(attached_path.sketch);
+				sketch_update_erbs_layer(attached_path.sketch);
 				wire_uninit(path);
 				return pcb_true;
 			}
