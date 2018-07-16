@@ -132,7 +132,7 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, pcb_bool copper_only)
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
 				for(n = 0; n < shape->data.poly.len; n++)
-					pcb_box_bump_point(&ps->BoundingBox, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
+					pcb_box_bump_point(dst, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
 				break;
 			case PCB_PSSH_LINE:
 				line.Point1.X = shape->data.line.x1 + ps->x;
@@ -566,7 +566,7 @@ void pcb_pstk_draw_label(pcb_pstk_t *ps)
 	}
 
 	vert = dx < dy;
-pcb_printf("vert=%d %ld %ld %mm\n", vert, dx, dy, ps->BoundingBox.X2);
+pcb_printf("vert=%d %ld %ld %mm %mm\n", vert, dx, dy, ps->BoundingBox.X2, ps->bbox_naked.X2);
 #ifdef PCB_PSTK_LABEL_OFFCENTER
 	pcb_coord_t offs = 0;
 	pcb_pstk_proto_t *proto;
