@@ -55,7 +55,7 @@ void GVT(destructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem);
 #define VTEWIRE_FOREACH(_loop_item_, _vt_) do { \
 	int _i_; \
 	for (_i_ = 0; _i_ < vtewire_len(_vt_); _i_++) { \
-		wire_t *_loop_item_ = (_vt_)->array[_i_];
+		ewire_t *_loop_item_ = (_vt_)->array[_i_];
 
 #define VTEWIRE_FOREACH_END() \
 	} \
