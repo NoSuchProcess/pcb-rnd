@@ -252,8 +252,10 @@ static void sketch_update_erbs(sketch_t *sk)
 
 	vtewire_uninit(&sk->ewires);
 	VTPOINT_FOREACH(p, &sk->cdt->points)
-		for (i = 0; i < 4; i++)
-			spoke_uninit(&((pointdata_t *)(p->data))->spoke[i]);
+		pointdata_t *pd = p->data;
+		if (pd != NULL)
+			for (i = 0; i < 4; i++)
+				spoke_uninit(&pd->spoke[i]);
 	VTPOINT_FOREACH_END();
 
 	VTWIRE_FOREACH(w, &sk->wires)
