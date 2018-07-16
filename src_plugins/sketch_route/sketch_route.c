@@ -107,12 +107,19 @@ static void sketch_update_erbs_layer(sketch_t *sk)
 		pcb_r_destroy_tree(&l->line_tree);
 	VTEWIRE_FOREACH(ew, &sk->ewires)
 		ewire_point_t *ewp = &ew->points.array[0];
-		spoke_pos_at_slot(ewp->sp, ewp->sp_slot, &px, &py);
-		for (i = 1; i < vtewire_point_len(&ew->points); i++) {
+		px = ((point_t *)ewp->sp)->pos.x;
+		py = -((point_t *)ewp->sp)->pos.y;
+		for (i = 1; i < vtewire_point_len(&ew->points) - 1; i++) {
 			ewp = &ew->points.array[i];
 			spoke_pos_at_slot(ewp->sp, ewp->sp_slot, &qx, &qy);
 			pcb_line_new(l, px, py, qx, qy, ew->wire->thickness, ew->wire->clearance, pcb_no_flags());
+			px = qx;
+			py = qy;
 		}
+		ewp = &ew->points.array[i];
+		qx = ((point_t *)ewp->sp)->pos.x;
+		qy = -((point_t *)ewp->sp)->pos.y;
+		pcb_line_new(l, px, py, qx, qy, ew->wire->thickness, ew->wire->clearance, pcb_no_flags());
 	VTEWIRE_FOREACH_END();
 }
 
