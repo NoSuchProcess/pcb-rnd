@@ -29,6 +29,16 @@ void ewire_remove_point(ewire_t *ew, int i)
 	vtewire_point_remove(&ew->points, i, 1);
 }
 
+ewire_point_t *ewire_get_point_at_slot(ewire_t *ew, spoke_t *sp, int slot_num)
+{
+  int i;
+  for (i = 0; i < vtewire_point_len(&ew->points); i++) {
+    if (ew->points.array[i].sp == sp && ew->points.array[i].sp_slot == slot_num)
+      return &ew->points.array[i];
+  }
+  return NULL;
+}
+
 int GVT(constructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem)
 {
   *elem = malloc(sizeof(**elem));

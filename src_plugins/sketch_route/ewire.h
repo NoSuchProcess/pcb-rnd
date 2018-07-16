@@ -9,7 +9,6 @@
 #ifdef GVT_DONT_UNDEF
 	#undef GVT_DONT_UNDEF
 	#include "ewire_point.h"
-	#include "wire.h"
 	#define GVT_DONT_UNDEF
 #else
 	#include "ewire_point.h"
@@ -27,6 +26,8 @@ void ewire_uninit(ewire_t *ew);
 void ewire_append_point(ewire_t *ew, spoke_t *sp, side_t side, int sp_slot);
 void ewire_insert_point(ewire_t *ew, int after_i, spoke_t *sp, side_t side, int sp_slot);
 void ewire_remove_point(ewire_t *ew, int i);
+
+ewire_point_t *ewire_get_point_at_slot(ewire_t *w, spoke_t *sp, int slot_num);
 
 
 /* ewire ptr Vector */
