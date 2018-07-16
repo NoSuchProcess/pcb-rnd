@@ -44,6 +44,10 @@
 	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 
 2. For later releases ===============================================================================
+- introduce new layer types:
+	- doc
+	- keepout
+	- decide where to store global layers
 - rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
