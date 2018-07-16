@@ -46,11 +46,9 @@ static int node_index(wire_t *w, wirelist_node_t *node)
   int i;
   for (i = 0; i < w->point_num; i++) {
     if (w->points[i].wire_node == node)
-      break;
+      return i
   }
-  if (i == w->point_num)
-    return -1;
-  return i;
+  return -1;
 }
 
 int wire_is_node_connected_with_point(wirelist_node_t *node, point_t *p)
