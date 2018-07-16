@@ -566,7 +566,6 @@ void pcb_pstk_draw_label(pcb_pstk_t *ps)
 	}
 
 	vert = dx < dy;
-pcb_printf("vert=%d %ld %ld %mm %mm\n", vert, dx, dy, ps->BoundingBox.X2, ps->bbox_naked.X2);
 #ifdef PCB_PSTK_LABEL_OFFCENTER
 	pcb_coord_t offs = 0;
 	pcb_pstk_proto_t *proto;
