@@ -297,7 +297,7 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 
 	/* get boundingbox of object and set cursor range */
-	pcb_obj_get_bbox(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &box);
+	pcb_obj_get_bbox_naked(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &box);
 	pcb_crosshair_set_range(pcb_crosshair.AttachedObject.X - box.X1,
 										pcb_crosshair.AttachedObject.Y - box.Y1,
 										PCB->MaxWidth - (box.X2 - pcb_crosshair.AttachedObject.X),

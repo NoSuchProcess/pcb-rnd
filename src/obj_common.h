@@ -99,7 +99,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type);
 pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype);
 
 
-int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
+int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 
 /* Host transformations: typically the transformations an object of a subc
    inherits from the subc */

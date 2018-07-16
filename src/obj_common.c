@@ -66,7 +66,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 /* returns a pointer to an objects bounding box;
  * data is valid until the routine is called again
  */
-int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
+int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
 {
 	switch (Type) {
 	case PCB_OBJ_LINE:
@@ -74,10 +74,10 @@ int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *re
 	case PCB_OBJ_TEXT:
 	case PCB_OBJ_POLY:
 	case PCB_OBJ_PSTK:
-		*res = *(pcb_box_t *)Ptr2;
+		*res = ((pcb_any_obj_t *)Ptr2)->bbox_naked;
 		return 0;
 	case PCB_OBJ_SUBC:
-		*res = *(pcb_box_t *)Ptr1;
+		*res = ((pcb_any_obj_t *)Ptr1)->bbox_naked;
 		return 0;
 	case PCB_OBJ_POLY_POINT:
 	case PCB_OBJ_LINE_POINT:
