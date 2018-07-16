@@ -129,7 +129,7 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 			wire_point_t *next_wp = &w->points[i+1];
 			pointdata_t *curr_pd = (pointdata_t *) curr_wp->p->data;
 			pointdata_t *next_pd = (pointdata_t *) next_wp->p->data;
-			int curr_sp_slot_num = wire_node_position_at_point(curr_wp->wire_node, curr_wp->p);
+			int curr_sp_slot_num = wire_point_position(curr_wp);
 			point_t curr_sp_p[4], next_sp_p[4];
 
 			for (j = 0; j < 4; j++) {

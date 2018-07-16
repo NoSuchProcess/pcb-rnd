@@ -33,7 +33,7 @@ void wire_copy(wire_t *dst, wire_t *src);
 
 int wire_is_node_connected_with_point(wirelist_node_t *node, point_t *p);
 int wire_is_coincident_at_node(wirelist_node_t *node, point_t *p1, point_t *p2);
-int wire_node_position_at_point(wirelist_node_t *node, point_t *p); /* counting from the inside */
+int wire_point_position(wire_point_t *wp); /* counting from the inside */
 
 
 /* List */
