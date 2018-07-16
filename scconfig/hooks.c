@@ -64,9 +64,14 @@ static void help1(void)
 	printf(" --force-all=plugin         enable even broken plugins for dynamic load\n");
 	printf(" --force-all=buildin        enable even broken plugins for static link\n");
 
-	for(a = main_argument_table; a->arg != NULL; a++)
-		if (a->help != NULL)
-			printf(" --%-24s %s\n", a->arg, a->help);
+	for(a = main_argument_table; a->arg != NULL; a++) {
+		if (a->help != NULL) {
+			char tmp[64];
+			sprintf(tmp, "%s=str", a->arg);
+			printf(" --%-24s %s\n", tmp, a->help);
+		}
+	}
+
 
 }
 
