@@ -133,9 +133,9 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 			point_t curr_sp_p[4], next_sp_p[4];
 
 			for (j = 0; j < 4; j++) {
-				spoke_pos_at_wire_node(&curr_pd->spoke[j], curr_wp->wire_node, &curr_sp_p[j].pos.x, &curr_sp_p[j].pos.y);
+				spoke_pos_at_wire_point(&curr_pd->spoke[j], curr_wp, &curr_sp_p[j].pos.x, &curr_sp_p[j].pos.y);
 				curr_sp_p[j].pos.y = -curr_sp_p[j].pos.y;
-				spoke_pos_at_wire_node(&next_pd->spoke[j], next_wp->wire_node, &next_sp_p[j].pos.x, &next_sp_p[j].pos.y);
+				spoke_pos_at_wire_point(&next_pd->spoke[j], next_wp, &next_sp_p[j].pos.x, &next_sp_p[j].pos.y);
 				next_sp_p[j].pos.y = -next_sp_p[j].pos.y;
 			}
 

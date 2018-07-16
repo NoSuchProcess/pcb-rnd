@@ -52,8 +52,10 @@ static void spoke_pos(spoke_t *sp, pcb_coord_t spacing, pcb_coord_t *x, pcb_coor
 	}
 }
 
-void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x, pcb_coord_t *y)
+void spoke_pos_at_wire_point(spoke_t *sp, wire_point_t *wp, pcb_coord_t *x, pcb_coord_t *y)
 {
+	pointdata_t *pd = wp->p->data;
+	wirelist_node_t *w_node = wp->wire_node;
 	pcb_coord_t spacing;
 
 	assert(w_node != NULL);
@@ -61,10 +63,22 @@ void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x
 	spacing = (w_node->item->thickness + 1)/2;
 	spacing += conf_core.design.bloat;
 	w_node = w_node->next;
-	WIRELIST_FOREACH(w, w_node)
-		spacing += w->thickness;
-		spacing += conf_core.design.bloat;
-	WIRELIST_FOREACH_END();
+	if (wirelist_get_index(pd->uturn_wires, w_node) != -1) {
+		WIRELIST_FOREACH(w, wp->wire_node)
+			spacing += w->thickness;
+			spacing += conf_core.design.bloat;
+		WIRELIST_FOREACH_END();
+	}
+	else {
+		WIRELIST_FOREACH(w, w_node)
+			spacing += w->thickness;
+			spacing += conf_core.design.bloat;
+		WIRELIST_FOREACH_END();
+		WIRELIST_FOREACH(w, pd->uturn_wires)
+			spacing += w->thickness;
+			spacing += conf_core.design.bloat;
+		WIRELIST_FOREACH_END();
+	}
 
 	spoke_pos(sp, spacing, x, y);
 }
