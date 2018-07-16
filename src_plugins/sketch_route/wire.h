@@ -15,13 +15,13 @@ typedef struct {
   wirelist_node_t *wire_node;
 } wire_point_t;
 
-typedef struct {
+struct wire_s {
 	int point_num;
 	int point_max;
 	wire_point_t *points;
 	pcb_coord_t thickness;
 	pcb_coord_t clearance;
-} wire_t;
+};
 
 typedef wire_t* wire_ptr_t;
 
