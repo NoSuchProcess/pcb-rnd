@@ -30,9 +30,6 @@
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well. (Propose that right-click should not select object) [report: Ade]
 - feature: fp_wget cache dir configurable [report: agaran]
-- biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
-	- make the new export dialog the default
-	- remove the old gtk-only export menu code
 - BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
