@@ -101,6 +101,136 @@ static void sketch_update_erbs_layer(sketch_t *sk, wire_t *new_w)
 	/* TODO */
 }
 
+static void sketch_validate_erbs(sketch_t *sk, ewire_t *ew)
+{
+	/* TODO: check ew spokes against not supported ewires conflicts */
+	/* TODO: check ewires segments, supported by ew spokes, against other spokes conflicts */
+}
+
+static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
+{
+	int i, j;
+	ewire_t *new_ew;
+
+	new_ew = *vtewire_alloc_append(&sk->ewires, 1);
+	new_ew->wire = w;
+	ewire_append_point(new_ew, (spoke_t *) w->points[0].p, SIDE_TERM, 0, w->points[0].wire_node);
+
+	if (w->point_num == 2) {
+		ewire_append_point(new_ew, (spoke_t *) w->points[1].p, SIDE_TERM, 0, w->points[1].wire_node);
+		return new_ew;
+	}
+	else {
+		spoke_t *curr_sp, *next_sp;
+		point_t prev_p, curr_p, next_p;
+
+		for (i = 0; i < w->point_num-1; i++) {
+			wire_point_t *curr_wp = &w->points[i];
+			wire_point_t *next_wp = &w->points[i+1];
+			pointdata_t *curr_pd = (pointdata_t *) curr_wp->p->data;
+			pointdata_t *next_pd = (pointdata_t *) next_wp->p->data;
+			int curr_sp_slot_num = wire_node_position_at_point(curr_wp->wire_node, curr_wp->p);
+			point_t curr_sp_p[4], next_sp_p[4];
+
+			for (j = 0; j < 4; j++) {
+				spoke_pos_at_wire_node(&curr_pd->spoke[j], curr_wp->wire_node, &curr_sp_p[j].pos.x, &curr_sp_p[j].pos.y);
+				curr_sp_p[j].pos.y = -curr_sp_p[j].pos.y;
+				spoke_pos_at_wire_node(&next_pd->spoke[j], next_wp->wire_node, &next_sp_p[j].pos.x, &next_sp_p[j].pos.y);
+				next_sp_p[j].pos.y = -next_sp_p[j].pos.y;
+			}
+
+			if (i == 0)
+				curr_p = *curr_wp->p;
+			if (i == w->point_num-2)
+				next_p = *next_wp->p;
+
+repeat_current_point:
+
+			/* 1. find destination spoke */
+			if (i < w->point_num-2) { /* start terminal - spoke, or spoke - spoke */
+				point_t *p;
+				spoke_dir_t next_sp_dir;
+
+				/* select the leftmost spoke, if point is on the right and vice-versa */
+				p = &next_sp_p[0];
+				for (j = 1; j < 4; j++) {
+					if (ORIENT(next_wp->side == SIDE_LEFT, &curr_p, p, &next_sp_p[j])) {
+						p = &next_sp_p[j];
+						next_sp_dir = j;
+					}
+				}
+				/* check if an another spoke is collinear and select the closer one */
+				for (j = 0; j < 4; j++) {
+					if (j == next_sp_dir)
+						continue;
+					if (ORIENT_COLLINEAR(&curr_p, p, &next_sp_p[j])) {
+						next_sp_dir = DIST2(&curr_p, p) < DIST2(&curr_p, &next_sp_p[j]) ? next_sp_dir : j;
+						break;
+					}
+				}
+				next_sp = &next_pd->spoke[next_sp_dir];
+				next_p = next_sp_p[next_sp_dir];
+			}
+
+			/* 2. check if the ewire should be attached to any of the remaining spokes at the current point */
+			if (i > 0) { /* spoke - spoke, or spoke - end terminal */
+				point_t *p;
+				spoke_dir_t curr_sp_dir;
+
+				/* if point is on the left, select the rightmost spoke (if there is any) and vice-versa */
+				p = NULL;
+				for (j = 0; j < 4; j++) {
+					if (j == curr_sp->dir)
+						continue;
+					if (p == NULL) {
+						if(ORIENT(curr_wp->side == SIDE_LEFT, &curr_p, &next_p, &curr_sp_p[j])
+							 || ORIENT_COLLINEAR(&curr_p, &next_p, &curr_sp_p[j])) {
+							p = &curr_sp_p[j];
+							curr_sp_dir = j;
+						}
+					}
+					else {
+						if(ORIENT(curr_wp->side == SIDE_LEFT, &curr_p, p, &curr_sp_p[j])) {
+							p = &curr_sp_p[j];
+							curr_sp_dir = j;
+						}
+					}
+				}
+				if (p != NULL) {
+					/* don't attach to the current point's spoke if spoke of the next point is closer */
+					if (DIST2(&curr_p, &next_p) < DIST2(&curr_p, p)) {
+						printf("necessary\n"); /* (not sure if this check is necessary) */
+					}
+					else {
+						ewire_append_point(new_ew, curr_sp, curr_wp->side, curr_sp_slot_num, curr_wp->wire_node);
+						spoke_insert_wire_at_slot(curr_sp, curr_sp_slot_num, new_ew);
+						curr_sp = &curr_pd->spoke[curr_sp_dir];
+						prev_p = curr_p;
+						curr_p = *p;
+						goto repeat_current_point;
+					}
+				}
+			}
+
+			/* 3. insert point if two subsequent segments are not concave */
+			if (i > 0) {
+				/* if point is on the left, check if the next point is on the right of the previous segment */
+				if (!ORIENT(curr_wp->side == SIDE_LEFT, &prev_p, &curr_p, &next_p)) {
+					ewire_append_point(new_ew, curr_sp, curr_wp->side, curr_sp_slot_num, curr_wp->wire_node);
+					spoke_insert_wire_at_slot(curr_sp, curr_sp_slot_num, new_ew);
+				}
+			}
+
+			curr_sp = next_sp;
+			prev_p = curr_p;
+			curr_p = next_p;
+		}
+
+		ewire_append_point(new_ew, (spoke_t *) w->points[w->point_num-1].p, SIDE_TERM, 0, w->points[w->point_num-1].wire_node);
+		return new_ew;
+	}
+}
+
 static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
 {
 	/* TODO */
