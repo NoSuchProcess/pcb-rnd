@@ -1,4 +1,5 @@
 #include <assert.h>
+#include "pointdata.h"
 
 #define GVT_DONT_UNDEF
 #define LST_DONT_UNDEF
@@ -46,7 +47,7 @@ static int node_index(wire_t *w, wirelist_node_t *node)
   int i;
   for (i = 0; i < w->point_num; i++) {
     if (w->points[i].wire_node == node)
-      return i
+      return i;
   }
   return -1;
 }
@@ -76,9 +77,9 @@ int wire_node_position_at_point(wirelist_node_t *node, point_t *p)
 {
   pointdata_t *pd = p->data;
   if (wirelist_get_index(pd->uturn_wires, node) != -1)
-    return wirelist_length(node);
+    return wirelist_length(node) - 1;
   else
-    return wirelist_length(node) + wirelist_length(pd->uturn_wires);
+    return wirelist_length(node) + wirelist_length(pd->uturn_wires) - 1;
 }
 
 static int LST(compare_func)(LST_ITEM_T *a, LST_ITEM_T *b)
