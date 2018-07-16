@@ -29,6 +29,6 @@ void spoke_uninit(spoke_t *sp);
 
 void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x, pcb_coord_t *y);
 
-void spoke_set_slot(spoke_t *sp, int slot_num, ewire_t *ew);
+void spoke_insert_wire_at_slot(spoke_t *sp, int slot_num, ewire_t *ew);
 
 #endif

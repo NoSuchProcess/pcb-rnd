@@ -63,7 +63,17 @@ void spoke_pos_at_wire_node(spoke_t *sp, wirelist_node_t *w_node, pcb_coord_t *x
 	}
 }
 
-void spoke_set_slot(spoke_t *sp, int slot_num, ewire_t *ew)
+void spoke_insert_wire_at_slot(spoke_t *sp, int slot_num, ewire_t *ew)
 {
+	if (vtp0_in_bound(&sp->slots, slot_num) && sp->slots.array[slot_num] != NULL) {
+		int i;
+		/* move all slots, starting from the slot_num, one step outside */
+		for (i = slot_num; i < vtp0_len(&sp->slots); i++) {
+			ewire_point_t *ewp = ewire_get_point_at_slot(sp->slots.array[i], sp, i);
+			assert(ewp != NULL);
+			ewp->sp_slot = i + 1;
+		}
+		vtp0_alloc_insert(&sp->slots, slot_num, 1);
+	}
 	vtp0_set(&sp->slots, slot_num, ew);
 }
