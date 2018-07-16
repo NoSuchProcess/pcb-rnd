@@ -44,6 +44,8 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 static void help1(void)
 {
+	argtbl_t *a;
+
 	printf("./configure: configure pcb-rnd.\n");
 	printf("\n");
 	printf("Usage: ./configure [options]\n");
@@ -61,6 +63,11 @@ static void help1(void)
 	printf(" --all=disable              disable all plugins (compile core only)\n");
 	printf(" --force-all=plugin         enable even broken plugins for dynamic load\n");
 	printf(" --force-all=buildin        enable even broken plugins for static link\n");
+
+	for(a = main_argument_table; a->arg != NULL; a++)
+		if (a->help != NULL)
+			printf(" --%-24s %s\n", a->arg, a->help);
+
 }
 
 static void help2(void)
