@@ -74,6 +74,15 @@ int wire_is_coincident_at_node(wirelist_node_t *node, point_t *p1, point_t *p2)
   return (w->points[i - 1].p == p1 && w->points[i + 1].p == p2);
 }
 
+int wire_node_position_at_point(wirelist_node_t *node, point_t *p)
+{
+  pointdata_t *pd = p->data;
+  if (wirelist_get_index(pd->uturn_wires, node) != -1)
+    return wirelist_length(node);
+  else
+    return wirelist_length(node) + wirelist_length(pd->uturn_wires);
+}
+
 static int LST(compare_func)(LST_ITEM_T *a, LST_ITEM_T *b)
 {
   return *a == *b;
