@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #define GVT_DONT_UNDEF
 #include "ewire.h"
 
@@ -28,6 +30,12 @@ void ewire_insert_point(ewire_t *ew, int after_i, spoke_t *sp, side_t side, int 
 void ewire_remove_point(ewire_t *ew, int i)
 {
 	vtewire_point_remove(&ew->points, i, 1);
+}
+
+ewire_point_t *ewire_get_point(ewire_t *ew, int i)
+{
+	assert(i < vtewire_point_len(&ew->points));
+	return &ew->points.array[i];
 }
 
 ewire_point_t *ewire_get_point_at_slot(ewire_t *ew, spoke_t *sp, int slot_num)
