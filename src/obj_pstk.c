@@ -560,9 +560,9 @@ void pcb_pstk_draw_label(pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 	if ((proto != NULL) && (proto->hdia > 0))
 		offs = proto->hdia/2;
-	pcb_term_label_draw(ps->x + offs, ps->y, 100.0, 0, pcb_false, ps->term, ps->intconn);
+	pcb_term_label_draw(ps->x + offs, ps->y, conf_core.appearance.term_label_size, 0, pcb_false, ps->term, ps->intconn);
 #endif
-	pcb_term_label_draw(ps->x, ps->y, 100.0, 0, pcb_true, ps->term, ps->intconn);
+	pcb_term_label_draw(ps->x, ps->y, conf_core.appearance.term_label_size, 0, pcb_true, ps->term, ps->intconn);
 }
 
 

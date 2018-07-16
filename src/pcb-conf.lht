@@ -136,6 +136,7 @@ li:pcb-rnd-conf-v1 {
 			layer_alpha = 0.7
 			drill_alpha = 0.85
 			text_host_bbox = true
+			term_label_size = 50
 
 			ha:loglevels {
 				debug_tag      = {}

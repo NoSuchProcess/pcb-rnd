@@ -164,6 +164,7 @@ typedef struct {
 		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
 		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
 		CFT_BOOLEAN text_host_bbox;        /* when moving a text object, the outline thin-draw should also include the bounding box */
+		CFT_REAL term_label_size;          /* size of terminal labels, in pcb font scale (100 is for the normal size) */
 		struct loglevels {
 			CFT_STRING   debug_tag;          /* log style tag of debug messages */
 			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */

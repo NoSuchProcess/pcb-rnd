@@ -1005,7 +1005,7 @@ void pcb_poly_draw_label(pcb_poly_t *poly)
 {
 	if (poly->term != NULL)
 		pcb_term_label_draw((poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
-			100.0, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
+			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
 }
 
 void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
