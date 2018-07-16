@@ -48,6 +48,11 @@ ewire_point_t *ewire_get_point_at_slot(ewire_t *ew, spoke_t *sp, int slot_num)
   return NULL;
 }
 
+size_t ewire_length(ewire_t *ew)
+{
+	return vtewire_point_len(&ew->points);
+}
+
 int GVT(constructor)(GVT(t) *vect, GVT_ELEM_TYPE *elem)
 {
   *elem = malloc(sizeof(**elem));

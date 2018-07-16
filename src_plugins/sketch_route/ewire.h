@@ -30,6 +30,8 @@ void ewire_remove_point(ewire_t *ew, int i);
 ewire_point_t *ewire_get_point(ewire_t *ew, int i);
 ewire_point_t *ewire_get_point_at_slot(ewire_t *ew, spoke_t *sp, int slot_num);
 
+size_t ewire_length(ewire_t *ew);
+
 
 /* ewire ptr Vector */
 #define GVT(x) vtewire_ ## x
