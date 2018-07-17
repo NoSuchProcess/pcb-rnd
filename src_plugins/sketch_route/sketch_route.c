@@ -455,6 +455,10 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 	new_w = *vtwire_alloc_append(&sk->wires, 1);
 	wire_copy(new_w, wire);
 
+#ifdef SK_DEBUG
+	printf("\ninserting wire into sketch:\n");
+#endif
+
 	assert(new_w->point_num >= 2);
 	for (i = 0; i < new_w->point_num; i++) {
 		wire_point_t *wp = &new_w->points[i];
@@ -465,14 +469,25 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 		pd = wp->p->data;
 		assert(pd != NULL);
 
+#ifdef SK_DEBUG
+			pcb_printf("  add point at (%mm, %mm); ", wp->p->pos.x, -wp->p->pos.y,
+								 wirelist_length(pd->terminal_wires) - 1);
+#endif
+
 		if (i == 0) { /* first point */
 			assert(wp->side == SIDE_TERM);
 			cdt_insert_constrained_edge(sk->cdt, wp->p, next_wp->p);
 			insert_wire_at_point(wp, new_w, &pd->terminal_wires, -1);
+#ifdef SK_DEBUG
+			pcb_printf("start terminal; %d other wires connected\n", wirelist_length(pd->terminal_wires) - 1);
+#endif
 		}
 		else if (i == new_w->point_num - 1) { /* last point */
 			assert(wp->side == SIDE_TERM);
 			insert_wire_at_point(wp, new_w, &pd->terminal_wires, -1);
+#ifdef SK_DEBUG
+			pcb_printf("end terminal; %d other wires connected\n", wirelist_length(pd->terminal_wires) - 1);
+#endif
 		}
 		else { /* middle point */
 			assert(wp->side != SIDE_TERM);
@@ -504,6 +519,10 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					n = -1;
 					n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
 					insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
+#ifdef SK_DEBUG
+					pcb_printf("collinear; list_num=%d; attached pos=%d; attached len=%d\n", list_num,
+										 wirelist_length(wp->wire_node), wirelist_length(pd->attached_wires[list_num]));
+#endif
 				}
 				else { /* U-turn */
 					assert(((prev_wp->side == SIDE_TERM) && (wp->side == next_wp->side))
@@ -517,6 +536,10 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					n = -1;
 					n += count_uturn_wires_coming_from_previous_point(prev_wp, wp, list_num);
 					insert_wire_at_point(wp, new_w, &pd->uturn_wires, n);
+#ifdef SK_DEBUG
+					pcb_printf("uturn; uturn pos=%d; uturn len=%d\n",
+										 wirelist_length(wp->wire_node), wirelist_length(pd->uturn_wires));
+#endif
 				}
 			}
 			else { /* not collinear case */
@@ -542,6 +565,10 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 				EDGELIST_FOREACH_END();
 				n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
 				insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
+#ifdef SK_DEBUG
+					pcb_printf("list_num=%d; attached pos=%d; attached len=%d\n", list_num,
+										 wirelist_length(wp->wire_node), wirelist_length(pd->attached_wires[list_num]));
+#endif
 			}
 		}
 	}
