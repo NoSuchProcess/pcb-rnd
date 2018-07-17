@@ -99,6 +99,29 @@ void spoke_pos_at_slot(spoke_t *sp, int slot, pcb_coord_t *x, pcb_coord_t *y)
 	spoke_pos(sp, spacing, x, y);
 }
 
+void spoke_pos_at_end(spoke_t *sp, pcb_coord_t bloat, pcb_coord_t *x, pcb_coord_t *y)
+{
+	pcb_coord_t spacing = 0;
+	int i;
+
+	if (vtp0_len(&sp->slots) > 0) {
+		for (i = 0; i < vtp0_len(&sp->slots) - 1; i++) {
+			spacing += conf_core.design.bloat;
+			spacing += ((ewire_t *) (sp->slots.array[i]))->wire->thickness;
+		}
+		spacing += conf_core.design.bloat;
+		if (bloat < 0)
+			spacing += (((ewire_t *) (sp->slots.array[vtp0_len(&sp->slots) - 1]))->wire->thickness + 1)/2;
+		else
+			spacing += ((ewire_t *) (sp->slots.array[vtp0_len(&sp->slots) - 1]))->wire->thickness;
+	}
+
+	if (bloat >= 0)
+		spacing += bloat;
+
+	spoke_pos(sp, spacing, x, y);
+}
+
 void spoke_insert_wire_at_slot(spoke_t *sp, int slot_num, ewire_t *ew)
 {
 	if (vtp0_in_bound(&sp->slots, slot_num) && sp->slots.array[slot_num] != NULL) {
