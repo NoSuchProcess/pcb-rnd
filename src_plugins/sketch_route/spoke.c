@@ -111,15 +111,16 @@ void spoke_pos_at_end(spoke_t *sp, pcb_coord_t bloat, pcb_coord_t *x, pcb_coord_
 			spacing += conf_core.design.bloat;
 			spacing += ((ewire_t *) (sp->slots.array[i]))->wire->thickness;
 		}
-		spacing += conf_core.design.bloat;
 		if (bloat < 0)
 			spacing += (((ewire_t *) (sp->slots.array[vtp0_len(&sp->slots) - 1]))->wire->thickness + 1)/2;
 		else
 			spacing += ((ewire_t *) (sp->slots.array[vtp0_len(&sp->slots) - 1]))->wire->thickness;
 	}
 
-	if (bloat >= 0)
+	if (bloat >= 0) {
+		spacing += conf_core.design.bloat;
 		spacing += bloat;
+	}
 
 	spoke_pos(sp, spacing, x, y);
 }
