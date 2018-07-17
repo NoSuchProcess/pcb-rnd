@@ -9,6 +9,7 @@
 void spoke_init(spoke_t *sp, spoke_dir_t dir, point_t *p)
 {
 	vtp0_init(&sp->slots);
+	sp->dir = dir;
 	sp->p = p;
 	/* TODO:
 	spoke_bbox(sp);
