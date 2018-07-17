@@ -227,7 +227,7 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 		hatch_box(x1, y1, x2, y2, thick_hatch, -step_back);
 }
 
-static pcb_box_t btn_addgrp, btn_delgrp, btn_addlayer, btn_dellayer;
+static pcb_box_t btn_addgrp, btn_delgrp, btn_addlayer, btn_dellayer, btn_addoutline;
 static pcb_box_t layer_crd[PCB_MAX_LAYER];
 static pcb_box_t group_crd[PCB_MAX_LAYERGRP];
 static pcb_box_t outline_crd;
@@ -320,7 +320,7 @@ static int is_button(int x, int y, const pcb_box_t *box)
 static pcb_hid_gc_t csect_gc;
 
 static pcb_coord_t ox, oy, cx, cy;
-static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer;
+static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer, drag_addoutline;
 static pcb_layergrp_id_t gactive = -1;
 static pcb_layergrp_id_t outline_gactive = -1;
 static pcb_layer_id_t lactive = -1;
@@ -541,8 +541,11 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		dline(0, ystart, 0, y+4, 1);
 		reg_outline_coords(t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2, PCB_MM_TO_COORD(y+4));
 	}
+	else {
+		create_button(gc, 2, y, "Create outline", &btn_addoutline);
+	}
 
-	x=20;
+	x=30;
 	x = 2 + create_button(gc, x, y, "Add copper group", &btn_addgrp);
 	x = 2 + create_button(gc, x, y, "Del copper group", &btn_delgrp);
 
@@ -655,6 +658,12 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
+			if (is_button(x, y, &btn_addoutline)) {
+				drag_addoutline = 1;
+				res = 1;
+				break;
+			}
+			
 			if (is_button(x, y, &btn_addgrp)) {
 				drag_addgrp = 1;
 				res = 1;
@@ -703,7 +712,23 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			}
 			break;
 		case PCB_HID_MOUSE_RELEASE:
-			if (drag_addgrp) {
+			if (drag_addoutline) {
+				if (is_button(x, y, &btn_addoutline)) {
+					pcb_layergrp_t *g = pcb_get_grp_new_misc(PCB);
+					g->name = pcb_strdup("global_outline");
+					g->ltype = PCB_LYT_OUTLINE;
+					g->valid = 1;
+					g->open = 1;
+
+					outline_gactive = pcb_layergrp_id(PCB, g);
+					pcb_layer_create(PCB, outline_gactive, "outline");
+					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+				}
+				drag_addoutline = 0;
+				gactive = -1;
+				res = 1;
+			}
+			else if (drag_addgrp) {
 				if (gactive >= 0) {
 					pcb_layergrp_t *g;
 					g = pcb_layergrp_insert_after(PCB, gactive);
