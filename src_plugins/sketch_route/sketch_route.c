@@ -484,10 +484,10 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 				edge_t *e = get_edge_from_points(wp->p, next_wp->p);
 				int list_num, n;
 
-				assert(prev_e->endp[1] == e->endp[0] || prev_e->endp[0] == e->endp[1]);
-				list_num = ((prev_e->endp[1] == wp->p) ^ (wp->side == SIDE_RIGHT) ? 1 : 0);
-
 				if (prev_e != e) { /* 3 subsequent points collinear */
+					assert(prev_e->endp[1] == e->endp[0] || prev_e->endp[0] == e->endp[1]);
+					list_num = ((prev_e->endp[1] == wp->p) ^ (wp->side == SIDE_RIGHT) ? 1 : 0);
+
 					/* check if there was a wire, already attached to this point, that doesn't go through the same points
 					 * as the new wire and is on the opposite wirelist at this point */
 					if (pd->attached_wires[list_num^1] != NULL
