@@ -424,13 +424,18 @@ static int count_wires_coming_from_previous_point(wire_point_t *prev_wp, wire_po
 
 static int count_uturn_wires_coming_from_previous_point(wire_point_t *prev_wp, wire_point_t *wp, int list_num)
 {
-	wirelist_node_t *list, *prev_list;
+	wirelist_node_t *list, *prev_list, *prev_uturn_list;
 	int n;
 
 	list = ((pointdata_t *) wp->p->data)->attached_wires[list_num];
 	prev_list = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num];
+	prev_uturn_list = ((pointdata_t *) prev_wp->p->data)->uturn_wires;
 
-	n = wirelist_get_index(prev_list, prev_wp->wire_node);
+	if (prev_wp->side == SIDE_TERM) /* corner case: prev point is a terminal */
+		n = wirelist_length(prev_list) + wirelist_length(prev_uturn_list);
+	else
+		n = wirelist_get_index(prev_list, prev_wp->wire_node);
+
 	n -= wirelist_length(list);
 
 	return n;
