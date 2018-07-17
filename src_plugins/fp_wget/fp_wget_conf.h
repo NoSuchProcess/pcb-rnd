@@ -8,6 +8,7 @@ typedef struct {
 		const struct fp_wget {
 			CFT_BOOLEAN auto_update_gedasymbols;       /* update the index of gedasymbols on startup automatically */
 			CFT_BOOLEAN auto_update_edakrill;          /* update the index of edakrill on startup automatically */
+			CFT_STRING cache_dir;                      /* where to build the cache */
 		} fp_wget;
 	} plugins;
 } conf_fp_wget_t;
