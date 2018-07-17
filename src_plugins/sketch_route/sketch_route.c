@@ -506,7 +506,9 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
 				}
 				else { /* U-turn */
-					assert((prev_wp->side == wp->side) && (wp->side == next_wp->side));
+					assert(((prev_wp->side == SIDE_TERM) && (wp->side == next_wp->side))
+								 || ((next_wp->side == SIDE_TERM) && (prev_wp->side == wp->side))
+								 || ((prev_wp->side == wp->side) && (wp->side == next_wp->side)));
 
 					/* find node to insert the new wire in the U-turn wirelist:
 					 * - determine index of the wire in the previous attached wirelist
