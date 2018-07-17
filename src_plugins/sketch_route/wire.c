@@ -44,7 +44,7 @@ void wire_copy(wire_t *dst, wire_t *src)
 	memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
 }
 
-static int node_index(wire_t *w, wirelist_node_t *node)
+int wire_node_index(wire_t *w, wirelist_node_t *node)
 {
   int i;
   for (i = 0; i < w->point_num; i++) {
