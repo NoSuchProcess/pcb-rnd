@@ -77,6 +77,7 @@ typedef struct {
 } sketch_t;
 
 static htip_t sketches;
+static pcb_bool_t show_spokes = pcb_true; /* TODO: make this a config node */
 
 
 static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
@@ -105,6 +106,7 @@ static void sketch_update_erbs_layer(sketch_t *sk)
 	list_map0(&l->Line, pcb_line_t, pcb_line_free);
 	if (l->line_tree)
 		pcb_r_destroy_tree(&l->line_tree);
+
 	VTEWIRE_FOREACH(ew, &sk->ewires)
 		ewire_point_t *ewp = &ew->points.array[0];
 		px = ((point_t *)ewp->sp)->pos.x;
@@ -121,6 +123,20 @@ static void sketch_update_erbs_layer(sketch_t *sk)
 		qy = -((point_t *)ewp->sp)->pos.y;
 		pcb_line_new(l, px, py, qx, qy, ew->wire->thickness, ew->wire->clearance, pcb_no_flags());
 	VTEWIRE_FOREACH_END();
+
+	if (show_spokes) {
+		VTPOINT_FOREACH(p, &sk->cdt->points)
+			pointdata_t *pd = p->data;
+			if (pd != NULL) {
+				px = p->pos.x;
+				py = -p->pos.y;
+				for (i = 0; i < 4; i++) {
+					spoke_pos_at_end(&pd->spoke[i], 0, &qx, &qy);
+					pcb_line_new(l, px, py, qx, qy, 1, 0, pcb_no_flags());
+				}
+			}
+		VTPOINT_FOREACH_END();
+	}
 }
 
 static void sketch_validate_erbs(sketch_t *sk, ewire_t *ew)
