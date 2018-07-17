@@ -253,9 +253,6 @@ FEATURES
 - BUG: main.c: SIGPIPE - detect it (needed for popen)
 - feature: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - advanced grid settings:
-	- keep two lists of preferred grid sizes, one in mil, one in mm
-	- generate the grid selection menu from those lists
-	- action to step up and down among those predefined grid sizes
 	- make sure it is possible to edit the lists in preferences
 - libstroke: zoom
 - improve locking:
