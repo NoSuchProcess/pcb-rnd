@@ -37,9 +37,11 @@ void wire_pop_point(wire_t *w)
 
 void wire_copy(wire_t *dst, wire_t *src)
 {
-  memcpy(dst, src, sizeof(wire_point_t));
-  dst->points = realloc(dst->points, src->point_max*sizeof(wire_point_t));
-  memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
+	wire_point_t *temp = dst->points;
+	memcpy(dst, src, sizeof(wire_point_t));
+	dst->points = temp;
+	dst->points = realloc(dst->points, src->point_max*sizeof(wire_point_t));
+	memcpy(dst->points, src->points, src->point_num*sizeof(wire_point_t));
 }
 
 static int node_index(wire_t *w, wirelist_node_t *node)
