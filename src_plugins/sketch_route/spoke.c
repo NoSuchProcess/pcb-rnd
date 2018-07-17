@@ -89,6 +89,8 @@ void spoke_pos_at_slot(spoke_t *sp, int slot, pcb_coord_t *x, pcb_coord_t *y)
 	pcb_coord_t spacing = 0;
 	int i;
 
+	assert(slot < vtp0_len(&sp->slots));
+
 	for (i = 0; i < slot; i++) {
 		spacing += conf_core.design.bloat;
 		spacing += ((ewire_t *) (sp->slots.array[i]))->wire->thickness;
