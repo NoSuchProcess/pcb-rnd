@@ -9,11 +9,11 @@
 #include "sktypedefs.h"
 
 
-typedef struct {
+struct wire_point_s {
 	point_t *p;
 	side_t side;
   wirelist_node_t *wire_node;
-} wire_point_t;
+};
 
 struct wire_s {
 	int point_num;
