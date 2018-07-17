@@ -16,6 +16,7 @@ LST(node_t) *LST(remove)(LST(node_t) *list, LST(node_t) *node);
 LST(node_t) *LST(remove_item)(LST(node_t) *list, LST_ITEM_T *item);
 LST(node_t) *LST(find)(LST(node_t) *list, LST_ITEM_T *item);
 LST(node_t) *LST(nth)(LST(node_t) *list, int n);
+LST(node_t) *LST(last)(LST(node_t) *list);
 
 size_t LST(length)(LST(node_t) *list);
 int LST(get_index)(LST(node_t) *list, LST(node_t) *node);

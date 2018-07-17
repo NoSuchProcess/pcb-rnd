@@ -92,6 +92,15 @@ LST(node_t) *LST(nth)(LST(node_t) *list, int n)
 	return list;
 }
 
+LST(node_t) *LST(last)(LST(node_t) *list)
+{
+	if (list == NULL)
+		return NULL;
+	while (list->next != NULL)
+		list = list->next;
+	return list;
+}
+
 size_t LST(length)(LST(node_t) *list)
 {
 	size_t len = 0;
