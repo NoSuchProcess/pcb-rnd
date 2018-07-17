@@ -54,17 +54,23 @@ int wire_node_index(wire_t *w, wirelist_node_t *node)
   return -1;
 }
 
-int wire_is_node_connected_with_point(wirelist_node_t *node, point_t *p)
+int wire_node_index_at_connected_point(wirelist_node_t *node, point_t *p)
 {
-  wire_t *w = node->item;
+	wire_t *w = node->item;
   int i = wire_node_index(w, node);
   if (i == -1)
-    return 0;
+    return -1;
   if (i == 0)
-    return w->points[1].p == p;
+    return w->points[1].p == p ? 1 : -1;
   if (i == w->point_num - 1)
-    return w->points[w->point_num - 2].p == p;
-  return (w->points[i - 1].p == p) || (w->points[i + 1].p == p);
+    return w->points[w->point_num - 2].p == p ? (w->point_num - 2) : -1;
+  return (w->points[i - 1].p == p) ? i - 1
+				 : (w->points[i + 1].p == p) ? i + 1 : -1;
+}
+
+int wire_is_node_connected_with_point(wirelist_node_t *node, point_t *p)
+{
+	return wire_node_index_at_connected_point(node, p) != -1;
 }
 
 int wire_is_coincident_at_node(wirelist_node_t *node, point_t *p1, point_t *p2)
