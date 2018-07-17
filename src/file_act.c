@@ -355,6 +355,7 @@ static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(pn
 static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *args[128];
+	char **a;
 	int n;
 
 	if (argc < 1) {
@@ -380,7 +381,9 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	argc-=2;
 
 	/* call the exporter */
-	pcb_exporter->parse_arguments(&argc, (char ***)(args+1));
+	a = args;
+	a++;
+	pcb_exporter->parse_arguments(&argc, &a);
 	pcb_exporter->do_export(NULL);
 
 	pcb_exporter = NULL;
