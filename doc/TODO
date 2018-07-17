@@ -10,17 +10,6 @@
 + feature: 'Zoom to Selection' action. Usage Example - Use advanced search to select an object and then 'Zoom to Selection' to find it. [report: Ade]
 	+ -> actions ZoomTo(selected) and ZoomTo(found)
 	+ BUG: ZoomTo() action does not update the crosshair. Zoom in/out (with mouse wheel) after ZoomTo centers the zoom on previous crosshair position which may be off screen. 
-- XOR rendering upgrade: [report: pstuge]
-	- option 1: composite solution:
-		+ make sure all xor draws are done in a single pass, at the very end; consider converting XOR draw from GC into a drawing mode [report: Ade]
-		- make sure it's drawn normally (without xor) as a canvas and applied onto the output as with XOR so overlapping objects won't cause a problem [report: Ade]
-	- option 2: emboss
-		+ draw them all at the end
-		- draw with a slightly thicker background, in normal mode, skip xor
-	- option 3:
-		- implement both option 1 and 2 and add a config setting that selects which one to do
-	- redefine xor rendering to be compositing?
-		- if so: allow padstack xor draw to draw all shapes on all layers
 - BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 	-> need per plugin menus and/or implement local grid in lesstif
 	-> non-bug
@@ -41,6 +30,9 @@
 	- in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 
 2. For later releases ===============================================================================
+- XOR rendering upgrade:
+		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
+		- if worked: allow padstack xor draw to draw all shapes on all layers
 - introduce new layer types:
 	- doc
 	- keepout
