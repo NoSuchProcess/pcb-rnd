@@ -34,7 +34,7 @@
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
-- feature: currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
++ feature: currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
 - feature: padstack label smarter print [report: Ade]
 	+ rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
 	+ global conf setting for label text size [report: Ade]
