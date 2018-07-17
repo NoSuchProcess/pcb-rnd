@@ -403,47 +403,94 @@ static int count_all_wires_coming_from_adjacent_point(pointdata_t *adj_pd, wire_
 
 static int count_wires_coming_from_previous_point(wire_point_t *prev_wp, wire_point_t *wp, int list_num)
 {
-	wirelist_node_t *prev_list, *prev_list2, *prev_list_term;
+	wirelist_node_t *prev_list, *prev_list_term, *prev_list_uturn;
 	int n;
 
 	prev_list = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num];
-	prev_list2 = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num^1];
 	prev_list_term = ((pointdata_t *) prev_wp->p->data)->terminal_wires;
+	prev_list_uturn = ((pointdata_t *) prev_wp->p->data)->uturn_wires;
 
-	if (prev_wp->side == wp->side) /* case 1: the wire was on the same side at the previous point */
+	if (prev_wp->side == wp->side) { /* case 1: the wire was on the same side at the previous point */
 		n = wirelist_get_index(prev_list, prev_wp->wire_node);
+		if (n == -1) /* wire was U-turned at the previous point */
+			n = wirelist_length(prev_list) + wirelist_get_index(prev_list_uturn, prev_wp->wire_node);
+	}
 	else if (prev_wp->side == SIDE_TERM) /* case 2: previous point was a terminal */
-		n = wirelist_length(prev_list);
+		n = wirelist_length(prev_list) + wirelist_length(prev_list_uturn);
 	else { /* case 3: the wire was on an other side of the previous point */
+		int temp;
 		n = wirelist_length(prev_list);
+		check_wires(prev_list_uturn);
 		check_wires(prev_list_term);
-		n += (wirelist_length(prev_list2) - 1) - wirelist_get_index(prev_list2, prev_wp->wire_node);
+		temp = wirelist_get_index(prev_list_uturn, prev_wp->wire_node);
+		if (temp >= 0) /* wire coming from previous U-turn */
+			n += (wirelist_length(prev_wp->wire_node) - 1);
+		else {
+			check_wires(prev_list_uturn);
+			n += (wirelist_length(prev_wp->wire_node) - 1);
+		}
 	}
 	return n;
 }
 
 static int count_uturn_wires_coming_from_previous_point(wire_point_t *prev_wp, wire_point_t *wp, int list_num)
 {
-	wirelist_node_t *list, *prev_list, *prev_uturn_list;
-	int n;
+	wirelist_node_t *list_uturn, *prev_list, *prev_list2, *prev_list_uturn;
+	wirelist_node_t *prev_outer_node, *curr_outer_node;
+	int i;
 
-	list = ((pointdata_t *) wp->p->data)->attached_wires[list_num];
+	list_uturn = ((pointdata_t *) wp->p->data)->uturn_wires;
 	prev_list = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num];
-	prev_uturn_list = ((pointdata_t *) prev_wp->p->data)->uturn_wires;
+	prev_list2 = ((pointdata_t *) prev_wp->p->data)->attached_wires[list_num^1];
+	prev_list_uturn = ((pointdata_t *) prev_wp->p->data)->uturn_wires;
 
-	if (prev_wp->side == SIDE_TERM) /* corner case: prev point is a terminal */
-		n = wirelist_length(prev_list) + wirelist_length(prev_uturn_list);
-	else
-		n = wirelist_get_index(prev_list, prev_wp->wire_node);
-
-	n -= wirelist_length(list);
-
-	return n;
+	if (prev_wp->side == wp->side) { /* case 1: the wire was on the same side at the previous point */
+		i = wirelist_get_index(prev_list, prev_wp->wire_node);
+		assert(i != -1);
+		if (i == 0)
+			return 0;
+		prev_outer_node = wirelist_nth(prev_list, i-1);
+		i = wire_node_index_at_connected_point(prev_outer_node, wp->p);
+		assert(i != -1);
+		curr_outer_node = prev_outer_node->item->points[i].wire_node;
+		return wirelist_get_index(list_uturn, curr_outer_node) + 1;
+	}
+	else {
+		if (prev_wp->side == SIDE_TERM) { /* case 2: previous point was a terminal */
+			prev_outer_node = wirelist_last(prev_list_uturn);
+			if (prev_outer_node == NULL) { /* no uturn wires at the previous point */
+				prev_outer_node = wirelist_last(prev_list);
+				if (prev_outer_node == NULL) /* no outer wires at the previous point at all */
+					return 0;
+			}
+			/* TODO: the result of this func can be ambiguous, so this need a deeper consideration
+			 * (connected point in case of uturns is both the previous and the next point) */
+			i = wire_node_index_at_connected_point(prev_outer_node, wp->p);
+			assert(i != -1);
+			curr_outer_node = prev_outer_node->item->points[i].wire_node;
+			return wirelist_get_index(list_uturn, curr_outer_node) + 1;
+		}
+		else { /* case 3: the wire was on an other side of the previous point */
+			prev_outer_node = prev_wp->wire_node->next;
+			if (prev_outer_node == NULL) { /* no inner wires at the previous point */
+				prev_outer_node = wirelist_last(prev_list2);
+				if (prev_outer_node == NULL) /* no wires at the previous point from the other side */
+					return 0;
+			}
+			/* TODO: uturn wires from the previous point, that may go to the current point, are _not_ taken into account */
+			i = wire_node_index_at_connected_point(prev_outer_node, wp->p);
+			if(i == -1)
+				return 0;
+			curr_outer_node = prev_outer_node->item->points[i].wire_node;
+			return wirelist_get_index(list_uturn, curr_outer_node) + 1;
+		}
+	}
 }
 #undef check_wires
 
 static void insert_wire_at_point(wire_point_t *wp, wire_t *w, wirelist_node_t **list, int n)
 {
+	assert(n >= -1);
 	if (n == -1) {
 		*list = wirelist_prepend(*list, &w);
 		wp->wire_node = *list;
@@ -469,9 +516,9 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 		wire_point_t *wp = &new_w->points[i];
 		wire_point_t *prev_wp = &new_w->points[i-1];
 		wire_point_t *next_wp = &new_w->points[i+1];
-		pointdata_t *pd;
+		pointdata_t *pd = wp->p->data;
+		pointdata_t *prev_pd = prev_wp->p->data;
 
-		pd = wp->p->data;
 		assert(pd != NULL);
 
 #ifdef SK_DEBUG
@@ -530,9 +577,14 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 #endif
 				}
 				else { /* U-turn */
-					assert(((prev_wp->side == SIDE_TERM) && (wp->side == next_wp->side))
-								 || ((next_wp->side == SIDE_TERM) && (prev_wp->side == wp->side))
-								 || ((prev_wp->side == wp->side) && (wp->side == next_wp->side)));
+					/* this list_num is related to the previous point, not the current one
+					 * (and is not used for selecting list to store the wire; only to determine uturn list index) */
+					if (prev_wp->side != SIDE_TERM) {
+						list_num = ((e->endp[1] == wp->p) ^ (prev_wp->side == SIDE_RIGHT) ? 1 : 0);
+						list_num = prev_pd->attached_wires[list_num] == NULL ? list_num^1 : list_num;
+					}
+					else /* except if previous point was a terminal */
+						list_num = ((e->endp[1] == wp->p) ^ (wp->side == SIDE_RIGHT) ? 1 : 0);
 
 					/* find node to insert the new wire in the U-turn wirelist:
 					 * - determine index of the wire in the previous attached wirelist
