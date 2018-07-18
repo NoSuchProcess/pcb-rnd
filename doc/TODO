@@ -25,6 +25,9 @@
 + feature: padstack label smarter print [report: Ade]
 	+ rotate depending pastack bbox orientation (example: tqfp upper pads) [report: Ade]
 	+ global conf setting for label text size [report: Ade]
+- padstack bbox:
+	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
+	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
 
 
 2. For later releases ===============================================================================
