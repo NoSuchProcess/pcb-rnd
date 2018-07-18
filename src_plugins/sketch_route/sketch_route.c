@@ -514,12 +514,19 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 	assert(new_w->point_num >= 2);
 	for (i = 0; i < new_w->point_num; i++) {
 		wire_point_t *wp = &new_w->points[i];
-		wire_point_t *prev_wp = &new_w->points[i-1];
-		wire_point_t *next_wp = &new_w->points[i+1];
+		wire_point_t *prev_wp;
+		wire_point_t *next_wp;
 		pointdata_t *pd = wp->p->data;
-		pointdata_t *prev_pd = prev_wp->p->data;
+		pointdata_t *prev_pd;
 
 		assert(pd != NULL);
+
+		if (i > 0) {
+			prev_wp = &new_w->points[i-1];
+			prev_pd = prev_wp->p->data;
+		}
+		if (i < new_w->point_num - 1)
+			next_wp = &new_w->points[i+1];
 
 #ifdef SK_DEBUG
 			pcb_printf("  add point at (%mm, %mm); ", wp->p->pos.x, -wp->p->pos.y,
