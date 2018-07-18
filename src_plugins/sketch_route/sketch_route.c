@@ -235,8 +235,7 @@ repeat_current_point:
 					if (j == curr_sp->dir)
 						continue;
 					if (p == NULL) {
-						if(ORIENT(curr_wp->side == SIDE_LEFT, &curr_p, &next_p, &curr_sp_p[j])
-							 || ORIENT_COLLINEAR(&curr_p, &next_p, &curr_sp_p[j])) {
+						if(ORIENT(curr_wp->side == SIDE_LEFT, &curr_p, &next_p, &curr_sp_p[j])) {
 							p = &curr_sp_p[j];
 							curr_sp_dir = j;
 						}
