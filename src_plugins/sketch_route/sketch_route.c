@@ -173,6 +173,7 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 			pointdata_t *next_pd = (pointdata_t *) next_wp->p->data;
 			int curr_sp_slot_num = wire_point_position(curr_wp);
 			point_t curr_sp_p[4], next_sp_p[4];
+			int repeat_cnt;
 
 #ifdef SK_DEBUG
 			pcb_printf("  wire point %d at (%mm, %mm); ", i, curr_wp->p->pos.x, -curr_wp->p->pos.y);
@@ -190,6 +191,7 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 			if (i == w->point_num-2)
 				next_p = *next_wp->p;
 
+			repeat_cnt = 0;
 repeat_current_point:
 
 			/* 1. find destination spoke */
@@ -260,6 +262,8 @@ repeat_current_point:
 #ifdef SK_DEBUG
 						pcb_printf("found obstructing spoke (dir %d) at (%mm, %mm); ", curr_sp->dir, curr_p.pos.x, -curr_p.pos.y);
 #endif
+						if (++repeat_cnt == 4)
+							break;
 						goto repeat_current_point;
 					}
 				}
