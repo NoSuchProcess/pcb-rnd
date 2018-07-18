@@ -203,10 +203,10 @@ void pcb_poly_bbox(pcb_poly_t *Polygon)
 	/* clearance is generally considered to be part of the bbox for all objects */
 	{
 		pcb_coord_t clr = PCB_POLY_HAS_CLEARANCE(Polygon) ? Polygon->Clearance/2 : 0;
-		Polygon->BoundingBox.X1 -= Polygon->bbox_naked.X1 - clr;
-		Polygon->BoundingBox.Y1 -= Polygon->bbox_naked.Y1 - clr;
-		Polygon->BoundingBox.X2 += Polygon->bbox_naked.X2 + clr;
-		Polygon->BoundingBox.Y2 += Polygon->bbox_naked.Y2 + clr;
+		Polygon->BoundingBox.X1 = Polygon->bbox_naked.X1 - clr;
+		Polygon->BoundingBox.Y1 = Polygon->bbox_naked.Y1 - clr;
+		Polygon->BoundingBox.X2 = Polygon->bbox_naked.X2 + clr;
+		Polygon->BoundingBox.Y2 = Polygon->bbox_naked.Y2 + clr;
 	}
 
 	/* boxes don't include the lower right corner */
