@@ -720,6 +720,7 @@ ha:{
 				ha:Group properties...              = { action={Propedit(layer_group:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
+				ha:Remove group...                  = { action={ DelGroup(@) } }
 				ha:Insert new layer                 = { action={ MoveLayer(-1, gi); EditLayer() } }
 				ha:Append new layer                 = { action={ MoveLayer(-1, ga); EditLayer() } }
 				-
