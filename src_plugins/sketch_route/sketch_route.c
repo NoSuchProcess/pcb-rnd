@@ -269,6 +269,8 @@ repeat_current_point:
 			}
 
 			/* 3. insert point if two subsequent segments are not concave */
+			/* TODO: concavity detection should propagate through the previous points, when one is found;
+			 *       maybe it could be done only in sketch_validate_erbs */
 			if (i > 0) {
 				/* if point is on the left, check if the next point is on the right of the previous segment */
 				if (!ORIENT(curr_wp->side == SIDE_LEFT, &prev_p, &curr_p, &next_p)) {
