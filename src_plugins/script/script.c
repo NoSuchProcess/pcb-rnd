@@ -60,7 +60,8 @@ static const char *script_pup_paths[] = {
 static void script_unload_entry(htsp_entry_t *e)
 {
 	script_t *s = (script_t *)e->value;
-	fgw_obj_unreg(&pcb_fgw, s->obj);
+	if (s->obj != NULL)
+		fgw_obj_unreg(&pcb_fgw, s->obj);
 	pup_unload(&script_pup, s->pup, NULL);
 	free(s->id);
 	free(s->fn);
