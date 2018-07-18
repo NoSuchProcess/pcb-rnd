@@ -78,7 +78,8 @@ int wire_is_coincident_at_node(wirelist_node_t *node, point_t *p1, point_t *p2)
   wire_t *w = node->item;
   int i = wire_node_index(w, node);
   assert(i != -1 && i != 0 && i != w->point_num - 1);
-  return (w->points[i - 1].p == p1 && w->points[i + 1].p == p2);
+  return (w->points[i - 1].p == p1 && w->points[i + 1].p == p2)
+				 || (w->points[i + 1].p == p1 && w->points[i - 1].p == p2);
 }
 
 int wire_point_position(wire_point_t *wp)
