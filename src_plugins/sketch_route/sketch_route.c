@@ -202,19 +202,16 @@ repeat_current_point:
 
 				/* select the leftmost spoke, if point is on the right and vice-versa */
 				p = &next_sp_p[0];
+				next_sp_dir = 0;
 				for (j = 1; j < 4; j++) {
 					if (ORIENT(next_wp->side == SIDE_LEFT, &curr_p, p, &next_sp_p[j])) {
 						p = &next_sp_p[j];
 						next_sp_dir = j;
 					}
-				}
-				/* check if an another spoke is collinear and select the closer one */
-				for (j = 0; j < 4; j++) {
-					if (j == next_sp_dir)
-						continue;
+					/* check collinear case and select the closer spoke */
 					if (ORIENT_COLLINEAR(&curr_p, p, &next_sp_p[j])) {
 						next_sp_dir = DIST2(&curr_p, p) < DIST2(&curr_p, &next_sp_p[j]) ? next_sp_dir : j;
-						break;
+						p = &next_sp_p[next_sp_dir];
 					}
 				}
 				next_sp = &next_pd->spoke[next_sp_dir];
