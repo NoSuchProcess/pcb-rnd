@@ -1514,6 +1514,40 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return ret;
 }
 
+static const char pcb_acts_DelGroup[] = "DelGroup([@group])";
+static const char pcb_acth_DelGroup[] = "Remove a layer group; if the first argument is not specified, the current group is removed";
+static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *name = NULL;
+	pcb_layergrp_t *g = NULL;
+	pcb_layergrp_id_t gid;
+
+	if (CURRENT != NULL)
+		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, EditLayer, name = argv[1].val.str);
+	if (*name == '@') {
+		gid = pcb_actd_EditGroup_gid;
+		if (name[1] != '\0')
+			gid = pcb_layergrp_by_name(PCB, name+1);
+		if (gid < 0) {
+			pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", name+1);
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+	}
+	else {
+		if (g == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Can't find layer group\n");
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+		gid = pcb_layergrp_id(PCB, g);
+	}
+
+	PCB_ACT_IRES(pcb_layergrp_del(PCB, gid, 1));
+	return 0;
+}
 
 const char pcb_acts_selectlayer[] = "SelectLayer(1..MAXLAYER|Silk|Rats)";
 const char pcb_acth_selectlayer[] = "Select which layer is the current layer.";
@@ -1928,6 +1962,7 @@ pcb_action_t gui_action_list[] = {
 	{"Cursor", pcb_act_Cursor, pcb_acth_Cursor, pcb_acts_Cursor},
 	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
+	{"DelGroup",  pcb_act_DelGroup, pcb_acth_DelGroup, pcb_acts_DelGroup},
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
