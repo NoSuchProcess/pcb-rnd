@@ -78,6 +78,7 @@ typedef struct {
 
 static htip_t sketches;
 static pcb_bool_t show_spokes = pcb_true; /* TODO: make this a config node */
+static pcb_bool_t check_net = pcb_false; /* TODO: make this a config node */
 
 
 static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
@@ -841,7 +842,7 @@ static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term
 	attached_path.sketch = sketches_get_sketch_at_layer(layer);
 	attached_path.start_term = start_term;
 	attached_path.net = pcb_netlist_find_net4term(PCB, start_term);
-	if (attached_path.net == NULL)
+	if (check_net && attached_path.net == NULL)
 		return pcb_false;
 
 	vtp0_init(&attached_path.lines);
@@ -985,32 +986,41 @@ next_triangle:
 static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 {
 	pcb_subc_t *subc = pcb_obj_parent_subc(end_term);
+	pcb_bool net_valid = pcb_false;
 	int i;
 
-	if(end_term != attached_path.start_term && subc != NULL) {
-		char termname[128];
-		pcb_snprintf(termname, sizeof(termname), "%s-%s", subc->refdes, end_term->term);
-		for (i = 0; i < attached_path.net->EntryN; i++) {
-			if (strcmp(attached_path.net->Entry[i].ListEntry, termname) == 0) {
-				point_t *end_p;
-				wire_t *path;
-
-				end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
-				if (attached_path_next_point(end_p) == pcb_false)
-					return pcb_false;
-
-				path = sketch_find_shortest_path(&attached_path.corridor);
-				path->thickness = conf_core.design.line_thickness;
-				path->clearance = conf_core.design.clearance;
-				sketch_insert_wire(attached_path.sketch, path);
-				sketch_update_cdt_layer(attached_path.sketch);
-				sketch_update_erbs(attached_path.sketch);
-				sketch_update_erbs_layer(attached_path.sketch);
-				wire_uninit(path);
-				return pcb_true;
+	if (check_net) {
+		if(end_term != attached_path.start_term && subc != NULL) {
+			char termname[128];
+			pcb_snprintf(termname, sizeof(termname), "%s-%s", subc->refdes, end_term->term);
+			for (i = 0; i < attached_path.net->EntryN; i++) {
+				if (strcmp(attached_path.net->Entry[i].ListEntry, termname) == 0)
+					net_valid = pcb_true;
 			}
 		}
 	}
+	else
+		net_valid = pcb_true;
+
+	if (net_valid) {
+		point_t *end_p;
+		wire_t *path;
+
+		end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
+		if (attached_path_next_point(end_p) == pcb_false)
+			return pcb_false;
+
+		path = sketch_find_shortest_path(&attached_path.corridor);
+		path->thickness = conf_core.design.line_thickness;
+		path->clearance = conf_core.design.clearance;
+		sketch_insert_wire(attached_path.sketch, path);
+		sketch_update_cdt_layer(attached_path.sketch);
+		sketch_update_erbs(attached_path.sketch);
+		sketch_update_erbs_layer(attached_path.sketch);
+		wire_uninit(path);
+		return pcb_true;
+	}
+
 	return pcb_false;
 }
 
