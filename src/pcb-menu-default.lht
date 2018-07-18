@@ -705,7 +705,7 @@ ha:{
 				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
 				ha:Move down (within group)         = { action=MoveLayer(c, step+) }
 				-
-				ha:Remove                           = { action=MoveLayer(c, -1) }
+				ha:Remove layer                     = { action=MoveLayer(c, -1) }
 				ha:Insert new, before this layer    = { action={ MoveLayer(-1, c); EditLayer() } }
 				ha:Insert new, after this layer     = { action={ MoveLayer(-1, c); MoveLayer(c, step+); EditLayer() } }
 				-
