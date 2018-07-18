@@ -154,6 +154,10 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 	new_ew->wire = w;
 	ewire_append_point(new_ew, (spoke_t *) w->points[0].p, SIDE_TERM, 0, w->points[0].wire_node);
 
+#ifdef SK_DEBUG
+	printf("\ninserting ERBS wire:\n");
+#endif
+
 	if (w->point_num == 2) {
 		ewire_append_point(new_ew, (spoke_t *) w->points[1].p, SIDE_TERM, 0, w->points[1].wire_node);
 		return new_ew;
@@ -169,6 +173,10 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 			pointdata_t *next_pd = (pointdata_t *) next_wp->p->data;
 			int curr_sp_slot_num = wire_point_position(curr_wp);
 			point_t curr_sp_p[4], next_sp_p[4];
+
+#ifdef SK_DEBUG
+			pcb_printf("  wire point %d at (%mm, %mm); ", i, curr_wp->p->pos.x, -curr_wp->p->pos.y);
+#endif
 
 			for (j = 0; j < 4; j++) {
 				spoke_pos_at_wire_point(&curr_pd->spoke[j], curr_wp, &curr_sp_p[j].pos.x, &curr_sp_p[j].pos.y);
@@ -210,6 +218,10 @@ repeat_current_point:
 				next_p = next_sp_p[next_sp_dir];
 			}
 
+#ifdef SK_DEBUG
+			pcb_printf("dest spoke (dir %d) at (%mm, %mm); ", next_sp->dir, next_p.pos.x, -next_p.pos.y);
+#endif
+
 			/* 2. check if the ewire should be attached to any of the remaining spokes at the current point */
 			if (i > 0) { /* spoke - spoke, or spoke - end terminal */
 				point_t *p;
@@ -245,6 +257,9 @@ repeat_current_point:
 						curr_sp = &curr_pd->spoke[curr_sp_dir];
 						prev_p = curr_p;
 						curr_p = *p;
+#ifdef SK_DEBUG
+						pcb_printf("found obstructing spoke (dir %d) at (%mm, %mm); ", curr_sp->dir, curr_p.pos.x, -curr_p.pos.y);
+#endif
 						goto repeat_current_point;
 					}
 				}
@@ -257,11 +272,19 @@ repeat_current_point:
 					ewire_append_point(new_ew, curr_sp, curr_wp->side, curr_sp_slot_num, curr_wp->wire_node);
 					spoke_insert_wire_at_slot(curr_sp, curr_sp_slot_num, new_ew);
 				}
+				else {
+#ifdef SK_DEBUG
+						pcb_printf("found concavity, skip; ");
+#endif
+				}
 			}
 
 			curr_sp = next_sp;
 			prev_p = curr_p;
 			curr_p = next_p;
+#ifdef SK_DEBUG
+			pcb_printf("\n");
+#endif
 		}
 
 		ewire_append_point(new_ew, (spoke_t *) w->points[w->point_num-1].p, SIDE_TERM, 0, w->points[w->point_num-1].wire_node);
