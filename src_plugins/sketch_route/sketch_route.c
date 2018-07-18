@@ -579,8 +579,8 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
 					insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
 #ifdef SK_DEBUG
-					pcb_printf("collinear; list_num=%d; attached pos=%d; attached len=%d\n", list_num,
-										 wirelist_length(wp->wire_node), wirelist_length(pd->attached_wires[list_num]));
+					pcb_printf("collinear; list_num=%d; n=%d; attached pos=%d; attached len=%d\n", list_num, n,
+										 wirelist_length(wp->wire_node)-1, wirelist_length(pd->attached_wires[list_num]));
 #endif
 				}
 				else { /* U-turn */
@@ -601,8 +601,8 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					n += count_uturn_wires_coming_from_previous_point(prev_wp, wp, list_num);
 					insert_wire_at_point(wp, new_w, &pd->uturn_wires, n);
 #ifdef SK_DEBUG
-					pcb_printf("uturn; uturn pos=%d; uturn len=%d\n",
-										 wirelist_length(wp->wire_node), wirelist_length(pd->uturn_wires));
+					pcb_printf("uturn; list_num=%d; n=%d; uturn pos=%d; uturn len=%d\n", list_num, n,
+										 wirelist_length(wp->wire_node)-1, wirelist_length(pd->uturn_wires));
 #endif
 				}
 			}
@@ -630,8 +630,8 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 				n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
 				insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
 #ifdef SK_DEBUG
-					pcb_printf("list_num=%d; attached pos=%d; attached len=%d\n", list_num,
-										 wirelist_length(wp->wire_node), wirelist_length(pd->attached_wires[list_num]));
+					pcb_printf("list_num=%d; n=%d, attached pos=%d; attached len=%d\n", list_num, n,
+										 wirelist_length(wp->wire_node)-1, wirelist_length(pd->attached_wires[list_num]));
 #endif
 			}
 		}
