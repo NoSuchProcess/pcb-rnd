@@ -34,8 +34,6 @@ typedef struct _GtkTrunctext GtkTrunctext;
 typedef struct _GtkTrunctextClass GtkTrunctextClass;
 GtkTrunctext *gtk_trunctext_new(const gchar *str);
 
-#include "compat.h"
-
 /* GtkTrunctext is a subclass of GtkLabel */
 #define TYPE_GTK_TRUNCTEXT (gtk_trunctext_get_type ())
 #define GTK_TRUNCTEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_GTK_TRUNCTEXT, GtkTrunctext))

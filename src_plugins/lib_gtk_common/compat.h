@@ -100,6 +100,7 @@ static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 	return gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 }
 
+void *gtk_trunctext_new(const gchar *str);
 static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
 {
 	return gtk_trunctext_new(str);
