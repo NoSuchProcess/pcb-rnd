@@ -112,9 +112,21 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_stroke_exec(arg);
 	}
 	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
-		char tmp[256];
-		pcb_snprintf(tmp, sizeof(tmp), "ZoomTo(%$mm, %$mm, %$mm, %$mm)", stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y);
-		pcb_parse_command(tmp);
+		fgw_arg_t args[5];
+		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, "zoomto");
+
+		if (f == NULL) {
+			pcb_message(PCB_MSG_ERROR, "zoomto action is not available");
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+
+		args[0].type = FGW_FUNC; args[0].val.func = f;
+		args[1].type = FGW_COORD; fgw_coord(&args[1]) = stroke_first_x;
+		args[2].type = FGW_COORD; fgw_coord(&args[2]) = stroke_first_y;
+		args[3].type = FGW_COORD; fgw_coord(&args[3]) = stroke_last_x;
+		args[4].type = FGW_COORD; fgw_coord(&args[4]) = stroke_last_y;
+		return pcb_actionv_(f, res, 5, args);
 	}
 	else if (pcb_strcasecmp(cmd, "stopline") == 0) {
 		if (conf_core.editor.mode == PCB_MODE_LINE)
