@@ -14,6 +14,8 @@ echo '
 	...
 ' | pcb-rnd --gui batch
 
+From within pcb-rnd the ExecuteFile(filename) action can be used to
+load and execute a pcb-rnd action script from a file.
 
 2. Embedded scripting
 ~~~~~~~~~~~~~~~~~~~~~
