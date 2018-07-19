@@ -115,7 +115,10 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	htsp_set(&scripts, s->id, s);
 
 	s->obj = fgw_obj_new(&pcb_fgw, s->id, s->lang, s->fn, NULL);
-
+	if (s->obj == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
+		return -1;
+	}
 	return 0;
 }
 
