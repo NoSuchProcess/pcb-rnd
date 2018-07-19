@@ -746,10 +746,15 @@ static int layer_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+static void pcb_action_err(fgw_obj_t *obj, const char *msg)
+{
+	pcb_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
+}
 
 void pcb_actions_init(void)
 {
 	fgw_init(&pcb_fgw, "pcb-rnd");
+	pcb_fgw.async_error = pcb_action_err;
 	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
