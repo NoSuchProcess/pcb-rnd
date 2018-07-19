@@ -252,6 +252,10 @@ void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
 	ps->BoundingBox.Y1 += dy;
 	ps->BoundingBox.X2 += dx;
 	ps->BoundingBox.Y2 += dy;
+	ps->bbox_naked.X1 += dx;
+	ps->bbox_naked.Y1 += dy;
+	ps->bbox_naked.X2 += dx;
+	ps->bbox_naked.Y2 += dy;
 }
 
 void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come)
