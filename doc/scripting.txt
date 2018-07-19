@@ -29,22 +29,4 @@ to the action infrastructure:
 
 For more info see user/06_feature/scripting/
 
-Usage
-
- Run action
-
-  LoadScript(id, filename, language)
-
- where id is an arbitrary text ID. The ID is used for referencing the script
- once it is loaded. The filename should be a full path (CWD is pcb-rnd's
- CWD). Language must be one of the languages configured in step 2 above.
-
- Once the script is loaded, it is accessible by calling the actions it
- registered using the standard fgw_func_reg() mechanism.
-
- Scripts can be unloaded using the action
-
-  UnloadScript(id)
-
-
 

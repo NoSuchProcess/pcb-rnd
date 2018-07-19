@@ -5,13 +5,35 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> Scripting intro </H1>
+
+<H1> Scripting - User Intro </H1>
 <p>
 This document is an introduction to fungw for pcb-rnd users. It focuses on
 scripting pcb-rnd and doesn't discuss fungw deeper than the minimum necessary.
 Fungw is more generic than shown here.
+<p>
+Loading a script using the CLI: run action
+<pre>
+	LoadScript(id, filename, language)
+</pre>
+<p>
+where id is an arbitrary text ID. The ID is used for referencing the script
+once it is loaded. The filename should be a full path (CWD is pcb-rnd's
+CWD). Language must be one of the languages configured in step 2 above.
+<p>
+Once the script is loaded, it is accessible by calling the actions it
+registered using the standard fgw_func_reg() mechanism.
+<p>
+Scripts can be unloaded using the action
+<pre>
+	UnloadScript(id)
+</pre>
 
-<H2> 1. The big picture </H2>
+
+<H1> Scripting - Developer Intro </H1>
+<p>
+
+<H2> 2.1. The big picture </H2>
 <p>
 The main interface between pcb-rnd internals and the outside world
 (e.g. user interface, scripts) is called actions. An action is typically
@@ -32,7 +54,7 @@ Thus the two main aspects of pcb-rnd scripting are:
 	     task
 </ul>
 
-<H2> 2. Defining actions </H2>
+<H2> 2.2. Defining actions </H2>
 <p>
 With fungw, every action is just a native function - the syntax varies
 from scripting language to scripting language (see
@@ -52,7 +74,7 @@ scalar native data type the scripting language supports. If the action
 is not called to get a value but to perform some changes, the return
 value should be an integer: 0 means success, anything else means error.
 
-<H2> 3. Calling actions </H2>
+<H2> 2.3. Calling actions </H2>
 <p>
 The script may call any action available at at a given time, independently
 of whether the action is defined in pcb-rnd core, in plugins or in other
@@ -63,7 +85,7 @@ are all single threaded, blocking calls. The script may use any scalar native
 data type for action arguments without conversion, fungw will take care of
 the conversions automatically.
 
-<H2> 4. Action names </H2>
+<H2> 2.4. Action names </H2>
 <p>
 All action names are registered in lowercase version. The script shall
 register lower case function names and action (function) calls should be
