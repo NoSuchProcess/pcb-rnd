@@ -1248,6 +1248,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 		sc->data->Layer[n].is_bound = 1;
 
 	pcb_data_bbox(&sc->BoundingBox, sc->data, pcb_true);
+	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, pcb_true);
 
 	if (!dt->subc_tree)
 		dt->subc_tree = pcb_r_create_tree();
