@@ -717,6 +717,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
+	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = PCB_MAX_COORD;
+	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -PCB_MAX_COORD;
 
 	/* make a copy of layer data */
 	for(n = 0; n < src->data->LayerN; n++) {
@@ -770,6 +772,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (nline != NULL) {
 				PCB_SET_PARENT(nline, layer, dl);
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &nline->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->bbox_naked, &nline->bbox_naked);
 			}
 		}
 
@@ -779,6 +782,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (narc != NULL) {
 				PCB_SET_PARENT(narc, layer, dl);
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &narc->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->bbox_naked, &narc->bbox_naked);
 			}
 		}
 
@@ -788,6 +792,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (ntext != NULL) {
 				PCB_SET_PARENT(ntext, layer, dl);
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &ntext->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->bbox_naked, &ntext->bbox_naked);
 			}
 		}
 
@@ -810,8 +815,10 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			nps = pcb_pstk_new_tr(sc->data, pid, ps->x+dx, ps->y+dy, ps->Clearance, ps->Flags, ps->rot, ps->xmirror, ps->smirror);
 			pcb_pstk_copy_meta(nps, ps);
 			MAYBE_KEEP_ID(nps, ps);
-			if (nps != NULL)
+			if (nps != NULL) {
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &nps->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->bbox_naked, &nps->bbox_naked);
+			}
 		}
 	}
 
@@ -828,6 +835,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (npoly != NULL) {
 				PCB_SET_PARENT(npoly, layer, dl);
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &npoly->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->bbox_naked, &npoly->bbox_naked);
 				pcb_poly_ppclear(npoly);
 			}
 		}
@@ -836,6 +844,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	memcpy(&sc->Flags, &src->Flags, sizeof(sc->Flags));
 
 	pcb_close_box(&sc->BoundingBox);
+	pcb_close_box(&sc->bbox_naked);
 
 	if (pcb != NULL) {
 		if (!dst->subc_tree)
@@ -899,6 +908,8 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	/* for calculating the new bounding box on the fly */
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
+	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = PCB_MAX_COORD;
+	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -PCB_MAX_COORD;
 
 	/* execute on layer locals */
 	for(n = 0; n < sc->data->LayerN; n++) {
@@ -913,21 +924,25 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		linelist_foreach(&sl->Line, &it, line) {
 			pcb_object_operation(opfunc, ctx, PCB_OBJ_LINE, sl, line, line);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &line->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->bbox_naked, &line->bbox_naked);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
 			pcb_object_operation(opfunc, ctx, PCB_OBJ_ARC, sl, arc, arc);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &arc->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->bbox_naked, &arc->bbox_naked);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
 			pcb_object_operation(opfunc, ctx, PCB_OBJ_TEXT, sl, text, text);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &text->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->bbox_naked, &text->bbox_naked);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
 			pcb_object_operation(opfunc, ctx, PCB_OBJ_POLY, sl, poly, poly);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &poly->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->bbox_naked, &poly->bbox_naked);
 		}
 
 	}
@@ -941,10 +956,12 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
 			pcb_object_operation(opfunc, ctx, PCB_OBJ_PSTK, ps, ps, ps);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &ps->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->bbox_naked, &ps->bbox_naked);
 		}
 	}
 
 	pcb_close_box(&sc->BoundingBox);
+	pcb_close_box(&sc->bbox_naked);
 	if (pcb_data_get_top(Data) != NULL)
 		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc);
 	DrawSubc(sc);
