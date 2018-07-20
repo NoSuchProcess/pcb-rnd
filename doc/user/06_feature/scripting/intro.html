@@ -37,6 +37,10 @@ Scripts can be unloaded using the action
 
 <H2> 1.2. Oneliners </H2>
 <p>
+Note: examples in this section assume pcb-rnd is configured and compiled
+with system <a href="install.txt">installed</a> fungw, and libmawk is also installed
+and the libmawk binding is compiled in fungw.
+<p>
 pcb-rnd also offers script one-liners. A one-liner is a short script
 intended to do one thing at the moment of execution. It is typically not
 saved in a file and is not recalled later. One-liners are invoked by
@@ -59,9 +63,20 @@ interpret all the following command lines entered. To leave the script mode,
 type "/exit".
 <p>
 For example:
-<pre>
-
-</pre>
+<ul>
+	<li> open the command line (pressing ':' with the default menu config)
+	<li> enter <i>awk</i> and press enter - this will switch to awk mode
+	<li> enter <i>for(y=1; y &lt; 10; y += 3) { createtext("#1", 0, "1 mm", y " mm", 0, 100, "foo:" y) } </i>
+	<li> either enter more awk one-liners or leave the awk mode by typing /exit
+</ul>
+<p>
+The one-liner mode can be used to get a better command interpreter. After
+all, any pcb-rnd action is accessible from any scripting language. For
+example the user may choose to switch to awk mode and issue normal
+pcb-rnd actions using the awk syntax. The default mode can even be
+configured through the conf system, by setting rc/cli_backend to the
+language name. However, the CPU and memory footprint of executing a full
+script interpreter for each command entered should be noted.
 <p>
 Limitations: each command line is a separate script context, there are no
 script states (e.g. variables) preserved between lines entered. Actions
