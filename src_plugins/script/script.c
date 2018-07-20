@@ -38,8 +38,11 @@
 #include "plugins.h"
 #include "error.h"
 #include "compat_misc.h"
+#include "compat_fs.h"
+#include "safe_fs.h"
 #include "pcb-printf.h"
 #include "globalconst.h"
+
 
 typedef struct {
 	char *id, *fn, *lang;
