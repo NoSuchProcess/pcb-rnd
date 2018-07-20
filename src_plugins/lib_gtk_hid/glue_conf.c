@@ -71,6 +71,11 @@ static void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 	ghidgui->common.set_status_line_label();
 }
 
+static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
+{
+	ghid_command_update_prompt(&ghidgui->topwin.cmd);
+}
+
 
 static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
 {
@@ -86,7 +91,7 @@ void ghid_conf_regs(const char *cookie)
 {
 	static conf_hid_callbacks_t 
 		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid,
-		cbs_text_scale, cbs_grid_unit, cbs_rst[4];
+		cbs_text_scale, cbs_grid_unit, cbs_rst[4], cbs_cli[2];
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
@@ -104,4 +109,8 @@ void ghid_conf_regs(const char *cookie)
 #warning padstack TODO: remove some paths when route style has proto
 	init_conf_watch(&cbs_rst[2], "design/via_thickness", ghid_confchg_rst);
 	init_conf_watch(&cbs_rst[3], "design/via_drilling_hole", ghid_confchg_rst);
+
+	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
+	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
+
 }
