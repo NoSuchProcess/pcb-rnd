@@ -1184,7 +1184,7 @@
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
- safe_fs.h
+ safe_fs.h globalconst.h
 ../src_plugins/fp_wget/wget_common.o: \
  ../src_plugins/fp_wget/wget_common.c ../config.h \
  ../src_plugins/fp_wget/wget_common.h compat_misc.h safe_fs.h conf.h \
@@ -5045,8 +5045,10 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer_grp.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h plugins.h \
- ../src_3rd/puplug/error.h error.h compat_misc.h pcb-printf.h \
- globalconst.h ../src_plugins/script/script_act.c dolists.h
+ ../src_3rd/puplug/error.h error.h compat_misc.h compat_fs.h safe_fs.h \
+ conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h pcb-printf.h globalconst.h \
+ ../src_plugins/script/script_act.c dolists.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
