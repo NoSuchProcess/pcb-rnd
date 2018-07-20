@@ -412,8 +412,7 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
 		ghid_command_window_show(ctx, raise);
 	else {
-		command =
-			ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
+		command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *)"");
 		if (command != NULL) {
 			/* copy new command line to save buffer */
 			g_free(previous);
