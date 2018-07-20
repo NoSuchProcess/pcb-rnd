@@ -338,7 +338,7 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 {
 	if (ctx->prompt_label != NULL)
-		gtk_label_set_text(ctx->prompt_label, pcb_cli_prompt(":"));
+		gtk_label_set_text(GTK_LABEL(ctx->prompt_label), pcb_cli_prompt(":"));
 }
 
 
