@@ -520,6 +520,56 @@ const char *pcb_cli_prompt(const char *suffix)
 	return prompt;
 }
 
+static vtp0_t cli_stack;
+
+static void cli_push(const char *val)
+{
+	if (val == NULL)
+		val = "";
+	vtp0_append(&cli_stack, pcb_strdup(val));
+}
+
+static char *cli_pop(void)
+{
+	if (cli_stack.used == 0)
+		return NULL;
+	return cli_stack.array[--cli_stack.used];
+}
+
+int pcb_cli_enter(const char *backend, const char *prompt)
+{
+	cli_push(conf_core.rc.cli_backend);
+	cli_push(conf_core.rc.cli_prompt);
+
+	if (conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE) != 0)
+		return -1;
+	return conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
+}
+
+int pcb_cli_leave(void)
+{
+	if (vtp0_len(&cli_stack) >= 2) {
+		char *prompt = NULL, *backend = NULL;
+		prompt = cli_pop();
+		backend = cli_pop();
+		conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE);
+		conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
+		free(prompt);
+		free(backend);
+		return 0;
+	}
+
+	conf_set(CFR_CLI, "rc/cli_backend", 0, "", POL_OVERWRITE);
+	conf_set(CFR_CLI, "rc/cli_prompt", 0, "", POL_OVERWRITE);
+	return -1;
+}
+
+void pcb_cli_uninit(void)
+{
+	while(vtp0_len(&cli_stack) > 0)
+		free(cli_pop());
+}
+
 int pcb_parse_command(const char *str_)
 {
 	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {

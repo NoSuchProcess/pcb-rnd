@@ -76,6 +76,18 @@ int pcb_parse_actions(const char *str_);
    suffix glued to it. Valid until the next call. */
 const char *pcb_cli_prompt(const char *suffix);
 
+/* Change the cli backend/prompt, entering a new cli mode; the old
+   mode is pushed on a stack */
+int pcb_cli_enter(const char *backend, const char *prompt);
+
+/* Leave the current cli mode, returning to the previous mode
+   (popped from a stack) */
+int pcb_cli_leave(void);
+
+
+/* Discard the cli mode stack */
+void pcb_cli_uninit(void);
+
 /* If the mouse cursor is in the drawin area, set x;y silently and return;
    else show msg and let the user click in the drawing area */
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
