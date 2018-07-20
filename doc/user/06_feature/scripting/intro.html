@@ -7,10 +7,16 @@
 <body>
 
 <H1> Scripting - User Intro </H1>
-<p>
 This document is an introduction to fungw for pcb-rnd users. It focuses on
 scripting pcb-rnd and doesn't discuss fungw deeper than the minimum necessary.
 Fungw is more generic than shown here.
+
+<H2> 1.1. Stored scripts </H2>
+<p>
+Stored scripts are typically larger piece of works that register actions,
+may create menus, GUI dialog boxes. Their role is to introduce new
+functionality to pcb-rnd - functionality written and shared by users,
+using their favorite script language.
 <p>
 Loading a script using the CLI: run action
 <pre>
@@ -28,6 +34,39 @@ Scripts can be unloaded using the action
 <pre>
 	UnloadScript(id)
 </pre>
+
+<H2> 1.2. Oneliners </H2>
+<p>
+pcb-rnd also offers script one-liners. A one-liner is a short script
+intended to do one thing at the moment of execution. It is typically not
+saved in a file and is not recalled later. One-liners are invoked by
+the Oneliner action:
+<pre>
+	OneLiner(awk, 'message("hello")')
+</pre>
+<p>
+Alternatively the language-specific shorthand action can be used; the
+following example is equivalent to the above example:
+<pre>
+	awk('message("hello")')
+</pre>
+<p>
+A third approach, most convenient for experimenting, is switching the
+command line interpreter to the given script lagnuage temporarily. For this
+the shorthand action (e.g. "awk", "python", "perl") should be exected without
+arguments. The promp of the cli changes to reflect the language that will
+interpret all the following command lines entered. To leave the script mode,
+type "/exit".
+<p>
+For example:
+<pre>
+
+</pre>
+<p>
+Limitations: each command line is a separate script context, there are no
+script states (e.g. variables) preserved between lines entered. Actions
+defined in one-liners are also discarded after the one-liner finished. For
+such use cases, stored script shall be written.
 
 
 <H1> Scripting - Developer Intro </H1>
