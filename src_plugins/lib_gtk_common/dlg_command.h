@@ -7,7 +7,7 @@
 #include "glue.h"
 
 typedef struct pcb_gtk_command_s {
-	GtkWidget *command_combo_box;
+	GtkWidget *command_combo_box, *prompt_label;
 	GtkEntry *command_entry;
 	gboolean command_entry_status_line_active;
 
@@ -22,6 +22,9 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise);
 void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise);
 char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command);
 void command_window_close_cb(pcb_gtk_command_t *ctx);
+
+/* Update the prompt text before the command entry - call it when any of conf_core.rc.cli_* change */
+void ghid_command_update_prompt(pcb_gtk_command_t *ctx);
 
 
 #endif

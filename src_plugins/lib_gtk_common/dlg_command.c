@@ -245,6 +245,7 @@ static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
 			ctx->command_combo_box);
 		gtk_widget_hide(command_window);
 	}
+	ctx->prompt_label = NULL;
 	combo_vbox = NULL;
 	/* Command Window is hidden/destroyed, so expected future value for command_window is NULL. */
 	command_window = NULL;
@@ -298,11 +299,13 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(command_window), vbox);
 
+	ctx->prompt_label = gtk_label_new(pcb_cli_prompt(":"));
+	gtk_box_pack_start(GTK_BOX(vbox), ctx->prompt_label, FALSE, FALSE, 0);
+
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
 		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), ctx);
 	}
-
 
 	gtk_box_pack_start(GTK_BOX(vbox), ctx->command_combo_box, FALSE, FALSE, 0);
 	combo_vbox = vbox;
@@ -332,6 +335,11 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	gtk_widget_show_all(command_window);
 }
 
+void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
+{
+	if (ctx->prompt_label != NULL)
+		gtk_label_set_text(ctx->prompt_label, pcb_cli_prompt(":"));
+}
 
 
 	/* This is the command entry function called from Action Command() when
