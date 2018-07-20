@@ -575,6 +575,7 @@ int pcb_parse_command(const char *str_)
 	fgw_arg_t res, args[2];
 	fgw_func_t *f;
 	const pcb_action_t *a;
+	const char *end;
 
 	/* no backend: classic pcb-rnd action parse */
 	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {
@@ -590,10 +591,21 @@ int pcb_parse_command(const char *str_)
 		return -1;
 	}
 
+	end = strpbrk(str_, "\n\r");
+
 	args[0].type = FGW_FUNC;
 	args[0].val.func = f;
-	args[1].type = FGW_STR;
-	args[1].val.str = str_;
+	if (end == NULL) {
+		/* optimization: string doesn't contain newline - pass it as is to save an strdup */
+		args[1].type = FGW_STR;
+		args[1].val.str = pcb_strdup(str_);
+	}
+	else {
+		/* string contains a newline; need to cut there, which needs a dup; let fungw free it as dynamic string, cleaning up args after the fungw call */
+		args[1].type = FGW_STR | FGW_DYN;
+		args[1].val.str = pcb_strdup(str_);
+		args[1].val.str[end - str_] = '\0';
+	}
 
 	if (pcb_actionv_(f, &res, 2, args) != 0)
 			return -1;
