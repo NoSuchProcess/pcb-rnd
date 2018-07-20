@@ -68,7 +68,7 @@ static const char pcb_acth_Oneliner[] = "Execute a script one-liner using a spec
 static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
 static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *lang = argv[0].val.func->name, *scr;
+	const char *lang = argv[0].val.func->name, *scr = NULL;
 	const char **s, *tr[] = {
 		"awk",         "mawk",
 		"ruby",        "mruby",
@@ -84,9 +84,13 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(1, FGW_STR, Oneliner, lang = argv[1].val.str);
 		PCB_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
 	}
+	else if (strcmp(lang, "/exit") == 0) {
+		PCB_ACT_IRES(pcb_cli_leave());
+		return 0;
+	}
 	else {
 		/* call to lang(script) */
-		PCB_ACT_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
+		PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
 	}
 
 	/* translate short name to long name */
@@ -96,6 +100,15 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			lang = *s;
 			break;
 		}
+	}
+
+	if (scr == NULL) {
+		PCB_ACT_IRES(pcb_cli_enter(lang, lang));
+		return 0;
+	}
+	if (pcb_strcasecmp(scr, "/exit") == 0) {
+		PCB_ACT_IRES(pcb_cli_leave());
+		return 0;
 	}
 
 	PCB_ACT_IRES(script_oneliner(lang, scr));
