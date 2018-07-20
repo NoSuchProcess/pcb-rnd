@@ -63,9 +63,10 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 /* Parse the given command string into action calls, and call
    hid_actionv for each action found.  Accepts both "action(arg1,
    arg2)" and command-style "action arg1 arg2", allowing only one
-   action in the later case.  Returns nonzero if the action handler(s)
-   return nonzero. */
-int pcb_parse_command(const char *str_);
+   action in the later case. If force_action_mode is true, str
+   is interpreted as pcb-rnd action despite of the cli mode.
+   Returns nonzero if the action handler(s) return nonzero. */
+int pcb_parse_command(const char *str_, pcb_bool force_action_mode);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only

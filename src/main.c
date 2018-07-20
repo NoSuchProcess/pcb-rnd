@@ -581,7 +581,7 @@ int main(int argc, char *argv[])
 	conf_update(NULL, -1);
 
 	if (main_action != NULL) {
-		int res = pcb_parse_command(main_action);
+		int res = pcb_parse_command(main_action, pcb_true);
 		if ((res != 0) && (main_action_hint != NULL))
 			fprintf(stderr, "\nHint: %s\n", main_action_hint);
 		exit(res);

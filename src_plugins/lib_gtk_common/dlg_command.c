@@ -205,7 +205,7 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 		command_history_add(ctx, command);
 
 	if (conf_hid_gtk.plugins.hid_gtk.use_command_window) {
-		pcb_parse_command(command);
+		pcb_parse_command(command, pcb_false);
 		g_free(command);
 	}
 	else {
@@ -425,7 +425,7 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 			/* copy new command line to save buffer */
 			g_free(previous);
 			previous = g_strdup(command);
-			pcb_parse_command(command);
+			pcb_parse_command(command, pcb_false);
 			g_free(command);
 		}
 	}

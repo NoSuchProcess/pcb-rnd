@@ -727,7 +727,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	case XmCR_ACTIVATE:
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
-		pcb_parse_command(s);
+		pcb_parse_command(s, pcb_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 	case XmCR_LOSING_FOCUS:

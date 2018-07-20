@@ -570,15 +570,15 @@ void pcb_cli_uninit(void)
 		free(cli_pop());
 }
 
-int pcb_parse_command(const char *str_)
+int pcb_parse_command(const char *str_, pcb_bool force_action_mode)
 {
 	fgw_arg_t res, args[2];
 	fgw_func_t *f;
 	const pcb_action_t *a;
 	const char *end;
 
-	/* no backend: classic pcb-rnd action parse */
-	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {
+	/* no backend or forced action mode: classic pcb-rnd action parse */
+	if (force_action_mode || (conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {
 		pcb_event(PCB_EVENT_CLI_ENTER, "s", str_);
 		return hid_parse_actionstring(str_, pcb_false);
 	}

@@ -144,7 +144,7 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 			uninit_batch();
 			goto quit;
 		}
-		pcb_parse_command(line);
+		pcb_parse_command(line, pcb_false);
 	}
 
 	quit:;

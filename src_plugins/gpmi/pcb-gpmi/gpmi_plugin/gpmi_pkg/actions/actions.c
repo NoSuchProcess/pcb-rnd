@@ -116,7 +116,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 int action(const char *cmdline)
 {
-	return pcb_parse_command(cmdline);
+	return pcb_parse_command(cmdline, pcb_true);
 }
 
 void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)

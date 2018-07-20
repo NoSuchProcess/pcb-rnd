@@ -108,7 +108,7 @@ int pcb_hid_get_flag(const char *name)
 			}
 			else {
 				/* slower but more generic way */
-				return pcb_parse_command(name);
+				return pcb_parse_command(name, pcb_true);
 			}
 		}
 		else {
