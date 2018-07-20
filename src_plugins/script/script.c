@@ -132,6 +132,46 @@ void script_list(const char *pat)
 	}
 }
 
+static void oneliner_boilerplate(FILE *f, const char *lang, int pre)
+{
+	if (strcmp(lang, "mawk") == 0) {
+		if (pre)
+			fputs("BEGIN {\n", f);
+		else
+			fputs("}\n", f);
+	}
+}
+
+int script_oneliner(const char *lang, const char *src)
+{
+	FILE *f;
+	char *fn;
+	int res = 0;
+
+	fn = pcb_tempfile_name_new("oneliner");
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_tempfile_unlink(fn);
+		pcb_message(PCB_MSG_ERROR, "script oneliner: can't open temp file for write\n");
+		return -1;
+	}
+	oneliner_boilerplate(f, lang, 1);
+	fputs(src, f);
+	fputs("\n", f);
+	oneliner_boilerplate(f, lang, 0);
+	fclose(f);
+
+	if (script_load("__oneliner", fn, lang) != 0) {
+		pcb_message(PCB_MSG_ERROR, "script oneliner: can't load/parse the script\n");
+		res = -1;
+	}
+	else
+		script_unload("__oneliner");
+
+	pcb_tempfile_unlink(fn);
+	return res;
+}
+
 #include "script_act.c"
 
 char *script_cookie = "script plugin";
