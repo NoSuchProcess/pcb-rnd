@@ -64,8 +64,63 @@ static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char pcb_acth_Oneliner[] = "Execute a script one-liner using a specific language";
+static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
+static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *lang = argv[0].val.func->name, *scr;
+	const char **s, *tr[] = {
+		"awk",         "mawk",
+		"ruby",        "mruby",
+		"py",          "python",
+		"js",          "duktape",
+		"javascript",  "duktape",
+		"stt",         "estutter",
+		NULL, NULL
+	};
+
+	if (strcmp(lang, "oneliner") == 0) {
+		/* call to oneliner(lang, script) */
+		PCB_ACT_CONVARG(1, FGW_STR, Oneliner, lang = argv[1].val.str);
+		PCB_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
+	}
+	else {
+		/* call to lang(script) */
+		PCB_ACT_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
+	}
+
+	/* translate short name to long name */
+	for(s = tr; *s != NULL; s += 2) {
+		if (strcmp(*s, lang) == 0) {
+			s++;
+			lang = *s;
+			break;
+		}
+	}
+
+	PCB_ACT_IRES(script_oneliner(lang, scr));
+	return 0;
+}
+
 static pcb_action_t script_action_list[] = {
 	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
 	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
-	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts}
+	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts},
+
+	/* script shorthands */
+	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"mawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"lua",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"tcl",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"javascript",  pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"js",          pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"stt",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"estutter",    pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"perl",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"ruby",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"mruby",       pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"py",          pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"python",      pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+
+	{"Oneliner", pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner}
 };
