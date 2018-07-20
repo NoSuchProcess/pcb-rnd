@@ -175,7 +175,7 @@ static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
 		printf(" [%d] `%s'", i, s);
 	}
-	pcb_hid_get_coords("Click X,Y for Debug", &x, &y);
+	pcb_hid_get_coords("Click X,Y for Debug", &x, &y, 0);
 	pcb_printf(" x,y %$mD\n", x, y);
 	PCB_ACT_IRES(0);
 	return 0;

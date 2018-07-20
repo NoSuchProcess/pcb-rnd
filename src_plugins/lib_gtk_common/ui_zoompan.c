@@ -346,7 +346,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 	if (v <= 0)
 		return 1;
 
-	pcb_hid_get_coords("Select zoom center", &x, &y);
+	pcb_hid_get_coords("Select zoom center", &x, &y, 0);
 	switch (ovp[0]) {
 	case '-':
 		pcb_gtk_zoom_view_rel(vw, x, y, 1 / v);
@@ -586,9 +586,9 @@ fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_ar
 }
 
 
-void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y)
+void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
-	if (!vw->has_entered && msg)
+	if ((force || !vw->has_entered) && msg)
 		ghid_get_user_xy(mouse, msg);
 	if (vw->has_entered) {
 		*x = vw->pcb_x;

@@ -440,7 +440,7 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *vp, *ovp;
 	double v;
 
-	pcb_hid_get_coords("Click on a place to zoom in", &x, &y);
+	pcb_hid_get_coords("Click on a place to zoom in", &x, &y, 0);
 
 	if (x == 0 && y == 0) {
 		x = view_width / 2;
@@ -552,7 +552,7 @@ static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	int mode;
 
-	pcb_hid_get_coords("Click on a place to pan", &x, &y);
+	pcb_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Pan, a0 = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, Pan, a1 = argv[2].val.str);
@@ -857,7 +857,7 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
 
-	pcb_hid_get_coords("Click on a location to center", &x, &y);
+	pcb_hid_get_coords("Click on a location to center", &x, &y, 0);
 
 	x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 	y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
@@ -3357,7 +3357,7 @@ static int lesstif_mod1_is_pressed(void)
 	return alt_pressed;
 }
 
-extern void lesstif_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y);
+extern void lesstif_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 static void lesstif_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {

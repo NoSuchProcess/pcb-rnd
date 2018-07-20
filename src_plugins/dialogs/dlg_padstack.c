@@ -596,7 +596,7 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		pcb_coord_t x, y;
 		void *ptr1, *ptr2 = NULL, *ptr3;
 		long type;
-		pcb_hid_get_coords("Click on a padstack to edit", &x, &y);
+		pcb_hid_get_coords("Click on a padstack to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_PSTK) {
 			pcb_message(PCB_MSG_ERROR, "Need a padstack.\n");

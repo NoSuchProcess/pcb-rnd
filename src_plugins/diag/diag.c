@@ -425,7 +425,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
-	pcb_hid_get_coords("Click on object to change", &x, &y);
+	pcb_hid_get_coords("Click on object to change", &x, &y, 0);
 
 	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
 		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);

@@ -153,7 +153,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	char *op = NULL, *report = NULL;
 	pcb_subc_t *subc;
 	pcb_coord_t x, y;
-	pcb_hid_get_coords("Click on object to report on", &x, &y);
+	pcb_hid_get_coords("Click on object to report on", &x, &y, 0);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
 
@@ -615,7 +615,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 		int type;
 		pcb_coord_t ox, oy, x, y;
 
-		pcb_hid_get_coords("Click on a copper line", &x, &y);
+		pcb_hid_get_coords("Click on a copper line", &x, &y, 0);
 
 		type = pcb_search_screen(x, y, PCB_OBJ_LINE, &r1, &r2, &r3);
 		if (type != PCB_OBJ_LINE) {
@@ -660,7 +660,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 	}
 	else {
 		pcb_coord_t x, y;
-		pcb_hid_get_coords("Click on a network", &x, &y);
+		pcb_hid_get_coords("Click on a network", &x, &y, 0);
 		return report_net_length_(res, argc, argv, x, y);
 	}
 }
@@ -810,15 +810,15 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
 
 	if (pcb_strcasecmp(cmd, "Object") == 0) {
-		pcb_hid_get_coords("Click on an object", &x, &y);
+		pcb_hid_get_coords("Click on an object", &x, &y, 0);
 		return pcb_act_report_dialog(res, argc, argv);
 	}
 	else if (pcb_strncasecmp(cmd, "Subc", 4) == 0) {
-		pcb_hid_get_coords("Click on a subcircuit", &x, &y);
+		pcb_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 		return pcb_act_report_dialog(res, argc, argv);
 	}
 
-	pcb_hid_get_coords("Click on object to report on", &x, &y);
+	pcb_hid_get_coords("Click on object to report on", &x, &y, 0);
 
 	if (pcb_strcasecmp(cmd, "DrillReport") == 0)
 		return report_drills(res, argc, argv);

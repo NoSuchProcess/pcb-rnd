@@ -188,7 +188,7 @@ static int nogui_mod1_is_pressed(void)
 	return 0;
 }
 
-static void nogui_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
+static void nogui_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	CRASH("get_coords");
 }

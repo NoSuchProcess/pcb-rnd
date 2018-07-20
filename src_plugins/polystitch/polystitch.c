@@ -94,7 +94,7 @@ static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	pcb_poly_t *inner_poly, *outer_poly;
 
-	pcb_hid_get_coords("Select a corner on the inner polygon", &x, &y);
+	pcb_hid_get_coords("Select a corner on the inner polygon", &x, &y, 0);
 	inner_poly = find_crosshair_poly(x, y);
 
 	if (inner_poly) {

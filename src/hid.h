@@ -299,7 +299,7 @@ struct pcb_hid_s {
 	int (*control_is_pressed)(void);
 	int (*mod1_is_pressed)(void);
 
-	void (*get_coords)(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
+	void (*get_coords)(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 	/* Fill in width and height with the sizes of the current view in
 	   pcb coordinates. used by action "Cursor" to determine max cursor pos.

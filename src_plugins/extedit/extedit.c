@@ -183,7 +183,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* pick up the object to edit */
 	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "object") == 0)) {
 		pcb_coord_t x, y;
-		pcb_hid_get_coords("Click on object to edit", &x, &y);
+		pcb_hid_get_coords("Click on object to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 	else if ((argc > 1) && (pcb_strcasecmp(cmd, "selected") == 0)) {

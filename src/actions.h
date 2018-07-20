@@ -90,8 +90,11 @@ int pcb_cli_leave(void);
 void pcb_cli_uninit(void);
 
 /* If the mouse cursor is in the drawin area, set x;y silently and return;
-   else show msg and let the user click in the drawing area */
-void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);
+   else show msg and let the user click in the drawing area. If force is
+   non-zero and msg is non-NULL, discard the cache and force querying a
+   new coord. This mode must NOT be used unless action arguments explictly
+   requested it. */
+void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 #define PCB_ACTION_MAX_ARGS 16
 

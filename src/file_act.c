@@ -305,7 +305,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_bool result;
 				pcb_coord_t x, y;
 
-				pcb_hid_get_coords("Click on an element", &x, &y);
+				pcb_hid_get_coords("Click on an element", &x, &y, 0);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 					pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
 					if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {

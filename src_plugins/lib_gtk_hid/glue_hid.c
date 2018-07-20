@@ -307,9 +307,9 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->topwin.cps, &gport->view);
 }
 
-static void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
+static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
-	pcb_gtk_get_coords(&gport->mouse, &gport->view, msg, x, y);
+	pcb_gtk_get_coords(&gport->mouse, &gport->view, msg, x, y, force);
 }
 
 static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)

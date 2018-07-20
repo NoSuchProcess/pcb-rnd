@@ -130,7 +130,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (n_found == 0) {
 				pcb_coord_t x, y;
 				void *ptrtmp;
-				pcb_hid_get_coords("Click on a subcircuit", &x, &y);
+				pcb_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
@@ -285,7 +285,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = fgw_keyword(&argv[1]));
 	PCB_ACT_IRES(0);
 
-	pcb_hid_get_coords("Click on Object or Flip Point", &x, &y);
+	pcb_hid_get_coords("Click on Object or Flip Point", &x, &y, 0);
 
 	switch(id) {
 		case F_Object:
@@ -338,7 +338,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fgw_str2coord_unit_restore(saved);
 
 
-	pcb_hid_get_coords("Select an Object", &x, &y);
+	pcb_hid_get_coords("Select an Object", &x, &y, 0);
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID) {
@@ -388,7 +388,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				pcb_hid_get_coords("Select an Object", &x, &y);
+				pcb_hid_get_coords("Select an Object", &x, &y, 0);
 				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_layer_t *target = CURRENT;
 					pcb_any_obj_t *o = ptr2;
@@ -1162,7 +1162,7 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
 	PCB_ACT_IRES(0);
 
-	pcb_hid_get_coords("Select an Object", &x, &y);
+	pcb_hid_get_coords("Select an Object", &x, &y, 0);
 
 	if (conf_core.editor.show_solder_side)
 		steps = -steps;

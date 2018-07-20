@@ -225,7 +225,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(4, FGW_STR, Import, units = argv[4].val.str);
 
 		if (!xs) {
-			pcb_hid_get_coords(_("Click on a location"), &x, &y);
+			pcb_hid_get_coords(_("Click on a location"), &x, &y, 0);
 		}
 		else if (pcb_strcasecmp(xs, "center") == 0) {
 			pcb_attrib_remove(PCB, "import::newX");

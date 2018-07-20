@@ -333,7 +333,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 	return res.val.nat_int;
 }
 
-void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
+void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	if (pcb_gui == NULL) {
 		fprintf(stderr, "pcb_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
@@ -341,7 +341,7 @@ void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
 		*y = 0;
 	}
 	else
-		pcb_gui->get_coords(msg, x, y);
+		pcb_gui->get_coords(msg, x, y, force);
 }
 
 static int hid_parse_actionstring(const char *rstr, char require_parens)

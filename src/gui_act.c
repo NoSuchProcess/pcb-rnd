@@ -418,7 +418,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				void *ptrtmp;
 				pcb_coord_t x, y;
 
-				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
+				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y, 0);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 					subc = (pcb_subc_t *) ptrtmp;
 					pcb_gui->show_item(subc);
@@ -432,7 +432,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t x, y;
-				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y);
+				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y, 0);
 
 				/* toggle terminal ID print for subcircuit parts */
 				type = pcb_search_screen(x, y, PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART | PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
@@ -903,7 +903,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				pcb_marked.Y = pcb_crosshair.Y;
 			}
 			else
-				pcb_hid_get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
+				pcb_hid_get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y, 0);
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
@@ -915,7 +915,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			pcb_marked.Y = pcb_crosshair.Y;
 		}
 		else
-			pcb_hid_get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
+			pcb_hid_get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y, 0);
 		pcb_notify_mark_change(pcb_true);
 	}
 	return 0;
@@ -1075,7 +1075,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int type;
 	pcb_layer_t *layer = CURRENT;
 
-	pcb_hid_get_coords("Select item to use properties from", &x, &y);
+	pcb_hid_get_coords("Select item to use properties from", &x, &y, 0);
 
 	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
@@ -1906,7 +1906,7 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *msg = "Click to enter a coordinate.";
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
 	PCB_ACT_IRES(0);
-	pcb_hid_get_coords(msg, &x, &y);
+	pcb_hid_get_coords(msg, &x, &y, 0);
 	return 0;
 }
 

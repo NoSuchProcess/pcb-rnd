@@ -94,7 +94,7 @@ static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
-			pcb_hid_get_coords(_("Select an Object"), &x, &y);
+			pcb_hid_get_coords(_("Select an Object"), &x, &y, 0);
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 /*				pcb_undo_save_serial();*/
 				pcb_gtk_dlg_fontsel(&ghidgui->common, ptr1, ptr2, type, 1);
@@ -287,7 +287,7 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_coord_t x, y;;
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
-					pcb_hid_get_coords("context sensitive popup: select object", &x, &y);
+					pcb_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
 					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
 					if (type == 0)
 						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
@@ -358,7 +358,7 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	GdkDisplay *display = gdk_display_get_default();
 	GdkScreen *screen = gdk_display_get_default_screen(display);
 
-	pcb_hid_get_coords("Click to center", &x, &y);
+	pcb_hid_get_coords("Click to center", &x, &y, 0);
 
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 	e = pcb_gtk_act_center(&gport->view, res, argc, argv, x, y, offset_x, offset_y, &pointer_x, &pointer_y);

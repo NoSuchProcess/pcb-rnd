@@ -202,7 +202,7 @@ static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		pcb_coord_t x, y;
 		int type;
 		void *ptr1, *ptr2, *ptr3;
-		pcb_hid_get_coords("Click on subc to change the layer binding of", &x, &y);
+		pcb_hid_get_coords("Click on subc to change the layer binding of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_SUBC) {
 			pcb_message(PCB_MSG_ERROR, "No subc under the cursor\n");

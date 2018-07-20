@@ -366,7 +366,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double tangent;
 	int new_delta_angle;
 
-	pcb_hid_get_coords("Click on a line-arc intersection or line segment", &Ux, &Uy);
+	pcb_hid_get_coords("Click on a line-arc intersection or line segment", &Ux, &Uy, 0);
 
 	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y)) {
 		if (!find_pair(Ux, Uy)) {

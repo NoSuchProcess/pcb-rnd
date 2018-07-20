@@ -89,7 +89,7 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (op == F_Object) {
 		pcb_coord_t x, y;
 		void *ptr1, *ptr2, *ptr3;
-		pcb_hid_get_coords("Click on object to change flags of", &x, &y);
+		pcb_hid_get_coords("Click on object to change flags of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_FLAGEDIT_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3);
 		ctx.ptr1 = ptr1;
 		ctx.obj = (pcb_any_obj_t *)ptr2;

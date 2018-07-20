@@ -59,7 +59,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(id) {
 	case F_Object:
-		pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y);
+		pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y, 0);
 		pcb_tool_save();
 		pcb_tool_select_by_id(PCB_MODE_REMOVE);
 		pcb_notify_mode();

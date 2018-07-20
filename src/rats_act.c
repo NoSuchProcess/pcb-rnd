@@ -166,7 +166,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Find:
 			{
 				pcb_coord_t x, y;
-				pcb_hid_get_coords(_("Click on a connection"), &x, &y);
+				pcb_hid_get_coords(_("Click on a connection"), &x, &y, 0);
 				pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
 				break;
 			}

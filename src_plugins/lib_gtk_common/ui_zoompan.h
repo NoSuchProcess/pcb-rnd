@@ -111,7 +111,7 @@ extern const char pcb_acts_pan[];
 extern const char pcb_acth_pan[];
 fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
-void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
+void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 /* Update adj limits to match the current zoom level */
 static inline void pcb_gtk_zoom_adjustment(GtkAdjustment *adj, pcb_coord_t view_size, pcb_coord_t board_size)
