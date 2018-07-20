@@ -1816,7 +1816,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNlabelString, XmStringCreatePCB("Command: "));
+	stdarg(XmNlabelString, XmStringCreatePCB(pcb_cli_prompt(":")));
 	m_cmd_label = XmCreateLabel(messages, XmStrCast("command"), stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
@@ -3849,6 +3849,11 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 		return;
 	if (strncmp(cfg->hash_path, "appearance/color/", 17) == 0)
 		lesstif_invalidate_all();
+	if (strncmp(cfg->hash_path, "rc/cli_", 7) == 0) {
+		stdarg_n = 0;
+		stdarg(XmNlabelString, XmStringCreatePCB(pcb_cli_prompt(":")));
+		XtSetValues(m_cmd_label, stdarg_args, stdarg_n);
+	}
 }
 
 static conf_hid_id_t lesstif_conf_id = -1;
