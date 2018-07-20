@@ -572,12 +572,33 @@ void pcb_cli_uninit(void)
 
 int pcb_parse_command(const char *str_)
 {
+	fgw_arg_t res, args[2];
+	fgw_func_t *f;
+	const pcb_action_t *a;
+
+	/* no backend: classic pcb-rnd action parse */
 	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {
 		pcb_event(PCB_EVENT_CLI_ENTER, "s", str_);
 		return hid_parse_actionstring(str_, pcb_false);
 	}
-	pcb_message(PCB_MSG_ERROR, "cli backends not yet supported, please reset rc/cli_backend\n");
-	return -1;
+
+	/* backend: let the backend action handle it */
+	a = pcb_find_action(conf_core.rc.cli_backend, &f);
+	if (!a) {
+		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", conf_core.rc.cli_backend);
+		pcb_cli_leave();
+		return -1;
+	}
+
+	args[0].type = FGW_FUNC;
+	args[0].val.func = f;
+	args[1].type = FGW_STR;
+	args[1].val.str = str_;
+
+	if (pcb_actionv_(f, &res, 2, args) != 0)
+			return -1;
+	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	return res.val.nat_int;
 }
 
 int pcb_parse_actions(const char *str_)
