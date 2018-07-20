@@ -137,7 +137,7 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 	batch_stay = 1;
 	while (batch_stay) {
 		if ((interactive) && (!conf_core.rc.quiet)) {
-			printf("%s> ", prompt);
+			printf("%s:%s> ", prompt, pcb_cli_prompt(NULL));
 			fflush(stdout);
 		}
 		if (fgets(line, sizeof(line) - 1, stdin) == NULL) {
