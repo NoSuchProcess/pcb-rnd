@@ -491,6 +491,35 @@ cleanup:
 	return retcode;
 }
 
+const char *pcb_cli_prompt(const char *suffix)
+{
+	const char *base;
+	static char prompt[128];
+	int blen, slen, len;
+
+	if ((conf_core.rc.cli_prompt != NULL) && (*conf_core.rc.cli_prompt != '\0'))
+		base = conf_core.rc.cli_prompt;
+	else if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0'))
+		base = "action";
+	else
+		base = conf_core.rc.cli_backend;
+
+	if ((suffix == NULL) || (*suffix == '\0'))
+		return base;
+
+	blen = strlen(base);
+	slen = strlen(suffix);
+
+	len = blen;
+	if (len >= sizeof(prompt)-1-slen)
+		len = sizeof(prompt)-1-slen;
+
+	memcpy(prompt, base, len);
+	memcpy(prompt+len, suffix, slen);
+	prompt[len+slen] = '\0';
+	return prompt;
+}
+
 int pcb_parse_command(const char *str_)
 {
 	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {

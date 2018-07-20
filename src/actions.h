@@ -72,6 +72,10 @@ int pcb_parse_command(const char *str_);
    "action(arg1, arg2)" */
 int pcb_parse_actions(const char *str_);
 
+/* Return a sttaic buffer with the current prompt plus an optional
+   suffix glued to it. Valid until the next call. */
+const char *pcb_cli_prompt(const char *suffix);
+
 /* If the mouse cursor is in the drawin area, set x;y silently and return;
    else show msg and let the user click in the drawing area */
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y);

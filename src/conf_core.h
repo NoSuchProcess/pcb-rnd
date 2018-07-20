@@ -120,6 +120,7 @@ typedef struct {
 		CFT_STRING save_final_fallback_fmt;/* when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as. */
 		CFT_STRING save_fp_fmt;            /* when saving a buffer element/subcircuit, prefer this format by default */
 
+		CFT_STRING cli_prompt;             /* plain text prompt to prefix the command entry */
 		CFT_STRING cli_backend;            /* command parser action */
 
 		/***** automatically set (in postproc) *****/
