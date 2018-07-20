@@ -227,16 +227,28 @@ typedef struct {
 	GMainLoop *loop;
 	pcb_gtk_common_t *com;
 	gboolean got_location;
+	gint last_press;
 } loop_ctx_t;
+
+static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
+{
+	lctx->last_press = kev->keyval;
+}
+
 
 /*  If user hits a key instead of the mouse button, we'll abort unless
     it's the enter key (which accepts the current crosshair location).
  */
-static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
+static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
 {
 	gint ksym = kev->keyval;
 
 	if (ghid_is_modifier_key_sym(ksym))
+		return TRUE;
+
+	/* accept a key only after a press _and_ release to avoid interfering with
+	   dialog boxes before and after the loop */
+	if (ksym != lctx->last_press)
 		return TRUE;
 
 	switch (ksym) {
@@ -274,7 +286,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 {
 	static int getting_loc = 0;
 	loop_ctx_t lctx;
-	gulong button_handler, key_handler;
+	gulong button_handler, key_handler1, key_handler2;
 	gint oldObjState, oldLineState, oldBoxState;
 
 	/* Do not enter the loop recursively (ask for coord only once); also don't
@@ -308,7 +320,8 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 	button_handler =
 		g_signal_connect(G_OBJECT(ctx->drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
-	key_handler = g_signal_connect(G_OBJECT(ctx->top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
+	key_handler1 = g_signal_connect(G_OBJECT(ctx->top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
+	key_handler2 = g_signal_connect(G_OBJECT(ctx->top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
 	lctx.com = ctx->com;
@@ -317,7 +330,8 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	g_main_loop_unref(lctx.loop);
 
 	g_signal_handler_disconnect(ctx->drawing_area, button_handler);
-	g_signal_handler_disconnect(ctx->top_window, key_handler);
+	g_signal_handler_disconnect(ctx->top_window, key_handler1);
+	g_signal_handler_disconnect(ctx->top_window, key_handler2);
 
 	ctx->com->interface_input_signals_connect();	/* return to normal */
 	ctx->com->interface_set_sensitive(TRUE);
