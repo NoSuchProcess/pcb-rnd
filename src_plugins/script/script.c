@@ -168,8 +168,7 @@ int script_oneliner(const char *lang, const char *src)
 		pcb_message(PCB_MSG_ERROR, "script oneliner: can't load/parse the script\n");
 		res = -1;
 	}
-	else
-		script_unload("__oneliner");
+	script_unload("__oneliner");
 
 	pcb_tempfile_unlink(fn);
 	return res;
