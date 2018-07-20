@@ -589,7 +589,8 @@ fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_ar
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	if ((force || !vw->has_entered) && msg)
-		ghid_get_user_xy(mouse, msg);
+		if (!ghid_get_user_xy(mouse, msg))
+			return;
 	if (vw->has_entered) {
 		*x = vw->pcb_x;
 		*y = vw->pcb_y;

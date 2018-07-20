@@ -335,10 +335,10 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	return lctx.got_location;
 }
 
-void ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg)
+gboolean ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg)
 {
 	pcb_undo_save_serial(); /* will be restored on button release in action helper in core */
-	run_get_location_loop(ctx, msg);
+	return run_get_location_loop(ctx, msg);
 }
 
 /* Mouse scroll wheel events */

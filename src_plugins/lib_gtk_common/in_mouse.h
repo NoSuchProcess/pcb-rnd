@@ -31,7 +31,7 @@ void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, gint mode);
 void ghid_corner_cursor(pcb_gtk_mouse_t *ctx);
 void ghid_restore_cursor(pcb_gtk_mouse_t *ctx);
 
-void ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg);
+gboolean ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg);
 
 gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
 
