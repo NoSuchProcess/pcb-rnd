@@ -41,11 +41,24 @@
 #include "search.h"
 #include "centgeo.h"
 #include "misc_util.h"
+#include "board.h"
+#include "data_it.h"
+#include "obj_line.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
 
 #define EDGE_TYPES (PCB_OBJ_LINE | PCB_OBJ_ARC)
 #define CUT_TYPES (PCB_OBJ_LINE | PCB_OBJ_ARC)
+
+static void list_by_flag(pcb_data_t *data, vtp0_t *dst, unsigned long types, unsigned long flag)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	
+	for(o = pcb_data_first(&it, data, types); o != NULL; o = pcb_data_next(&it))
+		if (PCB_FLAG_TEST(flag, o))
+			vtp0_append(dst, o);
+}
 
 #include "trim.c"
 
@@ -113,10 +126,19 @@ static fgw_error_t pcb_act_trim(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			vtp0_append(&edges, ptr2);
 			break;
 		case F_Selected:
+			list_by_flag(PCB->Data, &edges, EDGE_TYPES, PCB_FLAG_SELECTED);
+			break;
 		case F_Found:
+			list_by_flag(PCB->Data, &edges, EDGE_TYPES, PCB_FLAG_FOUND);
+			break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Invalid first argument\n");
 			goto err;
+	}
+
+	if (vtp0_len(&edges) < 1) {
+		pcb_message(PCB_MSG_ERROR, "No cutting edge found\n");
+		goto err;
 	}
 
 	if (do_trim(&edges, kwobj) < 0)
