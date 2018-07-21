@@ -96,3 +96,15 @@ void pcb_cline_offs(pcb_line_t *line, double offs, pcb_coord_t *dstx, pcb_coord_
 	*dsty = pcb_round((double)line->Point1.Y + offs * line_dy);
 }
 
+double pcb_cline_pt_offs(pcb_line_t *line, pcb_coord_t px, pcb_coord_t py)
+{
+	double line_dx, line_dy, pt_dx, pt_dy;
+
+	line_dx = line->Point2.X - line->Point1.X;
+	line_dy = line->Point2.Y - line->Point1.Y;
+
+	pt_dx = px - line->Point1.X;
+	pt_dy = py - line->Point1.Y;
+
+	return (line_dx * pt_dx + line_dy * pt_dy) / (line_dx*line_dx + line_dy*line_dy);
+}
