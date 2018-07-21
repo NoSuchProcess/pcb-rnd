@@ -62,7 +62,7 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 				{
 					p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
 					switch(p) {
-						case 0: return 0;
+						case 0: continue; /* no intersection, skip to the next potential cutting edge */
 						case 1:
 							if (io[0] < remo) {
 								if (io[0] > mino) mino = io[0];
