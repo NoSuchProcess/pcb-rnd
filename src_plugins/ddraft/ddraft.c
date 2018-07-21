@@ -39,6 +39,8 @@
 #include "actions.h"
 #include "funchash_core.h"
 #include "search.h"
+#include "centgeo.h"
+#include "misc_util.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
 
@@ -69,6 +71,7 @@ static long do_trim(vtp0_t *edges, int kwobj)
 				}
 				for(n = 0; n < vtp0_len(edges); n++)
 					res += pcb_trim((pcb_any_obj_t *)edges->array[n], (pcb_any_obj_t *)ptr2, x, y);
+				pcb_gui->invalidate_all();
 			}
 			break;
 		default:
