@@ -115,14 +115,14 @@ void lesstif_update_widget_flags(const char *cookie)
 /*-----------------------------------------------------------------------------*/
 
 #if 0
-		 static void
-		   stdarg_do_color(char *value, char *which)
+static void stdarg_do_color(char *value, char *which)
 {
 	XColor color;
-	if (XParseColor(display, cmap, value, &color))
+	if (XParseColor(display, cmap, value, &color)) {
 		if (XAllocColor(display, cmap, &color)) {
 			stdarg(which, color.pixel);
 		}
+	}
 }
 #endif
 
