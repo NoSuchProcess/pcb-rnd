@@ -81,7 +81,7 @@ unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l);
 void pcb_line_pre(pcb_line_t *line);
 
 /* re-administrate a line; call after changing geometry */
-void pcb_line_pre(pcb_line_t *line);
+void pcb_line_post(pcb_line_t *line);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
 void pcb_line_adjust_attached(void);
