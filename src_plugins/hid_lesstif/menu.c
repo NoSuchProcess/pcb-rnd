@@ -163,8 +163,11 @@ void lesstif_get_xy(const char *message)
 
 void lesstif_get_coords(const char *msg, pcb_coord_t *px, pcb_coord_t *py, int force)
 {
-	if ((force || !have_xy) && msg)
+	if ((force || !have_xy) && msg) {
+		if (force)
+			have_xy = 0;
 		lesstif_get_xy(msg);
+	}
 	if (have_xy)
 		lesstif_coords_to_pcb(action_x, action_y, px, py);
 }
