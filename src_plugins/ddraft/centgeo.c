@@ -30,6 +30,7 @@
 #include "centgeo.h"
 
 #include "obj_line.h"
+#include "compat_misc.h"
 
 /* Same basic algo as in find_geo.c - see comment for the algo
    description there */
