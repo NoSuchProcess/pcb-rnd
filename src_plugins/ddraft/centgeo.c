@@ -34,7 +34,7 @@
 
 /* Same basic algo as in find_geo.c - see comment for the algo
    description there */
-int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *ip)
+int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *ip, double offs[2])
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -73,6 +73,8 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 				ip->X1 = pcb_round((double)Line1->Point1.X + r * line1_dx);
 				ip->Y1 = pcb_round((double)Line1->Point1.Y + r * line1_dy);
 			}
+			if (offs != NULL)
+				offs[0] = r;
 			return 1;
 		}
 		return 0;
