@@ -12,4 +12,8 @@
    2 = overlapping segments (overlap endpoitns are stored in X1;Y1 and X2;Y2 of ip) */
 int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *ip, double offs[2]);
 
+/* Calculate the point on a line corresponding to a [0..1] offset and store
+   the result in dstx;dsty. */
+void pcb_cline_offs(pcb_line_t *line, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty);
+
 #endif

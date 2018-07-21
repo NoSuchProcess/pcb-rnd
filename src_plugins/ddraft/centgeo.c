@@ -85,3 +85,14 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 	return 0;
 }
 
+void pcb_cline_offs(pcb_line_t *line, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty)
+{
+	double line_dx, line_dy;
+
+	line_dx = line->Point2.X - line->Point1.X;
+	line_dy = line->Point2.Y - line->Point1.Y;
+
+	*dstx = pcb_round((double)line->Point1.X + offs * line_dx);
+	*dsty = pcb_round((double)line->Point1.Y + offs * line_dy);
+}
+
