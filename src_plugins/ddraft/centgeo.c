@@ -26,6 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
 #include "centgeo.h"
 
 #include "obj_line.h"
