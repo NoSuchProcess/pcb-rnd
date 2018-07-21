@@ -26,13 +26,34 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "undo_old.h"
+
+/* Move a line endpoint to a new absoltue coord in an undoable way */
+static void move_lp(pcb_line_t *line, int pt_idx, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_point_t *pt;
+
+	switch(pt_idx) {
+		case 1: pt = &line->Point1; break;
+		case 2: pt = &line->Point2; break;
+		default:
+			abort();
+	}
+
+	pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, line->parent.layer, line, pt, x - pt->X, y - pt->Y);
+	pcb_line_pre(line);
+	pt->X = x;
+	pt->Y = y;
+	pcb_line_post(line);
+}
+
 static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
 	int p, n;
 	double d1, d2;
 	double io[2];
 	double mino = 0.0, maxo = 1.0, remo = pcb_cline_pt_offs(line, rem_x, rem_y);
-
+	pcb_coord_t x, y;
 
 	for(n = 0; n < vtp0_len(cut_edges); n++) {
 		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
@@ -65,24 +86,29 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 
 	/* mino and maxo holds the two endpoint offsets after the cuts, in respect
 	   to the original line. Cut/split the line using them. */
-	pcb_line_pre(line);
 	if ((mino > 0.0) && (maxo < 1.0)) { /* remove (shortest) middle section */
-		pcb_line_t *new_line;
-		new_line = pcb_line_dup(line->parent.layer, line);
-		pcb_cline_offs(line, maxo, &line->Point1.X, &line->Point1.Y);
+		pcb_line_t *new_line = pcb_line_dup(line->parent.layer, line);
 
-		pcb_line_pre(new_line);
-		pcb_cline_offs(new_line, mino, &new_line->Point2.X, &new_line->Point2.Y);
-		pcb_line_post(new_line);
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, new_line->parent.layer, new_line, new_line);
+
+		pcb_cline_offs(line, maxo, &x, &y);
+		move_lp(line, 1, x, y);
+
+		pcb_cline_offs(new_line, mino, &x, &y);
+		move_lp(new_line, 2, x, y);
 	}
-	else if ((mino == 0.0) && (maxo < 1.0))  /* truncate at point1 (shortest overdue) */
-		pcb_cline_offs(line, maxo, &line->Point1.X, &line->Point1.Y);
-	else if ((mino > 0.0) && (maxo == 1.0))  /* truncate at point2 (shortest overdue) */
-		pcb_cline_offs(line, mino, &line->Point2.X, &line->Point2.Y);
+	else if ((mino == 0.0) && (maxo < 1.0)) { /* truncate at point1 (shortest overdue) */
+		pcb_cline_offs(line, maxo, &x, &y);
+		move_lp(line, 1, x, y);
+	}
+	else if ((mino > 0.0) && (maxo == 1.0)) { /* truncate at point2 (shortest overdue) */
+		pcb_cline_offs(line, mino, &x, &y);
+		move_lp(line, 2, x, y);
+	}
 	else
 		return -1;
-	pcb_line_post(line);
 
+	pcb_undo_inc_serial();
 	return 1;
 }
 
