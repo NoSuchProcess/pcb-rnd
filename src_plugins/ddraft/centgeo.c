@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  2d drafting plugin: trim objects
+ *  2d drafting plugin: center line geometry
  *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -25,16 +25,3 @@
  *    lead developer: email to pcb-rnd (at) igor2.repo.hu
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-
-int pcb_trim(pcb_any_obj_t *cut_edge, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y)
-{
-pcb_trace("trim: %p %p %mm %mm\n", cut_edge, obj, rem_x, rem_y);
-	switch(cut_edge->type) {
-/*
-		case PCB_OBJ_LINE: pcb_trim_with_line((pcb_line_t *)cut_edge, obj, rem_x, rem_y);
-*/
-		default:
-			return -1;
-	}
-}
-

@@ -1,5 +1,8 @@
 put /local/pcb/mod {ddraft}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/ddraft/ddraft.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/ddraft/ddraft.o
+	$(PLUGDIR)/ddraft/centgeo.o
+@]
 
 switch /local/pcb/ddraft/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
