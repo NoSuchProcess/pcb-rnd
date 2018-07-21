@@ -77,6 +77,11 @@ void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y);
 int pcb_line_eq(const pcb_host_trans_t *tr1, const pcb_line_t *l1, const pcb_host_trans_t *tr2, const pcb_line_t *l2);
 unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l);
 
+/* un-administrate a line; call before changing geometry */
+void pcb_line_pre(pcb_line_t *line);
+
+/* re-administrate a line; call after changing geometry */
+void pcb_line_pre(pcb_line_t *line);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
 void pcb_line_adjust_attached(void);

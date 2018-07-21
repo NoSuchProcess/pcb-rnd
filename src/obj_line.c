@@ -365,7 +365,25 @@ void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y)
 	y[3] = (pcb_coord_t)pcb_round(y2 + vy * width + ny * width);
 }
 
+void pcb_line_pre(pcb_line_t *line)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(line->parent.layer);
+	if (ly == NULL)
+		return;
+	if (ly->line_tree != NULL)
+		pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)line);
+	pcb_poly_restore_to_poly(ly->parent.data, PCB_OBJ_LINE, ly, line);
+}
 
+void pcb_line_post(pcb_line_t *line)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(line->parent.layer);
+	if (ly == NULL)
+		return;
+	if (ly->line_tree != NULL)
+		pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)line);
+	pcb_poly_clear_from_poly(ly->parent.data, PCB_OBJ_LINE, ly, line);
+}
 
 /*** ops ***/
 /* copies a line to buffer */
