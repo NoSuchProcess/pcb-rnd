@@ -57,6 +57,7 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 	/* No cross product means parallel or overlapping lines */
 	if (r == 0.0) {
 		if (s == 0.0) { /* overlap */
+#warning TODO: set ip
 			return 2;
 		}
 		return 0;
