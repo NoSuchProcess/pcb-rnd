@@ -126,7 +126,7 @@ static void stdarg_do_color(char *value, char *which)
 }
 #endif
 
-static int need_xy = 0, have_xy = 0, action_x, action_y;
+static int need_xy = 0, have_xy = 0, block_xy = 0, action_x, action_y;
 
 int lesstif_button_event(Widget w, XEvent * e)
 {
@@ -136,6 +136,8 @@ int lesstif_button_event(Widget w, XEvent * e)
 	if (!need_xy)
 		return 0;
 	if (w != work_area)
+		return 1;
+	if (block_xy)
 		return 1;
 	return 0;
 }
@@ -164,9 +166,12 @@ void lesstif_get_xy(const char *message)
 void lesstif_get_coords(const char *msg, pcb_coord_t *px, pcb_coord_t *py, int force)
 {
 	if ((force || !have_xy) && msg) {
-		if (force)
+		if (force) {
 			have_xy = 0;
+			block_xy = 1;
+		}
 		lesstif_get_xy(msg);
+		block_xy = 0;
 	}
 	if (have_xy)
 		lesstif_coords_to_pcb(action_x, action_y, px, py);
