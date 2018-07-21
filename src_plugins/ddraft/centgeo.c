@@ -46,12 +46,6 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 	point1_dx = Line1->Point1.X - Line2->Point1.X;
 	point1_dy = Line1->Point1.Y - Line2->Point1.Y;
 
-	/* If either line is a point, we have failed already, since the
-	 *   endpoint check above will have caught an "intersection". */
-	if ((line1_dx == 0 && line1_dy == 0)
-			|| (line2_dx == 0 && line2_dy == 0))
-		return pcb_false;
-
 	/* set s to cross product of Line1 and the line
 	 *   Line1.Point1--Line2.Point1 (as vectors) */
 	s = point1_dy * line1_dx - point1_dx * line1_dy;
@@ -59,22 +53,31 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 	/* set r to cross product of both lines (as vectors) */
 	r = line1_dx * line2_dy - line1_dy * line2_dx;
 
-	/* No cross product means parallel lines, or maybe Line2 is
-	 *  zero-length. In either case, since we did a bounding-box
-	 *  check before getting here, the above pcb_is_point_in_line() checks
-	 *  will have caught any intersections. */
-	if (r == 0.0)
-		return pcb_false;
+	/* No cross product means parallel or overlapping lines */
+	if (r == 0.0) {
+		if (s == 0.0) { /* overlap */
+			return 2;
+		}
+		return 0;
+	}
 
 	s /= r;
 	r = (point1_dy * line2_dx - point1_dx * line2_dy) / r;
 
 	/* intersection is at least on AB */
-	if (r >= 0.0 && r <= 1.0)
-		return (s >= 0.0 && s <= 1.0);
+	if (r >= 0.0 && r <= 1.0) {
+		if (s >= 0.0 && s <= 1.0) {
+			if (ip != NULL) {
+				ip->X1 = pcb_round((double)Line1->Point1.X + r * line1_dx);
+				ip->Y1 = pcb_round((double)Line1->Point1.Y + r * line1_dy);
+			}
+			return 1;
+		}
+		return 0;
+	}
 
 	/* intersection is at least on CD */
 	/* [removed this case since it always returns pcb_false --asp] */
-	return pcb_false;
+	return 0;
 }
 
