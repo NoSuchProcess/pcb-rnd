@@ -26,50 +26,70 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static int pcb_trim_with_line(pcb_line_t *cut_edge, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
-	int p;
+	int p, n;
 	double d1, d2;
-	pcb_box_t ip;
+	double io[2];
+	double mino = 0.0, maxo = 1.0, remo = pcb_cline_pt_offs(line, rem_x, rem_y);
 
-	switch(obj->type) {
-		case PCB_OBJ_LINE:
-			{
-				pcb_line_t *l = (pcb_line_t *)obj;
-				p = pcb_intersect_cline_cline(cut_edge, l, &ip);
-				switch(p) {
-					case 0: return 0;
-					case 1:
-						/* do not trim if the result would be a zero-length line */
-						if ((ip.X1 == l->Point1.X) && (ip.Y1 == l->Point1.Y)) return 0;
-						if ((ip.X1 == l->Point2.X) && (ip.Y1 == l->Point2.Y)) return 0;
 
-						/* determine which endpoint to move (the one closer to the rem point) */
-						d1 = pcb_distance2(rem_x, rem_y, l->Point1.X, l->Point1.Y);
-						d2 = pcb_distance2(rem_x, rem_y, l->Point2.X, l->Point2.Y);
-						pcb_line_pre(l);
-						if (d1 < d2) {
-							l->Point1.X = ip.X1;
-							l->Point1.Y = ip.Y1;
-						}
-						else {
-							l->Point2.X = ip.X1;
-							l->Point2.Y = ip.Y1;
-						}
-						pcb_line_post(l);
+	for(n = 0; n < vtp0_len(cut_edges); n++) {
+		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
+		switch(cut_edge->type) {
+			case PCB_OBJ_LINE:
+				{
+					p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
+					switch(p) {
+						case 0: return 0;
+						case 1:
+							if (io[0] > remo) {
+								if (io[0] > mino) mino = io[0];
+							}
+							else {
+								if (io[0] < maxo) maxo = io[0];
+							}
+							break;
+					}
 				}
-			}
-			break;
-		default: return -1;
+				break;
+			default: return -1;
+		}
 	}
-	return 0;
+
+	if ((mino == 0.0) && (maxo == 1.0))
+		return 0; /* nothing to be done */
+
+	if (mino == maxo)
+		return 0; /* refuse to end up with 0-length lines */
+
+	/* mino and maxo holds the two endpoint offsets after the cuts, in respect
+	   to the original line. Cut/split the line using them. */
+	pcb_line_pre(line);
+	if ((mino > 0.0) && (maxo < 1.0)) { /* remove (longest) middle section */
+		pcb_line_t *new_line;
+		new_line = pcb_line_dup(line->parent.layer, line);
+		pcb_cline_offs(line, maxo, &line->Point2.X, &line->Point2.Y);
+
+		pcb_line_pre(new_line);
+		pcb_cline_offs(new_line, mino, &new_line->Point1.X, &new_line->Point1.Y);
+		pcb_line_post(new_line);
+	}
+	else if ((mino == 0.0) && (maxo < 1.0))  /* truncate at point2 */
+		pcb_cline_offs(line, maxo, &line->Point2.X, &line->Point2.Y);
+	else if ((mino > 0.0) && (maxo == 1.0))    /* truncate at point1 */
+		pcb_cline_offs(line, mino, &line->Point1.X, &line->Point1.Y);
+	else
+		return -1;
+	pcb_line_post(line);
+
+	return 1;
 }
 
-int pcb_trim(pcb_any_obj_t *cut_edge, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y)
+int pcb_trim(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
-pcb_trace("trim: %p %p %mm %mm\n", cut_edge, obj, rem_x, rem_y);
-	switch(cut_edge->type) {
-		case PCB_OBJ_LINE: return pcb_trim_with_line((pcb_line_t *)cut_edge, obj, rem_x, rem_y);
+	switch(obj->type) {
+		case PCB_OBJ_LINE: return pcb_trim_line(cut_edges, obj, rem_x, rem_y);
 		default:
 			return -1;
 	}

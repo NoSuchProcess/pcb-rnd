@@ -82,8 +82,7 @@ static long do_trim(vtp0_t *edges, int kwobj)
 					pcb_message(PCB_MSG_ERROR, "Can't cut that object\n");
 					continue;
 				}
-				for(n = 0; n < vtp0_len(edges); n++)
-					res += pcb_trim((pcb_any_obj_t *)edges->array[n], (pcb_any_obj_t *)ptr2, x, y);
+				res += pcb_trim(edges, (pcb_any_obj_t *)ptr2, x, y);
 				pcb_gui->invalidate_all();
 			}
 			break;
