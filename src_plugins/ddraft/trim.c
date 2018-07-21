@@ -43,7 +43,7 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 					switch(p) {
 						case 0: return 0;
 						case 1:
-							if (io[0] > remo) {
+							if (io[0] < remo) {
 								if (io[0] > mino) mino = io[0];
 							}
 							else {
@@ -66,19 +66,19 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 	/* mino and maxo holds the two endpoint offsets after the cuts, in respect
 	   to the original line. Cut/split the line using them. */
 	pcb_line_pre(line);
-	if ((mino > 0.0) && (maxo < 1.0)) { /* remove (longest) middle section */
+	if ((mino > 0.0) && (maxo < 1.0)) { /* remove (shortest) middle section */
 		pcb_line_t *new_line;
 		new_line = pcb_line_dup(line->parent.layer, line);
-		pcb_cline_offs(line, maxo, &line->Point2.X, &line->Point2.Y);
+		pcb_cline_offs(line, maxo, &line->Point1.X, &line->Point1.Y);
 
 		pcb_line_pre(new_line);
-		pcb_cline_offs(new_line, mino, &new_line->Point1.X, &new_line->Point1.Y);
+		pcb_cline_offs(new_line, mino, &new_line->Point2.X, &new_line->Point2.Y);
 		pcb_line_post(new_line);
 	}
-	else if ((mino == 0.0) && (maxo < 1.0))  /* truncate at point2 */
-		pcb_cline_offs(line, maxo, &line->Point2.X, &line->Point2.Y);
-	else if ((mino > 0.0) && (maxo == 1.0))    /* truncate at point1 */
-		pcb_cline_offs(line, mino, &line->Point1.X, &line->Point1.Y);
+	else if ((mino == 0.0) && (maxo < 1.0))  /* truncate at point1 (shortest overdue) */
+		pcb_cline_offs(line, maxo, &line->Point1.X, &line->Point1.Y);
+	else if ((mino > 0.0) && (maxo == 1.0))  /* truncate at point2 (shortest overdue) */
+		pcb_cline_offs(line, mino, &line->Point2.X, &line->Point2.Y);
 	else
 		return -1;
 	pcb_line_post(line);
