@@ -26,6 +26,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "centgeo.h"
+
 #include "obj_line.h"
 
 /* Same basic algo as in find_geo.c - see comment for the algo
