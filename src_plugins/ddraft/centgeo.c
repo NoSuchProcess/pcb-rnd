@@ -56,8 +56,34 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 
 	/* No cross product means parallel or overlapping lines */
 	if (r == 0.0) {
-		if (s == 0.0) { /* overlap */
-#warning TODO: set ip
+		if (s == 0.0) { /* overlap; r and [0] will be Line2's point offset within Line1; s and [1] will be an endpoint of line1 */
+
+			r = pcb_cline_pt_offs(Line1, Line2->Point1.X, Line2->Point1.Y);
+			if ((r < 0.0) || (r > 1.0))
+				r = pcb_cline_pt_offs(Line1, Line2->Point2.X, Line2->Point2.Y);
+
+			s = pcb_cline_pt_offs(Line2, Line1->Point1.X, Line1->Point1.Y);
+			if ((s < 0.0) || (s > 1.0))
+				s = 0.0;
+			else
+				s = 1.0;
+
+			if (ip != NULL) {
+				ip->X1 = pcb_round((double)Line1->Point1.X + r * line1_dx);
+				ip->Y1 = pcb_round((double)Line1->Point1.Y + r * line1_dy);
+				if (s == 1.0) {
+					ip->X2 = Line1->Point2.X;
+					ip->Y2 = Line1->Point2.Y;
+				}
+				else {
+					ip->X2 = Line1->Point1.X;
+					ip->Y2 = Line1->Point1.Y;
+				}
+			}
+			if (offs != NULL) {
+				offs[0] = r;
+				offs[1] = s;
+			}
 			return 2;
 		}
 		return 0;
