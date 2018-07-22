@@ -1,49 +1,55 @@
 echo === initial state: empty ===
 reset *
-dump native design/default_layer_name
+dump native appearance/color/layer
 
 echo === import 3 levels ===
 paste system \
 	li:pcb-rnd-conf-v1 { \
 		ha:overwrite { \
-			ha:design { \
-				li:default_layer_name = { sys1; sys2 } \
+			ha:appearance { \
+				ha:color { \
+					li:layer = { sys1; sys2 } \
+				} \
 			} \
 		} \
 	}
-dump native design/default_layer_name
+dump native appearance/color/layer
 
 paste user \
 	li:pcb-rnd-conf-v1 { \
 		ha:overwrite { \
-			ha:design { \
-				li:default_layer_name = { user1; user2 } \
+			ha:appearance { \
+				ha:color { \
+					li:layer = { user1; user2 } \
+				} \
 			} \
 		} \
 	}
-dump native design/default_layer_name
+dump native appearance/color/layer
 
 paste design \
 	li:pcb-rnd-conf-v1 { \
 		ha:overwrite { \
-			ha:design { \
-				li:default_layer_name = { design1; design2 } \
+			ha:appearance { \
+				ha:color { \
+					li:layer = { design1; design2 } \
+				} \
 			} \
 		} \
 	}
-dump native design/default_layer_name
+dump native appearance/color/layer
 
 echo === change policy: design->prepend (design, user) ===
 role design
 chpolicy prepend
-dump native design/default_layer_name
+dump native appearance/color/layer
 
 echo === change policy: user->append (design, sys, user) ===
 role user
 chpolicy append
-dump native design/default_layer_name
+dump native appearance/color/layer
 
 echo === change policy: design->append (sys, user, design) ===
 role design
 chpolicy append
-dump native design/default_layer_name
+dump native appearance/color/layer
