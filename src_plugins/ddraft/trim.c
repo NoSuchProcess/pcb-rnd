@@ -152,9 +152,9 @@ int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			if (trim)
-				return pcb_trim_line(cut_edges, obj, rem_x, rem_y);
+				return pcb_trim_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
 			else
-				return pcb_split_line(cut_edges, obj, rem_x, rem_y);
+				return pcb_split_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
 		default:
 			return -1;
 	}
