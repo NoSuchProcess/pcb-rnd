@@ -107,7 +107,6 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 	else
 		return -1;
 
-	pcb_undo_inc_serial();
 	return 1;
 }
 
@@ -167,14 +166,18 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 
 int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y, int trim)
 {
+	int res = 0;
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			if (trim)
-				return pcb_trim_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
+				res = pcb_trim_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
 			else
-				return pcb_split_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
+				res = pcb_split_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
 		default:
 			return -1;
 	}
+
+	if (res > 0)
+		pcb_undo_inc_serial();
 }
 
