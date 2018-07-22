@@ -173,6 +173,7 @@ int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb
 				res = pcb_trim_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
 			else
 				res = pcb_split_line(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
+			break;
 		default:
 			return -1;
 	}
