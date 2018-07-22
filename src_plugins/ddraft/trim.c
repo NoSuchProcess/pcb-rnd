@@ -179,5 +179,6 @@ int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb
 
 	if (res > 0)
 		pcb_undo_inc_serial();
+	return res;
 }
 
