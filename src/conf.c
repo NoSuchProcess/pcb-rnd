@@ -738,6 +738,7 @@ static conf_ignore_t conf_ignores[] = {
 	{"design/max_width", 16, 0},
 	{"design/max_height", 17, 0},
 	{"design/groups", 13, 1},
+	{"design/default_layer_name", 25, 1},
 
 	{NULL, 0, 0}
 };
