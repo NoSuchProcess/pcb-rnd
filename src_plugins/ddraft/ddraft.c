@@ -44,6 +44,7 @@
 #include "board.h"
 #include "data_it.h"
 #include "obj_line.h"
+#include "undo.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
 
