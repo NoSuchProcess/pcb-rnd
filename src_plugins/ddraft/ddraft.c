@@ -67,7 +67,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 	pcb_objtype_t type;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_coord_t x, y;
-	long res = 0, n;
+	long res = 0;
 
 	switch(kwobj) {
 		case F_Object:

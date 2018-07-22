@@ -50,7 +50,6 @@ static void move_lp(pcb_line_t *line, int pt_idx, pcb_coord_t x, pcb_coord_t y)
 static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
 	int p, n;
-	double d1, d2;
 	double io[2];
 	double mino = 0.0, maxo = 1.0, remo = pcb_cline_pt_offs(line, rem_x, rem_y);
 	pcb_coord_t x, y;
