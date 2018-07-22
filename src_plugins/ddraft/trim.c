@@ -111,16 +111,26 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 	return 1;
 }
 
-static void split_lp(pcb_line_t *line, double offs)
+static pcb_line_t *split_lp(pcb_line_t *line, double offs)
 {
+	pcb_coord_t x, y;
+	pcb_line_t *new_line = pcb_line_dup(line->parent.layer, line);
 
+	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, new_line->parent.layer, new_line, new_line);
+
+	pcb_cline_offs(line, offs, &x, &y);
+	move_lp(line, 2, x, y);
+	move_lp(new_line, 1, x, y);
+
+	return new_line;
 }
 
 
 static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
-	int p, n, numsplt = 0;
+	int p, n, numsplt = 0, res;
 	double io[2];
+	pcb_line_t *new_line;
 
 	for(n = 0; n < vtp0_len(cut_edges); n++) {
 		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
@@ -131,11 +141,19 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 					switch(p) {
 						case 0: continue; /* no intersection, skip to the next potential cutting edge */
 						case 2:
-							split_lp(line, io[1]);
-							numsplt++;
+							if ((io[1] != 0.0) && (io[1] != 1.0)) {
+								new_line = split_lp(line, io[1]);
+								numsplt++;
+								res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
+								if (res > 0) numsplt += res;
+							}
 						case 1:
-							split_lp(line, io[0]);
-							numsplt++;
+							if ((io[0] != 0.0) && (io[0] != 1.0)) {
+								new_line = split_lp(line, io[0]);
+								numsplt++;
+								res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
+								if (res > 0) numsplt += res;
+							}
 							break;
 					}
 				}
