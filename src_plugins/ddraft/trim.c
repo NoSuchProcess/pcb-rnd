@@ -119,7 +119,7 @@ static void split_lp(pcb_line_t *line, double offs)
 
 static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
-	int p, n;
+	int p, n, numsplt = 0;
 	double io[2];
 
 	for(n = 0; n < vtp0_len(cut_edges); n++) {
@@ -132,8 +132,10 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 						case 0: continue; /* no intersection, skip to the next potential cutting edge */
 						case 2:
 							split_lp(line, io[1]);
+							numsplt++;
 						case 1:
 							split_lp(line, io[0]);
+							numsplt++;
 							break;
 					}
 				}
@@ -141,6 +143,8 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 			default: return -1;
 		}
 	}
+
+	return numsplt;
 }
 
 int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y, int trim)
