@@ -737,6 +737,7 @@ static conf_ignore_t conf_ignores[] = {
 	{"editor/increments", 17, 0},
 	{"design/max_width", 16, 0},
 	{"design/max_height", 17, 0},
+	{"design/groups", 13, 1},
 
 	{NULL, 0, 0}
 };
