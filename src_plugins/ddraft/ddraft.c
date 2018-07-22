@@ -62,7 +62,7 @@ static void list_by_flag(pcb_data_t *data, vtp0_t *dst, unsigned long types, uns
 
 #include "trim.c"
 
-static long do_trim(vtp0_t *edges, int kwobj)
+static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 {
 	pcb_objtype_t type;
 	void *ptr1, *ptr2, *ptr3;
@@ -82,7 +82,7 @@ static long do_trim(vtp0_t *edges, int kwobj)
 					pcb_message(PCB_MSG_ERROR, "Can't cut that object\n");
 					continue;
 				}
-				res += pcb_trim(edges, (pcb_any_obj_t *)ptr2, x, y);
+				res += pcb_trim_split(edges, (pcb_any_obj_t *)ptr2, x, y, trim);
 				pcb_gui->invalidate_all();
 			}
 			break;
@@ -94,18 +94,19 @@ static long do_trim(vtp0_t *edges, int kwobj)
 	return res;
 }
 
-static const char pcb_acts_trim[] = "trim([selected|found|object], [selected|found|object])\n";
-static const char pcb_acth_trim[] = "Use one or more objects as cutting edge and trim other objects. First argument is the cutting edge";
-static fgw_error_t pcb_act_trim(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acts_trim_split[] = "trim([selected|found|object], [selected|found|object])\nsplit([selected|found|object], [selected|found|object])";
+static const char pcb_acth_trim_split[] = "Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge";
+static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *actname = argv[0].val.func->name;
 	int kwcut = F_Object, kwobj = F_Object;
 	pcb_objtype_t type;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_coord_t x, y;
 	vtp0_t edges;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, trim, kwcut = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, trim, kwobj = fgw_keyword(&argv[2]));
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, trim_split, kwcut = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, trim_split, kwobj = fgw_keyword(&argv[2]));
 
 	vtp0_init(&edges);
 
@@ -140,7 +141,8 @@ static fgw_error_t pcb_act_trim(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto err;
 	}
 
-	if (do_trim(&edges, kwobj) < 0)
+
+	if (do_trim_split(&edges, kwobj, (*actname == 't')) < 0)
 		goto err;
 
 	PCB_ACT_IRES(0);
@@ -155,7 +157,8 @@ static fgw_error_t pcb_act_trim(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static pcb_action_t ddraft_action_list[] = {
-	{"trim", pcb_act_trim, pcb_acth_trim, pcb_acts_trim}
+	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
+	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split}
 };
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)

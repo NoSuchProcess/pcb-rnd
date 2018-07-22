@@ -112,10 +112,46 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 	return 1;
 }
 
-int pcb_trim(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static void split_lp(pcb_line_t *line, double offs)
+{
+
+}
+
+
+static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
+{
+	int p, n;
+	double io[2];
+
+	for(n = 0; n < vtp0_len(cut_edges); n++) {
+		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
+		switch(cut_edge->type) {
+			case PCB_OBJ_LINE:
+				{
+					p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
+					switch(p) {
+						case 0: continue; /* no intersection, skip to the next potential cutting edge */
+						case 2:
+							split_lp(line, io[1]);
+						case 1:
+							split_lp(line, io[0]);
+							break;
+					}
+				}
+				break;
+			default: return -1;
+		}
+	}
+}
+
+int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb_coord_t rem_y, int trim)
 {
 	switch(obj->type) {
-		case PCB_OBJ_LINE: return pcb_trim_line(cut_edges, obj, rem_x, rem_y);
+		case PCB_OBJ_LINE:
+			if (trim)
+				return pcb_trim_line(cut_edges, obj, rem_x, rem_y);
+			else
+				return pcb_split_line(cut_edges, obj, rem_x, rem_y);
 		default:
 			return -1;
 	}
