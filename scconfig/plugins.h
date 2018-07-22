@@ -76,7 +76,7 @@ plugin_def("io_tedax",         "tEDAx (Trivial EDA eXchange)",    sbuildin, 1)
 
 plugin_header("\nExport plugins:\n")
 plugin_def("cam",              "cam/job based export",            sdisable, 1)
-plugin_def("ddraft",           "2D drafting helper",              sdisable, 1)
+plugin_def("ddraft",           "2D drafting helper",              sbuildin, 1)
 plugin_def("export_bboard",    "breadboard pcb_exporter",         sdisable, 0)
 plugin_def("export_bom",       "bom pcb_exporter",                sbuildin, 1)
 plugin_def("export_dsn",       "specctra .dsn pcb_exporter",      sbuildin, 1)

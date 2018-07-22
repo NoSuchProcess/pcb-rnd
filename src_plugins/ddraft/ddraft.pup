@@ -3,5 +3,5 @@ $short 2D drafting helper
 $long Actions and a command interpreter for supporting advanced/precise 2 dimensional drafting
 $state WIP
 $package core
-default disable
+default buildin
 autoload 1
