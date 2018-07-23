@@ -1528,7 +1528,7 @@ MoveArc -> pcb_arcop_move
 MoveArcToLayerLowLevel -> pcb_arcop_move_to_layer_low
 MoveArcToLayer -> pcb_arcop_move_to_layer
 DestroyArc -> pcb_arcop_destroy
-RemoveArc_op -> pcb_arcop_remve
+RemoveArc_op -> pcb_arcop_remove
 RemoveArcPoint_op -> pcb_arcop_remove_point
 Rotate90Arc -> pcb_arcop_rotate90
 ChgFlagArc -> pcb_arcop_change_flag
@@ -1567,7 +1567,7 @@ MoveArc -> pcb_arcop_move
 MoveArcToLayerLowLevel -> pcb_arcop_move_to_layer_low
 MoveArcToLayer -> pcb_arcop_move_to_layer
 DestroyArc -> pcb_arcop_destroy
-RemoveArc_op -> pcb_arcop_remve
+RemoveArc_op -> pcb_arcop_remove
 RemoveArcPoint_op -> pcb_arcop_remove_point
 Rotate90Arc -> pcb_arcop_rotate90
 ChgFlagArc -> pcb_arcop_change_flag

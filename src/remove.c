@@ -47,7 +47,7 @@ static pcb_opfunc_t RemoveFunctions = {
 	pcb_polyop_remove,
 	pcb_lineop_remove_point,
 	pcb_polyop_remove_point,
-	pcb_arcop_remve,
+	pcb_arcop_remove,
 	pcb_ratop_remove,
 	pcb_arcop_remove_point,
 	pcb_subcop_remove,

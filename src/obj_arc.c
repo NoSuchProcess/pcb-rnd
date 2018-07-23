@@ -630,7 +630,7 @@ void *pcb_arcop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* removes an arc from a layer */
-void *pcb_arcop_remve(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis)
@@ -641,7 +641,7 @@ void *pcb_arcop_remve(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 void *pcb_arcop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int *end_id)
 {
-	return pcb_arcop_remve(ctx, l, a);
+	return pcb_arcop_remove(ctx, l, a);
 }
 
 void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
@@ -652,7 +652,7 @@ void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	res = pcb_arcop_remve(&ctx, Layer, Arc);
+	res = pcb_arcop_remove(&ctx, Layer, Arc);
 	pcb_draw();
 	return res;
 }
