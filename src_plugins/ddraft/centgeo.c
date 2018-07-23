@@ -184,7 +184,7 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 	r2 = Radius * l - d;
 	/* projection doesn't even intersect circle when r2 < 0 */
 	if (r2 < 0)
-		return pcb_false;
+		return 0;
 
 	/* line ends on arc? */
 	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, 0, Arc)) {
