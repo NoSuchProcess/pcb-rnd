@@ -190,10 +190,14 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, 0, Arc)) {
 		if (oline)
 			append(0, Line->Point1.X, Line->Point1.Y);
+		else
+			append(pcb_carc_pt_offs(Arc, Line->Point1.X, Line->Point1.Y), Line->Point1.X, Line->Point1.Y);
 	}
 	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, 0, Arc)) {
 		if (oline)
 			append(1, Line->Point2.X, Line->Point2.Y);
+		else
+			append(pcb_carc_pt_offs(Arc, Line->Point2.X, Line->Point2.Y), Line->Point2.X, Line->Point2.Y);
 	}
 
 	/* if line is a single point, there is no other way an intersection can happen */
@@ -210,6 +214,8 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc)) {
 			if (oline)
 				append(r, ix, iy);
+			else
+				append(pcb_carc_pt_offs(Arc, ix, iy), ix, iy);
 		}
 	}
 
@@ -220,6 +226,8 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc)) {
 			if (oline)
 				append(r, ix, iy);
+			else
+				append(pcb_carc_pt_offs(Arc, ix, iy), ix, iy);
 		}
 	}
 
@@ -230,6 +238,8 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 			r = pcb_cline_pt_offs(Line, ex, ey);
 			append(r, ex, ey);
 		}
+		else
+			append(0, ex, ey);
 	}
 	pcb_arc_get_end(Arc, 1, &ex, &ey);
 	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line)) {
@@ -237,6 +247,8 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 			r = pcb_cline_pt_offs(Line, ex, ey);
 			append(r, ex, ey);
 		}
+		else
+			append(1, ex, ey);
 	}
 
 	return found;
