@@ -149,6 +149,9 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 			case PCB_OBJ_LINE:
 				p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
 				break;
+			case PCB_OBJ_ARC:
+				p = pcb_intersect_cline_carc(line, (pcb_arc_t *)cut_edge, NULL, io);
+				break;
 			default: return -1;
 		}
 		switch(p) {
