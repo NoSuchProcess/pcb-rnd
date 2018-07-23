@@ -13,11 +13,12 @@
 int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *ip, double offs[2]);
 
 /* Calculate the intersection point(s) of a lines and an arc and store them
-   in ip and/or offs (on Line) if they are not NULL. Returns:
+   in ip and/or offs if they are not NULL. Returns:
    0 = no intersection
    1 = one intersection (X1;Y1 of ip is loaded)
    2 = two intersections (stored in X1;Y1 and X2;Y2 of ip) */
-int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2]);
+int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs_line[2]);
+int pcb_intersect_carc_line(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs_arc[2]);
 
 
 /* Calculate the point on a line corresponding to a [0..1] offset and store

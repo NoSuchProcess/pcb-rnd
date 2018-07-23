@@ -164,7 +164,7 @@ do { \
 		return found; \
 } while(0)
 
-int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2])
+static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2], int oline)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	pcb_coord_t ex, ey, ix, iy;
@@ -187,10 +187,14 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 		return pcb_false;
 
 	/* line ends on arc? */
-	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, 0, Arc))
-		append(0, Line->Point1.X, Line->Point1.Y);
-	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, 0, Arc))
-		append(1, Line->Point2.X, Line->Point2.Y);
+	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, 0, Arc)) {
+		if (oline)
+			append(0, Line->Point1.X, Line->Point1.Y);
+	}
+	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, 0, Arc)) {
+		if (oline)
+			append(1, Line->Point2.X, Line->Point2.Y);
+	}
 
 	/* if line is a single point, there is no other way an intersection can happen */
 	if (l == 0.0)
@@ -203,29 +207,48 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 	if ((r >= 0) && (r <= 1)) {
 		ix = pcb_round(Line->Point1.X + r * dx);
 		iy = pcb_round(Line->Point1.Y + r * dy);
-		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc))
-			append(r, ix, iy);
+		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc)) {
+			if (oline)
+				append(r, ix, iy);
+		}
 	}
 
 	r = (Radius - r2) / l;
 	if ((r >= 0) && (r <= 1)) {
 		ix = pcb_round(Line->Point1.X + r * dx);
 		iy = pcb_round(Line->Point1.Y + r * dy);
-		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc))
-			append(r, ix, iy);
+		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc)) {
+			if (oline)
+				append(r, ix, iy);
+		}
 	}
 
 	/* check if an arc end point is on the line */
 	pcb_arc_get_end(Arc, 0, &ex, &ey);
 	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line)) {
-		r = pcb_cline_pt_offs(Line, ex, ey);
-		append(r, ex, ey);
+		if (oline) {
+			r = pcb_cline_pt_offs(Line, ex, ey);
+			append(r, ex, ey);
+		}
 	}
 	pcb_arc_get_end(Arc, 1, &ex, &ey);
 	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line)) {
-		r = pcb_cline_pt_offs(Line, ex, ey);
-		append(r, ex, ey);
+		if (oline) {
+			r = pcb_cline_pt_offs(Line, ex, ey);
+			append(r, ex, ey);
+		}
 	}
 
 	return found;
 }
+
+int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2])
+{
+	return intersect_cline_carc(Line, Arc, ip, offs, 1);
+}
+
+int pcb_intersect_carc_line(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2])
+{
+	return intersect_cline_carc(Line, Arc, ip, offs, 0);
+}
+
