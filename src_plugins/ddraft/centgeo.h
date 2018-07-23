@@ -21,11 +21,14 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 int pcb_intersect_carc_line(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs_arc[2]);
 
 
-/* Calculate the point on a line corresponding to a [0..1] offset and store
+/* Calculate the point on an object corresponding to a [0..1] offset and store
    the result in dstx;dsty. */
 void pcb_cline_offs(pcb_line_t *line, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty);
+void pcb_carc_offs(pcb_arc_t *arc, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty);
 
-/* Project a point (px;py) onto a line and return the offset from point1 */
+/* Project a point (px;py) onto an object and return the offset from point1 */
 double pcb_cline_pt_offs(pcb_line_t *line, pcb_coord_t px, pcb_coord_t py);
+double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py);
+
 
 #endif
