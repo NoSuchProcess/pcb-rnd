@@ -70,7 +70,13 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 
 		switch(p) {
 			case 0: continue; /* no intersection, skip to the next potential cutting edge */
-			case 2: /* io[0] is the non-endpoint */
+			case 2:
+				if (io[1] < remo) {
+					if (io[1] > mino) mino = io[1];
+				}
+				else {
+					if (io[1] < maxo) maxo = io[1];
+				}
 			case 1:
 				if (io[0] < remo) {
 					if (io[0] > mino) mino = io[0];
