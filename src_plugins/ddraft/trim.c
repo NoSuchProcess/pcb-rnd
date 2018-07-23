@@ -146,29 +146,27 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
 		switch(cut_edge->type) {
 			case PCB_OBJ_LINE:
-				{
-					p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
-					switch(p) {
-						case 0: continue; /* no intersection, skip to the next potential cutting edge */
-						case 2:
-							if ((io[1] != 0.0) && (io[1] != 1.0)) {
-								new_line = split_lp(line, io[1]);
-								numsplt++;
-								res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
-								if (res > 0) numsplt += res;
-							}
-						case 1:
-							if ((io[0] != 0.0) && (io[0] != 1.0)) {
-								new_line = split_lp(line, io[0]);
-								numsplt++;
-								res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
-								if (res > 0) numsplt += res;
-							}
-							break;
-					}
-				}
+				p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
 				break;
 			default: return -1;
+		}
+		switch(p) {
+			case 0: continue; /* no intersection, skip to the next potential cutting edge */
+			case 2:
+				if ((io[1] != 0.0) && (io[1] != 1.0)) {
+					new_line = split_lp(line, io[1]);
+					numsplt++;
+					res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
+					if (res > 0) numsplt += res;
+				}
+			case 1:
+				if ((io[0] != 0.0) && (io[0] != 1.0)) {
+					new_line = split_lp(line, io[0]);
+					numsplt++;
+					res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
+					if (res > 0) numsplt += res;
+				}
+				break;
 		}
 	}
 
