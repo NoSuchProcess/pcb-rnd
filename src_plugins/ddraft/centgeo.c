@@ -33,6 +33,7 @@
 #include "obj_arc.h"
 #include "math_helper.h"
 #include "compat_misc.h"
+#include "search.h"
 
 /* Same basic algo as in find_geo.c - see comment for the algo
    description there */
@@ -137,10 +138,30 @@ double pcb_cline_pt_offs(pcb_line_t *line, pcb_coord_t px, pcb_coord_t py)
 	return (line_dx * pt_dx + line_dy * pt_dy) / (line_dx*line_dx + line_dy*line_dy);
 }
 
+#define append(ofs, ix, iy) \
+do { \
+	if (ip != NULL) { \
+		if (found == 0) { \
+			ip->X1 = ix; \
+			ip->Y1 = iy; \
+		} \
+		else { \
+			ip->X2 = ix; \
+			ip->Y2 = iy; \
+		} \
+	} \
+	if (offs != NULL) \
+		offs[found] = ofs; \
+	found++; \
+	if (found == 2) \
+		return found; \
+} while(0)
+
 int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2])
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
-	pcb_coord_t ex, ey;
+	pcb_coord_t ex, ey, ix, iy;
+	int found = 0;
 
 	dx = Line->Point2.X - Line->Point1.X;
 	dy = Line->Point2.Y - Line->Point1.Y;
@@ -158,30 +179,46 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 	if (r2 < 0)
 		return pcb_false;
 
-	/* check the ends of the line in case the projected point of intersection is beyond the line end */
+	/* line ends on arc? */
 	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, 0, Arc))
-		return pcb_true;
+		append(0, Line->Point1.X, Line->Point1.Y);
 	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, 0, Arc))
-		return pcb_true;
+		append(1, Line->Point2.X, Line->Point2.Y);
+
+	/* if line is a single point, there is no other way an intersection can happen */
 	if (l == 0.0)
-		return pcb_false;
+		return found;
 
 	r2 = sqrt(r2);
 	Radius = -(dx * dx1 + dy * dy1);
 	r = (Radius + r2) / l;
-	if (r >= 0 && r <= 1 && pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, 1, Arc))
-		return pcb_true;
+
+	if ((r >= 0) && (r <= 1)) {
+		ix = pcb_round(Line->Point1.X + r * dx);
+		iy = pcb_round(Line->Point1.Y + r * dy);
+		if (pcb_is_point_on_arc(ix, iy, 1, Arc))
+			append(r, ix, iy);
+	}
+
 	r = (Radius - r2) / l;
-	if (r >= 0 && r <= 1 && pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, 1, Arc))
-		return pcb_true;
+	if ((r >= 0) && (r <= 1)) {
+		ix = pcb_round(Line->Point1.X + r * dx);
+		iy = pcb_round(Line->Point1.Y + r * dy);
+		if (pcb_is_point_on_arc(ix, iy, 1, Arc))
+			append(r, ix, iy);
+	}
 
-	/* check arc end points */
+	/* check if an arc end point is on the line */
 	pcb_arc_get_end(Arc, 0, &ex, &ey);
-	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line))
-		return pcb_true;
-
+	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line)) {
+		r = pcb_cline_pt_offs(Line, ex, ey);
+		append(r, ex, ey);
+	}
 	pcb_arc_get_end(Arc, 1, &ex, &ey);
-	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line))
-		return pcb_true;
-	return pcb_false;
+	if (pcb_is_point_in_line(ex, ey, 1, (pcb_any_line_t *) Line)) {
+		r = pcb_cline_pt_offs(Line, ex, ey);
+		append(r, ex, ey);
+	}
+
+	return found;
 }
