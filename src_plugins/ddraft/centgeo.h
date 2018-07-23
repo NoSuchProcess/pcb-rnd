@@ -18,7 +18,7 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
    1 = one intersection (X1;Y1 of ip is loaded)
    2 = two intersections (stored in X1;Y1 and X2;Y2 of ip) */
 int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs_line[2]);
-int pcb_intersect_carc_line(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs_arc[2]);
+int pcb_intersect_carc_cline(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs_arc[2]);
 
 
 /* Calculate the point on an object corresponding to a [0..1] offset and store
