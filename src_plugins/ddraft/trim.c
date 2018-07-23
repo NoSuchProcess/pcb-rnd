@@ -144,6 +144,7 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 
 	for(n = 0; n < vtp0_len(cut_edges); n++) {
 		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
+		p = 0;
 		switch(cut_edge->type) {
 			case PCB_OBJ_LINE:
 				p = pcb_intersect_cline_cline(line, (pcb_line_t *)cut_edge, NULL, io);
@@ -156,13 +157,18 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 				if ((io[1] != 0.0) && (io[1] != 1.0)) {
 					new_line = split_lp(line, io[1]);
 					numsplt++;
+					res = pcb_split_line(cut_edges, line, rem_x, rem_y);
+					if (res > 0) numsplt += res;
 					res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
 					if (res > 0) numsplt += res;
+					break; /* can't use the other point if we did a split here, because that changes the meaning of offsets */
 				}
 			case 1:
 				if ((io[0] != 0.0) && (io[0] != 1.0)) {
 					new_line = split_lp(line, io[0]);
 					numsplt++;
+					res = pcb_split_line(cut_edges, line, rem_x, rem_y);
+					if (res > 0) numsplt += res;
 					res = pcb_split_line(cut_edges, new_line, rem_x, rem_y);
 					if (res > 0) numsplt += res;
 				}
