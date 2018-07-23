@@ -172,7 +172,15 @@
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h attrib.h \
- global_typedefs.h pcb_bool.h unit.h data_parent.h compat_misc.h
+ global_typedefs.h pcb_bool.h unit.h data_parent.h obj_arc.h \
+ math_helper.h compat_misc.h search.h rats.h netlist.h library.h \
+ route_style.h vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h box.h math_helper.h move.h \
+ misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h
 ../src_plugins/ddraft/ddraft.o: ../src_plugins/ddraft/ddraft.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
