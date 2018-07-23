@@ -159,7 +159,6 @@ void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y)
 	}
 }
 
-/* doesn't these belong in change.c ?? */
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da)
 {
 	if (new_da >= 360) {
