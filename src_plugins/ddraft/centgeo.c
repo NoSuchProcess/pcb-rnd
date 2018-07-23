@@ -138,6 +138,13 @@ double pcb_cline_pt_offs(pcb_line_t *line, pcb_coord_t px, pcb_coord_t py)
 	return (line_dx * pt_dx + line_dy * pt_dy) / (line_dx*line_dx + line_dy*line_dy);
 }
 
+static int line_ep(pcb_line_t *line, pcb_coord_t x, pcb_coord_t y)
+{
+	if ((line->Point1.X == x) && (line->Point1.Y == y)) return 1;
+	if ((line->Point2.X == x) && (line->Point2.Y == y)) return 1;
+	return 0;
+}
+
 #define append(ofs, ix, iy) \
 do { \
 	if (ip != NULL) { \
@@ -196,7 +203,7 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 	if ((r >= 0) && (r <= 1)) {
 		ix = pcb_round(Line->Point1.X + r * dx);
 		iy = pcb_round(Line->Point1.Y + r * dy);
-		if (pcb_is_point_on_arc(ix, iy, 1, Arc))
+		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc))
 			append(r, ix, iy);
 	}
 
@@ -204,7 +211,7 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 	if ((r >= 0) && (r <= 1)) {
 		ix = pcb_round(Line->Point1.X + r * dx);
 		iy = pcb_round(Line->Point1.Y + r * dy);
-		if (pcb_is_point_on_arc(ix, iy, 1, Arc))
+		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc))
 			append(r, ix, iy);
 	}
 
