@@ -267,7 +267,7 @@ int pcb_intersect_carc_cline(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 
 void pcb_carc_offs(pcb_arc_t *arc, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty)
 {
-	double ang = arc->StartAngle + offs * arc->Delta;
+	double ang = (arc->StartAngle + offs * arc->Delta) / PCB_RAD_TO_DEG;
 
 	*dstx = arc->X + cos(ang) * arc->Width;
 	*dsty = arc->Y - sin(ang) * arc->Height;
@@ -275,13 +275,20 @@ void pcb_carc_offs(pcb_arc_t *arc, double offs, pcb_coord_t *dstx, pcb_coord_t *
 
 double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 {
-	double dx, dy, ang;
+	double dx, dy, ang, dlt;
 
 	/* won't work with elliptical arc - see also pcb_is_point_on_arc */
 	dy = (double)(py - arc->Y) / (double)arc->Height;
 	dx = (double)(px - arc->X) / (double)arc->Width;
-	ang = -atan2(dy, dx);
+	ang = (-atan2(dy, dx)) * PCB_RAD_TO_DEG;
 
-	return (ang - arc->StartAngle) / arc->Delta;
+	if (arc->StartAngle < 0) {
+		ang = ang + arc->StartAngle;
+		dlt = -dlt;
+	}
+	else
+		ang = ang - arc->StartAngle;
+
+	return ang / dlt;
 }
 
