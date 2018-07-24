@@ -121,12 +121,25 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 	return 1;
 }
 
+static void move_arc_angs(pcb_arc_t *arc, int ep, double offs)
+{
+	double chg = offs * arc->Delta;
+	switch(ep) {
+		case 1:
+			arc->StartAngle += chg;
+			arc->Delta -= chg;
+			break;
+		case 2:
+			arc->Delta -= chg;
+			break;
+	}
+}
+
 static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
 	int p, n;
 	double io[2];
 	double mino = 0.0, maxo = 1.0, remo = pcb_carc_pt_offs(arc, rem_x, rem_y);
-	pcb_coord_t x, y;
 
 	for(n = 0; n < vtp0_len(cut_edges); n++) {
 		pcb_any_obj_t *cut_edge = (pcb_any_obj_t *)cut_edges->array[n];
@@ -142,8 +155,6 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pc
 			default: return -1;
 		}
 
-
-pcb_trace("p=%d %f %f\n", p, io[0], io[1]);
 		switch(p) {
 			case 0: continue; /* no intersection, skip to the next potential cutting edge */
 			case 2:
@@ -172,33 +183,25 @@ pcb_trace("mino=%f maxo=%f\n", mino, maxo);
 	if (mino == maxo)
 		return 0; /* refuse to end up with 0-length lines */
 
-
 return 0;
-#if 0
 	/* mino and maxo holds the two endpoint offsets after the cuts, in respect
 	   to the original line. Cut/split the line using them. */
 	if ((mino > 0.0) && (maxo < 1.0)) { /* remove (shortest) middle section */
-		pcb_line_t *new_line = pcb_line_dup(line->parent.layer, line);
+		pcb_arc_t *new_arc = pcb_arc_dup(arc->parent.layer, arc);
 
-		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, new_line->parent.layer, new_line, new_line);
+		pcb_undo_add_obj_to_create(PCB_OBJ_ARC, new_arc->parent.layer, new_arc, new_arc);
 
-		pcb_cline_offs(line, maxo, &x, &y);
-		move_lp(line, 1, x, y);
-
-		pcb_cline_offs(new_line, mino, &x, &y);
-		move_lp(new_line, 2, x, y);
+		move_arc_angs(arc, 1, maxo);
+		move_arc_angs(new_arc, 2, mino);
 	}
 	else if ((mino == 0.0) && (maxo < 1.0)) { /* truncate at point1 (shortest overdue) */
-		pcb_cline_offs(line, maxo, &x, &y);
-		move_lp(line, 1, x, y);
+		move_arc_angs(arc, 1, maxo);
 	}
 	else if ((mino > 0.0) && (maxo == 1.0)) { /* truncate at point2 (shortest overdue) */
-		pcb_cline_offs(line, mino, &x, &y);
-		move_lp(line, 2, x, y);
+		move_arc_angs(arc, 2, mino);
 	}
 	else
 		return -1;
-#endif
 	return 1;
 }
 
