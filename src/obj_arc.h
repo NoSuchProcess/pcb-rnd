@@ -84,6 +84,11 @@ double pcb_arc_area(const pcb_arc_t *arc);
 /* ptr3 values for start and end point */
 extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 
+/* un-administrate a arc; call before changing geometry */
+void pcb_arc_pre(pcb_arc_t *arc);
+
+/* re-administrate a arc; call after changing geometry */
+void pcb_arc_post(pcb_arc_t *arc);
 
 #define	pcb_arc_move(a,dx,dy)                                     \
 	do {                                                            \

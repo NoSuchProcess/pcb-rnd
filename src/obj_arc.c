@@ -319,6 +319,27 @@ pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc)
 	return pcb_arc_bbox_(arc, 1);
 }
 
+void pcb_arc_pre(pcb_arc_t *arc)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(arc->parent.layer);
+	if (ly == NULL)
+		return;
+	if (ly->arc_tree != NULL)
+		pcb_r_delete_entry(ly->arc_tree, (pcb_box_t *)arc);
+	pcb_poly_restore_to_poly(ly->parent.data, PCB_OBJ_ARC, ly, arc);
+}
+
+void pcb_arc_post(pcb_arc_t *arc)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(arc->parent.layer);
+	if (ly == NULL)
+		return;
+	if (ly->arc_tree != NULL)
+		pcb_r_insert_entry(ly->arc_tree, (pcb_box_t *)arc);
+	pcb_poly_clear_from_poly(ly->parent.data, PCB_OBJ_ARC, ly, arc);
+}
+
+
 /***** operations *****/
 
 /* copies an arc to buffer */
