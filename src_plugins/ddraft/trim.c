@@ -130,10 +130,11 @@ static void move_arc_angs(pcb_arc_t *arc, int ep, double offs)
 			arc->Delta -= chg;
 			break;
 		case 2:
-			arc->Delta -= chg;
+			arc->Delta = chg;
 			break;
 	}
 }
+
 
 static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
@@ -183,7 +184,6 @@ pcb_trace("mino=%f maxo=%f\n", mino, maxo);
 	if (mino == maxo)
 		return 0; /* refuse to end up with 0-length lines */
 
-return 0;
 	/* mino and maxo holds the two endpoint offsets after the cuts, in respect
 	   to the original line. Cut/split the line using them. */
 	if ((mino > 0.0) && (maxo < 1.0)) { /* remove (shortest) middle section */
