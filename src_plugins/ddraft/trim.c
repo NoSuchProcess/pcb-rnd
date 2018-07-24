@@ -134,7 +134,7 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pc
 		p = 0;
 		switch(cut_edge->type) {
 			case PCB_OBJ_LINE:
-				p = pcb_intersect_carc_cline(arc, (pcb_line_t *)cut_edge, NULL, io);
+				p = pcb_intersect_carc_cline((pcb_line_t *)cut_edge, arc, NULL, io);
 				break;
 /*			case PCB_OBJ_ARC:
 				p = pcb_intersect_carc_carc(arc, (pcb_arc_t *)cut_edge, NULL, io);
@@ -275,7 +275,7 @@ int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, pcb_coord_t rem_x, pcb
 			break;
 		case PCB_OBJ_ARC:
 			if (trim)
-				res = pcb_trim_arc(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);
+				res = pcb_trim_arc(cut_edges, (pcb_arc_t *)obj, rem_x, rem_y);
 /*			else
 				res = pcb_split_arc(cut_edges, (pcb_line_t *)obj, rem_x, rem_y);*/
 			break;
