@@ -195,13 +195,12 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 	pcb_arc_t *Arc;
 
 	if (prevent_dups) {
-	PCB_ARC_LOOP(Layer);
-	{
-		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
-				pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
-			return NULL;						/* prevent stacked arcs */
-	}
-	PCB_END_LOOP;
+		PCB_ARC_LOOP(Layer);
+		{
+			if (arc->X == X1 && arc->Y == Y1 && arc->Width == width && pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
+				return NULL; /* prevent stacked arcs */
+		}
+		PCB_END_LOOP;
 	}
 	Arc = pcb_arc_alloc(Layer);
 	if (!Arc)
