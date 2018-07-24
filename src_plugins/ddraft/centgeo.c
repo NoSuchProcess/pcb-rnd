@@ -281,6 +281,7 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 	dy = (double)(py - arc->Y) / (double)arc->Height;
 	dx = (double)(px - arc->X) / (double)arc->Width;
 	ang = (-atan2(dy, dx)) * PCB_RAD_TO_DEG;
+	dlt = arc->Delta;
 
 	if (arc->StartAngle < 0) {
 		ang = ang + arc->StartAngle;
