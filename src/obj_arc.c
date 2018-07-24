@@ -195,13 +195,22 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 	pcb_arc_t *Arc;
 
 	if (prevent_dups) {
-		PCB_ARC_LOOP(Layer);
-		{
+		pcb_rtree_it_t it;
+		pcb_any_obj_t *o;
+		pcb_box_t b;
+
+		b.X1 = X1 - width;
+		b.Y1 = Y1 - height;
+		b.X2 = X1 + width;
+		b.Y2 = Y1 + height;
+
+		for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)&b); o != NULL; o = pcb_rtree_next(&it)) {
+			pcb_arc_t *arc = (pcb_arc_t *)o;
 			if (arc->X == X1 && arc->Y == Y1 && arc->Width == width && pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
 				return NULL; /* prevent stacked arcs */
 		}
-		PCB_END_LOOP;
 	}
+
 	Arc = pcb_arc_alloc(Layer);
 	if (!Arc)
 		return Arc;
