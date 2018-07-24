@@ -275,21 +275,23 @@ void pcb_carc_offs(pcb_arc_t *arc, double offs, pcb_coord_t *dstx, pcb_coord_t *
 
 double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 {
-	double dx, dy, ang, dlt;
+	double dx, dy, ang, end;
 
 	/* won't work with elliptical arc - see also pcb_is_point_on_arc */
 	dy = (double)(py - arc->Y) / (double)arc->Height;
 	dx = (double)(px - arc->X) / (double)arc->Width;
-	ang = (-atan2(dy, dx)) * PCB_RAD_TO_DEG;
-	dlt = arc->Delta;
+	ang = (-atan2(dy, dx)) * PCB_RAD_TO_DEG + 180;
+	end = arc->StartAngle + arc->Delta;
 
-	if (arc->StartAngle < 0) {
-		ang = ang + arc->StartAngle;
-		dlt = -dlt;
-	}
-	else
-		ang = ang - arc->StartAngle;
+	if ((ang > end) && (ang > arc->StartAngle))
+		ang -= 360;
+	else if ((ang < end) && (ang < arc->StartAngle))
+		ang += 360;
 
-	return ang / dlt;
+	ang = ang / arc->Delta;
+	if (ang < 0)
+		ang = 1.0 - ang;
+
+	return ang;
 }
 
