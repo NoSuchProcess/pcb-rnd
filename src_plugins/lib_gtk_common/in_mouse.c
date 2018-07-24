@@ -233,6 +233,7 @@ typedef struct {
 static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
 {
 	lctx->last_press = kev->keyval;
+	return TRUE;
 }
 
 
