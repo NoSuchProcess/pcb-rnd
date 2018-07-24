@@ -521,7 +521,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(w, argv[9], "invalid arc width");
 
 			for(; *ly != NULL; ly++) {
-				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE), pcb_true);
 				load_term(a, argv[3], "invalid term ID for arc: '%s', skipping footprint\n");
 			}
 		}

@@ -190,10 +190,11 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 
 
 /* creates a new arc on a layer */
-pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags, pcb_bool prevent_dups)
 {
 	pcb_arc_t *Arc;
 
+	if (prevent_dups) {
 	PCB_ARC_LOOP(Layer);
 	{
 		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
@@ -201,6 +202,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 			return NULL;						/* prevent stacked arcs */
 	}
 	PCB_END_LOOP;
+	}
 	Arc = pcb_arc_alloc(Layer);
 	if (!Arc)
 		return Arc;
@@ -230,14 +232,14 @@ static pcb_arc_t *pcb_arc_copy_meta(pcb_arc_t *dst, pcb_arc_t *src)
 
 pcb_arc_t *pcb_arc_dup(pcb_layer_t *dst, pcb_arc_t *src)
 {
-	pcb_arc_t *a = pcb_arc_new(dst, src->X, src->Y, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags);
+	pcb_arc_t *a = pcb_arc_new(dst, src->X, src->Y, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, pcb_false);
 	pcb_arc_copy_meta(a, src);
 	return a;
 }
 
 pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
-	pcb_arc_t *a = pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags);
+	pcb_arc_t *a = pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, pcb_false);
 	pcb_arc_copy_meta(a, src);
 	return a;
 }
@@ -348,7 +350,7 @@ void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 	pcb_arc_t *a = pcb_arc_new(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), pcb_false);
 
 	pcb_arc_copy_meta(a, Arc);
 	return a;
@@ -551,7 +553,7 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 	arc = pcb_arc_new(Layer, Arc->X + ctx->copy.DeltaX,
 														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
-														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND));
+														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND), pcb_true);
 	if (!arc)
 		return arc;
 	pcb_arc_copy_meta(arc, Arc);
@@ -770,13 +772,12 @@ void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 		end_ang += 360.0;
 
 	if ((arc->Delta < 0) || (arc->Delta > 180))
-		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle + 360.0, arc->Thickness, arc->Clearance, arc->Flags);
+		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle + 360.0, arc->Thickness, arc->Clearance, arc->Flags, pcb_true);
 	else
-		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle, arc->Thickness, arc->Clearance, arc->Flags);
-
-	pcb_arc_copy_meta(new_arc, arc);
+		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle, arc->Thickness, arc->Clearance, arc->Flags, pcb_true);
 
 	if (new_arc != NULL) {
+		pcb_arc_copy_meta(new_arc, arc);
 		PCB_FLAG_CHANGE(PCB_CHGFLG_SET, PCB_FLAG_FOUND, new_arc);
 		if (arc->Delta < 0)
 			pcb_arc_set_angles(Layer, arc, arc->StartAngle, angle - arc->StartAngle - 360.0);

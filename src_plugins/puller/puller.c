@@ -1473,9 +1473,9 @@ static pcb_arc_t *create_arc(pcb_line_t *sample, int x, int y, int r, int sa, in
 #if TRACE1
 	pcb_printf("create_arc at %#mD r %#mS sa %d delta %d\n", x, y, r, sa, da);
 #endif
-	arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags);
+	arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
 	if (arc == 0) {
-		arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags);
+		arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
 	}
 	pcb_undo_add_obj_to_create(PCB_OBJ_ARC, CURRENT, arc, arc);
 

@@ -1047,7 +1047,7 @@ arc_hi_format
 		: T_ARC '[' measure measure measure measure measure measure number number flags ']'
 			{
 			  pcb_arc_new(Layer, NU ($3), NU ($4), NU ($5), NU ($6), $9, $10,
-			                             NU ($7), NU ($8), $11);
+			                             NU ($7), NU ($8), $11, pcb_true);
 			}
 		;
 
@@ -1056,7 +1056,7 @@ arc_1.7_format
 		: T_ARC '(' measure measure measure measure measure measure number number INTEGER ')'
 			{
 				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($6), $9, $10,
-						    OU ($7), OU ($8), pcb_flag_old($11));
+						    OU ($7), OU ($8), pcb_flag_old($11), pcb_true);
 			}
 		;
 
@@ -1065,7 +1065,7 @@ arc_oldformat
 		: T_ARC '(' measure measure measure measure measure measure number INTEGER ')'
 			{
 				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($5), IV ($8), $9,
-					OU ($7), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old($10));
+					OU ($7), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old($10), pcb_true);
 			}
 		;
 

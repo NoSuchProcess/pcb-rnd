@@ -1037,7 +1037,7 @@ pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y
 	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
-	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags());
+	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags(), pcb_true);
 }
 
 pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)

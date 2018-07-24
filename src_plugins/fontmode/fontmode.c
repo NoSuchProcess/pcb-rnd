@@ -192,8 +192,8 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc)) {
-			pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
-			newarc = pcb_arc_new(lorig, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
+			pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags(), pcb_true);
+			newarc = pcb_arc_new(lorig, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags(), pcb_true);
 			if (newarc != NULL) {
 				if (maxx < newarc->BoundingBox.X2 - ox)
 					maxx = newarc->BoundingBox.X2 - ox;

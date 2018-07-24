@@ -470,7 +470,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 																			 p_obj->delta_angle,
 																			 p_route->thickness,
 																			 p_route->clearance,
-																			 p_route->flags);
+																			 p_route->flags, pcb_true);
 					if (arc) {
 						pcb_added_lines++;
 						pcb_obj_add_attribs(arc, PCB->pen_attr);

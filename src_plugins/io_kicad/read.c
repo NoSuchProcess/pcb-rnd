@@ -772,7 +772,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 				startAngle += 360.0;
 			}
 		}
-		pcb_arc_new(&st->pcb->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
+		pcb_arc_new(&st->pcb->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags, pcb_true);
 		return 0;
 	}
 	return kicad_error(subtree, "unexpected empty/NULL node in gr_arc.");
@@ -2337,7 +2337,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							startAngle += 360.0;
 						}
 					}
-					pcb_arc_new(subc_layer, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness, 0, pcb_no_flags());
+					pcb_arc_new(subc_layer, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness, 0, pcb_no_flags(), pcb_true);
 				}
 
 /* ********************************************************** */

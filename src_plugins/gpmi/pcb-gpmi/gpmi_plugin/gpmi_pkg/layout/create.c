@@ -111,7 +111,7 @@ layout_object_t *layout_create_via(const char *search_id, int x, int y, int thic
 static void *layout_create_arc_(pcb_layer_t *layer, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	void *arc;
-	arc = pcb_arc_new(layer, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
+	arc = pcb_arc_new(layer, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags), pcb_true);
 	if (arc != NULL) {
 		pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 		return 0;

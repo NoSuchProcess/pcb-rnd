@@ -47,7 +47,7 @@ struct pcb_arc_s {       /* holds information about arcs */
 pcb_arc_t *pcb_arc_alloc(pcb_layer_t *);
 void pcb_arc_free(pcb_arc_t *data);
 
-pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t center_x, pcb_coord_t center_y, pcb_coord_t width_r, pcb_coord_t height_r, pcb_angle_t start_angle, pcb_angle_t delta_angle, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t center_x, pcb_coord_t center_y, pcb_coord_t width_r, pcb_coord_t height_r, pcb_angle_t start_angle, pcb_angle_t delta_angle, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags, pcb_bool prevent_dups);
 pcb_arc_t *pcb_arc_dup(pcb_layer_t *dst, pcb_arc_t *src);
 pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, pcb_coord_t dx, pcb_coord_t dy);
 void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc);

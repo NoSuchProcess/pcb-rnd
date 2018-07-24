@@ -361,13 +361,13 @@ document used reflects actual outputs from protel autotrax
 	if (segments == 10) { /* LU + RL quadrants */
 		start_angle = 180.0;
 		delta = 90.0;
-		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, pcb_true);
 		start_angle = 0.0;
 	}
 	else if (segments == 5) { /* RU + LL quadrants */
 		start_angle = 270.0;
 		delta = 90.0;
-		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, pcb_true);
 		start_angle = 90.0;
 	}
 	else if (segments >= 15) { /* whole circle */
@@ -427,7 +427,7 @@ document used reflects actual outputs from protel autotrax
 	if (ly == NULL)
 		return 0;
 
-	if (pcb_arc_new(ly, centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags) != 0)
+	if (pcb_arc_new(ly, centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, pcb_true) != 0)
 		return 1;
 	return -1;
 }
