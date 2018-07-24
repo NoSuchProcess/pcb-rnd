@@ -289,8 +289,12 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 		ang += 360;
 
 	ang = ang / arc->Delta;
+
+	/* temporary: assume the point is within the rang eof the arc */
 	if (ang < 0)
 		ang = 1.0 - ang;
+	if (ang > 1)
+		ang = 1.0 - (ang - 1.0);
 
 	return ang;
 }
