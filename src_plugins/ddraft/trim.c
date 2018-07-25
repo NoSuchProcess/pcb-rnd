@@ -132,6 +132,7 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 	return 1;
 }
 
+/* Move arc start or end angle to a specific absolute angle (undoable) */
 static void move_arc_angs(pcb_arc_t *arc, int ep, double offs)
 {
 	double chg = offs * arc->Delta;
@@ -220,6 +221,7 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pc
 	return 1;
 }
 
+/* Split a line in two lines at a specific offset (undoable) */
 static pcb_line_t *split_lp(pcb_line_t *line, double offs)
 {
 	pcb_coord_t x, y;
@@ -234,6 +236,7 @@ static pcb_line_t *split_lp(pcb_line_t *line, double offs)
 	return new_line;
 }
 
+/* Split an arc in two arcs at a specific offset (undoable) */
 static pcb_arc_t *split_arcp(pcb_arc_t *arc, double offs)
 {
 	pcb_arc_t *new_arc = pcb_arc_dup(arc->parent.layer, arc);

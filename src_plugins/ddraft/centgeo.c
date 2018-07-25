@@ -37,8 +37,9 @@
 #include "compat_misc.h"
 #include "search.h"
 
-/* Same basic algo as in find_geo.c - see comment for the algo
-   description there */
+/* Note about all intersection code: same basic algo as in find_geo.c -
+   see comment for the algo description there */
+
 int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *ip, double offs[2])
 {
 	double s, r;
@@ -147,6 +148,9 @@ static int line_ep(pcb_line_t *line, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
+/* Assumme there will be at two intersection points; load ofs/ix/iy in the
+   next slot of the result, return from the function if both intersections
+   found */
 #define append(ofs, ix, iy) \
 do { \
 	if (ip != NULL) { \
