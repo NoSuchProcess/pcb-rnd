@@ -261,7 +261,7 @@ int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, do
 	return intersect_cline_carc(Line, Arc, ip, offs, 1);
 }
 
-int pcb_intersect_carc_cline(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2])
+int pcb_intersect_carc_cline(pcb_arc_t *Arc, pcb_line_t *Line, pcb_box_t *ip, double offs[2])
 {
 	return intersect_cline_carc(Line, Arc, ip, offs, 0);
 }
