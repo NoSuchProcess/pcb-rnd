@@ -348,8 +348,8 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 	dl = pcb_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
 	/* concentric arcs, simpler intersection conditions */
 	if (dl < 0.5) {
-		if ((Arc1->Width - t >= Arc2->Width - t2 && Arc1->Width - t <= Arc2->Width + t2)
-				|| (Arc1->Width + t >= Arc2->Width - t2 && Arc1->Width + t <= Arc2->Width + t2)) {
+		if ((Arc1->Width >= Arc2->Width && Arc1->Width <= Arc2->Width)
+				|| (Arc1->Width >= Arc2->Width && Arc1->Width <= Arc2->Width)) {
 			pcb_angle_t sa1 = Arc1->StartAngle, d1 = Arc1->Delta;
 			pcb_angle_t sa2 = Arc2->StartAngle, d2 = Arc2->Delta;
 			/* NB the endpoints have already been checked,
@@ -380,7 +380,7 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 		}
 
 		if (radius_crosses_arc(Arc1->X + dx, Arc1->Y + dy, Arc1)
-				&& pcb_is_point_on_arc(Arc1->X + dx, Arc1->Y + dy, t, Arc2))
+				&& pcb_is_point_on_arc(Arc1->X + dx, Arc1->Y + dy, 1, Arc2))
 			return pcb_true;
 
 		dx = -pdx * r2 / dl;
@@ -391,7 +391,7 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 		}
 
 		if (radius_crosses_arc(Arc2->X + dx, Arc2->Y + dy, Arc2)
-				&& pcb_is_point_on_arc(Arc2->X + dx, Arc2->Y + dy, t1, Arc1))
+				&& pcb_is_point_on_arc(Arc2->X + dx, Arc2->Y + dy, 1, Arc1))
 			return pcb_true;
 		return pcb_false;
 	}
@@ -413,18 +413,19 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 	dx = d * pdx;
 	dy = d * pdy;
 	if (radius_crosses_arc(x + dy, y - dx, Arc1)
-			&& pcb_is_point_on_arc(x + dy, y - dx, t, Arc2))
+			&& pcb_is_point_on_arc(x + dy, y - dx, 1, Arc2))
 		return pcb_true;
 	if (radius_crosses_arc(x + dy, y - dx, Arc2)
-			&& pcb_is_point_on_arc(x + dy, y - dx, t1, Arc1))
+			&& pcb_is_point_on_arc(x + dy, y - dx, 1, Arc1))
 		return pcb_true;
 
 	if (radius_crosses_arc(x - dy, y + dx, Arc1)
-			&& pcb_is_point_on_arc(x - dy, y + dx, t, Arc2))
+			&& pcb_is_point_on_arc(x - dy, y + dx, 1, Arc2))
 		return pcb_true;
 	if (radius_crosses_arc(x - dy, y + dx, Arc2)
-			&& pcb_is_point_on_arc(x - dy, y + dx, t1, Arc1))
+			&& pcb_is_point_on_arc(x - dy, y + dx, 1, Arc1))
 		return pcb_true;
 	return pcb_false;
 }
 #endif
+
