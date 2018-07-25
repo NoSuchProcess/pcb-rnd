@@ -280,6 +280,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			nsources++;
 			sprintf(sname, "import::src%d", nsources);
 			PCB_ACT_CONVARG(start+n, FGW_STR, Import, src = argv[start+n].val.str);
+			src = pcb_attrib_get(PCB, sname);
 			n++;
 		} while (src);
 
@@ -291,6 +292,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				nsources++;
 				sprintf(sname, "import::src%d", nsources);
 				PCB_ACT_CONVARG(start+n, FGW_STR, Import, src = argv[start+n].val.str);
+				src = pcb_attrib_get(PCB, sname);
 				n++;
 				sources[nsources] = src;
 			} while (src);
