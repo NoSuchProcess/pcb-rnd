@@ -283,18 +283,23 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 	ang = (-atan2(dy, dx)) * PCB_RAD_TO_DEG + 180;
 	end = arc->StartAngle + arc->Delta;
 
-	if ((ang > end) && (ang > arc->StartAngle))
-		ang -= 360;
-	else if ((ang < end) && (ang < arc->StartAngle))
-		ang += 360;
+	/* normalize the angle: there are multiple ways an arc can cover the same
+	   angle range, e.g.  -10+30 and +20-30 - make sure the angle falls between
+	   the start/end (generic) range */
+	if (arc->StartAngle < end) {
+		if (ang > end)
+			ang -= 360;
+		if (ang < arc->StartAngle)
+			ang += 360;
+	}
+	else {
+		if (ang > arc->StartAngle)
+			ang -= 360;
+		if (ang < end)
+			ang += 360;
+	}
 
-	ang = ang / arc->Delta;
-
-	/* temporary: assume the point is within the rang eof the arc */
-	if (ang < 0)
-		ang = 1.0 - ang;
-	if (ang > 1)
-		ang = 1.0 - (ang - 1.0);
+	ang = (ang - arc->StartAngle) / arc->Delta;
 
 	return ang;
 }
