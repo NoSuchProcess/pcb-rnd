@@ -181,7 +181,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *mode = NULL;
 	const char **sources = NULL;
-	int start, nsources = 0;
+	int nsources = 0;
 	fgw_arg_t rs;
 
 	if (conf_import_sch.plugins.import_sch.verbose)
@@ -257,19 +257,24 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Import, mode = argv[1].val.str);
+
 	if (!mode)
 		mode = pcb_attrib_get(PCB, "import::mode");
 	if (!mode)
 		mode = "gnetlist";
 
 	if (argc > 2) {
-		start = 1;
-		nsources = argc - 2;
+		int n;
+		nsources = 0;
+		sources = (const char **)malloc((argc-1) * sizeof(char *));
+		for(n = 2; n < argc; n++) {
+			PCB_ACT_CONVARG(n, FGW_STR, Import, sources[nsources] = argv[n].val.str);
+			nsources++;
+		}
 	}
-	else
-		start = 0;
 
-	if (nsources > 0) {
+	if (sources == NULL) {
 		char sname[40];
 		char *src;
 		int n;
@@ -279,7 +284,6 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		do {
 			nsources++;
 			sprintf(sname, "import::src%d", nsources);
-			PCB_ACT_CONVARG(start+n, FGW_STR, Import, src = argv[start+n].val.str);
 			src = pcb_attrib_get(PCB, sname);
 			n++;
 		} while (src);
@@ -291,7 +295,6 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			do {
 				nsources++;
 				sprintf(sname, "import::src%d", nsources);
-				PCB_ACT_CONVARG(start+n, FGW_STR, Import, src = argv[start+n].val.str);
 				src = pcb_attrib_get(PCB, sname);
 				n++;
 				sources[nsources] = src;
@@ -299,7 +302,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if (!sources) {
+	if (sources == NULL) {
 		/* Replace .pcb with .sch and hope for the best.  */
 		char *pcbname = PCB->Filename;
 		char *schname;
