@@ -373,7 +373,7 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 		/* check the nearest to the other arc's center point */
 		dx = pdx * r1 / dl;
 		dy = pdy * r1 / dl;
-		if (dl + r1 < r2) {					/* Arc1 inside Arc2 */
+		if (dl + r1 < r2) { /* Arc1 inside Arc2 */
 			dx = -dx;
 			dy = -dy;
 		}
@@ -383,7 +383,7 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 
 		dx = -pdx * r2 / dl;
 		dy = -pdy * r2 / dl;
-		if (dl + r2 < r1) {					/* Arc2 inside Arc1 */
+		if (dl + r2 < r1) { /* Arc2 inside Arc1 */
 			dx = -dx;
 			dy = -dy;
 		}
