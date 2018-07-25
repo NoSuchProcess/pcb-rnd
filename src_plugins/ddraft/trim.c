@@ -47,6 +47,15 @@ static void move_lp(pcb_line_t *line, int pt_idx, pcb_coord_t x, pcb_coord_t y)
 	pcb_line_post(line);
 }
 
+/* normallize mino and maxo: make sure they are in the [0..1] range */
+#define norm_minmaxo() \
+	do { \
+		if (mino < 0.0) \
+			mino = 0.0; \
+		if (maxo > 1.0) \
+			mino = 1.0; \
+	} while(0)
+
 static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
 	int p, n;
@@ -87,6 +96,8 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 				break;
 		}
 	}
+
+	norm_minmaxo();
 
 	if ((mino == 0.0) && (maxo == 1.0))
 		return 0; /* nothing to be done */
@@ -179,6 +190,8 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pc
 				break;
 		}
 	}
+
+	norm_minmaxo();
 
 	if ((mino == 0.0) && (maxo == 1.0))
 		return 0; /* nothing to be done */
