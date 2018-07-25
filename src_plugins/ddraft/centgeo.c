@@ -359,29 +359,8 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 	pdy = Arc2->Y - Arc1->Y;
 	dl = pcb_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
 
-#if 0
-	/* concentric arcs, simpler intersection conditions */
-	if (dl < 0.5) {
-		if ((Arc1->Width >= Arc2->Width && Arc1->Width <= Arc2->Width)
-				|| (Arc1->Width >= Arc2->Width && Arc1->Width <= Arc2->Width)) {
-			pcb_angle_t sa1 = Arc1->StartAngle, d1 = Arc1->Delta;
-			pcb_angle_t sa2 = Arc2->StartAngle, d2 = Arc2->Delta;
-			/* NB the endpoints have already been checked,
-			   so we just compare the angles */
-
-			normalize_angles(&sa1, &d1);
-			normalize_angles(&sa2, &d2);
-			/* sa1 == sa2 was caught when checking endpoints */
-			if (sa1 > sa2)
-				if (sa1 < sa2 + d2 || sa1 + d1 - 360 > sa2)
-					return pcb_true;
-			if (sa2 > sa1)
-				if (sa2 < sa1 + d1 || sa2 + d2 - 360 > sa1)
-					return pcb_true;
-		}
-		return pcb_false;
-	}
-#endif
+	/* the original code used to do angle checks for concentric case here but
+	   those cases are already handled by the above endpoint checks. */
 
 	r1 = Arc1->Width;
 	r2 = Arc2->Width;
