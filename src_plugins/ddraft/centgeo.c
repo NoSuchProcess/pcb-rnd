@@ -327,7 +327,19 @@ static void normalize_angles(pcb_angle_t *sa, pcb_angle_t *d)
 	*sa = pcb_normalize_angle(*sa);
 }
 
-#if 0
+static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
+{
+	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
+	pcb_angle_t sa = arc->StartAngle, d = arc->Delta;
+
+	normalize_angles(&sa, &d);
+	if (alpha < 0)
+		alpha += 360;
+	if (sa <= alpha)
+		return (sa + d) >= alpha;
+	return (sa + d - 360) >= alpha;
+}
+
 int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, double offs[2])
 {
 	double x, y, dx, dy, r1, r2, a, d, l, dl;
@@ -427,5 +439,4 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 		return pcb_true;
 	return pcb_false;
 }
-#endif
 
