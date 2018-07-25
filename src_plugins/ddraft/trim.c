@@ -74,7 +74,7 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 			case PCB_OBJ_ARC:
 				p = pcb_intersect_cline_carc(line, (pcb_arc_t *)cut_edge, NULL, io);
 				break;
-			default: return -1;
+			default: continue;
 		}
 
 		switch(p) {
@@ -168,7 +168,7 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pc
 /*			case PCB_OBJ_ARC:
 				p = pcb_intersect_carc_carc(arc, (pcb_arc_t *)cut_edge, NULL, io);
 				break;*/
-			default: return -1;
+			default: continue;
 		}
 
 		switch(p) {
@@ -263,7 +263,7 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x
 			case PCB_OBJ_ARC:
 				p = pcb_intersect_cline_carc(line, (pcb_arc_t *)cut_edge, NULL, io);
 				break;
-			default: return -1;
+			default: continue;
 		}
 		switch(p) {
 			case 0: continue; /* no intersection, skip to the next potential cutting edge */
@@ -309,7 +309,7 @@ static int pcb_split_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, p
 /*	case PCB_OBJ_ARC:
 				p = pcb_intersect_carc_carc(line, (pcb_arc_t *)cut_edge, NULL, io);
 				break;*/
-			default: return -1;
+			default: continue;
 		}
 		switch(p) {
 			case 0: continue; /* no intersection, skip to the next potential cutting edge */
