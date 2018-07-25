@@ -345,19 +345,21 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 	double x, y, dx, dy, r1, r2, a, d, l, dl;
 	pcb_coord_t pdx, pdy;
 	pcb_coord_t box[8];
+	int found = 0;
 
 	/* try the end points first */
 	get_arc_ends(&box[0], Arc1);
 	get_arc_ends(&box[4], Arc2);
-	if (pcb_is_point_on_arc(box[0], box[1], 1, Arc2)
-			|| pcb_is_point_on_arc(box[2], box[3], 1, Arc2)
-			|| pcb_is_point_on_arc(box[4], box[5], 1, Arc1)
-			|| pcb_is_point_on_arc(box[6], box[7], 1, Arc1))
-		return pcb_true;
+	if (pcb_is_point_on_arc(box[0], box[1], 1, Arc2)) append(0, box[0], box[1]);
+	if (pcb_is_point_on_arc(box[2], box[3], 1, Arc2)) append(1, box[2], box[3]);
+	if (pcb_is_point_on_arc(box[4], box[5], 1, Arc1)) append(pcb_carc_pt_offs(Arc1, box[4], box[5]), box[4], box[5]);
+	if (pcb_is_point_on_arc(box[6], box[7], 1, Arc1)) append(pcb_carc_pt_offs(Arc1, box[6], box[7]), box[6], box[7]);
 
 	pdx = Arc2->X - Arc1->X;
 	pdy = Arc2->Y - Arc1->Y;
 	dl = pcb_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
+
+#if 0
 	/* concentric arcs, simpler intersection conditions */
 	if (dl < 0.5) {
 		if ((Arc1->Width >= Arc2->Width && Arc1->Width <= Arc2->Width)
@@ -379,6 +381,8 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 		}
 		return pcb_false;
 	}
+#endif
+
 	r1 = Arc1->Width;
 	r2 = Arc2->Width;
 	/* arcs centerlines are too far or too near */
@@ -391,9 +395,8 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 			dy = -dy;
 		}
 
-		if (radius_crosses_arc(Arc1->X + dx, Arc1->Y + dy, Arc1)
-				&& pcb_is_point_on_arc(Arc1->X + dx, Arc1->Y + dy, 1, Arc2))
-			return pcb_true;
+		if (radius_crosses_arc(Arc1->X + dx, Arc1->Y + dy, Arc1) && pcb_is_point_on_arc(Arc1->X + dx, Arc1->Y + dy, 1, Arc2))
+			append(pcb_carc_pt_offs(Arc1, Arc1->X + dx, Arc1->Y + dy), Arc1->X + dx, Arc1->Y + dy);
 
 		dx = -pdx * r2 / dl;
 		dy = -pdy * r2 / dl;
@@ -402,10 +405,8 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 			dy = -dy;
 		}
 
-		if (radius_crosses_arc(Arc2->X + dx, Arc2->Y + dy, Arc2)
-				&& pcb_is_point_on_arc(Arc2->X + dx, Arc2->Y + dy, 1, Arc1))
-			return pcb_true;
-		return pcb_false;
+		if (radius_crosses_arc(Arc2->X + dx, Arc2->Y + dy, Arc2) && pcb_is_point_on_arc(Arc2->X + dx, Arc2->Y + dy, 1, Arc1))
+			append(pcb_carc_pt_offs(Arc1, Arc2->X + dx, Arc2->Y + dy), Arc2->X + dx, Arc2->Y + dy);
 	}
 
 	l = dl * dl;
@@ -424,19 +425,12 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, dou
 	y = Arc1->Y + a * pdy;
 	dx = d * pdx;
 	dy = d * pdy;
-	if (radius_crosses_arc(x + dy, y - dx, Arc1)
-			&& pcb_is_point_on_arc(x + dy, y - dx, 1, Arc2))
-		return pcb_true;
-	if (radius_crosses_arc(x + dy, y - dx, Arc2)
-			&& pcb_is_point_on_arc(x + dy, y - dx, 1, Arc1))
-		return pcb_true;
+	if ((radius_crosses_arc(x + dy, y - dx, Arc1) && pcb_is_point_on_arc(x + dy, y - dx, 1, Arc2)) || (radius_crosses_arc(x + dy, y - dx, Arc2) && pcb_is_point_on_arc(x + dy, y - dx, 1, Arc1)))
+		append(pcb_carc_pt_offs(Arc1, x + dy, y - dx), x + dy, y - dx);
 
-	if (radius_crosses_arc(x - dy, y + dx, Arc1)
-			&& pcb_is_point_on_arc(x - dy, y + dx, 1, Arc2))
-		return pcb_true;
-	if (radius_crosses_arc(x - dy, y + dx, Arc2)
-			&& pcb_is_point_on_arc(x - dy, y + dx, 1, Arc1))
-		return pcb_true;
-	return pcb_false;
+	if ((radius_crosses_arc(x - dy, y + dx, Arc1) && pcb_is_point_on_arc(x - dy, y + dx, 1, Arc2)) || (radius_crosses_arc(x - dy, y + dx, Arc2) && pcb_is_point_on_arc(x - dy, y + dx, 1, Arc1)))
+		append(pcb_carc_pt_offs(Arc1, x - dy, y + dx), x - dy, y + dx);
+
+	return found;
 }
 
