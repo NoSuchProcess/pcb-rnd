@@ -65,6 +65,8 @@ typedef enum {
 	PCB_EVENT_GUI_SYNC_STATUS,        /* sync partial GUI state (status line update - do not update menus and do not redraw) */
 	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
 
+	PCB_EVENT_DRAW_CROSSHAIR_CHATT,   /* called from crosshair code upon attached object recalculation; event handlers can use this hook to enforce various geometric restrictions */
+
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 

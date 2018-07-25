@@ -984,6 +984,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 	}
 
+	pcb_event(PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
+
 	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc();
 
