@@ -308,27 +308,19 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 
 
 #if 0
-static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
+int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, double offs[2])
 {
-	double x, y, dx, dy, r1, r2, a, d, l, t, t1, t2, dl;
+	double x, y, dx, dy, r1, r2, a, d, l, dl;
 	pcb_coord_t pdx, pdy;
 	pcb_coord_t box[8];
-
-	t = 0.5 * Arc1->Thickness + Bloat;
-	t2 = 0.5 * Arc2->Thickness;
-	t1 = t2 + Bloat;
-
-	/* too thin arc */
-	if (t < 0 || t1 < 0)
-		return pcb_false;
 
 	/* try the end points first */
 	get_arc_ends(&box[0], Arc1);
 	get_arc_ends(&box[4], Arc2);
-	if (pcb_is_point_on_arc(box[0], box[1], t, Arc2)
-			|| pcb_is_point_on_arc(box[2], box[3], t, Arc2)
-			|| pcb_is_point_on_arc(box[4], box[5], t, Arc1)
-			|| pcb_is_point_on_arc(box[6], box[7], t, Arc1))
+	if (pcb_is_point_on_arc(box[0], box[1], 1, Arc2)
+			|| pcb_is_point_on_arc(box[2], box[3], 1, Arc2)
+			|| pcb_is_point_on_arc(box[4], box[5], 1, Arc1)
+			|| pcb_is_point_on_arc(box[6], box[7], 1, Arc1))
 		return pcb_true;
 
 	pdx = Arc2->X - Arc1->X;
