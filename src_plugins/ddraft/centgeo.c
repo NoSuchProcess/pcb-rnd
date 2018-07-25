@@ -307,6 +307,26 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 }
 
 
+static void get_arc_ends(pcb_coord_t *box, pcb_arc_t *arc)
+{
+	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
+	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
+	box[2] = arc->X - arc->Width * cos(PCB_M180 * (arc->StartAngle + arc->Delta));
+	box[3] = arc->Y + arc->Height * sin(PCB_M180 * (arc->StartAngle + arc->Delta));
+}
+
+/* reduce arc start angle and delta to 0..360 */
+static void normalize_angles(pcb_angle_t *sa, pcb_angle_t *d)
+{
+	if (*d < 0) {
+		*sa += *d;
+		*d = -*d;
+	}
+	if (*d > 360) /* full circle */
+		*d = 360;
+	*sa = pcb_normalize_angle(*sa);
+}
+
 #if 0
 int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, double offs[2])
 {
