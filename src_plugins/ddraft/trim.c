@@ -124,7 +124,6 @@ static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, pcb_coord_t rem_x,
 static void move_arc_angs(pcb_arc_t *arc, int ep, double offs)
 {
 	double chg = offs * arc->Delta;
-pcb_trace("arc: %f -> %f; ep=%d offs=%f chg=%f\n", arc->StartAngle, arc->Delta, ep, offs, chg);
 
 	pcb_undo_add_obj_to_change_angles(PCB_OBJ_ARC, arc->parent.layer, arc, arc);
 	pcb_arc_pre(arc);
@@ -180,8 +179,6 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, pcb_coord_t rem_x, pc
 				break;
 		}
 	}
-
-pcb_trace("mino=%f maxo=%f\n", mino, maxo);
 
 	if ((mino == 0.0) && (maxo == 1.0))
 		return 0; /* nothing to be done */
