@@ -1,7 +1,7 @@
 $class import
 $short import freepcb netlist
 $long Import the netlist and footprints from freepcb format (exported by e.g. easyeda)
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-r import netlist and footprint names from freepcb netlist
 $package import-net
