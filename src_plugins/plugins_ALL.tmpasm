@@ -48,6 +48,7 @@ include {../src_plugins/hid_lesstif/Plug.tmpasm}
 include {../src_plugins/hid_remote/Plug.tmpasm}
 include {../src_plugins/import_dsn/Plug.tmpasm}
 include {../src_plugins/import_edif/Plug.tmpasm}
+include {../src_plugins/import_fpcb_nl/Plug.tmpasm}
 include {../src_plugins/import_hpgl/Plug.tmpasm}
 include {../src_plugins/import_ipcd356/Plug.tmpasm}
 include {../src_plugins/import_ltspice/Plug.tmpasm}

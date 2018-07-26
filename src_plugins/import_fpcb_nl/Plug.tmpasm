@@ -1,0 +1,8 @@
+put /local/pcb/mod {import_fpcb_nl}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_fpcb_nl/fpcb_nl.o @]
+
+switch /local/pcb/import_fpcb_nl/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
