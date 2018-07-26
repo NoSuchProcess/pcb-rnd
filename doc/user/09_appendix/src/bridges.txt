@@ -11,6 +11,7 @@
 |[edif]|   |                                                                |   |           |
 |[netl]|   |                                                                |   |[remote]   |
 |[ipcd]|   |                                                                |   |           |
+|[easy]|   |                                                                |   |           |
 |[hpgl]|   +----------------------------------------------------------------+   +-----------+
 +------+
          *out-----------------------------------------------------------------+
@@ -83,6 +84,9 @@
 
 [hpgl]
 	label HPGL\n(2D CAD)
+
+[easy]
+	label EasyEDA\n(web2.0)
 
 [bbrd]
 	label breadboard
@@ -235,6 +239,9 @@
 
 -> ipcd.e pcbrnd
 	label netlist\npads/subcs
+
+-> easy.e pcbrnd
+	label import\nschematics
 
 -> hpgl.e pcbrnd
 	label import\nlines/arcs
