@@ -31,19 +31,21 @@
 
 typedef struct {
 	double line_angle[32];
+	double line_length[32];
 	
-	int line_angle_len;
+	
+	int line_angle_len, line_length_len;
 } ddraft_cnst_t;
 
 static ddraft_cnst_t cons;
 
-static void cnst_line_angle(ddraft_cnst_t *cn)
+static void cnst_line_anglen(ddraft_cnst_t *cn)
 {
-	double dx, dy, diff, target, ang, len, best_diff = 1000.0;
-	int n, best = -1;
+	double dx, dy, diff, target_ang, ang, target_len, len, best_diff;
+	int n, best;
 	pcb_route_object_t *line;
 
-	if ((cn->line_angle_len == 0) || (pcb_crosshair.Route.size < 1))
+	if (((cn->line_angle_len == 0) && (cn->line_length_len == 0)) || (pcb_crosshair.Route.size < 1))
 		return;
 
 	line = &pcb_crosshair.Route.objects[pcb_crosshair.Route.size-1];
@@ -53,23 +55,48 @@ static void cnst_line_angle(ddraft_cnst_t *cn)
 	ang = atan2(-(pcb_crosshair.Y - line->point1.Y), pcb_crosshair.X - line->point1.X) * PCB_RAD_TO_DEG;
 	len = pcb_distance(line->point1.X, line->point1.Y, pcb_crosshair.X, pcb_crosshair.Y);
 
-	/* find the best matching constraint angle */
-	for(n = 0; n < cn->line_angle_len; n++) {
-		diff = fabs(ang - cn->line_angle[n]);
-		if (diff < best_diff) {
-			best_diff = diff;
-			best = n;
+	if (cn->line_angle_len > 0) {
+		/* find the best matching constraint angle */
+		best = -1;
+		best_diff = 1000.0;
+		for(n = 0; n < cn->line_angle_len; n++) {
+			diff = fabs(ang - cn->line_angle[n]);
+			if (diff < best_diff) {
+				best_diff = diff;
+				best = n;
+			}
 		}
+		if (best < 0)
+			return;
+
+		target_ang = cn->line_angle[best];
 	}
+	else
+		target_ang = ang;
 
-	if (best < 0)
-		return;
 
-	target = cn->line_angle[best];
-	target /= PCB_RAD_TO_DEG;
+	if (cn->line_length_len > 0) {
+		/* find the best matching constraint length */
+		best = -1;
+		best_diff = COORD_MAX;
+		for(n = 0; n < cn->line_length_len; n++) {
+			diff = fabs(len - cn->line_length[n]);
+			if (diff < best_diff) {
+				best_diff = diff;
+				best = n;
+			}
+		}
+		if (best < 0)
+			return;
 
-	dx = len * cos(target);
-	dy = len * sin(target);
+		target_len = cn->line_length[best];
+	}
+	else
+		target_len = len;
+
+	target_ang /= PCB_RAD_TO_DEG;
+	dx = target_len * cos(target_ang);
+	dy = target_len * sin(target_ang);
 
 	line->point2.X = line->point1.X + dx;
 	line->point2.Y = line->point1.Y - dy;
@@ -78,7 +105,7 @@ static void cnst_line_angle(ddraft_cnst_t *cn)
 
 static void cnst_line2(ddraft_cnst_t *cn)
 {
-	cnst_line_angle(cn);
+	cnst_line_anglen(cn);
 }
 
 static void cnst_enforce(void *user_data, int argc, pcb_event_arg_t argv[])

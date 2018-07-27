@@ -180,6 +180,17 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				cons.line_angle_len++;
 			}
 			break;
+		case ddraft_fields_line_length:
+			if (argc-2 >= sizeof(cons.line_length) / sizeof(cons.line_length[0])) {
+				pcb_message(PCB_MSG_ERROR, "constraint: Too many line lengths\n");
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+			for(n = 2; n < argc; n++) {
+				PCB_ACT_CONVARG(n, FGW_COORD, constraint, cons.line_length[cons.line_length_len] = fgw_coord(&argv[n]));
+				cons.line_length_len++;
+			}
+			break;
 		case ddraft_fields_SPHASH_INVALID:
 			pcb_message(PCB_MSG_ERROR, "constraint: invalid field '%s'\n", stype);
 			PCB_ACT_IRES(-1);
