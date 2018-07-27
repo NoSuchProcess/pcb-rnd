@@ -143,6 +143,10 @@ void pcb_tool_arrow_notify_mode(void)
 			pcb_tool_note.ptr1 = ptr1;
 			pcb_tool_note.ptr2 = ptr2;
 			pcb_tool_note.ptr3 = ptr3;
+
+			/* remember where the user clicked to start this op */
+			pcb_crosshair.AttachedObject.X = pcb_tool_note.X;
+			pcb_crosshair.AttachedObject.Y = pcb_tool_note.Y;
 		}
 		if (!pcb_tool_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC)) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2))
 			pcb_tool_note.Moving = pcb_true;
