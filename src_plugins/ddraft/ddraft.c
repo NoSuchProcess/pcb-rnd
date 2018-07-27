@@ -227,10 +227,56 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_perp_paral[] = "perp()";
+static const char pcb_acth_perp_paral[] = "Draw a line perpendicular to another line";
+static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *actname = argv[0].val.func->name;
+	pcb_objtype_t type;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_coord_t x, y;
+	double dx, dy;
+	pcb_line_t *line;
+
+	pcb_hid_get_coords("Select target object", &x, &y, 0);
+	type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
+
+	if (type != PCB_OBJ_LINE) {
+		pcb_hid_get_coords("Select target object", &x, &y, 1);
+		type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
+	}
+
+	if (type != PCB_OBJ_LINE) {
+		pcb_message(PCB_MSG_ERROR, "%s: target object must be a line\n", actname);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	line = (pcb_line_t *)ptr2;
+	dx = line->Point2.X - line->Point1.X;
+	dy = line->Point2.Y - line->Point1.Y;
+	if ((dx == 0.0) && (dy == 0.0)) {
+		pcb_message(PCB_MSG_ERROR, "%s: target line must be longer than 0\n", actname);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	cons.line_angle_len = 2;
+	cons.line_angle[0] = atan2(-dy, dx) * PCB_RAD_TO_DEG;
+	if (actname[1] == 'e') /* perp */
+		cons.line_angle[0] += 90;
+	cons.line_angle[1] = fmod(cons.line_angle[0]+180, 360);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static pcb_action_t ddraft_action_list[] = {
 	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
-	{"constraint", pcb_act_constraint, pcb_acth_constraint, pcb_acts_constraint}
+	{"constraint", pcb_act_constraint, pcb_acth_constraint, pcb_acts_constraint},
+	{"perp", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
+	{"paral", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral}
 };
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
