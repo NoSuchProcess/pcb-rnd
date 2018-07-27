@@ -32,7 +32,7 @@
 typedef struct {
 	double line_angle[32];
 	double line_length[32];
-	
+	double line_angle_mod, line_length_mod;
 	
 	int line_angle_len, line_length_len;
 } ddraft_cnst_t;
@@ -45,7 +45,7 @@ static void cnst_line_anglen(ddraft_cnst_t *cn)
 	int n, best;
 	pcb_route_object_t *line;
 
-	if (((cn->line_angle_len == 0) && (cn->line_length_len == 0)) || (pcb_crosshair.Route.size < 1))
+	if (((cn->line_angle_len == 0) && (cn->line_length_len == 0) && (cn->line_angle_mod <= 0) && (cn->line_length_mod <= 0)) || (pcb_crosshair.Route.size < 1))
 		return;
 
 	line = &pcb_crosshair.Route.objects[pcb_crosshair.Route.size-1];
@@ -74,6 +74,8 @@ static void cnst_line_anglen(ddraft_cnst_t *cn)
 	else
 		target_ang = ang;
 
+	if (cn->line_angle_mod > 0)
+		target_ang = floor(target_ang / cn->line_angle_mod) * cn->line_angle_mod;
 
 	if (cn->line_length_len > 0) {
 		/* find the best matching constraint length */
@@ -93,6 +95,9 @@ static void cnst_line_anglen(ddraft_cnst_t *cn)
 	}
 	else
 		target_len = len;
+
+	if (cn->line_length_mod > 0)
+		target_len = floor(target_len / cn->line_length_mod) * cn->line_length_mod;
 
 	target_ang /= PCB_RAD_TO_DEG;
 	dx = target_len * cos(target_ang);

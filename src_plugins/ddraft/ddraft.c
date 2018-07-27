@@ -181,6 +181,10 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				cons.line_angle_len++;
 			}
 			break;
+		case ddraft_fields_line_angle_mod:
+			cons.line_angle_mod = 0;
+			PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
+			break;
 		case ddraft_fields_line_length:
 			if (argc-2 >= sizeof(cons.line_length) / sizeof(cons.line_length[0])) {
 				pcb_message(PCB_MSG_ERROR, "constraint: Too many line lengths\n");
@@ -193,6 +197,11 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				cons.line_length_len++;
 			}
 			break;
+		case ddraft_fields_line_length_mod:
+			cons.line_length_mod = 0;
+			PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.line_length_mod = fgw_coord(&argv[2]));
+			break;
+
 		case ddraft_fields_reset:
 			memset(&cons, 0, sizeof(cons));
 			break;
