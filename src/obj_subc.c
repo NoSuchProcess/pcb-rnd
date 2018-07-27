@@ -1537,6 +1537,22 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 }
 
 
+	/* in per-side mode, do not show subc mark if it is on the other side */
+#define draw_subc_per_layer() \
+do { \
+	int per_side = 0; \
+	if (cl != NULL) \
+		per_side = *(int *)cl; \
+	if (per_side) { \
+		int on_bottom; \
+		if (pcb_subc_get_side(subc, &on_bottom) == 0) { \
+			if ((!!on_bottom) != (!!conf_core.editor.show_solder_side)) \
+				return PCB_R_DIR_FOUND_CONTINUE; \
+		} \
+	} \
+} while(0)
+
+
 #include "conf_core.h"
 #include "draw.h"
 pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
@@ -1546,6 +1562,8 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 	int freq = conf_core.appearance.subc.dash_freq;
 	const char *nnclr;
+
+	draw_subc_per_layer();
 
 	if (freq > 32)
 		freq = 32;
@@ -1568,6 +1586,8 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
+
+	draw_subc_per_layer();
 
 	if (subc->refdes != NULL) {
 		pcb_coord_t x0, y0, dx, dy;

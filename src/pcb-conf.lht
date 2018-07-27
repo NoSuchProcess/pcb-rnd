@@ -137,6 +137,7 @@ li:pcb-rnd-conf-v1 {
 			drill_alpha = 0.85
 			text_host_bbox = true
 			term_label_size = 50
+			subc_layer_per_side = 1
 
 			ha:loglevels {
 				debug_tag      = {}

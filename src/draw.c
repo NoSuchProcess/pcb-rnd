@@ -255,6 +255,7 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 /* Draw subc and padstack marks in xor mode */
 static void draw_xor_marks(const pcb_box_t *drawn_area)
 {
+	int per_side = conf_core.appearance.subc_layer_per_side;
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, drawn_area);
 
@@ -263,7 +264,7 @@ static void draw_xor_marks(const pcb_box_t *drawn_area)
 	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 
 	if (PCB->SubcOn)
-		pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, &per_side, NULL);
 
 	if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
@@ -287,6 +288,8 @@ static void draw_rats(const pcb_box_t *drawn_area)
 
 static void draw_pins_and_pads(const pcb_box_t *drawn_area, pcb_layergrp_id_t component, pcb_layergrp_id_t solder)
 {
+	int per_side = conf_core.appearance.subc_layer_per_side;
+
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 
@@ -296,7 +299,7 @@ static void draw_pins_and_pads(const pcb_box_t *drawn_area, pcb_layergrp_id_t co
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (PCB->SubcOn)
-		pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_label_callback, &per_side, NULL);
 	if (PCB->padstack_mark_on) {
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 		pcb_draw_pstk_labels(drawn_area);
