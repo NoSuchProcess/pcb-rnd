@@ -28,14 +28,15 @@
 
 #include "crosshair.h"
 #include "obj_line.h"
+#include "tool.h"
 
 typedef struct {
-	double line_angle[32];
-	pcb_coord_t line_length[32];
-	double line_angle_mod;
-	pcb_coord_t line_length_mod;
+	double line_angle[32], move_angle[32];
+	pcb_coord_t line_length[32], move_length[32];
+	double line_angle_mod, move_angle_mod;
+	pcb_coord_t line_length_mod, move_length_mod;
 	
-	int line_angle_len, line_length_len;
+	int line_angle_len, line_length_len, move_angle_len, move_length_len;
 } ddraft_cnst_t;
 
 static ddraft_cnst_t cons;
@@ -137,14 +138,43 @@ static void cnst_line_anglen(ddraft_cnst_t *cn)
 	line->point2.Y = line->point1.Y - dy;
 }
 
-
 static void cnst_line2(ddraft_cnst_t *cn)
 {
 	cnst_line_anglen(cn);
+}
+
+static void cnst_move(ddraft_cnst_t *cn)
+{
+	double target_ang, dx, dy, target_len;
+	int res;
+
+	if (((cn->move_angle_len == 0) && (cn->move_length_len == 0) && (cn->move_angle_mod <= 0) && (cn->move_length_mod <= 0)))
+		return;
+
+	res = find_best_angle(&target_ang,
+		pcb_crosshair.AttachedObject.X, pcb_crosshair.AttachedObject.Y, pcb_crosshair.X, pcb_crosshair.Y,
+		cn->move_angle, cn->move_angle_len, cn->move_angle_mod);
+	if (res < 0) return;
+
+	res = find_best_length(&target_len,
+		pcb_crosshair.AttachedObject.X, pcb_crosshair.AttachedObject.Y, pcb_crosshair.X, pcb_crosshair.Y,
+		cn->move_length, cn->move_length_len, cn->move_length_mod);
+	if (res < 0) return;
+
+	dx = target_len * cos(target_ang);
+	dy = target_len * sin(target_ang);
+
+	pcb_crosshair.AttachedObject.tx = pcb_crosshair.AttachedObject.X + dx;
+	pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y - dy;
 }
 
 static void cnst_enforce(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) || (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD))
 		cnst_line2(&cons);
+	else if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_SECOND) /* normal d&d move or copy */
+		cnst_move(&cons);
+	else if (pcb_tool_note.Moving) /* selected copy (buffer mode) */
+		cnst_move(&cons);
+
 }

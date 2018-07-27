@@ -187,16 +187,30 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case ddraft_fields_line_angle:
 			load_arr(cons.line_angle, cons.line_angle_len, "line angles", FGW_DOUBLE, argv[n].val.nat_double);
 			break;
+		case ddraft_fields_move_angle:
+			load_arr(cons.move_angle, cons.move_angle_len, "move angles", FGW_DOUBLE, argv[n].val.nat_double);
+			break;
 		case ddraft_fields_line_angle_mod:
 			cons.line_angle_mod = 0;
 			PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
 			break;
+		case ddraft_fields_move_angle_mod:
+			cons.move_angle_mod = 0;
+			PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.move_angle_mod = argv[2].val.nat_double);
+			break;
 		case ddraft_fields_line_length:
 			load_arr(cons.line_length, cons.line_length_len, "line lengths", FGW_COORD, fgw_coord(&argv[n]));
+			break;
+		case ddraft_fields_move_length:
+			load_arr(cons.move_length, cons.move_length_len, "move lengths", FGW_COORD, fgw_coord(&argv[n]));
 			break;
 		case ddraft_fields_line_length_mod:
 			cons.line_length_mod = 0;
 			PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.line_length_mod = fgw_coord(&argv[2]));
+			break;
+		case ddraft_fields_move_length_mod:
+			cons.move_length_mod = 0;
+			PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.move_length_mod = fgw_coord(&argv[2]));
 			break;
 
 		case ddraft_fields_reset:

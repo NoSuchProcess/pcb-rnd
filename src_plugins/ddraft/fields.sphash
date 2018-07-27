@@ -2,4 +2,8 @@ line_angle
 line_length
 line_angle_mod
 line_length_mod
+move_angle
+move_length
+move_angle_mod
+move_length_mod
 reset
