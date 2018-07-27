@@ -39,15 +39,19 @@ static ddraft_cnst_t cons;
 
 static void cnst_line_angle(ddraft_cnst_t *cn)
 {
-	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
-	double diff, target, ang, len, best_diff = 1000.0;
+	double dx, dy, diff, target, ang, len, best_diff = 1000.0;
 	int n, best = -1;
+	pcb_route_object_t *line;
 
-	if (cn->line_angle_len == 0)
+	if ((cn->line_angle_len == 0) || (pcb_crosshair.Route.size < 1))
 		return;
 
-	ang = atan2(-(line->Point2.Y - line->Point1.Y), line->Point2.X - line->Point1.X) * PCB_RAD_TO_DEG;
-	len = pcb_distance(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+	line = &pcb_crosshair.Route.objects[pcb_crosshair.Route.size-1];
+	if (line->type != PCB_OBJ_LINE)
+		return;
+
+	ang = atan2(-(pcb_crosshair.Y - line->point1.Y), pcb_crosshair.X - line->point1.X) * PCB_RAD_TO_DEG;
+	len = pcb_distance(line->point1.X, line->point1.Y, pcb_crosshair.X, pcb_crosshair.Y);
 
 	/* find the best matching constraint angle */
 	for(n = 0; n < cn->line_angle_len; n++) {
@@ -62,8 +66,13 @@ static void cnst_line_angle(ddraft_cnst_t *cn)
 		return;
 
 	target = cn->line_angle[best];
+	target /= PCB_RAD_TO_DEG;
 
-	pcb_trace("line angle enforce: %d [%f]: %f/%f -> %f\n", cn->line_angle_len, cn->line_angle[0], ang, len, target);
+	dx = len * cos(target);
+	dy = len * sin(target);
+
+	line->point2.X = line->point1.X + dx;
+	line->point2.Y = line->point1.Y - dy;
 }
 
 
@@ -74,6 +83,6 @@ static void cnst_line2(ddraft_cnst_t *cn)
 
 static void cnst_enforce(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
+	if ((pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) || (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD))
 		cnst_line2(&cons);
 }
