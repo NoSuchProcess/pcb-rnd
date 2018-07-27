@@ -40,16 +40,17 @@ static void cnst_line_angle(ddraft_cnst_t *cn)
 {
 	if (cn->line_angle_len == 0)
 		return;
+	pcb_trace("line angle enforce: %d [%f]\n", cn->line_angle_len, cn->line_angle[0]);
 }
 
 
-static void cnst_line(ddraft_cnst_t *cn)
+static void cnst_line2(ddraft_cnst_t *cn)
 {
 	cnst_line_angle(cn);
 }
 
-static void cnst()
+static void cnst_enforce(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	cnst_line(&cons);
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
+		cnst_line2(&cons);
 }
-
