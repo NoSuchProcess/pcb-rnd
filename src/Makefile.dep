@@ -197,7 +197,7 @@
  math_helper.h move.h misc_util.h layer_grp.h hid_init.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h event.h actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h funchash_core.h \
  funchash.h funchash_core_list.h search.h rats.h netlist.h library.h \
  route_style.h vtroutestyle.h ../src_plugins/ddraft/centgeo.h obj_line.h \
@@ -207,8 +207,11 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h ../src_plugins/ddraft/trim.c \
- undo_old.h dolists.h
+ ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_plugins/ddraft/fields_sphash.h ../src_plugins/ddraft/trim.c \
+ undo_old.h ../src_plugins/ddraft/constraint.c crosshair.h dolists.h
+../src_plugins/ddraft/fields_sphash.o: \
+ ../src_plugins/ddraft/fields_sphash.c
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
  board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
