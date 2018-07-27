@@ -159,43 +159,40 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+#define load_arr(arr, ctr, msg, fgw_type_, fgw_val_) \
+do { \
+	int n; \
+	if (argc-2 >= sizeof(arr) / sizeof(arr[0])) { \
+		pcb_message(PCB_MSG_ERROR, "constraint: Too many " msg "\n"); \
+		PCB_ACT_IRES(-1); \
+		return 0; \
+	} \
+	ctr = 0; \
+	for(n = 2; n < argc; n++) { \
+		PCB_ACT_CONVARG(n, fgw_type_, constraint, arr[ctr] = fgw_val_); \
+		ctr++; \
+	} \
+} while(0)
+
 static const char pcb_acts_constraint[] = "constraint(type, off)\nconstraint(type, value, [value...])";
 static const char pcb_acth_constraint[] = "Configure or remove a drawing constraint";
 static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *stype;
-	int n, type;
+	int type;
 
 	PCB_ACT_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
 	type = ddraft_fields_sphash(stype);
 	switch(type) {
 		case ddraft_fields_line_angle:
-			if (argc-2 >= sizeof(cons.line_angle) / sizeof(cons.line_angle[0])) {
-				pcb_message(PCB_MSG_ERROR, "constraint: Too many line angles\n");
-				PCB_ACT_IRES(-1);
-				return 0;
-			}
-			cons.line_angle_len = 0;
-			for(n = 2; n < argc; n++) {
-				PCB_ACT_CONVARG(n, FGW_DOUBLE, constraint, cons.line_angle[cons.line_angle_len] = argv[n].val.nat_double);
-				cons.line_angle_len++;
-			}
+			load_arr(cons.line_angle, cons.line_angle_len, "line angles", FGW_DOUBLE, argv[n].val.nat_double);
 			break;
 		case ddraft_fields_line_angle_mod:
 			cons.line_angle_mod = 0;
 			PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
 			break;
 		case ddraft_fields_line_length:
-			if (argc-2 >= sizeof(cons.line_length) / sizeof(cons.line_length[0])) {
-				pcb_message(PCB_MSG_ERROR, "constraint: Too many line lengths\n");
-				PCB_ACT_IRES(-1);
-				return 0;
-			}
-			cons.line_length_len = 0;
-			for(n = 2; n < argc; n++) {
-				PCB_ACT_CONVARG(n, FGW_COORD, constraint, cons.line_length[cons.line_length_len] = fgw_coord(&argv[n]));
-				cons.line_length_len++;
-			}
+			load_arr(cons.line_length, cons.line_length_len, "line lengths", FGW_COORD, fgw_coord(&argv[n]));
 			break;
 		case ddraft_fields_line_length_mod:
 			cons.line_length_mod = 0;
