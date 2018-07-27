@@ -27,6 +27,7 @@
  */
 
 #include "crosshair.h"
+#include "obj_line.h"
 
 typedef struct {
 	double line_angle[32];
@@ -38,9 +39,31 @@ static ddraft_cnst_t cons;
 
 static void cnst_line_angle(ddraft_cnst_t *cn)
 {
+	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
+	double diff, target, ang, len, best_diff = 1000.0;
+	int n, best = -1;
+
 	if (cn->line_angle_len == 0)
 		return;
-	pcb_trace("line angle enforce: %d [%f]\n", cn->line_angle_len, cn->line_angle[0]);
+
+	ang = atan2(-(line->Point2.Y - line->Point1.Y), line->Point2.X - line->Point1.X) * PCB_RAD_TO_DEG;
+	len = pcb_distance(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+
+	/* find the best matching constraint angle */
+	for(n = 0; n < cn->line_angle_len; n++) {
+		diff = fabs(ang - cn->line_angle[n]);
+		if (diff < best_diff) {
+			best_diff = diff;
+			best = n;
+		}
+	}
+
+	if (best < 0)
+		return;
+
+	target = cn->line_angle[best];
+
+	pcb_trace("line angle enforce: %d [%f]: %f/%f -> %f\n", cn->line_angle_len, cn->line_angle[0], ang, len, target);
 }
 
 
