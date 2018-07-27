@@ -164,7 +164,6 @@ static const char pcb_acth_constraint[] = "Configure or remove a drawing constra
 static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *stype;
-	double dval;
 	int n, type;
 
 	PCB_ACT_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
