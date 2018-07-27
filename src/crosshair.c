@@ -984,8 +984,6 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 	}
 
-	pcb_event(PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
-
 	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc();
 
@@ -1145,6 +1143,7 @@ void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
 		pcb_tool_adjust_attached_objects();
+		pcb_event(PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 }
