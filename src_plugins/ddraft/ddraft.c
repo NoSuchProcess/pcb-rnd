@@ -191,6 +191,9 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				cons.line_length_len++;
 			}
 			break;
+		case ddraft_fields_reset:
+			memset(&cons, 0, sizeof(cons));
+			break;
 		case ddraft_fields_SPHASH_INVALID:
 			pcb_message(PCB_MSG_ERROR, "constraint: invalid field '%s'\n", stype);
 			PCB_ACT_IRES(-1);
