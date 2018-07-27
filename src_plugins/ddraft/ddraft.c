@@ -45,6 +45,7 @@
 #include "data_it.h"
 #include "obj_line.h"
 #include "undo.h"
+#include "fields_sphash.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
 
@@ -62,6 +63,7 @@ static void list_by_flag(pcb_data_t *data, vtp0_t *dst, unsigned long types, uns
 }
 
 #include "trim.c"
+#include "constraint.c"
 
 static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 {
@@ -156,10 +158,43 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_constraint[] = "constraint(type, off)\nconstraint(type, value, [value...])";
+static const char pcb_acth_constraint[] = "Configure or remove a drawing constraint";
+static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *stype;
+	double dval;
+	int n, type;
+
+	PCB_ACT_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
+	type = ddraft_fields_sphash(stype);
+	switch(type) {
+		case ddraft_fields_line_angle:
+			if (argc-2 >= sizeof(cons.line_angle) / sizeof(cons.line_angle[0])) {
+				pcb_message(PCB_MSG_ERROR, "constraint: Too many line angles\n");
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+			for(n = 2; n < argc; n++) {
+				PCB_ACT_CONVARG(n, FGW_DOUBLE, constraint, cons.line_angle[cons.line_angle_len] = argv[2].val.nat_double);
+				cons.line_angle_len++;
+			}
+			break;
+		case ddraft_fields_SPHASH_INVALID:
+			pcb_message(PCB_MSG_ERROR, "constraint: invalid field '%s'\n", stype);
+			PCB_ACT_IRES(-1);
+			return 0;
+			break;
+	}
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
 
 static pcb_action_t ddraft_action_list[] = {
 	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
-	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split}
+	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
+	{"constraint", pcb_act_constraint, pcb_acth_constraint, pcb_acts_constraint}
 };
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
