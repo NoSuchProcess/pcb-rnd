@@ -53,7 +53,10 @@ static int find_best_angle(double *out_ang, pcb_coord_t x1, pcb_coord_t y1, pcb_
 		best = -1;
 		best_diff = 1000.0;
 		for(n = 0; n < anglen; n++) {
-			diff = fabs(ang - angles[n]);
+			if (angles[n] < 180)
+				diff = fabs(ang - angles[n]);
+			else
+				diff = fabs(ang + (angles[n]-180));
 			if (diff < best_diff) {
 				best_diff = diff;
 				best = n;
