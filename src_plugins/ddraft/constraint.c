@@ -31,19 +31,87 @@
 
 typedef struct {
 	double line_angle[32];
-	double line_length[32];
-	double line_angle_mod, line_length_mod;
+	pcb_coord_t line_length[32];
+	double line_angle_mod;
+	pcb_coord_t line_length_mod;
 	
 	int line_angle_len, line_length_len;
 } ddraft_cnst_t;
 
 static ddraft_cnst_t cons;
 
+static int find_best_angle(double *out_ang, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, double *angles, int anglen, double angle_mod)
+{
+	double diff, ang, best_diff, target_ang;
+	int n, best;
+
+	ang = atan2(-(y2 - y1), x2 - x1) * PCB_RAD_TO_DEG;
+
+	if (anglen > 0) {
+		/* find the best matching constraint angle */
+		best = -1;
+		best_diff = 1000.0;
+		for(n = 0; n < anglen; n++) {
+			diff = fabs(ang - angles[n]);
+			if (diff < best_diff) {
+				best_diff = diff;
+				best = n;
+			}
+		}
+		if (best < 0)
+			return -1;
+
+		target_ang = angles[best];
+	}
+	else
+		target_ang = ang;
+
+	if (angle_mod > 0)
+		target_ang = floor(target_ang / angle_mod) * angle_mod;
+
+	target_ang /= PCB_RAD_TO_DEG;
+	*out_ang = target_ang;
+	return 0;
+}
+
+static int find_best_length(double *out_len, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t *lengths, int lengthlen, pcb_coord_t length_mod)
+{
+	double len, best_diff, diff, target_len;
+	int n, best;
+
+	len = pcb_distance(x1, y1, x2, y2);
+
+	if (lengthlen > 0) {
+		/* find the best matching constraint length */
+		best = -1;
+		best_diff = COORD_MAX;
+		for(n = 0; n < lengthlen; n++) {
+			diff = fabs(len - lengths[n]);
+			if (diff < best_diff) {
+				best_diff = diff;
+				best = n;
+			}
+		}
+		if (best < 0)
+			return -1;
+
+		target_len = lengths[best];
+	}
+	else
+		target_len = len;
+
+	if (length_mod > 0)
+		target_len = floor(target_len / (double)length_mod) * (double)length_mod;
+
+	*out_len = target_len;
+	return 0;
+}
+
 static void cnst_line_anglen(ddraft_cnst_t *cn)
 {
-	double dx, dy, diff, target_ang, ang, target_len, len, best_diff;
-	int n, best;
+	double target_ang, dx, dy, target_len;
 	pcb_route_object_t *line;
+	int res;
 
 	if (((cn->line_angle_len == 0) && (cn->line_length_len == 0) && (cn->line_angle_mod <= 0) && (cn->line_length_mod <= 0)) || (pcb_crosshair.Route.size < 1))
 		return;
@@ -52,54 +120,16 @@ static void cnst_line_anglen(ddraft_cnst_t *cn)
 	if (line->type != PCB_OBJ_LINE)
 		return;
 
-	ang = atan2(-(pcb_crosshair.Y - line->point1.Y), pcb_crosshair.X - line->point1.X) * PCB_RAD_TO_DEG;
-	len = pcb_distance(line->point1.X, line->point1.Y, pcb_crosshair.X, pcb_crosshair.Y);
+	res = find_best_angle(&target_ang,
+		line->point1.X, line->point1.Y, pcb_crosshair.X, pcb_crosshair.Y,
+		cn->line_angle, cn->line_angle_len, cn->line_angle_mod);
+	if (res < 0) return;
 
-	if (cn->line_angle_len > 0) {
-		/* find the best matching constraint angle */
-		best = -1;
-		best_diff = 1000.0;
-		for(n = 0; n < cn->line_angle_len; n++) {
-			diff = fabs(ang - cn->line_angle[n]);
-			if (diff < best_diff) {
-				best_diff = diff;
-				best = n;
-			}
-		}
-		if (best < 0)
-			return;
+	res = find_best_length(&target_len,
+		line->point1.X, line->point1.Y, pcb_crosshair.X, pcb_crosshair.Y,
+		cn->line_length, cn->line_length_len, cn->line_length_mod);
+	if (res < 0) return;
 
-		target_ang = cn->line_angle[best];
-	}
-	else
-		target_ang = ang;
-
-	if (cn->line_angle_mod > 0)
-		target_ang = floor(target_ang / cn->line_angle_mod) * cn->line_angle_mod;
-
-	if (cn->line_length_len > 0) {
-		/* find the best matching constraint length */
-		best = -1;
-		best_diff = COORD_MAX;
-		for(n = 0; n < cn->line_length_len; n++) {
-			diff = fabs(len - cn->line_length[n]);
-			if (diff < best_diff) {
-				best_diff = diff;
-				best = n;
-			}
-		}
-		if (best < 0)
-			return;
-
-		target_len = cn->line_length[best];
-	}
-	else
-		target_len = len;
-
-	if (cn->line_length_mod > 0)
-		target_len = floor(target_len / cn->line_length_mod) * cn->line_length_mod;
-
-	target_ang /= PCB_RAD_TO_DEG;
 	dx = target_len * cos(target_ang);
 	dy = target_len * sin(target_ang);
 
