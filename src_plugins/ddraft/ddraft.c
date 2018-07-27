@@ -175,6 +175,7 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_ACT_IRES(-1);
 				return 0;
 			}
+			cons.line_angle_len = 0;
 			for(n = 2; n < argc; n++) {
 				PCB_ACT_CONVARG(n, FGW_DOUBLE, constraint, cons.line_angle[cons.line_angle_len] = argv[n].val.nat_double);
 				cons.line_angle_len++;
@@ -186,6 +187,7 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_ACT_IRES(-1);
 				return 0;
 			}
+			cons.line_length_len = 0;
 			for(n = 2; n < argc; n++) {
 				PCB_ACT_CONVARG(n, FGW_COORD, constraint, cons.line_length[cons.line_length_len] = fgw_coord(&argv[n]));
 				cons.line_length_len++;
