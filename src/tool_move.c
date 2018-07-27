@@ -76,8 +76,8 @@ void pcb_tool_move_notify_mode(void)
 
 		/* second notify, move object */
 	case PCB_CH_STATE_SECOND:
-		dx = pcb_tool_note.X - pcb_crosshair.AttachedObject.X;
-		dy = pcb_tool_note.Y - pcb_crosshair.AttachedObject.Y;
+		dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
+		dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
 		if ((dx != 0) || (dy != 0)) {
 			pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
 			pcb_crosshair_set_local_ref(0, 0, pcb_false);
@@ -100,6 +100,12 @@ void pcb_tool_move_release_mode (void)
 	}
 }
 
+void pcb_tool_move_adjust_attached_objects(void)
+{
+	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
+	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
+}
+
 void pcb_tool_move_draw_attached(void)
 {
 	pcb_xordraw_movecopy();
@@ -119,7 +125,7 @@ pcb_tool_t pcb_tool_move = {
 	pcb_tool_move_uninit,
 	pcb_tool_move_notify_mode,
 	pcb_tool_move_release_mode,
-	NULL,
+	pcb_tool_move_adjust_attached_objects,
 	pcb_tool_move_draw_attached,
 	pcb_tool_move_undo_act,
 	NULL,

@@ -171,8 +171,8 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 	pcb_coord_t x, y;
 
 	/* set offset */
-	x = pcb_crosshair.X - Buffer->X;
-	y = pcb_crosshair.Y - Buffer->Y;
+	x = pcb_crosshair.AttachedObject.tx - Buffer->X;
+	y = pcb_crosshair.AttachedObject.ty - Buffer->Y;
 
 	/* draw all visible layers */
 	for (i = 0; i < pcb_max_layer; i++)
@@ -245,8 +245,8 @@ void pcb_xordraw_insert_pt_obj(void)
  */
 void pcb_xordraw_movecopy(void)
 {
-	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X;
-	pcb_coord_t dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
+	pcb_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
+	pcb_coord_t dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
 	int event_sent = 0;
 	
 	switch (pcb_crosshair.AttachedObject.Type) {

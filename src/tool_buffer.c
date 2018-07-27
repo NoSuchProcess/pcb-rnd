@@ -67,7 +67,7 @@ void pcb_tool_buffer_notify_mode(void)
 			pcb_subc_remove(orig_subc);
 		}
 	}
-	if (pcb_buffer_copy_to_layout(PCB, pcb_tool_note.X, pcb_tool_note.Y))
+	if (pcb_buffer_copy_to_layout(PCB, pcb_crosshair.AttachedObject.tx, pcb_crosshair.AttachedObject.ty))
 		pcb_board_set_changed_flag(pcb_true);
 
 	if (orig_subc != NULL) {
@@ -94,6 +94,12 @@ void pcb_tool_buffer_release_mode(void)
 	}
 }
 
+void pcb_tool_buffer_adjust_attached_objects(void)
+{
+	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
+	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
+}
+
 void pcb_tool_buffer_draw_attached(void)
 {
 	pcb_xordraw_buffer(PCB_PASTEBUFFER);
@@ -105,7 +111,7 @@ pcb_tool_t pcb_tool_buffer = {
 	pcb_tool_buffer_uninit,
 	pcb_tool_buffer_notify_mode,
 	pcb_tool_buffer_release_mode,
-	NULL,
+	pcb_tool_buffer_adjust_attached_objects,
 	pcb_tool_buffer_draw_attached,
 	NULL,
 	NULL,

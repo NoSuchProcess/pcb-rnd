@@ -44,6 +44,7 @@ typedef struct {              /* currently marked block */
 
 typedef struct {              /* currently attached object */
 	pcb_coord_t X, Y;           /* saved position when PCB_MODE_MOVE */
+	pcb_coord_t tx, ty;         /* target position when PCB_MODE_MOVE */
 	pcb_box_t BoundingBox;
 	long int Type;              /* object type */
 	long int State;

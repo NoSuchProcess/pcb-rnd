@@ -75,7 +75,7 @@ void pcb_tool_copy_notify_mode(void)
 			pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
 							 pcb_crosshair.AttachedObject.Ptr1,
 							 pcb_crosshair.AttachedObject.Ptr2,
-							 pcb_crosshair.AttachedObject.Ptr3, pcb_tool_note.X - pcb_crosshair.AttachedObject.X, pcb_tool_note.Y - pcb_crosshair.AttachedObject.Y);
+							 pcb_crosshair.AttachedObject.Ptr3, pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X, pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 
@@ -92,6 +92,12 @@ void pcb_tool_copy_release_mode (void)
 		pcb_tool_copy_notify_mode();
 		pcb_tool_note.Hit = 0;
 	}
+}
+
+void pcb_tool_copy_adjust_attached_objects(void)
+{
+	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
+	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
 void pcb_tool_copy_draw_attached(void)
@@ -113,7 +119,7 @@ pcb_tool_t pcb_tool_copy = {
 	pcb_tool_copy_uninit,
 	pcb_tool_copy_notify_mode,
 	pcb_tool_copy_release_mode,
-	NULL,
+	pcb_tool_copy_adjust_attached_objects,
 	pcb_tool_copy_draw_attached,
 	pcb_tool_copy_undo_act,
 	NULL,
