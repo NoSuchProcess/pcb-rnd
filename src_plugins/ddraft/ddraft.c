@@ -271,12 +271,80 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+static const char pcb_acts_tang[] = "tang()";
+static const char pcb_acth_tang[] = "Draw a line to be tangential to a circle";
+static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_objtype_t type;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_coord_t x, y;
+	double d, r, base;
+	pcb_route_object_t *line;
+	pcb_arc_t *arc;
+
+
+	if (((pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND) && (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)) || (pcb_crosshair.Route.size < 1)) {
+		err_nonline:;
+		pcb_message(PCB_MSG_ERROR, "tang: must be in line drawing mode with the first point already set\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	line = &pcb_crosshair.Route.objects[pcb_crosshair.Route.size-1];
+	if (line->type != PCB_OBJ_LINE)
+		goto err_nonline;
+
+
+	pcb_hid_get_coords("Select target arc", &x, &y, 0);
+	type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
+
+	if (type != PCB_OBJ_ARC) {
+		pcb_hid_get_coords("Select target arc", &x, &y, 1);
+		type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
+	}
+
+	if (type != PCB_OBJ_ARC) {
+		pcb_message(PCB_MSG_ERROR, "tang: target object must be an arc\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	arc = (pcb_arc_t *)ptr2;
+	if (fabs(arc->Height - arc->Width) > 100) {
+		pcb_message(PCB_MSG_ERROR, "tang: elliptical arcs are not supported (%$mm != %$mm)\n", arc->Height, arc->Width);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	d = pcb_distance(arc->X, arc->Y, line->point1.X, line->point1.Y);
+	r = arc->Width;
+
+	if (d <= r) {
+		pcb_message(PCB_MSG_ERROR, "tang: line must start outside of the circle\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	base = atan2(-(arc->Y - line->point1.Y), arc->X - line->point1.X);
+
+pcb_trace("base=%f d=%mm r=%mm\n", base * PCB_RAD_TO_DEG, (pcb_coord_t)d, (pcb_coord_t)r);
+
+	cons.line_angle_len = 2;
+	cons.line_angle[0] = (base + asin(r / d)) * PCB_RAD_TO_DEG;
+	cons.line_angle[1] = (base + asin(-r / d)) * PCB_RAD_TO_DEG;
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static pcb_action_t ddraft_action_list[] = {
 	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"constraint", pcb_act_constraint, pcb_acth_constraint, pcb_acts_constraint},
 	{"perp", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
-	{"paral", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral}
+	{"paral", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
+	{"tang", pcb_act_tang, pcb_acth_tang, pcb_acts_tang}
 };
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
