@@ -86,7 +86,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 					pcb_message(PCB_MSG_ERROR, "Can't cut that object\n");
 					continue;
 				}
-				res += pcb_trim_split(edges, (pcb_any_obj_t *)ptr2, x, y, trim);
+				res += pcb_trim_split(edges, (pcb_any_obj_t *)ptr2, REMO_INVALID, x, y, trim);
 				pcb_gui->invalidate_all();
 			}
 			break;
