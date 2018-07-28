@@ -193,6 +193,7 @@
 	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
 	- react on conf change events, refresh the fields
 - lihata v6:
+	- new doc layer types
 	- remove pcb_board_t Zoom/x/y
 	- remove via geometry from route style
 	- remove real layer visible flag (UI is always reset)
