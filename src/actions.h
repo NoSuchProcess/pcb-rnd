@@ -73,7 +73,7 @@ int pcb_parse_command(const char *str_, pcb_bool force_action_mode);
    "action(arg1, arg2)" */
 int pcb_parse_actions(const char *str_);
 
-/* Return a sttaic buffer with the current prompt plus an optional
+/* Return a static buffer with the current prompt plus an optional
    suffix glued to it. Valid until the next call. */
 const char *pcb_cli_prompt(const char *suffix);
 
