@@ -209,7 +209,8 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/ddraft/fields_sphash.h ../src_plugins/ddraft/trim.c \
- undo_old.h ../src_plugins/ddraft/constraint.c crosshair.h dolists.h
+ undo_old.h ../src_plugins/ddraft/constraint.c crosshair.h tool.h \
+ ../src_plugins/ddraft/cli.c dolists.h
 ../src_plugins/ddraft/fields_sphash.o: \
  ../src_plugins/ddraft/fields_sphash.c
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
