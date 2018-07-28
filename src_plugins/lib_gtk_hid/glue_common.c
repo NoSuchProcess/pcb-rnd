@@ -87,7 +87,9 @@ static void command_pack_in_status_line(void)
 
 static void command_post_entry(void)
 {
+#if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	ghid_interface_input_signals_connect();
+#endif
 	ghid_interface_set_sensitive(TRUE);
 	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
 	gtk_widget_grab_focus(gport->drawing_area);
@@ -96,7 +98,9 @@ static void command_post_entry(void)
 static void command_pre_entry(void)
 {
 	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
+#if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	ghid_interface_input_signals_disconnect();
+#endif
 	ghid_interface_set_sensitive(FALSE);
 }
 
