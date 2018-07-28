@@ -338,13 +338,16 @@ pcb_trace("base=%f d=%mm r=%mm\n", base * PCB_RAD_TO_DEG, (pcb_coord_t)d, (pcb_c
 	return 0;
 }
 
+#include "cli.c"
+
 static pcb_action_t ddraft_action_list[] = {
 	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"constraint", pcb_act_constraint, pcb_acth_constraint, pcb_acts_constraint},
 	{"perp", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
 	{"paral", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
-	{"tang", pcb_act_tang, pcb_acth_tang, pcb_acts_tang}
+	{"tang", pcb_act_tang, pcb_acth_tang, pcb_acts_tang},
+	{"ddraft", pcb_act_ddraft, pcb_acth_ddraft, pcb_acts_ddraft}
 };
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
