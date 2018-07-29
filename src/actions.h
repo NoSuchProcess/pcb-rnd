@@ -85,6 +85,10 @@ int pcb_cli_enter(const char *backend, const char *prompt);
    (popped from a stack) */
 int pcb_cli_leave(void);
 
+/* Mouse event while the command line is open; returns zero if
+   normal event processing shall be inhibited; notify is true if
+   called in notify mode, false if called in release mode */
+int pcb_cli_mouse(pcb_bool notify);
 
 /* Discard the cli mode stack */
 void pcb_cli_uninit(void);

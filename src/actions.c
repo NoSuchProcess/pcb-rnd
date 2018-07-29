@@ -564,6 +564,35 @@ int pcb_cli_leave(void)
 	return -1;
 }
 
+int pcb_cli_mouse(pcb_bool notify)
+{
+	fgw_func_t *f;
+	const pcb_action_t *a;
+	fgw_arg_t res, args[3];
+
+	/* no backend: let the original action work */
+	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0'))
+		return -1;
+
+	/* backend: let the backend action handle it */
+	a = pcb_find_action(conf_core.rc.cli_backend, &f);
+	if (!a)
+		return -1;
+
+	args[0].type = FGW_FUNC;
+	args[0].val.func = f;
+	args[1].type = FGW_STR;
+	args[1].val.str = "/click";
+	args[2].type = FGW_INT;
+	args[2].val.nat_int = notify;
+
+	if (pcb_actionv_(f, &res, 3, args) != 0)
+			return -1;
+	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	return res.val.nat_int;
+}
+
+
 void pcb_cli_uninit(void)
 {
 	while(vtp0_len(&cli_stack) > 0)

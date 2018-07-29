@@ -396,6 +396,9 @@ static void default_tool_unreg(void)
 /*** old helpers ***/
 void pcb_release_mode(void)
 {
+	if (pcb_crosshair.click_cmd_entry_active && (pcb_cli_mouse(0) == 0))
+		return;
+
 	pcb_tool_release_mode();
 
 	if (pcb_tool_is_saved)
@@ -406,6 +409,9 @@ void pcb_release_mode(void)
 
 void pcb_notify_mode(void)
 {
+	if (pcb_crosshair.click_cmd_entry_active && (pcb_cli_mouse(1) == 0))
+		return;
+
 	if (conf_core.temp.rat_warn)
 		pcb_clear_warnings();
 	pcb_tool_notify_mode();

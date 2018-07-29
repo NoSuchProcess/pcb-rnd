@@ -39,6 +39,7 @@
 #include "error.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "crosshair.h"
 
 /* split value into a list of '-' separated words; examine each word
    and set the bitmask of modifiers */
@@ -182,8 +183,10 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 
 void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active)
 {
+	pcb_crosshair.click_cmd_entry_active = cmd_entry_active;
 	pcb_hid_cfg_action(find_best_action(mouse, button_and_mask));
 	pcb_event(PCB_EVENT_USER_INPUT_POST, NULL);
+	pcb_crosshair.click_cmd_entry_active = 0;
 }
 
 
