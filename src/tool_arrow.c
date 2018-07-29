@@ -147,8 +147,8 @@ void pcb_tool_arrow_notify_mode(void)
 		if (!pcb_tool_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC)) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Moving = pcb_true;
 			/* remember where the user clicked to start this op */
-			pcb_crosshair.AttachedObject.X = pcb_tool_note.X;
-			pcb_crosshair.AttachedObject.Y = pcb_tool_note.Y;
+			pcb_crosshair.AttachedObject.tx = pcb_crosshair.AttachedObject.X = pcb_tool_note.X;
+			pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y = pcb_tool_note.Y;
 		}
 		if ((pcb_tool_note.Hit && pcb_tool_note.Moving) || type == PCB_OBJ_VOID)
 			return;
