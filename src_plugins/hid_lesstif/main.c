@@ -731,7 +731,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		pcb_parse_command(s, pcb_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
-	case XmCR_LOSING_FOCUS:
+
 		XtUnmanageChild(m_cmd);
 		XtUnmanageChild(m_cmd_label);
 		cmd_is_active = 0;
@@ -769,15 +769,12 @@ static const char pcb_acth_Command[] = "Displays the command line input window."
 The command window allows the user to manually enter actions to be
 executed.
 
-There are three ways to finish with the command window.  If you press
+There are two ways to finish with the command window.  If you press
 the @code{Enter} key, the command is invoked, the window goes away,
 and the next time you bring up the command window it's empty.  If you
 press the @code{Esc} key, the window goes away without invoking
 anything, and the next time you bring up the command window it's
-empty.  If you change focus away from the command window (i.e. click
-on some other window), the command window goes away but the next time
-you bring it up it resumes entering the command you were entering
-before.
+empty.
 
 %end-doc */
 
@@ -1371,6 +1368,9 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		printf("work_area: unknown event %d\n", e->type);
 		break;
 	}
+
+	if (cmd_is_active)
+		XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
 }
 
 static void draw_right_cross(GC xor_gc, int x, int y, int view_width, int view_height)
