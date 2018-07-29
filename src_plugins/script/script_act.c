@@ -68,7 +68,7 @@ static const char pcb_acth_Oneliner[] = "Execute a script one-liner using a spec
 static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
 static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *lang = argv[0].val.func->name, *scr = NULL;
+	const char *first = NULL, *lang = argv[0].val.func->name, *scr = NULL;
 	const char **s, *tr[] = {
 		"awk",         "mawk",
 		"ruby",        "mruby",
@@ -91,6 +91,14 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else {
 		/* call to lang(script) */
 		PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
+	}
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
+	if (first != NULL) {
+		if (strcmp(first, "/click") == 0) {
+			PCB_ACT_IRES(-1); /* ignore clicks */
+			return 0;
+		}
 	}
 
 	/* translate short name to long name */
