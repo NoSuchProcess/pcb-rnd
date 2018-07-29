@@ -180,7 +180,7 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 	return NULL;
 }
 
-void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask)
+void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active)
 {
 	pcb_hid_cfg_action(find_best_action(mouse, button_and_mask));
 	pcb_event(PCB_EVENT_USER_INPUT_POST, NULL);

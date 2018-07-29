@@ -719,6 +719,7 @@ static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static Widget m_cmd = 0, m_cmd_label;
+static int cmd_is_active = 0;
 
 static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruct * cbs)
 {
@@ -733,6 +734,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	case XmCR_LOSING_FOCUS:
 		XtUnmanageChild(m_cmd);
 		XtUnmanageChild(m_cmd_label);
+		cmd_is_active = 0;
 		break;
 	}
 }
@@ -750,6 +752,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 			XtUnmanageChild(m_cmd);
 			XtUnmanageChild(m_cmd_label);
 			XmTextSetString(w, XmStrCast(""));
+			cmd_is_active = 0;
 			*cont = False;
 			break;
 		}
@@ -783,6 +786,7 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
+	cmd_is_active = 1;
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -1293,7 +1297,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #else
 				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0);
 #endif
-			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, 0);
+			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 
 			pcb_notify_crosshair_change(pcb_true);
 			break;
@@ -1315,7 +1319,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0)
 #endif
 				+ PCB_M_Release;
-			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, 0);
+			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 		}

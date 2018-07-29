@@ -357,8 +357,9 @@ gboolean ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg)
 }
 
 /* Mouse scroll wheel events */
-gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out)
+gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *data)
 {
+	pcb_gtk_mouse_t *ctx = data;
 	ModifierKeysState mk;
 	GdkModifierType state;
 	int button;
@@ -380,7 +381,7 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 	}
 
 	ghid_wheel_zoom = 1;
-	hid_cfg_mouse_action(&ghid_mouse, button | mk);
+	hid_cfg_mouse_action(&ghid_mouse, button | mk, ctx->com->command_entry_is_active());
 	ghid_wheel_zoom = 0;
 
 	return TRUE;
@@ -405,7 +406,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);
+	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->com->command_entry_is_active());
 
 	ctx->com->port_button_press_main();
 
@@ -422,7 +423,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release);
+	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release, ctx->com->command_entry_is_active());
 
 	ctx->com->port_button_release_main();
 	return TRUE;
