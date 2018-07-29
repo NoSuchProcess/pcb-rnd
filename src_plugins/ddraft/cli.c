@@ -44,6 +44,10 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_IRES(0);
 		return 0;
 	}
+	if (strcmp(cmd, "/click") == 0) {
+		PCB_ACT_IRES(-1); /* ignore clicks for now */
+		return 0;
+	}
 
 	PCB_ACT_IRES(0);
 	return 0;
