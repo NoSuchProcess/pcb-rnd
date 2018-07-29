@@ -764,26 +764,7 @@ static const char pcb_acth_Command[] = "Displays the command line input window."
 /* %start-doc actions Command
 
 The command window allows the user to manually enter actions to be
-executed.  Action syntax can be done one of two ways:
-
-@table @code
-
-@item
-Follow the action name by an open parenthesis, arguments separated by
-commas, end with a close parenthesis.  Example: @code{Abc(1,2,3)}
-
-@item
-Separate the action name and arguments by spaces.  Example: @code{Abc
-1 2 3}.
-
-@end table
-
-The first option allows you to have arguments with spaces in them,
-but the second is more ``natural'' to type for most people.
-
-Note that action names are not case sensitive, but arguments normally
-are.  However, most actions will check for ``keywords'' in a case
-insensitive way.
+executed.
 
 There are three ways to finish with the command window.  If you press
 the @code{Enter} key, the command is invoked, the window goes away,
@@ -1312,7 +1293,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #else
 				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0);
 #endif
-			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
+			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, 0);
 
 			pcb_notify_crosshair_change(pcb_true);
 			break;
@@ -1334,7 +1315,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0)
 #endif
 				+ PCB_M_Release;
-			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
+			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, 0);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 		}
