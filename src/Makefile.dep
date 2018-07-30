@@ -6118,7 +6118,8 @@ hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
  obj_text_list.h obj_text.h font.h box.h math_helper.h move.h misc_util.h \
- layer_grp.h hid_cfg_action.h compat_misc.h event.h
+ layer_grp.h hid_cfg_action.h compat_misc.h event.h crosshair.h \
+ vtonpoint.h route.h
 hid_color.o: hid_color.c ../config.h hid_color.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
