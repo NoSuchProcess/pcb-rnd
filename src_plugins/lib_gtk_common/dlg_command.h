@@ -26,5 +26,7 @@ void command_window_close_cb(pcb_gtk_command_t *ctx);
 /* Update the prompt text before the command entry - call it when any of conf_core.rc.cli_* change */
 void ghid_command_update_prompt(pcb_gtk_command_t *ctx);
 
+const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor);
+
 
 #endif

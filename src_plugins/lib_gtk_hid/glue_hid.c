@@ -508,6 +508,11 @@ pcb_hid_drc_gui_t ghid_drc_gui = {
 	ghid_drc_window_throw_dialog_glue,
 };
 
+static const char *ghid_command_entry(const char *ovr, int *cursor)
+{
+	return pcb_gtk_cmd_command_entry(&ghidgui->topwin.cmd, ovr, cursor);
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -565,6 +570,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->propedit_add_stat = ghid_propedit_add_stat;
 /*	dst->propedit_add_prop = ghid_propedit_add_prop;*/
 /*	dst->propedit_add_value = ghid_propedit_add_value;*/
+	dst->command_entry = ghid_command_entry;
 
 	dst->drc_gui = &ghid_drc_gui;
 

@@ -438,3 +438,15 @@ void command_window_close_cb(pcb_gtk_command_t *ctx)
 	if (command_window)
 		gtk_widget_destroy(command_window);
 }
+
+const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)
+{
+	if (ovr != NULL) {
+		gtk_entry_set_text(ctx->command_entry, ovr);
+		if (cursor != NULL)
+			gtk_editable_set_position(GTK_EDITABLE(ctx->command_entry), *cursor);
+	}
+	if (cursor != NULL)
+		*cursor = gtk_editable_get_position(GTK_EDITABLE(ctx->command_entry));
+	return gtk_entry_get_text(ctx->command_entry);
+}
