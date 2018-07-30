@@ -441,6 +441,11 @@ void command_window_close_cb(pcb_gtk_command_t *ctx)
 
 const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)
 {
+	if (!ctx->com->command_entry_is_active()) {
+		if (cursor != NULL)
+			*cursor = -1;
+		return NULL;
+	}
 	if (ovr != NULL) {
 		gtk_entry_set_text(ctx->command_entry, ovr);
 		if (cursor != NULL)
