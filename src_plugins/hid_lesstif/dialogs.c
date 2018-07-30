@@ -524,30 +524,6 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 	return rv;
 }
 
-static const char pcb_acts_PromptFor[] = "PromptFor([message[,default]])";
-
-static const char pcb_acth_PromptFor[] = "Prompt for a response.";
-
-/* %start-doc actions PromptFor
-
-This is mostly for testing the lesstif HID interface.  The parameters
-are passed to the @code{prompt_for()} HID function, causing the user
-to be prompted for a response.  The respose is simply printed to the
-user's stdout.
-
-%end-doc */
-
-static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *a0 = NULL, *a1 = NULL;
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, PromptFor, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, PromptFor, a1 = argv[2].val.str);
-
-	PCB_ACT_IRES(lesstif_prompt_for(a0, a1));
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, pcb_hid_attr_ev_t ev), void *ctx)
@@ -1930,7 +1906,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
 	{"Confirm", pcb_act_ConfirmAction, pcb_acth_ConfirmAction, pcb_acts_ConfirmAction},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
