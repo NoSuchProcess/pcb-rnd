@@ -760,6 +760,31 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 	}
 }
 
+static const char *lesstif_command_entry(const char *ovr, int *cursor)
+{
+	if (!cmd_is_active) {
+		if (cursor != NULL)
+			*cursor = -1;
+		return NULL;
+	}
+
+	if (ovr != NULL) {
+		XmTextSetString(m_cmd, XmStrCast(ovr));
+		if (cursor != NULL)
+			XtVaSetValues(m_cmd, XmNcursorPosition, *cursor, NULL);
+	}
+
+	if (cursor != NULL) {
+		XmTextPosition pos;
+		stdarg_n = 0;
+		stdarg(XmNcursorPosition, &pos);
+		XtGetValues(m_cmd, stdarg_args, stdarg_n);
+		*cursor = pos;
+	}
+
+	return XmTextGetString(m_cmd);
+}
+
 static const char pcb_acts_Command[] = "Command()";
 
 static const char pcb_acth_Command[] = "Displays the command line input window.";
@@ -3962,6 +3987,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.progress = lesstif_progress;
 	lesstif_hid.edit_attributes = lesstif_attributes_dialog;
 	lesstif_hid.point_cursor = PointCursor;
+	lesstif_hid.command_entry = lesstif_command_entry;
 
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.remove_menu = lesstif_remove_menu;
