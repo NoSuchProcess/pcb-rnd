@@ -83,5 +83,15 @@ PCB_INLINE void pcb_hid_set_draw_faded(pcb_hid_gc_t gc, int faded)
 	}
 }
 
+PCB_INLINE const char *pcb_hid_command_entry(const char *ovr, int *cursor)
+{
+	if ((pcb_gui == NULL) || (pcb_gui->command_entry == NULL)) {
+		if (cursor != NULL)
+			*cursor = -1;
+		return NULL;
+	}
+	return pcb_gui->command_entry(ovr, cursor);
+}
+
 
 #endif

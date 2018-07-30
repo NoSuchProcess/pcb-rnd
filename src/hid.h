@@ -535,6 +535,14 @@ struct pcb_hid_s {
 	   (simplified) approximation of some objects that would end up being too
 	   small. For a GUI, this should depend on the zoom level */
 	pcb_coord_t coord_per_pix;
+
+	/* If ovr is not NULL:
+	    - overwrite the command etry with ovr
+	    - if cursor is not NULL, set the cursor after the overwrite
+	   If ovr is NULL:
+	    - if cursor is not NULL, load the value with the cursor (or -1 if not supported)
+	   Return the current command entry content in a read-only string */
+	const char *(*command_entry)(const char *ovr, int *cursor);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
