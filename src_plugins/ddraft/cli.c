@@ -120,8 +120,10 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		args++;
 		cursor -= (args - op);
 	}
-	else
+	else {
 		oplen = len;
+		cursor = 0;
+	}
 
 	/* look up op */
 	opp = find_op(op, oplen);
