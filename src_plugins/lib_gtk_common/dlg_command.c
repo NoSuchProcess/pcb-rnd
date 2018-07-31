@@ -251,7 +251,7 @@ static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
 	command_window = NULL;
 }
 
-static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
+static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
 
@@ -304,7 +304,7 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
-		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), ctx);
+		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 	}
 
 	gtk_box_pack_start(GTK_BOX(vbox), ctx->command_combo_box, FALSE, FALSE, 0);
@@ -356,7 +356,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	 */
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
-		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), ctx);
+		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 		ctx->pack_in_status_line();
 	}
 
@@ -384,7 +384,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	ctx->pre_entry();
 
 	gtk_widget_grab_focus(GTK_WIDGET(ctx->command_entry));
-	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), ctx);
+	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 
 	ghid_entry_loop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(ghid_entry_loop);
