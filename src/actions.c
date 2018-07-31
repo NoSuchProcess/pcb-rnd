@@ -564,11 +564,10 @@ int pcb_cli_leave(void)
 	return -1;
 }
 
-int pcb_cli_mouse(pcb_bool notify)
+static int pcb_cli_common(fgw_arg_t *args)
 {
-	fgw_func_t *f;
 	const pcb_action_t *a;
-	fgw_arg_t res, args[3];
+	fgw_func_t *f;
 
 	/* no backend: let the original action work */
 	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0'))
@@ -581,12 +580,23 @@ int pcb_cli_mouse(pcb_bool notify)
 
 	args[0].type = FGW_FUNC;
 	args[0].val.func = f;
+	return 0;
+}
+
+
+int pcb_cli_mouse(pcb_bool notify)
+{
+	fgw_arg_t res, args[3];
+
+	if (pcb_cli_common(args) != 0)
+		return -1;
+
 	args[1].type = FGW_STR;
 	args[1].val.str = "/click";
 	args[2].type = FGW_INT;
 	args[2].val.nat_int = notify;
 
-	if (pcb_actionv_(f, &res, 3, args) != 0)
+	if (pcb_actionv_(args[0].val.func, &res, 3, args) != 0)
 			return -1;
 	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
 	return res.val.nat_int;
