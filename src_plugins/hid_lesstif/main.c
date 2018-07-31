@@ -748,6 +748,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 		case KeyPress:
 			XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
 			switch (sym) {
+#warning TODO: lesstif command history
 				case XK_Tab:
 					pcb_cli_tab();
 					*cont = False;
