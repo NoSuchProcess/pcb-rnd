@@ -104,6 +104,8 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		cline = cmd;
 	else
 		cline = pcb_hid_command_entry(NULL, &cursor);
+	if (cline == NULL)
+		cline = "";
 	len = strlen(cline);
 	if (len >= sizeof(cline))
 		line = malloc(len+1);
@@ -133,13 +135,13 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto ret0;
 	}
 
-	if (strcmp(cmd, "/click") == 0) {
-		PCB_ACT_IRES(opp->click(args, cursor));
-		goto ret0;
-	}
-
-	if (strcmp(cmd, "/tab") == 0) {
-		PCB_ACT_IRES(opp->tab(args, cursor));
+	if (*cmd == '/') {
+		if (strcmp(cmd, "/click") == 0)
+			PCB_ACT_IRES(opp->click(args, cursor));
+		else if (strcmp(cmd, "/tab") == 0)
+			PCB_ACT_IRES(opp->tab(args, cursor));
+		else
+			PCB_ACT_IRES(0); /* ignore anything unhandled */
 		goto ret0;
 	}
 
