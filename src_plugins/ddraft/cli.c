@@ -27,6 +27,55 @@
  */
 
 #include "hid_inlines.h"
+#include "compat_misc.h"
+
+typedef struct {
+	const char *name;
+	int (*exec)(char *args);                 /* command line entered (finished, accepted) */
+	int (*click)(char *args, int cursor);    /* user clicked on the GUI while editing the command line */
+	int (*tab)(char *args, int cursor);      /* tab completion */
+} ddraft_op_t;
+
+static int line_exec(char *args)
+{
+	pcb_trace("line e: '%s'\n", args);
+	return -1;
+}
+
+static int line_click(char *args, int cursor)
+{
+	pcb_trace("line c: '%s':%d\n", args, cursor);
+	return -1;
+}
+
+static int line_tab(char *args, int cursor)
+{
+	pcb_trace("line t: '%s':%d\n", args, cursor);
+	return -1;
+}
+
+static const ddraft_op_t ddraft_ops[] = {
+	{"line",    line_exec,    line_click,    line_tab},
+	{NULL,      NULL,         NULL,          NULL}
+};
+
+static const ddraft_op_t *find_op(const char *op, int oplen)
+{
+	const ddraft_op_t *p, *found = NULL;
+
+	if (oplen < 1)
+		return NULL;
+
+	for(p = ddraft_ops; p->name != NULL; p++) {
+		if (pcb_strncasecmp(p->name, op, oplen) == 0) {
+			if (found != NULL)
+				return NULL; /* multiple match */
+			found = p;
+		}
+	}
+
+	return found;
+}
 
 static const char pcb_acts_ddraft[] = "ddraft([command])";
 static const char pcb_acth_ddraft[] = "Enter 2d drafting CLI mode or execute command";
@@ -34,7 +83,8 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *args, *cmd, *line, sline[1024], *op;
 	const char *cline = NULL;
-	int cursor, len;
+	int cursor, len, oplen;
+	const ddraft_op_t *opp;
 
 	if (argc == 1) {
 		pcb_cli_enter("ddraft", "ddraft");
@@ -50,8 +100,9 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	/* make a safe copy of the command line, either on stack or on heap if too large */
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, ddraft, cline = argv[2].val.str);
-	if (cline == NULL)
+	if ((cmd != NULL) && (*cmd != '/'))
+		cline = cmd;
+	else
 		cline = pcb_hid_command_entry(NULL, &cursor);
 	len = strlen(cline);
 	if (len >= sizeof(cline))
@@ -64,21 +115,33 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	op = line;
 	args = strpbrk(op, " \t");
 	if (args != NULL) {
+		oplen = args - op;
 		*args = '\0';
 		args++;
 		cursor -= (args - op);
 	}
+	else
+		oplen = len;
 
 	/* look up op */
-
-
-	if (strcmp(cmd, "/click") == 0) {
-		PCB_ACT_IRES(-1); /* ignore clicks for now */
+	opp = find_op(op, oplen);
+	if (opp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
+		PCB_ACT_IRES(-1);
 		goto ret0;
 	}
 
+	if (strcmp(cmd, "/click") == 0) {
+		PCB_ACT_IRES(opp->click(args, cursor));
+		goto ret0;
+	}
 
-	PCB_ACT_IRES(0);
+	if (strcmp(cmd, "/tab") == 0) {
+		PCB_ACT_IRES(opp->tab(args, cursor));
+		goto ret0;
+	}
+
+	PCB_ACT_IRES(opp->exec(args));
 
 	ret0:;
 	if (line != sline)
