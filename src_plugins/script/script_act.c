@@ -95,8 +95,8 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
 	if (first != NULL) {
-		if (strcmp(first, "/click") == 0) {
-			PCB_ACT_IRES(-1); /* ignore clicks */
+		if (*first == '/') {
+			PCB_ACT_IRES(-1); /* ignore /click, /tab and others for now */
 			return 0;
 		}
 	}
