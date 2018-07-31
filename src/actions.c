@@ -599,6 +599,22 @@ int pcb_cli_tab(void)
 	return res.val.nat_int;
 }
 
+int pcb_cli_edit(void)
+{
+	fgw_arg_t res, args[2];
+
+	if (pcb_cli_common(args) != 0)
+		return -1;
+
+	args[1].type = FGW_STR;
+	args[1].val.str = "/edit";
+
+	if (pcb_actionv_(args[0].val.func, &res, 2, args) != 0)
+			return -1;
+	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	return res.val.nat_int;
+}
+
 int pcb_cli_mouse(pcb_bool notify)
 {
 	fgw_arg_t res, args[3];

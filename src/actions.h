@@ -88,6 +88,9 @@ int pcb_cli_leave(void);
 /* Request for tab completion */
 int pcb_cli_tab(void);
 
+/* Called on each key press so indication can be updated */
+int pcb_cli_edit(void);
+
 /* Mouse event while the command line is open; returns zero if
    normal event processing shall be inhibited; notify is true if
    called in notify mode, false if called in release mode */
