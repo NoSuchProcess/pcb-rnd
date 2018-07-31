@@ -255,6 +255,12 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 {
 	gint ksym = kev->keyval;
 
+	if (ksym == GDK_KEY_Tab) {
+		pcb_cli_tab();
+		return TRUE;
+	}
+
+	/* escape key handling */
 	if (ksym != GDK_KEY_Escape)
 		return FALSE;
 
