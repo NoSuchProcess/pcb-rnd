@@ -745,19 +745,19 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 	KeySym sym;
 
 	switch (e->type) {
-	case KeyPress:
-		XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
-		switch (sym) {
-		case XK_Escape:
-			XtUnmanageChild(m_cmd);
-			XtUnmanageChild(m_cmd_label);
-			XmTextSetString(w, XmStrCast(""));
-			cmd_is_active = 0;
-			*cont = False;
+		case KeyPress:
+			XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
+			switch (sym) {
+				case XK_Escape:
+					XtUnmanageChild(m_cmd);
+					XtUnmanageChild(m_cmd_label);
+					XmTextSetString(w, XmStrCast(""));
+					cmd_is_active = 0;
+					*cont = False;
+					break;
+			}
 			break;
 		}
-		break;
-	}
 }
 
 static const char *lesstif_command_entry(const char *ovr, int *cursor)
