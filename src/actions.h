@@ -85,6 +85,9 @@ int pcb_cli_enter(const char *backend, const char *prompt);
    (popped from a stack) */
 int pcb_cli_leave(void);
 
+/* Request for tab completion */
+int pcb_cli_tab(void);
+
 /* Mouse event while the command line is open; returns zero if
    normal event processing shall be inhibited; notify is true if
    called in notify mode, false if called in release mode */
