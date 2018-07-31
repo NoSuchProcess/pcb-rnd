@@ -745,6 +745,10 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 	KeySym sym;
 
 	switch (e->type) {
+		case KeyRelease:
+			if (cmd_is_active)
+				pcb_cli_edit();
+			break;
 		case KeyPress:
 			XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
 			switch (sym) {
@@ -764,6 +768,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 			break;
 		}
 }
+
 
 static const char *lesstif_command_entry(const char *ovr, int *cursor)
 {
@@ -1847,7 +1852,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	m_cmd = XmCreateTextField(messages, XmStrCast("command"), stdarg_args, stdarg_n);
 	XtAddCallback(m_cmd, XmNactivateCallback, (XtCallbackProc) command_callback, 0);
 	XtAddCallback(m_cmd, XmNlosingFocusCallback, (XtCallbackProc) command_callback, 0);
-	XtAddEventHandler(m_cmd, KeyPressMask, 0, command_event_handler, 0);
+	XtAddEventHandler(m_cmd, KeyPressMask | KeyReleaseMask, 0, command_event_handler, 0);
 
 	m_mark = make_message("m_mark", 0, 0);
 	m_crosshair = make_message("m_crosshair", m_mark, 0);
