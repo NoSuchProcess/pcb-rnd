@@ -34,6 +34,7 @@ typedef struct {
 	int (*exec)(char *args);                 /* command line entered (finished, accepted) */
 	int (*click)(char *args, int cursor);    /* user clicked on the GUI while editing the command line */
 	int (*tab)(char *args, int cursor);      /* tab completion */
+	int (*edit)(char *args, int cursor);     /* called after editing the line or moving the cursor */
 } ddraft_op_t;
 
 static int line_exec(char *args)
@@ -54,9 +55,15 @@ static int line_tab(char *args, int cursor)
 	return -1;
 }
 
+static int line_edit(char *args, int cursor)
+{
+	pcb_trace("line e: '%s':%d\n", args, cursor);
+	return -1;
+}
+
 static const ddraft_op_t ddraft_ops[] = {
-	{"line",    line_exec,    line_click,    line_tab},
-	{NULL,      NULL,         NULL,          NULL}
+	{"line",    line_exec,    line_click,    line_tab,     line_edit},
+	{NULL,      NULL,         NULL,          NULL,         NULL}
 };
 
 static const ddraft_op_t *find_op(const char *op, int oplen)
@@ -130,7 +137,8 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* look up op */
 	opp = find_op(op, oplen);
 	if (opp == NULL) {
-		pcb_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
+		if (strcmp(cmd, "/edit") != 0)
+			pcb_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
 		PCB_ACT_IRES(-1);
 		goto ret0;
 	}
@@ -140,6 +148,8 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(opp->click(args, cursor));
 		else if (strcmp(cmd, "/tab") == 0)
 			PCB_ACT_IRES(opp->tab(args, cursor));
+		else if (strcmp(cmd, "/edit") == 0)
+			PCB_ACT_IRES(opp->edit(args, cursor));
 		else
 			PCB_ACT_IRES(0); /* ignore anything unhandled */
 		goto ret0;
