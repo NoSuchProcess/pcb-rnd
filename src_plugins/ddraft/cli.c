@@ -26,11 +26,15 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static const char pcb_acts_ddraft[] = "ddraft()";
+#include "hid_inlines.h"
+
+static const char pcb_acts_ddraft[] = "ddraft([command])";
 static const char pcb_acth_ddraft[] = "Enter 2d drafting CLI mode or execute command";
 static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char *cmd;
+	char *args, *cmd, *line, sline[1024], *op;
+	const char *cline = NULL;
+	int cursor, len;
 
 	if (argc == 1) {
 		pcb_cli_enter("ddraft", "ddraft");
@@ -44,11 +48,40 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_IRES(0);
 		return 0;
 	}
-	if (strcmp(cmd, "/click") == 0) {
-		PCB_ACT_IRES(-1); /* ignore clicks for now */
-		return 0;
+
+	/* make a safe copy of the command line, either on stack or on heap if too large */
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ddraft, cline = argv[2].val.str);
+	if (cline == NULL)
+		cline = pcb_hid_command_entry(NULL, &cursor);
+	len = strlen(cline);
+	if (len >= sizeof(cline))
+		line = malloc(len+1);
+	else
+		line = sline;
+	memcpy(line, cline, len+1);
+
+	/* split op and arguments; recalculate cursor so it's within the arguments */
+	op = line;
+	args = strpbrk(op, " \t");
+	if (args != NULL) {
+		*args = '\0';
+		args++;
+		cursor -= (args - op);
 	}
 
+	/* look up op */
+
+
+	if (strcmp(cmd, "/click") == 0) {
+		PCB_ACT_IRES(-1); /* ignore clicks for now */
+		goto ret0;
+	}
+
+
 	PCB_ACT_IRES(0);
+
+	ret0:;
+	if (line != sline)
+		free(line);
 	return 0;
 }
