@@ -280,6 +280,12 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 	return TRUE;
 }
 
+static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
+{
+	if (ctx->com->command_entry_is_active())
+		pcb_cli_edit();
+}
+
 
 	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
 	   |  Action Command() to show the command window.
@@ -311,6 +317,7 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
 		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
+		g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 	}
 
 	gtk_box_pack_start(GTK_BOX(vbox), ctx->command_combo_box, FALSE, FALSE, 0);
@@ -355,7 +362,7 @@ void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command)
 {
 	gchar *s;
-	gint escape_sig_id;
+	gint escape_sig_id, escape_sig2_id;
 
 	/* If this is the first user command entry, we have to create the
 	   |  command_combo_box and pack it into the status_line_hbox.
@@ -363,6 +370,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
 		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
+		g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 		ctx->pack_in_status_line();
 	}
 
@@ -391,6 +399,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 
 	gtk_widget_grab_focus(GTK_WIDGET(ctx->command_entry));
 	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
+	escape_sig2_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 
 	ghid_entry_loop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(ghid_entry_loop);
@@ -403,6 +412,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	/* Restore the damage we did before entering the loop.
 	 */
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig_id);
+	g_signal_handler_disconnect(ctx->command_entry, escape_sig2_id);
 
 	/* Hide the widgets */
 	if (conf_core.editor.fullscreen) {
