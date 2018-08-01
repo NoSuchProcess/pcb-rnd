@@ -135,7 +135,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 	char *s = strchr(line, ' '), *next; /* skip the instruction */
 	int i;
 
-	for(i = 0; s != NULL; s = next) {
+	for(i = 0;; s = next) {
 		while(isspace(*s)) s++;
 		switch(*s) {
 			case '@':
@@ -177,7 +177,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				}
 				APPEND(find_type(s, next-s), next);
 		}
-		if (*next == '\0')
+		if ((next == NULL) || (*next == '\0'))
 			break;
 	}
 
