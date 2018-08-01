@@ -37,6 +37,126 @@ typedef struct {
 	int (*edit)(char *args, int cursor);     /* called after editing the line or moving the cursor */
 } ddraft_op_t;
 
+typedef enum cli_ntype_e {
+	CLI_INVALID,
+	CLI_FROM,
+	CLI_TO,
+	CLI_ANGLE,
+	CLI_RELATIVE,
+	CLI_PERP,
+	CLI_PARAL,
+	CLI_TANGENT,
+	CLI_DIST,
+	CLI_OFFS,
+	CLI_COORD,
+	CLI_ID
+} cli_ntype_t;
+
+typedef struct cli_ntname_s {
+	const char *name;
+	cli_ntype_t type;
+} cli_ntname_t;
+
+static const cli_ntname_t cli_tnames[] = {
+	{"from",          CLI_FROM},
+	{"to",            CLI_TO},
+	{"angle",         CLI_ANGLE},
+	{"relative",      CLI_RELATIVE},
+	{"perpendicular", CLI_PERP},
+	{"parallel",      CLI_PARAL},
+	{"tangential",    CLI_TANGENT},
+	{"coord",         CLI_COORD},
+	{"distance",      CLI_DIST},
+	{"length",        CLI_DIST},
+	{"offset",        CLI_OFFS},
+	{NULL,            0}
+};
+
+typedef struct cli_node_s {
+	cli_ntype_t type;
+	int begin, end; /* cursor pos */
+	int invalid;
+
+	pcb_coord_t x, y;
+	pcb_angle_t angle, offs;
+	pcb_cardinal_t id;
+} cli_node_t;
+
+static const cli_ntype_t find_type(const char *type, int typelen)
+{
+	const cli_ntname_t *p, *found = NULL;
+
+	if (typelen < 1)
+		return CLI_INVALID;
+
+	for(p = cli_tnames; p->name != NULL; p++) {
+		if (pcb_strncasecmp(p->name, type, typelen) == 0) {
+			if (found != NULL)
+				return CLI_INVALID; /* multiple match */
+			found = p;
+		}
+	}
+
+	if (found == NULL)
+		return CLI_INVALID;
+	return found->type;
+}
+
+#define APPEND(type_, end_) \
+do { \
+	memset(&dst[i], 0, sizeof(cli_node_t)); \
+	dst[i].type = type_; \
+	dst[i].begin = s - line; \
+	dst[i].end = end_ - line; \
+	i++; \
+	if (i >= dstlen) \
+		return i; \
+} while(0)
+
+static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
+{
+	char *s = strchr(line, ' '), *next; /* skip the instruction */
+	int i;
+
+	for(i = 0; s != NULL; s = next) {
+		while(isspace(*s)) s++;
+		switch(*s) {
+			case '@':
+				next = s+1;
+				APPEND(CLI_RELATIVE, next);
+				/* TODO: read the coords */
+				continue;
+			case '<':
+				dst[i].angle = strtod(s+1, &next);
+				APPEND(CLI_ANGLE, next);
+				dst[i-1].invalid = (next == s);
+				continue;
+			case '%':
+				dst[i].offs = strtod(s+1, &next);
+				APPEND(CLI_OFFS, next);
+				dst[i-1].invalid = (next == s);
+				continue;
+			case '#':
+				dst[i].angle = strtol(s+1, &next, 10);
+				APPEND(CLI_ANGLE, next);
+				dst[i-1].invalid = (next == s);
+				continue;
+			case '~':
+				next = s+1;
+				APPEND(CLI_DIST, next);
+				/* TODO: read the coords */
+				break;
+			default:
+				next = strchr(s, ' ');
+				APPEND(find_type(s, next-s), next);
+		}
+	}
+
+	return i;
+}
+
+#undef APPEND
+
 static int line_exec(char *args)
 {
 	pcb_trace("line e: '%s'\n", args);
