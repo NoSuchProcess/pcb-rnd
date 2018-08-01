@@ -29,12 +29,14 @@
 #include "hid_inlines.h"
 #include "compat_misc.h"
 
+typedef struct cli_node_s cli_node_t;
+
 typedef struct {
 	const char *name;
-	int (*exec)(char *line);                 /* command line entered (finished, accepted) */
-	int (*click)(char *line, int cursor);    /* user clicked on the GUI while editing the command line */
-	int (*tab)(char *line, int cursor);      /* tab completion */
-	int (*edit)(char *line, int cursor);     /* called after editing the line or moving the cursor */
+	int (*exec)(char *line, int argc, cli_node_t *argv);                 /* command line entered (finished, accepted) */
+	int (*click)(char *line, int cursor, int argc, cli_node_t *argv);    /* user clicked on the GUI while editing the command line */
+	int (*tab)(char *line, int cursor, int argc, cli_node_t *argv);      /* tab completion */
+	int (*edit)(char *line, int cursor, int argc, cli_node_t *argv);     /* called after editing the line or moving the cursor */
 } ddraft_op_t;
 
 typedef enum cli_ntype_e {
@@ -72,7 +74,7 @@ static const cli_ntname_t cli_tnames[] = {
 	{NULL,            0}
 };
 
-typedef struct cli_node_s {
+struct cli_node_s {
 	cli_ntype_t type;
 	int begin, end; /* cursor pos */
 	int invalid;
@@ -80,7 +82,7 @@ typedef struct cli_node_s {
 	pcb_coord_t x, y;
 	pcb_angle_t angle, offs;
 	pcb_cardinal_t id;
-} cli_node_t;
+};
 
 static const cli_ntype_t find_type(const char *type, int typelen)
 {
@@ -157,25 +159,25 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 
 #undef APPEND
 
-static int line_exec(char *line)
+static int line_exec(char *line, int argc, cli_node_t *argv)
 {
 	pcb_trace("line e: '%s'\n", line);
 	return -1;
 }
 
-static int line_click(char *line, int cursor)
+static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	pcb_trace("line c: '%s':%d\n", line, cursor);
 	return -1;
 }
 
-static int line_tab(char *line, int cursor)
+static int line_tab(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	pcb_trace("line t: '%s':%d\n", line, cursor);
 	return -1;
 }
 
-static int line_edit(char *line, int cursor)
+static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	pcb_trace("line e: '%s':%d\n", line, cursor);
 	return -1;
@@ -212,6 +214,8 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *cline = NULL;
 	int cursor, len, oplen;
 	const ddraft_op_t *opp;
+	cli_node_t nd[128];
+	int ndlen;
 
 	if (argc == 1) {
 		pcb_cli_enter("ddraft", "ddraft");
@@ -257,19 +261,21 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto ret0;
 	}
 
+	ndlen = cli_parse(nd, sizeof(nd) / sizeof(nd[0]), line);
+
 	if (*cmd == '/') {
 		if (strcmp(cmd, "/click") == 0)
-			PCB_ACT_IRES(opp->click(line, cursor));
+			PCB_ACT_IRES(opp->click(line, cursor, ndlen, nd));
 		else if (strcmp(cmd, "/tab") == 0)
-			PCB_ACT_IRES(opp->tab(line, cursor));
+			PCB_ACT_IRES(opp->tab(line, cursor, ndlen, nd));
 		else if (strcmp(cmd, "/edit") == 0)
-			PCB_ACT_IRES(opp->edit(line, cursor));
+			PCB_ACT_IRES(opp->edit(line, cursor, ndlen, nd));
 		else
 			PCB_ACT_IRES(0); /* ignore anything unhandled */
 		goto ret0;
 	}
 
-	PCB_ACT_IRES(opp->exec(line));
+	PCB_ACT_IRES(opp->exec(line, ndlen, nd));
 
 	ret0:;
 	if (line != sline)
