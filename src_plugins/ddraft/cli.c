@@ -81,7 +81,7 @@ struct cli_node_s {
 	int begin, end; /* cursor pos */
 	int invalid;
 
-	pcb_coord_t x, y;
+	pcb_coord_t x, y, dist;
 	pcb_angle_t angle, offs;
 	pcb_cardinal_t id;
 };
@@ -129,6 +129,7 @@ do { \
 } while(0)
 
 #define iscrd(c) ((c == '+') || (c == '-') || (c == '.')  || isdigit(c))
+#define last_type ((i > 0) ? dst[i-1].type : CLI_INVALID)
 
 static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 {
@@ -162,20 +163,30 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				dst[i-1].invalid = (next == s);
 				continue;
 			case '~':
-				next = strchr(s+1, ' ');
-				if (next == NULL)
-					next = s+strlen(s);
-				
+				next = s+1;
 				APPEND(CLI_DIST, next);
-				/* TODO: read the coords */
 				break;
 			default:
 				next = strchr(s, ' ');
 				if (iscrd(*s)) {
-					APPEND(CLI_COORD, next);
-					/* TODO: read the coords */
+					switch(last_type) {
+						case CLI_FROM:
+						case CLI_TO:
+							APPEND(CLI_ABSOLUTE, s);
+						case CLI_RELATIVE:
+						case CLI_ABSOLUTE:
+							APPEND(CLI_COORD, next);
+							dst[i-1].x = 1; /* TODO: read the coords */
+							break;
+						case CLI_DIST:
+							dst[i-1].dist = 1; /* TODO: read the coord */
+							break;
+						default:
+							APPEND(CLI_INVALID, next);
+					}
 				}
-				APPEND(find_type(s, next-s), next);
+				else
+					APPEND(find_type(s, next-s), next);
 		}
 		if ((next == NULL) || (*next == '\0'))
 			break;
@@ -186,6 +197,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 
 #undef APPEND
 #undef iscrd
+#undef last_type
 
 #include "cli_line.c"
 
