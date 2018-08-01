@@ -31,10 +31,10 @@
 
 typedef struct {
 	const char *name;
-	int (*exec)(char *args);                 /* command line entered (finished, accepted) */
-	int (*click)(char *args, int cursor);    /* user clicked on the GUI while editing the command line */
-	int (*tab)(char *args, int cursor);      /* tab completion */
-	int (*edit)(char *args, int cursor);     /* called after editing the line or moving the cursor */
+	int (*exec)(char *line);                 /* command line entered (finished, accepted) */
+	int (*click)(char *line, int cursor);    /* user clicked on the GUI while editing the command line */
+	int (*tab)(char *line, int cursor);      /* tab completion */
+	int (*edit)(char *line, int cursor);     /* called after editing the line or moving the cursor */
 } ddraft_op_t;
 
 typedef enum cli_ntype_e {
@@ -157,27 +157,27 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 
 #undef APPEND
 
-static int line_exec(char *args)
+static int line_exec(char *line)
 {
-	pcb_trace("line e: '%s'\n", args);
+	pcb_trace("line e: '%s'\n", line);
 	return -1;
 }
 
-static int line_click(char *args, int cursor)
+static int line_click(char *line, int cursor)
 {
-	pcb_trace("line c: '%s':%d\n", args, cursor);
+	pcb_trace("line c: '%s':%d\n", line, cursor);
 	return -1;
 }
 
-static int line_tab(char *args, int cursor)
+static int line_tab(char *line, int cursor)
 {
-	pcb_trace("line t: '%s':%d\n", args, cursor);
+	pcb_trace("line t: '%s':%d\n", line, cursor);
 	return -1;
 }
 
-static int line_edit(char *args, int cursor)
+static int line_edit(char *line, int cursor)
 {
-	pcb_trace("line e: '%s':%d\n", args, cursor);
+	pcb_trace("line e: '%s':%d\n", line, cursor);
 	return -1;
 }
 
@@ -243,16 +243,10 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* split op and arguments; recalculate cursor so it's within the arguments */
 	op = line;
 	args = strpbrk(op, " \t");
-	if (args != NULL) {
+	if (args != NULL)
 		oplen = args - op;
-		*args = '\0';
-		args++;
-		cursor -= (args - op);
-	}
-	else {
+	else
 		oplen = len;
-		cursor = 0;
-	}
 
 	/* look up op */
 	opp = find_op(op, oplen);
@@ -265,17 +259,17 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (*cmd == '/') {
 		if (strcmp(cmd, "/click") == 0)
-			PCB_ACT_IRES(opp->click(args, cursor));
+			PCB_ACT_IRES(opp->click(line, cursor));
 		else if (strcmp(cmd, "/tab") == 0)
-			PCB_ACT_IRES(opp->tab(args, cursor));
+			PCB_ACT_IRES(opp->tab(line, cursor));
 		else if (strcmp(cmd, "/edit") == 0)
-			PCB_ACT_IRES(opp->edit(args, cursor));
+			PCB_ACT_IRES(opp->edit(line, cursor));
 		else
 			PCB_ACT_IRES(0); /* ignore anything unhandled */
 		goto ret0;
 	}
 
-	PCB_ACT_IRES(opp->exec(args));
+	PCB_ACT_IRES(opp->exec(line));
 
 	ret0:;
 	if (line != sline)
