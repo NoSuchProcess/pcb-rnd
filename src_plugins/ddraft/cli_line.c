@@ -3,7 +3,7 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 	int n;
 	pcb_trace("line e: '%s'\n", line);
 	for(n = 0; n < argc; n++) {
-		pcb_trace(" [%d] %d\n", argv[n].type);
+		pcb_trace(" [%d] %s/%d\n", n, find_rev_type(argv[n].type), argv[n].type, argv[n].invalid);
 	}
 	return -1;
 }
