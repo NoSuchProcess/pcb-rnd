@@ -44,6 +44,7 @@ typedef enum cli_ntype_e {
 	CLI_FROM,
 	CLI_TO,
 	CLI_ANGLE,
+	CLI_ABSOLUTE,
 	CLI_RELATIVE,
 	CLI_PERP,
 	CLI_PARAL,
@@ -63,6 +64,7 @@ static const cli_ntname_t cli_tnames[] = {
 	{"from",          CLI_FROM},
 	{"to",            CLI_TO},
 	{"angle",         CLI_ANGLE},
+	{"absolute",      CLI_ABSOLUTE},
 	{"relative",      CLI_RELATIVE},
 	{"perpendicular", CLI_PERP},
 	{"parallel",      CLI_PARAL},
@@ -126,6 +128,11 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 			case '@':
 				next = s+1;
 				APPEND(CLI_RELATIVE, next);
+				/* TODO: read the coords */
+				continue;
+			case '*':
+				next = s+1;
+				APPEND(CLI_ABSOLUTE, next);
 				/* TODO: read the coords */
 				continue;
 			case '<':
