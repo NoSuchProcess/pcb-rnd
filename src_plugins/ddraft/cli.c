@@ -106,6 +106,17 @@ static const cli_ntype_t find_type(const char *type, int typelen)
 	return found->type;
 }
 
+static const char *find_rev_type(cli_ntype_t type)
+{
+	const cli_ntname_t *p;
+
+	for(p = cli_tnames; p->name != NULL; p++)
+		if (p->type == type)
+			return p->name;
+
+	return "INVALID";
+}
+
 #define APPEND(type_, end_) \
 do { \
 	memset(&dst[i], 0, sizeof(cli_node_t)); \
@@ -116,6 +127,8 @@ do { \
 	if (i >= dstlen) \
 		return i; \
 } while(0)
+
+#define iscrd(c) ((c == '+') || (c == '-') || (c == '.')  || isdigit(c))
 
 static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 {
@@ -128,12 +141,10 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 			case '@':
 				next = s+1;
 				APPEND(CLI_RELATIVE, next);
-				/* TODO: read the coords */
 				continue;
 			case '*':
 				next = s+1;
 				APPEND(CLI_ABSOLUTE, next);
-				/* TODO: read the coords */
 				continue;
 			case '<':
 				dst[i].angle = strtod(s+1, &next);
@@ -151,20 +162,30 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				dst[i-1].invalid = (next == s);
 				continue;
 			case '~':
-				next = s+1;
+				next = strchr(s+1, ' ');
+				if (next == NULL)
+					next = s+strlen(s);
+				
 				APPEND(CLI_DIST, next);
 				/* TODO: read the coords */
 				break;
 			default:
 				next = strchr(s, ' ');
+				if (iscrd(*s)) {
+					APPEND(CLI_COORD, next);
+					/* TODO: read the coords */
+				}
 				APPEND(find_type(s, next-s), next);
 		}
+		if (*next == '\0')
+			break;
 	}
 
 	return i;
 }
 
 #undef APPEND
+#undef iscrd
 
 #include "cli_line.c"
 
