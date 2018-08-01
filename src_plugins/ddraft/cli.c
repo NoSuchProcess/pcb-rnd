@@ -243,6 +243,13 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		cline = pcb_hid_command_entry(NULL, &cursor);
 	if (cline == NULL)
 		cline = "";
+
+	while(isspace(*cline)) cline++;
+	if ((*cline == '\n') || (*cline == '#') || (*cline == '\0')) { /* empty or comment */
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
 	len = strlen(cline);
 	if (len >= sizeof(cline))
 		line = malloc(len+1);
@@ -257,11 +264,6 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		oplen = args - op;
 	else
 		oplen = len;
-
-	if (oplen < 1) { /* empty command is a nop */
-		PCB_ACT_IRES(0);
-		goto ret0;
-	}
 
 	/* look up op */
 	opp = find_op(op, oplen);
