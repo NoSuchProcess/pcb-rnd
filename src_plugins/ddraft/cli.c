@@ -230,6 +230,11 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		oplen = len;
 
+	if (oplen < 1) { /* empty command is a nop */
+		PCB_ACT_IRES(0);
+		goto ret0;
+	}
+
 	/* look up op */
 	opp = find_op(op, oplen);
 	if (opp == NULL) {
