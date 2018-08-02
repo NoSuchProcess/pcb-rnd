@@ -21,7 +21,7 @@ static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, in
 	}
 	n++;
 	box->X2 = box->X1;
-	box->Y2 = box->Y2;
+	box->Y2 = box->Y1;
 	n = cli_apply_coord(argc, argv, n, &box->X2, &box->Y2);
 	if (n < 0) {
 		if (verbose)
