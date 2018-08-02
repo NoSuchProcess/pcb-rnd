@@ -28,6 +28,7 @@
 
 #include "hid_inlines.h"
 #include "compat_misc.h"
+#include "conf_core.h"
 
 typedef struct cli_node_s cli_node_t;
 
@@ -180,15 +181,15 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 							}
 							memcpy(tmp, s, sep-s);
 							tmp[sep-s] = '\0';
-							dst[i-1].x = pcb_get_value(tmp, NULL, NULL, &succ);
+							dst[i-1].x = pcb_get_value_ex(tmp, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
-							dst[i-1].y = pcb_get_value(sep+1, NULL, NULL, &succ);
+							dst[i-1].y = pcb_get_value_ex(sep+1, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
 							break;
 						case CLI_DIST:
-							dst[i-1].dist = pcb_get_value(s, NULL, NULL, &succ);
+							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							dst[i-1].invalid = !succ;
 							break;
 						default:
