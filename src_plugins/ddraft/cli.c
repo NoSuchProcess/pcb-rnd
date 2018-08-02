@@ -175,6 +175,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 					next = s+strlen(s);
 				if (iscrd(*s)) {
 					switch(last_type) {
+						case CLI_INVALID:
 						case CLI_FROM:
 						case CLI_TO:
 							APPEND(CLI_ABSOLUTE, s);
