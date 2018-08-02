@@ -42,7 +42,7 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 	pcb_box_t box;
 
 	pcb_trace("line e: '%s'\n", line);
-	cli_print_args(argc, argc);
+	cli_print_args(argc, argv);
 
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 1);
