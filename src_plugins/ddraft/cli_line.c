@@ -67,7 +67,8 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 	int res;
 	pcb_box_t box;
 
-	pcb_tool_select_by_id(PCB_MODE_LINE);
+	if (pcb_tool_next_id != PCB_MODE_LINE)
+		pcb_tool_select_by_id(PCB_MODE_LINE);
 
 	pcb_trace("line e: '%s':%d\n", line, cursor);
 	memset(&box, 0, sizeof(box));
