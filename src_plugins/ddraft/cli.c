@@ -169,6 +169,8 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				break;
 			default:
 				next = strchr(s, ' ');
+				if (next == NULL)
+					next = s+strlen(s);
 				if (iscrd(*s)) {
 					switch(last_type) {
 						case CLI_FROM:
@@ -187,7 +189,15 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 							dst[i-1].x = pcb_get_value_ex(tmp, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
-							dst[i-1].y = pcb_get_value_ex(sep+1, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
+
+							sep++;
+							if ((next - sep) > sizeof(tmp)-2) {
+								dst[i-1].invalid = 1;
+								break;
+							}
+							memcpy(tmp, sep, next-sep);
+							tmp[next-sep] = '\0';
+							dst[i-1].y = pcb_get_value_ex(tmp, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
 							break;
