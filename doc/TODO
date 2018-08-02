@@ -252,7 +252,6 @@ FEATURES
 - feature: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - advanced grid settings:
 	- make sure it is possible to edit the lists in preferences
-- libstroke: zoom
 - improve locking:
 	- consider a move-only lock
 	- when thermal and some other operations are applied on a locked element, indicate it
