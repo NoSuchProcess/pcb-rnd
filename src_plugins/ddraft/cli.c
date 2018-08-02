@@ -133,8 +133,10 @@ do { \
 
 static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 {
-	char *s = strchr(line, ' '), *next; /* skip the instruction */
+	char tmp[128];
+	char *sep, *s = strchr(line, ' '), *next; /* skip the instruction */
 	int i;
+	pcb_bool succ;
 
 	for(i = 0;; s = next) {
 		while(isspace(*s)) s++;
@@ -176,7 +178,19 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 						case CLI_RELATIVE:
 						case CLI_ABSOLUTE:
 							APPEND(CLI_COORD, next);
-							dst[i-1].x = 1; /* TODO: read the coords */
+							sep = strchr(s, ',');
+							if ((sep == 0) || ((sep - s) > sizeof(tmp)-2)) {
+								dst[i-1].invalid = 1;
+								break;
+							}
+							memcpy(tmp, s, sep-s);
+							tmp[sep-s] = '\0';
+							dst[i-1].x = pcb_get_value(tmp, NULL, NULL, &succ);
+							if (!succ)
+								dst[i-1].invalid = 1;
+							dst[i-1].y = pcb_get_value(sep+1, NULL, NULL, &succ);
+							if (!succ)
+								dst[i-1].invalid = 1;
 							break;
 						case CLI_DIST:
 							dst[i-1].dist = 1; /* TODO: read the coord */
