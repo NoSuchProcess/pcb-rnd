@@ -159,11 +159,6 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				dst[i-1].offs = strtod(s+1, &next);
 				dst[i-1].invalid = (next == s);
 				continue;
-			case '#':
-				dst[i].angle = strtol(s+1, &next, 10);
-				APPEND(CLI_ANGLE, next);
-				dst[i-1].invalid = (next == s);
-				continue;
 			case '~':
 				next = s+1;
 				APPEND(CLI_DIST, next);
