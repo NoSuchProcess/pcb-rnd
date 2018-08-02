@@ -139,6 +139,9 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 	int i;
 	pcb_bool succ;
 
+	if (s == NULL)
+		return 0;
+
 	for(i = 0;; s = next) {
 		while(isspace(*s)) s++;
 		switch(*s) {
