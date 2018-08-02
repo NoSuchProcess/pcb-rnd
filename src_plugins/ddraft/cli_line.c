@@ -46,7 +46,13 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 1);
-	pcb_trace("line_exec: %mm;%mm -> %mm;%mm\n", box.X1, box.Y1, box.X2, box.Y2);
+	if (res == 0) {
+		pcb_trace("line_exec: %mm;%mm -> %mm;%mm\n", box.X1, box.Y1, box.X2, box.Y2);
+		pcb_line_new(CURRENT, box.X1, box.Y1, box.X2, box.Y2,
+			conf_core.design.line_thickness, 2 * conf_core.design.clearance,
+			pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0));
+		pcb_route_reset(&pcb_crosshair.Route);
+	}
 	return res;
 }
 
