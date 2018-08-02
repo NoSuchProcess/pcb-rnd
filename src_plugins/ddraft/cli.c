@@ -199,6 +199,84 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 #undef iscrd
 #undef last_type
 
+int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_coord_t *oy)
+{
+	int n, relative = 0, have_angle = 0, have_dist = 0;
+	double angle = 0, dist = 0, x = *ox, y = *oy;
+
+	for(n = start; n < argc; n++) {
+		switch(argv[n].type) {
+			case CLI_ABSOLUTE:
+				relative = 0;
+				break;
+			case CLI_RELATIVE:
+				relative = 1;
+				break;
+
+			case CLI_ANGLE:
+				have_angle = 1;
+				if (relative) {
+					angle += argv[n].angle;
+					relative = 0;
+				}
+				else
+					angle = argv[n].angle;
+				goto apply;
+
+			case CLI_DIST:
+				have_dist = 1;
+				if (relative) {
+					dist += argv[n].dist;
+					relative = 0;
+				}
+				else
+					dist = argv[n].dist;
+				goto apply;
+
+			case CLI_COORD:
+				if (relative) {
+					x += argv[n].x;
+					y += argv[n].y;
+					relative = 0;
+				}
+				else {
+					x = argv[n].x;
+					y = argv[n].y;
+				}
+				break;
+
+			case CLI_PERP:
+				pcb_message(PCB_MSG_ERROR, "perp not yet implemented\n");
+				return -1;
+			case CLI_PARAL:
+				pcb_message(PCB_MSG_ERROR, "paral not yet implemented\n");
+				return -1;
+			case CLI_TANGENT:
+				pcb_message(PCB_MSG_ERROR, "tangent not yet implemented\n");
+				return -1;
+
+			default:
+				goto over;
+			apply:;
+				if (have_angle && have_dist) {
+					x += cos(angle / PCB_RAD_TO_DEG) * dist;
+					y += sin(angle / PCB_RAD_TO_DEG) * dist;
+					have_angle = have_dist = 0;
+				}
+				break;
+		}
+		if (argv[n].invalid)
+			return -1;
+	}
+
+	over:;
+		if (have_angle || have_dist) /* could not apply */
+			return -1;
+	*ox = pcb_round(x);
+	*oy = pcb_round(y);
+	return n;
+}
+
 #include "cli_line.c"
 
 static const ddraft_op_t ddraft_ops[] = {
