@@ -193,7 +193,6 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 								dst[i-1].invalid = 1;
 							break;
 						case CLI_DIST:
-							APPEND(CLI_DIST, next);
 							dst[i-1].dist = pcb_get_value(s, NULL, NULL, &succ);
 							dst[i-1].invalid = !succ;
 							break;
