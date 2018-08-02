@@ -180,7 +180,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 						case CLI_ABSOLUTE:
 							APPEND(CLI_COORD, next);
 							sep = strchr(s, ',');
-							if ((sep == 0) || ((sep - s) > sizeof(tmp)-2)) {
+							if ((sep == NULL) || ((sep - s) > sizeof(tmp)-2)) {
 								dst[i-1].invalid = 1;
 								break;
 							}
