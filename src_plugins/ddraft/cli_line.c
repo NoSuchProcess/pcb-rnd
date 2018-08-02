@@ -38,14 +38,11 @@ static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, in
 
 static int line_exec(char *line, int argc, cli_node_t *argv)
 {
-	int n, res;
+	int res;
 	pcb_box_t box;
 
 	pcb_trace("line e: '%s'\n", line);
-
-	for(n = 0; n < argc; n++) {
-		pcb_trace(" [%d] %s/%d\n", n, find_rev_type(argv[n].type), argv[n].type, argv[n].invalid);
-	}
+	cli_print_args(argc, argc);
 
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 1);

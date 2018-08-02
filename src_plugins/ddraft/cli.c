@@ -291,6 +291,14 @@ int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_
 	return n;
 }
 
+static void cli_print_args(int argc, cli_node_t *argv)
+{
+	int n;
+	for(n = 0; n < argc; n++) {
+		pcb_trace(" [%d] %s/%d\n", n, find_rev_type(argv[n].type), argv[n].type, argv[n].invalid);
+	}
+}
+
 #include "cli_line.c"
 
 static const ddraft_op_t ddraft_ops[] = {
