@@ -295,7 +295,19 @@ static void cli_print_args(int argc, cli_node_t *argv)
 {
 	int n;
 	for(n = 0; n < argc; n++) {
-		pcb_trace(" [%d] %s/%d\n", n, find_rev_type(argv[n].type), argv[n].type, argv[n].invalid);
+		pcb_trace(" [%d] %s/%d", n, find_rev_type(argv[n].type), argv[n].type);
+		if (!argv[n].invalid) {
+			switch(argv[n].type) {
+				case CLI_COORD: pcb_trace(": %$mm,%$mm", argv[n].x, argv[n].y); break;
+				case CLI_ANGLE: pcb_trace(": %f", argv[n].angle); break;
+				case CLI_DIST: pcb_trace(": %$mm", argv[n].dist); break;
+				case CLI_OFFS: pcb_trace(": %f", argv[n].offs); break;
+				default:;
+			}
+			pcb_trace("\n");
+		}
+		else
+			pcb_trace(": INVALID\n");
 	}
 }
 
