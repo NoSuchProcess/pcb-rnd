@@ -144,6 +144,8 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 
 	for(i = 0;; s = next) {
 		while(isspace(*s)) s++;
+		if (*s == '\0')
+			break;
 		switch(*s) {
 			case '@':
 				next = s+1;
