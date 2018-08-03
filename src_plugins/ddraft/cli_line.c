@@ -50,7 +50,6 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 		pcb_line_new(CURRENT, box.X1, box.Y1, box.X2, box.Y2,
 			conf_core.design.line_thickness, 2 * conf_core.design.clearance,
 			pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0));
-		pcb_route_reset(&pcb_crosshair.Route);
 	}
 	return res;
 }
