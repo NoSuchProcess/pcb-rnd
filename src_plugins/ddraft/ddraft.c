@@ -178,6 +178,8 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+#include "constraint_gui.c"
+
 #define load_arr(arr, ctr, msg, fgw_type_, fgw_val_) \
 do { \
 	int n; \
@@ -197,10 +199,14 @@ static const char pcb_acts_constraint[] = "constraint(type, off)\nconstraint(typ
 static const char pcb_acth_constraint[] = "Configure or remove a drawing constraint";
 static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char *stype;
+	char *stype = NULL;
 	int type;
 
-	PCB_ACT_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
+	if (stype == NULL) {
+		PCB_ACT_IRES(constraint_gui());
+		return 0;
+	}
 	type = ddraft_fields_sphash(stype);
 	switch(type) {
 		case ddraft_fields_line_angle:
