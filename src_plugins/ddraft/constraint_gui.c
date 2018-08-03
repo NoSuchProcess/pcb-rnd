@@ -31,6 +31,13 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+
+	/* widget IDs */
+	int line_angle, move_angle;
+	int line_length, move_length;
+	int line_angle_mod, move_angle_mod;
+	int line_length_mod, move_length_mod;
+
 } cnstgui_ctx_t;
 
 cnstgui_ctx_t cnstgui_ctx;
@@ -40,6 +47,50 @@ static void cnstgui_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	cnstgui_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(cnstgui_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+
+#define c2g_array(name, fmt) \
+do { \
+	int n, l, len = sizeof(buff)-1; \
+	char *end = buff; \
+	*end = 0; \
+	for(n = 0; n < cons.name ## _len; n++) { \
+		if (n > 0) { \
+			*end++ = ' '; \
+			len--; \
+		} \
+		l = pcb_snprintf(end, len, fmt, cons.name[n]); \
+		len -= l; \
+		end += l; \
+	} \
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, str_value, pcb_strdup(buff)); \
+} while(0)
+
+#define c2g_float(name) \
+do { \
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, real_value, cons.name); \
+} while(0)
+
+#define c2g_coord(name) \
+do { \
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, coord_value, cons.name); \
+} while(0)
+
+/* copy all const fields into the GUI struct */
+static void cons_changed(void)
+{
+	char buff[1024];
+
+	c2g_array(line_angle, "%f");
+	c2g_float(line_angle_mod);
+	c2g_array(line_length, "%.08$$mH");
+	c2g_coord(line_length_mod);
+
+	c2g_array(move_angle, "%f");
+	c2g_float(move_angle_mod);
+	c2g_array(move_length, "%.08$$mH");
+	c2g_coord(move_length_mod);
 }
 
 int constraint_gui(void)
@@ -59,18 +110,26 @@ int constraint_gui(void)
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
+					cnstgui_ctx.line_angle = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Angle modulo:");
 				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+					cnstgui_ctx.line_angle_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
+					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
-				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengthd:");
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengths:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
+					cnstgui_ctx.line_length = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Length modulo:");
-				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+				PCB_DAD_COORD(cnstgui_ctx.dlg, "");
+					cnstgui_ctx.line_length_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
+					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
@@ -84,18 +143,26 @@ int constraint_gui(void)
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
+					cnstgui_ctx.move_angle = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Angle modulo:");
 				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+					cnstgui_ctx.move_angle_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
+					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
-				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengthd:");
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengths:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
+					cnstgui_ctx.move_length = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Length modulo:");
-				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+				PCB_DAD_COORD(cnstgui_ctx.dlg, "");
+					cnstgui_ctx.move_length_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
+					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
@@ -108,6 +175,8 @@ int constraint_gui(void)
 	cnstgui_ctx.active = 1;
 
 	PCB_DAD_NEW(cnstgui_ctx.dlg, "Drawing constraints", "constraints", &cnstgui_ctx, pcb_false, cnstgui_close_cb);
+
+	cons_changed();
 
 	return 0;
 }
