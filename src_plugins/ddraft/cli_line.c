@@ -58,7 +58,8 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	int argn = cli_cursor_arg(argc, argv, cursor);
-	int replace = 0, by;
+	int replace = 0, by, nto, res;
+	pcb_coord_t ox, oy;
 	char buff[CLI_MAX_INS_LEN];
 
 	pcb_trace("line c: '%s':%d (argn=%d)\n", line, cursor, argn);
@@ -79,6 +80,10 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	*buff = '\0';
 	by = argn;
 
+	for(nto = 0; nto < argc; nto++)
+		if (argv[nto].type == CLI_TO)
+			break;
+
 	retry:;
 
 	switch(argv[by].type) {
@@ -97,7 +102,23 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			goto maybe_replace_after;
 			break;
 		case CLI_RELATIVE:
-			pcb_trace("rel");
+			ox = oy = 0;
+			res = 0;
+			if (argv[res].type == CLI_FROM)
+				res++;
+			if (argn < nto) {
+				res = cli_apply_coord(argv, res, argn, &ox, &oy);
+			}
+			else {
+				res = cli_apply_coord(argv, res, nto, &ox, &oy); /* 'to' may be relative to 'from', so eval 'from' first */
+				res |= cli_apply_coord(argv, nto+1, argn, &ox, &oy);
+			}
+			if (res < 0) {
+				pcb_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");
+				return 0;
+			}
+			pcb_trace("rel from %$mm,%$mm", ox, oy);
+			pcb_snprintf(buff, sizeof(buff), "%$$mm,%$$mm", pcb_crosshair.X - ox, pcb_crosshair.Y - oy);
 			maybe_replace_after:;
 			if ((by+1 < argc) && (argv[by+1].type == CLI_COORD)) {
 				argn = by+1;
@@ -118,12 +139,10 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			break;
 	}
 
-#if 0
 	if (*buff == '\0') {
 		pcb_trace("nope...\n");
 		return 0;
 	}
-#endif
 
 	if (replace) {
 		pcb_trace(" replace %d: '%s'\n", argn, buff);
