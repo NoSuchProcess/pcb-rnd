@@ -175,7 +175,6 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				if (next == NULL)
 					next = s+strlen(s);
 				if (iscrd(*s)) {
-printf("iscrd: '%s' lst=%d\n", s, last_type);
 					switch(last_type) {
 						case CLI_INVALID:
 						case CLI_FROM:
@@ -348,11 +347,9 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 				c[3] = pcb_round(y);
 			}
 			angle = atan2(y - ly, x - lx) * PCB_RAD_TO_DEG;
-			printf("angle=%f\n", angle);
 			lx = x;
 			ly = y;
 			len++;
-
 		}
 	}
 
