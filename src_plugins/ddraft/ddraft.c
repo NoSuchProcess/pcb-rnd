@@ -372,7 +372,7 @@ void ddraft_tool_draw_attached(void)
 		pcb_gui->set_color(pcb_crosshair.GC, CURRENT->meta.real.color);
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y,
-			conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
+			conf_core.design.line_thickness, 0);
 	}
 }
 
