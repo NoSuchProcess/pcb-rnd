@@ -51,6 +51,7 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 			conf_core.design.line_thickness, 2 * conf_core.design.clearance,
 			pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0));
 	}
+	pcb_ddraft_attached_reset();
 	return res;
 }
 
