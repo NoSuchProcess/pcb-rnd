@@ -55,6 +55,34 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 	return res;
 }
 
+static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
+{
+	int res;
+	pcb_box_t box;
+
+	if (pcb_tool_next_id != PCB_MODE_LINE)
+		pcb_tool_select_by_id(PCB_MODE_LINE);
+
+	pcb_trace("line e: '%s':%d\n", line, cursor);
+	memset(&box, 0, sizeof(box));
+	res = line_parse(line, argc, argv, &box, 0);
+	if (res == 0) {
+		pcb_route_object_t *line;
+		if (pcb_crosshair.Route.size != 1)
+			pcb_route_resize(&pcb_crosshair.Route, 1);
+		pcb_crosshair.Route.thickness = 1;
+		line = &pcb_crosshair.Route.objects[0];
+		line->type = PCB_OBJ_LINE;
+		line->point1.X = box.X1;
+		line->point1.Y = box.Y1;
+		line->point2.X = box.X2;
+		line->point2.Y = box.Y2;
+		line->layer = INDEXOFCURRENT;
+		pcb_gui->invalidate_all();
+	}
+	return res;
+}
+
 static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	int argn = cli_cursor_arg(argc, argv, cursor);
@@ -168,30 +196,3 @@ static int line_tab(char *line, int cursor, int argc, cli_node_t *argv)
 	return -1;
 }
 
-static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
-{
-	int res;
-	pcb_box_t box;
-
-	if (pcb_tool_next_id != PCB_MODE_LINE)
-		pcb_tool_select_by_id(PCB_MODE_LINE);
-
-	pcb_trace("line e: '%s':%d\n", line, cursor);
-	memset(&box, 0, sizeof(box));
-	res = line_parse(line, argc, argv, &box, 0);
-	if (res == 0) {
-		pcb_route_object_t *line;
-		if (pcb_crosshair.Route.size != 1)
-			pcb_route_resize(&pcb_crosshair.Route, 1);
-		pcb_crosshair.Route.thickness = 1;
-		line = &pcb_crosshair.Route.objects[0];
-		line->type = PCB_OBJ_LINE;
-		line->point1.X = box.X1;
-		line->point1.Y = box.Y1;
-		line->point2.X = box.X2;
-		line->point2.Y = box.Y2;
-		line->layer = INDEXOFCURRENT;
-		pcb_gui->invalidate_all();
-	}
-	return res;
-}
