@@ -8,7 +8,7 @@ static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, in
 		pcb_message(PCB_MSG_ERROR, "Incremental line drawing is not yet supported\n");
 		return -1;
 	}
-	n = cli_apply_coord(argc, argv, n, &box->X1, &box->Y1);
+	n = cli_apply_coord(argv, n, argc, &box->X1, &box->Y1);
 	if (n < 0) {
 		if (verbose)
 			pcb_message(PCB_MSG_ERROR, "Invalid 'from' coord\n");
@@ -22,7 +22,7 @@ static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, in
 	n++;
 	box->X2 = box->X1;
 	box->Y2 = box->Y1;
-	n = cli_apply_coord(argc, argv, n, &box->X2, &box->Y2);
+	n = cli_apply_coord(argv, n, argc, &box->X2, &box->Y2);
 	if (n < 0) {
 		if (verbose)
 			pcb_message(PCB_MSG_ERROR, "Invalid 'to' coord\n");

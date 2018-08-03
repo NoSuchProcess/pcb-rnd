@@ -257,12 +257,12 @@ static int cli_str_insert(char *str, int from, char *ins, int enforce_space_befo
 	return from + inslen + extra;
 }
 
-static int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_coord_t *oy)
+static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox, pcb_coord_t *oy)
 {
 	int n, relative = 0, have_angle = 0, have_dist = 0;
 	double angle = 0, dist = 0, x = *ox, y = *oy;
 
-	for(n = start; n < argc; n++) {
+	for(n = start; n < end; n++) {
 		switch(argv[n].type) {
 			case CLI_ABSOLUTE:
 				relative = 0;
