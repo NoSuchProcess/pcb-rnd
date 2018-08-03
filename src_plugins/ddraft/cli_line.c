@@ -59,7 +59,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	int argn = cli_cursor_arg(argc, argv, cursor);
 	int replace = 0, by;
-	char buff[128];
+	char buff[CLI_MAX_INS_LEN];
 
 	pcb_trace("line c: '%s':%d (argn=%d)\n", line, cursor, argn);
 	cli_print_args(argc, argv);
@@ -124,10 +124,18 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	}
 #endif
 
-	if (replace)
+	if (replace) {
 		pcb_trace(" replace %d: '%s'\n", argn, buff);
-	else
+		cli_str_remove(line, argv[argn].begin, argv[argn].end);
+		cli_str_insert(line, argv[argn].begin, buff);
+		
+	}
+	else {
 		pcb_trace(" insert-after %d: '%s'\n", argn, buff);
+		cli_str_insert(line, argv[argn].end, buff);
+	}
+
+	printf("line='%s'\n", line);
 
 	return 0;
 }
