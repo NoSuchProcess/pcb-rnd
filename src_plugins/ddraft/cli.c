@@ -30,6 +30,8 @@
 #include "compat_misc.h"
 #include "conf_core.h"
 
+#define CLI_MAX_INS_LEN 128
+
 typedef struct cli_node_s cli_node_t;
 
 typedef struct {
@@ -235,6 +237,21 @@ static int cli_cursor_arg(int argc, cli_node_t *argv, int cursor)
 	return -1;
 }
 
+static void cli_str_remove(char *str, int from, int to)
+{
+	if (from >= to)
+		return;
+	memmove(str+from, str+to, strlen(str+to)+1);
+}
+
+
+static void cli_str_insert(char *str, int from, char *ins)
+{
+	int inslen = strlen(ins), remain = strlen(str+from);
+	memmove(str+from+inslen, str+from, remain+1);
+	memcpy(str+from, ins, inslen);
+}
+
 static int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_coord_t *oy)
 {
 	int n, relative = 0, have_angle = 0, have_dist = 0;
@@ -397,8 +414,8 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	len = strlen(cline);
-	if (len >= sizeof(cline))
-		line = malloc(len+1);
+	if (len >= sizeof(cline) - CLI_MAX_INS_LEN)
+		line = malloc(len + 1 + CLI_MAX_INS_LEN);
 	else
 		line = sline;
 	memcpy(line, cline, len+1);
