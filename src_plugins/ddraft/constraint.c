@@ -46,7 +46,7 @@ static int find_best_angle(double *out_ang, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	double diff, ang, best_diff, target_ang;
 	int n, best;
 
-	ang = atan2(-(y2 - y1), x2 - x1) * PCB_RAD_TO_DEG;
+	ang = atan2(y2 - y1, x2 - x1) * PCB_RAD_TO_DEG;
 
 	if (anglen > 0) {
 		/* find the best matching constraint angle */
@@ -138,7 +138,7 @@ static void cnst_line_anglen(ddraft_cnst_t *cn)
 	dy = target_len * sin(target_ang);
 
 	line->point2.X = line->point1.X + dx;
-	line->point2.Y = line->point1.Y - dy;
+	line->point2.Y = line->point1.Y + dy;
 }
 
 static void cnst_line2(ddraft_cnst_t *cn)
@@ -168,7 +168,7 @@ static void cnst_move(ddraft_cnst_t *cn)
 	dy = target_len * sin(target_ang);
 
 	pcb_crosshair.AttachedObject.tx = pcb_crosshair.AttachedObject.X + dx;
-	pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y - dy;
+	pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y + dy;
 }
 
 static void cnst_enforce(void *user_data, int argc, pcb_event_arg_t argv[])
