@@ -245,12 +245,16 @@ static void cli_str_remove(char *str, int from, int to)
 }
 
 
-static int cli_str_insert(char *str, int from, char *ins)
+static int cli_str_insert(char *str, int from, char *ins, int enforce_space_before)
 {
-	int inslen = strlen(ins), remain = strlen(str+from);
-	memmove(str+from+inslen, str+from, remain+1);
-	memcpy(str+from, ins, inslen);
-	return from + inslen;
+	int inslen = strlen(ins), remain = strlen(str+from), extra = 0;
+	if (enforce_space_before && (str[from-1] != ' '))
+		extra=1;
+	memmove(str+from+inslen+extra, str+from, remain+1);
+	if (extra)
+		str[from] = ' ';
+	memcpy(str+from+extra, ins, inslen);
+	return from + inslen + extra;
 }
 
 static int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_coord_t *oy)

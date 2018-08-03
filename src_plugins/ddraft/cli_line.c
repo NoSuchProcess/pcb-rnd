@@ -71,7 +71,8 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			/* empty arg list */
 			pcb_snprintf(buff, sizeof(buff), " from %$$mm,%$$mm", pcb_crosshair.X, pcb_crosshair.Y);
 			printf("append: '%s'\n", buff);
-			return 0;
+			cursor = cli_str_insert(line, strlen(line), buff, 1);
+			goto update;
 		}
 	}
 
@@ -127,15 +128,16 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	if (replace) {
 		pcb_trace(" replace %d: '%s'\n", argn, buff);
 		cli_str_remove(line, argv[argn].begin, argv[argn].end);
-		cursor = cli_str_insert(line, argv[argn].begin, buff);
+		cursor = cli_str_insert(line, argv[argn].begin, buff, 1);
 		
 	}
 	else {
 		pcb_trace(" insert-after %d: '%s'\n", argn, buff);
-		cursor = cli_str_insert(line, argv[argn].end, buff);
+		cursor = cli_str_insert(line, argv[argn].end, buff, 1);
 	}
 
 pcb_trace("line='%s'\n", line);
+	update:;
 	pcb_hid_command_entry(line, &cursor);
 
 	return 0;
