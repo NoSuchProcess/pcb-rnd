@@ -94,7 +94,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		argn = argc - 1;
 		if (argn < 0) {
 			/* empty arg list */
-			pcb_snprintf(buff, sizeof(buff), " from %$$mm,%$$mm", pcb_crosshair.X, pcb_crosshair.Y);
+			pcb_snprintf(buff, sizeof(buff), " from %.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
 			printf("append: '%s'\n", buff);
 			cursor = cli_str_insert(line, strlen(line), buff, 1);
 			goto update;
@@ -122,7 +122,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		case CLI_FROM:
 		case CLI_TO:
 			pcb_trace("abs");
-			pcb_snprintf(buff, sizeof(buff), "%$$mm,%$$mm", pcb_crosshair.X, pcb_crosshair.Y);
+			pcb_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
 			goto maybe_replace_after;
 			break;
 		case CLI_RELATIVE:
@@ -142,7 +142,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 				return 0;
 			}
 			pcb_trace("rel from %$mm,%$mm", ox, oy);
-			pcb_snprintf(buff, sizeof(buff), "%$$mm,%$$mm", pcb_crosshair.X - ox, pcb_crosshair.Y - oy);
+			pcb_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X - ox, pcb_crosshair.Y - oy);
 			maybe_replace_after:;
 			if ((by+1 < argc) && (argv[by+1].type == CLI_COORD)) {
 				argn = by+1;
