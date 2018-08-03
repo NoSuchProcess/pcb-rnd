@@ -26,7 +26,88 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "hid_dad.h"
+
+typedef struct{
+	PCB_DAD_DECL_NOINIT(dlg)
+	int active; /* already open - allow only one instance */
+} cnstgui_ctx_t;
+
+cnstgui_ctx_t cnstgui_ctx;
+
+static void cnstgui_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	cnstgui_ctx_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(cnstgui_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
 int constraint_gui(void)
 {
+	const char *tab_names[] = {"line", "move", NULL};
+	if (cnstgui_ctx.active)
+		return 0; /* do not open another */
+
+	PCB_DAD_BEGIN_TABBED(cnstgui_ctx.dlg, tab_names);
+
+		/* line */
+		PCB_DAD_BEGIN_VBOX(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "All direction lines (shall be on):");
+				PCB_DAD_BOOL(cnstgui_ctx.dlg, "");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");
+				PCB_DAD_STRING(cnstgui_ctx.dlg);
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Angle modulo:");
+				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengthd:");
+				PCB_DAD_STRING(cnstgui_ctx.dlg);
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Length modulo:");
+				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
+				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "perpendicular to");
+				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "parallel with");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+		PCB_DAD_END(cnstgui_ctx.dlg);
+
+		/* move */
+		PCB_DAD_BEGIN_VBOX(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");
+				PCB_DAD_STRING(cnstgui_ctx.dlg);
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Angle modulo:");
+				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengthd:");
+				PCB_DAD_STRING(cnstgui_ctx.dlg);
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Length modulo:");
+				PCB_DAD_REAL(cnstgui_ctx.dlg, "");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
+			PCB_DAD_END(cnstgui_ctx.dlg);
+		PCB_DAD_END(cnstgui_ctx.dlg);
+
+	PCB_DAD_END(cnstgui_ctx.dlg);
+
+	/* set up the context */
+	cnstgui_ctx.active = 1;
+
+	PCB_DAD_NEW(cnstgui_ctx.dlg, "Drawing constraints", "constraints", &cnstgui_ctx, pcb_false, cnstgui_close_cb);
+
 	return 0;
 }
