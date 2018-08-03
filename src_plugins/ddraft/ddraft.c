@@ -49,6 +49,7 @@
 #include "fields_sphash.h"
 #include "draw_wireframe.h"
 #include "conf_core.h"
+#include "vtc0.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
 static int pcb_ddraft_tool;
@@ -56,9 +57,17 @@ static int pcb_ddraft_tool;
 typedef struct {
 	pcb_line_t line;
 	int line_valid;
+
+	vtc0_t annot_lines; /* each pair of coord is a line */
 } pcb_ddraft_attached_t;
 
 pcb_ddraft_attached_t pcb_ddraft_attached;
+
+void pcb_ddraft_attached_reset(void)
+{
+	pcb_ddraft_attached.line_valid = 0;
+	vtc0_truncate(&pcb_ddraft_attached.annot_lines, 0);
+}
 
 #define EDGE_TYPES (PCB_OBJ_LINE | PCB_OBJ_ARC)
 #define CUT_TYPES (PCB_OBJ_LINE | PCB_OBJ_ARC)

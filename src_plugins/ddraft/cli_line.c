@@ -60,7 +60,7 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 	int res;
 	pcb_box_t box;
 
-	memset(&pcb_ddraft_attached, 0, sizeof(pcb_ddraft_attached));
+	pcb_ddraft_attached_reset();
 
 	if (pcb_tool_next_id != pcb_ddraft_tool)
 		pcb_tool_select_by_id(pcb_ddraft_tool);
