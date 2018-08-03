@@ -60,24 +60,20 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 	int res;
 	pcb_box_t box;
 
-	if (pcb_tool_next_id != PCB_MODE_LINE)
-		pcb_tool_select_by_id(PCB_MODE_LINE);
+	memset(&pcb_ddraft_attached, 0, sizeof(pcb_ddraft_attached));
+
+	if (pcb_tool_next_id != pcb_ddraft_tool)
+		pcb_tool_select_by_id(pcb_ddraft_tool);
 
 	pcb_trace("line e: '%s':%d\n", line, cursor);
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 0);
 	if (res == 0) {
-		pcb_route_object_t *line;
-		if (pcb_crosshair.Route.size != 1)
-			pcb_route_resize(&pcb_crosshair.Route, 1);
-		pcb_crosshair.Route.thickness = 1;
-		line = &pcb_crosshair.Route.objects[0];
-		line->type = PCB_OBJ_LINE;
-		line->point1.X = box.X1;
-		line->point1.Y = box.Y1;
-		line->point2.X = box.X2;
-		line->point2.Y = box.Y2;
-		line->layer = INDEXOFCURRENT;
+		pcb_ddraft_attached.line_valid = 1;
+		pcb_ddraft_attached.line.Point1.X = box.X1;
+		pcb_ddraft_attached.line.Point1.Y = box.Y1;
+		pcb_ddraft_attached.line.Point2.X = box.X2;
+		pcb_ddraft_attached.line.Point2.Y = box.Y2;
 		pcb_gui->invalidate_all();
 	}
 	return res;

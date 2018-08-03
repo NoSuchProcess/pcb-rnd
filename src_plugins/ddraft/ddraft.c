@@ -47,8 +47,18 @@
 #include "obj_line.h"
 #include "undo.h"
 #include "fields_sphash.h"
+#include "draw_wireframe.h"
+#include "conf_core.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
+static int pcb_ddraft_tool;
+
+typedef struct {
+	pcb_line_t line;
+	int line_valid;
+} pcb_ddraft_attached_t;
+
+pcb_ddraft_attached_t pcb_ddraft_attached;
 
 #define EDGE_TYPES (PCB_OBJ_LINE | PCB_OBJ_ARC)
 #define CUT_TYPES (PCB_OBJ_LINE | PCB_OBJ_ARC)
@@ -338,6 +348,21 @@ pcb_trace("base=%f d=%mm r=%mm\n", base * PCB_RAD_TO_DEG, (pcb_coord_t)d, (pcb_c
 	return 0;
 }
 
+void ddraft_tool_draw_attached(void)
+{
+	pcb_gui->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
+	pcb_gui->set_line_width(pcb_crosshair.GC, 1);
+	pcb_gui->set_color(pcb_crosshair.GC, "#000000");
+
+	if (pcb_ddraft_attached.line_valid) {
+		pcb_gui->draw_line(pcb_crosshair.GC, pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y);
+		pcb_gui->set_color(pcb_crosshair.GC, CURRENT->meta.real.color);
+		pcb_draw_wireframe_line(pcb_crosshair.GC,
+			pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y,
+			conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
+	}
+}
+
 #include "cli.c"
 
 static pcb_action_t ddraft_action_list[] = {
@@ -352,13 +377,29 @@ static pcb_action_t ddraft_action_list[] = {
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 
+static pcb_tool_t tool_ddraft = {
+	"ddraft", NULL, 1000,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	ddraft_tool_draw_attached,
+	NULL,
+	NULL,
+	pcb_false
+};
+
 int pplg_check_ver_ddraft(int ver_needed) { return 0; }
 
 void pplg_uninit_ddraft(void)
 {
 	pcb_event_unbind_allcookie(ddraft_cookie);
 	pcb_remove_actions_by_cookie(ddraft_cookie);
+	pcb_tool_unreg_by_cookie(ddraft_cookie);
 }
+
+
 
 #include "dolists.h"
 int pplg_init_ddraft(void)
@@ -368,5 +409,7 @@ int pplg_init_ddraft(void)
 	PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 	pcb_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);
 
+	pcb_tool_reg(&tool_ddraft, ddraft_cookie);
+	pcb_ddraft_tool = pcb_tool_lookup(tool_ddraft.name);
 	return 0;
 }
