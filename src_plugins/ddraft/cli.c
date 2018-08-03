@@ -226,7 +226,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 #undef iscrd
 #undef last_type
 
-int cli_cursor_arg(int argc, cli_node_t *argv, int cursor)
+static int cli_cursor_arg(int argc, cli_node_t *argv, int cursor)
 {
 	int n;
 	for(n = 0; n < argc; n++)
@@ -235,7 +235,7 @@ int cli_cursor_arg(int argc, cli_node_t *argv, int cursor)
 	return -1;
 }
 
-int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_coord_t *oy)
+static int cli_apply_coord(int argc, cli_node_t *argv, int start, pcb_coord_t *ox, pcb_coord_t *oy)
 {
 	int n, relative = 0, have_angle = 0, have_dist = 0;
 	double angle = 0, dist = 0, x = *ox, y = *oy;
