@@ -127,15 +127,16 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	if (replace) {
 		pcb_trace(" replace %d: '%s'\n", argn, buff);
 		cli_str_remove(line, argv[argn].begin, argv[argn].end);
-		cli_str_insert(line, argv[argn].begin, buff);
+		cursor = cli_str_insert(line, argv[argn].begin, buff);
 		
 	}
 	else {
 		pcb_trace(" insert-after %d: '%s'\n", argn, buff);
-		cli_str_insert(line, argv[argn].end, buff);
+		cursor = cli_str_insert(line, argv[argn].end, buff);
 	}
 
-	printf("line='%s'\n", line);
+pcb_trace("line='%s'\n", line);
+	pcb_hid_command_entry(line, &cursor);
 
 	return 0;
 }
