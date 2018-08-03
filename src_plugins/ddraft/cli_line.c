@@ -1,4 +1,4 @@
-static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, int verbose)
+static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, int verbose, int annot)
 {
 	int n = 0;
 
@@ -8,7 +8,7 @@ static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, in
 		pcb_message(PCB_MSG_ERROR, "Incremental line drawing is not yet supported\n");
 		return -1;
 	}
-	n = cli_apply_coord(argv, n, argc, &box->X1, &box->Y1);
+	n = cli_apply_coord(argv, n, argc, &box->X1, &box->Y1, annot);
 	if (n < 0) {
 		if (verbose)
 			pcb_message(PCB_MSG_ERROR, "Invalid 'from' coord\n");
@@ -22,7 +22,7 @@ static int line_parse(char *line, int argc, cli_node_t *argv, pcb_box_t *box, in
 	n++;
 	box->X2 = box->X1;
 	box->Y2 = box->Y1;
-	n = cli_apply_coord(argv, n, argc, &box->X2, &box->Y2);
+	n = cli_apply_coord(argv, n, argc, &box->X2, &box->Y2, annot);
 	if (n < 0) {
 		if (verbose)
 			pcb_message(PCB_MSG_ERROR, "Invalid 'to' coord\n");
@@ -44,7 +44,7 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 	pcb_trace("line e: '%s'\n", line);
 
 	memset(&box, 0, sizeof(box));
-	res = line_parse(line, argc, argv, &box, 1);
+	res = line_parse(line, argc, argv, &box, 1, 0);
 	if (res == 0) {
 		pcb_trace("line_exec: %mm;%mm -> %mm;%mm\n", box.X1, box.Y1, box.X2, box.Y2);
 		pcb_line_new(CURRENT, box.X1, box.Y1, box.X2, box.Y2,
@@ -67,7 +67,7 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 
 	pcb_trace("line e: '%s':%d\n", line, cursor);
 	memset(&box, 0, sizeof(box));
-	res = line_parse(line, argc, argv, &box, 0);
+	res = line_parse(line, argc, argv, &box, 0, 1);
 	if (res == 0) {
 		pcb_ddraft_attached.line_valid = 1;
 		pcb_ddraft_attached.line.Point1.X = box.X1;
@@ -131,11 +131,11 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			if (argv[res].type == CLI_FROM)
 				res++;
 			if (argn < nto) {
-				res = cli_apply_coord(argv, res, argn, &ox, &oy);
+				res = cli_apply_coord(argv, res, argn, &ox, &oy, 0);
 			}
 			else {
-				res = cli_apply_coord(argv, res, nto, &ox, &oy); /* 'to' may be relative to 'from', so eval 'from' first */
-				res |= cli_apply_coord(argv, nto+1, argn, &ox, &oy);
+				res = cli_apply_coord(argv, res, nto, &ox, &oy, 0); /* 'to' may be relative to 'from', so eval 'from' first */
+				res |= cli_apply_coord(argv, nto+1, argn, &ox, &oy, 0);
 			}
 			if (res < 0) {
 				pcb_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");

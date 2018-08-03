@@ -58,7 +58,7 @@ typedef struct {
 	pcb_line_t line;
 	int line_valid;
 
-	vtc0_t annot_lines; /* each pair of coord is a line */
+	vtc0_t annot_lines; /* each 4 coords specify a line */
 } pcb_ddraft_attached_t;
 
 pcb_ddraft_attached_t pcb_ddraft_attached;
@@ -359,12 +359,16 @@ pcb_trace("base=%f d=%mm r=%mm\n", base * PCB_RAD_TO_DEG, (pcb_coord_t)d, (pcb_c
 
 void ddraft_tool_draw_attached(void)
 {
+	int n;
 	pcb_gui->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_gui->set_line_width(pcb_crosshair.GC, 1);
-	pcb_gui->set_color(pcb_crosshair.GC, "#000000");
+	pcb_gui->set_color(pcb_crosshair.GC, "#333333");
+	for(n = 0; n < vtc0_len(&pcb_ddraft_attached.annot_lines); n += 4) {
+		pcb_coord_t *c = &pcb_ddraft_attached.annot_lines.array[n];
+		pcb_gui->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);
+	}
 
 	if (pcb_ddraft_attached.line_valid) {
-		pcb_gui->draw_line(pcb_crosshair.GC, pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y);
 		pcb_gui->set_color(pcb_crosshair.GC, CURRENT->meta.real.color);
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y,

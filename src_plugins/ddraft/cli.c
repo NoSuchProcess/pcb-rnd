@@ -257,15 +257,19 @@ static int cli_str_insert(char *str, int from, char *ins, int enforce_space_befo
 	return from + inslen + extra;
 }
 
-static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox, pcb_coord_t *oy)
+static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox, pcb_coord_t *oy, int annot)
 {
-	int n, relative = 0, have_angle = 0, have_dist = 0;
-	double angle = 0, dist = 0, x = *ox, y = *oy;
+	int n, relative = 0, have_angle = 0, have_dist = 0, len = (start > 1);
+	double angle = 0, dist = 0, lx, ly, x = *ox, y = *oy;
 
 	for(n = start; n < end; n++) {
+		int moved = 0;
+
 		switch(argv[n].type) {
 			case CLI_ABSOLUTE:
 				relative = 0;
+				len = 0;
+				lx = ly = 0;
 				break;
 			case CLI_RELATIVE:
 				relative = 1;
@@ -296,10 +300,14 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 					x += argv[n].x;
 					y += argv[n].y;
 					relative = 0;
+					moved = 1;
 				}
 				else {
 					x = argv[n].x;
 					y = argv[n].y;
+					len = 0;
+					lx = ly = 0;
+					moved = 1;
 				}
 				break;
 
@@ -320,11 +328,25 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 					x += cos(angle / PCB_RAD_TO_DEG) * dist;
 					y += sin(angle / PCB_RAD_TO_DEG) * dist;
 					have_angle = have_dist = 0;
+					moved = 1;
 				}
 				break;
 		}
 		if (argv[n].invalid)
 			return -1;
+
+		if ((annot) && (moved)) {
+			if (len > 0) {
+				pcb_coord_t *c = vtc0_alloc_append(&pcb_ddraft_attached.annot_lines, 4);
+				c[0] = pcb_round(lx);
+				c[1] = pcb_round(ly);
+				c[2] = pcb_round(x);
+				c[3] = pcb_round(y);
+			}
+			lx = x;
+			ly = y;
+			len++;
+		}
 	}
 
 	over:;
