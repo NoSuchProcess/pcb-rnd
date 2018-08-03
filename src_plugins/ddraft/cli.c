@@ -335,17 +335,20 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 		if (argv[n].invalid)
 			return -1;
 
-		if ((annot) && (moved)) {
-			if (len > 0) {
+		if (moved) {
+			if ((annot) && (len > 0)) {
 				pcb_coord_t *c = vtc0_alloc_append(&pcb_ddraft_attached.annot_lines, 4);
 				c[0] = pcb_round(lx);
 				c[1] = pcb_round(ly);
 				c[2] = pcb_round(x);
 				c[3] = pcb_round(y);
 			}
+			angle = atan2(y - ly, x - lx) * PCB_RAD_TO_DEG;
+			printf("angle=%f\n", angle);
 			lx = x;
 			ly = y;
 			len++;
+
 		}
 	}
 
