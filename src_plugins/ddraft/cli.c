@@ -137,7 +137,7 @@ do { \
 static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 {
 	char tmp[128];
-	char *sep, *s = strchr(line, ' '), *next; /* skip the instruction */
+	char *end, *sep, *s = strchr(line, ' '), *next; /* skip the instruction */
 	int i;
 	pcb_bool succ;
 
@@ -158,9 +158,8 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				APPEND(CLI_ABSOLUTE, next);
 				continue;
 			case '<':
+				next = s+1;
 				APPEND(CLI_ANGLE, next);
-				dst[i-1].angle = strtod(s+1, &next);
-				dst[i-1].invalid = (next == s);
 				continue;
 			case '%':
 				APPEND(CLI_OFFS, next);
@@ -176,6 +175,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 				if (next == NULL)
 					next = s+strlen(s);
 				if (iscrd(*s)) {
+printf("iscrd: '%s' lst=%d\n", s, last_type);
 					switch(last_type) {
 						case CLI_INVALID:
 						case CLI_FROM:
@@ -209,6 +209,10 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 						case CLI_DIST:
 							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							dst[i-1].invalid = !succ;
+							break;
+						case CLI_ANGLE:
+							dst[i-1].angle = strtod(s, &next);
+							dst[i-1].invalid = (dst[i-1].angle > 360.0) || (dst[i-1].angle < -360.0);
 							break;
 						default:
 							APPEND(CLI_INVALID, next);
