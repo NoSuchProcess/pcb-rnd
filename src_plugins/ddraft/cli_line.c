@@ -42,7 +42,6 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 	pcb_box_t box;
 
 	pcb_trace("line e: '%s'\n", line);
-	cli_print_args(argc, argv);
 
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 1);
@@ -58,7 +57,60 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 
 static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 {
-	pcb_trace("line c: '%s':%d\n", line, cursor);
+	int argn = cli_cursor_arg(argc, argv, cursor);
+	int replace = 0, by;
+
+	pcb_trace("line c: '%s':%d (argn=%d)\n", line, cursor, argn);
+	cli_print_args(argc, argv);
+
+	if (argn < 0)
+		return 0;
+
+	by = argn;
+
+	retry:;
+
+	switch(argv[by].type) {
+		case CLI_COORD:
+			if (by > 0) {
+				by--;
+				replace = 1;
+				goto retry;
+			}
+			/* fall through: when clicked at the first coord */
+		case CLI_ABSOLUTE:
+		case CLI_FROM:
+		case CLI_TO:
+			pcb_trace("abs");
+			goto maybe_replace_after;
+			break;
+		case CLI_RELATIVE:
+			pcb_trace("rel");
+			maybe_replace_after:;
+			if ((by+1 < argc) && (argv[by+1].type == CLI_COORD)) {
+				argn = by+1;
+				replace = 1;
+			}
+			break;
+		case CLI_ANGLE:
+			if (argv[argn].invalid)
+				pcb_trace("angle");
+			else
+				pcb_trace("dist at angle");
+			break;
+		case CLI_DIST:
+			if (argv[argn].invalid)
+				pcb_trace("dist");
+			else
+				pcb_trace("angle at dist");
+			break;
+	}
+
+	if (replace)
+		pcb_trace(" replace %d\n", argn);
+	else
+		pcb_trace(" insert-after %d\n", argn);
+
 	return 0;
 }
 
