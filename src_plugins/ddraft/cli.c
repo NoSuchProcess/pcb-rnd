@@ -442,11 +442,15 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto ret0;
 	}
 
+	reparse:;
 	ndlen = cli_parse(nd, sizeof(nd) / sizeof(nd[0]), line);
 
 	if (*cmd == '/') {
-		if (strcmp(cmd, "/click") == 0)
+		if (strcmp(cmd, "/click") == 0) {
 			PCB_ACT_IRES(opp->click(line, cursor, ndlen, nd));
+			cmd = "/edit";
+			goto reparse;
+		}
 		else if (strcmp(cmd, "/tab") == 0)
 			PCB_ACT_IRES(opp->tab(line, cursor, ndlen, nd));
 		else if (strcmp(cmd, "/edit") == 0)
