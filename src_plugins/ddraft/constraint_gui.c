@@ -212,16 +212,24 @@ int constraint_gui(void)
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
+
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
-				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
-					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_line);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "perpendicular to line");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_perp);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "parallel with line");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_paral);
+			PCB_DAD_END(cnstgui_ctx.dlg);
+
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "tangential to arc");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_tang);
 			PCB_DAD_END(cnstgui_ctx.dlg);
+
+			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
+				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_line);
+			PCB_DAD_END(cnstgui_ctx.dlg);
+
 		PCB_DAD_END(cnstgui_ctx.dlg);
 
 		/* move */
