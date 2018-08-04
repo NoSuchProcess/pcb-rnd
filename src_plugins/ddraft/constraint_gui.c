@@ -207,15 +207,17 @@ int constraint_gui(void)
 		/* line */
 		PCB_DAD_BEGIN_VBOX(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
-				PCB_DAD_LABEL(cnstgui_ctx.dlg, "All direction lines (shall be on):");
+				PCB_DAD_LABEL(cnstgui_ctx.dlg, "All direction lines:");
 				PCB_DAD_BOOL(cnstgui_ctx.dlg, "");
 					cnstgui_ctx.alldir = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_alldir);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "Constraints work well only when\nthe all-direction-lines is enabled");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
 					cnstgui_ctx.line_angle = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "space separated list of valid line angles in degree");
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "apply");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
@@ -226,11 +228,13 @@ int constraint_gui(void)
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "if non-zero:\nline angle must be an integer multiply of this value");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengths:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
 					cnstgui_ctx.line_length = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "space separated list of valid line lengths");
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "apply");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
@@ -241,23 +245,28 @@ int constraint_gui(void)
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "if non-zero:\nline length must be an integer multiply of this value");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "perpendicular to line");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_perp);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "sets the angle constraint perpendicular to a line\nselected on the drawing");
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "parallel with line");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_paral);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "sets the angle constraint parallel to a line\nselected on the drawing");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "tangential to arc");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_tang);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "sets the angle constraint to be tangential to the circle of an arc\nselected on the drawing");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_line);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "clear line constraint values");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 
 		PCB_DAD_END(cnstgui_ctx.dlg);
@@ -268,6 +277,7 @@ int constraint_gui(void)
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
 					cnstgui_ctx.move_angle = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "space separated list of valid move vector angles in degree");
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "apply");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
@@ -278,11 +288,13 @@ int constraint_gui(void)
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "if non-zero:\nmove vector angle must be an integer multiply of this value");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengths:");
 				PCB_DAD_STRING(cnstgui_ctx.dlg);
 					cnstgui_ctx.move_length = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "space separated list of valid move distances");
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "apply");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
@@ -293,10 +305,12 @@ int constraint_gui(void)
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "if non-zero:\nmove distance must be an integer multiply of this value");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_move);
+					PCB_DAD_HELP(cnstgui_ctx.dlg, "clear move constraint values");
 			PCB_DAD_END(cnstgui_ctx.dlg);
 		PCB_DAD_END(cnstgui_ctx.dlg);
 
