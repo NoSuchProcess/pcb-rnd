@@ -111,6 +111,11 @@ do { \
 	} \
 } while(0)
 
+#define g2c_scalar(name, valty) \
+do { \
+	cons.name = cnstgui_ctx.dlg[cnstgui_ctx.name].default_val.valty; \
+} while(0)
+
 
 /* copy all GUI fields into the cons struct */
 static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -119,14 +124,14 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	pcb_bool succ;
 
 	g2c_array(line_angle, strtod(curr, &end));
-/*	g2c_float(line_angle_mod);*/
+	g2c_scalar(line_angle_mod, real_value);
 	g2c_array(line_length, pcb_get_value(curr, NULL, NULL, &succ));
-/*	g2c_coord(line_length_mod);*/
+	g2c_scalar(line_length_mod, coord_value);
 
 	g2c_array(move_angle, strtod(curr, &end));
-/*	g2c_float(move_angle_mod);*/
+	g2c_scalar(move_angle_mod, real_value);
 	g2c_array(move_length, pcb_get_value(curr, NULL, NULL, &succ));
-/*	g2c_coord(move_length_mod);*/
+	g2c_scalar(move_length_mod, coord_value);
 }
 
 int constraint_gui(void)
@@ -156,6 +161,7 @@ int constraint_gui(void)
 					cnstgui_ctx.line_angle_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengths:");
@@ -170,6 +176,7 @@ int constraint_gui(void)
 					cnstgui_ctx.line_length_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
@@ -193,6 +200,7 @@ int constraint_gui(void)
 					cnstgui_ctx.move_angle_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed lengths:");
@@ -207,6 +215,7 @@ int constraint_gui(void)
 					cnstgui_ctx.move_length_mod = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
 					PCB_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 					PCB_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
