@@ -296,7 +296,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	cons.line_angle_len = 2;
-	cons.line_angle[0] = atan2(-dy, dx) * PCB_RAD_TO_DEG;
+	cons.line_angle[0] = atan2(dy, dx) * PCB_RAD_TO_DEG;
 	if (actname[1] == 'e') /* perp */
 		cons.line_angle[0] += 90;
 	cons.line_angle[1] = fmod(cons.line_angle[0]+180, 360);
@@ -361,7 +361,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	base = atan2(-(arc->Y - line->point1.Y), arc->X - line->point1.X);
+	base = atan2(arc->Y - line->point1.Y, arc->X - line->point1.X);
 
 pcb_trace("base=%f d=%mm r=%mm\n", base * PCB_RAD_TO_DEG, (pcb_coord_t)d, (pcb_coord_t)r);
 
