@@ -161,6 +161,8 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			else
 				pcb_trace("angle at dist");
 			break;
+		default:
+			return 0;
 	}
 
 	if (*buff == '\0') {
