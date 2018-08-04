@@ -152,6 +152,17 @@ static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	gui2cons(hid_ctx, caller_data, attr);
 }
 
+static void set_paral(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("paral", NULL);
+}
+
+static void set_perp(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("perp", NULL);
+}
+
+
 int constraint_gui(void)
 {
 	const char *tab_names[] = {"line", "move", NULL};
@@ -200,7 +211,9 @@ int constraint_gui(void)
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
 					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_line);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "perpendicular to");
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_perp);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "parallel with");
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_paral);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 		PCB_DAD_END(cnstgui_ctx.dlg);
 
