@@ -101,6 +101,8 @@ do { \
 	if (inp == NULL) break; \
 	strncpy(buff, inp, sizeof(buff)); \
 	for(curr = buff; curr != NULL; curr = next) { \
+		while(isspace(*curr)) curr++; \
+		if (*curr == '\0') break; \
 		next = strpbrk(curr, ",; "); \
 		if (next != NULL) { \
 			*next = '\0'; \
