@@ -33,11 +33,13 @@ typedef struct{
 	int active; /* already open - allow only one instance */
 
 	/* widget IDs */
+	int alldir;
 	int line_angle, move_angle;
 	int line_length, move_length;
 	int line_angle_mod, move_angle_mod;
 	int line_length_mod, move_length_mod;
 
+	int inhibit_confchg;
 } cnstgui_ctx_t;
 
 cnstgui_ctx_t cnstgui_ctx;
@@ -170,6 +172,30 @@ static void set_tang(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	pcb_actionl("tang", NULL);
 }
 
+void cons_gui_confchg(conf_native_t *cfg, int arr_idx)
+{
+	if (!cnstgui_ctx.active || cnstgui_ctx.inhibit_confchg)
+		return;
+
+	cnstgui_ctx.inhibit_confchg++;
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.alldir, int_value, conf_core.editor.all_direction_lines);
+	cnstgui_ctx.inhibit_confchg--;
+}
+
+static void set_alldir(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	const char *nv;
+	if (cnstgui_ctx.inhibit_confchg)
+		return;
+
+	cnstgui_ctx.inhibit_confchg++;
+	nv = (cnstgui_ctx.dlg[cnstgui_ctx.alldir].default_val.int_value) ? "1" : "0";
+	conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, nv, POL_OVERWRITE);
+	cnstgui_ctx.inhibit_confchg--;
+}
+
+
+
 int constraint_gui(void)
 {
 	const char *tab_names[] = {"line", "move", NULL};
@@ -183,6 +209,8 @@ int constraint_gui(void)
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "All direction lines (shall be on):");
 				PCB_DAD_BOOL(cnstgui_ctx.dlg, "");
+					cnstgui_ctx.alldir = PCB_DAD_CURRENT(cnstgui_ctx.dlg);
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_alldir);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_LABEL(cnstgui_ctx.dlg, "Fixed angles:");

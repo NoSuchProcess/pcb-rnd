@@ -49,6 +49,7 @@
 #include "fields_sphash.h"
 #include "draw_wireframe.h"
 #include "conf_core.h"
+#include "conf_hid.h"
 #include "vtc0.h"
 
 static const char *ddraft_cookie = "ddraft plugin";
@@ -430,10 +431,14 @@ void pplg_uninit_ddraft(void)
 }
 
 
+static const conf_hid_callbacks_t conf_cbs = { NULL, cons_gui_confchg, NULL, NULL };
 
 #include "dolists.h"
 int pplg_init_ddraft(void)
 {
+	conf_native_t *cn;
+	conf_hid_id_t confid;
+
 	PCB_API_CHK_VER;
 
 	PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
@@ -441,5 +446,10 @@ int pplg_init_ddraft(void)
 
 	pcb_tool_reg(&tool_ddraft, ddraft_cookie);
 	pcb_ddraft_tool = pcb_tool_lookup(tool_ddraft.name);
+
+
+	cn = conf_get_field("editor/all_direction_lines");
+	confid = conf_hid_reg(ddraft_cookie, NULL);
+	conf_hid_set_cb(cn, confid, &conf_cbs);
 	return 0;
 }
