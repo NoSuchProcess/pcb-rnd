@@ -364,8 +364,6 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	base = atan2(arc->Y - line->point1.Y, arc->X - line->point1.X);
 
-pcb_trace("base=%f d=%mm r=%mm\n", base * PCB_RAD_TO_DEG, (pcb_coord_t)d, (pcb_coord_t)r);
-
 	cons.line_angle_len = 2;
 	cons.line_angle[0] = (base + asin(r / d)) * PCB_RAD_TO_DEG;
 	cons.line_angle[1] = (base + asin(-r / d)) * PCB_RAD_TO_DEG;
