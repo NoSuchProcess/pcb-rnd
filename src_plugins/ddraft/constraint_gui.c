@@ -134,6 +134,24 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	g2c_scalar(move_length_mod, coord_value);
 }
 
+static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle_mod, real_value, 0);
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length_mod, coord_value, 0);
+	gui2cons(hid_ctx, caller_data, attr);
+}
+
+static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle_mod, real_value, 0);
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length_mod, coord_value, 0);
+	gui2cons(hid_ctx, caller_data, attr);
+}
+
 int constraint_gui(void)
 {
 	const char *tab_names[] = {"line", "move", NULL};
@@ -180,6 +198,7 @@ int constraint_gui(void)
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_line);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "perpendicular to");
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "parallel with");
 			PCB_DAD_END(cnstgui_ctx.dlg);
@@ -219,6 +238,7 @@ int constraint_gui(void)
 			PCB_DAD_END(cnstgui_ctx.dlg);
 			PCB_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 				PCB_DAD_BUTTON(cnstgui_ctx.dlg, "Reset");
+					PCB_DAD_CHANGE_CB(cnstgui_ctx.dlg, reset_move);
 			PCB_DAD_END(cnstgui_ctx.dlg);
 		PCB_DAD_END(cnstgui_ctx.dlg);
 
