@@ -191,7 +191,9 @@ static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_co
 
 	pcb_gtk_pan_common(v);
 	if (setch) {
-		pcb_crosshair_move_absolute((x1+x2)/2, (y1+y2)/2);
+		v->pcb_x = (x1+x2)/2;
+		v->pcb_y = (y1+y2)/2;
+		pcb_crosshair_move_absolute(v->pcb_x, v->pcb_y);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 }
