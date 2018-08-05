@@ -387,7 +387,8 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj) == ctx->flag) /* cheap check on the flag: don't do anything if the flag is already right */
 		return PCB_R_DIR_NOT_FOUND;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) == pcb_true)
+	/* do not let locked object selected, but allow deselection */
+	if ((PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) == pcb_true) && (ctx->flag))
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (!pcb_obj_near_box(obj, &ctx->box)) /* detailed box matching */
