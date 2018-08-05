@@ -13,7 +13,7 @@
 	-> need per plugin menus and/or implement local grid in lesstif
 	-> non-bug
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
-- BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
++ BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well. (Propose that right-click should not select object) [report: Ade]
 + feature: fp_wget cache dir configurable [report: agaran]
 - BUG: The lock flag can not be cleared for padstacks
