@@ -79,10 +79,33 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 	return res;
 }
 
+static int get_rel_coord(int argc, cli_node_t *argv, int argn, pcb_coord_t *ox, pcb_coord_t *oy)
+{
+	int nto, res;
+
+	for(nto = 0; nto < argc; nto++)
+		if (argv[nto].type == CLI_TO)
+			break;
+
+			*ox = *oy = 0;
+			res = 0;
+			if (argv[res].type == CLI_FROM)
+				res++;
+			if (argn < nto) {
+				res = cli_apply_coord(argv, res, argn, ox, oy, 0);
+			}
+			else {
+				res = cli_apply_coord(argv, res, nto, ox, oy, 0); /* 'to' may be relative to 'from', so eval 'from' first */
+				res |= cli_apply_coord(argv, nto+1, argn, ox, oy, 0);
+			}
+
+	return res;
+}
+
 static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	int argn = cli_cursor_arg(argc, argv, cursor);
-	int replace = 0, by, nto, res;
+	int replace = 0, by, res;
 	pcb_coord_t ox, oy;
 	char buff[CLI_MAX_INS_LEN];
 
@@ -104,9 +127,6 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	*buff = '\0';
 	by = argn;
 
-	for(nto = 0; nto < argc; nto++)
-		if (argv[nto].type == CLI_TO)
-			break;
 
 	retry:;
 
@@ -126,17 +146,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			goto maybe_replace_after;
 			break;
 		case CLI_RELATIVE:
-			ox = oy = 0;
-			res = 0;
-			if (argv[res].type == CLI_FROM)
-				res++;
-			if (argn < nto) {
-				res = cli_apply_coord(argv, res, argn, &ox, &oy, 0);
-			}
-			else {
-				res = cli_apply_coord(argv, res, nto, &ox, &oy, 0); /* 'to' may be relative to 'from', so eval 'from' first */
-				res |= cli_apply_coord(argv, nto+1, argn, &ox, &oy, 0);
-			}
+			res = get_rel_coord(argc, argv, argn, &ox, &oy);
 			if (res < 0) {
 				pcb_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");
 				return 0;
