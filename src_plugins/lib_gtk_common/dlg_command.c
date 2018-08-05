@@ -292,7 +292,7 @@ static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_g
 	 */
 void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 {
-	GtkWidget *vbox, *vbox1, *hbox, *button, *expander, *text;
+	GtkWidget *vbox, *vbox1, *hbox, *button, *expander, *text, *warn;
 	gint i;
 
 	if (command_window != NULL) {
@@ -310,6 +310,9 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(command_window), vbox);
+
+	warn = gtk_label_new("WARNING: separate command window is deprecated.\nPlease consider turning it off in the preferences.\n\n");
+	gtk_box_pack_start(GTK_BOX(vbox), warn, FALSE, FALSE, 0);
 
 	ctx->prompt_label = gtk_label_new(pcb_cli_prompt(":"));
 	gtk_box_pack_start(GTK_BOX(vbox), ctx->prompt_label, FALSE, FALSE, 0);

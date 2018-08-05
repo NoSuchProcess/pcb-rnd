@@ -511,7 +511,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
 																 TRUE, FALSE, FALSE, 2,
-																 config_command_window_toggle_cb, com, _("Use separate window for command entry"));
+																 config_command_window_toggle_cb, com, _("Use separate window for command entry (DEPRECATED)"));
 
 	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
 																 TRUE, FALSE, FALSE, 2,
