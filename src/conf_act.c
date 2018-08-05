@@ -155,7 +155,8 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		n = conf_get_field(a1);
 		if (n == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
+			if (conf_core.rc.verbose)
+				pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
 			return FGW_ERR_ARG_CONV;
 		}
 
