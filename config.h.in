@@ -52,6 +52,9 @@ print {#define PCB_INLINE static PCB_INLINE_DETECTED PCB_FUNC_UNUSED\n\n}
 print {\n\n/* Wether setenv() works */\n}
 print_ternary ?libs/env/setenv/presents {#define PCB_HAVE_SETENV 1} {/* #undef PCB_HAVE_SETENV */}
 
+print {\n\n/* Wether putenv() works */\n}
+print_ternary ?libs/env/putenv/presents {#define PCB_HAVE_PUTENV 1} {/* #undef PCB_HAVE_PUTENV */}
+
 print {\n\n/* Wether usleep() works */\n}
 print_ternary ?libs/time/usleep/presents {#define PCB_HAVE_USLEEP 1} {/* #undef PCB_HAVE_USLEEP */}
 
