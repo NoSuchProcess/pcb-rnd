@@ -167,6 +167,17 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 
 		layer->comb = ctx->attrs[w->comp].default_val.int_value;
 		get_ly_type(ctx->attrs[w->type].default_val.int_value, ctx->attrs[w->side].default_val.int_value, ctx->attrs[w->offs].default_val.int_value, &layer->meta.bound.type, &layer->meta.bound.stack_offs);
+
+		/* enforce some sanity rules */
+		if (layer->meta.bound.type & PCB_LYT_OUTLINE) {
+			/* outline must be positive global */
+			layer->comb = 0;
+			layer->meta.bound.type &= ~PCB_LYT_ANYWHERE;
+		}
+		if (!(layer->meta.bound.type & PCB_LYT_COPPER)) {
+			/* temporary: offset is useful only for copper layers */
+			layer->meta.bound.stack_offs = 0;
+		}
 	}
 }
 
