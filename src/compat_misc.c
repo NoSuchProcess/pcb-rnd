@@ -33,6 +33,7 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <math.h>
+#include <genvector/gds_char.h>
 #include "compat_misc.h"
 
 /* On some old systems random() works better than rand(). Unfortunately
@@ -174,7 +175,19 @@ int pcb_setenv(const char *name, const char *val, int overwrite)
 #ifdef PCB_HAVE_SETENV
 	return setenv(name, val, overwrite);
 #else
+#	ifdef PCB_HAVE_PUTENV
+	int res;
+	gds_t tmp;
+	gds_init(&tmp);
+	gds_append_str(&tmp, name);
+	gds_append(&tmp, '=');
+	gds_append_str(&tmp, val);
+	res = putenv(tmp.array);
+	gds_uninit(&tmp);
+	return res;
+#	else
 	return -1;
+#	endif
 #endif
 }
 
