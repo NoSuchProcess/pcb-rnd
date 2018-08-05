@@ -98,6 +98,12 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		PCB_ACT_FAIL(FlagEdit);
 
+	if ((ctx.obj_type != 0) && (PCB_FLAG_TEST(PCB_FLAG_LOCK, ctx.obj))) {
+		pcb_message(PCB_MSG_ERROR, "Can't edit the flags of a locked object, unlock first.\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
 	if (ctx.obj_type != 0) { /* interactive mode */
 		int n;
 		char tmp[128];
