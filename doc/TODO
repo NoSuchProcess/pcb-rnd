@@ -32,6 +32,7 @@
 
 
 2. For later releases ===============================================================================
+- Remove separate command entry window from gtk
 - XOR rendering upgrade:
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
