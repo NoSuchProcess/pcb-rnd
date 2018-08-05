@@ -16,7 +16,9 @@
 - BUG: Locking a subc also locks padstacks but unlocking the subc does not unlock the padstacks [report: Ade]
 - BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well. (Propose that right-click should not select object) [report: Ade]
 + feature: fp_wget cache dir configurable [report: agaran]
-- BUG: The lock flag can not be cleared for padstacks in the 'edit flags' or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
+- BUG: The lock flag can not be cleared for padstacks
+	+ in the 'edit flags' -> edit flags refuses to work on locked objects now, to avoid accidentall editing
+	- or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
