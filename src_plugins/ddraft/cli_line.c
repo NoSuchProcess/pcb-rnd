@@ -87,17 +87,17 @@ static int get_rel_coord(int argc, cli_node_t *argv, int argn, pcb_coord_t *ox, 
 		if (argv[nto].type == CLI_TO)
 			break;
 
-			*ox = *oy = 0;
-			res = 0;
-			if (argv[res].type == CLI_FROM)
-				res++;
-			if (argn < nto) {
-				res = cli_apply_coord(argv, res, argn, ox, oy, 0);
-			}
-			else {
-				res = cli_apply_coord(argv, res, nto, ox, oy, 0); /* 'to' may be relative to 'from', so eval 'from' first */
-				res |= cli_apply_coord(argv, nto+1, argn, ox, oy, 0);
-			}
+	*ox = *oy = 0;
+	res = 0;
+	if (argv[res].type == CLI_FROM)
+		res++;
+	if (argn < nto) {
+		res = cli_apply_coord(argv, res, argn, ox, oy, 0);
+	}
+	else {
+		res = cli_apply_coord(argv, res, nto, ox, oy, 0); /* 'to' may be relative to 'from', so eval 'from' first */
+		res |= cli_apply_coord(argv, nto+1, argn, ox, oy, 0);
+	}
 
 	return res;
 }
