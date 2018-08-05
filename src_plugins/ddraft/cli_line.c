@@ -169,10 +169,13 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			pcb_snprintf(buff, sizeof(buff), "<%f", atan2(pcb_crosshair.Y - oy, pcb_crosshair.X - ox) * PCB_RAD_TO_DEG);
 			break;
 		case CLI_DIST:
-			if (argv[argn].invalid)
-				pcb_trace("dist");
-			else
-				pcb_trace("angle at dist");
+			res = get_rel_coord(argc, argv, argn, &ox, &oy);
+			if (res < 0) {
+				pcb_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");
+				return 0;
+			}
+			replace=1;
+			pcb_snprintf(buff, sizeof(buff), "~%.08$$mm", pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, ox, oy));
 			break;
 		default:
 			return 0;
