@@ -174,9 +174,6 @@ void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	static pcb_flag_values_t pcb_pstk_flags = 0;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
-		return NULL;
-
 	if (pcb_pstk_flags == 0)
 		pcb_pstk_flags = pcb_obj_valid_flags(PCB_OBJ_PSTK);
 
