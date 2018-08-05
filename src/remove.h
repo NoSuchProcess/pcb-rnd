@@ -37,7 +37,7 @@
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE_POINT | PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_SUBC | \
 	PCB_OBJ_POLY_POINT | PCB_OBJ_POLY | PCB_OBJ_RAT | PCB_OBJ_ARC | PCB_OBJ_ARC_POINT)
 
-pcb_bool pcb_remove_selected(void);
+pcb_bool pcb_remove_selected(pcb_bool locked_too);
 
 /* Undoable delete (operation wrapper) */
 void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3);

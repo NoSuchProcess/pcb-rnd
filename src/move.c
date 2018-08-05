@@ -246,7 +246,7 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 	ctx.move.dst_layer = Target;
 	ctx.move.more_to_come = pcb_true;
 
-	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, pcb_true, PCB_OBJ_ANY);
+	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, pcb_true, PCB_OBJ_ANY, pcb_false);
 	/* passing pcb_true to above operation causes Undoserial to auto-increment */
 	return changed;
 }

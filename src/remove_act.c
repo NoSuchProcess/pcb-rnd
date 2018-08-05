@@ -53,7 +53,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, Delete, id = fgw_keyword(&argv[1]));
 
 	if (id == -1) { /* no arg */
-		if (pcb_remove_selected() == pcb_false)
+		if (pcb_remove_selected(pcb_false) == pcb_false)
 			id = F_Object;
 	}
 
@@ -66,7 +66,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_tool_restore();
 		break;
 	case F_Selected:
-		pcb_remove_selected();
+		pcb_remove_selected(pcb_false);
 		break;
 	case F_AllRats:
 		if (pcb_rats_destroy(pcb_false))
@@ -91,7 +91,7 @@ static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
 
 static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (pcb_remove_selected())
+	if (pcb_remove_selected(pcb_false))
 		pcb_board_set_changed_flag(pcb_true);
 	PCB_ACT_IRES(0);
 	return 0;

@@ -151,7 +151,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true);
 				pcb_undo_save_serial();
-				pcb_remove_selected();
+				pcb_remove_selected(pcb_false);
 				pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
 				pcb_buffer_copy_to_layout(PCB, x, y);

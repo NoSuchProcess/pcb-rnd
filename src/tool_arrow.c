@@ -70,7 +70,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 			pcb_undo_save_serial();
-			pcb_remove_selected();
+			pcb_remove_selected(pcb_false);
 			pcb_tool_save();
 			pcb_tool_is_saved = pcb_true;
 			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);

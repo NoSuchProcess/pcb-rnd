@@ -100,7 +100,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
  * resets the selected flag if requested
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type)
+pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type, pcb_bool on_locked_too)
 {
 	pcb_bool changed = pcb_false;
 
@@ -109,6 +109,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		PCB_LINE_VISIBLE_LOOP(data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
+				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(line);
@@ -180,7 +182,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				changed = pcb_true;
 			}
 			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART)) {
-				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type))
+				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type, on_locked_too))
 					changed = pcb_true;
 			}
 		}
