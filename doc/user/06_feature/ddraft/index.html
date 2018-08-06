@@ -54,5 +54,32 @@ the line start point and an existing object:
 	<tr><td> tang()          <td> click on an arc; set line_angle tangential to the circle of the arc
 </table>
 
+<h3> Cutting edges </h3>
+<p>
+For already existing, intersecting objects (lines and arcs), the user may
+define cutting edges that can manipulate target objects they intersect. There
+are two actions for cutting edges: trim() and split(). The first argument of
+these actions is:
+<ul>
+	<li> object (selecting a single cutting edge)
+	<li> selected (to use any selected object as cutting edge)
+	<li> found (to use any found (green highlight) object as cutting edge)
+</ul>
+<p>
+The objects participating may be on different layers. All calculation use
+the centerline of the objects.
+<p>
+In a <b>trim</b> operation the target objects are cut at the intersection point,
+excess parts (at the click) removed. If there are multiple cutting edges,
+the shortest possible section is removed. The below examples are generated
+with <i>trim(selected)</i>, clicking on the horizontal line at the small
+triangle mark.
+<p>
+<img src="trim.png" alt="[Effect of trim on a few examples]">
+<p>
+In a <b>split</b> operation target objects are split into multiple section wherever
+they cross a cutting edge. A split means a single line object becomes multiple
+line objects or a single arc object becomes multiple arc objects.
+
 </body>
 </html>
