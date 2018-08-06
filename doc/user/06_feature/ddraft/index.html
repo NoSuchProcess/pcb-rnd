@@ -16,8 +16,43 @@ Ddraft uses the following coordinate system (when looked from the top
 of the board):
 <p>
 <img src="coord_sys.png" alt="ddraft coordinate system: upper left corner is 0;0, x+ is tot he right, y+ is down, 0 deg is at 3 o'clock and increases clockwise">
-<p>
 
+<h3> constraints </h3>
+<p>
+Coordinate and/or angle constraints can be applied on line drawing (when
+<i>all-direction lines</i> turned on) and move operation. Executing the
+<i>constraint()</i> action without arguments opens a dialog box with the
+settings. The same settings are accessible from the command line, using
+the <i>constraint()</i> action with arguments:
+<p>
+<table border=1>
+	<caption><b>Constraint arguments: explicitly set</b>
+	<tr><th> action syntax                            <th> description
+	<tr><td> constraint(line_angle, ang1, ang2, ...)  <td> permit drawing lines only at specific angles
+	<tr><td> constraint(line_angle_mod, ang)          <td> permit drawing lines only at angles which are integer multiplies of <i>ang</i>
+	<tr><td> constraint(line_length, len1, len2, ...) <td> draw lines with length matching any length on the list
+	<tr><td> constraint(line_length_mod, len)         <td> draw lines with length matching any integer multiply of the <i>len</i>
+	<tr><td> constraint(move_angle, ang1, ang2, ...)  <td> permit moving objects only at specific angles
+	<tr><td> constraint(move_angle_mod, ang)          <td> permit moving objects only at angles which are integer multiplies of <i>ang</i>
+	<tr><td> constraint(move_length, len1, len2, ...) <td> move objects at a distance matching any length on the list
+	<tr><td> constraint(move_length_mod, len)         <td> move objects at a distance matching an integer multiply of the <i>len</i>
+	<tr><td> constraint(reset)                        <td> reset all constraints
+</table>
+<p>
+Length can include unit (on the GUI: without space). Multiple constraints
+can be set in the same time. Constraints are reset upon explicit user
+request or pcb-rnd restart.
+<p>
+For line drawing, it is possible to get the angle constraints calculated using
+the line start point and an existing object:
+<p>
+<table border=1>
+	<caption><b>Constraint arguments: calculated</b>
+	<tr><th> action syntax   <th> description
+	<tr><td> perp()          <td> click on a line; set line_angle perpendicular to that line
+	<tr><td> paral()         <td> click on a line; set line_angle parallel to that line
+	<tr><td> tang()          <td> click on an arc; set line_angle tangential to the circle of the arc
+</table>
 
 </body>
 </html>
