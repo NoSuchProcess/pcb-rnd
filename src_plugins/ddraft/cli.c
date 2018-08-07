@@ -219,13 +219,16 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 						case CLI_DIST:
 							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
 							dst[i-1].invalid = !succ;
+							dst[i-1].end = next - line;
 							break;
 						case CLI_ANGLE:
 							dst[i-1].angle = strtod(s, &next);
 							dst[i-1].invalid = (dst[i-1].angle > 360.0) || (dst[i-1].angle < -360.0);
+							dst[i-1].end = next - line;
 							break;
 						case_object :
 							dst[i-1].id = strtol(s, &next, 10);
+							dst[i-1].end = next - line;
 							break;
 						default:
 							APPEND(CLI_INVALID, next);
