@@ -379,7 +379,7 @@ static void cli_print_args(int argc, cli_node_t *argv)
 {
 	int n;
 	for(n = 0; n < argc; n++) {
-		pcb_trace(" [%d] %s/%d", n, find_rev_type(argv[n].type), argv[n].type);
+		pcb_trace(" [%d] %s/%d {%d..%d}", n, find_rev_type(argv[n].type), argv[n].type, argv[n].begin, argv[n].end);
 		if (!argv[n].invalid) {
 			switch(argv[n].type) {
 				case CLI_COORD: pcb_trace(": %$mm,%$mm", argv[n].x, argv[n].y); break;
