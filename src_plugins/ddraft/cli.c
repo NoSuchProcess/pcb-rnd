@@ -381,7 +381,7 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 				switch(to->type) {
 					case PCB_OBJ_LINE:
 						x = ((pcb_line_t *)to)->Point1.X;
-						y = ((pcb_line_t *)to)->Point1.X;
+						y = ((pcb_line_t *)to)->Point1.Y;
 						break;
 					case PCB_OBJ_ARC:
 						pcb_arc_get_end((pcb_arc_t *)to, 0, &tx, &ty);
@@ -396,7 +396,7 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 				switch(to->type) {
 					case PCB_OBJ_LINE:
 						x = ((pcb_line_t *)to)->Point2.X;
-						y = ((pcb_line_t *)to)->Point2.X;
+						y = ((pcb_line_t *)to)->Point2.Y;
 						break;
 					case PCB_OBJ_ARC:
 						pcb_arc_get_end((pcb_arc_t *)to, 1, &tx, &ty);
