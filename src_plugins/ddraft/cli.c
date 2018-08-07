@@ -386,6 +386,7 @@ static void cli_print_args(int argc, cli_node_t *argv)
 				case CLI_ANGLE: pcb_trace(": %f", argv[n].angle); break;
 				case CLI_DIST: pcb_trace(": %$mm", argv[n].dist); break;
 				case CLI_OFFS: pcb_trace(": %f", argv[n].offs); break;
+				case_object: pcb_trace(": %ld", (long)argv[n].id); break;
 				default:;
 			}
 			pcb_trace("\n");
