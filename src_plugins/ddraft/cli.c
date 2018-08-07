@@ -49,14 +49,22 @@ typedef enum cli_ntype_e {
 	CLI_ANGLE,
 	CLI_ABSOLUTE,
 	CLI_RELATIVE,
+
 	CLI_PERP,
 	CLI_PARAL,
 	CLI_TANGENT,
+	CLI_CENTER,
+	CLI_START,
+	CLI_END,
+
 	CLI_DIST,
 	CLI_OFFS,
-	CLI_COORD,
-	CLI_ID
+	CLI_COORD
 } cli_ntype_t;
+
+#define case_object \
+	case CLI_PERP: case CLI_PARAL: case CLI_TANGENT: case CLI_CENTER: \
+	case CLI_START: case CLI_END
 
 typedef struct cli_ntname_s {
 	const char *name;
@@ -72,6 +80,9 @@ static const cli_ntname_t cli_tnames[] = {
 	{"perpendicular", CLI_PERP},
 	{"parallel",      CLI_PARAL},
 	{"tangential",    CLI_TANGENT},
+	{"center",        CLI_CENTER},
+	{"start",         CLI_START},
+	{"end",           CLI_END},
 	{"coord",         CLI_COORD},
 	{"distance",      CLI_DIST},
 	{"length",        CLI_DIST},
@@ -212,6 +223,9 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 						case CLI_ANGLE:
 							dst[i-1].angle = strtod(s, &next);
 							dst[i-1].invalid = (dst[i-1].angle > 360.0) || (dst[i-1].angle < -360.0);
+							break;
+						case_object :
+							dst[i-1].id = strtol(s, &next, 10);
 							break;
 						default:
 							APPEND(CLI_INVALID, next);

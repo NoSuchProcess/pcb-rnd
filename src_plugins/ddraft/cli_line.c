@@ -177,6 +177,17 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 			replace=1;
 			pcb_snprintf(buff, sizeof(buff), "~%.08$$mm", pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, ox, oy));
 			break;
+		case_object: ;
+			{
+				void *p1, *p2, *p3;
+				pcb_any_obj_t *o;
+				if (pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE | PCB_OBJ_ARC, &p1, &p2, &p3) == 0)
+					return 0;
+				o = p2;
+				replace=1;
+				pcb_snprintf(buff, sizeof(buff), "%s %ld", find_rev_type(argv[by].type), (long)o->ID);
+			}
+			break;
 		default:
 			return 0;
 	}
