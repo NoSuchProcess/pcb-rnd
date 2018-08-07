@@ -1301,7 +1301,7 @@ int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result
  * the results.
  * A type value is returned too which is PCB_OBJ_VOID if no objects has been found.
  */
-static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
+int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
 	if (type == PCB_OBJ_LINE || type == PCB_OBJ_LINE_POINT) {
 		PCB_LINE_ALL_LOOP(Base);
