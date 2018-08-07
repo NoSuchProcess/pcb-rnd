@@ -281,9 +281,31 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 {
 	int n, relative = 0, have_angle = 0, have_dist = 0, len = (start > 1);
 	double angle = 0, dist = 0, lx, ly, x = *ox, y = *oy;
+	pcb_coord_t tx, ty;
 
 	for(n = start; n < end; n++) {
 		int moved = 0;
+		pcb_any_obj_t *to = NULL;
+
+		/* look up the target object for instructions referencing an object */
+		switch(argv[n].type) {
+			case_object :
+				if (argv[n].id > 0) {
+					void *p1, *p2, *p3;
+					int res;
+					res = pcb_search_obj_by_id_(PCB->Data, &p1, &p2, &p3, argv[n].id, PCB_OBJ_LINE);
+					if (res == 0)
+						res = pcb_search_obj_by_id_(PCB->Data, &p1, &p2, &p3, argv[n].id, PCB_OBJ_ARC);
+					if (res == 0)
+						res = pcb_search_obj_by_id_(PCB->Data, &p1, &p2, &p3, argv[n].id, PCB_OBJ_POLY);
+					if (res != 0)
+						to = p2;
+				}
+				if (to == NULL)
+					return -1;
+				break;
+			default:;
+		}
 
 		switch(argv[n].type) {
 			case CLI_ABSOLUTE:
@@ -340,6 +362,39 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 			case CLI_TANGENT:
 				pcb_message(PCB_MSG_ERROR, "tangent not yet implemented\n");
 				return -1;
+
+			case CLI_CENTER:
+				return -1;
+			case CLI_START:
+				switch(to->type) {
+					case PCB_OBJ_LINE:
+						x = ((pcb_line_t *)to)->Point1.X;
+						y = ((pcb_line_t *)to)->Point1.X;
+						break;
+					case PCB_OBJ_ARC:
+						pcb_arc_get_end((pcb_arc_t *)to, 0, &tx, &ty);
+						x = tx;
+						y = ty;
+						break;
+					default:
+						return -1;
+				}
+				break;
+			case CLI_END:
+				switch(to->type) {
+					case PCB_OBJ_LINE:
+						x = ((pcb_line_t *)to)->Point2.X;
+						y = ((pcb_line_t *)to)->Point2.X;
+						break;
+					case PCB_OBJ_ARC:
+						pcb_arc_get_end((pcb_arc_t *)to, 1, &tx, &ty);
+						x = tx;
+						y = ty;
+						break;
+					default:
+						return -1;
+				}
+				break;
 
 			default:
 				goto over;
