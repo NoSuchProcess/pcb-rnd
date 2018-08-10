@@ -26,11 +26,6 @@
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 + feature: currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
-- BUG: pcb_pstk_export_compat_pad() - round trip fails [report: igor2]
-	- may need to double clearance value
-	- mask needs some tuning too
-	- check on all callers; io_pcb already has a workaround for the clearance problem, nothing for the mask
-	- load from old pcb and save to old format (pcb, old lihata, check other users too), load again and compare the values
 
 2. For later releases ===============================================================================
 - Remove separate command entry window from gtk
