@@ -81,5 +81,104 @@ In a <b>split</b> operation target objects are split into multiple section where
 they cross a cutting edge. A split means a single line object becomes multiple
 line objects or a single arc object becomes multiple arc objects.
 
+<h3> Command line drafting </h3>
+<p>
+The above features are pcb-rnd actions designed to fit in the action framework,
+to work together with the original pcb-rnd drawing tools, like the line tool.
+An alternative to that is using the new, ddraft command line interpreter, which
+offers a different syntax, optimized for drafting.
+<p>
+There are two ways to use the ddraft command line interpreter:
+<ul>
+	<li> a command wrapped in the ddraft() action, e.g. <i>ddraft(line from 1,3 to 4,2)</i>
+	<li> switching the command entry to <i>ddraft CLI mode</i>, by issuing the <i>ddraft()</i> action;
+	     to exit from the ddraft CLI mode, type /exit
+</ul>
+<p>
+When used as a CLI mode, mouse clicks on the drawing will also edit the
+command line at the cursor. The generic rule is that a click will replace
+an already entered numerical value or inserts a missin numerical value, but
+all instruction keywords are typed on the keyboard. Instructions can
+be abbreviated; the shortest form accepted is the shortest prefix that
+is unique among the instruction keywords. For example "li" means "line"
+and "rel" or even "re" works for "relative".
+<p>
+The first instruction is the drawing command, which is one of the following.
+<p>
+<table border=1>
+	<caption><b>ddraft drawing commands</b>
+	<tr><th> command <th> syntax summary <th> purpose
+	<tr><td> line
+	    <td> line [from] <i>coord</i> to <i>coord</i> <!--[to <i>coord</i> ...]-->
+	    <td> draw line segments on the current layer, using the current routing style
+</table>
+<p>
+Parts enclosed in [] are optional. A <i>coord</i> description is a sequence
+of absolute and relative coordinates:
+<p>
+<table border=1>
+	<caption><b>ddraft drawing commands</b>
+	<tr><th> keyword <th> next instruction (argument) <th> example <th> purpose
+	<tr><td> absolute
+	    <td rowspan=3> xcoord,ycoord
+	    <td> abs 1mm,15mm
+	    <td rowspan=3> an absolute coordinate; units are optional; must not contain space
+	<tr><td> *
+	    <td> *1mm,15mm
+	<tr><td> &nbsp;
+	    <td> 1mm,15mm
+
+	<tr><td> relative
+	    <td rowspan=2> xcoord,ycoord
+	    <td> rel 1mm,15mm
+	    <td rowspan=2> a relative coordinate meaasured from the absolute coord specified so far; units are optional; must not contain space
+	<tr><td> @
+	    <td> @1mm,15mm
+
+	<tr><td> angle
+	    <td rowspan=2> degree
+	    <td> ang 15
+	    <td rowspan=2> an absolute angle in degrees; always measured from the X axis; should be used together with <i>length</i>
+	<tr><td> &lt;
+	    <td> &lt;15
+
+	<tr><td> relative angle
+	    <td rowspan=2> degree
+	    <td> rel ang 15
+	    <td rowspan=2> a relative angle in degrees; always measured from the X axis; should be used together with <i>length</i>
+	<tr><td> @&lt;
+	    <td> @&lt;15
+
+<!--TODO: paral -->
+
+	<tr><td> length
+	    <td rowspan=2> coord
+	    <td> len 3.1mm
+	    <td rowspan=2> length or distance to move from the previos coordinate; always relative; used together with an angle
+	<tr><td> ~
+	    <td> ~3.1mm
+
+</table>
+<p>
+For example the sequence
+<i>5mm,100mil relative 1mm,1mm relative angle 30 length 2mm<i>
+means:
+<ul>
+	<li> start from absolute coords at 5mm, 100mil; after this the current coordinate is: 5.0000mm,2.5400mm
+	<li> move relative (to the right and down) 1 and 1 mm; after this the current coordinate is: 6.0000mm,3.5400mm
+	<li> the last move was a 45 degree move; relative to this 45 degrees, start moving at 30 degrees (that is, in absolute 75 degrees), and...
+	<li> ... move 2mm in that direction
+	<li> the sequence ends here, the coordinate it points to is: 6.5176mm,5.4719mm
+</ul>
+Equivalent alternative forms for the same sequence:
+<pre>
+5mm,100mil rel 1mm,1mm rel ang 30 len 2mm
+5mm,100mil @1mm,1mm @&lt;30~2mm
+5,100mil @1,1 @&lt;30~2
+</pre>
+The last one assumes unit is set to mm.
+
+
+
 </body>
 </html>
