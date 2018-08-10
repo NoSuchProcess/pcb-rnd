@@ -273,7 +273,6 @@ FEATURES
   move then around. If all layers are visible, redraw of the far side layer
   is slow and causes flickering elements from that layer until the front is
   redrawn. Maybe we should have less flushes?
-- dmalloc: #include from the bottom from each file. Is this a good idea?!
 - CLEANUP: win32 port {large}
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
