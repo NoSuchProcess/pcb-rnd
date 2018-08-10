@@ -28,48 +28,48 @@
 + feature: currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
 
 2. For later releases ===============================================================================
-- Remove separate command entry window from gtk
-- padstack bbox:
+- CLEANUP: Remove separate command entry window from gtk
+- FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
 - XOR rendering upgrade:
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
-- introduce new layer types:
+- FEATURE: introduce new layer types:
 	- doc
 	- keepout
 	- decide where to store global layers
-- rewrite the preview API:
+- CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
 	- ... but there also should be an option for going with board flip (drc view)
-- fungw: DAD dialog: mini parser from text
-- cleanup: remove mnemonic from the menu system
+- FEATURE: fungw: DAD dialog: mini parser from text
+- CLEANUP: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
 - CAM:
-	- move the hackish gerber layer suffix functions into CAM configs
-	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
-	- export_gerber: add a true gerber drill output
-	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
-	- invent a generic API for both the drill attrib config table
-	- remove the gerber->drill dep and ask users to use the CAM instead
-	- unify how output files are accessed/checked: confirmation on overwrite
+	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
+	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
+	- FEATURE: export_gerber: add a true gerber drill output
+	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
+	- FEATURE: invent a generic API for both the drill attrib config table
+	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
+	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
-- draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
+- FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
 	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
 	- padstack
 	- clearing polygon
 	- text
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- route style upgrade to prototypes:
+- FEATURE: route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
-- DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
+- CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
 	- io infra for save incompatibility note with DRC list
 	- import sch. shouldn't select elements to be removed but put them on a drc list
@@ -77,82 +77,80 @@
 	- export to file 
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 - find.c rewrite:
-	- a new "report(NetLength)" should not care about netlists but depend on find.c only
-	- netlist rewrite
+	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
+	- CLEANUP: netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
-- feature: lesstif does not allow "save as" in non alien format [report: erich]
+- FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - SUBC: element removal:
 	- BUG? check if drc outline is drawn on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
-	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
-	- convert pcblib to subcircuits:
+	- FEATURE: "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
+	- CLEANUP: convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
-	- remove old install elements
-	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
-- When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
-- key rewrite: (base key swap bug (q<->a, y<->z))
+		- remove old install elements
+		- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
+- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
+- FEATURE: key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
-- feature: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
-- vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
-- propedit revamp:
+- FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
+- CLEANUP: propedit revamp:
 	- move the property editor out from gtk, using the DAD, into propedit
 	- test under lesstif
 	- remove Attribute()
-- DEL: retire the nelma plugin - nelma is unfinished and not maintained
-- feature in subc/term: new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
-- HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- fontsel: ttf import?
-- library window: allow long tags and long location text to split
-- undo on new layer from right-click menu in gtk layersel doesn't work
-- gtk layersel feature requests:
-	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
+- CLEANUP: retire the nelma plugin - nelma is unfinished and not maintained
+- FEATURE: subc/term: new terminal attribute: "pretend not connected to the same subc copper" (agaran's coil example)
+- FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
+- FEATURE: fontsel: ttf import?
+- FEATURE: library window: allow long tags and long location text to split
+- FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
+- FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - layer rewrite:
-	- catch the layer change signal from polygons and reclip; Evan's test case:
+	- BUG: catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
-	- do not require top and bottom silk (also grep for TODO #tbs)
+	- FEATURE: do not require top and bottom silk (also grep for TODO #tbs)
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
-		- allow GTK to handle keys in preview
-		- use the zoompan engine for the zooming. Modifiy API if necessary
-- cleanup/rewrite resources:
-	- load/swap menus (TODO#1)
+		- CLEANUP: allow GTK to handle keys in preview
+		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
+- CLEANUP: resources:
 	- gpmi:
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
 - conf:
-	- config pov: change prio
-	- gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed
-	- gtk preferences: poly isle area widget missing from the sizes tab
+	- FEATURE: preferences dialog, config pov: change prio
+	- (BUG: gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed)
+	- (BUG: gtk preferences: poly isle area widget missing from the sizes tab)
 	- BUG: default layer names from the user config are ignored
-	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
+	- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
-- Mark cleanup
+- CLEANUP: Mark
 	- see pool node mark_cleanup
 	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
 - unravel the undo code
-	- grid size change should be undoable? [report:Evan]
-	- maybe other conf settings too?
-- pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
-- layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-- io_pcb: new, optional "layer tag" field in mainline's file format
-- fp_board: extend the API so that the element can be presented without saving to a file
-- SUBC missing features: manual layer binding (reuse csect?)
+	- FEATURE: grid size change should be undoable? [report:Evan]
+	- FEATURE: maybe other conf settings too?
+- CLEANUP: pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
+- CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
+- FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
+- CLEANUP: fp_board: extend the API so that the element can be presented without saving to a file
+- FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - res/menu:
-	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
-	- re-add dynamic menus after a gui change:
+	- FEATURE: load/swap menus (TODO#1)
+	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
+	- CLEANUP: re-add dynamic menus after a gui change:
 		- either remember dynamic menus in a separate list so they can be rebuilt
 		- or provide hooks and let plugins deal with it
-	- fungw: auto-remove menus by cookie (TODO#2)
-	- load new res on the fly (replace the menu system):
+	- FEATURE: fungw: auto-remove menus by cookie (TODO#2)
+	- FEATURE: load new res on the fly (replace the menu system):
 		- low level reload code (re-add the dynamic menus too!)
 		- action to reload if file name is known
 		- gui load dialog with tags listed
-- decide about exporter policy:
+- CLENAUP: decide about exporter policy:
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
-- reduce
+- CLEANUP: reduce
 		- export_bom: rewrite the string list code using htsp and/or lists
 		- hash in hid_attrib.c?
 		- nelma and gcode both invent .png name locally
@@ -163,10 +161,11 @@
 			- replace ignore_refdes, ignore_value and ignore_descr with genvector
 	- mods:
 		- gpmi (and other buildins/plugins) not showing up in the about box
-- feature: project specific menus from extra lihata files - maybe from project.lht
+- FEATURE: project specific menus from extra lihata files - maybe from project.lht
 - vendor drill plugin:
-	- check if we want to keep vendor name
-- Lihata persistent save:
+	- CLEANUP: check if we want to keep vendor name
+	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
+- BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
@@ -175,42 +174,42 @@
 	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file. [report: Alain]
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - query & advanced search
-	- search expr wizard should pick up the expression from the button when clicked
-	- make a run on a large board, speed test, with -O0 and -O3:
+	- FEATURE: search expr wizard should pick up the expression from the button when clicked
+	- CLEANUP: make a run on a large board, speed test, with -O0 and -O3:
 		- iteration speed (a simple @)
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 - feature plugins:
-	- autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
-	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
-	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
-- feature req: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
+	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
+	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
+	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
+- FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - BUG: gtk: preferences/user POV/sizes is not in sync with preferences/config POV/ [report: Alain]
 	- rewrite using DAD
 	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
 	- react on conf change events, refresh the fields
-- lihata v6:
+- FEATURE: lihata v6:
 	- new doc layer types
 	- remove pcb_board_t Zoom/x/y
 	- remove via geometry from route style
 	- remove real layer visible flag (UI is always reset)
 	- add text object line width factor
-- parent subc update:
+- CLEANUP: parent subc update:
 	- inhibit mechanism to speed things up:
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
 		- when inhibit drops to zero, revisit all subcircuits that are dirty
 		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
 - export_dsn:
 	- missing global padstack (via) export:
-		- need to think over and check the spec for how to do this with no-hole padstacks
+		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
-	- elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
 - feautres/cleanup: hid:
-		- holes should be drawn below silk and mask (maybe this could be a config setting)
-- I/O bugs:
+		- FEATURE: holes should be drawn below silk and mask (maybe this could be a config setting)
+- BUG: I/O bugs:
 	- kicad:
 		- BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
 	- eagle:
@@ -249,61 +248,59 @@ FEATURES
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - BUG: main.c: SIGPIPE - detect it (needed for popen)
-- feature: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- advanced grid settings:
-	- make sure it is possible to edit the lists in preferences
+- FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
+- FEATURE: advanced grid settings: make it possible to edit the lists in preferences
 - improve locking:
 	- consider a move-only lock
 	- when thermal and some other operations are applied on a locked element, indicate it
-- Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
-- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
-- bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
-- bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
-- GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
-- insert drag&drop strangeness (mainline too):
+- BUG: Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
+- BUG: the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
+- BUG: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
+- BUG: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
+- FEATURE: GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
+- CLEANUP: insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
 	move; the new point should be marked somehow (e.g. green-find one half of the
 	object, like arc split does) lines can be inserted mostly only in all-dir-line
 	which is strange
-- missing rotate polygon (mainline too)
-- zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
-- scconfig: check if it picks up settings from env vars (for a gentoo build)
-- replace mkdtemp() with something safer
-- display net names on pins, vias (and maybe tracks?) when zoomed in enough
-- DRC should warn for thin poly hair
-- new examples
+- FEATURE: missing rotate polygon (mainline too)
+- BUG: zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
+- FEATURE: scconfig: check if it picks up settings from env vars (for a gentoo build)
+- CLEANUP: replace mkdtemp() with something safer
+- FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
+- FEATURE: DRC should warn for thin poly hair
+- FEATURE: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
-- In-line help needs update/re-structuration
-	- <lib_gtk_common/dlg_command.c>
-- rethink/rewrite the action/change infrastructure - too many void *ptr1
+- CLEANUP: In-line help needs update/re-structuration <lib_gtk_common/dlg_command.c>
+- CLEANUP: rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
-- double sided board, poly on both layers; grab existing lines on one layer and
+- BUG: double sided board, poly on both layers; grab existing lines on one layer and
   move then around. If all layers are visible, redraw of the far side layer
   is slow and causes flickering elements from that layer until the front is
   redrawn. Maybe we should have less flushes?
 - dmalloc: #include from the bottom from each file. Is this a good idea?!
-- win32 port {large}
+- CLEANUP: win32 port {large}
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
-- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
+- BUG: arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
-- while drawing a line, the temporary outline should reflect the layer color
-- push&shove
+- FEATURE: while drawing a line, the temporary outline should reflect the layer color
+- FEATURE: push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - --dump-actions shows gpmi paths ( is this related? it looks unexpected to me)
-- unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh]
+- CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh]
 - consider allowing negative Delta to be specified in CTRL-E property inspector
-- consider a simple all in one function to create a default layer stackup for static/predictable layer formats being imported, to simplify importer coding
-- trace length calculator:
+- FEATURE: consider a simple all in one function to create a default layer stackup for static/predictable layer formats being imported, to simplify importer coding
+- FEATURE: trace length calculator:
 	- click a line or arc or via
 	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
 	- stop at the first junction (anywhere where more than 2 objects are connected)
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
-- miter bug;  miter crosses SMT pads under certain conditions [report: celem/miloh] 
-- bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk [report:Evan]
+- BUG: miter bug;  miter crosses SMT pads under certain conditions [report: celem/miloh] 
+- BUG: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk [report:Evan]
 	-> it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap; it would be too expensive to calculate what else to redraw
-- core lib splitup:
+- CLEANUP: core lib splitup:
 	- gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
