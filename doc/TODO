@@ -118,7 +118,6 @@
 	- FEATURE: preferences dialog, config pov: change prio
 	- (BUG: gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed)
 	- (BUG: gtk preferences: poly isle area widget missing from the sizes tab)
-	- BUG: default layer names from the user config are ignored
 	- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
 - CLEANUP: Mark
