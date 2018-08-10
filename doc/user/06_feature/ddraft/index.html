@@ -164,12 +164,15 @@ For example the sequence
 <i>5mm,100mil relative 1mm,1mm relative angle 30 length 2mm<i>
 means:
 <ul>
-	<li> start from absolute coords at 5mm, 100mil; after this the current coordinate is: 5.0000mm,2.5400mm
-	<li> move relative (to the right and down) 1 and 1 mm; after this the current coordinate is: 6.0000mm,3.5400mm
-	<li> the last move was a 45 degree move; relative to this 45 degrees, start moving at 30 degrees (that is, in absolute 75 degrees), and...
-	<li> ... move 2mm in that direction
-	<li> the sequence ends here, the coordinate it points to is: 6.5176mm,5.4719mm
+	<li> step 1: start from absolute coords at 5mm, 100mil; after this the current coordinate is: 5.0000mm,2.5400mm
+	<li> step 2: move relative (to the right and down) 1 and 1 mm; after this the current coordinate is: 6.0000mm,3.5400mm
+	<li> step 3: the last move was a 45 degree move; relative to this 45 degrees, start moving at 30 degrees (that is, in absolute 75 degrees), and...
+	<li> step 4: ... move 2mm in that direction
+	<li> step 5: the sequence ends here, the coordinate it points to is: 6.5176mm,5.4719mm
 </ul>
+<p>
+<img src="coord_seq.png" alt="the coord sequence annotated with auxiliary lines and step numbers">
+<p>
 Equivalent alternative forms for the same sequence:
 <pre>
 5mm,100mil rel 1mm,1mm rel ang 30 len 2mm
