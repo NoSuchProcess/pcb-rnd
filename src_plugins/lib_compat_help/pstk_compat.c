@@ -580,20 +580,23 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 		for(n = 0; n < tshp->len; n++) {
 			pcb_coord_t w, h, x1, x2, y1, y2;
 
-			if (tshp->shape[0].data.poly.len != 4)
+			if (tshp->shape[n].shape != PCB_PSSH_POLY)
+				continue;
+
+			if (tshp->shape[n].data.poly.len != 4)
 				return pcb_false;
 
-			x1 = tshp->shape[0].data.poly.x[0];
-			x2 = tshp->shape[0].data.poly.x[2];
+			x1 = tshp->shape[n].data.poly.x[0];
+			x2 = tshp->shape[n].data.poly.x[2];
 			if (x1 < x2) {
-				x2 = tshp->shape[0].data.poly.x[0];
-				x1 = tshp->shape[0].data.poly.x[2];
+				x2 = tshp->shape[n].data.poly.x[0];
+				x1 = tshp->shape[n].data.poly.x[2];
 			}
-			y1 = tshp->shape[0].data.poly.y[0];
-			y2 = tshp->shape[0].data.poly.y[2];
+			y1 = tshp->shape[n].data.poly.y[0];
+			y2 = tshp->shape[n].data.poly.y[2];
 			if (y1 < y2) {
-				y2 = tshp->shape[0].data.poly.y[0];
-				y1 = tshp->shape[0].data.poly.y[2];
+				y2 = tshp->shape[n].data.poly.y[0];
+				y1 = tshp->shape[n].data.poly.y[2];
 			}
 			w = x1 - x2;
 			h = y1 - y2;
