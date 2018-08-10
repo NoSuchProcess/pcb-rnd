@@ -26,6 +26,7 @@
 + feature: currently if your lht file lacks an outline layer there is no way in the gui to add one [report: Evan]
 
 2. For later releases ===============================================================================
+- FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
 - CLEANUP: Remove separate command entry window from gtk
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
