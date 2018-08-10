@@ -666,7 +666,7 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 			break;
 	}
 
-	*clearance = ps->Clearance > 0 ? ps->Clearance : tshp->shape[0].clearance;
+	*clearance = (ps->Clearance > 0 ? ps->Clearance : tshp->shape[0].clearance) * 2;
 	*nopaste = pasten < 0;
 
 	return pcb_true;
