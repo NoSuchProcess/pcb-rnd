@@ -114,9 +114,6 @@
 		- CLEANUP: allow GTK to handle keys in preview
 		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
 - CLEANUP: resources:
-	- gpmi:
-		- hid: hid_destroy (pair of hid_create)
-		- cleanup on unload: remove menus
 - conf:
 	- FEATURE: preferences dialog, config pov: change prio
 	- (BUG: gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed)
@@ -159,8 +156,6 @@
 			- search for /units, replace it with pcb-printf something
 			- add round down
 			- replace ignore_refdes, ignore_value and ignore_descr with genvector
-	- mods:
-		- gpmi (and other buildins/plugins) not showing up in the about box
 - FEATURE: project specific menus from extra lihata files - maybe from project.lht
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
@@ -289,7 +284,6 @@ FEATURES
 - FEATURE: while drawing a line, the temporary outline should reflect the layer color
 - FEATURE: push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
-- --dump-actions shows gpmi paths ( is this related? it looks unexpected to me)
 - CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh]
 - consider allowing negative Delta to be specified in CTRL-E property inspector
 - FEATURE: consider a simple all in one function to create a default layer stackup for static/predictable layer formats being imported, to simplify importer coding
