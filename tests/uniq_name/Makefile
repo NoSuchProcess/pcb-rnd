@@ -5,7 +5,7 @@ SRC=$(ROOT)/src
 
 CFLAGS = -Wall -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
 LDLIBS = -lm
-LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o
+LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o $(LHT)/genvector/gds_char.o
 
 all: tester
 
