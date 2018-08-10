@@ -255,8 +255,7 @@ void pcb_main_uninit(void)
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
 	 * Because it removes some false positives from heap bug detectors such as
-	 * lib dmalloc.
-	 */
+	 * valgrind. */
 	pcb_board_free(PCB);
 	free(PCB);
 	PCB = NULL;
