@@ -25,6 +25,7 @@
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 
 2. For later releases ===============================================================================
+- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
 - CLEANUP: Remove separate command entry window from gtk
 - FEATURE: padstack bbox:
