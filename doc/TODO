@@ -11,9 +11,6 @@
 	+> long term: need per plugin menus and/or implement local grid in lesstif
 	+> suppressed the error message for now, the menu gets disabled anyway
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
-+ BUG: Right clicking a subc will toggle the select flag. If the user locks the subc during the right click operation then the select flag can get locked as well. (Propose that right-click should not select object) [report: Ade]
-	+> right click does not change the selection of subc; assuming it's the property editor that triggered it: it can operate only on selected objects at the moment, can't change it easily.
-	+> the real bug was this: if you manage to get a lock+select combination on any object (can be loaded from a file in whatever format!), clicking away should remove the selection flag from locked objects too; the meaning of lock shall be: "can't be easily changed by clicking around"
 + feature: fp_wget cache dir configurable [report: agaran]
 + BUG: The lock flag can not be cleared for padstacks
 	+ in the 'edit flags' -> edit flags refuses to work on locked objects now, to avoid accidentall editing
