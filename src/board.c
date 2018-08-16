@@ -151,8 +151,18 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 
 int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 {
+	int n;
+
 	/* copy default settings */
 	pcb_layer_colors_from_conf(pcb, 0);
+
+	for(n = 0; n < PCB_MAX_BUFFER; n++) {
+		if (pcb_buffers[n].Data != NULL) {
+			pcb_data_unbind_layers(pcb_buffers[n].Data);
+			pcb_data_binding_update(pcb, pcb_buffers[n].Data);
+		}
+	}
+
 	return 0;
 }
 
