@@ -276,7 +276,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 			for(arc = arclist_first(&symbol[*s].arcs); arc != NULL; arc = arclist_next(arc)) {
 				pcb_arc_bbox(arc);
 				maxx = MAX(maxx, arc->bbox_naked.X2);
-				maxy = MAX(maxy, arc->bbox_naked.X2);
+				maxy = MAX(maxy, arc->bbox_naked.Y2);
 			}
 
 			for(poly = polylist_first(&symbol[*s].polys); poly != NULL; poly = polylist_next(poly)) {
