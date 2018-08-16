@@ -96,6 +96,7 @@ void pcb_arc_post(pcb_arc_t *arc);
 		pcb_arc_t *__a__ = (a);                                       \
 		PCB_MOVE((__a__)->X,(__a__)->Y,__dx__,__dy__)                 \
 		PCB_BOX_MOVE_LOWLEVEL(&((__a__)->BoundingBox),__dx__,__dy__); \
+		PCB_BOX_MOVE_LOWLEVEL(&((__a__)->bbox_naked),__dx__,__dy__); \
 	} while(0)
 
 #define PCB_ARC_LOOP(element) do {                                      \
