@@ -160,9 +160,9 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 	{"@.side",            "side",             &op_tab[OPS_ANY], RIGHT_CONST, &right_const_tab[RC_SIDE]},
-	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.footprint",       "footprint",        &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.a.refdes",        "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.a.footprint",     "footprint",        &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.a.value",         "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
 
 	{NULL,                "host layer's",     NULL,             0, NULL},
 	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
