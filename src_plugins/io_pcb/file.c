@@ -861,6 +861,11 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 	if (setup) {
 		pcb_layer_group_setup_default(pcb);
 
+		/* make sure every layer has a name */
+		for(lid = 0; lid < pcb->Data->LayerN; lid++)
+			if (pcb->Data->Layer[lid].name == NULL)
+				pcb->Data->Layer[lid].name = pcb_strdup_printf("anon_%d", lid);
+
 		for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 			if (strcmp(pcb->Data->Layer[lid].name, "silk") == 0) {
 				if (silk < 0)
