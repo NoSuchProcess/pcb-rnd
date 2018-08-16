@@ -138,6 +138,9 @@ void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
 /* Recalculate the layer bindings updating meta.bound.real to new board layers */
 void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data);
 
+/* Break the binding in data bound layers (set htem all to NULL) */
+void pcb_data_unbind_layers(pcb_data_t *data);
+
 /* Make sure there are no negative coords in data, knowing the bbox of the data */
 int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox);
 

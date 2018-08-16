@@ -337,6 +337,13 @@ void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
 	}
 }
 
+void pcb_data_unbind_layers(pcb_data_t *data)
+{
+	pcb_layer_id_t n;
+	for(n = 0; n < data->LayerN; n++)
+		data->Layer[n].meta.bound.real = NULL;
+}
+
 void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data)
 {
 	int i;
