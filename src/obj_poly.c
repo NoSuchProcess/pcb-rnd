@@ -610,6 +610,7 @@ void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 	}
 	PCB_END_LOOP;
 	PCB_BOX_MOVE_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
+	PCB_BOX_MOVE_LOWLEVEL(&Polygon->bbox_naked, DX, DY);
 }
 
 /* moves a polygon */
