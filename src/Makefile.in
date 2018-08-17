@@ -36,7 +36,7 @@ else
 end
 
 # These files are to be generated before make dep is run
-put /local/pcb/DEPDEPS { conf_core_fields.h conf_internal.c generated_lists.h }
+put /local/pcb/DEPDEPS { conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c buildin.c pcb_menu_default.c }
 
 include {../scconfig/template/debug.tmpasm}
 
