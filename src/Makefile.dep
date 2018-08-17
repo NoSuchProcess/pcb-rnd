@@ -5727,7 +5727,9 @@ compat_fs.o: compat_fs.c ../config.h compat_inc.h compat_fs.h \
  ../src_3rd/genlist/gendlist.h error.h
 compat_lrealpath.o: compat_lrealpath.c compat_inc.h ../config.h \
  compat_lrealpath.h compat_misc.h
-compat_misc.o: compat_misc.c compat_inc.h ../config.h compat_misc.h
+compat_misc.o: compat_misc.c compat_inc.h ../config.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h compat_misc.h
 conf.o: conf.c ../src_3rd/genht/hash.h ../src_3rd/liblihata/tree.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -7347,10 +7349,11 @@ tool.o: tool.c ../config.h tool.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h event.h \
- find.h grid.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h tool_arc.h \
- tool_arrow.h tool_buffer.h tool_copy.h tool_insert.h tool_line.h \
- tool_lock.h tool_move.h tool_poly.h tool_polyhole.h tool_rectangle.h \
- tool_remove.h tool_rotate.h tool_text.h tool_thermal.h tool_via.h
+ find.h grid.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h actions.h \
+ tool_arc.h tool_arrow.h tool_buffer.h tool_copy.h tool_insert.h \
+ tool_line.h tool_lock.h tool_move.h tool_poly.h tool_polyhole.h \
+ tool_rectangle.h tool_remove.h tool_rotate.h tool_text.h tool_thermal.h \
+ tool_via.h
 tool_arc.o: tool_arc.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
