@@ -595,14 +595,14 @@ void lesstif_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, props, lesstif_create_menu_widget, NULL);
 }
 
-void lesstif_remove_menu(const char *menu_path)
+int lesstif_remove_menu(const char *menu_path)
 {
-	pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
+	return pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
 }
 
-void lesstif_remove_menu_node(lht_node_t *node)
+int lesstif_remove_menu_node(lht_node_t *node)
 {
-	pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
+	return pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
 static const char *lesstif_menu_cookie = "hid_lesstif_menu";

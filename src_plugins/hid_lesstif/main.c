@@ -3906,8 +3906,8 @@ static void lesstif_conf_regs(const char *cookie)
 
 
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
-void lesstif_remove_menu(const char *menu);
-void lesstif_remove_menu_node(lht_node_t *node);
+int lesstif_remove_menu(const char *menu);
+int lesstif_remove_menu_node(lht_node_t *node);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
