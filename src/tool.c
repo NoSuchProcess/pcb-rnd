@@ -39,6 +39,7 @@
 #include "find.h"
 #include "grid.h"
 #include "undo.h"
+#include "actions.h"
 
 
 pcb_toolid_t pcb_tool_prev_id;
