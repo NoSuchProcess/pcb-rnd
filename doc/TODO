@@ -21,6 +21,7 @@
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 
 2. For later releases ===============================================================================
+- FEATURE: Scale() buffer objects (with an option to affect coords only) [report: celem]
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
