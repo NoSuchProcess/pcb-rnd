@@ -1,3 +1,341 @@
+pcb-rnd 2.0.1 (!r18901)
+~~~~~~~~~~~~~~~~~~~~~~
+	[bbox]
+		-Add: naked bbox for every object (does not include clearance or other invisible effects)
+
+	[cam]
+		-Add: common interface to tell export plugins what layers to export in which file
+
+	[cli]
+		-Add: multi-language/multi-syntax CLI
+		-Add: configurable prompt
+		-Add: hid_gtk* includes the cli prompt
+		-Add: hid_batch includes the cli prompt
+		-Add: hid_lesstif prints the central prompt
+		-Add: mode stack with mode enter/leave helpers
+
+	[conf]
+		-Del: default_layer_name[] - should be coming from the default board, code shouldn't assume uninitialized layers have initialized layer names
+		-Del: default groups from config - depend on default board instead
+		-Del: route styles from the config - default board should bring it
+		-Del: via-specific select color
+		-Del: remove pin-specific selected color
+		-Del: remove subc-specific selected color
+		-Del: element selected color
+		-Del: remove rat-specific selected color
+		-Del: obsolete color setting: element-nonetlist
+		-Del: unused color conf node: black
+		-Del: remove the white color (not used)
+		-Del: remove unused color.invisible_mark
+
+	[core]
+		-Optimize: implement dynamic Level-of-Details in text rendering - draw less lines for small text
+		-Optimize: dynamic level-of-detail for padstack marks
+		-Optimize: thin draw poly contour: level-of-detail control: skip points too dense
+		-Optimize: draw helper poly clipping: if a polygon is fully within the clip box, do not do the expensive clipping
+		-Optimize: level-of-detail control for subc dashed bbox
+		-Optimize: draw logics: use cheaper storage for do_group
+		-Optimize: cheaper return from width calculation if string is NULL
+		-Optimize: simpler, cheaper term label draw with low level text draw call
+		-Cleanup: memory leak in path subst
+		-Cleanup: memory leak on conflist overwrite
+		-Cleanup: memory leak: uninit ui layers
+		-Cleanup: memory leak on dynamic hid callbacks on native config nodes
+		-Cleanup: memory leak: conf files hash
+		-Cleanup: memory leak on board dummy layers
+		-Cleanup: memory leak on plugin dir init
+		-Cleanup: pcb_lrealpath contains an strdup, an extra strdup on caller's side makes a mem leak
+		-Cleanup: memory leak on pcb_snprintf
+		-Cleanup: memory leak on hid cfg init by brave.c
+		-Cleanup: memory leak in layer vis hid reg
+		-Cleanup: layer name memory leak
+		-Cleanup: memory leaks in pcb_snprintf() and pcb_vsnprintf()
+		-Cleanup: rtree memory leak
+		-Cleanup: find.c memory leak on padstack lists
+		-Fix: label text centering corner case on mirrored view and vertical text
+		-Fix: delayed heavy terminal draw for polygon, text, line, arc
+		-Fix: do not call pcb_notify_crosshair_change(pcb_true) twice in a row when the crosshair moves - this is an error condition that will lead to most HIDs doing an expensive full redraw
+		-Fix: when an object is selected or unselected, make sure it is redrawn
+		-Fix: restore the crosshair colour after drawing the drc outline around the line shape
+		-Fix: restore the crosshair colour after drawing the drc outline for an attached arc tool shape
+		-Fix: FreeRotateBuffer() refuses to rotate angles too large (to avoid double precision floating number instability)
+		-Fix: mark the board changed on layer group operations that changes the layer stackup
+		-Fix: When drawing the UI layer, call set_drawing_mode (flush) before calling end_layer, instead of after.
+		-Fix: find.c padstack intersection bug: circular shape vs. arc typos made intersections not detected
+		-Fix: don't call NetlistShow() if there's no net name available
+		-Fix: make sure the board's file format is not affected by a backup save
+		-Fix: copy+paste crosshair range uses the naked bbox of the buffer, allowing objects to be moved near the edge of the drawing area even if clearance is beyond the drawing area
+		-Fix: don't use O(n^2) algo for finding duplicate arcs when we have rtrees
+		-Fix: crosshair saves original object x;y only on move-start so it doesn't interfere with the original functionality
+		-Fix: also set tx;ty to the current crosshair coord before a move so a double click doesn't reuse an old target coord from the previous operation (or a 0;0 in the first op)
+		-Fix: PromptFor() should return a string
+		-Fix: redraw the screen after buffer operations (should fix delayed draw on lesstif/irix)
+		-Fix: arrow tool: remember click coords even before the mouse is moved; fixes random object jumpyness on click-move-in-place
+		-Fix: pstk's flag change op shouldn't quit if padstack is locked - let the higher-level caller decide whether locked objects should be ignored
+		-Fix: allow locked objects to be deselected, not "locking the selected flag"
+		-Fix: locked objects shouldn't be removed on move or cut-to-buffer operations
+		-Fix: when a new board is loaded, rebind all buffer layers to avoid dangling bound layer pointers (still pointing to the previous boards' layers)
+		-Fix: text, arc, poly low level move should update naked bbox as well
+		-Fix: text bbox calculation typo with arc's Y
+		-Del: remove the erase color - with the drawing mode API the rendering mechanism doesn't depend on this hack any more
+		-Del: holes_after mechanism from the rendering code: always assume it is set to 1
+		-Del: remove SelectedElements from Flip() action's syntax description (old terminology)
+		-Del: action handler for ExecCommand - merged with System()
+		-Del: action_act.c and action_helper.c
+		-Del: all-in-one about box content string (last user was the lesstif hid's home-grown about box)
+		-Move: pcb_act_PCBChanged() to oldactions
+		-Move: pcb_act_RouteStylesChanged(), pcb_act_NetlistChanged() and pcb_act_LibraryChanged to oldactions (pcb-rnd has an event system)
+		-Move: pcb_act_MinMaskGap() to oldactions
+		-Move: pcb_act_ChangePaste() and pcb_act_ChangeHole() to oldactions
+		-Move: deprecated actions for changing octagon/square flag moved to oldactions
+		-Split: low level text string draw function from pcb_text_t draw function to make calls cheaper where the caller is not drawing an existing text object
+		-Add: helper funciton to calculate text string height
+		-Add: draw API and infrastructure for delayed heavy term rendering
+		-Add: save last seen raw mouse pointer coords in the crosshair struct
+		-Add: make terminal label printout size configurable
+		-Add: default menu: layer group context popup contains a del group item
+		-Add: cli: hook for the /tab action
+		-Add: actions: cli edit hook
+		-Add: use putenv() if setenv() is not available
+		-Add: expose the low level id search that doesn't throw a hace on not-found
+		-Add: zoom to selection and zoom to found in the menu
+
+	[ddraft]
+		-Add: new action: trim(): cutting edge objects to remove excess segments of lines and arcs
+		-Add: new action: split(): cutting edge objects to split lines and arcs into multiple objects
+		-Add: new action: constraint() for line drawing (angle and length)
+		-Add: new action: perp and paral and tang to constraint lines 
+		-Add: constraint GUI: dialog box to set or reset constraints
+		-Add: new action: ddraft() with a custom, 2d drawing mini-language
+		-Add: new CLI mode that uses the ddraft() syntax
+
+	[dialog]
+		-Fix: flag edit dialog refuses to operate on locked objects (it would get out of sync very fast)
+		-Fix: padstack editor now allows setting clearance to 0
+		-Add: new export dialog with tabs on the left
+		-Add: new about box
+		-Add: layer binding dialog: enforce current layer model limitations: when the user selects outline, make it global; when the users selects anything else but copper, reset stack offset
+
+	[distalign]
+		-Fix: Distribute() accepts optional gridless as the last argument
+
+	[doc]
+		-Add: document the new PCB_HID_COMP_POSITIVE_XOR drawing mode
+		-Add: template reference for padstack prototype
+		-Add: fungw action doc
+		-Add: explain how fungw functions are allowed to change their arguments
+		-Add: writeup on lib64/
+		-Add: fungw actions: raw example of extended coordinate load
+		-Add: developer doc with code snippets for fungw based action implementation
+		-Add: fungw action: calling other actions
+		-Add: introducing the CAM feature
+		-Add: a section for scripting (fungw)
+		-Add: document ddraft
+		-Add: EasyEDA on bridges
+		-Add: explain what the lock flag does
+		-Update: new version of GPL2 (from Debian's /usr/share) with the right FSF address and some white space fixups
+		-Update: datasheet: update list of supported scripting languages, replace gpmi with fungw
+		-Update: datasheet: file formats
+
+	[draw]
+		-Optimize: batch subc and padstack mark draws into one large xor draw session; batch subc and padtsack label draw in a separate non-xor draw session for now
+		-Optimize: do not use delay draw for padstack labels - they are drawn in a separate pass anyway
+
+	[draw_csect]
+		-Add: button for creating outline layer when it's not available
+
+	[export_ps]
+		-Add: show-toc option (default on, works only in single-file mode)
+		-Add: --single-page option to merge multiple layer groups (useful with --cam)
+
+	[fontmode]
+		-Fix: set layer color from defaults for the layers created for font editing to avoid a crash
+
+	[fp_fs]
+		-Fix: memory leak on non-existing paths
+
+	[fp_wget]
+		-Add: cache dir patch is configurable
+
+	[gl]
+		-Optimize: do not draw sophisticated round end caps for objects thinner than 1 pixel
+		-Optimize: do not use triangles for lines too thin - use plain old lines
+		-Optimize: tesselate with less number of points for polygons, when contour points are too dense
+		-Change: inline low level gl drawing functions to cut back on function call overhead
+		-Add: Support for XOR drawing mode
+
+	[gtk]
+		-Optimize: cheaper rendering of single-pixel objects
+		-Cleanup: memleak on config hid reg
+		-Fix: race-condition-free window position/size query
+		-Fix: when entering the drawing area, do a full redraw (invalidate-all) so the code does not depend on "xor-undraw" of the corsshair attached object
+		-Fix: all active top window widgets should let the central key handler handle all keyoard input
+		-Fix: don't change layer colors without the explicit request of the user
+		-Fix: property editor configures the preview layer name/color for all layers it uses
+		-Fix: for a context-popup, find subcircuits padstacks first and proceed to anythign non-subc-part only if none found; this allows right-clicking on subc padstacks
+		-Fix: get coords shall not change the input parameters if the user exits with an esc
+		-Fix: when handing keyboard presses (e.g. esc) in get coord, be more careful not to interfere with previous or next GUI interaction: accept only keys that are pressed _and_ released during the loop
+		-Fix: side correct zoom to window shall update .pcb_x and .pcb_y because get_coords think the coords are available
+		-Fix: advanced search expression build table: subcircuit footprint, refdes and value are all attributes, not properties
+		-Del: action LayerGroupsChanged (switched to events)
+		-Del: separate config subtree for selection colors; now that there is only one selection color, it shuld go in the main colors
+		-Del: get rid of the local About box implementation in favor of the central one
+		-Del: local ExportGUI implementation in favor of the central one
+		-Update: the layer selector widget uses layer's real color instead of guessing
+		-Add: action: ZoomTo(selected) and ZoomTo(found)
+		-Add: SwapSides() second arg S option for changing layer selection when swapping side
+		-Add: advanced search wizard table: common flags
+		-Add: when zooming to window, move the crosshair to the center of the window
+		-Add: attribute dialog: implement PCB_HATF_LEFT_TAB
+		-Add: implement the command entry hooks (tab, mouse clicks, editing)
+		-Change: property editor dialog's main tree is scrollable
+		-Change: mark the separate command window deprecated on the GUI
+
+	[gtk2_gdk]
+		-Optimize: draw dot instead of complex object when object is too small
+		-Optimize: omit too dense polygon corners (level-of-details control)
+		-Optimize: detect axis aligned rectangles and draw them cheaper
+		-Fix: crosshair coord rounding error
+		-Add: render burst sets zoom level in core for optimization
+
+	[gtk2_gl]
+		-Cleanup: more static functions to avoid name pollution
+		-Cleanup: use int from GL, not gint from GLib
+
+	[hid]
+		-Optimize: use centrally cached cap style and line width set to remove some load from the HIDs
+		-Optimize: centrally cached xor/faded hid calls
+		-Cleanup: rename cap styles with pcb_ prefix and avoid CamelCase
+		-Cleanup: centralize action GetXY - it does nothing HID-specific by now
+		-Cleanup: centralize the printer calibration action - has nothing HID-specific
+		-Move: clip.[ch] out from core, to lib_hid_common, as an inline function: it's used exclusively by renderers for line clipping
+		-Del: Trace_Cap: same as Round_Cap, no reason for the case/code duplication
+		-Del: Beveled_Cap: this hack was apperantly used for octagonal pins - padstacks don't have secial casing for octagons
+		-Del: API CHANGE: x and y coords are no longer passed as action arguments - only a few actions need coords and there are two different kind of coords (crosshair and pointer) so actions shall query for coords when they need it
+		-Del: API CHANGE: needs-coord from action registration: semi-automatic, central coord query for actions got removed already
+		-Del: remove the "erase" color and rely on the drawing mode for negative draw
+		-Del: holes_after from the API: it's always enabled now
+		-Change: API CHANGE: get coords can be forced to query the user for a new set of coords - some actions may need two, distinct set of coordinates
+		-Add: central gc cache struct in all hid gcs
+		-Add: centralize hid creation and destroy so that the core-side cache can be maintained
+		-Add: new API to make GUI zoom level available for core
+		-Add: comment that recommends updating the core zoom level in burst start
+		-Add: introduce PCB_HID_COMP_POSITIVE_XOR to help non-sw-render HIDs optimizing their XOR draws
+		-Add: PCB_HATF_LEFT_TAB for moving TABBED's tabs to the left (for a vertical align that works better when there are a lot of tabs)
+		-Add: DAD helper macro to build a DAD entry dupping an existing attr
+		-Add: extend the mouse input event API with a flag for whether the command line is open at the time of the event; this will be used for mouse integration with cli modes
+		-Add: API to query or change command line entry
+
+	[import_fpcb_nl]
+		-Add: import freepcb netlist (import schematics from EasyEDA)
+
+	[io_lihata]
+		-Fix: saving font should not write invalid nodes
+		-Add: read layer color from v5 boards
+
+	[layer]
+		-Fix: properly clreate new (missing) layer groups when upgrading the stack for padstack
+		-Fix: when creating new layer groups for a padstack upgrade, make sure new bottom paste and bottom silk and bottom mask end up below bottom copper
+		-Fix: don't overwrite silk's color permanently while rendering
+		-Fix: when composite drawing mask and paste, set the base color to the first layer's color
+		-Fix: when drawing bound layers, use the real layer's actual color (if real layer is available) instead of default color
+		-Fix: creating a new layer should set the change flag on the board
+		-Split: create intern misc layer code: separate the logic (where/why to create) from the mechanical part (low level data field fill in)
+		-Del: per layer selected color - use a global layer-object-selected-color instead
+		-Del: vtlayer - use vtp0 instead because UI layer pointers must be persistent because of object parent links
+		-Change: layer color is dynamically alloced (because it is loaded from the board file)
+		-Change: multi layer composite draw respects each layers own color and doesn't force using the same color
+		-Add: API for unified string-to-layer-id conversion
+		-Add: helper function to determine the default color of a new layer
+		-Add: force flag to enforce loading default layer colors (useful for loading old/alien formats without proper layer color support)
+		-Add: helper functions for change layer color
+		-Add: ui layer vector and ui layer lookup by id
+		-Add: when new layer is created, set its color to default
+		-Add: DelGroup() action, similar to EditGroup
+
+	[lesstif]
+		-Optimize: direct rendering mode optimization
+		-Fix: issue a (delayed) redraw on entering the drawing area so that the crosshair attached object is drawn properly
+		-Fix: draw attached objects from the crosshair change notification callback
+		-Fix: at the end of a full redraw, draw crosshair-attached objects only once, without drawing mode setting
+		-Fix: draw crosshair attached objects on the leave notification to keep the xor drawn objects coherent
+		-Fix: attached object redraw on leave happens only if crosshair is on
+		-Fix: when leaving the drawing area, refresh the mark so it remains on the screen
+		-Del: action LoadVendorFrom() - done in the vendor plugin
+		-Del: get rid of the local About box implementation in favor of the central one
+		-Del: local ExportGUI implementation (in favor of the new, central export dialog)
+		-Del: command entry action comment shouldn't explain action syntax, especially that that's only one of the backends
+		-Change: mark the lesstif-specific LibraryShow action deprecated
+		-Change: gui command entry + mouse clicking: command entry should not close or lose keyboard focus
+		-Add: action ZoomTo(selected)
+		-Add: action ZoomTo(found)
+		-Add: SwapSides() second arg S option for changing layer selection when swap sides
+		-Add: when zooming to window, move the crosshair to the center of the window
+		-Add: set core zoom level in render burst
+		-Add: command entry: support for cli /edit hook
+
+	[lib_compat_help]
+		-Fix: padstack->pad conversion: centralize the *2 on clearance value, that's how the old formats store it
+		-Fix: padstack->pad conversion: determine polygon shaped mask size properly
+
+	[mincut]
+		-Optimize: do not run mincut if there surely won't be a solution (no cuttable objects in between S and T)
+		-Fix: free up the graph after use to cut back on mem leaks
+		-Fix: memory leak on network names
+		-Fix: solver free's cloned graph on error return to avoid memleak
+	[propedit]
+		-Add: color field for real layers
+		-Add: map and set object flags
+
+	[pstk]
+		-Optimize: unplated hole graphics: use a smaller circle within the hole, so XOR can be avoided
+		-Fix: set line cap and width for drawing holes
+		-Fix: remove excess xor draw setup
+		-Fix: set line end cap before thin drawing padstack shapes - on some layers there's nothing else drawn that'd set the cap
+		-Change: display teminal name centered for padstacks - same happens with heavy terminals
+		-Add: action for breaking up a padstack
+		-Add: when bbox is vertical, print vertical term label so the label is aligned with pad orientation
+
+	[query]
+		-Fix: qyery() action sets the result field and returns success instead of returning the version number (which would mean error)
+		-Fix: don't execute the callback if current object is NULL
+		-Fix: don't let common bounding box based area accessor block the more precise, per object code
+		-Add: line length square (cheaper calculations)
+		-Add: line area accessor
+		-Add: arc length^2
+		-Add: arc area
+		-Add: return true area of polygons
+		-Add: support for executing flag lookups
+
+	[report]
+		-Fix: report(subc) should report only about subcircuits and nothing else
+
+	[scconfig]
+		-Add: print help of scconfig default args
+		-Add: detect putenv() if setenv() is not available
+
+	[script]
+		-Add: new action: ListScripts()
+		-Add: new action: LoadScript()
+		-Add: new action: UnLoadScript()
+		-Add: CLI mode for script oneliners
+		-Change: switch over all actions to the fungw API
+
+	[subc]
+		-Fix: get rotation angle inversion bug (fixes e.g. sch reimport rotation messup problem)
+		-Add: use subc_nonetlist for drawing the dashed outline of subcircuits with the nonetlist flag set
+		-Add: configuration setting for showing only visible-side subc marks (default on)
+
+	[tool]
+		-Fix: use the naked bbox for moving objs so they can reach the sides of the drawing area
+		-Del: pcb_adjust_attached_object(): was a wrapper around the tool's implementation, use that directly
+		-Del: the 'none' tool menu: there's no such tool, use the arrow tool instead
+		-Move: old tool related helpers pcb_release_mode() and pcb_notify_mode() to tool.[ch] to clean up action_helper
+		-Cleanup: pcb_act_ChkMode() should use the tool infra for converting string to tool id instead of a local list of tool names
+		-Split: separate target x,y fields in crosshair for move/copy; this allows detaching where the object will land from the current crosshair coord (allowing plugins to recalculate or restrict the target coords)
+		-Add: before a selected-move, store the starting coordinates so plugins, e.g. ddraft/constraint can calculate how far the move went
+		-Add: when the command line is open, override the normal notify/release action and try the cli backend first; perform the normal actions only if the backend did not handle it
+
 pcb-rnd 2.0.0 (r17177)
 ~~~~~~~~~~~~~~~~~~~~~~
 
