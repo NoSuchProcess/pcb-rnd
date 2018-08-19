@@ -294,6 +294,9 @@ static pcb_bool parse2coords(const char *arg, pcb_coord_t *rx, pcb_coord_t *ry)
 	char *end;
 	pcb_bool succ;
 
+	if (arg == NULL)
+		return pcb_false;
+
 	dst = arg;
 	end = strchr(dst, ';');
 	if (end != NULL) {
