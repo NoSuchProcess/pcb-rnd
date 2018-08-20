@@ -412,10 +412,18 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 1; n < argc; n++)
 		PCB_ACT_MAY_CONVARG(n, FGW_STR, regpoly, args[n-1] = argv[n].val.str);
 
-	a = get_where(args[0], &data, &x, &y, &have_coords);
-	if (a < 0) {
-		PCB_ACT_IRES(-1);
-		return 0;
+	if (argc > 2) {
+		a = get_where(args[0], &data, &x, &y, &have_coords);
+		if (a < 0) {
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+	}
+	else {
+		a = 0;
+		data = PCB->Data;
+		have_coords = 1;
+		pcb_hid_get_coords("Click on the center of the rectangle", &x, &y, 0);
 	}
 
 	/* convert width;height */
