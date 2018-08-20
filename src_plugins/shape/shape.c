@@ -321,7 +321,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *args[6];
 	double rot = 0;
-	pcb_coord_t x, y, rx, ry = 0;
+	pcb_coord_t x = 0, y = 0, rx, ry = 0;
 	pcb_bool succ, have_coords = pcb_false;
 	int corners = 0, a, n;
 	pcb_data_t *data;
@@ -393,7 +393,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int n, a;
 	pcb_data_t *data;
 	pcb_bool succ, have_coords = pcb_false;
-	pcb_coord_t x, y, w, h, rx, ry;
+	pcb_coord_t x = 0, y = 0, w, h, rx, ry;
 	double rot = 0.0;
 	char *end;
 
@@ -467,7 +467,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int n, a;
 	pcb_data_t *data;
 	pcb_bool succ, have_coords = pcb_false;
-	pcb_coord_t x, y, dia;
+	pcb_coord_t x = 0, y = 0, dia;
 
 	if (argc < 2) {
 		pcb_message(PCB_MSG_ERROR, "circle() needs at least one parameters (diameter)\n");
