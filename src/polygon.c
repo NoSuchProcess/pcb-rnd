@@ -1852,6 +1852,7 @@ pcb_bool pcb_poly_is_rect_in_p(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, p
 	return pcb_poly_isects_poly(s, p, pcb_true);
 }
 
+#warning TODO: this should be in polygon1.c
 /* NB: This function will free the passed pcb_polyarea_t.
  *     It must only be passed a single pcb_polyarea_t (pa->f == pa->b == pa)
  */
