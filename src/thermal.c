@@ -137,6 +137,11 @@ static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 		atmp.Delta = ea-sa;
 	}
 	else {
+		if (ea < sa) {
+			double tmp = ea;
+			ea = sa;
+			sa = tmp;
+		}
 		atmp.StartAngle = ea;
 		atmp.Delta = 360-ea+sa;
 	}
