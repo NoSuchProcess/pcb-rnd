@@ -1,4 +1,4 @@
-pcb-rnd 2.0.1 (!r18901)
+pcb-rnd 2.0.1 (!r18970)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[bbox]
 		-Add: naked bbox for every object (does not include clearance or other invisible effects)
@@ -283,6 +283,7 @@ pcb-rnd 2.0.1 (!r18901)
 		-Fix: free up the graph after use to cut back on mem leaks
 		-Fix: memory leak on network names
 		-Fix: solver free's cloned graph on error return to avoid memleak
+
 	[propedit]
 		-Add: color field for real layers
 		-Add: map and set object flags
@@ -335,6 +336,9 @@ pcb-rnd 2.0.1 (!r18901)
 		-Split: separate target x,y fields in crosshair for move/copy; this allows detaching where the object will land from the current crosshair coord (allowing plugins to recalculate or restrict the target coords)
 		-Add: before a selected-move, store the starting coordinates so plugins, e.g. ddraft/constraint can calculate how far the move went
 		-Add: when the command line is open, override the normal notify/release action and try the cli backend first; perform the normal actions only if the backend did not handle it
+
+	[thermal]
+		-Fix: thermal arc angle overflow corner case, on line end caps (reported by Ade)
 
 pcb-rnd 2.0.0 (r17177)
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -807,6 +811,8 @@ pcb-rnd 2.0.0 (r17177)
 	[shape]
 		-Fix: use tabbed widget instead of local tab implementation (works better on small screen)
 		-Fix: don't warn on start for invalid dia
+		-Fix: roundrect: don't crash on missing arg
+		-Fix: placing round rect: if there's only one arg, it should be the size
 
 	[stroke]
 		-Rewrite: new, configuration+action based stroke implementation, rewritten from scratch
