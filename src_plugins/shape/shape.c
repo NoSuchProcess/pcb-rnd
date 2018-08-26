@@ -94,6 +94,7 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_
 
 static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t ex, pcb_coord_t ey, pcb_coord_t rx, pcb_coord_t ry, double sa, int segs, int need_rot, double cosra, double sinra, pcb_coord_t rotcx, pcb_coord_t rotcy)
 {
+	pcb_coord_t lx, ly;
 	double da = M_PI/2.0/((double)segs-1);
 	int n;
 
@@ -101,6 +102,8 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t s
 	if (need_rot)
 		pcb_rotate(&sx, &sy, rotcx, rotcy, cosra, sinra);
 	pcb_poly_point_new(p, sx, sy);
+	lx = sx;
+	ly = sy;
 
 	/* add approximated ellipse points */
 	segs -= 2;
@@ -110,13 +113,17 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t s
 		y = pcb_round((double)cy - sin(sa) * (double)ry);
 		if (need_rot)
 			pcb_rotate(&x, &y, rotcx, rotcy, cosra, sinra);
-		pcb_poly_point_new(p, x, y);
+		if ((x != lx) || (y != ly))
+			pcb_poly_point_new(p, x, y);
+		lx = x;
+		ly = y;
 	}
 
 	/* add exact end point */
 	if (need_rot)
 		pcb_rotate(&ex, &ey, rotcx, rotcy, cosra, sinra);
-	pcb_poly_point_new(p, ex, ey);
+	if ((ex != lx) || (ey != ly))
+		pcb_poly_point_new(p, ex, ey);
 }
 
 #define CORNER(outx, outy, rect_signx, rect_signy, rsignx, rsigny) \
