@@ -12,9 +12,6 @@
 	+> suppressed the error message for now, the menu gets disabled anyway
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 + feature: fp_wget cache dir configurable [report: agaran]
-+ BUG: The lock flag can not be cleared for padstacks
-	+ in the 'edit flags' -> edit flags refuses to work on locked objects now, to avoid accidentall editing
-	+ or 'object properties' dialogs (can be cleared for lines and arcs). [report: Ade]
 + BUG: Locked objects can be moved when selected. [Report: Ade]
 	+> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
