@@ -35,8 +35,9 @@
 		- if worked: allow padstack xor draw to draw all shapes on all layers
 - FEATURE: introduce new layer types:
 	- doc
-	- keepout
+	- mech (keepout)
 	- decide where to store global layers
+	- revise io plugins to load/save them properly
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
