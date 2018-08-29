@@ -2028,9 +2028,10 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		case 3: loader = &plug_io_lihata_v3; break;
 		case 4: loader = &plug_io_lihata_v4; break;
 		case 5: loader = &plug_io_lihata_v5; break;
+		case 6: loader = &plug_io_lihata_v6; break;
 		default:
 			return iolht_error(nd, "Lihata board version %d not supported;\n"
-				"must be 1, 2, 3, 4 or 5.\n", rdver);
+				"must be 1, 2, 3, 4, 5 or 6.\n", rdver);
 	}
 
 	vtp0_init(&post_ids);

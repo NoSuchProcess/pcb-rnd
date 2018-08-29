@@ -28,5 +28,6 @@
 #include "lht_conf.h"
 
 extern conf_io_lihata_t conf_io_lihata;
-extern pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3, plug_io_lihata_v4, plug_io_lihata_v5;
+extern pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
+                     plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6;
 

@@ -31,7 +31,8 @@
 #include "write.h"
 #include "io_lihata.h"
 
-pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3, plug_io_lihata_v4, plug_io_lihata_v5;
+pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
+              plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6;
 conf_io_lihata_t conf_io_lihata;
 
 int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
@@ -57,6 +58,7 @@ int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
 void pplg_uninit_io_lihata(void)
 {
 	conf_unreg_fields("plugins/io_lihata/");
+	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
@@ -69,6 +71,28 @@ int pplg_init_io_lihata(void)
 	PCB_API_CHK_VER;
 
 	/* register the IO hook */
+
+
+	plug_io_lihata_v6.plugin_data = NULL;
+	plug_io_lihata_v6.fmt_support_prio = io_lihata_fmt;
+	plug_io_lihata_v6.test_parse = io_lihata_test_parse;
+	plug_io_lihata_v6.parse_pcb = io_lihata_parse_pcb;
+	plug_io_lihata_v6.parse_footprint = io_lihata_parse_element;
+	plug_io_lihata_v6.parse_font = io_lihata_parse_font;
+	plug_io_lihata_v6.write_font = io_lihata_write_font;
+	plug_io_lihata_v6.write_buffer = io_lihata_write_buffer;
+	plug_io_lihata_v6.write_footprint = io_lihata_write_element;
+	plug_io_lihata_v6.write_pcb = io_lihata_write_pcb_v6;
+	plug_io_lihata_v6.default_fmt = "lihata";
+	plug_io_lihata_v6.description = "lihata board v6";
+	plug_io_lihata_v6.save_preference_prio = 1;
+	plug_io_lihata_v6.default_extension = ".lht";
+	plug_io_lihata_v6.fp_extension = ".lht";
+	plug_io_lihata_v6.mime_type = "application/x-pcbrnd-board";
+
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
+
+
 	plug_io_lihata_v5.plugin_data = NULL;
 	plug_io_lihata_v5.fmt_support_prio = io_lihata_fmt;
 	plug_io_lihata_v5.test_parse = io_lihata_test_parse;
