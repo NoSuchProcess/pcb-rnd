@@ -4,7 +4,7 @@ pcb-rnd 2.0.1
 Focus of this release is infrastructural cleanups, bugfixes
 and GUI rendering optimization. The new features added in this
 release are all about extending the infrastructure to get the
-flexibility of pcb-rnd to the next level. 
+flexibility of pcb-rnd to the next level.
 
 New feature highlights:
 
@@ -21,7 +21,7 @@ supported scripting languages (the user can enter script one-liners directly).
 
 4. ddraft: angle/length constraint actions and GUI, trim() and split() actions,
 a new command line mode with a syntax designed for 2d drafting. Similar
-to those in mechnical cads, with actions to draw lines perpendicular or
+to those in mechanical cads, with actions to draw lines perpendicular or
 parallel to existing lines.
 
 5. Command line GUI upgrade: more seamless integration of command line
@@ -30,7 +30,7 @@ editing and mouse actions.
 6. New, single-stage, non-modal export dialog with tabs available exporters
 (also available in lesstif).
 
-7. Import plugin: freepcb netlsit - schematics from EasyEDA can be imported
+7. Import plugin: freepcb netlist - schematics from EasyEDA can be imported
 
-8. Persistent layer colord, saved with the board. Layer colors from the
+8. Persistent layer color, saved with the board. Layer colors from the
 configuration are used only as initial color for new layers.
