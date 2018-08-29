@@ -175,7 +175,7 @@ static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_tex
 {
 	map_chk_skip(ctx, text);
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
-	map_add_prop(ctx, "p/text/rotation", int, text->Direction);
+	map_add_prop(ctx, "p/text/direction", int, text->Direction);
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
 	map_common(ctx, (pcb_any_obj_t *)text);
 	map_attr(ctx, &text->Attributes);
@@ -463,7 +463,7 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 		DONE;
 	}
 
-	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
+	if (st->d_valid && (strcmp(pn, "direction") == 0)) {
 		int delta;
 		if (st->d_absolute) {
 			delta = (st->d - text->Direction);
