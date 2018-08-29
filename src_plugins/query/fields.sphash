@@ -22,6 +22,7 @@ start
 delta
 scale
 rotation
+direction
 string
 points
 hole
