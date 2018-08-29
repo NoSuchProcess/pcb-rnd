@@ -11,10 +11,8 @@ ha:lht_tree_doc { ha:comm {
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:rubberend { valtype=flag; desc={For lines, used internally for rubber band moves: indicates one end already rubber banding.}}
-			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
 		}
@@ -31,10 +29,8 @@ ha:lht_tree_doc { ha:comm {
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:rubberend { valtype=flag; desc={For lines, used internally for rubber band moves: indicates one end already rubber banding.}}
-			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
 		}
@@ -53,7 +49,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:clearpolypoly { valtype=flag; desc={For polygons, apply clearance to nearby polygons}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -73,7 +68,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:dyntext { valtype=flag; desc={For text: dynamic string (substitute %patterns%)}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -109,10 +103,8 @@ ha:lht_tree_doc { ha:comm {
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:warn { valtype=flag; desc={For pins, vias, and pads, set to indicate a warning.}}
-			ha:usetherm { valtype=flag; desc={Obsolete, indicates that pins/vias should be drawn with thermal fingers.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
 		}
@@ -130,7 +122,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
-			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
 		}
 	}
