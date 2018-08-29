@@ -58,14 +58,16 @@ typedef enum {
 	PCB_LYT_UI       = 0x00080000, /* (virtual) user interface drawings (feature plugins use this for displaying states or debug info) */
 	PCB_LYT_CSECT    = 0x00100000, /* (virtual) cross-section drawing (displaying layer groups) */
 	PCB_LYT_SUBSTRATE= 0x00200000, /* substrate / insulator */
-	PCB_LYT_MISC     = 0x00400000, /* misc physical layers (e.g. adhesive) */
+	PCB_LYT_MISC     = 0x00400000, /* misc (for internal use) */
 	PCB_LYT_DIALOG   = 0x00800000, /* (virtual) dialog box drawings (e.g. font selector) - not to be interpreted in the board space */
-	PCB_LYT_ANYTHING = 0x00FFFF00, /* MASK: layers consist anything */
+	PCB_LYT_DOC      = 0x01000000, /* misc documentation layers - user allocated, largely ignored by the code */
+	PCB_LYT_MECH     = 0x02000000, /* misc mechanical/physical layers (e.g. adhesive, keepouts) */
+	PCB_LYT_ANYTHING = 0x0FFFFF00, /* MASK: layers consist anything */
 
 	/* misc properties */
-	PCB_LYT_VIRTUAL  = 0x01000000, /* the layer is not in the layer array (generated layer) */
-	PCB_LYT_NOEXPORT = 0x02000000, /* should not show up in any of the exports */
-	PCB_LYT_ANYPROP  = 0x7F000000  /* MASK: misc layer properties */
+	PCB_LYT_VIRTUAL  = 0x10000000, /* the layer is not in the layer array (generated layer) */
+	PCB_LYT_NOEXPORT = 0x20000000, /* should not show up in any of the exports */
+	PCB_LYT_ANYPROP  = 0x70000000  /* MASK: misc layer properties */
 } pcb_layer_type_t;
 
 

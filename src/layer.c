@@ -92,6 +92,8 @@ static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_CSECT,   2, "cross-section" },
 	{ PCB_LYT_SUBSTRATE,2,"substrate" },
 	{ PCB_LYT_MISC,    2, "misc" },
+	{ PCB_LYT_DOC,     2, "doc" },
+	{ PCB_LYT_MECH,    2, "mech" },
 	{ PCB_LYT_UI,      2, "userinterface" },
 	{ PCB_LYT_VIRTUAL, 3, "virtual" },
 	{ 0, 0, NULL }
