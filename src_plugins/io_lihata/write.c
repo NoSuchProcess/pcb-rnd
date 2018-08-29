@@ -551,9 +551,37 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	lht_dom_hash_put(obj, build_text("string", text->TextString));
 	lht_dom_hash_put(obj, build_textf("fid", "%ld", text->fid));
 	lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
-	lht_dom_hash_put(obj, build_textf("direction", "%d", text->Direction));
 	lht_dom_hash_put(obj, build_textf("x", CFMT, text->X));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, text->Y));
+	if (wrver >= 6) {
+		lht_dom_hash_put(obj, build_textf("direction", "%d", text->Direction));
+
+		if (text->Direction == PCB_TEXT_FREEROT)
+			lht_dom_hash_put(obj, build_textf("rot", "%f", text->rot));
+		else
+			lht_dom_hash_put(obj, dummy_node("rot"));
+
+		if (text->thickness > 0)
+			lht_dom_hash_put(obj, build_textf("thickness", CFMT, text->thickness));
+		else
+			lht_dom_hash_put(obj, dummy_node("thickness"));
+	}
+	else {
+		if (text->Direction == PCB_TEXT_FREEROT) {
+			double rot = text->rot;
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "versions below lihata board v6 do not support arbitrary text rotation - rounding to 90 degree rotation", "Use only 90 degree rotations through the direction field");
+			while(rot < 0)
+				rot += 360;
+			while(rot > 360)
+				rot -= 360;
+			lht_dom_hash_put(obj, build_textf("direction", "%d", (int)pcb_round(text->rot / 90.0)));
+		}
+		else
+			lht_dom_hash_put(obj, build_textf("direction", "%d", text->Direction));
+
+		if (text->thickness > 0)
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "versions below lihata board v6 do not support arbitrary text width - will render with default width", "Leave the thickness field empty (zero) and depend on the automatism");
+	}
 
 	if (role != NULL)
 		lht_dom_hash_put(obj, build_text("role", role));
