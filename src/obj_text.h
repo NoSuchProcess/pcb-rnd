@@ -35,13 +35,17 @@
 #include "font.h"
 #include <genvector/gds_char.h>
 
+#define PCB_TEXT_FREEROT 0x7f
+
 struct pcb_text_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
 	int Scale;                    /* text scaling in percent */
 	pcb_coord_t X, Y;                   /* origin */
-	pcb_uint8_t Direction;
+	pcb_uint8_t Direction;        /* if PCB_TEXT_FREEROT, use rot */
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
+	pcb_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
+	double rot;                   /* used when Direction is PCB_TEXT_FREEROT */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
