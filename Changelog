@@ -1,4 +1,4 @@
-pcb-rnd 2.0.1 (r18977)
+pcb-rnd 2.0.1 (r18980)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[bbox]
 		-Add: naked bbox for every object (does not include clearance or other invisible effects)
