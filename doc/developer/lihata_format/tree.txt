@@ -15,9 +15,9 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
   ha:size                      object size related settings
    x                coord      drawing area size X (width)
    y                coord      drawing area size Y (height)
-   isle_area_nm2    double     remove polygon islands smaller than this value, specified in mm^2
+   isle_area_nm2    double     remove polygon islands smaller than this value, specified in nm^2
    thermal_scale    double     scale all thermals on the board by this factor
-  ha:drc                       design rule checker settings for the old DRC
+  ha:drc                   <5  design rule checker settings for the old DRC
    bloat            coord      Minimum copper spacing
    shrink           coord      Minimum overlap between validly touching copper objects
    min_width        coord      Minimum copper width
@@ -25,8 +25,8 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
    min_drill        coord      Minimum drill diameter
    min_ring         coord      Minimum annular ring width
   ha:cursor                    obsolete cursor/view state
-   x                coord      last positin, X (horizontal)
-   y                coord      last positin, Y (horizontal)
+   x                coord      last position, X (horizontal)
+   y                coord      last position, Y (horizontal)
    zoom             double     last view zoom factor
  ha:layer_stack                physical layer stack information: geometry and properties of physical layers
   li:groups                    ordered list of physical layers from top to bottom
@@ -47,10 +47,10 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
  ha:font                       font kit: all fonts used on the board (if no font specified, default font will be used)
   ha:FONT-ID                   the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
  ha:styles                     routing styles hash: collection of all available routing syles
- ha:netlists                   all availale netlists
+ ha:netlists                   all available netlists
   li:netlist                   the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
    ha:NETNAME                  a network
-    li:conn                    list of terminals connceted to the network
+    li:conn                    list of terminals connected to the network
      diameter       string     refdes-terminal
     ha:attributes          >=5 a hash of attribute key=value pairs
      attrib-key     string     attribute value
@@ -58,10 +58,10 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
    li:net_info                 describe the current state of a net, as seen on the input
     net             string     net name; first item on the list, only once
     term            string     terminal name; zero or more items starting from the second item
-   ha:add_conn                 the 'as built' network requires a new conncetion to be created during the back annotation
+   ha:add_conn                 the 'as built' network requires a new connection to be created during the back annotation
     net             string     net name the terminal should be added to
     term            string     terminal name
-   ha:del_conn                 the 'as built' network requires an existing conncetion to be removed during the back annotation
+   ha:del_conn                 the 'as built' network requires an existing connection to be removed during the back annotation
     net             string     net name the terminal should be removed from
     term            string     terminal name
    ha:change_attrib            the 'as built' network requires an attribute to be set or changed
@@ -223,10 +223,8 @@ ha:data                              Layers and global objects of the board
     selected            flag         Set when the object is selected.
     auto                flag         For lines and vias, indicates that these were created by the autorouter.
     warn                flag         For pins, vias, and pads, set to indicate a warning.
-    usetherm            flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
     drc                 flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
     lock                flag         Set for locked objects.
-    nonetlist           flag         subcircuit is not on the netlist and should not interfere with the netlist
     termname            flag         when set the names of pins are shown.
     floater             flag         subc part can be moved after subc placing
    li:thermal                        list of thermal shapes, per layer
@@ -302,10 +300,8 @@ ha:data                              Layers and global objects of the board
       selected          flag         Set when the object is selected.
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-      usetherm          flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       lock              flag         Set for locked objects.
-      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
       termname          flag         when set the names of pins are shown.
       floater           flag         subc part can be moved after subc placing
      li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
@@ -331,10 +327,8 @@ ha:data                              Layers and global objects of the board
       selected          flag         Set when the object is selected.
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-      usetherm          flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       lock              flag         Set for locked objects.
-      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
       termname          flag         when set the names of pins are shown.
       floater           flag         subc part can be moved after subc placing
      li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
@@ -355,7 +349,6 @@ ha:data                              Layers and global objects of the board
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       lock              flag         Set for locked objects.
-      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
       termname          flag         when set the names of pins are shown.
       clearpolypoly     flag         For polygons, apply clearance to nearby polygons
       floater           flag         subc part can be moved after subc placing
@@ -375,7 +368,9 @@ ha:data                              Layers and global objects of the board
      string             string       text string (payload)
      fid                integer      font ID
      scale              integer      text size scale in %
-     direction          integer      rotation in 90 degree steps (0 is horizontal)
+     direction          integer      rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Special value 0x7f (127) means the rot field shall be used instead (from v6).
+     rot                angle    >=6 rotation angle; applied when direction is 0x7f (127)
+     thickness          coord    >=6 if zero, use the default width algorithm; if non-zero use this value as rotation angle in degrees
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
      ha:flags                        flag bits of a text
@@ -386,7 +381,6 @@ ha:data                              Layers and global objects of the board
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       lock              flag         Set for locked objects.
-      nonetlist         flag         subcircuit is not on the netlist and should not interfere with the netlist
       termname          flag         when set the names of pins are shown.
       dyntext           flag         For text: dynamic string (substitute %patterns%)
       floater           flag         subc part can be moved after subc placing
@@ -529,10 +523,8 @@ ha:data                              Layers and global objects of the board
    selected             flag         Set when the object is selected.
    auto                 flag         For lines and vias, indicates that these were created by the autorouter.
    rubberend            flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-   usetherm             flag         Obsolete, indicates that pins/vias should be drawn with thermal fingers.
    drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
    lock                 flag         Set for locked objects.
-   nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist
    termname             flag         when set the names of pins are shown.
    floater              flag         subc part can be moved after subc placing
 
@@ -558,44 +550,50 @@ li:submenu                     ordered list of menu items for a submenu
 
 Types
 
-+--------------------------------------------------------------------------------------------------+
-|  type  |                                       description                                       |
-|--------+-----------------------------------------------------------------------------------------|
-|angle   |A decimal number without unit, representing an angle in degree. Can be positive or       |
-|        |negative.                                                                                |
-|--------+-----------------------------------------------------------------------------------------|
-|        |A decimal number with a unit suffix. If the unit suffix is missing, the coordinate is    |
-|        |loaded in the internal units (which is nanometer as of 2018, but could change in the     |
-|        |future, thus files shall not depend on it). Depending on the context, coordinates may    |
-|        |have a sign (positive or negative).                                                      |
-|coord   |                                                                                         |
-|        |Examples:                                                                                |
-|        |                                                                                         |
-|        |x=10mil;                                                                                 |
-|        |y=1.5mm;                                                                                 |
-|        |dia=12cm;                                                                                |
-|--------+-----------------------------------------------------------------------------------------|
-|        |A two-column table of coords. First column are X, second column are Y coordinates.       |
-|        |                                                                                         |
-|        |Examples:                                                                                |
-|        |                                                                                         |
-|coordtbl|ta:contour {                                                                             |
-|        | 1mm;   2.1mm;                                                                           |
-|        | 5mm;   5.2mm;                                                                           |
-|        | 3.7mm; 12mil;                                                                           |
-|        |}                                                                                        |
-|        |ta:foo = { 1mm; 2.1mm;  5mm;   5.2mm;  3.7mm; 12mil; }                                   |
-|--------+-----------------------------------------------------------------------------------------|
-|double  |Unitless numeric value in decimal format. Depending on context it is sometimes signed.   |
-|--------+-----------------------------------------------------------------------------------------|
-|flag    |If the flag is set, the value is "1", if the flag is not set, the whole key=value pair is|
-|        |omitted.                                                                                 |
-|--------+-----------------------------------------------------------------------------------------|
-|integer |Unitless integer value in decimal format. Depending on context it is sometimes signed.   |
-|--------+-----------------------------------------------------------------------------------------|
-|minuid  |An unique ID as generated by libminuid (24 ASCII characters).                            |
-|--------+-----------------------------------------------------------------------------------------|
-|none    |No value.                                                                                |
-|--------+-----------------------------------------------------------------------------------------|
-|string  |Free form text data                                                                      |
-+--------------------------------------------------------------------------------------------------+
++---------------------------------------------------------------+
+|  type  |                     description                      |
+|--------+------------------------------------------------------|
+|angle   |A decimal number without unit, representing an angle  |
+|        |in degree. Can be positive or negative.               |
+|--------+------------------------------------------------------|
+|        |A decimal number with a unit suffix. If the unit      |
+|        |suffix is missing, the coordinate is loaded in the    |
+|        |internal units (which is nanometer as of 2018, but    |
+|        |could change in the future, thus files shall not      |
+|        |depend on it). Depending on the context, coordinates  |
+|coord   |may have a sign (positive or negative).               |
+|        |                                                      |
+|        |Examples:                                             |
+|        |                                                      |
+|        |x=10mil;                                              |
+|        |y=1.5mm;                                              |
+|        |dia=12cm;                                             |
+|--------+------------------------------------------------------|
+|        |A two-column table of coords. First column are X,     |
+|        |second column are Y coordinates.                      |
+|        |                                                      |
+|        |Examples:                                             |
+|        |                                                      |
+|coordtbl|ta:contour {                                          |
+|        | 1mm;   2.1mm;                                        |
+|        | 5mm;   5.2mm;                                        |
+|        | 3.7mm; 12mil;                                        |
+|        |}                                                     |
+|        |ta:foo = { 1mm; 2.1mm;  5mm;   5.2mm;  3.7mm; 12mil; }|
+|--------+------------------------------------------------------|
+|double  |Unitless numeric value in decimal format. Depending on|
+|        |context it is sometimes signed.                       |
+|--------+------------------------------------------------------|
+|flag    |If the flag is set, the value is "1", if the flag is  |
+|        |not set, the whole key=value pair is omitted.         |
+|--------+------------------------------------------------------|
+|integer |Unitless integer value in decimal format. Depending on|
+|        |context it is sometimes signed.                       |
+|--------+------------------------------------------------------|
+|minuid  |An unique ID as generated by libminuid (24 ASCII      |
+|        |characters).                                          |
+|--------+------------------------------------------------------|
+|none    |No value.                                             |
+|--------+------------------------------------------------------|
+|string  |Free form text data                                   |
++---------------------------------------------------------------+
