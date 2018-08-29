@@ -1483,6 +1483,11 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			g->name = pcb_strdup(name->data.text.value);
 		parse_layer_type(&g->ltype, lht_dom_hash_get(grp, "type"), g->name);
 
+		if (rdver < 6) {
+			if ((g->ltype & PCB_LYT_DOC) || (g->ltype & PCB_LYT_MECH))
+				iolht_warn(grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.");
+		}
+
 		/* load attributes */
 		nattr= lht_dom_hash_get(grp, "attributes");
 		if (nattr != NULL) {

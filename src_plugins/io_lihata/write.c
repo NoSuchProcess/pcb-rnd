@@ -853,6 +853,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 
 	for(n = 0; n < pcb->LayerGroups.len; n++) {
 		pcb_layergrp_t *g = &pcb->LayerGroups.grp[n];
+		pcb_layer_type_t lyt;
 		char tmp[32];
 		sprintf(tmp, "%d", n);
 		lht_dom_list_append(grps, grp = lht_dom_node_alloc(LHT_HASH, tmp));
@@ -867,8 +868,15 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 		for(i = 0; i < g->len; i++)
 			lht_dom_list_append(layers, build_textf("", "%ld", g->lid[i]));
 
+		lyt = g->ltype;
+		if (wrver < 6) {
+			if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH)) {
+				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH);
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group type DOC or MECH in lihata formats below version 5, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
+			}
+		}
 		lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
-		pcb_layer_type_map(g->ltype, flags, build_layer_stack_flag);
+		pcb_layer_type_map(lyt, flags, build_layer_stack_flag);
 	}
 
 	return lstk;
