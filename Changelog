@@ -1,4 +1,4 @@
-pcb-rnd 2.0.1 (!r18970)
+pcb-rnd 2.0.1 (r18977)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[bbox]
 		-Add: naked bbox for every object (does not include clearance or other invisible effects)
@@ -812,6 +812,7 @@ pcb-rnd 2.0.0 (r17177)
 		-Fix: use tabbed widget instead of local tab implementation (works better on small screen)
 		-Fix: don't warn on start for invalid dia
 		-Fix: roundrect: don't crash on missing arg
+		-Fix: avoid generating self intersecting polygons when round rect rounding radius is 0
 		-Fix: placing round rect: if there's only one arg, it should be the size
 
 	[stroke]
