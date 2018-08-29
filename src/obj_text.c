@@ -433,6 +433,28 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	return NULL;
 }
 
+/* changes the thickness of a text object */
+void *pcb_textop_change_2nd_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+{
+	int value = ctx->chgsize.is_absolute ? ctx->chgsize.value : Text->thickness + ctx->chgsize.value;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
+		return NULL;
+	if (value != Text->thickness) {
+		pcb_undo_add_obj_to_2nd_size(PCB_OBJ_TEXT, Layer, Text, Text);
+		pcb_text_invalidate_erase(Layer, Text);
+		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
+		Text->thickness = value;
+		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
+		pcb_text_invalidate_draw(Layer, Text);
+		return Text;
+	}
+	return NULL;
+}
+
 /* sets data of a text object and calculates bounding box; memory must have
    already been allocated the one for the new string is allocated */
 void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)

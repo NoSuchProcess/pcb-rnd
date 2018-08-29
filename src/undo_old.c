@@ -1095,6 +1095,24 @@ void pcb_undo_add_obj_to_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	}
 }
 
+
+/* ---------------------------------------------------------------------------
+ * adds an object to the list of objects with Size changes
+ */
+void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
+{
+	UndoListTypePtr undo;
+
+	if (!Locked) {
+		undo = GetUndoSlot(PCB_UNDO_CHANGESIZE, PCB_OBJECT_ID(ptr2), Type);
+		switch (Type) {
+		case PCB_OBJ_TEXT:
+			undo->Data.Size = ((pcb_text_t *) ptr2)->thickness;
+			break;
+		}
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with Size changes
  */

@@ -84,7 +84,7 @@ pcb_opfunc_t Change1stSizeFunctions = {
 
 pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
-	NULL,
+	pcb_textop_change_2nd_size,
 	NULL,
 	NULL,
 	NULL,
