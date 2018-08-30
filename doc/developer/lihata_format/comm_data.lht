@@ -70,7 +70,7 @@ ha:lht_tree_doc { ha:comm {
 						desc={a logical layer}
 						li:children {
 							ha:lid        = { valtype=integer;  ver={>=2} desc={layer ID}}
-							ha:visible    = { valtype=integer;  desc={only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)}}
+							ha:visible    = { valtype=integer;  ver={<6} desc={only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)}}
 							ha:group      = { valtype=integer;  desc={only in real (non-boud) layers: "parent" layer group ID }}
 							ha:color      = { valtype=string;  ver={>=5} desc={ layer color on UI, in #rrggbb format }}
 							ha:stack_offs = { valtype=integer;  desc={only in bound layers: match offset e.g. for internal copper layers}}

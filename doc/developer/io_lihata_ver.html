@@ -60,6 +60,12 @@ History of io_lihata, per format version.
 	Extended the text object fields with optional thickness and rot fields that
 	will be able to override the default mechanism for determining the thickness
 	or the n*90 degree rotation angle (with an arbitrary value).
+	<p>
+	New layer group types PCB_LYT_DOC and PCB_LYT_MECH are handled on load
+	and save.
+	<p>
+	The layer visibility bit is not saved any more - it was reset after load so
+	it only added noise to the file.
 
 </body>
 </html>
