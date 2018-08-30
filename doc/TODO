@@ -184,7 +184,6 @@
 	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
 	- react on conf change events, refresh the fields
 - FEATURE: lihata v6:
-	- remove pcb_board_t Zoom/x/y
 	- remove via geometry from route style?
 	- text thickness in routing style
 - CLEANUP: parent subc update:
