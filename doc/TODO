@@ -12,8 +12,8 @@
 	+> suppressed the error message for now, the menu gets disabled anyway
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 + feature: fp_wget cache dir configurable [report: agaran]
-+ BUG: Locked objects can be moved when selected. [Report: Ade]
-	+> solution: locked objects are not removed on buffer/move operations (but they are still copied)
+- BUG: Locked objects can be moved when selected. [Report: Ade]
+	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 
