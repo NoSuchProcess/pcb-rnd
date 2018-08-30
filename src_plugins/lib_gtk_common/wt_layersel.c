@@ -572,7 +572,6 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		if (!(PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
 			continue;
-printf("in-stack:  %s\n", g->name);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[gid], g), FALSE, FALSE, 0);
 	}
 
