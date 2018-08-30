@@ -570,7 +570,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 	/* first section: editable layer groups participating in the layer stack */
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
-		if (!(PCB_LAYER_IN_STACK(g->ltype)))
+		if (!(PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
 			continue;
 printf("in-stack:  %s\n", g->name);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[gid], g), FALSE, FALSE, 0);
@@ -581,7 +581,7 @@ printf("in-stack:  %s\n", g->name);
 	/* second section: editable layer groups not being part of the stack */
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
-		if ((PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
+		if (PCB_LAYER_IN_STACK(g->ltype))
 			continue;
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[gid], g), FALSE, FALSE, 0);
 	}
