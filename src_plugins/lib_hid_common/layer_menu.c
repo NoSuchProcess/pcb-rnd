@@ -52,7 +52,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	char *end = path + plen;
 	pcb_menu_prop_t props;
 	char act[256], chk[256];
-	int idx, max_ml;
+	int idx, max_ml, sect;
 	pcb_layergrp_id_t gid;
 	const pcb_menu_layers_t *ml;
 
@@ -112,11 +112,15 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 
 
 	/* have to go reverse to keep order because this will insert items */
+	for(sect = 0; sect < 2; sect++) {
 	for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		int n;
 
 		if (g->ltype & PCB_LYT_SUBSTRATE)
+			continue;
+
+		if (!!sect != !!(PCB_LAYER_IN_STACK(g->ltype)))
 			continue;
 
 		for(n = g->len-1; n >= 0; n--) {
@@ -145,7 +149,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 		pcb_snprintf(end, len_avail, "[%s]", g->name);
 		pcb_gui->create_menu(path, &props);
 	}
-
+	}
 
 	/* restore the path */
 	end--;
