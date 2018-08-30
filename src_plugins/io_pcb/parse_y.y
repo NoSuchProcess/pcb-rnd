@@ -463,15 +463,11 @@ first variant accepts floating point numbers.  The special value
 pcbcursor
 		: T_CURSOR '(' measure measure number ')'
 			{
-				yyPCB->CursorX = OU ($3);
-				yyPCB->CursorY = OU ($4);
-				yyPCB->Zoom = $5*2;
+/* Not loading cursor position and zoom anymore */
 			}
 		| T_CURSOR '[' measure measure number ']'
 			{
-				yyPCB->CursorX = NU ($3);
-				yyPCB->CursorY = NU ($4);
-				yyPCB->Zoom = $5;
+/* Not loading cursor position and zoom anymore */
 			}
 		|
 		;

@@ -226,8 +226,8 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		free(Buffer->Data);
 		Buffer->Data = newPCB->Data;
 		newPCB->Data = NULL;
-		Buffer->X = newPCB->CursorX;
-		Buffer->Y = newPCB->CursorY;
+		Buffer->X = 0;
+		Buffer->Y = 0;
 		PCB_CLEAR_PARENT(Buffer->Data);
 		pcb_data_make_layers_bound(newPCB, Buffer->Data);
 		pcb_data_binding_update(pcb, Buffer->Data);

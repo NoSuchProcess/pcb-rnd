@@ -87,7 +87,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
 	ptr->Grid = conf_core.editor.grid;
 
-	ptr->Zoom = conf_core.editor.zoom;
 	ptr->MaxHeight = ptr->MaxWidth = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;

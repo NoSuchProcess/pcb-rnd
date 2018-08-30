@@ -76,7 +76,6 @@ struct pcb_board_s {
 	pcb_bool RatDraw;                               /* we're drawing rats */
 
 	pcb_bool loose_subc;                            /* when set, subc parts are not locked into the subc */
-	pcb_coord_t Zoom, CursorX, CursorY;             /* cursor position as saved with layout */
 	pcb_coord_t Grid, GridOffsetX, GridOffsetY;     /* as saved with layout */
 	pcb_coord_t MaxWidth, MaxHeight;                /* board dimensions (drawing area extents) */
 
