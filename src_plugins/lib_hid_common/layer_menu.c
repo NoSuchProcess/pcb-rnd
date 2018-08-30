@@ -113,42 +113,42 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 
 	/* have to go reverse to keep order because this will insert items */
 	for(sect = 0; sect < 2; sect++) {
-	for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
-		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
-		int n;
+		for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
+			pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
+			int n;
 
-		if (g->ltype & PCB_LYT_SUBSTRATE)
-			continue;
+			if (g->ltype & PCB_LYT_SUBSTRATE)
+				continue;
 
-		if (!!sect != !!(PCB_LAYER_IN_STACK(g->ltype)))
-			continue;
+			if (!!sect != !!(PCB_LAYER_IN_STACK(g->ltype)))
+				continue;
 
-		for(n = g->len-1; n >= 0; n--) {
-			pcb_layer_id_t lid = g->lid[n];
-			pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
-			pcb_layer_type_t lyt = pcb_layer_flags_(l);
+			for(n = g->len-1; n >= 0; n--) {
+				pcb_layer_id_t lid = g->lid[n];
+				pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
+				pcb_layer_type_t lyt = pcb_layer_flags_(l);
 
-			props.background = l->meta.real.color;
-			props.foreground = conf_core.appearance.color.background;
-			props.checked = chk;
-			if (ctx->view) {
-				sprintf(act, "ToggleView(%ld)", lid+1);
-				sprintf(chk, "ChkView(%ld)", lid+1);
+				props.background = l->meta.real.color;
+				props.foreground = conf_core.appearance.color.background;
+				props.checked = chk;
+				if (ctx->view) {
+					sprintf(act, "ToggleView(%ld)", lid+1);
+					sprintf(chk, "ChkView(%ld)", lid+1);
+				}
+				else {
+					sprintf(act, "SelectLayer(%ld)", lid+1);
+					sprintf(chk, "ChkLayer(%ld)", lid+1);
+				}
+				pcb_snprintf(end, len_avail, "  %s", l->name);
+				pcb_gui->create_menu(path, &props);
 			}
-			else {
-				sprintf(act, "SelectLayer(%ld)", lid+1);
-				sprintf(chk, "ChkLayer(%ld)", lid+1);
-			}
-			pcb_snprintf(end, len_avail, "  %s", l->name);
+
+			props.foreground = NULL;
+			props.background = NULL;
+			props.checked = NULL;
+			pcb_snprintf(end, len_avail, "[%s]", g->name);
 			pcb_gui->create_menu(path, &props);
 		}
-
-		props.foreground = NULL;
-		props.background = NULL;
-		props.checked = NULL;
-		pcb_snprintf(end, len_avail, "[%s]", g->name);
-		pcb_gui->create_menu(path, &props);
-	}
 	}
 
 	/* restore the path */
