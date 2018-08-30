@@ -1785,7 +1785,8 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (ml != NULL) {
 			pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
-			return *v;
+			PCB_ACT_IRES(*v);
+			return 0;
 		}
 
 		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", name);
