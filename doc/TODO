@@ -1,7 +1,4 @@
 0. For the upcoming release ===============================================================================
-+ BUG: mincut memory over-allocation: bug_files/mincut.lht [report: James]
-	+ if a short consists of terminals only, do not even start the algo, just mark the terminals
-	+ after that if there are too many shorted networks left, revert to the dump algorithm
 + feature: an action for switching layer to current side; see also ML/1955 [report: James]
 + BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
 + BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
