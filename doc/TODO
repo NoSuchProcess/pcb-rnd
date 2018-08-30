@@ -186,7 +186,6 @@
 - FEATURE: lihata v6:
 	- remove pcb_board_t Zoom/x/y
 	- remove via geometry from route style?
-	- remove real layer visible flag (UI is always reset)
 	- text thickness in routing style
 - CLEANUP: parent subc update:
 	- inhibit mechanism to speed things up:
