@@ -821,7 +821,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	if (nrot != 0) {
 		if (rdver < 6)
 			iolht_warn(nthickness, -1, "Text rot should not be present in a file with version lower than v6");
-		err |= parse_angle(&text->thickness, nrot);
+		err |= parse_coord(&text->thickness, nrot);
 		ndir = lht_dom_hash_get(obj, "Direction");
 		if (ndir == NULL)
 			text->Direction = PCB_TEXT_FREEROT;
