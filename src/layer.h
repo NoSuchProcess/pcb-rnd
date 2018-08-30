@@ -92,6 +92,8 @@ typedef enum { /* bitfield */
 	PCB_LYC_AUTO = 2        /* bit 1 is 0 for manual drawn layer or 1 for side-effect objects from padstacks; this is how the user controls on which composite mask/paste layer padstack side effects should appear */
 } pcb_layer_combining_t;
 
+#define PCB_LAYER_IN_STACK(lyt) (((lyt) & PCB_LYT_COPPER) || ((lyt) & PCB_LYT_SILK) || ((lyt) & PCB_LYT_MASK) || ((lyt) & PCB_LYT_PASTE))
+
 
 #include "globalconst.h"
 #include "global_typedefs.h"
