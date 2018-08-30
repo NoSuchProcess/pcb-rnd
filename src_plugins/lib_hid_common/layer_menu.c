@@ -113,6 +113,15 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 
 	/* have to go reverse to keep order because this will insert items */
 	for(sect = 0; sect < 2; sect++) {
+
+		pcb_snprintf(end, len_avail, "-");
+		props.foreground = NULL;
+		props.background = NULL;
+		props.checked = NULL;
+		*act = '\0';
+		*chk = '\0';
+		pcb_gui->create_menu(path, &props);
+
 		for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
 			pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 			int n;
