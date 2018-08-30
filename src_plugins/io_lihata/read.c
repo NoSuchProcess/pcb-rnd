@@ -887,7 +887,7 @@ static pcb_layer_combining_t parse_comb(pcb_board_t *pcb, lht_node_t *ncmb)
 
 static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, pcb_data_t *subc_parent)
 {
-	lht_node_t *n, *lst, *ncmb;
+	lht_node_t *n, *lst, *ncmb, *nvis;
 	lht_dom_iterator_t it;
 	int bound = (subc_parent != NULL);
 	pcb_layer_t *ly = &dt->Layer[layer_id];
@@ -937,7 +937,11 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			else
 				iolht_warn(nclr, 1, "Ignoring color: text node required\n");
 		}
-		parse_bool(&ly->meta.real.vis, hash_get(grp, "visible", 1));
+
+		nvis = hash_get(grp, "visible", 1);
+		if ((nvis != &missing_ok) && rdver >= 6)
+			iolht_warn(nvis, -1, "saving layer visibility is supported above lihata board v6 (reading from v%d)\n", rdver);
+		parse_bool(&ly->meta.real.vis, nvis);
 		if (pcb != NULL) {
 			int grp_id;
 			parse_int(&grp_id, hash_get(grp, "group", 0));

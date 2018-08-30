@@ -895,7 +895,8 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	obj = lht_dom_node_alloc(LHT_HASH, layer->name);
 
 	if (!layer->is_bound) {
-		lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
+		if (wrver < 6)
+			lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
 		lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
 		if (wrver >= 5)
 			lht_dom_hash_put(obj, build_text("color", layer->meta.real.color));
