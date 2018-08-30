@@ -3,7 +3,6 @@
 	+ if a short consists of terminals only, do not even start the algo, just mark the terminals
 	+ after that if there are too many shorted networks left, revert to the dump algorithm
 + feature: an action for switching layer to current side; see also ML/1955 [report: James]
-+ BUG: padstack clearance can not be set to zero in the padstackeditor: tab 1, set to 0, tab 2, change some other value, close dialog -> 0 is forgotten (probably it generally won't accept 0) ML/1954 [report: Casey]
 + BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
 + BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
 + BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
