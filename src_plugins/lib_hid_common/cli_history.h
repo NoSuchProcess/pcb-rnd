@@ -6,8 +6,9 @@ typedef void pcb_clihist_append_cb_t(void *ctx, const char *cmd);
 typedef void pcb_clihist_remove_cb_t(void *ctx, int idx);
 void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove);
 
-/* Load the last saved list from disk (or no-op if it is already loaded) */
-void pcb_clihist_load(void);
+
+/* Initialize the command history, load the history from disk if needed */
+void pcb_clihist_init(void);
 
 /* Call a series of append's to get the GUI in sync with the list */
 void pcb_clihist_sync(void *ctx, pcb_clihist_append_cb_t *append);
@@ -27,11 +28,12 @@ void pcb_clihist_reset(void);
 
 
 /*** Misc/internal ***/
+/* Load the last saved list from disk */
+void pcb_clihist_load(void);
 
 /* Save the command history to disk - called automatically on uninit */
 void pcb_clihist_save(void);
 
-/* Initialize the command history */
-void pcb_clihist_init(void);
+/* Free all memory used by the history */
 void pcb_clihist_uninit(void);
 
