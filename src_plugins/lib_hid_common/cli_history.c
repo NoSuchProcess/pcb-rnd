@@ -53,7 +53,7 @@ static hist_t *hist_append(const char *s)
 	size_t len = strlen(s);
 	h = malloc(sizeof(hist_t) + len);
 	memcpy(h->cmd, s, len+1);
-	h->lst.parent = NULL;
+	memset(&h->lst, 0, sizeof(h->lst));
 	gdl_append(&history, h, lst);
 	return h;
 }
