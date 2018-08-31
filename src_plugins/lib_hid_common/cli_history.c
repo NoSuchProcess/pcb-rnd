@@ -65,6 +65,21 @@ static hist_t *hist_append(const char *s)
 	return h;
 }
 
+static hist_t *hist_lookup(const char *cmd, int *idx)
+{
+	hist_t *h;
+	int i;
+
+	for(i = 0, h = gdl_first(&history); h != NULL; h = gdl_next(&history, h), i++) {
+		if (strcmp(h->cmd, cmd) == 0) {
+			*idx = i;
+			return h;
+		}
+	}
+
+	return NULL;
+}
+
 /* Trim list length to configured value; NOTE: shall not be called
    from conf change event because there is no way it could notify
    GUIs */
@@ -90,7 +105,8 @@ void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *app
 		return;
 
 	/* check for a duplicate entry; when found, move it to the end of the list */
-	for(idx = 0, h = gdl_first(&history); h != NULL; h = gdl_next(&history, h), idx++) {
+	h = hist_lookup(cmd, &idx);
+	if (h != NULL) {
 		if (strcmp(cmd, h->cmd) == 0) {
 			gdl_remove(&history, h, lst);
 			if (remove != NULL)
