@@ -51,8 +51,6 @@
 
 #include "compat.h"
 
-static GList *history_list;
-
 /* Put an allocated string on the history list and combo text list
    if it is not a duplicate.  The history_list is just a shadow of the
    combo list, but I think is needed because I don't see an API for reading
@@ -72,11 +70,11 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 
 	/* Check for a duplicate command.  If found, move it to the
 	   top of the list and similarly modify the combo box strings. */
-	for (i = 0, list = history_list; list; list = list->next, ++i) {
+	for (i = 0, list = ctx->history_list; list; list = list->next, ++i) {
 		s = (gchar *) list->data;
 		if (!strcmp(cmd, s)) {
-			history_list = g_list_remove(history_list, s);
-			history_list = g_list_append(history_list, s);
+			ctx->history_list = g_list_remove(ctx->history_list, s);
+			ctx->history_list = g_list_append(ctx->history_list, s);
 			gtkc_combo_box_text_remove(ctx->command_combo_box, i);
 			gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
 			return;
@@ -85,13 +83,13 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 
 	/* Not a duplicate, so put first in history list and combo box text list. */
 	s = g_strdup(cmd);
-	history_list = g_list_append(history_list, s);
+	ctx->history_list = g_list_append(ctx->history_list, s);
 	gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
 
 	/* And keep the lists trimmed! */
-	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
-		s = (gchar *) g_list_nth_data(history_list, 0);
-		history_list = g_list_remove(history_list, s);
+	if (g_list_length(ctx->history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
+		s = (gchar *) g_list_nth_data(ctx->history_list, 0);
+		ctx->history_list = g_list_remove(ctx->history_list, s);
 		gtkc_combo_box_text_remove(ctx->command_combo_box, 0);
 		g_free(s);
 	}
