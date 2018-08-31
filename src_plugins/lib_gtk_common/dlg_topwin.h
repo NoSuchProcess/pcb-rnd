@@ -13,7 +13,7 @@
 #include "bu_mode_btn.h"
 #include "bu_cursor_pos.h"
 #include "glue.h"
-#include "dlg_command.h"
+#include "bu_command.h"
 #include "wt_layersel.h"
 
 typedef struct {

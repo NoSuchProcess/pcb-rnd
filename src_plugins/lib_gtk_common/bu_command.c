@@ -34,7 +34,7 @@
 
 
 #include "config.h"
-#include "dlg_command.h"
+#include "bu_command.h"
 #include "conf_core.h"
 
 #include <gdk/gdkkeysyms.h>
