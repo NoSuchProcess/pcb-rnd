@@ -51,8 +51,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
-	{"GroupFlagEdit", pcb_act_GroupFlagEdit, pcb_acth_GroupFlagEdit, pcb_acts_GroupFlagEdit},
-	{"LayerFlagEdit", pcb_act_LayerFlagEdit, pcb_acth_LayerFlagEdit, pcb_acts_LayerFlagEdit}
+	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
+	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";

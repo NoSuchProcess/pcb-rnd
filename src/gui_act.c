@@ -1363,7 +1363,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char fn[PCB_ACTION_NAME_MAX];
 		fgw_arg_t args[2];
 		args[0].type = FGW_FUNC;
-		args[0].val.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "LayerFlagEdit"));
+		args[0].val.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "LayerPropGui"));
 		if (args[0].val.func != NULL) {
 			args[1].type = FGW_LONG;
 			args[1].val.nat_long = pcb_layer_id(PCB->Data, ly);
@@ -1472,7 +1472,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char fn[PCB_ACTION_NAME_MAX];
 		fgw_arg_t args[2];
 		args[0].type = FGW_FUNC;
-		args[0].val.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "GroupFlagEdit"));
+		args[0].val.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "GroupPropGui"));
 		if (args[0].val.func != NULL) {
 			args[1].type = FGW_LONG;
 			args[1].val.nat_long = pcb_layergrp_id(PCB, g);

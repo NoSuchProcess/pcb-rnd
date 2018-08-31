@@ -1,6 +1,6 @@
-static const char pcb_acts_LayerFlagEdit[] = "LayerFlagEdit(layerid)";
-static const char pcb_acth_LayerFlagEdit[] = "Change layer flags and properties";
-static fgw_error_t pcb_act_LayerFlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acts_LayerPropGui[] = "LayerPropGui(layerid)";
+static const char pcb_acth_LayerPropGui[] = "Change layer flags and properties";
+static fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int ar;
 	pcb_layer_t *ly;
@@ -12,7 +12,7 @@ static fgw_error_t pcb_act_LayerFlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		{"auto: auto-generated layer", NULL,    PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
 	};
 
-	PCB_ACT_MAY_CONVARG(1, FGW_LONG, LayerFlagEdit, lid = argv[1].val.nat_long);
+	PCB_ACT_MAY_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
 	ly = pcb_get_layer(PCB->Data, lid);
 
 	attr[0].default_val.str_value = pcb_strdup(ly->name);
@@ -41,9 +41,9 @@ static fgw_error_t pcb_act_LayerFlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static const char pcb_acts_GroupFlagEdit[] = "GroupFlagEdit(groupid)";
-static const char pcb_acth_GroupFlagEdit[] = "Change group flags and properties";
-static fgw_error_t pcb_act_GroupFlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acts_GroupPropGui[] = "GroupPropGui(groupid)";
+static const char pcb_acth_GroupPropGui[] = "Change group flags and properties";
+static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int ar;
 	pcb_layergrp_id_t gid;
@@ -53,7 +53,7 @@ static fgw_error_t pcb_act_GroupFlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
 	};
 
-	PCB_ACT_MAY_CONVARG(1, FGW_LONG, GroupFlagEdit, gid = argv[1].val.nat_long);
+	PCB_ACT_MAY_CONVARG(1, FGW_LONG, GroupPropGui, gid = argv[1].val.nat_long);
 	g = pcb_get_layergrp(PCB, gid);
 
 	attr[0].default_val.str_value = pcb_strdup(g->name);
