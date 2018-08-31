@@ -46,6 +46,7 @@ typedef struct hist_t {
 /* Global CLI history: first entry is the oldest, last is the most recent one */
 static gdl_list_t history;
 static int loaded = 0;
+static int cursor = -1; /* 0 means the last (most recent) entry, positive numbers are previous entries */
 
 static hist_t *hist_append(const char *s)
 {
@@ -124,6 +125,7 @@ void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *app
 		append(ctx, h->cmd);
 
 	pcb_clihist_trim(ctx, remove);
+	pcb_clihist_reset();
 }
 
 void pcb_clihist_sync(void *ctx, pcb_clihist_append_cb_t *append)
@@ -132,6 +134,44 @@ void pcb_clihist_sync(void *ctx, pcb_clihist_append_cb_t *append)
 	for(h = gdl_first(&history); h != NULL; h = gdl_next(&history, h))
 		append(ctx, h->cmd);
 }
+
+static hist_t *hist_back_cmd(int cnt)
+{
+	hist_t *h;
+
+	if (cnt < 0)
+		return NULL;
+
+	for(h = gdl_last(&history); (cnt > 0); h = gdl_prev(&history, h), cnt--)
+		if (h == NULL)
+			return NULL;
+	return h->cmd;
+}
+
+const char *pcb_clihist_prev(void)
+{
+	if (cursor < 0)
+		cursor = 0;
+	else
+		cursor++;
+	if (cursor >= gdl_length(&history))
+		cursor = gdl_length(&history) - 1;
+	return hist_back_cmd(cursor);
+}
+
+const char *pcb_clihist_next(void)
+{
+	cursor--;
+	if (cursor < -1)
+		cursor = -1;
+	return hist_back_cmd(cursor);
+}
+
+void pcb_clihist_reset(void)
+{
+	cursor = -1;
+}
+
 
 void pcb_clihist_load(void)
 {
@@ -157,6 +197,7 @@ void pcb_clihist_load(void)
 	}
 	fclose(f);
 	pcb_clihist_trim(NULL, NULL);
+	loaded = 1;
 }
 
 void pcb_clihist_save(void)
