@@ -50,6 +50,7 @@
 
 #include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_hid_common/util.h"
+#include "../src_plugins/lib_hid_common/cli_history.h"
 
 #include <sys/poll.h>
 
@@ -728,6 +729,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	case XmCR_ACTIVATE:
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
+		pcb_clihist_append(s, NULL, NULL, NULL);
 		pcb_parse_command(s, pcb_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
@@ -815,6 +817,7 @@ empty.
 
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_clihist_load();
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
