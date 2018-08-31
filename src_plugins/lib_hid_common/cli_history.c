@@ -49,12 +49,19 @@ static int loaded = 0;
 
 static hist_t *hist_append(const char *s)
 {
+	char *end;
 	hist_t *h;
 	size_t len = strlen(s);
+
 	h = malloc(sizeof(hist_t) + len);
 	memcpy(h->cmd, s, len+1);
 	memset(&h->lst, 0, sizeof(h->lst));
 	gdl_append(&history, h, lst);
+
+	end = strpbrk(h->cmd, "\r\n");
+	if (end != NULL)
+		*end = '\0';
+
 	return h;
 }
 
