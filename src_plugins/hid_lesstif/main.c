@@ -830,7 +830,7 @@ empty.
 
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_clihist_load();
+	pcb_clihist_init();
 	pcb_clihist_reset();
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
