@@ -66,7 +66,7 @@ int pplg_init_lib_hid_common(void)
 
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_lib_hid_common, field,isarray,type_name,cpath,cname,desc,flags);
+	conf_reg_field(lib_hid_common_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include "lib_hid_common_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
