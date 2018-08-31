@@ -170,6 +170,7 @@ static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_g
 {
 	if (ctx->com->command_entry_is_active())
 		pcb_cli_edit();
+	return TRUE;
 }
 
 void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
