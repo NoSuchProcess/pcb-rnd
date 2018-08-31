@@ -303,8 +303,9 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
  list_conf.h compat_misc.h obj_subc.h search.h rats.h netlist.h \
- route_style.h ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h \
- change.h ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
+ route_style.h ../src_plugins/dialogs/dlg_layer_flags.c \
+ ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h \
+ ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
  operation.h obj_pstk_inlines.h data.h thermal.h operation.h \
  ../src_plugins/dialogs/dlg_about.c build_run.h pcb-printf.h \
  ../src_plugins/dialogs/dlg_export.c hid_init.h dolists.h
