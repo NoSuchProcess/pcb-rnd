@@ -16,6 +16,9 @@ typedef struct pcb_gtk_command_s {
 	void (*pre_entry)(void);
 
 	pcb_gtk_common_t *com;
+
+	/* internal */
+	GMainLoop *ghid_entry_loop;
 } pcb_gtk_command_t;
 
 void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise);

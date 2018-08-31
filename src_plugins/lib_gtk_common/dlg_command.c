@@ -53,7 +53,6 @@
 
 static GList *history_list;
 static gchar *command_entered;
-GMainLoop *ghid_entry_loop;
 
 /* Put an allocated string on the history list and combo text list
    if it is not a duplicate.  The history_list is just a shadow of the
@@ -117,8 +116,8 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	if (*command)
 		command_history_add(ctx, command);
 
-	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop)) /* should always be */
-		g_main_loop_quit(ghid_entry_loop);
+	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
+		g_main_loop_quit(ctx->ghid_entry_loop);
 	command_entered = command; /* Caller will free it */
 }
 
@@ -153,8 +152,8 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 	if (ksym != GDK_KEY_Escape)
 		return FALSE;
 
-	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop)) /* should always be */
-		g_main_loop_quit(ghid_entry_loop);
+	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
+		g_main_loop_quit(ctx->ghid_entry_loop);
 	command_entered = NULL; /* We are aborting */
 	/* Hidding the widgets */
 	if (conf_core.editor.fullscreen) {
@@ -218,11 +217,11 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 	escape_sig2_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 
-	ghid_entry_loop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(ghid_entry_loop);
+	ctx->ghid_entry_loop = g_main_loop_new(NULL, FALSE);
+	g_main_loop_run(ctx->ghid_entry_loop);
 
-	g_main_loop_unref(ghid_entry_loop);
-	ghid_entry_loop = NULL;
+	g_main_loop_unref(ctx->ghid_entry_loop);
+	ctx->ghid_entry_loop = NULL;
 
 	ctx->command_entry_status_line_active = FALSE;
 
