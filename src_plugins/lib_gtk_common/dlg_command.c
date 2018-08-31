@@ -27,6 +27,8 @@
  */
 
 /* This file written by Bill Wilson for the PCB Gtk port */
+/* provides an interface for getting user input for executing a command. */
+
 
 #include "config.h"
 #include "dlg_command.h"
@@ -46,97 +48,9 @@
 
 #include "compat.h"
 
-
-static GtkWidget *command_window;
-static GtkWidget *combo_vbox;
 static GList *history_list;
 static gchar *command_entered;
 GMainLoop *ghid_entry_loop;
-
-
-/* gui-command-window.c provides two interfaces for getting user input
-|  for executing a command.
-|
-|  As the Xt PCB was ported to Gtk, the traditional user entry in the
-|  status line window presented some focus problems which require that
-|  there can be no menu key shortcuts that might be a key the user would
-|  type in.  It also requires a coordinating flag so the drawing area
-|  won't grab focus while the command entry is up.
-|
-|  I thought the interface should be cleaner, so I made an alternate
-|  command window interface which works better I think as a GUI interface.
-|  The user must focus onto the command window, but since it's a separate
-|  window, there's no confusion.  It has the restriction that objects to
-|  be operated on must be selected, but that actually seems a better user
-|  interface than one where typing into one location requires the user to
-|  be careful about which object might be under the cursor somewhere else.
-|
-|  In any event, both interfaces are here to work with.
-*/
-
-
-	/* When using a command window for command entry, provide a quick and
-	   |  abbreviated reference to available commands.
-	   |  This is currently just a start and can be expanded if it proves useful.
-	 */
-static const gchar *command_ref_text[] = {
-	N_("Common commands easily accessible via the gui may not be included here.\n"),
-	"\n",
-	N_("In user commands below, 'size' values may be absolute or relative\n"
-		 "if preceded by a '+' or '-'.  Where 'units' are indicated, use \n"
-		 "'mil' or 'mm' otherwise PCB internal units will be used.\n"),
-	"\n",
-	"<b>changesize(target, size, units)\n",
-	"\ttarget = {selectedlines | selectedpins | selectedvias | selectedpads \n"
-		"\t\t\t| selectedtexts | selectednames | selectedelements | selected}\n",
-	"\n",
-	"<b>changedrillsize(target, size, units)\n",
-	"\ttarget = {selectedpins | selectedvias | selectedobjects | selected}\n",
-	"\n",
-	"<b>changeclearsize(target, size, units)\n",
-	"\ttarget = {selectedpins | selectedpads | selectedvias | selectedlines\n"
-		"\t\t\t| selectedarcs | selectedobjects | selected}\n",
-	N_("\tChanges the clearance of objects.\n"),
-	"\n",
-	"<b>setvalue(target, size, units)\n",
-	"\ttarget = {grid | zoom | line | textscale | viadrillinghole\n" "\t\t\t| viadrillinghole | via}\n",
-	N_("\tChanges values.  Omit 'units' for 'grid' and 'zoom'.\n"),
-	"\n",
-	"<b>changejoin(target)\n",
-	"\ttarget = {object | selectedlines | selectedarcs | selected}\n",
-	N_("\tChanges the join (clearance through polygons) of objects.\n"),
-	"\n",
-	"<b>changesquare(target)\n",
-	"<b>setsquare(target)\n",
-	"<b>clearsquare(target)\n",
-	"\ttarget = {object | selectedelements | selectedpins | selected}\n",
-	N_("\tToggles, sets, or clears the square flag of objects.\n"),
-	"\n",
-	"<b>changeoctagon(target)\n",
-	"<b>setoctagon(target)\n",
-	"<b>clearoctagon(target)\n",
-	"\ttarget = {object | selectedelements | selectedpins selectedvias | selected}\n",
-	N_("\tToggles, sets, or clears the octagon flag of objects.\n"),
-	"\n",
-	"<b>changehole(target)\n",
-	"\ttarget = {object | selectedvias | selected}\n",
-	N_("\tChanges the hole flag of objects.\n"),
-	"\n",
-	"<b>flip(target)\n",
-	"\ttarget = {object | selectedelements | selected}\n",
-	N_("\tFlip elements to the opposite side of the board.\n"),
-	"\n",
-	"<b>togglethermal(target)\n",
-	"<b>setthermal(target)\n",
-	"<b>clearthermal(target)\n",
-	"\ttarget = {object | selectedpins | selectedvias | selected}\n",
-	N_("\tToggle, set or clear a thermal (on the current layer) to pins or vias.\n"),
-	"\n",
-	"<b>loadvendor(target)\n",
-	"\ttarget = [filename]\n",
-	N_("\tLoad a vendor file.  If 'filename' omitted, pop up file select dialog.\n"),
-};
-
 
 	/* Put an allocated string on the history list and combo text list
 	   |  if it is not a duplicate.  The history_list is just a shadow of the
@@ -204,25 +118,16 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	if (*command)
 		command_history_add(ctx, command);
 
-	if (conf_hid_gtk.plugins.hid_gtk.use_command_window) {
-		pcb_parse_command(command, pcb_false);
-		g_free(command);
-	}
-	else {
-		if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
-			g_main_loop_quit(ghid_entry_loop);
-		command_entered = command;	/* Caller will free it */
-	}
+	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
+		g_main_loop_quit(ghid_entry_loop);
+	command_entered = command;	/* Caller will free it */
 }
 
-	/* Create the command_combo_box.  Called once, either by
-	   |  ghid_command_window_show() or ghid_command_entry_get().  Then as long as
-	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE, the command_combo_box will live
-	   |  in a command window vbox or float if the command window is not up.
-	   |  But if conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE, the command_combo_box
-	   |  will live in the status_line_hbox either shown or hidden.
+	/* Create the command_combo_box.  Called once, by
+	   |  ghid_command_entry_get().  The command_combo_box
+	   |  lives in the status_line_hbox either shown or hidden.
 	   |  Since it's never destroyed, the combo history strings never need
-	   |  rebuilding and history is maintained if the combo box location is moved.
+	   |  rebuilding.
 	 */
 static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 {
@@ -237,20 +142,6 @@ static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
 }
 
-/* CB function related to Command Window destruction */
-static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
-{
-	if (command_window) {
-		gtk_container_remove(GTK_CONTAINER(combo_vbox), /* Float it */
-			ctx->command_combo_box);
-		gtk_widget_hide(command_window);
-	}
-	ctx->prompt_label = NULL;
-	combo_vbox = NULL;
-	/* Command Window is hidden/destroyed, so expected future value for command_window is NULL. */
-	command_window = NULL;
-}
-
 static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
@@ -263,11 +154,6 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 	/* escape key handling */
 	if (ksym != GDK_KEY_Escape)
 		return FALSE;
-
-	if (command_window) {
-		command_window_close_cb(ctx);
-		return TRUE;
-	}
 
 	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
 		g_main_loop_quit(ghid_entry_loop);
@@ -286,71 +172,6 @@ static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_g
 		pcb_cli_edit();
 }
 
-
-	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
-	   |  Action Command() to show the command window.
-	 */
-void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
-{
-	GtkWidget *vbox, *vbox1, *hbox, *button, *expander, *text, *warn;
-	gint i;
-
-	if (command_window != NULL) {
-		if (raise)
-			gtk_window_present(GTK_WINDOW(command_window));
-		return;
-	}
-
-	command_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	g_signal_connect(G_OBJECT(command_window), "destroy", G_CALLBACK(command_destroy_cb), ctx);
-	gtk_window_set_title(GTK_WINDOW(command_window), _("pcb-rnd Command Entry"));
-	gtk_window_set_role(GTK_WINDOW(command_window), "PCB_Command");
-	gtk_window_set_resizable(GTK_WINDOW(command_window), FALSE);
-
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-	gtk_container_add(GTK_CONTAINER(command_window), vbox);
-
-	warn = gtk_label_new("WARNING: separate command window is deprecated.\nPlease consider turning it off in the preferences.\n\n");
-	gtk_box_pack_start(GTK_BOX(vbox), warn, FALSE, FALSE, 0);
-
-	ctx->prompt_label = gtk_label_new(pcb_cli_prompt(":"));
-	gtk_box_pack_start(GTK_BOX(vbox), ctx->prompt_label, FALSE, FALSE, 0);
-
-	if (!ctx->command_combo_box) {
-		command_combo_box_entry_create(ctx);
-		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
-		g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
-	}
-
-	gtk_box_pack_start(GTK_BOX(vbox), ctx->command_combo_box, FALSE, FALSE, 0);
-	combo_vbox = vbox;
-
-	/* Make the command reference scrolled text view.  Use high level
-	   |  utility functions in gui-utils.c
-	 */
-	expander = gtk_expander_new(_("Command Reference"));
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 2);
-	vbox1 = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(expander), vbox1);
-	gtk_widget_set_size_request(vbox1, -1, 350);
-
-	text = ghid_scrolled_text_view(vbox1, NULL, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	for (i = 0; i < sizeof(command_ref_text) / sizeof(gchar *); ++i)
-		ghid_text_view_append(text, _(command_ref_text[i]));
-
-	/* The command window close button.
-	 */
-	hbox = gtk_hbutton_box_new();
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
-	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(command_destroy_cb), ctx);
-	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
-
-	gtk_widget_show_all(command_window);
-}
-
 void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 {
 	if (ctx->prompt_label != NULL)
@@ -358,10 +179,8 @@ void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 }
 
 
-	/* This is the command entry function called from Action Command() when
-	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE.  The command_combo_box is already
-	   |  packed into the status line label hbox in this case.
-	 */
+/* This is the command entry function called from Action Command().
+   The command_combo_box is packed into the status line label hbox. */
 char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command)
 {
 	gchar *s;
@@ -436,9 +255,6 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 	char *command;
 	static char *previous = NULL;
 
-	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
-		ghid_command_window_show(ctx, raise);
-	else {
 		command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *)"");
 		if (command != NULL) {
 			/* copy new command line to save buffer */
@@ -447,15 +263,8 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 			pcb_parse_command(command, pcb_false);
 			g_free(command);
 		}
-	}
 	ctx->com->window_set_name_label(PCB->Name);
 	ctx->com->set_status_line_label();
-}
-
-void command_window_close_cb(pcb_gtk_command_t *ctx)
-{
-	if (command_window)
-		gtk_widget_destroy(command_window);
 }
 
 const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)

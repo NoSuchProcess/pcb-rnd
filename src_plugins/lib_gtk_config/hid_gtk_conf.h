@@ -11,7 +11,6 @@ typedef struct {
 
 			CFT_BOOLEAN compact_horizontal;
 			CFT_BOOLEAN compact_vertical;
-			CFT_BOOLEAN use_command_window;
 			CFT_INTEGER history_size;
 			CFT_INTEGER n_mode_button_columns;
 

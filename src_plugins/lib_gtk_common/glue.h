@@ -66,7 +66,6 @@ typedef struct pcb_gtk_common_s {
 	void (*layer_buttons_update)(void);
 
 	int (*command_entry_is_active)(void);
-	void (*command_use_command_window_sync)(void);
 
 } pcb_gtk_common_t;
 

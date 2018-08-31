@@ -401,29 +401,6 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 
 	/* -------------- The General config page ----------------
 	 */
-
-static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer data)
-{
-	pcb_gtk_common_t *com = data;
-	gboolean active = gtk_toggle_button_get_active(button);
-	static gboolean holdoff;
-
-	if (holdoff)
-		return;
-
-	/* Can't toggle into command window mode if the status line command
-	   |  entry is active.
-	 */
-	if (com->command_entry_is_active()) {
-		holdoff = TRUE;
-		gtk_toggle_button_set_active(button, FALSE);
-		holdoff = FALSE;
-		return;
-	}
-	conf_setf(CFR_DESIGN, "plugins/hid_gtk/use_command_window", -1, "%d", active);
-	com->command_use_command_window_sync();
-}
-
 static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpointer data)
 {
 	pcb_gtk_common_t *com = data;
@@ -486,7 +463,6 @@ static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer 
 void config_general_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
-		"plugins/hid_gtk/use_command_window",
 		"plugins/hid_gtk/compact_horizontal",
 		"plugins/hid_gtk/compact_vertical",
 		"plugins/hid_gtk/history_size",
@@ -508,10 +484,6 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
 	vbox = ghid_category_vbox(content_vbox, _("Enables"), 4, 2, TRUE, TRUE);
-
-	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
-																 TRUE, FALSE, FALSE, 2,
-																 config_command_window_toggle_cb, com, _("Use separate window for command entry (DEPRECATED)"));
 
 	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
 																 TRUE, FALSE, FALSE, 2,

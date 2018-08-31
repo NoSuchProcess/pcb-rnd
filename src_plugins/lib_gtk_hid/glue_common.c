@@ -104,36 +104,6 @@ static void command_pre_entry(void)
 	ghid_interface_set_sensitive(FALSE);
 }
 
-	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window toggles, the config code calls
-	   |  this to ensure the command_combo_box is set up for living in the
-	   |  right place.
-	 */
-static void command_use_command_window_sync(pcb_gtk_command_t *ctx)
-{
-	/* The combo box will be NULL and not living anywhere until the
-	   |  first command entry.
-	 */
-	if (!ctx->command_combo_box)
-		return;
-
-	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
-		gtk_container_remove(GTK_CONTAINER(ghidgui->topwin.status_line_hbox), ctx->command_combo_box);
-	else {
-		/* Destroy the window (if it's up) which floats the command_combo_box
-		   |  so we can pack it back into the status line hbox.  If the window
-		   |  wasn't up, the command_combo_box was already floating.
-		 */
-		command_window_close_cb(ctx);
-		gtk_widget_hide(ctx->command_combo_box);
-		command_pack_in_status_line();
-	}
-}
-
-static void ghid_command_use_command_window_sync(void)
-{
-	command_use_command_window_sync(&ghidgui->topwin.cmd);
-}
-
 /*** input ***/
 
 void ghid_status_update(void)
@@ -280,7 +250,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.layer_buttons_update = ghid_layer_buttons_update;
 	ghidgui->common.LayersChanged = LayersChanged_cb;
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
-	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 	ghidgui->common.main_destroy = ghid_main_destroy;
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
