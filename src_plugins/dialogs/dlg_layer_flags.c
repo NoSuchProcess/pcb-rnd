@@ -50,7 +50,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	pcb_layergrp_t *g;
 	pcb_hid_attr_val_t rv[16];
 	pcb_hid_attribute_t attr[] = {
-		{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+		{"name", "group (physical layer) name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
 	};
 
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, GroupPropGui, gid = argv[1].val.nat_long);
@@ -58,7 +58,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	attr[0].default_val.str_value = pcb_strdup(g->name);
 
-	ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
+	ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit group properties", "Edit the properties of a layer group (physical layer)", NULL);
 
 	if (ar == 0) {
 		if (strcmp(g->name, attr[0].default_val.str_value) != 0) {
