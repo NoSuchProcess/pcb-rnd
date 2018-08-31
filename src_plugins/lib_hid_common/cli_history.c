@@ -110,6 +110,13 @@ void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *app
 	pcb_clihist_trim(ctx, remove);
 }
 
+void pcb_clihist_sync(void *ctx, pcb_clihist_append_cb_t *append)
+{
+	hist_t *h;
+	for(h = gdl_first(&history); h != NULL; h = gdl_next(&history, h))
+		append(ctx, h->cmd);
+}
+
 void pcb_clihist_load(void)
 {
 	FILE *f;
