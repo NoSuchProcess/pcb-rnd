@@ -23,7 +23,6 @@
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
-- CLEANUP: Remove separate command entry window from gtk
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
