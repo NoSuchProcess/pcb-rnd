@@ -33,6 +33,12 @@
 #include "routest_menu.h"
 #include "util.c"
 
+#include "lib_hid_common.h"
+#include "lib_hid_common_conf.h"
+
+conf_lib_hid_common_t lib_hid_common_conf;
+
+
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *layer_cookie = "lib_hid_common/layer";
 static const char *rst_cookie = "lib_hid_common/route_style";
@@ -59,6 +65,9 @@ int pplg_init_lib_hid_common(void)
 	int n;
 
 	PCB_API_CHK_VER;
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_lib_hid_common, field,isarray,type_name,cpath,cname,desc,flags);
+#include "lib_hid_common_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);

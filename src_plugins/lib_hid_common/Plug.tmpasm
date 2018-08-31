@@ -6,6 +6,8 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/routest_menu.o
   $(PLUGDIR)/lib_hid_common/cli_history.o
 @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/lib_hid_common/lib_hid_common_conf.h}
+
 
 switch /local/pcb/lib_hid_common/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
