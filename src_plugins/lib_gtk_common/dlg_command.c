@@ -108,7 +108,6 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	pcb_gtk_command_t *ctx = data;
 	gchar *command;
 
-	/*command = g_strdup(ghid_entry_get_text(GTK_WIDGET(ctx->command_entry))); */
 	command = g_strdup(pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(ctx->command_entry))));
 	gtk_entry_set_text(ctx->command_entry, "");
 
