@@ -55,7 +55,8 @@ GMainLoop *ghid_entry_loop;
 /* Put an allocated string on the history list and combo text list
    if it is not a duplicate.  The history_list is just a shadow of the
    combo list, but I think is needed because I don't see an API for reading
-   the combo strings.  The combo box strings take "const gchar *", so the
+   the combo strings. It is also a common, shared history with other HIDs.
+   The combo box strings take "const gchar *", so the
    same allocated string can go in both the history list and the combo list.
    If removed from both lists, a string can be freed.
  */
