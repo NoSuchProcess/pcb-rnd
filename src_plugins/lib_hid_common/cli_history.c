@@ -142,7 +142,7 @@ void pcb_clihist_save(void)
 	hist_t *h;
 	char *real_fn;
 
-	if ((CFG.file == NULL) || (CFG.slots < 1))
+	if ((CFG.file == NULL) || (CFG.slots < 1) || (!loaded))
 		return;
 
 	real_fn = pcb_build_fn(CFG.file);
