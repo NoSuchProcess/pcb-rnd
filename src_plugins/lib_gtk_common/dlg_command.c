@@ -70,8 +70,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 		return;
 
 	/* Check for a duplicate command.  If found, move it to the
-	   |  top of the list and similarly modify the combo box strings.
-	 */
+	   top of the list and similarly modify the combo box strings. */
 	for (i = 0, list = history_list; list; list = list->next, ++i) {
 		s = (gchar *) list->data;
 		if (!strcmp(cmd, s)) {
@@ -83,14 +82,12 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 		}
 	}
 
-	/* Not a duplicate, so put first in history list and combo box text list.
-	 */
+	/* Not a duplicate, so put first in history list and combo box text list. */
 	s = g_strdup(cmd);
 	history_list = g_list_append(history_list, s);
 	gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
 
-	/* And keep the lists trimmed!
-	 */
+	/* And keep the lists trimmed! */
 	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
 		s = (gchar *) g_list_nth_data(history_list, 0);
 		history_list = g_list_remove(history_list, s);
