@@ -1360,36 +1360,19 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (interactive) {
-		int ar;
-		pcb_hid_attr_val_t rv[16];
-		pcb_hid_attribute_t attr[] = {
-			{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-			{"sub: drawn using subtraction", NULL,  PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-			{"auto: auto-generated layer", NULL,    PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
-		};
-
-		attr[0].default_val.str_value = pcb_strdup(ly->name);
-		attr[1].default_val.int_value = ly->comb & PCB_LYC_SUB;
-		attr[2].default_val.int_value = ly->comb & PCB_LYC_AUTO;
-
-		ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
-
-		if (ar == 0) {
-			pcb_layer_combining_t comb = 0;
-			if (strcmp(ly->name, attr[0].default_val.str_value) != 0) {
-				ret |= pcb_layer_rename_(ly, (char *)attr[0].default_val.str_value);
-				attr[0].default_val.str_value = NULL;
-				pcb_board_set_changed_flag(pcb_true);
-			}
-			if (attr[1].default_val.int_value) comb |= PCB_LYC_SUB;
-			if (attr[2].default_val.int_value) comb |= PCB_LYC_AUTO;
-			if (ly->comb != comb) {
-				ly->comb = comb;
-				pcb_board_set_changed_flag(pcb_true);
-			}
+		char fn[PCB_ACTION_NAME_MAX];
+		fgw_arg_t args[2];
+		args[0].type = FGW_FUNC;
+		args[0].val.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "LayerFlagEdit"));
+		if (args[0].val.func != NULL) {
+			args[1].type = FGW_LONG;
+			args[1].val.nat_long = pcb_layer_id(PCB->Data, ly);
+			ret = pcb_actionv_(args[0].val.func, res, 2, args);
+			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
-		free((char *)attr[0].default_val.str_value);
-		ret |= ar;
+		else
+			return FGW_ERR_NOT_FOUND;
+		return ret;
 	}
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
@@ -1486,27 +1469,20 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (interactive) {
-		int ar;
-		pcb_hid_attr_val_t rv[16];
-		pcb_hid_attribute_t attr[] = {
-			{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-		};
-
-		attr[0].default_val.str_value = pcb_strdup(g->name);
-
-		ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit layer properties", "Edit the properties of a logical layer", NULL);
-
-		if (ar == 0) {
-			if (strcmp(g->name, attr[0].default_val.str_value) != 0) {
-				ret |= pcb_layergrp_rename_(g, (char *)attr[0].default_val.str_value);
-				attr[0].default_val.str_value = NULL;
-				pcb_board_set_changed_flag(pcb_true);
-			}
+		char fn[PCB_ACTION_NAME_MAX];
+		fgw_arg_t args[2];
+		args[0].type = FGW_FUNC;
+		args[0].val.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "GroupFlagEdit"));
+		if (args[0].val.func != NULL) {
+			args[1].type = FGW_LONG;
+			args[1].val.nat_long = pcb_layergrp_id(PCB, g);
+			ret = pcb_actionv_(args[0].val.func, res, 2, args);
+			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
+		else
+			return FGW_ERR_NOT_FOUND;
+		return ret;
 
-		free((char *)attr[0].default_val.str_value);
-
-		ret |= ar;
 	}
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);

@@ -38,6 +38,7 @@
 /* include them all for static inlines */
 #include "dlg_test.c"
 #include "dlg_layer_binding.c"
+#include "dlg_layer_flags.c"
 #include "dlg_flag_edit.c"
 #include "dlg_padstack.c"
 #include "dlg_about.c"
@@ -49,7 +50,9 @@ pcb_action_t dialogs_action_list[] = {
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
-	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI}
+	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
+	{"GroupFlagEdit", pcb_act_GroupFlagEdit, pcb_acth_GroupFlagEdit, pcb_acts_GroupFlagEdit},
+	{"LayerFlagEdit", pcb_act_LayerFlagEdit, pcb_acth_LayerFlagEdit, pcb_acts_LayerFlagEdit}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
