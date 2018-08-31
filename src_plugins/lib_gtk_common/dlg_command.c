@@ -52,7 +52,6 @@
 #include "compat.h"
 
 static GList *history_list;
-static gchar *command_entered;
 
 /* Put an allocated string on the history list and combo text list
    if it is not a duplicate.  The history_list is just a shadow of the
@@ -118,7 +117,7 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 
 	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
 		g_main_loop_quit(ctx->ghid_entry_loop);
-	command_entered = command; /* Caller will free it */
+	ctx->command_entered = command; /* Caller will free it */
 }
 
 /* Create the command_combo_box.  Called once, by
@@ -154,7 +153,7 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 
 	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
 		g_main_loop_quit(ctx->ghid_entry_loop);
-	command_entered = NULL; /* We are aborting */
+	ctx->command_entered = NULL; /* We are aborting */
 	/* Hidding the widgets */
 	if (conf_core.editor.fullscreen) {
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
@@ -238,7 +237,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	gtk_widget_hide(ctx->command_combo_box);
 	ctx->post_entry();
 
-	return command_entered;
+	return ctx->command_entered;
 }
 
 
