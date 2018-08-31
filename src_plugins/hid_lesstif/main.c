@@ -743,7 +743,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 
 static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * cont)
 {
-	char buf[10];
+	char *hist, buf[10];
 	KeySym sym;
 
 	switch (e->type) {
@@ -754,7 +754,20 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 		case KeyPress:
 			XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
 			switch (sym) {
-#warning TODO: lesstif command history
+				case XK_Up:
+					hist = pcb_clihist_prev();
+					if (hist != NULL)
+						XmTextSetString(w, XmStrCast(hist));
+					else
+						XmTextSetString(w, XmStrCast(""));
+					break;
+				case XK_Down:
+					hist = pcb_clihist_next();
+					if (hist != NULL)
+						XmTextSetString(w, XmStrCast(hist));
+					else
+						XmTextSetString(w, XmStrCast(""));
+					break;
 				case XK_Tab:
 					pcb_cli_tab();
 					*cont = False;
@@ -818,6 +831,7 @@ empty.
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_clihist_load();
+	pcb_clihist_reset();
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
