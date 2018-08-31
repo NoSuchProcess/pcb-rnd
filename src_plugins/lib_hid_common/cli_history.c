@@ -155,7 +155,7 @@ void pcb_clihist_save(void)
 void pcb_clihist_uninit(void)
 {
 	hist_t *h;
-	for(h = gdl_first(&history); h != NULL; ) {
+	for(h = gdl_first(&history); h != NULL; h = gdl_first(&history)) {
 		gdl_remove(&history, h, lst);
 		free(h);
 	}
