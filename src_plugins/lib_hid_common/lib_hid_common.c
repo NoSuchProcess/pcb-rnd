@@ -31,6 +31,7 @@
 #include "grid_menu.h"
 #include "layer_menu.h"
 #include "routest_menu.h"
+#include "cli_history.h"
 #include "util.c"
 
 #include "lib_hid_common.h"
@@ -49,6 +50,7 @@ static conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_common(void)
 {
+	pcb_clihist_save();
 	pcb_event_unbind_allcookie(grid_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
@@ -93,6 +95,8 @@ int pplg_init_lib_hid_common(void)
 		if (nat != NULL)
 			conf_hid_set_cb(nat, conf_id, &rcb[n]);
 	}
+
+	pcb_clihist_load();
 
 	return 0;
 }
