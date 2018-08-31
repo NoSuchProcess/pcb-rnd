@@ -229,7 +229,6 @@ void pcb_clihist_init()
 		return;
 
 	pcb_clihist_load();
-	loaded = 1;
 }
 
 void pcb_clihist_uninit(void)
