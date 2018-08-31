@@ -46,8 +46,6 @@
 #include "funchash.h"
 #include "layer.h"
 
-#define PCB_ACTION_NAME_MAX 128
-
 const pcb_action_t *pcb_current_action = NULL;
 
 fgw_ctx_t pcb_fgw;
@@ -66,7 +64,7 @@ static const char *check_action_name(const char *s)
 	return NULL;
 }
 
-static char *make_action_name(char *out, const char *inp, int inp_len)
+char *pcb_make_action_name(char *out, const char *inp, int inp_len)
 {
 	char *s;
 
@@ -79,11 +77,6 @@ static char *make_action_name(char *out, const char *inp, int inp_len)
 	for(s = out; *s != '\0'; s++)
 		*s = tolower(*s);
 	return out;
-}
-
-static char *aname(char *out, const char *inp)
-{
-	return make_action_name(out, inp, strlen(inp));
 }
 
 void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
@@ -110,7 +103,7 @@ void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
 		ca->cookie = cookie;
 		ca->action = a+i;
 
-		make_action_name(fn, a[i].name, len);
+		pcb_make_action_name(fn, a[i].name, len);
 		f = fgw_func_reg(pcb_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
@@ -139,7 +132,7 @@ void pcb_remove_actions(const pcb_action_t *a, int n)
 	char fn[PCB_ACTION_NAME_MAX];
 
 	for (i = 0; i < n; i++) {
-		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, aname(fn, a[i].name));
+		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, a[i].name));
 		if (f == NULL) {
 			pcb_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
@@ -170,7 +163,7 @@ const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
 	if (name == NULL)
 		return NULL;
 
-	f = fgw_func_lookup(&pcb_fgw, aname(fn, name));
+	f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, name));
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
@@ -311,7 +304,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 		return 1;
 	}
 
-	f = fgw_func_lookup(&pcb_fgw, aname(fn, name));
+	f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, name));
 	if (f == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);

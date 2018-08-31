@@ -4,6 +4,8 @@
 #include "hid.h"
 #include <libfungw/fungw.h>
 
+#define PCB_ACTION_NAME_MAX 128
+
 struct pcb_action_s {
 	const char *name; /* action command name */
 	fgw_error_t (*trigger_cb)(fgw_arg_t *ores, int argc, fgw_arg_t *argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
@@ -107,6 +109,12 @@ void pcb_cli_uninit(void);
 void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 #define PCB_ACTION_MAX_ARGS 16
+
+char *pcb_make_action_name(char *out, const char *inp, int inp_len);
+PCB_INLINE char *pcb_aname(char *out, const char *inp)
+{
+	return pcb_make_action_name(out, inp, strlen(inp));
+}
 
 /* Return 0 on success after an action call */
 PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
