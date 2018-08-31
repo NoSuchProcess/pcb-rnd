@@ -47,7 +47,7 @@ typedef struct hist_t {
 static gdl_list_t history;
 
 
-static void hist_append(const char *s)
+static hist_t *hist_append(const char *s)
 {
 	hist_t *h;
 	size_t len = strlen(s);
@@ -55,11 +55,35 @@ static void hist_append(const char *s)
 	memcpy(h->cmd, s, len+1);
 	h->lst.parent = NULL;
 	gdl_append(&history, h, lst);
+	return h;
 }
 
 void pcb_clihist_append(const char *cmd, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove)
 {
+	int idx;
+	hist_t *h;
+	void *ctx = NULL;
 
+	if ((cmd == NULL) || (*cmd == '\0'))
+		return;
+
+	/* check for a duplicate entry; when found, move it to the end of the list */
+	for(idx = 0, h = gdl_first(&history); h != NULL; h = gdl_next(&history, h), idx++) {
+		if (strcmp(cmd, h->cmd) == 0) {
+			gdl_remove(&history, h, lst);
+			if (remove != NULL)
+				remove(ctx, idx);
+			gdl_append(&history, h, lst);
+			if (append != NULL)
+				append(ctx, h->cmd);
+			return;
+		}
+	}
+
+	/* not a duplicate: append at the end */
+	h = hist_append(cmd);
+	if (append != NULL)
+		append(ctx, h->cmd);
 }
 
 void pcb_clihist_load(void)
