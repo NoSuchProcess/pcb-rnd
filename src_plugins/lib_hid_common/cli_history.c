@@ -58,6 +58,20 @@ static hist_t *hist_append(const char *s)
 	return h;
 }
 
+/* Trim list length to configured value; NOTE: shall not be called
+   from conf change event because there is no way it could notify
+   GUIs */
+void pcb_clihist_trim(void *ctx, pcb_clihist_remove_cb_t *remove)
+{
+	while(gdl_length(&history) > CFG.slots) {
+		hist_t *h = gdl_first(&history);
+		if (h == NULL)
+			return; /* corner case: slots < 0 */
+		gdl_remove(&history, h, lst);
+		free(h);
+	}
+}
+
 void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove)
 {
 	int idx;
@@ -83,6 +97,8 @@ void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *app
 	h = hist_append(cmd);
 	if (append != NULL)
 		append(ctx, h->cmd);
+
+	pcb_clihist_trim(ctx, remove);
 }
 
 void pcb_clihist_load(void)
@@ -108,6 +124,7 @@ void pcb_clihist_load(void)
 		hist_append(s);
 	}
 	fclose(f);
+	pcb_clihist_trim(NULL, NULL);
 }
 
 void pcb_clihist_save(void)
