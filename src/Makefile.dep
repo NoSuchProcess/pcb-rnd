@@ -1684,6 +1684,7 @@
  ../src_plugins/hid_lesstif/stdarg.h grid.h misc_util.h compat_misc.h \
  layer_vis.h tool.h ../src_plugins/lib_hid_common/clip.h \
  global_typedefs.h ../src_plugins/lib_hid_common/util.h \
+ ../src_plugins/lib_hid_common/cli_history.h \
  ../src_plugins/hid_lesstif/dlg_preview.c stub_draw.h dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
  ../src_plugins/hid_lesstif/xincludes.h ../config.h conf_core.h conf.h \
@@ -3058,7 +3059,8 @@
  ../src_plugins/lib_gtk_common/bu_text_view.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/util_str.h \
- ../src_plugins/lib_gtk_config/hid_gtk_conf.h
+ ../src_plugins/lib_gtk_config/hid_gtk_conf.h \
+ ../src_plugins/lib_hid_common/cli_history.h
 ../src_plugins/lib_gtk_common/bu_cursor_pos.o: \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.c ../config.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h conf_core.h conf.h \
@@ -4281,7 +4283,18 @@
  board.h event.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/lib_hid_common/cli_history.o: \
  ../src_plugins/lib_hid_common/cli_history.c ../config.h \
- ../src_plugins/lib_hid_common/cli_history.h
+ ../src_3rd/genlist/gendlist.h \
+ ../src_plugins/lib_hid_common/cli_history.h \
+ ../src_plugins/lib_hid_common/lib_hid_common.h \
+ ../src_plugins/lib_hid_common/lib_hid_common_conf.h conf.h \
+ global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h safe_fs.h paths.h
 ../src_plugins/lib_hid_common/grid_menu.o: \
  ../src_plugins/lib_hid_common/grid_menu.c ../config.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -4338,6 +4351,7 @@
  ../src_plugins/lib_hid_common/grid_menu.h conf.h event.h \
  ../src_plugins/lib_hid_common/layer_menu.h \
  ../src_plugins/lib_hid_common/routest_menu.h \
+ ../src_plugins/lib_hid_common/cli_history.h \
  ../src_plugins/lib_hid_common/util.c \
  ../src_plugins/lib_hid_common/util.h data.h globalconst.h layer.h \
  attrib.h obj_arc_list.h obj_common.h flag.h data_parent.h obj_arc.h \
