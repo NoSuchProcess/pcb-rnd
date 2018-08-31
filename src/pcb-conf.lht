@@ -206,6 +206,12 @@ li:pcb-rnd-conf-v1 {
 		} # appearance;
 
 		ha:plugins {
+			ha:lib_hid_common {
+				ha:cli_history {
+					file = {$(rc.path.home)/.pcb-rnd/cli_history}
+					slots = 64
+				}
+			}
 			ha:io_lihata {
 				aux_pcb_pattern = {%D.%B.lht.pcb}
 			}
