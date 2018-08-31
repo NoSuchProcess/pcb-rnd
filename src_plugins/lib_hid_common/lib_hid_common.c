@@ -98,7 +98,5 @@ int pplg_init_lib_hid_common(void)
 			conf_hid_set_cb(nat, conf_id, &rcb[n]);
 	}
 
-	pcb_clihist_load();
-
 	return 0;
 }

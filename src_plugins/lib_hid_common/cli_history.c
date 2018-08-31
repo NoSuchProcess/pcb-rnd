@@ -45,7 +45,7 @@ typedef struct hist_t {
 
 /* Global CLI history: first entry is the oldest, last is the most recent one */
 static gdl_list_t history;
-
+static int loaded = 0;
 
 static hist_t *hist_append(const char *s)
 {
@@ -150,6 +150,15 @@ void pcb_clihist_save(void)
 		fprintf(f, "%s\n", h->cmd);
 
 	fclose(f);
+}
+
+void pcb_clihist_init()
+{
+	if (loaded)
+		return;
+
+	pcb_clihist_load();
+	loaded = 1;
 }
 
 void pcb_clihist_uninit(void)
