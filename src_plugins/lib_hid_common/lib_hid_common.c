@@ -57,6 +57,7 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(rst_cookie);
 	conf_hid_unreg(grid_cookie);
 	conf_hid_unreg(rst_cookie);
+	conf_unreg_fields("plugins/lib_hid_common/");
 }
 
 int pplg_init_lib_hid_common(void)
