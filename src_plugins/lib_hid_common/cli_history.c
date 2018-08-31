@@ -68,6 +68,8 @@ void pcb_clihist_trim(void *ctx, pcb_clihist_remove_cb_t *remove)
 		if (h == NULL)
 			return; /* corner case: slots < 0 */
 		gdl_remove(&history, h, lst);
+		if (remove != NULL)
+			remove(ctx, 0);
 		free(h);
 	}
 }
