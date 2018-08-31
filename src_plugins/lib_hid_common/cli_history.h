@@ -5,3 +5,5 @@ void pcb_clihist_append(const char *cmd, pcb_clihist_append_cb_t *append, pcb_cl
 
 void pcb_clihist_load(void);
 void pcb_clihist_save(void);
+void pcb_clihist_uninit(void);
+

@@ -44,7 +44,7 @@ typedef struct hist_t {
 } hist_t;
 
 /* Global CLI history: first entry is the oldest, last is the most recent one */
-static gdl_list_t *history;
+static gdl_list_t history;
 
 
 static void hist_append(const char *s)
@@ -54,7 +54,7 @@ static void hist_append(const char *s)
 	h = malloc(sizeof(hist_t) + len);
 	memcpy(h->cmd, s, len+1);
 	h->lst.parent = NULL;
-	gdl_append(history, h, lst);
+	gdl_append(&history, h, lst);
 }
 
 void pcb_clihist_append(const char *cmd, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove)
@@ -104,9 +104,17 @@ void pcb_clihist_save(void)
 	if (f == NULL)
 		return;
 
-	for(h = gdl_first(history); h != NULL; h = gdl_next(history, h))
+	for(h = gdl_first(&history); h != NULL; h = gdl_next(&history, h))
 		fprintf(f, "%s\n", h->cmd);
 
 	fclose(f);
 }
 
+void pcb_clihist_uninit(void)
+{
+	hist_t *h;
+	for(h = gdl_first(&history); h != NULL; ) {
+		gdl_remove(&history, h, lst);
+		free(h);
+	}
+}
