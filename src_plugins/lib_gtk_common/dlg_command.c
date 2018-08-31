@@ -114,9 +114,9 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	if (*command)
 		command_history_add(ctx, command);
 
-	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
+	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop)) /* should always be */
 		g_main_loop_quit(ghid_entry_loop);
-	command_entered = command;	/* Caller will free it */
+	command_entered = command; /* Caller will free it */
 }
 
 /* Create the command_combo_box.  Called once, by
@@ -150,9 +150,9 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 	if (ksym != GDK_KEY_Escape)
 		return FALSE;
 
-	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
+	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop)) /* should always be */
 		g_main_loop_quit(ghid_entry_loop);
-	command_entered = NULL;				/* We are aborting */
+	command_entered = NULL; /* We are aborting */
 	/* Hidding the widgets */
 	if (conf_core.editor.fullscreen) {
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
