@@ -52,13 +52,13 @@ static GList *history_list;
 static gchar *command_entered;
 GMainLoop *ghid_entry_loop;
 
-	/* Put an allocated string on the history list and combo text list
-	   |  if it is not a duplicate.  The history_list is just a shadow of the
-	   |  combo list, but I think is needed because I don't see an API for reading
-	   |  the combo strings.  The combo box strings take "const gchar *", so the
-	   |  same allocated string can go in both the history list and the combo list.
-	   |  If removed from both lists, a string can be freed.
-	 */
+/* Put an allocated string on the history list and combo text list
+   if it is not a duplicate.  The history_list is just a shadow of the
+   combo list, but I think is needed because I don't see an API for reading
+   the combo strings.  The combo box strings take "const gchar *", so the
+   same allocated string can go in both the history list and the combo list.
+   If removed from both lists, a string can be freed.
+ */
 static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 {
 	GList *list;
@@ -99,13 +99,12 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 }
 
 
-	/* Called when user hits "Enter" key in command entry.  The action to take
-	   |  depends on where the combo box is.  If it's in the command window, we can
-	   |  immediately execute the command and carry on.  If it's in the status
-	   |  line hbox, then we need stop the command entry g_main_loop from running
-	   |  and save the allocated string so it can be returned from
-	   |  ghid_command_entry_get()
-	 */
+/* Called when user hits "Enter" key in command entry.  The action to take
+   depends on where the combo box is.  If it's in the command window, we can
+   immediately execute the command and carry on.  If it's in the status
+   line hbox, then we need stop the command entry g_main_loop from running
+   and save the allocated string so it can be returned from
+   ghid_command_entry_get() */
 static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 {
 	pcb_gtk_command_t *ctx = data;
@@ -123,12 +122,11 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	command_entered = command;	/* Caller will free it */
 }
 
-	/* Create the command_combo_box.  Called once, by
-	   |  ghid_command_entry_get().  The command_combo_box
-	   |  lives in the status_line_hbox either shown or hidden.
-	   |  Since it's never destroyed, the combo history strings never need
-	   |  rebuilding.
-	 */
+/* Create the command_combo_box.  Called once, by
+   ghid_command_entry_get().  The command_combo_box
+   lives in the status_line_hbox either shown or hidden.
+   Since it's never destroyed, the combo history strings never need
+   rebuilding. */
 static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 {
 	ctx->command_combo_box = gtk_combo_box_text_new_with_entry();
@@ -188,8 +186,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	gint escape_sig_id, escape_sig2_id;
 
 	/* If this is the first user command entry, we have to create the
-	   |  command_combo_box and pack it into the status_line_hbox.
-	 */
+	   command_combo_box and pack it into the status_line_hbox. */
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
 		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
@@ -198,26 +195,23 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	}
 
 	/* Make the prompt bold and set the label before showing the combo to
-	   |  avoid window resizing wider.
-	 */
+	   avoid window resizing wider. */
 	s = g_strdup_printf("<b>%s</b>", prompt ? prompt : "");
 	ctx->com->status_line_set_text(s);
 	g_free(s);
 
 	/* Flag so output drawing area won't try to get focus away from us and
-	   |  so resetting the status line label can be blocked when resize
-	   |  callbacks are invokded from the resize caused by showing the combo box.
-	 */
+	   so resetting the status line label can be blocked when resize
+	   callbacks are invokded from the resize caused by showing the combo box. */
 	ctx->command_entry_status_line_active = TRUE;
 
 	gtk_entry_set_text(ctx->command_entry, command ? command : "");
 	gtk_widget_show_all(gtk_widget_get_parent(ctx->command_combo_box));
 
 	/* Remove the top window accel group so keys intended for the entry
-	   |  don't get intercepted by the menu system.  Set the interface
-	   |  insensitive so all the user can do is enter a command, grab focus
-	   |  and connect a handler to look for the escape key.
-	 */
+	   don't get intercepted by the menu system.  Set the interface
+	   insensitive so all the user can do is enter a command, grab focus
+	   and connect a handler to look for the escape key. */
 	ctx->pre_entry();
 
 	gtk_widget_grab_focus(GTK_WIDGET(ctx->command_entry));
@@ -232,8 +226,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 
 	ctx->command_entry_status_line_active = FALSE;
 
-	/* Restore the damage we did before entering the loop.
-	 */
+	/* Restore the damage we did before entering the loop. */
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig_id);
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig2_id);
 
@@ -242,8 +235,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
 	}
 
-	/* Restore the status line label and give focus back to the drawing area
-	 */
+	/* Restore the status line label and give focus back to the drawing area */
 	gtk_widget_hide(ctx->command_combo_box);
 	ctx->post_entry();
 
@@ -256,14 +248,14 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 	char *command;
 	static char *previous = NULL;
 
-		command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *)"");
-		if (command != NULL) {
-			/* copy new command line to save buffer */
-			g_free(previous);
-			previous = g_strdup(command);
-			pcb_parse_command(command, pcb_false);
-			g_free(command);
-		}
+	command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *)"");
+	if (command != NULL) {
+		/* copy new command line to save buffer */
+		g_free(previous);
+		previous = g_strdup(command);
+		pcb_parse_command(command, pcb_false);
+		g_free(command);
+	}
 	ctx->com->window_set_name_label(PCB->Name);
 	ctx->com->set_status_line_label();
 }
