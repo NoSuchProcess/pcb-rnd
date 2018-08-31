@@ -48,51 +48,31 @@
 #include "bu_status_line.h"
 #include "util_str.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_hid_common/cli_history.h"
+
 
 #include "compat.h"
 
 /* Put an allocated string on the history list and combo text list
-   if it is not a duplicate.  The history_list is just a shadow of the
-   combo list, but I think is needed because I don't see an API for reading
-   the combo strings. It is also a common, shared history with other HIDs.
-   The combo box strings take "const gchar *", so the
-   same allocated string can go in both the history list and the combo list.
-   If removed from both lists, a string can be freed.
- */
+   if it is not a duplicate.  The combo box is just a shadow of the
+   real, common history, shared with other HIDs. The combo box strings
+   take "const gchar *", which are allocated within the common history. */
+
+static void ghid_chist_append(void *ctx_, const char *cmd)
+{
+	pcb_gtk_command_t *ctx = (pcb_gtk_command_t *)ctx_;
+	gtkc_combo_box_text_append_text(ctx->command_combo_box, cmd);
+}
+
+static void ghid_chist_remove(void *ctx_, int idx)
+{
+	pcb_gtk_command_t *ctx = (pcb_gtk_command_t *)ctx_;
+	gtkc_combo_box_text_remove(ctx->command_combo_box, idx);
+}
+
 static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 {
-	GList *list;
-	gchar *s;
-	gint i;
-
-	if (!cmd || !*cmd)
-		return;
-
-	/* Check for a duplicate command.  If found, move it to the
-	   top of the list and similarly modify the combo box strings. */
-	for (i = 0, list = ctx->history_list; list; list = list->next, ++i) {
-		s = (gchar *) list->data;
-		if (!strcmp(cmd, s)) {
-			ctx->history_list = g_list_remove(ctx->history_list, s);
-			ctx->history_list = g_list_append(ctx->history_list, s);
-			gtkc_combo_box_text_remove(ctx->command_combo_box, i);
-			gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
-			return;
-		}
-	}
-
-	/* Not a duplicate, so put first in history list and combo box text list. */
-	s = g_strdup(cmd);
-	ctx->history_list = g_list_append(ctx->history_list, s);
-	gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
-
-	/* And keep the lists trimmed! */
-	if (g_list_length(ctx->history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
-		s = (gchar *) g_list_nth_data(ctx->history_list, 0);
-		ctx->history_list = g_list_remove(ctx->history_list, s);
-		gtkc_combo_box_text_remove(ctx->command_combo_box, 0);
-		g_free(s);
-	}
+	pcb_clihist_append(cmd, ctx, ghid_chist_append, ghid_chist_remove);
 }
 
 
@@ -134,6 +114,8 @@ static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 	g_signal_connect(G_OBJECT(ctx->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), ctx);
 
 	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
+	pcb_clihist_init();
+	pcb_clihist_sync(ctx, ghid_chist_append);
 }
 
 static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)

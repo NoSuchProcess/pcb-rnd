@@ -20,7 +20,6 @@ typedef struct pcb_gtk_command_s {
 	/* internal */
 	GMainLoop *ghid_entry_loop;
 	gchar *command_entered;
-	GList *history_list;
 } pcb_gtk_command_t;
 
 void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise);
