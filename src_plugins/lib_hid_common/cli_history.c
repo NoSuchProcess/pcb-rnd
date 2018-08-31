@@ -58,11 +58,10 @@ static hist_t *hist_append(const char *s)
 	return h;
 }
 
-void pcb_clihist_append(const char *cmd, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove)
+void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove)
 {
 	int idx;
 	hist_t *h;
-	void *ctx = NULL;
 
 	if ((cmd == NULL) || (*cmd == '\0'))
 		return;
