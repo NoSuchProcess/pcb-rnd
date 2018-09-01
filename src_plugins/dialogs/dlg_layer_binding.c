@@ -89,6 +89,7 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 {
 	get_ly_type_(combo_type, type);
 
+	if (PCB_LAYER_SIDED(*type)) {
 	/* set side and offset */
 	if (dlg_offs == 0) {
 		if (combo_side == 0)
@@ -100,6 +101,7 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 		if (combo_side != 0)
 			dlg_offs = -dlg_offs;
 		*type |= PCB_LYT_INTERN;
+	}
 	}
 	*offs = dlg_offs;
 }
@@ -133,8 +135,14 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
 
-		/* side & offset */
-		PCB_DAD_SET_VALUE(hid_ctx, w->side, int_value, !!(layer->meta.bound.type & PCB_LYT_BOTTOM));
+		/* disable side for non-sided */
+		if (PCB_LAYER_SIDED(layer->meta.bound.type)) {
+			/* side & offset */
+			PCB_DAD_SET_VALUE(hid_ctx, w->side, int_value, !!(layer->meta.bound.type & PCB_LYT_BOTTOM));
+			pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
+		}
+		else
+			pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, 0);
 
 		ofs = layer->meta.bound.stack_offs;
 		if (ofs < 0) {
@@ -147,10 +155,6 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->offs, enable);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->from, enable);
-
-		enable = !(layer->meta.bound.type & PCB_LYT_VIRTUAL) && !(layer->meta.bound.type & PCB_LYT_OUTLINE);
-		pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, enable);
-
 
 		/* real layer */
 		if (layer->meta.bound.real != NULL)
