@@ -64,7 +64,7 @@ static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, val);
 }
 
-static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_type_t *type, int *offs)
+static void get_ly_type_(int combo_type, pcb_layer_type_t *type)
 {
 	/* clear relevant flags */
 	*type &= ~(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL);
@@ -78,6 +78,12 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 		case 5: *type |= PCB_LYT_OUTLINE; break;
 		case 6: *type |= PCB_LYT_VIRTUAL; break;
 	}
+}
+
+
+static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_type_t *type, int *offs)
+{
+	get_ly_type_(combo_type, type);
 
 	/* set side and offset */
 	if (dlg_offs == 0) {
