@@ -1,3 +1,5 @@
+#include "event.h"
+
 static const char pcb_acts_LayerPropGui[] = "LayerPropGui(layerid)";
 static const char pcb_acth_LayerPropGui[] = "Change layer flags and properties";
 static fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -45,18 +47,21 @@ static const char pcb_acts_GroupPropGui[] = "GroupPropGui(groupid)";
 static const char pcb_acth_GroupPropGui[] = "Change group flags and properties";
 static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int ar;
+	int ar, orig_type;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	pcb_hid_attr_val_t rv[16];
 	pcb_hid_attribute_t attr[] = {
 		{"name", "group (physical layer) name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+		{"type", "type/material of the group",           PCB_HATT_ENUM,   0, 0, {0}, NULL, NULL, 0, NULL, NULL},
 	};
 
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, GroupPropGui, gid = argv[1].val.nat_long);
 	g = pcb_get_layergrp(PCB, gid);
 
 	attr[0].default_val.str_value = pcb_strdup(g->name);
+	attr[1].enumerations = lb_types;
+	attr[1].default_val.int_value = orig_type = ly_type2enum(g->ltype);
 
 	ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit group properties", "Edit the properties of a layer group (physical layer)", NULL);
 
@@ -65,6 +70,18 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			ar |= pcb_layergrp_rename_(g, (char *)attr[0].default_val.str_value);
 			attr[0].default_val.str_value = NULL;
 			pcb_board_set_changed_flag(pcb_true);
+		}
+
+		if (attr[1].default_val.int_value != orig_type) {
+			pcb_layer_type_t lyt = 0;
+			get_ly_type_(attr[1].default_val.int_value, &lyt);
+			g->ltype &= ~PCB_LYT_ANYTHING;
+			g->ltype |= lyt;
+			if (PCB_LAYER_SIDED(lyt)) {
+#warning TODO
+			}
+			pcb_board_set_changed_flag(pcb_true);
+			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 	}
 
