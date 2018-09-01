@@ -90,18 +90,18 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 	get_ly_type_(combo_type, type);
 
 	if (PCB_LAYER_SIDED(*type)) {
-	/* set side and offset */
-	if (dlg_offs == 0) {
-		if (combo_side == 0)
-			*type |= PCB_LYT_TOP;
-		else
-			*type |= PCB_LYT_BOTTOM;
-	}
-	else {
-		if (combo_side != 0)
-			dlg_offs = -dlg_offs;
-		*type |= PCB_LYT_INTERN;
-	}
+		/* set side and offset */
+		if (dlg_offs == 0) {
+			if (combo_side == 0)
+				*type |= PCB_LYT_TOP;
+			else
+				*type |= PCB_LYT_BOTTOM;
+		}
+		else {
+			if (combo_side != 0)
+				dlg_offs = -dlg_offs;
+			*type |= PCB_LYT_INTERN;
+		}
 	}
 	*offs = dlg_offs;
 }
