@@ -32,7 +32,7 @@
 #include "search.h"
 
 static const char *lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
-static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "outline", "virtual", NULL };
+static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "outline", "mech", "doc", "virtual", NULL };
 static const char *lb_side[] = { "top", "bottom", NULL };
 
 typedef struct {
@@ -59,7 +59,9 @@ static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 	else if (type & PCB_LYT_SILK)    val = 3;
 	else if (type & PCB_LYT_COPPER)  val = 4;
 	else if (type & PCB_LYT_OUTLINE) val = 5;
-	else if (type & PCB_LYT_VIRTUAL) val = 6;
+	else if (type & PCB_LYT_MECH)    val = 6;
+	else if (type & PCB_LYT_DOC)     val = 7;
+	else if (type & PCB_LYT_VIRTUAL) val = 8;
 
 	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, val);
 }
@@ -76,7 +78,9 @@ static void get_ly_type_(int combo_type, pcb_layer_type_t *type)
 		case 3: *type |= PCB_LYT_SILK; break;
 		case 4: *type |= PCB_LYT_COPPER; break;
 		case 5: *type |= PCB_LYT_OUTLINE; break;
-		case 6: *type |= PCB_LYT_VIRTUAL; break;
+		case 6: *type |= PCB_LYT_MECH; break;
+		case 7: *type |= PCB_LYT_DOC; break;
+		case 8: *type |= PCB_LYT_VIRTUAL; break;
 	}
 }
 
