@@ -29,8 +29,6 @@
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
 - FEATURE: introduce new layer types:
-	- doc
-	- mech (keepout)
 	- revise io plugins to load/save them properly
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
