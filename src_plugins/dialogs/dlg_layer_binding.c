@@ -49,21 +49,22 @@ typedef struct {
 	pcb_hid_attribute_t *attrs;
 } lb_ctx_t;
 
+static int ly_type2enum(pcb_layer_type_t type)
+{
+	if (type & PCB_LYT_PASTE)        return 1;
+	else if (type & PCB_LYT_MASK)    return 2;
+	else if (type & PCB_LYT_SILK)    return 3;
+	else if (type & PCB_LYT_COPPER)  return 4;
+	else if (type & PCB_LYT_OUTLINE) return 5;
+	else if (type & PCB_LYT_MECH)    return 6;
+	else if (type & PCB_LYT_DOC)     return 7;
+	else if (type & PCB_LYT_VIRTUAL) return 8;
+	return 0;
+}
+
 static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 {
-	int val;
-
-	val = 0;
-	if (type & PCB_LYT_PASTE)        val = 1;
-	else if (type & PCB_LYT_MASK)    val = 2;
-	else if (type & PCB_LYT_SILK)    val = 3;
-	else if (type & PCB_LYT_COPPER)  val = 4;
-	else if (type & PCB_LYT_OUTLINE) val = 5;
-	else if (type & PCB_LYT_MECH)    val = 6;
-	else if (type & PCB_LYT_DOC)     val = 7;
-	else if (type & PCB_LYT_VIRTUAL) val = 8;
-
-	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, val);
+	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, ly_type2enum(type));
 }
 
 static void get_ly_type_(int combo_type, pcb_layer_type_t *type)
