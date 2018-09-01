@@ -31,7 +31,6 @@
 - FEATURE: introduce new layer types:
 	- doc
 	- mech (keepout)
-	- decide where to store global layers
 	- revise io plugins to load/save them properly
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
