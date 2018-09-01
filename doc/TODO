@@ -1,43 +1,46 @@
-0. For the upcoming release ===============================================================================
+0. old, still waiting for ack
 + BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
 + BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
 + BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
 + BUG: lesstif: when gtk is not compiled in, there are tons of warnigns see bug_files/lesstif_menu.txt [report: rqsall]
 	+> long term: need per plugin menus and/or implement local grid in lesstif
 	+> suppressed the error message for now, the menu gets disabled anyway
-- BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 + feature: fp_wget cache dir configurable [report: agaran]
-- BUG: Locked objects can be moved when selected. [Report: Ade]
-	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 + BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
-- BUG: menu item to move selected subcircuits to the other side requests click to confirm subc, but {s f} action acts on current selection 
 
-2. For later releases ===============================================================================
+1. For the upcoming release ===============================================================================
+- BUG: menu item to move selected subcircuits to the other side requests click to confirm subc, but {s f} action acts on current selection 
+- BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
+- BUG: Locked objects can be moved when selected. [Report: Ade]
+	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
+- FEATURE: introduce new layer types:
+	- revise io plugins to load/save them properly
+- FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - FEATURE: text rot:
 	- propset: set_text_cb_any(): set the rot field and refresh the text
 	- write text rotation functions 
 	- revise all io_ plugins to save text direction/rot properly
-- FEATURE: Scale() buffer objects (with an option to affect coords only) [report: celem]
-- FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
-- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
-- FEATURE: padstack bbox:
-	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
-	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
-- XOR rendering upgrade:
-		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
-		- if worked: allow padstack xor draw to draw all shapes on all layers
-- FEATURE: introduce new layer types:
-	- revise io plugins to load/save them properly
-- CLEANUP: rewrite the preview API:
-	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
-	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
-	- ... but there also should be an option for going with board flip (drc view)
-- FEATURE: fungw: DAD dialog: mini parser from text
+- FEATURE: Scale() buffer objects (with an option to affect coords only) [report: celem]
 - CLEANUP: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
+- FEATURE: subc/term: new terminal attribute: "pretend not connected to the same subc copper" (agaran's coil example)
+- FEATURE: fontsel: ttf import?
+- layer rewrite:
+	- BUG: catch the layer change signal from polygons and reclip; Evan's test case:
+	  draw a line on a layer and a poly on another and change whether they are in
+	  the same layer group
+	- FEATURE: do not require top and bottom silk (also grep for TODO #tbs)
+- export_dsn/new io_dsn (with King Kevin and celem):
+	- missing global padstack (via) export:
+		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
+		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
+	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+
+2. For later releases ===============================================================================
+- FEATURE: fungw: DAD dialog: mini parser from text
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
@@ -46,6 +49,23 @@
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
+- FEATURE: route style upgrade to prototypes:
+	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+- feature plugins:
+	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
+	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
+	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
+- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
+- FEATURE: padstack bbox:
+	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
+	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
+- XOR rendering upgrade:
+		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
+		- if worked: allow padstack xor draw to draw all shapes on all layers
+- CLEANUP: rewrite the preview API:
+	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
+	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
+	- ... but there also should be an option for going with board flip (drc view)
 - opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
@@ -56,8 +76,6 @@
 	- text
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- FEATURE: route style upgrade to prototypes:
-	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
@@ -90,22 +108,14 @@
 	- test under lesstif
 	- remove Attribute()
 - CLEANUP: retire the nelma plugin - nelma is unfinished and not maintained
-- FEATURE: subc/term: new terminal attribute: "pretend not connected to the same subc copper" (agaran's coil example)
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- FEATURE: fontsel: ttf import?
 - FEATURE: library window: allow long tags and long location text to split
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
-- layer rewrite:
-	- BUG: catch the layer change signal from polygons and reclip; Evan's test case:
-	  draw a line on a layer and a poly on another and change whether they are in
-	  the same layer group
-	- FEATURE: do not require top and bottom silk (also grep for TODO #tbs)
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
 		- CLEANUP: allow GTK to handle keys in preview
 		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
-- CLEANUP: resources:
-- conf:
+- CLEANUP: resources/conf:
 	- FEATURE: preferences dialog, config pov: change prio
 	- (BUG: gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed)
 	- (BUG: gtk preferences: poly isle area widget missing from the sizes tab)
@@ -165,10 +175,6 @@
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
-- feature plugins:
-	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
-	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
-	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
@@ -184,11 +190,6 @@
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
 		- when inhibit drops to zero, revisit all subcircuits that are dirty
 		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
-- export_dsn:
-	- missing global padstack (via) export:
-		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
-		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
-	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
 - feautres/cleanup: hid:
 		- FEATURE: holes should be drawn below silk and mask (maybe this could be a config setting)
 - BUG: I/O bugs:
