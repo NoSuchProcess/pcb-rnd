@@ -6,7 +6,6 @@
 	+> long term: need per plugin menus and/or implement local grid in lesstif
 	+> suppressed the error message for now, the menu gets disabled anyway
 + feature: fp_wget cache dir configurable [report: agaran]
-+ BUG: property editor window too tall: add scroll ML/2047 [report: gpaubert]
 + BUG: unwanted file format change. Reprod: new board; place a rectangle; save as pcb/mainline; place a 1206 from the lib; {f s} -> saved as lihata v5 [report: Richard]
 
 1. For the upcoming release ===============================================================================
