@@ -94,9 +94,12 @@ Each layer group has a type. Types are:
 <ul>
 	<li> <b>copper</b> for signal layers
 	<li> <b>silk</b> for silkscreen layers
-	<li> <b>outline</b> for the contour of the board and slots and cutouts
 	<li> <b>mask</b> for solder masks
 	<li> <b>paste</b> for solder paste
+
+	<li> <b>outline</b> for the contour of the board and slots and cutouts
+	<li> <b>mech</b>    provision: mechanical information (e.g. adhesive; sent to the board fab)
+	<li> <b>doc</b>     documentation and metadata (not sent to the board fab)
 </ul>
 <p>
 Each layer group has a location. Locations are:
@@ -119,6 +122,8 @@ combination is supported or not.
 	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no     <td> yes
 	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no     <td> yes
 	<tr><th> outline<td> no  <td> no     <td> no     <td> yes    <td> no
+	<tr><th> mech   <td> yes <td> yes    <td> yes    <td> yes    <td> yes
+	<tr><th> doc    <td> no  <td> no     <td> no     <td> yes    <td> yes
 </table>
 
 <h3 id="objects"> 2.4. Basic Drawing Objects </h3>
