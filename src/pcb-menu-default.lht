@@ -663,6 +663,7 @@ ha:{
 				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
 				ha:External editor...     { action=extedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
+				ha:Edit layer bindings... { action=LayerBinding() }
 #TODO: replace from lib
 				-
 				ha:Remove subcircuit      { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
