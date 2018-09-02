@@ -3,6 +3,16 @@
 	The core and core plugins use these from a single, central hash
 	This list is used to cpp-generate the F_* constants in enum pcb_function_id_t
 */
+
+/* layer purpose */
+action_entry(user)
+action_entry(fab)
+action_entry(assy)
+action_entry(csect)
+action_entry(plated)
+action_entry(unplated)
+
+/* Keywords for actions */
 action_entry(Add)
 action_entry(AddSelected)
 action_entry(All)
