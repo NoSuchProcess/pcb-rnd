@@ -33,6 +33,8 @@
 #include "layer_grp.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "funchash.h"
+#include "funchash_core.h"
 
 /* notify the rest of the code after layer group changes so that the GUI
    and other parts sync up */
@@ -696,6 +698,34 @@ int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *nam
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 	if (grp == NULL) return -1;
 	return pcb_layergrp_rename_(grp, pcb_strdup(name));
+}
+
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose)
+{
+	free(lg->purpose);
+	if (purpose == NULL) {
+		lg->purpose = NULL;
+		lg->purpi = F_user;
+	}
+	else {
+		lg->purpose = purpose;
+		lg->purpi = pcb_funchash_get(purpose, NULL);
+		if (lg->purpi < 0)
+			lg->purpi = F_user;
+	}
+	return 0;
+}
+
+int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose)
+{
+	int ret = pcb_layergrp_set_purpose__(lg, purpose);
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	return ret;
+}
+
+int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose)
+{
+	return pcb_layergrp_set_purpose_(lg, pcb_strdup(purpose));
 }
 
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)

@@ -115,8 +115,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 	const char *name;              /* layer name */
 
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
-	char *purpose;                 /* what a doc/mech layer is used for */
-	int purpi;                     /* integer version of purpose from the funtion hash (cache) */
 
 	/* for bound layers these point to the board layer's*/
 	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
@@ -136,6 +134,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 			pcb_layer_type_t type;
 			/* for comb, use the ->comb from the common part */
 			int stack_offs;                /* offset in the stack for PCB_LYT_INNER: positive is counted from primary side, negative from the opposite side */
+			char *purpose;                 /* what the target doc/mech layer is used for */
 
 			unsigned user_specified:1;     /* 1 if the user forced the binding */
 			pcb_layer_id_t user_lid;
@@ -269,12 +268,6 @@ int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor
 /* changes the name/color of a layer; string has to be allocated by the caller (pcb_strdup) */
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
 int pcb_layer_recolor_(pcb_layer_t *Layer, char *color);
-
-/* Change the purpose field and recalc purpi (not undoable) */
-int pcb_layer_set_purpose__(pcb_layer_t *ly, char *purpose); /* no strdup, no event */
-int pcb_layer_set_purpose_(pcb_layer_t *ly, char *purpose); /* no strdup, send layer change event */
-int pcb_layer_set_purpose(pcb_layer_t *ly, const char *purpose); /* strdup, send event */
-
 
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is

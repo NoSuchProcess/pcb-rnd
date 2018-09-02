@@ -44,7 +44,10 @@ struct pcb_layergrp_s {
 	pcb_cardinal_t len;                    /* number of layer IDs in use */
 	pcb_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
 	char *name;                            /* name of the physical layer (independent of the name of the layer groups) */
+
 	pcb_layer_type_t ltype;
+	char *purpose;                         /* what a doc/mech layer is used for */
+	int purpi;                             /* integer version of purpose from the funtion hash (cache) */
 
 	unsigned valid:1;                      /* 1 if it's a new-style, valid layer group; 0 after loading old files with no layer stackup info */
 	unsigned vis:1;                        /* 1 if layer group is visible on the GUI */
@@ -149,6 +152,12 @@ int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lna
 
 /* changes the name of a layer; memory has to be already allocated */
 int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name);
+
+/* Change the purpose field and recalc purpi (not undoable) */
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose); /* no strdup, no event */
+int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose); /* no strdup, send layer change event */
+int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose); /* strdup, send event */
+
 
 /* Slow linear search for a layer group by name */
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);

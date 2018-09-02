@@ -38,8 +38,6 @@
 #include "layer_ui.h"
 #include "layer_vis.h"
 #include "rtree.h"
-#include "funchash.h"
-#include "funchash_core.h"
 #include "obj_pstk_inlines.h"
 #include "list_common.h"
 
@@ -468,35 +466,6 @@ int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color)
 {
 	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(color));
 }
-
-int pcb_layer_set_purpose__(pcb_layer_t *ly, char *purpose)
-{
-	free(ly->purpose);
-	if (purpose == NULL) {
-		ly->purpose = NULL;
-		ly->purpi = F_user;
-	}
-	else {
-		ly->purpose = purpose;
-		ly->purpi = pcb_funchash_get(purpose, NULL);
-		if (ly->purpi < 0)
-			ly->purpi = F_user;
-	}
-	return 0;
-}
-
-int pcb_layer_set_purpose_(pcb_layer_t *ly, char *purpose)
-{
-	int ret = pcb_layer_set_purpose__(ly, purpose);
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
-	return ret;
-}
-
-int pcb_layer_set_purpose(pcb_layer_t *ly, const char *purpose)
-{
-	return pcb_layer_set_purpose_(ly, pcb_strdup(purpose));
-}
-
 
 #undef APPEND
 
