@@ -330,6 +330,8 @@ typedef struct pcb_virt_layer_s {
 	char *name;
 	pcb_layer_id_t new_id;
 	pcb_layer_type_t type;
+	const char *purpose;
+	int purpi;
 } pcb_virt_layer_t;
 
 extern pcb_virt_layer_t pcb_virt_layers[];
