@@ -1,5 +1,4 @@
 0. old, still waiting for ack
-+ BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
 
 1. For the upcoming release ===============================================================================
 - BUG: menu item to move selected subcircuits to the other side requests click to confirm subc, but {s f} action acts on current selection 
