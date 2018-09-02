@@ -303,7 +303,7 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
  list_conf.h compat_misc.h obj_subc.h search.h rats.h netlist.h \
- route_style.h ../src_plugins/dialogs/dlg_layer_flags.c \
+ route_style.h ../src_plugins/dialogs/dlg_layer_flags.c event.h \
  ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h \
  ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
  operation.h obj_pstk_inlines.h data.h thermal.h operation.h \
@@ -6325,7 +6325,8 @@ layer_grp.o: layer_grp.c ../config.h board.h global_typedefs.h pcb_bool.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h compat_misc.h event.h
+ vtpadstack_t.h compat_misc.h event.h funchash.h funchash_core.h \
+ funchash_core_list.h
 layer_ui.o: layer_ui.c ../config.h layer.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h attrib.h obj_arc_list.h obj_common.h \
  flag.h data_parent.h obj_arc.h ../src_3rd/genlist/gendlist.h \
