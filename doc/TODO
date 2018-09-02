@@ -2,7 +2,6 @@
 + BUG: crosshair vs. grid - one pixel off, see ML 1801 [report: pstuge]
 + BUG: gtk: keyboard handling in top window; ML 1811 [report: pstuge]
 + BUG: press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge]
-+ feature: fp_wget cache dir configurable [report: agaran]
 
 1. For the upcoming release ===============================================================================
 - BUG: menu item to move selected subcircuits to the other side requests click to confirm subc, but {s f} action acts on current selection 
