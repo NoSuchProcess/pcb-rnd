@@ -880,7 +880,7 @@ static pcb_layer_combining_t parse_comb(pcb_board_t *pcb, lht_node_t *ncmb)
 
 static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, pcb_data_t *subc_parent)
 {
-	lht_node_t *n, *lst, *ncmb, *nvis;
+	lht_node_t *n, *lst, *ncmb, *nvis, *npurp;
 	lht_dom_iterator_t it;
 	int bound = (subc_parent != NULL);
 	pcb_layer_t *ly = &dt->Layer[layer_id];
@@ -903,11 +903,25 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		ly->comb = parse_comb(pcb, ncmb);
 	}
 
+	npurp = lht_dom_hash_get(grp, "purpose");
+	if ((rdver < 6) && (npurp != NULL))
+		iolht_warn(npurp, -1, "Lihata board below v6 should not have layer purpose (the file may not load correctly in older versions of pcb-rnd)\n");
+
+	if (!bound && (npurp != NULL))
+		iolht_warn(npurp, -1, "Only bound layers should have purpose - ignoring this field\n");
+
 	if (bound) {
 		ly->is_bound = 1;
 		ly->name = pcb_strdup(grp->name);
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
 		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, lht_dom_hash_get(grp, "type"), "bound layer");
+		if (npurp != NULL) {
+			if (npurp->type == LHT_TEXT)
+				dt->Layer[layer_id].meta.bound.purpose = pcb_strdup(npurp->data.text.value);
+			else
+				iolht_warn(npurp, -1, "Layers purpose shall be text - ignoring this field\n");
+		}
+
 		if (pcb != NULL) {
 			dt->Layer[layer_id].meta.bound.real = pcb_layer_resolve_binding(pcb, &dt->Layer[layer_id]);
 			if (dt->Layer[layer_id].meta.bound.real != NULL)
@@ -1431,7 +1445,7 @@ static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
 
 static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 {
-	lht_node_t *grps, *grp, *name, *layers, *lyr, *nattr;
+	lht_node_t *grps, *grp, *name, *layers, *lyr, *nattr, *npurp;
 	lht_dom_iterator_t it, itt;
 	long int n;
 
@@ -1466,6 +1480,8 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		if (pcb->LayerGroups.len <= gid)
 			pcb->LayerGroups.len = gid+1;
 		g->parent.board = pcb;
+		g->purpose = NULL;
+		g->purpi = -1;
 		g->parent_type = PCB_PARENT_BOARD;
 		g->type = PCB_OBJ_LAYERGRP;
 		g->valid = 1;
@@ -1483,6 +1499,16 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		if (rdver < 6) {
 			if ((g->ltype & PCB_LYT_DOC) || (g->ltype & PCB_LYT_MECH))
 				iolht_warn(grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.");
+		}
+
+		npurp = lht_dom_hash_get(grp, "purpose");
+		if (npurp != NULL) {
+			if (rdver < 6)
+				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.");
+			if (npurp->type == LHT_TEXT)
+				pcb_layergrp_set_purpose__(g, pcb_strdup(npurp->data.text.value));
+			else
+				iolht_warn(npurp, -1, "Group purpose shall be text - ignoring this field\n");
 		}
 
 		/* load attributes */
