@@ -870,10 +870,18 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 
 		lyt = g->ltype;
 		if (wrver < 6) {
+			if (g->purpose != NULL)
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group purpose in lihata formats below version 6.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 			if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH)) {
 				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH);
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group type DOC or MECH in lihata formats below version 5, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 			}
+		}
+		else {
+			if (g->purpose != NULL)
+				lht_dom_hash_put(grp, build_text("purpose", g->purpose));
+			else
+				lht_dom_hash_put(grp, dummy_node("purpose"));
 		}
 		lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
 		pcb_layer_type_map(lyt, flags, build_layer_stack_flag);
@@ -910,6 +918,14 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 
 			lht_dom_hash_put(obj, type = lht_dom_node_alloc(LHT_HASH, "type"));
 			pcb_layer_type_map(layer->meta.bound.type, type, build_layer_stack_flag);
+			if (wrver >= 6) {
+				if (layer->meta.bound.purpose != NULL)
+					lht_dom_hash_put(obj, build_text("purpose", layer->meta.bound.purpose));
+				else
+					lht_dom_hash_put(obj, dummy_node("purpose"));
+			}
+			else if (layer->meta.bound.purpose != NULL)
+				pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layer with a purpose string - not supported in lihata board below v6. Layer binding might be broken after load.\n");
 		}
 		else
 			pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
