@@ -75,6 +75,7 @@ ha:lht_tree_doc { ha:roots {
 										desc { a flag-list of layer type flag bits }
 										sy:children = {/lht_tree_doc/comm/layer_mask/children}
 									}
+									ha:name { valtype=string; ver={>=6} desc={purpose of layer groups (useful with mechanical/documentation groups}}
 									ha:layers {
 										type=li
 										desc { ordered list of logical layer IDs hosted by this layer group }
