@@ -874,7 +874,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group purpose in lihata formats below version 6.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 			if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH)) {
 				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH);
-				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group type DOC or MECH in lihata formats below version 5, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group type DOC or MECH in lihata formats below version 6, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 			}
 		}
 		else {
