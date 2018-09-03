@@ -293,6 +293,42 @@ unsigned int pcb_layer_flags_(pcb_layer_t *layer)
 	return layer->meta.bound.type;
 }
 
+int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **out)
+{
+	pcb_layergrp_t *grp;
+
+	if (layer_idx & PCB_LYT_UI)
+		return PCB_LYT_UI | PCB_LYT_VIRTUAL;
+
+	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX)) {
+		if (out != NULL)
+			*out = pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].purpose;
+		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].purpi;
+	}
+
+	if ((layer_idx < 0) || (layer_idx >= pcb->Data->LayerN)) {
+		if (out != NULL)
+			*out = NULL;
+		return -1;
+	}
+
+	grp = pcb_get_layergrp(pcb, layer_idx);
+
+	if (out != NULL) {
+		if (grp == NULL) {
+			*out = NULL;
+			return -1;
+		}
+		*out = grp->purpose;
+		return grp->purpi;
+	}
+
+	if (grp == NULL)
+		return -1;
+
+	return grp->purpi;
+}
+
 #define APPEND(n) \
 	do { \
 		if (res != NULL) { \

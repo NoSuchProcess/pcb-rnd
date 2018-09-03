@@ -222,6 +222,11 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty);
 unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx);
 unsigned int pcb_layer_flags_(pcb_layer_t *layer);
 
+/* Return the purpi of the group of a layer; if out is not NULL, also copy
+   a pointer to the purpose string there (valid until a layer change) */
+int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **out);
+
+
 /* map bits of a layer type (call cb for each bit set); return number of bits
    found. */
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name));
