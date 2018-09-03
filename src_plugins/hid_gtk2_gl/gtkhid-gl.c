@@ -8,6 +8,7 @@
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
+#include "funchash_core.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
@@ -188,6 +189,9 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 		return PCB->Data->Layer[idx].meta.real.vis;
 	}
 
+	if (PCB_LAYER_IS_ASSY(flags, purpi))
+		return 0;
+
 	/* virtual layers */
 	{
 		switch (flags & PCB_LYT_ANYTHING) {
@@ -196,8 +200,6 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return pcb_silk_on(PCB);
-			return 0;
-		case PCB_LYT_ASSY:
 			return 0;
 		case PCB_LYT_PDRILL:
 		case PCB_LYT_UDRILL:

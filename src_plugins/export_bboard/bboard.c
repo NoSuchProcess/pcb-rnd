@@ -53,6 +53,7 @@
 #include "compat_misc.h"
 #include "compat_fs.h"
 #include "misc_util.h"
+#include "funchash_core.h"
 #include "rtree.h"
 
 #include "hid.h"
@@ -179,9 +180,9 @@ static pcb_hid_attribute_t *bboard_get_export_options(int *n)
 	return bboard_options;
 }
 
-static int bboard_validate_layer(unsigned long flags, int group, int skipsolder)
+static int bboard_validate_layer(unsigned long flags, int purpi, int group, int skipsolder)
 {
-	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY) || (flags & PCB_LYT_OUTLINE))
+	if ((flags & PCB_LYT_INVIS) || PCB_LAYER_IS_ASSY(flags, purpi) || (flags & PCB_LYT_OUTLINE))
 		return 0;
 
 	if (group_data[group].solder && skipsolder)
@@ -552,9 +553,21 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 	/* draw all wires from all valid layers */
 	for (i = pcb_max_layer; i >= 0; i--) {
 		unsigned int flg = pcb_layer_flags(PCB, i);
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_t *grp;
+		int purpi;
+
 		if (flg & PCB_LYT_SILK)
 			continue;
-		if (bboard_validate_layer(flg, pcb_layer_get_group(PCB, i), options[HA_skipsolder].int_value)) {
+
+		gid = pcb_layer_get_group(PCB, i);
+		grp = pcb_get_layergrp(PCB, gid);
+		if (grp == NULL)
+			purpi = -1;
+		else
+			purpi = grp->purpi;
+
+		if (bboard_validate_layer(flg, purpi, gid, options[HA_skipsolder].int_value)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
 			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));

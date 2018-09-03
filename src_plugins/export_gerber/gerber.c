@@ -24,6 +24,7 @@
 #include "compat_misc.h"
 #include "safe_fs.h"
 #include "macro.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -397,7 +398,7 @@ static pcb_box_t region;
 
 /* Very similar to pcb_layer_to_file_name() but appends only a
    three-character suffix compatible with Eagle's defaults.  */
-static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
+static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags, int purpi)
 {
 	const char *suff = "out";
 
@@ -425,9 +426,9 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		suff = "inv";
 	else if (fmatch(flags, PCB_LYT_FAB))
 		suff = "fab";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_ASSY))
+	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "ast";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
+	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "asb";
 	else if (fmatch(flags, PCB_LYT_OUTLINE))
 		suff = "oln";
@@ -442,7 +443,7 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 
 /* Very similar to layer_type_to_file_name() but appends only a
    three-character suffix compatible with Hackvana's naming requirements  */
-static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
+static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags, int purpi)
 {
 	char *suff;
 
@@ -470,9 +471,9 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 		suff = "inv";
 	else if (fmatch(flags, PCB_LYT_FAB))
 		suff = "fab";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_ASSY))
+	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "ast";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
+	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "asb";
 	else if (fmatch(flags, PCB_LYT_OUTLINE))
 		suff = "gm1";
@@ -486,7 +487,7 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 }
 
 /* Very similar to layer_type_to_file_name() but appends the group name _and_ the magic suffix */
-static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsigned int flags)
+static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsigned int flags, int purpi)
 {
 	char *suff;
 	int name_len;
@@ -516,9 +517,9 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 		suff = "inv";
 	else if (fmatch(flags, PCB_LYT_FAB))
 		suff = "fab";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_ASSY))
+	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "ast";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
+	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "asb";
 	else if (fmatch(flags, PCB_LYT_OUTLINE))
 		suff = "gko";
@@ -546,7 +547,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 #undef fmatch
 
 
-static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags)
+static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, int purpi)
 {
 	int fns_style;
 	const char *sext = ".gbr";
@@ -563,13 +564,13 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 		fns_style = PCB_FNS_first;
 		break;
 	case NAME_STYLE_EAGLE:
-		assign_eagle_file_suffix(dest, lid, flags);
+		assign_eagle_file_suffix(dest, lid, flags, purpi);
 		return;
 	case NAME_STYLE_HACKVANA:
-		assign_hackvana_file_suffix(dest, lid, flags);
+		assign_hackvana_file_suffix(dest, lid, flags, purpi);
 		return;
 	case NAME_STYLE_UNIVERSAL:
-		assign_universal_file_suffix(dest, gid, flags);
+		assign_universal_file_suffix(dest, gid, flags, purpi);
 		return;
 	}
 
@@ -696,7 +697,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 	const char *group_name;
 
 	/* before cam lets this happen... */
-	if (flags & PCB_LYT_ASSY)
+	if (PCB_LAYER_IS_ASSY(flags, purpi))
 		return 0;
 
 	pcb_cam_set_layer_group(&gerber_cam, group, purpose, purpi, flags);
@@ -721,14 +722,14 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 			if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK)) stay = 1;
 			if (copy_outline_mode == COPY_OUTLINE_ALL && \
 				((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) ||
-				(flags & PCB_LYT_FAB) || (flags & PCB_LYT_ASSY) || 
+				(flags & PCB_LYT_FAB) || PCB_LAYER_IS_ASSY(flags, purpi) ||
 				(flags & PCB_LYT_OUTLINE))) stay = 1;
 
 			if (!stay) return 0;
 		}
 	}
 
-	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY)) {
+	if ((flags & PCB_LYT_INVIS) || PCB_LAYER_IS_ASSY(flags, purpi)) {
 /*		printf("  nope: invis %d or assy %d\n", (flags & PCB_LYT_INVIS), (flags & PCB_LYT_ASSY));*/
 		return 0;
 	}
@@ -793,7 +794,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		}
 
 		pagecount++;
-		assign_file_suffix(filesuff, group, layer, flags);
+		assign_file_suffix(filesuff, group, layer, flags, purpi);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen(gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
 			if (f == NULL) {
@@ -877,7 +878,7 @@ emit_outline:
 	if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK))
 		want_outline = 1;
 
-	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_ASSY)))
+	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || (flags & PCB_LYT_FAB) || PCB_LAYER_IS_ASSY(flags, purpi)))
 		want_outline = 1;
 
 	if (want_outline && !(flags & PCB_LYT_OUTLINE)) {

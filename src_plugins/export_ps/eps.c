@@ -23,6 +23,7 @@
 #include "hid_cam.h"
 #include "hid_flags.h"
 #include "hid_color.h"
+#include "funchash_core.h"
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented EPS function %s.\n", func); abort()
 
@@ -374,7 +375,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		if (flags & PCB_LYT_NOEXPORT)
 			return 0;
 
-		if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_CSECT) || (flags & PCB_LYT_INVIS))
+		if (PCB_LAYER_IS_ASSY(flags, purpi) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_CSECT) || (flags & PCB_LYT_INVIS))
 			return 0;
 
 		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && (flags & PCB_LYT_OUTLINE))

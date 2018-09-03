@@ -17,6 +17,7 @@
 #include "plugins.h"
 #include "hid_cam.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -828,7 +829,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 
 	global.is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	global.is_mask = !!(flags & PCB_LYT_MASK);
-	global.is_assy = !!(flags & PCB_LYT_ASSY);
+	global.is_assy = PCB_LAYER_IS_ASSY(flags, purpi);
 	global.is_copper = !!(flags & PCB_LYT_COPPER);
 	global.is_paste = !!(flags & PCB_LYT_PASTE);
 

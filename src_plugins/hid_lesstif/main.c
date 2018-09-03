@@ -27,6 +27,7 @@
 #include "plugins.h"
 #include "macro.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -2921,6 +2922,9 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 	if (flags & PCB_LYT_COPPER)
 		return pinout ? 1 : PCB->Data->Layer[idx].meta.real.vis;
 
+	if (PCB_LAYER_IS_ASSY(flags, purpi))
+		return 0;
+
 	/* virtual layers */
 	{
 		switch (flags & PCB_LYT_ANYTHING) {
@@ -2929,8 +2933,6 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return pcb_silk_on(PCB);
-			return 0;
-		case PCB_LYT_ASSY:
 			return 0;
 		case PCB_LYT_UDRILL:
 		case PCB_LYT_PDRILL:

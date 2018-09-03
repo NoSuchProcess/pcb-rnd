@@ -38,6 +38,7 @@
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
+#include "funchash_core.h"
 
 #include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
@@ -234,6 +235,9 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, const char *purpo
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
 		return /*pinout ? 1 : */ PCB->Data->Layer[idx].meta.real.vis;
 
+	if (PCB_LAYER_IS_ASSY(flags, purpi))
+		return 0;
+
 	/* virtual layers */
 	{
 		switch (flags & PCB_LYT_ANYTHING) {
@@ -242,8 +246,6 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, const char *purpo
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*|| pinout */ )
 				return pcb_silk_on(PCB);
-			return 0;
-		case PCB_LYT_ASSY:
 			return 0;
 		case PCB_LYT_PDRILL:
 		case PCB_LYT_UDRILL:

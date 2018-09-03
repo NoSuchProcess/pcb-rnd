@@ -92,7 +92,6 @@ typedef enum layer_flag_e {
 	LYT_OUTLINE   = PCB_LYT_OUTLINE,
 	LYT_RAT       = PCB_LYT_RAT,
 	LYT_INVIS     = PCB_LYT_INVIS,
-	LYT_ASSY      = PCB_LYT_ASSY,
 	LYT_FAB       = PCB_LYT_FAB,
 	LYT_PDRILL    = PCB_LYT_PDRILL,
 	LYT_UDRILL    = PCB_LYT_UDRILL,

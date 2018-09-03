@@ -47,6 +47,7 @@
 #include "compat_misc.h"
 #include "plugins.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -1277,7 +1278,7 @@ static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		if (flags & PCB_LYT_NOEXPORT)
 			return 0;
 
-		if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS) || (flags & PCB_LYT_CSECT))
+		if (PCB_LAYER_IS_ASSY(flags, purpi) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS) || (flags & PCB_LYT_CSECT))
 			return 0;
 	}
 

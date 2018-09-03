@@ -45,8 +45,8 @@
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1, PCB_LYT_VIRTUAL | PCB_LYT_INVIS, NULL, -1 },
 	{"rats",           PCB_LYT_VIRTUAL + 2, PCB_LYT_VIRTUAL | PCB_LYT_RAT, NULL, -1 },
-	{"topassembly",    PCB_LYT_VIRTUAL + 3, PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP, "assy", F_assy },
-	{"bottomassembly", PCB_LYT_VIRTUAL + 4, PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM, "assy", F_assy },
+	{"topassembly",    PCB_LYT_VIRTUAL + 3, PCB_LYT_VIRTUAL | PCB_LYT_TOP, "assy", F_assy },
+	{"bottomassembly", PCB_LYT_VIRTUAL + 4, PCB_LYT_VIRTUAL | PCB_LYT_BOTTOM, "assy", F_assy },
 	{"fab",            PCB_LYT_VIRTUAL + 5, PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL, "fab", F_fab },
 	{"plated-drill",   PCB_LYT_VIRTUAL + 6, PCB_LYT_VIRTUAL | PCB_LYT_PDRILL, "plated", F_plated },
 	{"unplated-drill", PCB_LYT_VIRTUAL + 7, PCB_LYT_VIRTUAL | PCB_LYT_UDRILL, "unplated", F_unplated },
@@ -86,7 +86,6 @@ static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_OUTLINE, 2, "outline" },
 	{ PCB_LYT_RAT,     2, "rat" },
 	{ PCB_LYT_INVIS,   2, "invis" },
-	{ PCB_LYT_ASSY,    2, "assy" },
 	{ PCB_LYT_FAB,     2, "fab" },
 	{ PCB_LYT_PDRILL,  2, "plateddrill" },
 	{ PCB_LYT_UDRILL,  2, "unplateddrill" },
