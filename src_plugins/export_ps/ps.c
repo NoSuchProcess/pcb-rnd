@@ -930,14 +930,14 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		if (mirror_this)
 			fprintf(global.f, "1 -1 scale\n");
 
-		fprintf(global.f, "%g dup neg scale\n", (flags & PCB_LYT_FAB) ? 1.0 : global.scale_factor);
+		fprintf(global.f, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.scale_factor);
 		pcb_fprintf(global.f, "%mi %mi translate\n", -PCB->MaxWidth / 2, -PCB->MaxHeight / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
 		 * even if it means some of the board falls off the right edge.
 		 * If users don't want to make smaller boards, or use fewer drill
 		 * sizes, they can always ignore this sheet. */
-		if (flags & PCB_LYT_FAB) {
+		if (PCB_LAYER_IS_FAB(flags, purpi)) {
 			pcb_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->MaxHeight / 2;
 			pcb_coord_t needed = pcb_stub_draw_fab_overhang();
 			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
@@ -989,7 +989,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
 	 * text on all pages -- even if that text is blank */
-	if (!(flags & PCB_LYT_FAB))
+	if (!(PCB_LAYER_IS_FAB(flags, purpi)))
 		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto (Layer %s) show grestore newpath /ty ty ts sub def\n", name);
 	else
 		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto ( ) show grestore newpath /ty ty ts sub def\n");

@@ -424,7 +424,7 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		suff = "crs";
 	else if (fmatch(flags, PCB_LYT_INVIS))
 		suff = "inv";
-	else if (fmatch(flags, PCB_LYT_FAB))
+	else if (PCB_LAYER_IS_FAB(flags, purpi))
 		suff = "fab";
 	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "ast";
@@ -469,7 +469,7 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 		suff = "gbp";
 	else if (fmatch(flags, PCB_LYT_INVIS))
 		suff = "inv";
-	else if (fmatch(flags, PCB_LYT_FAB))
+	else if (PCB_LAYER_IS_FAB(flags, purpi))
 		suff = "fab";
 	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "ast";
@@ -515,7 +515,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 		suff = "gbp";
 	else if (fmatch(flags, PCB_LYT_INVIS))
 		suff = "inv";
-	else if (fmatch(flags, PCB_LYT_FAB))
+	else if (PCB_LAYER_IS_FAB(flags, purpi))
 		suff = "fab";
 	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "ast";
@@ -722,7 +722,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 			if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK)) stay = 1;
 			if (copy_outline_mode == COPY_OUTLINE_ALL && \
 				((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) ||
-				(flags & PCB_LYT_FAB) || PCB_LAYER_IS_ASSY(flags, purpi) ||
+				PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_ASSY(flags, purpi) ||
 				(flags & PCB_LYT_OUTLINE))) stay = 1;
 
 			if (!stay) return 0;
@@ -878,7 +878,7 @@ emit_outline:
 	if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK))
 		want_outline = 1;
 
-	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || (flags & PCB_LYT_FAB) || PCB_LAYER_IS_ASSY(flags, purpi)))
+	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_ASSY(flags, purpi)))
 		want_outline = 1;
 
 	if (want_outline && !(flags & PCB_LYT_OUTLINE)) {

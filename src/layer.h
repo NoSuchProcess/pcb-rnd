@@ -51,7 +51,6 @@ typedef enum {
 	PCB_LYT_OUTLINE  = 0x00001000, /* outline (contour of the board) */
 	PCB_LYT_RAT      = 0x00002000, /* (virtual) rats nest (one, not in the stackup) */
 	PCB_LYT_INVIS    = 0x00004000, /* (virtual) layer is invisible (one, not in the stackup) */
-	PCB_LYT_FAB      = 0x00010000, /* (virtual) fab drawing (one, not in the stackup) */
 	PCB_LYT_PDRILL   = 0x00020000, /* (virtual) plated drills (affects all physical layers) */
 	PCB_LYT_UDRILL   = 0x00040000, /* (virtual) unplated drills (affects all physical layers) */
 	PCB_LYT_UI       = 0x00080000, /* (virtual) user interface drawings (feature plugins use this for displaying states or debug info) */
@@ -95,6 +94,7 @@ typedef enum { /* bitfield */
 #define PCB_LAYER_SIDED(lyt)    (((lyt) & PCB_LYT_COPPER) || ((lyt) & PCB_LYT_SILK) || ((lyt) & PCB_LYT_MASK) || ((lyt) & PCB_LYT_PASTE))
 
 #define PCB_LAYER_IS_ASSY(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_assy))
+#define PCB_LAYER_IS_FAB(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_fab))
 
 #include "globalconst.h"
 #include "global_typedefs.h"
