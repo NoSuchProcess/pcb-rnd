@@ -1,4 +1,6 @@
-0. For the upcoming release ===============================================================================
+0. old, still waiting for ack
+
+1. For the upcoming release ===============================================================================
 - BUG: menu item to move selected subcircuits to the other side requests click to confirm subc, but {s f} action acts on current selection 
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
@@ -31,7 +33,7 @@
 - BUG: gl hid, press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge, miloh]
 - BUG: see fine grid view at http://scififaster.net/images_drawings/grid_spacing_oddity.png examine grid spacing by counting pixels is 5,6,6,6 in x and y dimensions, (is this a screen/res issue to disregard?) [report: Miloh]
 
-1. For later releases ===============================================================================
+2. For later releases ===============================================================================
 - FEATURE: fungw: DAD dialog: mini parser from text
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
@@ -203,7 +205,7 @@
 		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 		- bin: layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
 
-2. Long term ===============================================================================
+3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
 	-> reason: order of padstack shape rendering is random
 	-> we should probably render large objects first then smaller ones
@@ -219,7 +221,7 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 - menu item for export of multiple selected layout elements to discrete .fp files
 
-3. Low prio ===============================================================================
+4. Low prio ===============================================================================
 - BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: igor2, miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
