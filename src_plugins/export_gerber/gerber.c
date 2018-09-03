@@ -689,7 +689,7 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
-static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int want_outline;
 	char *cp;
@@ -699,7 +699,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	if (flags & PCB_LYT_ASSY)
 		return 0;
 
-	pcb_cam_set_layer_group(&gerber_cam, group, flags);
+	pcb_cam_set_layer_group(&gerber_cam, group, purpose, purpi, flags);
 
 	if (flags & PCB_LYT_UI)
 		return 0;

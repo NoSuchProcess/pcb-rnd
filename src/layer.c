@@ -954,7 +954,7 @@ int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_e
 		pcb_layergrp_id_t grp;
 		pcb_layer_id_t lid = v->new_id;
 		grp = pcb_layer_get_group(pcb, lid);
-		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
+		return pcb_gui->set_layer_group(grp, v->purpose, v->purpi, lid, v->type, is_empty);
 	}
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
@@ -968,7 +968,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(-1, pcb_layer_id(first->parent.data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
+		return pcb_gui->set_layer_group(-1, NULL, -1, pcb_layer_id(first->parent.data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

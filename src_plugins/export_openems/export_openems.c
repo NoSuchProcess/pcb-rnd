@@ -657,7 +657,7 @@ static int openems_parse_arguments(int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int openems_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int openems_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	if (flags & PCB_LYT_COPPER) { /* export copper layers only */
 		ems_ctx->clayer = ems_ctx->lg_pcb2ems[group];

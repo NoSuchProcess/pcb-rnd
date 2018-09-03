@@ -356,7 +356,7 @@ static int openscad_parse_arguments(int *argc, char ***argv)
 
 
 
-static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int openscad_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	if (flags & PCB_LYT_UI)
 		return 0;

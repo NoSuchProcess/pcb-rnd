@@ -132,7 +132,7 @@ static void remote_invalidate_all(void)
 	proto_send_invalidate_all();
 }
 
-static int remote_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int remote_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	if (flags & PCB_LYT_UI) /* do not draw UI layers yet, we didn't create them */
 		return 0;
@@ -141,10 +141,10 @@ static int remote_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	if (flags & PCB_LYT_CSECT) /* do not draw cross-sect, we didn't create them */
 		return 0;
 	if (group >= 0)
-		proto_send_set_layer_group(group, is_empty);
+		proto_send_set_layer_group(group, purpose, is_empty);
 	else {
 #warning layer TODO: remove this temporary hack for virtual layers
-		proto_send_set_layer_group(layer, is_empty);
+		proto_send_set_layer_group(layer, purpose, is_empty);
 	}
 
 	return 1; /* do draw */

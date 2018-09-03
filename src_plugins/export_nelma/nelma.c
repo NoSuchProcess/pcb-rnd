@@ -655,7 +655,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 
 /* *** PNG export (slightly modified code from PNG export HID) ************* */
 
-static int nelma_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int nelma_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	if (flags & PCB_LYT_INVIS)
 		return 0;

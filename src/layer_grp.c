@@ -583,7 +583,7 @@ int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_emp
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(grp, pcb->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(pcb, grp), is_empty);
+		return pcb_gui->set_layer_group(grp, pcb->LayerGroups.grp[grp].purpose, pcb->LayerGroups.grp[grp].purpi, pcb->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(pcb, grp), is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

@@ -32,7 +32,7 @@
 static pcb_hid_attribute_t *eps_get_export_options(int *n);
 static void eps_do_export(pcb_hid_attr_val_t * options);
 static int eps_parse_arguments(int *argc, char ***argv);
-static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
+static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 static pcb_hid_gc_t eps_make_gc(void);
 static void eps_destroy_gc(pcb_hid_gc_t gc);
 static void eps_set_color(pcb_hid_gc_t gc, const char *name);
@@ -360,7 +360,7 @@ static int is_mask;
 static int is_paste;
 static int is_drill;
 
-static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	char tmp_ln[PCB_PATH_MAX];
 	const char *name;
@@ -368,7 +368,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	pcb_cam_set_layer_group(&eps_cam, group, flags);
+	pcb_cam_set_layer_group(&eps_cam, group, purpose, purpi, flags);
 
 	if (!eps_cam.active) {
 		if (flags & PCB_LYT_NOEXPORT)

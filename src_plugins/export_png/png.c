@@ -1192,7 +1192,7 @@ static int is_mask;
 static int is_drill;
 
 
-static int png_set_layer_group_photo(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
 			if (photo_flip)
@@ -1263,14 +1263,14 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, pcb_layer_id_t lay
 		return 1;
 }
 
-static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	doing_outline = 0;
 
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	pcb_cam_set_layer_group(&png_cam, group, flags);
+	pcb_cam_set_layer_group(&png_cam, group, purpose, purpi, flags);
 
 
 	if (!png_cam.active) {
@@ -1285,7 +1285,7 @@ static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	is_mask = (flags & PCB_LYT_MASK);
 
 	if (photo_mode)
-		return png_set_layer_group_photo(group, layer, flags, is_empty);
+		return png_set_layer_group_photo(group, purpose, purpi, layer, flags, is_empty);
 
 	if (as_shown) {
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {

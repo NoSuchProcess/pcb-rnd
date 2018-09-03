@@ -33,7 +33,7 @@
 
 const char *ps_cookie = "ps HID";
 
-static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
+static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 static void use_gc(pcb_hid_gc_t gc);
 
 typedef struct hid_gc_s {
@@ -675,7 +675,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.linewidth = -1;
 	/* reset static vars */
-	ps_set_layer_group(-1, -1, 0, -1);
+	ps_set_layer_group(-1, NULL, -1, -1, 0, -1);
 	use_gc(NULL);
 
 	global.exps.view.X1 = 0;
@@ -698,7 +698,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
-	ps_set_layer_group(-1, -1, 0, -1); /* reset static vars */
+	ps_set_layer_group(-1, NULL, -1, -1, 0, -1); /* reset static vars */
 	pcb_hid_expose_all(&ps_hid, &global.exps);
 
 	if (the_file)
@@ -786,7 +786,7 @@ static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, int dx, int dy)
 	fprintf(fh, "stroke grestore\n");
 }
 
-static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	char tmp_fn[PCB_PATH_MAX];
 	char tmp_ln[PCB_PATH_MAX];
@@ -804,7 +804,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	pcb_cam_set_layer_group(&ps_cam, group, flags);
+	pcb_cam_set_layer_group(&ps_cam, group, purpose, purpi, flags);
 
 	if (!ps_cam.active) {
 		if (flags & PCB_LYT_NOEXPORT)

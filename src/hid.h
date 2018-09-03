@@ -221,7 +221,8 @@ struct pcb_hid_s {
 	void (*notify_mark_change)(pcb_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per layer group
-	   (physical layer); layer is the first layer in the group.
+	   (physical layer); pusrpose/purpi are the extracted purpose field and its
+	   keyword/function version; layer is the first layer in the group.
 	   TODO: The group may be -1 until the layer rewrite is finished.
 	   If it returns false (zero), the HID does not want that layer, and none of
 	   the drawing functions should be called.  If it returns pcb_true (nonzero),
@@ -229,7 +230,7 @@ struct pcb_hid_s {
 	   functions.  In addition to the copper layer groups, you may select virtual
 	   layers. The is_empty argument is a hint - if set, the layer is empty, if
 	   zero it may be non-empty. */
-	int (*set_layer_group)(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
+	int (*set_layer_group)(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 
 	/* Tell the GUI the layer last selected has been finished with. */
 	void (*end_layer)(void);

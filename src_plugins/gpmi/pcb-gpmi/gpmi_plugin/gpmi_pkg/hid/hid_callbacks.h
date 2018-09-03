@@ -4,7 +4,7 @@ void gpmi_hid_destroy_gc(pcb_hid_gc_t gc);
 void gpmi_hid_do_export(pcb_hid_attr_val_t * options);
 int gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv);
 void gpmi_hid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int cursor_action);
-int gpmi_hid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
+int gpmi_hid_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 void gpmi_hid_set_color(pcb_hid_gc_t gc, const char *name);
 void gpmi_hid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 void gpmi_hid_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
