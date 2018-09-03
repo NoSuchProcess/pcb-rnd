@@ -38,6 +38,7 @@
 #include "stub_draw.h"
 #include "layer_ui.h"
 #include "hid_inlines.h"
+#include "funchash_core.h"
 
 #include "obj_pstk_draw.h"
 #include "obj_line_draw.h"
@@ -931,6 +932,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_hid_t *old_gui = expose_begin(hid);
 	unsigned long lflg = pcb_layer_flags(PCB, e->content.layer_id);
+	int purpi = -1;
 	int fx, fy;
 
 	if (lflg & PCB_LYT_LOGICAL) {
@@ -940,7 +942,10 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 		conf_force_set_bool(conf_core.editor.view.flip_y, 0);
 	}
 
-	if (lflg & PCB_LYT_CSECT) {
+	if (lflg & PCB_LYT_VIRTUAL)
+		purpi = pcb_layer_purpose(PCB, e->content.layer_id, NULL);
+
+	if (PCB_LAYER_IS_CSECT(lflg, purpi)) {
 		if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0)) || (e->force)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);

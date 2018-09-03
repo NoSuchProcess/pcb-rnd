@@ -12,6 +12,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "funchash_core.h"
 #include "event.h"
 
 #include "proto.h"
@@ -138,7 +139,7 @@ static int remote_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		return 0;
 	if (flags & PCB_LYT_NOEXPORT)
 		return 0;
-	if (flags & PCB_LYT_CSECT) /* do not draw cross-sect, we didn't create them */
+	if (PCB_LAYER_IS_CSECT(flags, purpi)) /* do not draw cross-sect, we didn't create them */
 		return 0;
 	if (group >= 0)
 		proto_send_set_layer_group(group, purpose, is_empty);

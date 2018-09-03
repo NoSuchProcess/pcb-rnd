@@ -734,7 +734,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		return 0;
 	}
 
-	if ((flags & PCB_LYT_CSECT) && (!want_cross_sect))
+	if (PCB_LAYER_IS_CSECT(flags, purpi) && (!want_cross_sect))
 		return 0;
 
 	if ((group >= 0) && (group < pcb_max_group(PCB))) {

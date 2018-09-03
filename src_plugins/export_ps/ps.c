@@ -820,7 +820,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		if (flags & PCB_LYT_INVIS)
 			return 0;
 
-		if (flags & PCB_LYT_CSECT) /* not yet finished */
+		if (PCB_LAYER_IS_CSECT(flags, purpi)) /* not yet finished */
 			return 0;
 	}
 

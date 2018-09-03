@@ -192,6 +192,16 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	if (PCB_LAYER_IS_ASSY(flags, purpi))
 		return 0;
 
+	if (PCB_LAYER_IS_CSECT(flags, purpi)) {
+			/* Opaque draw */
+			priv->trans_lines = pcb_false;
+			/* Disable stencil for cross-section drawing; that code
+			 * relies on overdraw doing the right thing and doesn't
+			 * use layers */
+			/*glDisable(GL_STENCIL_TEST);*/
+			return 0;
+	}
+
 	/* virtual layers */
 	{
 		switch (flags & PCB_LYT_ANYTHING) {
@@ -208,14 +218,6 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 			return 1;
 		case PCB_LYT_RAT:
 			return PCB->RatOn;
-		case PCB_LYT_CSECT:
-			/* Opaque draw */
-			priv->trans_lines = pcb_false;
-			/* Disable stencil for cross-section drawing; that code
-			 * relies on overdraw doing the right thing and doesn't
-			 * use layers */
-			/*glDisable(GL_STENCIL_TEST);*/
-			return 0;
 		}
 	}
 	return 0;

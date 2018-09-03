@@ -1278,7 +1278,7 @@ static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		if (flags & PCB_LYT_NOEXPORT)
 			return 0;
 
-		if (PCB_LAYER_IS_ASSY(flags, purpi) || PCB_LAYER_IS_FAB(flags, purpi) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS) || (flags & PCB_LYT_CSECT))
+		if (PCB_LAYER_IS_ASSY(flags, purpi) || PCB_LAYER_IS_FAB(flags, purpi) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS) || PCB_LAYER_IS_CSECT(flags, purpi))
 			return 0;
 	}
 

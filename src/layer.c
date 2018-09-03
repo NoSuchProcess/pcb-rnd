@@ -357,6 +357,7 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
 }
 
 
+
 int pcb_layer_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
@@ -377,6 +378,36 @@ int pcb_layer_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res,
 
 	return used;
 }
+
+/* optimization: code dup for speed */
+int pcb_layer_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len, int purpi, const char *purpose)
+{
+	int n, used = 0;
+	pcb_virt_layer_t *v;
+
+#define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || (strcmp(purpose, ps) == 0)))
+
+	for(v = pcb_virt_layers; v->name != NULL; v++)
+		if (((v->type & mask) == mask) && (PURP_MATCH(v->purpose, v->purpi)))
+			APPEND_VIRT(v);
+
+	for (n = 0; n < PCB_MAX_LAYER; n++) {
+		if ((pcb_layer_flags(pcb, n) & mask) == mask) {
+			const char *lpurp;
+			int lpurpi = pcb_layer_purpose(pcb, n, &lpurp);
+			if (PURP_MATCH(lpurp, lpurpi))
+				APPEND(n);
+		}
+	}
+
+	if (mask == PCB_LYT_UI)
+		for (n = 0; n < vtp0_len(&pcb_uilayers); n++)
+			if ((pcb_uilayers.array[n] != NULL))
+				APPEND(n | PCB_LYT_UI | PCB_LYT_VIRTUAL);
+
+	return used;
+}
+
 
 int pcb_layer_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
