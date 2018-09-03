@@ -90,7 +90,7 @@ newly(soldergnd 3 11)
 </pre>
 Creates a layer 3 called "soldergnd" in group 11.
 
-<h3> setlg(group_id is_empty) </h3>
+<h3> setlg(group_id is_empty purpose) </h3>
 Inform the client that the next set of drawing commands are for a specific
 layer group. (Note: the reason for announcing groups and not layers:
 all layers in that group are drawn at once; visibility
@@ -100,6 +100,7 @@ Arguments:
 <ul>
 	<li> group_id: unique ID of the layer group
 	<li> is_empty: 1 if the layer group may be empty, 0 if the layer is not empty (TODO: this bit is not 100% reliable yet)
+	<li> purpose: layer group purpose field (usefil in mech/doc groups)
 </ul>
 
 <h3> makeGC() </h3>
