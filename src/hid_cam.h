@@ -54,7 +54,7 @@ typedef enum pcb_file_name_style_e {
 } pcb_file_name_style_t;
 
 /* Returns a filename base that can be used to output the layer.  */
-char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style);
+char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
 
 /* Returns a filename base that can be used to output the layer; if flags is 0,
    look it up. Copies result in dest (which should be at least PCB_DERIVE_FN_SUFF_LEN bytes wide).

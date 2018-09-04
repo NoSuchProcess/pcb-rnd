@@ -386,7 +386,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 
 	{
 		char tmp_ln[PCB_PATH_MAX];
-		const char *name = name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
+		const char *name = name = pcb_layer_to_file_name(tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
 		fprintf(f, "<g id=\"layer_%ld_%s\"", group, name);
 	}
 

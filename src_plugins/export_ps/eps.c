@@ -389,7 +389,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 	if (is_mask || is_paste)
 		return 0;
 
-	name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
+	name = pcb_layer_to_file_name(tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
 
 #if 0
 	printf("Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);

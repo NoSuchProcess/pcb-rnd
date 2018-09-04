@@ -36,7 +36,7 @@
 #include "layer_vis.h"
 #include "plug_io.h"
 
-char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style)
+char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	const pcb_virt_layer_t *v;
 	pcb_layergrp_id_t group;

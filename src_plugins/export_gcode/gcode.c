@@ -412,7 +412,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {
 		if (gcode_export_group[i]) {
 			char tmp_ln[PCB_PATH_MAX];
-			const char *name = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
+			const char *name = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB->LayerGroups.grp[i].purpose, PCB->LayerGroups.grp[i].purpi, PCB_FNS_fixed);
 			gcode_cur_group = i;
 
 			/* magic */

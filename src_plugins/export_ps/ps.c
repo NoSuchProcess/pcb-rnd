@@ -825,7 +825,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 	}
 
 
-	name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
+	name = pcb_layer_to_file_name(tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
 
 	global.is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	global.is_mask = !!(flags & PCB_LYT_MASK);
@@ -875,7 +875,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 				ps_end_file(global.f);
 				fclose(global.f);
 			}
-			global.f = psopen(global.filename, pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed));
+			global.f = psopen(global.filename, pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			if (!global.f) {
 				perror(global.filename);
 				return 0;
@@ -892,7 +892,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		 * ordinal page number must reflect the position of that page in
 		 * the body of the PostScript file and must start with 1, not 0.
 		 */
-		fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed), global.pagecount);
+		fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed), global.pagecount);
 
 		if (global.mirror)
 			mirror_this = !mirror_this;
@@ -903,9 +903,9 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		if (global.legend) {
 			fprintf(global.f, "30 30 moveto (%s) show\n", PCB->Filename);
 			if (PCB->Name)
-				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed));
+				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			else
-				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed));
+				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			if (mirror_this)
 				fprintf(global.f, "( \\(mirrored\\)) show\n");
 

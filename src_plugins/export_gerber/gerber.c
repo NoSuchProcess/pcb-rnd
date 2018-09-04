@@ -547,7 +547,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 #undef fmatch
 
 
-static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, int purpi)
+static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi)
 {
 	int fns_style;
 	const char *sext = ".gbr";
@@ -576,7 +576,7 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 
 	if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL))
 		sext = ".cnc";
-	pcb_layer_to_file_name(dest, lid, flags, fns_style);
+	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, fns_style);
 	strcat(dest, sext);
 }
 
@@ -794,7 +794,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		}
 
 		pagecount++;
-		assign_file_suffix(filesuff, group, layer, flags, purpi);
+		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen(gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
 			if (f == NULL) {
