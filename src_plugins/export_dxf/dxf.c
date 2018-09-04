@@ -44,6 +44,7 @@
 #include "compat_misc.h"
 #include "lht_template.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -361,13 +362,13 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		return 1;
 	}
 
-	if (flags & PCB_LYT_PDRILL) {
+	if (PCB_LAYER_IS_PDRILL(flags, purpi)) {
 		dxf_ctx.layer_name = "drill_plated";
 		dxf_ctx.force_thin = 1;
 		return 1;
 	}
 
-	if (flags & PCB_LYT_UDRILL) {
+	if (PCB_LAYER_IS_UDRILL(flags, purpi)) {
 		dxf_ctx.layer_name = "drill_unplated";
 		dxf_ctx.force_thin = 1;
 		return 1;

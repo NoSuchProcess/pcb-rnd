@@ -74,6 +74,7 @@
 #include "plugins.h"
 #include "hid_cam.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -663,7 +664,7 @@ static int nelma_set_layer_group(pcb_layergrp_id_t group, const char *purpose, i
 	if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK)
 		return 0;
 
-	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	is_mask = !!(flags & PCB_LYT_MASK);
 
 	if (is_mask) {

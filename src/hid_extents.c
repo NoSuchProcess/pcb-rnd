@@ -33,6 +33,7 @@
 #include "data.h"
 #include "hid_draw_helpers.h"
 #include "hid_extents.h"
+#include "funchash_core.h"
 
 static pcb_box_t box;
 
@@ -42,12 +43,12 @@ typedef struct hid_gc_s {
 
 static int extents_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
+	if (PCB_LAYER_IS_DRILL(flags, purpi))
+		return 1;
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_COPPER:
 		case PCB_LYT_OUTLINE:
 		case PCB_LYT_SILK:
-		case PCB_LYT_PDRILL:
-		case PCB_LYT_UDRILL:
 			return 1;
 		default:
 			return 0;

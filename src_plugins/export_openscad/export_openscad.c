@@ -47,6 +47,7 @@
 #include "plugins.h"
 #include "safe_fs.h"
 #include "obj_pstk_inlines.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -368,10 +369,7 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, const char *purpose
 		return 0;
 	}
 
-	if (flags & PCB_LYT_PDRILL)
-		return 0;
-
-	if (flags & PCB_LYT_UDRILL)
+	if (PCB_LAYER_IS_DRILL(flags, purpi))
 		return 0;
 
 	if (flags & PCB_LYT_MASK) {

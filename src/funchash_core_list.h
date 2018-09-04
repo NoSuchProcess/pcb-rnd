@@ -9,8 +9,8 @@ action_entry(user)
 action_entry(fab)
 action_entry(assy)
 action_entry(csect)
-action_entry(plated)
-action_entry(unplated)
+action_entry(pdrill)
+action_entry(udrill)
 
 /* Keywords for actions */
 action_entry(Add)

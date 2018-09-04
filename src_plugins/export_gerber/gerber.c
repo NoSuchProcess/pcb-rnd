@@ -414,9 +414,9 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		suff = "stc";
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
 		suff = "sts";
-	else if (fmatch(flags, PCB_LYT_PDRILL))
+	else if (PCB_LAYER_IS_PDRILL(flags, purpi))
 		suff = "drd";
-	else if (fmatch(flags, PCB_LYT_UDRILL))
+	else if (PCB_LAYER_IS_UDRILL(flags, purpi))
 		suff = "dru";
 	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
 		suff = "crc";
@@ -459,9 +459,9 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 		suff = "gts";
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
 		suff = "gbs";
-	else if (fmatch(flags, PCB_LYT_PDRILL))
+	else if (PCB_LAYER_IS_PDRILL(flags, purpi))
 		suff = "cnc";
-	else if (fmatch(flags, PCB_LYT_UDRILL))
+	else if (PCB_LAYER_IS_UDRILL(flags, purpi))
 		suff = "_NPTH.drl";
 	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
 		suff = "gtp";
@@ -505,9 +505,9 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 		suff = "gts";
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
 		suff = "gbs";
-	else if (fmatch(flags, PCB_LYT_PDRILL))
+	else if (PCB_LAYER_IS_PDRILL(flags, purpi))
 		suff = "drl";
-	else if (fmatch(flags, PCB_LYT_UDRILL))
+	else if (PCB_LAYER_IS_UDRILL(flags, purpi))
 		suff = "_NPTH.drl";
 	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
 		suff = "gtp";
@@ -574,7 +574,7 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 		return;
 	}
 
-	if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL))
+	if (PCB_LAYER_IS_DRILL(flags, purpi))
 		sext = ".cnc";
 	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, fns_style);
 	strcat(dest, sext);
@@ -765,7 +765,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		pending_drills = NULL;
 	}
 
-	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	is_mask = !!(flags & PCB_LYT_MASK);
 	if (group < 0 || group != lastgroup) {
 		char utcTime[64];

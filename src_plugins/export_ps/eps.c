@@ -382,7 +382,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 			return 0;
 	}
 
-	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	is_mask = (flags & PCB_LYT_MASK);
 	is_paste = !!(flags & PCB_LYT_PASTE);
 

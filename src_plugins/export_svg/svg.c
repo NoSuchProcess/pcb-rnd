@@ -50,6 +50,7 @@
 #include "compat_misc.h"
 #include "plugins.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -376,7 +377,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		default:;
 	}
 
-	if (!(flags & PCB_LYT_COPPER) && (!is_our_silk) && (!is_our_mask) && !(flags & PCB_LYT_PDRILL) && !(flags & PCB_LYT_PDRILL) && !(flags & PCB_LYT_OUTLINE))
+	if (!(flags & PCB_LYT_COPPER) && (!is_our_silk) && (!is_our_mask) && !(PCB_LAYER_IS_DRILL(flags, purpi)) && !(flags & PCB_LYT_OUTLINE))
 		return 0;
 
 	while(group_open) {
@@ -411,7 +412,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		}
 	}
 
-	drawing_hole = (flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL);
+	drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
 
 	return 1;
 }

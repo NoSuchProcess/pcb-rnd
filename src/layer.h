@@ -51,8 +51,6 @@ typedef enum {
 	PCB_LYT_OUTLINE  = 0x00001000, /* outline (contour of the board) */
 	PCB_LYT_RAT      = 0x00002000, /* (virtual) rats nest (one, not in the stackup) */
 	PCB_LYT_INVIS    = 0x00004000, /* (virtual) layer is invisible (one, not in the stackup) */
-	PCB_LYT_PDRILL   = 0x00020000, /* (virtual) plated drills (affects all physical layers) */
-	PCB_LYT_UDRILL   = 0x00040000, /* (virtual) unplated drills (affects all physical layers) */
 	PCB_LYT_UI       = 0x00080000, /* (virtual) user interface drawings (feature plugins use this for displaying states or debug info) */
 	PCB_LYT_SUBSTRATE= 0x00200000, /* substrate / insulator */
 	PCB_LYT_MISC     = 0x00400000, /* misc (for internal use) */
@@ -95,6 +93,9 @@ typedef enum { /* bitfield */
 #define PCB_LAYER_IS_ASSY(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_assy))
 #define PCB_LAYER_IS_FAB(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_fab))
 #define PCB_LAYER_IS_CSECT(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_csect))
+#define PCB_LAYER_IS_PDRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_pdrill))
+#define PCB_LAYER_IS_UDRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_udrill))
+#define PCB_LAYER_IS_DRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && (((purpi) == F_pdrill) || ((purpi) == F_udrill)))
 
 #include "globalconst.h"
 #include "global_typedefs.h"

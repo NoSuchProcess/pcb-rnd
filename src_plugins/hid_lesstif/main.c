@@ -2927,6 +2927,9 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 
 	/* virtual layers */
 	{
+		if (PCB_LAYER_IS_DRILL(flags, purpi))
+			return 1;
+
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
 			return pinout ? 0 : PCB->InvisibleObjectsOn;
@@ -2934,9 +2937,6 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return pcb_silk_on(PCB);
 			return 0;
-		case PCB_LYT_UDRILL:
-		case PCB_LYT_PDRILL:
-			return 1;
 		case PCB_LYT_UI:
 			return 1;
 		case PCB_LYT_RAT:

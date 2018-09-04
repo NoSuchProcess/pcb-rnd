@@ -827,7 +827,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 
 	name = pcb_layer_to_file_name(tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
 
-	global.is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	global.is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	global.is_mask = !!(flags & PCB_LYT_MASK);
 	global.is_assy = PCB_LAYER_IS_ASSY(flags, purpi);
 	global.is_copper = !!(flags & PCB_LYT_COPPER);

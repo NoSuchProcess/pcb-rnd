@@ -1215,7 +1215,7 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 				return 0;
 			photo_im = &photo_mask;
 		}
-		else if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL)) {
+		else if (PCB_LAYER_IS_DRILL(flags, purpi)) {
 			photo_im = &photo_drill;
 		}
 		else {
@@ -1257,7 +1257,7 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 				return 0;
 			}
 
-			if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL))
+			if (PCB_LAYER_IS_DRILL(flags, purpi))
 				gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(im), gdImageSY(im), black->c);
 		}
 		im = *photo_im;
@@ -1282,7 +1282,7 @@ static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 			return 0;
 	}
 
-	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	is_mask = (flags & PCB_LYT_MASK);
 
 	if (photo_mode)
