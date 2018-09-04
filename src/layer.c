@@ -119,6 +119,8 @@ do { \
 	} \
 } while(0)
 
+#define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || (strcmp(purpose, ps) == 0)))
+
 void pcb_layer_free(pcb_layer_t *layer)
 {
 	if (!layer->is_bound)
@@ -345,12 +347,12 @@ do { \
 	APPEND(v->new_id); \
 } while(0)
 
-const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
+const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask, const char *purpose, int purpi)
 {
 	const pcb_virt_layer_t *v;
 	mask &= (~PCB_LYT_VIRTUAL);
 	for(v = pcb_virt_layers; v->name != NULL; v++)
-		if (((v->type & (~PCB_LYT_VIRTUAL)) & mask) == mask)
+		if ((((v->type & (~PCB_LYT_VIRTUAL)) & mask) == mask) && PURP_MATCH(v->purpose, v->purpi))
 			return v;
 	return NULL;
 }
@@ -384,7 +386,6 @@ int pcb_layer_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res
 	int n, used = 0;
 	pcb_virt_layer_t *v;
 
-#define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || (strcmp(purpose, ps) == 0)))
 
 	for(v = pcb_virt_layers; v->name != NULL; v++)
 		if (((v->type & mask) == mask) && (PURP_MATCH(v->purpose, v->purpi)))

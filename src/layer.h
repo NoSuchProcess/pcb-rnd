@@ -346,7 +346,7 @@ typedef struct pcb_virt_layer_s {
 extern pcb_virt_layer_t pcb_virt_layers[];
 
 /* Return the first virtual layer that fully matches mask */
-const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
+const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask, const char *purpose, int purpi);
 
 /* Returns whether the given unsigned int layer flags corresponds to a layer
    that's on the visible side of the board at the moment. */

@@ -51,7 +51,7 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 		return dest;
 	}
 
-	v = pcb_vlayer_get_first(flags);
+	v = pcb_vlayer_get_first(flags, purpose, purpi);
 	if (v != NULL) {
 		strcpy(dest, v->name);
 		return dest;
@@ -263,7 +263,8 @@ pcb_trace("CAM FN='%s'\n", dst->fn);
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
 				goto err;
 
-			vl = pcb_vlayer_get_first(lyt);
+#warning TODO: extend the syntax for purpose
+			vl = pcb_vlayer_get_first(lyt, NULL, -1);
 			if (vl == NULL) {
 				pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 				int n, len = pcb_layergrp_list(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]));
@@ -322,7 +323,7 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 	if (!cam->active)
 		return 0;
 
-	vl = pcb_vlayer_get_first(flags);
+	vl = pcb_vlayer_get_first(flags, purpose, purpi);
 	if (vl == NULL) {
 		if (group == -1)
 			return 1;
