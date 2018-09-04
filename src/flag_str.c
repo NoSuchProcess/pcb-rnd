@@ -94,6 +94,8 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 
 const int pcb_object_flagbits_len = PCB_ENTRIES(pcb_object_flagbits);
 
+/* List of old/obsolete flags to silently ignore on load */
+static const char *old_flag_ignore[] = { "connected", NULL };
 
 /*
  * This helper function maintains a small list of buffers which are
@@ -382,6 +384,15 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 					PCB_FLAG_SET(flagbits[i].mask, &rv);
 					break;
 				}
+			if (!found) {
+				const char **ign;
+				for(ign = old_flag_ignore; *ign != NULL; ign++) {
+					if (memcmp(*ign, fp, flen) == 0) {
+						found = 1;
+						break;
+					}
+				}
+			}
 			if (!found) {
 				const char *fmt = "Unknown flag: \"%.*s\" ignored";
 				pcb_unknown_flag_t *u;
