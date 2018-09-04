@@ -5,7 +5,14 @@
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: introduce new layer types:
+	- implement pcb_layer_purpose_()
+	- pcb_layer_purpose for bound layers!
+	- replace the OUTLINE LYT with an unplated boundary
+		- make sure it works in subc
+		- make sure it works in padstack
+		- double check io_lihata compatibility
 	- revise io plugins to load/save them properly
+	- CAM syntax for purpose
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - FEATURE: text rot:
 	- propset: set_text_cb_any(): set the rot field and refresh the text
