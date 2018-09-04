@@ -51,6 +51,7 @@ typedef enum {
 	PCB_LYT_OUTLINE  = 0x00001000, /* outline (contour of the board) */
 	PCB_LYT_RAT      = 0x00002000, /* (virtual) rats nest (one, not in the stackup) */
 	PCB_LYT_INVIS    = 0x00004000, /* (virtual) layer is invisible (one, not in the stackup) */
+	PCB_LYT_BOUNDARY = 0x00008000, /* physical boundaries of the board (inner and outer): route, cuts, slots, drills */
 	PCB_LYT_UI       = 0x00080000, /* (virtual) user interface drawings (feature plugins use this for displaying states or debug info) */
 	PCB_LYT_SUBSTRATE= 0x00200000, /* substrate / insulator */
 	PCB_LYT_MISC     = 0x00400000, /* misc (for internal use) */

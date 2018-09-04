@@ -11,6 +11,8 @@ action_entry(assy)
 action_entry(csect)
 action_entry(pdrill)
 action_entry(udrill)
+action_entry(proute)
+action_entry(uroute)
 
 /* Keywords for actions */
 action_entry(Add)
