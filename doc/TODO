@@ -5,8 +5,6 @@
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: introduce new layer types:
-	- implement pcb_layer_purpose_()
-	- pcb_layer_purpose for bound layers!
 	- replace the OUTLINE LYT with an unplated boundary
 		- make sure it works in subc
 		- make sure it works in padstack
