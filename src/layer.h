@@ -97,7 +97,7 @@ typedef enum { /* bitfield */
 #define PCB_LAYER_IS_PDRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_pdrill))
 #define PCB_LAYER_IS_UDRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_udrill))
 #define PCB_LAYER_IS_DRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && (((purpi) == F_pdrill) || ((purpi) == F_udrill)))
-#define PCB_LAYER_IS_UROUTE(lyt, purpi) (((((lyt) & PCB_LYT_BOUNDARY) && ((((purpi) == F_uroute)))) || ((lyt) & PCB_LYT_OUTLINE))
+#define PCB_LAYER_IS_UROUTE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && ((((purpi) == F_uroute)))) || ((lyt) & PCB_LYT_OUTLINE))
 #define PCB_LAYER_IS_PROUTE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute))))
 #define PCB_LAYER_IS_ROUTE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute))) || ((lyt) & PCB_LYT_OUTLINE))
 
