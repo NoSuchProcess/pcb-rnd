@@ -328,6 +328,38 @@ int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **o
 	return grp->purpi;
 }
 
+int pcb_layer_purpose_(pcb_layer_t *layer, const char **out)
+{
+	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
+	if (!layer->is_bound) {
+		pcb_data_t *data = layer->parent.data;
+		pcb_layer_id_t lid;
+
+		if (data == NULL)
+			return 0;
+
+		lid = pcb_layer_id(data, layer);;
+		if (lid < 0)
+			return 0;
+
+		assert(data->parent_type == PCB_PARENT_BOARD);
+		return pcb_layer_purpose(data->parent.board, lid, out);
+	}
+
+	/* bound layer: if it is already bound to a real layer, use that, whatever it is (manual binding may override our local type match pattern) */
+	if (layer->meta.bound.real != NULL) {
+		layer = pcb_layer_get_real(layer);
+		if (layer == NULL)
+			return 0;
+		return pcb_layer_purpose_(layer, out); /* tail recursion */
+	}
+
+	/* bound layer without a real layer binding: use the type match */
+	if (out != NULL)
+		*out = layer->meta.bound.purpose;
+	return pcb_funchash_get(layer->meta.bound.purpose, NULL);
+}
+
 #define APPEND(n) \
 	do { \
 		if (res != NULL) { \
