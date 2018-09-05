@@ -67,6 +67,7 @@
 #include "thermal.h"
 #include "event.h"
 #include "macro.h"
+#include "funchash_core.h"
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
@@ -536,9 +537,10 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 {
 	unsigned long lflg = pcb_layer_flags_(layer);
+	int purpi = pcb_layer_purpose_(layer, NULL);
 	/* The old PCB format encodes some properties in layer names - have to
 	   alter the real layer name before save to get the same effect */
-	if (lflg & PCB_LYT_OUTLINE) {
+	if (PCB_LAYER_IS_UROUTE(lflg, purpi)) {
 		if (pcb_strcasecmp(name, "outline") == 0)
 			return name;
 		return "Outline";
@@ -644,7 +646,8 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 	for (i = 0; i < data->LayerN; i++) {
 		pcb_layer_t *ly = &(data->Layer[i]);
 		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
-		if (!(lyt & (PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_OUTLINE))) {
+		int purpi = pcb_layer_purpose_(ly, NULL);
+		if ((!(lyt & (PCB_LYT_COPPER | PCB_LYT_SILK))) && (!PCB_LAYER_IS_ROUTE(lyt, purpi))) {
 			if (!pcb_layer_is_pure_empty(ly)) {
 				char *desc = pcb_strdup_printf("Layer %s can be exported only as a copper layer\n", ly->name);
 				pcb_io_incompat_save(data, NULL, desc, NULL);

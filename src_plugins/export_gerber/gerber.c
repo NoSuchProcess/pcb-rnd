@@ -430,7 +430,7 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		suff = "ast";
 	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "asb";
-	else if (fmatch(flags, PCB_LYT_OUTLINE))
+	else if (PCB_LAYER_IS_ROUTE(flags, purpi))
 		suff = "oln";
 	else {
 		static char buf[20];
@@ -475,7 +475,7 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 		suff = "ast";
 	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "asb";
-	else if (fmatch(flags, PCB_LYT_OUTLINE))
+	else if (PCB_LAYER_IS_ROUTE(flags, purpi))
 		suff = "gm1";
 	else {
 		static char buf[20];
@@ -521,7 +521,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 		suff = "ast";
 	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
 		suff = "asb";
-	else if (fmatch(flags, PCB_LYT_OUTLINE))
+	else if (PCB_LAYER_IS_ROUTE(flags, purpi))
 		suff = "gko";
 	else {
 		static char buf[20];
@@ -746,7 +746,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		group_name = "<virtual group>";
 
 	flash_drills = 0;
-	if (flags & PCB_LYT_OUTLINE)
+	if (PCB_LAYER_IS_ROUTE(flags, purpi))
 		flash_drills = 1;
 
 	if (is_drill && n_pending_drills) {
@@ -881,7 +881,7 @@ emit_outline:
 	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_ASSY(flags, purpi)))
 		want_outline = 1;
 
-	if (want_outline && !(flags & PCB_LYT_OUTLINE)) {
+	if (want_outline && !(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		if (outline_layer && outline_layer != PCB->Data->Layer + layer)
 			pcb_draw_layer(outline_layer, &region);
 		else if (!outline_layer) {

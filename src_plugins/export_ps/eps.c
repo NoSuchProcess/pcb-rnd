@@ -378,7 +378,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		if (PCB_LAYER_IS_ASSY(flags, purpi) || PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_CSECT(flags, purpi) || (flags & PCB_LYT_INVIS))
 			return 0;
 
-		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && (flags & PCB_LYT_OUTLINE))
+		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && PCB_LAYER_IS_ROUTE(flags, purpi))
 			return 0;
 	}
 

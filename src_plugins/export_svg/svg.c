@@ -377,7 +377,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		default:;
 	}
 
-	if (!(flags & PCB_LYT_COPPER) && (!is_our_silk) && (!is_our_mask) && !(PCB_LAYER_IS_DRILL(flags, purpi)) && !(flags & PCB_LYT_OUTLINE))
+	if (!(flags & PCB_LYT_COPPER) && (!is_our_silk) && (!is_our_mask) && !(PCB_LAYER_IS_DRILL(flags, purpi)) && !(PCB_LAYER_IS_ROUTE(flags, purpi)))
 		return 0;
 
 	while(group_open) {

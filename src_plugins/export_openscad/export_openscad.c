@@ -365,7 +365,7 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, const char *purpose
 	if (flags & PCB_LYT_INVIS)
 		return 0;
 
-	if (flags & PCB_LYT_OUTLINE) {
+	if (PCB_LAYER_IS_ROUTE(flags, purpi)) {
 		return 0;
 	}
 

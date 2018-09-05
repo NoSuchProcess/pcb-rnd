@@ -182,7 +182,7 @@ static pcb_hid_attribute_t *bboard_get_export_options(int *n)
 
 static int bboard_validate_layer(unsigned long flags, int purpi, int group, int skipsolder)
 {
-	if ((flags & PCB_LYT_INVIS) || PCB_LAYER_IS_ASSY(flags, purpi) || (flags & PCB_LYT_OUTLINE))
+	if ((flags & PCB_LYT_INVIS) || PCB_LAYER_IS_ASSY(flags, purpi) || PCB_LAYER_IS_ROUTE(flags, purpi))
 		return 0;
 
 	if (group_data[group].solder && skipsolder)

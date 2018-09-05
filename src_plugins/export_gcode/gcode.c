@@ -273,13 +273,14 @@ void gcode_choose_groups()
 
 		if (!pcb_layer_is_empty_(PCB, layer)) {
 			/* layer isn't empty */
+			int purpi = pcb_layer_purpose(PCB, n, NULL);
 
 			/*
 			 * is this check necessary? It seems that special
 			 * layers have negative indexes?
 			 */
 
-			if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_OUTLINE)) {
+			if ((flags & PCB_LYT_COPPER) || PCB_LAYER_IS_ROUTE(flags, purpi)) {
 				m = pcb_layer_get_group(PCB, n);
 
 				/* the export layer */

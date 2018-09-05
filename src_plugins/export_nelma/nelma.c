@@ -505,7 +505,7 @@ void nelma_choose_groups()
 
 		if (!pcb_layer_is_empty_(PCB, layer)) {
 			/* layer isn't empty */
-			if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_OUTLINE)) {
+			if ((flags & PCB_LYT_COPPER) || PCB_LAYER_IS_ROUTE(flags, pcb_layer_purpose_(layer, NULL))) {
 				/* layer is a copper layer */
 				m = pcb_layer_get_group(PCB, n);
 

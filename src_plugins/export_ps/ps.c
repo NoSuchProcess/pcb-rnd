@@ -1001,7 +1001,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 	if (global.outline &&
 			global.outline_layer != NULL &&
 			global.outline_layer != pcb_get_layer(PCB->Data, layer) &&
-			!(flags & PCB_LYT_OUTLINE)) {
+			!(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		int save_drill = global.is_drill;
 		global.is_drill = 0;
 		pcb_draw_layer(global.outline_layer, &global.exps.view);

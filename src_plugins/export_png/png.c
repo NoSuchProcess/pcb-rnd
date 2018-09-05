@@ -1219,7 +1219,7 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 			photo_im = &photo_drill;
 		}
 		else {
-			if (flags & PCB_LYT_OUTLINE) {
+			if (PCB_LAYER_IS_ROUTE(flags, purpi)) {
 				doing_outline = 1;
 				have_outline = 0;
 				photo_im = &photo_outline;
