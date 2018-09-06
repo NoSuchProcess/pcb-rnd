@@ -195,7 +195,7 @@ void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *pu
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		pcb_layer_t *ly = NULL;
 
-		if ((g->type & lyt) != lyt)
+		if ((g->ltype & lyt) != lyt)
 			continue;
 
 		if ((purpi != -1) && (g->purpi != purpi))
