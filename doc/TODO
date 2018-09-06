@@ -9,6 +9,11 @@
 		- make sure it works in subc
 		- make sure it works in padstack
 		- double check io_lihata compatibility
+		- upgrade query
+		- upgrade the advanced search
+		- upgrade propedit
+		- upgrade the layer group type dialog
+		- update the docs
 	- revise io plugins to load/save them properly
 	- CAM syntax for purpose
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
