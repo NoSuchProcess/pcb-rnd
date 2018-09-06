@@ -44,6 +44,7 @@
 #include "macro.h"
 #include "obj_pstk_inlines.h"
 #include "hid_inlines.h"
+#include "funchash_core.h"
 
 #include "obj_text_draw.h"
 
@@ -175,6 +176,30 @@ static int DrawFab_overhang(void)
 	return (ds + 2) * TEXT_LINE;
 }
 
+static void draw_fab_layer(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_layer_t *layer, int found)
+{
+	pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
+	PCB_LINE_LOOP(layer);
+	{
+		pcb_gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+	}
+	PCB_END_LOOP;
+	PCB_ARC_LOOP(layer);
+	{
+		pcb_gui->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+	}
+	PCB_END_LOOP;
+	PCB_TEXT_LOOP(layer);
+	{
+		pcb_text_draw_(text, 0, 0, PCB_TXT_TINY_ACCURATE);
+	}
+	PCB_END_LOOP;
+	if (!found) {
+		pcb_hid_set_line_width(gc, FAB_LINE_W);
+		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
+	}
+}
+
 static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_drill_info_t *AllDrills;
@@ -272,9 +297,11 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	yoff = -TEXT_LINE;
 	for (found = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_PTR(i);
-		if ((pcb_layer_flags(PCB, i) & PCB_LYT_OUTLINE) && (!PCB_RTREE_EMPTY(l->line_tree) || !PCB_RTREE_EMPTY(l->arc_tree))) {
+		pcb_layer_type_t flags = pcb_layer_flags(PCB, i);
+		int purpi = pcb_layer_purpose(PCB, i, NULL);
+		if (PCB_LAYER_IS_ROUTE(flags, purpi) && (!PCB_RTREE_EMPTY(l->line_tree) || !PCB_RTREE_EMPTY(l->arc_tree))) {
+			draw_fab_layer(gc, e, l, found);
 			found = 1;
-			break;
 		}
 	}
 	if (!found) {
@@ -291,27 +318,6 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 						"Board outline is the centerline of this %f mil"
 						" rectangle - 0,0 to %f,%f mils",
 						PCB_COORD_TO_MIL(FAB_LINE_W), PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
-	}
-	else {
-		pcb_layer_t *layer = LAYER_PTR(i);
-		pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
-		PCB_LINE_LOOP(layer);
-		{
-			pcb_gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
-		}
-		PCB_END_LOOP;
-		PCB_ARC_LOOP(layer);
-		{
-			pcb_gui->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
-		}
-		PCB_END_LOOP;
-		PCB_TEXT_LOOP(layer);
-		{
-			pcb_text_draw_(text, 0, 0, PCB_TXT_TINY_ACCURATE);
-		}
-		PCB_END_LOOP;
-		pcb_hid_set_line_width(gc, FAB_LINE_W);
-		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 	yoff -= TEXT_LINE;
 
