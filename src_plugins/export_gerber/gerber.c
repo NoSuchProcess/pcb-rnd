@@ -886,8 +886,8 @@ emit_outline:
 	if (want_outline && !(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		if (has_outline) {
 			pcb_draw_groups(PCB, PCB_LYT_OUTLINE, -1, NULL, &region, "#000000", 0, 0, 0);
-			pcb_draw_groups(PCB, PCB_LYT_MECH, F_proute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
-			pcb_draw_groups(PCB, PCB_LYT_MECH, F_uroute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
 		}
 		else {
 			pcb_hid_gc_t gc = pcb_hid_make_gc();
