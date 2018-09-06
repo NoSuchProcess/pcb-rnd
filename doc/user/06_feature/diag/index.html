@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2 id=""> Diag plugin </h2>
+<p>
+
+The diag plugin provides an integrity check feature to pcb-rnd. The diag plugin
+can be run manually or run automatically after each user input. The diag
+plugin evaluates all the board data in memory and looks for anythign that seems
+strange. Note that using the diag plugin in automated mode will likely slow
+down the user experience.
+
+The diagnostic plugin provides a dumpconf action to pcb-rnd.
+
+<!place example usage in diag pool node>
+How it can help: sometimes a bug triggers when you edit something, ruins your
+data, but you don't figure it until 10 more editing steps. Then we try to
+reproduce the problem by repeating the last 2..4 steps, and we fail: everything
+looks good. We have no chance to figure the real problem happened 10 steps
+earlier. If you auto integrity check is on, it has some chance to capture the
+problem right after it happened, so we detect it at that -10th step before it
+has to escalate to a segfault or assert.
+<---!>
+
+The setting is a normal config setting, you can enable or disable it any time,
+from gui, from cli, from config files, from actions. It's called
+plugins/diag/auto_integrity - by default it's 0 (off); it runs when it's set to
+1.
+
+<p>
+<li>
+</body>
+</html>
