@@ -191,8 +191,8 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		chk_attr("layer", &data->Layer[n]);
 
 		if (data->Layer[n].is_bound) {
-			if ((data->Layer[n].meta.bound.type & PCB_LYT_OUTLINE) && (data->Layer[n].meta.bound.type & PCB_LYT_ANYWHERE))
-				pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s is a non-global outline (bound layer)\n", whose, n, data->Layer[n].name);
+			if ((data->Layer[n].meta.bound.type & PCB_LYT_BOUNDARY) && (data->Layer[n].meta.bound.type & PCB_LYT_ANYWHERE))
+				pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s is a non-global boundary (bound layer)\n", whose, n, data->Layer[n].name);
 		}
 
 		/* check layer objects */
@@ -252,8 +252,8 @@ static void chk_layergrps(pcb_board_t *pcb)
 		pcb_layergrp_t *grp = &pcb->LayerGroups.grp[n];
 		check_parent("layer_group", grp, PCB_PARENT_BOARD, pcb);
 		check_type(grp, PCB_OBJ_LAYERGRP);
-		if ((grp->ltype & PCB_LYT_OUTLINE) && (grp->ltype & PCB_LYT_ANYWHERE))
-			pcb_message(PCB_MSG_ERROR, CHK "layer group %ld/%s is a non-global outline\n", n, grp->name);
+		if ((grp->ltype & PCB_LYT_BOUNDARY) && (grp->ltype & PCB_LYT_ANYWHERE))
+			pcb_message(PCB_MSG_ERROR, CHK "layer group %ld/%s is a non-global boundary\n", n, grp->name);
 	}
 }
 
