@@ -93,7 +93,7 @@ static int flash_drills;
 static int copy_outline_mode;
 static int name_style;
 static int want_cross_sect;
-static pcb_layer_t *outline_layer;
+static int has_outline;
 static int gerber_debug;
 
 enum ApertureShape {
@@ -586,6 +586,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	int save_ons[PCB_MAX_LAYER + 2];
+	pcb_layergrp_t *g;
 	pcb_hid_expose_ctx_t ctx;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
@@ -615,12 +616,13 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	want_cross_sect = options[HA_cross_sect].int_value;
 
-#warning layer TODO: this assumes there is only one outline layer; instead of this, just use a boolthat says whether we had an outline layer and redo the search
-	outline_layer = NULL;
-
-	for (i = 0; i < pcb_max_layer; i++)
-		if (pcb_layer_flags(PCB, i) & PCB_LYT_OUTLINE)
-			outline_layer = PCB->Data->Layer + i;
+	has_outline = 0;
+	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
+		if (PCB_LAYER_IS_ROUTE(g->ltype, g->purpi)) {
+			has_outline = 1;
+			break;
+		}
+	}
 
 	i = strlen(fnbase);
 	filename = (char *) realloc(filename, i + SUFF_LEN);
@@ -882,9 +884,12 @@ emit_outline:
 		want_outline = 1;
 
 	if (want_outline && !(PCB_LAYER_IS_ROUTE(flags, purpi))) {
-		if (outline_layer && outline_layer != PCB->Data->Layer + layer)
-			pcb_draw_layer(outline_layer, &region);
-		else if (!outline_layer) {
+		if (has_outline) {
+			pcb_draw_groups(PCB, PCB_LYT_OUTLINE, -1, NULL, &region, "#000000", 0, 0, 0);
+			pcb_draw_groups(PCB, PCB_LYT_MECH, F_proute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(PCB, PCB_LYT_MECH, F_uroute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
+		}
+		else {
 			pcb_hid_gc_t gc = pcb_hid_make_gc();
 			if (flags & PCB_LYT_SILK)
 				pcb_hid_set_line_width(gc, conf_core.design.min_slk);
