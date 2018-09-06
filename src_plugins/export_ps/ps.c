@@ -419,8 +419,7 @@ static struct {
 	pcb_bool legend;
 	pcb_bool single_page;
 
-	pcb_layer_t *outline_layer;
-
+	int has_outline;
 	double scale_factor;
 
 	pcb_hid_expose_ctx_t exps;
@@ -665,11 +664,12 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	}
 
 	lid = -1;
-	pcb_layer_list(PCB, PCB_LYT_OUTLINE, &lid, 1);
-	if (lid >= 0)
-		global.outline_layer = pcb_get_layer(PCB->Data, lid);
-	else
-		global.outline_layer = NULL;
+	pcb_layer_listp(PCB, PCB_LYT_MECH, &lid, 1, F_uroute, NULL);
+	if (lid == -1)
+		pcb_layer_listp(PCB, PCB_LYT_MECH, &lid, 1, F_proute, NULL);
+	if (lid == -1)
+		pcb_layer_listp(PCB, PCB_LYT_OUTLINE, &lid, 1, -1, NULL);
+	global.has_outline = (lid >= 0);
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
@@ -954,7 +954,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			fprintf(global.f, "/rgb { setrgbcolor } bind def\n");
 		}
 
-		if ((global.outline && !global.outline_layer) ||global.invert) {
+		if (global.has_outline || global.invert) {
 			pcb_fprintf(global.f,
 									"0 setgray 0 setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
@@ -995,16 +995,17 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto ( ) show grestore newpath /ty ty ts sub def\n");
 #endif
 
-	/* If we're printing a layer other than the outline layer, and
+	/* If we're printing a layer other than an outline layer, and
 	   we want to "print outlines", and we have an outline layer,
 	   print the outline layer on this layer also.  */
 	if (global.outline &&
-			global.outline_layer != NULL &&
-			global.outline_layer != pcb_get_layer(PCB->Data, layer) &&
+			global.has_outline &&
 			!(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		int save_drill = global.is_drill;
 		global.is_drill = 0;
-		pcb_draw_layer(global.outline_layer, &global.exps.view);
+		pcb_draw_groups(PCB, PCB_LYT_OUTLINE, -1, NULL, &global.exps.view, "#000000", 0, 0, 0);
+		pcb_draw_groups(PCB, PCB_LYT_MECH, F_proute, NULL, &global.exps.view, "#000000", PCB_LYT_MECH, 0, 0);
+		pcb_draw_groups(PCB, PCB_LYT_MECH, F_uroute, NULL, &global.exps.view, "#000000", PCB_LYT_MECH, 0, 0);
 		global.is_drill = save_drill;
 	}
 
