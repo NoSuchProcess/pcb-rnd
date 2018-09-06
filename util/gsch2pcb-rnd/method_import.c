@@ -68,6 +68,9 @@ static void import_go(int sep_net)
 		}
 	}
 
+	if (conf_g2pr.utils.gsch2pcb_rnd.quiet_mode)
+		return;
+
 	/* Tell user what to do next */
 	printf("\nNext step:\n");
 	printf("1.  Run pcb-rnd on your board file (or on an empty board if it's the first time).\n");
