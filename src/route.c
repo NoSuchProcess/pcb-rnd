@@ -283,39 +283,46 @@ void pcb_route_calculate_45(pcb_point_t *start_point, pcb_point_t *target_point)
 	}
 }
 
-
-/* TODO: Pass in other required information such as object flags */
-void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
+void pcb_route_start(	pcb_board_t *		PCB, 
+											pcb_route_t *		route, 
+											pcb_point_t *		point,
+											pcb_layer_id_t 	layer_id, 
+											pcb_coord_t 		thickness, 
+											pcb_coord_t		 	clearance, 
+											pcb_flag_t 			flags )
 {
-
-	/* TODO: If an external route calculator has been selected then use it instead of this default one. */
-	/* TODO: Add DRC Checking */
-
-
-	/* Set radius to 0 for standard 45/90 operation */
-	const pcb_coord_t radius = thickness * conf_core.editor.route_radius;
-
-	/* If the line can be drawn directly to the target then add a single line segment. */
-	if (conf_core.editor.all_direction_lines) {
-		pcb_route_direct(PCB, route, point1, point2, layer_id, thickness, clearance, flags);
-		return;
-	}
-
 	/* Restart the route */
 	pcb_route_reset(route);
-	route->start_point = *point1;
+	route->start_point = *point;
+	route->end_point = *point;
 	route->thickness = thickness;
 	route->clearance = clearance;
 	route->start_layer = layer_id;
 	route->end_layer = layer_id;
 	route->PCB = PCB;
 	route->flags = flags;
+}
+
+void pcb_route_calculate_to(	pcb_route_t *   route,
+															pcb_point_t *   point,
+															int							mod1,
+															int							mod2 )
+{
+	/* TODO: If an external route calculator has been selected then use it instead of this default one. */
+	/* TODO: Add DRC Checking */
+
+	pcb_point_t * 	point1 = &route->end_point;
+	pcb_point_t * 	point2 = point;
+	pcb_layer_id_t	layer_id = route->end_layer;
+
+	/* Set radius to 0 for standard 45/90 operation */
+	const pcb_coord_t radius = route->thickness * conf_core.editor.route_radius;
 
 	/* If the start point is the same as the end point then add a single 0-length line. 
 	 * If a 0-length line is not added then some operations such as moving a line point
 	 * could cause the line to disappear.
 	 */
-	if ((point1->X == point2->X) && (point1->Y == point2->Y)) {
+	if((point1->X == point2->X) && (point1->Y == point2->Y)) {
 		route->end_point = *point2;
 		pcb_route_add_line(route, point1, point2, layer_id);
 	}
@@ -388,6 +395,24 @@ void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *poin
 			route->end_point = *point2;
 		}
 	}
+	
+}
+
+/* TODO: Pass in other required information such as object flags */
+void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
+{
+	/* Set radius to 0 for standard 45/90 operation */
+	const pcb_coord_t radius = thickness * conf_core.editor.route_radius;
+
+	pcb_route_start( PCB,route,point1,layer_id,thickness,clearance,flags ); 
+
+	/* If the line can be drawn directly to the target then add a single line segment. */
+	if (conf_core.editor.all_direction_lines) {
+		pcb_route_add_line(route, point1, point2, layer_id);
+		return;
+	}
+
+	pcb_route_calculate_to(	route, point2, mod1, mod2 );
 }
 
 int pcb_route_apply(const pcb_route_t *p_route)
@@ -397,7 +422,6 @@ int pcb_route_apply(const pcb_route_t *p_route)
 
 int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_line_layer, pcb_line_t *apply_to_line)
 {
-
 	int i;
 	int applied = 0;
 
