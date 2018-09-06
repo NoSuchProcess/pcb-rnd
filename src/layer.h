@@ -97,9 +97,17 @@ typedef enum { /* bitfield */
 #define PCB_LAYER_IS_PDRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_pdrill))
 #define PCB_LAYER_IS_UDRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_udrill))
 #define PCB_LAYER_IS_DRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && (((purpi) == F_pdrill) || ((purpi) == F_udrill)))
-#define PCB_LAYER_IS_UROUTE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && ((((purpi) == F_uroute)))) || ((lyt) & PCB_LYT_OUTLINE))
-#define PCB_LAYER_IS_PROUTE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute))))
-#define PCB_LAYER_IS_ROUTE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute))) || ((lyt) & PCB_LYT_OUTLINE))
+
+/* Route must be on a mech or boundary layer */
+#define PCB_LAYER_IS_UROUTE(lyt, purpi) ((((lyt) & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && ((((purpi) == F_uroute)))) || ((lyt) & PCB_LYT_OUTLINE))
+#define PCB_LAYER_IS_PROUTE(lyt, purpi) ((((lyt) & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && (((purpi) == F_proute))))
+#define PCB_LAYER_IS_ROUTE(lyt, purpi) ((((lyt) &  (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && (((purpi) == F_proute) || ((purpi) == F_uroute))) || ((lyt) & PCB_LYT_OUTLINE))
+
+/* Outline is a route in a boundary group; outline in this sense
+   means the "perimeter of the board", but could include largish internal
+   cutout - the user needs to be explicit about this. Mech layers are NOT
+   included, that's the difference compared to routed layers */
+#define PCB_LAYER_IS_OUTLINE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute))) || ((lyt) & PCB_LYT_OUTLINE))
 
 #include "globalconst.h"
 #include "global_typedefs.h"

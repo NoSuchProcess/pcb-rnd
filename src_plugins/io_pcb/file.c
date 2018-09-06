@@ -540,7 +540,7 @@ static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 	int purpi = pcb_layer_purpose_(layer, NULL);
 	/* The old PCB format encodes some properties in layer names - have to
 	   alter the real layer name before save to get the same effect */
-	if (PCB_LAYER_IS_UROUTE(lflg, purpi)) {
+	if (PCB_LAYER_IS_OUTLINE(lflg, purpi)) {
 		if (pcb_strcasecmp(name, "outline") == 0)
 			return name;
 		return "Outline";
