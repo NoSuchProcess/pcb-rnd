@@ -451,7 +451,8 @@ int main(int argc, char ** argv)
 		}
 		if (current_method == NULL) {
 			want_method = want_method_default;
-			pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project (that has no board or project file yet); defaulting to -m %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this method.", want_method);
+			if (!conf_g2pr.utils.gsch2pcb_rnd.quiet_mode)
+				pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project (that has no board or project file yet); defaulting to -m %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this method.", want_method);
 		}
 	}
 
