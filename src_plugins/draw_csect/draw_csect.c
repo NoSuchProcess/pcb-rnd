@@ -469,7 +469,8 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			color = COLOR_MISC;
 			stepf = 3;
 		}
-		else if (g->ltype & PCB_LYT_OUTLINE) {
+#warning TODO: handle multiple outline layers
+		else if ((g->ltype & PCB_LYT_BOUNDARY) || (g->ltype & PCB_LYT_OUTLINE)) {
 			outline_gid = gid;
 			continue;
 		}
@@ -705,7 +706,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					/* temporary workaround for the restricted setup */
 					if (pcb_layergrp_flags(PCB, gid - 1) & PCB_LYT_SUBSTRATE)
 						drag_gid_subst = gid - 1;
-					else if ((pcb_layergrp_flags(PCB, gid - 1) & PCB_LYT_OUTLINE) && (pcb_layergrp_flags(PCB, gid - 2) & PCB_LYT_SUBSTRATE))
+					else if ((pcb_layergrp_flags(PCB, gid - 1) & PCB_LYT_BOUNDARY) && (pcb_layergrp_flags(PCB, gid - 2) & PCB_LYT_SUBSTRATE))
 						drag_gid_subst = gid - 2;
 					res = 1;
 				}
@@ -716,7 +717,8 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				if (is_button(x, y, &btn_addoutline)) {
 					pcb_layergrp_t *g = pcb_get_grp_new_misc(PCB);
 					g->name = pcb_strdup("global_outline");
-					g->ltype = PCB_LYT_OUTLINE;
+					g->ltype = PCB_LYT_BOUNDARY;
+					g->purpose = pcb_strdup("uroute");
 					g->valid = 1;
 					g->open = 1;
 
@@ -880,7 +882,9 @@ static fgw_error_t pcb_act_dump_csect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (g->ltype & PCB_LYT_MASK) type_gfx = "mask";
 		else if (g->ltype & PCB_LYT_PASTE) type_gfx = "pst.";
 		else if (g->ltype & PCB_LYT_MISC) type_gfx = "misc";
-		else if (g->ltype & PCB_LYT_OUTLINE) type_gfx = "||||";
+		else if (g->ltype & PCB_LYT_MECH) type_gfx = "mech";
+		else if (g->ltype & PCB_LYT_DOC) type_gfx = "doc.";
+		else if (g->ltype & PCB_LYT_BOUNDARY) type_gfx = "||||";
 		else type_gfx = "????";
 
 		printf("%s {%ld} %s\n", type_gfx, gid, g->name);
