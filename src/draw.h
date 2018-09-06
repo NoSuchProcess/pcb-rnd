@@ -97,6 +97,10 @@ void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
    e.g. a subc only */
 void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data);
 
+/* Composite draw all layer groups matching lyt/purpi/purpose */
+void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const char *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
+
+
 void pcb_erase_obj(int, void *, void *);
 void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area);

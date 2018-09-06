@@ -176,3 +176,48 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 
 	comp_draw_layer_real(ctx, draw_auto, auto_data);
 }
+
+/******** generic group draws ********/
+
+static void pcb_draw_groups_auto(comp_ctx_t *ctx, void *lym)
+{
+	pcb_layer_type_t *pstk_lyt_match = (pcb_layer_type_t *)lym;
+	if ((ctx->pcb->pstk_on) && (*pstk_lyt_match != 0))
+		pcb_draw_pstks(ctx->gid, ctx->screen, 0, *pstk_lyt_match);
+}
+
+void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const char *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *g;
+	comp_ctx_t cctx;
+
+	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
+		pcb_layer_t *ly = NULL;
+
+		if ((g->type & lyt) != lyt)
+			continue;
+
+		if ((purpi != -1) && (g->purpi != purpi))
+			continue;
+
+		if ((purpose != NULL) && (strcmp(g->purpose, purpose) != 0))
+			continue;
+
+		if (g->len > 0)
+			ly = pcb_get_layer(PCB->Data, g->lid[0]);
+		cctx.pcb = pcb;
+		cctx.grp = g;
+		cctx.screen = screen;
+		cctx.gid = gid;
+		cctx.color = ly != NULL ? ly->meta.real.color : default_color;
+		cctx.thin = thin_draw;
+		cctx.invert = invert;
+
+		if (!cctx.invert)
+			pcb_draw_out.direct = 0;
+
+		comp_draw_layer(&cctx, pcb_draw_groups_auto, &pstk_lyt_match);
+		comp_finish(&cctx);
+	}
+}
