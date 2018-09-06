@@ -42,6 +42,7 @@
 - BUG: gl hid, press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge, miloh]
 - BUG: {u u} undo is piecemeal after flipping {s f } a group of subc to backside. repro: place a part, copy, select a few to flip sides, then flipsides and undo doesn't work on the group. 
 - BUG: boardflip doesn't undo 
+- BUG: boardflip segfault on test file http://scififaster.net/public/boardfliptest.lht [report: Miloh]
 
 2. For later releases ===============================================================================
 - FEATURE: fungw: DAD dialog: mini parser from text
