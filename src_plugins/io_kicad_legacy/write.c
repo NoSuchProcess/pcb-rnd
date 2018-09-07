@@ -839,10 +839,10 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 	}
 
 	/* figure out which pcb layers are outlines and make a list */
-	outlineCount = pcb_layer_list(PCB, PCB_LYT_OUTLINE, NULL, 0);
+	outlineCount = pcb_layer_list(PCB, PCB_LYT_BOUNDARY, NULL, 0);
 	if (outlineCount > 0) {
 		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
-		pcb_layer_list(PCB, PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+		pcb_layer_list(PCB, PCB_LYT_BOUNDARY, outlineLayers, outlineCount);
 	}
 	else {
 		outlineLayers = NULL;
