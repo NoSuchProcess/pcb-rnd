@@ -46,7 +46,7 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 	if (flags == 0)
 		flags = pcb_layer_flags(PCB, lid);
 
-	if (flags & PCB_LYT_OUTLINE) {
+	if (flags & PCB_LYT_BOUNDARY) {
 		strcpy(dest, "outline");
 		return dest;
 	}
