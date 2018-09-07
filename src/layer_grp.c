@@ -622,6 +622,20 @@ int pcb_layergrp_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t
 	return used;
 }
 
+int pcb_layergrp_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len, int purpi, const char *purpose)
+{
+	int group, used = 0;
+	pcb_layergrp_t *g;
+	for (group = 0, g = pcb->LayerGroups.grp; group < pcb->LayerGroups.len; group++,g++) {
+		if ((pcb_layergrp_flags(pcb, group) & mask) == mask) {
+			if (((purpose == NULL) || (strcmp(purpose, g->purpose) == 0)) && ((purpi == -1) || (purpi == g->purpi))) {
+				APPEND(group);
+			}
+		}
+	}
+	return used;
+}
+
 int pcb_layergrp_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, used = 0;
