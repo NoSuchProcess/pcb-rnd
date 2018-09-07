@@ -1388,7 +1388,6 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layergrp_t *g = NULL;
 
-#warning layer TODO: rewrite this with DAD in two versions (bound and unbound)
 	if (CURRENT->is_bound) {
 		pcb_message(PCB_MSG_ERROR, "Can't edit bound layers yet\n");
 		PCB_ACT_IRES(1);
