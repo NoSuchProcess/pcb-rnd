@@ -1115,9 +1115,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 	}
 	else {
 		/* registering a new layer in buffer */
-#warning layer TODO:
-/*		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name, -1, purpose);*/
-		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name);
+		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name, purpose);
 		id = ly - st->fp_data->Layer;
 	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);

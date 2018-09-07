@@ -921,7 +921,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	return best;
 }
 
-pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name)
+pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name, const char *purpose)
 {
 	pcb_layer_t *lay = &data->Layer[data->LayerN++];
 
@@ -929,6 +929,7 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	lay->is_bound = 1;
 	lay->name = pcb_strdup(name);
 	lay->meta.bound.type = type;
+	lay->meta.bound.purpose = purpose;
 	lay->parent.data = data;
 	lay->parent_type = PCB_PARENT_DATA;
 	lay->type = PCB_OBJ_LAYER;

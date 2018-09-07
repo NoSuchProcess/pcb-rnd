@@ -164,7 +164,7 @@ static void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc)
 	}
 
 	if (sc->aux_layer == NULL)
-		sc->aux_layer = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
+		sc->aux_layer = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME, NULL);
 }
 
 /* Looking up aux objects for determining orientation/origin of a subc
@@ -511,17 +511,17 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	{
 		if (top_pads > 0) {
 			if (dst_top_paste == NULL)
-				dst_top_paste = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste");
+				dst_top_paste = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste", NULL);
 			if (dst_top_mask == NULL) {
-				dst_top_mask = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_MASK, "top mask");
+				dst_top_mask = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_MASK, "top mask", NULL);
 				dst_top_mask->comb = PCB_LYC_SUB;
 			}
 		}
 		if (bottom_pads > 0) {
 			if (dst_bottom_paste == NULL)
-				dst_bottom_paste = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
+				dst_bottom_paste = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste", NULL);
 			if (dst_bottom_mask == NULL) {
-				dst_bottom_mask = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
+				dst_bottom_mask = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask", NULL);
 				dst_bottom_mask->comb = PCB_LYC_SUB;
 			}
 		}
@@ -550,7 +550,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	pcb_attribute_put(&sc->Attributes, "refdes", "U0");
 	if (!has_refdes_text) {
 		if (dst_top_silk == NULL)
-			dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk");
+			dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
 		if (dst_top_silk != NULL)
 			pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
 		else

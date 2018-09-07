@@ -310,7 +310,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees);
 pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src);
 
 /* Allocate a new bound layer within data, set it up, but do not do the binding */
-pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name);
+pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name, const char *purpose);
 
 /* Calculate a hash of a bound layer (ingoring its name) */
 unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, pcb_bool smirror);
