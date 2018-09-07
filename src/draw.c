@@ -709,12 +709,13 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 	pcb_layer_t *Layer;
 	pcb_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
 	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
-	unsigned int gflg = pcb_layergrp_flags(PCB, group);
+	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
+	unsigned int gflg = grp->ltype;
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 
-	if (gflg & PCB_LYT_OUTLINE)
+	if (PCB_LAYER_IS_OUTLINE(gflg, grp->purpi))
 		rv = 0;
 
 	for (i = n_entries - 1; i >= 0; i--) {

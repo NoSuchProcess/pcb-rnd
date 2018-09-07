@@ -496,7 +496,7 @@ int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_
 void pcb_layergrp_fix_old_outline(pcb_board_t *pcb)
 {
 	pcb_layer_stack_t *LayerGroup = &pcb->LayerGroups;
-	pcb_layergrp_t *g = pcb_get_grp(LayerGroup, PCB_LYT_ANYWHERE, PCB_LYT_OUTLINE);
+	pcb_layergrp_t *g = pcb_get_grp(LayerGroup, PCB_LYT_ANYWHERE, PCB_LYT_BOUNDARY);
 	if ((g != NULL) && (g[1].ltype & PCB_LYT_SUBSTRATE)) {
 		pcb_layergrp_id_t gid = g - LayerGroup->grp + 1;
 		pcb_layergrp_del(pcb, gid, 0);
@@ -505,10 +505,11 @@ void pcb_layergrp_fix_old_outline(pcb_board_t *pcb)
 
 void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 {
-	g->ltype |= PCB_LYT_OUTLINE;
+	g->ltype |= PCB_LYT_BOUNDARY;
 	g->ltype &= ~PCB_LYT_COPPER;
 	free(g->name);
 	g->name = pcb_strdup("global_outline");
+	pcb_layergrp_set_purpose__(g, pcb_strdup("uroute"));
 }
 
 
@@ -699,7 +700,7 @@ void pcb_layer_group_setup_default(pcb_board_t *pcb)
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom_silk", pcb);
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom_paste", pcb);
 
-/*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
+/*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_BOUNDARY, "outline");*/
 }
 
 void pcb_layer_group_setup_silks(pcb_board_t *pcb)
@@ -819,7 +820,7 @@ void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
 	pcb_layergrp_id_t g;
 	for(g = 0; g < pcb->LayerGroups.len-2; g++) {
 		pcb_layergrp_t *g0 = &pcb->LayerGroups.grp[g], *g1 = &pcb->LayerGroups.grp[g+1];
-		if ((g < pcb->LayerGroups.len-3) && (g1->ltype & PCB_LYT_OUTLINE)) g1++;
+		if ((g < pcb->LayerGroups.len-3) && (g1->ltype & PCB_LYT_BOUNDARY)) g1++;
 		if ((g0->ltype & PCB_LYT_COPPER) && (g1->ltype & PCB_LYT_COPPER)) {
 			pcb_layergrp_t *ng = pcb_layergrp_insert_after(pcb, g);
 			ng->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
@@ -859,10 +860,12 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			continue;
 		}
 
-		if (ly->meta.bound.type & PCB_LYT_OUTLINE) {
+		if (ly->meta.bound.type & PCB_LYT_BOUNDARY) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
-			grp->ltype = PCB_LYT_OUTLINE | PCB_LYT_INTERN;
+			grp->ltype = PCB_LYT_BOUNDARY;
 			grp->name = pcb_strdup("outline");
+			if (ly->meta.bound.purpose != NULL)
+				pcb_layergrp_set_purpose__(grp, pcb_strdup(ly->meta.bound.purpose));
 			pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
 			continue;
 		}

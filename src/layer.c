@@ -882,9 +882,9 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	}
 	else {
 		pcb_layer_type_t lyt = src->meta.bound.type;
-		if ((lyt & PCB_LYT_OUTLINE) && (lyt & PCB_LYT_ANYWHERE)) {
-			lyt = PCB_LYT_OUTLINE;
-			pcb_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: outline layer must be global\n", src->name);
+		if ((lyt & PCB_LYT_BOUNDARY) && (lyt & PCB_LYT_ANYWHERE)) {
+			lyt = PCB_LYT_BOUNDARY;
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
 		}
 		if (pcb_layergrp_list(pcb, lyt, &gid, 1) != 1)
 			return NULL;
