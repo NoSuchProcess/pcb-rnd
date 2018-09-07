@@ -170,8 +170,8 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 {
 	int count = 0;
-	pcb_layergrp_id_t gid;
-	pcb_layergrp_t *g;
+	pcb_layergrp_id_t gid, goutid;
+	pcb_layergrp_t *g, *goutl = NULL;
 	comp_ctx_t cctx;
 
 	cctx.pcb = PCB;
@@ -185,6 +185,11 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 		if ((g->ltype != PCB_LYT_BOUNDARY) || (g->len < 1))
 			continue;
 
+		if ((g->ltype & PCB_LYT_BOUNDARY) && (g->purpi = F_uroute)) {
+			goutl = g;
+			goutid = gid;
+		}
+
 		if (pcb_layer_gui_set_layer(gid, g, 0)) {
 			cctx.gid = gid;
 			cctx.grp = g;
@@ -193,15 +198,29 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
 			for(n = 0; n < g->len; n++) {
-				cctx.color = PCB->Data->Layer[g->lid[n]].meta.real.color;
-				pcb_draw_layer(LAYER_PTR(g->lid[n]), cctx.screen, &count);
+				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
+				cctx.color = ly->meta.real.color;
+				pcb_draw_layer(ly, cctx.screen, &count);
 			}
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 		}
 	}
 
-	if (count == 0) {
-#warning layer TODO: draw implicit outline here
+/*printf("impl: %d %p\n", count, goutl);*/
+	if ((count == 0) && (goutl != NULL) && (pcb_layer_gui_set_layer(goutid, goutl, 0))) {
+		/* The implicit outline rectangle (or automatic outline rectanlge).
+		   We should check for pcb_gui->gui here, but it's kinda cool seeing the
+		   auto-outline magically disappear when you first add something to
+		   the outline layer.  */
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
+
+		pcb_gui->set_color(pcb_draw_out.fgGC, PCB->Data->Layer[goutl->lid[0]].meta.real.color);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
+		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 	}
 }
 

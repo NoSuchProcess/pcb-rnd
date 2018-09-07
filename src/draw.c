@@ -604,17 +604,6 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t *screen, int *num_found)
 		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, num_found);
 	}
 
-	/* The implicit outline rectangle (or automatic outline rectanlge).
-	   We should check for pcb_gui->gui here, but it's kinda cool seeing the
-	   auto-outline magically disappear when you first add something to
-	   the outline layer.  */
-	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(PCB, Layer)) {
-		pcb_gui->set_color(pcb_draw_out.fgGC, Layer->meta.real.color);
-		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
-		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
-	}
-
 	if (may_have_delayed)
 		pcb_draw_delayed_objs(&info);
 
