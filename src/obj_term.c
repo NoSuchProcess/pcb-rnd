@@ -318,7 +318,7 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 		return NULL;
 
 	/* search for global objects: padstack */
-	if (lyt & (PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_OUTLINE)) {
+	if (lyt & (PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_MECH)) {
 		PCB_PADSTACK_LOOP(subc->data) {
 			CHECK_TERM_GL(padstack);
 		} PCB_END_LOOP;
