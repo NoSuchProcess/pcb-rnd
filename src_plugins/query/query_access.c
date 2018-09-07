@@ -281,6 +281,7 @@ static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *r
 {
 	pcb_layer_t *l = (pcb_layer_t *)obj;
 	query_fields_keys_t fh1;
+	const char *prp;
 
 	fld2hash_req(fh1, fld, 0);
 
@@ -298,6 +299,9 @@ static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *r
 		case query_fields_visible:  PCB_QRY_RET_INT(res, l->meta.real.vis);
 		case query_fields_position: PCB_QRY_RET_INT(res, pcb_layer_flags_(l) & PCB_LYT_ANYWHERE);
 		case query_fields_type:     PCB_QRY_RET_INT(res, pcb_layer_flags_(l) & PCB_LYT_ANYTHING);
+		case query_fields_purpose:
+			pcb_layer_purpose_(l, &prp);
+			PCB_QRY_RET_STR(res, prp);
 		default:;
 	}
 
