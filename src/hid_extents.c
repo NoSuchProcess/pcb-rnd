@@ -47,7 +47,8 @@ static int extents_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 		return 1;
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_COPPER:
-		case PCB_LYT_OUTLINE:
+		case PCB_LYT_BOUNDARY:
+		case PCB_LYT_MECH:
 		case PCB_LYT_SILK:
 			return 1;
 		default:
