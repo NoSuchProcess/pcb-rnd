@@ -244,7 +244,7 @@ static void draw_ui_layers(const pcb_box_t *drawn_area)
 					pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 					have_canvas = 1;
 				}
-				pcb_draw_layer(ly, drawn_area);
+				pcb_draw_layer(ly, drawn_area, NULL);
 			}
 		}
 		if (have_canvas)
@@ -545,7 +545,7 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 #include "draw_composite.c"
 #include "draw_ly_spec.c"
 
-void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
+void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t *screen, int *num_found)
 {
 	pcb_draw_info_t info;
 	pcb_box_t scr2;
@@ -575,12 +575,12 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 		delayed_terms_enabled = pcb_true;
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 1);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_term_callback, &info, NULL);
+		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_term_callback, &info, num_found);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, NULL);
+		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, num_found);
 	}
 
 	if (conf_core.editor.check_planes)
@@ -589,16 +589,16 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = pcb_true;
-		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, Layer, NULL);
-		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, Layer, NULL);
-		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_term_callback, Layer, NULL);
+		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, Layer, num_found);
+		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, Layer, num_found);
+		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_term_callback, Layer, num_found);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
-		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, NULL);
-		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);
+		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, num_found);
+		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, num_found);
+		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, num_found);
 	}
 
 	/* The implicit outline rectangle (or automatic outline rectanlge).
@@ -722,7 +722,7 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 		layernum = layers[i];
 		Layer = PCB->Data->Layer + layernum;
 		if (!(gflg & PCB_LYT_SILK) && Layer->meta.real.vis)
-			pcb_draw_layer(Layer, drawn_area);
+			pcb_draw_layer(Layer, drawn_area, NULL);
 	}
 	if (n_entries > 1)
 		rv = 1;
@@ -967,7 +967,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	else if ((e->content.layer_id >= 0) && (e->content.layer_id < pcb_max_layer)) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
-		pcb_draw_layer(&(PCB->Data->Layer[e->content.layer_id]), &e->view);
+		pcb_draw_layer(&(PCB->Data->Layer[e->content.layer_id]), &e->view, NULL);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
 	}
 	else

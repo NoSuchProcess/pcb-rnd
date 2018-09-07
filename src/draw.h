@@ -90,7 +90,7 @@ void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 void pcb_draw(void);
 void pcb_redraw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
-void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
+void pcb_draw_layer(pcb_layer_t *ly, const pcb_box_t *screen, int *num_found);
 
 /* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
    objects that are not in the subtree of data - useful for drawing a subtree,

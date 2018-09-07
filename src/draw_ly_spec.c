@@ -157,7 +157,7 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 		/* fallback: implicit layer -> original code: draw auto+manual */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
-		pcb_draw_layer(LAYER_PTR(lid), cctx.screen);
+		pcb_draw_layer(LAYER_PTR(lid), cctx.screen, NULL);
 		pcb_draw_silk_auto(&cctx, &lyt_side);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 	}
