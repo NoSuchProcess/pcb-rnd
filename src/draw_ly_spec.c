@@ -190,6 +190,22 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 			goutid = gid;
 		}
 
+		/* Count whether there are objects on any boundary layer:
+		   don't count the objects drawn, but the objects the layer has;
+		   zooming in the middle doesn't mean we need to have the implicit
+		   outline */
+		for(n = 0; n < g->len; n++) {
+			pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
+			if (ly->line_tree != NULL)
+				count += ly->line_tree->size;
+			if (ly->arc_tree != NULL)
+				count += ly->arc_tree->size;
+			if (ly->text_tree != NULL)
+				count += ly->text_tree->size;
+			if (ly->polygon_tree != NULL)
+				count += ly->polygon_tree->size;
+		}
+
 		if (pcb_layer_gui_set_layer(gid, g, 0)) {
 			cctx.gid = gid;
 			cctx.grp = g;
@@ -200,13 +216,12 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
 				cctx.color = ly->meta.real.color;
-				pcb_draw_layer(ly, cctx.screen, &count);
+				pcb_draw_layer(ly, cctx.screen, NULL);
 			}
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 		}
 	}
 
-/*printf("impl: %d %p\n", count, goutl);*/
 	if ((count == 0) && (goutl != NULL) && (pcb_layer_gui_set_layer(goutid, goutl, 0))) {
 		/* The implicit outline rectangle (or automatic outline rectanlge).
 		   We should check for pcb_gui->gui here, but it's kinda cool seeing the
