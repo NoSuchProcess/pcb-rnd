@@ -78,6 +78,7 @@ static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
 static void pcb_draw_mask(int side, const pcb_box_t *screen);
 static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area);
+static void pcb_draw_boundary(const pcb_box_t *drawn_area);
 static void pcb_draw_rats(const pcb_box_t *);
 static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area);
 
@@ -332,7 +333,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
-		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE)) /* do not draw silk, mask and paste here, they'll be drawn separately */
+		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
 			continue;
 
 		if (l->meta.real.vis && !do_group[group]) {
@@ -439,6 +440,8 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 		pcb_draw_paste(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
+
+	pcb_draw_boundary(drawn_area);
 
 	draw_virtual_layers(drawn_area);
 	if (pcb_gui->gui) {
@@ -704,7 +707,7 @@ void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_
  */
 static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_current)
 {
-	int i, rv = 1;
+	int i;
 	pcb_layer_id_t layernum;
 	pcb_layer_t *Layer;
 	pcb_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
@@ -715,23 +718,18 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 
-	if (PCB_LAYER_IS_OUTLINE(gflg, grp->purpi))
-		rv = 0;
-
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];
 		Layer = PCB->Data->Layer + layernum;
 		if (!(gflg & PCB_LYT_SILK) && Layer->meta.real.vis)
 			pcb_draw_layer(Layer, drawn_area, NULL);
 	}
-	if (n_entries > 1)
-		rv = 1;
 
 	if ((gflg & PCB_LYT_COPPER) && (PCB->pstk_on))
 		pcb_draw_pstks(group, drawn_area, (CURRENT->meta.real.grp == group), 0);
 
 	/* this draws the holes - must be the last, so holes are drawn over everything else */
-	if (rv && !pcb_gui->gui)
+	if (!pcb_gui->gui)
 		pcb_draw_ppv(group, drawn_area);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);

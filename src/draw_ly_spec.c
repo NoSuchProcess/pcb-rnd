@@ -167,6 +167,44 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	}
 }
 
+static void pcb_draw_boundary(const pcb_box_t *drawn_area)
+{
+	int count = 0;
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *g;
+	comp_ctx_t cctx;
+
+	cctx.pcb = PCB;
+	cctx.screen = drawn_area;
+	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
+	cctx.invert = 0;
+
+
+	for(gid = 0, g = PCB->LayerGroups.grp; gid < PCB->LayerGroups.len; gid++,g++) {
+		int n;
+		if ((g->ltype != PCB_LYT_BOUNDARY) || (g->len < 1))
+			continue;
+
+		if (pcb_layer_gui_set_layer(gid, g, 0)) {
+			cctx.gid = gid;
+			cctx.grp = g;
+
+			/* boundary does NOT support compisiting, everything is drawn in positive */
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
+			for(n = 0; n < g->len; n++) {
+				cctx.color = PCB->Data->Layer[g->lid[n]].meta.real.color;
+				pcb_draw_layer(LAYER_PTR(g->lid[n]), cctx.screen, &count);
+			}
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+		}
+	}
+
+	if (count == 0) {
+#warning layer TODO: draw implicit outline here
+	}
+}
+
 
 /******** misc ********/
 
