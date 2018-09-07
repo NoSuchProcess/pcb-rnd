@@ -52,6 +52,7 @@
 #include "pcb_minuid.h"
 #include "safe_fs.h"
 #include "thermal.h"
+#include "funchash_core.h"
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
@@ -846,7 +847,7 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 {
 	lht_node_t *lstk, *grps, *grp, *layers, *flags;
-	int n, i;
+	int n, i, outlines = 0;
 
 	lstk = lht_dom_node_alloc(LHT_HASH, "layer_stack");
 	lht_dom_hash_put(lstk, grps = lht_dom_node_alloc(LHT_LIST, "groups"));
@@ -872,8 +873,16 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 		if (wrver < 6) {
 			if (g->purpose != NULL)
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group purpose in lihata formats below version 6.", "Either save in lihata v6 - or accept that these layers will change type in the file");
-			if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH)) {
-				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH);
+			if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) {
+				lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
+				pcb_layer_type_map(lyt & (~PCB_LYT_ANYTHING), flags, build_layer_stack_flag);
+				lht_dom_hash_put(flags, build_text("outline", "1"));
+				outlines++;
+				if (outlines > 1)
+					return pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save multiple outline layer groups in lihata board version below v6", "Save in lihata board v6");
+			}
+			else if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH) || (lyt & PCB_LYT_BOUNDARY)) {
+				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH | PCB_LYT_BOUNDARY);
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group type DOC or MECH in lihata formats below version 6, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 			}
 		}

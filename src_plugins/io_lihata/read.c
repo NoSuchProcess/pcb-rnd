@@ -839,7 +839,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	return err;
 }
 
-static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *loc)
+static int parse_layer_type(pcb_layer_type_t *dst, const char **dst_purpose, lht_node_t *nd, const char *loc)
 {
 	lht_node_t *flg;
 	lht_dom_iterator_t itt;
@@ -847,11 +847,26 @@ static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *l
 	if (nd == NULL)
 		return -1;
 
+	*dst_purpose = NULL;
+
 	for(flg = lht_dom_first(&itt, nd); flg != NULL; flg = lht_dom_next(&itt)) {
-		pcb_layer_type_t val = pcb_layer_type_str2bit(flg->name);
+		pcb_layer_type_t val;
+		if (rdver < 6) {
+			if (strcmp(flg->name, "outline") == 0) {
+				*dst |= PCB_LYT_BOUNDARY;
+				*dst_purpose = "uroute";
+				continue;
+			}
+		}
+		
+		val = pcb_layer_type_str2bit(flg->name);
 		if (val == 0)
 			iolht_error(flg, "Invalid type name: '%s' in %s (ignoring the type flag)\n", flg->name, loc);
 		*dst |= val;
+		if (rdver < 6) {
+			if (val & (PCB_LYT_MECH | PCB_LYT_DOC | PCB_LYT_BOUNDARY))
+				iolht_warn(flg, -1, "Potentially invalid type name: '%s' in %s - lihata board before v6 did not support it\n(accepting it for now, but expect broken layer stack)\n", flg->name, loc);
+		}
 	}
 
 	return 0;
@@ -911,16 +926,19 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		iolht_warn(npurp, -1, "Only bound layers should have purpose - ignoring this field\n");
 
 	if (bound) {
+		const char *prp;
 		ly->is_bound = 1;
 		ly->name = pcb_strdup(grp->name);
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
-		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, lht_dom_hash_get(grp, "type"), "bound layer");
-		if (npurp != NULL) {
+		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, &prp, lht_dom_hash_get(grp, "type"), "bound layer");
+		if (npurp != NULL) { /* use the explicit purpose if it is set */
 			if (npurp->type == LHT_TEXT)
 				dt->Layer[layer_id].meta.bound.purpose = pcb_strdup(npurp->data.text.value);
 			else
 				iolht_warn(npurp, -1, "Layers purpose shall be text - ignoring this field\n");
 		}
+		else if (prp != NULL) /* or the implicit one from parse_layer_type(), for old versions */
+			dt->Layer[layer_id].meta.bound.purpose = pcb_strdup(prp);
 
 		if (pcb != NULL) {
 			dt->Layer[layer_id].meta.bound.real = pcb_layer_resolve_binding(pcb, &dt->Layer[layer_id]);
@@ -1423,8 +1441,10 @@ static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 		return iolht_error(loc, "Unsupported layer stackup: top silk layer missing\n");
 	if (pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
 		return iolht_error(loc, "Unsupported layer stackup: bottom silk layer missing\n");
-	if (pcb_layer_list(pcb, PCB_LYT_OUTLINE, tmp, 2) > 1)
-		return iolht_error(loc, "Unsupported layer stackup: multiple outline layers\n");
+	if (rdver < 6) {
+		if (pcb_layer_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1)
+			return iolht_error(loc, "Unsupported layer stackup: multiple outline layers was not possible before lihata board v6\n");
+	}
 	return 0;
 }
 
@@ -1438,8 +1458,8 @@ static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
 		return iolht_error(loc, "Unsupported layer stackup: top silk layer group missing\n");
 	if (pcb_layergrp_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
 		return iolht_error(loc, "Unsupported layer stackup: bottom silk layer group missing\n");
-	if (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, tmp, 2) > 1)
-		return iolht_error(loc, "Unsupported layer stackup: multiple outline layer groups\n");
+	if ((pcb_layergrp_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1) && (rdver < 6))
+		return iolht_error(loc, "Unsupported layer stackup: multiple outline layer groups was not possible before lihata board v6\n");
 	return 0;
 }
 
@@ -1458,6 +1478,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_t *g;
 		char *end;
+		const char *prp;
 
 		if (grp->type != LHT_HASH) {
 			iolht_error(grp, "Invalid group in layer stack: '%s' (not a hash; ignoring the group)\n", grp->name);
@@ -1494,7 +1515,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		}
 		else
 			g->name = pcb_strdup(name->data.text.value);
-		parse_layer_type(&g->ltype, lht_dom_hash_get(grp, "type"), g->name);
+		parse_layer_type(&g->ltype, &prp, lht_dom_hash_get(grp, "type"), g->name);
 
 		if (rdver < 6) {
 			if ((g->ltype & PCB_LYT_DOC) || (g->ltype & PCB_LYT_MECH))
@@ -1502,7 +1523,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		}
 
 		npurp = lht_dom_hash_get(grp, "purpose");
-		if (npurp != NULL) {
+		if (npurp != NULL) { /* use the explicit purpose field if found */
 			if (rdver < 6)
 				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.");
 			if (npurp->type == LHT_TEXT)
@@ -1510,6 +1531,8 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			else
 				iolht_warn(npurp, -1, "Group purpose shall be text - ignoring this field\n");
 		}
+		else if (prp != NULL) /* or the implicit one returned by parse_layer_type() */
+			pcb_layergrp_set_purpose__(g, pcb_strdup(prp));
 
 		/* load attributes */
 		nattr= lht_dom_hash_get(grp, "attributes");
@@ -1602,12 +1625,15 @@ static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 
 static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
-	lht_node_t *ncmb, *nlyt, *ns;
+	lht_node_t *ncmb, *nlyt, *ns, *np;
 	int res = -1;
+	const char *prp;
 
 	nlyt = lht_dom_hash_get(nshape, "layer_mask");
 	if ((nlyt != NULL) && (nlyt->type == LHT_HASH))
-		res = parse_layer_type(&dst->layer_mask, nlyt, "padstack shape");
+		res = parse_layer_type(&dst->layer_mask, &prp, nlyt, "padstack shape");
+
+#warning layer TODO: shape v6 and support for prp
 
 	if (res != 0)
 		return iolht_error(nlyt != NULL ? nlyt : nshape, "Failed to parse pad stack shape (layer mask)\n");
