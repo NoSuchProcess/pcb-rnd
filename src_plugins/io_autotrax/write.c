@@ -59,7 +59,7 @@ static layer_map_t layer_map[LAYER_MAP_LEN] = {
 	/*  8 */ { PCB_LYT_BOTTOM | PCB_LYT_SILK,   0}, /* "bottom overlay" */
 	/*  9 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 1}, /* "ground plane" */
 	/* 10 */ { PCB_LYT_INTERN | PCB_LYT_COPPER, 1}, /* "power plane" */
-	/* 11 */ { PCB_LYT_OUTLINE,                 0}, /* "board layer" */
+	/* 11 */ { PCB_LYT_BOUNDARY,                0}, /* "board layer" */
 	/* 12 */ { 0,                               0}, /* "keepout" */
 	/* 13 */ { 0,                               0}, /* "multi layer" - used to indicate padstacks are on all layers */
 };
