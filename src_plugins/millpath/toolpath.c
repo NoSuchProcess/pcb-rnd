@@ -42,6 +42,7 @@
 #include "obj_poly.h"
 #include "obj_poly_op.h"
 #include "polygon.h"
+#include "funchash_core.h"
 
 #include "src_plugins/lib_polyhelp/polyhelp.h"
 
@@ -134,27 +135,39 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 
 static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
-	pcb_layergrp_id_t otl;
 	int has_otl;
+	pcb_layergrp_id_t i;
+	pcb_layergrp_t *g;
 
 	assert(!layer->is_bound);
 
 	result->grp = pcb_get_layergrp(pcb, layer->meta.real.grp);
-	has_otl = (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, &otl, 1) == 1);
+
+	has_otl = 0;
+	for(i = 0, g = pcb->LayerGroups.grp; i < pcb->LayerGroups.len; i++,g++) {
+		if ((PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) && (!pcb_layergrp_is_pure_empty(pcb, i))) {
+			has_otl = 1;
+			break;
+		}
+	}
+
 
 	if (has_otl) { /* if there's an outline layer, the remove-poly shouldn't be bigger than that */
 		pcb_line_t *line;
 		pcb_arc_t *arc;
 		pcb_rtree_it_t it;
 		pcb_box_t otlbb;
-		pcb_layergrp_t *og = pcb_get_layergrp(pcb, otl);
-		int n;
+		pcb_layer_id_t lid;
 		
 		otlbb.X1 = otlbb.Y1 = PCB_MAX_COORD;
 		otlbb.X2 = otlbb.Y2 = -PCB_MAX_COORD;
 
-		for(n = 0; n < og->len; n++) {
-			pcb_layer_t *l = pcb_get_layer(PCB->Data, og->lid[n]);
+		for(lid = 0; lid < pcb->Data->Layer; lid++) {
+			pcb_layer_t *l;
+			if (!PCB_LAYER_IS_OUTLINE(pcb_layer_flags(PCB, lid), pcb_layer_purpose(PCB, lid, NULL)))
+				continue;
+
+			l = pcb_get_layer(PCB->Data, lid);
 			if (l == NULL)
 				continue;
 
@@ -175,8 +188,9 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 	sub_group_all(pcb, result, result->grp, 0);
 	if (has_otl)
-		sub_group_all(pcb, result, pcb_get_layergrp(pcb, otl), 1);
-
+		for(i = 0, g = pcb->LayerGroups.grp; i < pcb->LayerGroups.len; i++,g++)
+			if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi))
+				sub_group_all(pcb, result, g, 1);
 	sub_global_all(pcb, result, layer);
 }
 
