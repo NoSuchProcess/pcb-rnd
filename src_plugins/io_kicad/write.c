@@ -37,6 +37,7 @@
 #include "layer.h"
 #include "netlist.h"
 #include "obj_pstk_inlines.h"
+#include "funchash_core.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
@@ -96,7 +97,7 @@ static fixed_layer_t fixed_layers[] = {
 	{21, "F.SilkS",    "user",   0, PCB_LYT_SILK | PCB_LYT_TOP,      FLP_FIXED },
 	{22, "B.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_BOTTOM,   FLP_FIXED },
 	{23, "F.Mask",     "user",   0, PCB_LYT_MASK | PCB_LYT_TOP,      FLP_FIXED },
-	{28, "Edge.Cuts",  "user",   0, PCB_LYT_OUTLINE,                 FLP_FIXED },
+	{28, "Edge.Cuts",  "user",   0, PCB_LYT_BOUNDARY,                FLP_FIXED },
 	{0, NULL, NULL, 0}
 };
 
@@ -904,20 +905,18 @@ static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, pcb_coo
 
 static void kicad_fixup_outline(wctx_t *ctx, int ind)
 {
-	int n;
+	int i;
 	fixed_layer_t *l;
+	pcb_layergrp_t *g;
 
 	/* if any outline layer is non-empty, don't draw the implicit outline */
-	for(n = 0; n < ctx->pcb->Data->LayerN; n++) {
-		if (!(pcb_layer_flags(ctx->pcb, n) & PCB_LYT_OUTLINE))
-			continue;
-		if (!pcb_layer_is_pure_empty(&ctx->pcb->Data->Layer[n]))
+	for(i = 0, g = ctx->pcb->LayerGroups.grp; i < ctx->pcb->LayerGroups.len; i++,g++)
+		if ((PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) && (!pcb_layergrp_is_pure_empty(ctx->pcb, i)))
 			return;
-	}
 
 	/* find the first kicad outline layer */
 	for(l = fixed_layers; l->name != NULL; l++) {
-		if (l->type & PCB_LYT_OUTLINE) {
+		if (l->type & PCB_LYT_BOUNDARY) {
 			kicad_print_implicit_outline(ctx, l->name, KICAD_OUTLINE_THICK, ind);
 			return;
 		}
