@@ -667,8 +667,6 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	pcb_layer_listp(PCB, PCB_LYT_BOUNDARY, &lid, 1, F_uroute, NULL);
 	if (lid == -1)
 		pcb_layer_listp(PCB, PCB_LYT_BOUNDARY, &lid, 1, F_proute, NULL);
-	if (lid == -1)
-		pcb_layer_listp(PCB, PCB_LYT_OUTLINE, &lid, 1, -1, NULL);
 	global.has_outline = (lid >= 0);
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
@@ -1003,7 +1001,6 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			!(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		int save_drill = global.is_drill;
 		global.is_drill = 0;
-		pcb_draw_groups(PCB, PCB_LYT_OUTLINE, -1, NULL, &global.exps.view, "#000000", 0, 0, 0);
 		pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &global.exps.view, "#000000", PCB_LYT_MECH, 0, 0);
 		pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &global.exps.view, "#000000", PCB_LYT_MECH, 0, 0);
 		global.is_drill = save_drill;

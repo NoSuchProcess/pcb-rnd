@@ -470,7 +470,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			stepf = 3;
 		}
 #warning layer TODO: handle multiple outline layers
-		else if ((g->ltype & PCB_LYT_BOUNDARY) || (g->ltype & PCB_LYT_OUTLINE)) {
+		else if (g->ltype & PCB_LYT_BOUNDARY) {
 			outline_gid = gid;
 			continue;
 		}

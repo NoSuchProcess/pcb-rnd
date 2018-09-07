@@ -32,7 +32,7 @@
 #include "search.h"
 
 static const char *lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
-static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "outline", "mech", "doc", "virtual", NULL };
+static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "boundary", "mech", "doc", "virtual", NULL };
 static const char *lb_side[] = { "top", "bottom", NULL };
 
 typedef struct {
@@ -55,7 +55,7 @@ static int ly_type2enum(pcb_layer_type_t type)
 	else if (type & PCB_LYT_MASK)    return 2;
 	else if (type & PCB_LYT_SILK)    return 3;
 	else if (type & PCB_LYT_COPPER)  return 4;
-	else if (type & PCB_LYT_OUTLINE) return 5;
+	else if (type & PCB_LYT_BOUNDARY) return 5;
 	else if (type & PCB_LYT_MECH)    return 6;
 	else if (type & PCB_LYT_DOC)     return 7;
 	else if (type & PCB_LYT_VIRTUAL) return 8;
@@ -78,7 +78,7 @@ static void get_ly_type_(int combo_type, pcb_layer_type_t *type)
 		case 2: *type |= PCB_LYT_MASK; break;
 		case 3: *type |= PCB_LYT_SILK; break;
 		case 4: *type |= PCB_LYT_COPPER; break;
-		case 5: *type |= PCB_LYT_OUTLINE; break;
+		case 5: *type |= PCB_LYT_BOUNDARY; break;
 		case 6: *type |= PCB_LYT_MECH; break;
 		case 7: *type |= PCB_LYT_DOC; break;
 		case 8: *type |= PCB_LYT_VIRTUAL; break;
@@ -123,7 +123,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		int ofs;
 
 		/* disable comp for copper and outline */
-		enable = !(layer->meta.bound.type & PCB_LYT_COPPER) && !(layer->meta.bound.type & PCB_LYT_OUTLINE);
+		enable = !(layer->meta.bound.type & PCB_LYT_COPPER) && !(layer->meta.bound.type & PCB_LYT_BOUNDARY);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->comp, enable);
 		if (!enable)
 			layer->comb = 0; /* copper and outline must be +manual */
@@ -184,7 +184,7 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 		get_ly_type(ctx->attrs[w->type].default_val.int_value, ctx->attrs[w->side].default_val.int_value, ctx->attrs[w->offs].default_val.int_value, &layer->meta.bound.type, &layer->meta.bound.stack_offs);
 
 		/* enforce some sanity rules */
-		if (layer->meta.bound.type & PCB_LYT_OUTLINE) {
+		if (layer->meta.bound.type & PCB_LYT_BOUNDARY) {
 			/* outline must be positive global */
 			layer->comb = 0;
 			layer->meta.bound.type &= ~PCB_LYT_ANYWHERE;

@@ -871,9 +871,12 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 
 		lyt = g->ltype;
 		if (wrver < 6) {
-			if (g->purpose != NULL)
+			int is_outline = (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi));
+
+			if ((!is_outline) && (g->purpose != NULL))
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group purpose in lihata formats below version 6.", "Either save in lihata v6 - or accept that these layers will change type in the file");
-			if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) {
+
+			if (is_outline) {
 				lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
 				pcb_layer_type_map(lyt & (~PCB_LYT_ANYTHING), flags, build_layer_stack_flag);
 				lht_dom_hash_put(flags, build_text("outline", "1"));

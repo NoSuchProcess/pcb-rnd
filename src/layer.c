@@ -83,7 +83,6 @@ static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_SILK,    2, "silk" },
 	{ PCB_LYT_MASK,    2, "mask" },
 	{ PCB_LYT_PASTE,   2, "paste" },
-	{ PCB_LYT_OUTLINE, 2, "outline" },
 	{ PCB_LYT_BOUNDARY,2, "boundary" },
 	{ PCB_LYT_RAT,     2, "rat" },
 	{ PCB_LYT_INVIS,   2, "invis" },

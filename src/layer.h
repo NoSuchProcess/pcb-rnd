@@ -48,7 +48,6 @@ typedef enum {
 	PCB_LYT_SILK     = 0x00000200, /* silk objects */
 	PCB_LYT_MASK     = 0x00000400, /* solder mask */
 	PCB_LYT_PASTE    = 0x00000800, /* paste */
-	PCB_LYT_OUTLINE  = 0x00001000, /* outline (contour of the board) */
 	PCB_LYT_RAT      = 0x00002000, /* (virtual) rats nest (one, not in the stackup) */
 	PCB_LYT_INVIS    = 0x00004000, /* (virtual) layer is invisible (one, not in the stackup) */
 	PCB_LYT_BOUNDARY = 0x00008000, /* physical boundaries of the board (inner and outer): route, cuts, slots, drills */
@@ -99,15 +98,15 @@ typedef enum { /* bitfield */
 #define PCB_LAYER_IS_DRILL(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && (((purpi) == F_pdrill) || ((purpi) == F_udrill)))
 
 /* Route must be on a mech or boundary layer */
-#define PCB_LAYER_IS_UROUTE(lyt, purpi) ((((lyt) & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && ((((purpi) == F_uroute)))) || ((lyt) & PCB_LYT_OUTLINE))
-#define PCB_LAYER_IS_PROUTE(lyt, purpi) ((((lyt) & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && (((purpi) == F_proute))))
-#define PCB_LAYER_IS_ROUTE(lyt, purpi) ((((lyt) &  (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && (((purpi) == F_proute) || ((purpi) == F_uroute))) || ((lyt) & PCB_LYT_OUTLINE))
+#define PCB_LAYER_IS_UROUTE(lyt, purpi) (((lyt) & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && ((((purpi) == F_uroute))))
+#define PCB_LAYER_IS_PROUTE(lyt, purpi) (((lyt) & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && (((purpi) == F_proute)))
+#define PCB_LAYER_IS_ROUTE(lyt, purpi)  (((lyt) &  (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) && (((purpi) == F_proute) || ((purpi) == F_uroute)))
 
 /* Outline is a route in a boundary group; outline in this sense
    means the "perimeter of the board", but could include largish internal
    cutout - the user needs to be explicit about this. Mech layers are NOT
    included, that's the difference compared to routed layers */
-#define PCB_LAYER_IS_OUTLINE(lyt, purpi) ((((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute))) || ((lyt) & PCB_LYT_OUTLINE))
+#define PCB_LAYER_IS_OUTLINE(lyt, purpi) (((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute)))
 
 #include "globalconst.h"
 #include "global_typedefs.h"

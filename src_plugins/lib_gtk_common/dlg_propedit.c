@@ -384,7 +384,7 @@ static void prop_preview_draw(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	pcb_board_t *old_pcb;
 	old_pcb = PCB;
 	PCB = &preview_pcb;
-	pcb_draw_layer(&(PCB->Data->Layer[0]), &e->view);
+	pcb_draw_layer(&(PCB->Data->Layer[0]), &e->view, NULL);
 	pcb_draw_ppv(0, &e->view);
 	PCB = old_pcb;
 }
