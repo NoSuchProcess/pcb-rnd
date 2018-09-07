@@ -183,7 +183,7 @@ ha:lht_tree_doc { ha:comm {
 								li:children {
 									ha:ps_shape_v4 {
 										type=ha
-										desc={shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin}
+										desc={shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin; layer mask shall contain one material and at most one location bit}
 										li:children {
 											sy:layer_mask@dup = {/lht_tree_doc/comm/layer_mask}
 											ha:combining {
