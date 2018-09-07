@@ -35,6 +35,7 @@
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_netmap/netmap.h"
+#include "funchash_core.h"
 #include <genht/htpi.h>
 #include <genht/hash.h>
 
@@ -357,11 +358,23 @@ static void write_arc(hyp_wr_t * wr, pcb_arc_t * arc)
 
 static int write_board(hyp_wr_t * wr)
 {
-	pcb_layer_id_t lid;
+	int has_outline;
+	pcb_layergrp_id_t i;
+	pcb_layergrp_t *g;
 
 	fprintf(wr->f, "{BOARD\n");
 
-	if ((pcb_layer_list(PCB, PCB_LYT_OUTLINE, &lid, 1) != 1) || (pcb_layer_is_pure_empty(&wr->pcb->Data->Layer[lid]))) {
+	has_outline = 0;
+	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
+		if (pcb_layergrp_is_pure_empty(PCB, i))
+			continue;
+		if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) {
+			has_outline = 1;
+			break;
+		}
+	}
+
+	if (!has_outline) {
 		/* implicit outline */
 		fprintf(wr->f, "* implicit outline derived from board width and height\n");
 		write_pr_line(wr, 0, 0, PCB->MaxWidth, 0);
@@ -369,18 +382,31 @@ static int write_board(hyp_wr_t * wr)
 		write_pr_line(wr, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
 		write_pr_line(wr, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
 	}
-	else {
-		/* explicit outline */
-		pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
-		gdl_iterator_t it;
-		pcb_line_t *line;
-		pcb_arc_t *arc;
+	else { /* explicit outline */
+		for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
+			int n;
 
-		linelist_foreach(&l->Line, &it, line) {
-			write_pr_line(wr, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
-		}
-		arclist_foreach(&l->Arc, &it, arc) {
-			write_pr_arc(wr, arc);
+			if (!PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi))
+				continue;
+
+			for(n = 0; n < g->len; n++) {
+				pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
+				gdl_iterator_t it;
+				pcb_line_t *line;
+				pcb_arc_t *arc;
+
+				if (l == NULL)
+					continue;
+
+#warning layer TODO: refuse negative layers and warn for objects other than line/arc
+
+				linelist_foreach(&l->Line, &it, line) {
+					write_pr_line(wr, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+				}
+				arclist_foreach(&l->Arc, &it, arc) {
+					write_pr_arc(wr, arc);
+				}
+			}
 		}
 	}
 	fprintf(wr->f, "}\n");
