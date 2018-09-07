@@ -725,7 +725,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 			if (copy_outline_mode == COPY_OUTLINE_ALL && \
 				((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) ||
 				PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_ASSY(flags, purpi) ||
-				(flags & PCB_LYT_OUTLINE))) stay = 1;
+				PCB_LAYER_IS_OUTLINE(flags, purpi))) stay = 1;
 
 			if (!stay) return 0;
 		}
