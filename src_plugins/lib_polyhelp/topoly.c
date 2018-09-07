@@ -33,6 +33,7 @@
 
 #include "error.h"
 #include "rtree.h"
+#include "data.h"
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_poly.h"
@@ -41,6 +42,7 @@
 #include "search.h"
 #include "hid.h"
 #include "actions.h"
+#include "funchash_core.h"
 
 #define VALID_TYPE(obj) (((obj)->type == PCB_OBJ_ARC)  || ((obj)->type == PCB_OBJ_LINE))
 #define CONT_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC)
@@ -289,26 +291,27 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 	pcb_coord_t x, y;
 	double bestd = (double)pcb->MaxHeight*(double)pcb->MaxHeight + (double)pcb->MaxWidth*(double)pcb->MaxWidth;
 
-	if (pcb_layer_list(pcb, PCB_LYT_OUTLINE, &lid, 1) != 1)
-		return NULL;
+	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		if (!PCB_LAYER_IS_OUTLINE(pcb_layer_flags(PCB, lid), pcb_layer_purpose(PCB, lid, NULL)))
+			continue;
 
-	layer = pcb_get_layer(PCB->Data, lid);
-	PCB_LINE_LOOP(layer) {
-		check(line->Point1.X, line->Point1.Y, line);
-		check(line->Point2.X, line->Point2.Y, line);
+		layer = pcb_get_layer(PCB->Data, lid);
+		PCB_LINE_LOOP(layer) {
+			check(line->Point1.X, line->Point1.Y, line);
+			check(line->Point2.X, line->Point2.Y, line);
+		}
+		PCB_END_LOOP;
+
+		PCB_ARC_LOOP(layer) {
+			pcb_arc_get_end(arc, 0, &x, &y);
+			check(x, y, arc);
+			pcb_arc_get_end(arc, 1, &x, &y);
+			check(x, y, arc);
+			pcb_arc_middle(arc, &x, &y);
+			check(x, y, arc);
+		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
-
-	PCB_ARC_LOOP(layer) {
-
-		pcb_arc_get_end(arc, 0, &x, &y);
-		check(x, y, arc);
-		pcb_arc_get_end(arc, 1, &x, &y);
-		check(x, y, arc);
-		pcb_arc_middle(arc, &x, &y);
-		check(x, y, arc);
-	}
-	PCB_END_LOOP;
 
 	return best;
 }
