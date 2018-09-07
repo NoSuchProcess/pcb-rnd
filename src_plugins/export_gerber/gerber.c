@@ -618,7 +618,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	has_outline = 0;
 	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
-		if (PCB_LAYER_IS_ROUTE(g->ltype, g->purpi)) {
+		if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) {
 			has_outline = 1;
 			break;
 		}
