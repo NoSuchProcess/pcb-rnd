@@ -83,7 +83,9 @@ flag[.]         { return T_FLD_FLAG; }
 "SILK"          { qry_lval.n = make_constant(yytext, PCB_LYT_SILK); return T_CONST; }
 "MASK"          { qry_lval.n = make_constant(yytext, PCB_LYT_MASK); return T_CONST; }
 "PASTE"         { qry_lval.n = make_constant(yytext, PCB_LYT_PASTE); return T_CONST; }
-"OUTLINE"       { qry_lval.n = make_constant(yytext, PCB_LYT_OUTLINE); return T_CONST; }
+"MECH"          { qry_lval.n = make_constant(yytext, PCB_LYT_MECH); return T_CONST; }
+"DOC"           { qry_lval.n = make_constant(yytext, PCB_LYT_DOC); return T_CONST; }
+"BOUNDARY"      { qry_lval.n = make_constant(yytext, PCB_LYT_BOUNDARY); return T_CONST; }
 
 
 

@@ -564,7 +564,7 @@ static struct pcb_qry_lytc_s field_pstk_lyt(pcb_pstk_t *ps, const char *where)
 		else if (strncmp(start, "silk", len) == 0) lytc.lyt |= PCB_LYT_SILK;
 		else if (strncmp(start, "mask", len) == 0) lytc.lyt |= PCB_LYT_MASK;
 		else if (strncmp(start, "paste", len) == 0) lytc.lyt |= PCB_LYT_PASTE;
-		else if (strncmp(start, "outline", len) == 0) lytc.lyt |= PCB_LYT_OUTLINE;
+		else if (strncmp(start, "mech", len) == 0) lytc.lyt |= PCB_LYT_MECH;
 		else if (strncmp(start, "auto", len) == 0) { lytc.lyc |= PCB_LYC_AUTO; got_pol = 1; }
 		else if (strncmp(start, "sub", len) == 0) { lytc.lyc |= PCB_LYC_SUB; got_pol = 1; }
 		else if (strncmp(start, "neg", len) == 0) { lytc.lyc |= PCB_LYC_SUB; got_pol = 1; }
