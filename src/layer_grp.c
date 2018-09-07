@@ -176,6 +176,17 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
+pcb_bool pcb_layergrp_is_empty_pure(pcb_board_t *pcb, pcb_layergrp_id_t num)
+{
+	int i;
+	pcb_layergrp_t *g = &pcb->LayerGroups.grp[num];
+
+	for (i = 0; i < g->len; i++)
+		if (!pcb_layer_is_pure_empty(pcb_get_layer(pcb->Data, g->lid[i])))
+			return pcb_false;
+	return pcb_true;
+}
+
 static void pcb_layergrp_free_fields(pcb_layergrp_t *g)
 {
 	free(g->name);
