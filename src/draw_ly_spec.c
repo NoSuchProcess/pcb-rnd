@@ -182,13 +182,14 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 
 	for(gid = 0, g = PCB->LayerGroups.grp; gid < PCB->LayerGroups.len; gid++,g++) {
 		int n, numobj;
-		if ((g->ltype != PCB_LYT_BOUNDARY) || (g->len < 1))
-			continue;
 
 		if ((g->ltype & PCB_LYT_BOUNDARY) && (g->purpi = F_uroute)) {
 			goutl = g;
 			goutid = gid;
 		}
+
+		if ((g->ltype != PCB_LYT_BOUNDARY) || (g->len < 1))
+			continue;
 
 		/* Count whether there are objects on any boundary layer:
 		   don't count the objects drawn, but the objects the layer has;
