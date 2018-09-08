@@ -550,7 +550,7 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
 		proto = pcb_pstk_get_proto(ps);
 
 	/* No slot at all */
-	if (proto->hdia <= 0)
+	if (proto->mech_idx < 0)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* hole is plated, but the caller doesn't want plated holes */
