@@ -176,11 +176,11 @@ static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore,
 	if (!(ly->comb & PCB_LYC_AUTO))
 		return;
 
-	if (g->purpi = F_uroute) {
+	if (g->purpi == F_uroute) {
 		dslot = uslot;
 		dscore = uscore;
 	}
-	else if (g->purpi = F_proute) {
+	else if (g->purpi == F_proute) {
 		dslot = pslot;
 		dscore = pscore;
 	}
@@ -191,8 +191,8 @@ static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore,
 	if (g->ltype & PCB_LYT_MECH) score = 2;
 
 	if (score > *pscore) {
-		*pscore = score;
-		*pslot = ly;
+		*dscore = score;
+		*dslot = ly;
 	}
 }
 
@@ -204,6 +204,7 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 	pcb_layer_t *uslot = NULL, *pslot = NULL;
 	int uscore = 0, pscore = 0;
 	comp_ctx_t cctx;
+	pcb_pstk_draw_hole_t ht;
 
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
@@ -272,6 +273,15 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 	}
+
+	/* draw slots */
+	ht = 0;
+	if ((uslot != NULL) && (uslot->meta.real.vis))
+		ht |= PCB_PHOLE_UNPLATED;
+	if ((pslot != NULL) && (pslot->meta.real.vis))
+		ht |= PCB_PHOLE_PLATED;
+	if (ht != 0)
+		pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, ht | PCB_PHOLE_BB);
 }
 
 

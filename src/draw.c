@@ -500,6 +500,19 @@ static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_hole_callback, &ctx, NULL);
 }
 
+static void pcb_draw_pstk_slots(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype)
+{
+	pcb_pstk_draw_t ctx;
+
+	if (!PCB->hole_on)
+		return;
+
+	ctx.pcb = PCB;
+	ctx.gid = group;
+	ctx.holetype = holetype;
+	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_slot_callback, &ctx, NULL);
+}
+
 /* ---------------------------------------------------------------------------
  * Draws padstacks - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->pstk_on
