@@ -51,7 +51,18 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 {
+	pcb_pstk_tshape_t *ts = &dst->tr.array[0];
+	unsigned int n;
+
 	dst->hash = pcb_pstk_proto_hash(dst);
+	dst->mech_idx = -1;
+
+	for(n = 0; n < ts->len; n++) {
+		if (ts->shape[n].layer_mask & PCB_LYT_MECH) {
+			dst->mech_idx = n;
+			break;
+		}
+	}
 }
 
 void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len)
