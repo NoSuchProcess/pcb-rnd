@@ -1288,6 +1288,11 @@ static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 	if (photo_mode)
 		return png_set_layer_group_photo(group, purpose, purpi, layer, flags, is_empty);
 
+	if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
+		doing_outline = 1;
+		have_outline = 0;
+	}
+
 	if (as_shown) {
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
