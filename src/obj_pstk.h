@@ -76,6 +76,7 @@ typedef struct pcb_pstk_proto_s {
 	/* local cache - not saved */
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
 	pcb_data_t *parent;
+	int mech_idx;                  /* -1 or index to the first shape[] that is of PCB_LYT_MECH */
 } pcb_pstk_proto_t;
 
 
@@ -217,6 +218,8 @@ extern pcb_data_t *pcb_pstk_data_hack;
    copied into data. In any case, the caller should not free proto. */
 pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet);
 
+/* Update caches and hash - must be called after any change to the prototype */
+void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);
 
 /*** hash ***/
 unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p);

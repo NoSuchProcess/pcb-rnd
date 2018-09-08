@@ -49,6 +49,11 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 #warning TODO: do a full field free here
 }
 
+void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
+{
+	dst->hash = pcb_pstk_proto_hash(dst);
+}
+
 void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len)
 {
 	poly->x = malloc(sizeof(poly->x[0]) * len * 2);
@@ -278,7 +283,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	}
 
 	/* all went fine */
-	dst->hash = pcb_pstk_proto_hash(dst);
+	pcb_pstk_proto_update(dst);
 	ret = 0;
 
 	quit:;
@@ -589,11 +594,13 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 		pcb_vtpadstack_proto_append(&data->ps_protos, *proto);
 		np = pcb_vtpadstack_proto_get(&data->ps_protos, n, 0);
 		np->parent = data;
+		pcb_pstk_proto_update(np);
 	}
 	else {
 		memcpy(data->ps_protos.array+first_free, proto, sizeof(pcb_pstk_proto_t));
 		data->ps_protos.array[first_free].in_use = 1;
 		data->ps_protos.array[first_free].parent = data;
+		pcb_pstk_proto_update(data->ps_protos.array+first_free);
 	}
 	memset(proto, 0, sizeof(pcb_pstk_proto_t)); /* make sure a subsequent free() won't do any harm */
 	return n;
@@ -614,11 +621,13 @@ pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_
 		nproto = pcb_vtpadstack_proto_alloc_append(&data->ps_protos, 1);
 		pcb_pstk_proto_copy(nproto, proto);
 		nproto->parent = data;
+		pcb_pstk_proto_update(nproto);
 	}
 	else {
 		pcb_pstk_proto_copy(data->ps_protos.array+first_free, proto);
 		data->ps_protos.array[first_free].in_use = 1;
 		data->ps_protos.array[first_free].parent = data;
+		pcb_pstk_proto_update(data->ps_protos.array+first_free);
 	}
 	return n;
 }
@@ -897,6 +906,7 @@ void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coor
 	for(n = 0; n < proto->tr.used; n++)
 		for(i = 0; i < proto->tr.array[n].len; i++)
 			pcb_pstk_shape_grow(&proto->tr.array[n].shape[i], is_absolute, val);
+	pcb_pstk_proto_update(proto);
 }
 
 void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pcb_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb)
@@ -920,6 +930,7 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pc
 		if (bloat != 0)
 			pcb_pstk_shape_grow(&proto->tr.array[n].shape[d], pcb_false, bloat);
 	}
+	pcb_pstk_proto_update(proto);
 }
 
 
@@ -941,6 +952,8 @@ void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx)
 	/* delete the shape from all transformed variants */
 	for(n = 0; n < proto->tr.used; n++)
 		pcb_pstk_tshape_del_idx(&proto->tr.array[n], idx);
+
+	pcb_pstk_proto_update(proto);
 }
 
 void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
