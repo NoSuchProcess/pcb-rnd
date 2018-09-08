@@ -54,6 +54,7 @@ typedef struct {
 
 pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl);
 pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl);
 pcb_r_dir_t pcb_pstk_clear_callback(const pcb_box_t *b, void *cl);
 #endif
 

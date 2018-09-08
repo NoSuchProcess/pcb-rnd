@@ -531,6 +531,46 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_pstk_draw_t *ctx = cl;
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_proto_t *proto;
+
+	/* hide subc parts if requested */
+	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* no slot in this layer group */
+	if (ctx->gid >= 0) {
+		if (!pcb_pstk_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
+			return PCB_R_DIR_FOUND_CONTINUE;
+	}
+	else
+		proto = pcb_pstk_get_proto(ps);
+
+	/* No slot at all */
+	if (proto->hdia <= 0)
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* hole is plated, but the caller doesn't want plated holes */
+	if (proto->hplated && (!(ctx->holetype & PCB_PHOLE_PLATED)))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* hole is unplated, but the caller doesn't want unplated holes */
+	if (!proto->hplated && (!(ctx->holetype & PCB_PHOLE_UNPLATED)))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* BBslot, but the caller doesn't want BBslot */
+	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(ctx->holetype & PCB_PHOLE_BB)))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* actual slot */
+#warning layer TODO
+	pcb_trace("draw slot!\n");
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_pstk_shape_t *shape = NULL;
