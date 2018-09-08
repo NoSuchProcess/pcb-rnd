@@ -119,7 +119,7 @@ static void append_tshape(pcb_pstk_tshape_t *ts, pcb_pstk_tshape_t *src, int src
 
 int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
-	int ret = -1, n, m, i, extra_obj = 0;
+	int ret = -1, n, m, i, extra_obj = 0, has_slot = 0, has_hole = 0;
 	pcb_any_obj_t **o;
 	pcb_pstk_tshape_t *ts, *ts_src;
 	pcb_pstk_t *pstk = NULL;
@@ -138,6 +138,18 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	ts->smirror = 0;
 	ts->len = 0;
 	for(n = 0, o = (pcb_any_obj_t **)objs->array; n < vtp0_len(objs); n++,o++) {
+		pcb_layer_t *ly = (*o)->parent.layer;
+		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+
+		if (lyt & PCB_LYT_MECH) {
+			if (has_slot) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple mechanical objects (slots) are not allowed\n");
+				goto quit;
+			}
+			has_slot++;
+		}
+
 		switch((*o)->type) {
 			case PCB_OBJ_LINE:
 			case PCB_OBJ_POLY:
@@ -156,6 +168,8 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 						pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid input padstacks proto\n");
 					goto quit;
 				}
+				if (prt->hdia > 0)
+					has_hole = 1;
 				dst->hdia = prt->hdia;
 				dst->hplated = prt->hplated;
 				if ((ox != pstk->x) || (oy != pstk->y)) {
@@ -246,7 +260,12 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		ly = (*o)->parent.layer;
 		ts->shape[n].layer_mask = pcb_layer_flags_(ly);
 		ts->shape[n].comb = ly->comb;
-		if (ts->shape[n].layer_mask & (PCB_LYT_PASTE | PCB_LYT_MASK))
+
+		if (ts->shape[n].layer_mask & PCB_LYT_BOUNDARY) {
+			ts->shape[n].layer_mask &= ~PCB_LYT_BOUNDARY;
+			ts->shape[n].layer_mask |= PCB_LYT_MECH;
+		}
+		if (ts->shape[n].layer_mask & (PCB_LYT_PASTE | PCB_LYT_MASK | PCB_LYT_MECH))
 			ts->shape[n].comb |= PCB_LYC_AUTO;
 
 		for(m = 0; m < n; m++) {
@@ -256,11 +275,17 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				goto quit;
 			}
 		}
-		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (pstk == NULL)) {
+		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (has_hole) && (!has_slot)) {
 			if (!quiet)
 				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
 			goto quit;
 		}
+	}
+
+	if (has_hole && has_slot) {
+		if (!quiet)
+			pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have both hole (padstack) and slot \n");
+		goto quit;
 	}
 
 	/* if there was a padstack, use the padstack's shape on layers that are not specified */
@@ -278,6 +303,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB | PCB_LYC_AUTO);
 			MAYBE_COPY(PCB_LYT_PASTE | PCB_LYT_BOTTOM, PCB_LYC_AUTO);
 			MAYBE_COPY(PCB_LYT_PASTE | PCB_LYT_TOP, PCB_LYC_AUTO);
+			MAYBE_COPY(PCB_LYT_MECH, PCB_LYC_AUTO);
 #			undef MAYBE_COPY
 		}
 	}
