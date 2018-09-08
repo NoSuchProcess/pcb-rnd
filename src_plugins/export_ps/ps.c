@@ -617,8 +617,8 @@ static FILE *psopen(const char *base, const char *which)
    or eps.  */
 void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
-	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_layer_id_t lid;
+	static int saved_layer_stack[PCB_MAX_LAYER], i;
+	pcb_layergrp_t *g;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -663,11 +663,13 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		global.scale_factor *= MIN(zx, zy);
 	}
 
-	lid = -1;
-	pcb_layer_listp(PCB, PCB_LYT_BOUNDARY, &lid, 1, F_uroute, NULL);
-	if (lid == -1)
-		pcb_layer_listp(PCB, PCB_LYT_BOUNDARY, &lid, 1, F_proute, NULL);
-	global.has_outline = (lid >= 0);
+	global.has_outline = 0;
+	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
+		if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi) && !pcb_layergrp_is_pure_empty(PCB, i)) {
+			global.has_outline = 1;
+			break;
+		}
+	}
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
@@ -952,7 +954,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			fprintf(global.f, "/rgb { setrgbcolor } bind def\n");
 		}
 
-		if (global.has_outline || global.invert) {
+		if (!global.has_outline || global.invert) {
 			pcb_fprintf(global.f,
 									"0 setgray 0 setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
