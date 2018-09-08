@@ -1571,21 +1571,6 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 	}
 }
 
-static void png_draw_rect_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	use_gc(im, gc);
-	gdImageRectangle(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), unerase_override ? white->c : gc->color->c);
-}
-
-static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	png_draw_rect_(im, gc, x1, y1, x2, y2);
-	if ((im != erase_im) && (erase_im != NULL)) {
-		unerase_override = 1;
-		png_draw_rect_(erase_im, gc, x1, y1, x2, y2);
-		unerase_override = 0;
-	}
-}
 
 static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
@@ -1693,6 +1678,14 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		png_draw_line_(erase_im, gc, x1, y1, x2, y2);
 		unerase_override = 0;
 	}
+}
+
+static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	png_draw_line(gc, x1, y1, x2, y1);
+	png_draw_line(gc, x2, y1, x2, y2);
+	png_draw_line(gc, x2, y2, x1, y2);
+	png_draw_line(gc, x1, y2, x1, y1);
 }
 
 
