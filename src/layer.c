@@ -311,7 +311,7 @@ int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **o
 		return -1;
 	}
 
-	grp = pcb_get_layergrp(pcb, layer_idx);
+	grp = pcb_get_layergrp(pcb, pcb->Data->Layer[layer_idx].meta.real.grp);
 
 	if (out != NULL) {
 		if (grp == NULL) {
