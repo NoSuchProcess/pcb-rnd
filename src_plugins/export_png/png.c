@@ -1614,6 +1614,7 @@ static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
+	int x1o = 0, y1o = 0, x2o = 0, y2o = 0;
 	if (x1 == x2 && y1 == y2 && !photo_mode) {
 		pcb_coord_t w = gc->width / 2;
 		if (gc->cap != pcb_cap_square)
@@ -1631,19 +1632,19 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 		   are brought in by a pixel to make sure we have contiguous
 		   outlines.  */
 		if (x1 == PCB->MaxWidth && x2 == PCB->MaxWidth) {
-			x1 -= pcb_round(scale / 2);
-			x2 -= pcb_round(scale / 2);
+			x1o = -1;
+			x2o = -1;
 		}
 		if (y1 == PCB->MaxHeight && y2 == PCB->MaxHeight) {
-			y1 -= pcb_round(scale / 2);
-			y2 -= pcb_round(scale / 2);
+			y1o = -1;
+			y2o = -1;
 		}
 	}
 
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 	if (gc->cap != pcb_cap_square || x1 == x2 || y1 == y2) {
-		gdImageLine(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gdBrushed);
+		gdImageLine(im, SCALE_X(x1) + x1o, SCALE_Y(y1) + y1o, SCALE_X(x2) + x2o, SCALE_Y(y2) + y2o, gdBrushed);
 	}
 	else {
 		/*
