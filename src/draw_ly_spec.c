@@ -167,11 +167,42 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	}
 }
 
+static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore, int *pscore, pcb_layergrp_t *g, pcb_layer_t *ly)
+{
+	int score;
+	pcb_layer_t **dslot;
+	int *dscore;
+
+	if (!(ly->comb & PCB_LYC_AUTO))
+		return;
+
+	if (g->purpi = F_uroute) {
+		dslot = uslot;
+		dscore = uscore;
+	}
+	else if (g->purpi = F_proute) {
+		dslot = pslot;
+		dscore = pscore;
+	}
+	else
+		return;
+
+	if (g->ltype & PCB_LYT_BOUNDARY) score = 1;
+	if (g->ltype & PCB_LYT_MECH) score = 2;
+
+	if (score > *pscore) {
+		*pscore = score;
+		*pslot = ly;
+	}
+}
+
 static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 {
 	int count = 0;
 	pcb_layergrp_id_t gid, goutid;
 	pcb_layergrp_t *g, *goutl = NULL;
+	pcb_layer_t *uslot = NULL, *pslot = NULL;
+	int uscore = 0, pscore = 0;
 	comp_ctx_t cctx;
 
 	cctx.pcb = PCB;
@@ -206,6 +237,7 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 				numobj += ly->text_tree->size;
 			if (ly->polygon_tree != NULL)
 				numobj += ly->polygon_tree->size;
+			remember_slot(&uslot, &pslot, &uscore, &pscore, g, ly);
 		}
 		count += numobj;
 
