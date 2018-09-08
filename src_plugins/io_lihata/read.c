@@ -965,7 +965,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 		nvis = hash_get(grp, "visible", 1);
 		if ((nvis != &missing_ok) && rdver >= 6)
-			iolht_warn(nvis, -1, "saving layer visibility is supported above lihata board v6 (reading from v%d)\n", rdver);
+			iolht_warn(nvis, -1, "saving layer visibility was supported only before lihata board v6 (reading from v%d)\n", rdver);
 		parse_bool(&ly->meta.real.vis, nvis);
 		if (pcb != NULL) {
 			int grp_id;
