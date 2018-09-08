@@ -60,4 +60,18 @@
 <use xlink:href="#comp_pixel_2" mask="url(#comp_clip_2)"/>
 <!-- Composite: finished -->
 </g>
+<g id="layer_9_outline">
+<!--normal-->
+<!-- Composite: reset -->
+<defs>
+<g id="comp_pixel_3">
+ <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
+</g>
+<mask id="comp_clip_3" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+ <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#FFFFFF" stroke-linecap="round" fill="none"/>
+</mask>
+</defs>
+<use xlink:href="#comp_pixel_3" mask="url(#comp_clip_3)"/>
+<!-- Composite: finished -->
+</g>
 </svg>

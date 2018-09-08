@@ -43,4 +43,8 @@
  <circle cx="1.9050" cy="2.5400" r="0.4001" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="2.5400" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
+<g id="layer_9_outline">
+<!--normal-->
+ <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
+</g>
 </svg>
