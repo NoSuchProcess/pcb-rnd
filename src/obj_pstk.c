@@ -366,17 +366,17 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
-			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-			pcb_gui->fill_polygon_offs(pcb_draw_out.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+			pcb_hid_set_line_cap(gc, pcb_cap_round);
+			pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 			break;
 		case PCB_PSSH_LINE:
-			pcb_hid_set_line_cap(pcb_draw_out.fgGC, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
-			pcb_hid_set_line_width(pcb_draw_out.fgGC, shape->data.line.thickness);
-			pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
+			pcb_hid_set_line_cap(gc, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
+			pcb_hid_set_line_width(gc, shape->data.line.thickness);
+			pcb_gui->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;
 		case PCB_PSSH_CIRC:
-			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-			pcb_gui->fill_circle(pcb_draw_out.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+			pcb_hid_set_line_cap(gc, pcb_cap_round);
+			pcb_gui->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
 			break;
 	}
 }
