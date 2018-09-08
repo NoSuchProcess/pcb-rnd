@@ -78,7 +78,7 @@ static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
 static void pcb_draw_mask(int side, const pcb_box_t *screen);
 static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area);
-static void pcb_draw_boundary(const pcb_box_t *drawn_area);
+static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area);
 static void pcb_draw_rats(const pcb_box_t *);
 static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area);
 
@@ -333,7 +333,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
-		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
+		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
 			continue;
 
 		if (l->meta.real.vis && !do_group[group]) {
@@ -441,7 +441,7 @@ static void DrawEverything(const pcb_box_t *drawn_area)
 		pcb_gui->end_layer();
 	}
 
-	pcb_draw_boundary(drawn_area);
+	pcb_draw_boundary_mech(drawn_area);
 
 	draw_virtual_layers(drawn_area);
 	if (pcb_gui->gui) {

@@ -167,7 +167,7 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	}
 }
 
-static void pcb_draw_boundary(const pcb_box_t *drawn_area)
+static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 {
 	int count = 0;
 	pcb_layergrp_id_t gid, goutid;
@@ -188,7 +188,7 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 			goutid = gid;
 		}
 
-		if ((g->ltype != PCB_LYT_BOUNDARY) || (g->len < 1))
+		if (!(g->ltype & (PCB_LYT_BOUNDARY | PCB_LYT_MECH)) || (g->len < 1))
 			continue;
 
 		/* Count whether there are objects on any boundary layer:
