@@ -356,6 +356,9 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 {
 	int opa, is_our_mask = 0, is_our_silk = 0;
 
+	if (is_empty)
+		return 0;
+
 	if (flags & PCB_LYT_UI)
 		return 0;
 
