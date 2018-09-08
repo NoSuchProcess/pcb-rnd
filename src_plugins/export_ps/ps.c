@@ -956,8 +956,9 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 
 		if (!global.has_outline || global.invert) {
 			pcb_fprintf(global.f,
-									"0 setgray 0 setlinewidth 0 0 moveto 0 "
+									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
+									conf_core.design.min_wid + 2 * global.bloat,
 									PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, global.invert ? "fill" : "stroke");
 		}
 
