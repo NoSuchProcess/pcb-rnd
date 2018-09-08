@@ -181,7 +181,7 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 
 
 	for(gid = 0, g = PCB->LayerGroups.grp; gid < PCB->LayerGroups.len; gid++,g++) {
-		int n;
+		int n, numobj;
 		if ((g->ltype != PCB_LYT_BOUNDARY) || (g->len < 1))
 			continue;
 
@@ -194,19 +194,21 @@ static void pcb_draw_boundary(const pcb_box_t *drawn_area)
 		   don't count the objects drawn, but the objects the layer has;
 		   zooming in the middle doesn't mean we need to have the implicit
 		   outline */
+		numobj = 0;
 		for(n = 0; n < g->len; n++) {
 			pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
 			if (ly->line_tree != NULL)
-				count += ly->line_tree->size;
+				numobj += ly->line_tree->size;
 			if (ly->arc_tree != NULL)
-				count += ly->arc_tree->size;
+				numobj += ly->arc_tree->size;
 			if (ly->text_tree != NULL)
-				count += ly->text_tree->size;
+				numobj += ly->text_tree->size;
 			if (ly->polygon_tree != NULL)
-				count += ly->polygon_tree->size;
+				numobj += ly->polygon_tree->size;
 		}
+		count += numobj;
 
-		if (pcb_layer_gui_set_layer(gid, g, 0)) {
+		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0))) {
 			cctx.gid = gid;
 			cctx.grp = g;
 
