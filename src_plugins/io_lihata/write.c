@@ -723,12 +723,16 @@ static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const ch
 }
 
 
-static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
+static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *pp)
 {
 	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
 	pcb_cardinal_t n, sn, pn;
 	pcb_pstk_tshape_t *ts;
 	char tmp[64];
+	pcb_layer_type_t lyt_permit = PCB_LYT_ANYWHERE | PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE;
+
+	if (wrver >= 6)
+		lyt_permit |= PCB_LYT_MECH;
 
 	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
 	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
@@ -739,7 +743,11 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 			continue;
 		}
 
-		sprintf(tmp, "ps_proto_v4.%ld", (long)n);
+		if (wrver < 6)
+			sprintf(tmp, "ps_proto_v4.%ld", (long)n);
+		else
+			sprintf(tmp, "ps_proto_v6.%ld", (long)n);
+
 		lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_HASH, tmp));
 
 		lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
@@ -761,11 +769,15 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 		if (ts != NULL)
 		for(sn = 0; sn < ts->len; sn++) {
 			pcb_pstk_shape_t *shape = ts->shape + sn;
+			pcb_layer_type_t save_mask;
 
 			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
 
+			save_mask = shape->layer_mask & lyt_permit;
+			if (save_mask != shape->layer_mask)
+				pcb_io_incompat_save(data, NULL, "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes will not show up correctly");
 			lht_dom_hash_put(nshape, nmask = lht_dom_node_alloc(LHT_HASH, "layer_mask"));
-			pcb_layer_type_map(shape->layer_mask, nmask, build_layer_stack_flag);
+			pcb_layer_type_map(save_mask, nmask, build_layer_stack_flag);
 
 			lht_dom_hash_put(nshape, ncomb = lht_dom_node_alloc(LHT_HASH, "combining"));
 			pcb_layer_comb_map(shape->comb, ncomb, build_data_layer_comb);
@@ -1072,7 +1084,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 	lht_dom_hash_put(ndt, grp);
 
 	if (wrver >= 4) {
-		lht_dom_hash_put(ndt, build_pstk_protos(&data->ps_protos));
+		lht_dom_hash_put(ndt, build_pstk_protos(data, &data->ps_protos));
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps))
 			lht_dom_list_append(grp, build_pstk(ps));
 	}
@@ -1592,10 +1604,15 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 	doc = lht_dom_init();
 
 	/* determine version */
+	wrver = 1;
 	if (ctx == &plug_io_lihata_v3)
 		wrver = 3;
-	else
+	else if (ctx == &plug_io_lihata_v4)
 		wrver = 4;
+	else if (ctx == &plug_io_lihata_v5)
+		wrver = 5;
+	else if (ctx == &plug_io_lihata_v6)
+		wrver = 6;
 
 	/* bump version if features require */
 	sc = pcb_subclist_first(&data->subc);
@@ -1609,8 +1626,10 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 
 	if (wrver == 3)
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
-	else if (wrver >= 4)
+	else if ((wrver >= 4) && (wrver < 6))
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v4");
+	else if (wrver >= 6)
+		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v6");
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
 		return -1;
