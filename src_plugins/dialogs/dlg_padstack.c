@@ -411,6 +411,8 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
 	for(n = 0; n < proto->tr.used; n++)
 		pcb_pstk_shape_grow(&proto->tr.array[n].shape[dst_idx], pcb_false, bloat);
 
+	pcb_pstk_proto_update(proto);
+
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
 }
