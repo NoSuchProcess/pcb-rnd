@@ -507,6 +507,7 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 {
 	g->ltype |= PCB_LYT_BOUNDARY;
 	g->ltype &= ~PCB_LYT_COPPER;
+	g->ltype &= ~(PCB_LYT_ANYWHERE);
 	free(g->name);
 	g->name = pcb_strdup("global_outline");
 	pcb_layergrp_set_purpose__(g, pcb_strdup("uroute"));
