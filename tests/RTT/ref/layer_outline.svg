@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
-<g id="layer_9_outline">
-<!--normal-->
- <line x1="1.9050" y1="2.5400" x2="1.9050" y2="10.1600" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round"/>
- <line x1="1.9050" y1="10.1600" x2="9.5250" y2="10.1600" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round"/>
- <line x1="9.5250" y1="10.1600" x2="1.9050" y2="2.5400" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round"/>
-</g>
 <g id="layer_7_group7">
 </g>
 <g id="layer_5_group5">
@@ -15,5 +9,11 @@
 <g id="layer_3_top">
 </g>
 <g id="layer_1_topsilk">
+</g>
+<g id="layer_9_outline">
+<!--normal-->
+ <line x1="1.9050" y1="2.5400" x2="1.9050" y2="10.1600" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round"/>
+ <line x1="1.9050" y1="10.1600" x2="9.5250" y2="10.1600" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round"/>
+ <line x1="9.5250" y1="10.1600" x2="1.9050" y2="2.5400" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round"/>
 </g>
 </svg>

@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
-<g id="layer_9_outline">
-<!--normal-->
- <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
-</g>
 <g id="layer_7_group7">
 <!--normal-->
  <polygon points="1.5240,2.7940 3.5560,2.7940 3.5560,4.8260 1.5240,4.8260 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
@@ -71,5 +67,9 @@
  <circle cx="10.1600" cy="3.8100" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="2.5400" cy="8.8900" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="10.1600" cy="8.8900" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<g id="layer_9_outline">
+<!--normal-->
+ <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
 </g>
 </svg>

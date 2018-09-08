@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
-<g id="layer_9_outline">
-<!--normal-->
- <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
-</g>
 <g id="layer_7_group7">
 </g>
 <g id="layer_5_group5">
@@ -23,5 +19,9 @@
  <polygon points="0.6350,4.4450 2.5400,4.6182 2.5400,5.7150 1.9050,5.7150 1.9050,6.9850 2.5400,7.6200 2.5400,8.1280 1.2700,8.8900 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
 </g>
 <g id="layer_1_topsilk">
+</g>
+<g id="layer_9_outline">
+<!--normal-->
+ <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
 </g>
 </svg>
