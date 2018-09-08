@@ -1396,6 +1396,24 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
+
+/* outline layers did not have auto flkag back then but we need that now for padstack slots */
+static void outline_fixup(pcb_board_t *pcb)
+{
+	pcb_layer_id_t n;
+	pcb_layergrp_inhibit_inc();
+
+	for(n = 0; n < pcb->Data->LayerN; n++) {
+		pcb_layer_t *l = &pcb->Data->Layer[n];
+		pcb_layergrp_t *g = &pcb->LayerGroups.grp[l->meta.real.grp];
+
+		if (g->ltype & PCB_LYT_BOUNDARY)
+			l->comb |= PCB_LYC_AUTO;
+	}
+
+	pcb_layergrp_inhibit_dec();
+}
+
 static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 {
 	pcb_layer_id_t tmp[2], lid;
@@ -1772,6 +1790,9 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 
 	if (rdver == 1)
 		layer_fixup(pcb);
+
+	if (rdver < 6)
+		outline_fixup(pcb);
 
 	if (rdver >= 4) {
 		grp = lht_dom_hash_get(nd, "padstack_prototypes");
