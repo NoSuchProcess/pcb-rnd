@@ -551,8 +551,10 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 					if (lids[n] < 0)
 						continue;
 					if (LAYER_IS_OUTLINE(lids[n])) {
-						if (g->ltype & PCB_LYT_INTERN)
+						if (g->ltype & PCB_LYT_INTERN) {
 							pcb_layergrp_fix_turn_to_outline(g);
+							pcb->Data->Layer[lids[n]].comb |= PCB_LYC_AUTO;
+						}
 						else
 							pcb_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
 					}
@@ -868,11 +870,16 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 
 		if (ly->meta.bound.type & PCB_LYT_BOUNDARY) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
+			pcb_layer_id_t nlid;
+			pcb_layer_t *nly;
 			grp->ltype = PCB_LYT_BOUNDARY;
 			grp->name = pcb_strdup("outline");
 			if (ly->meta.bound.purpose != NULL)
 				pcb_layergrp_set_purpose__(grp, pcb_strdup(ly->meta.bound.purpose));
-			pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+			nlid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+			nly = pcb_get_layer(pcb->Data, nlid);
+			if (nly != NULL)
+				nly->comb = ly->comb;
 			continue;
 		}
 
