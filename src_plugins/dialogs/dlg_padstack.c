@@ -47,7 +47,8 @@ static const pse_proto_layer_t pse_layer[] = {
 	{"any internal copper",  PCB_LYT_INTERN | PCB_LYT_COPPER, 0,                        {2,4},  0},
 	{"bottom copper",        PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0,                        {2,3},  0},
 	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB|PCB_LYC_AUTO, {4,-1}, PSE_MASK_BLOAT},
-	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1}, 0}
+	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1}, 0},
+	{"slot",                 PCB_LYT_MECH,                    PCB_LYC_AUTO,             {-1,-1},0}
 };
 #define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
 
