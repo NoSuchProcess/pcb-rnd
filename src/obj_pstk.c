@@ -536,6 +536,7 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_draw_t *ctx = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
+	pcb_pstk_shape_t *shape;
 
 	/* hide subc parts if requested */
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
@@ -566,8 +567,16 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* actual slot */
-#warning layer TODO
-	pcb_trace("draw slot!\n");
+	shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
+	if (shape != NULL) {
+		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
+			pcb_hid_set_line_width(pcb_draw_out.drillGC, 0);
+			pcb_pstk_draw_shape_thin(pcb_draw_out.drillGC, ps, shape);
+		}
+		else
+			pcb_pstk_draw_shape_solid(pcb_draw_out.drillGC, ps, shape);
+	}
+
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
