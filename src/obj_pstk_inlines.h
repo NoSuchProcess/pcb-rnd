@@ -108,7 +108,7 @@ PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps,
 		return PCB_BB_INVALID;
 
 	/* most common case should be quick */
-	if (proto->hdia == 0) {
+	if (!PCB_PSTK_PROTO_CUTS(proto)) {
 		if (top != NULL) *top = -1;
 		if (bottom != NULL) *bottom = -1;
 		return PCB_BB_NONE;
