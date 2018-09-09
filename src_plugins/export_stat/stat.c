@@ -137,7 +137,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	char buff[1024];
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
-	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0;
+	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0, num_slots = 0;
 
 	memset(lgss, 0, sizeof(lgss));
 	memset(group_not_empty, 0, sizeof(group_not_empty));
@@ -281,7 +281,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 	PCB_SUBC_LOOP(PCB->Data) {
 		int bott;
-		pcb_cardinal_t hole = 0, all = 0;
+		pcb_cardinal_t slot = 0, hole = 0, all = 0;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		htsi_t t;
@@ -303,6 +303,10 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 					pcb_pstk_proto_t *proto = pcb_pstk_get_proto((pcb_pstk_t *)o);
 					if ((proto != NULL) && (proto->hdia > 0))
 						hole++;
+					if ((proto != NULL) && (proto->mech_idx >= 0)) {
+						hole++;
+						num_slots++;
+					}
 				}
 			}
 		}
@@ -339,6 +343,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "			pads=%ld\n", (long int)num_epads);
 	fprintf(f, "			pins=%ld\n", (long int)num_epins);
 	fprintf(f, "			terms=%ld\n", (long int)num_terms);
+	fprintf(f, "			slots=%ld\n", (long int)num_slots);
 	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
 
