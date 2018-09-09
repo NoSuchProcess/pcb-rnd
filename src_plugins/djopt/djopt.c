@@ -2519,7 +2519,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				continue;
 
 			c = find_corner(padstack->x, padstack->y, -1);
-			if (proto->hdia <= 0)
+			if (!PCB_PSTK_PROTO_CUTS(proto))
 				c->pad = padstack;
 			else
 				c->pin = padstack;
