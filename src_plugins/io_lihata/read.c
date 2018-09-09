@@ -1675,11 +1675,24 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 }
 
 
-static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent)
+static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent, int prver)
 {
 	int itmp, i;
 	lht_node_t *nshape, *n;
 	pcb_pstk_tshape_t *ts;
+
+	switch(prver) {
+		case 4:
+			if (rdver >= 6)
+				iolht_warn(nproto, 6, "lihata board from v6 should use padstack prototype v6");
+			break;
+		case 6:
+			if (rdver < 6)
+				iolht_warn(nproto, 6, "lihata board nefore v6 did not have padstack prototype v6");
+			break;
+		default:
+			return iolht_error(nproto, "invalid padstack prototype version\n");
+	}
 
 	n = lht_dom_hash_get(nproto, "name");
 	if (n != NULL) {
@@ -1740,9 +1753,14 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++) {
 		if ((pr->type == LHT_TEXT) && (strcmp(pr->name, "unused") == 0))
 			continue;
-		else if ((pr->type == LHT_HASH) && (strncmp(pr->name, "ps_proto_v4", 11) == 0)) {
+		else if ((pr->type == LHT_HASH) && (strncmp(pr->name, "ps_proto_v", 10) == 0)) {
 			char *sid = pr->name+11, *end;
 			long int pid_in_file;
+			int prver = strtol(pr->name+10, &end, 10);
+
+			if ((*end != '\0') && (*end != '.'))
+				return iolht_error(pr, "Invalid padstack proto version '%s' (not an integer)\n", pr->name+10);
+
 			if (*sid == '.') {
 				sid++;
 				pid_in_file = strtol(sid, &end, 0);
@@ -1756,7 +1774,7 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 				return iolht_error(pr, "Invalid padstack proto ID '%s' (syntax)\n", sid);
 			if (pid >= dst->ps_protos.used)
 				pcb_vtpadstack_proto_enlarge(&dst->ps_protos, pid);
-			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent, prver);
 			if (res != 0)
 				return iolht_error(pr, "Invalid padstack proto definition\n");
 		}
