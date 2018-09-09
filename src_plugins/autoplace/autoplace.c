@@ -321,7 +321,7 @@ static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * b
 static int pstk_ispad(pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-	return (proto->hdia <= 0);
+	return !PCB_PSTK_PROTO_CUTS(proto);
 }
 
 /* ---------------------------------------------------------------------------
