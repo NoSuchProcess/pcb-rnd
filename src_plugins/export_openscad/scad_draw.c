@@ -119,6 +119,7 @@ static void scad_draw_pstk(const pcb_pstk_t *ps)
 	}
 
 #warning padstack TODO: this ignores bbvias
+#warning slot TODO: this ignores slots
 	if (proto->hdia > 0) {
 		pcb_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x), TRY_(ps->y));
 		pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", proto->hdia/2);
