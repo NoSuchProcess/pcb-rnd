@@ -204,6 +204,7 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 	pcb_layergrp_t *g, *goutl = NULL;
 	pcb_layer_t *uslot = NULL, *pslot = NULL;
 	int uscore = 0, pscore = 0;
+	int plated, unplated;
 	comp_ctx_t cctx;
 
 	cctx.pcb = PCB;
@@ -275,8 +276,13 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 	}
 
 	/* draw slots */
+	if (((uslot == NULL) || (!uslot->meta.real.vis)) && ((pslot == NULL) || (!pslot->meta.real.vis)))
+		return;
+
+	pcb_board_count_slots(PCB, &plated, &unplated, drawn_area);
+
 	if ((uslot != NULL) && (uslot->meta.real.vis)) {
-		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, 0)) {
+		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, unplated > 0)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
 			pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
@@ -284,7 +290,7 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 		}
 	}
 	if ((pslot != NULL) && (pslot->meta.real.vis)) {
-		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, 0)) {
+		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, plated > 0)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
 			pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
