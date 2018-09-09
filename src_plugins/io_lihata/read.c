@@ -1730,6 +1730,8 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 			if (parse_data_pstk_shape_v4(pcb, ts->shape+i, n, subc_parent) != 0)
 				goto error;
 
+	pcb_pstk_proto_update(dst);
+
 	return 0;
 	error:;
 	free(ts->shape);
