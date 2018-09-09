@@ -199,11 +199,38 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+static pcb_r_dir_t slot_counting_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	HoleCountStruct *hcs = (HoleCountStruct *)cl;
+
+	if ((proto != NULL) && (proto->mech_idx >= 0)) {
+		if (proto->hplated)
+			hcs->nplated++;
+		else
+			hcs->nunplated++;
+	}
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const pcb_box_t *within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 
 	pcb_r_search(pcb->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+
+	if (plated != NULL)
+		*plated = hcs.nplated;
+	if (unplated != NULL)
+		*unplated = hcs.nunplated;
+}
+
+void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const pcb_box_t *within_area)
+{
+	HoleCountStruct hcs = { 0, 0 };
+
+	pcb_r_search(pcb->Data->padstack_tree, within_area, NULL, slot_counting_callback, &hcs, NULL);
 
 	if (plated != NULL)
 		*plated = hcs.nplated;
