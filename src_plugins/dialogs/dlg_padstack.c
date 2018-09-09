@@ -166,12 +166,25 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	}
 
 	/* proto - hole */
-	s = "Hole geometry (<unknown>):";
-	switch(htype) {
-		case PCB_BB_NONE: s = "Hole geometry (there is no hole in this padstack):"; break;
-		case PCB_BB_THRU: s = "Hole geometry (all-way-through hole):"; break;
-		case PCB_BB_BB: s = "Hole geometry (blind and/or buried hole):"; break;
-		case PCB_BB_INVALID: s = "Hole geometry (INVALID HOLE):"; break;
+	if (proto->mech_idx >= 0) {
+		s = "Slot geometry (<unknown>):";
+		switch(htype) {
+			case PCB_BB_NONE: s = "Slot geometry (there is no slot in this padstack):"; break;
+			case PCB_BB_THRU: s = "Slot geometry (all-way-through slot):"; break;
+			case PCB_BB_BB: s = "Slot geometry (blind and/or buried slot):"; break;
+			case PCB_BB_INVALID: s = "Slot geometry (INVALID SLOT):"; break;
+		}
+		pcb_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 0);
+	}
+	else {
+		s = "Hole geometry (<unknown>):";
+		switch(htype) {
+			case PCB_BB_NONE: s = "Hole geometry (there is no hole in this padstack):"; break;
+			case PCB_BB_THRU: s = "Hole geometry (all-way-through hole):"; break;
+			case PCB_BB_BB: s = "Hole geometry (blind and/or buried hole):"; break;
+			case PCB_BB_INVALID: s = "Hole geometry (INVALID HOLE):"; break;
+		}
+		pcb_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 1);
 	}
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str_value, s);
 
@@ -703,7 +716,7 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 
-					PCB_DAD_LABEL(dlg, "Plating:");
+					PCB_DAD_LABEL(dlg, "Hole/slot plating:");
 					PCB_DAD_BOOL(dlg, "");
 						pse.hplated = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
@@ -711,25 +724,25 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 
-					PCB_DAD_LABEL(dlg, "Hole top:");
+					PCB_DAD_LABEL(dlg, "Hole/slot top:");
 					PCB_DAD_INTEGER(dlg, "");
 						pse.htop_val = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
 						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_HELP(dlg, "Blind/buried via: top end of the hole");
+						PCB_DAD_HELP(dlg, "Blind/buried via/slot: top end of the hole");
 					PCB_DAD_LABEL(dlg, "<text>");
 						pse.htop_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
 						pse.htop_layer = PCB_DAD_CURRENT(dlg);
 
-					PCB_DAD_LABEL(dlg, "Hole bottom:");
+					PCB_DAD_LABEL(dlg, "Hole/slot bottom:");
 					PCB_DAD_INTEGER(dlg, "");
 						pse.hbot_val = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
 						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_HELP(dlg, "Blind/buried via: bottom end of the hole");
+						PCB_DAD_HELP(dlg, "Blind/buried via/slot: bottom end of the hole");
 					PCB_DAD_LABEL(dlg, "<text>");
 						pse.hbot_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
