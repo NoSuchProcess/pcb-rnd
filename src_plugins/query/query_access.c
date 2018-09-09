@@ -119,10 +119,9 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 {
 	assert(lst->type == PCBQ_VT_LST);
-#warning layer TODO: make layer a real object with the common header
 #warning TODO: rather do rtree search here to avoid recursion
 	pcb_loop_all(PCB, &lst->data.lst,
-		/*(mask & PCB_OBJ_LAYER) ? list_layer_cb :*/ NULL,
+		(mask & PCB_OBJ_LAYER) ? list_layer_cb : NULL,
 		(mask & PCB_OBJ_LINE) ? list_line_cb : NULL,
 		(mask & PCB_OBJ_ARC) ? list_arc_cb : NULL,
 		(mask & PCB_OBJ_TEXT) ? list_text_cb : NULL,

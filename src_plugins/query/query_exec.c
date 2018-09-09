@@ -38,7 +38,7 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root)
 {
 	memset(ctx, 0, sizeof(pcb_qry_exec_t));
 	ctx->all.type = PCBQ_VT_LST;
-	pcb_qry_list_all(&ctx->all, PCB_OBJ_ANY);
+	pcb_qry_list_all(&ctx->all, PCB_OBJ_ANY & (~PCB_OBJ_LAYER));
 	ctx->root = root;
 	ctx->iter = NULL;
 }
