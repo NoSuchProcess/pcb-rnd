@@ -924,6 +924,8 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		}
 	}
 
+#warning slot TODO: check if slot breaks other shapes
+
 	if ((proto->hdia > 0) && (proto->hdia < conf_core.design.min_drill))
 		*err_minhole = proto->hdia;
 }

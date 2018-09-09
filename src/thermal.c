@@ -733,6 +733,7 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 		case PCB_THERMAL_NOSHAPE:
 			{
 				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+#warning slot TODO: this is hole centric
 				return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + clearance);
 			}
 		case PCB_THERMAL_SOLID: return NULL;
