@@ -205,7 +205,6 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 	pcb_layer_t *uslot = NULL, *pslot = NULL;
 	int uscore = 0, pscore = 0;
 	comp_ctx_t cctx;
-	pcb_pstk_draw_hole_t ht;
 
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
@@ -276,13 +275,22 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 	}
 
 	/* draw slots */
-	ht = 0;
-	if ((uslot != NULL) && (uslot->meta.real.vis))
-		ht |= PCB_PHOLE_UNPLATED;
-	if ((pslot != NULL) && (pslot->meta.real.vis))
-		ht |= PCB_PHOLE_PLATED;
-	if (ht != 0)
-		pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, ht | PCB_PHOLE_BB);
+	if ((uslot != NULL) && (uslot->meta.real.vis)) {
+		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, 0)) {
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
+			pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+		}
+	}
+	if ((pslot != NULL) && (pslot->meta.real.vis)) {
+		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, 0)) {
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
+			pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+		}
+	}
 }
 
 
