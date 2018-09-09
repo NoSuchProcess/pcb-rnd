@@ -17,7 +17,6 @@
 	- CAM syntax for purpose
 	- slotting:
 		- upgrade the padstack editor dialog
-		- upgrade find.c
 		- check which I/O can handle it
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - FEATURE: text rot:
@@ -97,6 +96,7 @@
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- CLEANUP: netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
+	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - SUBC: element removal:
 	- BUG? check if drc outline is drawn on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
