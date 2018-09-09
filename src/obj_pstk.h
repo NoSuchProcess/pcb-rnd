@@ -79,6 +79,12 @@ typedef struct pcb_pstk_proto_s {
 	int mech_idx;                  /* -1 or index to the first shape[] that is of PCB_LYT_MECH */
 } pcb_pstk_proto_t;
 
+/* Whether a proto cuts through board layers (has a hole or slot) */
+#define PCB_PSTK_PROTO_CUTS(proto) (((proto)->hdia > 0) || ((proto)->mech_idx >= 0))
+
+/* Whether a proto cuts through board layers (has a hole or slot) and connects
+   layers with conductive material */
+#define PCB_PSTK_PROTO_PLATES(proto) (((proto)->hplated) && (((proto)->hdia > 0) || ((proto)->mech_idx >= 0)))
 
 
 pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data);
