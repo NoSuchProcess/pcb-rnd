@@ -10,13 +10,11 @@
 		- make sure it works in padstack
 		- double check io_lihata compatibility
 		- upgrade the advanced search
-		- upgrade propedit
-		- upgrade the layer group type dialog
 		- update the docs
 	- revise io plugins to load/save them properly
 	- CAM syntax for purpose
 	- slotting:
-		- upgrade the padstack editor dialog
+		- test padstack build and merge and breakup
 		- check which I/O can handle it
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - FEATURE: text rot:
