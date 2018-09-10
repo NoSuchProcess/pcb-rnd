@@ -50,6 +50,8 @@ BEGIN {
 	print "</head>"
 	print "<body>"
 	print "<p>"
+        print "<h1> pcb-rnd User Manual: Appendix </h1>"
+	print "<p>"
 	print "<h2> Pcb-rnd Action Reference</h2>"
 	print "<table border=1>"
 	print "<caption><b>"

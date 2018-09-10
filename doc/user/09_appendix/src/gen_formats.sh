@@ -12,7 +12,7 @@ echo '
 </head>
 <body>
 
-<h1> pcb-rnd - User Manual: Appendix </h1>
+<h1> pcb-rnd User Manual: Appendix </h1>
 <p>
 <h2> File format support </h2>
 
