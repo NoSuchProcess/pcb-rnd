@@ -46,6 +46,7 @@
 - BUG: boardflip doesn't undo [report: Miloh]
 - BUG: boardflip segfault on test file http://scififaster.net/public/boardfliptest.lht [report: Miloh]
 - BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path)
+- FEATURE: session persistent message log  (messages are flushed after dialog is closed?) [report: Miloh]
 
 2. For later releases ===============================================================================
 - FEATURE: fungw: DAD dialog: mini parser from text
