@@ -92,14 +92,14 @@ can host zero or more logical layers.
 <p>
 Each layer group has a type. Types are:
 <ul>
-	<li> <b>copper</b> for signal layers
-	<li> <b>silk</b> for silkscreen layers
-	<li> <b>mask</b> for solder masks
-	<li> <b>paste</b> for solder paste
+	<li> <b>copper</b>   for signal layers
+	<li> <b>silk</b>     for silkscreen layers
+	<li> <b>mask</b>     for solder masks
+	<li> <b>paste</b>    for solder paste
 
-	<li> <b>boundary</b>for the contour of the board
-	<li> <b>mech</b>    mechanical information (e.g. cutouts, slots, adhesive; sent to the board fab)
-	<li> <b>doc</b>     documentation and metadata (not sent to the board fab)
+	<li> <b>boundary</b> for the contour of the board
+	<li> <b>mech</b>     mechanical information (e.g. cutouts, slots, adhesive; sent to the board fab)
+	<li> <b>doc</b>      documentation and metadata (not sent to the board fab)
 </ul>
 <p>
 Each layer group has a location. Locations are:
@@ -116,14 +116,14 @@ combination is supported or not.
 <p>
 <table border=1>
 	<caption><b>Layer Combination Support</b>
-	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global <th> composite
-	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no     <td> no
-	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no     <td> yes
-	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no     <td> yes
-	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no     <td> yes
-	<tr><th> boundary<td> no <td> no     <td> no     <td> yes    <td> no
-	<tr><th> mech   <td> yes <td> yes    <td> yes    <td> yes    <td> maybe
-	<tr><th> doc    <td> yes <td> yes    <td> yes    <td> yes    <td> maybe
+	<tr><th> &nbsp;   <th> top <th> bottom <th> intern <th> global <th> composite
+	<tr><th> copper   <td> yes <td> yes    <td> yes    <td> no     <td> no
+	<tr><th> silk     <td> yes <td> yes    <td> no     <td> no     <td> yes
+	<tr><th> mask     <td> yes <td> yes    <td> no     <td> no     <td> yes
+	<tr><th> paste    <td> yes <td> yes    <td> no     <td> no     <td> yes
+	<tr><th> boundary <td> no <td> no     <td> no     <td> yes    <td> no
+	<tr><th> mech     <td> yes <td> yes    <td> yes    <td> yes    <td> maybe
+	<tr><th> doc      <td> yes <td> yes    <td> yes    <td> yes    <td> maybe
 </table>
 <p>
 Note: for some layer types whether compositing is allowed depends on the
