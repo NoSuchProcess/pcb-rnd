@@ -1524,6 +1524,57 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_DupGroup[] = "DupGroup([@group])";
+static const char pcb_acth_DupGroup[] = "Duplicate a layer group; if the first argument is not specified, the current group is duplicated";
+static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *name = NULL;
+	pcb_layergrp_t *g = NULL;
+	pcb_layergrp_id_t gid, ng;
+
+	if (CURRENT != NULL)
+		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DupGroup, name = argv[1].val.str);
+	if (*name == '@') {
+		gid = pcb_actd_EditGroup_gid;
+		if (name[1] != '\0')
+			gid = pcb_layergrp_by_name(PCB, name+1);
+		if (gid < 0) {
+			pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", name+1);
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+	}
+	else {
+		if (g == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Can't find layer group\n");
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+		gid = pcb_layergrp_id(PCB, g);
+	}
+
+	pcb_layergrp_inhibit_inc();
+	ng = pcb_layergrp_dup(PCB, gid, 1);
+	if (ng >= 0) {
+		pcb_layer_id_t lid = pcb_layer_create(PCB, ng, g->name);
+		if (lid >= 0)
+			PCB_ACT_IRES(0);
+		else
+			PCB_ACT_IRES(-1);
+	}
+	else
+		PCB_ACT_IRES(-1);
+	pcb_layergrp_inhibit_dec();
+
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	if ((pcb_gui != NULL) && (pcb_exporter == NULL))
+		pcb_gui->invalidate_all();
+
+	return 0;
+}
+
 const char pcb_acts_selectlayer[] = "SelectLayer(1..MAXLAYER|Silk|Rats)";
 const char pcb_acth_selectlayer[] = "Select which layer is the current layer.";
 
@@ -1967,6 +2018,7 @@ pcb_action_t gui_action_list[] = {
 	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
 	{"DelGroup",  pcb_act_DelGroup, pcb_acth_DelGroup, pcb_acts_DelGroup},
+	{"DupGroup",  pcb_act_DupGroup, pcb_acth_DupGroup, pcb_acts_DupGroup},
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
