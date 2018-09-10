@@ -6,8 +6,7 @@
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: introduce new layer types:
 	- replace the OUTLINE LYT with an unplated boundary
-		- make sure it works in subc
-		- make sure it works in padstack
+		- make sure it works in subc (plus layer bindings!)
 		- double check io_lihata compatibility
 		- upgrade the advanced search
 		- update the docs
