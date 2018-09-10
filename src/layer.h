@@ -43,7 +43,7 @@ typedef enum {
 	PCB_LYT_LOGICAL  = 0x00000008, /* does not depend on the layer stackup (typically aux drawing layer) */
 	PCB_LYT_ANYWHERE = 0x000000FF, /* MASK: layer is anywhere on the stack */
 
-	/* What the layer consists of */
+	/* What the layer consists of (main type) */
 	PCB_LYT_COPPER   = 0x00000100, /* copper objects */
 	PCB_LYT_SILK     = 0x00000200, /* silk objects */
 	PCB_LYT_MASK     = 0x00000400, /* solder mask */
