@@ -9,7 +9,6 @@
 		- make sure it works in subc (plus layer bindings!)
 		- double check io_lihata compatibility
 		- upgrade the advanced search
-		- update the docs
 	- revise io plugins to load/save them properly
 	- CAM syntax for purpose
 	- slotting:
