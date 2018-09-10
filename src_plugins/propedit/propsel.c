@@ -145,6 +145,7 @@ static int map_layergrp_cb(void *ctx, pcb_board_t *pcb, pcb_layergrp_t *grp)
 		return 0;
 
 	map_add_prop(ctx, "p/layer_group/name", String, grp->name);
+	map_add_prop(ctx, "p/layer_group/purpose", String, grp->purpose);
 	map_attr(ctx, &grp->Attributes);
 	return 0;
 }
@@ -380,6 +381,9 @@ static void set_layergrp_cb(void *ctx, pcb_board_t *pcb, pcb_layergrp_t *grp)
 
 	if ((strcmp(pn, "name") == 0) &&
 	    (pcb_layergrp_rename_(grp, pcb_strdup(st->value)) == 0)) DONE;
+
+	if ((strcmp(pn, "purpose") == 0) &&
+	    (pcb_layergrp_set_purpose(grp, st->value) == 0)) DONE;
 
 	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
 }
