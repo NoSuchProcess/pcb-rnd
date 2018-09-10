@@ -22,8 +22,8 @@ the most important global properties.
 <b>Board size</b> is given as a width and a height. For rectangular boards
 this can be the real board size, but more commonly it is used to simply
 determine the on-screen drawing area and the final board dimensions are
-specified using the outline layer. If the board is not rectangular, the
-contour must be specified on the outline layer and the board size must be
+specified using boundary layer groups. If the board is not rectangular, the
+contour must be specified on boundary layers and the board size must be
 large enough that the outline fits in it.
 <p>
 <b>Netlist</b> is the list of logical connections to be realized in copper.
@@ -97,8 +97,8 @@ Each layer group has a type. Types are:
 	<li> <b>mask</b> for solder masks
 	<li> <b>paste</b> for solder paste
 
-	<li> <b>outline</b> for the contour of the board and slots and cutouts
-	<li> <b>mech</b>    provision: mechanical information (e.g. adhesive; sent to the board fab)
+	<li> <b>boundary</b>for the contour of the board
+	<li> <b>mech</b>    mechanical information (e.g. cutouts, slots, adhesive; sent to the board fab)
 	<li> <b>doc</b>     documentation and metadata (not sent to the board fab)
 </ul>
 <p>
@@ -110,7 +110,7 @@ Each layer group has a location. Locations are:
 	<li><b>global</b> (affects all physical layers, thus has no specific location)
 </ul>
 <p>
-Not all combination of type and location are supported: e.g. for an outline
+Not all combination of type and location are supported: e.g. for a boundary
 layer group the location is always global. The table below lists whether a
 combination is supported or not.
 <p>
@@ -121,7 +121,7 @@ combination is supported or not.
 	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no     <td> yes
 	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no     <td> yes
 	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no     <td> yes
-	<tr><th> outline<td> no  <td> no     <td> no     <td> yes    <td> no
+	<tr><th> boundary<td> no <td> no     <td> no     <td> yes    <td> no
 	<tr><th> mech   <td> yes <td> yes    <td> yes    <td> yes    <td> yes
 	<tr><th> doc    <td> yes <td> yes    <td> yes    <td> yes    <td> yes
 </table>
