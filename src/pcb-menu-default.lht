@@ -718,7 +718,7 @@ ha:{
 
 		ha:group {
 			li:submenu {
-				ha:Group name and flags...          = { action=EditGroup(@) }
+				ha:Group name & type...             = { action=EditGroup(@) }
 				ha:Group properties...              = { action={Propedit(layer_group:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
