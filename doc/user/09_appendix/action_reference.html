@@ -7,10 +7,12 @@
 </head>
 <body>
 <p>
+<h1> pcb-rnd User Manual: Appendix </h1>
+<p>
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
+This is pcb-rnd 2.0.1 (svn r19258),  an interactive printed circuit board editor
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> Cursor </td>
@@ -91,6 +93,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ReplaceFootprint </td>
 <td>Replace the footprint of the selected components with the footprint specified.</td>
 <td>ReplaceFootprint()</td>
+<tr><td> constraint </td>
+<td>Configure or remove a drawing constraint</td>
+<td>constraint(type, off)<br>constraint(type, value, [value...])</td>
 <tr><td> python </td>
 <td>Execute a script one-liner using a specific language</td>
 <td>Oneliner(lang, script)</td>
@@ -146,6 +151,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> DumpActions </td>
 <td>Dump all actions available.</td>
 <td>DumpActions()</td>
+<tr><td> ddraft </td>
+<td>Enter 2d drafting CLI mode or execute command</td>
+<td>ddraft([command])</td>
 <tr><td> RouteStylesChanged </td>
 <td>Tells the GUI that the routing styles have changed.</td>
 <td>RouteStylesChanged()</td>
@@ -173,6 +181,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> Bell </td>
 <td>Attempt to produce audible notification (e.g. beep the speaker).</td>
 <td>Bell()</td>
+<tr><td> ddraft </td>
+<td>Enter 2d drafting CLI mode or execute command</td>
+<td>ddraft([command])</td>
 <tr><td> skretriangulate </td>
 <td>Reconstruct CDT on all layer groups</td>
 <td>skretriangulate()</td>
@@ -272,6 +283,12 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ReportObject </td>
 <td>Report on the object under the crosshair</td>
 <td>ReportObject()</td>
+<tr><td> tang </td>
+<td>Draw a line to be tangential to a circle</td>
+<td>tang()</td>
+<tr><td> GroupPropGui </td>
+<td>Change group flags and properties</td>
+<td>GroupPropGui(groupid)</td>
 <tr><td> skretriangulate </td>
 <td>Reconstruct CDT on all layer groups</td>
 <td>skretriangulate()</td>
@@ -305,12 +322,12 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ToggleVendor </td>
 <td>Toggles the state of automatic drill size mapping.</td>
 <td>ToggleVendor()</td>
-<tr><td> rehash </td>
-<td>Reload all gpmi scripts</td>
-<td>TODO</td>
 <tr><td> FlagEdit </td>
 <td>Change the layer binding.</td>
 <td>FlagEdit(object)</td>
+<tr><td> PromptFor </td>
+<td>Prompt for a response.</td>
+<td>PromptFor([message[,default]])</td>
 <tr><td> About </td>
 <td>Present the about box</td>
 <td>About()</td>
@@ -318,9 +335,6 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> Flip </td>
 <td>Flip a subcircuit to the opposite side of the board.</td>
 <td>Flip(Object|Selected)</td>
-<tr><td> rehash </td>
-<td>Reload all gpmi scripts</td>
-<td>TODO</td>
 <tr><td> ExecCommand </td>
 <td>Run shell command</td>
 <td>System(shell_cmd)</td>
@@ -458,9 +472,6 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ChangeDrillSize </td>
 <td>Changes the drilling hole size of objects.</td>
 <td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td>
-<tr><td> acompnet </td>
-<td>Attempt to auto-complete the current network</td>
-<td>acompnet()</td>
 <tr><td> DumpPluginDirs </td>
 <td>Print plugins directories in a format digestable by scripts.</td>
 <td>DumpPluginDirs()</td>
@@ -544,9 +555,6 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> SelectLayer </td>
 <td>Select which layer is the current layer.</td>
 <td>SelectLayer(1..MAXLAYER|Silk|Rats)</td>
-<tr><td> gpmi_scripts </td>
-<td>Manage gpmi scripts</td>
-<td>TODO</td>
 <tr><td> wq </td>
 <td>Saves the layout data and quits.</td>
 <td>wq</td>
@@ -621,6 +629,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> PrintCopyright </td>
 <td>Print copyright notice.</td>
 <td>PrintCopyright()</td>
+<tr><td> DupGroup </td>
+<td>Duplicate a layer group; if the first argument is not specified, the current group is duplicated</td>
+<td>DupGroup([@group])</td>
 <tr><td> SaveTo </td>
 <td>Saves data to a file.</td>
 <td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)<br>SaveTo(PasteBuffer,filename,[fmt])</td>
@@ -636,6 +647,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> Normalize </td>
 <td>Move all objects within the drawing area, align the drawing to 0;0</td>
 <td>Normalize()</td>
+<tr><td> LayerPropGui </td>
+<td>Change layer flags and properties</td>
+<td>LayerPropGui(layerid)</td>
 <tr><td> EvalConf </td>
 <td>Perform various operations on the configuration tree.</td>
 <td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td>
@@ -671,6 +685,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td>
 <td>PolyOffs(offset)</td>
 <tr><td> pscalib </td>
+<tr><td> PromptFor </td>
+<td>Prompt for a response.</td>
+<td>PromptFor([message[,default]])</td>
 <tr><td> SetFlag </td>
 <td>Sets flags on objects.</td>
 <td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td>
@@ -680,6 +697,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ClrFlag </td>
 <td>Clears flags on objects.</td>
 <td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td>
+<tr><td> GroupPropGui </td>
+<td>Change group flags and properties</td>
+<td>GroupPropGui(groupid)</td>
 <tr><td> AddRats </td>
 <td>Add one or more rat lines to the board.</td>
 <td>AddRats(AllRats|SelectedRats|Close)</td>
@@ -713,6 +733,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> align </td>
 <td>Align subcircuits</td>
 <td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td>
+<tr><td> paral </td>
+<td>Draw a line perpendicular to another line</td>
+<td>perp()</td>
 <tr><td> ChangeOctagon </td>
 <tr><td> CreateText </td>
 <td>Create a new text object</td>
@@ -814,12 +837,12 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ChkLayer </td>
 <td>Returns 1 if the specified layer is the active layer</td>
 <td>ChkLayer(layerid)</td>
-<tr><td> AutoRoute </td>
-<td>Auto-route some or all rat lines.</td>
-<td>AutoRoute(AllRats|SelectedRats)</td>
 <tr><td> mesh </td>
 <td>generate a mesh for simulation</td>
 <td>mesh()</td>
+<tr><td> AutoRoute </td>
+<td>Auto-route some or all rat lines.</td>
+<td>AutoRoute(AllRats|SelectedRats)</td>
 <tr><td> ExportGUI </td>
 <td>Open the export dialog.</td>
 <td>ExportGUI()</td>
@@ -947,9 +970,6 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> Mode </td>
 <td>Change or use the tool mode.</td>
 <td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td>
-<tr><td> gpmi_scripts </td>
-<td>Manage gpmi scripts</td>
-<td>TODO</td>
 <tr><td> Renumber </td>
 <td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td>
 <td>Renumber()<br>Renumber(filename)</td>
@@ -1008,6 +1028,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> align </td>
 <td>Align subcircuits</td>
 <td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td>
+<tr><td> paral </td>
+<td>Draw a line perpendicular to another line</td>
+<td>perp()</td>
 <tr><td> dumpundo </td>
 <td>Print info about fonts</td>
 <td>dumpfonts()</td>
@@ -1035,6 +1058,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> MorphPolygon </td>
 <td>Converts dead polygon islands into separate polygons.</td>
 <td>pcb_poly_morph(Object|Selected)</td>
+<tr><td> LayerPropGui </td>
+<td>Change layer flags and properties</td>
+<td>LayerPropGui(layerid)</td>
 <tr><td> LoadEeschemaFrom </td>
 <td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td>
 <td>LoadEeschemaFrom(filename)</td>
@@ -1087,6 +1113,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ChangeName </td>
 <td>Sets the name (or pin number) of objects.</td>
 <td>ChangeName(Object)<br>ChangeName(Layout|Layer)</td>
+<tr><td> perp </td>
+<td>Draw a line perpendicular to another line</td>
+<td>perp()</td>
 <tr><td> Oneliner </td>
 <td>Execute a script one-liner using a specific language</td>
 <td>Oneliner(lang, script)</td>
@@ -1102,9 +1131,6 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> smartdisperse </td>
 <td>TODO</td>
 <td>SmartDisperse([All|Selected])</td>
-<tr><td> acompnet </td>
-<td>Attempt to auto-complete the current network</td>
-<td>acompnet()</td>
 <tr><td> mawk </td>
 <td>Execute a script one-liner using a specific language</td>
 <td>Oneliner(lang, script)</td>
@@ -1117,9 +1143,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> dumpflags </td>
 <td>dump flags, optionally using the format string provided by the user</td>
 <td>dumpflags([fmt])</td>
-<tr><td> ChkBuffer </td>
-<td>Return 1 if currently selected buffer's index matches idx</td>
-<td>ChkBuffer(idx)</td>
+<tr><td> constraint </td>
+<td>Configure or remove a drawing constraint</td>
+<td>constraint(type, off)<br>constraint(type, value, [value...])</td>
 <tr><td> DelGroup </td>
 <td>Remove a layer group; if the first argument is not specified, the current group is removed</td>
 <td>DelGroup([@group])</td>
@@ -1129,6 +1155,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> Rotate90 </td>
 <td>Rotates the object under the crosshair by 90 degree steps.</td>
 <td>pcb_move_obj(steps)</td>
+<tr><td> ChkBuffer </td>
+<td>Return 1 if currently selected buffer's index matches idx</td>
+<td>ChkBuffer(idx)</td>
 <tr><td> netlist </td>
 <td>Perform various actions on netlists.</td>
 <td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td>
@@ -1304,6 +1333,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <td>Debug action.</td>
 <td>Debug(...)</td>
 <tr><td> ListRotations </td>
+<tr><td> tang </td>
+<td>Draw a line to be tangential to a circle</td>
+<td>tang()</td>
 <tr><td> Unselect </td>
 <td>Unselects the object at the pointer location or the specified objects.</td>
 <td>Unselect(All|Block|Connection)</td>
@@ -1326,6 +1358,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> ManagePlugins </td>
 <td>Manage plugins dialog.</td>
 <td>ManagePlugins()</td>
+<tr><td> DupGroup </td>
+<td>Duplicate a layer group; if the first argument is not specified, the current group is duplicated</td>
+<td>DupGroup([@group])</td>
 <tr><td> ToPoly </td>
 <td>convert a closed loop of lines and arcs into a polygon</td>
 <td>ToPoly()<br>ToPoly(outline)</td>
@@ -1368,6 +1403,9 @@ This is pcb-rnd 2.0.0 (svn r17732),  an interactive printed circuit board editor
 <tr><td> LoadMentorFrom </td>
 <td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td>
 <td>LoadMentorFrom(filename)</td>
+<tr><td> perp </td>
+<td>Draw a line perpendicular to another line</td>
+<td>perp()</td>
 <tr><td> PolyStitch </td>
 <tr><td> Select </td>
 <td>Toggles or sets the selection.</td>
