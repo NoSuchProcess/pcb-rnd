@@ -1500,7 +1500,7 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (CURRENT != NULL)
 		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, EditLayer, name = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DelGroup, name = argv[1].val.str);
 	if (*name == '@') {
 		gid = pcb_actd_EditGroup_gid;
 		if (name[1] != '\0')
