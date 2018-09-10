@@ -128,6 +128,19 @@ combination is supported or not.
 <p>
 Note: for some layer types whether compositing is allowed depends on the
 subtype (purpose).
+<p>
+Each layer group has a <i>purpose</i> field, which functions as a
+subtype. The value is a free form text for user defined groups, but pcb-rnd
+recognizes (and handles specially) the following combinations:
+<p>
+<table border=1>
+	<caption><b>Layer purpose combination recongized </b>
+	<tr><th> main type <th> purpose <th> special meaning
+	<tr><td> boundary  <td> uroute  <td> unplated, routed bounary: routed outline of the board
+	<tr><td> boundary  <td> proute  <td> plated, routed bounary: routed outline of the board with copper plating
+	<tr><td> mech      <td> uroute  <td> unplated, routed inner cutout: unplated slots and small inner cutouts, done with drilling or routing or punch-through
+	<tr><td> mech      <td> proute  <td> plated, routed inner cutout: plated slots and small inner cutouts, done with drilling or routing or punch-through (typical for oval/rectanglar pins)
+</table>
 
 <h3 id="objects"> 2.4. Basic Drawing Objects </h3>
 <p>
