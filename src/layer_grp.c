@@ -131,6 +131,50 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 	return -1;
 }
 
+static void make_substrate(pcb_board_t *pcb, pcb_layergrp_t *g)
+{
+	g->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+	g->valid = 1;
+	g->parent_type = PCB_PARENT_BOARD;
+	g->parent.board = pcb;
+	g->type = PCB_OBJ_LAYERGRP;
+}
+
+pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate)
+{
+	pcb_layergrp_t *ng, *og = pcb_get_layergrp(pcb, gid);
+	pcb_layergrp_id_t after;
+
+	if (og == NULL)
+		return -1;
+
+	inhibit_notify++;
+	if (auto_substrate && (og->ltype & PCB_LYT_COPPER)&& !(og->ltype & PCB_LYT_BOTTOM)) {
+		ng = pcb_layergrp_insert_after(pcb, gid);
+		make_substrate(pcb, ng);
+		after = ng - pcb->LayerGroups.grp;
+	}
+	else
+		after = gid;
+
+	ng = pcb_layergrp_insert_after(pcb, after);
+	if (og->name != NULL)
+		ng->name = pcb_strdup(og->name);
+	ng->ltype = og->ltype;
+	if (og->purpose != NULL)
+		ng->purpose = pcb_strdup(og->purpose);
+	ng->purpi = og->purpi;
+	ng->valid = ng->open = ng->vis = 1;
+	ng->parent_type = PCB_PARENT_BOARD;
+	ng->parent.board = pcb;
+	ng->type = PCB_OBJ_LAYERGRP;
+
+	inhibit_notify--;
+	NOTIFY(pcb);
+	return ng - pcb->LayerGroups.grp;
+}
+
+
 pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, pcb_layergrp_id_t gid)
 {
 	if (pcb_layergrp_del_layer(pcb, -1, lid) != 0)
@@ -291,13 +335,8 @@ static void pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, in
 	stack->grp[bl].parent.board = pcb;
 	stack->grp[bl].type = PCB_OBJ_LAYERGRP;
 	bl++;
-	if (!omit_substrate) {
-		stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
-		stack->grp[bl].valid = 1;
-		stack->grp[bl].parent_type = PCB_PARENT_BOARD;
-		stack->grp[bl].parent.board = pcb;
-		stack->grp[bl].type = PCB_OBJ_LAYERGRP;
-	}
+	if (!omit_substrate)
+		make_substrate(pcb, &stack->grp[bl]);
 }
 
 static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate, int force_end)

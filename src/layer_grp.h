@@ -116,6 +116,10 @@ int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layergrp_
    (.grp = -1), else layers are deleted too */
 int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers);
 
+/* Duplicate a layer group (with no layers); if auto_substrate is set, insert
+   a substrate layer automatically if needed */
+pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate);
+
 /* Move gfrom to to_before and shift the stack as necessary. Return -1 on range error */
 int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t gfrom, pcb_layergrp_id_t to_before);
 
