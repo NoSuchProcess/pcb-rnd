@@ -7,7 +7,7 @@
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: introduce new layer types:
 	- replace the OUTLINE LYT with an unplated boundary
-		- make sure it works in subc (plus layer bindings!)
+		- doc layer rendering: respect sides and compositing
 		- double check io_lihata compatibility
 		- upgrade the advanced search
 	- revise io plugins to load/save them properly
@@ -15,6 +15,7 @@
 	- slotting:
 		- test padstack build and merge and breakup
 		- check which I/O can handle it
+		- export G85 in excellon
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
 - FEATURE: text rot:
 	- propset: set_text_cb_any(): set the rot field and refresh the text
