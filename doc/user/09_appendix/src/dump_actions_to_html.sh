@@ -32,7 +32,7 @@ echo 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 echo "<caption>\n" "<b>"
 echo $pcb_rnd_ver ", " $pcb_rnd_rev
 echo "</b>"
-echo  "<th>Action<th> Description <th> Syntax"
+echo  "<th> Action <th> Description <th> Syntax <th> Plugin"
 (
 	cd ../../../../src
 	./pcb-rnd --dump-actions 2>/dev/null
@@ -44,12 +44,14 @@ function flush_sd()
 			sub("^<br>", "", a)
 			sub("^<br>", "", d)
 			sub("^<br>", "", s)
-			print  "<tr><td>" a "</td>" "<td>" d "</td>" "<td>" s "</td>"
+			sub("^<br>", "", c)
+			print  "<tr><td>" a "</td>" "<td>" d "</td>" "<td>" s "</td>" "<td>" c "</td>"
 			}
 		
 	a=""
 	s=""
 	d=""
+	c=""
 }
 
 
@@ -69,6 +71,12 @@ function flush_sd()
 /^S/ {
 	sub("^S", "", $0)
 	s = s "<br>" $0
+	next
+}
+
+/^C/ {
+	sub("^C", "", $0)
+	c = c "<br>" $0
 	next
 }
 
