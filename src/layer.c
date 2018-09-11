@@ -880,10 +880,9 @@ static int strcmp_score(const char *s1, const char *s2)
 	return score;
 }
 
-pcb_layer_t *pcb_layer_resolve_best(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_t *src, int *best_score)
+void pcb_layer_resolve_best(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_t *src, int *best_score, pcb_layer_t **best)
 {
 	int l, score;
-	pcb_layer_t *best = NULL;
 
 	for(l = 0; l < grp->len; l++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[l]);
@@ -896,13 +895,11 @@ pcb_layer_t *pcb_layer_resolve_best(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_l
 			score += strcmp_score(grp->purpose, src->meta.bound.purpose);
 
 			if (score > *best_score) {
-				best = ly;
+				*best = ly;
 				*best_score = score;
 			}
 		}
 	}
-
-	return best;
 }
 
 pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
@@ -910,6 +907,8 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	int best_score = 0;
+	pcb_layer_t *best = NULL;
+
 
 	assert(src->is_bound);
 
@@ -934,7 +933,8 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		grp = pcb->LayerGroups.grp+gid;
 	}
 
-	return pcb_layer_resolve_best(pcb, grp, src, &best_score);
+	pcb_layer_resolve_best(pcb, grp, src, &best_score, &best);
+	return best;
 }
 
 pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name, const char *purpose)
