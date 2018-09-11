@@ -13,13 +13,13 @@
 
 function flush_sd()
 {
-	if (a != "" ){
-		if ( s != "" || d != "" ) {
+		if ( a != "" ||  s != "" || d != "" ) {
+			sub("^<br>", "", a)
 			sub("^<br>", "", d)
 			sub("^<br>", "", s)
 			print  "<tr><td>" a "</td>" "<td>" d "</td>" "<td>" s "</td>"
 			}
-	}
+		
 	a=""
 	s=""
 	d=""
@@ -29,7 +29,7 @@ function flush_sd()
 /^A/ {
 	flush_sd()
 	sub("^A", "", $0)
-	a = a $0
+	a = a "<br>" $0
 	next
 }
 
