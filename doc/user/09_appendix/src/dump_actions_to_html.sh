@@ -1,92 +1,40 @@
 #!/bin/sh
 
-# dumps pcb-rnd actions into a simple html table for the docs 
-#
-#errata: pcb_dump_actions function in src/hid_actions.c
-#        printf("A%s\n", ca->action->name);
-#        dump_string('D', desc);
-#        dump_string('S', synt);
+# collates the pcb-rnd action table into a html doc page
 
-
-(
-	cd ../../../../src
-	./pcb-rnd --version
-	svn info ^/ | awk '/Revision:/ {
-		print $0
-		got_rev=1
-		exit
-		}
-		END {
-			if (!got_rev)
-			print "Rev unknown"
-		}
-		'
-	./pcb-rnd --dump-actions
-) | awk '
-
-function flush_sd()
-{
-	if (s != "" || d != "" ) {
-		sub("^<br>", "", d)
-		sub("^<br>", "", s)
-		print "<td>" d "</td>"
-		print "<td>" s "</td>"
+cd ../../../../src
+pcb_rnd_ver=`./pcb-rnd --version`
+pcb_rnd_rev=`svn info ^/ | awk '/Revision:/ {
+	print $0
+	got_rev=1
+	exit
 	}
-	s=""
-	d=""
-}
+	END {
+		if (!got_rev)
+		print "Rev unknown"
+	}
+	'`
+cd ../doc/user/09_appendix/src
 
-BEGIN {
-	q="\""
-# first line of input is the version
-	getline pcb_rnd_ver
-	getline pcb_rnd_rev
-	print "<!DOCTYPE HTML PUBLIC " q "-//W3C//DTD HTML 4.01 Transitional//EN" q " " q "http://www.w3.org/TR/html4/loose.dtd"  q ">"
-	print "<html>"
-	print "<head>"
-	print "<title> pcb-rnd user manual </title>"
-	print "<meta http-equiv=" q "Content-Type" q " content=" q "text/html;charset=us-ascii" q ">"
-	print "<link rel=" q "stylesheet" q " type=" q "text/css" q " href=" q " ../default.css" q ">"
-	print "</head>"
-	print "<body>"
-	print "<p>"
-        print "<h1> pcb-rnd User Manual: Appendix </h1>"
-	print "<p>"
-	print "<h2> Pcb-rnd Action Reference</h2>"
-	print "<table border=1>"
-	print "<caption><b>"
-	print  pcb_rnd_ver ", " pcb_rnd_rev
-	print "</b>"
-	print "<th>Action<th> Description <th> Syntax"
-}
-
-/^A/ {
-	flush_sd()
-	sub("^A", "", $0)
-	printf "<tr><td> %s </td>\n", $0
-	next
-}
-
-/^D/ {
-	sub("^D", "", $0)
-	d = d "<br>" $0
-	next
-}
-
-/^S/ {
-	sub("^S", "", $0)
-	s = s "<br>" $0
-	next
-}
-
-END {
-	flush_sd()
-	print "</table>"
-	print "</body>"
-	print "</html>"
-
-}
-
-' 
-
-
+echo 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+<html>
+<head>
+<title> pcb-rnd user manual </title>
+<meta http-equiv=\"Content-Type\" content=\"text/html;charset=us-ascii\">
+<link rel=\"stylesheet\" type=\"text/css\" href=\" ../default.css\">
+</head>
+<body>
+<p>
+<h1> pcb-rnd User Manual: Appendix </h1>
+<p>
+<h2> Action Reference</h2>
+<table border=1>"
+echo "<caption>\n" "<b>"
+echo $pcb_rnd_ver ", " $pcb_rnd_rev
+echo "</b>"
+echo  "<th>Action<th> Description <th> Syntax"
+./action_sorting.sh 2>/dev/null
+echo "
+</table>
+</body>
+</html>"
