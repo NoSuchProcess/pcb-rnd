@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: gtk: Can't close the widnow while command entry is open. If the layout was modified, it will issue an "Are you sure..." dialog, where ignoring the changes does nothing. Then, as soon as I hit 'escape' to close the action input box, pcb-rnd exits immediately. [report: TwisteR]
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
