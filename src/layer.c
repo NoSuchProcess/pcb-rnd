@@ -880,11 +880,35 @@ static int strcmp_score(const char *s1, const char *s2)
 	return score;
 }
 
-pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
+pcb_layer_t *pcb_layer_resolve_best(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_t *src)
 {
 	int l, score, best_score = 0;
-	pcb_layergrp_id_t gid;
 	pcb_layer_t *best = NULL;
+
+	for(l = 0; l < grp->len; l++) {
+		pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[l]);
+		if ((ly->comb & PCB_LYC_SUB) == (src->comb & PCB_LYC_SUB)) {
+			score = 1;
+			if (ly->comb == src->comb)
+				score++;
+
+			score += strcmp_score(ly->name, src->name);
+			score += strcmp_score(grp->purpose, src->meta.bound.purpose);
+
+			if (score > best_score) {
+				best = ly;
+				best_score = score;
+			}
+		}
+	}
+
+	return best;
+}
+
+pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *grp;
 
 	assert(src->is_bound);
 
@@ -895,6 +919,8 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		else
 			gid = pcb_layergrp_get_top_copper();
 		gid = pcb_layergrp_step(pcb, gid, src->meta.bound.stack_offs, PCB_LYT_COPPER | PCB_LYT_INTERN);
+		/* target group identified; pick the closest match layer within that group */
+		grp = pcb->LayerGroups.grp+gid;
 	}
 	else {
 		pcb_layer_type_t lyt = src->meta.bound.type;
@@ -904,30 +930,10 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		}
 		if (pcb_layergrp_list(pcb, lyt, &gid, 1) != 1)
 			return NULL;
+		grp = pcb->LayerGroups.grp+gid;
 	}
 
-	/* target group identified; pick the closest match layer within that group */
-	{
-		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
-		for(l = 0; l < grp->len; l++) {
-			pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[l]);
-			if ((ly->comb & PCB_LYC_SUB) == (src->comb & PCB_LYC_SUB)) {
-				score = 1;
-				if (ly->comb == src->comb)
-					score++;
-
-				score += strcmp_score(ly->name, src->name);
-				score += strcmp_score(grp->purpose, src->meta.bound.purpose);
-
-				if (score > best_score) {
-					best = ly;
-					best_score = score;
-				}
-			}
-		}
-	}
-
-	return best;
+	return pcb_layer_resolve_best(pcb, grp, src);
 }
 
 pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name, const char *purpose)
