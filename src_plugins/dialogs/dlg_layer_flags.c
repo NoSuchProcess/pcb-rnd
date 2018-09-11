@@ -52,8 +52,8 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	pcb_layergrp_t *g;
 	pcb_hid_attr_val_t rv[16];
 	pcb_hid_attribute_t attr[] = {
-		{"name", "group (physical layer) name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-		{"type", "type/material of the group",           PCB_HATT_ENUM,   0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+		{"name",    "group (physical layer) name",         PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+		{"type",    "type/material of the group",          PCB_HATT_ENUM,   0, 0, {0}, NULL, NULL, 0, NULL, NULL},
 		{"purpose", "purpose or subtype",                  PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
 	};
 
