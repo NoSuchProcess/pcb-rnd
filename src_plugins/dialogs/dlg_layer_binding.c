@@ -36,7 +36,7 @@ static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", 
 static const char *lb_side[] = { "top", "bottom", NULL };
 
 typedef struct {
-	int name, comp, type, offs, from, side, layer; /* widet indices */
+	int name, comp, type, offs, from, side, purpose, layer; /* widet indices */
 } lb_widx_t;
 
 typedef struct {
@@ -111,6 +111,9 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 #define layer_name_mismatch(w, layer) \
 ((ctx->attrs[w->name].default_val.str_value == NULL) || (strcmp(layer->name, ctx->attrs[w->name].default_val.str_value) != 0))
 
+#define layer_purpose_mismatch(w, layer) \
+((ctx->attrs[w->purpose].default_val.str_value == NULL) || (layer->meta.bound.purpose == NULL) || (strcmp(layer->meta.bound.purpose, ctx->attrs[w->purpose].default_val.str_value) != 0))
+
 static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 {
 	int n;
@@ -131,6 +134,13 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		/* name and type */
 		if (layer_name_mismatch(w, layer))
 			PCB_DAD_SET_VALUE(hid_ctx, w->name, str_value, pcb_strdup(layer->name));
+
+		if (layer_purpose_mismatch(w, layer)) {
+			char *purp = layer->meta.bound.purpose;
+			if (purp == NULL)
+				purp = "";
+			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str_value, pcb_strdup(purp));
+		}
 
 		PCB_DAD_SET_VALUE(hid_ctx, w->comp, int_value, layer->comb);
 
@@ -178,6 +188,15 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 		if (layer_name_mismatch(w, layer)) {
 			free((char *)layer->name);
 			layer->name = pcb_strdup(ctx->attrs[w->name].default_val.str_value);
+		}
+
+		if (layer_purpose_mismatch(w, layer)) {
+			const char *purp = ctx->attrs[w->purpose].default_val.str_value;
+			free((char *)layer->meta.bound.purpose);
+			if ((purp == NULL) || (*purp == '\0'))
+				layer->meta.bound.purpose = NULL;
+			else
+				layer->meta.bound.purpose = pcb_strdup(purp);
 		}
 
 		layer->comb = ctx->attrs[w->comp].default_val.int_value;
@@ -299,6 +318,12 @@ static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *arg
 					PCB_DAD_ENUM(dlg, lb_side);
 						w->side = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_LABEL(dlg, "Purpose:");
+					PCB_DAD_STRING(dlg);
+						w->purpose = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_END(dlg);
+
 			PCB_DAD_END(dlg);
 
 			/* right side */
