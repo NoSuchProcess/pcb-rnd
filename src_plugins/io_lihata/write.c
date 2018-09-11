@@ -1386,8 +1386,12 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	sprintf(vers, "pcb-rnd-board-v%d", wrver);
 	brd->root = lht_dom_node_alloc(LHT_HASH, vers);
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
-	if (wrver >= 2)
-		lht_dom_hash_put(brd->root, build_layer_stack(pcb));
+	if (wrver >= 2) {
+		lht_node_t *stack = build_layer_stack(pcb);
+		if (stack == NULL)
+			goto error;
+		lht_dom_hash_put(brd->root, stack);
+	}
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
@@ -1395,6 +1399,10 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());
 	return brd;
+
+	error:;
+	lht_dom_uninit(brd);
+	return NULL;
 }
 
 static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node_t *inmem_node, const char *ondisk_value)
@@ -1448,6 +1456,11 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 
 	wrver = ver;
 	brd = build_board(PCB);
+
+	if (brd == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to build the board at that version - nothing is written\n");
+		return -1;
+	}
 
 #if IO_LIHATA_SAVE_BACKUP_IN_PCB
 	{
