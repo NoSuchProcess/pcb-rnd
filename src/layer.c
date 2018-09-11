@@ -863,6 +863,23 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	}
 }
 
+static int strcmp_score(const char *s1, const char *s2)
+{
+	int score = 0;
+
+	if (s1 == s2) /* mainly for NULL = NULL */
+		score += 4;
+	
+	if ((s1 != NULL) && (s2 != NULL)) {
+		if (strcmp(s1, s2) == 0)
+			score += 4;
+		else if (pcb_strcasecmp(s1, s2) == 0)
+			score += 2;
+	}
+
+	return score;
+}
+
 pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 {
 	int l, score, best_score = 0;
@@ -899,15 +916,8 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 				if (ly->comb == src->comb)
 					score++;
 
-				if (ly->name == src->name) /* mainly for NULL = NULL */
-					score += 4;
-				
-				if ((ly->name != NULL) && (src->name != NULL)) {
-					if (strcmp(ly->name, src->name) == 0)
-						score += 4;
-					else if (pcb_strcasecmp(ly->name, src->name) == 0)
-						score += 2;
-				}
+				score += strcmp_score(ly->name, src->name);
+				score += strcmp_score(grp->purpose, src->meta.bound.purpose);
 
 				if (score > best_score) {
 					best = ly;
