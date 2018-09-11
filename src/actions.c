@@ -229,13 +229,16 @@ void pcb_dump_actions(void)
 		hid_cookie_action_t *ca = f->reg_data;
 		const char *desc = ca->action->description;
 		const char *synt = ca->action->syntax;
+		const char *ck = ca->cookie;
 
 		desc = desc ? desc : "";
 		synt = synt ? synt : "";
+		ck = ck ? ck : "";
 
 		printf("A%s\n", ca->action->name);
 		dump_string('D', desc);
 		dump_string('S', synt);
+		dump_string('C', ck);
 	}
 }
 
