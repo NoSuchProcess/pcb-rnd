@@ -921,6 +921,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		gid = pcb_layergrp_step(pcb, gid, src->meta.bound.stack_offs, PCB_LYT_COPPER | PCB_LYT_INTERN);
 		/* target group identified; pick the closest match layer within that group */
 		grp = pcb->LayerGroups.grp+gid;
+		pcb_layer_resolve_best(pcb, grp, src, &best_score, &best);
 	}
 	else {
 		pcb_layer_type_t lyt = src->meta.bound.type;
@@ -928,12 +929,11 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 			lyt = PCB_LYT_BOUNDARY;
 			pcb_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
 		}
-		if (pcb_layergrp_list(pcb, lyt, &gid, 1) != 1)
-			return NULL;
-		grp = pcb->LayerGroups.grp+gid;
+		for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++)
+			if ((grp->ltype & lyt) == lyt)
+				pcb_layer_resolve_best(pcb, grp, src, &best_score, &best);
 	}
 
-	pcb_layer_resolve_best(pcb, grp, src, &best_score, &best);
 	return best;
 }
 
