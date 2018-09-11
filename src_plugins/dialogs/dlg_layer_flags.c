@@ -63,7 +63,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	attr[0].default_val.str_value = pcb_strdup(g->name);
 	attr[1].enumerations = lb_types;
 	attr[1].default_val.int_value = orig_type = ly_type2enum(g->ltype);
-	attr[2].default_val.str_value = pcb_strdup(g->purpose);
+	attr[2].default_val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
 
 	ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit group properties", "Edit the properties of a layer group (physical layer)", NULL);
 
@@ -85,8 +85,17 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			changed = 1;
 		}
 
-		if (strcmp(g->purpose, attr[2].default_val.str_value) != 0) {
-			pcb_layergrp_set_purpose__(g, pcb_strdup(attr[2].default_val.str_value));
+		if (attr[2].default_val.str_value == NULL) {
+			if (g->purpose != NULL) {
+				pcb_layergrp_set_purpose__(g, NULL);
+				changed = 1;
+			}
+		}
+		else if ((g->purpose == NULL) || (strcmp(g->purpose, attr[2].default_val.str_value) != 0)) {
+			if (*attr[2].default_val.str_value == '\0')
+				pcb_layergrp_set_purpose__(g, NULL);
+			else
+				pcb_layergrp_set_purpose__(g, pcb_strdup(attr[2].default_val.str_value));
 			changed = 1;
 		}
 
