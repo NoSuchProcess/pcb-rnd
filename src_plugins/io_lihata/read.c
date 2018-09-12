@@ -1811,7 +1811,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 	if (rdver == 1)
 		layer_fixup(pcb);
 
-	if (rdver < 6)
+	if ((rdver < 6) && (pcb != NULL))
 		outline_fixup(pcb);
 
 	if (rdver >= 4) {
