@@ -40,6 +40,7 @@
 #include "undo.h"
 #include "vtpadstack_t.h"
 #include "obj_hash.h"
+#include "funchash_core.h"
 
 static const char core_proto_cookie[] = "padstack prototypes";
 
@@ -153,12 +154,16 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
 
 		if (lyt & PCB_LYT_MECH) {
+			int purpi;
+			pcb_board_t *pcb;
 			if (has_slot) {
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple mechanical objects (slots) are not allowed\n");
 				goto quit;
 			}
 			has_slot++;
+			purpi = pcb_layer_purpose_(ly, NULL);
+			dst->hplated = !!PCB_LAYER_IS_PROUTE(lyt, purpi);
 		}
 
 		switch((*o)->type) {
