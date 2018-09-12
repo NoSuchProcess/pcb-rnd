@@ -340,6 +340,7 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 	int n, i;
 	pcb_layer_type_t lyt, filt = (PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE);
 	pcb_any_obj_t *no;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(src);
 
 	if (ts == NULL)
 		return -1;
@@ -351,11 +352,29 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 		pcb_coord_t clr;
 		pcb_poly_t *p;
 
+		/* look up the best layer type */
 		for(lid = 0; lid < dst->LayerN; lid++) {
 			ly = &dst->Layer[lid];
 			lyt = pcb_layer_flags_(ly);
+
+#warning layer TODO: make a real scoring mechanism here instead of ly1, ly2, ly3
+			/* cheat: pretend boundary layers are mech layers because padstack layer types are interested only in mech layers */
+			if (lyt & PCB_LYT_BOUNDARY) {
+				lyt &= ~PCB_LYT_BOUNDARY;
+				lyt |= PCB_LYT_MECH;
+			}
+
 			if ((lyt & shp->layer_mask) == shp->layer_mask) {
-				if (shp->comb == ly->comb) {
+				int comb_match = (shp->comb == ly->comb);
+				int plate_match = 1;
+
+				if (lyt & PCB_LYT_MECH) { /* check plating only for mech layers */
+					int purpi = pcb_layer_purpose_(ly, NULL);
+					int ly_plated = !!PCB_LAYER_IS_PROUTE(lyt, purpi);
+					plate_match = (ly_plated == proto->hplated);
+				}
+
+				if (comb_match && plate_match) {
 					ly1 = ly;
 					break;
 				}
