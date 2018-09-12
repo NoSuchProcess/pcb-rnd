@@ -9,7 +9,6 @@
 	- replace the OUTLINE LYT with an unplated boundary
 		- doc layer rendering: respect sides and compositing
 		- double check io_lihata compatibility
-		- upgrade the advanced search
 	- revise io plugins to load/save them properly
 	- CAM syntax for purpose
 	- slotting:
