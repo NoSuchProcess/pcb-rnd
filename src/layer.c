@@ -952,7 +952,10 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	lay->is_bound = 1;
 	lay->name = pcb_strdup(name);
 	lay->meta.bound.type = type;
-	lay->meta.bound.purpose = purpose;
+	if (purpose == NULL)
+		lay->meta.bound.purpose = NULL;
+	else
+		lay->meta.bound.purpose = pcb_strdup(purpose);
 	lay->parent.data = data;
 	lay->parent_type = PCB_PARENT_DATA;
 	lay->type = PCB_OBJ_LAYER;
