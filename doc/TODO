@@ -12,7 +12,6 @@
 	- revise io plugins to load/save them properly
 	- CAM syntax for purpose
 	- slotting:
-		- test padstack build and merge and breakup
 		- check which I/O can handle it
 		- export G85 in excellon
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case)
