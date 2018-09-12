@@ -171,6 +171,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_YESNO]},
 	{"@.layer.position",  "stack position",   &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERPOS]},
 	{"@.layer.type",      "type",             &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERTYPE]},
+	{"@.layer.purpose",   "purpose",          &op_tab[OPS_STR], RIGHT_STR, NULL},
 
 	{NULL,                "host subcircuit's",NULL,             0, NULL},
 	{"@.subc.x",          "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
