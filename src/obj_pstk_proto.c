@@ -391,7 +391,7 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 				no = (pcb_any_obj_t *)pcb_line_new(ly,
 					src->x + shp->data.line.x1, src->y + shp->data.line.y1,
 					src->x + shp->data.line.x2, src->y + shp->data.line.y2,
-					shp->data.circ.dia, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+					shp->data.line.thickness, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
 					break;
 			case PCB_PSSH_POLY:
 				p = pcb_poly_new(ly, clr, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
