@@ -842,10 +842,12 @@ void pcb_layer_real2bound_offs(pcb_layer_t *dst, pcb_board_t *src_pcb, pcb_layer
 void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 {
 	pcb_board_t *pcb;
+	pcb_layergrp_t *grp;
 
 	assert(!src->is_bound);
 
 	pcb = pcb_layer_get_top(src);
+	grp = pcb_get_layergrp(pcb, src->meta.real.grp);
 	dst->comb = src->comb;
 
 	dst->meta.bound.type = pcb_layergrp_flags(pcb, src->meta.real.grp);
@@ -853,6 +855,11 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 		dst->name = pcb_strdup(src->name);
 	else
 		dst->name = NULL;
+
+	if ((grp != NULL) && (grp->purpose != NULL))
+		dst->meta.bound.purpose = pcb_strdup(grp->purpose);
+	else
+		dst->meta.bound.purpose = NULL;
 
 	pcb_layer_real2bound_offs(dst, pcb, src);
 
