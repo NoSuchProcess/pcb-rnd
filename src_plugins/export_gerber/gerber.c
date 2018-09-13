@@ -1061,8 +1061,17 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	pcb_bool m = pcb_false;
 
 	if (line_slots) {
-#warning slot TODO
-pcb_trace("Excellon line slot!\n");
+		return; /* do not yet export slots until the whole excellon part is rewritten a bit */
+		PendingDrills *pd = new_pending_drill();
+		pcb_coord_t dia = gc->width/2;
+		pd->x = x1;
+		pd->y = y1;
+		pd->x2 = x2;
+		pd->y2 = y2;
+		pd->diam = dia*2;
+		findAperture(curr_aptr_list, dia, ROUND);
+		pd->is_slot = (x1 != x2) || (y1 != y2);
+		return;
 	}
 
 	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
