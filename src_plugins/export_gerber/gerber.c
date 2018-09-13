@@ -89,7 +89,7 @@ static int all_layers;
 static int is_mask, was_drill;
 static int is_drill;
 static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
-static int flash_drills;
+static int flash_drills, line_slots;
 static int copy_outline_mode;
 static int name_style;
 static int want_cross_sect;
@@ -753,8 +753,11 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		group_name = "<virtual group>";
 
 	flash_drills = 0;
-	if (PCB_LAYER_IS_ROUTE(flags, purpi))
+	line_slots = 0;
+	if (PCB_LAYER_IS_ROUTE(flags, purpi)) {
 		flash_drills = 1;
+		line_slots = 1;
+	}
 
 	if (is_drill && n_pending_drills) {
 		int i;
@@ -1047,6 +1050,11 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 {
 	pcb_bool m = pcb_false;
 
+	if (line_slots) {
+#warning slot TODO
+pcb_trace("Excellon line slot!\n");
+	}
+
 	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
 		pcb_coord_t x[5], y[5];
 		double tx, ty, theta;
@@ -1247,6 +1255,11 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t 
 	int i;
 	int firstTime = 1;
 	pcb_coord_t startX = 0, startY = 0;
+
+	if (line_slots) {
+		pcb_message(PCB_MSG_ERROR, "Can't export polygon as G85 slot in excellon cnc files;\nplease use lines for slotting if you export gerber\n");
+		return;
+	}
 
 	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
 		return;
