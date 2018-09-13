@@ -128,6 +128,11 @@ typedef struct {
 	pcb_coord_t diam;
 	pcb_coord_t x;
 	pcb_coord_t y;
+
+	/* for slots */
+	int is_slot;
+	pcb_coord_t x2;
+	pcb_coord_t y2;
 } PendingDrills;
 PendingDrills *pending_drills = NULL;
 int n_pending_drills = 0, max_pending_drills = 0;
@@ -1216,6 +1221,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 		pending_drills[n_pending_drills].x = cx;
 		pending_drills[n_pending_drills].y = cy;
 		pending_drills[n_pending_drills].diam = radius * 2;
+		pending_drills[n_pending_drills].is_slot = 0;
 		n_pending_drills++;
 		return;
 	}
