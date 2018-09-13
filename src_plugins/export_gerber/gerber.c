@@ -1046,6 +1046,16 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
+static PendingDrills *new_pending_drill(void)
+{
+	if (n_pending_drills >= max_pending_drills) {
+		max_pending_drills += 100;
+		pending_drills = (PendingDrills *) realloc(pending_drills, max_pending_drills * sizeof(pending_drills[0]));
+	}
+	return &pending_drills[n_pending_drills++];
+}
+
+
 static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_bool m = pcb_false;
@@ -1225,15 +1235,11 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		if (n_pending_drills >= max_pending_drills) {
-			max_pending_drills += 100;
-			pending_drills = (PendingDrills *) realloc(pending_drills, max_pending_drills * sizeof(pending_drills[0]));
-		}
-		pending_drills[n_pending_drills].x = cx;
-		pending_drills[n_pending_drills].y = cy;
-		pending_drills[n_pending_drills].diam = radius * 2;
-		pending_drills[n_pending_drills].is_slot = 0;
-		n_pending_drills++;
+		PendingDrills *pd = new_pending_drill();
+		pd->x = cx;
+		pd->y = cy;
+		pd->diam = radius * 2;
+		pd->is_slot = 0;
 		return;
 	}
 	else if (gc->drill && !flash_drills)
