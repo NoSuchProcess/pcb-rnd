@@ -765,7 +765,10 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 				Aperture *ap = findAperture(curr_aptr_list, pending_drills[i].diam, ROUND);
 				fprintf(f, "T%02d\r\n", ap->dCode);
 			}
-			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y));
+			if (pending_drills[i].is_slot)
+				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y), gerberDrX(PCB, pending_drills[i].x2), gerberDrY(PCB, pending_drills[i].y2));
+			else
+				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y));
 		}
 		free(pending_drills);
 		n_pending_drills = max_pending_drills = 0;
