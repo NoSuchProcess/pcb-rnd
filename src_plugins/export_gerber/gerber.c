@@ -87,7 +87,7 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 static int verbose;
 static int all_layers;
 static int is_mask, was_drill;
-static int is_drill;
+static int is_drill, is_plated;
 static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
 static int flash_drills, line_slots;
 static int copy_outline_mode;
@@ -778,7 +778,8 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		pending_drills = NULL;
 	}
 
-	is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
+	is_drill = PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi));
+	is_plated = PCB_LAYER_IS_PROUTE(flags, purpi) || PCB_LAYER_IS_PDRILL(flags, purpi);
 	is_mask = !!(flags & PCB_LYT_MASK);
 	if (group < 0 || group != lastgroup) {
 		char utcTime[64];
