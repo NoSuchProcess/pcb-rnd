@@ -25,6 +25,7 @@
 #include "safe_fs.h"
 #include "macro.h"
 #include "funchash_core.h"
+#include "gerber_conf.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -36,6 +37,8 @@
 #include "conf_core.h"
 
 const char *gerber_cookie = "gerber HID";
+
+conf_gerber_t conf_gerber;
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented Gerber function %s.\n", func); abort()
 
@@ -1431,11 +1434,17 @@ int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
 void pplg_uninit_export_gerber(void)
 {
 	pcb_hid_remove_attributes_by_cookie(gerber_cookie);
+	conf_unreg_fields("plugins/gerber/");
 }
 
 int pplg_init_export_gerber(void)
 {
 	PCB_API_CHK_VER;
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_gerber, field,isarray,type_name,cpath,cname,desc,flags);
+#include "gerber_conf_fields.h"
+
 	memset(&gerber_hid, 0, sizeof(gerber_hid));
 
 	pcb_hid_nogui_init(&gerber_hid);

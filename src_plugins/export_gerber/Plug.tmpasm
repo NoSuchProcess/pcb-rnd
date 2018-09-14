@@ -1,5 +1,7 @@
 put /local/pcb/mod {export_gerber}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_gerber/gerber.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/export_gerber/gerber_conf.h}
+
 
 switch /local/pcb/export_gerber/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

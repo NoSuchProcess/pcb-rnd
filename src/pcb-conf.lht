@@ -259,6 +259,10 @@ li:pcb-rnd-conf-v1 {
 				auto_update_gedasymbols = 0
 				auto_update_edakrill = 0
 			}
+			ha:export_gerber {
+				plated_g85_slot = 0
+				unplated_g85_slot = 0
+			}
 		} # plugins
 
 		ha:utils {
