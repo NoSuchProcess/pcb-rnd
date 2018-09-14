@@ -663,8 +663,13 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi,
 
 static void drill_export(void)
 {
+	int wd = was_drill;
+	was_drill = 1;
 	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills, &aprp);
 	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills, &apru);
+	maybe_close_f(f); /* make sure M30 is written */
+	f = NULL;
+	was_drill = wd;
 }
 
 
@@ -1122,7 +1127,6 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	pcb_bool m = pcb_false;
 
 	if (line_slots) {
-		return; /* do not yet export slots until the whole excellon part is rewritten a bit */
 		pending_drill_t *pd = new_pending_drill();
 		pcb_coord_t dia = gc->width/2;
 		pd->x = x1;
@@ -1130,7 +1134,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		pd->x2 = x2;
 		pd->y2 = y2;
 		pd->diam = dia*2;
-		find_aperture(DRILL_APR, dia, ROUND);
+		find_aperture(DRILL_APR, dia*2, ROUND);
 		pd->is_slot = (x1 != x2) || (y1 != y2);
 		return;
 	}
