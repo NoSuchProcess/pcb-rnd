@@ -134,8 +134,9 @@ typedef struct {
 	pcb_coord_t x2;
 	pcb_coord_t y2;
 } PendingDrills;
-PendingDrills *pending_drills = NULL;
-int n_pending_drills = 0, max_pending_drills = 0;
+PendingDrills *pending_udrills, *pending_pdrills = NULL;
+pcb_cardinal_t n_pending_udrills = 0, max_pending_udrills = 0;
+pcb_cardinal_t n_pending_pdrills = 0, max_pending_pdrills = 0;
 
 /*----------------------------------------------------------------------------*/
 /* Defined Constants                                                          */
@@ -585,7 +586,10 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 	strcat(dest, sext);
 }
 
-static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi)
+#warning TODO: remove:
+static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal_t pdn);
+
+static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, PendingDrills **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd)
 {
 	const pcb_virt_layer_t *vl = pcb_vlayer_get_first(mask, purpose, purpi);
 
@@ -594,6 +598,7 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi)
 	maybe_close_f(f);
 	f = NULL;
 
+
 	pagecount++;
 	assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1);
 	f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
@@ -601,13 +606,20 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi)
 		pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", filename);
 		return;
 	}
-	printf("drill file name: '%s'\n", filename);
+
+printf("drill file name: '%s'\n", filename);
+
+	if (*npd) {
+		drill_print_holes(curr_aptr_list, *pd, *npd);
+		free(*pd); *pd = NULL;
+		*npd = *mpd = 0;
+	}
 }
 
-static void drill_export()
+static void drill_export(void)
 {
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill);
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills);
 }
 
 
@@ -726,37 +738,31 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
-static void drill_print_holes(ApertureList *apl)
+static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal_t npd)
 {
-		int i;
-		/* dump pending drills in sequence */
-		qsort(pending_drills, n_pending_drills, sizeof(pending_drills[0]), drill_sort);
-		for (i = 0; i < n_pending_drills; i++) {
-			if (i == 0 || pending_drills[i].diam != pending_drills[i - 1].diam) {
-				Aperture *ap = findAperture(apl, pending_drills[i].diam, ROUND);
-				fprintf(f, "T%02d\r\n", ap->dCode);
-			}
-			if (pending_drills[i].is_slot)
-				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y), gerberDrX(PCB, pending_drills[i].x2), gerberDrY(PCB, pending_drills[i].y2));
-			else
-				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y));
-		}
-		free(pending_drills);
-		n_pending_drills = max_pending_drills = 0;
-		pending_drills = NULL;
-}
-
-static void drill_print_header(ApertureList *aptr_list)
-{
+		pcb_cardinal_t i;
 	Aperture *search;
 
 			/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
 			   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
 			fprintf(f, "M48\r\n" "INCH\r\n");
-			for (search = aptr_list->data; search; search = search->next)
+			for (search = apl->data; search; search = search->next)
 				pcb_fprintf(f, "T%02dC%.3mi\r\n", search->dCode, search->width);
 			fprintf(f, "%%\r\n");
 			/* FIXME */
+
+		/* dump pending drills in sequence */
+		qsort(pd, npd, sizeof(pd[0]), drill_sort);
+		for (i = 0; i < npd; i++) {
+			if (i == 0 || pd[i].diam != pd[i - 1].diam) {
+				Aperture *ap = findAperture(apl, pd[i].diam, ROUND);
+				fprintf(f, "T%02d\r\n", ap->dCode);
+			}
+			if (pd[i].is_slot)
+				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
+			else
+				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y));
+		}
 }
 
 static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
@@ -821,9 +827,6 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		line_slots = 1;
 	}
 
-	if (is_drill && n_pending_drills)
-		drill_print_holes(curr_aptr_list);
-
 	is_drill = PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi));
 	is_plated = PCB_LAYER_IS_PROUTE(flags, purpi) || PCB_LAYER_IS_PDRILL(flags, purpi);
 	is_mask = !!(flags & PCB_LYT_MASK);
@@ -869,12 +872,6 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 			int c = aptr_list->count;
 			printf("Gerber: %d aperture%s in %s\n", c, c == 1 ? "" : "s", filename);
 		}
-
-		if (is_drill) {
-			drill_print_header(aptr_list);
-			return 1;
-		}
-
 
 		fprintf(f, "G04 start of page %d for group %ld layer_idx %ld *\r\n", pagecount, group, layer);
 
@@ -1090,11 +1087,20 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 
 static PendingDrills *new_pending_drill(void)
 {
-	if (n_pending_drills >= max_pending_drills) {
-		max_pending_drills += 100;
-		pending_drills = (PendingDrills *) realloc(pending_drills, max_pending_drills * sizeof(pending_drills[0]));
+	if (is_plated) {
+		if (n_pending_pdrills >= max_pending_pdrills) {
+			max_pending_pdrills += 100;
+			pending_pdrills = (PendingDrills *)realloc(pending_pdrills, max_pending_pdrills * sizeof(pending_pdrills[0]));
+		}
+		return &pending_pdrills[n_pending_pdrills++];
 	}
-	return &pending_drills[n_pending_drills++];
+	else {
+		if (n_pending_udrills >= max_pending_udrills) {
+			max_pending_udrills += 100;
+			pending_udrills = (PendingDrills *)realloc(pending_udrills, max_pending_udrills * sizeof(pending_udrills[0]));
+		}
+		return &pending_udrills[n_pending_udrills++];
+	}
 }
 
 
