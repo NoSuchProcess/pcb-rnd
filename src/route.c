@@ -518,6 +518,126 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 	return applied;
 }
 
+int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc_layer, pcb_arc_t *apply_to_arc)
+{
+	int i;
+	int applied = 0;
+	
+	for(i = 0; i < p_route->size; i++) {
+		pcb_route_object_t const *p_obj = &p_route->objects[i];
+		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer));
+
+		switch (p_obj->type) {
+		  case PCB_OBJ_ARC:
+			  /* If the route is being applied to an existing arc then the existing
+					 arc will be used as the first arc in the route. This maintains the
+					 ID of the arc.
+				 */
+			  if (apply_to_arc) {
+					int changes = 0;
+
+					/* Move the existing line points to the position of the route line. */
+					if((p_obj->radius != apply_to_arc->Width) || (p_obj->radius != apply_to_arc->Height)) {
+						pcb_undo_add_obj_to_change_radii(PCB_OBJ_ARC, apply_to_arc, apply_to_arc, apply_to_arc);
+						++changes;
+					}
+
+					if((p_obj->start_angle != apply_to_arc->StartAngle) || (p_obj->delta_angle != apply_to_arc->Delta)) {
+						pcb_undo_add_obj_to_change_angles(PCB_OBJ_ARC, apply_to_arc, apply_to_arc, apply_to_arc);
+						++changes;
+					}
+
+					if(p_route->thickness != apply_to_arc->Thickness) {
+						pcb_undo_add_obj_to_size(PCB_OBJ_ARC, Layer, Arc, Arc);
+						++changes;
+					}
+
+					if((p_obj->point1.X != apply_to_arc->X) || (p_obj->point1.Y != apply_to_arc->Y)) {
+						pcb_undo_add_obj_to_move(PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc, NULL, p_obj->point1.X - apply_to_arc->X, p_obj->point1.Y - apply_to_arc->Y);
+						++changes;
+					}
+
+					if(changes > 0) {
+						/* Modify the existing arc */
+						pcb_arc_invalidate_erase(apply_to_arc);
+
+						pcb_r_delete_entry(apply_to_arc_layer->arc_tree, (pcb_box_t *) apply_to_arc);
+						pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
+
+						apply_to_arc->X = p_obj->point1.X;
+						apply_to_arc->Y = p_obj->point1.Y;
+						apply_to_arc->Width = p_obj->radius;
+						apply_to_arc->Height = p_obj->radius;
+						apply_to_arc->StartAngle = p_obj->start_angle;
+						apply_to_arc->Delta = p_obj->delta_angle;
+						apply_to_arc->Thickness = p_route->thickness;
+						pcb_arc_bbox(apply_to_arc);
+						pcb_r_insert_entry(apply_to_arc_layer->arc_tree, (pcb_box_t *) apply_to_arc);
+						pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
+						pcb_arc_invalidate_draw(layer, apply_to_arc);
+						apply_to_arc_layer = layer;
+					}
+
+					/* The existing arc has been used so forget about it. */
+					apply_to_arc = NULL;
+					applied = 1;
+				}
+				else {
+					/* Create a new arc */
+					pcb_arc_t *arc = pcb_arc_new(	layer,
+					                              p_obj->point1.X,
+					                              p_obj->point1.Y,
+					                              p_obj->radius,
+					                              p_obj->radius,
+					                              p_obj->start_angle,
+					                              p_obj->delta_angle,
+					                              p_route->thickness,
+					                              p_route->clearance,
+					                              p_route->flags, pcb_true);
+					if (arc) {
+						pcb_added_lines++;
+						pcb_obj_add_attribs(arc, PCB->pen_attr);
+						pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
+						pcb_arc_invalidate_draw(layer, arc);
+						applied = 1;
+					}
+				}
+			break;
+
+		  case PCB_OBJ_LINE:
+		    {
+			    /* Create a new line */
+			    pcb_line_t *line = pcb_line_new_merge(layer,
+					                                      p_obj->point1.X,
+					                                      p_obj->point1.Y,
+					                                      p_obj->point2.X,
+					                                      p_obj->point2.Y,
+					                                      p_route->thickness,
+					                                      p_route->clearance,
+					                                      p_route->flags);
+					if (line) {
+						pcb_added_lines++;
+						pcb_obj_add_attribs(line, PCB->pen_attr);
+						pcb_line_invalidate_draw(layer, line);
+						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
+						applied = 1;
+					}
+		    }
+			  break;
+
+		  default:
+			  break;
+		}
+	}
+
+	/* If the existing apply-to-arc wasn't updated then it should be deleted */
+	/* (This can happen if the route does not contain any arcs.)             */
+	if (apply_to_arc != NULL)
+		pcb_arc_destroy(apply_to_arc_layer, apply_to_arc);
+
+	return applied;
+}
+
 /*=============================================================================
  * 
  *  Route Drawing
