@@ -865,7 +865,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		if (finding_apertures)
 			goto emit_outline;
 
-		if (aptr_list->count == 0 && !all_layers)
+		if (aptr_list->count == 0 && !all_layers && !is_drill)
 			return 0;
 
 		if (!gerber_cam.active) {
@@ -971,7 +971,6 @@ emit_outline:
 			pcb_hid_destroy_gc(gc);
 		}
 	}
-
 	return 1;
 }
 
@@ -1127,15 +1126,18 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	pcb_bool m = pcb_false;
 
 	if (line_slots) {
-		pending_drill_t *pd = new_pending_drill();
 		pcb_coord_t dia = gc->width/2;
-		pd->x = x1;
-		pd->y = y1;
-		pd->x2 = x2;
-		pd->y2 = y2;
-		pd->diam = dia*2;
 		find_aperture(DRILL_APR, dia*2, ROUND);
-		pd->is_slot = (x1 != x2) || (y1 != y2);
+
+		if (!finding_apertures) {
+			pending_drill_t *pd = new_pending_drill();
+			pd->x = x1;
+			pd->y = y1;
+			pd->x2 = x2;
+			pd->y2 = y2;
+			pd->diam = dia*2;
+			pd->is_slot = (x1 != x2) || (y1 != y2);
+		}
 		return;
 	}
 
