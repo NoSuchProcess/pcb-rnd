@@ -586,8 +586,42 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 	strcat(dest, sext);
 }
 
-#warning TODO: remove:
-static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal_t pdn);
+static int drill_sort(const void *va, const void *vb)
+{
+	PendingDrills *a = (PendingDrills *) va;
+	PendingDrills *b = (PendingDrills *) vb;
+	if (a->diam != b->diam)
+		return a->diam - b->diam;
+	if (a->x != b->x)
+		return a->x - a->x;
+	return b->y - b->y;
+}
+
+static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal_t npd)
+{
+	pcb_cardinal_t i;
+	Aperture *search;
+
+	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
+	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
+	fprintf(f, "M48\r\n" "INCH\r\n");
+	for (search = apl->data; search; search = search->next)
+		pcb_fprintf(f, "T%02dC%.3mi\r\n", search->dCode, search->width);
+	fprintf(f, "%%\r\n");
+
+	/* dump pending drills in sequence */
+	qsort(pd, npd, sizeof(pd[0]), drill_sort);
+	for (i = 0; i < npd; i++) {
+		if (i == 0 || pd[i].diam != pd[i - 1].diam) {
+			Aperture *ap = findAperture(apl, pd[i].diam, ROUND);
+			fprintf(f, "T%02d\r\n", ap->dCode);
+		}
+		if (pd[i].is_slot)
+			pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
+		else
+			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y));
+	}
+}
 
 static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, PendingDrills **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd)
 {
@@ -597,7 +631,6 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi,
 
 	maybe_close_f(f);
 	f = NULL;
-
 
 	pagecount++;
 	assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1);
@@ -727,42 +760,7 @@ static int gerber_parse_arguments(int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int drill_sort(const void *va, const void *vb)
-{
-	PendingDrills *a = (PendingDrills *) va;
-	PendingDrills *b = (PendingDrills *) vb;
-	if (a->diam != b->diam)
-		return a->diam - b->diam;
-	if (a->x != b->x)
-		return a->x - a->x;
-	return b->y - b->y;
-}
 
-static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal_t npd)
-{
-	pcb_cardinal_t i;
-	Aperture *search;
-
-	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
-	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
-	fprintf(f, "M48\r\n" "INCH\r\n");
-	for (search = apl->data; search; search = search->next)
-		pcb_fprintf(f, "T%02dC%.3mi\r\n", search->dCode, search->width);
-	fprintf(f, "%%\r\n");
-
-	/* dump pending drills in sequence */
-	qsort(pd, npd, sizeof(pd[0]), drill_sort);
-	for (i = 0; i < npd; i++) {
-		if (i == 0 || pd[i].diam != pd[i - 1].diam) {
-			Aperture *ap = findAperture(apl, pd[i].diam, ROUND);
-			fprintf(f, "T%02d\r\n", ap->dCode);
-		}
-		if (pd[i].is_slot)
-			pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
-		else
-			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y));
-	}
-}
 
 static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
