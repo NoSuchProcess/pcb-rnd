@@ -92,6 +92,10 @@ struct pcb_box_s {  /* a bounding box */
 	pcb_coord_t X2, Y2;     /* and lower right corner */
 };
 
+typedef struct pcb_xform_s {   /* generic object transformation */
+	pcb_coord_t bloat;   /* if non-zero, bloat (positive) or shrink (negative) by this value */
+} pcb_xform_t;
+
 /* Return the user readable name of an object type in a string; never NULL */
 const char *pcb_obj_type_name(pcb_objtype_t type);
 

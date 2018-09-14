@@ -111,6 +111,7 @@ typedef enum { /* bitfield */
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "attrib.h"
+#include "obj_common.h"
 #include "obj_arc_list.h"
 #include "obj_line_list.h"
 #include "obj_poly_list.h"
@@ -138,6 +139,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 			char *color;                   /* strdup'd */
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
+			pcb_xform_t xform;             /* layer specified rendering transformation */
 		} real;
 		struct { /* A subcircuit layer binding; list data are local but everything else is coming from board layers */
 			pcb_layer_t *real;             /* NULL if unbound */
