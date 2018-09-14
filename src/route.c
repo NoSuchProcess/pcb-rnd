@@ -548,7 +548,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 					}
 
 					if(p_route->thickness != apply_to_arc->Thickness) {
-						pcb_undo_add_obj_to_size(PCB_OBJ_ARC, Layer, Arc, Arc);
+						pcb_undo_add_obj_to_size(PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc, apply_to_arc);
 						++changes;
 					}
 
