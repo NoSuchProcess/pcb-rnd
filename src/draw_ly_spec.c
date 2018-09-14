@@ -191,7 +191,7 @@ static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore,
 	if (g->ltype & PCB_LYT_BOUNDARY) score = 1;
 	if (g->ltype & PCB_LYT_MECH) score = 2;
 
-	if (score > *pscore) {
+	if (score > *dscore) {
 		*dscore = score;
 		*dslot = ly;
 	}
