@@ -552,7 +552,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 #undef fmatch
 
 
-static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi)
+static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill)
 {
 	int fns_style;
 	const char *sext = ".gbr";
@@ -579,11 +579,37 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 		return;
 	}
 
-	if (PCB_LAYER_IS_DRILL(flags, purpi))
+	if (drill && PCB_LAYER_IS_DRILL(flags, purpi))
 		sext = ".cnc";
 	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, fns_style);
 	strcat(dest, sext);
 }
+
+static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi)
+{
+	const pcb_virt_layer_t *vl = pcb_vlayer_get_first(mask, purpose, purpi);
+
+	assert(vl != NULL);
+
+	maybe_close_f(f);
+	f = NULL;
+
+	pagecount++;
+	assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1);
+	f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", filename);
+		return;
+	}
+	printf("drill file name: '%s'\n", filename);
+}
+
+static void drill_export()
+{
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill);
+}
+
 
 static void gerber_do_export(pcb_hid_attr_val_t * options)
 {
@@ -673,6 +699,9 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	if (pcb_cam_end(&gerber_cam) == 0)
 		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+
+	if (!gerber_cam.active)
+		drill_export();
 
 	/* in cam mode we have f still open */
 	maybe_close_f(f);
@@ -825,7 +854,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		}
 
 		pagecount++;
-		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi);
+		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi, 0);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen(gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
 			if (f == NULL) {
