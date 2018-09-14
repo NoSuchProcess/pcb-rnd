@@ -614,9 +614,41 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
-static void drill_print_holes(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd)
+static void drill_print_objs(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd, int force_g85, int slots)
 {
 	pcb_cardinal_t i;
+	int first = 1;
+
+	for (i = 0; i < npd; i++) {
+		if (slots != (!!pd[i].is_slot))
+			continue;
+		if (i == 0 || pd[i].diam != pd[i - 1].diam) {
+			aperture_t *ap = find_aperture(apl, pd[i].diam, ROUND);
+			fprintf(f, "T%02d\r\n", ap->dCode);
+		}
+		if (pd[i].is_slot) {
+			if (first) {
+				pcb_fprintf(f, "G00\r\n");
+				first = 0;
+			}
+			if (force_g85)
+				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
+			else
+				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\nM15\r\nG01X%06.0mkY%06.0mk\r\nM17\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
+		}
+		else {
+			if (first) {
+				pcb_fprintf(f, "G05\r\n");
+				first = 0;
+			}
+			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y));
+		}
+	}
+
+}
+
+static void drill_print_holes(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd, int force_g85)
+{
 	aperture_t *search;
 
 	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
@@ -628,19 +660,11 @@ static void drill_print_holes(aperture_list_t *apl, pending_drill_t *pd, pcb_car
 
 	/* dump pending drills in sequence */
 	qsort(pd, npd, sizeof(pd[0]), drill_sort);
-	for (i = 0; i < npd; i++) {
-		if (i == 0 || pd[i].diam != pd[i - 1].diam) {
-			aperture_t *ap = find_aperture(apl, pd[i].diam, ROUND);
-			fprintf(f, "T%02d\r\n", ap->dCode);
-		}
-		if (pd[i].is_slot)
-			pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
-		else
-			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y));
-	}
+	drill_print_objs(apl, pd, npd, force_g85, 0);
+	drill_print_objs(apl, pd, npd, force_g85, 1);
 }
 
-static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd, aperture_list_t *apl)
+static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd, aperture_list_t *apl, int force_g85)
 {
 	const pcb_virt_layer_t *vl = pcb_vlayer_get_first(mask, purpose, purpi);
 
@@ -658,7 +682,7 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi,
 	}
 
 	if (*npd) {
-		drill_print_holes(apl, *pd, *npd);
+		drill_print_holes(apl, *pd, *npd, force_g85);
 		free(*pd); *pd = NULL;
 		*npd = *mpd = 0;
 	}
@@ -668,8 +692,8 @@ static void drill_export(void)
 {
 	int wd = was_drill;
 	was_drill = 1;
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills, &aprp);
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills, &apru);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills, &aprp, conf_gerber.plugins.export_gerber.plated_g85_slot);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills, &apru, conf_gerber.plugins.export_gerber.unplated_g85_slot);
 	maybe_close_f(f); /* make sure M30 is written */
 	f = NULL;
 	was_drill = wd;
