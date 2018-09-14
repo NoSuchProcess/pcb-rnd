@@ -96,12 +96,12 @@ static int want_cross_sect;
 static int has_outline;
 static int gerber_debug;
 
-enum ApertureShape {
+enum aperture_shape_e {
 	ROUND,												/* Shaped like a circle */
 	OCTAGON,											/* octagonal shape */
 	SQUARE												/* Shaped like a square */
 };
-typedef enum ApertureShape ApertureShape;
+typedef enum aperture_shape_e aperture_shape_t;
 
 /* This is added to the global aperture array indexes to get gerber
    dcode and macro numbers.  */
@@ -110,17 +110,17 @@ typedef enum ApertureShape ApertureShape;
 typedef struct aperture {
 	int dCode;										/* The RS-274X D code */
 	pcb_coord_t width;									/* Size in pcb units */
-	ApertureShape shape;					/* ROUND/SQUARE etc */
+	aperture_shape_t shape;					/* ROUND/SQUARE etc */
 	struct aperture *next;
-} Aperture;
+} aperture_t;
 
 typedef struct {
-	Aperture *data;
+	aperture_t *data;
 	int count;
-} ApertureList;
+} aperture_list_t;
 
-static ApertureList *layer_aptr_list;
-static ApertureList *curr_aptr_list;
+static aperture_list_t *layer_aptr_list;
+static aperture_list_t *curr_aptr_list;
 static int layer_list_max;
 static int layer_list_idx;
 
@@ -133,8 +133,8 @@ typedef struct {
 	int is_slot;
 	pcb_coord_t x2;
 	pcb_coord_t y2;
-} PendingDrills;
-PendingDrills *pending_udrills, *pending_pdrills = NULL;
+} pending_drill_t;
+pending_drill_t *pending_udrills, *pending_pdrills = NULL;
 pcb_cardinal_t n_pending_udrills = 0, max_pending_udrills = 0;
 pcb_cardinal_t n_pending_pdrills = 0, max_pending_pdrills = 0;
 
@@ -148,29 +148,29 @@ pcb_cardinal_t n_pending_pdrills = 0, max_pending_pdrills = 0;
 /*----------------------------------------------------------------------------*/
 
 /* Initialize aperture list */
-static void initApertureList(ApertureList * list)
+static void init_aperture_list(aperture_list_t * list)
 {
 	list->data = NULL;
 	list->count = 0;
 }
 
-static void deinitApertureList(ApertureList * list)
+static void uninit_aperture_list(aperture_list_t * list)
 {
-	Aperture *search = list->data;
-	Aperture *next;
+	aperture_t *search = list->data;
+	aperture_t *next;
 	while (search) {
 		next = search->next;
 		free(search);
 		search = next;
 	}
-	initApertureList(list);
+	init_aperture_list(list);
 }
 
-static void resetApertures()
+static void reset_apertures()
 {
 	int i;
 	for (i = 0; i < layer_list_max; ++i)
-		deinitApertureList(&layer_aptr_list[i]);
+		uninit_aperture_list(&layer_aptr_list[i]);
 	free(layer_aptr_list);
 	layer_aptr_list = NULL;
 	curr_aptr_list = NULL;
@@ -179,11 +179,11 @@ static void resetApertures()
 }
 
 /* Create and add a new aperture to the list */
-static Aperture *addAperture(ApertureList * list, pcb_coord_t width, ApertureShape shape)
+static aperture_t *add_aperture(aperture_list_t * list, pcb_coord_t width, aperture_shape_t shape)
 {
 	static int aperture_count;
 
-	Aperture *app = (Aperture *) malloc(sizeof *app);
+	aperture_t *app = (aperture_t *) malloc(sizeof *app);
 	if (app == NULL)
 		return NULL;
 
@@ -200,9 +200,9 @@ static Aperture *addAperture(ApertureList * list, pcb_coord_t width, ApertureSha
 
 /* Fetch an aperture from the list with the specified
  *  width/shape, creating a new one if none exists */
-static Aperture *findAperture(ApertureList * list, pcb_coord_t width, ApertureShape shape)
+static aperture_t *find_aperture(aperture_list_t * list, pcb_coord_t width, aperture_shape_t shape)
 {
-	Aperture *search;
+	aperture_t *search;
 
 	/* we never draw zero-width lines */
 	if (width == 0)
@@ -214,11 +214,11 @@ static Aperture *findAperture(ApertureList * list, pcb_coord_t width, ApertureSh
 			return search;
 
 	/* Failing that, create a new one */
-	return addAperture(list, width, shape);
+	return add_aperture(list, width, shape);
 }
 
 /* Output aperture data to the file */
-static void fprintAperture(FILE * f, Aperture * aptr)
+static void fprint_aperture(FILE * f, aperture_t * aptr)
 {
 	switch (aptr->shape) {
 	case ROUND:
@@ -236,15 +236,15 @@ static void fprintAperture(FILE * f, Aperture * aptr)
 
 /* Set the aperture list for the current layer,
  * expanding the list buffer if needed  */
-static ApertureList *setLayerApertureList(int layer_idx)
+static aperture_list_t *set_layer_aperture_list(int layer_idx)
 {
 	if (layer_idx >= layer_list_max) {
 		int i = layer_list_max;
 		layer_list_max = 2 * (layer_idx + 1);
-		layer_aptr_list = (ApertureList *)
+		layer_aptr_list = (aperture_list_t *)
 			realloc(layer_aptr_list, layer_list_max * sizeof(*layer_aptr_list));
 		for (; i < layer_list_max; ++i)
-			initApertureList(&layer_aptr_list[i]);
+			init_aperture_list(&layer_aptr_list[i]);
 	}
 	curr_aptr_list = &layer_aptr_list[layer_idx];
 	return curr_aptr_list;
@@ -588,8 +588,8 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 
 static int drill_sort(const void *va, const void *vb)
 {
-	PendingDrills *a = (PendingDrills *) va;
-	PendingDrills *b = (PendingDrills *) vb;
+	pending_drill_t *a = (pending_drill_t *) va;
+	pending_drill_t *b = (pending_drill_t *) vb;
 	if (a->diam != b->diam)
 		return a->diam - b->diam;
 	if (a->x != b->x)
@@ -597,10 +597,10 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
-static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal_t npd)
+static void drill_print_holes(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd)
 {
 	pcb_cardinal_t i;
-	Aperture *search;
+	aperture_t *search;
 
 	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
 	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
@@ -613,7 +613,7 @@ static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal
 	qsort(pd, npd, sizeof(pd[0]), drill_sort);
 	for (i = 0; i < npd; i++) {
 		if (i == 0 || pd[i].diam != pd[i - 1].diam) {
-			Aperture *ap = findAperture(apl, pd[i].diam, ROUND);
+			aperture_t *ap = find_aperture(apl, pd[i].diam, ROUND);
 			fprintf(f, "T%02d\r\n", ap->dCode);
 		}
 		if (pd[i].is_slot)
@@ -623,7 +623,7 @@ static void drill_print_holes(ApertureList *apl, PendingDrills *pd, pcb_cardinal
 	}
 }
 
-static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, PendingDrills **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd)
+static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd)
 {
 	const pcb_virt_layer_t *vl = pcb_vlayer_get_first(mask, purpose, purpi);
 
@@ -722,7 +722,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	ctx.view.Y2 = PCB->MaxHeight;
 
 	pagecount = 1;
-	resetApertures();
+	reset_apertures();
 
 	lastgroup = -1;
 	layer_list_idx = 0;
@@ -829,8 +829,8 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 	is_mask = !!(flags & PCB_LYT_MASK);
 	if (group < 0 || group != lastgroup) {
 		char utcTime[64];
-		ApertureList *aptr_list;
-		Aperture *search;
+		aperture_list_t *aptr_list;
+		aperture_t *search;
 
 		lastgroup = group;
 		lastX = -1;
@@ -839,7 +839,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		linewidth = -1;
 		lastcap = -1;
 
-		aptr_list = setLayerApertureList(layer_list_idx++);
+		aptr_list = set_layer_aperture_list(layer_list_idx++);
 
 		if (finding_apertures)
 			goto emit_outline;
@@ -910,7 +910,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		lncount = 1;
 
 		for (search = aptr_list->data; search; search = search->next)
-			fprintAperture(f, search);
+			fprint_aperture(f, search);
 		if (aptr_list->count == 0)
 			/* We need to put *something* in the file to make it be parsed
 			   as RS-274X instead of RS-274D. */
@@ -1018,7 +1018,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 	if (radius) {
 		radius *= 2;
 		if (radius != linewidth || lastcap != pcb_cap_round) {
-			Aperture *aptr = findAperture(curr_aptr_list, radius, ROUND);
+			aperture_t *aptr = find_aperture(curr_aptr_list, radius, ROUND);
 			if (aptr == NULL)
 				pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
 			else if (f && !is_drill)
@@ -1028,8 +1028,8 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		}
 	}
 	else if (linewidth != gc->width || lastcap != gc->cap) {
-		Aperture *aptr;
-		ApertureShape shape;
+		aperture_t *aptr;
+		aperture_shape_t shape;
 
 		linewidth = gc->width;
 		lastcap = gc->cap;
@@ -1044,7 +1044,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 			assert(!"unhandled cap");
 			shape = ROUND;
 		}
-		aptr = findAperture(curr_aptr_list, linewidth, shape);
+		aptr = find_aperture(curr_aptr_list, linewidth, shape);
 		if (aptr == NULL)
 			pcb_fprintf(stderr, "error: aperture for width %$mS type %s is null\n", linewidth, shape == ROUND ? "ROUND" : "SQUARE");
 		if (f && aptr)
@@ -1082,19 +1082,19 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static PendingDrills *new_pending_drill(void)
+static pending_drill_t *new_pending_drill(void)
 {
 	if (is_plated) {
 		if (n_pending_pdrills >= max_pending_pdrills) {
 			max_pending_pdrills += 100;
-			pending_pdrills = (PendingDrills *)realloc(pending_pdrills, max_pending_pdrills * sizeof(pending_pdrills[0]));
+			pending_pdrills = (pending_drill_t *)realloc(pending_pdrills, max_pending_pdrills * sizeof(pending_pdrills[0]));
 		}
 		return &pending_pdrills[n_pending_pdrills++];
 	}
 	else {
 		if (n_pending_udrills >= max_pending_udrills) {
 			max_pending_udrills += 100;
-			pending_udrills = (PendingDrills *)realloc(pending_udrills, max_pending_udrills * sizeof(pending_udrills[0]));
+			pending_udrills = (pending_drill_t *)realloc(pending_udrills, max_pending_udrills * sizeof(pending_udrills[0]));
 		}
 		return &pending_udrills[n_pending_udrills++];
 	}
@@ -1107,14 +1107,14 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 
 	if (line_slots) {
 		return; /* do not yet export slots until the whole excellon part is rewritten a bit */
-		PendingDrills *pd = new_pending_drill();
+		pending_drill_t *pd = new_pending_drill();
 		pcb_coord_t dia = gc->width/2;
 		pd->x = x1;
 		pd->y = y1;
 		pd->x2 = x2;
 		pd->y2 = y2;
 		pd->diam = dia*2;
-		findAperture(curr_aptr_list, dia, ROUND);
+		find_aperture(curr_aptr_list, dia, ROUND);
 		pd->is_slot = (x1 != x2) || (y1 != y2);
 		return;
 	}
@@ -1289,7 +1289,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		PendingDrills *pd = new_pending_drill();
+		pending_drill_t *pd = new_pending_drill();
 		pd->x = cx;
 		pd->y = cy;
 		pd->diam = radius * 2;
