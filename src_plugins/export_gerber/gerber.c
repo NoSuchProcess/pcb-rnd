@@ -654,8 +654,6 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi,
 		return;
 	}
 
-printf("drill file name: '%s'\n", filename);
-
 	if (*npd) {
 		drill_print_holes(apl, *pd, *npd);
 		free(*pd); *pd = NULL;
