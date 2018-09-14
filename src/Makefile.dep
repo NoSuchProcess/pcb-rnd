@@ -720,8 +720,10 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_cam.h \
  hid_attrib.h compat_misc.h safe_fs.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h macro.h funchash_core.h \
- funchash.h funchash_core_list.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_attrib.h hid_flags.h hid_inlines.h conf_core.h
+ funchash.h funchash_core_list.h \
+ ../src_plugins/export_gerber/gerber_conf.h conf.h hid.h hid_nogui.h \
+ hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h hid_inlines.h \
+ conf_core.h ../src_plugins/export_gerber/gerber_conf_fields.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
