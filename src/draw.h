@@ -26,18 +26,17 @@
  *
  */
 
-#ifndef	PCB_DRAW_H
-#define	PCB_DRAW_H
+#ifndef PCB_DRAW_H
+#define PCB_DRAW_H
 
 #include "config.h"
 #include "hid.h"
 
-typedef struct {								/* holds information about output window */
-	pcb_hid_gc_t drillGC,										/* drill and foreground; */
-	  fgGC,												/* changed from some routines */
-	  active_padGC, backpadGC, padGC, padselGC,						/* pads are drawn with this gc */
-	  pmGC;												/* depth 1 pixmap GC to store clip */
-	unsigned direct:1; /* starts as 1 and becomes 0 before the first compositing layer group is reset */
+/* holds information about output window */
+typedef struct {
+	pcb_hid_gc_t drillGC, fgGC, pmGC;                      /* changed from some routines */
+	pcb_hid_gc_t active_padGC, backpadGC, padGC, padselGC; /* pads are drawn with this gc */
+	unsigned direct:1;                                     /* starts as 1 and becomes 0 before the first compositing layer group is reset */
 } pcb_output_t;
 
 extern pcb_output_t pcb_draw_out;
