@@ -137,6 +137,8 @@ typedef struct {
 pending_drill_t *pending_udrills, *pending_pdrills = NULL;
 pcb_cardinal_t n_pending_udrills = 0, max_pending_udrills = 0;
 pcb_cardinal_t n_pending_pdrills = 0, max_pending_pdrills = 0;
+aperture_list_t apru, aprp;
+#define DRILL_APR (is_plated ? &aprp : &apru)
 
 /*----------------------------------------------------------------------------*/
 /* Defined Constants                                                          */
@@ -586,6 +588,18 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 	strcat(dest, sext);
 }
 
+static void drill_init()
+{
+	init_aperture_list(&apru);
+	init_aperture_list(&aprp);
+}
+
+static void drill_uninit()
+{
+	uninit_aperture_list(&apru);
+	uninit_aperture_list(&aprp);
+}
+
 static int drill_sort(const void *va, const void *vb)
 {
 	pending_drill_t *a = (pending_drill_t *) va;
@@ -623,7 +637,7 @@ static void drill_print_holes(aperture_list_t *apl, pending_drill_t *pd, pcb_car
 	}
 }
 
-static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd)
+static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd, aperture_list_t *apl)
 {
 	const pcb_virt_layer_t *vl = pcb_vlayer_get_first(mask, purpose, purpi);
 
@@ -643,7 +657,7 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi,
 printf("drill file name: '%s'\n", filename);
 
 	if (*npd) {
-		drill_print_holes(curr_aptr_list, *pd, *npd);
+		drill_print_holes(apl, *pd, *npd);
 		free(*pd); *pd = NULL;
 		*npd = *mpd = 0;
 	}
@@ -651,8 +665,8 @@ printf("drill file name: '%s'\n", filename);
 
 static void drill_export(void)
 {
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills);
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills, &aprp);
+	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills, &apru);
 }
 
 
@@ -668,6 +682,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
+
+	drill_init();
 
 	drawing_mode_issued = PCB_HID_COMP_POSITIVE;
 
@@ -747,6 +763,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	if (!gerber_cam.active)
 		drill_export();
+
+	drill_uninit();
 
 	/* in cam mode we have f still open */
 	maybe_close_f(f);
@@ -1114,7 +1132,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		pd->x2 = x2;
 		pd->y2 = y2;
 		pd->diam = dia*2;
-		find_aperture(curr_aptr_list, dia, ROUND);
+		find_aperture(DRILL_APR, dia, ROUND);
 		pd->is_slot = (x1 != x2) || (y1 != y2);
 		return;
 	}
@@ -1290,6 +1308,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 		return;
 	if (is_drill) {
 		pending_drill_t *pd = new_pending_drill();
+		find_aperture(DRILL_APR, radius*2, ROUND);
 		pd->x = cx;
 		pd->y = cy;
 		pd->diam = radius * 2;
