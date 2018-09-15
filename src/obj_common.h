@@ -96,6 +96,15 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 	pcb_coord_t bloat;   /* if non-zero, bloat (positive) or shrink (negative) by this value */
 } pcb_xform_t;
 
+#define pcb_xform_clear(dst)      memset(dst, 0, sizeof(pcb_xform_t))
+#define pcb_xform_copy(dst, src)  memcpy(dst, src, sizeof(pcb_xform_t))
+#define pcb_xform_add(dst, src) \
+	do { \
+		pcb_xform_t *__dst__ = dst; \
+		pcb_xform_t *__src__ = src; \
+		*__dst__->bloat += *__src__->bloat; \
+	} while(0)
+
 /* Return the user readable name of an object type in a string; never NULL */
 const char *pcb_obj_type_name(pcb_objtype_t type);
 
