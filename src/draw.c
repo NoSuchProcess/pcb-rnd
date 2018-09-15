@@ -613,7 +613,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t *screen, int *num_found)
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, num_found);
+		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, NULL, num_found);
 		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, num_found);
 		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, num_found);
 	}
@@ -689,7 +689,7 @@ void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_
 		if (Layer->line_tree != NULL)
 			for(o = pcb_rtree_first(&it, Layer->line_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_line_draw_callback((pcb_box_t *)o, Layer);
+					pcb_line_draw_callback((pcb_box_t *)o, NULL);
 		if (Layer->arc_tree != NULL)
 			for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
