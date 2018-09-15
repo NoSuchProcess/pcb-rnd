@@ -278,6 +278,7 @@ FEATURES
 		- remove cat, sed, grep where possible, use scconfig instead
 - BUG: arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
+	- similar with lines: bug_files/dwgarea.lht; grabbing the lines for move will force them to fall within the drawing area [report: pstuge]
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
 - FEATURE: while drawing a line, the temporary outline should reflect the layer color
 - FEATURE: push&shove
