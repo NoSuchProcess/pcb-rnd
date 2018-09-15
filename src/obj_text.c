@@ -1091,10 +1091,11 @@ void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term
 	}
 }
 
-static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_gfx)
+static void pcb_text_draw(pcb_text_t *text, int allow_term_gfx)
 {
 	int min_silk_line;
 	unsigned int flg = 0;
+	pcb_layer_t *layer = text->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
 		if (layer->is_bound) {
@@ -1138,7 +1139,7 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	pcb_text_draw(layer, text, 0);
+	pcb_text_draw(text, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1153,7 +1154,7 @@ pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	pcb_text_draw(layer, text, 1);
+	pcb_text_draw(text, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
