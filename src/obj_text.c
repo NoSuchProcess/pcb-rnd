@@ -994,7 +994,7 @@ static void pcb_text_draw_string_(pcb_font_t *font, const unsigned char *string,
 				if (xordraw)
 					pcb_gui->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
-					pcb_arc_draw_(&newarc, 0);
+					pcb_arc_draw_(info, &newarc, 0);
 			}
 
 			/* draw the polygons */

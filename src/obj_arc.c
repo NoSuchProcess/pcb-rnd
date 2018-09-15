@@ -873,8 +873,10 @@ void pcb_arc_draw_label(pcb_arc_t *arc)
 	}
 }
 
-void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
+void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
+	pcb_coord_t thickness = arc->Thickness;
+
 	if (!arc->Thickness)
 		return;
 
@@ -883,18 +885,24 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 		return;
 	}
 
+	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
+		thickness += info->xform->bloat;
+		if (thickness < 1)
+			thickness = 1;
+	}
+
 	PCB_DRAW_BBOX(arc);
 
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw)
 	{
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc)) {
 			pcb_hid_set_line_cap(pcb_draw_out.active_padGC, pcb_cap_round);
-			pcb_hid_set_line_width(pcb_draw_out.active_padGC, arc->Thickness);
+			pcb_hid_set_line_width(pcb_draw_out.active_padGC, thickness);
 			pcb_gui->draw_arc(pcb_draw_out.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, arc->Thickness);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, thickness);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 	}
@@ -915,7 +923,7 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 	}
 }
 
-static void pcb_arc_draw(pcb_arc_t *arc, int allow_term_gfx)
+static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -947,12 +955,13 @@ static void pcb_arc_draw(pcb_arc_t *arc, int allow_term_gfx)
 		color = buf;
 	}
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);
-	pcb_arc_draw_(arc, allow_term_gfx);
+	pcb_arc_draw_(info, arc, allow_term_gfx);
 }
 
 pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *)b;
+	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -960,13 +969,14 @@ pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_arc_draw(arc, 0);
+	pcb_arc_draw(info, arc, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 pcb_r_dir_t pcb_arc_draw_term_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *)b;
+	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -974,7 +984,7 @@ pcb_r_dir_t pcb_arc_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_arc_draw(arc, 1);
+	pcb_arc_draw(info, arc, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

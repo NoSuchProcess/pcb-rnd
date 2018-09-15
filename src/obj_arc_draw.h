@@ -28,13 +28,15 @@
 
 /*** Standard draw of arcs ***/
 
+#include "draw.h"
+
 /* Include rtree.h for this */
 #ifdef PCB_RTREE_H
 pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl);
 pcb_r_dir_t pcb_arc_draw_term_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx);
+void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx);
 void pcb_arc_invalidate_erase(pcb_arc_t *Arc);
 void pcb_arc_invalidate_draw(pcb_layer_t *Layer, pcb_arc_t *Arc);
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc);
