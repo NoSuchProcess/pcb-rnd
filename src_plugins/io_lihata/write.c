@@ -893,8 +893,10 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 				pcb_layer_type_map(lyt & (~PCB_LYT_ANYTHING), flags, build_layer_stack_flag);
 				lht_dom_hash_put(flags, build_text("outline", "1"));
 				outlines++;
-				if (outlines > 1)
-					return pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save multiple outline layer groups in lihata board version below v6", "Save in lihata board v6");
+				if (outlines > 1) {
+					pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save multiple outline layer groups in lihata board version below v6", "Save in lihata board v6");
+					return NULL;
+				}
 			}
 			else if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH) || (lyt & PCB_LYT_BOUNDARY)) {
 				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH | PCB_LYT_BOUNDARY);
