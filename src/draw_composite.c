@@ -31,7 +31,7 @@
 
 typedef struct comp_ctx_s {
 	pcb_draw_info_t *info;
-	pcb_layergrp_t *grp;
+	const pcb_layergrp_t *grp;
 	pcb_layergrp_id_t gid;
 	const char *color;
 
@@ -146,7 +146,7 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 		comp_start_add(ctx);
 }
 
-int pcb_draw_layergrp_is_comp(pcb_layergrp_t *g)
+int pcb_draw_layergrp_is_comp(const pcb_layergrp_t *g)
 {
 	int n;
 

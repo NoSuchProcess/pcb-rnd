@@ -126,7 +126,7 @@ typedef struct pcb_draw_info_s {
 int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
 
 /* Returns whether a group is composite-drawn */
-int pcb_draw_layergrp_is_comp(pcb_layergrp_t *g);
+int pcb_draw_layergrp_is_comp(const pcb_layergrp_t *g);
 
 /* Draw (render) or invalidate a terminal label */
 void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn);

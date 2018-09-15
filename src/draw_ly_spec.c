@@ -197,7 +197,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 {
 	int count = 0;
 	pcb_layergrp_id_t gid, goutid;
-	pcb_layergrp_t *g, *goutl = NULL;
+	const pcb_layergrp_t *g, *goutl = NULL;
 	pcb_layer_t *uslot = NULL, *pslot = NULL;
 	int uscore = 0, pscore = 0;
 	int plated, unplated;
