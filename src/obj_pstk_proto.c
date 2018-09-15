@@ -155,7 +155,6 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 
 		if (lyt & PCB_LYT_MECH) {
 			int purpi;
-			pcb_board_t *pcb;
 			if (has_slot) {
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple mechanical objects (slots) are not allowed\n");
