@@ -566,7 +566,7 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 {
 	unsigned int lflg = 0;
-	int may_have_delayed = 0, has_xform = 0;
+	int may_have_delayed = 0;
 	pcb_xform_t xform;
 
 	info->layer = Layer;
