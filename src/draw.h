@@ -89,19 +89,18 @@ void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 void pcb_draw(void);
 void pcb_redraw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
-void pcb_draw_layer(pcb_layer_t *ly, const pcb_box_t *screen, int *num_found);
+void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_box_t *screen, int *num_found);
 
 /* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
    objects that are not in the subtree of data - useful for drawing a subtree,
    e.g. a subc only */
-void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data);
+void pcb_draw_layer_under(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data);
 
 /* Composite draw all layer groups matching lyt/purpi/purpose */
 void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const char *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
 
 
 void pcb_erase_obj(int, void *, void *);
-void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area);
 
 /*#define PCB_BBOX_DEBUG*/
@@ -118,8 +117,9 @@ void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area);
 
 /* Some low level draw callback depend on this in their void *cl */
 typedef struct pcb_draw_info_s {
+	const pcb_board_t *pcb;
 	const pcb_box_t *drawn_area;
-	pcb_layer_t *layer;
+	const pcb_layer_t *layer;
 } pcb_draw_info_t;
 
 /* Returns whether lay_id is part of a group that is composite-drawn */

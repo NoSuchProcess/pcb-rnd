@@ -1674,7 +1674,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
 		if (layer->meta.bound.type & PCB_LYT_COPPER)
-			pcb_draw_layer_under(layer, drawn_area, sc->data);
+			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data);
 	}
 
 	/* draw padstacks */
@@ -1697,7 +1697,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
 		if (layer->meta.bound.type & (PCB_LYT_SILK | PCB_LYT_BOUNDARY | PCB_LYT_MECH | PCB_LYT_DOC))
-			pcb_draw_layer_under(layer, drawn_area, sc->data);
+			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data);
 	}
 
 	/* padstack mark goes on top */

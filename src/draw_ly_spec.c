@@ -36,34 +36,33 @@
 static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
 {
 	if (PCB->pstk_on)
-		pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
+		pcb_draw_pstks(ctx->info, ctx->gid, 0, PCB_LYC_AUTO);
 }
 
-static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
+static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 {
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 	pcb_layer_t *ly = NULL;
 
-	pcb_layergrp_list(PCB, PCB_LYT_PASTE | side_lyt, &gid, 1);
+	pcb_layergrp_list(info->pcb, PCB_LYT_PASTE | side_lyt, &gid, 1);
 
-	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid);
 
 	if (cctx.grp->len > 0)
-		ly = pcb_get_layer(PCB->Data, cctx.grp->lid[0]);
+		ly = pcb_get_layer(info->pcb->Data, cctx.grp->lid[0]);
 
-	cctx.pcb = PCB;
-	cctx.screen = drawn_area;
+	cctx.info = info;
 	cctx.gid = gid;
 	cctx.color = ly != NULL ? ly->meta.real.color : conf_core.appearance.color.paste;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-add */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 	else {
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
@@ -75,10 +74,10 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 {
 	if (PCB->pstk_on)
-		pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
+		pcb_draw_pstks(ctx->info, ctx->gid, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
 }
 
-static void pcb_draw_mask(int side, const pcb_box_t *screen)
+static void pcb_draw_mask(pcb_draw_info_t *info, int side)
 {
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
@@ -92,9 +91,7 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	if (cctx.grp->len > 0)
 		ly = pcb_get_layer(PCB->Data, cctx.grp->lid[0]);
 
-	cctx.pcb = PCB;
-	cctx.screen = screen;
-
+	cctx.info = info;
 	cctx.gid = gid;
 	cctx.color = ly != NULL ? ly->meta.real.color : conf_core.appearance.color.mask;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
@@ -119,7 +116,7 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 {
 	if (PCB->pstk_on)
-		pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
+		pcb_draw_pstks(ctx->info, ctx->gid, 0, PCB_LYC_AUTO);
 }
 
 static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
@@ -133,34 +130,33 @@ static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
 	return 0;
 }
 
-static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
+static void pcb_draw_silk(pcb_draw_info_t *info, unsigned long lyt_side)
 {
 	pcb_layer_id_t lid;
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 
-	if (pcb_layer_list(PCB, PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
+	if (pcb_layer_list(info->pcb, PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
 		return;
 
-	pcb_layergrp_list(PCB, PCB_LYT_SILK | lyt_side, &gid, 1);
-	if (!PCB->LayerGroups.grp[gid].vis)
+	pcb_layergrp_list(info->pcb, PCB_LYT_SILK | lyt_side, &gid, 1);
+	if (!info->pcb->LayerGroups.grp[gid].vis)
 		return;
 
-	cctx.pcb = PCB;
-	cctx.screen = drawn_area;
-	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.info = info;
+	cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid);
 	cctx.gid = gid;
-	cctx.color = PCB->Data->Layer[lid].meta.real.color;
+	cctx.color = info->pcb->Data->Layer[lid].meta.real.color;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
 	if (pcb_is_silk_old_style(&cctx, lid)) {
 		/* fallback: implicit layer -> original code: draw auto+manual */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
-		pcb_draw_layer(LAYER_PTR(lid), cctx.screen, NULL);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		pcb_draw_layer(info->pcb, LAYER_PTR(lid), info->drawn_area, NULL);
 		pcb_draw_silk_auto(&cctx, &lyt_side);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 	else {
 		comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
@@ -168,7 +164,7 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	}
 }
 
-static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore, int *pscore, pcb_layergrp_t *g, pcb_layer_t *ly)
+static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore, int *pscore, const pcb_layergrp_t *g, pcb_layer_t *ly)
 {
 	int score;
 	pcb_layer_t **dslot;
@@ -197,7 +193,7 @@ static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore,
 	}
 }
 
-static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
+static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 {
 	int count = 0;
 	pcb_layergrp_id_t gid, goutid;
@@ -207,16 +203,15 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 	int plated, unplated;
 	comp_ctx_t cctx;
 
-	cctx.pcb = PCB;
-	cctx.screen = drawn_area;
+	cctx.info = info;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
 
-	for(gid = 0, g = PCB->LayerGroups.grp; gid < PCB->LayerGroups.len; gid++,g++) {
+	for(gid = 0, g = info->pcb->LayerGroups.grp; gid < info->pcb->LayerGroups.len; gid++,g++) {
 		int n, numobj;
 
-		if ((g->ltype & PCB_LYT_BOUNDARY) && (g->purpi = F_uroute)) {
+		if ((g->ltype & PCB_LYT_BOUNDARY) && (g->purpi == F_uroute)) {
 			goutl = g;
 			goutid = gid;
 		}
@@ -248,14 +243,14 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 			cctx.grp = g;
 
 			/* boundary does NOT support compisiting, everything is drawn in positive */
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
 				cctx.color = ly->meta.real.color;
-				pcb_draw_layer(ly, cctx.screen, NULL);
+				pcb_draw_layer(info->pcb, ly, info->drawn_area, NULL);
 			}
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		}
 	}
 
@@ -264,37 +259,37 @@ static void pcb_draw_boundary_mech(const pcb_box_t *drawn_area)
 		   We should check for pcb_gui->gui here, but it's kinda cool seeing the
 		   auto-outline magically disappear when you first add something to
 		   the outline layer.  */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 
 		pcb_gui->set_color(pcb_draw_out.fgGC, PCB->Data->Layer[goutl->lid[0]].meta.real.color);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 
 	/* draw slots */
 	if (((uslot == NULL) || (!uslot->meta.real.vis)) && ((pslot == NULL) || (!pslot->meta.real.vis)))
 		return;
 
-	pcb_board_count_slots(PCB, &plated, &unplated, drawn_area);
+	pcb_board_count_slots(PCB, &plated, &unplated, info->drawn_area);
 
 	if ((uslot != NULL) && (uslot->meta.real.vis)) {
 		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, unplated > 0)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
-			pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_draw_pstk_slots(info, CURRENT->meta.real.grp, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		}
 	}
 	if ((pslot != NULL) && (pslot->meta.real.vis)) {
 		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, plated > 0)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
-			pcb_draw_pstk_slots(CURRENT->meta.real.grp, drawn_area, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_draw_pstk_slots(info, CURRENT->meta.real.grp, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		}
 	}
 }
@@ -310,7 +305,7 @@ static void pcb_draw_rats(const pcb_box_t *drawn_area)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 
-static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area)
+static void pcb_draw_assembly(pcb_draw_info_t *info, unsigned int lyt_side)
 {
 	pcb_layergrp_id_t side_group;
 
@@ -319,10 +314,10 @@ static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area
 
 	pcb_draw_doing_assy = pcb_true;
 	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
-	DrawLayerGroup(side_group, drawn_area, 0);
+	DrawLayerGroup(info, side_group, 0);
 	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */
-	pcb_draw_silk(lyt_side, drawn_area);
+	pcb_draw_silk(info, lyt_side);
 	pcb_draw_doing_assy = pcb_false;
 }

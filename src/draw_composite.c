@@ -30,8 +30,7 @@
    using positive and negative draw operations. Included from draw.c. */
 
 typedef struct comp_ctx_s {
-	pcb_board_t *pcb;
-	const pcb_box_t *screen;
+	pcb_draw_info_t *info;
 	pcb_layergrp_t *grp;
 	pcb_layergrp_id_t gid;
 	const char *color;
@@ -43,26 +42,26 @@ typedef struct comp_ctx_s {
 static void comp_fill_board(comp_ctx_t *ctx)
 {
 	pcb_gui->set_color(pcb_draw_out.fgGC, ctx->color);
-	if (ctx->screen == NULL)
-		pcb_gui->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->pcb->MaxWidth, ctx->pcb->MaxHeight);
+	if (ctx->info->drawn_area == NULL)
+		pcb_gui->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->MaxWidth, ctx->info->pcb->MaxHeight);
 	else
-		pcb_gui->fill_rect(pcb_draw_out.fgGC, ctx->screen->X1, ctx->screen->Y1, ctx->screen->X2, ctx->screen->Y2);
+		pcb_gui->fill_rect(pcb_draw_out.fgGC, ctx->info->drawn_area->X1, ctx->info->drawn_area->Y1, ctx->info->drawn_area->X2, ctx->info->drawn_area->Y2);
 }
 
 static void comp_start_sub_(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_start_add_(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		pcb_gui->set_color(pcb_draw_out.pmGC, ctx->color);
 		return;
 	}
@@ -76,7 +75,7 @@ static void comp_start_sub(comp_ctx_t *ctx)
 static void comp_start_add(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		return;
 	}
 
@@ -89,16 +88,16 @@ static void comp_start_add(comp_ctx_t *ctx)
 static void comp_finish(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->info->drawn_area);
 		return;
 	}
 
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, ctx->info->drawn_area);
 
 	if (ctx->thin)
 		return;
@@ -108,7 +107,7 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 
 	if ((!ctx->thin) && (negative)) {
 		/* drawing the big poly for the negative */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		comp_fill_board(ctx);
 	}
 }
@@ -139,7 +138,7 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 			pcb_draw_out.fgGC = pcb_draw_out.pmGC;
 			if (l->comb & PCB_LYC_AUTO)
 				draw_auto(ctx, auto_data);
-			pcb_draw_layer(l, ctx->screen, NULL);
+			pcb_draw_layer(ctx->info->pcb, l, ctx->info->drawn_area, NULL);
 			pcb_draw_out.fgGC = old_fg;
 		}
 	}
@@ -182,15 +181,19 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 static void pcb_draw_groups_auto(comp_ctx_t *ctx, void *lym)
 {
 	pcb_layer_type_t *pstk_lyt_match = (pcb_layer_type_t *)lym;
-	if ((ctx->pcb->pstk_on) && (*pstk_lyt_match != 0))
-		pcb_draw_pstks(ctx->gid, ctx->screen, 0, *pstk_lyt_match);
+	if ((ctx->info->pcb->pstk_on) && (*pstk_lyt_match != 0))
+		pcb_draw_pstks(ctx->info, ctx->gid, 0, *pstk_lyt_match);
 }
 
 void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const char *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
 {
+	pcb_draw_info_t info;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	comp_ctx_t cctx;
+
+	info.pcb = pcb;
+	info.drawn_area = screen;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		pcb_layer_t *ly = NULL;
@@ -206,9 +209,9 @@ void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *pu
 
 		if (g->len > 0)
 			ly = pcb_get_layer(PCB->Data, g->lid[0]);
-		cctx.pcb = pcb;
+		info.layer = ly;
 		cctx.grp = g;
-		cctx.screen = screen;
+		cctx.info = &info;
 		cctx.gid = gid;
 		cctx.color = ly != NULL ? ly->meta.real.color : default_color;
 		cctx.thin = thin_draw;
