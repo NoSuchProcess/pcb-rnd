@@ -34,10 +34,11 @@
 #include "hid.h"
 #include "pcb_bool.h"
 #include "global_typedefs.h"
+#include "draw.h"
 
 /* fab */
 extern int (*pcb_stub_draw_fab_overhang)(void);
-extern void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
+extern void (*pcb_stub_draw_fab)(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 /* csect */
 extern void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);

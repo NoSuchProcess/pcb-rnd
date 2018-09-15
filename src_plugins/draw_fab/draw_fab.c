@@ -200,13 +200,11 @@ static void draw_fab_layer(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid
 	}
 }
 
-static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_drill_info_t *AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0, found;
 	char utcTime[64];
-#warning TODO: get this as an arg
-	pcb_draw_info_t *info = NULL;
 
 	AllDrills = drill_get_info(PCB->Data);
 	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)

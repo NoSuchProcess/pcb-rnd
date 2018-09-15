@@ -31,7 +31,7 @@
 #include "obj_text_draw.h"
 
 /****** common code ******/
-void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
+void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
 {
 	pcb_text_t t;
 
@@ -44,7 +44,7 @@ void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
 	t.fid = 0; /* use the default font */
 	t.Scale = 150;
 	t.Flags = pcb_no_flags();
-	pcb_text_draw_(NULL, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
+	pcb_text_draw_(info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 }
 
 static pcb_bool dummy_mouse(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
@@ -60,13 +60,13 @@ int dummy_DrawFab_overhang(void)
 	return 0;
 }
 
-void dummy_DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+void dummy_DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	dummy_draw_text(gc, "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded");
+	dummy_draw_text(info, gc, "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded");
 }
 
 int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
-void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_DrawFab;
+void (*pcb_stub_draw_fab)(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_DrawFab;
 
 
 /****** csect - cross section of the board ******/
@@ -74,7 +74,7 @@ void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dumm
 
 static void dummy_draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	dummy_draw_text(gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
+	dummy_draw_text(NULL, gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
 }
 
 
@@ -85,7 +85,7 @@ pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, 
 /****** font selector GUI ******/
 static void dummy_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	dummy_draw_text(gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
+	dummy_draw_text(NULL, gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
 
 static pcb_text_t *dummy_fontsel_text = NULL;

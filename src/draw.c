@@ -212,7 +212,7 @@ static void draw_virtual_layers(pcb_draw_info_t *info)
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0)) {
-		pcb_stub_draw_fab(pcb_draw_out.fgGC, &hid_exp);
+		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
 
