@@ -549,7 +549,7 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 		pcb_box_t *b = (pcb_box_t *)o;
 		switch(o->type) {
 			case PCB_OBJ_ARC:  pcb_arc_draw_term_callback(b, NULL); break;
-			case PCB_OBJ_LINE: pcb_line_draw_term_callback(b, info->layer); break;
+			case PCB_OBJ_LINE: pcb_line_draw_term_callback(b, NULL); break;
 			case PCB_OBJ_TEXT: pcb_text_draw_term_callback(b, info->layer); break;
 			case PCB_OBJ_POLY: pcb_poly_draw_term_callback(b, info); break;
 			default:
@@ -606,7 +606,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t *screen, int *num_found)
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = pcb_true;
-		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, Layer, num_found);
+		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, NULL, num_found);
 		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, NULL, num_found);
 		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_term_callback, Layer, num_found);
 		delayed_terms_enabled = pcb_false;
@@ -675,7 +675,7 @@ void pcb_draw_layer_under(pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_
 		if (Layer->line_tree != NULL)
 			for(o = pcb_rtree_first(&it, Layer->line_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_line_draw_term_callback((pcb_box_t *)o, Layer);
+					pcb_line_draw_term_callback((pcb_box_t *)o, NULL);
 		if (Layer->arc_tree != NULL)
 			for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
