@@ -1059,10 +1059,11 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 	}
 }
 
-static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
+static void pcb_poly_draw(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
 	static const char *color;
 	char buf[sizeof("#XXXXXX")];
+	pcb_layer_t *layer = polygon->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = conf_core.appearance.color.warn;
@@ -1105,7 +1106,7 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_poly_draw(i->layer, polygon, i->drawn_area, 0);
+	pcb_poly_draw(polygon, i->drawn_area, 0);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -1124,7 +1125,7 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_poly_draw(i->layer, polygon, i->drawn_area, 1);
+	pcb_poly_draw(polygon, i->drawn_area, 1);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
