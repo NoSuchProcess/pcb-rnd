@@ -630,7 +630,7 @@ error:
 	return 1;
 }
 
-int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, pcb_layergrp_t *grp, int is_empty)
+int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty)
 {
 	/* if there's no GUI, that means no draw should be done */
 	if (pcb_gui == NULL)
