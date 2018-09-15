@@ -154,7 +154,7 @@ static void pcb_draw_silk(pcb_draw_info_t *info, unsigned long lyt_side)
 		/* fallback: implicit layer -> original code: draw auto+manual */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		pcb_draw_layer(info->pcb, LAYER_PTR(lid), info->drawn_area);
+		pcb_draw_layer(info, LAYER_PTR(lid));
 		pcb_draw_silk_auto(&cctx, &lyt_side);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
@@ -238,7 +238,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
-				pcb_draw_layer(info->pcb, ly, info->drawn_area);
+				pcb_draw_layer(info, ly);
 			}
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		}

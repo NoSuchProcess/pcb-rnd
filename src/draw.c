@@ -247,7 +247,7 @@ static void draw_ui_layers(pcb_draw_info_t *info)
 					pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 					have_canvas = 1;
 				}
-				pcb_draw_layer(info->pcb, ly, info->drawn_area);
+				pcb_draw_layer(info, ly);
 			}
 		}
 		if (have_canvas)
@@ -563,25 +563,12 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 #include "draw_composite.c"
 #include "draw_ly_spec.c"
 
-void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
+void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 {
-	pcb_draw_info_t info;
-	pcb_box_t scr2;
 	unsigned int lflg = 0;
 	int may_have_delayed = 0;
 
-	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
-		scr2 = *screen;
-		screen = &scr2;
-		if (scr2.X2 <= scr2.X1)
-			scr2.X2 = scr2.X1+1;
-		if (scr2.Y2 <= scr2.Y1)
-			scr2.Y2 = scr2.Y1+1;
-	}
-
-	info.pcb = pcb;
-	info.drawn_area = screen;
-	info.layer = Layer;
+	info->layer = Layer;
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
@@ -594,12 +581,12 @@ void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 		delayed_terms_enabled = pcb_true;
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 1);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_term_callback, &info, NULL);
+		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_term_callback, info, NULL);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, NULL);
+		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_callback, info, NULL);
 	}
 
 	if (conf_core.editor.check_planes)
@@ -608,24 +595,48 @@ void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = pcb_true;
-		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, &info, NULL);
-		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, &info, NULL);
-		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_term_callback, &info, NULL);
+		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
+		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
+		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, &info, NULL);
-		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, &info, NULL);
-		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, &info, NULL);
+		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_callback, info, NULL);
+		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_callback, info, NULL);
+		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
 	}
 
 	if (may_have_delayed)
-		pcb_draw_delayed_objs(&info);
+		pcb_draw_delayed_objs(info);
 
 	out:;
 		pcb_draw_out.active_padGC = NULL;
+
+	info->layer = NULL;
 }
+
+void pcb_draw_layer_noxform(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
+{
+	pcb_draw_info_t info;
+	pcb_box_t scr2;
+
+	info.pcb = pcb;
+	info.drawn_area = screen;
+
+	/* fix screen coord order */
+	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
+		scr2 = *screen;
+		info.drawn_area = &scr2;
+		if (scr2.X2 <= scr2.X1)
+			scr2.X2 = scr2.X1+1;
+		if (scr2.Y2 <= scr2.Y1)
+			scr2.Y2 = scr2.Y1+1;
+	}
+
+	pcb_draw_layer(&info, Layer);
+}
+
 
 /* This version is about 1% slower and used rarely, thus it's all dupped
    from pcb_draw_layer() to keep the original speed there */
@@ -728,7 +739,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 		layernum = layers[i];
 		Layer = info->pcb->Data->Layer + layernum;
 		if (!(gflg & PCB_LYT_SILK) && Layer->meta.real.vis)
-			pcb_draw_layer(info->pcb, Layer, info->drawn_area);
+			pcb_draw_layer(info, Layer);
 	}
 
 	if ((gflg & PCB_LYT_COPPER) && (PCB->pstk_on))
@@ -975,7 +986,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	else if ((e->content.layer_id >= 0) && (e->content.layer_id < pcb_max_layer)) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
-		pcb_draw_layer(PCB, &(PCB->Data->Layer[e->content.layer_id]), &e->view);
+		pcb_draw_layer_noxform(PCB, &(PCB->Data->Layer[e->content.layer_id]), &e->view);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
 	}
 	else

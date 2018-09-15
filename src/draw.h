@@ -41,6 +41,16 @@ typedef struct {
 
 extern pcb_output_t pcb_draw_out;
 
+/* Some low level draw callback depend on this in their void *cl */
+typedef struct pcb_draw_info_s {
+	const pcb_board_t *pcb;
+	const pcb_box_t *drawn_area;
+	const pcb_xform_t *xform_caller;       /* the extra transformation the caller requested */
+	pcb_xform_t *xform;                    /* the final transformation applied on objects */
+
+	const pcb_layer_t *layer;
+} pcb_draw_info_t;
+
 /* Temporarily inhibid drawing if this is non-zero. A function that calls a
    lot of other functions that would call pcb_draw() a lot in turn may increase
    this value before the calls, then decrease it at the end and call pcb_draw().
@@ -89,7 +99,8 @@ void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 void pcb_draw(void);
 void pcb_redraw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
-void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_box_t *screen);
+void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *ly);
+void pcb_draw_layer_noxform(const pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_box_t *screen);
 
 /* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
    objects that are not in the subtree of data - useful for drawing a subtree,
@@ -115,15 +126,6 @@ void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area);
 #define PCB_DRAW_BBOX(obj)
 #endif
 
-/* Some low level draw callback depend on this in their void *cl */
-typedef struct pcb_draw_info_s {
-	const pcb_board_t *pcb;
-	const pcb_box_t *drawn_area;
-	const pcb_xform_t *xform_caller;       /* the extra transformation the caller requested */
-	pcb_xform_t *xform;                    /* the final transformation applied on objects */
-
-	const pcb_layer_t *layer;
-} pcb_draw_info_t;
 
 /* Returns whether lay_id is part of a group that is composite-drawn */
 int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
