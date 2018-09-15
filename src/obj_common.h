@@ -104,6 +104,7 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 		pcb_xform_t *__src__ = src; \
 		*__dst__->bloat += *__src__->bloat; \
 	} while(0)
+#define pcb_xform_is_nop(src) ((src)->bloat == 0)
 
 /* Return the user readable name of an object type in a string; never NULL */
 const char *pcb_obj_type_name(pcb_objtype_t type);
