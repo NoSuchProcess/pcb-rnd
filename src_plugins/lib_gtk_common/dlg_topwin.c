@@ -405,14 +405,14 @@ static gboolean resize_grip_expose(GtkWidget *area, GdkEventExpose *event, GdkWi
 	gint size = MIN(area->allocation.width, area->allocation.height);
 
 	gtk_paint_resize_grip(area->style,
-			area->window,
-			gtk_widget_get_state(area),
-			&event->area,
-			area,
-			"statusline",
-			edge,
-			0, area->allocation.height - size,
-			size, size);
+		area->window,
+		gtk_widget_get_state(area),
+		&event->area,
+		area,
+		"statusline",
+		edge,
+		0, area->allocation.height - size,
+		size, size);
 	return TRUE;
 }
 
@@ -422,15 +422,15 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 		return TRUE;
 
 	switch (event->button) {
-	case 1:
-		gtk_window_begin_resize_drag(GTK_WINDOW(gtk_widget_get_toplevel(area)), edge,
+		case 1:
+			gtk_window_begin_resize_drag(GTK_WINDOW(gtk_widget_get_toplevel(area)), edge,
 				event->button, event->x_root, event->y_root, event->time);
-		break;
+			break;
 
-	case 2:
-		gtk_window_begin_move_drag(GTK_WINDOW(gtk_widget_get_toplevel(area)),
-				event->button, event->x_root, event->y_root, event->time);
-		break;
+		case 2:
+			gtk_window_begin_move_drag(GTK_WINDOW(gtk_widget_get_toplevel(area)),
+					event->button, event->x_root, event->y_root, event->time);
+			break;
 	}
 
 	return TRUE;
@@ -575,9 +575,9 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
 	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip, FALSE, FALSE, 0);
 	g_signal_connect(resize_grip, "expose_event", G_CALLBACK(resize_grip_expose),
-			GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
+		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
 	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press),
-			GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
+		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
 
 	/* Depending on user setting, the command_combo_box may get packed into
 	   |  the status_line_hbox, but it will happen on demand the first time
