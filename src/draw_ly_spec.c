@@ -201,12 +201,6 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 	pcb_layer_t *uslot = NULL, *pslot = NULL;
 	int uscore = 0, pscore = 0;
 	int plated, unplated;
-	comp_ctx_t cctx;
-
-	cctx.info = info;
-	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
-	cctx.invert = 0;
-
 
 	for(gid = 0, g = info->pcb->LayerGroups.grp; gid < info->pcb->LayerGroups.len; gid++,g++) {
 		int n, numobj;
@@ -239,15 +233,11 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		count += numobj;
 
 		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0))) {
-			cctx.gid = gid;
-			cctx.grp = g;
-
 			/* boundary does NOT support compisiting, everything is drawn in positive */
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
-				cctx.color = ly->meta.real.color;
 				pcb_draw_layer(info->pcb, ly, info->drawn_area, NULL);
 			}
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
