@@ -98,14 +98,14 @@ int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, pcb_layergrp_t *grp, int is_e
 int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty);
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
-unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t group_idx);
+unsigned int pcb_layergrp_flags(const pcb_board_t *pcb, pcb_layergrp_id_t group_idx);
 const char *pcb_layergrp_name(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 
 /* Same as pcb_layer_list but lists layer groups. A group is matching
    if any layer in that group matches mask. */
-int pcb_layergrp_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
-int pcb_layergrp_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len, int purpi, const char *purpose);
-int pcb_layergrp_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
+int pcb_layergrp_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
+int pcb_layergrp_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len, int purpi, const char *purpose);
+int pcb_layergrp_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
 
 /* Put a layer in a group (the layer should not be in any other group);
    returns 0 on success */

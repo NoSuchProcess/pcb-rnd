@@ -184,7 +184,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, 
 	return gid;
 }
 
-unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t gid)
+unsigned int pcb_layergrp_flags(const pcb_board_t *pcb, pcb_layergrp_id_t gid)
 {
 
 	if ((gid < 0) || (gid >= pcb->LayerGroups.len))
@@ -660,7 +660,7 @@ int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_emp
 			used++; \
 	} while(0)
 
-int pcb_layergrp_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
+int pcb_layergrp_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, used = 0;
 	for (group = 0; group < pcb->LayerGroups.len; group++) {
@@ -670,10 +670,10 @@ int pcb_layergrp_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t
 	return used;
 }
 
-int pcb_layergrp_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len, int purpi, const char *purpose)
+int pcb_layergrp_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len, int purpi, const char *purpose)
 {
 	int group, used = 0;
-	pcb_layergrp_t *g;
+	const pcb_layergrp_t *g;
 	for (group = 0, g = pcb->LayerGroups.grp; group < pcb->LayerGroups.len; group++,g++) {
 		if ((pcb_layergrp_flags(pcb, group) & mask) == mask) {
 			if (((purpose == NULL) || (strcmp(purpose, g->purpose) == 0)) && ((purpi == -1) || (purpi == g->purpi))) {
@@ -684,7 +684,7 @@ int pcb_layergrp_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_
 	return used;
 }
 
-int pcb_layergrp_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
+int pcb_layergrp_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, used = 0;
 	for (group = 0; group < pcb->LayerGroups.len; group++) {
