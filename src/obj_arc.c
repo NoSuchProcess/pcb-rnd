@@ -915,10 +915,11 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 	}
 }
 
-static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gfx)
+static void pcb_arc_draw(pcb_arc_t *arc, int allow_term_gfx)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
+	pcb_layer_t *layer = arc->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
 		color = conf_core.appearance.color.warn;
@@ -959,7 +960,7 @@ pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_arc_draw((pcb_layer_t *)cl, arc, 0);
+	pcb_arc_draw(arc, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -973,7 +974,7 @@ pcb_r_dir_t pcb_arc_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_arc_draw((pcb_layer_t *)cl, arc, 1);
+	pcb_arc_draw(arc, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
