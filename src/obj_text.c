@@ -1130,7 +1130,6 @@ static void pcb_text_draw(pcb_text_t *text, int allow_term_gfx)
 
 pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 {
-	pcb_layer_t *layer = cl;
 	pcb_text_t *text = (pcb_text_t *) b;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
@@ -1145,7 +1144,6 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 
 pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
 {
-	pcb_layer_t *layer = cl;
 	pcb_text_t *text = (pcb_text_t *) b;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
