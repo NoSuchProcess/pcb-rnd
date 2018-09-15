@@ -921,6 +921,7 @@ static void pcb_text_draw_string_(pcb_font_t *font, const unsigned char *string,
 {
 	pcb_coord_t x = 0;
 	pcb_cardinal_t n;
+	pcb_draw_info_t *info = NULL;
 
 	/* cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
@@ -967,7 +968,7 @@ static void pcb_text_draw_string_(pcb_font_t *font, const unsigned char *string,
 				if (xordraw)
 					pcb_gui->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
-					pcb_line_draw_(&newline, 0);
+					pcb_line_draw_(info, &newline, 0);
 			}
 
 			/* draw the arcs */

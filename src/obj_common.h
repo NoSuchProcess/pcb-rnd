@@ -101,8 +101,8 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 #define pcb_xform_add(dst, src) \
 	do { \
 		pcb_xform_t *__dst__ = dst; \
-		pcb_xform_t *__src__ = src; \
-		*__dst__->bloat += *__src__->bloat; \
+		const pcb_xform_t *__src__ = src; \
+		__dst__->bloat += __src__->bloat; \
 	} while(0)
 #define pcb_xform_is_nop(src) ((src)->bloat == 0)
 

@@ -566,9 +566,22 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 {
 	unsigned int lflg = 0;
-	int may_have_delayed = 0;
+	int may_have_delayed = 0, has_xform = 0;
+	pcb_xform_t xform;
 
 	info->layer = Layer;
+	if (!pcb_xform_is_nop(&Layer->meta.real.xform)) {
+		pcb_xform_copy(&xform, &Layer->meta.real.xform);
+		info->xform = &xform;
+	}
+	if (info->xform_caller != NULL) {
+		if (info->xform == NULL) {
+			info->xform = &xform;
+			pcb_xform_copy(&xform, info->xform_caller);
+		}
+		else
+			pcb_xform_add(&xform, info->xform_caller);
+	}
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
@@ -614,6 +627,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 		pcb_draw_out.active_padGC = NULL;
 
 	info->layer = NULL;
+	info->xform = NULL;
 }
 
 void pcb_draw_layer_noxform(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
@@ -623,6 +637,7 @@ void pcb_draw_layer_noxform(const pcb_board_t *pcb, const pcb_layer_t *Layer, co
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
+	info.xform_caller = NULL;
 
 	/* fix screen coord order */
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
@@ -659,7 +674,10 @@ void pcb_draw_layer_under(const pcb_board_t *pcb, const pcb_layer_t *Layer, cons
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
+	info.xform_caller = NULL;
 	info.layer = Layer;
+
+#warning TODO: xform comb
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
@@ -909,6 +927,7 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 		pcb_draw_info_t info;
 		info.pcb = PCB;
 		info.drawn_area = &ctx->view;
+		info.xform_caller = NULL;
 		info.layer = NULL;
 		draw_everything(&info);
 		expose_end(old_gui);

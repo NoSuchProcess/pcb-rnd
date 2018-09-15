@@ -1018,11 +1018,19 @@ void pcb_line_draw_label(pcb_line_t *line)
 }
 
 
-void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
+void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 {
+	pcb_coord_t thickness = line->Thickness;
+
 	if (delayed_terms_enabled && (line->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)line);
 		return;
+	}
+
+	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
+		thickness += info->xform->bloat;
+		if (thickness < 1)
+			thickness = 1;
 	}
 
 	PCB_DRAW_BBOX(line);
@@ -1030,12 +1038,12 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw) {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line)) {
 			pcb_hid_set_line_cap(pcb_draw_out.active_padGC, pcb_cap_round);
-			pcb_hid_set_line_width(pcb_draw_out.active_padGC, line->Thickness);
+			pcb_hid_set_line_width(pcb_draw_out.active_padGC, thickness);
 			pcb_gui->draw_line(pcb_draw_out.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
-			pcb_hid_set_line_width(pcb_draw_out.fgGC, line->Thickness);
+			pcb_hid_set_line_width(pcb_draw_out.fgGC, thickness);
 		pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
 	else {
@@ -1046,7 +1054,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 
 		if(conf_core.editor.wireframe_draw) { 
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-			pcb_draw_wireframe_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0);
+			pcb_draw_wireframe_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, thickness, 0);
 		}
 	}
 
@@ -1056,7 +1064,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 	}
 }
 
-static void pcb_line_draw(pcb_line_t *line, int allow_term_gfx)
+static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -1089,12 +1097,13 @@ static void pcb_line_draw(pcb_line_t *line, int allow_term_gfx)
 	}
 
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);
-	pcb_line_draw_(line, allow_term_gfx);
+	pcb_line_draw_(info, line, allow_term_gfx);
 }
 
 pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *)b;
+	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1102,13 +1111,14 @@ pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_line_draw(line, 0);
+	pcb_line_draw(info, line, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 pcb_r_dir_t pcb_line_draw_term_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *)b;
+	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1116,7 +1126,7 @@ pcb_r_dir_t pcb_line_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_line_draw(line, 1);
+	pcb_line_draw(info, line, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

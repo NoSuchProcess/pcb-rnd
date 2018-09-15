@@ -126,7 +126,7 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 	l.Thickness = PCB_MM_TO_COORD(thick);
 	if (l.Thickness == 0)
 		l.Thickness = 1;
-	pcb_line_draw_(&l, 0);
+	pcb_line_draw_(NULL, &l, 0);
 }
 
 /* draw a line of a specific thickness */
@@ -140,7 +140,7 @@ static void dline_(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y
 	l.Thickness = PCB_MM_TO_COORD(thick);
 	if (l.Thickness == 0)
 		l.Thickness = 1;
-	pcb_line_draw_(&l, 0);
+	pcb_line_draw_(NULL, &l, 0);
 }
 
 
