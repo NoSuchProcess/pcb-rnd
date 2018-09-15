@@ -13,7 +13,6 @@
 	- CAM syntax for purpose (Friday)
 	- slotting:
 		- check which I/O can handle it
-		- export G85 in excellon
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case) [report: Bdale]
 	- search for trdraw TODO:
 		- text poly rendering bloat
