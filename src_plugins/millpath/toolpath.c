@@ -217,7 +217,6 @@ static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result,
 
 static void trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs)
 {
-	int n;
 	pcb_coord_t tool_dia = result->tools->dia[tool_idx];
 
 	while(trace_contour(pcb, result, tool_idx, extra_offs) > 0)
