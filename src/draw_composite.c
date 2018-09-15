@@ -138,7 +138,7 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 			pcb_draw_out.fgGC = pcb_draw_out.pmGC;
 			if (l->comb & PCB_LYC_AUTO)
 				draw_auto(ctx, auto_data);
-			pcb_draw_layer(ctx->info->pcb, l, ctx->info->drawn_area, NULL);
+			pcb_draw_layer(ctx->info->pcb, l, ctx->info->drawn_area);
 			pcb_draw_out.fgGC = old_fg;
 		}
 	}

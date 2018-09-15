@@ -89,7 +89,7 @@ void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 void pcb_draw(void);
 void pcb_redraw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
-void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_box_t *screen, int *num_found);
+void pcb_draw_layer(const pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_box_t *screen);
 
 /* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
    objects that are not in the subtree of data - useful for drawing a subtree,
@@ -119,6 +119,9 @@ void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area);
 typedef struct pcb_draw_info_s {
 	const pcb_board_t *pcb;
 	const pcb_box_t *drawn_area;
+	const pcb_xform_t *xform_caller;       /* the extra transformation the caller requested */
+	pcb_xform_t xform;                     /* the final transformation applied on objects */
+
 	const pcb_layer_t *layer;
 } pcb_draw_info_t;
 
