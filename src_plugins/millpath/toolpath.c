@@ -162,7 +162,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		otlbb.X1 = otlbb.Y1 = PCB_MAX_COORD;
 		otlbb.X2 = otlbb.Y2 = -PCB_MAX_COORD;
 
-		for(lid = 0; lid < pcb->Data->Layer; lid++) {
+		for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 			pcb_layer_t *l;
 			if (!PCB_LAYER_IS_OUTLINE(pcb_layer_flags(PCB, lid), pcb_layer_purpose(PCB, lid, NULL)))
 				continue;
