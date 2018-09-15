@@ -7,10 +7,10 @@
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: introduce new layer types:
 	- replace the OUTLINE LYT with an unplated boundary
-		- doc layer rendering: respect sides and compositing
+		- doc layer rendering: respect sides and compositing (Friday)
 		- double check io_lihata compatibility
 	- revise io plugins to load/save them properly
-	- CAM syntax for purpose
+	- CAM syntax for purpose (Friday)
 	- slotting:
 		- check which I/O can handle it
 		- export G85 in excellon
@@ -95,6 +95,7 @@
 	- CLEANUP: netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found
+	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - SUBC: element removal:
 	- BUG? check if drc outline is drawn on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
