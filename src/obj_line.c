@@ -1056,10 +1056,11 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 	}
 }
 
-static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_gfx)
+static void pcb_line_draw(pcb_line_t *line, int allow_term_gfx)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
+	pcb_layer_t *layer = line->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
 		color = conf_core.appearance.color.warn;
@@ -1101,7 +1102,7 @@ pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_line_draw((pcb_layer_t *)cl, line, 0);
+	pcb_line_draw(line, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1115,7 +1116,7 @@ pcb_r_dir_t pcb_line_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_line_draw((pcb_layer_t *)cl, line, 1);
+	pcb_line_draw(line, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
