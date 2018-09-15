@@ -786,13 +786,13 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, int scale, int direction, int mirror)
+static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, int scale, int direction, int mirror)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
 	pcb_point_t *p;
 
-
+#warning trdraw TODO: do not ignore info
 	max = poly->PointN;
 	if (max > MAX_SIMPLE_POLY_POINTS) {
 		max = MAX_SIMPLE_POLY_POINTS;
@@ -998,7 +998,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 
 			/* draw the polygons */
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				draw_text_poly(p, x0, y0, x, xordraw, xordx, xordy, scale, direction, mirror);
+				draw_text_poly(info, p, x0, y0, x, xordraw, xordx, xordy, scale, direction, mirror);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
