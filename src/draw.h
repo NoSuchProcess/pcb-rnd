@@ -120,7 +120,7 @@ typedef struct pcb_draw_info_s {
 	const pcb_board_t *pcb;
 	const pcb_box_t *drawn_area;
 	const pcb_xform_t *xform_caller;       /* the extra transformation the caller requested */
-	pcb_xform_t xform;                     /* the final transformation applied on objects */
+	pcb_xform_t *xform;                    /* the final transformation applied on objects */
 
 	const pcb_layer_t *layer;
 } pcb_draw_info_t;
