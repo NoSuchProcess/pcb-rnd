@@ -304,7 +304,7 @@ static void pcb_draw_assembly(pcb_draw_info_t *info, unsigned int lyt_side)
 
 	pcb_draw_doing_assy = pcb_true;
 	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
-	DrawLayerGroup(info, side_group, 0);
+	pcb_draw_layer_grp(info, side_group, 0);
 	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */

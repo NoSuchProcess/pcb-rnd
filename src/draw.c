@@ -68,8 +68,8 @@ static vtp0_t delayed_labels, delayed_objs;
 pcb_bool delayed_labels_enabled = pcb_false;
 pcb_bool delayed_terms_enabled = pcb_false;
 
-static void DrawEverything(pcb_draw_info_t *info);
-static void DrawLayerGroup(pcb_draw_info_t *info, int, int);
+static void draw_everything(pcb_draw_info_t *info);
+static void pcb_draw_layer_grp(pcb_draw_info_t *info, int, int);
 static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj);
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info);
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info);
@@ -178,7 +178,7 @@ void pcb_redraw(void)
 	pcb_gui->invalidate_all();
 }
 
-static void DrawEverything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
+static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 {
 	int plated, unplated;
 	pcb_board_count_holes(PCB, &plated, &unplated, info->drawn_area);
@@ -313,7 +313,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 }
 
 
-static void DrawEverything(pcb_draw_info_t *info)
+static void draw_everything(pcb_draw_info_t *info)
 {
 	char *old_silk_color;
 	int i, ngroups, slk_len;
@@ -382,7 +382,7 @@ static void DrawEverything(pcb_draw_info_t *info)
 					is_current = 1;
 			}
 
-			DrawLayerGroup(info, group, is_current);
+			pcb_draw_layer_grp(info, group, is_current);
 			pcb_gui->end_layer();
 		}
 	}
@@ -423,7 +423,7 @@ static void DrawEverything(pcb_draw_info_t *info)
 	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area); 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		DrawEverything_holes(info, side_copper_grp);
+		draw_everything_holes(info, side_copper_grp);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 
@@ -711,7 +711,7 @@ void pcb_draw_layer_under(const pcb_board_t *pcb, const pcb_layer_t *Layer, cons
  * draws one layer group.  If the exporter is not a GUI,
  * also draws the padstacks in this layer group.
  */
-static void DrawLayerGroup(pcb_draw_info_t *info, int group, int is_current)
+static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 {
 	int i;
 	pcb_layer_id_t layernum;
@@ -899,7 +899,7 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 		info.pcb = PCB;
 		info.drawn_area = &ctx->view;
 		info.layer = NULL;
-		DrawEverything(&info);
+		draw_everything(&info);
 		expose_end(old_gui);
 	}
 }
