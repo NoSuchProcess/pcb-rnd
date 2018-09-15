@@ -917,11 +917,10 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0,
 	return 0;
 }
 
-static void pcb_text_draw_string_(pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	pcb_coord_t x = 0;
 	pcb_cardinal_t n;
-	pcb_draw_info_t *info = NULL;
 
 	/* cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
@@ -1033,16 +1032,16 @@ static void pcb_text_draw_string_(pcb_font_t *font, const unsigned char *string,
 	}
 }
 
-void pcb_text_draw_string(pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
-	pcb_text_draw_string_(font, string, x0, y0, scale, direction, mirror, min_line_width, xordraw, xordx, xordy, tiny);
+	pcb_text_draw_string_(info, font, string, x0, y0, scale, direction, mirror, min_line_width, xordraw, xordx, xordy, tiny);
 }
 
 /* lowlevel drawing routine for text objects */
-static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	unsigned char *rendered = pcb_text_render_str(Text);
-	pcb_text_draw_string_(pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->Direction, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), min_line_width, xordraw, xordx, xordy, tiny);
+	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->Direction, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), min_line_width, xordraw, xordx, xordy, tiny);
 	pcb_text_free_str(Text, rendered);
 }
 
@@ -1077,14 +1076,14 @@ void pcb_text_draw_label(pcb_text_t *text)
 }
 
 
-void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny)
+void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *text, pcb_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny)
 {
 	if (delayed_terms_enabled && (text->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)text);
 		return;
 	}
 
-	DrawTextLowLevel_(text, min_line_width, 0, 0, 0, tiny);
+	DrawTextLowLevel_(info, text, min_line_width, 0, 0, 0, tiny);
 
 	if (text->term != NULL) {
 		if ((allow_term_gfx) && ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text)))
@@ -1092,7 +1091,7 @@ void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term
 	}
 }
 
-static void pcb_text_draw(pcb_text_t *text, int allow_term_gfx)
+static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_term_gfx)
 {
 	int min_silk_line;
 	unsigned int flg = 0;
@@ -1126,12 +1125,13 @@ static void pcb_text_draw(pcb_text_t *text, int allow_term_gfx)
 	else
 		min_silk_line = conf_core.design.min_wid;
 
-	pcb_text_draw_(text, min_silk_line, allow_term_gfx, PCB_TXT_TINY_CHEAP);
+	pcb_text_draw_(info, text, min_silk_line, allow_term_gfx, PCB_TXT_TINY_CHEAP);
 }
 
 pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
+	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1139,13 +1139,14 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	pcb_text_draw(text, 0);
+	pcb_text_draw(info, text, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
+	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b))
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1153,7 +1154,7 @@ pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	pcb_text_draw(text, 1);
+	pcb_text_draw(info, text, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1170,7 +1171,7 @@ void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text)
 
 void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 {
-	DrawTextLowLevel_(text, 0, 1, x, y, PCB_TXT_TINY_CHEAP);
+	DrawTextLowLevel_(NULL, text, 0, 1, x, y, PCB_TXT_TINY_CHEAP);
 	if (conf_core.appearance.text_host_bbox) {
 		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
 		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
