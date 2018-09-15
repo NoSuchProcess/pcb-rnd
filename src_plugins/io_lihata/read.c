@@ -1643,7 +1643,7 @@ static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 
 static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
-	lht_node_t *ncmb, *nlyt, *ns, *np;
+	lht_node_t *ncmb, *nlyt, *ns;
 	int res = -1;
 	const char *prp;
 
