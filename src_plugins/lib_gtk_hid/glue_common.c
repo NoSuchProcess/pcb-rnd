@@ -82,7 +82,7 @@ int ghid_command_entry_is_active(void)
 
 static void command_pack_in_status_line(void)
 {
-	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->topwin.cmd.command_combo_box, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->topwin.cmd.command_combo_box, TRUE, TRUE, 0);
 }
 
 static void command_post_entry(void)
