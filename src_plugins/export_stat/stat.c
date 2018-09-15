@@ -305,6 +305,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 						hole++;
 					if ((proto != NULL) && (proto->mech_idx >= 0)) {
 						hole++;
+						slot++;
 						num_slots++;
 					}
 				}
@@ -317,7 +318,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		}
 
 		/* a part is considered smd if it has at most half as many holes as terminals total */
-		if (hole*2 < all)
+		if ((hole*2 + slot*2) < all)
 			num_esmd++;
 
 		htsi_uninit(&t);
