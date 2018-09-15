@@ -226,7 +226,7 @@ pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
 	return pcb_false;
 }
 
-pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
+pcb_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer)
 {
 	if (Layer->parent_type == PCB_PARENT_UI)
 		return pcb_uilayer_get_id(Layer);
@@ -244,7 +244,7 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 	return -1;
 }
 
-unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
+unsigned int pcb_layer_flags(const pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 {
 	pcb_layer_t *l;
 
@@ -261,7 +261,7 @@ unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 	return pcb_layergrp_flags(pcb, l->meta.real.grp);
 }
 
-unsigned int pcb_layer_flags_(pcb_layer_t *layer)
+unsigned int pcb_layer_flags_(const pcb_layer_t *layer)
 {
 
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
@@ -292,7 +292,7 @@ unsigned int pcb_layer_flags_(pcb_layer_t *layer)
 	return layer->meta.bound.type;
 }
 
-int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **out)
+int pcb_layer_purpose(const pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **out)
 {
 	pcb_layergrp_t *grp;
 
@@ -311,7 +311,7 @@ int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **o
 		return -1;
 	}
 
-	grp = pcb_get_layergrp(pcb, pcb->Data->Layer[layer_idx].meta.real.grp);
+	grp = pcb_get_layergrp((pcb_board_t *)pcb, pcb->Data->Layer[layer_idx].meta.real.grp);
 
 	if (out != NULL) {
 		if (grp == NULL) {
@@ -328,7 +328,7 @@ int pcb_layer_purpose(pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **o
 	return grp->purpi;
 }
 
-int pcb_layer_purpose_(pcb_layer_t *layer, const char **out)
+int pcb_layer_purpose_(const pcb_layer_t *layer, const char **out)
 {
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
 	if (!layer->is_bound) {
@@ -389,7 +389,7 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask, const char *
 
 
 
-int pcb_layer_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
+int pcb_layer_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -411,7 +411,7 @@ int pcb_layer_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res,
 }
 
 /* optimization: code dup for speed */
-int pcb_layer_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len, int purpi, const char *purpose)
+int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len, int purpi, const char *purpose)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -439,7 +439,7 @@ int pcb_layer_listp(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res
 }
 
 
-int pcb_layer_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
+int pcb_layer_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
