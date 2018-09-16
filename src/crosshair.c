@@ -72,7 +72,7 @@ static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
 	moved_ps.x += x;
 	moved_ps.y += y;
 
-	pcb_pstk_thindraw(pcb_crosshair.GC, &moved_ps);
+	pcb_pstk_thindraw(NULL, pcb_crosshair.GC, &moved_ps);
 }
 
 /* ---------------------------------------------------------------------------

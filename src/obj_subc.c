@@ -669,7 +669,7 @@ void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_cu
 				ps->xmirror = !ps->xmirror;
 				ps->protoi = -1;
 			}
-			pcb_pstk_thindraw(pcb_crosshair.GC, ps);
+			pcb_pstk_thindraw(NULL, pcb_crosshair.GC, ps);
 			ps->x = ox;
 			ps->y = oy;
 			ps->xmirror = oxm;

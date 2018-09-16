@@ -361,7 +361,7 @@ static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 		conf_core.appearance.color.selected : conf_core.appearance.color.padstackmark);
 }
 
-static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 
 	switch(shape->shape) {
@@ -381,7 +381,7 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 	}
 }
 
-static void pcb_pstk_draw_shape_thin(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	int n;
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
@@ -429,10 +429,10 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 			set_ps_color(ps, info->objcb.pstk.is_current, grp->ltype, info->objcb.pstk.layer1);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-			pcb_pstk_draw_shape_thin(pcb_draw_out.fgGC, ps, shape);
+			pcb_pstk_draw_shape_thin(info, pcb_draw_out.fgGC, ps, shape);
 		}
 		else
-			pcb_pstk_draw_shape_solid(pcb_draw_out.fgGC, ps, shape);
+			pcb_pstk_draw_shape_solid(info, pcb_draw_out.fgGC, ps, shape);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -572,16 +572,16 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
 	if (shape != NULL) {
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 			pcb_hid_set_line_width(pcb_draw_out.drillGC, 0);
-			pcb_pstk_draw_shape_thin(pcb_draw_out.drillGC, ps, shape);
+			pcb_pstk_draw_shape_thin(info, pcb_draw_out.drillGC, ps, shape);
 		}
 		else
-			pcb_pstk_draw_shape_solid(pcb_draw_out.drillGC, ps, shape);
+			pcb_pstk_draw_shape_solid(info, pcb_draw_out.drillGC, ps, shape);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
+void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_pstk_shape_t *shape = NULL;
 	pcb_board_t *pcb;
@@ -600,7 +600,7 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 	}
 
 	if (shape != NULL)
-		pcb_pstk_draw_shape_thin(gc, ps, shape);
+		pcb_pstk_draw_shape_thin(info, gc, ps, shape);
 }
 
 void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
