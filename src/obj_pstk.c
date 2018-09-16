@@ -469,12 +469,13 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 
 pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl)
 {
+	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
-			pcb_pstk_draw_label(ps);
+			pcb_pstk_draw_label(info, ps);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -602,7 +603,7 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 		pcb_pstk_draw_shape_thin(gc, ps, shape);
 }
 
-void pcb_pstk_draw_label(pcb_pstk_t *ps)
+void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 {
 	pcb_bool vert;
 	pcb_coord_t dx, dy;
@@ -625,9 +626,9 @@ void pcb_pstk_draw_label(pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 	if ((proto != NULL) && (proto->hdia > 0))
 		offs = proto->hdia/2;
-	pcb_term_label_draw(ps->x + offs, ps->y, conf_core.appearance.term_label_size, vert, pcb_false, ps->term, ps->intconn);
+	pcb_term_label_draw(info, ps->x + offs, ps->y, conf_core.appearance.term_label_size, vert, pcb_false, ps->term, ps->intconn);
 #endif
-	pcb_term_label_draw(ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, ps->term, ps->intconn);
+	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, ps->term, ps->intconn);
 }
 
 

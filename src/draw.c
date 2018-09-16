@@ -70,7 +70,7 @@ pcb_bool delayed_terms_enabled = pcb_false;
 
 static void draw_everything(pcb_draw_info_t *info);
 static void pcb_draw_layer_grp(pcb_draw_info_t *info, int, int);
-static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj);
+static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb_any_obj_t *obj);
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info);
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info);
 static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype);
@@ -314,7 +314,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 		pcb_draw_pstk_labels(info);
 	}
-	pcb_draw_pstk_names(conf_core.editor.show_solder_side ? solder : component, info->drawn_area);
+	pcb_draw_pstk_names(info, conf_core.editor.show_solder_side ? solder : component, info->drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
@@ -526,12 +526,12 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
  * Draws padstacks' names - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->pstk_on
  */
-void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
+void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
 {
 	if (PCB->pstk_on || !pcb_gui->gui) {
 		size_t n;
 		for(n = 0; n < delayed_labels.used; n++)
-			pcb_draw_obj_label(group, delayed_labels.array[n]);
+			pcb_draw_obj_label(info, group, delayed_labels.array[n]);
 	}
 	delayed_labels.used = 0;
 }
@@ -836,7 +836,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 	}
 }
 
-static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
+static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
 {
 	if (pcb_hidden_floater(obj))
 		return;
@@ -849,11 +849,11 @@ static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
 	}
 
 	switch(obj->type) {
-		case PCB_OBJ_LINE:    pcb_line_draw_label((pcb_line_t *)obj); return;
-		case PCB_OBJ_ARC:     pcb_arc_draw_label((pcb_arc_t *)obj); return;
-		case PCB_OBJ_POLY:    pcb_poly_draw_label((pcb_poly_t *)obj); return;
-		case PCB_OBJ_TEXT:    pcb_text_draw_label((pcb_text_t *)obj); return;
-		case PCB_OBJ_PSTK:    pcb_pstk_draw_label((pcb_pstk_t *)obj); return;
+		case PCB_OBJ_LINE:    pcb_line_draw_label(info, (pcb_line_t *)obj); return;
+		case PCB_OBJ_ARC:     pcb_arc_draw_label(info, (pcb_arc_t *)obj); return;
+		case PCB_OBJ_POLY:    pcb_poly_draw_label(info, (pcb_poly_t *)obj); return;
+		case PCB_OBJ_TEXT:    pcb_text_draw_label(info, (pcb_text_t *)obj); return;
+		case PCB_OBJ_PSTK:    pcb_pstk_draw_label(info, (pcb_pstk_t *)obj); return;
 		default: break;
 	}
 }
@@ -1053,7 +1053,7 @@ static const char *lab_with_intconn(int intconn, const char *lab, char *buff, in
 	}
 
 
-void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
 {
 	int mirror, direction;
 	PCB_TERM_LABEL_SETUP;
@@ -1065,7 +1065,7 @@ void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool ve
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
-	pcb_text_draw_string(NULL, font, label, x, y, scale, direction, mirror, 1, 0, 0, 0, PCB_TXT_TINY_HIDE);
+	pcb_text_draw_string(info, font, label, x, y, scale, direction, mirror, 1, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
 }

@@ -133,7 +133,7 @@ void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *pu
 
 
 void pcb_erase_obj(int, void *, void *);
-void pcb_draw_pstk_names(pcb_layergrp_id_t group, const pcb_box_t *drawn_area);
+void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const pcb_box_t *drawn_area);
 
 /*#define PCB_BBOX_DEBUG*/
 
@@ -155,7 +155,7 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
 int pcb_draw_layergrp_is_comp(const pcb_layergrp_t *g);
 
 /* Draw (render) or invalidate a terminal label */
-void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn);
+void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn);
 void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn);
 
 

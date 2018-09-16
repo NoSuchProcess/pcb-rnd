@@ -1068,10 +1068,10 @@ void pcb_text_name_invalidate_draw(pcb_text_t *text)
 			100.0, is_text_term_vert(text), pcb_true, text->term, text->intconn);
 }
 
-void pcb_text_draw_label(pcb_text_t *text)
+void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text)
 {
 	if (text->term != NULL)
-		pcb_term_label_draw((text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
+		pcb_term_label_draw(info, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
 			conf_core.appearance.term_label_size, is_text_term_vert(text), pcb_true, text->term, text->intconn);
 }
 

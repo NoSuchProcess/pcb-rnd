@@ -1002,10 +1002,10 @@ void pcb_poly_name_invalidate_draw(pcb_poly_t *poly)
 	}
 }
 
-void pcb_poly_draw_label(pcb_poly_t *poly)
+void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 {
 	if (poly->term != NULL)
-		pcb_term_label_draw((poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
+		pcb_term_label_draw(info, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
 			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
 }
 
