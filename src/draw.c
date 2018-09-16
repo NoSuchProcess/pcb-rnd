@@ -632,7 +632,7 @@ void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const pc
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
-	info.xform_caller = NULL;
+	info.xform_caller = info.xform = NULL;
 
 	/* fix screen coord order */
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
@@ -669,7 +669,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
-	info.xform_caller = NULL;
+	info.xform_caller = info.xform = NULL;
 	info.layer = Layer;
 
 #warning trdraw TODO: xform comb
@@ -922,7 +922,7 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 		pcb_draw_info_t info;
 		info.pcb = PCB;
 		info.drawn_area = &ctx->view;
-		info.xform_caller = NULL;
+		info.xform_caller = info.xform = NULL;
 		info.layer = NULL;
 		draw_everything(&info);
 		expose_end(old_gui);
