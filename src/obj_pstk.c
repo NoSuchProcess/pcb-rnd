@@ -363,20 +363,25 @@ static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 
 static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
+	pcb_coord_t r, dthick = 0;
+	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0))
+		dthick = info->xform->bloat;
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
+#warning trdraw TODO: poly bloat
 			pcb_hid_set_line_cap(gc, pcb_cap_round);
 			pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 			break;
 		case PCB_PSSH_LINE:
 			pcb_hid_set_line_cap(gc, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
-			pcb_hid_set_line_width(gc, shape->data.line.thickness);
+			pcb_hid_set_line_width(gc, MAX(shape->data.line.thickness + dthick, 1));
 			pcb_gui->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;
 		case PCB_PSSH_CIRC:
+			r = MAX(shape->data.circ.dia/2 + dthick/2, 1);
 			pcb_hid_set_line_cap(gc, pcb_cap_round);
-			pcb_gui->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+			pcb_gui->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r);
 			break;
 	}
 }
@@ -384,18 +389,25 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pc
 static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	int n;
+	pcb_coord_t r, dthick = 0;
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
+
+	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0))
+		dthick = info->xform->bloat;
+
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
+#warning trdraw TODO: poly bloat
 			for(n = 1; n < shape->data.poly.len; n++)
 				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
 			pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
 			break;
 		case PCB_PSSH_LINE:
-			pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness, shape->data.line.square);
+			pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, MAX(shape->data.line.thickness + dthick, 1), shape->data.line.square);
 			break;
 		case PCB_PSSH_CIRC:
-			pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360);
+			r = MAX(shape->data.circ.dia/2 + dthick/2, 1);
+			pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r, r, 0, 360);
 			break;
 	}
 }
