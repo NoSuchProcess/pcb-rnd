@@ -1680,7 +1680,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	}
 
 	/* draw padstacks */
-	info.pcb = NULL;
+	info.pcb = PCB;
 	info.drawn_area = drawn_area;
 	info.xform_caller = info.xform = NULL;
 	info.layer = NULL;
