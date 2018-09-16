@@ -677,7 +677,7 @@ void pcb_draw_layer_under(const pcb_board_t *pcb, const pcb_layer_t *Layer, cons
 	info.xform_caller = NULL;
 	info.layer = Layer;
 
-#warning TODO: xform comb
+#warning trdraw TODO: xform comb
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
