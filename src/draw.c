@@ -619,7 +619,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 	info->xform = NULL;
 }
 
-void pcb_draw_layer_noxform(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
+void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
 {
 	pcb_draw_info_t info;
 	pcb_box_t scr2;
@@ -644,7 +644,7 @@ void pcb_draw_layer_noxform(const pcb_board_t *pcb, const pcb_layer_t *Layer, co
 
 /* This version is about 1% slower and used rarely, thus it's all dupped
    from pcb_draw_layer() to keep the original speed there */
-void pcb_draw_layer_under(const pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data)
+void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data)
 {
 	pcb_draw_info_t info;
 	pcb_box_t scr2;
