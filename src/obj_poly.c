@@ -1009,23 +1009,25 @@ void pcb_poly_draw_label(pcb_poly_t *poly)
 			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
 }
 
-void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
+void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
 	if (delayed_terms_enabled && (polygon->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)polygon);
 		return;
 	}
 
+#warning trdraw TODO: info->bloat
+
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
 	{
-		pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, drawn_area);
+		pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
 	}
 	else {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon)) {
 			pcb_vnode_t *n, *head;
 			int i;
 
-			pcb_gui->fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, drawn_area);
+			pcb_gui->fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, info->drawn_area);
 			head = &polygon->Clipped->contours->head;
 
 			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
@@ -1042,7 +1044,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 			}
 		}
 		else
-			pcb_gui->fill_pcb_polygon(pcb_draw_out.fgGC, polygon, drawn_area);
+			pcb_gui->fill_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
 	}
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
@@ -1050,7 +1052,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 		pcb_poly_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
-			pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, &poly, drawn_area);
+			pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, &poly, info->drawn_area);
 	}
 
 	if (polygon->term != NULL) {
@@ -1059,7 +1061,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 	}
 }
 
-static void pcb_poly_draw(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
+static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
 	static const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -1089,7 +1091,7 @@ static void pcb_poly_draw(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int 
 		color = layer->meta.real.color;
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 
-	pcb_poly_draw_(polygon, drawn_area, allow_term_gfx);
+	pcb_poly_draw_(info, polygon, allow_term_gfx);
 }
 
 pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
@@ -1106,7 +1108,7 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_poly_draw(polygon, i->drawn_area, 0);
+	pcb_poly_draw(i, polygon, 0);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -1125,7 +1127,7 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_poly_draw(polygon, i->drawn_area, 1);
+	pcb_poly_draw(i, polygon, 1);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
