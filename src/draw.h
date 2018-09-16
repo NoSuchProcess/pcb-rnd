@@ -66,6 +66,9 @@ typedef struct pcb_draw_info_s {
 
 			pcb_layer_type_t shape_mask; /* when gid is invalid, use this for the shapes */
 		} pstk;
+		struct {
+			int per_side;
+		} subc;
 	} objcb;
 } pcb_draw_info_t;
 
@@ -111,7 +114,7 @@ void pcb_lighten_color(const char *orig, char buf[8], double factor);
    the number of on/off segment pairs. It is guaranteed that the line starts
    and ends with an "on" line segment. If cheap is true, allow drawing less
    segments if the line is short */
-void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap);
+void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap);
 
 
 void pcb_draw(void);

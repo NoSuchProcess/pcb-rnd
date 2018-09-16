@@ -1577,6 +1577,7 @@ do { \
 #include "draw.h"
 pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 {
+	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
@@ -1593,10 +1594,10 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 
 	if (freq >= 0) {
-		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq, pcb_true);
-		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2, freq, pcb_true);
-		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1, freq, pcb_true);
-		pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq, pcb_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq, pcb_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2, freq, pcb_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1, freq, pcb_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq, pcb_true);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -1604,6 +1605,7 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 
 pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 {
+	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
 

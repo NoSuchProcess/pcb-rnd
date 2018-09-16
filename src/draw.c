@@ -116,13 +116,15 @@ void pcb_lighten_color(const char *orig, char buf[8], double factor)
 	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
 }
 
-void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap)
+void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
 	double len_mnt = PCB_ABS(dx) + PCB_ABS(dy);
 	int n;
 	pcb_coord_t minlen = pcb_gui->coord_per_pix * 8;
+
+#warning trdraw TODO: use info
 
 	if (len_mnt < minlen*2) {
 		/* line too short, just draw it */
@@ -267,8 +269,10 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 
-	if (PCB->SubcOn)
-		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, &per_side, NULL);
+	if (PCB->SubcOn) {
+		info->objcb.subc.per_side = per_side;
+		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
+	}
 
 	if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
@@ -302,8 +306,10 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-	if (PCB->SubcOn)
-		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_label_callback, &per_side, NULL);
+	if (PCB->SubcOn) {
+		info->objcb.subc.per_side = per_side;
+		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_label_callback, info, NULL);
+	}
 	if (PCB->padstack_mark_on) {
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 		pcb_draw_pstk_labels(info);
