@@ -35,23 +35,6 @@
 #include "board.h"
 #include "layer_grp.h"
 
-typedef enum {
-	PCB_PHOLE_PLATED = 1,
-	PCB_PHOLE_UNPLATED = 2,
-	PCB_PHOLE_BB = 4
-} pcb_pstk_draw_hole_t;
-
-typedef struct {
-	pcb_board_t *pcb;
-	pcb_layergrp_id_t gid;
-	int is_current;
-	pcb_pstk_draw_hole_t holetype;
-	pcb_layer_combining_t comb;
-	pcb_layer_t *layer1; /* first (real) layer in the target group */
-
-	pcb_layer_type_t shape_mask; /* when gid is invalid, use this for the shapes */
-} pcb_pstk_draw_t;
-
 pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl);
 pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl);
 pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl);

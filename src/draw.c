@@ -463,56 +463,45 @@ static void draw_everything(pcb_draw_info_t *info)
 static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
 {
 	pcb_layergrp_t *g = PCB->LayerGroups.grp + group;
-	pcb_pstk_draw_t ctx;
-	ctx.pcb = PCB;
-	ctx.gid = group;
-	ctx.is_current = is_current;
-	ctx.comb = comb;
+
+	info->objcb.pstk.gid = group;
+	info->objcb.pstk.is_current = is_current;
+	info->objcb.pstk.comb = comb;
 	if (g->len > 0)
-		ctx.layer1 = pcb_get_layer(PCB->Data, g->lid[0]);
+		info->objcb.pstk.layer1 = pcb_get_layer(info->pcb->Data, g->lid[0]);
 	else
-		ctx.layer1 = NULL;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
+		info->objcb.pstk.layer1 = NULL;
+	pcb_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info)
 {
-	pcb_pstk_draw_t ctx;
-	ctx.pcb = PCB;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_mark_callback, &ctx, NULL);
+	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_mark_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info)
 {
-	pcb_pstk_draw_t ctx;
-	ctx.pcb = PCB;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_label_callback, &ctx, NULL);
+	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_label_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
 {
-	pcb_pstk_draw_t ctx;
-
 	if (!PCB->hole_on)
 		return;
 
-	ctx.pcb = PCB;
-	ctx.gid = group;
-	ctx.holetype = holetype;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, &ctx, NULL);
+	info->objcb.pstk.gid = group;
+	info->objcb.pstk.holetype = holetype;
+	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
 {
-	pcb_pstk_draw_t ctx;
-
 	if (!PCB->hole_on)
 		return;
 
-	ctx.pcb = PCB;
-	ctx.gid = group;
-	ctx.holetype = holetype;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, &ctx, NULL);
+	info->objcb.pstk.gid = group;
+	info->objcb.pstk.holetype = holetype;
+	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
 }
 
 /* ---------------------------------------------------------------------------

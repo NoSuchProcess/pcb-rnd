@@ -41,6 +41,12 @@ typedef struct {
 
 extern pcb_output_t pcb_draw_out;
 
+typedef enum {
+	PCB_PHOLE_PLATED = 1,
+	PCB_PHOLE_UNPLATED = 2,
+	PCB_PHOLE_BB = 4
+} pcb_pstk_draw_hole_t;
+
 /* Some low level draw callback depend on this in their void *cl */
 typedef struct pcb_draw_info_s {
 	const pcb_board_t *pcb;
@@ -49,6 +55,18 @@ typedef struct pcb_draw_info_s {
 	pcb_xform_t *xform;                    /* the final transformation applied on objects */
 
 	const pcb_layer_t *layer;
+
+	union { /* fields used for specific object callbacks */
+		struct {
+			pcb_layergrp_id_t gid;
+			int is_current;
+			pcb_pstk_draw_hole_t holetype;
+			pcb_layer_combining_t comb;
+			pcb_layer_t *layer1; /* first (real) layer in the target group */
+
+			pcb_layer_type_t shape_mask; /* when gid is invalid, use this for the shapes */
+		} pstk;
+	} objcb;
 } pcb_draw_info_t;
 
 /* Temporarily inhibid drawing if this is non-zero. A function that calls a
