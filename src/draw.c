@@ -558,25 +558,30 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 #include "draw_composite.c"
 #include "draw_ly_spec.c"
 
+static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer_t *Layer)
+{
+	info->layer = Layer;
+	if ((Layer != NULL) && (!pcb_xform_is_nop(&Layer->meta.real.xform))) {
+		pcb_xform_copy(dst, &Layer->meta.real.xform);
+		info->xform = dst;
+	}
+	if (info->xform_caller != NULL) {
+		if (info->xform == NULL) {
+			info->xform = dst;
+			pcb_xform_copy(dst, info->xform_caller);
+		}
+		else
+			pcb_xform_add(dst, info->xform_caller);
+	}
+}
+
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 {
 	unsigned int lflg = 0;
 	int may_have_delayed = 0;
 	pcb_xform_t xform;
 
-	info->layer = Layer;
-	if (!pcb_xform_is_nop(&Layer->meta.real.xform)) {
-		pcb_xform_copy(&xform, &Layer->meta.real.xform);
-		info->xform = &xform;
-	}
-	if (info->xform_caller != NULL) {
-		if (info->xform == NULL) {
-			info->xform = &xform;
-			pcb_xform_copy(&xform, info->xform_caller);
-		}
-		else
-			pcb_xform_add(&xform, info->xform_caller);
-	}
+	xform_setup(info, &xform, Layer);
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
