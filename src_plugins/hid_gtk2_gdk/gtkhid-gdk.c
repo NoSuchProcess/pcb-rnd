@@ -100,7 +100,7 @@ static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * col
 }
 
 
-static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group(PCB)) {

@@ -352,7 +352,7 @@ static int svg_parse_arguments(int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	int opa, is_our_mask = 0, is_our_silk = 0;
 
@@ -362,7 +362,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 	if (flags & PCB_LYT_UI)
 		return 0;
 
-	pcb_cam_set_layer_group(&svg_cam, group, purpose, purpi, flags);
+	pcb_cam_set_layer_group(&svg_cam, group, purpose, purpi, flags, xform);
 
 	if (!svg_cam.active) {
 		if (flags & PCB_LYT_INVIS)

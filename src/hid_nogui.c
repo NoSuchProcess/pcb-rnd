@@ -77,7 +77,7 @@ static void nogui_invalidate_all(void)
 	CRASH("invalidate_all");
 }
 
-static int nogui_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int nogui_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	CRASH("set_layer_group");
 	return 0;

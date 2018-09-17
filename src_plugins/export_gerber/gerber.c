@@ -810,7 +810,7 @@ static int gerber_parse_arguments(int *argc, char ***argv)
 
 
 
-static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	int want_outline;
 	char *cp;
@@ -820,7 +820,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 	if (PCB_LAYER_IS_ASSY(flags, purpi))
 		return 0;
 
-	pcb_cam_set_layer_group(&gerber_cam, group, purpose, purpi, flags);
+	pcb_cam_set_layer_group(&gerber_cam, group, purpose, purpi, flags, xform);
 
 	if (flags & PCB_LYT_UI)
 		return 0;

@@ -41,7 +41,7 @@ typedef struct hid_gc_s {
 	int width;
 } hid_gc_s;
 
-static int extents_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+static int extents_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	if (PCB_LAYER_IS_DRILL(flags, purpi))
 		return 1;

@@ -640,7 +640,7 @@ int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, in
 		*xform = NULL;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, is_empty);
+		return pcb_gui->set_layer_group(gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, is_empty, xform);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

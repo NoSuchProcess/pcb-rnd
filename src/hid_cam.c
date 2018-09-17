@@ -316,7 +316,7 @@ int pcb_cam_end(pcb_cam_t *dst)
 }
 
 
-int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags)
+int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, pcb_xform_t **xform)
 {
 	const pcb_virt_layer_t *vl;
 
