@@ -760,8 +760,18 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 			pcb_draw_layer(info, Layer);
 	}
 
-	if ((gflg & PCB_LYT_COPPER) && (PCB->pstk_on))
+	if ((gflg & PCB_LYT_COPPER) && (PCB->pstk_on)) {
+		pcb_xform_t tmp;
+		const pcb_layer_t *ly1 = NULL;
+
+		/* figure first layer to get the transformations from */
+		if (n_entries > 0)
+			ly1 = info->pcb->Data->Layer + layers[0];
+
+		xform_setup(info, &tmp, ly1);
 		pcb_draw_pstks(info, group, (CURRENT->meta.real.grp == group), 0);
+		info->xform = NULL;
+	}
 
 	/* this draws the holes - must be the last, so holes are drawn over everything else */
 	if (!pcb_gui->gui)
