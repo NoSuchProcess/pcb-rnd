@@ -774,6 +774,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 		xform_setup(info, &tmp, ly1);
 		pcb_draw_pstks(info, group, (CURRENT->meta.real.grp == group), 0);
 		info->xform = NULL;
+		info->layer = NULL;
 	}
 
 	/* this draws the holes - must be the last, so holes are drawn over everything else */
