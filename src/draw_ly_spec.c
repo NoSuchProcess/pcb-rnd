@@ -232,7 +232,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		}
 		count += numobj;
 
-		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0))) {
+		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0), &info->xform)) {
 			/* boundary does NOT support compisiting, everything is drawn in positive */
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
@@ -244,7 +244,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		}
 	}
 
-	if ((count == 0) && (goutl != NULL) && (pcb_layer_gui_set_layer(goutid, goutl, 0))) {
+	if ((count == 0) && (goutl != NULL) && (pcb_layer_gui_set_layer(goutid, goutl, 0, &info->xform))) {
 		/* The implicit outline rectangle (or automatic outline rectanlge).
 		   We should check for pcb_gui->gui here, but it's kinda cool seeing the
 		   auto-outline magically disappear when you first add something to
@@ -267,7 +267,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 	pcb_board_count_slots(PCB, &plated, &unplated, info->drawn_area);
 
 	if ((uslot != NULL) && (uslot->meta.real.vis)) {
-		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, unplated > 0)) {
+		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, unplated > 0, &info->xform)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_pstk_slots(info, CURRENT->meta.real.grp, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
@@ -275,7 +275,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		}
 	}
 	if ((pslot != NULL) && (pslot->meta.real.vis)) {
-		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, plated > 0)) {
+		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, plated > 0, &info->xform)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_pstk_slots(info, CURRENT->meta.real.grp, PCB_PHOLE_PLATED | PCB_PHOLE_BB);

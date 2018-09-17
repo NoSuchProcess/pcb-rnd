@@ -228,8 +228,8 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
 
 
 /* call the gui to set a virtual layer or the UI layer group */
-int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty);
-int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty);
+int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, pcb_xform_t **xform);
+int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, pcb_xform_t **xform);
 
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx or layer is invalid. */

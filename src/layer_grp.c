@@ -630,11 +630,14 @@ error:
 	return 1;
 }
 
-int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty)
+int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, pcb_xform_t **xform)
 {
 	/* if there's no GUI, that means no draw should be done */
 	if (pcb_gui == NULL)
 		return 0;
+
+	if (xform != NULL)
+		*xform = NULL;
 
 	if (pcb_gui->set_layer_group != NULL)
 		return pcb_gui->set_layer_group(gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, is_empty);
@@ -643,9 +646,9 @@ int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, in
 	return 1;
 }
 
-int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty)
+int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty, pcb_xform_t **xform)
 {
-	return pcb_layer_gui_set_layer(grp, &pcb->LayerGroups.grp[grp], is_empty);
+	return pcb_layer_gui_set_layer(grp, &pcb->LayerGroups.grp[grp], is_empty, xform);
 }
 
 #define APPEND(n) \

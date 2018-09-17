@@ -94,8 +94,8 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t lgrp);
 pcb_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num);
 
 /* call the gui to set a layer group */
-int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty);
-int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty);
+int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, pcb_xform_t **xform);
+int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty, pcb_xform_t **xform);
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layergrp_flags(const pcb_board_t *pcb, pcb_layergrp_id_t group_idx);

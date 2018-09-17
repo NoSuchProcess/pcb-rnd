@@ -1063,7 +1063,7 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb)
 			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
 }
 
-int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty)
+int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, pcb_xform_t **xform)
 {
 	pcb_virt_layer_t *v = &pcb_virt_layers[vid];
 	assert((vid >= 0) && (vid < PCB_VLY_end));
@@ -1071,6 +1071,9 @@ int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_e
 	/* if there's no GUI, that means no draw should be done */
 	if (pcb_gui == NULL)
 		return 0;
+
+	if (xform != NULL)
+		*xform = NULL;
 
 #warning layer TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
 	if (pcb_gui->set_layer_group != NULL) {
@@ -1084,11 +1087,14 @@ int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_e
 	return 1;
 }
 
-int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
+int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, pcb_xform_t **xform)
 {
 	/* if there's no GUI, that means no draw should be done */
 	if (pcb_gui == NULL)
 		return 0;
+
+	if (xform != NULL)
+		*xform = NULL;
 
 	if (pcb_gui->set_layer_group != NULL)
 		return pcb_gui->set_layer_group(-1, NULL, -1, pcb_layer_id(first->parent.data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
