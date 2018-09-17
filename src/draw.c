@@ -662,6 +662,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 	unsigned int lflg = 0;
 	pcb_rtree_it_t it;
 	pcb_any_obj_t *o;
+	pcb_xform_t tmp;
 
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
 		scr2 = *screen;
@@ -675,9 +676,8 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 	info.pcb = pcb;
 	info.drawn_area = screen;
 	info.xform_caller = info.xform = NULL;
-	info.layer = Layer;
 
-#warning trdraw TODO: xform comb
+	xform_setup(&info, &tmp, Layer);
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
@@ -734,6 +734,9 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 
 	out:;
 		pcb_draw_out.active_padGC = NULL;
+
+	info.layer = NULL;
+	info.xform = NULL;
 }
 
 /* ---------------------------------------------------------------------------
