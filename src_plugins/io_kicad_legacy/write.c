@@ -427,7 +427,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 				fputs(" C ", FP);
 			}
 			pcb_fprintf(FP, "%.0mk %.0mk ", pad_dia, pad_dia); /* height = width */
-			fprintf(FP, "0 0 %f\n", psrot * 10); /* deltaX deltaY Orientation as float in decidegrees */
+			fprintf(FP, "0 0 %d\n", (int)(psrot * 10)); /* deltaX deltaY Orientation as float in decidegrees */
 
 			/* drill details; size and x,y pos relative to pad location */
 			pcb_fprintf(FP, "Dr %.0mk 0 0\n", drill_dia);
@@ -507,7 +507,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(ps->term));
 			pcb_fprintf(FP, " %c %.0mk %.0mk ", shape_chr, w, h);
 
-			pcb_fprintf(FP, "0 0 %10f\n", psrot*10.0); /* deltaX deltaY Orientation as float in decidegrees */
+			pcb_fprintf(FP, "0 0 %d\n", (int)(psrot*10.0)); /* deltaX deltaY Orientation as float in decidegrees */
 
 			fputs("Dr 0 0 0\n", FP); /* drill details; zero size; x,y pos vs pad location */
 
@@ -657,7 +657,6 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 
 #warning TODO: no hardwiring of dates
 	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", FP);
-	fputs("Units mm\n", FP);
 	fputs("$INDEX\n", FP);
 	io_kicad_legacy_write_subc_index(FP, buff->Data);
 	fputs("$EndINDEX\n", FP);
