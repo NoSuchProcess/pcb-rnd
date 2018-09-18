@@ -35,12 +35,12 @@ Syntax of the layer group definition:
 	<li> location-material (e.g. "top-copper" for any layer group that is copper and is on the top side)
 	<li> type[-type...] (more generally: a list of layer type flags)
 	<li> type:offs (e.g. "copper:+2" means the second copper layer group from the top, "copper:-3" means the third copper layer group from the bottom; offs is counted from 1, +1 meaning top outer layer, -1 meaning bottom outer layer)
-	<li> plus an optional list of transformations in paranthesis
+	<li> plus an optional list of supplements in paranthesis
 </ul>
 <p>
-When output transformations are specified, it's a comma separated list of key=value pairs.
+When supplements are specified, it's a comma separated list of key=value pairs.
 <p>
-(TODO: optionally prefixed with + or - for polarity and something for bloat/shrink)
+(TODO: supplement for inversion)
 <p>
 Examples:
 <table border=1 cellspacing=0>
