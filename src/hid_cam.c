@@ -207,13 +207,13 @@ static char *lp_err = "";
 
 /* Parse a layer directive: split at comma, curr will end up holding the
    layer name. If there were transformations in (), they are split and
-   listed in tr up to at most *trc entries. Returns NULL on error or
+   listed in tr up to at most *spc entries. Returns NULL on error or
    pointer to the next layer directive. */
-static char *parse_layer(char *curr, char **trk, char **trv, int *trc)
+static char *parse_layer(char *curr, char **spk, char **spv, int *spc)
 {
 	char *s, *lasta, *eq;
-	int level = 0, trmax = *trc;
-	*trc = 0;
+	int level = 0, trmax = *spc;
+	*spc = 0;
 
 	for(s = curr; *s != '\0'; s++) {
 		switch(*s) {
@@ -234,17 +234,17 @@ static char *parse_layer(char *curr, char **trk, char **trv, int *trc)
 				if (level == 0)
 					goto out;
 				append:;
-				if (*trc >= trmax)
+				if (*spc >= trmax)
 					return lp_err;
 				lasta = strip(lasta);
-				trk[*trc] = lasta;
+				spk[*spc] = lasta;
 				eq = strchr(lasta, '=');
 				if (eq != NULL) {
 					*eq = '\0';
 					eq++;
 				}
-				trv[*trc] = eq;
-				(*trc)++;
+				spv[*spc] = eq;
+				(*spc)++;
 				*s = '\0';
 				lasta = s+1;
 		}
@@ -264,11 +264,11 @@ static char *parse_layer(char *curr, char **trk, char **trv, int *trc)
 	return NULL; /* no more layers */
 }
 
-static void parse_layer_args(char **trk, char **trv, int trc)
+static void parse_layer_supplements(char **spk, char **spv, int spc)
 {
 	int n;
-	for(n = 0; n < trc; n++)
-		pcb_trace(" [%d] '%s' '%s'\n", n, trk[n], trv[n]);
+	for(n = 0; n < spc; n++)
+		pcb_trace(" [%d] '%s' '%s'\n", n, spk[n], spv[n]);
 }
 
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
@@ -300,9 +300,9 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
-		char *trk[64], *trv[64];
-		int trc = sizeof(trk) / sizeof(trk[0]);
-		next = parse_layer(curr, trk, trv, &trc);
+		char *spk[64], *spv[64];
+		int spc = sizeof(spk) / sizeof(spk[0]);
+		next = parse_layer(curr, spk, spv, &spc);
 		if (next == lp_err) {
 			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer transformation\n");
 			goto err;
@@ -336,7 +336,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 				goto err;
 
 #warning TODO: extend the syntax for purpose
-			parse_layer_args(trk, trv, trc);
+			parse_layer_supplements(spk, spv, spc);
 
 			vl = pcb_vlayer_get_first(lyt, NULL, -1);
 			if (vl == NULL) {
