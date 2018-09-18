@@ -904,6 +904,10 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
 			CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1,0 );
 			CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2,1 );
+			if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
+				CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point1, pcb_true);
+				CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point2, pcb_true);
+			}
 			break;
 		}
 
