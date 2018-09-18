@@ -18,7 +18,6 @@
 		- text poly rendering bloat
 		- padstack simple poly rendering bloat
 		- polygon rendering bloat
-	- CAM syntax extension
 - FEATURE: text rot:
 	- propset: set_text_cb_any(): set the rot field and refresh the text
 	- write text rotation functions 
