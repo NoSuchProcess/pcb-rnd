@@ -374,7 +374,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 						dst->grp_vis[gid] = 1;
 						if (xf != NULL) {
-							dst->xform[gid] = xf;
+							dst->xform[gid] = &dst->xform_[gid];
 							memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
 						}
 					}
@@ -385,7 +385,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 						dst->grp_vis[gid] = 1;
 						if (xf != NULL) {
-							dst->xform[gid] = xf;
+							dst->xform[gid] = &dst->xform_[gid];
 							memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
 						}
 					}
@@ -396,7 +396,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 				int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
 				dst->vgrp_vis[vid] = 1;
 				if (xf != NULL) {
-					dst->vxform[vid] = xf;
+					dst->vxform[vid] = &dst->vxform_[vid];
 					memcpy(&dst->vxform_[vid], &xf_, sizeof(pcb_xform_t));
 				}
 
