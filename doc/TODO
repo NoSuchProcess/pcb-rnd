@@ -241,6 +241,7 @@ FEATURES
 - menu item for export of multiple selected layout elements to discrete .fp files
 
 4. Low prio ===============================================================================
+- FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304 [report: gpaubert]
 - FEATURE: filled vias for via-in-pad: http://www.saturnelectronics.com/products_capabilities/via-in-pad.html
 - FEATURE: depth controlled mech layers (routed) for internal cavirites: http://www.saturnelectronics.com/products_capabilities/internal-cavity_boards.html
 - BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: igor2, miloh]
