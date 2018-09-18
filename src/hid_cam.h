@@ -12,6 +12,11 @@ typedef struct pcb_cam_s {
 	int grp_vis[PCB_MAX_LAYERGRP]; /* whether a real layer group should be rendered */
 	int vgrp_vis[PCB_VLY_end];     /* whether a virtual layer group should be rendered */
 
+	pcb_xform_t *xform[PCB_MAX_LAYERGRP];
+	pcb_xform_t xform_[PCB_MAX_LAYERGRP];
+	pcb_xform_t *vxform[PCB_VLY_end];
+	pcb_xform_t vxform_[PCB_VLY_end];
+
 	/* private/internal/cache */
 	char *inst;
 	pcb_board_t *pcb;

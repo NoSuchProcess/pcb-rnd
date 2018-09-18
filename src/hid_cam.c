@@ -264,17 +264,29 @@ static char *parse_layer(char *curr, char **spk, char **spv, int *spc)
 	return NULL; /* no more layers */
 }
 
-static void parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose)
+
+static void parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, pcb_xform_t **xf, pcb_xform_t *xf_)
 {
 	int n;
 
 	*purpose = NULL;
+	memset(xf_, 0, sizeof(pcb_xform_t));
 
 	for(n = 0; n < spc; n++) {
 		char *key = spk[n], *val = spv[n];
 		pcb_trace(" [%d] '%s' '%s'\n", n, spk[n], spv[n]);
 		if (strcmp(key, "purpose") == 0)
 			*purpose = val;
+		if (strcmp(key, "bloat") == 0) {
+			pcb_bool succ;
+			double v = pcb_get_value(val, NULL, NULL, &succ);
+			if (succ) {
+				xf_->bloat = v;
+				*xf = xf_;
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "CAM: ignoring invalid layer supplement value '%s' for bloat\n", val);
+		}
 		else
 			pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
 	}
@@ -340,12 +352,13 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 			int offs, has_offs;
 			pcb_layer_type_t lyt;
 			const pcb_virt_layer_t *vl;
+			pcb_xform_t *xf, xf_;
 
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
 				goto err;
 
 #warning TODO: extend the syntax for purpose
-			parse_layer_supplements(spk, spv, spc, &purpose);
+			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
 
 			vl = pcb_vlayer_get_first(lyt, purpose, -1);
 			if (vl == NULL) {
@@ -360,6 +373,10 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 						pcb_layergrp_id_t gid = gids[offs];
 						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 						dst->grp_vis[gid] = 1;
+						if (xf != NULL) {
+							dst->xform[gid] = xf;
+							memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
+						}
 					}
 				}
 				else {
@@ -367,6 +384,10 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 						pcb_layergrp_id_t gid = gids[n];
 						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 						dst->grp_vis[gid] = 1;
+						if (xf != NULL) {
+							dst->xform[gid] = xf;
+							memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
+						}
 					}
 				}
 				
@@ -374,6 +395,11 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 			else {
 				int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
 				dst->vgrp_vis[vid] = 1;
+				if (xf != NULL) {
+					dst->vxform[vid] = xf;
+					memcpy(&dst->vxform_[vid], &xf_, sizeof(pcb_xform_t));
+				}
+
 			}
 		}
 	}
