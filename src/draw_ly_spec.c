@@ -232,7 +232,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		}
 		count += numobj;
 
-		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0), &info->xform)) {
+		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0), &info->xform_caller)) {
 			/* boundary does NOT support compisiting, everything is drawn in positive */
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);

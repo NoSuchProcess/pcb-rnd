@@ -373,7 +373,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	for (i = ngroups - 1; i >= 0; i--) {
 		pcb_layergrp_id_t group = drawn_groups[i];
 
-		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform)) {
+		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_caller)) {
 			int is_current = 0;
 			pcb_layergrp_id_t cgrp = CURRENT->meta.real.grp;
 
@@ -405,13 +405,13 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	/* Draw the solder mask if turned on */
 	gid = pcb_layergrp_get_top_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_caller))) {
 		pcb_draw_mask(info, PCB_COMPONENT_SIDE);
 		pcb_gui->end_layer();
 	}
 
 	gid = pcb_layergrp_get_bottom_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_caller))) {
 		pcb_draw_mask(info, PCB_SOLDER_SIDE);
 		pcb_gui->end_layer();
 	}
@@ -419,7 +419,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	/* Draw silks */
 	slk_len = pcb_layergrp_list(PCB, PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
 	for(i = 0; i < slk_len; i++) {
-		if (pcb_layer_gui_set_glayer(PCB, slk[i], 0, &info->xform)) {
+		if (pcb_layer_gui_set_glayer(PCB, slk[i], 0, &info->xform_caller)) {
 			unsigned int loc = pcb_layergrp_flags(PCB, slk[i]);
 			pcb_draw_silk(info, loc & PCB_LYT_ANYWHERE);
 			pcb_gui->end_layer();
@@ -436,7 +436,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	gid = pcb_layergrp_get_top_paste();
 	if (gid >= 0)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_caller))) {
 		pcb_draw_paste(info, PCB_COMPONENT_SIDE);
 		pcb_gui->end_layer();
 	}
@@ -444,7 +444,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	gid = pcb_layergrp_get_bottom_paste();
 	if (gid >= 0)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_caller))) {
 		pcb_draw_paste(info, PCB_SOLDER_SIDE);
 		pcb_gui->end_layer();
 	}
