@@ -264,16 +264,25 @@ static char *parse_layer(char *curr, char **spk, char **spv, int *spc)
 	return NULL; /* no more layers */
 }
 
-static void parse_layer_supplements(char **spk, char **spv, int spc)
+static void parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose)
 {
 	int n;
-	for(n = 0; n < spc; n++)
+
+	*purpose = NULL;
+
+	for(n = 0; n < spc; n++) {
+		char *key = spk[n], *val = spv[n];
 		pcb_trace(" [%d] '%s' '%s'\n", n, spk[n], spv[n]);
+		if (strcmp(key, "purpose") == 0)
+			*purpose = val;
+		else
+			pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
+	}
 }
 
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
-	char *curr, *next;
+	char *curr, *next, *purpose;
 
 	if ((src == NULL) || (*src == '\0'))
 		return 0;
@@ -336,12 +345,12 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 				goto err;
 
 #warning TODO: extend the syntax for purpose
-			parse_layer_supplements(spk, spv, spc);
+			parse_layer_supplements(spk, spv, spc, &purpose);
 
-			vl = pcb_vlayer_get_first(lyt, NULL, -1);
+			vl = pcb_vlayer_get_first(lyt, purpose, -1);
 			if (vl == NULL) {
 				pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
-				int n, len = pcb_layergrp_list(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]));
+				int n, len = pcb_layergrp_listp(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]), -1, purpose);
 				if (has_offs) {
 					if (offs < 0)
 						offs = len - offs;
