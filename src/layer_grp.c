@@ -679,7 +679,7 @@ int pcb_layergrp_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layerg
 	const pcb_layergrp_t *g;
 	for (group = 0, g = pcb->LayerGroups.grp; group < pcb->LayerGroups.len; group++,g++) {
 		if ((pcb_layergrp_flags(pcb, group) & mask) == mask) {
-			if (((purpose == NULL) || (strcmp(purpose, g->purpose) == 0)) && ((purpi == -1) || (purpi == g->purpi))) {
+			if (((purpose == NULL) || ((g->purpose != NULL) && (strcmp(purpose, g->purpose) == 0))) && ((purpi == -1) || (purpi == g->purpi))) {
 				APPEND(group);
 			}
 		}
