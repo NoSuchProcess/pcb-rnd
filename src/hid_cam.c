@@ -439,11 +439,17 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 
 		if (!cam->grp_vis[group])
 			return 1;
+
+		if (cam->xform[group] != NULL)
+			*xform = cam->xform[group];
 	}
 	else {
 		int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
 		if (!cam->vgrp_vis[vid])
 			return 1;
+
+		if (cam->vxform[vid] != NULL)
+			*xform = cam->xform[vid];
 	}
 
 	cam->exported_grps++;
