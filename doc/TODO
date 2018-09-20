@@ -1,6 +1,10 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- FEATURE: lihata v6:
+	- padstack shape hshadow for the no-shape clearance trickery ML/2318 [report: pstuge]
+	- remove via geometry from route style?
+	- text thickness in routing style
 - CLEANUP: remove PCB_UNIT_FILE_MODE (risky setlocale!)
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
 - BUG: gtk: Can't close the widnow while command entry is open. If the layout was modified, it will issue an "Are you sure..." dialog, where ignoring the changes does nothing. Then, as soon as I hit 'escape' to close the action input box, pcb-rnd exits immediately. [report: TwisteR]
@@ -193,9 +197,6 @@
 	- rewrite using DAD
 	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
 	- react on conf change events, refresh the fields
-- FEATURE: lihata v6:
-	- remove via geometry from route style?
-	- text thickness in routing style
 - CLEANUP: parent subc update:
 	- inhibit mechanism to speed things up:
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
