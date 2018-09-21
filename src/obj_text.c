@@ -786,7 +786,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, int scale, int direction, int mirror)
+static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, pcb_coord_t x0, int xordraw, int thindraw, pcb_coord_t xordx, pcb_coord_t xordy, int scale, int direction, int mirror)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
@@ -813,9 +813,10 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 		y[n] += ty0;
 	}
 
-	if (xordraw) {
+	if (xordraw || thindraw) {
+		pcb_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
 		for(n = 1, p = poly->Points+1; n < max; n++,p++)
-			pcb_gui->draw_line(pcb_crosshair.GC, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
+			pcb_gui->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
 	}
 	else
 		pcb_gui->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
@@ -936,6 +937,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			pcb_line_t newline;
 			pcb_poly_t *p;
 			pcb_arc_t *a, newarc;
+			int poly_thin;
 
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
@@ -997,8 +999,9 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			}
 
 			/* draw the polygons */
+			poly_thin = conf_core.editor.thin_draw || conf_core.editor.wireframe_draw;
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				draw_text_poly(info, p, x0, y0, x, xordraw, xordx, xordy, scale, direction, mirror);
+				draw_text_poly(info, p, x0, y0, x, xordraw, poly_thin, xordx, xordy, scale, direction, mirror);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
