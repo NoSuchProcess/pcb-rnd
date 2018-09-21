@@ -20,7 +20,6 @@
 		- check which I/O can handle it
 - FEATURE: rendering transformations (to be used with cam, for Bdale's stencil use case) [report: Bdale]
 	- search for trdraw TODO:
-		- text poly rendering bloat
 		- polygon rendering bloat
 - FEATURE: text rot:
 	- propset: set_text_cb_any(): set the rot field and refresh the text
