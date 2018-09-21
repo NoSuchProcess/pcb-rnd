@@ -38,7 +38,7 @@ typedef struct pse_proto_layer_s {
 	pcb_coord_t auto_bloat;
 } pse_proto_layer_t;
 
-#define PSE_MASK_BLOAT PCB_MIL_TO_COORD(4)
+#define PSE_MASK_BLOAT PCB_MIL_TO_COORD(2*3)
 
 static const pse_proto_layer_t pse_layer[] = {
 	{"top paste",            PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO,             {2,-1}, 0},
