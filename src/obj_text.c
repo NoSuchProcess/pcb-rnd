@@ -817,6 +817,7 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 		pcb_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
 		for(n = 1, p = poly->Points+1; n < max; n++,p++)
 			pcb_gui->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
+		pcb_gui->draw_line(gc, xordx + x[0], xordy + y[0], xordx + x[max-1], xordy + y[max-1]);
 	}
 	else
 		pcb_gui->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
