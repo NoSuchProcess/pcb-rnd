@@ -738,8 +738,10 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly)
 		poly->pa = pcb_polyarea_create();
 		pcb_poly_contour_inv(pl);
 		pcb_polyarea_contour_include(poly->pa, pl);
+		poly->inverted = 1;
 	}
-
+	else
+		poly->inverted = 0;
 }
 
 /*** Undoable hole change ***/

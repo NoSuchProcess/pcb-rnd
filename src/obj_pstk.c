@@ -48,6 +48,7 @@
 #include "vtpadstack.h"
 #include "event.h"
 #include "hid_inlines.h"
+#include "polygon_offs.h"
 
 #define SQR(o) ((o)*(o))
 
@@ -369,9 +370,49 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pc
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
-#warning trdraw TODO: poly bloat
+			if (shape->data.poly.pa == NULL)
+				pcb_pstk_shape_update_pa(&shape->data.poly);
 			pcb_hid_set_line_cap(gc, pcb_cap_round);
-			pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+			if (dthick != 0) {
+				/* slow - but would be used on export mostly, not on-screen drawing */
+				pcb_polo_t *p, p_st[32];
+				pcb_coord_t *x, *y, xy_st[64];
+				double vl = pcb_round(-dthick/2);
+				long n;
+
+				if (!shape->data.poly.inverted)
+					dthick = -dthick;
+				vl = pcb_round(dthick/2);
+				
+				if (shape->data.poly.len >= sizeof(p_st) / sizeof(p_st[0])) {
+					p = malloc(sizeof(pcb_polo_t) * shape->data.poly.len);
+					x = malloc(sizeof(pcb_coord_t) * shape->data.poly.len);
+				}
+				else {
+					p = p_st;
+					x = xy_st;
+				}
+				y = x + sizeof(p_st) / sizeof(p_st[0]);
+
+				/* relative: move each point radially */
+				for(n = 0; n < shape->data.poly.len; n++) {
+					p[n].x = shape->data.poly.x[n];
+					p[n].y = shape->data.poly.y[n];
+				}
+				pcb_polo_norms(p, shape->data.poly.len);
+				pcb_polo_offs(vl, p, shape->data.poly.len);
+				for(n = 0; n < shape->data.poly.len; n++) {
+					x[n] = pcb_round(p[n].x);
+					y[n] = pcb_round(p[n].y);
+				}
+				pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, x, y, ps->x, ps->y);
+				if (p != p_st) {
+					free(p);
+					free(x);
+				}
+			}
+			else
+				pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 			break;
 		case PCB_PSSH_LINE:
 			pcb_hid_set_line_cap(gc, shape->data.line.square ? pcb_cap_square : pcb_cap_round);

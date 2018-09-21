@@ -36,6 +36,7 @@ typedef struct pcb_pstk_poly_s {
 	pcb_coord_t *x;               /* ordered list of points, X coord */
 	pcb_coord_t *y;               /* ordered list of points, Y coord */
 	pcb_polyarea_t *pa;           /* cache for the poly code */
+	char inverted;                /* 1 if x;y has the opposite direction as pa */
 } pcb_pstk_poly_t;
 
 typedef struct pcb_pstk_line_s {
