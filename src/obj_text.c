@@ -38,6 +38,7 @@
 #include "hid_inlines.h"
 #include "undo.h"
 #include "polygon.h"
+#include "polygon_offs.h"
 #include "event.h"
 #include "layer.h"
 
@@ -811,6 +812,20 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 
 		x[n] += tx0;
 		y[n] += ty0;
+	}
+
+	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
+		pcb_polo_t *p, pp[MAX_SIMPLE_POLY_POINTS];
+		for(n = 0, p = pp; n < max; n++,p++) {
+			p->x = x[n];
+			p->y = y[n];
+		}
+		pcb_polo_norms(pp, max);
+		pcb_polo_offs(info->xform->bloat, pp, max);
+		for(n = 0, p = pp; n < max; n++,p++) {
+			x[n] = pcb_round(p->x);
+			y[n] = pcb_round(p->y);
+		}
 	}
 
 	if (xordraw || thindraw) {
