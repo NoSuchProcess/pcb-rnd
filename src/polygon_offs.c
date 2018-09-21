@@ -36,6 +36,13 @@ void pcb_polo_norm(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	*ny = dx / len;
 }
 
+void pcb_polo_normd(double *nx, double *ny, double x1, double y1, double x2, double y2)
+{
+	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
+	*nx = -dy / len;
+	*ny = dx / len;
+}
+
 static long warp(long n, long len)
 {
 	if (n < 0) n += len;
@@ -91,6 +98,17 @@ void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts)
 			pcsh[np].x, pcsh[np].y, pcsh[np].nx, pcsh[np].ny,
 			pcsh[nn2].x, pcsh[nn2].y, pcsh[nn2].nx, pcsh[nn2].ny
 		);
+	}
+}
+
+
+void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts)
+{
+	long n;
+
+	for(n = 0; n < num_pts; n++) {
+		long nn = warp(n+1, num_pts);
+		pcb_polo_normd(&pcsh[n].nx, &pcsh[n].ny, pcsh[n].x, pcsh[n].y, pcsh[nn].x, pcsh[nn].y);
 	}
 }
 

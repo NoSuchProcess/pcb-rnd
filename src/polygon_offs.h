@@ -36,6 +36,9 @@ typedef struct {
 	double x, y, nx, ny;
 } pcb_polo_t;
 
+/* Calculate the normal vectors of a cache */
+void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts);
+
 /* Ortho-shift all edges of a polygon */
 void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts);
 
