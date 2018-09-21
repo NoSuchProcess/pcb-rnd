@@ -41,6 +41,7 @@
 #include "vtpadstack_t.h"
 #include "obj_hash.h"
 #include "funchash_core.h"
+#include "polygon_offs.h"
 
 static const char core_proto_cookie[] = "padstack prototypes";
 
@@ -932,17 +933,27 @@ void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_
 #warning TODO
 			}
 			else {
+				pcb_polo_t *p, p_st[32];
+				double vl = pcb_round(-val/2);
+
+				if (shp->data.poly.len >= sizeof(p_st) / sizeof(p_st[0]))
+					p = malloc(sizeof(pcb_polo_t) * shp->data.poly.len);
+				else
+					p = p_st;
+
 				/* relative: move each point radially */
 				for(n = 0; n < shp->data.poly.len; n++) {
-					double dx = shp->data.poly.x[n] - cx, dy = shp->data.poly.y[n] - cy;
-					double dist = sqrt(dx*dx + dy*dy);
-					double vx = dx / dist, vy = dy / dist;
-					dist += val;
-					if (dist <= PCB_MM_TO_COORD(0.01))
-						dist = PCB_MM_TO_COORD(0.01);
-					shp->data.poly.x[n] = cx + vx * dist;
-					shp->data.poly.y[n] = cy + vy * dist;
+					p[n].x = shp->data.poly.x[n];
+					p[n].y = shp->data.poly.y[n];
 				}
+				pcb_polo_norms(p, shp->data.poly.len);
+				pcb_polo_offs(vl, p, shp->data.poly.len);
+				for(n = 0; n < shp->data.poly.len; n++) {
+					shp->data.poly.x[n] = p[n].x;
+					shp->data.poly.y[n] = p[n].y;
+				}
+				if (p != p_st)
+					free(p);
 			}
 			pcb_pstk_shape_update_pa(&shp->data.poly);
 			break;
