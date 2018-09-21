@@ -42,12 +42,13 @@ void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts);
 /* Calculate and return the double of the area of a cached polygon */
 double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts);
 
-/* Ortho-shift all edges of a polygon */
+/* Ortho-shift all edges of a polygon. Positive offset means shrink. */
 void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts);
 
 /* Orhto-shift an edge specified by x0;y0 and x1;y1. Calculate the new
    edge points by extending/shrinking the previous and next line segment.
-   Modifies the target edge's start and end coords. Requires cached normals. */
+   Modifies the target edge's start and end coords. Requires cached normals
+   Positive offset means shrink. */
 void pcb_polo_edge_shift(double offs,
 	double *x0, double *y0, double nx, double ny,
 	double *x1, double *y1,
