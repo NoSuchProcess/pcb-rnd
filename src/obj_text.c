@@ -793,7 +793,6 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 	int max, n;
 	pcb_point_t *p;
 
-#warning trdraw TODO: do not ignore info
 	max = poly->PointN;
 	if (max > MAX_SIMPLE_POLY_POINTS) {
 		max = MAX_SIMPLE_POLY_POINTS;
@@ -828,7 +827,6 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 		else
 			dv = 0.5;
 		pcb_polo_offs(info->xform->bloat*dv, pp, max);
-		printf("%f\n", a2);
 		for(n = 0, p = pp; n < max; n++,p++) {
 			x[n] = pcb_round(p->x);
 			y[n] = pcb_round(p->y);
