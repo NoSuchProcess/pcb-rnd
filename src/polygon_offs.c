@@ -26,95 +26,118 @@
 
 /* Polygon contour offset calculation */
 
-static void norm(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+#include "compat_misc.h"
+
+typedef struct {
+	double x, y, nx, ny;
+} pcache_t;
+
+static void normal(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
 	*nx = -dy / len;
 	*ny = dx / len;
 }
 
-static void ll_intersect(double *xi, double *yi, double ax1, double ay1, double ax2, double ay2, double bx1, double by1, double bx2, double by2)
+static long warp(long n, long len)
 {
-	double ua, X1, Y1, X2, Y2, X3, Y3, X4, Y4, tmp;
-
-	/* maths from http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/ */
-	X1 = ax1;
-	X2 = ax2;
-	X3 = bx1;
-	X4 = bx2;
-	Y1 = ay1;
-	Y2 = ay2;
-	Y3 = by1;
-	Y4 = by2;
-
-	tmp = ((Y4 - Y3) * (X2 - X1) - (X4 - X3) * (Y2 - Y1));
-
-	if (tmp == 0) {
-		/* Corner case: parallel lines; intersect only if the endpoint of either line
-		   is on the other line */
-		*xi = ax2;
-		*yi = ay2;
-	}
-
-
-	ua = ((X4 - X3) * (Y1 - Y3) - (Y4 - Y3) * (X1 - X3)) / tmp;
-/*	ub = ((X2 - X1) * (Y1 - Y3) - (Y2 - Y1) * (X1 - X3)) / tmp;*/
-	*xi = X1 + ua * (X2 - X1);
-	*yi = Y1 + ua * (Y2 - Y1);
+	if (n < 0) n += len;
+	else if (n >= len) n -= len;
+	return n;
 }
 
+/* Parallel shift an edge specified by x0;y0 and x1;y1. Calculate the new
+   edge points by extending/shrinking the previous and next line segment.
+   Modifies the target edge's start and end coords. Requires cached normals. */
+
+static void edge_shift(double offs,
+	double *x0, double *y0, double nx, double ny,
+	double *x1, double *y1,
+	double prev_x, double prev_y, double prev_nx, double prev_ny,
+	double next_x, double next_y, double next_nx, double next_ny)
+{
+	double ax, ay, al, a1l, a1x, a1y;
+
+	/* previous edge's endpoint offset */
+	ax = (*x0) - prev_x;
+	ay = (*y0) - prev_y;
+	al = sqrt(ax*ax + ay*ay);
+	ax /= al;
+	ay /= al;
+	a1l = ax*nx + ay*ny;
+	a1x = offs / a1l * ax;
+	a1y = offs / a1l * ay;
+
+	(*x0) += a1x;
+	(*y0) += a1y;
+
+	/* next edge's endpoint offset */
+	ax = next_x - (*x1);
+	ay = next_y - (*y1);
+	al = sqrt(ax*ax + ay*ay);
+	ax /= al;
+	ay /= al;
+
+	a1l = ax*nx + ay*ny;
+	a1x = offs / a1l * ax;
+	a1y = offs / a1l * ay;
+
+	(*x1) += a1x;
+	(*y1) += a1y;
+}
+
+static void poly_offs(double offs, pcache_t *pcsh, long num_pts)
+{
+	long n;
+
+	for(n = 0; n < num_pts; n++) {
+		long np = warp(n-1, num_pts), nn1 = warp(n+1, num_pts), nn2 = warp(n+2, num_pts);
+		edge_shift(offs,
+			&pcsh[n].x, &pcsh[n].y, pcsh[n].nx, pcsh[n].ny,
+			&pcsh[nn1].x, &pcsh[nn1].y,
+			pcsh[np].x, pcsh[np].y, pcsh[np].nx, pcsh[np].ny,
+			pcsh[nn2].x, pcsh[nn2].y, pcsh[nn2].nx, pcsh[nn2].ny
+		);
+	}
+}
 
 pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 {
-	const pcb_vnode_t *p = NULL, *v, *n;
+	const pcb_vnode_t *v;
 	pcb_vector_t tmp;
 	pcb_pline_t *res = NULL;
-	double nx, ny, px, py;
-	int num_pts, i;
+	long num_pts, n;
+	pcache_t *pcsh;
 
+	/* count corners */
 	v = &src->head;
 	num_pts = 0;
 	do {
 		num_pts++;
 	} while((v = v->next) != &src->head);
 
-
-	v = &src->head;
-	i = 0;
-	do {
-		n = v->next;
-		norm(&nx, &ny, v->point[0], v->point[1], n->point[0], n->point[1]);
-
-		if (p != NULL) {
-			double xi, yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2;
-			
-			vx1 = p->point[0] - px*offs;
-			vy1 = p->point[1] - py*offs;
-			vx2 = v->point[0] - px*offs;
-			vy2 = v->point[1] - py*offs;
-
-			nx1 = v->point[0] - nx*offs;
-			ny1 = v->point[1] - ny*offs;
-			nx2 = n->point[0] - nx*offs;
-			ny2 = n->point[1] - ny*offs;
-
-			ll_intersect(&xi, &yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2);
-
-			tmp[0] = xi;
-			tmp[1] = yi;
-			if (res == NULL)
-				res = pcb_poly_contour_new(tmp);
-			else
-				pcb_poly_vertex_include(res->head.prev, pcb_poly_node_create(tmp));
-		}
-
-		p = v;
-		v = v->next;
-		px = nx;
-		py = ny;
-		i++;
+	/* allocate the cache and copy all data */
+	pcsh = malloc(sizeof(pcache_t) * num_pts);
+	for(n = 0, v = &src->head; n < num_pts; n++, v = v->next) {
+		pcsh[n].x = v->point[0];
+		pcsh[n].y = v->point[1];
+		normal(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 	}
-	while(i <= num_pts);
 
+	/* offset the cache */
+	poly_offs(offs, pcsh, num_pts);
+
+
+	/* create a new pline by copying the cache */
+	tmp[0] = pcb_round(pcsh[0].x);
+	tmp[1] = pcb_round(pcsh[0].y);
+	res = pcb_poly_contour_new(tmp);
+	for(n = 1; n < num_pts; n++) {
+		tmp[0] = pcb_round(pcsh[n].x);
+		tmp[1] = pcb_round(pcsh[n].y);
+		pcb_poly_vertex_include(res->head.prev, pcb_poly_node_create(tmp));
+	}
+
+	free(pcsh);
 	return res;
 }
