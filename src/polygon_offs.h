@@ -26,5 +26,25 @@
 
 /* Polygon contour offset calculation */
 
+
 pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs);
+
+
+/* low level */
+
+typedef struct {
+	double x, y, nx, ny;
+} pcb_polo_t;
+
+/* Ortho-shift all edges of a polygon */
+void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts);
+
+/* Orhto-shift an edge specified by x0;y0 and x1;y1. Calculate the new
+   edge points by extending/shrinking the previous and next line segment.
+   Modifies the target edge's start and end coords. Requires cached normals. */
+void pcb_polo_edge_shift(double offs,
+	double *x0, double *y0, double nx, double ny,
+	double *x1, double *y1,
+	double prev_x, double prev_y, double prev_nx, double prev_ny,
+	double next_x, double next_y, double next_nx, double next_ny);
 

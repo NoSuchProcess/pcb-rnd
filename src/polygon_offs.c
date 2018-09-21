@@ -27,12 +27,9 @@
 /* Polygon contour offset calculation */
 
 #include "compat_misc.h"
+#include "polygon_offs.h"
 
-typedef struct {
-	double x, y, nx, ny;
-} pcache_t;
-
-static void normal(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+void pcb_polo_norm(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
 	*nx = -dy / len;
@@ -46,11 +43,7 @@ static long warp(long n, long len)
 	return n;
 }
 
-/* Parallel shift an edge specified by x0;y0 and x1;y1. Calculate the new
-   edge points by extending/shrinking the previous and next line segment.
-   Modifies the target edge's start and end coords. Requires cached normals. */
-
-static void edge_shift(double offs,
+void pcb_polo_edge_shift(double offs,
 	double *x0, double *y0, double nx, double ny,
 	double *x1, double *y1,
 	double prev_x, double prev_y, double prev_nx, double prev_ny,
@@ -86,13 +79,13 @@ static void edge_shift(double offs,
 	(*y1) += a1y;
 }
 
-static void poly_offs(double offs, pcache_t *pcsh, long num_pts)
+void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts)
 {
 	long n;
 
 	for(n = 0; n < num_pts; n++) {
 		long np = warp(n-1, num_pts), nn1 = warp(n+1, num_pts), nn2 = warp(n+2, num_pts);
-		edge_shift(offs,
+		pcb_polo_edge_shift(offs,
 			&pcsh[n].x, &pcsh[n].y, pcsh[n].nx, pcsh[n].ny,
 			&pcsh[nn1].x, &pcsh[nn1].y,
 			pcsh[np].x, pcsh[np].y, pcsh[np].nx, pcsh[np].ny,
@@ -107,7 +100,7 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 	pcb_vector_t tmp;
 	pcb_pline_t *res = NULL;
 	long num_pts, n;
-	pcache_t *pcsh;
+	pcb_polo_t *pcsh;
 
 	/* count corners */
 	v = &src->head;
@@ -117,15 +110,15 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 	} while((v = v->next) != &src->head);
 
 	/* allocate the cache and copy all data */
-	pcsh = malloc(sizeof(pcache_t) * num_pts);
+	pcsh = malloc(sizeof(pcb_polo_t) * num_pts);
 	for(n = 0, v = &src->head; n < num_pts; n++, v = v->next) {
 		pcsh[n].x = v->point[0];
 		pcsh[n].y = v->point[1];
-		normal(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
+		pcb_polo_norm(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 	}
 
 	/* offset the cache */
-	poly_offs(offs, pcsh, num_pts);
+	pcb_polo_offs(offs, pcsh, num_pts);
 
 
 	/* create a new pline by copying the cache */
