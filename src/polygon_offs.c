@@ -112,6 +112,19 @@ void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts)
 	}
 }
 
+double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts)
+{
+	double a = 0;
+	long n;
+
+	for(n = 0; n < num_pts-1; n++) {
+		long nn = warp(n+1, num_pts);
+		a += pcsh[n].x * pcsh[nn].y;
+		a -= pcsh[n].y * pcsh[nn].x;
+	}
+	return a;
+}
+
 pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 {
 	const pcb_vnode_t *v;
