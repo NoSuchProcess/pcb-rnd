@@ -811,13 +811,13 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 
 		x[n] += tx0;
 		y[n] += ty0;
-
-		if (xordraw && (n > 0))
-			pcb_gui->draw_line(pcb_crosshair.GC, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
-		
 	}
 
-	if (!xordraw)
+	if (xordraw) {
+		for(n = 1, p = poly->Points+1; n < max; n++,p++)
+			pcb_gui->draw_line(pcb_crosshair.GC, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
+	}
+	else
 		pcb_gui->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
 }
 
