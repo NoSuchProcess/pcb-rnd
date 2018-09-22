@@ -414,7 +414,13 @@ For each layer group type, the user may specify zero or one pad shape.
 	<tr><td>fillcircle     <td> x;y offset of the center, diameter
 	<tr><td>line           <td> round or square cap, from x1;y1 to x2;y2 with the specified thickness
 	<tr><td>simple-polygon <td> a simple polygon has a single outer contour and no holes
+	<tr><td>hshadow        <td> n/a
 </table>
+<p>
+Pad shape hshadow is a special construct: when drawing a clearance around
+the shape, it pretends to be a copy of the hole or slot shape, but it never
+has any visible (positive) effect on the target layer. Typical use is inner
+layer clearance around a via that should not have a copper ring on that layer.
 <p>
 The pad stack has an origin, a 0;0 point where it is grabbed. If the pad stack
 features a hole, the origin is the center point of the hole. Pad shapes are
