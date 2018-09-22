@@ -136,7 +136,7 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 		{
 			pcb_hid_gc_t old_fg = pcb_draw_out.fgGC;
 			pcb_draw_out.fgGC = pcb_draw_out.pmGC;
-			if (l->comb & PCB_LYC_AUTO)
+			if ((l->comb & PCB_LYC_AUTO) && (draw_auto != NULL))
 				draw_auto(ctx, auto_data);
 			pcb_draw_layer(ctx->info, l);
 			pcb_draw_out.fgGC = old_fg;

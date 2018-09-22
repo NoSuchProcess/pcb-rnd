@@ -130,27 +130,37 @@ static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
 	return 0;
 }
 
-static void pcb_draw_silk(pcb_draw_info_t *info, unsigned long lyt_side)
+static void pcb_draw_silk_doc(pcb_draw_info_t *info, unsigned long lyt_side, unsigned long lyt_type, int setgrp, int invis)
 {
 	pcb_layer_id_t lid;
-	pcb_layergrp_id_t gid = -1;
+	pcb_layergrp_id_t gid[PCB_MAX_LAYERGRP];
 	comp_ctx_t cctx;
+	int len, n;
 
-	if (pcb_layer_list(info->pcb, PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
+	len = pcb_layergrp_list(info->pcb, lyt_type | lyt_side, gid, PCB_MAX_LAYERGRP);
+	if (len < 1)
 		return;
 
-	pcb_layergrp_list(info->pcb, PCB_LYT_SILK | lyt_side, &gid, 1);
-	if (!info->pcb->LayerGroups.grp[gid].vis)
-		return;
+	for(n = 0; n < len; n++) {
+
+	if (!info->pcb->LayerGroups.grp[gid[n]].vis)
+		continue;
+
+	if (setgrp)
+		if (!pcb_layer_gui_set_glayer(info->pcb, gid[n], 0, &info->xform_caller))
+			continue;
 
 	cctx.info = info;
-	cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid);
-	cctx.gid = gid;
-	cctx.color = info->pcb->Data->Layer[lid].meta.real.color;
+	cctx.gid = gid[n];
+	cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid[n]);
+	if (cctx.grp->len == 0)
+		continue;
+	lid = cctx.grp->lid[0];
+	cctx.color = invis ? conf_core.appearance.color.invisible_objects : info->pcb->Data->Layer[lid].meta.real.color;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
-	if (pcb_is_silk_old_style(&cctx, lid)) {
+	if ((lyt_type & PCB_LYT_SILK) && (pcb_is_silk_old_style(&cctx, lid))) {
 		/* fallback: implicit layer -> original code: draw auto+manual */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
@@ -161,6 +171,10 @@ static void pcb_draw_silk(pcb_draw_info_t *info, unsigned long lyt_side)
 	else {
 		comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
 		comp_finish(&cctx);
+	}
+	if (setgrp)
+		pcb_gui->end_layer();
+
 	}
 }
 
@@ -308,6 +322,6 @@ static void pcb_draw_assembly(pcb_draw_info_t *info, unsigned int lyt_side)
 	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */
-	pcb_draw_silk(info, lyt_side);
+	pcb_draw_silk_doc(info, lyt_side, PCB_LYT_SILK, 0, 0);
 	pcb_draw_doing_assy = pcb_false;
 }

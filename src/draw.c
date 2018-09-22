@@ -79,7 +79,7 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group);
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(pcb_draw_info_t *info, int side);
 static void pcb_draw_mask(pcb_draw_info_t *info, int side);
-static void pcb_draw_silk(pcb_draw_info_t *info, unsigned long lyt_side);
+static void pcb_draw_silk_doc(pcb_draw_info_t *info, unsigned long lyt_side, unsigned long lyt_type, int setgrp, int invis);
 static void pcb_draw_boundary_mech(pcb_draw_info_t *info);
 static void pcb_draw_rats(const pcb_box_t *);
 static void pcb_draw_assembly(pcb_draw_info_t *info, unsigned int lyt_side);
@@ -322,8 +322,8 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 static void draw_everything(pcb_draw_info_t *info)
 {
 	char *old_silk_color;
-	int i, ngroups, slk_len;
-	pcb_layergrp_id_t component, solder, slk[16], gid, side_copper_grp;
+	int i, ngroups;
+	pcb_layergrp_id_t component, solder, gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
 	char do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
@@ -341,7 +341,7 @@ static void draw_everything(pcb_draw_info_t *info)
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
-		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
+		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_DOC) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
 			continue;
 
 		if (l->meta.real.vis && !do_group[group]) {
@@ -360,12 +360,13 @@ static void draw_everything(pcb_draw_info_t *info)
 	 * first draw all 'invisible' stuff
 	 */
 	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_caller)) {
-		pcb_draw_silk(info, PCB_LYT_INVISIBLE_SIDE());
+		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
+		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
+		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-
 		pcb_gui->end_layer();
 	}
 
@@ -416,14 +417,14 @@ static void draw_everything(pcb_draw_info_t *info)
 		pcb_gui->end_layer();
 	}
 
-	/* Draw silks */
-	slk_len = pcb_layergrp_list(PCB, PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
-	for(i = 0; i < slk_len; i++) {
-		if (pcb_layer_gui_set_glayer(PCB, slk[i], 0, &info->xform_caller)) {
-			unsigned int loc = pcb_layergrp_flags(PCB, slk[i]);
-			pcb_draw_silk(info, loc & PCB_LYT_ANYWHERE);
-			pcb_gui->end_layer();
-		}
+	/* Draw doc and silks */
+	{
+		pcb_layer_type_t side = PCB_LYT_VISIBLE_SIDE();
+
+		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
+		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
+		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 1, 0);
+		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 1, 0);
 	}
 
 	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
