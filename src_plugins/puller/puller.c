@@ -742,6 +742,8 @@ static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y,
 			double dist2 = pcb_distance2(cx, cy, x, y);
 			return (dist2 <= max_dist2);
 		}
+		case PCB_PSSH_HSHADOW:
+			return 0;
 	}
 	return 0;
 }
@@ -1426,6 +1428,10 @@ static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 
 	if (shape == NULL) return 0;
 	switch(shape->shape) {
+		case PCB_PSSH_HSHADOW:
+#warning hshadow TODO: slot!
+			gp_point(ps->x, ps->y, 1, 0);
+			break;
 		case PCB_PSSH_CIRC:
 			gp_point(ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, 0);
 			break;

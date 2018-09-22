@@ -133,6 +133,9 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 		pcb_pstk_shape_t *shape = pcb_pstk_shape(pse->ps, pse_layer[n].mask, pse_layer[n].comb);
 		if (shape != NULL) {
 			switch(shape->shape) {
+				case PCB_PSSH_HSHADOW:
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "hshadow");
+					break;
 				case PCB_PSSH_CIRC:
 					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "circle");
 					if ((shape->data.circ.x != 0) || (shape->data.circ.y != 0))

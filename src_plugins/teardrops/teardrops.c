@@ -237,6 +237,13 @@ static void check_pstk(pcb_pstk_t *ps)
 				px = ps->x + shp->data.circ.x;
 				py = ps->y + shp->data.circ.y;
 				break;
+
+			case PCB_PSSH_HSHADOW:
+#warning hshadow TODO: slot!
+				thickness = 1;
+				px = ps->x;
+				py = ps->y;
+				break;
 		}
 
 		spot.X1 = px - 10;

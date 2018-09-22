@@ -620,6 +620,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 				case PCB_PSSH_POLY: PCB_QRY_RET_STR(res, "polygon");
 				case PCB_PSSH_LINE: PCB_QRY_RET_STR(res, "line");
 				case PCB_PSSH_CIRC: PCB_QRY_RET_STR(res, "circle");
+				case PCB_PSSH_HSHADOW: PCB_QRY_RET_STR(res, "hshadow");
 			}
 		}
 		PCB_QRY_RET_STR(res, "");

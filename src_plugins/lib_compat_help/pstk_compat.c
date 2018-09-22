@@ -338,6 +338,8 @@ static pcb_pstk_compshape_t get_old_shape(pcb_coord_t *dia, const pcb_pstk_shape
 			if (shp->data.poly.len == 8)
 				return get_old_shape_octa(dia, shp);
 			break;
+		case PCB_PSSH_HSHADOW:
+			break;
 	}
 	return PCB_PSTK_COMPAT_INVALID;
 }
@@ -611,6 +613,8 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	/* require all shapes to be concentric */
 	for(n = 1; n < tshp->len; n++) {
 		switch(tshp->shape[0].shape) {
+			case PCB_PSSH_HSHADOW:
+				return pcb_false;
 			case PCB_PSSH_LINE:
 				if (tshp->shape[0].data.line.x1 != tshp->shape[n].data.line.x1)
 					return pcb_false;
@@ -666,6 +670,8 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 			*y2 = ly2[0] + ps->y;
 			*thickness = lt[coppern];
 			*mask = lt[maskn];
+			break;
+		case PCB_PSSH_HSHADOW:
 			break;
 	}
 
