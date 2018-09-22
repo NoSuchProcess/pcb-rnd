@@ -376,7 +376,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 		double vl = pcb_round(-dthick/2);
 		long n;
 
-		if (!shape->data.poly.inverted)
+		if (shape->data.poly.inverted)
 			dthick = -dthick;
 		vl = pcb_round(dthick/2);
 		

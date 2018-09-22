@@ -822,7 +822,7 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 		}
 		pcb_polo_norms(pp, max);
 		a2 = pcb_polo_2area(pp, max);
-		if (a2 > 0)
+		if (a2 < 0)
 			dv = -0.5;
 		else
 			dv = 0.5;

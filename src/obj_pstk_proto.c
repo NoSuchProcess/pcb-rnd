@@ -936,7 +936,7 @@ void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_
 			}
 			else {
 				pcb_polo_t *p, p_st[32];
-				double vl = pcb_round(-val/2);
+				double vl = pcb_round(val/2);
 
 				if (shp->data.poly.len >= sizeof(p_st) / sizeof(p_st[0]))
 					p = malloc(sizeof(pcb_polo_t) * shp->data.poly.len);

@@ -58,6 +58,8 @@ void pcb_polo_edge_shift(double offs,
 {
 	double ax, ay, al, a1l, a1x, a1y;
 
+	offs = -offs;
+
 	/* previous edge's endpoint offset */
 	ax = (*x0) - prev_x;
 	ay = (*y0) - prev_y;

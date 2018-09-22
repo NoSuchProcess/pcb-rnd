@@ -1063,11 +1063,11 @@ static pcb_poly_t *pcb_poly_draw_tr(pcb_draw_info_t *info, pcb_poly_t *polygon)
 			continue;
 
 		/* iterate over the vectors of the contour */
-		pcb_poly_draw_tr_offs(&it, -offs);
+		pcb_poly_draw_tr_offs(&it, offs);
 
 		/* iterate over all holes within this island */
 		for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
-			pcb_poly_draw_tr_offs(&it, -offs);
+			pcb_poly_draw_tr_offs(&it, offs);
 	}
 
 	return np;
