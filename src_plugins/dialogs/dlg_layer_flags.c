@@ -80,11 +80,13 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	{
 		pcb_layer_type_t loc = g->ltype & PCB_LYT_ANYWHERE;
-		attr[3].default_val.int_value = -1;
-		for(n = 0; ltypes[n] != NULL; n++) {
-			if ((loc & ltype_bits[n]) == loc) {
-				attr[3].default_val.int_value = n;
-				break;
+		attr[3].default_val.int_value = 3;
+		if (loc != 0) {
+			for(n = 0; ltypes[n] != NULL; n++) {
+				if ((loc & ltype_bits[n]) == loc) {
+					attr[3].default_val.int_value = n;
+					break;
+				}
 			}
 		}
 	}
