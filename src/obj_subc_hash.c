@@ -37,7 +37,7 @@
 
 int pcb_subc_hash_ignore_uid = 0;
 
-int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
+int pcb_subc_eq(pcb_subc_t *sc1, pcb_subc_t *sc2)
 {
 	pcb_host_trans_t tr1, tr2;
 	int lid;
@@ -110,7 +110,7 @@ int pcb_subc_eq(const pcb_subc_t *sc1, const pcb_subc_t *sc2)
 	return 1;
 }
 
-unsigned int pcb_subc_hash(const pcb_subc_t *sc)
+unsigned int pcb_subc_hash(pcb_subc_t *sc)
 {
 	unsigned int hash;
 	int lid;
