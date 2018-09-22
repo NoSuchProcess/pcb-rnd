@@ -68,7 +68,7 @@ fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		memcpy(new_ref, old_ref, refdes_split - old_ref);
 		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-		pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc, subc->refdes);
+		pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc, (char *)subc->refdes);
 
 		pcb_chg_obj_name(PCB_OBJ_SUBC, subc, subc, subc, new_ref);
 	}
