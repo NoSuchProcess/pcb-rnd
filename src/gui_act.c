@@ -1608,8 +1608,10 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	ng = pcb_layergrp_dup(PCB, gid, 1);
 	if (ng >= 0) {
 		pcb_layer_id_t lid = pcb_layer_create(PCB, ng, g->name);
-		if (lid >= 0)
+		if (lid >= 0) {
 			PCB_ACT_IRES(0);
+			PCB->Data->Layer[lid].meta.real.vis = 1;
+		}
 		else
 			PCB_ACT_IRES(-1);
 	}
