@@ -558,6 +558,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_widget_set_size_request(resize_grip, 18, 18);
 	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
 	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip, FALSE, FALSE, 0);
+	gtk_widget_set_tooltip_text(resize_grip, "Left-click to resize the main window\nMid-click to move the window");
 	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press),
 		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
 
