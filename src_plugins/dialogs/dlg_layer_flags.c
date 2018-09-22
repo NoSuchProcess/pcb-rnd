@@ -67,7 +67,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	if (g->ltype & LOC_TYPES) {
 		for(n = 0; ltype_bits[n] != 0; n++)
 			if (g->ltype & ltype_bits[n])
-				attr[1].default_val.int_value = orig_loc = n;
+				attr[1].default_val.int_value = n;
 	}
 	else
 		omit_loc = 1;
@@ -77,6 +77,18 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	attr[1].default_val.int_value = orig_type = ly_type2enum(g->ltype);
 	attr[2].default_val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
 	attr[3].enumerations = ltypes;
+
+	{
+		pcb_layer_type_t loc = g->ltype & PCB_LYT_ANYWHERE;
+		attr[3].default_val.int_value = -1;
+		for(n = 0; ltypes[n] != NULL; n++) {
+			if ((loc & ltype_bits[n]) == loc) {
+				attr[3].default_val.int_value = n;
+				break;
+			}
+		}
+	}
+	orig_loc = attr[3].default_val.int_value;
 
 	ar = pcb_attribute_dialog(attr, sizeof(attr)/sizeof(attr[0]) - omit_loc, rv, "Edit group properties", "Edit the properties of a layer group (physical layer)", NULL);
 
@@ -92,10 +104,18 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			get_ly_type_(attr[1].default_val.int_value, &lyt);
 			g->ltype &= ~PCB_LYT_ANYTHING;
 			g->ltype |= lyt;
-			if (PCB_LAYER_SIDED(lyt)) {
-#warning TODO
-			}
 			changed = 1;
+		}
+
+		if ((!omit_loc) && (attr[3].default_val.int_value != orig_loc)) {
+			if (PCB_LAYER_SIDED(g->ltype)) {
+				g->ltype &= ~PCB_LYT_ANYWHERE;
+				if (attr[3].default_val.int_value >= 0)
+					g->ltype |= ltype_bits[attr[3].default_val.int_value];
+				changed = 1;
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "Ignoring location - for this layer group type it is determined by the stackup\n");
 		}
 
 		if (attr[2].default_val.str_value == NULL) {
@@ -110,15 +130,6 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			else
 				pcb_layergrp_set_purpose__(g, pcb_strdup(attr[2].default_val.str_value));
 			changed = 1;
-		}
-
-		if ((!omit_loc) && (orig_loc != attr[1].default_val.int_value) && (orig_loc >= 0)) {
-			if (g->ltype & LOC_TYPES) {
-				g->ltype &= ~PCB_LYT_ANYWHERE;
-				g->ltype |= ltype_bits[attr[1].default_val.int_value];
-			}
-			else
-				pcb_message(PCB_MSG_ERROR, "Ignoring location - for this layer group type it is determined by the stackup\n");
 		}
 
 		if (changed) {
