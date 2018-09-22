@@ -400,22 +400,6 @@ static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *u
 	return FALSE;
 }
 
-static gboolean resize_grip_expose(GtkWidget *area, GdkEventExpose *event, GdkWindowEdge edge)
-{
-	gint size = MIN(area->allocation.width, area->allocation.height);
-
-	gtk_paint_resize_grip(area->style,
-		area->window,
-		gtk_widget_get_state(area),
-		&event->area,
-		area,
-		"statusline",
-		edge,
-		0, area->allocation.height - size,
-		size, size);
-	return TRUE;
-}
-
 static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event, GdkWindowEdge edge)
 {
 	if (event->type != GDK_BUTTON_PRESS)
@@ -570,12 +554,10 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->status_line_label = label;
 	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), label, FALSE, FALSE, 0);
 
-	resize_grip = gtk_drawing_area_new();
+	resize_grip = gtk_event_box_new();
 	gtk_widget_set_size_request(resize_grip, 18, 18);
 	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
 	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip, FALSE, FALSE, 0);
-	g_signal_connect(resize_grip, "expose_event", G_CALLBACK(resize_grip_expose),
-		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
 	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press),
 		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
 
