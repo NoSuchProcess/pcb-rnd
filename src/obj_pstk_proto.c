@@ -122,6 +122,7 @@ static void append_tshape(pcb_pstk_tshape_t *ts, pcb_pstk_tshape_t *src, int src
 	switch(src->shape[srci].shape) {
 		case PCB_PSSH_LINE:
 		case PCB_PSSH_CIRC:
+		case PCB_PSSH_HSHADOW:
 			break; /* do nothing, all fields are copied already by the memcpy */
 		case PCB_PSSH_POLY:
 			pcb_pstk_shape_alloc_poly(&ts->shape[idx].data.poly, src->shape[srci].data.poly.len);
@@ -476,6 +477,7 @@ void pcb_pstk_shape_copy(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *src)
 	switch(src->shape) {
 		case PCB_PSSH_LINE:
 		case PCB_PSSH_CIRC:
+		case PCB_PSSH_HSHADOW:
 			break; /* do nothing, all fields are copied already by the memcpy */
 		case PCB_PSSH_POLY:
 			pcb_pstk_shape_alloc_poly(&dst->data.poly, src->data.poly.len);
@@ -489,6 +491,7 @@ void pcb_pstk_shape_free(pcb_pstk_shape_t *s)
 	switch(s->shape) {
 		case PCB_PSSH_LINE:
 		case PCB_PSSH_CIRC:
+		case PCB_PSSH_HSHADOW:
 			break; /* no allocation */
 		case PCB_PSSH_POLY:
 			pcb_pstk_shape_free_poly(&s->data.poly);
@@ -510,6 +513,7 @@ void pcb_pstk_tshape_copy(pcb_pstk_tshape_t *ts_dst, pcb_pstk_tshape_t *ts_src)
 		switch(ts_src->shape[n].shape) {
 			case PCB_PSSH_LINE:
 			case PCB_PSSH_CIRC:
+			case PCB_PSSH_HSHADOW:
 				break; /* do nothing, all fields are copied already by the memcpy */
 			case PCB_PSSH_POLY:
 				pcb_pstk_shape_alloc_poly(&ts_dst->shape[n].data.poly, ts_src->shape[n].data.poly.len);
@@ -530,6 +534,8 @@ void pcb_pstk_shape_rot(pcb_pstk_shape_t *sh, double sina, double cosa, double a
 			break;
 		case PCB_PSSH_CIRC:
 			pcb_rotate(&sh->data.circ.x, &sh->data.circ.y, 0, 0, cosa, sina);
+			break;
+		case PCB_PSSH_HSHADOW:
 			break;
 		case PCB_PSSH_POLY:
 			if (sh->data.poly.pa != NULL)
@@ -564,6 +570,8 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 				break;
 			case PCB_PSSH_CIRC:
 				sh->data.circ.y = -sh->data.circ.y;
+				break;
+			case PCB_PSSH_HSHADOW:
 				break;
 			case PCB_PSSH_POLY:
 				if (sh->data.poly.pa != NULL)
@@ -928,6 +936,8 @@ void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_
 			if (shp->data.circ.dia < 1)
 				shp->data.circ.dia = 1;
 			break;
+		case PCB_PSSH_HSHADOW:
+			break;
 		case PCB_PSSH_POLY:
 			pcb_pstk_poly_center(&shp->data.poly, &cx, &cy);
 			pcb_polyarea_free(&shp->data.poly.pa);
@@ -1061,6 +1071,8 @@ static unsigned int pcb_pstk_shape_hash(const pcb_pstk_shape_t *sh)
 			ret ^= pcb_hash_coord(sh->data.circ.x) ^ pcb_hash_coord(sh->data.circ.y);
 			ret ^= pcb_hash_coord(sh->data.circ.dia);
 			break;
+		case PCB_PSSH_HSHADOW:
+			break;
 	}
 
 	return ret;
@@ -1104,6 +1116,8 @@ static int pcb_pstk_shape_eq(const pcb_pstk_shape_t *sh1, const pcb_pstk_shape_t
 			if (sh1->data.circ.x != sh2->data.circ.x) return 0;
 			if (sh1->data.circ.y != sh2->data.circ.y) return 0;
 			if (sh1->data.circ.dia != sh2->data.circ.dia) return 0;
+			break;
+		case PCB_PSSH_HSHADOW:
 			break;
 	}
 

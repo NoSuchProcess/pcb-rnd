@@ -150,6 +150,8 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, pcb_bool copper_only)
 				pcb_box_bump_point(dst, ps->x - shape->data.circ.dia/2, ps->y - shape->data.circ.dia/2);
 				pcb_box_bump_point(dst, ps->x + shape->data.circ.dia/2, ps->y + shape->data.circ.dia/2);
 				break;
+			case PCB_PSSH_HSHADOW:
+				break;
 		}
 	}
 
@@ -444,6 +446,8 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pc
 			pcb_hid_set_line_cap(gc, pcb_cap_round);
 			pcb_gui->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r);
 			break;
+		case PCB_PSSH_HSHADOW:
+			break;
 	}
 }
 
@@ -465,6 +469,8 @@ static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb
 		case PCB_PSSH_CIRC:
 			r = MAX(shape->data.circ.dia/2 + dthick/2, 1);
 			pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r, r, 0, 360);
+			break;
+		case PCB_PSSH_HSHADOW:
 			break;
 	}
 }
@@ -749,6 +755,10 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 			pad.Clearance = 0;
 			pad.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
 			return isneg ? PCB_PAD_TOUCHES_BOX(&pad, box) : PCB_PAD_IN_BOX(&pad, box);
+
+		case PCB_PSSH_HSHADOW:
+			return 0;
+
 		case PCB_PSSH_POLY:
 			if (shape->data.poly.pa == NULL)
 				pcb_pstk_shape_update_pa(&shape->data.poly);
@@ -848,6 +858,8 @@ static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, p
 	pcb_vector_t v;
 
 	switch(shape->shape) {
+		case PCB_PSSH_HSHADOW:
+			return 0;
 		case PCB_PSSH_CIRC:
 			return PCB_POINT_IN_CIRCLE(x, y, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2 + radius);
 		case PCB_PSSH_LINE:
@@ -931,6 +943,8 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 	int n;
 
 	switch(shp->shape) {
+		case PCB_PSSH_HSHADOW:
+			break;
 		case PCB_PSSH_CIRC:
 			dist = sqrt(shp->data.circ.x*shp->data.circ.x + shp->data.circ.y*shp->data.circ.y);
 			neck = (double)(shp->data.circ.dia - hdia) / 2.0 - dist;

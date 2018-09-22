@@ -60,7 +60,8 @@ typedef struct pcb_pstk_shape_s {
 	enum {
 		PCB_PSSH_POLY,
 		PCB_PSSH_LINE,
-		PCB_PSSH_CIRC                /* filled circle */
+		PCB_PSSH_CIRC,               /* filled circle */
+		PCB_PSSH_HSHADOW             /* for clearance: pretend the shape is the same as the drill's or slot's; but do not add anything positive to the target layer */
 	} shape;
 	pcb_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
 } pcb_pstk_shape_t;
