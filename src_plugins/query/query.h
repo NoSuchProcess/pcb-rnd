@@ -126,7 +126,7 @@ struct pcb_qry_node_s {
 		pcb_qry_val_t result;       /* of pure functions and subtrees */
 		re_se_t *regex;
 		long cnst;                  /* named constant */
-		pcb_flag_bits_t *flg;
+		const pcb_flag_bits_t *flg;
 	} precomp;
 };
 
