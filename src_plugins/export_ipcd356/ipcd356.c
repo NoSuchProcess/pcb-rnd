@@ -218,6 +218,8 @@ static void ipcd356_pstk_shape(test_feature_t *t, pcb_pstk_shape_t *sh)
 	int n;
 	pcb_coord_t x1, y1, x2, y2;
 	switch(sh->shape) {
+		case PCB_PSSH_HSHADOW:
+			break;
 		case PCB_PSSH_CIRC:
 			t->width = sh->data.circ.dia;
 			t->height = 0;

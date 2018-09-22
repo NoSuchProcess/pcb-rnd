@@ -371,6 +371,8 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_
 		case PCB_PSSH_CIRC:
 			print_circshape(term_shapes, &shp->data.circ, ox, oy, grp, partsidesign);
 			break;
+		case PCB_PSSH_HSHADOW:
+			break;
 	}
 }
 
