@@ -364,6 +364,8 @@ static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 
 static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape, int fill, pcb_coord_t dthick)
 {
+	long n;
+
 	if (shape->data.poly.pa == NULL)
 		pcb_pstk_shape_update_pa(&shape->data.poly);
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
@@ -399,14 +401,27 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 			x[n] = pcb_round(p[n].x);
 			y[n] = pcb_round(p[n].y);
 		}
-		pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, x, y, ps->x, ps->y);
+
+		if (!fill) {
+			for(n = 1; n < shape->data.poly.len; n++)
+				pcb_gui->draw_line(gc, ps->x + x[n-1], ps->y + y[n-1], ps->x + x[n], ps->y + y[n]);
+			pcb_gui->draw_line(gc, ps->x + x[n-1], ps->y + y[n-1], ps->x + x[0], ps->y + y[0]);
+		}
+		else
+			pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, x, y, ps->x, ps->y);
 		if (p != p_st) {
 			free(p);
 			free(x);
 		}
 	}
-	else
+	else {
+		if (!fill) {
+			for(n = 1; n < shape->data.poly.len; n++)
+				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
+			pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
+		}
 		pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+	}
 }
 
 static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
@@ -443,10 +458,7 @@ static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
-#warning trdraw TODO: poly bloat
-			for(n = 1; n < shape->data.poly.len; n++)
-				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
-			pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
+			pcb_pstk_draw_poly(info, gc, ps, shape, 0, dthick);
 			break;
 		case PCB_PSSH_LINE:
 			pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, MAX(shape->data.line.thickness + dthick, 1), shape->data.line.square);
