@@ -241,10 +241,11 @@ Postscript output in color.
 @cindex ps-bloat
 @item --ps-bloat <num>
 Amount to add to trace/pad/pin edges.
+OBSOLETE - do not use.
 @end ftable
 %end-doc
 */
-	{"ps-bloat", "Amount to add to trace/pad/pin edges",
+	{"ps-bloat", "Amount to add to trace/pad/pin edges (OBSOLETE - do not use)",
 	 PCB_HATT_COORD, -PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100), {0, 0, 0}, 0, 0},
 #define HA_psbloat 8
 
