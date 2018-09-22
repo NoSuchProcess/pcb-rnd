@@ -562,6 +562,9 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 								w = h = shape->data.circ.dia;
 								shape_str = "oval";
 								break;
+							case PCB_PSSH_HSHADOW:
+#warning hshadow TODO
+								break;
 						}
 					}
 					if (tshp->shape[n].layer_mask & PCB_LYT_MASK)

@@ -496,6 +496,12 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 							cy = shape->data.circ.y;
 							shape_chr = 'C';
 							break;
+						case PCB_PSSH_HSHADOW:
+#warning hshadow TODO
+							shape_chr = 'C';
+							cx = 0;
+							cy = 0;
+							break;
 					}
 				}
 				if (tshp->shape[n].layer_mask & PCB_LYT_MASK)

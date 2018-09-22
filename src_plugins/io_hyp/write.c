@@ -183,6 +183,9 @@ void hyp_pstk_shape(hyp_wr_t *wr, const char *lynam, const pcb_pstk_shape_t *shp
 	int shnum = 0, n;
 #warning TODO: this ignores rotation
 	switch(shp->shape) {
+		case PCB_PSSH_HSHADOW:
+#warning hshadow TODO
+			break;
 		case PCB_PSSH_CIRC:
 			sx = sy = shp->data.circ.dia;
 			shnum = 0;

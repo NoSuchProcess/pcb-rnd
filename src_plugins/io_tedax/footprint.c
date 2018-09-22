@@ -229,6 +229,8 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 				get_layer_props(shp->layer_mask, lloc, ltyp, continue);
 				clr = padstack->Clearance > 0 ? padstack->Clearance : shp->clearance;
 				switch(shp->shape) {
+					case PCB_PSSH_HSHADOW:
+						break;
 					case PCB_PSSH_CIRC:
 						pcb_fprintf(f, "	fillcircle %s %s %s %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
 							padstack->x + shp->data.circ.x - ox, padstack->y + shp->data.circ.y - oy,
