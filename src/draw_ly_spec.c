@@ -142,41 +142,39 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, unsigned long lyt_side, uns
 		return;
 
 	for(n = 0; n < len; n++) {
-
-	if (!info->pcb->LayerGroups.grp[gid[n]].vis)
-		continue;
-
-	if (setgrp)
-		if (!pcb_layer_gui_set_glayer(info->pcb, gid[n], 0, &info->xform_caller))
+		if (!info->pcb->LayerGroups.grp[gid[n]].vis)
 			continue;
 
-	cctx.info = info;
-	cctx.gid = gid[n];
-	cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid[n]);
-	if ((lyt_side == 0) && (cctx.grp->ltype & PCB_LYT_ANYWHERE) != 0) /* special case for global */
-		continue;
-	if (cctx.grp->len == 0)
-		continue;
-	lid = cctx.grp->lid[0];
-	cctx.color = invis ? conf_core.appearance.color.invisible_objects : info->pcb->Data->Layer[lid].meta.real.color;
-	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
-	cctx.invert = 0;
+		if (setgrp)
+			if (!pcb_layer_gui_set_glayer(info->pcb, gid[n], 0, &info->xform_caller))
+				continue;
 
-	if ((lyt_type & PCB_LYT_SILK) && (pcb_is_silk_old_style(&cctx, lid))) {
-		/* fallback: implicit layer -> original code: draw auto+manual */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		pcb_draw_layer(info, LAYER_PTR(lid));
-		pcb_draw_silk_auto(&cctx, &lyt_side);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-	}
-	else {
-		comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
-		comp_finish(&cctx);
-	}
-	if (setgrp)
-		pcb_gui->end_layer();
+		cctx.info = info;
+		cctx.gid = gid[n];
+		cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid[n]);
+		if ((lyt_side == 0) && (cctx.grp->ltype & PCB_LYT_ANYWHERE) != 0) /* special case for global */
+			continue;
+		if (cctx.grp->len == 0)
+			continue;
+		lid = cctx.grp->lid[0];
+		cctx.color = invis ? conf_core.appearance.color.invisible_objects : info->pcb->Data->Layer[lid].meta.real.color;
+		cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
+		cctx.invert = 0;
 
+		if ((lyt_type & PCB_LYT_SILK) && (pcb_is_silk_old_style(&cctx, lid))) {
+			/* fallback: implicit layer -> original code: draw auto+manual */
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_draw_layer(info, LAYER_PTR(lid));
+			pcb_draw_silk_auto(&cctx, &lyt_side);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		}
+		else {
+			comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
+			comp_finish(&cctx);
+		}
+		if (setgrp)
+			pcb_gui->end_layer();
 	}
 }
 
