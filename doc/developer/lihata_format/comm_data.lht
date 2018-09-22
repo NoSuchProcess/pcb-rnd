@@ -216,6 +216,11 @@ ha:lht_tree_doc { ha:comm {
 													ha:dia      = { valtype=coord;   desc={circle diameter }}
 												}
 											}
+											ha:ps_hshadow {
+												type=te
+												desc={hole/slot shadow}
+												ver={>=6}
+											}
 										}
 									}
 								}
