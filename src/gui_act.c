@@ -1537,9 +1537,21 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
+	if (ltype == 0) {
+		pcb_message(PCB_MSG_ERROR, "Invalid type: '%s'\n", sloc);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
 	if (sloc != NULL) {
-		if (strcmp(sloc, "global") != 0)
+		if (strcmp(sloc, "global") != 0) {
 			lloc = pcb_layer_type_str2bit(sloc) & PCB_LYT_ANYWHERE;
+			if (lloc == 0) {
+				pcb_message(PCB_MSG_ERROR, "Invalid location: '%s'\n", sloc);
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+		}
 	}
 
 	pcb_layergrp_inhibit_inc();
