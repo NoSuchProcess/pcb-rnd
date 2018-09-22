@@ -1009,14 +1009,84 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
 }
 
+static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, pcb_coord_t offs)
+{
+	int go;
+	long len, n;
+	pcb_coord_t x, y;
+	pcb_polo_t *p, p_st[256];
+
+	/* calculate length of the polyline */
+	for(go = pcb_poly_vect_first(it, &x, &y), len = 0; go; go = pcb_poly_vect_next(it, &x, &y))
+		len++;
+
+	if (len >= sizeof(p_st) / sizeof(p_st[0]))
+		p = malloc(sizeof(pcb_polo_t) * len);
+	else
+		p = p_st;
+
+	for(go = pcb_poly_vect_first(it, &x, &y), n = 0; go; go = pcb_poly_vect_next(it, &x, &y), n++) {
+		p[n].x = x;
+		p[n].y = y;
+	}
+
+	pcb_polo_norms(p, len);
+	pcb_polo_offs(offs, p, len);
+
+
+	for(go = pcb_poly_vect_first(it, &x, &y), n = 0; go; go = pcb_poly_vect_next(it, &x, &y), n++) {
+		it->v->point[0] = pcb_round(p[n].x);
+		it->v->point[1] = pcb_round(p[n].y);
+	}
+
+	if (p != p_st)
+		free(p);
+}
+
+static pcb_poly_t *pcb_poly_draw_tr(pcb_draw_info_t *info, pcb_poly_t *polygon)
+{
+	pcb_poly_t *np = pcb_poly_alloc(polygon->parent.layer);
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+	pcb_coord_t offs = info->xform->bloat / 2;
+
+	pcb_poly_copy(np, polygon, 0, 0);
+	pcb_polyarea_copy0(&np->Clipped, polygon->Clipped);
+
+	/* iterate over all islands of a polygon */
+	for(pa = pcb_poly_island_first(np, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_pline_t *pl;
+
+		/* check if we have a contour for the given island */
+		pl = pcb_poly_contour(&it);
+		if (pl == NULL)
+			continue;
+
+		/* iterate over the vectors of the contour */
+		pcb_poly_draw_tr_offs(&it, -offs);
+
+		/* iterate over all holes within this island */
+		for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+			pcb_poly_draw_tr_offs(&it, -offs);
+	}
+
+	return np;
+}
+
 void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
+	pcb_poly_t *trpoly = NULL;
+
 	if (delayed_terms_enabled && (polygon->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)polygon);
 		return;
 	}
 
-#warning trdraw TODO: info->bloat
+	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
+		/* Slow dupping and recalculation every time; if we ever need this on-screen, we should cache */
+		trpoly = pcb_poly_draw_tr(info, polygon);
+		polygon = trpoly;
+	}
 
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
 	{
@@ -1059,6 +1129,9 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, polygon))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)polygon);
 	}
+
+	if (trpoly != NULL)
+		pcb_poly_free(trpoly);
 }
 
 static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
