@@ -210,7 +210,7 @@ int fp_wget_search_(char *out, int out_len, FILE *f, const char *fn)
 }
 
 
-int fp_wget_search(char *out, int out_len, char *name, int offline, const char *url, const char *cache)
+int fp_wget_search(char *out, int out_len, const char *name, int offline, const char *url, const char *cache)
 {
 	FILE *f_idx;
 	int fctx;
