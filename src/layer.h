@@ -88,7 +88,7 @@ typedef enum { /* bitfield */
 } pcb_layer_combining_t;
 
 #define PCB_LAYER_IN_STACK(lyt) (((lyt) & PCB_LYT_COPPER) || ((lyt) & PCB_LYT_SILK) || ((lyt) & PCB_LYT_MASK) || ((lyt) & PCB_LYT_PASTE) || ((lyt) & PCB_LYT_SUBSTRATE))
-#define PCB_LAYER_SIDED(lyt)    (((lyt) & PCB_LYT_COPPER) || ((lyt) & PCB_LYT_SILK) || ((lyt) & PCB_LYT_MASK) || ((lyt) & PCB_LYT_PASTE))
+#define PCB_LAYER_SIDED(lyt)    (((lyt) & PCB_LYT_COPPER) || ((lyt) & PCB_LYT_SILK) || ((lyt) & PCB_LYT_MASK) || ((lyt) & PCB_LYT_PASTE) || ((lyt) & PCB_LYT_DOC))
 
 #define PCB_LAYER_IS_ASSY(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_assy))
 #define PCB_LAYER_IS_FAB(lyt, purpi) (((lyt) & PCB_LYT_VIRTUAL) && ((purpi) == F_fab))
