@@ -423,6 +423,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
 		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
+		pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
 		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 1, 0);
 		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 1, 0);
 	}

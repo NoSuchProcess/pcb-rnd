@@ -153,6 +153,8 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, unsigned long lyt_side, uns
 	cctx.info = info;
 	cctx.gid = gid[n];
 	cctx.grp = pcb_get_layergrp((pcb_board_t *)info->pcb, gid[n]);
+	if ((lyt_side == 0) && (cctx.grp->ltype & PCB_LYT_ANYWHERE) != 0) /* special case for global */
+		continue;
 	if (cctx.grp->len == 0)
 		continue;
 	lid = cctx.grp->lid[0];
