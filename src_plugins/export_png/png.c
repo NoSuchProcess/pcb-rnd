@@ -357,10 +357,11 @@ File format to be exported. Parameter @code{<string>} can be @samp{PNG},
 Amount of extra thickness to add to traces, pads, or pin edges. The parameter
 @samp{<num><dim>} is a number, appended by a dimension @samp{mm}, @samp{mil}, or
 @samp{pix}. If no dimension is given, the default dimension is 1/100 mil.
+OBSOLETE - do not use this feature!
 @end ftable
 %end-doc
 */
-	{"png-bloat", "Amount (in/mm/mil/pix) to add to trace/pad/pin edges (1 = 1/100 mil)",
+	{"png-bloat", "Amount (in/mm/mil/pix) to add to trace/pad/pin edges (1 = 1/100 mil) (OBSOLETE - do not use this feature!)",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_bloat 10
 
