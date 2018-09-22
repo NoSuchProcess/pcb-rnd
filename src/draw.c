@@ -124,7 +124,7 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1
 	int n;
 	pcb_coord_t minlen = pcb_gui->coord_per_pix * 8;
 
-#warning trdraw TODO: use info
+	/* Ignore info->xform->bloat because a dashed line is always thin */
 
 	if (len_mnt < minlen*2) {
 		/* line too short, just draw it */
