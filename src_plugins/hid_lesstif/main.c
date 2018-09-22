@@ -744,7 +744,8 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 
 static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * cont)
 {
-	char *hist, buf[10];
+	const char *hist;
+	char buf[10];
 	KeySym sym;
 
 	switch (e->type) {
