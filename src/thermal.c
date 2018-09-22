@@ -689,6 +689,7 @@ static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 					pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
 					if (s == shp) /* self-ref: hshadow in a mech layer type */
 						return NULL;
+					shp = s;
 				}
 				else
 					return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + clearance);
