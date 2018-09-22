@@ -355,6 +355,30 @@ static const char * FullScreen_xpm[] = {
 " .      ",
 "        "};
 
+/* XPM */
+static const char * resize_grip_xpm[] = {
+"17 17 3 1",
+" 	c None",
+".	c #FFFFFF",
+"+	c #9E9A91",
+"                .",
+"               .+",
+"              .++",
+"             .++ ",
+"            .++  ",
+"           .++  .",
+"          .++  .+",
+"         .++  .++",
+"        .++  .++ ",
+"       .++  .++  ",
+"      .++  .++  .",
+"     .++  .++  .+",
+"    .++  .++  .++",
+"   .++  .++  .++ ",
+"  .++  .++  .++  ",
+" .++  .++  .++   ",
+".++  .++  .++    "};
+
 /* Embed an XPM image in a button, and make it display as small as possible 
  *   Returns: a new image button. When freeing the object, the image needs to be freed 
  *            as well, using :
@@ -429,7 +453,10 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
 	GtkWidget *vbox, *frame, *hbox_scroll, *fullscreen_btn;
 	GtkWidget *label;
+	GtkWidget *resize_grip_vbox;
 	GtkWidget *resize_grip;
+	GdkPixbuf *resize_grip_pixbuf;
+	GtkWidget *resize_grip_image;
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
@@ -554,13 +581,18 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->status_line_label = label;
 	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), label, FALSE, FALSE, 0);
 
+	resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
 	resize_grip = gtk_event_box_new();
-	gtk_widget_set_size_request(resize_grip, 18, 18);
+	resize_grip_pixbuf = gdk_pixbuf_new_from_xpm_data(resize_grip_xpm);
+	resize_grip_image = gtk_image_new_from_pixbuf(resize_grip_pixbuf);
+	g_object_unref(resize_grip_pixbuf);
+	gtk_container_add(GTK_CONTAINER(resize_grip), resize_grip_image);
 	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
-	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip, FALSE, FALSE, 0);
 	gtk_widget_set_tooltip_text(resize_grip, "Left-click to resize the main window\nMid-click to move the window");
 	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press),
 		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
+	gtk_box_pack_end(GTK_BOX(resize_grip_vbox), resize_grip, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip_vbox, FALSE, FALSE, 0);
 
 	/* Depending on user setting, the command_combo_box may get packed into
 	   |  the status_line_hbox, but it will happen on demand the first time
