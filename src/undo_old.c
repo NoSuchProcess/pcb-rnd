@@ -1024,7 +1024,7 @@ void pcb_undo_add_obj_to_move(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with changed names
  */
-void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, const char *OldName)
+void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
 {
 	UndoListTypePtr undo;
 
