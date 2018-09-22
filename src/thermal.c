@@ -679,10 +679,21 @@ static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pres = NULL;
 
+	retry:;
 	switch(shp->shape) {
 		case PCB_PSSH_HSHADOW:
-#warning hshadow TODO
-			return NULL;
+			{
+				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+				pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
+				if (proto->mech_idx >= 0) {
+					pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
+					if (s == shp) /* self-ref: hshadow in a mech layer type */
+						return NULL;
+				}
+				else
+					return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + clearance);
+			}
+			goto retry;
 		case PCB_PSSH_CIRC:
 			return pcb_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + clearance);
 		case PCB_PSSH_LINE:
