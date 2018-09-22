@@ -449,7 +449,6 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pc
 
 static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
-	int n;
 	pcb_coord_t r, dthick = 0;
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
 
