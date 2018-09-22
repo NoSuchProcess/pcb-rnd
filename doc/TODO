@@ -3,8 +3,8 @@
 1. For the upcoming release ===============================================================================
 - FEATURE: lihata v6:
 	- padstack shape hshadow for the no-shape clearance trickery ML/2318 [report: pstuge]
-	- remove via geometry from route style?
 	- text thickness in routing style
+	- upgrade the default board to v6, add plated mech for slotting and set v6 the default format
 - FEATURE: introduce new layer types:
 	- OUTLINE LYT removal: double check io_lihata compatibility
 	- revise io plugins to load/save them properly
@@ -215,6 +215,8 @@
 		- bin: need to refine naming of library (.lbr) elements in loaded .lbr files; any text names in the binary tree, if starting with ASCII 127, sequentially reference strings in the text block which comes immediately after the board/design tree. In later eagle binary versions, the text block seems to become a node of the tree, but a node of arbitrary length, not 24 bytes, with length of block still encoded in first few bytes. 
 		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 		- bin: layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
+- FEATURE: lihata v7
+	- remove via geometry from route style
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
