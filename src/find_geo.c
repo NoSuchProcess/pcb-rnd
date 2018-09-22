@@ -763,6 +763,8 @@ pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 			tmp.Flags = pcb_no_flags();
 			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, &tmp);
 		}
+		case PCB_PSSH_HSHADOW:
+			return 0; /* non-object won't intersect */
 	}
 	return pcb_false;
 }
@@ -801,6 +803,8 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 		case PCB_PSSH_CIRC:
 			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, arc);
 			break;
+		case PCB_PSSH_HSHADOW:
+			return 0; /* non-object won't intersect */
 	}
 	return pcb_false;
 }
@@ -863,6 +867,8 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 			pcb_line_bbox(&tmp);
 			return pcb_is_line_in_poly(&tmp, poly);
 		}
+		case PCB_PSSH_HSHADOW:
+			return 0; /* non-object won't intersect */
 	}
 	return pcb_false;
 }
@@ -910,6 +916,8 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 					return pcb_intersect_line_polyline(shape1->data.poly.pa->contours, shape2->data.line.x1 + ps2->x - ps1->x, shape2->data.line.y1 + ps2->y - ps1->y, shape2->data.line.x2 + ps2->x - ps1->x, shape2->data.line.y2 + ps2->y - ps1->y, shape2->data.line.thickness);
 				case PCB_PSSH_CIRC:
 					return pstk_shape_int_circ_poly(ps1, shape1, ps2, shape2);
+				case PCB_PSSH_HSHADOW:
+					return 0; /* non-object won't intersect */
 			}
 			break;
 
@@ -926,6 +934,8 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 				}
 				case PCB_PSSH_CIRC:
 					return pstk_shape_int_circ_line(ps1, shape1, ps2, shape2);
+				case PCB_PSSH_HSHADOW:
+					return 0; /* non-object won't intersect */
 			}
 			break;
 
@@ -941,8 +951,13 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 						double dia = ((double)shape1->data.circ.dia + (double)shape2->data.circ.dia)/2.0;
 						return cdist2 <= dia*dia;
 					}
+				case PCB_PSSH_HSHADOW:
+					return 0; /* non-object won't intersect */
 			}
 			break;
+
+		case PCB_PSSH_HSHADOW:
+			return 0; /* non-object won't intersect */
 	}
 	return pcb_false;
 }
