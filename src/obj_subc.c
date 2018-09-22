@@ -628,7 +628,7 @@ void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_cu
 				temp_arc.Width = arc->Width;
 				temp_arc.Height = arc->Height;
 				temp_arc.Thickness = arc->Thickness;
-				pcb_draw_wireframe_arc(pcb_crosshair.GC, &temp_arc);
+				pcb_draw_wireframe_arc(pcb_crosshair.GC, &temp_arc, arc->Thickness);
 			}
 		}
 

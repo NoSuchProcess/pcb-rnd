@@ -34,9 +34,9 @@
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  */
-PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc)
+PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc, pcb_coord_t thick)
 {
-	pcb_coord_t wid = arc->Thickness / 2;
+	pcb_coord_t wid = thick / 2;
 	pcb_coord_t x1, y1, x2, y2;
 
 	pcb_arc_get_end(arc, 0, &x1, &y1);

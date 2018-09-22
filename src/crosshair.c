@@ -159,7 +159,7 @@ void pcb_xordraw_attached_arc(pcb_coord_t thick)
 	arc.Width = arc.Height = wy;
 	arc.Thickness = thick;
 
-	pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+	pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, thick);
 }
 
 /* ---------------------------------------------------------------------------
@@ -192,7 +192,7 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 				pcb_arc_t translated_arc = *arc;
 				translated_arc.X += x;
 				translated_arc.Y += y;
-				pcb_draw_wireframe_arc(pcb_crosshair.GC, &translated_arc);
+				pcb_draw_wireframe_arc(pcb_crosshair.GC, &translated_arc, arc->Thickness);
 			}
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(layer);
@@ -308,13 +308,13 @@ void pcb_xordraw_movecopy(void)
 			arc.X += dx;
 			arc.Y += dy;
 
-			pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+			pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
-				pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -406,13 +406,13 @@ void pcb_xordraw_movecopy(void)
 				arc.Delta       = pcb_crosshair.AttachedObject.delta_angle;
 			}
 
-			pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+			pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
-				pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 
