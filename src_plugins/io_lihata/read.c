@@ -1646,6 +1646,7 @@ static int parse_data_pstk_shape_hshadow(pcb_board_t *pcb, pcb_pstk_shape_t *dst
 	dst->shape = PCB_PSSH_HSHADOW;
 	if (rdver < 6)
 		iolht_warn(nshape, 7, "lihata board before v6 did not support padstack shape hshadow\n");
+	return 0;
 }
 
 static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
