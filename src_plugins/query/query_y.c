@@ -1728,7 +1728,7 @@ yyreduce:
 
   case 47:
 #line 256 "query_y.y" /* yacc.c:1646  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = attrib_prepend_free((yyvsp[0].n)->data.str, (yyvsp[-2].s), '.'); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = attrib_prepend_free((char *)(yyvsp[0].n)->data.str, (yyvsp[-2].s), '.'); }
 #line 1733 "query_y.c" /* yacc.c:1646  */
     break;
 

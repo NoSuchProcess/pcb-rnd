@@ -253,7 +253,7 @@ fields:
 
 attribs:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; }
-	| T_STR '.' attribs      { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = attrib_prepend_free($3->data.str, $1, '.'); }
+	| T_STR '.' attribs      { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = attrib_prepend_free((char *)$3->data.str, $1, '.'); }
 	| T_QSTR                 { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; }
 	;
 
