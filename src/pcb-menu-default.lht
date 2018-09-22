@@ -726,6 +726,7 @@ ha:{
 				ha:Create new group {
 					li:submenu {
 						ha:Boundary, unplated, routed   = { action={ NewGroup(boundary, global, uroute) } }
+						ha:Boundary, plated, routed     = { action={ NewGroup(boundary, global, proute) } }
 						ha:Mech, unplated, routed       = { action={ NewGroup(mech, global, uroute) } }
 						ha:Mech, plated, routed         = { action={ NewGroup(mech, global, proute) } }
 						ha:Doc, top side                = { action={ NewGroup(doc, top) } }
