@@ -424,14 +424,15 @@ static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *u
 	return FALSE;
 }
 
-static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event, GdkWindowEdge edge)
+static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event, gpointer user_data)
 {
 	if (event->type != GDK_BUTTON_PRESS)
 		return TRUE;
 
 	switch (event->button) {
 		case 1:
-			gtk_window_begin_resize_drag(GTK_WINDOW(gtk_widget_get_toplevel(area)), edge,
+			gtk_window_begin_resize_drag(GTK_WINDOW(gtk_widget_get_toplevel(area)),
+				GDK_WINDOW_EDGE_SOUTH_EAST,
 				event->button, event->x_root, event->y_root, event->time);
 			break;
 
@@ -589,8 +590,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_container_add(GTK_CONTAINER(resize_grip), resize_grip_image);
 	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
 	gtk_widget_set_tooltip_text(resize_grip, "Left-click to resize the main window\nMid-click to move the window");
-	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press),
-		GINT_TO_POINTER(GDK_WINDOW_EDGE_SOUTH_EAST));
+	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press), NULL);
 	gtk_box_pack_end(GTK_BOX(resize_grip_vbox), resize_grip, FALSE, FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip_vbox, FALSE, FALSE, 0);
 
