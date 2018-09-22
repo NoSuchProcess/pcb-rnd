@@ -1641,6 +1641,13 @@ static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 	return err;
 }
 
+static int parse_data_pstk_shape_hshadow(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+{
+	dst->shape = PCB_PSSH_HSHADOW;
+	if (rdver < 6)
+		iolht_warn(nshape, 7, "lihata board before v6 did not support padstack shape hshadow\n");
+}
+
 static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	lht_node_t *ncmb, *nlyt, *ns;
@@ -1670,6 +1677,9 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 
 	ns = lht_dom_hash_get(nshape, "ps_circ");
 	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_circ(pcb, dst, ns, subc_parent);
+
+	ns = lht_dom_hash_get(nshape, "ps_hshadow");
+	if ((ns != NULL) && (ns->type == LHT_TEXT)) return parse_data_pstk_shape_hshadow(pcb, dst, ns, subc_parent);
 
 	return iolht_error(nshape, "Failed to parse pad stack: missing shape\n");
 }

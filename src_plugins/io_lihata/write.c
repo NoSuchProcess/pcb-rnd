@@ -814,7 +814,7 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 						lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, 1));
 					}
 					else
-						nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_hshadow");
+						nshapeo = lht_dom_node_alloc(LHT_TEXT, "ps_hshadow");
 					break;
 				default:
 					pcb_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
