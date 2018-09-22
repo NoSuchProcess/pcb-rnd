@@ -1543,6 +1543,12 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	if ((ltype == PCB_LYT_COPPER) || (ltype == PCB_LYT_SUBSTRATE)) {
+		pcb_message(PCB_MSG_ERROR, "Can not create this type of layer group: '%s'\n", sloc);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
 	if (sloc != NULL) {
 		if (strcmp(sloc, "global") != 0) {
 			lloc = pcb_layer_type_str2bit(sloc) & PCB_LYT_ANYWHERE;
