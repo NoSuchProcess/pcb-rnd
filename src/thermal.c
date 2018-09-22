@@ -680,6 +680,9 @@ static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 	pcb_polyarea_t *pres = NULL;
 
 	switch(shp->shape) {
+		case PCB_PSSH_HSHADOW:
+#warning hshadow TODO
+			return NULL;
 		case PCB_PSSH_CIRC:
 			return pcb_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + clearance);
 		case PCB_PSSH_LINE:
@@ -741,6 +744,9 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 		case PCB_THERMAL_ROUND:
 		case PCB_THERMAL_SHARP:
 			switch(shp->shape) {
+				case PCB_PSSH_HSHADOW:
+#warning hsahadow TODO
+					break;
 				case PCB_PSSH_CIRC:
 					return ThermPoly_(pcb, ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia, clearance*2, pcb_themal_style_new2old(thr));
 				case PCB_PSSH_LINE:
