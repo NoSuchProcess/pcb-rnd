@@ -1524,6 +1524,55 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose]])";
+static const char pcb_acth_NewGroup[] = "Create a new layer group with a single, positive drawn layer in it";
+static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *stype = NULL, *sloc = NULL, *spurp = NULL;
+	pcb_layergrp_t *g = NULL;
+	pcb_layer_type_t ltype = 0, lloc = 0;
+
+	PCB_ACT_CONVARG(1, FGW_STR, NewGroup, stype = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, NewGroup, sloc = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
+
+	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
+	if (sloc != NULL)
+		lloc = pcb_layer_type_str2bit(sloc) & PCB_LYT_ANYWHERE;
+
+	pcb_layergrp_inhibit_inc();
+	g = pcb_get_grp_new_misc(PCB);
+	if (g != NULL) {
+		pcb_layer_id_t lid;
+
+		if (spurp != NULL)
+			pcb_layergrp_set_purpose__(g, pcb_strdup(spurp));
+
+		free(g->name);
+		g->name = pcb_strdup_printf("%s%s%s", sloc == NULL ? "" : sloc, sloc == NULL ? "" : "-", stype);
+		g->ltype = ltype | lloc;
+		g->vis = 1;
+		g->open = 1;
+		lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, stype);
+		if (lid >= 0) {
+			PCB_ACT_IRES(0);
+			PCB->Data->Layer[lid].meta.real.vis = 1;
+		}
+		else
+			PCB_ACT_IRES(-1);
+
+	}
+	else
+		PCB_ACT_IRES(-1);
+	pcb_layergrp_inhibit_dec();
+
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	if ((pcb_gui != NULL) && (pcb_exporter == NULL))
+		pcb_gui->invalidate_all();
+
+	return 0;
+}
+
 static const char pcb_acts_DupGroup[] = "DupGroup([@group])";
 static const char pcb_acth_DupGroup[] = "Duplicate a layer group; if the first argument is not specified, the current group is duplicated";
 static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -2019,6 +2068,7 @@ pcb_action_t gui_action_list[] = {
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
 	{"DelGroup",  pcb_act_DelGroup, pcb_acth_DelGroup, pcb_acts_DelGroup},
 	{"DupGroup",  pcb_act_DupGroup, pcb_acth_DupGroup, pcb_acts_DupGroup},
+	{"NewGroup",  pcb_act_NewGroup, pcb_acth_NewGroup, pcb_acts_NewGroup},
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
