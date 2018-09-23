@@ -134,6 +134,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 		if (shape != NULL) {
 			switch(shape->shape) {
 				case PCB_PSSH_HSHADOW:
+					*tmp = '\0';
 					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "hshadow");
 					break;
 				case PCB_PSSH_CIRC:
