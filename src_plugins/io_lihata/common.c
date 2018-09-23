@@ -41,6 +41,7 @@ static const char *thermal_style[] = {
 	"solid",
 	"diagonal-round",
 	"horver-round"
+	"noshape"
 };
 
 static const int thermal_style_bits[] = {
@@ -49,18 +50,22 @@ static const int thermal_style_bits[] = {
 	PCB_THERMAL_ON | PCB_THERMAL_SHARP,
 	PCB_THERMAL_ON | PCB_THERMAL_SOLID,
 	PCB_THERMAL_ON | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ROUND,
-	PCB_THERMAL_ON | PCB_THERMAL_ROUND
+	PCB_THERMAL_ON | PCB_THERMAL_ROUND,
+	PCB_THERMAL_ON
 };
 
-int io_lihata_resolve_thermal_style_old(const char *name)
+int io_lihata_resolve_thermal_style_old(const char *name, int ver)
 {
-	int n;
+	int n, omit = 0;
 	char *end;
 
 	if (name == NULL)
 		return 0;
 
-	for(n = 1; n < PCB_ENTRIES(thermal_style); n++)
+	if (ver < 6) /* old file versions did not have explicit no-shape */
+		omit = 1;
+
+	for(n = 1; n < PCB_ENTRIES(thermal_style) - omit; n++)
 		if (strcmp(name, thermal_style[n]) == 0)
 			return thermal_style_bits[n];
 

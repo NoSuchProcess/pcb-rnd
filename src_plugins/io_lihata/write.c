@@ -857,6 +857,8 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 			thr_lst = lht_dom_node_alloc(LHT_LIST, tmp);
 			while((b = pcb_thermal_bits2str(&ts)) != NULL)
 				lht_dom_list_append(thr_lst, build_text(NULL, b));
+			if ((wrver >= 6) && ((ts & 3) == PCB_THERMAL_NOSHAPE))
+				lht_dom_list_append(thr_lst, build_text(NULL, "noshape"));
 			lht_dom_list_append(thr, thr_lst);
 		}
 

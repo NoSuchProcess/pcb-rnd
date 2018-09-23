@@ -493,7 +493,7 @@ static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
 					int layer = pcb_layer_by_name(pcb->Data, n->name);
 					if (layer < 0)
 						return iolht_error(n, "Invalid layer name in thermal: '%s'\n", n->name);
-					ps->thermals.shape[layer] = io_lihata_resolve_thermal_style_old(n->data.text.value);
+					ps->thermals.shape[layer] = io_lihata_resolve_thermal_style_old(n->data.text.value, rdver);
 				}
 			}
 		}
