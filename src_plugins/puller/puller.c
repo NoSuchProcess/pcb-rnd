@@ -1421,17 +1421,19 @@ static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b; /* have to drop const because we may update the cache in ps */
 	pcb_layer_t *layer = CURRENT;
-	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer);
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer), tmpshp;
 
 	if (ps == start_pinpad || ps == end_pinpad)
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (shape == NULL) return 0;
+	retry:;
 	switch(shape->shape) {
 		case PCB_PSSH_HSHADOW:
-#warning hshadow TODO: slot!
-			gp_point(ps->x, ps->y, 1, 0);
-			break;
+			shape = pcb_pstk_hshadow_shape(ps, shape, &tmpshp);
+			if (shape == NULL)
+				return 0;
+			goto retry;
 		case PCB_PSSH_CIRC:
 			gp_point(ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, 0);
 			break;
