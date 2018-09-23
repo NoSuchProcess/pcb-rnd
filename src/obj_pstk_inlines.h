@@ -198,7 +198,8 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt
 	return 0;
 }
 
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+/* If force is non-zero, return the shape even if a thermal says no-shape */
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at_(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, int force)
 {
 	unsigned int lyt = pcb_layer_flags_(layer);
 	pcb_layer_combining_t comb = layer->comb;
@@ -212,12 +213,14 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps,
 		}
 
 		/* special case: if thermal says 'no shape' on this layer, omit the shape */
-		layer = pcb_layer_get_real(layer);
-		if ((layer != NULL) && (layer->parent.data != NULL)) {
-			lid = pcb_layer_id(layer->parent.data, layer);
-			if (lid < ps->thermals.used) {
-				if ((ps->thermals.shape[lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[lid] & 3) == PCB_THERMAL_NOSHAPE))
-					return NULL;
+		if (!force) {
+			layer = pcb_layer_get_real(layer);
+			if ((layer != NULL) && (layer->parent.data != NULL)) {
+				lid = pcb_layer_id(layer->parent.data, layer);
+				if (lid < ps->thermals.used) {
+					if ((ps->thermals.shape[lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[lid] & 3) == PCB_THERMAL_NOSHAPE))
+						return NULL;
+				}
 			}
 		}
 	}
@@ -230,6 +233,12 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps,
 
 	return pcb_pstk_shape(ps, lyt, comb);
 }
+
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+{
+	return pcb_pstk_shape_at_(pcb, ps, layer, 0);
+}
+
 
 PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
 {
