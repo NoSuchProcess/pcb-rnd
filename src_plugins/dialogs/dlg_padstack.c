@@ -80,7 +80,7 @@ typedef struct pse_s {
 	void *parent_hid_ctx;
 	int editing_shape; /* index of the shape being edited */
 	pcb_hid_attribute_t *shape_chg;
-	int text_shape, del, derive;
+	int text_shape, del, derive, hshadow;
 	int copy_do, copy_from;
 	int shrink, amount, grow;
 } pse_t;
@@ -345,6 +345,16 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_gui->invalidate_all();
 }
 
+static void pse_shape_hshadow(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	pcb_pstk_proto_del_shape(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_shape_add_hshadow(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pcb_gui->invalidate_all();
+}
+
 static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	int n, src_idx = -1;
@@ -475,6 +485,10 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 			pse->del = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_CHANGE_CB(dlg, pse_shape_del);
 			PCB_DAD_HELP(dlg, "Remove the shape from this layer type");
+		PCB_DAD_BUTTON(dlg, "Replace shape with hshadow");
+			pse->hshadow = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_CHANGE_CB(dlg, pse_shape_hshadow);
+			PCB_DAD_HELP(dlg, "Set shape to hshadow on this layer type\n(invisible shape with the same\ngeometry as the hole or slot, for proper clearance)");
 		PCB_DAD_BUTTON(dlg, "Derive automatically");
 			pse->derive = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_CHANGE_CB(dlg, pse_shape_auto);
