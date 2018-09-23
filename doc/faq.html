@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd - news </title>
+	<title> pcb-rnd - FAQ </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 <!--AUTO head begin-->
 	<link rel="icon" href="resources/logo16.png">
@@ -24,14 +24,19 @@
 
 <br>
 <!--content-->
-<h1> pcb-rnd documentation </h1>
+<h1> pcb-rnd FAQ </h1>
 
+
+<h2 id="slots"> slots (oval holes) </h2>
+
+<h3> My slot doesn't show up on screen or in exports </h3>
+<p>
+Make sure you have the right layer groups and layers set up:
 <ul>
-	<li> <a href="user/index.html"> user manual (work in progress) </a>
-	<li> <a href="faq.html"> FAQ </a>
-	<li> <a href="developer/"> developer's corner </a>
-	<li> <a href="http://repo.hu/projects/pcb-rnd-aux/pool">pcb-rnd knowledge pool</a>
+	<li> a mech layer group with purpose uroute and another with purpose proute for unplated and plated slots
+	<li> make sure there is a layer in each group that has <i>auto</i> in the comb flags - padstack side effects will land only on auto layers; auto layers are indicated with white hatching in the layer selector's layer color
 </ul>
+
 
 </body>
 </html>
