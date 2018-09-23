@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - FEATURE: lihata v6:
-	- padstack shape hshadow for the no-shape clearance trickery ML/2318 [report: pstuge]
 	- text thickness in routing style
 	- upgrade the default board to v6, add plated mech for slotting and set v6 the default format
 - FEATURE: introduce new layer types:
