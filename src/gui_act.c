@@ -1524,17 +1524,18 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose]])";
+static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub]]])";
 static const char pcb_acth_NewGroup[] = "Create a new layer group with a single, positive drawn layer in it";
 static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *stype = NULL, *sloc = NULL, *spurp = NULL;
+	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL;
 	pcb_layergrp_t *g = NULL;
 	pcb_layer_type_t ltype = 0, lloc = 0;
 
 	PCB_ACT_CONVARG(1, FGW_STR, NewGroup, stype = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, NewGroup, sloc = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, NewGroup, scomb = argv[4].val.str);
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
 	if (ltype == 0) {
@@ -1575,8 +1576,14 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		g->open = 1;
 		lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, stype);
 		if (lid >= 0) {
+			pcb_layer_t *ly;
 			PCB_ACT_IRES(0);
-			PCB->Data->Layer[lid].meta.real.vis = 1;
+			ly = &PCB->Data->Layer[lid];
+			ly->meta.real.vis = 1;
+			if (scomb != NULL) {
+				if (strstr(scomb, "auto") != NULL) ly->comb |= PCB_LYC_AUTO;
+				if (strstr(scomb, "sub") != NULL)  ly->comb |= PCB_LYC_SUB;
+			}
 		}
 		else
 			PCB_ACT_IRES(-1);
