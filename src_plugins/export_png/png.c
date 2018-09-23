@@ -1191,11 +1191,12 @@ static int png_parse_arguments(int *argc, char ***argv)
 
 
 static int is_mask;
-static int is_drill;
+static int is_photo_drill;
 
 
 static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
+	is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi)));
 		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
 			if (photo_flip)
 				return 0;
@@ -1216,7 +1217,7 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 				return 0;
 			photo_im = &photo_mask;
 		}
-		else if (PCB_LAYER_IS_DRILL(flags, purpi)) {
+		else if (is_photo_drill) {
 			photo_im = &photo_drill;
 		}
 		else {
@@ -1258,7 +1259,7 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 				return 0;
 			}
 
-			if (PCB_LAYER_IS_DRILL(flags, purpi))
+			if (is_photo_drill)
 				gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(im), gdImageSY(im), black->c);
 		}
 		im = *photo_im;
@@ -1283,7 +1284,6 @@ static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 			return 0;
 	}
 
-	is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	is_mask = (flags & PCB_LYT_MASK);
 
 	if (photo_mode)
@@ -1339,7 +1339,7 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;
-	if (direct)
+	if ((direct) || (is_photo_drill)) /* photo drill is a special layer, no copositing on that */
 		return;
 	switch(op) {
 		case PCB_HID_COMP_RESET:
