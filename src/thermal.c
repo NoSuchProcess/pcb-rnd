@@ -723,7 +723,7 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 	else
 		thr = 0;
 
-	shp = pcb_pstk_shape_at(pcb, ps, layer);
+	shp = pcb_pstk_shape_at_(pcb, ps, layer, 1);
 	if (shp == NULL)
 		return NULL;
 
@@ -738,7 +738,9 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 
 	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
-			goto hshadow; /* local version of the padstack-central hshadow setting */
+			tmpshp.shape = PCB_PSSH_HSHADOW;
+			tmpshp.clearance = shp->clearance;
+			return pcb_thermal_area_pstk_nothermal(pcb, ps, lid, &tmpshp, clearance);
 		case PCB_THERMAL_SOLID: return NULL;
 		case PCB_THERMAL_ROUND:
 		case PCB_THERMAL_SHARP:
