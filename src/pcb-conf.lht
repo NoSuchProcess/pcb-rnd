@@ -164,7 +164,7 @@ li:pcb-rnd-conf-v1 {
 				rat = {#b8860b}
 				invisible_objects = {#cccccc}
 				connected = {#00ff00}
-				off_limit = {#cccccc}
+				off_limit = {#aaaaaa}
 				grid = {#ff0000}
 				li:layer = {
 					{#8b2323}; {#3a5fcd}; {#104e8b}; {#cd3700}; {#548b54};
