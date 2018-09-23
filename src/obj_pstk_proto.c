@@ -1016,6 +1016,22 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pc
 	pcb_pstk_proto_update(proto);
 }
 
+void pcb_pstk_shape_add_hshadow(pcb_pstk_proto_t *proto, pcb_layer_type_t mask, pcb_layer_combining_t comb)
+{
+	int n;
+
+	/* do the same on all shapes of all transformed variants */
+	for(n = 0; n < proto->tr.used; n++) {
+		int d = proto->tr.array[n].len;
+		proto->tr.array[n].len++;
+		proto->tr.array[n].shape = realloc(proto->tr.array[n].shape, proto->tr.array[n].len * sizeof(proto->tr.array[n].shape[0]));
+		proto->tr.array[n].shape[d].shape = PCB_PSSH_HSHADOW;
+		proto->tr.array[n].shape[d].layer_mask = mask;
+		proto->tr.array[n].shape[d].comb = comb;
+	}
+	pcb_pstk_proto_update(proto);
+}
+
 
 static void pcb_pstk_tshape_del_idx(pcb_pstk_tshape_t *shp, int idx)
 {
