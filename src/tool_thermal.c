@@ -51,7 +51,8 @@ void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 		PCB_THERMAL_ON | PCB_THERMAL_ROUND,
 		PCB_THERMAL_ON | PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL,
 		PCB_THERMAL_ON | PCB_THERMAL_SHARP,
-		PCB_THERMAL_ON | PCB_THERMAL_SOLID
+		PCB_THERMAL_ON | PCB_THERMAL_SOLID,
+		PCB_THERMAL_ON | PCB_THERMAL_NOSHAPE
 	};
 	int cycles = sizeof(cycle) / sizeof(cycle[0]);
 
