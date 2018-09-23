@@ -265,12 +265,16 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 	return pcb_pstk_shape(ps, grp->ltype, comb);
 }
 
-
+/* Return the shape of the hshadow, if it is not the same as the forbidden
+   shape. The forbidden shape should be the shape that triggers the lookup.
+   tmpshp should be a local temporary shape where the circular shape for a
+   hole can be built. */
 PCB_INLINE pcb_pstk_shape_t *pcb_pstk_hshadow_shape(pcb_pstk_t *ps, pcb_pstk_shape_t *forbidden, pcb_pstk_shape_t *tmpshp)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
 
+	/* slot */
 	if (proto->mech_idx >= 0) {
 		pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
 		if (s == forbidden) /* self-ref: hshadow in a mech layer type */
@@ -278,6 +282,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_hshadow_shape(pcb_pstk_t *ps, pcb_pstk_sha
 		return s;
 	}
 
+	/* hole */
 	tmpshp->shape = PCB_PSSH_CIRC;
 	tmpshp->data.circ.x = 0;
 	tmpshp->data.circ.y = 0;
