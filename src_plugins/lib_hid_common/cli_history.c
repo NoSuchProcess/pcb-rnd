@@ -135,7 +135,7 @@ void pcb_clihist_sync(void *ctx, pcb_clihist_append_cb_t *append)
 		append(ctx, h->cmd);
 }
 
-static hist_t *hist_back_cmd(int cnt)
+static const char *hist_back_cmd(int cnt)
 {
 	hist_t *h;
 
