@@ -35,7 +35,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:round      = { valtype=none;  desc={ shape: rounded edge fingers }}
 											ha:sharp      = { valtype=none;  desc={ shape: sharp edge fingers }}
 											ha:solid      = { valtype=none;  desc={ shape: no thermal relief, solid connection without clearance }}
-											ha:noshape    = { valtype=none;  desc={ shape: special: omit copper shape of the padstack on this layer }}
+											ha:noshape    = { valtype=none;  ver={>=6} desc={ shape: special: omit copper shape of the padstack on this layer }}
 										}
 									}
 								}
