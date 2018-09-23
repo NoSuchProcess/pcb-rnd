@@ -187,7 +187,7 @@ static void check_pstk(pcb_pstk_t *ps)
 
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		pcb_pstk_shape_t *shp;
+		pcb_pstk_shape_t *shp, tmpshp;
 		pcb_box_t spot;
 		int n;
 		double mindist;
@@ -199,6 +199,7 @@ static void check_pstk(pcb_pstk_t *ps)
 		if (shp == NULL)
 			continue;
 
+		retry:;
 		switch(shp->shape) {
 			case PCB_PSSH_POLY:
 				/* Simplistic approach on polygons; works only on the simplest cases
@@ -239,11 +240,10 @@ static void check_pstk(pcb_pstk_t *ps)
 				break;
 
 			case PCB_PSSH_HSHADOW:
-#warning hshadow TODO: slot!
-				thickness = 1;
-				px = ps->x;
-				py = ps->y;
-				break;
+				shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
+				if (shp != NULL)
+					goto retry;
+				continue;
 		}
 
 		spot.X1 = px - 10;
