@@ -701,7 +701,7 @@ ha:{
 		ha:layer {
 			li:submenu {
 				ha:Layer comb. flags...             = { action=EditLayer() }
-				ha:Layer properties...              = { action={Propedit(layer:current)} }
+				ha:Layer properties...              = { action={Unselect(all); Propedit(layer:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
@@ -719,7 +719,7 @@ ha:{
 		ha:group {
 			li:submenu {
 				ha:Group name & type...             = { action=EditGroup(@) }
-				ha:Group properties...              = { action={Propedit(layer_group:current)} }
+				ha:Group properties...              = { action={Unselect(all); Propedit(layer_group:current)} }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Duplicate group                  = { action={ DupGroup(@) } }
