@@ -268,21 +268,21 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 
 PCB_INLINE pcb_pstk_shape_t *pcb_pstk_hshadow_shape(pcb_pstk_t *ps, pcb_pstk_shape_t *forbidden, pcb_pstk_shape_t *tmpshp)
 {
-						pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-						pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
-						if (proto->mech_idx >= 0) {
-							pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
-							if (s == forbidden) /* self-ref: hshadow in a mech layer type */
-								return NULL;
-							return s;
-						}
-						else {
-							tmpshp->shape = PCB_PSSH_CIRC;
-							tmpshp->data.circ.x = 0;
-							tmpshp->data.circ.y = 0;
-							tmpshp->data.circ.dia = proto->hdia;
-							return tmpshp;
-						}
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
+
+	if (proto->mech_idx >= 0) {
+		pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
+		if (s == forbidden) /* self-ref: hshadow in a mech layer type */
+			return NULL;
+		return s;
+	}
+
+	tmpshp->shape = PCB_PSSH_CIRC;
+	tmpshp->data.circ.x = 0;
+	tmpshp->data.circ.y = 0;
+	tmpshp->data.circ.dia = proto->hdia;
+	return tmpshp;
 }
 
 #endif
