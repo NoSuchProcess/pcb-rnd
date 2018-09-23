@@ -494,8 +494,17 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 		else
 			return PCB_R_DIR_NOT_FOUND;
 	}
-	else
+	else {
+		int n;
+		pcb_layer_id_t *lid;
 		shape = pcb_pstk_shape_gid(info->pcb, ps, info->objcb.pstk.gid, info->objcb.pstk.comb, &grp);
+		for(n = 0, lid = grp->lid; n < grp->len; n++,lid++) {
+			if (*lid < ps->thermals.used) {
+				if ((ps->thermals.shape[*lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[*lid] & 3) == PCB_THERMAL_NOSHAPE))
+					return PCB_R_DIR_NOT_FOUND;
+			}
+		}
+	}
 
 	if (shape != NULL) {
 		if (grp == NULL)
