@@ -70,7 +70,7 @@ void pcb_tool_lock_notify_mode(void)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 			pcb_draw();
 		}
-		pcb_actionl("Report", "Object", NULL);
+		pcb_actionl("Report", "Object", "log", NULL);
 	}
 }
 
