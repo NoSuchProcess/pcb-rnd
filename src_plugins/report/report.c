@@ -150,12 +150,13 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
-	char *op = NULL, *report = NULL;
+	char *op = NULL, *report = NULL, *how = NULL;
 	pcb_subc_t *subc;
 	pcb_coord_t x, y;
 	pcb_hid_get_coords("Click on object to report on", &x, &y, 0);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
 
 	if (op != NULL) {
 		if (pcb_strncasecmp(op, "Subc", 4) == 0)
@@ -388,7 +389,10 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		sprintf(report + len, "\nPart of subcircuit #%ld\n", subc->ID);
 	}
 
-	pcb_gui->report_dialog("Report", report);
+	if (strcmp(how, "log") == 0)
+		pcb_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", report);
+	else
+		pcb_gui->report_dialog("Report", report);
 	free(report);
 
 	PCB_ACT_IRES(0);
