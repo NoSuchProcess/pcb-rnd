@@ -712,6 +712,25 @@ static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 	return NULL;
 }
 
+pcb_pstk_shape_t *pcb_pstk_hshadow_shape(pcb_pstk_t *ps, pcb_pstk_shape_t *forbidden, pcb_pstk_shape_t *tmpshp)
+{
+						pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+						pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
+						if (proto->mech_idx >= 0) {
+							pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
+							if (s == forbidden) /* self-ref: hshadow in a mech layer type */
+								return NULL;
+							return s;
+						}
+						else {
+							tmpshp->shape = PCB_PSSH_CIRC;
+							tmpshp->data.circ.x = 0;
+							tmpshp->data.circ.y = 0;
+							tmpshp->data.circ.dia = proto->hdia;
+							return tmpshp;
+						}
+}
+
 pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid)
 {
 	unsigned char thr;
@@ -753,24 +772,8 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 			retry:;
 			switch(shp->shape) {
 				case PCB_PSSH_HSHADOW:
-					{
-						hshadow:;
-						pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-						pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
-						if (proto->mech_idx >= 0) {
-							pcb_pstk_shape_t *s = ts->shape + proto->mech_idx;
-							if (s == shp) /* self-ref: hshadow in a mech layer type */
-								return NULL;
-							shp = s;
-						}
-						else {
-							shp = &tmpshp;
-							shp->shape = PCB_PSSH_CIRC;
-							shp->data.circ.x = 0;
-							shp->data.circ.y = 0;
-							shp->data.circ.dia = proto->hdia;
-						}
-					}
+					hshadow:;
+					shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
 					goto retry;
 				case PCB_PSSH_CIRC:
 					return ThermPoly_(pcb, ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia, clearance*2, pcb_themal_style_new2old(thr));
