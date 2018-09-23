@@ -746,19 +746,15 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 
 	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
-			{
-				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-#warning slot TODO: this is hole centric
-				return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + clearance);
-			}
+			goto hshadow; /* local version of the padstack-central hshadow setting */
 		case PCB_THERMAL_SOLID: return NULL;
-
 		case PCB_THERMAL_ROUND:
 		case PCB_THERMAL_SHARP:
 			retry:;
 			switch(shp->shape) {
 				case PCB_PSSH_HSHADOW:
 					{
+						hshadow:;
 						pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 						pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
 						if (proto->mech_idx >= 0) {
