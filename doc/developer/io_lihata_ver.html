@@ -68,6 +68,10 @@ History of io_lihata, per format version.
 	<p>
 	The layer visibility bit is not saved any more - it was reset after load so
 	it only added noise to the file.
+	<p>
+	When saving PCB_THERMAL_NOSHAPE, mark
+	it explicitly by writing "noshape" instead of just leaving the
+	thermal shape empty.
 
 <H2> lihata subcircuit </H2>
 	<H3> v4 </H3>
@@ -82,9 +86,6 @@ History of io_lihata, per format version.
 
 	<H3> v6 </H3>
 	Used from board v6. Features new layer type: PCB_LYT_MECH and
-	new pad shape: hshadow. When saving PCB_THERMAL_NOSHAPE, mark
-	it explicitly by writing "noshape" instead of just leaving the
-	thermal shape empty.
-
+	new pad shape: hshadow. 
 </body>
 </html>
