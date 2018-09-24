@@ -11,6 +11,7 @@
 typedef struct {
 	pcb_coord_t Thick;            /* line thickness */
 	pcb_coord_t textt;            /* text thickness */
+	pcb_coord_t texts;            /* text scale */
 	pcb_coord_t Clearance;        /* min. separation from other nets */
 	pcb_cardinal_t via_proto;     /* via padstack prototype ID */
 	int via_proto_set;            /* 1 if via_proto is set/valid, 0 for old file formats */
