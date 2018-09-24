@@ -970,6 +970,8 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 				newline.Thickness = PCB_SCALE_TEXT(newline.Thickness, scale / 2);
 				if (newline.Thickness < min_line_width)
 					newline.Thickness = min_line_width;
+				if (thickness > 0)
+					newline.Thickness = thickness;
 
 				pcb_line_rotate90(&newline, 0, 0, direction);
 
@@ -1003,6 +1005,8 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, scale / 2);
 				if (newarc.Thickness < min_line_width)
 					newarc.Thickness = min_line_width;
+				if (thickness > 0)
+					newarc.Thickness = thickness;
 				pcb_arc_rotate90(&newarc, 0, 0, direction);
 
 				if (mirror) {
