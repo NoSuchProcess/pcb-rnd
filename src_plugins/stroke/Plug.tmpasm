@@ -17,16 +17,16 @@ switch /local/pcb/stroke/controls
 	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
 
-switch /local/pcb/stroke/controls
-	case {disable}   end;
-	default
-		append /local/pcb/DEPDEPS { ../src_plugins/stroke/conf_internal.c }
-		append /local/pcb/DISTCLEANFILES { ../src_plugins/stroke/conf_internal.c }
-		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/stroke/stroke.conf" "$(DATADIR)/stroke.conf"}
-
-		append /local/pcb/RULES [@
+append /local/pcb/DEPDEPS { ../src_plugins/stroke/conf_internal.c }
+append /local/pcb/DISTCLEANFILES { ../src_plugins/stroke/conf_internal.c }
+append /local/pcb/RULES [@
 ../src_plugins/stroke/conf_internal.c: ../src_plugins/stroke/stroke.conf $(CQUOTE)
 	$(CQUOTE) -n stroke_conf_internal < ../src_plugins/stroke/stroke.conf > ../src_plugins/stroke/conf_internal.c
 @]
+
+switch /local/pcb/stroke/controls
+	case {disable}   end;
+	default
+		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/stroke/stroke.conf" "$(DATADIR)/stroke.conf"}
 	end
 end
