@@ -2019,6 +2019,18 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 		err |= parse_coord(&s->Clearance, hash_get(stn, "clearance", 0));
 		parse_attributes(&s->attr, lht_dom_hash_get(stn, "attributes"));
 
+		/* read text thickness */
+		{
+			lht_node_t *tt = lht_dom_hash_get(stn, "text_thick");
+
+			s->textt = 0;
+			if (tt != NULL) {
+				err |= parse_coord(&s->textt,  tt);
+				if (rdver < 6)
+					iolht_warn(stn, -1, "text_thick in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
+			}
+		}
+
 		if (rdver >= 5) {
 			lht_node_t *vp = lht_dom_hash_get(stn, "via_proto");
 			if (vp != NULL) {

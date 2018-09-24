@@ -1232,6 +1232,11 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		}
 		else
 			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v5 did not support padstack prototype in route style\n", "Either save in lihata v5+ or be aware of losing this information");
+		if (wrver >= 6) {
+			if (s->textt > 0)
+				pcb_io_incompat_save(NULL, NULL, "lihata boards before version v6 did not support text thickness in route style\n", "Either save in lihata v6+ or be aware of losing this information");
+			lht_dom_hash_put(sn, build_textf("text_thick", CFMT, s->textt));
+		}
 		lht_dom_hash_put(sn, build_attributes(&s->attr));
 	}
 	return stl;
