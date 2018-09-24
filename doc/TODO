@@ -3,7 +3,10 @@
 1. For the upcoming release ===============================================================================
 - FEATURE: lihata v6:
 	- text thickness in routing style
-	- upgrade the default board to v6, add plated mech for slotting and set v6 the default format
+	- upgrade the default board to v6:
+		- add plated mech for slotting
+		- route style: text scale and thickness fields
+		- set v6 the default format
 - FEATURE: introduce new layer types:
 	- OUTLINE LYT removal: double check io_lihata compatibility
 	- revise io plugins to load/save them properly
