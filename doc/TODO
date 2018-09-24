@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- CLEANUP: scconfig: generalize conf_internal for plugins
 - FEATURE: lihata v6:
 	- DRC check for text thickness (too thin)
 	- query support for text thickness
