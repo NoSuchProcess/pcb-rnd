@@ -8,16 +8,16 @@ switch /local/pcb/cam/controls
 	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
 
-switch /local/pcb/cam/controls
-	case {disable}   end;
-	default
-		append /local/pcb/DEPDEPS { ../src_plugins/cam/conf_internal.c }
-		append /local/pcb/DISTCLEANFILES { ../src_plugins/cam/conf_internal.c }
-		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/cam/cam.conf" "$(DATADIR)/cam.conf"}
-
-		append /local/pcb/RULES [@
+append /local/pcb/DEPDEPS { ../src_plugins/cam/conf_internal.c }
+append /local/pcb/DISTCLEANFILES { ../src_plugins/cam/conf_internal.c }
+append /local/pcb/RULES [@
 ../src_plugins/cam/conf_internal.c: ../src_plugins/cam/cam.conf $(CQUOTE)
 	$(CQUOTE) -n cam_conf_internal < ../src_plugins/cam/cam.conf > ../src_plugins/cam/conf_internal.c
 @]
+
+switch /local/pcb/cam/controls
+	case {disable}   end;
+	default
+		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/cam/cam.conf" "$(DATADIR)/cam.conf"}
 	end
 end

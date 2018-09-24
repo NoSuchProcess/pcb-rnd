@@ -8,16 +8,16 @@ switch /local/pcb/export_xy/controls
 	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
 
-switch /local/pcb/export_xy/controls
-	case {disable}   end;
-	default
-		append /local/pcb/DEPDEPS { ../src_plugins/export_xy/conf_internal.c }
-		append /local/pcb/DISTCLEANFILES { ../src_plugins/export_xy/conf_internal.c }
-		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/export_xy/export_xy.conf" "$(DATADIR)/export_xy.conf"}
-
-		append /local/pcb/RULES [@
+append /local/pcb/DEPDEPS { ../src_plugins/export_xy/conf_internal.c }
+append /local/pcb/DISTCLEANFILES { ../src_plugins/export_xy/conf_internal.c }
+append /local/pcb/RULES [@
 ../src_plugins/export_xy/conf_internal.c: ../src_plugins/export_xy/export_xy.conf $(CQUOTE)
 	$(CQUOTE) -n export_xy_conf_internal < ../src_plugins/export_xy/export_xy.conf > ../src_plugins/export_xy/conf_internal.c
 @]
+
+switch /local/pcb/export_xy/controls
+	case {disable}   end;
+	default
+		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/export_xy/export_xy.conf" "$(DATADIR)/export_xy.conf"}
 	end
 end

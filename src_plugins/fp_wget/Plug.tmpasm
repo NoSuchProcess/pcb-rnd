@@ -13,16 +13,16 @@ switch /local/pcb/fp_wget/controls
 	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
 
-switch /local/pcb/fp_wget/controls
-	case {disable}   end;
-	default
-		append /local/pcb/DEPDEPS { ../src_plugins/fp_wget/conf_internal.c }
-		append /local/pcb/DISTCLEANFILES { ../src_plugins/fp_wget/conf_internal.c }
-		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/fp_wget/fp_wget.conf" "$(DATADIR)/fp_wget.conf"}
-
-		append /local/pcb/RULES [@
+append /local/pcb/DEPDEPS { ../src_plugins/fp_wget/conf_internal.c }
+append /local/pcb/DISTCLEANFILES { ../src_plugins/fp_wget/conf_internal.c }
+append /local/pcb/RULES [@
 ../src_plugins/fp_wget/conf_internal.c: ../src_plugins/fp_wget/fp_wget.conf $(CQUOTE)
 	$(CQUOTE) -n fp_wget_conf_internal < ../src_plugins/fp_wget/fp_wget.conf > ../src_plugins/fp_wget/conf_internal.c
 @]
+
+switch /local/pcb/fp_wget/controls
+	case {disable}   end;
+	default
+		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/fp_wget/fp_wget.conf" "$(DATADIR)/fp_wget.conf"}
 	end
 end
