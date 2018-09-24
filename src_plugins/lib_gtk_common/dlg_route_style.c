@@ -273,7 +273,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	GtkWidget *dialog;
 	GtkWidget *content_area;
 	GtkWidget *vbox, *hbox, *sub_vbox, *table;
-	GtkWidget *label, *select_box, *check_box;
+	GtkWidget *label, *select_box;
 	GtkWidget *button;
 	const char *new_name;
 
@@ -362,10 +362,6 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
 	gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, FALSE, 0);
 
-	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
-	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
-	gtk_box_pack_start(GTK_BOX(sub_vbox), check_box, TRUE, TRUE, 0);
-
 	add_new_iter(rss);
 
 	/* Display dialog */
@@ -382,7 +378,6 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 		int changed = 0, need_rebuild = 0;
 		pcb_route_style_t *rst;
 		pcb_gtk_obj_route_style_t *style;
-		gboolean save;
 
 		if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(select_box), &iter))
 			goto cancel;
@@ -422,7 +417,6 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 		rst_modify(changed, rst->Diameter, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry)));
 		rst_modify(changed, rst->Clearance, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
 #undef rst_modify
-		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
 		if (style == NULL) {
 			style = pcb_gtk_route_style_add_route_style(rss, rst, 0);
 		}
@@ -444,7 +438,6 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 
 		/* Emit change signals */
 		pcb_gtk_route_style_select_style(rss, rst);
-		g_signal_emit(rss, pcb_gtk_route_style_signals_id[STYLE_EDITED_SIGNAL], 0, save);
 
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);
