@@ -1239,6 +1239,11 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		else if (s->textt > 0)
 			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v6 did not support text thickness in route style\n", "Either save in lihata v6+ or be aware of losing this information");
 
+		if (wrver >= 6)
+			lht_dom_hash_put(sn, build_textf("text_scale", "%d", s->texts));
+		else if (s->texts > 0)
+			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v6 did not support text scale in route style\n", "Either save in lihata v6+ or be aware of losing this information");
+
 		lht_dom_hash_put(sn, build_attributes(&s->attr));
 	}
 	return stl;

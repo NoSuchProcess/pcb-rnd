@@ -2031,6 +2031,18 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 			}
 		}
 
+		/* read text scale */
+		{
+			lht_node_t *ts = lht_dom_hash_get(stn, "text_scale");
+
+			s->texts = 0;
+			if (ts != NULL) {
+				err |= parse_int(&s->texts, ts);
+				if (rdver < 6)
+					iolht_warn(stn, -1, "text_scale in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
+			}
+		}
+
 		if (rdver >= 5) {
 			lht_node_t *vp = lht_dom_hash_get(stn, "via_proto");
 			if (vp != NULL) {
