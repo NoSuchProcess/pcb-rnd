@@ -2,7 +2,9 @@
 
 1. For the upcoming release ===============================================================================
 - FEATURE: lihata v6:
-	- text thickness in routing style
+	- DRC check for text thickness (too thin)
+	- query support for text thickness
+	- propedit support for text thickness
 	- upgrade the default board to v6:
 		- add plated mech for slotting
 		- route style: text scale and thickness fields
