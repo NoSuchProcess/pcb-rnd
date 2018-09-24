@@ -1086,7 +1086,7 @@ void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, do
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
-	pcb_text_draw_string(info, font, label, x, y, scale, direction, mirror, 1, 0, 0, 0, PCB_TXT_TINY_HIDE);
+	pcb_text_draw_string(info, font, label, x, y, scale, direction, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
 }

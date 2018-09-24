@@ -939,7 +939,7 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0,
 	return 0;
 }
 
-static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t thickness, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	pcb_coord_t x = 0;
 	pcb_cardinal_t n;
@@ -1056,16 +1056,16 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 	}
 }
 
-void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, pcb_coord_t thickness, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
-	pcb_text_draw_string_(info, font, string, x0, y0, scale, direction, mirror, min_line_width, xordraw, xordx, xordy, tiny);
+	pcb_text_draw_string_(info, font, string, x0, y0, scale, direction, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny);
 }
 
 /* lowlevel drawing routine for text objects */
 static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	unsigned char *rendered = pcb_text_render_str(Text);
-	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->Direction, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), min_line_width, xordraw, xordx, xordy, tiny);
+	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->Direction, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny);
 	pcb_text_free_str(Text, rendered);
 }
 
