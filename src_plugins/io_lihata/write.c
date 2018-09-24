@@ -1224,6 +1224,7 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
 		lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
 		lht_dom_hash_put(sn, build_textf("clearance", CFMT, s->Clearance));
+
 		if (wrver >= 5) {
 			if (s->via_proto_set)
 				lht_dom_hash_put(sn, build_textf("via_proto", "%ld", (long int)s->via_proto));
@@ -1232,6 +1233,7 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		}
 		else
 			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v5 did not support padstack prototype in route style\n", "Either save in lihata v5+ or be aware of losing this information");
+
 		if (wrver >= 6)
 			lht_dom_hash_put(sn, build_textf("text_thick", CFMT, s->textt));
 		else if (s->textt > 0)
