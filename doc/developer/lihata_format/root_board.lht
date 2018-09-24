@@ -101,6 +101,8 @@ ha:lht_tree_doc { ha:roots {
 					desc { routing style: a collection of pen settings }
 					li:children {
 						ha:thickness   { valtype=coord; desc={default trace thickness (affects lines and arcs)}}
+						ha:text_thick  { valtype=coord; ver={>=6} desc={default text stroke thickness (0 means pick thickness automatically using the original algorithm)}}
+						ha:text_scale  { valtype=coord; ver={>=6} desc={default text scaling (0 means 100%, for backward compatibility)}}
 						ha:clearance   { valtype=coord; desc={default clearance (affects lines, arcs and polygons)}}
 						ha:diameter    { valtype=coord; ver={<=5} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
 						ha:hole        { valtype=coord; ver={<=5} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
