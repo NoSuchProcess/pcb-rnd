@@ -119,7 +119,7 @@ static void dialog_style_changed_cb(GtkComboBox *combo, pcb_gtk_dlg_route_style_
 	gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), style->rst->name);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->line_entry), style->rst->Thick);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->textt_entry), style->rst->textt);
-	gtk_spin_button_set_value(GHID_COORD_ENTRY(dialog->texts_entry), style->rst->texts);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog->texts_entry), style->rst->texts);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_hole_entry), style->rst->Hole);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Clearance);
@@ -424,7 +424,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	} while(0)
 		rst_modify(changed, rst->Thick, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry)));
 		rst_modify(changed, rst->textt, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.textt_entry)));
-		rst_modify(changed, rst->texts, gtk_spin_button_get_value_as_int(GHID_COORD_ENTRY(dialog_data.texts_entry)));
+		rst_modify(changed, rst->texts, gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(dialog_data.texts_entry)));
 		rst_modify(changed, rst->Hole, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry)));
 		rst_modify(changed, rst->Diameter, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry)));
 		rst_modify(changed, rst->Clearance, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
