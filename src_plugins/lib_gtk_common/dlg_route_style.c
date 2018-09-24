@@ -118,7 +118,8 @@ static void dialog_style_changed_cb(GtkComboBox *combo, pcb_gtk_dlg_route_style_
 
 	gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), style->rst->name);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->line_entry), style->rst->Thick);
-	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->text_entry), style->rst->textt);
+	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->textt_entry), style->rst->textt);
+	gtk_spin_button_set_value(GHID_COORD_ENTRY(dialog->texts_entry), style->rst->texts);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_hole_entry), style->rst->Hole);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
 	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Clearance);
@@ -264,6 +265,12 @@ static void _table_attach(GtkWidget *table, gint row, const gchar *label, GtkWid
 	_table_attach_(table, row, label, *entry);
 }
 
+static void _table_attach_spin(GtkWidget *table, gint row, const gchar *label, GtkWidget **entry, pcb_coord_t min, pcb_coord_t max)
+{
+	*entry = gtk_spin_button_new_with_range(min, max, 10);
+	_table_attach_(table, row, label, *entry);
+}
+
 void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_t *rss)
 {
 	GtkTreePath *path;
@@ -315,14 +322,15 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	gtk_table_attach(GTK_TABLE(table), dialog_data.name_entry, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 
 	_table_attach(table, 1, _("Line width:"), &dialog_data.line_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
-	_table_attach(table, 2, _("Text thickness:"), &dialog_data.text_entry, 0, PCB_MAX_LINESIZE);
-	_table_attach(table, 3, _("Via hole size:"),
+	_table_attach_spin(table, 2, _("Text scale:"), &dialog_data.texts_entry, 0, 10000);
+	_table_attach(table, 3, _("Text thickness:"), &dialog_data.textt_entry, 0, PCB_MAX_LINESIZE);
+	_table_attach(table, 4, _("Via hole size:"),
 								&dialog_data.via_hole_entry, PCB_MIN_PINORVIAHOLE, PCB_MAX_PINORVIASIZE - PCB_MIN_PINORVIACOPPER);
-	_table_attach(table, 4, _("Via ring size:"),
+	_table_attach(table, 5, _("Via ring size:"),
 								&dialog_data.via_size_entry, PCB_MIN_PINORVIAHOLE + PCB_MIN_PINORVIACOPPER, PCB_MAX_PINORVIASIZE);
-	_table_attach(table, 5, _("Clearance:"), &dialog_data.clearance_entry, 0, PCB_MAX_LINESIZE);
+	_table_attach(table, 6, _("Clearance:"), &dialog_data.clearance_entry, 0, PCB_MAX_LINESIZE);
 
-	_table_attach_(table, 6, "", gtk_label_new(""));
+	_table_attach_(table, 7, "", gtk_label_new(""));
 
 	/* create attrib table */
 	{
@@ -356,7 +364,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 		g_signal_connect(G_OBJECT(dialog_data.attr_table), "key-release-event", G_CALLBACK(attr_key_release_cb), &dialog_data);
 
 	}
-	_table_attach_(table, 7, _("Attributes:"), dialog_data.attr_table);
+	_table_attach_(table, 8, _("Attributes:"), dialog_data.attr_table);
 
 
 	/* create delete button */
@@ -415,7 +423,8 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 		} \
 	} while(0)
 		rst_modify(changed, rst->Thick, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry)));
-		rst_modify(changed, rst->textt, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.text_entry)));
+		rst_modify(changed, rst->textt, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.textt_entry)));
+		rst_modify(changed, rst->texts, gtk_spin_button_get_value_as_int(GHID_COORD_ENTRY(dialog_data.texts_entry)));
 		rst_modify(changed, rst->Hole, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry)));
 		rst_modify(changed, rst->Diameter, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry)));
 		rst_modify(changed, rst->Clearance, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));

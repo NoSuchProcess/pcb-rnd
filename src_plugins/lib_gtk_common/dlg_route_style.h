@@ -6,7 +6,8 @@ struct pcb_gtk_dlg_route_style_s {
 	pcb_gtk_route_style_t *rss;
 	GtkWidget *name_entry;
 	GtkWidget *line_entry;
-	GtkWidget *text_entry;
+	GtkWidget *textt_entry;
+	GtkWidget *texts_entry;
 	GtkWidget *via_hole_entry;
 	GtkWidget *via_size_entry;
 	GtkWidget *clearance_entry;
