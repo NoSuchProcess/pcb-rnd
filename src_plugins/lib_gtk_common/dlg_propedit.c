@@ -352,7 +352,7 @@ static void prop_preview_init(void)
 							0.0, 90.0, PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(40), pcb_flag_make(PCB_FLAG_CLEARLINE), pcb_false);
 
 	pcb_text_new(preview_pcb.Data->Layer + 0, pcb_font(PCB, 0, 1),
-							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
+							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, 0, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer + 0,
 																									 PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),

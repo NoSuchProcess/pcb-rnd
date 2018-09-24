@@ -577,7 +577,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		}
 	}
 
-	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, text_direction, text_scaling, text_val, text_flags);
+	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, text_direction, text_scaling, 0, text_val, text_flags);
 	return 0;
 }
 

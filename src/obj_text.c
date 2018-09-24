@@ -82,7 +82,7 @@ void pcb_text_free(pcb_text_t * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, pcb_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
@@ -101,6 +101,7 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X,
 	text->Direction = Direction;
 	text->Flags = Flags;
 	text->Scale = Scale;
+	text->thickness = thickness;
 	text->TextString = pcb_strdup(TextString);
 	text->fid = PCBFont->id;
 	text->ID = pcb_create_ID_get();
@@ -120,14 +121,14 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
-	pcb_text_t *t = pcb_text_new(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->Direction, src->Scale, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->Direction, src->Scale, src->thickness, src->TextString, src->Flags);
 	pcb_text_copy_meta(t, src);
 	return t;
 }
 
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
-	pcb_text_t *t = pcb_text_new(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->Direction, src->Scale, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->Direction, src->Scale, src->thickness, src->TextString, src->Flags);
 	pcb_text_copy_meta(t, src);
 	return t;
 }
@@ -380,7 +381,7 @@ unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-	pcb_text_t *t = pcb_text_new(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
+	pcb_text_t *t = pcb_text_new(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->Direction, Text->Scale, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
 
 	pcb_text_copy_meta(t, Text);
 	return t;
@@ -519,7 +520,7 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_t *text;
 
 	text = pcb_text_new(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
-											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
+											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	pcb_text_copy_meta(text, Text);
 	pcb_text_invalidate_draw(Layer, text);
 	pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, Layer, text, text);

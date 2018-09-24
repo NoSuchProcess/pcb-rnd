@@ -169,10 +169,10 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if ((s > 32) && (s < 127)) {
 			sprintf(txt, "%c", s);
-			pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, txt, pcb_no_flags());
+			pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 		}
 		sprintf(txt, "%d", s);
-		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, txt, pcb_no_flags());
+		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 
 		for (l = 0; l < symbol->LineN; l++) {
 			pcb_line_new_merge(lfont,

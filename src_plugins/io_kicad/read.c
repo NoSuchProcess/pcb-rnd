@@ -440,7 +440,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, direction, scaling, text, Flags);
+		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, direction, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
 	return kicad_error(subtree, "failed to create gr_text element");

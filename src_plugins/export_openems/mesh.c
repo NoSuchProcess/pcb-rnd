@@ -443,9 +443,9 @@ static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t au
 {
 	aux -= PCB_MM_TO_COORD(0.6);
 	if (dir == PCB_MESH_HORIZONTAL)
-		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), aux, 0, 1, 75, label, pcb_no_flags());
+		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), aux, 0, 1, 75, 0, label, pcb_no_flags());
 	else
-		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), 0, aux, 0, 75, label, pcb_no_flags());
+		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), 0, aux, 0, 75, 0, label, pcb_no_flags());
 
 }
 
@@ -499,7 +499,7 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 		if (grp->ltype & PCB_LYT_COPPER) {
 			y2 = y + mesh->def_copper_thick * mag / 2;
 			pcb_line_new(mesh->ui_layer_z, xr, y2, xr+PCB_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
-			pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, grp->name, pcb_no_flags());
+			pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, 0, grp->name, pcb_no_flags());
 			y += mesh->def_copper_thick * mag;
 		}
 		else if (grp->ltype & PCB_LYT_SUBSTRATE) {

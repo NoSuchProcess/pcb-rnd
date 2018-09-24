@@ -123,6 +123,7 @@ li:pcb-rnd-conf-v1 {
 
 #			alignment_distance = 0
 			text_scale = 100
+			text_thickness = 0
 			text_font_id = 0
 #			poly_isle_area = 0
 #			background_image = {}

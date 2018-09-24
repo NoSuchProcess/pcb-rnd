@@ -100,6 +100,7 @@ void ghid_conf_regs(const char *cookie)
 	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_status_line);
 	init_conf_watch(&cbs_grid, "editor/grid", ghid_confchg_status_line);
 	init_conf_watch(&cbs_text_scale, "design/text_scale", ghid_confchg_status_line);
+	init_conf_watch(&cbs_text_scale, "design/text_thickness", ghid_confchg_status_line);
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", ghid_confchg_grid_unit);

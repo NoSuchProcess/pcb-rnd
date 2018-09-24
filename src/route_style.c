@@ -164,6 +164,7 @@ int pcb_route_string_parse(char *s, vtroutestyle_t *styles, const char *default_
 void pcb_use_route_style(pcb_route_style_t * rst)
 {
 	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
+	conf_set_design("design/text_thickness", "%$mS", rst->textt);
 	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
 	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
 	conf_set_design("design/clearance", "%$mS", rst->Clearance);

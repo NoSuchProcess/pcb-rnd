@@ -2405,7 +2405,7 @@ void lesstif_update_status_line()
 		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, conf_core.design.clearance, s45);
 		break;
 	case PCB_MODE_TEXT:
-		buf = pcb_strdup_printf("%d %%", conf_core.design.text_scale);
+		buf = pcb_strdup_printf("%d %% %m+%.2mS", conf_core.design.text_scale, UUNIT, conf_core.design.text_thickness);
 		break;
 	case PCB_MODE_MOVE:
 	case PCB_MODE_COPY:

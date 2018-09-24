@@ -141,7 +141,7 @@ layout_object_t *layout_create_text(const char *search_id, layer_id_t layer_id, 
 	if (layer == NULL)
 		return NULL;
 
-	res = pcb_text_new(layer, pcb_font(PCB, 0, 1), x, y, direction, scale, pcb_strdup(str), get_flags(flags));
+	res = pcb_text_new(layer, pcb_font(PCB, 0, 1), x, y, direction, scale, 0, pcb_strdup(str), get_flags(flags));
 	return search_persist_created(search_id, layer_id, res, OM_ARC);
 }
 

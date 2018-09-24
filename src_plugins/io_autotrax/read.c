@@ -221,7 +221,7 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	if (lyt & PCB_LYT_BOTTOM) Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 	else Flags = pcb_flag_make(0);
 
-	if (pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, direction, scaling, t, Flags) != 0)
+	if (pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, direction, scaling, 0, t, Flags) != 0)
 		return 1;
 	return -1;
 

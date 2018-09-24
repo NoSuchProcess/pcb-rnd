@@ -58,7 +58,7 @@ void pcb_tool_text_notify_mode(void)
 			if (pcb_layer_flags(PCB, INDEXOFCURRENT) & PCB_LYT_BOTTOM)
 				flag |= PCB_FLAG_ONSOLDER;
 			if ((text = pcb_text_new(pcb_loose_subc_layer(PCB, CURRENT), pcb_font(PCB, conf_core.design.text_font_id, 1), pcb_tool_note.X,
-																pcb_tool_note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {
+																pcb_tool_note.Y, 0, conf_core.design.text_scale, conf_core.design.text_thickness, string, pcb_flag_make(flag))) != NULL) {
 				pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, CURRENT, text, text);
 				pcb_undo_inc_serial();
 				pcb_text_invalidate_draw(CURRENT, text);
@@ -82,6 +82,7 @@ void pcb_tool_text_draw_attached(void)
 	text.Direction = 0;
 	text.Flags = pcb_flag_make(flag);
 	text.Scale = conf_core.design.text_scale;
+	text.thickness = conf_core.design.text_thickness;
 	text.TextString = "A";
 	text.fid = conf_core.design.text_font_id;
 	text.ID = 0;

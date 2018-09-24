@@ -71,7 +71,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		"%s" /* line break */
 		"<b>via</b>=%mS (%mS)  "
 		"<b>clearance</b>=%mS  "
-		"<b>text</b>=%i%%  "
+		"<b>text</b>=%i%% %$mS "
 		"<b>buffer</b>=#%i"),
 		unit->allow, conf_core.editor.show_solder_side ? _("bottom") : _("top"),
 		PCB->Grid,
@@ -81,6 +81,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		conf_core.design.via_thickness, conf_core.design.via_drilling_hole, 
 		conf_core.design.clearance,
 		conf_core.design.text_scale,
+		conf_core.design.text_thickness,
 		conf_core.editor.buffer_number + 1);
 }
 

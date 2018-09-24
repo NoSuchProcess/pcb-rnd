@@ -152,6 +152,7 @@ typedef struct {
 		CFT_COORD min_drill;
 		CFT_COORD min_ring;
 		CFT_INTEGER text_scale;            /* text scaling in % */
+		CFT_COORD text_thickness;          /* override stroke font text thickness */
 		CFT_INTEGER text_font_id;
 		CFT_REAL poly_isle_area;           /* polygon min area */
 		CFT_STRING fab_author;             /* Full name of author for FAB drawings */
