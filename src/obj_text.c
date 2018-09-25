@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -788,7 +789,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t tx0, pcb_coord_t ty0, pcb_coord_t x0, int xordraw, int thindraw, pcb_coord_t xordx, pcb_coord_t xordy, int scale, int direction, int mirror)
+static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx_t mx, pcb_coord_t xo, int xordraw, int thindraw, pcb_coord_t xordx, pcb_coord_t xordy)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
@@ -801,17 +802,8 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_coord_t 
 
 	/* transform each coordinate */
 	for(n = 0, p = poly->Points; n < max; n++,p++) {
-		x[n] = PCB_SCALE_TEXT(p->X + x0, scale);
-		y[n] = PCB_SCALE_TEXT(p->Y, scale);
-		PCB_COORD_ROTATE90(x[n], y[n], 0, 0, direction);
-
-		if (mirror) {
-			x[n] = PCB_SWAP_SIGN_X(x[n]);
-			y[n] = PCB_SWAP_SIGN_Y(y[n]);
-		}
-
-		x[n] += tx0;
-		y[n] += ty0;
+		x[n] = pcb_round(pcb_xform_x(mx, p->X + xo, p->Y));
+		y[n] = pcb_round(pcb_xform_y(mx, p->X + xo, p->Y));
 	}
 
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
@@ -944,6 +936,15 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 {
 	pcb_coord_t x = 0;
 	pcb_cardinal_t n;
+	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
+	double sc = (double)scale / 100.0;
+	double rotdeg = 90.0 * direction;
+
+	pcb_xform_mx_translate(mx, x0, y0);
+	pcb_xform_mx_scale(mx, sc, sc);
+	if (mirror)
+		pcb_xform_mx_scale(mx, 1, -1);
+	pcb_xform_mx_rotate(mx, rotdeg);
 
 	/* cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
@@ -964,32 +965,16 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
 				newline = *line;
-				newline.Point1.X = PCB_SCALE_TEXT(newline.Point1.X + x, scale);
-				newline.Point1.Y = PCB_SCALE_TEXT(newline.Point1.Y, scale);
-				newline.Point2.X = PCB_SCALE_TEXT(newline.Point2.X + x, scale);
-				newline.Point2.Y = PCB_SCALE_TEXT(newline.Point2.Y, scale);
+				newline.Point1.X = pcb_round(pcb_xform_x(mx, line->Point1.X+x, line->Point1.Y));
+				newline.Point1.Y = pcb_round(pcb_xform_y(mx, line->Point1.X+x, line->Point1.Y));
+				newline.Point2.X = pcb_round(pcb_xform_x(mx, line->Point2.X+x, line->Point2.Y));
+				newline.Point2.Y = pcb_round(pcb_xform_y(mx, line->Point2.X+x, line->Point2.Y));
 				newline.Thickness = PCB_SCALE_TEXT(newline.Thickness, scale / 2);
+
 				if (newline.Thickness < min_line_width)
 					newline.Thickness = min_line_width;
 				if (thickness > 0)
 					newline.Thickness = thickness;
-
-				pcb_line_rotate90(&newline, 0, 0, direction);
-
-				/* the labels of SMD objects on the bottom
-				 * side haven't been swapped yet, only their offset
-				 */
-				if (mirror) {
-					newline.Point1.X = PCB_SWAP_SIGN_X(newline.Point1.X);
-					newline.Point1.Y = PCB_SWAP_SIGN_Y(newline.Point1.Y);
-					newline.Point2.X = PCB_SWAP_SIGN_X(newline.Point2.X);
-					newline.Point2.Y = PCB_SWAP_SIGN_Y(newline.Point2.Y);
-				}
-				/* add offset and draw line */
-				newline.Point1.X += x0;
-				newline.Point1.Y += y0;
-				newline.Point2.X += x0;
-				newline.Point2.Y += y0;
 				if (xordraw)
 					pcb_gui->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
@@ -1000,24 +985,19 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			for(a = arclist_first(&font->Symbol[*string].arcs); a != NULL; a = arclist_next(a)) {
 				newarc = *a;
 
-				newarc.X = PCB_SCALE_TEXT(newarc.X + x, scale);
-				newarc.Y = PCB_SCALE_TEXT(newarc.Y, scale);
+				newarc.X = pcb_round(pcb_xform_x(mx, a->X + x, a->Y));
+				newarc.Y = pcb_round(pcb_xform_y(mx, a->X + x, a->Y));
 				newarc.Height = newarc.Width = PCB_SCALE_TEXT(newarc.Height, scale);
 				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, scale / 2);
+				newarc.StartAngle += rotdeg;
+				if (mirror) {
+					newarc.StartAngle = PCB_SWAP_ANGLE(newarc.StartAngle);
+					newarc.Delta = PCB_SWAP_DELTA(newarc.Delta);
+				}
 				if (newarc.Thickness < min_line_width)
 					newarc.Thickness = min_line_width;
 				if (thickness > 0)
 					newarc.Thickness = thickness;
-				pcb_arc_rotate90(&newarc, 0, 0, direction);
-
-				if (mirror) {
-					newarc.X = PCB_SWAP_SIGN_X(newarc.X);
-					newarc.Y = PCB_SWAP_SIGN_Y(newarc.Y);
-					newarc.StartAngle = PCB_SWAP_ANGLE(newarc.StartAngle);
-					newarc.Delta = PCB_SWAP_DELTA(newarc.Delta);
-				}
-				newarc.X += x0;
-				newarc.Y += y0;
 				if (xordraw)
 					pcb_gui->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
@@ -1027,7 +1007,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			/* draw the polygons */
 			poly_thin = conf_core.editor.thin_draw || conf_core.editor.wireframe_draw;
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				draw_text_poly(info, p, x0, y0, x, xordraw, poly_thin, xordx, xordy, scale, direction, mirror);
+				draw_text_poly(info, p, mx, x, xordraw, poly_thin, xordx, xordy);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
