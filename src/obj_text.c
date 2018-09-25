@@ -1017,24 +1017,16 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			pcb_box_t defaultsymbol = font->DefaultSymbol;
 			pcb_coord_t size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
 
-			defaultsymbol.X1 = PCB_SCALE_TEXT(defaultsymbol.X1 + x, scale);
-			defaultsymbol.Y1 = PCB_SCALE_TEXT(defaultsymbol.Y1, scale);
-			defaultsymbol.X2 = PCB_SCALE_TEXT(defaultsymbol.X2 + x, scale);
-			defaultsymbol.Y2 = PCB_SCALE_TEXT(defaultsymbol.Y2, scale);
+			defaultsymbol.X1 = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
+			defaultsymbol.Y1 = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
+			defaultsymbol.X2 = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
+			defaultsymbol.Y2 = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
 
-			pcb_box_rotate90(&defaultsymbol, 0, 0, direction);
-
-			/* add offset and draw box */
-			defaultsymbol.X1 += x0;
-			defaultsymbol.Y1 += y0;
-			defaultsymbol.X2 += x0;
-			defaultsymbol.Y2 += y0;
+			/* draw move on to next cursor position */
 			if (xordraw)
 				pcb_gui->draw_rect(pcb_crosshair.GC, xordx+defaultsymbol.X1, xordy+defaultsymbol.Y1, xordx+defaultsymbol.X2, xordy+defaultsymbol.Y2);
 			else
 				pcb_gui->fill_rect(pcb_draw_out.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
-
-			/* move on to next cursor position */
 			x += size;
 		}
 		string++;
