@@ -2,6 +2,10 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: scconfig: generalize conf_internal for plugins
+- FEATURE: text rot:
+	- propset: set_text_cb_any(): set the rot field and refresh the text
+	- write text rotation functions 
+	- revise all io_ plugins to save text direction/rot properly
 - FEATURE: lihata v6:
 	- DRC check for text thickness (too thin)
 	- query support for text thickness
@@ -20,10 +24,6 @@
 - BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
-- FEATURE: text rot:
-	- propset: set_text_cb_any(): set the rot field and refresh the text
-	- write text rotation functions 
-	- revise all io_ plugins to save text direction/rot properly
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
 - FEATURE: Scale() buffer objects (with an option to affect coords only) [report: celem]
 - CLEANUP: remove mnemonic from the menu system
