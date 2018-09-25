@@ -1126,6 +1126,9 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 	unsigned int flg = 0;
 	pcb_layer_t *layer = pcb_layer_get_real(text->parent.layer);
 
+	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
+		layer = text->parent.layer;
+
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
 		if (layer->is_bound) {
 			const char *color;
