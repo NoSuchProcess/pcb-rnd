@@ -92,6 +92,9 @@ struct pcb_box_s {  /* a bounding box */
 	pcb_coord_t X2, Y2;     /* and lower right corner */
 };
 
+typedef double pcb_xform_mx_t[9];
+#define PCB_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
+
 typedef struct pcb_xform_s {   /* generic object transformation */
 	pcb_coord_t bloat;   /* if non-zero, bloat (positive) or shrink (negative) by this value */
 } pcb_xform_t;
@@ -105,6 +108,15 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 		__dst__->bloat += __src__->bloat; \
 	} while(0)
 #define pcb_xform_is_nop(src) ((src)->bloat == 0)
+
+/* Standard 2d matrix transformation using mx as pcb_xform_mx_t */
+#define pcb_xform_x(mx, x_in, y_in) ((double)(x_in) * mx[0] + (double)(y_in) * mx[1] + mx[2])
+#define pcb_xform_y(mx, x_in, y_in) ((double)(x_in) * mx[3] + (double)(y_in) * mx[4] + mx[5])
+
+void pcb_xform_mx_rotate(pcb_xform_mx_t mx, double deg);
+void pcb_xform_mx_translate(pcb_xform_mx_t mx, double xt, double yt);
+void pcb_xform_mx_scale(pcb_xform_mx_t mx, double st, double sy);
+void pcb_xform_mx_mirrorx(pcb_xform_mx_t mx); /* mirror over the x axis (flip y coords) */
 
 /* Return the user readable name of an object type in a string; never NULL */
 const char *pcb_obj_type_name(pcb_objtype_t type);

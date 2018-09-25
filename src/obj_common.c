@@ -226,3 +226,86 @@ pcb_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_l
 			return 0;
 	}
 }
+
+static void mmult(pcb_xform_mx_t dst, const pcb_xform_mx_t src)
+{
+	pcb_xform_mx_t tmp;
+
+	tmp[0] = dst[0] * src[0] + dst[1] * src[3] + dst[2] * src[6];
+	tmp[1] = dst[0] * src[1] + dst[1] * src[4] + dst[2] * src[7];
+	tmp[2] = dst[0] * src[2] + dst[1] * src[5] + dst[2] * src[8];
+
+	tmp[3] = dst[3] * src[0] + dst[4] * src[3] + dst[5] * src[6];
+	tmp[4] = dst[3] * src[1] + dst[4] * src[4] + dst[5] * src[7];
+	tmp[5] = dst[3] * src[2] + dst[4] * src[5] + dst[5] * src[8];
+
+	tmp[6] = dst[6] * src[0] + dst[7] * src[3] + dst[8] * src[6];
+	tmp[7] = dst[6] * src[1] + dst[7] * src[4] + dst[8] * src[7];
+	tmp[8] = dst[6] * src[2] + dst[7] * src[5] + dst[8] * src[8];
+
+	memcpy(dst, tmp, sizeof(tmp));
+}
+
+void pcb_xform_mx_rotate(pcb_xform_mx_t mx, double deg)
+{
+	pcb_xform_mx_t tr;
+
+	deg /= PCB_RAD_TO_DEG;
+
+	tr[0] = cos(deg);
+	tr[1] = sin(deg);
+	tr[2] = 0;
+
+	tr[3] = -sin(deg);
+	tr[4] = cos(deg);
+	tr[5] = 0;
+
+	tr[6] = 0;
+	tr[7] = 0;
+	tr[8] = 1;
+
+	mmult(mx, tr);
+}
+
+void pcb_xform_mx_translate(pcb_xform_mx_t mx, double xt, double yt)
+{
+	pcb_xform_mx_t tr;
+
+	tr[0] = 1;
+	tr[1] = 0;
+	tr[2] = xt;
+
+	tr[3] = 0;
+	tr[4] = 1;
+	tr[5] = yt;
+
+	tr[6] = 0;
+	tr[7] = 0;
+	tr[8] = 1;
+
+	mmult(mx, tr);
+}
+
+void pcb_xform_mx_scale(pcb_xform_mx_t mx, double sx, double sy)
+{
+	pcb_xform_mx_t tr;
+
+	tr[0] = sx;
+	tr[1] = 0;
+	tr[2] = 0;
+
+	tr[3] = 0;
+	tr[4] = sy;
+	tr[5] = 0;
+
+	tr[6] = 0;
+	tr[7] = 0;
+	tr[8] = 1;
+
+	mmult(mx, tr);
+}
+
+void pcb_xform_mx_mirrorx(pcb_xform_mx_t mx)
+{
+	pcb_xform_mx_scale(mx, 0, -1);
+}
