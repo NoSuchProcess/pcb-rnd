@@ -443,7 +443,7 @@ static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t au
 {
 	aux -= PCB_MM_TO_COORD(0.6);
 	if (dir == PCB_MESH_HORIZONTAL)
-		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), aux, 0, 1, 75, 0, label, pcb_no_flags());
+		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), aux, 0, 90, 75, 0, label, pcb_no_flags());
 	else
 		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), 0, aux, 0, 75, 0, label, pcb_no_flags());
 

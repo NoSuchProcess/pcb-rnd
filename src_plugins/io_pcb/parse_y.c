@@ -2339,7 +2339,7 @@ yyreduce:
 #line 1099 "parse_y.y" /* yacc.c:1646  */
     {
 					/* use a default scale of 100% */
-				pcb_text_new(Layer,yyFont,OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), 100, 0, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
+				pcb_text_new(Layer,yyFont,OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number) * 90.0, 100, 0, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
 #line 2346 "parse_y.c" /* yacc.c:1646  */
@@ -2353,11 +2353,11 @@ yyreduce:
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
-					pcb_text_new(lay ,yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), 0, (yyvsp[-2].string),
+					pcb_text_new(lay ,yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number) * 90.0, (yyvsp[-3].number), 0, (yyvsp[-2].string),
 						      pcb_flag_old((yyvsp[-1].integer)));
 				}
 				else
-					pcb_text_new(Layer, yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), 0, (yyvsp[-2].string),
+					pcb_text_new(Layer, yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number) * 90.0, (yyvsp[-3].number), 0, (yyvsp[-2].string),
 						      pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
@@ -2379,10 +2379,10 @@ yyreduce:
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
-					pcb_text_new(lay, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), 0, (yyvsp[-2].string), (yyvsp[-1].flagtype));
+					pcb_text_new(lay, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number) * 90.0, (yyvsp[-3].number), 0, (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				}
 				else
-					pcb_text_new(Layer, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), 0, (yyvsp[-2].string), (yyvsp[-1].flagtype));
+					pcb_text_new(Layer, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number) * 90.0, (yyvsp[-3].number), 0, (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-2].string));
 			}
 #line 2389 "parse_y.c" /* yacc.c:1646  */

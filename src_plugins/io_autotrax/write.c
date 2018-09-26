@@ -443,6 +443,12 @@ static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 	if (!pcb_layer_is_empty_(PCB, layer)) { /*|| (layer->name && *layer->name)) { */
 		local_flag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
+			int direction;
+			
+			if (pcb_text_old_direction(&direction, text->rot) != 0) {
+#warning TODO: indicate save incompatibility
+			}
+
 			if (current_layer < 9) { /* copper or silk layer text */
 				if (in_subc)
 					fputs("CS\r\n", ctx->f);
@@ -453,13 +459,13 @@ static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 				rotation = 0;
 				if (current_layer == 6 || current_layer == 8) /* back copper or silk */
 					autotrax_mirrored = 16; /* mirrored */
-				if (text->Direction == 3) /*vertical down */
+				if (direction == 3) /*vertical down */
 					rotation = 3;
-				else if (text->Direction == 2) /*upside down */
+				else if (direction == 2) /*upside down */
 					rotation = 2;
-				else if (text->Direction == 1) /*vertical up */
+				else if (direction == 1) /*vertical up */
 					rotation = 1;
-				else if (text->Direction == 0) /*normal text */
+				else if (direction == 0) /*normal text */
 					rotation = 0;
 
 				pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X+dx, PCB->MaxHeight - (text->Y+dy), textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);

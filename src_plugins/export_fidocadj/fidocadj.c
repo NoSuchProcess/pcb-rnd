@@ -272,9 +272,10 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 					y0 -= sy;
 					break;
 			}*/
+#warning textrot TODO: can we exprot rotation with %f?
 			fprintf(f, "TY %ld %ld %ld %ld %d 1 %d * ", /* 1 = bold */
 				crd(x0), crd(y0), crd(glyphy), crd(glyphx),
-				90*(text->Direction), fidoly);
+				(int)pcb_round(text->rot), fidoly);
 			for(s = text->TextString; *s != '\0'; s++) {
 				if (*s == ' ')
 					fprintf(f, "++");

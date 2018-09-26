@@ -436,7 +436,9 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		if (trefdes != NULL) {
 			rx = trefdes->X - ox;
 			ry = trefdes->Y - oy;
-			rdir = trefdes->Direction;
+			if (!pcb_text_old_direction(&rdir, trefdes->rot)) {
+#warning textrot TODO: incompatibility warning
+			}
 			rscale = trefdes->Scale;
 		}
 		else {
@@ -581,7 +583,11 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, PCB_OBJ_ARC));
 		}
 		textlist_foreach(&layer->Text, &it, text) {
-			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, text->Direction, text->Scale);
+			int dir;
+			if (!pcb_text_old_direction(&dir, text->rot)) {
+#warning textrot TODO: incompatibility warning
+			}
+			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, text->Scale);
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
 		}

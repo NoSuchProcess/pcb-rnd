@@ -208,6 +208,7 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
 	pcb_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */
+	int direction;
 
 	pcb_coord_t defaultXSize;
 	pcb_coord_t defaultYSize;
@@ -245,7 +246,11 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 				if (halfStringHeight < 0) {
 					halfStringHeight = -halfStringHeight;
 				}
-				if (text->Direction == 3) { /*vertical down */
+
+#warning code duplication with io_kicad - clean that up after fixing textrot!
+#warning textrot TODO: use the angle, not n*90 deg
+				pcb_text_old_direction(&direction, text->rot);
+				if (direction == 3) { /*vertical down */
 					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
 						rotation = 2700;
 						kicadMirrored = 0; /* mirrored */
@@ -259,7 +264,7 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 						textOffsetX -= halfStringWidth;
 					}
 				}
-				else if (text->Direction == 2) { /*upside down */
+				else if (direction == 2) { /*upside down */
 					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
 						rotation = 0;
 						kicadMirrored = 0; /* mirrored */
@@ -272,7 +277,7 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 					}
 					textOffsetX = -halfStringWidth;
 				}
-				else if (text->Direction == 1) { /*vertical up */
+				else if (direction == 1) { /*vertical up */
 					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
 						rotation = 900;
 						kicadMirrored = 0; /* mirrored */
@@ -286,7 +291,7 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 						textOffsetX = 0; /* += halfStringWidth; */
 					}
 				}
-				else if (text->Direction == 0) { /*normal text */
+				else if (direction == 0) { /*normal text */
 					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
 						rotation = 1800;
 						kicadMirrored = 0; /* mirrored */

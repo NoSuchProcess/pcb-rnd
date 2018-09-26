@@ -577,7 +577,8 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		}
 	}
 
-	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, text_direction, text_scaling, 0, text_val, text_flags);
+#warning textrot TODO: check if we can just use the angle
+	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*text_direction, text_scaling, 0, text_val, text_flags);
 	return 0;
 }
 

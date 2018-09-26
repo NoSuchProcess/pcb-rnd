@@ -310,7 +310,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 	pcb_coord_t defaultXSize;
 	pcb_coord_t defaultYSize;
 	pcb_coord_t strokeThickness;
-	int rotation;
+	int rotation, direction;
 	pcb_coord_t textOffsetX;
 	pcb_coord_t textOffsetY;
 	pcb_coord_t halfStringWidth;
@@ -337,7 +337,10 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 	if (halfStringHeight < 0) {
 		halfStringHeight = -halfStringHeight;
 	}
-	if (text->Direction == 3) { /*vertical down */
+
+#warning textrot TODO: use the degrees instead of 90 deg steps
+	pcb_text_old_direction(&direction, text->rot);
+	if (direction == 3) { /*vertical down */
 		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
 			rotation = 2700;
 			kicadMirrored = 0; /* mirrored */
@@ -351,7 +354,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 			textOffsetX -= halfStringWidth;
 		}
 	}
-	else if (text->Direction == 2) { /*upside down */
+	else if (direction == 2) { /*upside down */
 		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
 			rotation = 0;
 			kicadMirrored = 0; /* mirrored */
@@ -364,7 +367,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 		}
 		textOffsetX = -halfStringWidth;
 	}
-	else if (text->Direction == 1) { /*vertical up */
+	else if (direction == 1) { /*vertical up */
 		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
 			rotation = 900;
 			kicadMirrored = 0; /* mirrored */
@@ -378,7 +381,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 			textOffsetX = 0; /* += halfStringWidth; */
 		}
 	}
-	else if (text->Direction == 0) { /*normal text */
+	else if (direction == 0) { /*normal text */
 		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
 			rotation = 1800;
 			kicadMirrored = 0; /* mirrored */
