@@ -666,6 +666,21 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 }
 
+/* rotates a text; only the bounding box is rotated,
+   text rotation itself is done by the drawing routines */
+void pcb_text_rotate(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, double rotdeg)
+{
+	pcb_rotate(&Text->X, &Text->Y, X, Y, cosa, sina);
+	Text->rot += rotdeg;
+	if (Text->rot > 360.0)
+		Text->rot -= 360.0;
+	else if (Text->rot < 0.0)
+		Text->rot += 360.0;
+
+	/* can't optimize with box rotation because of closed boxes */
+	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+}
+
 /* rotates a text object and redraws it */
 void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
