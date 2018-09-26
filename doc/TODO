@@ -3,9 +3,8 @@
 1. For the upcoming release ===============================================================================
 - CLEANUP: scconfig: generalize conf_internal for plugins
 - FEATURE: text rot:
-	- enable arbitrary rotation in the render code
+	- rewrite text bounding box calc
 	- propset: set_text_cb_any(): set the rot field and refresh the text
-	- write text rotation functions 
 	- revise all io_ plugins to save text direction/rot properly
 - FEATURE: lihata v6:
 	- DRC check for text thickness (too thin)
