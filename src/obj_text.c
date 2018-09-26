@@ -688,7 +688,6 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	if (Layer->text_tree != NULL)
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 
-	Text->rot = fmod(Text->rot + ctx->rotate.angle, 90.0);
 	if (Text->rot < 0.0)
 		Text->rot += 360.0;
 
