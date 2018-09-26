@@ -775,7 +775,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_text_t *text;
 	lht_node_t *role, *nthickness, *nrot, *ndir;
-	int tmp, err = 0;
+	int tmp, err = 0, dir;
 	unsigned char intconn = 0;
 
 	if (obj->type != LHT_HASH)
@@ -801,14 +801,14 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	err |= parse_int(&tmp, hash_get(obj, "fid", 0));
 	text->fid = tmp;
 	tmp = 0;
-	err |= parse_int(&tmp, hash_get(obj, "direction", 0));
-	text->Direction = tmp;
 	err |= parse_coord(&text->X, hash_get(obj, "x", 0));
 	err |= parse_coord(&text->Y, hash_get(obj, "y", 0));
 	err |= parse_text(&text->TextString, hash_get(obj, "string", 0));
 
 	nthickness = lht_dom_hash_get(obj, "thickness");
 	nrot = lht_dom_hash_get(obj, "rot");
+	ndir = lht_dom_hash_get(obj, "direction");
+
 
 	if (nthickness != NULL) {
 		if (rdver < 6)
@@ -818,19 +818,25 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	else
 		text->thickness = 0;
 
+	if ((ndir != NULL) && (rdver >= 6))
+		iolht_warn(nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead");
+
 	if (nrot != 0) {
 		if (rdver < 6)
 			iolht_warn(nthickness, -1, "Text rot should not be present in a file with version lower than v6");
-		err |= parse_coord(&text->thickness, nrot);
-		ndir = lht_dom_hash_get(obj, "Direction");
-		if (ndir == NULL)
-			text->Direction = PCB_TEXT_FREEROT;
-		if (text->Direction != PCB_TEXT_FREEROT)
-			iolht_warn(nthickness, -1, "Text with both rot angle and Direction set - rot angle will be ignored");
+		err |= parse_double(&text->rot, nrot);
 	}
-	else
-		text->rot = 0;
-
+	else {
+		if (ndir != NULL) {
+			err |= parse_int(&dir, ndir);
+			dir %= 4;
+			if (dir < 0)
+				dir += 4;
+			text->rot = 90.0 * dir;
+		}
+		else
+			text->rot = 0;
+	}
 
 #warning TODO: get the font
 	if (ly != NULL)
