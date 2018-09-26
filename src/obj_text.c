@@ -1014,19 +1014,36 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 		}
 		else {
 			/* the default symbol is a filled box */
-			pcb_box_t defaultsymbol = font->DefaultSymbol;
-			pcb_coord_t size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
+			pcb_coord_t size = (font->DefaultSymbol.X2 - font->DefaultSymbol.X1) * 6 / 5;
+			pcb_coord_t px[4], py[4];
 
-			defaultsymbol.X1 = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
-			defaultsymbol.Y1 = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
-			defaultsymbol.X2 = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
-			defaultsymbol.Y2 = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
+			px[0] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
+			py[0] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
+			px[1] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y1));
+			py[1] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y1));
+			px[2] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
+			py[2] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
+			px[3] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
+			py[3] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
 
 			/* draw move on to next cursor position */
-			if (xordraw)
-				pcb_gui->draw_rect(pcb_crosshair.GC, xordx+defaultsymbol.X1, xordy+defaultsymbol.Y1, xordx+defaultsymbol.X2, xordy+defaultsymbol.Y2);
-			else
-				pcb_gui->fill_rect(pcb_draw_out.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
+			if (xordraw || (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)) {
+				if (xordraw) {
+					pcb_gui->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
+					pcb_gui->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
+					pcb_gui->draw_line(pcb_crosshair.GC, px[2] + xordx, py[2] + xordy, px[3] + xordx, py[3] + xordy);
+					pcb_gui->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[4] + xordx, py[4] + xordy);
+				}
+				else {
+					pcb_gui->draw_line(pcb_draw_out.fgGC, px[0], py[0], px[1], py[1]);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, px[1], py[1], px[2], py[2]);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, px[2], py[2], px[3], py[3]);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[4], py[4]);
+				}
+			}
+			else {
+				pcb_gui->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
+			}
 			x += size;
 		}
 		string++;
