@@ -1244,6 +1244,22 @@ static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_trace("font change %d\n", argv[1].d.i);
 }
 
+pcb_bool pcb_text_old_direction(int *dir_out, double rot)
+{
+	double r;
+
+	r = fmod(rot, 90.0);
+
+	if (dir_out != NULL) {
+		int d = pcb_round(rot / 90);
+		if (d < 0)
+			d += 4;
+		*dir_out = d;
+	}
+
+	return (r <= 0.5);
+}
+
 void pcb_text_init(void)
 {
 	pcb_event_bind(PCB_EVENT_FONT_CHANGED, pcb_text_font_chg, NULL, text_cookie);
