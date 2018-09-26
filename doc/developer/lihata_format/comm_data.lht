@@ -150,8 +150,8 @@ ha:lht_tree_doc { ha:comm {
 											ha:string    = { valtype=string;  desc={text string (payload)}}
 											ha:fid       = { valtype=integer; desc={font ID}}
 											ha:scale     = { valtype=integer; desc={text size scale in %}}
-											ha:direction = { valtype=integer; desc={rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Special value 0x7f (127) means the rot field shall be used instead (from v6).}}
-											ha:rot       = { valtype=angle;   ver={>=6} desc={rotation angle; applied when direction is 0x7f (127)}}
+											ha:direction = { valtype=integer; ver={<=5} desc={rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Starting from v6, the rot field shall be used instead of direction}}
+											ha:rot       = { valtype=angle;   ver={>=6} desc={rotation angle in degrees, [0..360), CCW}}
 											ha:thickness = { valtype=coord;   ver={>=6} desc={if zero, use the default width algorithm; if non-zero use this value as rotation angle in degrees}}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 											sy:flags@dup  = {/lht_tree_doc/comm/flags_text}
