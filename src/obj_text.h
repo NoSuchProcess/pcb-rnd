@@ -35,13 +35,10 @@
 #include "font.h"
 #include <genvector/gds_char.h>
 
-#define PCB_TEXT_FREEROT 0x7f
-
 struct pcb_text_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
 	int Scale;                    /* text scaling in percent */
 	pcb_coord_t X, Y;                   /* origin */
-	pcb_uint8_t Direction;        /* if PCB_TEXT_FREEROT, use rot */
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
 	pcb_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
@@ -56,7 +53,7 @@ struct pcb_text_s {
 
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 void pcb_text_free(pcb_text_t * data);
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, pcb_coord_t thickness, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, double rot, int Scale, pcb_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src);
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, pcb_coord_t dx, pcb_coord_t dy);
 void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);

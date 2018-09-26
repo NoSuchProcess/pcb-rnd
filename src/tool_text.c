@@ -79,7 +79,7 @@ void pcb_tool_text_draw_attached(void)
 
 	text.X = pcb_crosshair.X;
 	text.Y = pcb_crosshair.Y;
-	text.Direction = 0;
+	text.rot = 0;
 	text.Flags = pcb_flag_make(flag);
 	text.Scale = conf_core.design.text_scale;
 	text.thickness = conf_core.design.text_thickness;

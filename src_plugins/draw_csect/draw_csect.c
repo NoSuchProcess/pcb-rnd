@@ -67,7 +67,7 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
-	t.Direction = dir;
+	t.rot = 90.0*dir;
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
@@ -83,7 +83,7 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 	t.X = x;
 	t.Y = y;
 	t.TextString = (char *)txt;
-	t.Direction = dir;
+	t.rot = 90.0*dir;
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
@@ -99,7 +99,7 @@ static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, c
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
-	t.Direction = dir;
+	t.rot = 90.0 * dir;
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();

@@ -53,7 +53,7 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
-	t.Direction = 0;
+	t.rot = 0;
 	t.Scale = scale;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();

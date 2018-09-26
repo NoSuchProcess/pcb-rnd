@@ -40,7 +40,7 @@ void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
 	t.X = 0;
 	t.Y = 0;
 	t.TextString = (char *)str;
-	t.Direction = 0;
+	t.rot = 0;
 	t.fid = 0; /* use the default font */
 	t.Scale = 150;
 	t.Flags = pcb_no_flags();
