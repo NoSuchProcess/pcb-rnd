@@ -487,7 +487,6 @@ static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_x:        PCB_QRY_RET_INT(res, t->X);
 		case query_fields_y:        PCB_QRY_RET_INT(res, t->Y);
 		case query_fields_scale:    PCB_QRY_RET_INT(res, t->Scale);
-		case query_fields_direction:PCB_QRY_RET_INT(res, t->Direction);
 		case query_fields_rotation:
 		case query_fields_rot:      PCB_QRY_RET_INT(res, t->rot);
 		case query_fields_thickness:PCB_QRY_RET_INT(res, t->thickness);
