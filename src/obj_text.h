@@ -70,6 +70,11 @@ void pcb_text_mirror_coords(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_
 void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid);
 void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text);
 
+void pcb_text_pre(pcb_text_t *text);
+void pcb_text_post(pcb_text_t *text);
+
+
+
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */
 void pcb_text_dyn_bbox_update(pcb_data_t *data);

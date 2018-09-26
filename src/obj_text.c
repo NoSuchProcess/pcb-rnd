@@ -749,6 +749,27 @@ void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
 }
 
+void pcb_text_pre(pcb_text_t *text)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(text->parent.layer);
+	if (ly == NULL)
+		return;
+	if (ly->text_tree != NULL)
+		pcb_r_delete_entry(ly->text_tree, (pcb_box_t *)text);
+	pcb_poly_restore_to_poly(ly->parent.data, PCB_OBJ_TEXT, ly, text);
+}
+
+void pcb_text_post(pcb_text_t *text)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(text->parent.layer);
+	if (ly == NULL)
+		return;
+	if (ly->text_tree != NULL)
+		pcb_r_insert_entry(ly->text_tree, (pcb_box_t *)text);
+	pcb_poly_clear_from_poly(ly->parent.data, PCB_OBJ_TEXT, ly, text);
+}
+
+
 void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 {
 	pcb_data_t *data = layer->parent.data;
