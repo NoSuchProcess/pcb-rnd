@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 - CLEANUP: scconfig: generalize conf_internal for plugins
 - FEATURE: text rot:
+	- enable arbitrary rotation in the render code
 	- propset: set_text_cb_any(): set the rot field and refresh the text
 	- write text rotation functions 
 	- revise all io_ plugins to save text direction/rot properly
@@ -14,6 +15,7 @@
 		- add plated mech for slotting
 		- route style: text scale and thickness fields
 		- set v6 the default format
+- BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - FEATURE: introduce new layer types:
 	- OUTLINE LYT removal: double check io_lihata compatibility
 	- revise io plugins to load/save them properly
