@@ -342,7 +342,11 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		pcb_arc_rotate(layer, arc, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
 	PCB_ENDALL_LOOP;
-	/* FIXME: rotate text */
+	PCB_TEXT_ALL_LOOP(Buffer->Data);
+	{
+		pcb_text_rotate(text, Buffer->X, Buffer->Y, cosa, sina, angle);
+	}
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		pcb_poly_rotate(layer, polygon, Buffer->X, Buffer->Y, cosa, sina);
