@@ -281,6 +281,40 @@ doIsBad:
 
 unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
+static int drc_text(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid, pcb_coord_t *x, pcb_coord_t *y)
+{
+	pcb_drc_violation_t *violation;
+	int object_count;
+	long int *object_id_list;
+	int *object_type_list;
+
+	if (text->thickness == 0)
+		return 0; /* automatic thickness is always valid - ensured by the renderer */
+	if (text->thickness < min_wid) {
+		pcb_undo_add_obj_to_flag(text);
+		PCB_FLAG_SET(TheFlag, text);
+		pcb_text_invalidate_draw(layer, text);
+		drcerr_count++;
+		SetThing(PCB_OBJ_TEXT, layer, text, text);
+		LocateError(x, y);
+		BuildObjectList(&object_count, &object_id_list, &object_type_list);
+		violation = pcb_drc_violation_new(_("Text thickness is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), *x, *y, 0,	/* ANGLE OF ERROR UNKNOWN */
+																			pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
+																			text->thickness, min_wid, object_count, object_id_list, object_type_list);
+		append_drc_violation(violation);
+		pcb_drc_violation_free(violation);
+		free(object_id_list);
+		free(object_type_list);
+		if (!throw_drc_dialog()) {
+			IsBad = pcb_true;
+			return 1;
+		}
+		pcb_undo_inc_serial();
+		pcb_undo(pcb_false);
+	}
+	return 0;
+}
+
 /*-----------------------------------------------------------------------------
  * Check for DRC violations
  * see if the connectivity changes when everything is bloated, or shrunk
@@ -347,6 +381,20 @@ int pcb_drc_all(void)
 	TheFlag = PCB_FLAG_SELECTED;
 	/* check minimum widths and polygon clearances */
 	if (!IsBad) {
+		PCB_TEXT_COPPER_LOOP(PCB->Data);
+		{
+			if (drc_text(layer, text, conf_core.design.min_wid, &x, &y))
+				break;
+		}
+		PCB_ENDALL_LOOP;
+
+		PCB_SILK_COPPER_LOOP(PCB->Data);
+		{
+			if (drc_text(layer, text, conf_core.design.min_slk, &x, &y))
+				break;
+		}
+		PCB_ENDALL_LOOP;
+
 		PCB_LINE_COPPER_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
