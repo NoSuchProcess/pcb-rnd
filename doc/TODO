@@ -2,10 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: scconfig: generalize conf_internal for plugins
-- FEATURE: lihata v6:
-	- upgrade the default board to v6:
-		- add plated mech for slotting
-		- set v6 the default format
 - BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - FEATURE: introduce new layer types:
 	- OUTLINE LYT removal: double check io_lihata compatibility
