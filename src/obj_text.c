@@ -906,27 +906,25 @@ pcb_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *st
 }
 
 
-PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xordx, pcb_coord_t xordy, int direction, int mirror)
+PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_xform_mx_t mx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xordx, pcb_coord_t xordy)
 {
-	PCB_COORD_ROTATE90(x1, y1, 0, 0, direction);
-	PCB_COORD_ROTATE90(x2, y2, 0, 0, direction);
+	pcb_coord_t tx1, ty1, tx2, ty2;
 
-	if (mirror) {
-		x1 = PCB_SWAP_SIGN_X(x1);
-		y1 = PCB_SWAP_SIGN_Y(y1);
-		x2 = PCB_SWAP_SIGN_X(x2);
-		y2 = PCB_SWAP_SIGN_Y(y2);
-	}
+	tx1 = pcb_round(pcb_xform_x(mx, x1, y1));
+	ty1 = pcb_round(pcb_xform_y(mx, x1, y1));
+	tx2 = pcb_round(pcb_xform_x(mx, x2, y2));
+	ty2 = pcb_round(pcb_xform_y(mx, x2, y2));
 
-	x1 += xordx;
-	y1 += xordy;
-	x2 += xordx;
-	y2 += xordy;
-	pcb_gui->draw_line(gc, x1, y1, x2, y2);
+	tx1 += xordx;
+	ty1 += xordy;
+	tx2 += xordx;
+	ty2 += xordy;
+
+	pcb_gui->draw_line(gc, tx1, ty1, tx2, ty2);
 }
 
 
-PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0, int scale, int direction, int mirror, const unsigned char *string, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsigned char *string, int scale, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, scale);
 	if (tiny == PCB_TXT_TINY_HIDE) {
@@ -937,12 +935,12 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0,
 		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
 			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
-				cheap_text_line(pcb_crosshair.GC, 0, h/2, w, h/2, xordx + x0, xordy + y0, direction, mirror);
+				cheap_text_line(pcb_crosshair.GC, mx, 0, h/2, w, h/2, xordx, xordy);
 			}
 			else {
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-				cheap_text_line(pcb_draw_out.fgGC, 0, h/2, w, h/2, x0, y0, direction, mirror);
+				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h/2, w, h/2, 0, 0);
 			}
 			return 1;
 		}
@@ -950,17 +948,17 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_coord_t x0, pcb_coord_t y0,
 			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				h /= 4;
-				cheap_text_line(pcb_crosshair.GC, 0, h,   w, h,   xordx + x0, xordy + y0, direction, mirror);
-				cheap_text_line(pcb_crosshair.GC, 0, h,   w, h*3, xordx + x0, xordy + y0, direction, mirror);
-				cheap_text_line(pcb_crosshair.GC, 0, h*3, w, h*3, xordx + x0, xordy + y0, direction, mirror);
+				cheap_text_line(pcb_crosshair.GC, mx, 0, h,   w, h,   xordx, xordy);
+				cheap_text_line(pcb_crosshair.GC, mx, 0, h,   w, h*3, xordx, xordy);
+				cheap_text_line(pcb_crosshair.GC, mx, 0, h*3, w, h*3, xordx, xordy);
 			}
 			else {
 				h /= 4;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-				cheap_text_line(pcb_draw_out.fgGC, 0, h,   w, h,   x0, y0, direction, mirror);
-				cheap_text_line(pcb_draw_out.fgGC, 0, h,   w, h*3, x0, y0, direction, mirror);
-				cheap_text_line(pcb_draw_out.fgGC, 0, h*3, w, h*3, x0, y0, direction, mirror);
+				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h,   w, h,   0, 0);
+				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h,   w, h*3, 0, 0);
+				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h*3, w, h*3, 0, 0);
 			}
 			return 1;
 		}
@@ -983,7 +981,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 
 	/* cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
-		if (draw_text_cheap(font, x0, y0, scale, rotdeg/90, mirror, string, xordraw, xordx, xordy, tiny))
+		if (draw_text_cheap(font, mx, string, scale, xordraw, xordx, xordy, tiny))
 			return;
 	}
 
