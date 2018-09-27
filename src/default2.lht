@@ -1,6 +1,6 @@
 # pcb-rnd official 2-layer default board
 
-ha:pcb-rnd-board-v4 {
+ha:pcb-rnd-board-v6 {
  li:styles {
    ha:Signal {
     diameter = 2mm
@@ -56,6 +56,8 @@ ha:pcb-rnd-board-v4 {
      ha:top-mask     { lid=10; group=2; ha:combining { sub=1; auto=1; } }
      ha:bottom-mask  { lid=11; group=7; ha:combining { sub=1; auto=1; } }
      ha:bottom-paste { lid=12; group=9; ha:combining { auto=1; } }
+     ha:slot-plated   { lid=13; group=10; ha:combining { auto=1; } }
+     ha:slot-unplated { lid=14; group=11; ha:combining { auto=1; } }
    }
  }
 
@@ -88,7 +90,8 @@ ha:pcb-rnd-board-v4 {
    }
    ha:5 {
     name = global_outline
-    ha:type { outline=1; }
+    ha:type { boundary=1; }
+    purpose = uroute
     li:layers { 6; }
    }
    ha:6 {
@@ -110,6 +113,18 @@ ha:pcb-rnd-board-v4 {
     name = bottom_paste
     ha:type { bottom=1; paste=1; }
     li:layers { 12; }
+   }
+   ha:10 {
+    name = pmech
+    ha:type { mech=1; }
+    purpose = proute
+    li:layers { 13; }
+   }
+   ha:11 {
+    name = umech
+    ha:type { mech=1; }
+    purpose = uroute
+    li:layers { 14; }
    }
   }
  }
