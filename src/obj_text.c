@@ -225,6 +225,9 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_coord_t min_unscaled_radius;
 	pcb_bool first_time = pcb_true;
 	pcb_poly_t *poly;
+	double sc = (double)Text->Scale / 100.0;
+	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
+	pcb_coord_t cx[4], cy[4];
 
 #warning textrot TODO: rewrite the bounding box calculation
 	int dir;
@@ -315,31 +318,30 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		tx += symbol[*s].Width + space;
 	}
 
-	/* scale values */
-	minx = PCB_SCALE_TEXT(minx, Text->Scale);
-	miny = PCB_SCALE_TEXT(miny, Text->Scale);
-	maxx = PCB_SCALE_TEXT(maxx, Text->Scale);
-	maxy = PCB_SCALE_TEXT(maxy, Text->Scale);
+	/* it is enough to do the transformations only once, on the raw bounding box */
+	pcb_xform_mx_translate(mx, Text->X, Text->Y);
+	pcb_xform_mx_scale(mx, sc, sc);
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text))
+		pcb_xform_mx_scale(mx, 1, -1);
+	pcb_xform_mx_rotate(mx, Text->rot);
 
-	/* set upper-left and lower-right corner;
-	 * swap coordinates if necessary (origin is already in 'swapped')
-	 * and rotate box
-	 */
+	/* calculate the transformed coordinates of all 4 corners of the raw
+	   (non-axis-aligned) bounding box */
+	cx[0] = pcb_round(pcb_xform_x(mx, minx, miny));
+	cy[0] = pcb_round(pcb_xform_y(mx, minx, miny));
+	cx[1] = pcb_round(pcb_xform_x(mx, maxx, miny));
+	cy[1] = pcb_round(pcb_xform_y(mx, maxx, miny));
+	cx[2] = pcb_round(pcb_xform_x(mx, maxx, maxy));
+	cy[2] = pcb_round(pcb_xform_y(mx, maxx, maxy));
+	cx[3] = pcb_round(pcb_xform_x(mx, minx, maxy));
+	cy[3] = pcb_round(pcb_xform_y(mx, minx, maxy));
 
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
-		Text->bbox_naked.X1 = Text->X + minx;
-		Text->bbox_naked.Y1 = Text->Y - miny;
-		Text->bbox_naked.X2 = Text->X + maxx;
-		Text->bbox_naked.Y2 = Text->Y - maxy;
-		pcb_box_rotate90(&Text->bbox_naked, Text->X, Text->Y, (4 - dir) & 0x03);
-	}
-	else {
-		Text->bbox_naked.X1 = Text->X + minx;
-		Text->bbox_naked.Y1 = Text->Y + miny;
-		Text->bbox_naked.X2 = Text->X + maxx;
-		Text->bbox_naked.Y2 = Text->Y + maxy;
-		pcb_box_rotate90(&Text->bbox_naked, Text->X, Text->Y, dir);
-	}
+	/* calculate the axis-aligned version */
+	Text->bbox_naked.X1 = Text->bbox_naked.X2 = cx[0];
+	Text->bbox_naked.Y1 = Text->bbox_naked.Y2 = cy[0];
+	pcb_box_bump_point(&Text->bbox_naked, cx[1], cy[1]);
+	pcb_box_bump_point(&Text->bbox_naked, cx[2], cy[2]);
+	pcb_box_bump_point(&Text->bbox_naked, cx[3], cy[3]);
 
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too
