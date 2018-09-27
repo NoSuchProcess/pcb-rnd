@@ -116,6 +116,7 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 void pcb_xform_mx_rotate(pcb_xform_mx_t mx, double deg);
 void pcb_xform_mx_translate(pcb_xform_mx_t mx, double xt, double yt);
 void pcb_xform_mx_scale(pcb_xform_mx_t mx, double st, double sy);
+void pcb_xform_mx_shear(pcb_xform_mx_t mx, double sx, double sy);
 void pcb_xform_mx_mirrorx(pcb_xform_mx_t mx); /* mirror over the x axis (flip y coords) */
 
 /* Return the user readable name of an object type in a string; never NULL */

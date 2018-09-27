@@ -305,6 +305,25 @@ void pcb_xform_mx_scale(pcb_xform_mx_t mx, double sx, double sy)
 	mmult(mx, tr);
 }
 
+void pcb_xform_mx_shear(pcb_xform_mx_t mx, double sx, double sy)
+{
+	pcb_xform_mx_t tr;
+
+	tr[0] = 1;
+	tr[1] = sx;
+	tr[2] = 0;
+
+	tr[3] = sy;
+	tr[4] = 1;
+	tr[5] = 0;
+
+	tr[6] = 0;
+	tr[7] = 0;
+	tr[8] = 1;
+
+	mmult(mx, tr);
+}
+
 void pcb_xform_mx_mirrorx(pcb_xform_mx_t mx)
 {
 	pcb_xform_mx_scale(mx, 0, -1);
