@@ -924,6 +924,7 @@ PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_xform_mx_t mx, pcb_coord_t 
 }
 
 
+/* Decreased level-of-detail: draw only a few lines for the whole text */
 PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsigned char *string, int scale, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, scale);
@@ -979,7 +980,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 		pcb_xform_mx_scale(mx, 1, -1);
 	pcb_xform_mx_rotate(mx, rotdeg);
 
-	/* cheap draw */
+	/* Text too small at this zoom level: cheap draw */
 	if (tiny != PCB_TXT_TINY_ACCURATE) {
 		if (draw_text_cheap(font, mx, string, scale, xordraw, xordx, xordy, tiny))
 			return;
