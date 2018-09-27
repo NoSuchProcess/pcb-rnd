@@ -54,6 +54,7 @@ void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
 void pcb_undo_add_obj_to_flag(void *obj);
 void pcb_undo_add_obj_to_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3);
+void pcb_undo_add_obj_to_rot(int Type, void *ptr1, void *ptr2, void *ptr3);
 void pcb_undo_add_obj_to_clear_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_radii(int, void *, void *, void *);
@@ -85,7 +86,8 @@ typedef enum {
 	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
 	PCB_UNDO_CHANGERADII       = 0x200000, /* change arc radii */
 	PCB_UNDO_OTHERSIDE         = 0x400000, /* change side of board (subcircuit) */
-	PCB_UNDO_ROTATE            = 0x800000  /* rotations at arbitrary angle */
+	PCB_UNDO_ROTATE            = 0x800000, /* rotations at arbitrary angle */
+	PCB_UNDO_CHANGEROT         = 0x1000000 /* change internal/self rotation of an object */
 } pcb_undo_op_t;
 
 const char *undo_type2str(int type);

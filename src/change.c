@@ -95,6 +95,19 @@ pcb_opfunc_t Change2ndSizeFunctions = {
 	pcb_pstkop_change_2nd_size
 };
 
+pcb_opfunc_t ChangeRotFunctions = {
+	NULL,
+	pcb_textop_change_rot,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	pcb_pstkop_rotate
+};
+
 static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
@@ -319,6 +332,28 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
 	ctx.chgsize.value = Difference;
 
 	change = pcb_selected_operation(PCB, PCB->Data, &Change2ndSizeFunctions, &ctx, pcb_false, types, pcb_false);
+	if (change) {
+		pcb_draw();
+		pcb_undo_inc_serial();
+	}
+	return change;
+}
+
+/* --------------------------------------------------------------------------
+ * changes the internal/self rotation all selected and visible objects
+ * returns pcb_true if anything has changed
+ */
+pcb_bool pcb_chg_selected_rot(int types, double Difference, pcb_bool fixIt)
+{
+	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
+
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRotFunctions, &ctx, pcb_false, types, pcb_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -596,6 +631,29 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	ctx.chgsize.value = Difference;
 
 	change = (pcb_object_operation(&Change2ndSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	if (change) {
+		pcb_draw();
+		if (incundo)
+			pcb_undo_inc_serial();
+	}
+	return change;
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the internal/self rotation of the passed object
+ * Returns pcb_true if anything is changed
+ */
+pcb_bool pcb_chg_obj_rot(int Type, void *Ptr1, void *Ptr2, void *Ptr3, double Difference, pcb_bool fixIt, pcb_bool incundo)
+{
+	pcb_bool change;
+	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
+
+	change = (pcb_object_operation(&ChangeRotFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
 		if (incundo)

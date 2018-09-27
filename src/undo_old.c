@@ -334,6 +334,49 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 }
 
 /* ---------------------------------------------------------------------------
+ * recovers an object from a Size change operation
+ */
+static pcb_bool UndoChangeRot(UndoListTypePtr Entry)
+{
+	void *ptr1, *ptr2, *ptr3, *ptr1e;
+	int type;
+	double swap;
+	pcb_bool ret = pcb_false;
+
+	/* lookup entry by ID */
+	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+	ptr1e = ptr1;
+
+
+	if (pcb_undo_and_draw)
+		pcb_draw_obj((pcb_any_obj_t *)ptr2);
+
+	switch(type) {
+		case PCB_OBJ_PSTK:
+			swap = ((pcb_pstk_t *)ptr2)->rot;
+			pcb_pstk_pre(((pcb_pstk_t *)ptr2));
+			((pcb_pstk_t *)ptr2)->rot = Entry->Data.Size;
+			Entry->Data.Size = swap;
+			pcb_pstk_post(((pcb_pstk_t *)ptr2));
+			ret = pcb_true;
+			break;
+
+		case PCB_OBJ_TEXT:
+			swap = ((pcb_text_t *)ptr2)->rot;
+			pcb_text_pre(((pcb_text_t *)ptr2));
+			((pcb_text_t *)ptr2)->rot = Entry->Data.Size;
+			Entry->Data.Size = swap;
+			pcb_text_post(((pcb_text_t *)ptr2));
+			ret = pcb_true;
+			break;
+	}
+
+	if (pcb_undo_and_draw)
+		pcb_draw_obj((pcb_any_obj_t *)ptr2);
+	return ret;
+}
+
+/* ---------------------------------------------------------------------------
  * recovers an object from a FLAG change operation
  */
 static pcb_bool UndoFlag(UndoListTypePtr Entry)
@@ -789,6 +832,11 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
+	case PCB_UNDO_CHANGEROT:
+		if (UndoChangeRot(ptr))
+			return 0;
+		break;
+
 	case PCB_UNDO_CHANGECLEARSIZE:
 		if (UndoChangeClearSize(ptr))
 			return 0;
@@ -1114,6 +1162,26 @@ void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 }
 
 /* ---------------------------------------------------------------------------
+ * adds an object to the list of objects with rot changes
+ */
+void pcb_undo_add_obj_to_rot(int Type, void *ptr1, void *ptr2, void *ptr3)
+{
+	UndoListTypePtr undo;
+
+	if (!Locked) {
+		undo = GetUndoSlot(PCB_UNDO_CHANGEROT, PCB_OBJECT_ID(ptr2), Type);
+		switch (Type) {
+		case PCB_OBJ_PSTK:
+			undo->Data.Size = ((pcb_pstk_t *) ptr2)->rot;
+			break;
+		case PCB_OBJ_TEXT:
+			undo->Data.Size = ((pcb_text_t *) ptr2)->rot;
+			break;
+		}
+	}
+}
+
+/* ---------------------------------------------------------------------------
  * adds an object to the list of objects with Size changes
  */
 void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3)
@@ -1261,6 +1329,7 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_MOVETOLAYER: return "movetolayer";
 		case PCB_UNDO_FLAG: return "flag";
 		case PCB_UNDO_CHANGESIZE: return "changesize";
+		case PCB_UNDO_CHANGEROT: return "changerot";
 		case PCB_UNDO_OTHERSIDE: return "otherside";
 		case PCB_UNDO_CHANGECLEARSIZE: return "chngeclearsize";
 		case PCB_UNDO_CHANGEANGLES: return "changeangles";

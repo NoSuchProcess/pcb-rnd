@@ -1265,3 +1265,19 @@ pcb_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t
 	shp = pcb_pstk_shape_at(pcb, ps, layer);
 	return shp->clearance;
 }
+
+void pcb_pstk_pre(pcb_pstk_t *pstk)
+{
+	pcb_data_t *data = pstk->parent.data;
+	if (data->padstack_tree != NULL)
+		pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)pstk);
+	pcb_poly_restore_to_poly(data, PCB_OBJ_PSTK, NULL, pstk);
+}
+
+void pcb_pstk_post(pcb_pstk_t *pstk)
+{
+	pcb_data_t *data = pstk->parent.data;
+	if (data->padstack_tree != NULL)
+		pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)pstk);
+	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, pstk);
+}

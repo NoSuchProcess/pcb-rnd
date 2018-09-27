@@ -50,6 +50,9 @@ extern int defer_updates, defer_needs_update;
 #define	PCB_CHANGE2NDSIZE_TYPES     \
 	(PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART)
 
+#define	PCB_CHANGEROT_TYPES     \
+	(PCB_OBJ_PSTK | PCB_OBJ_TEXT)
+
 /* We include polygons here only to inform the user not to do it that way.  */
 #define PCB_CHANGECLEARSIZE_TYPES \
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC | \
@@ -73,6 +76,7 @@ extern int defer_updates, defer_needs_update;
 pcb_bool pcb_chg_selected_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_clear_size(int, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_selected_2nd_size(int, pcb_coord_t, pcb_bool);
+pcb_bool pcb_chg_selected_rot(int, double, pcb_bool);
 pcb_bool pcb_chg_selected_join(int);
 pcb_bool pcb_set_selected_join(int);
 pcb_bool pcb_clr_selected_join(int);
@@ -83,6 +87,7 @@ pcb_bool pcb_chg_obj_1st_size(int, void *, void *, void *, pcb_coord_t, pcb_bool
 pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid);
 pcb_bool pcb_chg_obj_clear_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
 pcb_bool pcb_chg_obj_2nd_size(int, void *, void *, void *, pcb_coord_t, pcb_bool, pcb_bool);
+pcb_bool pcb_chg_obj_rot(int, void *, void *, void *, double, pcb_bool, pcb_bool);
 pcb_bool pcb_chg_obj_join(int, void *, void *, void *);
 pcb_bool pcb_set_obj_join(int, void *, void *, void *);
 pcb_bool pcb_clr_obj_join(int, void *, void *, void *);

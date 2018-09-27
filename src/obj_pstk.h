@@ -95,6 +95,9 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
 void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps);
 
+void pcb_pstk_pre(pcb_pstk_t *pstk);
+void pcb_pstk_post(pcb_pstk_t *pstk);
+
 /* hash and eq */
 int pcb_pstk_eq(const pcb_host_trans_t *tr1, const pcb_pstk_t *p1, const pcb_host_trans_t *tr2, const pcb_pstk_t *p2);
 unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p);
