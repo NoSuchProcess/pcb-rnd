@@ -87,7 +87,8 @@ typedef enum {
 	PCB_UNDO_CHANGERADII       = 0x200000, /* change arc radii */
 	PCB_UNDO_OTHERSIDE         = 0x400000, /* change side of board (subcircuit) */
 	PCB_UNDO_ROTATE            = 0x800000, /* rotations at arbitrary angle */
-	PCB_UNDO_CHANGEROT         = 0x1000000 /* change internal/self rotation of an object */
+	PCB_UNDO_CHANGEROT         = 0x1000000, /* change internal/self rotation of an object */
+	PCB_UNDO_CHANGE2SIZE       = 0x2000000 /* change 2nd size of object */
 } pcb_undo_op_t;
 
 const char *undo_type2str(int type);

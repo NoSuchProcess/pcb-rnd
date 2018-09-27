@@ -88,6 +88,7 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr);
 static pcb_bool UndoFlag(UndoListTypePtr);
 static pcb_bool UndoOtherSide(UndoListTypePtr);
 static pcb_bool UndoChangeSize(UndoListTypePtr);
+static pcb_bool UndoChange2ndSize(UndoListTypePtr);
 static pcb_bool UndoChangeAngles(UndoListTypePtr);
 static pcb_bool UndoChangeRadii(UndoListTypePtr);
 static pcb_bool UndoChangeClearSize(UndoListTypePtr);
@@ -328,6 +329,29 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		if (pcb_undo_and_draw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
+		return pcb_true;
+	}
+	return pcb_false;
+}
+
+/* ---------------------------------------------------------------------------
+ * recovers an object from a 2nd Size change operation
+ */
+static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
+{
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+	pcb_coord_t swap;
+
+	/* lookup entry by ID */
+	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+
+	if (type == PCB_OBJ_TEXT) { /* thickness */
+		swap = ((pcb_text_t *)ptr2)->thickness;
+		pcb_text_pre((pcb_text_t *)ptr2);
+		((pcb_text_t *)ptr2)->thickness = Entry->Data.Size;
+		Entry->Data.Size = swap;
+		pcb_text_post((pcb_text_t *)ptr2);
 		return pcb_true;
 	}
 	return pcb_false;
@@ -832,6 +856,11 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
+	case PCB_UNDO_CHANGE2SIZE:
+		if (UndoChange2ndSize(ptr))
+			return 0;
+		break;
+
 	case PCB_UNDO_CHANGEROT:
 		if (UndoChangeRot(ptr))
 			return 0;
@@ -1152,7 +1181,7 @@ void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGESIZE, PCB_OBJECT_ID(ptr2), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGE2SIZE, PCB_OBJECT_ID(ptr2), Type);
 		switch (Type) {
 		case PCB_OBJ_TEXT:
 			undo->Data.Size = ((pcb_text_t *) ptr2)->thickness;
