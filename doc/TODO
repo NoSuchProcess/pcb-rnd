@@ -5,7 +5,6 @@
 - FEATURE: lihata v6:
 	- upgrade the default board to v6:
 		- add plated mech for slotting
-		- route style: text scale and thickness fields
 		- set v6 the default format
 - BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - FEATURE: introduce new layer types:
