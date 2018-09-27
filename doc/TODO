@@ -15,8 +15,8 @@
 	- slotting: check which I/O can handle it
 - CLEANUP: remove PCB_UNIT_FILE_MODE (risky setlocale!)
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
-- BUG: gtk: Can't close the widnow while command entry is open. If the layout was modified, it will issue an "Are you sure..." dialog, where ignoring the changes does nothing. Then, as soon as I hit 'escape' to close the action input box, pcb-rnd exits immediately. [report: TwisteR]
-- BUG:  gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
+- BUG: gtk: Can't close the window while command entry is open. If the layout was modified, it will issue an "Are you sure..." dialog, where ignoring the changes does nothing. Then, as soon as I hit 'escape' to close the action input box, pcb-rnd exits immediately. [report: TwisteR]
+- BUG: gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
