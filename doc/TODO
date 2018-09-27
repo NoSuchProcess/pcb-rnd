@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - CLEANUP: scconfig: generalize conf_internal for plugins
 - FEATURE: lihata v6:
-	- DRC check for text thickness (too thin)
 	- upgrade the default board to v6:
 		- add plated mech for slotting
 		- route style: text scale and thickness fields
