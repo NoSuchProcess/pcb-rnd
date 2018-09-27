@@ -468,9 +468,8 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 		DONE;
 	}
 
-	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
-#warning textrot TODO: rot
-	}
+	if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
+		pcb_chg_obj_rot(type, layer_or_element, text, text, st->d, st->d_absolute, pcb_true)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
 		pcb_chg_obj_2nd_size(type, layer_or_element, text, text, st->c, st->c_absolute, pcb_true)) DONE;
