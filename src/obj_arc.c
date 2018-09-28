@@ -927,7 +927,10 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
-	pcb_layer_t *layer = arc->parent.layer;
+	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(arc->parent.layer);
+
+	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
+		layer = arc->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
 		color = conf_core.appearance.color.warn;

@@ -1171,7 +1171,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 {
 	int min_silk_line;
 	unsigned int flg = 0;
-	pcb_layer_t *layer = pcb_layer_get_real(text->parent.layer);
+	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(text->parent.layer);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = text->parent.layer;

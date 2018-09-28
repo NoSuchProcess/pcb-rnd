@@ -1068,7 +1068,10 @@ static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_ter
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
-	pcb_layer_t *layer = line->parent.layer;
+	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(line->parent.layer);
+
+	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
+		layer = line->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
 		color = conf_core.appearance.color.warn;

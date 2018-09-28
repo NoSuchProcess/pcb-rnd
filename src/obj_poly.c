@@ -1138,7 +1138,10 @@ static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_
 {
 	static const char *color;
 	char buf[sizeof("#XXXXXX")];
-	pcb_layer_t *layer = polygon->parent.layer;
+	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(polygon->parent.layer);
+
+	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
+		layer = polygon->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = conf_core.appearance.color.warn;
