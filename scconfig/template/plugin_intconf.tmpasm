@@ -1,0 +1,30 @@
+# Set up internal embedde dconfig
+# Input: /local/pcb/mod/CONFFILE is the file name of the conf file (without path)
+#        /local/pcb/mod/CONFVAR is the variable name to use in conf_internal.c
+
+switch ?/local/pcb/mod/CONFFILE
+case {...}
+put /local/pcb/MCFG [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/CONFFILE@@]
+put /local/pcb/ICFG [@$(PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
+
+append /local/pcb/DEPDEPS [@ @/local/pcb/ICFG@ @]
+append /local/pcb/DISTCLEANFILES [@ @/local/pcb/ICFG@ @]
+append /local/pcb/RULES [@
+@/local/pcb/ICFG@: @/local/pcb/MCFG@ $(CQUOTE)
+	$(CQUOTE) -n @/local/pcb/mod/CONFVAR@ < @/local/pcb/MCFG@ > @/local/pcb/ICFG@
+@]
+
+
+switch /local/pcb/mod/enabled
+	case {1}
+		append /local/pcb/rules/install_ [@
+	$(SCCBOX) $(HOW) "@/local/pcb/mod/CONFFILE@" "$(DATADIR)/@/local/pcb/mod/CONFFILE@"@]
+	end
+	default end;
+end
+
+end
+default
+end
+end
+
