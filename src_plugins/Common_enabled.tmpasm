@@ -58,11 +58,15 @@ switch /local/pcb/mod/LEX
 	end
 end
 
+put /local/pcb/mod/enabled {1}
+
 include  /local/pcb/tmpasm/plugin_conf
 include  /local/pcb/tmpasm/plugin_sphash
+include  /local/pcb/tmpasm/plugin_intconf
 
 append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
 
+put /local/pcb/mod/enabled {}
 put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/OBJS_C99 {}
 put /local/pcb/mod/LDFLAGS {}
@@ -72,4 +76,5 @@ put /local/pcb/mod/LEX {}
 put /local/pcb/mod/SPHASH {}
 put /local/pcb/mod/CLEANFILES {}
 put /local/pcb/mod {}
-
+put /local/pcb/mod/CONFFILE {}
+put /local/pcb/mod/CONFVAR  {}

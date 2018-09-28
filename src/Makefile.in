@@ -265,6 +265,7 @@ put /local/pcb/tmpasm/disable         {../src_plugins/Disable.tmpasm}
 put /local/pcb/tmpasm/common_enabled  {../src_plugins/Common_enabled.tmpasm}
 put /local/pcb/tmpasm/plugin_sphash   {../scconfig/template/plugin_sphash.tmpasm}
 put /local/pcb/tmpasm/plugin_conf     {../scconfig/template/plugin_conf.tmpasm}
+put /local/pcb/tmpasm/plugin_intconf  {../scconfig/template/plugin_intconf.tmpasm}
 
 include {../src_plugins/plugins_ALL.tmpasm}
 

@@ -1,23 +1,11 @@
 put /local/pcb/mod {export_xy}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_xy/xy.o @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/export_xy/xy_conf.h}
+put /local/pcb/mod/CONFFILE {export_xy.conf}
+put /local/pcb/mod/CONFVAR {export_xy_conf_internal}
 
 switch /local/pcb/export_xy/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
-end
-
-append /local/pcb/DEPDEPS { ../src_plugins/export_xy/conf_internal.c }
-append /local/pcb/DISTCLEANFILES { ../src_plugins/export_xy/conf_internal.c }
-append /local/pcb/RULES [@
-../src_plugins/export_xy/conf_internal.c: ../src_plugins/export_xy/export_xy.conf $(CQUOTE)
-	$(CQUOTE) -n export_xy_conf_internal < ../src_plugins/export_xy/export_xy.conf > ../src_plugins/export_xy/conf_internal.c
-@]
-
-switch /local/pcb/export_xy/controls
-	case {disable}   end;
-	default
-		append /local/pcb/rules/install_ {\n	$(SCCBOX) $(HOW) "../src_plugins/export_xy/export_xy.conf" "$(DATADIR)/export_xy.conf"}
-	end
 end
