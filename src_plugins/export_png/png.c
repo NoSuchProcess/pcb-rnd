@@ -953,8 +953,10 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		im = master_im;
 
 		ts_bs(photo_copper[photo_groups[0]]);
-		ts_bs(photo_silk);
-		ts_bs_sm(photo_mask);
+		if (photo_silk != NULL)
+			ts_bs(photo_silk);
+		if (photo_mask != NULL)
+			ts_bs_sm(photo_mask);
 
 		if (photo_outline && have_outline) {
 			int black = gdImageColorResolve(photo_outline, 0x00, 0x00, 0x00);
