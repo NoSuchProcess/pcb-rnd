@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: scconfig: generalize conf_internal for plugins
 - BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - CLEANUP: remove PCB_UNIT_FILE_MODE (risky setlocale!)
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
