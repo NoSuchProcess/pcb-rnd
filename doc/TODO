@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: retire nelma
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
 - CLEANUP: fp_board: extend the API so that the element can be presented without saving to a file
 - BUG: rendering: padstack poly in 1206 is rendered solid when rgabbed for move [report: Igor2]
