@@ -46,11 +46,10 @@ const char *action_arg(int argn);
 int action(const char *cmdline);
 
 /* Create a new menu or submenu at path. Missing parents are created
-   automatically with empty action, mnemonic, hotkey and tooltip.
+   automatically with empty action, hotkey and tooltip.
    Arguments:
     path: the full path of the new menu
     action: this action is executed when the user clicks on the menu
-    mnemonic: which letter to underline in the menu text (will be the fast-jump-there key once the menu is open)
     hotkey: when this key is pressed in the main gui, the action is also triggered; the format is modifiers&lt;Key&gt;letter, where modifiers is Alt, Shift or Ctrl. This is the same syntax that is used in the .res files.
     tooltip: short help text */
-void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip);
+void create_menu(const char *path, const char *action, const char *dummy, const char *hotkey, const char *tooltip);

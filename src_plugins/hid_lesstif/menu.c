@@ -407,10 +407,6 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 		}
 	}
 
-	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_MNEMONIC);
-	if (v != NULL)
-		stdarg(XmNmnemonic, v);
-
 	kacc = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if (kacc != NULL) {
 		char *acc_str = pcb_hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);

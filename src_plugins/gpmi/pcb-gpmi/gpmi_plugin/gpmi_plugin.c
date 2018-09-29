@@ -50,7 +50,6 @@ static void ev_gui_init(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	memset(&mp, 0, sizeof(mp));
 	mp.action = "gpmi_scripts()";
-	mp.mnemonic = "S";
 	mp.accel = "<Key>p;<key>g;<key>s";
 	mp.tip = "Manage GPMI scripts";
 	mp.cookie = gpmi_cookie;

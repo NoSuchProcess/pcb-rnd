@@ -78,7 +78,6 @@ int pcb_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
    lihata node names */
 typedef enum {
 	PCB_MF_ACCELERATOR,
-	PCB_MF_MNEMONIC,
 	PCB_MF_SUBMENU,
 	PCB_MF_CHECKED,
 	PCB_MF_UPDATE_ON,

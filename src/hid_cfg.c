@@ -81,7 +81,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie, "m", cmc->props->mnemonic, "a", cmc->props->accel, "tip", cmc->props->tip, "action", cmc->props->action, "checked", cmc->props->checked, "update_on", cmc->props->update_on, "foreground", cmc->props->foreground, "background", cmc->props->background, NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie, "a", cmc->props->accel, "tip", cmc->props->tip, "action", cmc->props->action, "checked", cmc->props->checked, "update_on", cmc->props->update_on, "foreground", cmc->props->foreground, "background", cmc->props->background, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
@@ -416,7 +416,6 @@ lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufi
 
 	switch(field) {
 		case PCB_MF_ACCELERATOR:  fieldstr = "a"; break;
-		case PCB_MF_MNEMONIC:     fieldstr = "m"; break;
 		case PCB_MF_SUBMENU:      fieldstr = "submenu"; break;
 		case PCB_MF_CHECKED:      fieldstr = "checked"; break;
 		case PCB_MF_UPDATE_ON:    fieldstr = "update_on"; break;

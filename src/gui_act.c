@@ -968,7 +968,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, mnemonic, accel, tooltip, cookie)";
+static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, dummy, accel, tooltip, cookie)";
 static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 
 /* %start-doc actions RouteStyle
@@ -994,7 +994,6 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_menu_prop_t props;
 		memset(&props, 0, sizeof(props));
 		props.action = (argc > 2) ? argv[2].val.str : NULL;
-		props.mnemonic = (argc > 3) ? argv[3].val.str : NULL;
 		props.accel = (argc > 4) ? argv[4].val.str : NULL;
 		props.tip = (argc > 5) ? argv[5].val.str : NULL;
 		props.cookie = (argc > 6) ? argv[6].val.str : NULL;

@@ -119,13 +119,12 @@ int action(const char *cmdline)
 	return pcb_parse_command(cmdline, pcb_true);
 }
 
-void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)
+void create_menu(const char *path, const char *action, const char *dummy, const char *hotkey, const char *tooltip)
 {
 	pcb_menu_prop_t mp;
 
 	memset(&mp, 0, sizeof(mp));
 	mp.action = action;
-	mp.mnemonic = mnemonic;
 	mp.accel = hotkey;
 	mp.tip = tooltip;
 	mp.cookie = "TODO#2";

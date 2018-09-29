@@ -388,7 +388,7 @@ static void remote_show_item(void *item)
 {
 }
 
-static void remote_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
+static void remote_create_menu(const char *menu, const char *action, const char *dummy, const char *accel, const char *tip, const char *cookie)
 {
 }
 
