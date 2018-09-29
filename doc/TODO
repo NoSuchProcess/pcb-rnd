@@ -1,6 +1,9 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- CLEANUP: retire nelma
+- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
+- CLEANUP: fp_board: extend the API so that the element can be presented without saving to a file
 - BUG: rendering: padstack poly in 1206 is rendered solid when rgabbed for move [report: Igor2]
 - BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
@@ -90,7 +93,6 @@
 		- revise the value attribute - should be empty by default
 		- remove old install elements
 		- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
-- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
 - FEATURE: key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
@@ -100,7 +102,6 @@
 	- move the property editor out from gtk, using the DAD, into propedit
 	- test under lesstif
 	- remove Attribute()
-- CLEANUP: retire the nelma plugin - nelma is unfinished and not maintained
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - FEATURE: library window: allow long tags and long location text to split
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
@@ -123,7 +124,6 @@
 - CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
-- CLEANUP: fp_board: extend the API so that the element can be presented without saving to a file
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
@@ -143,7 +143,7 @@
 - CLEANUP: reduce
 		- export_bom: rewrite the string list code using htsp and/or lists
 		- hash in hid_attrib.c?
-		- nelma and gcode both invent .png name locally
+		- gcode invents .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 		- vendordrill
 			- search for /units, replace it with pcb-printf something
