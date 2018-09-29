@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
-- CLEANUP: fp_board: extend the API so that the element can be presented without saving to a file
 - BUG: rendering: padstack poly in 1206 is rendered solid when rgabbed for move [report: Igor2]
 - BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
