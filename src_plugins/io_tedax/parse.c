@@ -78,6 +78,7 @@ int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_siz
 				o++;
 			}
 		}
+		*o = '\0';
 		return argc+1; /* valid line, split up */
 	}
 
