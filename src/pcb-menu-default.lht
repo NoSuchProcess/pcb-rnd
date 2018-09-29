@@ -33,18 +33,16 @@ ha:{
 	li:main_menu {
 		### File Menu
 		ha:File {
-			m=F
 			li:submenu {
 				ha:Start New Layout                  = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
 				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-
 				ha:Load layout...                    = { li:a={{<key>f;<key>o};{<key>f;<key>l};}  action=Load(Layout); tip=Load a layout from a file }
 				-
-				ha:Save Layout                       = { m=S; li:a={{<key>f;<key>s}; {Ctrl<Key>s};};        action=Save(Layout); tip=Saves current layout }
-				ha:Save Layout As...                 = { m=A; li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s};};  action=Save(LayoutAs); tip=Saves current layout into a new file }
+				ha:Save Layout                       = { li:a={{<key>f;<key>s}; {Ctrl<Key>s};};        action=Save(Layout); tip=Saves current layout }
+				ha:Save Layout As...                 = { li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s};};  action=Save(LayoutAs); tip=Saves current layout into a new file }
 				-
 				ha:Import {
-					m=I
 					li:submenu {
 						ha:Import gschem schematics          = {                             action=Import() }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
@@ -100,7 +98,6 @@ ha:{
 		} # File
 
 		ha:Edit {
-			m=E
 			li:submenu {
 				ha:Undo last operation          = { li:a={{<key>u; <Key>u}; {Ctrl<Key>z};};   action=Undo() }
 				ha:Redo last undone operation   = { li:a={{<key>u; <Key>r}; {Ctrl<Key>y};};   action=Redo() }
@@ -176,10 +173,8 @@ ha:{
 		} # Edit
 
 		ha:View {
-			m=V
 			li:submenu {
 			ha:Grid {
-				m=G
 				li:submenu {
 					ha:Enable visible grid        = { a={<key>g; <key>v}; checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
 					ha:Enable local grid          = { a={<key>g; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
@@ -235,8 +230,8 @@ ha:{
 				}
 				ha:Zoom and side {
 					li:submenu {
-						ha:Zoom In 20%            = { m=Z; li:a={{<Key>z;<Key>z;}; {<char>+};} action=Zoom(-1.2) }
-						ha:Zoom Out 20%           = { m=O; li:a={{<Key>z;<Key>x;}; {<char>-};} action=Zoom(+1.2) }
+						ha:Zoom In 20%            = { li:a={{<Key>z;<Key>z;}; {<char>+};} action=Zoom(-1.2) }
+						ha:Zoom Out 20%           = { li:a={{<Key>z;<Key>x;}; {<char>-};} action=Zoom(+1.2) }
 						ha:Zoom In 2X             = { action=Zoom(-2) }
 						ha:Zoom Out 2X            = { action=Zoom(+2) }
 						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
@@ -246,10 +241,10 @@ ha:{
 						ha:Zoom to 2.5mil/px      = { action={Zoom(=2.5mil)} }
 						ha:Zoom to 0.1mm/px       = { action={Zoom(=0.1mm)} }
 						ha:Zoom to 10mil/px       = { action={Zoom(=10mil)} }
-						ha:Zoom In 20% and center = { m=Z; li:action={Zoom(-1.2); Center()} }
-						ha:Zoom Out 20% and center= { m=O; li:action={Zoom(+1.2); Center()} }
+						ha:Zoom In 20% and center = { li:action={Zoom(-1.2); Center()} }
+						ha:Zoom Out 20% and center= { li:action={Zoom(+1.2); Center()} }
 						-
-						ha:Zoom Extents           = {      li:a={{<Key>z;<Key>e;}; {<key>v;<key>f};}; m=M; action=Zoom() }
+						ha:Zoom Extents           = {      li:a={{<Key>z;<Key>e;}; {<key>v;<key>f};}; action=Zoom() }
 						ha:Zoom to selection      = {      a={<Key>z;<Key>s;}; action=ZoomTo(selected) }
 						ha:Zoom to found          = {      a={<Key>z;<Key>f;}; action=ZoomTo(found) }
 						-
@@ -262,7 +257,6 @@ ha:{
 					}
 				}
 				ha:Layers {
-					m=G
 					li:submenu {
 						ha:Shown Layers {
 							li:submenu {
@@ -289,10 +283,8 @@ ha:{
 		} # View
 
 		ha:Mode = {
-			m=M
 			li:submenu {
 				ha:Routing {
-					m=R
 					li:submenu {
 						ha:'All-direction' lines            = { li:a={{<key>m; <key>l; <key>a}; {<char>.};}; checked=editor/all_direction_lines; action=conf(toggle, editor/all_direction_lines, design); update_on={editor/all_direction_lines} }
 						ha:Cycle line clip/refraction       = { li:a={{<key>m; <key>l; <key>f}; {<char>/};}; action=Display(CycleClip) }
@@ -311,7 +303,6 @@ ha:{
 					}
 				}
 				ha:Cursor/snap {
-					m=C
 					li:submenu {
 						ha:Orthogonal moves                 = { a={<key>m; <key>c; <key>o}; checked=editor/orthogonal_moves; action=conf(toggle, editor/orthogonal_moves, design) }
 						ha:Crosshair snaps to padstacks     = { a={<key>m; <key>c; <key>p}; checked=editor/snap_pin; action=conf(toggle, editor/snap_pin, design) }
@@ -320,7 +311,6 @@ ha:{
 					}
 				}
 				ha:Drawing {
-					m=D
 					li:submenu {
 						ha:Show autorouter trials           = { a={<key>m; <key>d; <key>a}; checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
 						ha:Highlighting on line, arc points = { a={<key>m; <key>d; <key>h}; checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
@@ -369,7 +359,6 @@ ha:{
 		} #Mode
 
 		ha:Select {
-			m=l
 			li:submenu {
 				ha:Select all visible objects      = { a={<key>s; <key>a; <key>a;}; action=Select(All) }
 				ha:Select all connected objects    = { a={<key>s; <key>a; <key>c;}; action=Select(Connection) }
@@ -406,7 +395,6 @@ ha:{
 		} # Select
 
 		ha:Buffer {
-			m=B
 			li:submenu {
 				ha:Rotate buffer 90 deg CCW (left)  = { li:a={{<key>b;<key>r;<key>l}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
 				ha:Rotate buffer 90 deg CW (right)  = { a={<key>b;<key>r;<key>r}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
@@ -425,18 +413,17 @@ ha:{
 
 				ha:Buffer selection {
 					li:submenu {
-						ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a={<key>b;<Key>1;} action=PasteBuffer(1); update_on={editor/buffer_number} }
-						ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a={<key>b;<Key>2;} action=PasteBuffer(2); update_on={editor/buffer_number} }
-						ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a={<key>b;<Key>3;} action=PasteBuffer(3); update_on={editor/buffer_number} }
-						ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a={<key>b;<Key>4;} action=PasteBuffer(4); update_on={editor/buffer_number} }
-						ha:Select scratchpad = { checked=ChkBuffer(5); m=5; a={<key>b;<Key>5;} action=PasteBuffer(5); update_on={editor/buffer_number} }
+						ha:Select Buffer \#1 = { checked=ChkBuffer(1); a={<key>b;<Key>1;} action=PasteBuffer(1); update_on={editor/buffer_number} }
+						ha:Select Buffer \#2 = { checked=ChkBuffer(2); a={<key>b;<Key>2;} action=PasteBuffer(2); update_on={editor/buffer_number} }
+						ha:Select Buffer \#3 = { checked=ChkBuffer(3); a={<key>b;<Key>3;} action=PasteBuffer(3); update_on={editor/buffer_number} }
+						ha:Select Buffer \#4 = { checked=ChkBuffer(4); a={<key>b;<Key>4;} action=PasteBuffer(4); update_on={editor/buffer_number} }
+						ha:Select scratchpad = { checked=ChkBuffer(5); a={<key>b;<Key>5;} action=PasteBuffer(5); update_on={editor/buffer_number} }
 					}
 				}
 			}
 		} # Buffer
 
 		ha:Connects = {
-			m=C
 			li:submenu {
 				ha:Rats nest {
 					li:submenu {
@@ -507,14 +494,12 @@ ha:{
 		} # Connects
 	
 		ha:Plugins {
-			m=P
 			li:submenu {
 				ha:Manage plugins... = { a={<Key>f;<Key>c;<Key>p;}; action=ManagePlugins() }
 			}
 		} # Plugins
 
 		ha:Window {
-			m=W
 			li:submenu {
 				ha:Library        = { a={<Key>w;<Key>l}; action=DoWindows(Library) }
 				ha:Message Log    = { a={<Key>w;<Key>m}; action=DoWindows(Log) }

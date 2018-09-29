@@ -37,8 +37,8 @@ ha:{
 		ha:File = {
 			li:submenu {
 				ha:About... = { action=About() }
-				ha:Save layout = { m=S; a=Ctrl<Key>s; action=Save(Layout) }
-				ha:Save layout as... = { m=A; a=Shift Ctrl<Key>s; action=Save(LayoutAs) }
+				ha:Save layout = { a=Ctrl<Key>s; action=Save(Layout) }
+				ha:Save layout as... = { a=Shift Ctrl<Key>s; action=Save(LayoutAs) }
 				ha:Revert = { action=Load(Revert,none) }
 				ha:Load layout = { action=Load(Layout) }
 				ha:Import = {
@@ -79,7 +79,7 @@ ha:{
 				-
 				ha:Start new layout = { a=Ctrl<Key>n; action=New() }
 				-
-				ha:Quit Program = { m=Q; a=Ctrl<Key>q; action=Quit() }
+				ha:Quit Program = { a=Ctrl<Key>q; action=Quit() }
 			}
 		} # File
 
@@ -106,10 +106,10 @@ ha:{
 				ha:Zoom {
 					li:submenu {
 						ha:Zoom In 2X = { action=Zoom(-2) }
-						ha:Zoom In 20% = { m=Z; a=<Key>z; action=Zoom(-1.2) }
-						ha:Zoom Out 20% = { m=O; a=Shift<Key>z; action=Zoom(+1.2); }
+						ha:Zoom In 20% = { a=<Key>z; action=Zoom(-1.2) }
+						ha:Zoom Out 20% = { a=Shift<Key>z; action=Zoom(+1.2); }
 						ha:Zoom Out 2X = { action=Zoom(+2) }
-						ha:Zoom Max = { m=M; a=<Key>v; action=Zoom() }
+						ha:Zoom Max = { a=<Key>v; action=Zoom() }
 						ha:Zoom Toggle = { a=<Key>`; action=Zoom(Toggle) }
 						-
 						ha:Zoom to 0.1mil\/px = { action={Zoom(=0.1mil)} }

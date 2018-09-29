@@ -45,18 +45,16 @@ ha:{
 	li:main_menu {
 		### File Menu
 		ha:File {
-			m=F
 			li:submenu {
 				ha:Start New Layout                  = { a=Ctrl<Key>n; action=New() }
 				ha:Revert                            = {                             action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-
 				ha:Load layout                       = {                             action=Load(Layout); tip=Load a layout from a file }
 				-
-				ha:Save Layout                       = { m=S; a={Ctrl<Key>s};        action=Save(Layout); tip=Saves current layout }
-				ha:Save Layout As...                 = { m=A; a={Shift Ctrl<Key>s};  action=Save(LayoutAs); tip=Saves current layout into a new file }
+				ha:Save Layout                       = { a={Ctrl<Key>s};        action=Save(Layout); tip=Saves current layout }
+				ha:Save Layout As...                 = { a={Shift Ctrl<Key>s};  action=Save(LayoutAs); tip=Saves current layout into a new file }
 				-
 				ha:Import {
-					m=I
 					li:submenu {
 						ha:Import gschem schematics          = {                             action=Import() }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
@@ -103,7 +101,6 @@ ha:{
 		}
 
 		ha:Edit {
-			m=E
 			li:submenu {
 				ha:Undo last operation          = { a=<Key>u;           action=Undo() }
 				ha:Redo last undone operation   = { a=Shift<Key>r;      action=Redo() }
@@ -150,7 +147,6 @@ ha:{
 		} # Edit
 
 		ha:View {
-			m=V
 			li:submenu {
 				ha:Enable visible grid        = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
 				ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
@@ -211,11 +207,11 @@ ha:{
 					}
 				}
 				ha:Pins/Via show Name/Number  = { a=<Key>d; action=Display(PinOrPadName) }
-				ha:Zoom In 20%                = { m=Z; a=<Key>z; action=Zoom(-1.2) }
-				ha:Zoom Out 20%               = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
+				ha:Zoom In 20%                = { a=<Key>z; action=Zoom(-1.2) }
+				ha:Zoom Out 20%               = { a=Shift<Key>z; action=Zoom(+1.2) }
 				ha:More zooms and view changes {
 					li:submenu {
-						ha:Zoom Max               = { m=M; a=<Key>v; action=Zoom() }
+						ha:Zoom Max               = { a=<Key>v; action=Zoom() }
 						ha:Zoom In 2X             = { action=Zoom(-2) }
 						ha:Zoom Out 2X            = { action=Zoom(+2) }
 						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
@@ -225,8 +221,8 @@ ha:{
 						ha:Zoom to 2.5mil/px      = { action={Zoom(=2.5mil)} }
 						ha:Zoom to 0.1mm/px       = { action={Zoom(=0.1mm)} }
 						ha:Zoom to 10mil/px       = { action={Zoom(=10mil)} }
-						ha:Zoom In 20% and center = { m=Z; li:action={Zoom(-1.2); Center()} }
-						ha:Zoom Out 20% and center= { m=O; li:action={Zoom(+1.2); Center()} }
+						ha:Zoom In 20% and center = { li:action={Zoom(-1.2); Center()} }
+						ha:Zoom Out 20% and center= { li:action={Zoom(+1.2); Center()} }
 						ha:Flip up/down           = { checked=editor/view/flip_y; a=<Key>Tab; action=SwapSides(V) }
 						ha:Flip left/right        = { checked=editor/view/flip_x; a=Shift<Key>Tab; action=SwapSides(H) }
 						ha:Spin 180 degrees       = { a=Ctrl<Key>Tab; action=SwapSides(R) }
@@ -257,7 +253,6 @@ ha:{
 		} # View
 
 		ha:Settings = {
-			m=S
 			li:submenu {
 				ha:'All-direction' lines            = { checked=editor/all_direction_lines; a=<char>.; action=conf(toggle, editor/all_direction_lines, design) }
 				ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
@@ -288,20 +283,18 @@ ha:{
 				-
 				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
 				ha:Import New Elements at = {
-					m=I
 					li:submenu {
-						ha:Center          = { m=C; action=Import(setnewpoint,center) }
-						ha:Mark            = { m=M; action=Import(setnewpoint,mark) }
-						ha:Crosshair       = { m=h; action=Import(setnewpoint) }
+						ha:Center          = { action=Import(setnewpoint,center) }
+						ha:Mark            = { action=Import(setnewpoint,mark) }
+						ha:Crosshair       = { action=Import(setnewpoint) }
 						-
-						ha:Set Dispersion  = { m=D; action=Import(setdisperse) }
+						ha:Set Dispersion  = { action=Import(setdisperse) }
 					}
 				}
 			}
 		} #Settings
 
 		ha:Select {
-			m=l
 			li:submenu {
 				ha:Select all visible objects      = { action=Select(All) }
 				ha:Select all connected objects    = { action=Select(Connection) }
@@ -354,7 +347,6 @@ ha:{
 		} # Select
 
 		ha:Buffer {
-			m=B
 			li:submenu {
 				ha:Cut selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
 				ha:Paste buffer to layout  = { action=Mode(PasteBuffer) }
@@ -372,16 +364,15 @@ ha:{
 				ha:Save buffer subcircuits to file = { action=Save(PasteBuffer) }
 				ha:Layer bindings...               = { action=LayerBinding(buffer) }
 				-
-				ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1); update_on={editor/buffer_number} }
-				ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a=Shift<Key>2; action=PasteBuffer(2); update_on={editor/buffer_number} }
-				ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a=Shift<Key>3; action=PasteBuffer(3); update_on={editor/buffer_number} }
-				ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a=Shift<Key>4; action=PasteBuffer(4); update_on={editor/buffer_number} }
-				ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a=Shift<Key>5; action=PasteBuffer(5); update_on={editor/buffer_number} }
+				ha:Select Buffer \#1 = { checked=ChkBuffer(1); a=Shift<Key>1; action=PasteBuffer(1); update_on={editor/buffer_number} }
+				ha:Select Buffer \#2 = { checked=ChkBuffer(2); a=Shift<Key>2; action=PasteBuffer(2); update_on={editor/buffer_number} }
+				ha:Select Buffer \#3 = { checked=ChkBuffer(3); a=Shift<Key>3; action=PasteBuffer(3); update_on={editor/buffer_number} }
+				ha:Select Buffer \#4 = { checked=ChkBuffer(4); a=Shift<Key>4; action=PasteBuffer(4); update_on={editor/buffer_number} }
+				ha:Select Buffer \#5 = { checked=ChkBuffer(5); a=Shift<Key>5; action=PasteBuffer(5); update_on={editor/buffer_number} }
 			}
 		} # Buffer
 
 		ha:Connects = {
-			m=C
 			li:submenu {
 				ha:Lookup connection to object   = { a=Ctrl<Key>f; li:action={GetXY(Click on the object); Connection(Find)} }
 				ha:Reset scanned pads/pins/vias  = { li:action={Connection(ResetPinsViasAndPads); Display(Redraw)} }
@@ -433,14 +424,12 @@ ha:{
 		} # Connects
 	
 		ha:Plugins {
-			m=P
 			li:submenu {
 				ha:Manage plugins... = { a=Alt<Key>p; action=ManagePlugins() }
 			}
 		} # Plugins
 
 		ha:Info = {
-			m=I
 			li:submenu {
 				ha:Generate object report  = { a=Ctrl<Key>r; action=ReportObject() }
 				ha:Generate drill summary  = { action=Report(DrillReport) }
@@ -545,7 +534,6 @@ ha:{
 		} # Info
 
 		ha:Window {
-			m=W
 			li:submenu {
 				ha:Library        = { a=<Key>i; action=DoWindows(Library) }
 				ha:Message Log    = { action=DoWindows(Log) }
