@@ -485,7 +485,7 @@ out:;
 
 #define F_IS_PARAMETRIC 0
 #define F_TMPNAME 1
-static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
+static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
 	char *basename, *params, *fullname;
 	FILE *fp, *f = NULL;

@@ -78,14 +78,16 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	return 0;
 }
 
-static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
+static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
 	char *fpath, *ids, *end;
 	unsigned long int id, req_id;
 	pcb_buffer_t buff;
 	FILE *f = NULL;
 	pcb_opctx_t op;
-	char *tmp_name = ".board.fp";
+
+	if (dst == NULL)
+		return;
 
 	if (strncmp(name, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return NULL;
@@ -116,27 +118,16 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 		id++;
 		if (id == req_id) {
 /*			if (strcmp(element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString, l->name)) */
-			pcb_buffer_t buff2;
 
 #warning TODO: extend the API:
 			/* This is not pretty: we are saving the element to a file so we can return a FILE *.
 			   Later on we should just return the footprint. */
 			memset(&op, 0, sizeof(op));
-			op.buffer.dst = calloc(sizeof(pcb_data_t), 1);
+			op.buffer.dst = dst;
 			pcb_data_set_layer_parents(op.buffer.dst);
 			pcb_subcop_add_to_buffer(&op, subc);
 
-			f = pcb_fopen(tmp_name, "w");
-			memset(&buff2, 0, sizeof(buff2));
-			buff2.Data = op.buffer.dst;
-			pcb_write_buffer(f, &buff2, NULL, pcb_true);
-			fclose(f);
-
-			pcb_data_free(op.buffer.dst);
-			free(op.buffer.dst);
-
-			f = pcb_fopen(tmp_name, "r");
-			break;
+			return PCB_FP_FOPEN_IN_DST;
 		}
 	} PCB_END_LOOP;
 

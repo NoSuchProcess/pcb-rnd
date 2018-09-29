@@ -2431,7 +2431,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 	FILE *f;
 	pcb_subc_t *sc;
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st, NULL);
 
 	if (f != NULL) {
 		doc = lht_dom_load_stream(f, name, &errmsg);

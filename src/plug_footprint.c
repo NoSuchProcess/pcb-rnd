@@ -38,6 +38,9 @@
 #include "compat_misc.h"
 #include "event.h"
 
+FILE PCB_FP_FOPEN_IN_DST_, *PCB_FP_FOPEN_IN_DST = &PCB_FP_FOPEN_IN_DST;
+
+
 pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 pcb_fplibrary_t pcb_library;
 
@@ -111,7 +114,7 @@ const char *pcb_fp_tagname(const void *tagid)
 	return (char *) tagid;
 }
 
-FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
+FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
 	FILE *res = NULL;
 	if (strchr(path, ':') != NULL)  {
@@ -125,13 +128,13 @@ FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 				next++;
 			}
 
-			PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, name, fctx));
+			PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, name, fctx, dst));
 			curr = next;
 		}
 		free(tmp);
 	}
 	else
-		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, path, name, fctx));
+		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, path, name, fctx, dst));
 	return res;
 }
 

@@ -2459,7 +2459,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	int ret;
 	pcb_fp_fopen_ctx_t st;
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st, NULL);
 
 	/* set up the yy globals only after the pcb_fp_fopen() because it can
 	   also call Parse */

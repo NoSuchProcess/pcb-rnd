@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "vtlibrary.h"
+#include "data.h"
 
 typedef struct pcb_plug_fp_s pcb_plug_fp_t;
 
@@ -15,7 +16,7 @@ typedef struct {
 } pcb_fp_fopen_ctx_t;
 
 /* hook bindings, see below */
-FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
+FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 
 /* duplicates the name and splits it into a basename and params;
@@ -37,6 +38,8 @@ void pcb_fp_init();
 void pcb_fp_uninit();
 
 /**************************** API definition *********************************/
+extern FILE *PCB_FP_FOPEN_IN_DST;
+
 struct pcb_plug_fp_s {
 	pcb_plug_fp_t *next;
 	void *plugin_data;
@@ -51,8 +54,10 @@ struct pcb_plug_fp_s {
    If name is not an absolute path, search_path is searched for the first match.
    The user has to supply a state integer that will be used by pcb_pcb_fp_fclose().
    Must fill in fctx->backend, may use any other field of fctx as well.
+   If dst is non-NULL, some backends (e.g. fp_board) may decide to place the
+   loaded footprint in dst and return PCB_FP_FOPEN_IN_DST.
  */
-	FILE *(*fp_fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
+	FILE *(*fp_fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
 
 /* Close the footprint file opened by pcb_pcb_fp_fopen(). */
 	void (*fp_fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
