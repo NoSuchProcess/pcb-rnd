@@ -463,9 +463,9 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	if (*vp == '+' || *vp == '-' || *vp == '=')
 		vp++;
-	pcb_setlocale(LC_ALL, "C");
+
 	v = strtod(vp, NULL);
-	pcb_setlocale(LC_ALL, "");
+
 	if (v <= 0)
 		return 1;
 	switch (ovp[0]) {

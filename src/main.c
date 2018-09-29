@@ -377,14 +377,7 @@ int main(int argc, char *argv[])
 	vtp0_t plugin_cli_conf;
 	int autopick_gui = -1;
 
-#ifdef LOCALEDIR
-	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-	textdomain(GETTEXT_PACKAGE);
-	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-	setlocale(LC_ALL, "");
-#else
 	setlocale(LC_ALL, "C");
-#endif
 
 	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
 	/* init application:
@@ -637,8 +630,6 @@ int main(int argc, char *argv[])
 	}
 
 	if (pcb_gui->printer || pcb_gui->exporter) {
-		/* Workaround to fix batch output for non-C locales */
-		setlocale(LC_NUMERIC, "C");
 		if (pcb_data_is_empty(PCB->Data)) {
 			pcb_message(PCB_MSG_ERROR, "Can't export empty board - the board needs to contain at least one object.\n");
 			exit(1);

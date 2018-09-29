@@ -383,10 +383,9 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 
 	if (settings_dest != CFR_invalid)
 		conf_reset(settings_dest, Filename);
-	pcb_setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
 
 	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
-	pcb_setlocale(LC_ALL, "");
+
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
 		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(PCB_ENABLEPCB_FLAG_MINCUT, yy_pcb_flags), POL_OVERWRITE);

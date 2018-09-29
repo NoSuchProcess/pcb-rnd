@@ -243,13 +243,6 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	 */
 	/* g_thread_init (NULL); */
 
-#if defined (ENABLE_NLS)
-	/* Do our own setlocale() stufff since we want to override LC_NUMERIC
-	 */
-	gtk_set_locale();
-	pcb_setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
-#endif
-
 	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
 	/*

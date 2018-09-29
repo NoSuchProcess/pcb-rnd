@@ -100,16 +100,10 @@ static inline void make_printf_spec(char *printf_spec_new, const char *printf_sp
 		sprintf(printf_spec_new, ", %s.%df", printf_spec, precision);
 }
 
-/* sprintf a value */
+/* sprintf a value (used to change locale on is_file_mode) */
 #define sprintf_lc_safe(is_file_mode, out, fmt, val) \
 do { \
-	if (is_file_mode) { \
-		pcb_setlocale(LC_ALL, "C"); \
-		sprintf(out, fmt, val); \
-		pcb_setlocale(LC_ALL, ""); \
-	} \
-	else \
-		sprintf(out, fmt, val); \
+	sprintf(out, fmt, val); \
 	if (trunc0) \
 		do_trunc0(filemode_buff); \
 } while(0)

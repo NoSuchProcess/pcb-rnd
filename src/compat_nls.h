@@ -39,11 +39,6 @@
 #	else
 #		define N_(S) S
 #	endif
-#	ifdef LOCALEDIR
-#		define pcb_setlocale setlocale
-#	else
-#		define pcb_setlocale(a, b)
-#	endif
 #else
 #	define _(S) S
 #	define N_(S) S
