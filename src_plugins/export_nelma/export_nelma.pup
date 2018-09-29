@@ -1,9 +1,0 @@
-$class export
-$short nelma pcb_exporter
-$long Export to nelma (Numerical capacitance calculator) - the 3rd party software, Nelma is not maintained any more.
-$state deprecated
-$fmt-native no
-$fmt-feature-w export a board in the nelma format for Numerical capacitance calculation
-#$package export-sim
-default disable
-autoload 1

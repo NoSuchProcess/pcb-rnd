@@ -1,3 +1,4 @@
+19626	configure	retired the nelma exporter
 19343	configure	export_gerber: plugin configuration for G85 slots
 19048	configure	gtk: command line source cleanup/rename and centralize history handling
 18668	configure	ddraft: sphash for constraints
