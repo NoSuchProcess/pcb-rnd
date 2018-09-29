@@ -48,7 +48,6 @@ Description-en: Modular Printed Circuit Board layout tool
    - dxf, 2d drawings (export)
    - fidocadj board (export)
    - gcode (export)
-   - nelma (export)
    - PNG, JPEG, GIF (export with photo-realistic render option)
    - postscript: ps, eps (export)
    - svg (export)

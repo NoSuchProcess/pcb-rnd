@@ -16,7 +16,7 @@
 +------+
          *out-----------------------------------------------------------------+
          | [bbrd]    [bom_]    [xy__]    [gerb]    [opcd]    [lpr_]    [scad] | [web     ]
-         |      [stat]    [ps__]    [svg_]    [png_]    [nelm]    [dxf_]      |
+         |      [stat]    [ps__]    [svg_]    [png_]              [dxf_]      |
          +--------------------------------------------------------------------+
 %%
 
@@ -154,9 +154,6 @@
 [png_]
 	label png\njpg, bmp
 
-[nelm]
-	label nelma\n(sim)
-
 
 
 
@@ -214,8 +211,6 @@
 	label svg
 
 -> pcbrnd png_.n
-
--> pcbrnd nelm.n
 
 
 
