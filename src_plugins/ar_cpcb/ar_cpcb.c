@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <gensexpr/gsxl.h>
+#include <genht/htip.h>
 
 #include "board.h"
 #include "data.h"
@@ -47,6 +48,17 @@ typedef struct {
 	pcb_layer_t *copper[PCB_MAX_LAYERGRP];
 } cpcb_layers_t;
 
+typedef struct {
+	pcb_netmap_t netmap;
+
+	/* int -> net conversion */
+	pcb_lib_menu_t **i2n;
+	int maxnets;
+
+	/* net->int conversion */
+	htip_t n2i;
+} cpcb_netmap_t;
+
 static void cpcb_map_layers(pcb_board_t *pcb, cpcb_layers_t *dst)
 {
 	int gid;
@@ -61,7 +73,44 @@ static void cpcb_map_layers(pcb_board_t *pcb, cpcb_layers_t *dst)
 	}
 }
 
-static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
+static int cpcb_map_nets(pcb_board_t *pcb, cpcb_netmap_t *dst)
+{
+	htpp_entry_t *e;
+	long id;
+
+	if (pcb_netmap_init(&dst->netmap, pcb) != 0)
+		return -1;
+
+	dst->maxnets = 0;
+	for(e = htpp_first(&dst->netmap.o2n); e != NULL; e = htpp_next(&dst->netmap.o2n, e))
+		dst->maxnets++;
+
+	if (dst->maxnets == 0)
+		return -1;
+
+	dst->i2n = malloc(sizeof(pcb_lib_menu_t *) * dst->maxnets);
+	htip_init(&dst->n2i, longhash, longkeyeq);
+
+	id = 0;
+	for(e = htpp_first(&dst->netmap.o2n); e != NULL; e = htpp_next(&dst->netmap.o2n, e)) {
+		dst->i2n[id] = (pcb_lib_menu_t *)e->value;
+		htip_set(&dst->n2i, id, e->value);
+		id++;
+	}
+
+	return 0;
+}
+
+
+static void cpcb_free_nets(cpcb_netmap_t *dst)
+{
+	htip_uninit(&dst->n2i);
+	free(dst->i2n);
+	pcb_netmap_uninit(&dst->netmap);
+}
+
+
+static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netmap_t *nmap)
 {
 	gsx_parse_res_t res;
 	gsxl_dom_t dom;
@@ -148,9 +197,9 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
 	return 0;
 }
 
-static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
+static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netmap_t *nmap)
 {
-
+	return -1;
 }
 
 static const char pcb_acts_import_cpcb[] = "ImportcpcbFrom(filename)";
@@ -171,7 +220,7 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	cpcb_map_layers(PCB, &stk);
-	cpcb_load(PCB, f, &stk);
+	cpcb_load(PCB, f, &stk, NULL);
 
 	fclose(f);
 
@@ -186,6 +235,8 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fn;
 	FILE *f;
 	cpcb_layers_t stk;
+	cpcb_netmap_t nmap;
+
 	PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
 
 	f = pcb_fopen(fn, "w");
@@ -195,11 +246,18 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	if (cpcb_map_nets(PCB, &nmap) != 0) {
+		fclose(f);
+		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n", fn);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
 	cpcb_map_layers(PCB, &stk);
-	cpcb_save(PCB, f, &stk);
+	cpcb_save(PCB, f, &stk, &nmap);
+	cpcb_free_nets(&nmap);
 
 	fclose(f);
-
 
 	return -1;
 }
