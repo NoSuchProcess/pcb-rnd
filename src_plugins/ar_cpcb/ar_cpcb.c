@@ -36,6 +36,8 @@
 #include "plugins.h"
 #include "actions.h"
 #include "safe_fs.h"
+#include "conf_core.h"
+#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 static const char *cpcb_cookie = "cpcb plugin";
 
@@ -80,7 +82,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
 	for(rn = gsxl_children(dom.root); rn != NULL; rn = gsxl_next(rn)) {
 		int numch = 0;
 		gsxl_node_t *p, *nid, *ntr, *nvr, *ngap, *npads, *npaths, *nx, *ny, *nl;
-		pcb_coord_t thick, clear;
+		pcb_coord_t thick, clear, via_dia;
 		char *end;
 
 		for(n = gsxl_children(rn); n != NULL; n = gsxl_next(n)) numch++;
@@ -93,15 +95,15 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
 				break;
 			case 6: /* tracks */
 				nid = gsxl_nth(rn, 1);
-				ntr = gsxl_next(nid); thick = PCB_MM_TO_COORD(strtod(ntr->str, NULL));
-				nvr = gsxl_next(ntr);
+				ntr = gsxl_next(nid); thick = 2*PCB_MM_TO_COORD(strtod(ntr->str, NULL));
+				nvr = gsxl_next(ntr); via_dia = 2*PCB_MM_TO_COORD(strtod(nvr->str, NULL));
 				ngap = gsxl_next(nvr); clear = PCB_MM_TO_COORD(strtod(ngap->str, NULL));
 				npads = gsxl_next(ngap);
 				npaths = gsxl_next(npads);
 
 				for(n = gsxl_children(npaths); n != NULL; n = gsxl_next(n)) { /* iterate over all paths of the track */
 					pcb_coord_t lx, ly, x, y;
-					int len = 0, lidx;
+					int len = 0, lidx, llidx;
 
 					for(p = gsxl_children(n); p != NULL; p = gsxl_next(p)) { /* iterate over all points of the path */
 						pcb_line_t *line;
@@ -119,10 +121,22 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
 							continue;
 						}
 
-						if (len > 0)
-							line = pcb_line_new(stack->copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
+						if (len > 0) {
+							if (llidx != lidx) {
+								if ((lx == x) && (ly == y)) {
+									pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, x, y,
+										conf_core.design.via_drilling_hole, via_dia, conf_core.design.clearance,
+										0, PCB_PSTK_COMPAT_ROUND, pcb_true);
+								}
+								else
+									pcb_message(PCB_MSG_ERROR, "Invalid via: not vertical, in line %ld\n", (long)nl->line);
+							}
+							else
+								line = pcb_line_new(stack->copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
+						}
 						lx = x;
 						ly = y;
+						llidx = lidx;
 						len++;
 					}
 				}
