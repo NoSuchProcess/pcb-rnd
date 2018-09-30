@@ -199,7 +199,20 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 
 static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netmap_t *nmap)
 {
-	return -1;
+	htpp_entry_t *e;
+
+	/* print dims */
+	pcb_fprintf(f, "(%mm %mm %d)\n", pcb->MaxWidth, pcb->MaxHeight, stack->maxlayer);
+
+	/* print tracks */
+	for(e = htpp_first(&nmap->netmap.o2n); e != NULL; e = htpp_next(&nmap->netmap.o2n, e)) {
+		pcb_lib_menu_t *net = e->value;
+		pcb_fprintf(f, "# %s\n", net->Name);
+	}
+
+	/* print eof marker */
+	fprintf(f, "()\n");
+	return 0;
 }
 
 static const char pcb_acts_import_cpcb[] = "ImportcpcbFrom(filename)";
