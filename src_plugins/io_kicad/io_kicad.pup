@@ -10,7 +10,6 @@ $fmt-feature-r eeschema netlist and footprint info
 $package io-alien
 default buildin
 
-# for the uniq name lib:
 dep lib_gensexpr
 
 autoload 1
