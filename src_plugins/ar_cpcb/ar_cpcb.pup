@@ -1,0 +1,9 @@
+$class feature
+$short autoroute with c-pcb
+$long Autoroute using external tool c-pcb
+$state WIP
+$package auto
+default buildin
+dep lib_gensexpr
+autoload 1
+
