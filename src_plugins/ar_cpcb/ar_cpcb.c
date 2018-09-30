@@ -38,6 +38,7 @@
 #include "actions.h"
 #include "safe_fs.h"
 #include "conf_core.h"
+#include "obj_pstk_inlines.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_netmap/netmap.h"
 
@@ -197,18 +198,69 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	return 0;
 }
 
+static void cpcb_print_pads(pcb_board_t *pcb, FILE *f, pcb_any_obj_t *o, cpcb_layers_t *stack)
+{
+	int lidx;
+
+	switch(o->type) {
+		case PCB_OBJ_PSTK:
+			for(lidx = 0; lidx < stack->maxlayer; lidx++) {
+				int n;
+				pcb_pstk_t *ps = (pcb_pstk_t *)o;
+				pcb_pstk_shape_t *shp = pcb_pstk_shape_at(pcb, ps, stack->copper[lidx]);
+				if (shp == NULL)
+					continue;
+				switch(shp->shape) {
+					case PCB_PSSH_LINE:
+						break;
+					case PCB_PSSH_POLY:
+						pcb_fprintf(f, "(0 %mm (%mm %mm %d) (", conf_core.design.clearance, ps->x, ps->y, lidx);
+						for(n = 0; n < shp->data.poly.len; n++)
+							pcb_fprintf(f, "(%mm %mm)", shp->data.poly.x[n], shp->data.poly.y[n]);
+						fprintf(f, "))");
+						break;
+					case PCB_PSSH_CIRC:
+						pcb_fprintf(f, "(%mm %mm (%mm %mm %d) ())", shp->data.circ.dia/2, conf_core.design.clearance, ps->x, ps->y, lidx);
+						break;
+				}
+			}
+			break;
+		case PCB_OBJ_LINE:
+			break;
+		case PCB_OBJ_POLY:
+			break;
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_ARC:
+			break;
+	}
+}
+
 static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netmap_t *nmap)
 {
 	htpp_entry_t *e;
 
 	/* print dims */
-	pcb_fprintf(f, "(%mm %mm %d)\n", pcb->MaxWidth, pcb->MaxHeight, stack->maxlayer);
+	pcb_fprintf(f, "(%d %d %d)\n", (int)(PCB_COORD_TO_MM(pcb->MaxWidth)+0.5), (int)(PCB_COORD_TO_MM(pcb->MaxHeight)+0.5), stack->maxlayer);
 
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {
 		pcb_lib_menu_t *net = e->key;
+		dyn_obj_t *o, *olist = e->value;
 		long id = htpi_get(&nmap->n2i, net);
+
 		pcb_fprintf(f, "# %s: %ld\n", net->Name, id);
+		pcb_fprintf(f, "(%ld %mm %mm %mm\n", id, conf_core.design.line_thickness/2, conf_core.design.via_thickness/2, conf_core.design.clearance);
+
+		/* print pads (terminals) */
+		pcb_fprintf(f, "	(");
+		for(o = olist; o != NULL; o = o->next)
+			if (o->obj->term != NULL)
+				cpcb_print_pads(pcb, f, o->obj, stack);
+		pcb_fprintf(f, ")\n");
+
+		fprintf(f, "	()\n");
+
+		fprintf(f, ")\n");
 	}
 
 	/* print eof marker */
