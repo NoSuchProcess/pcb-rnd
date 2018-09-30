@@ -67,7 +67,7 @@ static void cpcb_map_layers(pcb_board_t *pcb, cpcb_layers_t *dst)
 	/* map copper layers from top to bottom */
 	dst->maxlayer = 0;
 	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
-		if ((grp->ltype & PCB_LYT_COPPER) && (grp->len > 0)) {
+		if ((grp->ltype & PCB_LYT_COPPER) && (grp->len > 0) && (grp->vis)) {
 			dst->copper[dst->maxlayer] = pcb_get_layer(pcb->Data, grp->lid[0]);
 			dst->maxlayer++;
 		}
