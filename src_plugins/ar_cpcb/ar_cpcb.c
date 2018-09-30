@@ -180,7 +180,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 										0, PCB_PSTK_COMPAT_ROUND, pcb_true);
 								}
 								else
-									pcb_message(PCB_MSG_ERROR, "Invalid via: not vertical, in line %ld\n", (long)nl->line);
+									pcb_message(PCB_MSG_ERROR, "Invalid via: not vertical, in line %ld:%ld\n", (long)nl->line, (long)nl->col);
 							}
 							else
 								line = pcb_line_new(stack->copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
