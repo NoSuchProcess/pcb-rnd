@@ -18,6 +18,7 @@ plugin_def("lib_polyhelp",     "polygon helpers",                 sbuildin, 1)
 
 plugin_header("\nFeature plugins:\n")
 plugin_def("acompnet",         "net auto-completion",             sdisable, 1)
+plugin_def("ar_cpcb",          "autoroute with c-pcb",            sbuildin, 1)
 plugin_def("autocrop",         "crop board to fit objects",       sbuildin, 1)
 plugin_def("autoplace",        "auto place components",           sbuildin, 1)
 plugin_def("autoroute",        "the original autorouter",         sbuildin, 1)
@@ -116,6 +117,7 @@ plugin_def("hid_lesstif",      "the lesstif gui",                 sbuildin, 1)
 plugin_def("hid_remote",       "remote HID server",               sdisable, 0)
 
 
+plugin_dep("ar_cpcb", "lib_gensexpr")
 plugin_dep("autoroute", "lib_compat_help")
 plugin_dep("draw_fab", "report")
 plugin_dep("export_fidocadj", "lib_compat_help")
