@@ -92,9 +92,9 @@ static int cpcb_map_nets(pcb_board_t *pcb, cpcb_netmap_t *dst)
 	htpi_init(&dst->n2i, ptrhash, ptrkeyeq);
 
 	id = 0;
-	for(e = htpp_first(&dst->netmap.o2n); e != NULL; e = htpp_next(&dst->netmap.o2n, e)) {
-		dst->i2n[id] = (pcb_lib_menu_t *)e->value;
-		htpi_set(&dst->n2i, e->value, id);
+	for(e = htpp_first(&dst->netmap.n2o); e != NULL; e = htpp_next(&dst->netmap.n2o, e)) {
+		dst->i2n[id] = (pcb_lib_menu_t *)e->key;
+		htpi_set(&dst->n2i, e->key, id);
 		id++;
 	}
 
@@ -207,7 +207,8 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {
 		pcb_lib_menu_t *net = e->key;
-		pcb_fprintf(f, "# %s\n", net->Name);
+		long id = htpi_get(&nmap->n2i, net);
+		pcb_fprintf(f, "# %s: %ld\n", net->Name, id);
 	}
 
 	/* print eof marker */
