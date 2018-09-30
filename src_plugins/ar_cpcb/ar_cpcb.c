@@ -43,8 +43,9 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f)
 	gsx_parse_res_t res;
 	gsxl_dom_t dom;
 	gsxl_node_t *rn, *n;
-	int c;
-	pcb_layer_t *copper;
+	int gid, c, maxlayer;
+	pcb_layer_t *copper[PCB_MAX_LAYERGRP];
+	pcb_layergrp_t *grp;
 
 	/* low level s-expression parse */
 	gsxl_init(&dom, gsxl_node_t);
@@ -58,11 +59,21 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f)
 	if (res != GSX_RES_EOE)
 		return -1;
 
+	/* map copper layers from top to bottom */
+	maxlayer = 0;
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+		if ((grp->ltype & PCB_LYT_COPPER) && (grp->len > 0)) {
+			copper[maxlayer] = pcb_get_layer(pcb->Data, grp->lid[0]);
+			maxlayer++;
+		}
+	}
+
 
 	for(rn = gsxl_children(dom.root); rn != NULL; rn = gsxl_next(rn)) {
 		int numch = 0;
 		gsxl_node_t *p, *nid, *ntr, *nvr, *ngap, *npads, *npaths, *nx, *ny, *nl;
 		pcb_coord_t thick, clear;
+		char *end;
 
 		for(n = gsxl_children(rn); n != NULL; n = gsxl_next(n)) numch++;
 		switch(numch) {
@@ -82,15 +93,26 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f)
 
 				for(n = gsxl_children(npaths); n != NULL; n = gsxl_next(n)) { /* iterate over all paths of the track */
 					pcb_coord_t lx, ly, x, y;
-					int len = 0;
+					int len = 0, lidx;
 
 					for(p = gsxl_children(n); p != NULL; p = gsxl_next(p)) { /* iterate over all points of the path */
 						pcb_line_t *line;
 						nx = gsxl_children(p); x = PCB_MM_TO_COORD(strtod(nx->str, NULL));
 						ny = gsxl_next(nx); y = PCB_MM_TO_COORD(strtod(ny->str, NULL));
 						nl = gsxl_next(ny);
+						
+						lidx = strtol(nl->str, &end, 10);
+						if (*end != '\0') {
+							pcb_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (not an integer) in line %ld\n", nl->str, (long)nl->line);
+							continue;
+						}
+						if ((lidx < 0) || (lidx >= maxlayer)) {
+							pcb_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (out of range) in line %ld\n", nl->str, (long)nl->line);
+							continue;
+						}
+
 						if (len > 0)
-							line = pcb_line_new(CURRENT, lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
+							line = pcb_line_new(copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
 						lx = x;
 						ly = y;
 						len++;
