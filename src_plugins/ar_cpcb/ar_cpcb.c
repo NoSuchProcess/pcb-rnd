@@ -30,7 +30,7 @@
 
 #include <stdio.h>
 #include <gensexpr/gsxl.h>
-#include <genht/htip.h>
+#include <genht/htpi.h>
 
 #include "board.h"
 #include "data.h"
@@ -56,7 +56,7 @@ typedef struct {
 	int maxnets;
 
 	/* net->int conversion */
-	htip_t n2i;
+	htpi_t n2i;
 } cpcb_netmap_t;
 
 static void cpcb_map_layers(pcb_board_t *pcb, cpcb_layers_t *dst)
@@ -89,12 +89,12 @@ static int cpcb_map_nets(pcb_board_t *pcb, cpcb_netmap_t *dst)
 		return -1;
 
 	dst->i2n = malloc(sizeof(pcb_lib_menu_t *) * dst->maxnets);
-	htip_init(&dst->n2i, longhash, longkeyeq);
+	htpi_init(&dst->n2i, ptrhash, ptrkeyeq);
 
 	id = 0;
 	for(e = htpp_first(&dst->netmap.o2n); e != NULL; e = htpp_next(&dst->netmap.o2n, e)) {
 		dst->i2n[id] = (pcb_lib_menu_t *)e->value;
-		htip_set(&dst->n2i, id, e->value);
+		htpi_set(&dst->n2i, e->value, id);
 		id++;
 	}
 
@@ -104,7 +104,7 @@ static int cpcb_map_nets(pcb_board_t *pcb, cpcb_netmap_t *dst)
 
 static void cpcb_free_nets(cpcb_netmap_t *dst)
 {
-	htip_uninit(&dst->n2i);
+	htpi_uninit(&dst->n2i);
 	free(dst->i2n);
 	pcb_netmap_uninit(&dst->netmap);
 }
