@@ -325,7 +325,8 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fclose(f);
 
-	return -1;
+	PCB_ACT_IRES(0);
+	return 0;
 }
 
 static const char pcb_acts_cpcb[] = "cpcb(board|selected, [command])";
