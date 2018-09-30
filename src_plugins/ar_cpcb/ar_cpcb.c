@@ -328,10 +328,66 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return -1;
 }
 
+static const char pcb_acts_cpcb[] = "cpcb(board|selected, [command])";
+static const char pcb_acth_cpcb[] = "Executed external autorouter cpcb to route the board or parts of the board";
+fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *scope, *cmd = "cpcb", *tmpfn = "cpcb.tmp";
+	char *cmdline;
+	FILE *f;
+	cpcb_layers_t stk;
+	cpcb_netmap_t nmap;
+
+	PCB_ACT_CONVARG(1, FGW_STR, cpcb, scope = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, cpcb, cmd = argv[2].val.str);
+
+	if (strcmp(scope, "board") != 0) {
+		pcb_message(PCB_MSG_ERROR, "Only board routing is supported at the moment\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	f = pcb_fopen(tmpfn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not open temp file %s for write\n", tmpfn);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	if (cpcb_map_nets(PCB, &nmap) != 0) {
+		fclose(f);
+		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	cpcb_map_layers(PCB, &stk);
+	cpcb_save(PCB, f, &stk, &nmap);
+	fclose(f);
+
+	cmdline = pcb_strdup_printf("%s < %s", cmd, tmpfn);
+	f = pcb_popen(cmdline, "r");
+	if (f != NULL) {
+		cpcb_load(PCB, f, &stk, NULL);
+		pclose(f);
+		PCB_ACT_IRES(0);
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Failed to execute c-pcb\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+/*	pcb_remove(tmpfn);*/
+	free(cmdline);
+	cpcb_free_nets(&nmap);
+	return 0;
+}
 
 static pcb_action_t cpcb_action_list[] = {
 	{"ImportcpcbFrom", pcb_act_import_cpcb, pcb_acth_import_cpcb, pcb_acts_import_cpcb},
 	{"ExportcpcbTo", pcb_act_export_cpcb, pcb_acth_export_cpcb, pcb_acts_export_cpcb},
+	{"cpcb", pcb_act_cpcb, pcb_acth_cpcb, pcb_acts_cpcb}
 };
 
 PCB_REGISTER_ACTIONS(cpcb_action_list, cpcb_cookie)
