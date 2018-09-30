@@ -39,14 +39,31 @@
 
 static const char *cpcb_cookie = "cpcb plugin";
 
-static int cpcb_load(pcb_board_t *pcb, FILE *f)
+typedef struct {
+	int maxlayer;
+	pcb_layer_t *copper[PCB_MAX_LAYERGRP];
+} cpcb_layers_t;
+
+static void cpcb_map_layers(pcb_board_t *pcb, cpcb_layers_t *dst)
+{
+	int gid;
+	pcb_layergrp_t *grp;
+	/* map copper layers from top to bottom */
+	dst->maxlayer = 0;
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+		if ((grp->ltype & PCB_LYT_COPPER) && (grp->len > 0)) {
+			dst->copper[dst->maxlayer] = pcb_get_layer(pcb->Data, grp->lid[0]);
+			dst->maxlayer++;
+		}
+	}
+}
+
+static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
 {
 	gsx_parse_res_t res;
 	gsxl_dom_t dom;
 	gsxl_node_t *rn, *n;
-	int gid, c, maxlayer;
-	pcb_layer_t *copper[PCB_MAX_LAYERGRP];
-	pcb_layergrp_t *grp;
+	int c;
 
 	/* low level s-expression parse */
 	gsxl_init(&dom, gsxl_node_t);
@@ -59,16 +76,6 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f)
 	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
 	if (res != GSX_RES_EOE)
 		return -1;
-
-	/* map copper layers from top to bottom */
-	maxlayer = 0;
-	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
-		if ((grp->ltype & PCB_LYT_COPPER) && (grp->len > 0)) {
-			copper[maxlayer] = pcb_get_layer(pcb->Data, grp->lid[0]);
-			maxlayer++;
-		}
-	}
-
 
 	for(rn = gsxl_children(dom.root); rn != NULL; rn = gsxl_next(rn)) {
 		int numch = 0;
@@ -107,13 +114,13 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f)
 							pcb_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (not an integer) in line %ld\n", nl->str, (long)nl->line);
 							continue;
 						}
-						if ((lidx < 0) || (lidx >= maxlayer)) {
+						if ((lidx < 0) || (lidx >= stack->maxlayer)) {
 							pcb_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (out of range) in line %ld\n", nl->str, (long)nl->line);
 							continue;
 						}
 
 						if (len > 0)
-							line = pcb_line_new(copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
+							line = pcb_line_new(stack->copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
 						lx = x;
 						ly = y;
 						len++;
@@ -132,6 +139,7 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fn;
 	FILE *f;
+	cpcb_layers_t stk;
 
 	PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
 
@@ -141,7 +149,10 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
-	cpcb_load(PCB, f);
+
+	cpcb_map_layers(PCB, &stk);
+	cpcb_load(PCB, f, &stk);
+
 	fclose(f);
 
 	PCB_ACT_IRES(0);
