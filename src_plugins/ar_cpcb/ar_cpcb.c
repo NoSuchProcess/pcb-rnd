@@ -314,7 +314,7 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (cpcb_map_nets(PCB, &nmap) != 0) {
 		fclose(f);
-		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n", fn);
+		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n");
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
