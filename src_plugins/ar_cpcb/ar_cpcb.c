@@ -205,8 +205,8 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	pcb_fprintf(f, "(%mm %mm %d)\n", pcb->MaxWidth, pcb->MaxHeight, stack->maxlayer);
 
 	/* print tracks */
-	for(e = htpp_first(&nmap->netmap.o2n); e != NULL; e = htpp_next(&nmap->netmap.o2n, e)) {
-		pcb_lib_menu_t *net = e->value;
+	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {
+		pcb_lib_menu_t *net = e->key;
 		pcb_fprintf(f, "# %s\n", net->Name);
 	}
 
