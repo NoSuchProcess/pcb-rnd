@@ -35,6 +35,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "actions.h"
+#include "safe_fs.h"
 
 static const char *cpcb_cookie = "cpcb plugin";
 
