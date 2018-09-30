@@ -303,7 +303,7 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cpcb_layers_t stk;
 	cpcb_netmap_t nmap;
 
-	PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, export_cpcb, fn = argv[1].val.str);
 
 	f = pcb_fopen(fn, "w");
 	if (f == NULL) {
