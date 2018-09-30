@@ -69,6 +69,9 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	pcb_netmap_t *map = ctx;
 	map->curr_net = NULL;
 
+	if (obj->term != NULL)
+		map->curr_net = pcb_netlist_find_net4term(pcb, obj);
+
 	if (htpp_get(&map->o2n, obj) != NULL)
 		return;
 
