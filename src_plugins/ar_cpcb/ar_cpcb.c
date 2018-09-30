@@ -38,6 +38,7 @@
 #include "safe_fs.h"
 #include "conf_core.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+#include "src_plugins/lib_netmap/netmap.h"
 
 static const char *cpcb_cookie = "cpcb plugin";
 
@@ -147,6 +148,11 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
 	return 0;
 }
 
+static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack)
+{
+
+}
+
 static const char pcb_acts_import_cpcb[] = "ImportcpcbFrom(filename)";
 static const char pcb_acth_import_cpcb[] = "Loads the auto-routed tracks from the specified c-pcb output.";
 fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -177,6 +183,24 @@ static const char pcb_acts_export_cpcb[] = "ExportcpcbTo(filename)";
 static const char pcb_acth_export_cpcb[] = "Dumps the current board in c-pcb format.";
 fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *fn;
+	FILE *f;
+	cpcb_layers_t stk;
+	PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not open %s for write\n", fn);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	cpcb_map_layers(PCB, &stk);
+	cpcb_save(PCB, f, &stk);
+
+	fclose(f);
+
+
 	return -1;
 }
 
