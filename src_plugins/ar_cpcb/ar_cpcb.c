@@ -248,7 +248,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 		dyn_obj_t *o, *olist = e->value;
 		long id = htpi_get(&nmap->n2i, net);
 
-		pcb_fprintf(f, "# %s: %ld\n", net->Name, id);
+/*		pcb_fprintf(f, "# %s: %ld\n", net->Name, id);*/
 		pcb_fprintf(f, "(%ld %mm %mm %mm\n", id, conf_core.design.line_thickness/2, conf_core.design.via_thickness/2, conf_core.design.clearance);
 
 		/* print pads (terminals) */
