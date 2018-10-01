@@ -1,4 +1,4 @@
-G04 start of page 2 for group 3 layer_idx 0 *
+G04 start of page 3 for group 3 layer_idx 0 *
 G04 Title: smd elements on both sides, top_copper *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,8 +9,8 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNTOP*%
-%ADD11C,0.0001*%
-G54D11*G36*
+%ADD13C,0.0001*%
+G54D13*G36*
 X19154Y41240D02*X14036D01*
 Y33760D01*
 X19154D01*

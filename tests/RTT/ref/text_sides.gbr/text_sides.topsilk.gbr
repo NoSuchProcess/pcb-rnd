@@ -1,4 +1,4 @@
-G04 start of page 2 for group 1 layer_idx 8 *
+G04 start of page 3 for group 1 layer_idx 8 *
 G04 Title: text on both sides, top_silk *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,8 +9,8 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNTOPSILK*%
-%ADD11C,0.0070*%
-G54D11*X22500Y31500D02*Y28500D01*
+%ADD12C,0.0070*%
+G54D12*X22500Y31500D02*Y28500D01*
 Y31500D02*X23200Y32500D01*
 X24300D01*
 X25000Y31500D01*

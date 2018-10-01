@@ -1,4 +1,4 @@
-G04 start of page 5 for group 11 layer_idx 10 *
+G04 start of page 6 for group 11 layer_idx 10 *
 G04 Title: smd elements on both sides, bottom_mask *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,8 +9,8 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNBOTTOMMASK*%
-%ADD14C,0.0001*%
-G54D14*G36*
+%ADD16C,0.0001*%
+G54D16*G36*
 X13736Y10960D02*X19454D01*
 Y19040D01*
 X13736D01*
