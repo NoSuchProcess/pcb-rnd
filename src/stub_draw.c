@@ -37,10 +37,8 @@ void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
 
 	pcb_gui->set_color(gc, "#FF0000");
 
-	t.X = 0;
-	t.Y = 0;
+	memset(&t, 0, sizeof(t));
 	t.TextString = (char *)str;
-	t.rot = 0;
 	t.fid = 0; /* use the default font */
 	t.Scale = 150;
 	t.Flags = pcb_no_flags();
