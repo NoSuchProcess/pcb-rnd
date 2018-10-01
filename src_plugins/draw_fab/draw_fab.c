@@ -82,7 +82,7 @@ static void text_at(pcb_draw_info_t *info, pcb_hid_gc_t gc, int x, int y, int al
 	va_start(a, fmt);
 	vsprintf(tmp, fmt, a);
 	va_end(a);
-	t.rot = 0;
+	memset(&t, 0, sizeof(t));
 	t.TextString = tmp;
 	t.Scale = PCB_COORD_TO_MIL(TEXT_SIZE);	/* pcnt of 100mil base height */
 	t.Flags = pcb_no_flags();
