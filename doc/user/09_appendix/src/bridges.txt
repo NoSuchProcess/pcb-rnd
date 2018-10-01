@@ -1,7 +1,7 @@
-           *io--------------------------------------------------------------+
-           |    [kica         ]        [gpcb   ]    [hyp_]    [gsch]        |
-           |                   [ frt_ ]        [fido]    [prtl]    [eagl]   |
-           +----------------------------------------------------------------+
+           *io----------------------------------------------------------------+
+           |  [kica         ]        [gpcb   ]    [hyp_]    [gsch]    [c_pcb] |
+           |                 [ frt_ ]        [fido]    [prtl]    [eagl]       |
+           +------------------------------------------------------------------+
 *inp---+                                                                        *hid--------+
 |[eesc]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
 |[mucs]|   |                                                                |   |           |
@@ -12,6 +12,7 @@
 |[netl]|   |                                                                |   |[remote]   |
 |[ipcd]|   |                                                                |   |           |
 |[easy]|   |                                                                |   |           |
+|[xsch]|   |                                                                |   |           |
 |[hpgl]|   +----------------------------------------------------------------+   +-----------+
 +------+
          *out-----------------------------------------------------------------+
@@ -88,6 +89,9 @@
 [easy]
 	label EasyEDA\n(web2.0)
 
+[xsch]
+	label XSCHEM\n
+
 [bbrd]
 	label breadboard
 
@@ -115,6 +119,9 @@
 
 [eagl]
 	label Eagle\n(board)
+
+[c_pcb]
+	label c-pcb\n(autorouting)
 
 
 
@@ -238,6 +245,9 @@
 -> easy.e pcbrnd
 	label import\nschematics
 
+-> xsch.e pcbrnd
+	label import\nschematics
+
 -> hpgl.e pcbrnd
 	label import\nlines/arcs
 
@@ -277,6 +287,8 @@
 <-> eagl.s pcbrnd
 	label board
 
+<-> c_pcb.s pcbrnd
+	label board
 
 <-> pcbrnd batch.w
 
