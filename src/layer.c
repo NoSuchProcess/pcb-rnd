@@ -1149,7 +1149,7 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cac
 	return *cache;
 }
 
-pcb_layer_id_t pcb_layer_get_bottom_silk()
+pcb_layer_id_t pcb_layer_get_bottom_silk(void)
 {
 	static pcb_layer_id_t cache = -1;
 	pcb_layer_id_t id = pcb_layer_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
@@ -1157,7 +1157,7 @@ pcb_layer_id_t pcb_layer_get_bottom_silk()
 	return id;
 }
 
-pcb_layer_id_t pcb_layer_get_top_silk()
+pcb_layer_id_t pcb_layer_get_top_silk(void)
 {
 	static pcb_layer_id_t cache = -1;
 	pcb_layer_id_t id = pcb_layer_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
