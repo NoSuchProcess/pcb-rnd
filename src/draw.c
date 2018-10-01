@@ -79,10 +79,10 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group);
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(pcb_draw_info_t *info, int side);
 static void pcb_draw_mask(pcb_draw_info_t *info, int side);
-static void pcb_draw_silk_doc(pcb_draw_info_t *info, unsigned long lyt_side, unsigned long lyt_type, int setgrp, int invis);
+static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, pcb_layer_type_t lyt_type, int setgrp, int invis);
 static void pcb_draw_boundary_mech(pcb_draw_info_t *info);
 static void pcb_draw_rats(const pcb_box_t *);
-static void pcb_draw_assembly(pcb_draw_info_t *info, unsigned int lyt_side);
+static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side);
 
 
 void pcb_draw_delay_label_add(pcb_any_obj_t *obj)

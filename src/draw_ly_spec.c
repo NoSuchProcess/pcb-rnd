@@ -130,7 +130,7 @@ static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
 	return 0;
 }
 
-static void pcb_draw_silk_doc(pcb_draw_info_t *info, unsigned long lyt_side, unsigned long lyt_type, int setgrp, int invis)
+static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, pcb_layer_type_t lyt_type, int setgrp, int invis)
 {
 	pcb_layer_id_t lid;
 	pcb_layergrp_id_t gid[PCB_MAX_LAYERGRP];
@@ -309,7 +309,7 @@ static void pcb_draw_rats(const pcb_box_t *drawn_area)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 
-static void pcb_draw_assembly(pcb_draw_info_t *info, unsigned int lyt_side)
+static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
 {
 	pcb_layergrp_id_t side_group;
 
