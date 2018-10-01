@@ -18,6 +18,7 @@ save countdictstack mark newpath /showpage {} def /setpagedevice {pop} def
 /c { 0 360 arc fill } bind def
 /cc { 0 360 arc nclip } bind def
 /a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def
+% Layer bottomsilk group 12 drill 0 mask 0
 % Layer bottom group 10 drill 0 mask 0
 0.02000 setlinewidth
 1 setlinecap
@@ -79,7 +80,6 @@ nclip
 0 0 0 setrgbcolor
 0.10000 0.22500 0.10000 0.12500 t
 grestore
-% Layer bottomsilk group 12 drill 0 mask 0
 gsave
 % Layer plated-drill group -1 drill 1 mask 0
 0.00000 setlinewidth
