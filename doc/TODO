@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Remove this feature from the rubberband plugin and add an alternative method of updating rats. [report: Ade]
 - BUG: rendering: padstack poly in 1206 is rendered solid when rgabbed for move [report: Igor2]
 - BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
@@ -32,6 +31,7 @@
 - FEATURE: session persistent message log  (messages are flushed after dialog is closed?) [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
 - FEATURE: fungw: DAD dialog: mini parser from text
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
