@@ -867,7 +867,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 
 	flash_drills = 0;
 	line_slots = 0;
-	if (PCB_LAYER_IS_ROUTE(flags, purpi)) {
+	if ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi)) {
 		flash_drills = 1;
 		line_slots = 1;
 	}
@@ -1155,6 +1155,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	if (line_slots) {
 		pcb_coord_t dia = gc->width/2;
 		find_aperture(DRILL_APR, dia*2, ROUND);
+		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
 		if (!finding_apertures) {
 			pending_drill_t *pd = new_pending_drill();
