@@ -1458,38 +1458,36 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	}
 }
 
-static void
-calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,int end,pcb_coord_t dx,pcb_coord_t dy,pcb_route_t * route)
+static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,int end,pcb_coord_t dx,pcb_coord_t dy,pcb_route_t * route)
 {
 	/* This basic implementation simply connects the arc to the moving
-	 * point with a new route so that they remain connected.
-	 */
+	   point with a new route so that they remain connected. */
 
 	/* TODO: Add more elaberate techniques for rubberbanding with an attached arc. */
 
-	pcb_layer_id_t layerid = pcb_layer_id(PCB->Data,arcptr->Layer);
+	pcb_layer_id_t layerid = pcb_layer_id(PCB->Data, arcptr->Layer);
 	pcb_arc_t arc = *(arcptr->Arc);
 	pcb_point_t startpoint;
 	pcb_point_t endpoint;
 	pcb_point_t center;
 
-	if(end == 1) {
+	if (end == 1) {
 		arc.StartAngle += arc.Delta;
 		arc.Delta = -arc.Delta;
 	}
 
 	pcb_arc_get_end(&arc,0,&startpoint.X, &startpoint.Y);
-	pcb_route_start(PCB, route, &startpoint, layerid, arc.Thickness, arc.Clearance, arc.Flags );
+	pcb_route_start(PCB, route, &startpoint, layerid, arc.Thickness, arc.Clearance, arc.Flags);
 
 	center.X = arc.X;
 	center.Y = arc.Y;
 	endpoint.X = route->end_point.X + dx;
 	endpoint.Y = route->end_point.Y + dy;
 
-	pcb_route_add_arc(route,&center,arc.StartAngle,arc.Delta,arc.Width,layerid);
+	pcb_route_add_arc(route, &center, arc.StartAngle, arc.Delta, arc.Width, layerid);
 
-	if((dx != 0) || (dy != 0))
-		pcb_route_calculate_to(route,&endpoint,pcb_gui->shift_is_pressed(),pcb_gui->control_is_pressed());
+	if ((dx != 0) || (dy != 0))
+		pcb_route_calculate_to(route, &endpoint, pcb_gui->shift_is_pressed(), pcb_gui->control_is_pressed());
 }
 
 
