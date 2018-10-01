@@ -39,6 +39,7 @@
 #include "stub_draw.h"
 #include "layer_ui.h"
 #include "hid_inlines.h"
+#include "layer_inlines.h"
 #include "funchash_core.h"
 
 #include "obj_pstk_draw.h"
@@ -321,6 +322,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 
 static void draw_everything(pcb_draw_info_t *info)
 {
+	pcb_layer_t *backsilk;
 	char *old_silk_color;
 	int i, ngroups;
 	pcb_layergrp_id_t component, solder, gid, side_copper_grp;
@@ -330,8 +332,11 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
 
-	old_silk_color = PCB->Data->BACKSILKLAYER.meta.real.color;
-	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
+	backsilk = pcb_layer_silk_back(PCB);
+	if (backsilk != NULL) {
+		old_silk_color = backsilk->meta.real.color;
+		backsilk->meta.real.color = conf_core.appearance.color.invisible_objects;
+	}
 
 	pcb_gui->render_burst(PCB_HID_BURST_START, info->drawn_area);
 
@@ -473,7 +478,8 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	finish:;
 	pcb_gui->render_burst(PCB_HID_BURST_END, info->drawn_area);
-	PCB->Data->BACKSILKLAYER.meta.real.color = old_silk_color;
+	if (backsilk != NULL)
+		backsilk->meta.real.color = old_silk_color;
 }
 
 static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
