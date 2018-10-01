@@ -74,4 +74,16 @@
 <use xlink:href="#comp_pixel_3" mask="url(#comp_clip_3)"/>
 <!-- Composite: finished -->
 </g>
+<g id="layer_9_outline">
+<!--normal-->
+<!-- Composite: reset -->
+<defs>
+<g id="comp_pixel_4">
+</g>
+<mask id="comp_clip_4" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+</mask>
+</defs>
+<use xlink:href="#comp_pixel_4" mask="url(#comp_clip_4)"/>
+<!-- Composite: finished -->
+</g>
 </svg>
