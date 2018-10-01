@@ -370,6 +370,14 @@ static void draw_everything(pcb_draw_info_t *info)
 		pcb_gui->end_layer();
 	}
 
+	/* Draw far side doc and silks */
+	{
+		pcb_layer_type_t ivside = PCB_LYT_INVISIBLE_SIDE();
+
+		pcb_draw_silk_doc(info, ivside, PCB_LYT_SILK, 1, 0);
+		pcb_draw_silk_doc(info, ivside, PCB_LYT_DOC, 1, 0);
+	}
+
 	/* draw all layers in layerstack order */
 	for (i = ngroups - 1; i >= 0; i--) {
 		pcb_layergrp_id_t group = drawn_groups[i];
@@ -419,13 +427,13 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	/* Draw doc and silks */
 	{
-		pcb_layer_type_t side = PCB_LYT_VISIBLE_SIDE();
+		pcb_layer_type_t vside = PCB_LYT_VISIBLE_SIDE();
 
 		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
 		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
 		pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
-		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 1, 0);
-		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 1, 0);
+		pcb_draw_silk_doc(info, vside, PCB_LYT_SILK, 1, 0);
+		pcb_draw_silk_doc(info, vside, PCB_LYT_DOC, 1, 0);
 	}
 
 	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
