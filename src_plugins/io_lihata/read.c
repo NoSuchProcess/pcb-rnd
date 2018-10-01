@@ -812,18 +812,18 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 
 	if (nthickness != NULL) {
 		if (rdver < 6)
-			iolht_warn(nthickness, -1, "Text thickness should not be present in a file with version lower than v6");
+			iolht_warn(nthickness, -1, "Text thickness should not be present in a file with version lower than v6\n");
 		err |= parse_coord(&text->thickness, nthickness);
 	}
 	else
 		text->thickness = 0;
 
 	if ((ndir != NULL) && (rdver >= 6))
-		iolht_warn(nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead");
+		iolht_warn(nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead\n");
 
 	if (nrot != 0) {
 		if (rdver < 6)
-			iolht_warn(nthickness, -1, "Text rot should not be present in a file with version lower than v6");
+			iolht_warn(nthickness, -1, "Text rot should not be present in a file with version lower than v6\n");
 		err |= parse_double(&text->rot, nrot);
 	}
 	else {
@@ -1543,13 +1543,13 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 
 		if (rdver < 6) {
 			if ((g->ltype & PCB_LYT_DOC) || (g->ltype & PCB_LYT_MECH))
-				iolht_warn(grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.");
+				iolht_warn(grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.\n");
 		}
 
 		npurp = lht_dom_hash_get(grp, "purpose");
 		if (npurp != NULL) { /* use the explicit purpose field if found */
 			if (rdver < 6)
-				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.");
+				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.\n");
 			if (npurp->type == LHT_TEXT)
 				pcb_layergrp_set_purpose__(g, pcb_strdup(npurp->data.text.value));
 			else
@@ -1562,7 +1562,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		nattr= lht_dom_hash_get(grp, "attributes");
 		if (nattr != NULL) {
 			if (rdver < 5)
-				iolht_warn(nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
+				iolht_warn(nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
 			if (parse_attributes(&g->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
@@ -1701,11 +1701,11 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	switch(prver) {
 		case 4:
 			if (rdver >= 6)
-				iolht_warn(nproto, 6, "lihata board from v6 should use padstack prototype v6");
+				iolht_warn(nproto, 6, "lihata board from v6 should use padstack prototype v6\n");
 			break;
 		case 6:
 			if (rdver < 6)
-				iolht_warn(nproto, 6, "lihata board nefore v6 did not have padstack prototype v6");
+				iolht_warn(nproto, 6, "lihata board nefore v6 did not have padstack prototype v6\n");
 			break;
 		default:
 			return iolht_error(nproto, "invalid padstack prototype version\n");
@@ -1715,7 +1715,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	if (n != NULL) {
 		dst->name = pcb_strdup(n->data.text.value);
 		if (rdver < 5)
-			iolht_warn(n, 6, "lihata board before v5 did not support padstack prototype names");
+			iolht_warn(n, 6, "lihata board before v5 did not support padstack prototype names\n");
 	}
 	else
 		dst->name = NULL;
@@ -2102,7 +2102,7 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 
 		if (nattr != NULL) {
 			if (rdver < 5)
-				iolht_warn(nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.");
+				iolht_warn(nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
 			if (parse_attributes(&net->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
