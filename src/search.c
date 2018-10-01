@@ -1086,6 +1086,53 @@ pcb_layer_type_t pstk_vis_layers(pcb_board_t *pcb, pcb_layer_type_t material)
 	return res | material;
 }
 
+static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, pcb_layer_t *SearchLayer, int HigherAvail, double HigherBound, int objst)
+{
+		if (SearchLayer->meta.real.vis) {
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+					Type & PCB_OBJ_POLY_POINT &&
+					SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
+				return PCB_OBJ_POLY_POINT;
+
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+					Type & PCB_OBJ_LINE_POINT &&
+					SearchLinePointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_point_t **) Result3))
+				return PCB_OBJ_LINE_POINT;
+
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+					Type & PCB_OBJ_ARC_POINT &&
+					SearchArcPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int **) Result3))
+				return PCB_OBJ_ARC_POINT;
+
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_LINE
+					&& SearchLineByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
+				return PCB_OBJ_LINE;
+
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_ARC &&
+					SearchArcByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (pcb_arc_t **) Result3))
+				return PCB_OBJ_ARC;
+
+			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_TEXT
+					&& SearchTextByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
+				return PCB_OBJ_TEXT;
+
+			if (Type & PCB_OBJ_POLY &&
+					SearchPolygonByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_poly_t **) Result3)) {
+				if (HigherAvail) {
+					pcb_box_t *box = &(*(pcb_poly_t **) Result2)->BoundingBox;
+					double area = (double) (box->X2 - box->X1) * (double) (box->X2 - box->X1);
+					if (HigherBound < area)
+						return -1;
+					else
+						return PCB_OBJ_POLY;
+				}
+				else
+					return PCB_OBJ_POLY;
+			}
+		}
+	return 0;
+}
+
 /* ---------------------------------------------------------------------------
  * searches for any kind of object or for a set of object types
  * the calling routine passes two pointers to allocated memory for storing
@@ -1172,6 +1219,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	}
 
 	for (i = -1; i < pcb_max_layer + 1; i++) {
+		int found;
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are i=-1 and i=max+1, if we meet them elsewhere, skip */
 			continue;
 		if (i < 0)
@@ -1184,48 +1232,11 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			if (!PCB->InvisibleObjectsOn)
 				continue;
 		}
-		if (SearchLayer->meta.real.vis) {
-			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
-					Type & PCB_OBJ_POLY_POINT &&
-					SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
-				return PCB_OBJ_POLY_POINT;
-
-			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
-					Type & PCB_OBJ_LINE_POINT &&
-					SearchLinePointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_point_t **) Result3))
-				return PCB_OBJ_LINE_POINT;
-
-			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
-					Type & PCB_OBJ_ARC_POINT &&
-					SearchArcPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int **) Result3))
-				return PCB_OBJ_ARC_POINT;
-
-			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_LINE
-					&& SearchLineByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
-				return PCB_OBJ_LINE;
-
-			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_ARC &&
-					SearchArcByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (pcb_arc_t **) Result3))
-				return PCB_OBJ_ARC;
-
-			if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_TEXT
-					&& SearchTextByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
-				return PCB_OBJ_TEXT;
-
-			if (Type & PCB_OBJ_POLY &&
-					SearchPolygonByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_poly_t **) Result3)) {
-				if (HigherAvail) {
-					pcb_box_t *box = &(*(pcb_poly_t **) Result2)->BoundingBox;
-					double area = (double) (box->X2 - box->X1) * (double) (box->X2 - box->X1);
-					if (HigherBound < area)
-						break;
-					else
-						return PCB_OBJ_POLY;
-				}
-				else
-					return PCB_OBJ_POLY;
-			}
-		}
+		found = pcb_search_obj_by_loc_layer(Type, Result1, Result2, Result3, req_flag, SearchLayer, HigherAvail, HigherBound, objst);
+		if (found < 0)
+			break;
+		if (found != 0)
+			return found;
 	}
 	/* return any previously found objects */
 	if (HigherAvail & PCB_OBJ_PSTK) {
