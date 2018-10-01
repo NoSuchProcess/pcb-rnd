@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if test ! -f out/$1
+then
+	echo "Need an output file name, e.g. arc_angles.ps" >&2
+	exit 1
+fi
+
+name=`echo $1 | sed "s/[.][^.]*$//"`
+
+
+mkdir -p diff
+
+echo "convert ref..."
+convert -density 200 ref/$1 diff/ref_$name.png
+
+echo "convert out..."
+convert -density 200 out/$1 diff/out_$name.png
+
+echo "diff:"
+
+for n in diff/ref_$name*.png
+do
+	m=`echo "$n" | sed "s/ref_/out_/"`
+	d=`echo "$n" | sed "s/ref_/diff_/"`
+	res=`compare "$n" "$m"  -metric AE  $d 2>&1`
+	echo "  $n \"$res\""
+	test "$res" -lt 8 && rm $d $n $m
+done
