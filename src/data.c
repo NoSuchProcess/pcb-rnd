@@ -426,6 +426,46 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 	}
 }
 
+void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recurse)
+{
+	if ((sx == 1.0) && (sy == 1.0) && (sth == 1.0))
+		return;
+
+	PCB_PADSTACK_LOOP(data);
+	{
+		pcb_pstk_scale(padstack, sx, sy);
+	}
+	PCB_END_LOOP;
+	if (recurse) {
+		PCB_SUBC_LOOP(data);
+		{
+			pcb_subc_scale(data, subc, sx, sy, sth, 1);
+		}
+		PCB_END_LOOP;
+	}
+	PCB_LINE_ALL_LOOP(data);
+	{
+		pcb_line_scale(line, sx, sy, sth);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_ARC_ALL_LOOP(data);
+	{
+		pcb_arc_scale(arc, sx, sy, sth);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(data);
+	{
+		pcb_poly_scale(polygon, sx, sy);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_TEXT_ALL_LOOP(data);
+	{
+		pcb_text_scale(text, sx, sy, sth);
+	}
+	PCB_ENDALL_LOOP;
+}
+
+
 int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
 {
 	pcb_box_t tmp;

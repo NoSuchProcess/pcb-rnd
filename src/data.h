@@ -164,6 +164,10 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 
+/* Multiply x and y coords by sx and sy and thickness by sth (where applicable).
+   If recurse is non-zero, also modify subcircuits */
+void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recurse);
+
 /* run pcb_poly_init_clip() on all polygons in data */
 void pcb_data_clip_polys(pcb_data_t *data);
 
