@@ -36,8 +36,33 @@
 
 int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
-	pcb_message(PCB_MSG_ERROR, "io_dsn_test_parse() not yet implemented.\n");
-	return -1;
+	char line[1024], *s;
+	int phc = 0, in_pcb = 0, lineno = 0;
+
+	if (typ != PCB_IOT_PCB)
+		return 0;
+
+	while(!(feof(f)) && (lineno < 512)) {
+		if (fgets(line, sizeof(line), f) != NULL) {
+			lineno++;
+			for(s = line; *s != '\0'; s++)
+				if (*s == '(')
+					phc++;
+			s = line;
+			if ((phc > 0) && (strstr(s, "pcb") != 0))
+				in_pcb = 1;
+			if ((phc > 2) && in_pcb && (strstr(s, "space_in_quoted_tokens") != 0))
+				return 1;
+			if ((phc > 2) && in_pcb && (strstr(s, "host_cad") != 0))
+				return 1;
+			if ((phc > 2) && in_pcb && (strstr(s, "host_version") != 0))
+				return 1;
+		}
+	}
+
+	/* hit eof before seeing a valid root -> bad */
+	return 0;
+
 }
 
 int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
