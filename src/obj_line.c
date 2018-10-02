@@ -871,6 +871,7 @@ void pcb_line_scale(pcb_line_t *line, double sx, double sy, double sth)
 	if (sth != 1.0)
 		line->Thickness = pcb_round((double)line->Thickness * sth);
 
+	pcb_line_bbox(line);
 	pcb_line_post(line);
 }
 

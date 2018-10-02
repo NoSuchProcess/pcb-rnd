@@ -760,6 +760,7 @@ void pcb_arc_scale(pcb_arc_t *arc, double sx, double sy, double sth)
 	if (sth != 1.0)
 		arc->Thickness = pcb_round((double)arc->Thickness * sth);
 
+	pcb_arc_bbox(arc);
 	pcb_arc_post(arc);
 }
 

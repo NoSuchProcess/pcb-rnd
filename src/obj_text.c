@@ -779,6 +779,7 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 	if ((sth != 1.0) && (text->thickness > 0.0))
 		text->thickness = pcb_round((double)text->thickness * sth);
 
+	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	pcb_text_post(text);
 }
 
