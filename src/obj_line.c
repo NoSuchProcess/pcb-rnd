@@ -854,6 +854,26 @@ void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t y_offs)
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
 }
 
+void pcb_line_scale(pcb_line_t *line, double sx, double sy, double sth)
+{
+	pcb_line_pre(line);
+
+	if (sx != 1.0) {
+		line->Point1.X = pcb_round((double)line->Point1.X * sx);
+		line->Point2.X = pcb_round((double)line->Point2.X * sx);
+	}
+
+	if (sy != 1.0) {
+		line->Point1.Y = pcb_round((double)line->Point1.Y * sy);
+		line->Point2.Y = pcb_round((double)line->Point2.Y * sy);
+	}
+
+	if (sth != 1.0)
+		line->Thickness = pcb_round((double)line->Thickness * sth);
+
+	pcb_line_post(line);
+}
+
 void pcb_line_flip_side(pcb_layer_t *layer, pcb_line_t *line)
 {
 	pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
