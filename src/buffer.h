@@ -66,6 +66,10 @@ void pcb_buffers_flip_side(pcb_board_t *pcb);
 /* graphically mirror the buffer on the current side */
 void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 
+/* Scale all coords and sizes by sx;sy and thicknesses by sth;
+   if recurse is non-zero, also scale subcircuits */
+void pcb_buffer_scale(pcb_board_t *pcb, pcb_buffer_t *Buffer, double sx, double sy, double sth, int recurse);
+
 /* Init/uninit all buffers (stored in board-independent global variables) */
 void pcb_init_buffers(pcb_board_t *pcb);
 void pcb_uninit_buffers(pcb_board_t *pcb);

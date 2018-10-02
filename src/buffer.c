@@ -452,6 +452,12 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_set_buffer_bbox(Buffer);
 }
 
+void pcb_buffer_scale(pcb_board_t *pcb, pcb_buffer_t *Buffer, double sx, double sy, double sth, int recurse)
+{
+	pcb_data_scale(Buffer->Data, sx, sy, sth, recurse);
+	pcb_set_buffer_bbox(Buffer);
+}
+
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int j, k;
