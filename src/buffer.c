@@ -412,6 +412,47 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ScaleBuffer[] = "ScaleBuffer(x [,y [,thickness [,subc]]])";
+static const char pcb_acth_ScaleBuffer[] =
+	"Scales the buffer by multiplying all coordinates by a floating point number.\n"
+	"If only x is given, it is also used for y and thickness too. If subc is not\n"
+	"empty, subcircuits are also scaled\n";
+fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *sx;
+	double x, y, th;
+	int recurse = 0;
+	char *end;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = argv[1].val.str);
+
+	if (sx == NULL)
+		sx = pcb_gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
+	if ((sx == NULL) || (*sx == '\0')) {
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+	x = strtod(sx, &end);
+	if (*end != '\0') {
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+	y = th = x;
+
+	PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);
+	PCB_ACT_MAY_CONVARG(3, FGW_DOUBLE, ScaleBuffer, th = argv[3].val.nat_double);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, ScaleBuffer, recurse = (argv[4].val.str != NULL));
+
+	PCB_ACT_IRES(0);
+
+
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_buffer_scale(PCB, PCB_PASTEBUFFER, x, y, th, recurse);
+	pcb_notify_crosshair_change(pcb_true);
+	return 0;
+}
+
+
 void pcb_init_buffers(pcb_board_t *pcb)
 {
 	int i;
@@ -978,6 +1019,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 pcb_action_t buffer_action_list[] = {
 	{"FreeRotateBuffer", pcb_act_FreeRotateBuffer, pcb_acth_FreeRotateBuffer, pcb_acts_FreeRotateBuffer},
+	{"ScaleBuffer", pcb_act_ScaleBuffer, pcb_acth_ScaleBuffer, pcb_acts_ScaleBuffer},
 	{"LoadFootprint", pcb_act_LoadFootprint, pcb_acth_LoadFootprint, pcb_acts_LoadFootprint},
 	{"PasteBuffer", pcb_act_PasteBuffer, pcb_acth_PasteBuffer, pcb_acts_PasteBuffer}
 };
