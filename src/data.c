@@ -38,6 +38,7 @@
 #include "data_it.h"
 #include "rtree.h"
 #include "list_common.h"
+#include "compat_misc.h"
 #include "layer_it.h"
 #include "operation.h"
 #include "flag.h"
@@ -440,6 +441,19 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 		PCB_SUBC_LOOP(data);
 		{
 			pcb_subc_scale(data, subc, sx, sy, sth, 1);
+		}
+		PCB_END_LOOP;
+	}
+	else {
+		/* when not scaled recursively, position still needs to be scaled */
+		PCB_SUBC_LOOP(data);
+		{
+			pcb_coord_t ox, oy, nx, ny;
+			if (pcb_subc_get_origin(subc, &ox, &oy) == 0) {
+				nx = pcb_round((double)ox * sx);
+				ny = pcb_round((double)oy * sy);
+				pcb_subc_move(subc, nx - ox, ny - oy, pcb_true);
+			}
 		}
 		PCB_END_LOOP;
 	}
