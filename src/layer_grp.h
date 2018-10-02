@@ -154,6 +154,9 @@ pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int
 void pcb_layergrp_inhibit_inc(void);
 void pcb_layergrp_inhibit_dec(void);
 
+/* Send out a layer changed event if not inhibited */
+void pcb_layergrp_notify(pcb_board_t *pcb);
+
 /* Rename an existing layer by idx */
 int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname);
 
