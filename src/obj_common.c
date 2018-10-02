@@ -144,6 +144,8 @@ void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 	}
 }
 
+#define istrue(s) ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T'))
+
 void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)(((char *)list) - offsetof(pcb_any_obj_t, Attributes));
@@ -153,6 +155,9 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		inv = pcb_obj_id_invalid(obj->term);
 		if (inv != NULL)
 			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
+	}
+	else if (strcmp(name, "intcut") == 0) {
+		obj->intcut = istrue(value);
 	}
 	else if (strcmp(name, "intconn") == 0) {
 		long cid = 0;
