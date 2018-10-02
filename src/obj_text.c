@@ -765,7 +765,10 @@ void pcb_text_mirror_coords(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_
 
 void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 {
-	pcb_text_pre(text);
+	int onbrd = (text->parent.layer != NULL) && (!text->parent.layer->is_bound);
+
+	if (onbrd)
+		pcb_text_pre(text);
 
 	if (sx != 1.0)
 		text->X = pcb_round((double)text->X * sx);
@@ -780,7 +783,8 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 		text->thickness = pcb_round((double)text->thickness * sth);
 
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
-	pcb_text_post(text);
+	if (onbrd)
+		pcb_text_post(text);
 }
 
 

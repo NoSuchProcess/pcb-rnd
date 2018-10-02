@@ -186,7 +186,10 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
 
 void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy)
 {
-	pcb_poly_pre(poly);
+	int onbrd = (poly->parent.layer != NULL) && (!poly->parent.layer->is_bound);
+
+	if (onbrd)
+		pcb_poly_pre(poly);
 	PCB_POLY_POINT_LOOP(poly);
 	{
 		point->X = pcb_round((double)point->X * sx);
@@ -194,7 +197,8 @@ void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy)
 	}
 	PCB_END_LOOP;
 	pcb_poly_bbox(poly);
-	pcb_poly_post(poly);
+	if (onbrd)
+		pcb_poly_post(poly);
 }
 
 

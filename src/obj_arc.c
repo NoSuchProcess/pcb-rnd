@@ -745,7 +745,10 @@ void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
 
 void pcb_arc_scale(pcb_arc_t *arc, double sx, double sy, double sth)
 {
-	pcb_arc_pre(arc);
+	int onbrd = (arc->parent.layer != NULL) && (!arc->parent.layer->is_bound);
+
+	if (onbrd)
+		pcb_arc_pre(arc);
 
 	if (sx != 1.0) {
 		arc->X = pcb_round((double)arc->X * sx);
@@ -761,7 +764,8 @@ void pcb_arc_scale(pcb_arc_t *arc, double sx, double sy, double sth)
 		arc->Thickness = pcb_round((double)arc->Thickness * sth);
 
 	pcb_arc_bbox(arc);
-	pcb_arc_post(arc);
+	if (onbrd)
+		pcb_arc_post(arc);
 }
 
 /* rotates an arc */
