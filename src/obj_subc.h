@@ -69,6 +69,10 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
 
 void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror);
 
+/* Scale coords/pos of a subc by sx,sy with thickness factor sth;
+   if recurse is non-zero, descend in subc-in-subc */
+void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, double sth, int recurse);
+
 /* changes the side of the board a subc is on; returns pcb_true if done */
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff);
 

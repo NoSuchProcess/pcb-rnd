@@ -1509,6 +1509,19 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb
 		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
 }
 
+void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, double sth, int recurse)
+{
+	if ((data != NULL) && (data->subc_tree != NULL))
+		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
+
+	pcb_data_scale(subc->data, sx, sy, sth, recurse);
+	pcb_subc_bbox(subc);
+
+	if ((data != NULL) && (data->subc_tree != NULL))
+		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
+}
+
+
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 {
 	pcb_opctx_t ctx;
