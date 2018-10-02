@@ -32,16 +32,20 @@
 #include <gensexpr/gsxl.h>
 #include <ctype.h>
 
+#include "board.h"
+#include "data.h"
 #include "plug_io.h"
 #include "error.h"
 #include "pcb_bool.h"
 #include "safe_fs.h"
 #include "compat_misc.h"
+#include "layer_grp.h"
 
 #include "read.h"
 
 typedef struct {
 	gsxl_dom_t dom;
+	pcb_board_t *pcb;
 	const pcb_unit_t *unit;
 } dsn_read_t;
 
@@ -76,9 +80,29 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 }
 
 /*** tree parse ***/
+static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
+{
+	const pcb_dflgmap_t *m;
+
+	if (str == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not parse board without a structure subtree\n");
+		return -1;
+	}
+
+	pcb_layergrp_inhibit_inc();
+	for(m = pcb_dflgmap; m <= pcb_dflgmap_last_top_noncopper; m++)
+		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m);
+
+	for(m = pcb_dflgmap_first_bottom_noncopper; m->name != NULL; m++)
+		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m);
+
+	pcb_layergrp_inhibit_dec();
+	return 0;
+}
+
 static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 {
-	gsxl_node_t *n, *nunit = NULL, *nstruct = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL, *ncolors = NULL, *nresolution = NULL;
+	gsxl_node_t *n, *nunit = NULL, *nstructure = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL, *ncolors = NULL, *nresolution = NULL;
 
 	/* default unit in case the file does not specify one */
 	ctx->unit = get_unit_struct("inch");
@@ -88,7 +112,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 			continue;
 		else if_save_uniq(n, unit)
 		else if_save_uniq(n, resolution)
-		else if_save_uniq(n, struct)
+		else if_save_uniq(n, structure)
 		else if_save_uniq(n, placement)
 		else if_save_uniq(n, library)
 		else if_save_uniq(n, network)
@@ -105,6 +129,9 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	}
 
 	if (push_unit(ctx, nunit) == NULL)
+		return -1;
+
+	if (dsn_parse_struct(ctx, nstructure) != 0)
 		return -1;
 
 	return 0;
@@ -197,7 +224,7 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 	return 0;
 }
 
-int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	dsn_read_t rdctx;
 	gsxl_node_t *rn;
@@ -220,6 +247,7 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 		goto error;
 	}
 
+	rdctx.pcb = pcb;
 	ret = dsn_parse_pcb(&rdctx, rn);
 	gsxl_uninit(&rdctx.dom);
 	return ret;
