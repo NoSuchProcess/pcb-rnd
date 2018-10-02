@@ -36,6 +36,7 @@
 #include "error.h"
 #include "pcb_bool.h"
 #include "safe_fs.h"
+#include "compat_misc.h"
 
 #include "read.h"
 
@@ -43,10 +44,31 @@ typedef struct {
 	gsxl_dom_t dom;
 } dsn_read_t;
 
+#define if_save_uniq(node, name) \
+	if (pcb_strcasecmp(node->str, #name) == 0) { \
+		if (n ## name != NULL) { \
+			pcb_message(PCB_MSG_ERROR, "Multiple " #name " nodes where only one is expected (at %ld:%ld)\n", (long)node->line, (long)node->col); \
+			return -1; \
+		} \
+		n ## name = node; \
+	}
 
 /*** tree parse ***/
 int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 {
+	gsxl_node_t *n, *nunit = NULL, *nstruct = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL;
+
+	for(n = root->children; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			continue;
+		else if_save_uniq(n, unit)
+		else if_save_uniq(n, struct)
+		else if_save_uniq(n, placement)
+		else if_save_uniq(n, library)
+		else if_save_uniq(n, network)
+		else if_save_uniq(n, wiring)
+	}
+
 	return 0;
 }
 
