@@ -447,7 +447,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 	pcb_notify_crosshair_change(pcb_false);
-	pcb_buffer_scale(PCB, PCB_PASTEBUFFER, x, y, th, recurse);
+	pcb_buffer_scale(PCB_PASTEBUFFER, x, y, th, recurse);
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
@@ -493,7 +493,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_set_buffer_bbox(Buffer);
 }
 
-void pcb_buffer_scale(pcb_board_t *pcb, pcb_buffer_t *Buffer, double sx, double sy, double sth, int recurse)
+void pcb_buffer_scale(pcb_buffer_t *Buffer, double sx, double sy, double sth, int recurse)
 {
 	pcb_data_scale(Buffer->Data, sx, sy, sth, recurse);
 	pcb_set_buffer_bbox(Buffer);
