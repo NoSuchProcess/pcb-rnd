@@ -42,6 +42,7 @@
 
 typedef struct {
 	gsxl_dom_t dom;
+	const pcb_unit_t *unit;
 } dsn_read_t;
 
 #define if_save_uniq(node, name) \
@@ -53,15 +54,40 @@ typedef struct {
 		n ## name = node; \
 	}
 
-/*** tree parse ***/
-int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
+static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 {
-	gsxl_node_t *n, *nunit = NULL, *nstruct = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL, *ncolors = NULL;
+	const pcb_unit_t *old = ctx->unit;
+
+	if ((nu == NULL) || (nu->children == NULL))
+		return ctx->unit;
+	
+	ctx->unit = get_unit_struct(nu->children->str);
+	if (ctx->unit == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", nu->children->str, (long)nu->line, (long)nu->col);
+		return NULL;
+	}
+
+	return old;
+}
+
+static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
+{
+	ctx->unit = saved;
+}
+
+/*** tree parse ***/
+static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
+{
+	gsxl_node_t *n, *nunit = NULL, *nstruct = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL, *ncolors = NULL, *nresolution = NULL;
+
+	/* default unit in case the file does not specify one */
+	ctx->unit = get_unit_struct("inch");
 
 	for(n = root->children->next; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
 		else if_save_uniq(n, unit)
+		else if_save_uniq(n, resolution)
 		else if_save_uniq(n, struct)
 		else if_save_uniq(n, placement)
 		else if_save_uniq(n, library)
@@ -69,6 +95,17 @@ int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 		else if_save_uniq(n, wiring)
 		else if_save_uniq(n, colors)
 	}
+
+	if ((nresolution != NULL) && (nresolution->children != NULL)) {
+		ctx->unit = get_unit_struct(nresolution->children->str);
+		if (ctx->unit == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Invalid resolution unit: '%s'\n", nresolution->children->str);
+			return -1;
+		}
+	}
+
+	if (push_unit(ctx, nunit) == NULL)
+		return -1;
 
 	return 0;
 }
