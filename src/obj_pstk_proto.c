@@ -972,6 +972,39 @@ void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_
 	}
 }
 
+void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy)
+{
+	pcb_coord_t cx, cy;
+	int n;
+
+#warning padstack TODO: undo
+
+	switch(shp->shape) {
+		case PCB_PSSH_LINE:
+			shp->data.line.thickness = pcb_round(shp->data.line.thickness * ((sx+sy)/2.0));
+			if (shp->data.line.thickness < 1)
+				shp->data.line.thickness = 1;
+			break;
+		case PCB_PSSH_CIRC:
+			shp->data.circ.dia = pcb_round(shp->data.circ.dia * ((sx+sy)/2.0));
+			if (shp->data.circ.dia < 1)
+				shp->data.circ.dia = 1;
+			break;
+		case PCB_PSSH_HSHADOW:
+			break;
+		case PCB_PSSH_POLY:
+			pcb_pstk_poly_center(&shp->data.poly, &cx, &cy);
+			pcb_polyarea_free(&shp->data.poly.pa);
+
+			for(n = 0; n < shp->data.poly.len; n++) {
+				shp->data.poly.x[n] = pcb_round((double)shp->data.poly.x[n] * sx);
+				shp->data.poly.y[n] = pcb_round((double)shp->data.poly.y[n] * sy);
+			}
+			pcb_pstk_shape_update_pa(&shp->data.poly);
+			break;
+	}
+}
+
 void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
 {
 #warning padstack TODO: undo
