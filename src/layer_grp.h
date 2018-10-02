@@ -257,4 +257,8 @@ extern const pcb_dflgmap_t pcb_dflgmap[]; /* the whole map */
 extern const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper;
 extern const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper;
 
+/* Overwrite an existing group from a default layer group map entry and create
+   a layer in the group */
+void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src);
+
 #endif

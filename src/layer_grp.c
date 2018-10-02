@@ -1014,6 +1014,19 @@ const pcb_dflgmap_t pcb_dflgmap[] = {
 const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper = pcb_dflgmap+2;
 const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper = pcb_dflgmap+5;
 
+void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src)
+{
+	pcb_layergrp_id_t gid = grp - pcb->LayerGroups.grp;
+	grp->name = pcb_strdup(src->name);
+	grp->ltype = src->lyt;
+	if (grp->len == 0) {
+		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, src->name);
+		if (lid >= 0) {
+			pcb->Data->Layer[lid].comb = src->comb;
+		}
+	}
+}
+
 void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 {
 	const pcb_dflgmap_t *m;
@@ -1026,19 +1039,9 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 			grp = &pcb->LayerGroups.grp[gid];
 			free(grp->name);
 		}
-		else {
+		else
 			grp = pcb_get_grp_new_intern_(pcb, 1, m->force_end);
-			gid = grp - pcb->LayerGroups.grp;
-			grp->ltype = m->lyt;
-		}
-
-		grp->name = pcb_strdup(m->name);
-		if (grp->len == 0) {
-			pcb_layer_id_t lid = pcb_layer_create(pcb, gid, m->name);
-			if (lid >= 0) {
-				pcb->Data->Layer[lid].comb = m->comb;
-			}
-		}
+		pcb_layergrp_set_dflgly(pcb, grp, m);
 	}
 	inhibit_notify--;
 	NOTIFY(pcb);
