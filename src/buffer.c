@@ -427,7 +427,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = argv[1].val.str);
 
 	if (sx == NULL)
-		sx = pcb_gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
+		sx = pcb_gui->prompt_for("Enter scaling factor (unitless multiplier):", "1.0");
 	if ((sx == NULL) || (*sx == '\0')) {
 		PCB_ACT_IRES(-1);
 		return 0;
