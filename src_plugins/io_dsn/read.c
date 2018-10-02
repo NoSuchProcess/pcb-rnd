@@ -58,7 +58,7 @@ int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 {
 	gsxl_node_t *n, *nunit = NULL, *nstruct = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL;
 
-	for(n = root->children; n != NULL; n = n->next) {
+	for(n = root->children->next; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
 		else if_save_uniq(n, unit)
