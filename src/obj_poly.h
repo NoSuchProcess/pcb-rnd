@@ -78,6 +78,9 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon);
 void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
 pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, pcb_coord_t dx, pcb_coord_t dy);
 
+void pcb_poly_pre(pcb_poly_t *poly);
+void pcb_poly_post(pcb_poly_t *poly);
+
 /* hash and eq */
 int pcb_poly_eq(const pcb_host_trans_t *tr1, const pcb_poly_t *p1, const pcb_host_trans_t *tr2, const pcb_poly_t *p2);
 unsigned int pcb_poly_hash(const pcb_host_trans_t *tr, const pcb_poly_t *p);

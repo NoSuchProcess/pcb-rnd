@@ -946,6 +946,28 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *P
 	return Polygon;
 }
 
+void pcb_poly_pre(pcb_poly_t *poly)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(poly->parent.layer);
+	if (ly == NULL)
+		return;
+
+	pcb_poly_pprestore(poly);
+	if (ly->polygon_tree != NULL)
+		pcb_r_delete_entry(ly->polygon_tree, (pcb_box_t *)poly);
+}
+
+void pcb_poly_post(pcb_poly_t *poly)
+{
+	pcb_layer_t *ly = pcb_layer_get_real(poly->parent.layer);
+	if (ly == NULL)
+		return;
+
+	if (ly->polygon_tree != NULL)
+		pcb_r_insert_entry(ly->polygon_tree, (pcb_box_t *)poly);
+	pcb_poly_ppclear(poly);
+}
+
 
 /*** iteration helpers ***/
 void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb)
