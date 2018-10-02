@@ -240,4 +240,18 @@ int pcb_paste_on(pcb_board_t *pcb);
 /* recalculate the copper cache */
 void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st);
 
+/* default layer group map */
+typedef struct pcb_dflgmap_s {
+	const char *name;
+	pcb_layer_type_t lyt;
+	pcb_layer_combining_t comb;
+	int force_end;
+} pcb_dflgmap_t;
+
+extern const pcb_dflgmap_t pcb_dflgmap[]; /* the whole map */
+
+/* pointers into the array marking boundaries */
+extern const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper;
+extern const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper;
+
 #endif

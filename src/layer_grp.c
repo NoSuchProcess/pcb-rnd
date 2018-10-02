@@ -993,31 +993,30 @@ void pcb_layergroup_free_stack(pcb_layer_stack_t *st)
 	st->cache.copper_len = st->cache.copper_alloced = 0;
 }
 
+const pcb_dflgmap_t pcb_dflgmap[] = {
+	{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO, 0},
+	{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO, 0},
+	{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO, 0},
+	{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0, 0},
+	{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0},
+	{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0},
+	{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO, 1},
+	{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO, 1},
+	{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO, 1},
+	{NULL, 0}
+};
+
+const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper = pcb_dflgmap+2;
+const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper = pcb_dflgmap+5;
+
 void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 {
-	typedef struct lmap_s {
-		const char *name;
-		pcb_layer_type_t lyt;
-		pcb_layer_combining_t comb;
-		int force_end;
-	} lmap_t;
-	const lmap_t *m, lmap[] = {
-		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO, 0},
-		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO, 0},
-		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO, 0},
-		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0, 0},
-		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0},
-		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0},
-		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO, 1},
-		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO, 1},
-		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO, 1},
-		{NULL, 0}
-	};
+	const pcb_dflgmap_t *m;
 	pcb_layergrp_t *grp;
 	pcb_layergrp_id_t gid;
 
 	inhibit_notify++;
-	for(m = lmap; m->name != NULL; m++) {
+	for(m = pcb_dflgmap; m->name != NULL; m++) {
 		if (pcb_layergrp_list(pcb, m->lyt, &gid, 1) == 1) {
 			grp = &pcb->LayerGroups.grp[gid];
 			free(grp->name);
