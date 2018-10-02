@@ -496,6 +496,8 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 void pcb_buffer_scale(pcb_buffer_t *Buffer, double sx, double sy, double sth, int recurse)
 {
 	pcb_data_scale(Buffer->Data, sx, sy, sth, recurse);
+	Buffer->X = pcb_round((double)Buffer->X * sx);
+	Buffer->Y = pcb_round((double)Buffer->Y * sy);
 	pcb_set_buffer_bbox(Buffer);
 }
 
