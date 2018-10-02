@@ -28,11 +28,20 @@
 
 #include "config.h"
 
+#include <stdio.h>
+#include <gensexpr/gsxl.h>
+#include <ctype.h>
+
 #include "plug_io.h"
 #include "error.h"
 #include "pcb_bool.h"
+#include "safe_fs.h"
 
 #include "read.h"
+
+typedef struct {
+	gsxl_dom_t dom;
+} dsn_read_t;
 
 int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
@@ -62,11 +71,71 @@ int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filena
 
 	/* hit eof before seeing a valid root -> bad */
 	return 0;
+}
 
+static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
+{
+	int c, blen = -1;
+	gsx_parse_res_t res;
+	FILE *f;
+	char buff[12];
+	long q_offs = -1, offs;
+
+
+	f = pcb_fopen(fn, "r");
+	if (f == NULL)
+		return -1;
+
+	/* find the offset of the quote char so it can be ignored during the s-expression parse */
+	offs = 0;
+	while(!(feof(f))) {
+		c = fgetc(f);
+		if (c == 's')
+			blen = 0;
+		if (blen >= 0) {
+			buff[blen] = c;
+			if (blen == 12) {
+				if (memcmp(buff, "string_quote", 12) == 0) {
+					for(c = fgetc(f),offs++; isspace(c); c = fgetc(f),offs++) ;
+					q_offs = offs;
+					printf("quote is %c at %ld\n", c, q_offs);
+					break;
+				}
+				blen = -1;
+			}
+			blen++;
+		}
+		offs++;
+	}
+	rewind(f);
+
+
+	gsxl_init(&rdctx->dom, gsxl_node_t);
+	rdctx->dom.parse.line_comment_char = '#';
+	offs = 0;
+	do {
+		c = fgetc(f);
+		if (offs == q_offs) /* need to ignore the quote char else it's an unbalanced quote */
+			c = '.';
+		offs++;
+	} while((res = gsxl_parse_char(&rdctx->dom, c)) == GSX_RES_NEXT);
+	if (res != GSX_RES_EOE)
+		return -1;
+
+	return 0;
 }
 
 int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
+	dsn_read_t rdctx;
+	gsxl_node_t *rn;
+
+	memset(&rdctx, 0, sizeof(rdctx));
+	dsn_parse_file(&rdctx, Filename);
+
+	for(rn = gsxl_children(rdctx.dom.root); rn != NULL; rn = gsxl_next(rn)) {
+	}
+
 	pcb_message(PCB_MSG_ERROR, "io_dsn_parse_pcb() not yet implemented.\n");
 	return -1;
 }
