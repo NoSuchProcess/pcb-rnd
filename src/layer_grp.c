@@ -1012,7 +1012,7 @@ const pcb_dflgmap_t pcb_dflgmap[] = {
 };
 
 const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper = pcb_dflgmap+2;
-const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper = pcb_dflgmap+5;
+const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper = pcb_dflgmap+6;
 
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src)
 {
