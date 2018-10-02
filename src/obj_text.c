@@ -763,6 +763,26 @@ void pcb_text_mirror_coords(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_
 		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
 }
 
+void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
+{
+	pcb_text_pre(text);
+
+	if (sx != 1.0)
+		text->X = pcb_round((double)text->X * sx);
+
+	if (sy != 1.0)
+		text->Y = pcb_round((double)text->X * sy);
+
+	if ((sx != 1.0) || (sy != 1.0))
+		text->Scale = pcb_round((double)text->Scale * (sy+sx)/2.0);
+
+	if ((sth != 1.0) && (text->thickness > 0.0))
+		text->thickness = pcb_round((double)text->thickness * sth);
+
+	pcb_text_post(text);
+}
+
+
 void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
