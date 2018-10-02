@@ -774,7 +774,7 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 		text->X = pcb_round((double)text->X * sx);
 
 	if (sy != 1.0)
-		text->Y = pcb_round((double)text->X * sy);
+		text->Y = pcb_round((double)text->Y * sy);
 
 	if ((sx != 1.0) || (sy != 1.0))
 		text->Scale = pcb_round((double)text->Scale * (sy+sx)/2.0);
