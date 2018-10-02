@@ -419,7 +419,7 @@ static const char pcb_acth_ScaleBuffer[] =
 	"empty, subcircuits are also scaled\n";
 fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *sx;
+	const char *sx = NULL;
 	double x, y, th;
 	int recurse = 0;
 	char *end;
