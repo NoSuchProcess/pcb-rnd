@@ -43,6 +43,16 @@ typedef struct {
 	gsxl_dom_t dom;
 } dsn_read_t;
 
+
+/*** tree parse ***/
+int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
+{
+	return 0;
+}
+
+/*** glue and low level ***/
+
+
 int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[1024], *s;
@@ -119,6 +129,8 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 			c = '.';
 		offs++;
 	} while((res = gsxl_parse_char(&rdctx->dom, c)) == GSX_RES_NEXT);
+
+	fclose(f);
 	if (res != GSX_RES_EOE)
 		return -1;
 
@@ -129,14 +141,31 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 {
 	dsn_read_t rdctx;
 	gsxl_node_t *rn;
+	int ret;
 
 	memset(&rdctx, 0, sizeof(rdctx));
-	dsn_parse_file(&rdctx, Filename);
-
-	for(rn = gsxl_children(rdctx.dom.root); rn != NULL; rn = gsxl_next(rn)) {
+	if (dsn_parse_file(&rdctx, Filename) != 0) {
+		pcb_message(PCB_MSG_ERROR, "s-expression parse error\n");
+		goto error;
 	}
 
-	pcb_message(PCB_MSG_ERROR, "io_dsn_parse_pcb() not yet implemented.\n");
+	gsxl_compact_tree(&rdctx.dom);
+	rn = rdctx.dom.root;
+	if (strcmp(rn->str, "pcb") != 0) {
+		pcb_message(PCB_MSG_ERROR, "Root node should be pcb, got %s instead\n", rn->str);
+		goto error;
+	}
+	if (gsxl_next(rn) != NULL) {
+		pcb_message(PCB_MSG_ERROR, "Multiple root nodes?!\n");
+		goto error;
+	}
+
+	ret = dsn_parse_pcb(&rdctx, rn);
+	gsxl_uninit(&rdctx.dom);
+	return ret;
+
+	error:;
+	gsxl_uninit(&rdctx.dom);
 	return -1;
 }
 
