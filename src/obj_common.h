@@ -182,7 +182,6 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	void                 *ratconn; \
 	unsigned char        thermal; \
 	unsigned char        intconn, intnoconn; \
-	unsigned             intcut:1; \
 	char                 override_color[sizeof("#XXXXXX")]
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
