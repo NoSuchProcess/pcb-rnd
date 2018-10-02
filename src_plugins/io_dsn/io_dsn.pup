@@ -1,0 +1,11 @@
+$class io
+$short specctra .dsn
+$long Load and save specctra DSN files
+$state works
+$fmt-native no
+$fmt-feature-r dsn board
+$fmt-feature-w dsn board
+$package io-alien
+dep lib_gensexpr
+default disable
+autoload 1

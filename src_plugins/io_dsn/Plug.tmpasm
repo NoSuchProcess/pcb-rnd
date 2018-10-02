@@ -1,0 +1,12 @@
+put /local/pcb/mod {io_dsn}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/io_dsn/io_dsn.o
+	$(PLUGDIR)/io_dsn/read.o
+	$(PLUGDIR)/io_dsn/write.o
+@]
+
+switch /local/pcb/io_dsn/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

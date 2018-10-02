@@ -629,6 +629,12 @@ static void LayersFixup(void)
 	/* the PCB format requires 2 silk layers to be the last; swap layers to make that so */
 	bs = pcb_layer_get_bottom_silk();
 	ts = pcb_layer_get_top_silk();
+
+	if ((bs < 0) || (ts < 0)) {
+		pcb_message(PCB_MSG_ERROR, "The geda/pcb file format requires top and bottom silk layers.\nExporting a board without those will not be usable in geda/pcb.\n");
+		return;
+	}
+
 	if (bs != pcb_max_layer - 2) {
 		pcb_layer_swap(PCB, bs, pcb_max_layer - 2);
 		chg = 1;
