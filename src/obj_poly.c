@@ -184,6 +184,19 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
 	/* hmmm, how to handle clip */
 }
 
+void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy)
+{
+	pcb_poly_pre(poly);
+	PCB_POLY_POINT_LOOP(poly);
+	{
+		point->X = pcb_round((double)point->X * sx);
+		point->Y = pcb_round((double)point->Y * sy);
+	}
+	PCB_END_LOOP;
+	pcb_poly_bbox(poly);
+	pcb_poly_post(poly);
+}
+
 
 /* sets the bounding box of a polygons */
 void pcb_poly_bbox(pcb_poly_t *Polygon)
