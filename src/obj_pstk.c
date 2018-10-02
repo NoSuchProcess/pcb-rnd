@@ -1072,6 +1072,9 @@ void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy)
 	for(n = 0; n < tshp->len; n++)
 		pcb_pstk_shape_scale(&tshp->shape[n], sx, sy);
 
+	if (prt->hdia > 0.0)
+		prt->hdia = pcb_round((double)prt->hdia * ((sx+sy)/2.0));
+
 	pcb_pstk_proto_update(prt);
 	ps->proto = pcb_pstk_proto_insert_or_free(ps->parent.data, prt, 1);
 
@@ -1080,9 +1083,6 @@ void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy)
 
 	if (sy != 1.0)
 		ps->y = pcb_round((double)ps->y * sy);
-
-	if (ps->hdia > 0.0)
-		ps->hida = pcb_round((double)ps->hdia * ((sx+sy)/2.0));
 
 	pcb_pstk_post(ps);
 }
