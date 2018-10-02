@@ -984,11 +984,17 @@ void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy)
 			shp->data.line.thickness = pcb_round(shp->data.line.thickness * ((sx+sy)/2.0));
 			if (shp->data.line.thickness < 1)
 				shp->data.line.thickness = 1;
+			shp->data.line.x1 = pcb_round((double)shp->data.line.x1 * sx);
+			shp->data.line.y1 = pcb_round((double)shp->data.line.y1 * sy);
+			shp->data.line.x2 = pcb_round((double)shp->data.line.x2 * sx);
+			shp->data.line.y2 = pcb_round((double)shp->data.line.y2 * sy);
 			break;
 		case PCB_PSSH_CIRC:
 			shp->data.circ.dia = pcb_round(shp->data.circ.dia * ((sx+sy)/2.0));
 			if (shp->data.circ.dia < 1)
 				shp->data.circ.dia = 1;
+			shp->data.circ.x = pcb_round((double)shp->data.circ.x * sx);
+			shp->data.circ.y = pcb_round((double)shp->data.circ.y * sy);
 			break;
 		case PCB_PSSH_HSHADOW:
 			break;
