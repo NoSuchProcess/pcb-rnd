@@ -16,7 +16,6 @@
 	- BUG: catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
-	- FEATURE: do not require top and bottom silk (also grep for TODO #tbs)
 - export_dsn/new io_dsn (with King Kevin and celem):
 	- missing global padstack (via) export:
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
@@ -31,6 +30,9 @@
 - FEATURE: session persistent message log  (messages are flushed after dialog is closed?) [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP:  do not require top and bottom silk (also grep for TODO #tbs)
+	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
+	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
 - FEATURE: fungw: DAD dialog: mini parser from text
 - CAM:
