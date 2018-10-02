@@ -1053,6 +1053,40 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disa
 	}
 }
 
+void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy)
+{
+	pcb_pstk_proto_t *prt;
+	pcb_pstk_tshape_t *tshp;
+	int n;
+
+	if ((sx == 1.0) && (sy == 1.0))
+		return;
+
+	pcb_pstk_pre(ps);
+
+	prt = malloc(sizeof(pcb_pstk_proto_t));
+	pcb_pstk_proto_copy(prt, pcb_pstk_get_proto(ps));
+
+	/* after the copy we have the canonical transformed shape only; scale each shape in it */
+	tshp = &prt->tr.array[0];
+	for(n = 0; n < tshp->len; n++)
+		pcb_pstk_shape_scale(&tshp->shape[n], sx, sy);
+
+	pcb_pstk_proto_update(prt);
+	ps->proto = pcb_pstk_proto_insert_or_free(ps->parent.data, prt, 1);
+
+	if (sx != 1.0)
+		ps->x = pcb_round((double)ps->x * sx);
+
+	if (sy != 1.0)
+		ps->y = pcb_round((double)ps->y * sy);
+
+	if (ps->hdia > 0.0)
+		ps->hida = pcb_round((double)ps->hdia * ((sx+sy)/2.0));
+
+	pcb_pstk_post(ps);
+}
+
 unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_t alloc)
 {
 	if (ps->thermals.used <= lid) {
