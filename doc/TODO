@@ -9,7 +9,6 @@
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
 - FEATURE: relay events to multi-actions so that scripts can bind to events by defining actions
-- FEATURE: Scale() buffer objects (with an option to affect coords only) [report: celem]
 - FEATURE: subc/term: new terminal attribute: "pretend not connected to the same subc copper" (agaran's coil example)
 - FEATURE: fontsel: ttf import?
 - layer rewrite:
