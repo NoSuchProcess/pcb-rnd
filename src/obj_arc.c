@@ -756,8 +756,8 @@ void pcb_arc_scale(pcb_arc_t *arc, double sx, double sy, double sth)
 	}
 
 	if (sy != 1.0) {
-		arc->Y = pcb_round((double)arc->X * sy);
-		arc->Height = pcb_round((double)arc->Width * sy);
+		arc->Y = pcb_round((double)arc->Y * sy);
+		arc->Height = pcb_round((double)arc->Height * sy);
 	}
 
 	if (sth != 1.0)
