@@ -64,6 +64,8 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 {
 	static pcb_text_t t;
 
+	memset(&t, 0, sizeof(t));
+
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
@@ -80,6 +82,8 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 {
 	static pcb_text_t t;
 
+	memset(&t, 0, sizeof(t));
+
 	t.X = x;
 	t.Y = y;
 	t.TextString = (char *)txt;
@@ -95,6 +99,8 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const char *bgcolor, const char *fgcolor)
 {
 	static pcb_text_t t;
+
+	memset(&t, 0, sizeof(t));
 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
