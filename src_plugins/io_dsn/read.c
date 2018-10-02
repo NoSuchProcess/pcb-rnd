@@ -151,7 +151,7 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 
 	gsxl_compact_tree(&rdctx.dom);
 	rn = rdctx.dom.root;
-	if (strcmp(rn->str, "pcb") != 0) {
+	if (pcb_strcasecmp(rn->str, "pcb") != 0) {
 		pcb_message(PCB_MSG_ERROR, "Root node should be pcb, got %s instead\n", rn->str);
 		goto error;
 	}
