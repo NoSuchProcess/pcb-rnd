@@ -29,8 +29,9 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <gensexpr/gsxl.h>
 #include <ctype.h>
+#include <gensexpr/gsxl.h>
+#include <genht/htsp.h>
 
 #include "board.h"
 #include "data.h"
@@ -49,6 +50,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	const pcb_unit_t *unit;
 	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
+	htsp_t name2layer;
 	unsigned has_pcb_boundary:1;
 } dsn_read_t;
 
@@ -317,6 +319,8 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 		if (n->str == NULL)
 			continue;
 		else if (pcb_strcasecmp(n->str, "layer") == 0) {
+			pcb_layer_t *ly;
+
 			if (botcop != NULL) {
 				CHECK_TOO_MANY_LAYERS(n, ctx->pcb->LayerGroups.len);
 				pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], &pcb_dflg_substrate, NULL, NULL);
@@ -326,6 +330,14 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 			if (topcop == NULL)
 				topcop = botcop;
 			pcb_layergrp_set_dflgly(ctx->pcb, botcop, &pcb_dflg_int_copper, STR(gsxl_children(n)), STR(gsxl_children(n)));
+
+			ly = pcb_get_layer(ctx->pcb->Data, botcop->lid[0]);
+			if (ly == NULL) {
+				pcb_message(PCB_MSG_ERROR, "io_dsn internal error: no layer in group\n");
+				return -1;
+			}
+			htsp_set(&ctx->name2layer, (char *)ly->name, ly);
+
 			if (n->children != NULL) {
 				for(i = n->children->next; i != NULL; i = i->next) {
 					if (pcb_strcasecmp(i->str, "type") == 0) {
@@ -381,6 +393,17 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	return 0;
 }
 
+#define DSN_PARSE_NET(ly, net, fail) \
+do { \
+	gsxl_node_t *__net__ = (net); \
+	const char *__nname__ = STRE(__net__); \
+	ly = htsp_get(&ctx->name2layer, __nname__); \
+	if (ly == NULL) { \
+		pcb_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col); \
+		{ fail; } \
+	} \
+} while(0)
+
 static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 #warning TODO
@@ -391,9 +414,10 @@ static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	pcb_box_t box;
 	gsxl_node_t *net = wrr->children->next;
-#warning TODO:
-	pcb_layer_t *ly = CURRENT;
-	
+	pcb_layer_t *ly;
+
+	DSN_PARSE_NET(ly, net, return -1);
+
 	if (dsn_parse_rect(ctx, &box, net->next) != 0)
 		return -1;
 
@@ -654,7 +678,9 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 	}
 
 	rdctx.pcb = pcb;
+	htsp_init(&rdctx.name2layer, strhash, strkeyeq);
 	ret = dsn_parse_pcb(&rdctx, rn);
+	htsp_uninit(&rdctx.name2layer);
 	gsxl_uninit(&rdctx.dom);
 	return ret;
 
