@@ -42,6 +42,7 @@
 #include "compat_misc.h"
 #include "layer_grp.h"
 #include "conf_core.h"
+#include "math_helper.h"
 
 #include "read.h"
 
@@ -105,8 +106,8 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 		int __i__, __maxpts__ = (maxpts); \
 		gsxl_node_t *__n__ = (src); \
 		for(__i__ = 0; __i__ < __maxpts__; __i__++) { \
-			if (coords == NULL) { err_statement; } \
-			crd[__i__] = ((__i__ % 2) == 0) ? COORDX(ctx, __n__) : COORDY(ctx, __n__); \
+			if (__n__ == NULL) { err_statement; } \
+			dst[__i__] = ((__i__ % 2) == 0) ? COORDX(ctx, __n__) : COORDY(ctx, __n__); \
 			__n__ = __n__->next; \
 		} \
 	} while(0)
@@ -454,7 +455,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 	}
 
 	aper = dsn_load_aper(ctx, net->next);
-
+#warning TODO: use aperture (bloat up poly)
 	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
 	for(n = net->next->next; n != NULL;) {
 		if (isalpha(*n->str))
@@ -504,10 +505,10 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	gsxl_node_t *n, *net = wrr->children;
 	pcb_layer_t *ly;
-	pcb_coord_t aper;
-	pcb_coord_t cx, cy, dia;
+	pcb_coord_t r, cent[2] = {0, 0};
 	long len = 0;
 	pcb_poly_t *poly;
+	double a, astep;
 
 	DSN_PARSE_NET(ly, net, return -1);
 
@@ -516,7 +517,27 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 		return -1;
 	}
 
+	n = net->next;
+	r = pcb_round((double)COORD(ctx, n) / 2.0);
+	n = n->next;
+	if (n != NULL)
+		DSN_LOAD_COORDS_XY(cent, n, 2, goto err_cent);
+
+	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
+	astep = 2*M_PI / (8 + r / PCB_MM_TO_COORD(0.1));
+
+	for(a = 0; a < 2*M_PI; a += astep) {
+		pcb_coord_t x, y;
+		x = pcb_round(cos(a) * (double)r + (double)cent[0]);
+		y = pcb_round(sin(a) * (double)r + (double)cent[1]);
+		pcb_poly_point_new(poly, x, y);
+	}
+	pcb_add_poly_on_layer(ly, poly);
 	return 0;
+
+	err_cent:;
+	pcb_message(PCB_MSG_ERROR, "Not enogh circle center attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+	return -1;
 }
 
 static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
