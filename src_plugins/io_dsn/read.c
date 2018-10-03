@@ -159,6 +159,7 @@ static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src)
 
 	err:;
 	pcb_message(PCB_MSG_ERROR, "Missing coord in rect (at %ld:%ld)\n", (long)src->line, (long)src->col);
+	return -1;
 }
 
 
@@ -428,8 +429,38 @@ static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-#warning TODO
-return 0;
+	gsxl_node_t *n, *net = wrr->children->next;
+	pcb_layer_t *ly;
+	pcb_coord_t aper;
+	pcb_coord_t x, y, px, py;
+	int len = 0;
+
+	DSN_PARSE_NET(ly, net, return -1);
+
+	if ((net->next == NULL) || (net->next->next == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Not enogh wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
+
+	aper = COORD(ctx, net->next);
+
+	for(n = net->next->next; n != NULL;) {
+		x = COORDX(ctx, n);
+		if (n->next == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+			break;
+		}
+		n = n->next;
+		y = COORDY(ctx, n);
+		n = n->next;
+		if (len > 0)
+			pcb_line_new(ly, px, py, x, y, aper, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		len++;
+		px = x;
+		py = y;
+	}
+
+	return 0;
 }
 
 static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
