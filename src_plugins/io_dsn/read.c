@@ -426,8 +426,10 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 	} while((res = gsxl_parse_char(&rdctx->dom, c)) == GSX_RES_NEXT);
 
 	fclose(f);
-	if (res != GSX_RES_EOE)
+	if (res != GSX_RES_EOE) {
+		pcb_message(PCB_MSG_ERROR, "s-expression parse error at offset %ld\n", offs);
 		return -1;
+	}
 
 	return 0;
 }
@@ -439,10 +441,8 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 	int ret;
 
 	memset(&rdctx, 0, sizeof(rdctx));
-	if (dsn_parse_file(&rdctx, Filename) != 0) {
-		pcb_message(PCB_MSG_ERROR, "s-expression parse error\n");
+	if (dsn_parse_file(&rdctx, Filename) != 0)
 		goto error;
-	}
 
 	gsxl_compact_tree(&rdctx.dom);
 	rn = rdctx.dom.root;
