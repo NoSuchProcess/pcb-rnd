@@ -200,9 +200,8 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 	pcb_layer_id_t olid;
 	pcb_layer_t *oly;
 
-	ctx->has_pcb_boundary = 0;
 	if (bnd == NULL)
-		goto none;
+		return 0;
 
 	if (pcb_layer_list(ctx->pcb, PCB_LYT_BOUNDARY, &olid, 1) < 1) {
 		pcb_message(PCB_MSG_ERROR, "Intenal error: no boundary layer found\n");
@@ -216,16 +215,7 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 	if (res != 0)
 		return -1;
 
-	if ((ctx->bbox.X1 < 0) || (ctx->bbox.Y1 < 0))
-		pcb_message(PCB_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
 
-	ctx->pcb->MaxWidth = ctx->bbox.X2 - ctx->bbox.X1;
-	ctx->pcb->MaxHeight = ctx->bbox.Y2 - ctx->bbox.Y1;
-
-	none:;
-#warning TODO: make up the boundary later on from bbox
-	if (!ctx->has_pcb_boundary)
-		pcb_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\n");
 	return 0;
 }
 
@@ -240,7 +230,7 @@ do { \
 static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
-	gsxl_node_t *n, *nboundary = NULL;
+	gsxl_node_t *n;
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL;
 
 	if (str == NULL) {
@@ -268,7 +258,6 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 				topcop = botcop;
 			pcb_layergrp_set_dflgly(ctx->pcb, botcop, &pcb_dflg_int_copper, STR(gsxl_children(n)), STR(gsxl_children(n)));
 		}
-		else if_save_uniq(n, boundary)
 	}
 
 	if (topcop == NULL) {
@@ -289,8 +278,25 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 
 	pcb_layergrp_inhibit_dec();
 
-	if (dsn_parse_boundary(ctx, nboundary) != 0)
-		return -1;
+	ctx->has_pcb_boundary = 0;
+	for(n = str->children; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			continue;
+		else if (pcb_strcasecmp(n->str, "boundary") == 0) {
+			if (dsn_parse_boundary(ctx, n) != 0)
+				return -1;
+		}
+	}
+
+	if ((ctx->bbox.X1 < 0) || (ctx->bbox.Y1 < 0))
+		pcb_message(PCB_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
+
+	ctx->pcb->MaxWidth = ctx->bbox.X2 - ctx->bbox.X1;
+	ctx->pcb->MaxHeight = ctx->bbox.Y2 - ctx->bbox.Y1;
+
+#warning TODO: make up the boundary later on from bbox
+	if (!ctx->has_pcb_boundary)
+		pcb_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\n");
 
 	return 0;
 }
