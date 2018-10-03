@@ -438,7 +438,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 	DSN_PARSE_NET(ly, net, return -1);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "Not enogh wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		pcb_message(PCB_MSG_ERROR, "Not enogh wire polygon attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -485,6 +485,25 @@ static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 		return -1;
 
 	pcb_poly_new_from_rectangle(ly, box.X1, box.Y1, box.X2, box.Y2, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
+
+	return 0;
+}
+
+static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
+{
+	gsxl_node_t *n, *net = wrr->children;
+	pcb_layer_t *ly;
+	pcb_coord_t aper;
+	pcb_coord_t cx, cy, dia;
+	long len = 0;
+	pcb_poly_t *poly;
+
+	DSN_PARSE_NET(ly, net, return -1);
+
+	if ((net->next == NULL) || (net->next->next == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Not enogh wire circle attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
 
 	return 0;
 }
@@ -590,13 +609,6 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	return 0;
 }
-
-static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
-{
-#warning TODO
-return 0;
-}
-
 
 static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
