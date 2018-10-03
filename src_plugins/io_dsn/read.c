@@ -247,7 +247,7 @@ do { \
 	} \
 } while(0)
 
-static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
+static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
 	gsxl_node_t *n, *i;
@@ -368,7 +368,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	if (push_unit(ctx, nunit) == NULL)
 		return -1;
 
-	if (dsn_parse_struct(ctx, nstructure) != 0)
+	if (dsn_parse_structure(ctx, nstructure) != 0)
 		return -1;
 
 	return 0;
