@@ -228,22 +228,20 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 		}
 		else if (pcb_strcasecmp(bnd->str, "rect") == 0) {
 			pcb_box_t box;
-			pcb_coord_t aper;
 
 			b = gsxl_children(bnd);
 			if ((b->next == NULL) || (b->next->next == NULL)) {
 				pcb_message(PCB_MSG_ERROR, "not enough arguments for boundary rect (at %ld:%ld)\n", (long)b->line, (long)b->col);
 				return -1;
 			}
-			aper = COORD(ctx, b->next);
 			if (pcb_strcasecmp(STRE(b), "pcb") == 0)
 				ctx->has_pcb_boundary = 1;
-			if (dsn_parse_rect(ctx, &box, b->next->next) != 0)
+			if (dsn_parse_rect(ctx, &box, b->next) != 0)
 				return -1;
-			boundary_line(oly, box.X1, box.Y1, box.X1, box.Y2, aper);
-			boundary_line(oly, box.X1, box.Y2, box.X2, box.Y2, aper);
-			boundary_line(oly, box.X2, box.Y2, box.X1, box.Y2, aper);
-			boundary_line(oly, box.X1, box.Y2, box.X1, box.Y1, aper);
+			boundary_line(oly, box.X1, box.Y1, box.X1, box.Y2, 0);
+			boundary_line(oly, box.X1, box.Y2, box.X2, box.Y2, 0);
+			boundary_line(oly, box.X2, box.Y2, box.X1, box.Y2, 0);
+			boundary_line(oly, box.X1, box.Y2, box.X1, box.Y1, 0);
 		}
 		else if (pcb_strcasecmp(bnd->str, "rule") == 0) {
 			if (!do_bbox && (dsn_parse_rule(ctx, bnd) != 0))
