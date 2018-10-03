@@ -1043,6 +1043,7 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 			pcb->Data->Layer[lid].comb = src->comb;
 		}
 	}
+	grp->valid = 1;
 }
 
 void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
