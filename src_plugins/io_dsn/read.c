@@ -243,6 +243,9 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 	topcop->ltype = PCB_LYT_TOP | PCB_LYT_COPPER;
 	botcop->ltype = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 
+	CHECK_TOO_MANY_LAYERS(str, ctx->pcb->LayerGroups.len);
+	pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], &pcb_dflg_outline, NULL, NULL);
+
 	for(m = pcb_dflgmap_first_bottom_noncopper; m->name != NULL; m++) {
 		CHECK_TOO_MANY_LAYERS(str, ctx->pcb->LayerGroups.len);
 		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m, NULL, NULL);
