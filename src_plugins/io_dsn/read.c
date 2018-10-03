@@ -99,13 +99,17 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 {
 	const pcb_unit_t *old = ctx->unit;
+	char *su, *s;
 
 	if ((nu == NULL) || (nu->children == NULL))
 		return ctx->unit;
-	
-	ctx->unit = get_unit_struct(STRE(gsxl_children(nu)));
+
+	for(su = s = STRE(gsxl_children(nu)); *s != '\0'; s++)
+		*s = tolower(*s);
+
+	ctx->unit = get_unit_struct(su);
 	if (ctx->unit == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", STRE(gsxl_children(nu)), (long)nu->line, (long)nu->col);
+		pcb_message(PCB_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", su, (long)nu->line, (long)nu->col);
 		return NULL;
 	}
 
@@ -312,9 +316,14 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	}
 
 	if ((nresolution != NULL) && (nresolution->children != NULL)) {
-		ctx->unit = get_unit_struct(STRE(gsxl_children(nresolution)));
+		char *s, *su;
+
+		for(su = s = STRE(gsxl_children(nresolution)); *s != '\0'; s++)
+			*s = tolower(*s);
+
+		ctx->unit = get_unit_struct(su);
 		if (ctx->unit == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid resolution unit: '%s'\n", STRE(gsxl_children(nresolution)));
+			pcb_message(PCB_MSG_ERROR, "Invalid resolution unit: '%s'\n", su);
 			return -1;
 		}
 	}
@@ -347,6 +356,8 @@ int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filena
 					phc++;
 			s = line;
 			if ((phc > 0) && (strstr(s, "pcb") != 0))
+				in_pcb = 1;
+			if ((phc > 0) && (strstr(s, "PCB") != 0))
 				in_pcb = 1;
 			if ((phc > 2) && in_pcb && (strstr(s, "space_in_quoted_tokens") != 0))
 				return 1;
