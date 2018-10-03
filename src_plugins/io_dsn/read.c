@@ -47,6 +47,7 @@ typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;
 	const pcb_unit_t *unit;
+	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	unsigned has_pcb_boundary:1;
 } dsn_read_t;
 
@@ -92,6 +93,9 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 	return PCB_MIL_TO_COORD(v);
 }
 
+#define COORDX(ctx, n) COORD(ctx, n)
+#define COORDY(ctx, n) (ctx->bbox.Y2 - COORD(ctx, n))
+
 static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 {
 	const pcb_unit_t *old = ctx->unit;
@@ -128,13 +132,69 @@ static void boundary_line(pcb_layer_t *oly, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	pcb_line_new(oly, x1, y1, x2, y2, aper, 0, pcb_no_flags());
 }
 
+static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, pcb_layer_t *oly)
+{
+	gsxl_node_t *b, *n;
+	for(bnd = bnd->children; bnd != NULL; bnd = bnd->next) {
+		if (bnd->str == NULL)
+			continue;
+		if (pcb_strcasecmp(bnd->str, "path") == 0) {
+			pcb_coord_t x, y, lx, ly, fx, fy, aper;
+			int len;
+
+			b = gsxl_children(bnd);
+			if (!do_bbox && (pcb_strcasecmp(STRE(b), "pcb") == 0)) {
+				pcb_message(PCB_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
+				ctx->has_pcb_boundary = 1;
+			}
+			aper = COORD(ctx, b->next);
+
+			for(len = 0, n = b->next->next; n != NULL; len++) {
+				x = COORDX(ctx, n);
+				if (n->next == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+					break;
+				}
+				n = n->next;
+				if (do_bbox)
+					y = COORD(ctx, n);
+				else
+					y = COORDY(ctx, n);
+				n = n->next;
+				if (!do_bbox) {
+					if (len == 0) {
+						fx = x;
+						fy = y;
+					}
+					else
+						boundary_line(oly, lx, ly, x, y, aper);
+					lx = x;
+					ly = y;
+				}
+				else
+					pcb_box_bump_point(&ctx->bbox, x, y);
+			}
+			if (!do_bbox && (x != fx) && (y != fy)) /* close the boundary */
+				boundary_line(oly, lx, ly, x, y, aper);
+		}
+		else if (pcb_strcasecmp(bnd->str, "rect") == 0) {
+			b = gsxl_children(bnd);
+			if (pcb_strcasecmp(STRE(b), "pcb") == 0)
+				ctx->has_pcb_boundary = 1;
+		}
+		else if (pcb_strcasecmp(bnd->str, "rule") == 0) {
+			if (!do_bbox && (dsn_parse_rule(ctx, bnd) != 0))
+				return -1;
+		}
+	}
+	return 0;
+}
 
 static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 {
-	gsxl_node_t *n;
+	int res;
 	pcb_layer_id_t olid;
 	pcb_layer_t *oly;
-	int neg = 0;
 
 	ctx->has_pcb_boundary = 0;
 	if (bnd == NULL)
@@ -146,55 +206,17 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 	}
 	oly = pcb_get_layer(ctx->pcb->Data, olid);
 
-	for(bnd = bnd->children; bnd != NULL; bnd = bnd->next) {
-		if (bnd->str == NULL)
-			continue;
-		if (pcb_strcasecmp(bnd->str, "path") == 0) {
-			pcb_coord_t x, y, lx, ly, fx, fy, aper;
-			int len;
 
-			n = gsxl_children(bnd);
-			if (pcb_strcasecmp(STRE(n), "pcb") == 0) {
-				pcb_message(PCB_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
-				ctx->has_pcb_boundary = 1;
-			}
-			aper = COORD(ctx, n->next);
-			for(len = 0, n = n->next->next; n != NULL; len++) {
-				x = COORD(ctx, n);
-				if (n->next == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
-					break;
-				}
-				n = n->next;
-				y = COORD(ctx, n);
-				n = n->next;
-				if ((x < 0) || (y < 0))
-					neg = 1;
-				if (len == 0) {
-					fx = x;
-					fy = y;
-				}
-				else
-					boundary_line(oly, lx, ly, x, y, aper);
-				lx = x;
-				ly = y;
-			}
-			if ((x != fx) && (y != fy)) /* close the boundary */
-				boundary_line(oly, lx, ly, x, y, aper);
-		}
-		if (pcb_strcasecmp(bnd->str, "rect") == 0) {
-			n = gsxl_children(bnd);
-			if (pcb_strcasecmp(STRE(n), "pcb") == 0)
-				ctx->has_pcb_boundary = 1;
-		}
-		if (pcb_strcasecmp(bnd->str, "rule") == 0) {
-			if (dsn_parse_rule(ctx, bnd) != 0)
-				return -1;
-		}
-	}
+	res = dsn_parse_boundary_(ctx, bnd, 1, oly);
+	res |= dsn_parse_boundary_(ctx, bnd, 0, oly);
+	if (res != 0)
+		return -1;
 
-	if (neg)
+	if ((ctx->bbox.X1 < 0) || (ctx->bbox.Y1 < 0))
 		pcb_message(PCB_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
+
+	ctx->pcb->MaxWidth = ctx->bbox.X2 - ctx->bbox.X1;
+	ctx->pcb->MaxHeight = ctx->bbox.Y2 - ctx->bbox.Y1;
 
 	none:;
 #warning TODO: make up the boundary later on from bbox
