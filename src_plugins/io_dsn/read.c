@@ -428,8 +428,49 @@ do { \
 
 static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-#warning TODO
-return 0;
+	gsxl_node_t *n, *net = wrr->children;
+	pcb_layer_t *ly;
+	pcb_coord_t aper;
+	pcb_coord_t x, y, fx, fy;
+	long len = 0;
+	pcb_poly_t *poly;
+
+	DSN_PARSE_NET(ly, net, return -1);
+
+	if ((net->next == NULL) || (net->next->next == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Not enogh wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
+
+	aper = dsn_load_aper(ctx, net->next);
+
+	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
+	for(n = net->next->next; n != NULL;) {
+		if (isalpha(*n->str))
+			break;
+		x = COORDX(ctx, n);
+		if (n->next == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+			break;
+		}
+		n = n->next;
+		y = COORDY(ctx, n);
+		n = n->next;
+		if (len == 0) {
+			fx = x;
+			fy = y;
+		}
+		else {
+			if ((fx == x) && (fy == y))
+				break;
+		}
+		pcb_poly_point_new(poly, x, y);
+		len++;
+	}
+	pcb_add_poly_on_layer(ly, poly);
+	if (len < 3)
+		pcb_message(PCB_MSG_ERROR, "Not enough coordinate pairs for a polygon (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+	return 0;
 }
 
 static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
@@ -578,7 +619,7 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "poly") == 0) {
+		if (pcb_strcasecmp(wrr->str, "polygon") == 0) {
 			if (dsn_parse_wire_poly(ctx, wrr) != 0)
 				return -1;
 		}
