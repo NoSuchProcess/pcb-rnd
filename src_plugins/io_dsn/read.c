@@ -471,10 +471,70 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 }
 
+static int qarc_angle(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t x, pcb_coord_t y, pcb_coord_t *r)
+{
+	pcb_coord_t dx = x - cx;
+	pcb_coord_t dy = y - cy;
+
+	if ((dx != 0) && (dy != 0))
+		return -1;
+
+	if (dx < 0) {
+		*r = -dx;
+		return 0;
+	}
+	if (dx > 0) {
+		*r = dx;
+		return 180;
+	}
+
+	if (dy < 0) {
+		*r = -dy;
+		return 90;
+	}
+	if (dy > 0) {
+		*r = dy;
+		return 270;
+	}
+
+	return -1; /* all were zero */
+}
+
 static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-#warning TODO
-return 0;
+	gsxl_node_t *n, *coords, *net = wrr->children;
+	pcb_layer_t *ly;
+	pcb_coord_t r1, r2, aper;
+	pcb_coord_t crd[6]; /* sx, sy, ex, ey, cx, cy */
+	int i, len = 0, sa, ea;
+
+	DSN_PARSE_NET(ly, net, return -1);
+
+	if ((net->next == NULL) || ((coords = net->next->next) == NULL)) {
+		not_enough:;
+		pcb_message(PCB_MSG_ERROR, "Not enogh wire qarc attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
+
+	aper = COORD(ctx, net->next);
+
+	for(i = 0; i < 6; i++) {
+		if (coords == NULL)
+			goto not_enough;
+		crd[i] = ((i % 2) == 0) ? COORDX(ctx, coords) : COORDY(ctx, coords);
+		coords = coords->next;
+	}
+
+	sa = qarc_angle(crd[4], crd[5], crd[0], crd[1], &r1);
+	ea = qarc_angle(crd[4], crd[5], crd[2], crd[3], &r2);
+	if ((sa == -1) || (ea == -1) || (r1 != r2)) {
+		pcb_message(PCB_MSG_ERROR, "invalid qarcs coords (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
+
+	pcb_arc_new(ly, crd[4], crd[5], r1, r1, sa, ea-sa, aper, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+
+	return 0;
 }
 
 static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
