@@ -259,11 +259,11 @@ extern const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper;
 extern const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper;
 
 /* predefined common default map entries for building a stack */
-const pcb_dflgmap_t pcb_dflg_top_copper;
-const pcb_dflgmap_t pcb_dflg_int_copper;
-const pcb_dflgmap_t pcb_dflg_substrate;
-const pcb_dflgmap_t pcb_dflg_bot_copper;
-const pcb_dflgmap_t pcb_dflg_outline;
+extern const pcb_dflgmap_t pcb_dflg_top_copper;
+extern const pcb_dflgmap_t pcb_dflg_int_copper;
+extern const pcb_dflgmap_t pcb_dflg_substrate;
+extern const pcb_dflgmap_t pcb_dflg_bot_copper;
+extern const pcb_dflgmap_t pcb_dflg_outline;
 
 
 /* Overwrite an existing group from a default layer group map entry and create
