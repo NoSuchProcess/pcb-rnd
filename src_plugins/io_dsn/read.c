@@ -51,6 +51,7 @@ typedef struct {
 	const pcb_unit_t *unit;
 	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
+	pcb_coord_t default_width;
 	unsigned has_pcb_boundary:1;
 } dsn_read_t;
 
@@ -126,6 +127,16 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 
 /*** tree parse ***/
 
+static pcb_coord_t dsn_load_aper(dsn_read_t *ctx, gsxl_node_t *c)
+{
+	pcb_coord_t res = COORD(ctx, c);
+	if (res == 0)
+		res = ctx->default_width;
+	if (res == 0)
+		res = 1;
+	return res;
+}
+
 static void parse_attribute(dsn_read_t *ctx, pcb_attribute_list_t *attr, gsxl_node_t *kv)
 {
 	for(;kv != NULL; kv = kv->next)
@@ -169,9 +180,13 @@ static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src, int
 }
 
 
-static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *bnd)
+static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *rule)
 {
-#warning TODO
+	if ((rule == NULL) || (rule->str == NULL))
+		return 0;
+	if (pcb_strcasecmp(rule->str, "width") == 0)
+		ctx->default_width = COORD(ctx, rule->children);
+#warning TODO: load the rest
 	return 0;
 }
 
@@ -252,10 +267,6 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 			}
 			else
 				pcb_box_bump_box(&ctx->bbox, &box);
-		}
-		else if (pcb_strcasecmp(bnd->str, "rule") == 0) {
-			if (!do_bbox && (dsn_parse_rule(ctx, bnd) != 0))
-				return -1;
 		}
 	}
 	return 0;
@@ -387,6 +398,10 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 			if (dsn_parse_boundary(ctx, n) != 0)
 				return -1;
 		}
+		else if (pcb_strcasecmp(n->str, "rule") == 0) {
+			if (dsn_parse_rule(ctx, n->children) != 0)
+				return -1;
+		}
 	}
 
 	if ((ctx->bbox.X1 < 0) || (ctx->bbox.Y1 < 0))
@@ -450,7 +465,7 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 		return -1;
 	}
 
-	aper = COORD(ctx, net->next);
+	aper = dsn_load_aper(ctx, net->next);
 
 	for(n = net->next->next; n != NULL;) {
 		x = COORDX(ctx, n);
@@ -516,7 +531,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 		return -1;
 	}
 
-	aper = COORD(ctx, net->next);
+	aper = dsn_load_aper(ctx, net->next);
 
 	for(i = 0; i < 6; i++) {
 		if (coords == NULL)
