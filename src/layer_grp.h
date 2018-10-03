@@ -263,6 +263,7 @@ const pcb_dflgmap_t pcb_dflg_top_copper;
 const pcb_dflgmap_t pcb_dflg_int_copper;
 const pcb_dflgmap_t pcb_dflg_substrate;
 const pcb_dflgmap_t pcb_dflg_bot_copper;
+const pcb_dflgmap_t pcb_dflg_outline;
 
 
 /* Overwrite an existing group from a default layer group map entry and create
