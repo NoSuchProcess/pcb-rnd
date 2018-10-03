@@ -98,6 +98,14 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 }
 
 /*** tree parse ***/
+#define CHECK_TOO_MANY_LAYERS(node, num) \
+do { \
+	if (num >= PCB_MAX_LAYERGRP) { \
+		pcb_message(PCB_MSG_ERROR, "Too many layer groups in the layer stack (at %ld:%ld)\n", (long)node->line, (long)node->col); \
+		return -1; \
+	} \
+} while(0)
+
 static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
@@ -110,15 +118,20 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 	}
 
 	pcb_layergrp_inhibit_inc();
-	for(m = pcb_dflgmap; m <= pcb_dflgmap_last_top_noncopper; m++)
+	for(m = pcb_dflgmap; m <= pcb_dflgmap_last_top_noncopper; m++) {
+		CHECK_TOO_MANY_LAYERS(str, ctx->pcb->LayerGroups.len);
 		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m, NULL, NULL);
+	}
 
 	for(n = str->children; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
 		else if (pcb_strcasecmp(n->str, "layer") == 0) {
-			if (botcop != NULL)
+			if (botcop != NULL) {
+				CHECK_TOO_MANY_LAYERS(n, ctx->pcb->LayerGroups.len);
 				pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], &pcb_dflg_substrate, NULL, NULL);
+			}
+			CHECK_TOO_MANY_LAYERS(n, ctx->pcb->LayerGroups.len);
 			botcop = &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++];
 			if (topcop == NULL)
 				topcop = botcop;
@@ -135,8 +148,10 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 	topcop->ltype = PCB_LYT_TOP | PCB_LYT_COPPER;
 	botcop->ltype = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 
-	for(m = pcb_dflgmap_first_bottom_noncopper; m->name != NULL; m++)
+	for(m = pcb_dflgmap_first_bottom_noncopper; m->name != NULL; m++) {
+		CHECK_TOO_MANY_LAYERS(str, ctx->pcb->LayerGroups.len);
 		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m, NULL, NULL);
+	}
 
 	pcb_layergrp_inhibit_dec();
 	return 0;
