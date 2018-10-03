@@ -100,6 +100,17 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 #define COORDX(ctx, n) COORD(ctx, n)
 #define COORDY(ctx, n) (ctx->bbox.Y2 - COORD(ctx, n))
 
+#define DSN_LOAD_COORDS_XY(dst, src, maxpts, err_statement) \
+	do { \
+		int __i__, __maxpts__ = (maxpts); \
+		gsxl_node_t *__n__ = (src); \
+		for(__i__ = 0; __i__ < __maxpts__; __i__++) { \
+			if (coords == NULL) { err_statement; } \
+			crd[__i__] = ((__i__ % 2) == 0) ? COORDX(ctx, __n__) : COORDY(ctx, __n__); \
+			__n__ = __n__->next; \
+		} \
+	} while(0)
+
 static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 {
 	const pcb_unit_t *old = ctx->unit;
@@ -591,12 +602,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	aper = dsn_load_aper(ctx, net->next);
 
-	for(i = 0; i < 6; i++) {
-		if (coords == NULL)
-			goto not_enough;
-		crd[i] = ((i % 2) == 0) ? COORDX(ctx, coords) : COORDY(ctx, coords);
-		coords = coords->next;
-	}
+	DSN_LOAD_COORDS_XY(crd, coords, 6, goto not_enough);
 
 	sa = qarc_angle(crd[4], crd[5], crd[0], crd[1], &r1);
 	ea = qarc_angle(crd[4], crd[5], crd[2], crd[3], &r2);
