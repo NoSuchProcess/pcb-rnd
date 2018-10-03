@@ -1013,6 +1013,18 @@ const pcb_dflgmap_t pcb_dflgmap[] = {
 
 const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper = pcb_dflgmap+2;
 const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper = pcb_dflgmap+6;
+const pcb_dflgmap_t pcb_dflg_top_copper = {
+	"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER, 0, 0
+};
+const pcb_dflgmap_t pcb_dflg_int_copper = {
+	"int_copper",          PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0
+};
+const pcb_dflgmap_t pcb_dflg_substrate = {
+	"substrate",           PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, 0, 0
+};
+const pcb_dflgmap_t pcb_dflg_bot_copper = {
+	"bot_copper",          PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0
+};
 
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src)
 {
