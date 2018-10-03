@@ -505,11 +505,11 @@ static int qarc_angle(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t x, pcb_coord_t
 
 	if (dy < 0) {
 		*r = -dy;
-		return 90;
+		return 270;
 	}
 	if (dy > 0) {
 		*r = dy;
-		return 270;
+		return 90;
 	}
 
 	return -1; /* all were zero */
