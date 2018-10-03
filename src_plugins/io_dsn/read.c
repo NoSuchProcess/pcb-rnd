@@ -47,6 +47,7 @@ typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;
 	const pcb_unit_t *unit;
+	unsigned has_pcb_boundary:1;
 } dsn_read_t;
 
 static char *STR(gsxl_node_t *node)
@@ -98,6 +99,22 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 }
 
 /*** tree parse ***/
+
+static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
+{
+	ctx->has_pcb_boundary = 0;
+	if (bnd == NULL)
+		goto none;
+
+
+
+	none:;
+#warning TODO: make up the boundary later on from bbox
+	if (!ctx->has_pcb_boundary)
+		pcb_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\n");
+	return 0;
+}
+
 #define CHECK_TOO_MANY_LAYERS(node, num) \
 do { \
 	if (num >= PCB_MAX_LAYERGRP) { \
@@ -154,6 +171,10 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 	}
 
 	pcb_layergrp_inhibit_dec();
+
+	if (dsn_parse_boundary(ctx, nboundary) != 0)
+		return -1;
+
 	return 0;
 }
 
