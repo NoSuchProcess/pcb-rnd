@@ -129,6 +129,31 @@ static void parse_attribute(dsn_read_t *ctx, pcb_attribute_list_t *attr, gsxl_no
 		pcb_attribute_put(attr, STRE(kv), STRE(kv->children));
 }
 
+static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src)
+{
+	pcb_coord_t x, y;
+
+	/* set all corners to first x;y */
+	dst->X1 = dst->X2 = COORDX(ctx, src);
+	if (src->next == NULL) goto err;
+	src = src->next;
+	dst->Y1 = dst->Y2 = COORDY(ctx, src);
+	if (src->next == NULL) goto err;
+	src = src->next;
+
+	/* bump with second x;y */
+	x = COORDX(ctx, src);
+	if (src->next == NULL) goto err;
+	src = src->next;
+	y = COORDY(ctx, src);
+	pcb_box_bump_point(dst, x, y);
+	return 0;
+
+	err:;
+	pcb_message(PCB_MSG_ERROR, "Missing coord in rect (at %ld:%ld)\n", (long)src->line, (long)src->col);
+}
+
+
 static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *bnd)
 {
 #warning TODO
@@ -188,9 +213,12 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 				boundary_line(oly, lx, ly, x, y, aper);
 		}
 		else if (pcb_strcasecmp(bnd->str, "rect") == 0) {
+			pcb_box_t box;
 			b = gsxl_children(bnd);
 			if (pcb_strcasecmp(STRE(b), "pcb") == 0)
 				ctx->has_pcb_boundary = 1;
+			if (dsn_parse_rect(ctx, &box, b->next) != 0)
+				return -1;
 #warning TODO
 		}
 		else if (pcb_strcasecmp(bnd->str, "rule") == 0) {
@@ -340,8 +368,15 @@ return 0;
 
 static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-#warning TODO
-return 0;
+	pcb_box_t box;
+	gsxl_node_t *net = wrr->children->next;
+	
+	if (dsn_parse_rect(ctx, &box, net->next) != 0)
+		return -1;
+
+#warning TODO: draw poly on box
+
+	return 0;
 }
 
 static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
