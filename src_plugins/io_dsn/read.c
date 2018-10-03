@@ -158,7 +158,8 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 			for(len = 0, n = n->next; n != NULL; len++) {
 				x = COORD(ctx, n);
 				if (n->next == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Not rnough coordinate values (missing y)\n");
+					pcb_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+					break;
 				}
 				n = n->next;
 				y = COORD(ctx, n);
