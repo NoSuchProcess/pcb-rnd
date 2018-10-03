@@ -414,7 +414,7 @@ return 0;
 static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	pcb_box_t box;
-	gsxl_node_t *net = wrr->children->next;
+	gsxl_node_t *net = wrr->children;
 	pcb_layer_t *ly;
 
 	DSN_PARSE_NET(ly, net, return -1);
@@ -429,7 +429,7 @@ static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	gsxl_node_t *n, *net = wrr->children->next;
+	gsxl_node_t *n, *net = wrr->children;
 	pcb_layer_t *ly;
 	pcb_coord_t aper;
 	pcb_coord_t x, y, px, py;
