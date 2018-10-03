@@ -1027,7 +1027,7 @@ const pcb_dflgmap_t pcb_dflg_bot_copper = {
 };
 
 const pcb_dflgmap_t pcb_dflg_outline = {
-	"bot_copper",          PCB_LYT_BOUNDARY, "uroute", 0, 0
+	"outline",             PCB_LYT_BOUNDARY, "uroute", 0, 0
 };
 
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname)
