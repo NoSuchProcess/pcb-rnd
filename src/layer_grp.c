@@ -999,15 +999,15 @@ void pcb_layergroup_free_stack(pcb_layer_stack_t *st)
 }
 
 const pcb_dflgmap_t pcb_dflgmap[] = {
-	{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO, 0},
-	{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO, 0},
-	{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO, 0},
-	{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0, 0},
-	{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0},
-	{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0},
-	{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO, 1},
-	{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO, 1},
-	{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO, 1},
+	{"top_paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO, 0},
+	{"top_silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO, 0},
+	{"top_mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO, 0},
+	{"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0, 0},
+	{"any_internal_copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0},
+	{"bottom_copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0},
+	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO, 1},
+	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO, 1},
+	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO, 1},
 	{NULL, 0}
 };
 
