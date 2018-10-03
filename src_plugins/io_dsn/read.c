@@ -191,6 +191,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 			b = gsxl_children(bnd);
 			if (pcb_strcasecmp(STRE(b), "pcb") == 0)
 				ctx->has_pcb_boundary = 1;
+#warning TODO
 		}
 		else if (pcb_strcasecmp(bnd->str, "rule") == 0) {
 			if (!do_bbox && (dsn_parse_rule(ctx, bnd) != 0))
@@ -227,8 +228,13 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 
 static int parse_layer_type(dsn_read_t *ctx, pcb_layergrp_t *grp, const char *ty)
 {
-	if (pcb_strcasecmp(ty, "signal") == 0)
+	if ((pcb_strcasecmp(ty, "signal") == 0) || (pcb_strcasecmp(ty, "jumper") == 0))
 		return 0; /* nothig special to do */
+	if ((pcb_strcasecmp(ty, "power") == 0) || (pcb_strcasecmp(ty, "mixed") == 0)) {
+#warning TODO: place poly
+		return 0;
+	}
+
 	pcb_message(PCB_MSG_WARNING, "Ignoring unknown layer type '%s' for %s\n", ty, grp->name);
 	return 0;
 }
