@@ -123,9 +123,10 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 
 /*** tree parse ***/
 
-static void parse_attribute(dsn_read_t *ctx, pcb_attribute_t *attr, gsxl_node_t *kv)
+static void parse_attribute(dsn_read_t *ctx, pcb_attribute_list_t *attr, gsxl_node_t *kv)
 {
-	printf("***PROP\n");
+	for(;kv != NULL; kv = kv->next)
+		pcb_attribute_put(attr, STRE(kv), STRE(kv->children));
 }
 
 static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *bnd)
