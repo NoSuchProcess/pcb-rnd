@@ -65,6 +65,8 @@ static char *STRE(gsxl_node_t *node)
 	return node->str;
 }
 
+/* check if node is named name and if so, save the node in nname for
+   later reference; assumes node->str is not NULL */
 #define if_save_uniq(node, name) \
 	if (pcb_strcasecmp(node->str, #name) == 0) { \
 		if (n ## name != NULL) { \
@@ -81,9 +83,9 @@ static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 	if ((nu == NULL) || (nu->children == NULL))
 		return ctx->unit;
 	
-	ctx->unit = get_unit_struct(nu->children->str);
+	ctx->unit = get_unit_struct(STRE(gsxl_children(nu)));
 	if (ctx->unit == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", nu->children->str, (long)nu->line, (long)nu->col);
+		pcb_message(PCB_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", STRE(gsxl_children(nu)), (long)nu->line, (long)nu->col);
 		return NULL;
 	}
 
@@ -161,9 +163,9 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	}
 
 	if ((nresolution != NULL) && (nresolution->children != NULL)) {
-		ctx->unit = get_unit_struct(nresolution->children->str);
+		ctx->unit = get_unit_struct(STRE(gsxl_children(nresolution)));
 		if (ctx->unit == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid resolution unit: '%s'\n", nresolution->children->str);
+			pcb_message(PCB_MSG_ERROR, "Invalid resolution unit: '%s'\n", STRE(gsxl_children(nresolution)));
 			return -1;
 		}
 	}
@@ -278,7 +280,7 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 
 	gsxl_compact_tree(&rdctx.dom);
 	rn = rdctx.dom.root;
-	if (pcb_strcasecmp(rn->str, "pcb") != 0) {
+	if ((rn == NULL) || (rn->str == NULL) || (pcb_strcasecmp(rn->str, "pcb") != 0)) {
 		pcb_message(PCB_MSG_ERROR, "Root node should be pcb, got %s instead\n", rn->str);
 		goto error;
 	}
