@@ -83,6 +83,8 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
+	gsxl_node_t *n, *nboundary = NULL;
+	pcb_layergrp_t *topcop = NULL, *botcop = NULL;
 
 	if (str == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not parse board without a structure subtree\n");
@@ -91,10 +93,32 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 
 	pcb_layergrp_inhibit_inc();
 	for(m = pcb_dflgmap; m <= pcb_dflgmap_last_top_noncopper; m++)
-		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m);
+		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m, NULL, NULL);
+
+	for(n = str->children; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			continue;
+		else if (pcb_strcasecmp(n->str, "layer") == 0) {
+			if (botcop != NULL)
+				pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], &pcb_dflg_substrate, NULL, NULL);
+			botcop = &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++];
+			if (topcop == NULL)
+				topcop = botcop;
+			pcb_layergrp_set_dflgly(ctx->pcb, botcop, &pcb_dflg_int_copper, NULL, NULL);
+		}
+		else if_save_uniq(n, boundary)
+	}
+
+	if (topcop == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not parse board without a copper layers\n");
+		return -1;
+	}
+
+	topcop->ltype = PCB_LYT_TOP | PCB_LYT_COPPER;
+	botcop->ltype = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 
 	for(m = pcb_dflgmap_first_bottom_noncopper; m->name != NULL; m++)
-		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m);
+		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m, NULL, NULL);
 
 	pcb_layergrp_inhibit_dec();
 	return 0;
