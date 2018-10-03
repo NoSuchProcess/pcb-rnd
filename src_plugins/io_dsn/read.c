@@ -484,12 +484,12 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 		if (wrr->str == NULL)
 			continue;
 		if (pcb_strcasecmp(wrr->str, "type")) { }
-		else if (pcb_strcasecmp(wrr->str, "attr")) { }
-		else if (pcb_strcasecmp(wrr->str, "net")) { }
-		else if (pcb_strcasecmp(wrr->str, "turret")) { }
-		else if (pcb_strcasecmp(wrr->str, "shield")) { }
-		else if (pcb_strcasecmp(wrr->str, "connect")) { }
-		else if (pcb_strcasecmp(wrr->str, "supply")) { }
+		else if (pcb_strcasecmp(wrr->str, "attr") == 0) { }
+		else if (pcb_strcasecmp(wrr->str, "net") == 0) { }
+		else if (pcb_strcasecmp(wrr->str, "turret") == 0) { }
+		else if (pcb_strcasecmp(wrr->str, "shield") == 0) { }
+		else if (pcb_strcasecmp(wrr->str, "connect") == 0) { }
+		else if (pcb_strcasecmp(wrr->str, "supply") == 0) { }
 	}
 */
 
@@ -497,23 +497,23 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "poly")) {
+		if (pcb_strcasecmp(wrr->str, "poly") == 0) {
 			if (dsn_parse_wire_poly(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "path")) {
+		else if (pcb_strcasecmp(wrr->str, "path") == 0) {
 			if (dsn_parse_wire_path(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "qarc")) {
+		else if (pcb_strcasecmp(wrr->str, "qarc") == 0) {
 			if (dsn_parse_wire_qarc(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "rect")) {
+		else if (pcb_strcasecmp(wrr->str, "rect") == 0) {
 			if (dsn_parse_wire_rect(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "circle")) {
+		else if (pcb_strcasecmp(wrr->str, "circle") == 0) {
 			if (dsn_parse_wire_circle(ctx, wrr) != 0)
 				return -1;
 		}
@@ -532,15 +532,15 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "wire")) {
+		if (pcb_strcasecmp(wrr->str, "wire") == 0) {
 			if (dsn_parse_wire(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "via")) {
+		else if (pcb_strcasecmp(wrr->str, "via") == 0) {
 			if (dsn_parse_via(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "bond")) {
+		else if (pcb_strcasecmp(wrr->str, "bond") == 0) {
 			pcb_message(PCB_MSG_WARNING, "unhandled bond shape (at %ld:%ld) - please send the dsn file as a bugreport\n", (long)wrr->line, (long)wrr->col);
 		}
 #warning TODO: what else
