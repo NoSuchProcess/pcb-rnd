@@ -49,6 +49,22 @@ typedef struct {
 	const pcb_unit_t *unit;
 } dsn_read_t;
 
+static char *STR(gsxl_node_t *node)
+{
+	if (node == NULL)
+		return NULL;
+	return node->str;
+}
+
+static char *STRE(gsxl_node_t *node)
+{
+	if (node == NULL)
+		return "";
+	if (node->str == NULL)
+		return "";
+	return node->str;
+}
+
 #define if_save_uniq(node, name) \
 	if (pcb_strcasecmp(node->str, #name) == 0) { \
 		if (n ## name != NULL) { \
@@ -104,7 +120,7 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 			botcop = &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++];
 			if (topcop == NULL)
 				topcop = botcop;
-			pcb_layergrp_set_dflgly(ctx->pcb, botcop, &pcb_dflg_int_copper, NULL, NULL);
+			pcb_layergrp_set_dflgly(ctx->pcb, botcop, &pcb_dflg_int_copper, STR(gsxl_children(n)), STR(gsxl_children(n)));
 		}
 		else if_save_uniq(n, boundary)
 	}
