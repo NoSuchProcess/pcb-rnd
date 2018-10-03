@@ -247,6 +247,7 @@ void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st);
 typedef struct pcb_dflgmap_s {
 	const char *name;
 	pcb_layer_type_t lyt;
+	const char *purpose;
 	pcb_layer_combining_t comb;
 	int force_end;
 } pcb_dflgmap_t;

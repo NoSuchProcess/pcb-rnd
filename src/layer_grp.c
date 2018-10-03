@@ -999,31 +999,35 @@ void pcb_layergroup_free_stack(pcb_layer_stack_t *st)
 }
 
 const pcb_dflgmap_t pcb_dflgmap[] = {
-	{"top_paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO, 0},
-	{"top_silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO, 0},
-	{"top_mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO, 0},
-	{"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0, 0},
-	{"any_internal_copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0},
-	{"bottom_copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0},
-	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO, 1},
-	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO, 1},
-	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO, 1},
+	{"top_paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     NULL, PCB_LYC_AUTO, 0},
+	{"top_silk",            PCB_LYT_TOP | PCB_LYT_SILK,      NULL, PCB_LYC_AUTO, 0},
+	{"top_mask",            PCB_LYT_TOP | PCB_LYT_MASK,      NULL, PCB_LYC_SUB | PCB_LYC_AUTO, 0},
+	{"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    NULL, 0, 0},
+	{"any_internal_copper", PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0, 0},
+	{"bottom_copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0, 0},
+	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   NULL, PCB_LYC_SUB | PCB_LYC_AUTO, 1},
+	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, 1},
+	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, 1},
 	{NULL, 0}
 };
 
 const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper = pcb_dflgmap+2;
 const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper = pcb_dflgmap+6;
 const pcb_dflgmap_t pcb_dflg_top_copper = {
-	"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER, 0, 0
+	"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0, 0
 };
 const pcb_dflgmap_t pcb_dflg_int_copper = {
-	"int_copper",          PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0
+	"int_copper",          PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0, 0
 };
 const pcb_dflgmap_t pcb_dflg_substrate = {
-	"substrate",           PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, 0, 0
+	"substrate",           PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL, 0, 0
 };
 const pcb_dflgmap_t pcb_dflg_bot_copper = {
-	"bot_copper",          PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0
+	"bot_copper",          PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0, 0
+};
+
+const pcb_dflgmap_t pcb_dflg_outline = {
+	"bot_copper",          PCB_LYT_BOUNDARY, "uroute", 0, 0
 };
 
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname)
@@ -1037,6 +1041,12 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 
 	grp->name = pcb_strdup(grname);
 	grp->ltype = src->lyt;
+
+	free(grp->purpose);
+	grp->purpose = NULL;
+	if (src->purpose != NULL)
+		pcb_layergrp_set_purpose__(grp, pcb_strdup(src->purpose));
+
 	if (grp->len == 0) {
 		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, lyname);
 		if (lid >= 0) {
