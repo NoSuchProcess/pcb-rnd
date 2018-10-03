@@ -123,6 +123,11 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 
 /*** tree parse ***/
 
+static void parse_attribute(dsn_read_t *ctx, pcb_attribute_t *attr, gsxl_node_t *kv)
+{
+	printf("***PROP\n");
+}
+
 static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *bnd)
 {
 #warning TODO
@@ -219,6 +224,14 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 	return 0;
 }
 
+static int parse_layer_type(dsn_read_t *ctx, pcb_layergrp_t *grp, const char *ty)
+{
+	if (pcb_strcasecmp(ty, "signal") == 0)
+		return 0; /* nothig special to do */
+	pcb_message(PCB_MSG_WARNING, "Ignoring unknown layer type '%s' for %s\n", ty, grp->name);
+	return 0;
+}
+
 #define CHECK_TOO_MANY_LAYERS(node, num) \
 do { \
 	if (num >= PCB_MAX_LAYERGRP) { \
@@ -230,7 +243,7 @@ do { \
 static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
-	gsxl_node_t *n;
+	gsxl_node_t *n, *i;
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL;
 
 	if (str == NULL) {
@@ -257,6 +270,17 @@ static int dsn_parse_struct(dsn_read_t *ctx, gsxl_node_t *str)
 			if (topcop == NULL)
 				topcop = botcop;
 			pcb_layergrp_set_dflgly(ctx->pcb, botcop, &pcb_dflg_int_copper, STR(gsxl_children(n)), STR(gsxl_children(n)));
+			if (n->children != NULL) {
+				for(i = n->children->next; i != NULL; i = i->next) {
+					if (pcb_strcasecmp(i->str, "type") == 0) {
+						if (parse_layer_type(ctx, botcop, STRE(i->children)) != 0)
+							return -1;
+					}
+					else if (pcb_strcasecmp(i->str, "property") == 0) {
+						parse_attribute(ctx, &botcop->Attributes, i->children);
+					}
+				}
+			}
 		}
 	}
 
