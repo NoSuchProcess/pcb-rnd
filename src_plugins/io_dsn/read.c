@@ -132,7 +132,7 @@ static void parse_attribute(dsn_read_t *ctx, pcb_attribute_list_t *attr, gsxl_no
 		pcb_attribute_put(attr, STRE(kv), STRE(kv->children));
 }
 
-static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src)
+static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src, int no_y_flip)
 {
 	pcb_coord_t x, y;
 
@@ -145,7 +145,10 @@ static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src)
 	dst->X1 = dst->X2 = COORDX(ctx, src);
 	if (src->next == NULL) goto err;
 	src = src->next;
-	dst->Y1 = dst->Y2 = COORDY(ctx, src);
+	if (no_y_flip)
+		dst->Y1 = dst->Y2 = COORD(ctx, src);
+	else
+		dst->Y1 = dst->Y2 = COORDY(ctx, src);
 	if (src->next == NULL) goto err;
 	src = src->next;
 
@@ -153,7 +156,10 @@ static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src)
 	x = COORDX(ctx, src);
 	if (src->next == NULL) goto err;
 	src = src->next;
-	y = COORDY(ctx, src);
+	if (no_y_flip)
+		y = COORD(ctx, src);
+	else
+		y = COORDY(ctx, src);
 	pcb_box_bump_point(dst, x, y);
 	return 0;
 
@@ -236,12 +242,16 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 			}
 			if (pcb_strcasecmp(STRE(b), "pcb") == 0)
 				ctx->has_pcb_boundary = 1;
-			if (dsn_parse_rect(ctx, &box, b->next) != 0)
+			if (dsn_parse_rect(ctx, &box, b->next, do_bbox) != 0)
 				return -1;
-			boundary_line(oly, box.X1, box.Y1, box.X1, box.Y2, 0);
-			boundary_line(oly, box.X1, box.Y2, box.X2, box.Y2, 0);
-			boundary_line(oly, box.X2, box.Y2, box.X1, box.Y2, 0);
-			boundary_line(oly, box.X1, box.Y2, box.X1, box.Y1, 0);
+			if (!do_bbox) {
+				boundary_line(oly, box.X1, box.Y1, box.X1, box.Y2, 0);
+				boundary_line(oly, box.X1, box.Y2, box.X2, box.Y2, 0);
+				boundary_line(oly, box.X2, box.Y2, box.X1, box.Y2, 0);
+				boundary_line(oly, box.X1, box.Y2, box.X1, box.Y1, 0);
+			}
+			else
+				pcb_box_bump_box(&ctx->bbox, &box);
 		}
 		else if (pcb_strcasecmp(bnd->str, "rule") == 0) {
 			if (!do_bbox && (dsn_parse_rule(ctx, bnd) != 0))
@@ -417,7 +427,7 @@ static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	DSN_PARSE_NET(ly, net, return -1);
 
-	if (dsn_parse_rect(ctx, &box, net->next) != 0)
+	if (dsn_parse_rect(ctx, &box, net->next, 0) != 0)
 		return -1;
 
 	pcb_poly_new_from_rectangle(ly, box.X1, box.Y1, box.X2, box.Y2, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
