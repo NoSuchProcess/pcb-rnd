@@ -131,8 +131,6 @@ static pcb_coord_t dsn_load_aper(dsn_read_t *ctx, gsxl_node_t *c)
 {
 	pcb_coord_t res = COORD(ctx, c);
 	if (res == 0)
-		res = ctx->default_width;
-	if (res == 0)
 		res = 1;
 	return res;
 }
