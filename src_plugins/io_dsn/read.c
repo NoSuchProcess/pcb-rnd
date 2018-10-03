@@ -134,6 +134,7 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 	gsxl_node_t *n;
 	pcb_layer_id_t olid;
 	pcb_layer_t *oly;
+	int neg = 0;
 
 	ctx->has_pcb_boundary = 0;
 	if (bnd == NULL)
@@ -167,6 +168,8 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 				n = n->next;
 				y = COORD(ctx, n);
 				n = n->next;
+				if ((x < 0) || (y < 0))
+					neg = 1;
 				if (len == 0) {
 					fx = x;
 					fy = y;
@@ -189,6 +192,9 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 				return -1;
 		}
 	}
+
+	if (neg)
+		pcb_message(PCB_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
 
 	none:;
 #warning TODO: make up the boundary later on from bbox
