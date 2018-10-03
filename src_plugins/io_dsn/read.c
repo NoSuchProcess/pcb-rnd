@@ -121,9 +121,11 @@ static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *bnd)
 	return 0;
 }
 
-static void boundary_line(pcb_layer_t *oly, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void boundary_line(pcb_layer_t *oly, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t aper)
 {
-	pcb_line_new(oly, x1, y1, x2, 2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
+	if (aper <= 0)
+		aper = 1;
+	pcb_line_new(oly, x1, y1, x2, y2, aper, 0, pcb_no_flags());
 }
 
 
@@ -147,7 +149,7 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 		if (bnd->str == NULL)
 			continue;
 		if (pcb_strcasecmp(bnd->str, "path") == 0) {
-			pcb_coord_t x, y, lx, ly, fx, fy;
+			pcb_coord_t x, y, lx, ly, fx, fy, aper;
 			int len;
 
 			n = gsxl_children(bnd);
@@ -155,7 +157,8 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 				pcb_message(PCB_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
 				ctx->has_pcb_boundary = 1;
 			}
-			for(len = 0, n = n->next; n != NULL; len++) {
+			aper = COORD(ctx, n->next);
+			for(len = 0, n = n->next->next; n != NULL; len++) {
 				x = COORD(ctx, n);
 				if (n->next == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
@@ -169,12 +172,12 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 					fy = y;
 				}
 				else
-					boundary_line(oly, lx, ly, x, y);
+					boundary_line(oly, lx, ly, x, y, aper);
 				lx = x;
 				ly = y;
 			}
 			if ((x != fx) && (y != fy)) /* close the boundary */
-				boundary_line(oly, lx, ly, x, y);
+				boundary_line(oly, lx, ly, x, y, aper);
 		}
 		if (pcb_strcasecmp(bnd->str, "rect") == 0) {
 			n = gsxl_children(bnd);
