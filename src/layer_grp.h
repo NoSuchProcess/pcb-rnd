@@ -266,6 +266,6 @@ const pcb_dflgmap_t pcb_dflg_bot_copper;
 
 /* Overwrite an existing group from a default layer group map entry and create
    a layer in the group */
-void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src);
+void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname);
 
 #endif

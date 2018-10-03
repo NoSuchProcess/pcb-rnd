@@ -1026,13 +1026,19 @@ const pcb_dflgmap_t pcb_dflg_bot_copper = {
 	"bot_copper",          PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0, 0
 };
 
-void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src)
+void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname)
 {
 	pcb_layergrp_id_t gid = grp - pcb->LayerGroups.grp;
-	grp->name = pcb_strdup(src->name);
+
+	if (grname == NULL)
+		grname = src->name;
+	if (lyname == NULL)
+		lyname = src->name;
+
+	grp->name = pcb_strdup(grname);
 	grp->ltype = src->lyt;
 	if (grp->len == 0) {
-		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, src->name);
+		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, lyname);
 		if (lid >= 0) {
 			pcb->Data->Layer[lid].comb = src->comb;
 		}
@@ -1053,7 +1059,7 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 		}
 		else
 			grp = pcb_get_grp_new_intern_(pcb, 1, m->force_end);
-		pcb_layergrp_set_dflgly(pcb, grp, m);
+		pcb_layergrp_set_dflgly(pcb, grp, m, NULL, NULL);
 	}
 	inhibit_notify--;
 	NOTIFY(pcb);
