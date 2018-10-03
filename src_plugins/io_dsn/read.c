@@ -427,6 +427,65 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	return 0;
 }
 
+static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
+{
+	const pcb_unit_t *old_unit;
+	gsxl_node_t *n;
+
+	for(n = wrr->children; n != NULL; n = n->next)
+		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0))
+			old_unit = push_unit(ctx, n);
+
+	for(n = wrr->children; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			continue;
+		if (pcb_strcasecmp(n->str, "shape") == 0) {
+#warning TODO: load shapes and store in local array
+		}
+		else if (pcb_strcasecmp(n->str, "rule") == 0) {
+#warning TODO: pick up clearance
+		}
+		else if ((pcb_strcasecmp(n->str, "rotate") == 0) || (pcb_strcasecmp(n->str, "absolute") == 0)) {
+			if (pcb_strcasecmp(STRE(n->children), "off") == 0) {
+				pcb_message(PCB_MSG_WARNING, "unhandled padstack flag %s (at %ld:%ld) - this property will be ignored\n", n->str, (long)n->line, (long)n->col);
+			}
+		}
+	}
+
+	if (old_unit != NULL)
+		pop_unit(ctx, old_unit);
+
+	return 0;
+}
+
+static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *wrr)
+{
+#warning TODO
+	return 0;
+}
+
+static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
+{
+	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
+		if (wrr->str == NULL)
+			continue;
+		if (pcb_strcasecmp(wrr->str, "image") == 0) {
+			if (dsn_parse_lib_image(ctx, wrr) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(wrr->str, "padstack") == 0) {
+			if (dsn_parse_lib_padstack(ctx, wrr) != 0)
+				return -1;
+		}
+		else if ((pcb_strcasecmp(wrr->str, "jumper") == 0) || (pcb_strcasecmp(wrr->str, "via_array_template") == 0) || (pcb_strcasecmp(wrr->str, "directory") == 0)) {
+			pcb_message(PCB_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
+		}
+
+	}
+	return 0;
+}
+
+
 #define DSN_PARSE_NET(ly, net, fail) \
 do { \
 	gsxl_node_t *__net__ = (net); \
@@ -748,6 +807,11 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 
 	if (dsn_parse_structure(ctx, nstructure) != 0)
 		return -1;
+
+	if ((nlibrary != NULL) && (nlibrary->children != NULL)) {
+		if (dsn_parse_library(ctx, nwiring) != 0)
+			return -1;
+	}
 
 	if ((nwiring != NULL) && (nwiring->children != NULL))
 		if (dsn_parse_wiring(ctx, nwiring) != 0)
