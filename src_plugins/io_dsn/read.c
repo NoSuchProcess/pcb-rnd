@@ -40,6 +40,7 @@
 #include "safe_fs.h"
 #include "compat_misc.h"
 #include "layer_grp.h"
+#include "conf_core.h"
 
 #include "read.h"
 
@@ -390,11 +391,13 @@ static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	pcb_box_t box;
 	gsxl_node_t *net = wrr->children->next;
+#warning TODO:
+	pcb_layer_t *ly = CURRENT;
 	
 	if (dsn_parse_rect(ctx, &box, net->next) != 0)
 		return -1;
 
-#warning TODO: draw poly on box
+	pcb_poly_new_from_rectangle(ly, box.X1, box.Y1, box.X2, box.Y2, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
 
 	return 0;
 }
