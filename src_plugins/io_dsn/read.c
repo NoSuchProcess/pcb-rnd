@@ -133,6 +133,11 @@ static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src)
 {
 	pcb_coord_t x, y;
 
+	if (src == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Missing coord in rect\n");
+		return -1;
+	}
+
 	/* set all corners to first x;y */
 	dst->X1 = dst->X2 = COORDX(ctx, src);
 	if (src->next == NULL) goto err;
