@@ -77,6 +77,21 @@ static char *STRE(gsxl_node_t *node)
 		n ## name = node; \
 	}
 
+static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
+{
+	char *end, *s = STRE(n);
+	double v = strtod(s, &end);
+
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "Invalid coord: '%s' (at %ld:%ld)\n", s, (long)n->line, (long)n->col);
+		return 0;
+	}
+	v /= ctx->unit->scale_factor;
+	if (ctx->unit->family == PCB_UNIT_METRIC)
+		return PCB_MM_TO_COORD(v);
+	return PCB_MIL_TO_COORD(v);
+}
+
 static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 {
 	const pcb_unit_t *old = ctx->unit;
@@ -100,13 +115,76 @@ static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 
 /*** tree parse ***/
 
+static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *bnd)
+{
+#warning TODO
+	return 0;
+}
+
+static void boundary_line(pcb_layer_t *oly, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	pcb_line_new(oly, x1, y1, x2, 2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
+}
+
+
 static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 {
+	gsxl_node_t *n;
+	pcb_layer_id_t olid;
+	pcb_layer_t *oly;
+
 	ctx->has_pcb_boundary = 0;
 	if (bnd == NULL)
 		goto none;
 
+	if (pcb_layer_list(ctx->pcb, PCB_LYT_BOUNDARY, &olid, 1) < 1) {
+		pcb_message(PCB_MSG_ERROR, "Intenal error: no boundary layer found\n");
+		return -1;
+	}
+	oly = pcb_get_layer(ctx->pcb->Data, olid);
 
+	for(bnd = bnd->children; bnd != NULL; bnd = bnd->next) {
+		if (bnd->str == NULL)
+			continue;
+		if (pcb_strcasecmp(bnd->str, "path") == 0) {
+			pcb_coord_t x, y, lx, ly, fx, fy;
+			int len;
+
+			n = gsxl_children(bnd);
+			if (pcb_strcasecmp(STRE(n), "pcb") == 0) {
+				pcb_message(PCB_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
+				ctx->has_pcb_boundary = 1;
+			}
+			for(len = 0, n = n->next; n != NULL; len++) {
+				x = COORD(ctx, n);
+				if (n->next == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Not rnough coordinate values (missing y)\n");
+				}
+				n = n->next;
+				y = COORD(ctx, n);
+				n = n->next;
+				if (len == 0) {
+					fx = x;
+					fy = y;
+				}
+				else
+					boundary_line(oly, lx, ly, x, y);
+				lx = x;
+				ly = y;
+			}
+			if ((x != fx) && (y != fy)) /* close the boundary */
+				boundary_line(oly, lx, ly, x, y);
+		}
+		if (pcb_strcasecmp(bnd->str, "rect") == 0) {
+			n = gsxl_children(bnd);
+			if (pcb_strcasecmp(STRE(n), "pcb") == 0)
+				ctx->has_pcb_boundary = 1;
+		}
+		if (pcb_strcasecmp(bnd->str, "rule") == 0) {
+			if (dsn_parse_rule(ctx, bnd) != 0)
+				return -1;
+		}
+	}
 
 	none:;
 #warning TODO: make up the boundary later on from bbox
