@@ -427,10 +427,46 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	return 0;
 }
 
+int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+{
+	pcb_pstk_shape_t *shp = pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
+#warning TODO
+	return 0;
+}
+
+int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+{
+	pcb_pstk_shape_t *shp = pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
+#warning TODO
+	return 0;
+}
+
+int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+{
+	pcb_pstk_shape_t *shp = pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
+#warning TODO
+	return 0;
+}
+
+int dsn_parse_pstk_shape_hole(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+{
+#warning TODO
+	return 0;
+}
+
+int dsn_parse_pstk_shape_plated(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+{
+#warning TODO
+	return 0;
+}
+
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	const pcb_unit_t *old_unit;
-	gsxl_node_t *n;
+	gsxl_node_t *n, *sn;
+	pcb_pstk_proto_t prt;
+
+	memset(&prt, 0, sizeof(prt));
 
 	for(n = wrr->children; n != NULL; n = n->next)
 		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0))
@@ -440,7 +476,36 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		if (n->str == NULL)
 			continue;
 		if (pcb_strcasecmp(n->str, "shape") == 0) {
-#warning TODO: load shapes and store in local array
+			sn = n->children;
+			if ((sn == NULL) || (sn->str == NULL)) {
+				pcb_message(PCB_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)n->line, (long)n->col);
+				goto err;
+			}
+			if (pcb_strcasecmp(sn->str, "circle") == 0) {
+				if (dsn_parse_pstk_shape_circle(ctx, sn, &prt) != 0)
+					goto err;
+			}
+			else if (pcb_strcasecmp(sn->str, "rect") == 0) {
+				if (dsn_parse_pstk_shape_rect(ctx, sn, &prt) != 0)
+					goto err;
+			}
+			else if (pcb_strcasecmp(sn->str, "polygon") == 0) {
+				if (dsn_parse_pstk_shape_rect(ctx, sn, &prt) != 0)
+					goto err;
+			}
+			else if (pcb_strcasecmp(sn->str, "hole") == 0) {
+				if (dsn_parse_pstk_shape_hole(ctx, sn, &prt) != 0)
+					goto err;
+			}
+			else if (pcb_strcasecmp(sn->str, "plated") == 0) {
+				if (dsn_parse_pstk_shape_plated(ctx, sn, &prt) != 0)
+					goto err;
+			}
+			else if ((pcb_strcasecmp(sn->str, "path") == 0) || (pcb_strcasecmp(sn->str, "qarc") == 0)) {
+				pcb_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)n->line, (long)n->col);
+				goto err;
+			}
+			
 		}
 		else if (pcb_strcasecmp(n->str, "rule") == 0) {
 #warning TODO: pick up clearance
@@ -456,6 +521,9 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		pop_unit(ctx, old_unit);
 
 	return 0;
+	err:;
+	pcb_pstk_proto_free_fields(&prt);
+	return -1;
 }
 
 static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *wrr)
