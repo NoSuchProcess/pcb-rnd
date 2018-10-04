@@ -355,11 +355,14 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	gsxl_node_t *n, *i;
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL, *grp;
 	pcb_layergrp_id_t gid;
+	const pcb_unit_t *old_unit;
 
 	if (str == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not parse board without a structure subtree\n");
 		return -1;
 	}
+
+	old_unit = dsn_set_old_unit(ctx, str->children);
 
 	pcb_layergrp_inhibit_inc();
 	for(m = pcb_dflgmap; m <= pcb_dflgmap_last_top_noncopper; m++) {
@@ -460,6 +463,9 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 			pcb_poly_new_from_rectangle(ly, ctx->bbox.X1, ctx->bbox.Y2 - ctx->bbox.Y1, ctx->bbox.X2, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLY));
 		}
 	}
+
+	if (old_unit != NULL)
+		pop_unit(ctx, old_unit);
 
 	return 0;
 }
@@ -781,6 +787,10 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
+	const pcb_unit_t *old_unit;
+
+	old_unit = dsn_set_old_unit(ctx, wrr->children);
+
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
@@ -795,8 +805,11 @@ static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 		else if ((pcb_strcasecmp(wrr->str, "jumper") == 0) || (pcb_strcasecmp(wrr->str, "via_array_template") == 0) || (pcb_strcasecmp(wrr->str, "directory") == 0)) {
 			pcb_message(PCB_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
 		}
-
 	}
+
+	if (old_unit != NULL)
+		pop_unit(ctx, old_unit);
+
 	return 0;
 }
 
