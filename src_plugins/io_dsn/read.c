@@ -1145,6 +1145,10 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 		return 0;
 	}
 
+	if (back)
+		pcb_pstk_mirror(ps, PCB_PSTK_DONT_MIRROR_COORDS, 1, 1);
+
+
 	return 0;
 	not_enough:;
 	pcb_message(PCB_MSG_ERROR, "Not enough coordinates for a testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
