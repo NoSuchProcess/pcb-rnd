@@ -445,9 +445,12 @@ int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_
 	return 0;
 }
 
-int dsn_parse_pstk_shape_plated(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+int dsn_parse_pstk_shape_plating(dsn_read_t *ctx, gsxl_node_t *plt, pcb_pstk_proto_t *prt)
 {
-#warning TODO
+	if ((plt->children == NULL) || (plt->children->str == NULL))
+		return 0;
+	if (pcb_strcasecmp(plt->children->str, "plated") == 0)
+		prt->hplated = 1;
 	return 0;
 }
 
@@ -509,8 +512,8 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		else if (pcb_strcasecmp(n->str, "antipad") == 0) {
 			/* silently not supported */
 		}
-		else if (pcb_strcasecmp(n->str, "plated") == 0) {
-			if (dsn_parse_pstk_shape_plated(ctx, sn, &prt) != 0)
+		else if (pcb_strcasecmp(n->str, "plating") == 0) {
+			if (dsn_parse_pstk_shape_plating(ctx, n, &prt) != 0)
 				goto err;
 		}
 		else if (pcb_strcasecmp(n->str, "rule") == 0) {
@@ -883,7 +886,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 		return -1;
 
 	if ((nlibrary != NULL) && (nlibrary->children != NULL)) {
-		if (dsn_parse_library(ctx, nwiring) != 0)
+		if (dsn_parse_library(ctx, nlibrary) != 0)
 			return -1;
 	}
 
