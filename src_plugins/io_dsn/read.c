@@ -55,6 +55,7 @@ typedef struct {
 	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
 	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
+	htsp_t subcs;  /* subc images - allocated for the hash, copied on placement */
 	pcb_cardinal_t testpoint;
 	unsigned has_pcb_boundary:1;
 	unsigned has_testpoint:1;
@@ -779,14 +780,102 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return -1;
 }
 
-static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_img_outline(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+{
+#warning TODO
+return 0;
+}
+
+static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+{
+#warning TODO
+return 0;
+}
+
+static int dsn_parse_img_conductor(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+{
+#warning TODO
+return 0;
+}
+
+static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+{
+#warning TODO
+return 0;
+}
+
+static int dsn_parse_img_keepout(dsn_read_t *ctx, gsxl_node_t *imr, const char *type, pcb_subc_t *subc)
+{
+#warning TODO
+return 0;
+}
+
+static int dsn_parse_img_property(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+{
+#warning TODO
+return 0;
+}
+
+static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 {
 	const pcb_unit_t *old_unit;
+	pcb_subc_t *subc;
+	char *id;
 
-	old_unit = dsn_set_old_unit(ctx, wrr->children);
+	id = STRE(imr->children);
+	if ((id == NULL) || (*id == '\0')) {
+		pcb_message(PCB_MSG_WARNING, "invalid empty image name (at %ld:%ld) - this property will be ignored\n", (long)imr->line, (long)imr->col);
+		return -1;
+	}
 
-#warning TODO
+	old_unit = dsn_set_old_unit(ctx, imr->children);
 
+	subc = calloc(sizeof(pcb_subc_t), 1);
+
+	for(imr = imr->children->next; imr != NULL; imr = imr->next) {
+		if (imr->str == NULL)
+			continue;
+		if (pcb_strcasecmp(imr->str, "outline") == 0) {
+			if (dsn_parse_img_outline(ctx, imr, subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "pin") == 0) {
+			if (dsn_parse_img_pin(ctx, imr, subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "conductor") == 0) {
+			if (dsn_parse_img_conductor(ctx, imr, subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "via") == 0) {
+			if (dsn_parse_img_via(ctx, imr, subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "keepout") == 0) {
+			if (dsn_parse_img_keepout(ctx, imr, "all", subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "wire_keepout") == 0) {
+			if (dsn_parse_img_keepout(ctx, imr, "copper", subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "place_keepout") == 0) {
+			if (dsn_parse_img_keepout(ctx, imr, "subc", subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "via_keepout") == 0) {
+			if (dsn_parse_img_keepout(ctx, imr, "via", subc) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(imr->str, "property") == 0) {
+			if (dsn_parse_img_property(ctx, imr, subc) != 0)
+				return -1;
+		}
+	}
+
+	pcb_attribute_put(&subc->Attributes, "refdes", id);
+	id = pcb_attribute_get(&subc->Attributes, "refdes");
+	htsp_set(&ctx->subcs, id, subc);
 
 	if (old_unit != NULL)
 		pop_unit(ctx, old_unit);
@@ -1449,6 +1538,7 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 	rdctx.pcb = pcb;
 	htsp_init(&rdctx.name2layer, strhash, strkeyeq);
 	htsp_init(&rdctx.protos, strhash, strkeyeq);
+	htsp_init(&rdctx.subcs, strhash, strkeyeq);
 
 	ret = dsn_parse_pcb(&rdctx, rn);
 
@@ -1456,6 +1546,8 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 		pcb_pstk_proto_free_fields(e->value);
 		free(e->value);
 	}
+	for (e = htsp_first(&rdctx.subcs); e; e = htsp_next(&rdctx.subcs, e))
+		pcb_subc_free(e->value);
 	htsp_uninit(&rdctx.name2layer);
 	htsp_uninit(&rdctx.protos);
 	gsxl_uninit(&rdctx.dom);
