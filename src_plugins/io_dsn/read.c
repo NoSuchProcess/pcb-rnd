@@ -431,21 +431,20 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
 	gsxl_node_t *args = nd->children->next;
-	pcb_coord_t dia, cent[2];
+	pcb_coord_t dia;
 
-	if (args == NULL) {
+	if ((args == NULL) || (args->next == NULL) || (args->next->next == NULL)) {
 		not_enough:;
 		pcb_message(PCB_MSG_ERROR, "Padstack circle: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
-	dia = COORD(ctx, args);
-	DSN_LOAD_COORDS_XY(cent, args->next, 2, goto not_enough);
-
 	shp->shape = PCB_PSSH_CIRC;
-	shp->data.circ.dia = dia;
-	shp->data.circ.x = cent[0];
-	shp->data.circ.y = cent[1];
+	shp->data.circ.dia = COORD(ctx, args);
+	shp->data.circ.x = COORD(ctx, args->next);
+	shp->data.circ.y = COORD(ctx, args->next->next);
+	if (shp->data.circ.y != 0)
+		shp->data.circ.y = -shp->data.circ.y;
 	return 0;
 }
 
