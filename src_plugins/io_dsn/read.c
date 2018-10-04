@@ -854,6 +854,8 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	const pcb_unit_t *old_unit;
 	pcb_subc_t *subc;
 	char *id;
+	int n;
+	pcb_layer_t *ly;
 
 	id = STRE(imr->children);
 	if ((id == NULL) || (*id == '\0')) {
@@ -864,7 +866,11 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	old_unit = dsn_set_old_unit(ctx, imr->children);
 
 	subc = pcb_subc_new();
-	pcb_data_make_layers_bound(ctx->pcb, subc->data);
+	for(n = 0, ly = ctx->pcb->Data->Layer; n < ctx->pcb->Data->LayerN; n++,ly++) {
+		const char *purp = NULL;
+		pcb_layer_purpose_(ly, &purp);
+		pcb_layer_new_bound(subc->data, pcb_layer_flags_(ly), ly->name, purp);
+	}
 
 	for(imr = imr->children->next; imr != NULL; imr = imr->next) {
 		if (imr->str == NULL)
