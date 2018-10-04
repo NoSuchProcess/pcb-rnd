@@ -704,7 +704,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 	DSN_PARSE_NET(ly, net, return -1);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "Not enogh wire polygon attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		pcb_message(PCB_MSG_ERROR, "Not enough wire polygon attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -766,7 +766,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	DSN_PARSE_NET(ly, net, return -1);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "Not enogh wire circle attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		pcb_message(PCB_MSG_ERROR, "Not enough wire circle attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -789,7 +789,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 
 	err_cent:;
-	pcb_message(PCB_MSG_ERROR, "Not enogh circle center attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+	pcb_message(PCB_MSG_ERROR, "Not enough circle center attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 	return -1;
 }
 
@@ -804,7 +804,7 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 	DSN_PARSE_NET(ly, net, return -1);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "Not enogh wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		pcb_message(PCB_MSG_ERROR, "Not enough wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -870,7 +870,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	if ((net->next == NULL) || ((coords = net->next->next) == NULL)) {
 		not_enough:;
-		pcb_message(PCB_MSG_ERROR, "Not enogh wire qarc attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		pcb_message(PCB_MSG_ERROR, "Not enough wire qarc attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
