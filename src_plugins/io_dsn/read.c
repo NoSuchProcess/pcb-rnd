@@ -472,7 +472,6 @@ int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t
 
 int dsn_parse_pstk_shape_path(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
-	pcb_box_t box;
 	gsxl_node_t *extra;
 	gsxl_node_t *th = nd->children->next, *args = th->next;
 
@@ -500,9 +499,40 @@ int dsn_parse_pstk_shape_path(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t
 	return 0;
 }
 
-int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
+int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
-#warning TODO
+	gsxl_node_t *n, *ap = nd->children->next, *args = ap->next;
+	pcb_coord_t aper;
+	long len, i;
+	
+	for(len = 0, n = args; (n != NULL) && !(isalpha(*n->str)); n = n->next, len++) ;
+
+	if (len < 3) {
+		pcb_message(PCB_MSG_ERROR, "Padstack poly: too few points (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		return -1;
+	}
+
+	if ((len % 2) != 0) {
+		pcb_message(PCB_MSG_ERROR, "Padstack poly: wrong (odd) number of arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		return -1;
+	}
+
+	shp->shape = PCB_PSSH_POLY;
+	pcb_pstk_shape_alloc_poly(&shp->data.poly, len/2);
+	for(n = args, i = 0; n != NULL; n = n->next, i++) {
+		shp->data.poly.x[i] = COORD(ctx, n);
+		n = n->next;
+		shp->data.poly.y[i] = COORD(ctx, n);
+		if (shp->data.poly.y[i] != 0)
+			shp->data.poly.y[i] = -shp->data.poly.y[i];
+	}
+
+	aper = COORD(ctx, ap);
+	if (aper > 0)
+		pcb_pstk_shape_grow(shp, 0, aper);
+
+	pcb_pstk_shape_update_pa(&shp->data.poly);
+
 	return 0;
 }
 
