@@ -1220,9 +1220,43 @@ static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 	return 0;
 }
 
+static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
+{
+	char *s, *netname = nwr->children->str;
+
+	for(s = netname; *s != '\0'; s++)
+		if (!isalnum(*s) && (*s != '+') && (*s != '-'))
+			*s = '_';
+
+	for(nwr = nwr->children->next; nwr != NULL; nwr = nwr->next) {
+		if (nwr->str == NULL)
+			continue;
+		if (pcb_strcasecmp(nwr->str, "pins") == 0) {
+			gsxl_node_t *n;
+			for(n = nwr->children; n != NULL; n = n->next)
+				pcb_actionl("Netlist", "Add",  netname, n->str, NULL);
+		}
+	}
+	return 0;
+}
+
 static int dsn_parse_network(dsn_read_t *ctx, gsxl_node_t *nwr)
 {
-#warning TODO
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
+
+	for(nwr = nwr->children; nwr != NULL; nwr = nwr->next) {
+		if (nwr->str == NULL)
+			continue;
+		if (pcb_strcasecmp(nwr->str, "net") == 0) {
+			if (dsn_parse_net(ctx, nwr) != 0)
+				return -1;
+		}
+	}
+
+	pcb_actionl("Netlist", "Sort", NULL);
+	pcb_actionl("Netlist", "Thaw", NULL);
+
 	return 0;
 }
 
