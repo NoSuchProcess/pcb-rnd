@@ -55,7 +55,9 @@ typedef struct {
 	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
 	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
+	pcb_cardinal_t testpoint;
 	unsigned has_pcb_boundary:1;
+	unsigned has_testpoint:1;
 } dsn_read_t;
 
 static char *STR(gsxl_node_t *node)
@@ -1079,6 +1081,70 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 	return -1;
 }
 
+static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
+{
+	pcb_coord_t crd[2] = {0, 0};
+	gsxl_node_t *side;
+	pcb_pstk_t *ps;
+	int back;
+
+	DSN_LOAD_COORDS_XY(crd, tnd->children, 2, goto not_enough);
+
+	side = tnd->children->next->next;
+	if ((side == NULL) || (side->str == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Testpoint without side (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
+		return -1;
+	}
+	if (pcb_strcasecmp(side->str, "front") == 0) {
+		back = 0;
+	}
+	else if (pcb_strcasecmp(side->str, "back") == 0) {
+		back = 1;
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Invalid testpoint side '%s' (at %ld:%ld)\n", side->str, (long)tnd->line, (long)tnd->col);
+		return -1;
+	}
+
+	/* create a padstack for the testpoint if we don't have one already */
+	if (!ctx->has_testpoint) {
+		pcb_pstk_proto_t tpp;
+		pcb_pstk_shape_t *shp;
+
+		memset(&tpp, 0, sizeof(tpp));
+		pcb_vtpadstack_tshape_alloc_append(&tpp.tr, 1);
+
+		/* copper pad */
+		shp = pcb_pstk_alloc_append_shape(&tpp.tr.array[0]);
+		memset(shp, 0, sizeof(pcb_pstk_shape_t));
+		shp->layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+		shp->shape = PCB_PSSH_CIRC;
+		shp->data.circ.dia = conf_core.design.min_wid;
+
+		/* solder mask cutout - 5% larger */
+		shp = pcb_pstk_alloc_append_shape(&tpp.tr.array[0]);
+		memset(shp, 0, sizeof(pcb_pstk_shape_t));
+		shp->layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+		shp->shape = PCB_PSSH_CIRC;
+		shp->data.circ.dia = pcb_round((double)conf_core.design.min_wid * 1.05);
+
+		ctx->testpoint = pcb_pstk_proto_insert_dup(ctx->pcb->Data, &tpp, 1);
+		ctx->has_testpoint = 1;
+		pcb_pstk_proto_free_fields(&tpp);
+	}
+
+	ps = pcb_pstk_new(ctx->pcb->Data, ctx->testpoint, crd[0], crd[1], 0, pcb_no_flags());
+	if (ps == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to create testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
+		return 0;
+	}
+
+	return 0;
+	not_enough:;
+	pcb_message(PCB_MSG_ERROR, "Not enough coordinates for a testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
+	return -1;
+}
+
 static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	const pcb_unit_t *old_unit;
@@ -1094,6 +1160,10 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 		}
 		else if (pcb_strcasecmp(wrr->str, "via") == 0) {
 			if (dsn_parse_via(ctx, wrr) != 0)
+				return -1;
+		}
+		else if (pcb_strcasecmp(wrr->str, "point") == 0) {
+			if (dsn_parse_point(ctx, wrr) != 0)
 				return -1;
 		}
 		else if (pcb_strcasecmp(wrr->str, "bond") == 0) {
