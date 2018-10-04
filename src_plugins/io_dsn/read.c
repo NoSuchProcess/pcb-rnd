@@ -1056,8 +1056,7 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 	DSN_LOAD_COORDS_XY(crd, vnd->children->next, 2, goto err_coord);
 
 	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1);
-pcb_trace("VIA: %ld %mm %mm\n", pid, crd[0], crd[1]);
-	if (pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], 0, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
+	if (pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
 
 	return 0;
