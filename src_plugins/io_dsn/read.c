@@ -471,6 +471,36 @@ int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t
 	return 0;
 }
 
+int dsn_parse_pstk_shape_path(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
+{
+	pcb_box_t box;
+	gsxl_node_t *extra;
+	gsxl_node_t *th = nd->children->next, *args = th->next;
+
+	if ((args == NULL) || (args->next == NULL) || (args->next->next == NULL) || (args->next->next->next == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Padstack path: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		return -1;
+	}
+
+	extra = args->next->next->next->next;
+	if ((extra != NULL) && (!isalpha(*extra->str))) {
+		pcb_message(PCB_MSG_ERROR, "Padstack path: too many arguments - only a single line supported (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		return -1;
+	}
+
+	shp->shape = PCB_PSSH_LINE;
+	shp->data.line.x1 = COORD(ctx, args);
+	shp->data.line.y1 = COORD(ctx, args->next);
+	shp->data.line.x2 = COORD(ctx, args->next->next);
+	shp->data.line.y2 = COORD(ctx, args->next->next->next);
+	shp->data.line.thickness = COORD(ctx, th);
+
+	if (shp->data.line.y1 != 0) shp->data.line.y1 = -shp->data.line.y1;
+	if (shp->data.line.y2 != 0) shp->data.line.y2 = -shp->data.line.y2;
+
+	return 0;
+}
+
 int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
 {
 #warning TODO
@@ -505,7 +535,11 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 		if (dsn_parse_pstk_shape_rect(ctx, sn, shp) != 0)
 			return -1;
 	}
-	else if ((pcb_strcasecmp(sn->str, "path") == 0) || (pcb_strcasecmp(sn->str, "qarc") == 0)) {
+	else if (pcb_strcasecmp(sn->str, "path") == 0) {
+		if (dsn_parse_pstk_shape_path(ctx, sn, shp) != 0)
+			return -1;
+	}
+	else if (pcb_strcasecmp(sn->str, "qarc") == 0) {
 		pcb_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
 		return -1;
 	}
