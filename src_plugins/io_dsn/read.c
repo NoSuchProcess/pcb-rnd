@@ -492,6 +492,10 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 		pcb_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
 		return -1;
 	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Invalid/unknown padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
+		return -1;
+	}
 	return 0;
 }
 
