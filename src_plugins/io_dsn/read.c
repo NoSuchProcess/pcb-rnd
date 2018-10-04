@@ -53,7 +53,6 @@ typedef struct {
 	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
 	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
-	pcb_coord_t default_width;
 	unsigned has_pcb_boundary:1;
 } dsn_read_t;
 
@@ -196,8 +195,8 @@ static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *rule)
 	if ((rule == NULL) || (rule->str == NULL))
 		return 0;
 	if (pcb_strcasecmp(rule->str, "width") == 0)
-		ctx->default_width = COORD(ctx, rule->children);
-#warning TODO: load the rest
+		conf_set_design("design/min_wid", "%$mS", COORD(ctx, rule->children));
+	/* the rest of the rules do not have a direct mapping in the current DRC code */
 	return 0;
 }
 
