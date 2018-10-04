@@ -556,7 +556,7 @@ static void dsn_pstk_set_shape(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb_
 
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	const pcb_unit_t *old_unit;
+	const pcb_unit_t *old_unit = NULL;
 	gsxl_node_t *n;
 	pcb_pstk_proto_t *prt;
 	pcb_pstk_shape_t hole;
@@ -936,10 +936,36 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 }
 
-static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 {
-#warning TODO
-return 0;
+	pcb_pstk_proto_t *proto;
+	const char *pname;
+	pcb_cardinal_t pid;
+	pcb_coord_t crd[2] = {0, 0};
+
+	if ((vnd->children == NULL) || (vnd->children->str == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Not enough via arguments (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
+		return -1;
+	}
+
+	pname = vnd->children->str;
+	proto = htsp_get(&ctx->protos, pname);
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Unknown via '%s' (at %ld:%ld)\n", pname, (long)vnd->line, (long)vnd->col);
+		return -1;
+	}
+
+	DSN_LOAD_COORDS_XY(crd, vnd->children->next, 2, goto err_coord);
+
+	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1);
+pcb_trace("VIA: %ld %mm %mm\n", pid, crd[0], crd[1]);
+	if (pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], 0, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
+		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
+
+	return 0;
+	err_coord:;
+	pcb_message(PCB_MSG_ERROR, "Invalid via coordinates (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
+	return -1;
 }
 
 static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
