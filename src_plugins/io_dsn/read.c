@@ -433,7 +433,6 @@ int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape
 	gsxl_node_t *args = nd->children->next;
 
 	if ((args == NULL) || (args->next == NULL) || (args->next->next == NULL)) {
-		not_enough:;
 		pcb_message(PCB_MSG_ERROR, "Padstack circle: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
