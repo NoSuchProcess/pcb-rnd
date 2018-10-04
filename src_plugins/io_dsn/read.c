@@ -620,7 +620,18 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	}
 
 	if (has_hole) {
-#warning TODO: convert prt_hole to a hole or a circle
+		if ((hole.shape == PCB_PSSH_CIRC) && (hole.data.circ.x == 0) && (hole.data.circ.y == 0)) {
+			/* simple, concentric hole: convert to a single-dia hole */
+			prt.hdia = hole.data.circ.dia;
+		}
+		else {
+			/* non-circular or non-concentric hole: slot on the mech layer */
+			pcb_pstk_shape_t *newshp = pcb_pstk_alloc_append_shape(&prt.tr.array[0]);
+			hole.layer_mask = PCB_LYT_MECH;
+			hole.comb = PCB_LYC_AUTO;
+			pcb_pstk_shape_copy(newshp, &hole);
+			pcb_pstk_shape_free(&hole);
+		}
 	}
 
 	if (old_unit != NULL)
