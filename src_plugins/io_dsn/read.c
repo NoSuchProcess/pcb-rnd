@@ -813,11 +813,12 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	term = STRE(pn->children->next);
 	DSN_LOAD_COORDS_XY(crd, pn->children->next->next, 2, goto err_coord);
 
-	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1);
-	ps = pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1);
+	ps = pcb_pstk_new(subc->data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	if (ps == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
-	pcb_attribute_put(&ps->Attributes, "term", term);
+	else
+		pcb_attribute_put(&ps->Attributes, "term", term);
 
 	return 0;
 	err_coord:;
