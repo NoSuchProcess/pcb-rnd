@@ -715,9 +715,6 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 			if (dsn_parse_pstk_shape_plating(ctx, n, prt) != 0)
 				goto err;
 		}
-		else if (pcb_strcasecmp(n->str, "rule") == 0) {
-#warning TODO: pick up clearance
-		}
 		else if ((pcb_strcasecmp(n->str, "rotate") == 0) || (pcb_strcasecmp(n->str, "absolute") == 0)) {
 			if (pcb_strcasecmp(STRE(n->children), "off") == 0) {
 				pcb_message(PCB_MSG_WARNING, "unhandled padstack flag %s (at %ld:%ld) - this property will be ignored\n", n->str, (long)n->line, (long)n->col);
