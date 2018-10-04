@@ -112,13 +112,11 @@ quit:;
 	return ret;
 }
 
-
 /* The primary purpose of this action is to rebuild a netlist from a
    script, in conjunction with the clear action above.  */
 static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 {
-	int ni, pi;
-	pcb_lib_t *netlist = patch ? &PCB->NetlistLib[PCB_NETLIST_EDITED] : &PCB->NetlistLib[PCB_NETLIST_INPUT];
+	int pi;
 	pcb_lib_menu_t *net = NULL;
 	pcb_lib_entry_t *pin = NULL;
 
@@ -128,24 +126,7 @@ static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 	if ((*netname == '\0') || (*pinname == '\0'))
 		return -1;
 
-	for (ni = 0; ni < netlist->MenuN; ni++) {
-		if (strcmp(netlist->Menu[ni].Name + 2, netname) == 0) {
-			net = &(netlist->Menu[ni]);
-			break;
-		}
-	}
-
-
-	if (net == NULL) {
-		if (!patch) {
-			net = pcb_lib_menu_new(netlist, NULL);
-			net->Name = pcb_strdup_printf("  %s", netname);
-			net->flag = 1;
-			PCB->netlist_needs_update=1;
-		}
-		else
-			net = pcb_lib_net_new(netlist, (char *) netname, NULL);
-	}
+	net = pcb_netlist_lookup(patch, netname, pcb_true);
 
 	for (pi = 0; pi < net->EntryN; pi++) {
 		if (strcmp(net->Entry[pi].ListEntry, pinname) == 0) {

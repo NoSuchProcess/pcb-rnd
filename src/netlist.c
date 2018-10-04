@@ -323,3 +323,29 @@ void pcb_net_free(pcb_net_t *Net)
 		memset(Net, 0, sizeof(pcb_net_t));
 	}
 }
+
+pcb_lib_menu_t *pcb_netlist_lookup(int patch, const char *netname, pcb_bool alloc)
+{
+	pcb_lib_t *netlist = patch ? &PCB->NetlistLib[PCB_NETLIST_EDITED] : &PCB->NetlistLib[PCB_NETLIST_INPUT];
+	long ni;
+
+	if ((netname == NULL) || (*netname == '\0'))
+		return NULL;
+
+	for (ni = 0; ni < netlist->MenuN; ni++)
+		if (strcmp(netlist->Menu[ni].Name + 2, netname) == 0)
+			return &(netlist->Menu[ni]);
+
+	if (!alloc)
+		return NULL;
+
+	if (!patch) {
+		pcb_lib_menu_t *net = pcb_lib_menu_new(netlist, NULL);
+		net->Name = pcb_strdup_printf("  %s", netname);
+		net->flag = 1;
+		PCB->netlist_needs_update=1;
+		return net;
+	}
+
+	return pcb_lib_net_new(netlist, (char *)netname, NULL);
+}
