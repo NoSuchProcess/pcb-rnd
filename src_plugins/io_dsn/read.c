@@ -147,7 +147,7 @@ static const pcb_unit_t *dsn_set_old_unit(dsn_read_t *ctx, gsxl_node_t *nd)
 	gsxl_node_t *n;
 
 	for(n = nd; n != NULL; n = n->next) {
-		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0)) {
+		if ((n->str != NULL) && ((pcb_strcasecmp(n->str, "unit") == 0) || (pcb_strcasecmp(n->str, "resolution") == 0))) {
 			old_unit = push_unit(ctx, n);
 			break;
 		}
