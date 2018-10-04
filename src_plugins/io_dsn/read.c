@@ -431,7 +431,6 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
 	gsxl_node_t *args = nd->children->next;
-	pcb_coord_t dia;
 
 	if ((args == NULL) || (args->next == NULL) || (args->next->next == NULL)) {
 		not_enough:;
