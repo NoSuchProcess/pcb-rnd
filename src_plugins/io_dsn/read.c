@@ -43,6 +43,8 @@
 #include "layer_grp.h"
 #include "conf_core.h"
 #include "math_helper.h"
+#include "actions.h"
+#include "netlist.h"
 
 #include "read.h"
 
@@ -1223,10 +1225,13 @@ static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 {
 	char *s, *netname = nwr->children->str;
+	pcb_lib_menu_t *net;
 
 	for(s = netname; *s != '\0'; s++)
 		if (!isalnum(*s) && (*s != '+') && (*s != '-'))
 			*s = '_';
+
+	net = pcb_netlist_lookup(0, netname, pcb_true);
 
 	for(nwr = nwr->children->next; nwr != NULL; nwr = nwr->next) {
 		if (nwr->str == NULL)
@@ -1236,7 +1241,11 @@ static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 			for(n = nwr->children; n != NULL; n = n->next)
 				pcb_actionl("Netlist", "Add",  netname, n->str, NULL);
 		}
+		else if (pcb_strcasecmp(nwr->str, "property") == 0) {
+			parse_attribute(ctx, &net->Attributes, nwr->children);
+		}
 	}
+
 	return 0;
 }
 
