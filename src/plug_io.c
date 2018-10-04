@@ -773,7 +773,12 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
 			pcb_box_t b;
 			/* a footprint has no board size set, need to invent one */
 			pcb_data_bbox(&b, PCB->Data, 0);
-			pcb_board_resize(b.X2*1.5, b.Y2*1.5);
+			if ((b.X2 < b.X1) || (b.Y2 < b.Y1)) {
+				pcb_message(PCB_MSG_ERROR, "Invalid footprint file: can not determine bounding box\n");
+				res = -1;
+			}
+			else
+				pcb_board_resize(b.X2*1.5, b.Y2*1.5);
 		}
 	}
 	return res;
