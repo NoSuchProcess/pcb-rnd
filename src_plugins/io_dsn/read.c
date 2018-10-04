@@ -561,7 +561,7 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 			return -1;
 	}
 	else if (pcb_strcasecmp(sn->str, "polygon") == 0) {
-		if (dsn_parse_pstk_shape_rect(ctx, sn, shp) != 0)
+		if (dsn_parse_pstk_shape_poly(ctx, sn, shp) != 0)
 			return -1;
 	}
 	else if (pcb_strcasecmp(sn->str, "path") == 0) {
