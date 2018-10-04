@@ -52,6 +52,7 @@ typedef struct {
 	const pcb_unit_t *unit;
 	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
+	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
 	pcb_coord_t default_width;
 	unsigned has_pcb_boundary:1;
 } dsn_read_t;
@@ -557,14 +558,21 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	const pcb_unit_t *old_unit;
 	gsxl_node_t *n;
-	pcb_pstk_proto_t prt;
+	pcb_pstk_proto_t *prt;
 	pcb_pstk_shape_t hole;
 	int has_hole = 0;
 
-	memset(&prt, 0, sizeof(prt));
-	pcb_vtpadstack_tshape_alloc_append(&prt.tr, 1);
+	if ((wrr->children == NULL) || (wrr->children->str == NULL)) {
+		pcb_message(PCB_MSG_WARNING, "Empty padstack (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
 
-	for(n = wrr->children; n != NULL; n = n->next)
+	prt = calloc(sizeof(pcb_pstk_proto_t), 1);
+	pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
+
+	prt->name = pcb_strdup(wrr->children->str);
+
+	for(n = wrr->children->next; n != NULL; n = n->next)
 		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0))
 			old_unit = push_unit(ctx, n);
 
@@ -582,7 +590,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 			if (dsn_parse_lib_padstack_shp(ctx, n->children, &shp) != 0)
 				goto err;
 
-			dsn_pstk_set_shape(&prt, lyt, &shp, n);
+			dsn_pstk_set_shape(prt, lyt, &shp, n);
 		}
 		else if (pcb_strcasecmp(n->str, "hole") == 0) {
 			pcb_pstk_shape_t shp;
@@ -606,7 +614,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 			/* silently not supported */
 		}
 		else if (pcb_strcasecmp(n->str, "plating") == 0) {
-			if (dsn_parse_pstk_shape_plating(ctx, n, &prt) != 0)
+			if (dsn_parse_pstk_shape_plating(ctx, n, prt) != 0)
 				goto err;
 		}
 		else if (pcb_strcasecmp(n->str, "rule") == 0) {
@@ -622,11 +630,11 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	if (has_hole) {
 		if ((hole.shape == PCB_PSSH_CIRC) && (hole.data.circ.x == 0) && (hole.data.circ.y == 0)) {
 			/* simple, concentric hole: convert to a single-dia hole */
-			prt.hdia = hole.data.circ.dia;
+			prt->hdia = hole.data.circ.dia;
 		}
 		else {
 			/* non-circular or non-concentric hole: slot on the mech layer */
-			pcb_pstk_shape_t *newshp = pcb_pstk_alloc_append_shape(&prt.tr.array[0]);
+			pcb_pstk_shape_t *newshp = pcb_pstk_alloc_append_shape(&prt->tr.array[0]);
 			hole.layer_mask = PCB_LYT_MECH;
 			hole.comb = PCB_LYC_AUTO;
 			pcb_pstk_shape_copy(newshp, &hole);
@@ -634,12 +642,15 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		}
 	}
 
+	htsp_set(&ctx->protos, prt->name, prt);
+
 	if (old_unit != NULL)
 		pop_unit(ctx, old_unit);
 
 	return 0;
 	err:;
-	pcb_pstk_proto_free_fields(&prt);
+	pcb_pstk_proto_free_fields(prt);
+	free(prt);
 	return -1;
 }
 
@@ -1100,6 +1111,7 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 {
 	dsn_read_t rdctx;
 	gsxl_node_t *rn;
+	htsp_entry_t *e;
 	int ret;
 
 	memset(&rdctx, 0, sizeof(rdctx));
@@ -1119,8 +1131,16 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 
 	rdctx.pcb = pcb;
 	htsp_init(&rdctx.name2layer, strhash, strkeyeq);
+	htsp_init(&rdctx.protos, strhash, strkeyeq);
+
 	ret = dsn_parse_pcb(&rdctx, rn);
+
+	for (e = htsp_first(&rdctx.protos); e; e = htsp_next(&rdctx.protos, e)) {
+		pcb_pstk_proto_free_fields(e->value);
+		free(e->value);
+	}
 	htsp_uninit(&rdctx.name2layer);
+	htsp_uninit(&rdctx.protos);
 	gsxl_uninit(&rdctx.dom);
 	return ret;
 
