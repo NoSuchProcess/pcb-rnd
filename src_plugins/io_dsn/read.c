@@ -468,17 +468,22 @@ int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape
 {
 	gsxl_node_t *args = nd->children->next;
 
-	if ((args == NULL) || (args->next == NULL) || (args->next->next == NULL)) {
+	if ((args == NULL) || (args->str == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Padstack circle: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
 	shp->shape = PCB_PSSH_CIRC;
 	shp->data.circ.dia = COORD(ctx, args);
-	shp->data.circ.x = COORD(ctx, args->next);
-	shp->data.circ.y = COORD(ctx, args->next->next);
-	if (shp->data.circ.y != 0)
-		shp->data.circ.y = -shp->data.circ.y;
+	if (args->next != NULL) {
+		shp->data.circ.x = COORD(ctx, args->next);
+		shp->data.circ.y = COORD(ctx, args->next->next);
+		if (shp->data.circ.y != 0)
+			shp->data.circ.y = -shp->data.circ.y;
+	}
+	else
+		shp->data.circ.x = shp->data.circ.y = 0;
+
 	return 0;
 }
 
