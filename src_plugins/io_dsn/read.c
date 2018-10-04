@@ -781,7 +781,15 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
+	const pcb_unit_t *old_unit;
+
+	old_unit = dsn_set_old_unit(ctx, wrr->children);
+
 #warning TODO
+
+
+	if (old_unit != NULL)
+		pop_unit(ctx, old_unit);
 	return 0;
 }
 
