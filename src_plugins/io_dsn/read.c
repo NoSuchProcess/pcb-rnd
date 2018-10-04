@@ -786,10 +786,43 @@ static int dsn_parse_img_outline(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *
 return 0;
 }
 
-static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 {
-#warning TODO
-return 0;
+	const char *term, *psname = STRE(pn->children);
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_t *ps;
+	pcb_cardinal_t pid;
+	pcb_coord_t crd[2] = {0, 0};
+
+	if ((psname == NULL) || (*psname == '\0')) {
+		pcb_message(PCB_MSG_ERROR, "Invalid anonymous pin (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		return -1;
+	}
+
+	proto = htsp_get(&ctx->protos, psname);
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Unknown pin '%s' (at %ld:%ld)\n", psname, (long)pn->line, (long)pn->col);
+		return -1;
+	}
+
+	if (pn->children->next == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Missing pin terminal ID (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		return -1;
+	}
+
+	term = STRE(pn->children->next);
+	DSN_LOAD_COORDS_XY(crd, pn->children->next->next, 2, goto err_coord);
+
+	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1);
+	ps = pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	if (ps == NULL)
+		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+	pcb_attribute_put(&ps->Attributes, "term", term);
+
+	return 0;
+	err_coord:;
+	pcb_message(PCB_MSG_ERROR, "Invalid pin coordinates (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+	return -1;
 }
 
 static int dsn_parse_img_conductor(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
@@ -830,7 +863,8 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 
 	old_unit = dsn_set_old_unit(ctx, imr->children);
 
-	subc = calloc(sizeof(pcb_subc_t), 1);
+	subc = pcb_subc_new();
+	pcb_data_make_layers_bound(ctx->pcb, subc->data);
 
 	for(imr = imr->children->next; imr != NULL; imr = imr->next) {
 		if (imr->str == NULL)
