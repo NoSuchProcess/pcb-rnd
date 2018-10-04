@@ -143,6 +143,10 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 /* free fields of a proto (not freeing the proto itself, not removing it from lists */
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst);
 
+/* low level: allocate a new, uninitialized shape at the end of a transformed shape
+   WARNING: this should be done on all transformed shapes in parallel! */
+pcb_pstk_shape_t *pcb_pstk_alloc_append_shape(pcb_pstk_tshape_t *ts);
+
 /* allocate/free the point array of a poly shape (single allocation for x and y) */
 void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len);
 void pcb_pstk_shape_free_poly(pcb_pstk_poly_t *poly);

@@ -98,6 +98,16 @@ int pcb_pstk_get_shape_idx(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_laye
 	return -1;
 }
 
+pcb_pstk_shape_t *pcb_pstk_alloc_append_shape(pcb_pstk_tshape_t *ts)
+{
+	int idx = ts->len;
+
+	ts->len++;
+	ts->shape = realloc(ts->shape, ts->len * sizeof(pcb_pstk_shape_t));
+
+	return &ts->shape[idx];
+}
+
 static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_coord_t dia)
 {
 	int idx = ts->len;
