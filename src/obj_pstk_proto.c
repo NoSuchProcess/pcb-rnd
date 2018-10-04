@@ -1142,7 +1142,7 @@ unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p)
 	return ret;
 }
 
-static int pcb_pstk_shape_eq(const pcb_pstk_shape_t *sh1, const pcb_pstk_shape_t *sh2)
+int pcb_pstk_shape_eq(const pcb_pstk_shape_t *sh1, const pcb_pstk_shape_t *sh2)
 {
 	int n;
 

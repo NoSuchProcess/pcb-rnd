@@ -243,6 +243,8 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);
 unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p);
 int pcb_pstk_proto_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2);
 
+int pcb_pstk_shape_eq(const pcb_pstk_shape_t *sh1, const pcb_pstk_shape_t *sh2);
+
 /*** loops ***/
 #define PCB_PADSTACK_LOOP(top) do {                                \
   pcb_pstk_t *padstack;                                        \
