@@ -1130,6 +1130,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 		shp = pcb_pstk_alloc_append_shape(&tpp.tr.array[0]);
 		memset(shp, 0, sizeof(pcb_pstk_shape_t));
 		shp->layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+		shp->comb = PCB_LYC_SUB | PCB_LYC_AUTO;
 		shp->shape = PCB_PSSH_CIRC;
 		shp->data.circ.dia = pcb_round((double)conf_core.design.min_wid * 1.05);
 
