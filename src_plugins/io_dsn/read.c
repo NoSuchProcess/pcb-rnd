@@ -46,8 +46,6 @@
 
 #include "read.h"
 
-#warning TODO: check where else the unit descriptor can appear
-
 typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;
@@ -1208,6 +1206,27 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 }
 
+static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
+{
+	const pcb_unit_t *old_unit;
+
+	old_unit = dsn_set_old_unit(ctx, plr->children);
+
+#warning TODO
+
+	if (old_unit != NULL)
+		pop_unit(ctx, old_unit);
+
+	return 0;
+}
+
+static int dsn_parse_network(dsn_read_t *ctx, gsxl_node_t *nwr)
+{
+#warning TODO
+	return 0;
+}
+
+
 
 static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 {
@@ -1250,6 +1269,16 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 
 	if ((nlibrary != NULL) && (nlibrary->children != NULL)) {
 		if (dsn_parse_library(ctx, nlibrary) != 0)
+			return -1;
+	}
+
+	if ((nplacement != NULL) && (nplacement->children != NULL)) {
+		if (dsn_parse_placement(ctx, nplacement) != 0)
+			return -1;
+	}
+
+	if ((nnetwork != NULL) && (nnetwork->children != NULL)) {
+		if (dsn_parse_network(ctx, nnetwork) != 0)
 			return -1;
 	}
 
