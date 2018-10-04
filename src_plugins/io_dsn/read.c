@@ -1176,10 +1176,9 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 			if (dsn_parse_point(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "bond") == 0) {
-			pcb_message(PCB_MSG_WARNING, "unhandled bond shape (at %ld:%ld) - please send the dsn file as a bugreport\n", (long)wrr->line, (long)wrr->col);
+		else if ((pcb_strcasecmp(wrr->str, "bond") == 0) || (pcb_strcasecmp(wrr->str, "supply_pin") == 0)) {
+			pcb_message(PCB_MSG_WARNING, "unhandled wiring: '%s' (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
 		}
-#warning TODO: what else
 	}
 
 	if (old_unit != NULL)
