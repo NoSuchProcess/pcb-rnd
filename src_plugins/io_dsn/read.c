@@ -427,28 +427,19 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	return 0;
 }
 
-int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
 {
-	pcb_pstk_shape_t *shp = pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
 #warning TODO
 	return 0;
 }
 
-int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
 {
-	pcb_pstk_shape_t *shp = pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
 #warning TODO
 	return 0;
 }
 
-int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
-{
-	pcb_pstk_shape_t *shp = pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
-#warning TODO
-	return 0;
-}
-
-int dsn_parse_pstk_shape_hole(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_proto_t *prt)
+int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
 {
 #warning TODO
 	return 0;
@@ -460,11 +451,38 @@ int dsn_parse_pstk_shape_plated(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_prot
 	return 0;
 }
 
+static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk_shape_t *shp)
+{
+	if ((sn == NULL) || (sn->str == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)sn->line, (long)sn->col);
+		return -1;
+	}
+	if (pcb_strcasecmp(sn->str, "circle") == 0) {
+		if (dsn_parse_pstk_shape_circle(ctx, sn, shp) != 0)
+			return -1;
+	}
+	else if (pcb_strcasecmp(sn->str, "rect") == 0) {
+		if (dsn_parse_pstk_shape_rect(ctx, sn, shp) != 0)
+			return -1;
+	}
+	else if (pcb_strcasecmp(sn->str, "polygon") == 0) {
+		if (dsn_parse_pstk_shape_rect(ctx, sn, shp) != 0)
+			return -1;
+	}
+	else if ((pcb_strcasecmp(sn->str, "path") == 0) || (pcb_strcasecmp(sn->str, "qarc") == 0)) {
+		pcb_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
+		return -1;
+	}
+	return 0;
+}
+
+
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	const pcb_unit_t *old_unit;
 	gsxl_node_t *n, *sn;
 	pcb_pstk_proto_t prt;
+	
 
 	memset(&prt, 0, sizeof(prt));
 
@@ -476,36 +494,24 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		if (n->str == NULL)
 			continue;
 		if (pcb_strcasecmp(n->str, "shape") == 0) {
-			sn = n->children;
-			if ((sn == NULL) || (sn->str == NULL)) {
-				pcb_message(PCB_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)n->line, (long)n->col);
+			pcb_pstk_tshape_t *tshp = pcb_vtpadstack_tshape_alloc_append(&prt.tr, 1);
+			if (dsn_parse_lib_padstack_shp(ctx, n->children, tshp->shape) != 0)
 				goto err;
-			}
-			if (pcb_strcasecmp(sn->str, "circle") == 0) {
-				if (dsn_parse_pstk_shape_circle(ctx, sn, &prt) != 0)
-					goto err;
-			}
-			else if (pcb_strcasecmp(sn->str, "rect") == 0) {
-				if (dsn_parse_pstk_shape_rect(ctx, sn, &prt) != 0)
-					goto err;
-			}
-			else if (pcb_strcasecmp(sn->str, "polygon") == 0) {
-				if (dsn_parse_pstk_shape_rect(ctx, sn, &prt) != 0)
-					goto err;
-			}
-			else if (pcb_strcasecmp(sn->str, "hole") == 0) {
-				if (dsn_parse_pstk_shape_hole(ctx, sn, &prt) != 0)
-					goto err;
-			}
-			else if (pcb_strcasecmp(sn->str, "plated") == 0) {
-				if (dsn_parse_pstk_shape_plated(ctx, sn, &prt) != 0)
-					goto err;
-			}
-			else if ((pcb_strcasecmp(sn->str, "path") == 0) || (pcb_strcasecmp(sn->str, "qarc") == 0)) {
-				pcb_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)n->line, (long)n->col);
+		}
+		else if (pcb_strcasecmp(n->str, "hole") == 0) {
+/*
+			pcb_pstk_shape_t shp;
+			if (dsn_parse_lib_padstack_shp(ctx, n->children, &shp) != 0)
 				goto err;
-			}
-			
+*/
+#warning TODO: construct a slot or hole
+		}
+		else if (pcb_strcasecmp(n->str, "antipad") == 0) {
+			/* silently not supported */
+		}
+		else if (pcb_strcasecmp(n->str, "plated") == 0) {
+			if (dsn_parse_pstk_shape_plated(ctx, sn, &prt) != 0)
+				goto err;
 		}
 		else if (pcb_strcasecmp(n->str, "rule") == 0) {
 #warning TODO: pick up clearance
