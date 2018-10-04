@@ -312,7 +312,7 @@ static int parse_layer_type(dsn_read_t *ctx, pcb_layergrp_t *grp, const char *ty
 	if ((pcb_strcasecmp(ty, "signal") == 0) || (pcb_strcasecmp(ty, "jumper") == 0))
 		return 0; /* nothig special to do */
 	if ((pcb_strcasecmp(ty, "power") == 0) || (pcb_strcasecmp(ty, "mixed") == 0)) {
-#warning TODO: place poly
+		pcb_attribute_put(&grp->Attributes, "plane", ty);
 		return 0;
 	}
 
@@ -332,7 +332,8 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
 	gsxl_node_t *n, *i;
-	pcb_layergrp_t *topcop = NULL, *botcop = NULL;
+	pcb_layergrp_t *topcop = NULL, *botcop = NULL, *grp;
+	pcb_layergrp_id_t gid;
 
 	if (str == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not parse board without a structure subtree\n");
@@ -423,6 +424,20 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	if (!ctx->has_pcb_boundary) {
 		ctx->bbox.X1 = ctx->bbox.Y1 = ctx->bbox.X2 = ctx->bbox.Y2 = 0;
 		pcb_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\nYou may want to execute autocrop()\n");
+	}
+
+	/* place polygons on planes */
+	for(gid = 0, grp = ctx->pcb->LayerGroups.grp; gid < ctx->pcb->LayerGroups.len; gid++,grp++) {
+		if (pcb_attribute_get(&grp->Attributes, "plane") != NULL) {
+			pcb_poly_t *poly;
+			pcb_layer_t *ly;
+			if (!ctx->has_pcb_boundary) {
+				pcb_message(PCB_MSG_ERROR, "Because of the missing pcb boundary power planes are not filled with polygons.\n");
+				return 0;
+			}
+			ly = pcb_get_layer(ctx->pcb->Data, grp->lid[0]);
+			pcb_poly_new_from_rectangle(ly, ctx->bbox.X1, ctx->bbox.Y2 - ctx->bbox.Y1, ctx->bbox.X2, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+		}
 	}
 
 	return 0;
