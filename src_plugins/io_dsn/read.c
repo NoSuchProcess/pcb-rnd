@@ -491,11 +491,48 @@ static pcb_layer_type_t dsn_pstk_shape_layer(dsn_read_t *ctx, gsxl_node_t *net)
 
 	ly = htsp_get(&ctx->name2layer, nname); \
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col);
+		pcb_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", nname, (long)net->line, (long)net->col);
 		return -1;
 	}
 
 	return pcb_layer_flags_(ly) & PCB_LYT_ANYWHERE;
+}
+
+
+static void dsn_pstk_set_shape_(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb_pstk_shape_t *shp, gsxl_node_t *nd)
+{
+	pcb_pstk_shape_t *existing = NULL;
+	int n;
+
+	for(n = 0; n < prt->tr.array[0].len; n++) {
+		if (lyt == prt->tr.array[0].shape[n].layer_mask) {
+			existing = &prt->tr.array[0].shape[n];
+			break;
+		}
+	}
+
+	if (existing == NULL) {
+		pcb_pstk_shape_t *newshp = pcb_pstk_alloc_append_shape(&prt->tr.array[0]);
+		pcb_pstk_shape_copy(newshp, shp);
+		return;
+	}
+
+	if (pcb_pstk_shape_eq(existing, shp))
+		return;
+
+	pcb_message(PCB_MSG_WARNING, "Incompatible padstack: some shape details are lost (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+}
+
+static void dsn_pstk_set_shape(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb_pstk_shape_t *shp, gsxl_node_t *nd)
+{
+	if (lyt == 0) {
+		dsn_pstk_set_shape_(prt, PCB_LYT_TOP | PCB_LYT_COPPER, shp, nd);
+		dsn_pstk_set_shape_(prt, PCB_LYT_INTERN | PCB_LYT_COPPER, shp, nd);
+		dsn_pstk_set_shape_(prt, PCB_LYT_BOTTOM | PCB_LYT_COPPER, shp, nd);
+	}
+	else
+		dsn_pstk_set_shape_(prt, lyt | PCB_LYT_COPPER, shp, nd);
+	pcb_pstk_shape_free(shp);
 }
 
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
@@ -503,9 +540,11 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	const pcb_unit_t *old_unit;
 	gsxl_node_t *n;
 	pcb_pstk_proto_t prt;
-	
+	pcb_pstk_shape_t hole;
+	int has_hole = 0;
 
 	memset(&prt, 0, sizeof(prt));
+	pcb_vtpadstack_tshape_alloc_append(&prt.tr, 1);
 
 	for(n = wrr->children; n != NULL; n = n->next)
 		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0))
@@ -515,17 +554,35 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		if (n->str == NULL)
 			continue;
 		if (pcb_strcasecmp(n->str, "shape") == 0) {
-			pcb_pstk_tshape_t *tshp = pcb_vtpadstack_tshape_alloc_append(&prt.tr, 1);
-			if (dsn_parse_lib_padstack_shp(ctx, n->children, tshp->shape) != 0)
-				goto err;
-		}
-		else if (pcb_strcasecmp(n->str, "hole") == 0) {
-/*
 			pcb_pstk_shape_t shp;
+			pcb_layer_type_t lyt;
+
+			lyt = dsn_pstk_shape_layer(ctx, n->children->children);
+			if (lyt < 0)
+				goto err;
+
 			if (dsn_parse_lib_padstack_shp(ctx, n->children, &shp) != 0)
 				goto err;
-*/
-#warning TODO: construct a slot or hole
+
+			dsn_pstk_set_shape(&prt, lyt, &shp, n);
+		}
+		else if (pcb_strcasecmp(n->str, "hole") == 0) {
+			pcb_pstk_shape_t shp;
+
+			if (has_hole) {
+				if (dsn_parse_lib_padstack_shp(ctx, n->children, &shp) != 0)
+					goto err;
+
+				if (!pcb_pstk_shape_eq(&hole, &shp))
+					pcb_message(PCB_MSG_WARNING, "Incompatible padstack: non-uniform hole geometry; keeping one hole shape randomly (at %ld:%ld)\n", (long)n->line, (long)n->col);
+
+				pcb_pstk_shape_free(&shp);
+			}
+			else {
+				if (dsn_parse_lib_padstack_shp(ctx, n->children, &hole) != 0)
+					goto err;
+				has_hole = 1;
+			}
 		}
 		else if (pcb_strcasecmp(n->str, "antipad") == 0) {
 			/* silently not supported */
@@ -542,6 +599,10 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 				pcb_message(PCB_MSG_WARNING, "unhandled padstack flag %s (at %ld:%ld) - this property will be ignored\n", n->str, (long)n->line, (long)n->col);
 			}
 		}
+	}
+
+	if (has_hole) {
+#warning TODO: convert prt_hole to a hole or a circle
 	}
 
 	if (old_unit != NULL)
