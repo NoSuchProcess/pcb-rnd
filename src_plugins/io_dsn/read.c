@@ -560,7 +560,7 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 		if (dsn_parse_pstk_shape_rect(ctx, sn, shp) != 0)
 			return -1;
 	}
-	else if (pcb_strcasecmp(sn->str, "polygon") == 0) {
+	else if ((pcb_strcasecmp(sn->str, "polygon") == 0) || (pcb_strcasecmp(sn->str, "poly") == 0)) {
 		if (dsn_parse_pstk_shape_poly(ctx, sn, shp) != 0)
 			return -1;
 	}
@@ -995,7 +995,7 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "polygon") == 0) {
+		if ((pcb_strcasecmp(wrr->str, "polygon") == 0) || (pcb_strcasecmp(wrr->str, "poly") == 0)) {
 			if (dsn_parse_wire_poly(ctx, wrr) != 0)
 				return -1;
 		}
