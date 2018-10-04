@@ -907,8 +907,8 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 		}
 	}
 
-	pcb_attribute_put(&subc->Attributes, "refdes", id);
-	id = pcb_attribute_get(&subc->Attributes, "refdes");
+	pcb_attribute_put(&subc->Attributes, "footprint", id);
+	id = pcb_attribute_get(&subc->Attributes, "footprint");
 	htsp_set(&ctx->subcs, id, subc);
 
 	if (old_unit != NULL)
