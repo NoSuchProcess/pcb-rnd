@@ -46,6 +46,8 @@
 
 #include "read.h"
 
+#warning TODO: check where else the unit descriptor can appear
+
 typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;
@@ -135,6 +137,23 @@ static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
 {
 	ctx->unit = saved;
+}
+
+/* Search a subtree for a unit descriptor and push it and return the old.
+   Returns NULL if nothing found/pushed */
+static const pcb_unit_t *dsn_set_old_unit(dsn_read_t *ctx, gsxl_node_t *nd)
+{
+	const pcb_unit_t *old_unit = NULL;
+	gsxl_node_t *n;
+
+	for(n = nd; n != NULL; n = n->next) {
+		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0)) {
+			old_unit = push_unit(ctx, n);
+			break;
+		}
+	}
+
+	return old_unit;
 }
 
 /*** tree parse ***/
@@ -654,7 +673,7 @@ static void dsn_pstk_set_shape(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb_
 
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	const pcb_unit_t *old_unit = NULL;
+	const pcb_unit_t *old_unit;
 	gsxl_node_t *n;
 	pcb_pstk_proto_t *prt;
 	pcb_pstk_shape_t hole;
@@ -670,9 +689,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	prt->name = pcb_strdup(wrr->children->str);
 
-	for(n = wrr->children->next; n != NULL; n = n->next)
-		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "unit") == 0))
-			old_unit = push_unit(ctx, n);
+	old_unit = dsn_set_old_unit(ctx, wrr->children->next);
 
 	for(n = wrr->children; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -1064,6 +1081,10 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 
 static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
+	const pcb_unit_t *old_unit;
+
+	old_unit = dsn_set_old_unit(ctx, wrr->children);
+
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
@@ -1080,6 +1101,10 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 		}
 #warning TODO: what else
 	}
+
+	if (old_unit != NULL)
+		pop_unit(ctx, old_unit);
+
 	return 0;
 }
 
