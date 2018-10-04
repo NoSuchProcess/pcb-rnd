@@ -1335,13 +1335,60 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 }
 
+static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirror_first)
+{
+	const char *id = STRE(plr->children);
+	pcb_subc_t *subc, *nsc;
+	gsxl_node_t *n;
+
+	subc = htsp_get(&ctx->subcs, id);
+	if (subc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Invalid image name '%s' in placement (at %ld:%ld) - please send the dsn file as a bugreport\n", id, (long)plr->line, (long)plr->col);
+		return -1;
+	}
+
+	for(n = plr->children->next; n != NULL; n = n->next) {
+		pcb_coord_t crd[2] = {0, 0};
+		const char *refdes = STRE(n->children);
+		DSN_LOAD_COORDS_XY(crd, n->children->next, 2, goto bad_coord);
+
+		pcb_printf("!!! %s %s %s %mm %mm\n", n->str, id, refdes, crd[0], crd[1]);
+
+		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0);
+		pcb_attribute_put(&nsc->Attributes, "refdes", refdes);
+	}
+
+	return 0;
+	bad_coord:;
+	pcb_message(PCB_MSG_ERROR, "Invalid placement coords (at %ld:%ld) - please send the dsn file as a bugreport\n", (long)n->line, (long)n->col);
+	return -1;
+}
+
 static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 {
 	const pcb_unit_t *old_unit;
+	int mirror_first = 1;
 
 	old_unit = dsn_set_old_unit(ctx, plr->children);
 
-#warning TODO
+	for(plr = plr->children; plr != NULL; plr = plr->next) {
+		if (plr->str == NULL)
+			continue;
+		if (pcb_strcasecmp(plr->str, "place_control") == 0) {
+			if (pcb_strcasecmp(STRE(plr->children), "flip_style") == 0) {
+				if (pcb_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
+					mirror_first = 1;
+				else if (pcb_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
+					mirror_first = 0;
+				else
+					pcb_message(PCB_MSG_WARNING, "invalid flip_style: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", STRE(plr->children->children), (long)plr->line, (long)plr->col);
+			}
+		}
+		else if (pcb_strcasecmp(plr->str, "component") == 0) {
+			if (dsn_parse_place_component(ctx, plr, mirror_first) != 0)
+				return -1;
+		}
+	}
 
 	if (old_unit != NULL)
 		pop_unit(ctx, old_unit);
