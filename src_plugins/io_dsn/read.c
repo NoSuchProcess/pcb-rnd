@@ -448,9 +448,27 @@ int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape
 	return 0;
 }
 
-int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
+int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
-#warning TODO
+	pcb_box_t box;
+	gsxl_node_t *args = nd->children->next;
+
+	if (dsn_parse_rect(ctx, &box, args, 1) != 0)
+		return -1;
+
+	shp->shape = PCB_PSSH_POLY;
+	pcb_pstk_shape_alloc_poly(&shp->data.poly, 4);
+
+	if (box.Y1 != 0) box.Y1 = -box.Y1;
+	if (box.Y2 != 0) box.Y2 = -box.Y2;
+
+	shp->data.poly.x[0] = box.X1; shp->data.poly.y[0] = box.Y1;
+	shp->data.poly.x[1] = box.X2; shp->data.poly.y[1] = box.Y1;
+	shp->data.poly.x[2] = box.X2; shp->data.poly.y[2] = box.Y2;
+	shp->data.poly.x[3] = box.X1; shp->data.poly.y[3] = box.Y2;
+
+	pcb_pstk_shape_update_pa(&shp->data.poly);
+
 	return 0;
 }
 
