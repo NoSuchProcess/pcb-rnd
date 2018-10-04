@@ -479,6 +479,24 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 	return 0;
 }
 
+/* Return a PCB_LYT_TOP, PCB_LYT_BOTTOM, PCB_LYT_INTERN or 0 for global;
+   return -1 for invalid layer name */
+static pcb_layer_type_t dsn_pstk_shape_layer(dsn_read_t *ctx, gsxl_node_t *net)
+{
+	const char *nname= STRE(net);
+	pcb_layer_t *ly;
+
+	if ((pcb_strcasecmp(nname, "signal") == 0) || (pcb_strcasecmp(nname, "power") == 0))
+		return 0;
+
+	ly = htsp_get(&ctx->name2layer, nname); \
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col);
+		return -1;
+	}
+
+	return pcb_layer_flags_(ly) & PCB_LYT_ANYWHERE;
+}
 
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
