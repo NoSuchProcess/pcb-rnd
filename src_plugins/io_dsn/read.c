@@ -483,7 +483,7 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	const pcb_unit_t *old_unit;
-	gsxl_node_t *n, *sn;
+	gsxl_node_t *n;
 	pcb_pstk_proto_t prt;
 	
 
@@ -642,7 +642,6 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	gsxl_node_t *n, *net = wrr->children;
 	pcb_layer_t *ly;
 	pcb_coord_t r, cent[2] = {0, 0};
-	long len = 0;
 	pcb_poly_t *poly;
 	double a, astep;
 
@@ -743,11 +742,11 @@ static int qarc_angle(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t x, pcb_coord_t
 
 static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	gsxl_node_t *n, *coords, *net = wrr->children;
+	gsxl_node_t *coords, *net = wrr->children;
 	pcb_layer_t *ly;
 	pcb_coord_t r1, r2, aper;
 	pcb_coord_t crd[6]; /* sx, sy, ex, ey, cx, cy */
-	int i, len = 0, sa, ea;
+	int sa, ea;
 
 	DSN_PARSE_NET(ly, net, return -1);
 
