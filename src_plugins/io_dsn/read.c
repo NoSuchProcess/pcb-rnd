@@ -427,9 +427,24 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	return 0;
 }
 
-int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_pstk_shape_t *shp)
+int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
-#warning TODO
+	gsxl_node_t *args = nd->children->next;
+	pcb_coord_t dia, cent[2];
+
+	if (args == NULL) {
+		not_enough:;
+		pcb_message(PCB_MSG_ERROR, "Padstack circle: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		return -1;
+	}
+
+	dia = COORD(ctx, args);
+	DSN_LOAD_COORDS_XY(cent, args->next, 2, goto not_enough);
+
+	shp->shape = PCB_PSSH_CIRC;
+	shp->data.circ.dia = dia;
+	shp->data.circ.x = cent[0];
+	shp->data.circ.y = cent[1];
 	return 0;
 }
 
@@ -456,6 +471,7 @@ int dsn_parse_pstk_shape_plating(dsn_read_t *ctx, gsxl_node_t *plt, pcb_pstk_pro
 
 static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk_shape_t *shp)
 {
+	memset(shp, 0, sizeof(pcb_pstk_shape_t));
 	if ((sn == NULL) || (sn->str == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)sn->line, (long)sn->col);
 		return -1;
@@ -503,6 +519,8 @@ static void dsn_pstk_set_shape_(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb
 {
 	pcb_pstk_shape_t *existing = NULL;
 	int n;
+
+	shp->layer_mask = lyt;
 
 	for(n = 0; n < prt->tr.array[0].len; n++) {
 		if (lyt == prt->tr.array[0].shape[n].layer_mask) {
