@@ -421,9 +421,10 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	ctx->pcb->MaxWidth = ctx->bbox.X2 - ctx->bbox.X1;
 	ctx->pcb->MaxHeight = ctx->bbox.Y2 - ctx->bbox.Y1;
 
-#warning TODO: make up the boundary later on from bbox
-	if (!ctx->has_pcb_boundary)
-		pcb_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\n");
+	if (!ctx->has_pcb_boundary) {
+		ctx->bbox.X1 = ctx->bbox.Y1 = ctx->bbox.X2 = ctx->bbox.Y2 = 0;
+		pcb_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\nYou may want to execute autocrop()\n");
+	}
 
 	return 0;
 }
