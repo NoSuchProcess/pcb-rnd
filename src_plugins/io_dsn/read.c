@@ -919,22 +919,26 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
 	const pcb_unit_t *old_unit;
+	gsxl_node_t *n;
 
 	old_unit = dsn_set_old_unit(ctx, wrr->children);
 
-	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
-		if (wrr->str == NULL)
+	for(n = wrr->children; n != NULL; n = n->next) {
+		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "padstack") == 0)) {
+			if (dsn_parse_lib_padstack(ctx, n) != 0)
+				return -1;
+		}
+	}
+
+	for(n = wrr->children; n != NULL; n = n->next) {
+		if (n->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "image") == 0) {
-			if (dsn_parse_lib_image(ctx, wrr) != 0)
+		if (pcb_strcasecmp(n->str, "image") == 0) {
+			if (dsn_parse_lib_image(ctx, n) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "padstack") == 0) {
-			if (dsn_parse_lib_padstack(ctx, wrr) != 0)
-				return -1;
-		}
-		else if ((pcb_strcasecmp(wrr->str, "jumper") == 0) || (pcb_strcasecmp(wrr->str, "via_array_template") == 0) || (pcb_strcasecmp(wrr->str, "directory") == 0)) {
-			pcb_message(PCB_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
+		else if ((pcb_strcasecmp(n->str, "jumper") == 0) || (pcb_strcasecmp(n->str, "via_array_template") == 0) || (pcb_strcasecmp(n->str, "directory") == 0)) {
+			pcb_message(PCB_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", n->str, (long)n->line, (long)n->col);
 		}
 	}
 
