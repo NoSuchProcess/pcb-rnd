@@ -1357,12 +1357,50 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 	for(n = plr->children->next; n != NULL; n = n->next) {
 		pcb_coord_t crd[2] = {0, 0};
 		const char *refdes = STRE(n->children);
+		gsxl_node_t *side;
+		int need_mirror;
+		double rot;
+		char *end;
+
 		DSN_LOAD_COORDS_XY(crd, n->children->next, 2, goto bad_coord);
 
-		pcb_printf("!!! %s %s %s %mm %mm\n", n->str, id, refdes, crd[0], crd[1]);
+		side = n->children->next->next->next;
+		if ((side == NULL) || (side->str == NULL)) {
+			pcb_message(PCB_MSG_ERROR, "Invalid placement side (at %ld:%ld)\n", (long)n->line, (long)n->col);
+			return -1;
+		}
+		if (pcb_strcasecmp(side->str, "front") == 0)
+			need_mirror = 0;
+		else if (pcb_strcasecmp(side->str, "back") == 0)
+			need_mirror = 1;
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid placement side '%s' (at %ld:%ld)\n", side->str, (long)n->line, (long)n->col);
+			return -1;
+		}
+
+		rot = strtod(STRE(side->next), &end);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "Invalid placement rotation '%s' - must be a number (at %ld:%ld)\n", side->next->str, (long)n->line, (long)n->col);
+			return -1;
+		}
+
+		pcb_printf("!!! %s %s %s %mm %mm %s@%f\n", n->str, id, refdes, crd[0], crd[1], side->str, rot);
 
 		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0);
 		pcb_attribute_put(&nsc->Attributes, "refdes", refdes);
+
+		if (mirror_first) {
+			if (need_mirror)
+				pcb_subc_change_side(&nsc, crd[1] * 2 - PCB->MaxHeight);
+			if (rot != 0.0)
+				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+		}
+		else {
+			if (rot != 0.0)
+				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+			if (need_mirror)
+				pcb_subc_change_side(&nsc, crd[1] * 2 - PCB->MaxHeight);
+		}
 	}
 
 	return 0;
