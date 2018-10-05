@@ -45,6 +45,7 @@
 #include "math_helper.h"
 #include "actions.h"
 #include "netlist.h"
+#include "polygon_offs.h"
 
 #include "read.h"
 
@@ -1090,7 +1091,6 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	}
 
 	aper = dsn_load_aper(ctx, net->next);
-#warning TODO: use aperture (bloat up poly)
 	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
 	for(n = net->next->next; n != NULL;) {
 		if (isalpha(*n->str))
@@ -1119,9 +1119,37 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 		pcb_poly_point_new(poly, x, y);
 		len++;
 	}
-	pcb_add_poly_on_layer(ly, poly);
-	if (len < 3)
+
+	if (len < 3) {
 		pcb_message(PCB_MSG_ERROR, "Not enough coordinate pairs for a polygon (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		return -1;
+	}
+
+	if (aper != 0) {
+		double dv;
+		long n;
+		pcb_polo_t *p;
+
+		/* this assumes there's no hole in the poly - but DSN doesn't support holes anyway */
+		p = malloc(sizeof(pcb_polo_t) * len);
+		for(n = 0; n < len; n++) {
+			p[n].x = poly->Points[n].X;
+			p[n].y = poly->Points[n].Y;
+		}
+		pcb_polo_norms(p, len);
+		if (pcb_polo_2area(p, len) < 0)
+			dv = -2.0;
+		else
+			dv = 2.0;
+		pcb_polo_offs((double)aper / dv, p, len);
+
+		for(n = 0; n < len; n++) {
+			poly->Points[n].X = pcb_round(p[n].x);
+			poly->Points[n].Y = pcb_round(p[n].y);
+		}
+		free(p);
+	}
+	pcb_add_poly_on_layer(ly, poly);
 	return 0;
 }
 
