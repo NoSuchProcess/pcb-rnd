@@ -31,6 +31,7 @@
 - FEATURE: session persistent message log  (messages are flushed after dialog is closed?) [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it
 - CLEANUP:  do not require top and bottom silk (also grep for TODO #tbs)
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
