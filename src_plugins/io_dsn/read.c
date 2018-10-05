@@ -928,7 +928,7 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	pcb_subc_t *subc;
 	char *id;
 	int n;
-	pcb_layer_t *ly;
+	pcb_layer_t *ly, *nly;
 
 	id = STRE(imr->children);
 	if ((id == NULL) || (*id == '\0')) {
@@ -946,8 +946,15 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	/* create a bound layer for all board layers, just in case */
 	for(n = 0, ly = ctx->pcb->Data->Layer; n < ctx->pcb->Data->LayerN; n++,ly++) {
 		const char *purp = NULL;
+		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+
 		pcb_layer_purpose_(ly, &purp);
-		pcb_layer_new_bound(subc->data, pcb_layer_flags_(ly), ly->name, purp);
+		nly = pcb_layer_new_bound(subc->data, lyt, ly->name, purp);
+
+		if ((lyt & PCB_LYT_MASK) || (lyt & PCB_LYT_PASTE))
+			nly->comb |= PCB_LYC_AUTO;
+		if (lyt & PCB_LYT_MASK)
+			nly->comb |= PCB_LYC_SUB;
 	}
 
 	/* create less popular format-special bound layers at the end */
