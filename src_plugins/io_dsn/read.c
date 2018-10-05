@@ -106,13 +106,21 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 #define COORDX(ctx, n) COORD(ctx, n)
 #define COORDY(ctx, n) (ctx->bbox.Y2 - COORD(ctx, n))
 
-#define DSN_LOAD_COORDS_XY(dst, src, maxpts, err_statement) \
+/* load coordinates from nodes starting from src, hoppin on ->next, into
+   pcb_coord_t dst[]. Each coord is converted according to the next char
+   in const char *fmt[] */
+#define DSN_LOAD_COORDS_FMT(dst, src, fmt, err_statement) \
 	do { \
-		int __i__, __maxpts__ = (maxpts); \
+		int __i__; \
 		gsxl_node_t *__n__ = (src); \
-		for(__i__ = 0; __i__ < __maxpts__; __i__++) { \
+		const char *__fmt__ = (fmt); \
+		for(__i__ = 0; __fmt__[__i__] != '\0'; __i__++) { \
 			if (__n__ == NULL) { err_statement; } \
-			dst[__i__] = ((__i__ % 2) == 0) ? COORDX(ctx, __n__) : COORDY(ctx, __n__); \
+			switch(__fmt__[__i__]) { \
+				case 'c': dst[__i__] = COORD(ctx, __n__); break; \
+				case 'x': dst[__i__] = COORDX(ctx, __n__); break; \
+				case 'y': dst[__i__] = COORDY(ctx, __n__); break; \
+			} \
 			__n__ = __n__->next; \
 		} \
 	} while(0)
@@ -814,7 +822,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 
 	term = STRE(pn->children->next);
 	ncoord = pn->children->next->next;
-	DSN_LOAD_COORDS_XY(crd, ncoord, 2, goto err_coord);
+	DSN_LOAD_COORDS_FMT(crd, ncoord, "xy", goto err_coord);
 
 	nrot = ncoord->next->next;
 	if ((nrot != NULL) && (nrot->str != NULL) && (pcb_strcasecmp(nrot->str, "rotate") == 0)) {
@@ -1067,7 +1075,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	r = pcb_round((double)COORD(ctx, n) / 2.0);
 	n = n->next;
 	if (n != NULL)
-		DSN_LOAD_COORDS_XY(cent, n, 2, goto err_cent);
+		DSN_LOAD_COORDS_FMT(cent, n, "xy", goto err_cent);
 
 	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
 	astep = 2*M_PI / (8 + r / PCB_MM_TO_COORD(0.1));
@@ -1169,7 +1177,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	aper = dsn_load_aper(ctx, net->next);
 
-	DSN_LOAD_COORDS_XY(crd, coords, 6, goto not_enough);
+	DSN_LOAD_COORDS_FMT(crd, coords, "xyxyxy", goto not_enough);
 
 	sa = qarc_angle(crd[4], crd[5], crd[0], crd[1], &r1);
 	ea = qarc_angle(crd[4], crd[5], crd[2], crd[3], &r2);
@@ -1247,7 +1255,7 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 		return -1;
 	}
 
-	DSN_LOAD_COORDS_XY(crd, vnd->children->next, 2, goto err_coord);
+	DSN_LOAD_COORDS_FMT(crd, vnd->children->next, "xy", goto err_coord);
 
 	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1);
 	if (pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
@@ -1266,7 +1274,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 	pcb_pstk_t *ps;
 	int back;
 
-	DSN_LOAD_COORDS_XY(crd, tnd->children, 2, goto not_enough);
+	DSN_LOAD_COORDS_FMT(crd, tnd->children, "xy", goto not_enough);
 
 	side = tnd->children->next->next;
 	if ((side == NULL) || (side->str == NULL)) {
@@ -1380,7 +1388,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 		double rot;
 		char *end;
 
-		DSN_LOAD_COORDS_XY(crd, n->children->next, 2, goto bad_coord);
+		DSN_LOAD_COORDS_FMT(crd, n->children->next, "xy", goto bad_coord);
 
 		side = n->children->next->next->next;
 		if ((side == NULL) || (side->str == NULL)) {
