@@ -51,5 +51,20 @@ picks up - but if the file does not contain holes, pcb-rnd can't improvise them.
 You can use query() to find offending padstacks and use propset() or 
 the padstack editor to install the holes.
 
+<h3> There are no silk graphics on subcircuits after import </h3>
+<p>
+The DSN format does not specify silk. There are outline and keepout objects
+in the format and pcb-rnd loads them on special purpose documentation layers.
+The use of these objects vary from tool to tool - some tools will draw the
+bounding box of the part using lines on the outline layer, but other tools
+may just draw a large, rectangular filled polygon.
+<p>
+Use the per subcircuit layer bindings to map them on a board silk layer.
+
+<h3> Missing solder mask cutouts and solder paste patterns after import </h3>
+<p>
+The DSN format does not specify solder mask or paste. Please use the padstack
+editor on the affected padstacks.
+
 </body>
 </html>
