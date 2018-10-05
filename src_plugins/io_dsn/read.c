@@ -172,6 +172,8 @@ static const pcb_unit_t *dsn_set_old_unit(dsn_read_t *ctx, gsxl_node_t *nd)
 
 /*** tree parse ***/
 
+static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly);
+
 static pcb_coord_t dsn_load_aper(dsn_read_t *ctx, gsxl_node_t *c)
 {
 	pcb_coord_t res = COORD(ctx, c);
@@ -889,8 +891,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 
 static int dsn_parse_img_conductor(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
 {
-#warning TODO
-return 0;
+	return dsn_parse_wire(ctx, imr, subc, NULL);
 }
 
 
@@ -1012,18 +1013,32 @@ static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 }
 
 
-#define DSN_PARSE_NET(ly, net, fail) \
+#define DSN_PARSE_NET(ly, net, fail, subc, force_ly) \
 do { \
-	gsxl_node_t *__net__ = (net); \
-	const char *__nname__ = STRE(__net__); \
-	ly = htsp_get(&ctx->name2layer, __nname__); \
-	if (ly == NULL) { \
-		pcb_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col); \
-		{ fail; } \
+	if (force_ly == NULL) { \
+		gsxl_node_t *__net__ = (net); \
+		const char *__nname__ = STRE(__net__); \
+		if (subc != NULL) { \
+			int __n__; \
+			ly = NULL; \
+			for(__n__ = 0; __n__ < subc->data->LayerN; __n__++) { \
+				if (strcmp(subc->data->Layer[__n__].name, __nname__) == 0) { \
+					ly = &subc->data->Layer[__n__]; \
+				} \
+			} \
+		} \
+		else \
+			ly = htsp_get(&ctx->name2layer, __nname__); \
+		if (ly == NULL) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col); \
+			{ fail; } \
+		} \
 	} \
+	else \
+		ly = force_ly; \
 } while(0)
 
-static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
 	gsxl_node_t *n, *net = wrr->children;
 	pcb_layer_t *ly;
@@ -1032,7 +1047,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 	long len = 0;
 	pcb_poly_t *poly;
 
-	DSN_PARSE_NET(ly, net, return -1);
+	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Not enough wire polygon attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
@@ -1051,7 +1066,12 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 			break;
 		}
 		n = n->next;
-		y = COORDY(ctx, n);
+		if (subc != 0) {
+			y = COORD(ctx, n);
+			if (y != 0) y = -y;
+		}
+		else
+			y = COORDY(ctx, n);
 		n = n->next;
 		if (len == 0) {
 			fx = x;
@@ -1070,23 +1090,28 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 }
 
-static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
 	pcb_box_t box;
 	gsxl_node_t *net = wrr->children;
 	pcb_layer_t *ly;
 
-	DSN_PARSE_NET(ly, net, return -1);
+	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
-	if (dsn_parse_rect(ctx, &box, net->next, 0) != 0)
+	if (dsn_parse_rect(ctx, &box, net->next, (subc != NULL)) != 0)
 		return -1;
+
+	if (subc) {
+		if (box.Y1 != 0) box.Y1 = -box.Y1;
+		if (box.Y2 != 0) box.Y2 = -box.Y2;
+	}
 
 	pcb_poly_new_from_rectangle(ly, box.X1, box.Y1, box.X2, box.Y2, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
 
 	return 0;
 }
 
-static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
 	gsxl_node_t *n, *net = wrr->children;
 	pcb_layer_t *ly;
@@ -1094,7 +1119,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	pcb_poly_t *poly;
 	double a, astep;
 
-	DSN_PARSE_NET(ly, net, return -1);
+	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Not enough wire circle attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
@@ -1105,7 +1130,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	r = pcb_round((double)COORD(ctx, n) / 2.0);
 	n = n->next;
 	if (n != NULL)
-		DSN_LOAD_COORDS_FMT(cent, n, "xy", goto err_cent);
+		DSN_LOAD_COORDS_FMT(cent, n, (subc == NULL) ? "xy" : "XY", goto err_cent);
 
 	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
 	astep = 2*M_PI / (8 + r / PCB_MM_TO_COORD(0.1));
@@ -1124,7 +1149,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return -1;
 }
 
-static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
 	gsxl_node_t *n, *net = wrr->children;
 	pcb_layer_t *ly;
@@ -1132,7 +1157,7 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 	pcb_coord_t x, y, px, py;
 	int len = 0;
 
-	DSN_PARSE_NET(ly, net, return -1);
+	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Not enough wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
@@ -1148,7 +1173,12 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr)
 			break;
 		}
 		n = n->next;
-		y = COORDY(ctx, n);
+		if (subc != NULL) {
+			y = COORD(ctx, n);
+			if (y != 0) y = -y;
+		}
+		else
+			y = COORDY(ctx, n);
 		n = n->next;
 		if (len > 0)
 			pcb_line_new(ly, px, py, x, y, aper, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -1189,7 +1219,7 @@ static int qarc_angle(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t x, pcb_coord_t
 	return -1; /* all were zero */
 }
 
-static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
 	gsxl_node_t *coords, *net = wrr->children;
 	pcb_layer_t *ly;
@@ -1197,7 +1227,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 	pcb_coord_t crd[6]; /* sx, sy, ex, ey, cx, cy */
 	int sa, ea;
 
-	DSN_PARSE_NET(ly, net, return -1);
+	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || ((coords = net->next->next) == NULL)) {
 		not_enough:;
@@ -1207,7 +1237,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 	aper = dsn_load_aper(ctx, net->next);
 
-	DSN_LOAD_COORDS_FMT(crd, coords, "xyxyxy", goto not_enough);
+	DSN_LOAD_COORDS_FMT(crd, coords, (subc == NULL) ? "xyxyxy" : "XYXYXY", goto not_enough);
 
 	sa = qarc_angle(crd[4], crd[5], crd[0], crd[1], &r1);
 	ea = qarc_angle(crd[4], crd[5], crd[2], crd[3], &r2);
@@ -1221,7 +1251,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return 0;
 }
 
-static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
+static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
 	/* pick up properties */
 /* These are specified but not handled by pcb-rnd: /
@@ -1243,23 +1273,23 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr)
 		if (wrr->str == NULL)
 			continue;
 		if ((pcb_strcasecmp(wrr->str, "polygon") == 0) || (pcb_strcasecmp(wrr->str, "poly") == 0)) {
-			if (dsn_parse_wire_poly(ctx, wrr) != 0)
+			if (dsn_parse_wire_poly(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
 		else if (pcb_strcasecmp(wrr->str, "path") == 0) {
-			if (dsn_parse_wire_path(ctx, wrr) != 0)
+			if (dsn_parse_wire_path(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
 		else if (pcb_strcasecmp(wrr->str, "qarc") == 0) {
-			if (dsn_parse_wire_qarc(ctx, wrr) != 0)
+			if (dsn_parse_wire_qarc(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
 		else if (pcb_strcasecmp(wrr->str, "rect") == 0) {
-			if (dsn_parse_wire_rect(ctx, wrr) != 0)
+			if (dsn_parse_wire_rect(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
 		else if (pcb_strcasecmp(wrr->str, "circle") == 0) {
-			if (dsn_parse_wire_circle(ctx, wrr) != 0)
+			if (dsn_parse_wire_circle(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
 	}
@@ -1376,7 +1406,7 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 		if (wrr->str == NULL)
 			continue;
 		if (pcb_strcasecmp(wrr->str, "wire") == 0) {
-			if (dsn_parse_wire(ctx, wrr) != 0)
+			if (dsn_parse_wire(ctx, wrr, NULL, NULL) != 0)
 				return -1;
 		}
 		else if (pcb_strcasecmp(wrr->str, "via") == 0) {
