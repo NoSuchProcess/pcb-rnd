@@ -948,6 +948,9 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 		const char *purp = NULL;
 		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
 
+		if (lyt & PCB_LYT_SUBSTRATE)
+			continue;
+
 		pcb_layer_purpose_(ly, &purp);
 		nly = pcb_layer_new_bound(subc->data, lyt, ly->name, purp);
 
