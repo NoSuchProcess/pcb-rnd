@@ -371,6 +371,19 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL, *grp;
 	pcb_layergrp_id_t gid;
 	const pcb_unit_t *old_unit;
+	const pcb_dflgmap_t doclayers[] = {
+		{"top_outline",         PCB_LYT_TOP | PCB_LYT_DOC,    "outline", PCB_LYC_AUTO, 0},
+		{"bot_outline",         PCB_LYT_BOTTOM | PCB_LYT_DOC, "outline", PCB_LYC_AUTO, 0},
+		{"top_all_keepout",     PCB_LYT_TOP | PCB_LYT_DOC,    "all_keepout", PCB_LYC_AUTO, 0},
+		{"bot_all_keepout",     PCB_LYT_BOTTOM | PCB_LYT_DOC, "all_keepout", PCB_LYC_AUTO, 0},
+		{"top_copper_keepout",  PCB_LYT_TOP | PCB_LYT_DOC,    "copper_keepout", PCB_LYC_AUTO, 0},
+		{"bot_copper_keepout",  PCB_LYT_BOTTOM | PCB_LYT_DOC, "copper_keepout", PCB_LYC_AUTO, 0},
+		{"top_subc_keepout",    PCB_LYT_TOP | PCB_LYT_DOC,    "subc_keepout", PCB_LYC_AUTO, 0},
+		{"bot_subc_keepout",    PCB_LYT_BOTTOM | PCB_LYT_DOC, "subc_keepout", PCB_LYC_AUTO, 0},
+		{"top_via_keepout",     PCB_LYT_TOP | PCB_LYT_DOC,    "via_keepout", PCB_LYC_AUTO, 0},
+		{"bot_via_keepout",     PCB_LYT_BOTTOM | PCB_LYT_DOC, "via_keepout", PCB_LYC_AUTO, 0},
+		{NULL, 0}
+	};
 
 	if (str == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not parse board without a structure subtree\n");
@@ -437,6 +450,22 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 		CHECK_TOO_MANY_LAYERS(str, ctx->pcb->LayerGroups.len);
 		pcb_layergrp_set_dflgly(ctx->pcb, &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++], m, NULL, NULL);
 	}
+
+	/* create documentation layers */
+	for(m = doclayers; m->name != NULL; m++) {
+		pcb_layergrp_t *grp;
+/*		pcb_layer_t *ly;*/
+
+		CHECK_TOO_MANY_LAYERS(str, ctx->pcb->LayerGroups.len);
+		grp = &ctx->pcb->LayerGroups.grp[ctx->pcb->LayerGroups.len++];
+		pcb_layergrp_set_dflgly(ctx->pcb, grp, m, NULL, NULL);
+
+/* overridden by the GUI logic:
+		grp->vis = 0;
+		ly = pcb_get_layer(ctx->pcb->Data, grp->lid[0]);
+		ly->meta.real.vis = 0;*/
+	}
+
 
 	pcb_layergrp_inhibit_dec();
 
@@ -961,9 +990,10 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	}
 
 	/* create less popular format-special bound layers at the end */
-	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "wire_keepout", "wire_keepout");
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "all_keepout", "all_keepout");
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "copper_keepout", "copper_keepout");
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "subc_keepout", "subc_keepout");
 	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "via_keepout", "via_keepout");
-	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "place_keepout", "place_keepout");
 
 
 	for(imr = imr->children->next; imr != NULL; imr = imr->next) {
