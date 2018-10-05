@@ -1524,8 +1524,6 @@ void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, do
 
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 {
-	pcb_opctx_t ctx;
-	pcb_subc_t *newsc, *newsc2;
 	int n;
 	pcb_board_t *pcb;
 	pcb_data_t *data, *oldhack;
@@ -1537,34 +1535,27 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	data = (*subc)->parent.data;
 	pcb = pcb_data_get_top(data);
 
-	/* move subc into a local "buffer" */
-	memset(&ctx, 0, sizeof(ctx));
-	ctx.buffer.pcb = pcb_data_get_top((*subc)->data);
-	ctx.buffer.dst = pcb_data_new(NULL);
-	ctx.buffer.src = data;
-
-	oldhack = pcb_pstk_data_hack;
-	pcb_pstk_data_hack = ctx.buffer.dst;
-	newsc = pcb_subcop_move_buffer(&ctx, *subc);
-
-
 	/* mirror object geometry and stackup */
-	pcb_subc_mirror(NULL, newsc, yoff, pcb_true);
-	for(n = 0; n < newsc->data->LayerN; n++) {
-		pcb_layer_t *ly = newsc->data->Layer + n;
+
+	if ((data != NULL) && (data->subc_tree != NULL))
+		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)(*subc));
+
+	pcb_data_mirror((*subc)->data, yoff, PCB_TXM_SIDE, 1);
+
+	for(n = 0; n < (*subc)->data->LayerN; n++) {
+		pcb_layer_t *ly = (*subc)->data->Layer + n;
 		ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
 		ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
 	}
+	pcb_subc_rebind(pcb, *subc);
 
-	/* place the new subc */
-	newsc2 = pcb_subc_dup_at(pcb, data, newsc, 0, 0, pcb_true);
-	newsc2->ID = newsc->ID;
-	PCB_SET_PARENT(newsc2, data, data);
-	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, newsc2, newsc2, newsc2, yoff);
+	pcb_subc_bbox(*subc);
 
-	*subc = newsc2;
-	pcb_subc_free(newsc);
-	pcb_data_free(ctx.buffer.dst);
+	if ((data != NULL) && (data->subc_tree != NULL))
+		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)(*subc));
+
+	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, *subc, *subc, *subc, yoff);
+
 	pcb_pstk_data_hack = oldhack;
 	return pcb_true;
 }
