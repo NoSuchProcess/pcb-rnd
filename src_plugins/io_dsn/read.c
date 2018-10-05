@@ -797,6 +797,38 @@ static int dsn_parse_img_outline(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *
 return 0;
 }
 
+static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
+{
+	const char *psname = STRE(pn->children);
+	gsxl_node_t *ncoord;
+	pcb_pstk_proto_t *proto;
+
+	if ((psname == NULL) || (*psname == '\0')) {
+		pcb_message(PCB_MSG_ERROR, "Invalid anonymous via (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		return -1;
+	}
+
+	proto = htsp_get(&ctx->protos, psname);
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Unknown via '%s' (at %ld:%ld)\n", psname, (long)pn->line, (long)pn->col);
+		return -1;
+	}
+
+	for(ncoord = pn->children->next; ncoord != NULL; ncoord = ncoord->next->next) {
+		pcb_coord_t crd[2];
+		pcb_cardinal_t pid;
+
+		DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
+		pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1);
+		pcb_pstk_new(subc->data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	}
+
+	return 0;
+	err_coord:;
+	pcb_message(PCB_MSG_ERROR, "Invalid via coordinates (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+	return -1;
+}
+
 static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 {
 	gsxl_node_t *ncoord, *nrot;
@@ -861,11 +893,6 @@ static int dsn_parse_img_conductor(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t
 return 0;
 }
 
-static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
-{
-#warning TODO
-return 0;
-}
 
 static int dsn_parse_img_keepout(dsn_read_t *ctx, gsxl_node_t *imr, const char *type, pcb_subc_t *subc)
 {
