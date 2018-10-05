@@ -108,7 +108,8 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 
 /* load coordinates from nodes starting from src, hoppin on ->next, into
    pcb_coord_t dst[]. Each coord is converted according to the next char
-   in const char *fmt[] */
+   in const char *fmt[]; 'c' is raw coord, 'x' and 'y' are board coords,
+   'X' and 'Y' are relative coords */
 #define DSN_LOAD_COORDS_FMT(dst, src, fmt, err_statement) \
 	do { \
 		int __i__; \
@@ -120,6 +121,8 @@ static pcb_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 				case 'c': dst[__i__] = COORD(ctx, __n__); break; \
 				case 'x': dst[__i__] = COORDX(ctx, __n__); break; \
 				case 'y': dst[__i__] = COORDY(ctx, __n__); break; \
+				case 'X': dst[__i__] = COORD(ctx, __n__); break; \
+				case 'Y': dst[__i__] = COORD(ctx, __n__); if (dst[__i__] != 0) dst[__i__] = -dst[__i__]; break; \
 			} \
 			__n__ = __n__->next; \
 		} \
@@ -822,7 +825,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 
 	term = STRE(pn->children->next);
 	ncoord = pn->children->next->next;
-	DSN_LOAD_COORDS_FMT(crd, ncoord, "xy", goto err_coord);
+	DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
 
 	nrot = ncoord->next->next;
 	if ((nrot != NULL) && (nrot->str != NULL) && (pcb_strcasecmp(nrot->str, "rotate") == 0)) {
