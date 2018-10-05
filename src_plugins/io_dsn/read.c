@@ -900,10 +900,10 @@ static int dsn_parse_img_keepout(dsn_read_t *ctx, gsxl_node_t *imr, const char *
 return 0;
 }
 
-static int dsn_parse_img_property(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
+static int dsn_parse_img_property(dsn_read_t *ctx, gsxl_node_t *nd, pcb_subc_t *subc)
 {
-#warning TODO
-return 0;
+	parse_attribute(ctx, &subc->Attributes, nd->children);
+	return 0;
 }
 
 static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
