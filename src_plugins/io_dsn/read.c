@@ -788,11 +788,13 @@ return 0;
 
 static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 {
+	gsxl_node_t *ncoord, *nrot;
 	const char *term, *psname = STRE(pn->children);
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_t *ps;
 	pcb_cardinal_t pid;
 	pcb_coord_t crd[2] = {0, 0};
+	double rotang = 0.0;
 
 	if ((psname == NULL) || (*psname == '\0')) {
 		pcb_message(PCB_MSG_ERROR, "Invalid anonymous pin (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
@@ -811,14 +813,30 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	}
 
 	term = STRE(pn->children->next);
-	DSN_LOAD_COORDS_XY(crd, pn->children->next->next, 2, goto err_coord);
+	ncoord = pn->children->next->next;
+	DSN_LOAD_COORDS_XY(crd, ncoord, 2, goto err_coord);
+
+	nrot = ncoord->next->next;
+	if ((nrot != NULL) && (nrot->str != NULL) && (pcb_strcasecmp(nrot->str, "rotate") == 0)) {
+		char *end;
+		rotang = strtod(STRE(nrot->children), &end);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "Invalid pin rotation angle (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+			return -1;
+		}
+	}
 
 	pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1);
 	ps = pcb_pstk_new(subc->data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
-	if (ps == NULL)
-		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
-	else
+	if (ps != NULL) {
+		if (rotang != 0.0) {
+			ps->rot = rotang;
+			pcb_pstk_bbox(ps);
+		}
 		pcb_attribute_put(&ps->Attributes, "term", term);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 
 	return 0;
 	err_coord:;
