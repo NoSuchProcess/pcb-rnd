@@ -793,11 +793,6 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	return -1;
 }
 
-static int dsn_parse_img_outline(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t *subc)
-{
-#warning TODO
-return 0;
-}
 
 static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 {
@@ -894,11 +889,31 @@ static int dsn_parse_img_conductor(dsn_read_t *ctx, gsxl_node_t *imr, pcb_subc_t
 	return dsn_parse_wire(ctx, imr, subc, NULL);
 }
 
-
-static int dsn_parse_img_keepout(dsn_read_t *ctx, gsxl_node_t *imr, const char *type, pcb_subc_t *subc)
+static int dsn_parse_img_hardwired(dsn_read_t *ctx, gsxl_node_t *nd, pcb_subc_t *subc, pcb_layer_type_t lyt, const char *purpose)
 {
-#warning TODO
-return 0;
+	pcb_layer_t *ly;
+	int n, found;
+	for(n = 0, found = 0, ly = subc->data->Layer; n < subc->data->LayerN; n++,ly++) {
+		if ((ly->meta.bound.type & lyt) && (strcmp(ly->meta.bound.purpose, purpose) == 0)) {
+			found = 1;
+			break;
+		}
+	}
+	if (!found) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: subc doc outline layer (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		return -1;
+	}
+	return dsn_parse_wire(ctx, nd, subc, ly);
+}
+
+static int dsn_parse_img_outline(dsn_read_t *ctx, gsxl_node_t *nd, pcb_subc_t *subc)
+{
+	return dsn_parse_img_hardwired(ctx, nd, subc, PCB_LYT_DOC, "outline");
+}
+
+static int dsn_parse_img_keepout(dsn_read_t *ctx, gsxl_node_t *nd, const char *type, pcb_subc_t *subc)
+{
+	return dsn_parse_img_hardwired(ctx, nd, subc, PCB_LYT_DOC, type);
 }
 
 static int dsn_parse_img_property(dsn_read_t *ctx, gsxl_node_t *nd, pcb_subc_t *subc)
@@ -924,11 +939,22 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	old_unit = dsn_set_old_unit(ctx, imr->children);
 
 	subc = pcb_subc_new();
+
+	/* create format-special bound layers first so lookup is fast */
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "dsn outline", "outline");
+
+	/* create a bound layer for all board layers, just in case */
 	for(n = 0, ly = ctx->pcb->Data->Layer; n < ctx->pcb->Data->LayerN; n++,ly++) {
 		const char *purp = NULL;
 		pcb_layer_purpose_(ly, &purp);
 		pcb_layer_new_bound(subc->data, pcb_layer_flags_(ly), ly->name, purp);
 	}
+
+	/* create less popular format-special bound layers at the end */
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "wire_keepout", "wire_keepout");
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "via_keepout", "via_keepout");
+	pcb_layer_new_bound(subc->data, PCB_LYT_DOC | PCB_LYT_TOP, "place_keepout", "place_keepout");
+
 
 	for(imr = imr->children->next; imr != NULL; imr = imr->next) {
 		if (imr->str == NULL)
