@@ -192,6 +192,7 @@ void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *pu
 	pcb_layergrp_t *g;
 	comp_ctx_t cctx;
 
+	memset(&info, 0, sizeof(info));
 	info.pcb = pcb;
 	info.drawn_area = screen;
 
