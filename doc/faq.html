@@ -37,6 +37,19 @@ Make sure you have the right layer groups and layers set up:
 	<li> make sure there is a layer in each group that has <i>auto</i> in the comb flags - padstack side effects will land only on auto layers; auto layers are indicated with white hatching in the layer selector's layer color
 </ul>
 
+<h2 id="slots"> DSN format </h2>
+<h3> There are no holes in padstacks on import </h3>
+<p>
+The DSN format was originally designed for autorouting; an autorouter doesn't
+need to know the geometry of a hole, assuming copper annulus is always around
+the hole. Thus old versions of the file format simply does not have a way
+to describe holes. 
+<p>
+Some software extended the format and use a <i>hole</i> directive that pcb-rnd
+picks up - but if the file does not contain holes, pcb-rnd can't improvise them.
+<p>
+You can use query() to find offending padstacks and use propset() or 
+the padstack editor to install the holes.
 
 </body>
 </html>
