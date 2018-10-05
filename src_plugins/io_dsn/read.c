@@ -1699,7 +1699,9 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 	htsp_init(&rdctx.protos, strhash, strkeyeq);
 	htsp_init(&rdctx.subcs, strhash, strkeyeq);
 
+	pcb_data_clip_inhibit_inc(rdctx.pcb->Data);
 	ret = dsn_parse_pcb(&rdctx, rn);
+	pcb_data_clip_inhibit_dec(rdctx.pcb->Data, 1);
 
 	for (e = htsp_first(&rdctx.protos); e; e = htsp_next(&rdctx.protos, e)) {
 		pcb_pstk_proto_free_fields(e->value);
