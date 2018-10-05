@@ -467,7 +467,6 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	/* place polygons on planes */
 	for(gid = 0, grp = ctx->pcb->LayerGroups.grp; gid < ctx->pcb->LayerGroups.len; gid++,grp++) {
 		if (pcb_attribute_get(&grp->Attributes, "plane") != NULL) {
-			pcb_poly_t *poly;
 			pcb_layer_t *ly;
 			if (!ctx->has_pcb_boundary) {
 				pcb_message(PCB_MSG_ERROR, "Because of the missing pcb boundary power planes are not filled with polygons.\n");
@@ -1505,8 +1504,6 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			pcb_message(PCB_MSG_ERROR, "Invalid placement rotation '%s' - must be a number (at %ld:%ld)\n", side->next->str, (long)n->line, (long)n->col);
 			return -1;
 		}
-
-		pcb_printf("!!! %s %s %s %mm %mm %s@%f\n", n->str, id, refdes, crd[0], crd[1], side->str, rot);
 
 		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0);
 		pcb_attribute_put(&nsc->Attributes, "refdes", refdes);
