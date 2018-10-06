@@ -1,8 +1,8 @@
  /*
   *                            COPYRIGHT
   *
- *  pcb-rnd, interactive printed circuit board design
- *  (this file is based on PCB, interactive printed circuit board design)
+  *  pcb-rnd, interactive printed circuit board design
+  *  (this file is based on PCB, interactive printed circuit board design)
   *  Copyright (C) 2006 Dan McMahill
   *
   *  This program is free software; you can redistribute it and/or modify
@@ -19,10 +19,10 @@
   *  along with this program; if not, write to the Free Software
   *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
   *
- *  Contact:
- *    Project page: http://repo.hu/projects/pcb-rnd
- *    lead developer: email to pcb-rnd (at) igor2.repo.hu
- *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+  *  Contact:
+  *    Project page: http://repo.hu/projects/pcb-rnd
+  *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
   */
 
 /*
