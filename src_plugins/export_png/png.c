@@ -533,6 +533,7 @@ static int layer_sort(const void *va, const void *vb)
 static const char *filename;
 static pcb_box_t *bounds;
 static int in_mono, as_shown;
+static pcb_layergrp_id_t photo_last_grp;
 
 static void parse_bloat(const char *str)
 {
@@ -619,6 +620,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcap = -1;
 	lastgroup = -1;
+	photo_last_grp = -1;
 	show_solder_side = conf_core.editor.show_solder_side;
 	last_color_r = last_color_g = last_color_b = last_cap = -1;
 
@@ -1198,6 +1200,13 @@ static int is_photo_drill;
 
 static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
+
+	/* workaround: the outline layer vs. alpha breaks if set twice and the draw
+	   code may set it twice (if there's no mech layer), but always in a row */
+	if (group == photo_last_grp)
+		return;
+	photo_last_grp = group;
+
 	is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi)));
 		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
 			if (photo_flip)
