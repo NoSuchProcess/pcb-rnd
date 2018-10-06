@@ -210,6 +210,7 @@
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
+- FEATURE: when there's a backup copy available of a file on load, offer to load the backup instead - make this a configure option [report: TwisteR]
 - FEATURE: lihata v7
 	- remove via geometry from route style
 
