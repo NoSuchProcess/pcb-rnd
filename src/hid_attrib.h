@@ -34,7 +34,8 @@ typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_LABEL       = 2,  /* direct children print label */
 	PCB_HATF_SCROLL      = 4,  /* box/table is scrollable */
 	PCB_HATF_HIDE_TABLAB = 8,  /* hide tab labes of a TABBED - the tab mechanism works, but tab names are not displayed and are not clickable */
-	PCB_HATF_LEFT_TAB    = 16  /* display tab labels of TABBED on the left instead of on top (default) */
+	PCB_HATF_LEFT_TAB    = 16, /* display tab labels of TABBED on the left instead of on top (default) */
+	PCB_HATF_TREE_COL    = 32  /* first column of a PCB_HATT_TREE is a tree */
 } pcb_hatt_compflags_t;
 
 typedef enum pcb_hids_e {
@@ -49,7 +50,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_UNIT,
 	PCB_HATT_COORD,
 	PCB_HATT_BUTTON,              /* push button; default value is the label */
-	PCB_HATT_TREE,                /* tree/list view */
+	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; if first col is a tree, levels are created normal / addressing (/ is the root, every entry is specified from the root) */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
@@ -69,6 +70,12 @@ typedef enum pcb_hids_e {
 #define pcb_hatt_flags       max_val
 #define pcb_hatt_table_cols  min_val
 
+typedef struct {
+	int len;         /* number of cols used */
+	void *hid_data;  /* the hid running the widget can use this field to store a custom pointer per row */
+	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
+} pcb_hid_row_t;
+
 struct pcb_hid_attribute_s {
 	const char *name;
 	/* If the help_text is this, usage() won't show this option */
@@ -77,10 +84,15 @@ struct pcb_hid_attribute_s {
 	pcb_hids_t type;
 	int min_val, max_val;				/* for integer and real */
 	pcb_hid_attr_val_t default_val;		/* Also actual value for global attributes.  */
+
+	/* NULL terminated list of values for a PCB_HATT_ENUM;
+	   Also (ab)used as (htsp_t *) with (pcb_hid_row_t *) keys for
+	   a PCB_HATT_TREE */
 	const char **enumerations;
+
 	/* If set, this is used for global attributes (i.e. those set
 	   statically with REGISTER_ATTRIBUTES below) instead of changing
-	   the default_val.  */
+	   the default_val. */
 	void *value;
 
 	/* dynamic API */
