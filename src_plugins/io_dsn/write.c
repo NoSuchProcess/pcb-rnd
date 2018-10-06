@@ -68,6 +68,22 @@ static void group_name(char *dst, const char *src, pcb_layergrp_id_t gid)
 #define COORDX(x) (x)
 #define COORDY(y) (PCB->MaxHeight - (y))
 
+static int dsn_write_structure(dsn_write_t *wctx)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *lg;
+
+	fprintf(wctx->f, "  (structure\n");
+	for(gid = 0, lg = wctx->pcb->LayerGroups.grp; gid < wctx->pcb->LayerGroups.len; gid++,lg++) {
+		char gname[GNAME_MAX];
+		if (!(lg->ltype & PCB_LYT_COPPER))
+			continue;
+		group_name(gname, lg->name, gid);
+		fprintf(wctx->f, "    (layer \"%s\" (type signal))\n", gname);
+	}
+	fprintf(wctx->f, "  )\n");
+}
+
 static int dsn_write_wiring(dsn_write_t *wctx)
 {
 	pcb_layer_id_t lid;
@@ -138,6 +154,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	fprintf(wctx->f, "  (unit mm)\n");
 	pcb_printf_slot[4] = "%.07mm";
 
+	res |= dsn_write_structure(wctx);
 	res |= dsn_write_wiring(wctx);
 
 	fprintf(wctx->f, ")\n");
