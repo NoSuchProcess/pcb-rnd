@@ -159,6 +159,7 @@ do { \
 	htsp_init(&tree->paths, strhash, strkeyeq); \
 	tree->attrib = &table[table ## _len-1]; \
 	PCB_DAD_ALLOC(table, PCB_HATT_TREE); \
+	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_table_cols, cols); \
 	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)tree); \
 } while(0)
