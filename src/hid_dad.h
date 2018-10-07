@@ -227,6 +227,7 @@ do { \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
+		case PCB_HATT_TREE: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
