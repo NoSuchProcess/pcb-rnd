@@ -71,10 +71,17 @@ typedef enum pcb_hids_e {
 #define pcb_hatt_table_cols  min_val
 
 typedef struct {
-	int len;         /* number of cols used */
+	int cols;        /* number of columns used by this node (allocation size) */
 	void *hid_data;  /* the hid running the widget can use this field to store a custom pointer per row */
+	gdl_list_t children;
+	gdl_elem_t list;
 	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
 } pcb_hid_row_t;
+
+typedef struct {
+	gdl_list_t rows; /* ordered list of first level rows (tree root) */
+	htsp_t paths;    /* translate first column paths iinto (pcb_hid_row_t *) */
+} pcb_hid_tree_t;
 
 struct pcb_hid_attribute_s {
 	const char *name;
@@ -86,8 +93,7 @@ struct pcb_hid_attribute_s {
 	pcb_hid_attr_val_t default_val;		/* Also actual value for global attributes.  */
 
 	/* NULL terminated list of values for a PCB_HATT_ENUM;
-	   Also (ab)used as (htsp_t *) with (pcb_hid_row_t *) keys for
-	   a PCB_HATT_TREE */
+	   Also (ab)used as (pcb_hid_tree_t *) for a PCB_HATT_TREE */
 	const char **enumerations;
 
 	/* If set, this is used for global attributes (i.e. those set
