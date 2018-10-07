@@ -120,15 +120,6 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, choices); \
 } while(0)
 
-#define PCB_DAD_TREE(table, cols, first_col_is_tree) \
-do { \
-	pcb_hid_tree_t *tree = malloc(sizeof(pcb_hid_tree_t)); \
-	htsp_init(&tree->paths, strhash, strkeyeq); \
-	PCB_DAD_ALLOC(table, PCB_HATT_TREE); \
-	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
-	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (char **)tree); \
-} while(0)
-
 #define PCB_DAD_BOOL(table, label) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BOOL); \
@@ -160,6 +151,15 @@ do { \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
 	table[table ## _len - 1].default_val.str_value = text; \
+} while(0)
+
+#define PCB_DAD_TREE(table, cols, first_col_is_tree) \
+do { \
+	pcb_hid_tree_t *tree = malloc(sizeof(pcb_hid_tree_t)); \
+	htsp_init(&tree->paths, strhash, strkeyeq); \
+	PCB_DAD_ALLOC(table, PCB_HATT_TREE); \
+	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
+	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (char **)tree); \
 } while(0)
 
 #define PCB_DAD_DUP_ATTR(table, attr) \
