@@ -35,6 +35,7 @@
 
 #include "pcb-printf.h"
 #include "hid_attrib.h"
+#include "hid_dad_tree.h"
 #include "hid_init.h"
 #include "misc_util.h"
 #include "compat_misc.h"
@@ -233,6 +234,25 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 		gtkc_scrolled_window_add_with_viewport(fr, parent);
 	}
 	return parent;
+}
+
+/* insert a subtree of a tree-table widget in a gtk table store reursively */
+static void ghid_treetable_import(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, gdl_list_t *lst, GtkTreeIter *par)
+{
+	pcb_hid_row_t *r;
+	GtkTreeIter curr;
+	int c;
+
+	for(r = gdl_first(lst); r != NULL; r = gdl_next(lst, r)) {
+		gtk_tree_store_append(tstore, &curr, par);
+		for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
+			GValue v = G_VALUE_INIT;
+			g_value_init(&v, G_TYPE_STRING);
+			g_value_set_string(&v, r->cell[c]);
+			gtk_tree_store_set_value(tstore, &curr, c, &v);
+		}
+		ghid_treetable_import(attr, tstore, &r->children, &curr);
+	}
 }
 
 typedef struct {
@@ -472,6 +492,48 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 				}
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
+				break;
+
+			case PCB_HATT_TREE:
+				{
+					int c;
+					GtkWidget *view = gtk_tree_view_new();
+					GtkTreeModel *model;
+					GtkTreeStore *tstore;
+					GType *types;
+					GtkCellRenderer *renderer;
+					pcb_hid_tree_t *tree = (pcb_hid_tree_t *)ctx->attrs[j].enumerations;
+
+					hbox = gtkc_hbox_new(FALSE, 4);
+					gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+					/* create columns */
+					types = malloc(sizeof(GType) * ctx->attrs[j].pcb_hatt_table_cols);
+					for(c = 0; c < ctx->attrs[j].pcb_hatt_table_cols; c++) {
+						GtkTreeViewColumn *col = gtk_tree_view_column_new();
+						gtk_tree_view_column_set_title(col, "dummy");
+						gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+						renderer = gtk_cell_renderer_text_new();
+						gtk_tree_view_column_pack_start(col, renderer, TRUE);
+						gtk_tree_view_column_add_attribute(col, renderer, "text", c);
+						types[c] = G_TYPE_STRING;
+					}
+
+					/* import existing data */
+					tstore = gtk_tree_store_newv(ctx->attrs[j].pcb_hatt_table_cols, types);
+					free(types);
+					ghid_treetable_import(&ctx->attrs[j], tstore, &tree->rows, NULL);
+					model = GTK_TREE_MODEL(tstore);
+					gtk_tree_view_set_model(GTK_TREE_VIEW(view), model);
+					g_object_unref(model); /* destroy model automatically with view */
+					gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
+
+
+					gtk_widget_set_tooltip_text(view, ctx->attrs[j].help_text);
+					gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);
+					g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
+					ctx->wl[j] = view;
+				}
 				break;
 
 			case PCB_HATT_PATH:
