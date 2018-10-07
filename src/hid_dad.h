@@ -162,6 +162,12 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (char **)tree); \
 } while(0)
 
+#define PCB_DAD_TREE_APPEND(table, row_after, cells) \
+	pcb_dad_tree_append(&table[table ## _len-1], row_after, cells)
+
+#define PCB_DAD_TREE_INSERT(table, row_before, cells) \
+	pcb_dad_tree_insert(&table[table ## _len-1], row_before, cells)
+
 #define PCB_DAD_DUP_ATTR(table, attr) \
 do { \
 	PCB_DAD_ALLOC(table, 0); \
