@@ -20,7 +20,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_row_t *row)
 {
-	char *ptr = row->link.parent;
+	char *ptr = (char *)row->link.parent;
 	if (ptr == NULL)
 		return NULL;
 	ptr -= offsetof(gdl_elem_t, parent);
