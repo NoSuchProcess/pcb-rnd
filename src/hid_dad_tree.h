@@ -89,7 +89,7 @@ PCB_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *
 
 /* allocate a new row and append it after aft; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid_row_t *aft, char **cols)
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, void *hid_ctx, pcb_hid_row_t *aft, char **cols)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -104,12 +104,14 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 
 	gdl_insert_after(par, aft, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
+	if (tree->insert_cb != NULL)
+		tree->insert_cb(tree->attrib, hid_ctx, nrow);
 	return nrow;
 }
 
 /* allocate a new row and inert it before bfr; if bfr is NULL, the new row is inserted at the
    beginning of the list of entries in the root (== at the top of the list) */
-PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid_row_t *bfr, char **cols)
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, void *hid_ctx, pcb_hid_row_t *bfr, char **cols)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -124,6 +126,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 
 	gdl_insert_before(par, bfr, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
+	if (tree->insert_cb != NULL)
+		tree->insert_cb(tree->attrib, hid_ctx, nrow);
 	return nrow;
 }
 #endif

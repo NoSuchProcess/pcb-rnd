@@ -157,16 +157,17 @@ do { \
 do { \
 	pcb_hid_tree_t *tree = calloc(sizeof(pcb_hid_tree_t), 1); \
 	htsp_init(&tree->paths, strhash, strkeyeq); \
+	tree->attrib = &table[table ## _len-1]; \
 	PCB_DAD_ALLOC(table, PCB_HATT_TREE); \
 	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)tree); \
 } while(0)
 
-#define PCB_DAD_TREE_APPEND(table, row_after, cells) \
-	pcb_dad_tree_append(&table[table ## _len-1], row_after, cells)
+#define PCB_DAD_TREE_APPEND(table, hid_ctx, row_after, cells) \
+	pcb_dad_tree_append(&table[table ## _len-1], hid_ctx, row_after, cells)
 
-#define PCB_DAD_TREE_INSERT(table, row_before, cells) \
-	pcb_dad_tree_insert(&table[table ## _len-1], row_before, cells)
+#define PCB_DAD_TREE_INSERT(table, hid_ctx, row_before, cells) \
+	pcb_dad_tree_insert(&table[table ## _len-1], hid_ctx, row_before, cells)
 
 #define PCB_DAD_DUP_ATTR(table, attr) \
 do { \

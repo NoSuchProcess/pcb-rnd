@@ -82,6 +82,10 @@ typedef struct {
 typedef struct {
 	gdl_list_t rows; /* ordered list of first level rows (tree root) */
 	htsp_t paths;    /* translate first column paths iinto (pcb_hid_row_t *) */
+	pcb_hid_attribute_t *attrib;
+
+	/* optional callbacks HIDs may set after widget creation */
+	void (*insert_cb)(pcb_hid_attribute_t *attrib, void *hid_data, pcb_hid_row_t *new_row);
 } pcb_hid_tree_t;
 
 struct pcb_hid_attribute_s {
