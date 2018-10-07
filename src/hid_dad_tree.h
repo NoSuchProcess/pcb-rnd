@@ -72,13 +72,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 	else
 		par = aft->link.parent;
 
-	if (aft == NULL)
-		gdl_append(par, nrow, link);
-	else
-		gdl_insert_after(par, aft, nrow, link);
-
+	gdl_insert_after(par, aft, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
-
 	return nrow;
 }
 
@@ -97,13 +92,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 	else
 		par = bfr->link.parent;
 
-	if (bfr == NULL)
-		gdl_insert(par, nrow, link);
-	else
-		gdl_insert_before(par, bfr, nrow, link);
-
+	gdl_insert_before(par, bfr, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
-
 	return nrow;
 }
 
