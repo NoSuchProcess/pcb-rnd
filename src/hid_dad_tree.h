@@ -21,10 +21,10 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 	return nrow;
 }
 
-PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_row_t *row)
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
 {
 	char *ptr = (char *)row->link.parent;
-	if (ptr == NULL)
+	if ((ptr == NULL) || ((gdl_list_t *)ptr == &tree->rows))
 		return NULL;
 	ptr -= offsetof(gdl_elem_t, parent);
 	ptr -= offsetof(pcb_hid_row_t, link);
@@ -32,11 +32,11 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_row_t *row)
 }
 
 /* recursively build a full path of a tree node in path */
-PCB_INLINE void pcb_dad_tree_build_path(gds_t *path, pcb_hid_row_t *row)
+PCB_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_hid_row_t *row)
 {
-	pcb_hid_row_t *par = pcb_dad_tree_parent_row(row);
+	pcb_hid_row_t *par = pcb_dad_tree_parent_row(tree, row);
 	if (par != NULL)
-		pcb_dad_tree_build_path(path, row);
+		pcb_dad_tree_build_path(tree, path, par);
 	if (path->used > 0)
 		gds_append(path, '/');
 	gds_append_str(path, row->cell[0]);
@@ -48,7 +48,8 @@ PCB_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL) {
 		gds_t path;
-		pcb_dad_tree_build_path(&path, row);
+		gds_init(&path);
+		pcb_dad_tree_build_path(tree, &path, row);
 		row->path = path.array;
 	}
 	else
