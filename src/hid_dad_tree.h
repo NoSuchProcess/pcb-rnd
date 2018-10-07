@@ -13,7 +13,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 	char **s, **o;
 	for(s = cols, num_cols = 0; *s != NULL; s++, num_cols++);
 
-	nrow = calloc(sizeof(pcb_hid_row_t) + sizeof(char *) * num_cols, 0);
+	nrow = calloc(sizeof(pcb_hid_row_t) + sizeof(char *) * num_cols, 1);
 	nrow->cols = num_cols;
 	for(s = cols, o = nrow->cell; *s != NULL; s++, o++)
 		*o = *s;
