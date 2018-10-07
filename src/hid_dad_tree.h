@@ -1,3 +1,5 @@
+#include <genvector/gds_char.h>
+
 /* Internal: Allocate a new row and load the cells (but do not insert it anywhere) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 {
@@ -12,6 +14,41 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 		*o = *s;
 
 	return nrow;
+}
+
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_row_t *row)
+{
+	char *ptr = row->link.parent;
+	if (ptr == NULL)
+		return NULL;
+	ptr -= offsetof(gdl_elem_s, parent);
+	ptr -= offsetof(pcb_hid_row_t, link);
+	return (pcb_hid_row_t *)ptr;
+}
+
+/* recursively build a full path of a tree node in path */
+PCB_INLINE void pcb_dad_tree_build_path(gds_t *path, pcb_hid_row_t *row)
+{
+	pcb_hid_row_t *par = pcb_dad_tree_parent_row(row);
+	if (par != NULL)
+		pcb_dad_tree_build_path(path, row);
+	if (path->used > 0)
+		gds_append(path, '/');
+	gds_append_str(path, row->cell[0]);
+}
+
+/* calculate path of a row and insert it in the tree hash */
+PCB_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL) {
+		gds_t path;
+		pcb_dad_tree_build_path(&path, row);
+		row->path = path.array;
+	}
+	else
+		row->path = row->cell[0];
+	htsp_set(&tree->paths, row->path, row);
 }
 
 /* allocate a new row and append it after aft; if aft is NULL, the new row is appended at the
@@ -33,6 +70,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 		gdl_append(par, nrow, link);
 	else
 		gdl_insert_after(par, aft, nrow, link);
+
+	pcb_dad_tree_set_hash(attr, nrow);
 
 	return nrow;
 }
@@ -56,6 +95,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 		gdl_insert(par, nrow, link);
 	else
 		gdl_insert_before(par, bfr, nrow, link);
+
+	pcb_dad_tree_set_hash(attr, nrow);
 
 	return nrow;
 }
