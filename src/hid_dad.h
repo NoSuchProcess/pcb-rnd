@@ -155,7 +155,7 @@ do { \
 
 #define PCB_DAD_TREE(table, cols, first_col_is_tree) \
 do { \
-	pcb_hid_tree_t *tree = malloc(sizeof(pcb_hid_tree_t)); \
+	pcb_hid_tree_t *tree = calloc(sizeof(pcb_hid_tree_t), 1); \
 	htsp_init(&tree->paths, strhash, strkeyeq); \
 	PCB_DAD_ALLOC(table, PCB_HATT_TREE); \
 	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
