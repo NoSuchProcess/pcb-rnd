@@ -43,7 +43,12 @@ static int attr_idx, attr_idx2;
 static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
-	const char *tabs[] = { "original test", "new test", NULL };
+	const char *tabs[] = { "original test", "new test", "tree-table", NULL };
+	char *row1[] = {"one", "foo", "FOO", NULL};
+	char *row2[] = {"two", "bar", "BAR", NULL};
+	char *row2b[] = {"under_two", "ut", "uuut", NULL};
+	char *row3[] = {"three", "baz", "BAZ", NULL};
+	pcb_hid_row_t *row;
 
 	test_t ctx;
 	memset(&ctx, 0, sizeof(ctx));
@@ -81,6 +86,15 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_DAD_LABEL(ctx.dlg, "new test.");
 			PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
 				PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
+		PCB_DAD_END(ctx.dlg);
+
+		/* tab 2: tree table widget */
+		PCB_DAD_BEGIN_VBOX(ctx.dlg);
+			PCB_DAD_TREE(ctx.dlg, 3, 1);
+			PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row1);
+			row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row2);
+			PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, NULL, row, row2b);
+			PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row3);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
