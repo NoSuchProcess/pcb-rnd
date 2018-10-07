@@ -252,7 +252,9 @@ do { \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
+			break; \
 		case PCB_HATT_TREE: \
+			pcb_dad_tree_free(&table[table ## _len - 1]); \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
@@ -268,5 +270,8 @@ do { \
 	free(table ## _result); \
 	table ## _result = calloc(PCB_DAD_CURRENT(table)+1, sizeof(pcb_hid_attr_val_t)); \
 } while(0)
+
+/* Internal: free all rows and caches and the tree itself */
+void pcb_dad_tree_free(pcb_hid_attribute_t *attr);
 
 #endif

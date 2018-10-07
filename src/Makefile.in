@@ -83,13 +83,13 @@ append /local/pcb/OBJS [@
 	grid.o
 	gui_act.o
 	heap.o
-
 	hid_attrib.o
 	hid_cfg.o
 	hid_cfg_action.o
 	hid_cfg_input.o
 	hid_cam.o
 	hid_color.o
+	hid_dad_tree.o
 	hid_draw_helpers.o
 	hid_extents.o
 	hid_flags.o

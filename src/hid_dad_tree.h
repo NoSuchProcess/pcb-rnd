@@ -1,6 +1,8 @@
 #ifndef PCB_HID_DAD_TREE_H
 #define PCB_HID_DAD_TREE_H
 
+#include "hid_attrib.h"
+#include "hid_dad.h"
 #include <genvector/gds_char.h>
 #include <genht/hash.h>
 #include <genht/htsp.h>
@@ -96,5 +98,4 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 	pcb_dad_tree_set_hash(attr, nrow);
 	return nrow;
 }
-
 #endif
