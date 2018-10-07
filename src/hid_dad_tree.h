@@ -1,4 +1,6 @@
 #include <genvector/gds_char.h>
+#include <genht/hash.h>
+#include <genht/htsp.h>
 
 /* Internal: Allocate a new row and load the cells (but do not insert it anywhere) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
