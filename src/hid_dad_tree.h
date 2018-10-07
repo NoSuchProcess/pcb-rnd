@@ -19,6 +19,19 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_tree_t *tree, pcb_hid_row_t *aft, char **cols)
 {
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
+	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
+
+	if (aft == NULL) {
+		par = &tree->rows;
+		aft = gdl_last(par);
+	}
+	else
+		par = aft->link.parent;
+
+	if (aft == NULL)
+		gdl_append(par, nrow, link);
+	else
+		gdl_insert_after(par, aft, nrow, link);
 
 	return nrow;
 }
@@ -28,6 +41,19 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_tree_t *tree, pcb_hid_row_
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_tree_t *tree, pcb_hid_row_t *bfr, char **cols)
 {
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
+	gdl_list_t *par; /* the list that is the common parent of bfr and the new row */
+
+	if (bfr == NULL) {
+		par = &tree->rows;
+		bfr = gdl_first(par);
+	}
+	else
+		par = bfr->link.parent;
+
+	if (bfr == NULL)
+		gdl_insert(par, nrow, link);
+	else
+		gdl_insert_before(par, bfr, nrow, link);
 
 	return nrow;
 }

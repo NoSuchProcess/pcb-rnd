@@ -50,7 +50,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_UNIT,
 	PCB_HATT_COORD,
 	PCB_HATT_BUTTON,              /* push button; default value is the label */
-	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; if first col is a tree, levels are created normal / addressing (/ is the root, every entry is specified from the root) */
+	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'enumerations' */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
@@ -74,7 +74,8 @@ typedef struct {
 	int cols;        /* number of columns used by this node (allocation size) */
 	void *hid_data;  /* the hid running the widget can use this field to store a custom pointer per row */
 	gdl_list_t children;
-	gdl_elem_t list;
+	gdl_elem_t link;
+	char *path;      /* full path of the node; allocated/free'd by DAD (/ is the root, every entry is specified from the root, but the leading / is omitted; in non-tree case, this only points to the first col data) */
 	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
 } pcb_hid_row_t;
 
