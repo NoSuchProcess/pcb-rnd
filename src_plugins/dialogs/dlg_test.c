@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "hid_dad_tree.h"
+
 static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
 
