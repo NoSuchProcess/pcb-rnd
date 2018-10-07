@@ -56,8 +56,9 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_tree_t *tree, pcb_hid_
 	char *ptr = (char *)row->link.parent;
 	if ((ptr == NULL) || ((gdl_list_t *)ptr == &tree->rows))
 		return NULL;
+printf("sub: %d %d\n", offsetof(gdl_elem_t, parent), offsetof(pcb_hid_row_t, children));
 	ptr -= offsetof(gdl_elem_t, parent);
-	ptr -= offsetof(pcb_hid_row_t, link);
+	ptr -= offsetof(pcb_hid_row_t, children);
 	return (pcb_hid_row_t *)ptr;
 }
 
@@ -130,4 +131,25 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, void *h
 		tree->insert_cb(tree->attrib, hid_ctx, nrow);
 	return nrow;
 }
+
+/* allocate a new row and append it under prn; if aft is NULL, the new row is appended at the
+   end of the list of entries in the root (== at the bottom of the list) */
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, void *hid_ctx, pcb_hid_row_t *prn, char **cols)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
+	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
+
+	if (prn == NULL)
+		par = &tree->rows;
+	else
+		par = &prn->children;
+
+	gdl_append(par, nrow, link);
+	pcb_dad_tree_set_hash(attr, nrow);
+	if (tree->insert_cb != NULL)
+		tree->insert_cb(tree->attrib, hid_ctx, nrow);
+	return nrow;
+}
+
 #endif

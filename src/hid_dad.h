@@ -167,6 +167,9 @@ do { \
 #define PCB_DAD_TREE_APPEND(table, hid_ctx, row_after, cells) \
 	pcb_dad_tree_append(&table[table ## _len-1], hid_ctx, row_after, cells)
 
+#define PCB_DAD_TREE_APPEND_UNDER(table, hid_ctx, parent_row, cells) \
+	pcb_dad_tree_append_under(&table[table ## _len-1], hid_ctx, parent_row, cells)
+
 #define PCB_DAD_TREE_INSERT(table, hid_ctx, row_before, cells) \
 	pcb_dad_tree_insert(&table[table ## _len-1], hid_ctx, row_before, cells)
 
