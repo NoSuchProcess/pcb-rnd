@@ -85,7 +85,8 @@ typedef struct {
 	pcb_hid_attribute_t *attrib;
 
 	/* optional callbacks HIDs may set after widget creation */
-	void (*insert_cb)(pcb_hid_attribute_t *attrib, void *hid_data, pcb_hid_row_t *new_row);
+	void *hid_ctx;
+	void (*insert_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row);
 } pcb_hid_tree_t;
 
 struct pcb_hid_attribute_s {

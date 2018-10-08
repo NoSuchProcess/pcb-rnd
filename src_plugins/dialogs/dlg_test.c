@@ -92,10 +92,10 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* tab 2: tree table widget */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
 			PCB_DAD_TREE(ctx.dlg, 3, 1);
-				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row1);
-				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row2);
-				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, NULL, row, row2b);
-				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row3);
+				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
+				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
+				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
+				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
 				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
 			PCB_DAD_BUTTON(ctx.dlg, "insert row");
 				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
@@ -143,6 +143,6 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	char *row[] = {"new", "1", "2", NULL};
-	pcb_dad_tree_insert(&ctx->dlg[ctx->tt], hid_ctx, NULL, row);
+	pcb_dad_tree_insert(&ctx->dlg[ctx->tt], NULL, row);
 }
 

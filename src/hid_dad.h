@@ -164,14 +164,14 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)tree); \
 } while(0)
 
-#define PCB_DAD_TREE_APPEND(table, hid_ctx, row_after, cells) \
-	pcb_dad_tree_append(&table[table ## _len-1], hid_ctx, row_after, cells)
+#define PCB_DAD_TREE_APPEND(table, row_after, cells) \
+	pcb_dad_tree_append(&table[table ## _len-1], row_after, cells)
 
-#define PCB_DAD_TREE_APPEND_UNDER(table, hid_ctx, parent_row, cells) \
-	pcb_dad_tree_append_under(&table[table ## _len-1], hid_ctx, parent_row, cells)
+#define PCB_DAD_TREE_APPEND_UNDER(table, parent_row, cells) \
+	pcb_dad_tree_append_under(&table[table ## _len-1], parent_row, cells)
 
-#define PCB_DAD_TREE_INSERT(table, hid_ctx, row_before, cells) \
-	pcb_dad_tree_insert(&table[table ## _len-1], hid_ctx, row_before, cells)
+#define PCB_DAD_TREE_INSERT(table, row_before, cells) \
+	pcb_dad_tree_insert(&table[table ## _len-1], row_before, cells)
 
 #define PCB_DAD_DUP_ATTR(table, attr) \
 do { \
