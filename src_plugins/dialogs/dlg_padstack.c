@@ -610,6 +610,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	pse_ps2dlg(hid_ctx, pse);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */
+	pcb_gui->invalidate_all();
 }
 
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object, [tab])\n";
