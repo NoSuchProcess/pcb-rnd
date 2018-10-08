@@ -59,6 +59,7 @@ static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_I
 typedef struct pse_s {
 	pcb_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
+	pcb_data_t *data; /* parent data where the proto is sitting; might be a subc */
 	pcb_pstk_t *ps;
 	int tab;
 
@@ -604,7 +605,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	proto.hdia = pse->attrs[pse->gen_drill].default_val.coord_value;
 	proto.hplated = 1;
 
-	pid = pcb_pstk_proto_insert_dup(pse->pcb->Data, &proto, 1);
+	pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1);
 	pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
 
 	pse_ps2dlg(hid_ctx, pse);
@@ -645,6 +646,9 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	pse.pcb = pcb_data_get_top(pse.ps->parent.data);
 	if (pse.pcb == NULL)
 		pse.pcb = PCB;
+
+	pse.data = pse.ps->parent.data;
+	assert(pse.ps->parent_type == PCB_PARENT_DATA);
 
 	PCB_DAD_BEGIN_TABBED(dlg, tabs);
 		pse.tab = PCB_DAD_CURRENT(dlg);
