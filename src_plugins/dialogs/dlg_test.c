@@ -31,13 +31,14 @@ static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtab;
+	int wtab, tt;
 } test_t;
 
 
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static int attr_idx, attr_idx2;
 static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -95,6 +96,9 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row2);
 				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, NULL, row, row2b);
 				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row3);
+				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_BUTTON(ctx.dlg, "insert row");
+				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
@@ -134,3 +138,11 @@ static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	val.int_value = 0;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtab, &val);
 }
+
+static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	char *row[] = {"new", "1", "2", NULL};
+	pcb_dad_tree_insert(&ctx->dlg[ctx->tt], hid_ctx, NULL, row);
+}
+
