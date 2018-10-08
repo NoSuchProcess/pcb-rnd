@@ -295,23 +295,6 @@ repeat_current_point:
 	}
 }
 
-static void sketch_update_erbs(sketch_t *sk)
-{
-	int i;
-
-	vtewire_uninit(&sk->ewires);
-	VTPOINT_FOREACH(p, &sk->cdt->points)
-		pointdata_t *pd = p->data;
-		if (pd != NULL)
-			for (i = 0; i < 4; i++)
-				spoke_uninit(&pd->spoke[i]);
-	VTPOINT_FOREACH_END();
-
-	VTWIRE_FOREACH(w, &sk->wires)
-		sketch_insert_ewire(sk, w);
-	VTWIRE_FOREACH_END();
-}
-
 static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
 {
 	/* TODO */
@@ -525,7 +508,7 @@ static void insert_wire_at_point(wire_point_t *wp, wire_t *w, wirelist_node_t **
 		wp->wire_node = wirelist_insert_after_nth(*list, n, &w);
 }
 
-static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
+static wire_t *sketch_insert_wire(sketch_t *sk, wire_t *wire)
 {
 	wire_t *new_w;
 	int i;
@@ -662,6 +645,7 @@ static void sketch_insert_wire(sketch_t *sk, wire_t *wire)
 			}
 		}
 	}
+	return new_w;
 }
 
 struct search_info {
@@ -1001,7 +985,7 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 
 	if (net_valid) {
 		point_t *end_p;
-		wire_t *path;
+		wire_t *path, *new_wire;
 
 		end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
 		if (attached_path_next_point(end_p) == pcb_false)
@@ -1010,9 +994,9 @@ static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 		path = sketch_find_shortest_path(&attached_path.corridor);
 		path->thickness = conf_core.design.line_thickness;
 		path->clearance = conf_core.design.clearance;
-		sketch_insert_wire(attached_path.sketch, path);
+		new_wire = sketch_insert_wire(attached_path.sketch, path);
+		sketch_insert_ewire(attached_path.sketch, new_wire);
 		sketch_update_cdt_layer(attached_path.sketch);
-		sketch_update_erbs(attached_path.sketch);
 		sketch_update_erbs_layer(attached_path.sketch);
 		wire_uninit(path);
 		return pcb_true;
