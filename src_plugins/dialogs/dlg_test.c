@@ -91,10 +91,10 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* tab 2: tree table widget */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
 			PCB_DAD_TREE(ctx.dlg, 3, 1);
-			PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row1);
-			row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row2);
-			PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, NULL, row, row2b);
-			PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row3);
+				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row1);
+				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row2);
+				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, NULL, row, row2b);
+				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, NULL, row3);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
