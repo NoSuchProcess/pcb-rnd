@@ -1134,9 +1134,19 @@ fgw_error_t pcb_act_skline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_sktransform[] = "sktransform(rect|oct|alldir)";
+static const char pcb_acth_sktransform[] = "Transform sketch to geometrical wiring";
+fgw_error_t pcb_act_sktransform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	/* TODO */
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t sketch_route_action_list[] = {
 	{"skretriangulate", pcb_act_skretriangulate, pcb_acth_skretriangulate, pcb_acts_skretriangulate},
-	{"skline", pcb_act_skline, pcb_acth_skline, pcb_acts_skline}
+	{"skline", pcb_act_skline, pcb_acth_skline, pcb_acts_skline},
+	{"sktransform", pcb_act_sktransform, pcb_acth_sktransform, pcb_acts_sktransform}
 };
 
 PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
