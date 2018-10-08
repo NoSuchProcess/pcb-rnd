@@ -236,21 +236,30 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 	return parent;
 }
 
+static void ghid_treetable_add(pcb_hid_attribute_t *attr, GtkTreeStore *tstore,GtkTreeIter *newitr, GtkTreeIter *par, pcb_hid_row_t *r, int prepend)
+{
+	int c;
+
+	if (prepend)
+		gtk_tree_store_prepend(tstore, newitr, par);
+	else
+		gtk_tree_store_append(tstore, newitr, par);
+	for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
+		GValue v = G_VALUE_INIT;
+		g_value_init(&v, G_TYPE_STRING);
+		g_value_set_string(&v, r->cell[c]);
+		gtk_tree_store_set_value(tstore, newitr, c, &v);
+	}
+}
+
 /* insert a subtree of a tree-table widget in a gtk table store reursively */
 static void ghid_treetable_import(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, gdl_list_t *lst, GtkTreeIter *par)
 {
 	pcb_hid_row_t *r;
 	GtkTreeIter curr;
-	int c;
 
 	for(r = gdl_first(lst); r != NULL; r = gdl_next(lst, r)) {
-		gtk_tree_store_append(tstore, &curr, par);
-		for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
-			GValue v = G_VALUE_INIT;
-			g_value_init(&v, G_TYPE_STRING);
-			g_value_set_string(&v, r->cell[c]);
-			gtk_tree_store_set_value(tstore, &curr, c, &v);
-		}
+		ghid_treetable_add(attr, tstore, &curr, par, r, 0);
 		ghid_treetable_import(attr, tstore, &r->children, &curr);
 	}
 }
@@ -261,7 +270,10 @@ static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx,
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
-pcb_trace("insert: attr=%p idx=%d w=%p m=%p\n", attrib, idx, tt, model);
+	GtkTreeIter curr, *par = NULL;
+
+#warning TODO: set parent and decide whether to insert or append
+	ghid_treetable_add(attrib, model, &curr, par, new_row, 1);
 }
 
 typedef struct {
