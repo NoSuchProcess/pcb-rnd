@@ -255,6 +255,15 @@ static void ghid_treetable_import(pcb_hid_attribute_t *attr, GtkTreeStore *tstor
 	}
 }
 
+static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *tt = ctx->wl[idx];
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
+pcb_trace("insert: attr=%p idx=%d w=%p m=%p\n", attrib, idx, tt, model);
+}
+
 typedef struct {
 	enum {
 		TB_TABLE,
@@ -503,6 +512,9 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					GType *types;
 					GtkCellRenderer *renderer;
 					pcb_hid_tree_t *tree = (pcb_hid_tree_t *)ctx->attrs[j].enumerations;
+
+					tree->insert_cb = ghid_treetable_insert_cb;
+					tree->hid_ctx = ctx;
 
 					hbox = gtkc_hbox_new(FALSE, 4);
 					gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
