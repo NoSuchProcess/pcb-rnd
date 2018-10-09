@@ -561,6 +561,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					GtkTreeStore *tstore;
 					GType *types;
 					GtkCellRenderer *renderer;
+					GtkTreeSelection *selection;
 					pcb_hid_tree_t *tree = (pcb_hid_tree_t *)ctx->attrs[j].enumerations;
 
 					tree->insert_cb = ghid_treetable_insert_cb;
@@ -601,6 +602,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL));
 					g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_treetable_cursor), &ctx->attrs[j]);
+					selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+					gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 					gtk_widget_set_tooltip_text(view, ctx->attrs[j].help_text);
 					gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);
