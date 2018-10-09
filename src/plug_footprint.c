@@ -38,7 +38,7 @@
 #include "compat_misc.h"
 #include "event.h"
 
-FILE PCB_FP_FOPEN_IN_DST_, *PCB_FP_FOPEN_IN_DST = &PCB_FP_FOPEN_IN_DST;
+FILE PCB_FP_FOPEN_IN_DST_, *PCB_FP_FOPEN_IN_DST = &PCB_FP_FOPEN_IN_DST_;
 
 
 pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
