@@ -254,6 +254,14 @@ static GtkTreeIter *ghid_treetable_add(pcb_hid_attribute_t *attr, GtkTreeStore *
 		gtk_tree_store_set_value(tstore, curr, c, &v);
 	}
 
+	/* remember the dad row in the hidden last cell */
+	{
+		GValue v = G_VALUE_INIT;
+		g_value_init(&v, G_TYPE_POINTER);
+		g_value_set_pointer(&v, r);
+		gtk_tree_store_set_value(tstore, curr, c, &v);
+	}
+
 	r->hid_data = curr;
 	return curr;
 }
@@ -284,6 +292,25 @@ static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx,
 static void ghid_treetable_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	free(row->hid_data);
+}
+
+static void ghid_treetable_cursor(GtkWidget *tree, pcb_hid_attribute_t *attr)
+{
+	GtkTreeSelection *tsel;
+	GtkTreeModel *tm;
+	GtkTreeIter iter;
+	pcb_hid_row_t *r;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	if (tsel == NULL)
+		return;
+
+	gtk_tree_selection_get_selected(tsel, &tm, &iter);
+	if (iter.stamp == 0)
+		return;
+
+	gtk_tree_model_get(tm, &iter, attr->pcb_hatt_table_cols, &r, -1);
+	pcb_trace("Select: %p %s\n", r, r->cell[0]);
 }
 
 typedef struct {
@@ -544,7 +571,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 					/* create columns */
-					types = malloc(sizeof(GType) * ctx->attrs[j].pcb_hatt_table_cols);
+					types = malloc(sizeof(GType) * (ctx->attrs[j].pcb_hatt_table_cols+1));
 					colhdr = tree->hdr;
 					for(c = 0; c < ctx->attrs[j].pcb_hatt_table_cols; c++) {
 						GtkTreeViewColumn *col = gtk_tree_view_column_new();
@@ -560,8 +587,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 						types[c] = G_TYPE_STRING;
 					}
 
+					/* append a hidden row for storing the dad row pointer */
+					types[c] = G_TYPE_POINTER;
+
 					/* import existing data */
-					tstore = gtk_tree_store_newv(ctx->attrs[j].pcb_hatt_table_cols, types);
+					tstore = gtk_tree_store_newv(ctx->attrs[j].pcb_hatt_table_cols+1, types);
 					free(types);
 					ghid_treetable_import(&ctx->attrs[j], tstore, &tree->rows, NULL);
 					model = GTK_TREE_MODEL(tstore);
@@ -570,6 +600,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
 					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL));
+					g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_treetable_cursor), &ctx->attrs[j]);
 
 					gtk_widget_set_tooltip_text(view, ctx->attrs[j].help_text);
 					gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);
