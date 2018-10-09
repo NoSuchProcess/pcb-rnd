@@ -1526,7 +1526,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 {
 	int n;
 	pcb_board_t *pcb;
-	pcb_data_t *data, *oldhack;
+	pcb_data_t *data;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, *subc))
 		return pcb_false;
@@ -1556,7 +1556,6 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 
 	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, *subc, *subc, *subc, yoff);
 
-	pcb_pstk_data_hack = oldhack;
 	return pcb_true;
 }
 
