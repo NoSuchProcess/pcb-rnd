@@ -1204,7 +1204,7 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 	/* workaround: the outline layer vs. alpha breaks if set twice and the draw
 	   code may set it twice (if there's no mech layer), but always in a row */
 	if (group == photo_last_grp)
-		return;
+		return 1;
 	photo_last_grp = group;
 
 	is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi)));
