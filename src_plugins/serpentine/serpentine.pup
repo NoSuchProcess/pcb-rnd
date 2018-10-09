@@ -1,0 +1,8 @@
+$class feature
+$short Serpentine creation
+$long Create serpentines on existing lines.
+$state WIP
+#$package auto
+default disable-all
+autoload 1
+

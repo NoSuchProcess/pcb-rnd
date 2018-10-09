@@ -1,0 +1,11 @@
+put /local/pcb/mod {serpentine}
+put /local/pcb/mod/OBJS [@ 
+	$(PLUGDIR)/serpentine/serpentine.o
+@]
+put /local/pcb/mod/CONF {$(PLUGDIR)/serpentine/serpentine_conf.h}
+
+switch /local/pcb/serpentine/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
