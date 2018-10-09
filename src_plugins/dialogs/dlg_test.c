@@ -152,7 +152,6 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	test_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 	pcb_trace("selected: path=%s row=%p '%s'\n", attr->default_val.str_value, row, row->cell[0]);
 }
