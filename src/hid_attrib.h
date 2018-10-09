@@ -89,6 +89,7 @@ typedef struct {
 	void *hid_ctx;
 	void (*insert_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row);
 	void (*free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+	pcb_hid_row_t *(*get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 } pcb_hid_tree_t;
 
 struct pcb_hid_attribute_s {

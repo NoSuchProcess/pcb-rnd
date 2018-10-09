@@ -294,23 +294,42 @@ static void ghid_treetable_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, p
 	free(row->hid_data);
 }
 
-static void ghid_treetable_cursor(GtkWidget *tree, pcb_hid_attribute_t *attr)
+
+static pcb_hid_row_t *ghid_treetable_get_selected(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *tt = ctx->wl[idx];
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
 	GtkTreeIter iter;
 	pcb_hid_row_t *r;
 
-	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tt));
 	if (tsel == NULL)
-		return;
+		return NULL;
 
 	gtk_tree_selection_get_selected(tsel, &tm, &iter);
 	if (iter.stamp == 0)
-		return;
+		return NULL;
 
-	gtk_tree_model_get(tm, &iter, attr->pcb_hatt_table_cols, &r, -1);
-	pcb_trace("Select: %p %s\n", r, r->cell[0]);
+	gtk_tree_model_get(tm, &iter, attrib->pcb_hatt_table_cols, &r, -1);
+	return r;
+}
+
+static void ghid_treetable_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
+{
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(widget), PCB_OBJ_PROP);
+	pcb_hid_row_t *r = ghid_treetable_get_selected(attr, ctx);
+
+	attr->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+	if (r != NULL)
+		attr->default_val.str_value = r->path;
+	else
+		attr->default_val.str_value = NULL;
+	change_cb(ctx, attr);
 }
 
 typedef struct {
@@ -566,6 +585,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 					tree->insert_cb = ghid_treetable_insert_cb;
 					tree->free_cb = ghid_treetable_free_cb;
+					tree->get_selected_cb = ghid_treetable_get_selected;
 					tree->hid_ctx = ctx;
 
 					hbox = gtkc_hbox_new(FALSE, 4);

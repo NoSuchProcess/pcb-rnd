@@ -152,4 +152,15 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 	return nrow;
 }
 
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	if (tree->get_selected_cb == NULL)
+		return NULL;
+
+
+	return tree->get_selected_cb(tree->attrib, tree->hid_ctx);
+}
+
 #endif
