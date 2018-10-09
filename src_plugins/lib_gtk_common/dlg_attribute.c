@@ -280,6 +280,11 @@ static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx,
 	ghid_treetable_add(attrib, GTK_TREE_STORE(model), (par == NULL ? NULL : par->hid_data), new_row, 1);
 }
 
+static void ghid_treetable_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	free(row->hid_data);
+}
+
 typedef struct {
 	enum {
 		TB_TABLE,
@@ -530,6 +535,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					pcb_hid_tree_t *tree = (pcb_hid_tree_t *)ctx->attrs[j].enumerations;
 
 					tree->insert_cb = ghid_treetable_insert_cb;
+					tree->free_cb = ghid_treetable_free_cb;
 					tree->hid_ctx = ctx;
 
 					hbox = gtkc_hbox_new(FALSE, 4);

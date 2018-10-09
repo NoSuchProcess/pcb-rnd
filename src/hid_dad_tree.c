@@ -32,12 +32,19 @@
 /* recursively free a row list subtree */
 static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *list)
 {
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	pcb_hid_row_t *r;
+
 	while((r = gdl_first(list)) != NULL) {
 		gdl_remove(list, r, link);
 		pcb_dad_tree_free_rowlist(attr, &r->children);
+
+		if (tree->free_cb != NULL)
+			tree->free_cb(tree->attrib, tree->hid_ctx, r);
+
 		if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL)
 			free(r->path);
+
 		free(r);
 	}
 }
