@@ -3,19 +3,6 @@
 
 #include "hid.h"
 
-typedef struct pcb_hid_attr_trnd_s pcb_hid_attr_trnd_t;
-
-/* tree node */
-struct pcb_hid_attr_trnd_s {
-	const char *text;               /* displayed on the UI */
-	long uid;                       /* tree-uniq; for referencing/addressing; valid values are >= 0, -1 is the terminator */
-	void *user_data;                /* arbitrary, used by the caller */
-	int expand;                     /* node expanded (open) */
-	pcb_hid_attr_trnd_t *next;      /* next sibling; each level is a singly linked list terminated by NULL */
-	pcb_hid_attr_trnd_t *parent;
-	pcb_hid_attr_trnd_t *children;  /* fisrt children on the next level, or NULL */
-};
-
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses int_value, HA_enum sets int_value to the index and
    str_value to the enumeration string.  PCB_HATT_LABEL just shows the
@@ -26,7 +13,6 @@ struct pcb_hid_attr_val_s {
 	double real_value;
 	pcb_coord_t coord_value;
 	void (*func)();
-	pcb_hid_attr_trnd_t *tree; /* the current val_s is the root; this points to the first child node on the top level */
 };
 
 typedef enum pcb_hatt_compflags_e {
