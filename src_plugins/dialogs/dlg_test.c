@@ -51,7 +51,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row2[] = {"two", "bar", "BAR", NULL};
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
 	char *row3[] = {"three", "baz", "BAZ", NULL};
-	char *hdr[] = {"num", "data1", "data2", NULL};
+	const char *hdr[] = {"num", "data1", "data2", NULL};
 	pcb_hid_row_t *row;
 
 	test_t ctx;
