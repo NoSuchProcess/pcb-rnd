@@ -528,6 +528,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			case PCB_HATT_TREE:
 				{
 					int c;
+					const char **colhdr;
 					GtkWidget *view = gtk_tree_view_new();
 					GtkTreeModel *model;
 					GtkTreeStore *tstore;
@@ -544,9 +545,14 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 					/* create columns */
 					types = malloc(sizeof(GType) * ctx->attrs[j].pcb_hatt_table_cols);
+					colhdr = tree->hdr;
 					for(c = 0; c < ctx->attrs[j].pcb_hatt_table_cols; c++) {
 						GtkTreeViewColumn *col = gtk_tree_view_column_new();
-						gtk_tree_view_column_set_title(col, "dummy");
+						if (tree->hdr != NULL) {
+							gtk_tree_view_column_set_title(col, *colhdr == NULL ? "" : *colhdr);
+							if (*colhdr != NULL)
+								colhdr++;
+						}
 						gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 						renderer = gtk_cell_renderer_text_new();
 						gtk_tree_view_column_pack_start(col, renderer, TRUE);
@@ -563,7 +569,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					g_object_unref(model); /* destroy model automatically with view */
 					gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
-					g_object_set(view, "rules-hint", TRUE, "headers-visible", FALSE);
+					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL));
 
 					gtk_widget_set_tooltip_text(view, ctx->attrs[j].help_text);
 					gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);

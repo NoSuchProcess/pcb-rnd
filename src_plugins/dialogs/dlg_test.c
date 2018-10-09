@@ -49,6 +49,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row2[] = {"two", "bar", "BAR", NULL};
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
 	char *row3[] = {"three", "baz", "BAZ", NULL};
+	char *hdr[] = {"num", "data1", "data2", NULL};
 	pcb_hid_row_t *row;
 
 	test_t ctx;
@@ -91,7 +92,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* tab 2: tree table widget */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_TREE(ctx.dlg, 3, 1);
+			PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
 				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
 				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
 				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
