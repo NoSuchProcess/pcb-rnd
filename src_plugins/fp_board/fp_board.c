@@ -87,7 +87,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 	pcb_opctx_t op;
 
 	if (dst == NULL)
-		return;
+		return NULL;
 
 	if (strncmp(name, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return NULL;
