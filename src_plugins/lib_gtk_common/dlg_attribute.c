@@ -620,7 +620,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					g_object_unref(model); /* destroy model automatically with view */
 					gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
-					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL));
+					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL), NULL);
 					g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_treetable_cursor), &ctx->attrs[j]);
 					selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 					gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
