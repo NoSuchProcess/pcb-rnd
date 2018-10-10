@@ -32,6 +32,7 @@ static const char dlg_test_help[] = "test the attribute dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wtab, tt;
+	int ttctr;
 } test_t;
 
 
@@ -40,6 +41,7 @@ static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 
 
 static int attr_idx, attr_idx2;
@@ -95,12 +97,13 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* tab 2: tree table widget */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
 			PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
+				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
+				PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
 				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
 				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
 				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
 				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
-				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
 			PCB_DAD_BUTTON(ctx.dlg, "insert row");
 				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
 		PCB_DAD_END(ctx.dlg);
@@ -147,10 +150,12 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
-	char *rowdata[] = {"new", "1", "2", NULL};
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+	char *rowdata[] = {NULL, "dum1", "dum2", NULL};
+	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
 
-	pcb_dad_tree_insert(treea, row, rowdata);
+	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
+	new_row = pcb_dad_tree_insert(treea, row, rowdata);
+	new_row->user_data2.lng = 1;
 }
 
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -162,3 +167,8 @@ static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		pcb_trace("tt selected: <NONE>\n");
 }
 
+static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	if (row->user_data2.lng)
+		free(row->cell[0]);
+}
