@@ -602,9 +602,9 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					GtkTreeSelection *selection;
 					pcb_hid_tree_t *tree = (pcb_hid_tree_t *)ctx->attrs[j].enumerations;
 
-					tree->insert_cb = ghid_treetable_insert_cb;
-					tree->free_cb = ghid_treetable_free_cb;
-					tree->get_selected_cb = ghid_treetable_get_selected;
+					tree->hid_insert_cb = ghid_treetable_insert_cb;
+					tree->hid_free_cb = ghid_treetable_free_cb;
+					tree->hid_get_selected_cb = ghid_treetable_get_selected;
 					tree->hid_ctx = ctx;
 
 					hbox = gtkc_hbox_new(FALSE, 4);

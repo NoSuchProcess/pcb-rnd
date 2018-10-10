@@ -105,8 +105,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 
 	gdl_insert_after(par, aft, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
-	if (tree->insert_cb != NULL)
-		tree->insert_cb(tree->attrib, tree->hid_ctx, nrow);
+	if (tree->hid_insert_cb != NULL)
+		tree->hid_insert_cb(tree->attrib, tree->hid_ctx, nrow);
 	return nrow;
 }
 
@@ -127,8 +127,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 
 	gdl_insert_before(par, bfr, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
-	if (tree->insert_cb != NULL)
-		tree->insert_cb(tree->attrib, tree->hid_ctx, nrow);
+	if (tree->hid_insert_cb != NULL)
+		tree->hid_insert_cb(tree->attrib, tree->hid_ctx, nrow);
 	return nrow;
 }
 
@@ -147,8 +147,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 
 	gdl_append(par, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
-	if (tree->insert_cb != NULL)
-		tree->insert_cb(tree->attrib, tree->hid_ctx, nrow);
+	if (tree->hid_insert_cb != NULL)
+		tree->hid_insert_cb(tree->attrib, tree->hid_ctx, nrow);
 	return nrow;
 }
 
@@ -156,11 +156,11 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 
-	if (tree->get_selected_cb == NULL)
+	if (tree->hid_get_selected_cb == NULL)
 		return NULL;
 
 
-	return tree->get_selected_cb(tree->attrib, tree->hid_ctx);
+	return tree->hid_get_selected_cb(tree->attrib, tree->hid_ctx);
 }
 
 #endif

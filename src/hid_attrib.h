@@ -62,6 +62,14 @@ typedef struct {
 	gdl_list_t children;
 	gdl_elem_t link;
 	char *path;      /* full path of the node; allocated/free'd by DAD (/ is the root, every entry is specified from the root, but the leading / is omitted; in non-tree case, this only points to the first col data) */
+
+	/* caller/user data */
+	void *user_data;
+	union {
+		void *ptr;
+		long lng;
+		double dbl;
+	} user_data2;
 	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
 } pcb_hid_row_t;
 
@@ -71,11 +79,15 @@ typedef struct {
 	pcb_hid_attribute_t *attrib;
 	const char **hdr; /* optional column headers (NULL means disable header) */
 
+	/* optional callbacks the user set after widget creation */
+	void *user_ctx;
+	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_ctx;
-	void (*insert_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row);
-	void (*free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	pcb_hid_row_t *(*get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+	void (*hid_insert_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row);
+	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 } pcb_hid_tree_t;
 
 struct pcb_hid_attribute_s {
