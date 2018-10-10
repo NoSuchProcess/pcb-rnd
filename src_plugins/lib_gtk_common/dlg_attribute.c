@@ -548,7 +548,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
-	int save;
+	int ret, save;
 	save = ctx->inhibit_valchg;
 	ctx->inhibit_valchg = 1;
 
@@ -559,6 +559,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_END:
 			goto error;
+
+		case PCB_HATT_TREE:
+			ret = ghid_tree_table_set(ctx, idx, val);
+			ctx->inhibit_valchg = save;
+			return ret;
 
 		case PCB_HATT_LABEL:
 			{

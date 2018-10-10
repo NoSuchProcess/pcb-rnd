@@ -297,6 +297,31 @@ static gboolean ghid_treetable_button_release_cb(GtkWidget *widget, GdkEvent *ev
 	return FALSE;
 }
 
+static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	GtkWidget *tt = ctx->wl[idx];
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
+	pcb_hid_attribute_t *attr = &ctx->attrs[idx];
+	GtkTreePath *path;
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_row_t *r;
+	const char *s = val->str_value;
+
+	while(*s == '/') s++;
+	r = htsp_get(&tree->paths, s);
+	if (r == NULL)
+		return -1;
+
+	path = gtk_tree_model_get_path(model, r->hid_data);
+	if (path == NULL)
+		return -1;
+
+	gtk_tree_view_expand_to_path(GTK_TREE_VIEW(tt), path);
+	gtk_tree_view_set_cursor(GTK_TREE_VIEW(tt), path, NULL, FALSE);
+	return 0;
+}
+
+
 static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
 	int c;
