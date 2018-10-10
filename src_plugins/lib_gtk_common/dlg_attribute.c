@@ -479,68 +479,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_TREE:
-				{
-					int c;
-					const char **colhdr;
-					GtkWidget *view = gtk_tree_view_new();
-					GtkTreeModel *model;
-					GtkTreeStore *tstore;
-					GType *types;
-					GtkCellRenderer *renderer;
-					GtkTreeSelection *selection;
-					pcb_hid_tree_t *tree = (pcb_hid_tree_t *)ctx->attrs[j].enumerations;
-
-					tree->hid_insert_cb = ghid_treetable_insert_cb;
-					tree->hid_free_cb = ghid_treetable_free_cb;
-					tree->hid_get_selected_cb = ghid_treetable_get_selected;
-					tree->hid_ctx = ctx;
-
-					hbox = gtkc_hbox_new(FALSE, 4);
-					gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
-
-					/* create columns */
-					types = malloc(sizeof(GType) * (ctx->attrs[j].pcb_hatt_table_cols+1));
-					colhdr = tree->hdr;
-					for(c = 0; c < ctx->attrs[j].pcb_hatt_table_cols; c++) {
-						GtkTreeViewColumn *col = gtk_tree_view_column_new();
-						if (tree->hdr != NULL) {
-							gtk_tree_view_column_set_title(col, *colhdr == NULL ? "" : *colhdr);
-							if (*colhdr != NULL)
-								colhdr++;
-						}
-						gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
-						renderer = gtk_cell_renderer_text_new();
-						gtk_tree_view_column_pack_start(col, renderer, TRUE);
-						gtk_tree_view_column_add_attribute(col, renderer, "text", c);
-						types[c] = G_TYPE_STRING;
-					}
-
-					/* append a hidden row for storing the dad row pointer */
-					types[c] = G_TYPE_POINTER;
-
-					/* import existing data */
-					tstore = gtk_tree_store_newv(ctx->attrs[j].pcb_hatt_table_cols+1, types);
-					free(types);
-					ghid_treetable_import(&ctx->attrs[j], tstore, &tree->rows, NULL);
-					model = GTK_TREE_MODEL(tstore);
-					gtk_tree_view_set_model(GTK_TREE_VIEW(view), model);
-					g_object_unref(model); /* destroy model automatically with view */
-					gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
-
-					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL), NULL);
-					g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_treetable_cursor), &ctx->attrs[j]);
-					g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(ghid_treetable_button_press_cb), &ctx->attrs[j]);
-					g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(ghid_treetable_button_release_cb), &ctx->attrs[j]);
-					g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(ghid_treetable_key_press_cb), &ctx->attrs[j]);
-
-					selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-					gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
-
-					gtk_widget_set_tooltip_text(view, ctx->attrs[j].help_text);
-					gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);
-					g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
-					ctx->wl[j] = view;
-				}
+				ctx->wl[j] = ghid_tree_table_create(ctx, &ctx->attrs[j], parent);
 				break;
 
 			case PCB_HATT_PATH:
