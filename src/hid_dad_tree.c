@@ -42,6 +42,9 @@ static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *lis
 		if (tree->hid_free_cb != NULL)
 			tree->hid_free_cb(tree->attrib, tree->hid_ctx, r);
 
+		if (tree->user_free_cb != NULL)
+			tree->user_free_cb(tree->attrib, tree->hid_ctx, r);
+
 		if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL)
 			free(r->path);
 
