@@ -179,8 +179,8 @@ do { \
    can be set */
 #define PCB_DAD_TREE_SET_CB(table, name, func_or_data) \
 do { \
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)&table[table ## _len-1].enumerations; \
-	tree->user_ ## name = func_or_data; \
+	pcb_hid_tree_t *__tree__ = (pcb_hid_tree_t *)table[table ## _len-1].enumerations; \
+	__tree__->user_ ## name = func_or_data; \
 } while(0)
 
 #define PCB_DAD_DUP_ATTR(table, attr) \
