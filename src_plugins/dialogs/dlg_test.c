@@ -42,6 +42,7 @@ static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 
 
@@ -101,6 +102,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
 				PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
+				PCB_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
 				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
 				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
 				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
@@ -175,13 +177,23 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	new_row->user_data2.lng = 1;
 }
 
+/* table level selection */
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 	if (attr->default_val.str_value != NULL)
-		pcb_trace("tt selected: path=%s row=%p '%s'\n", attr->default_val.str_value, row, row->cell[0]);
+		pcb_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->default_val.str_value, row, row->cell[0]);
 	else
-		pcb_trace("tt selected: <NONE>\n");
+		pcb_trace("tt tbl selected: <NONE>\n");
+}
+
+/* row level selection */
+static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	if (row != NULL)
+		pcb_trace("tt row selected: row=%p '%s'\n", row, row->cell[0]);
+	else
+		pcb_trace("tt row selected: <NONE>\n");
 }
 
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
