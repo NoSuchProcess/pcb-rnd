@@ -41,6 +41,7 @@ static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
@@ -112,6 +113,8 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
 				PCB_DAD_BUTTON(ctx.dlg, "append row");
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
+				PCB_DAD_BUTTON(ctx.dlg, "jump!");
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
 			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
@@ -175,6 +178,15 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
 	new_row = pcb_dad_tree_append(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
+}
+
+static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attr_val_t val;
+
+	val.str_value = "two/under_two";
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->tt, &val);
 }
 
 /* table level selection */
