@@ -747,7 +747,6 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 			retry:;
 			switch(shp->shape) {
 				case PCB_PSSH_HSHADOW:
-					hshadow:;
 					shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
 					if (shp == NULL)
 						return NULL;
