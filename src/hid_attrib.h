@@ -82,6 +82,7 @@ typedef struct {
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
 	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+	void (*user_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_ctx;
