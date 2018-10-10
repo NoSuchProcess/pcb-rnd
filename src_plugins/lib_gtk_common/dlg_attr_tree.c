@@ -25,6 +25,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <gdk/gdkkeysyms.h>
+
 static GtkTreeIter *ghid_treetable_add(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, pcb_hid_row_t *r, int prepend, GtkTreeIter *sibling)
 {
 	int c;
@@ -158,8 +160,6 @@ static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTre
 	else
 		gtk_tree_view_expand_row(tree_view, path, FALSE);
 }
-
-#include <gdk/gdkkeysyms.h>
 
 /* Key pressed activation handler: CTRL-C -> copy footprint name to clipboard;
    Enter -> row-activate. */
