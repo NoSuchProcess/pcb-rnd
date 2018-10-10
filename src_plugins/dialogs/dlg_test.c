@@ -146,8 +146,11 @@ static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	char *row[] = {"new", "1", "2", NULL};
-	pcb_dad_tree_insert(&ctx->dlg[ctx->tt], NULL, row);
+	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
+	char *rowdata[] = {"new", "1", "2", NULL};
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+
+	pcb_dad_tree_insert(treea, row, rowdata);
 }
 
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -158,3 +161,4 @@ static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	else
 		pcb_trace("tt selected: <NONE>\n");
 }
+
