@@ -144,6 +144,18 @@ static void ghid_treetable_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 		tree->user_selected_cb(attr, ctx, r);
 }
 
+static gboolean treetable_filter_visible_func(GtkTreeModel *model, GtkTreeIter *iter, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_row_t *r;
+
+	gtk_tree_model_get(model, iter, attr->pcb_hatt_table_cols, &r, -1);
+
+	if (r == NULL)
+		return TRUE; /* should not happen; when it does, it's a bug - better make the row visible */
+
+	return !r->hide;
+}
+
 /* Activation (e.g. double-clicking) of a footprint row. As a convenience
 to the user, GTK provides Shift-Arrow Left, Right to expand or
 contract any node with children. */
@@ -366,7 +378,10 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	tstore = gtk_tree_store_newv(attr->pcb_hatt_table_cols+1, types);
 	free(types);
 	ghid_treetable_import(attr, tstore, &tree->rows, NULL);
+
 	model = GTK_TREE_MODEL(tstore);
+	model = (GtkTreeModel *)g_object_new(GTK_TYPE_TREE_MODEL_FILTER, "child-model", model, "virtual-root", NULL, NULL);
+	gtk_tree_model_filter_set_visible_func((GtkTreeModelFilter *) model, treetable_filter_visible_func, attr, NULL);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(view), model);
 	g_object_unref(model); /* destroy model automatically with view */
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
