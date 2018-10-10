@@ -237,15 +237,23 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 	return parent;
 }
 
-static GtkTreeIter *ghid_treetable_add(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, pcb_hid_row_t *r, int prepend)
+static GtkTreeIter *ghid_treetable_add(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, pcb_hid_row_t *r, int prepend, GtkTreeIter *sibling)
 {
 	int c;
 	GtkTreeIter *curr = malloc(sizeof(GtkTreeIter));
 
-	if (prepend)
-		gtk_tree_store_prepend(tstore, curr, par);
-	else
-		gtk_tree_store_append(tstore, curr, par);
+	if (sibling == NULL) {
+		if (prepend)
+			gtk_tree_store_prepend(tstore, curr, par);
+		else
+			gtk_tree_store_append(tstore, curr, par);
+	}
+	else {
+		if (prepend)
+			gtk_tree_store_insert_before(tstore, curr, par, sibling);
+		else
+			gtk_tree_store_insert_after(tstore, curr, par, sibling);
+	}
 
 	for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
 		GValue v = G_VALUE_INIT;
@@ -272,7 +280,7 @@ static void ghid_treetable_import(pcb_hid_attribute_t *attr, GtkTreeStore *tstor
 	pcb_hid_row_t *r;
 
 	for(r = gdl_first(lst); r != NULL; r = gdl_next(lst, r)) {
-		GtkTreeIter *curr = ghid_treetable_add(attr, tstore, par, r, 0);
+		GtkTreeIter *curr = ghid_treetable_add(attr, tstore, par, r, 0, NULL);
 		ghid_treetable_import(attr, tstore, &r->children, curr);
 	}
 }
@@ -283,10 +291,21 @@ static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx,
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
-	pcb_hid_row_t *par = pcb_dad_tree_parent_row((pcb_hid_tree_t *)attrib->enumerations, new_row);
+	pcb_hid_row_t *sibling, *par = pcb_dad_tree_parent_row((pcb_hid_tree_t *)attrib->enumerations, new_row);
+	GtkTreeIter *sibiter, *pariter;
+	int prepnd;
 
-#warning TODO: decide whether to insert or append
-	ghid_treetable_add(attrib, GTK_TREE_STORE(model), (par == NULL ? NULL : par->hid_data), new_row, 1);
+	sibling = gdl_prev(new_row->link.parent, new_row);
+	if (sibling == NULL) {
+		sibling = gdl_next(new_row->link.parent, new_row);
+		prepnd = 1;
+	}
+	else
+		prepnd = 0;
+
+	pariter = par == NULL ? NULL : par->hid_data;
+	sibiter = sibling == NULL ? NULL : sibling->hid_data;
+	ghid_treetable_add(attrib, GTK_TREE_STORE(model), pariter, new_row, prepnd, sibiter);
 }
 
 static void ghid_treetable_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
