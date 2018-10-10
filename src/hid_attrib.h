@@ -62,6 +62,7 @@ typedef struct {
 	gdl_list_t children;
 	gdl_elem_t link;
 	char *path;      /* full path of the node; allocated/free'd by DAD (/ is the root, every entry is specified from the root, but the leading / is omitted; in non-tree case, this only points to the first col data) */
+	unsigned hide:1; /* if non-zero, the row is not visible (e.g. filtered out) */
 
 	/* caller/user data */
 	void *user_data;
