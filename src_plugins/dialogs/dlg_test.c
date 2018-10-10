@@ -40,6 +40,7 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 
@@ -104,8 +105,12 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
 				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
 				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
-			PCB_DAD_BUTTON(ctx.dlg, "insert row");
-				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
+			PCB_DAD_BEGIN_HBOX(ctx.dlg);
+				PCB_DAD_BUTTON(ctx.dlg, "insert row");
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
+				PCB_DAD_BUTTON(ctx.dlg, "append row");
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
+			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
@@ -150,11 +155,23 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
-	char *rowdata[] = {NULL, "dum1", "dum2", NULL};
+	char *rowdata[] = {NULL, "ins", "dummy", NULL};
 	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
 	new_row = pcb_dad_tree_insert(treea, row, rowdata);
+	new_row->user_data2.lng = 1;
+}
+
+static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
+	char *rowdata[] = {NULL, "app", "dummy", NULL};
+	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+
+	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
+	new_row = pcb_dad_tree_append(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 }
 
