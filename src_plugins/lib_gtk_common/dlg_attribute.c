@@ -354,6 +354,163 @@ static void ghid_treetable_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 		tree->user_selected_cb(attr, ctx, r);
 }
 
+/* Activation (e.g. double-clicking) of a footprint row. As a convenience
+to the user, GTK provides Shift-Arrow Left, Right to expand or
+contract any node with children. */
+static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, pcb_hid_attribute_t *attr)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	model = gtk_tree_view_get_model(tree_view);
+	gtk_tree_model_get_iter(model, &iter, path);
+
+	if (gtk_tree_view_row_expanded(tree_view, path))
+		gtk_tree_view_collapse_row(tree_view, path);
+	else
+		gtk_tree_view_expand_row(tree_view, path, FALSE);
+}
+
+#include <gdk/gdkkeysyms.h>
+
+/* Key pressed activation handler: CTRL-C -> copy footprint name to clipboard;
+   Enter -> row-activate. */
+static gboolean ghid_treetable_key_press_cb(GtkTreeView *tree_view, GdkEventKey *event, pcb_hid_attribute_t *attr)
+{
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	pcb_bool key_handled, arrow_key, enter_key, force_activate = pcb_false;
+	GtkClipboard *clipboard;
+	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
+
+	arrow_key = ((event->keyval == GDK_KEY_Up) || (event->keyval == GDK_KEY_KP_Up)
+		|| (event->keyval == GDK_KEY_Down) || (event->keyval == GDK_KEY_KP_Down)
+		|| (event->keyval == GDK_KEY_KP_Page_Down) || (event->keyval == GDK_KEY_KP_Page_Up)
+		|| (event->keyval == GDK_KEY_Page_Down) || (event->keyval == GDK_KEY_Page_Up)
+		|| (event->keyval == GDK_KEY_KP_Home) || (event->keyval == GDK_KEY_KP_End)
+		|| (event->keyval == GDK_KEY_Home) || (event->keyval == GDK_KEY_End));
+	enter_key = (event->keyval == GDK_KEY_Return) || (event->keyval == GDK_KEY_KP_Enter);
+	key_handled = (enter_key || arrow_key);
+
+	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
+	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == GDK_KEY_c) || (event->keyval == GDK_KEY_C))) {
+		pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+		pcb_hid_row_t *r;
+		const char *cliptext;
+
+		selection = gtk_tree_view_get_selection(tree_view);
+		g_return_val_if_fail(selection != NULL, TRUE);
+
+		if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+			return TRUE;
+
+		gtk_tree_model_get(model, &iter, attr->pcb_hatt_table_cols, &r, -1);
+		if (r == NULL)
+			return TRUE;
+
+		clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+		g_return_val_if_fail(clipboard != NULL, TRUE);
+
+		if (tree->user_copy_to_clip_cb != NULL)
+			cliptext = tree->user_copy_to_clip_cb(attr, tree->hid_ctx, r);
+		else
+			cliptext = r->cell[0];
+
+		gtk_clipboard_set_text(clipboard, cliptext, -1);
+
+		return FALSE;
+	}
+
+	if (!key_handled)
+		return FALSE;
+
+	/* If arrows (up or down), let GTK process the selection change. Then activate the new selected row. */
+	if (arrow_key) {
+		GtkWidgetClass *class = GTK_WIDGET_GET_CLASS(tree_view);
+
+		class->key_press_event(GTK_WIDGET(tree_view), event);
+	}
+
+	selection = gtk_tree_view_get_selection(tree_view);
+	g_return_val_if_fail(selection != NULL, TRUE);
+
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return TRUE;
+
+	/* arrow key should activate the row only if it's a leaf (real footprint), for
+	   display, but shouldn't open/close levels visited or pop up the parametric
+	   footprint dialog */
+	if (arrow_key) {
+		pcb_hid_row_t *r;
+
+		gtk_tree_model_get(model, &iter, attr->pcb_hatt_table_cols, &r, -1);
+		if (r != NULL) {
+			pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+			if (tree->user_browse_activate_cb != NULL) { /* let the user callbakc decide */
+				force_activate = tree->user_browse_activate_cb(attr, tree->hid_ctx, r);
+			}
+			else { /* automatic decision: only leaf nodes activate */
+				if (gdl_first(&r->children) == NULL)
+					force_activate = pcb_true;
+			}
+		}
+	}
+
+	/* Handle 'Enter' key and arrow keys as "activate" on plain footprints */
+	if (enter_key || force_activate) {
+		path = gtk_tree_model_get_path(model, &iter);
+		if (path != NULL) {
+			tree_row_activated(tree_view, path, NULL, attr);
+		}
+		gtk_tree_path_free(path);
+	}
+
+	return TRUE;
+}
+
+/* Handle the double-click to be equivalent to "row-activated" signal */
+static gboolean ghid_treetable_button_press_cb(GtkWidget *widget, GdkEvent *ev, pcb_hid_attribute_t *attr)
+{
+	GtkTreeView *tv = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+
+	if (ev->button.type == GDK_2BUTTON_PRESS) {
+		model = gtk_tree_view_get_model(tv);
+		gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
+		if (path != NULL) {
+			gtk_tree_model_get_iter(model, &iter, path);
+			tree_row_activated(tv, path, NULL, attr);
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean ghid_treetable_button_release_cb(GtkWidget *widget, GdkEvent *ev, pcb_hid_attribute_t *attr)
+{
+	GtkTreeView *tv = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+
+	model = gtk_tree_view_get_model(tv);
+	gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
+	if (path != NULL) {
+		gtk_tree_model_get_iter(model, &iter, path);
+		/* Do not activate the row if LEFT-click on a "parent category" row. */
+		if (ev->button.button != 1 || !gtk_tree_model_iter_has_child(model, &iter))
+			tree_row_activated(tv, path, NULL, attr);
+	}
+
+	return FALSE;
+}
+
+
+
 typedef struct {
 	enum {
 		TB_TABLE,
@@ -644,6 +801,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 					g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL), NULL);
 					g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_treetable_cursor), &ctx->attrs[j]);
+					g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(ghid_treetable_button_press_cb), &ctx->attrs[j]);
+					g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(ghid_treetable_button_release_cb), &ctx->attrs[j]);
+					g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(ghid_treetable_key_press_cb), &ctx->attrs[j]);
+
 					selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 					gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
