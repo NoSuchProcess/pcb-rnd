@@ -340,6 +340,7 @@ static void ghid_treetable_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(widget), PCB_OBJ_PROP);
 	pcb_hid_row_t *r = ghid_treetable_get_selected(attr, ctx);
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 
 	attr->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -349,6 +350,8 @@ static void ghid_treetable_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 	else
 		attr->default_val.str_value = NULL;
 	change_cb(ctx, attr);
+	if (tree->user_selected_cb != NULL)
+		tree->user_selected_cb(attr, ctx, r);
 }
 
 typedef struct {
