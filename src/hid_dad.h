@@ -174,6 +174,15 @@ do { \
 #define PCB_DAD_TREE_INSERT(table, row_before, cells) \
 	pcb_dad_tree_insert(&table[table ## _len-1], row_before, cells)
 
+/* set the named tree user callback to func_or_data; name is automatically
+   appended with user_, any field prefixed with user_ in pcb_hid_tree_t
+   can be set */
+#define PCB_DAD_TREE_SET_CB(table, name, func_or_data) \
+do { \
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)&table[table ## _len-1].enumerations; \
+	tree->user_ ## name = func_or_data; \
+} while(0)
+
 #define PCB_DAD_DUP_ATTR(table, attr) \
 do { \
 	PCB_DAD_ALLOC(table, 0); \
