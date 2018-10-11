@@ -164,8 +164,9 @@ static void ghid_treetable_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 		tree->user_selected_cb(attr, ctx, r);
 }
 
-static gboolean treetable_filter_visible_func(GtkTreeModel *model, GtkTreeIter *iter, pcb_hid_attribute_t *attr)
+static gboolean treetable_filter_visible_func(GtkTreeModel *model, GtkTreeIter *iter, void *user_data)
 {
+	pcb_hid_attribute_t *attr = user_data;
 	pcb_hid_row_t *r;
 
 	gtk_tree_model_get(model, iter, attr->pcb_hatt_table_cols, &r, -1);
