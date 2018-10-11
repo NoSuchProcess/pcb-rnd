@@ -153,6 +153,11 @@ do { \
 	table[table ## _len - 1].default_val.str_value = text; \
 } while(0)
 
+#define PCB_DAD_PROGRESS(table) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_PROGRESS); \
+} while(0)
+
 #define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
 do { \
 	pcb_hid_tree_t *tree = calloc(sizeof(pcb_hid_tree_t), 1); \
@@ -237,6 +242,7 @@ do { \
 			table[table ## _len - 1].field.int_value = (int)val; \
 			break; \
 		case PCB_HATT_REAL: \
+		case PCB_HATT_PROGRESS: \
 			table[table ## _len - 1].field.real_value = (double)val; \
 			break; \
 		case PCB_HATT_STRING: \
@@ -265,6 +271,7 @@ do { \
 		case PCB_HATT_COORD: \
 		case PCB_HATT_UNIT: \
 		case PCB_HATT_REAL: \
+		case PCB_HATT_PROGRESS: \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
