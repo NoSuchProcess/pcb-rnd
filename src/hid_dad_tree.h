@@ -163,4 +163,12 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 	return tree->hid_get_selected_cb(tree->attrib, tree->hid_ctx);
 }
 
+PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	if (tree->hid_update_hide_cb != NULL)
+		tree->hid_update_hide_cb(tree->attrib, tree->hid_ctx);
+}
+
+
 #endif
