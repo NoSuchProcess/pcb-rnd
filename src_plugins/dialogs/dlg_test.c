@@ -31,7 +31,7 @@ static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtab, tt;
+	int wtab, tt, wprog;
 	int ttctr;
 } test_t;
 
@@ -121,6 +121,10 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_BOOL(ctx.dlg, "filter");
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
 			PCB_DAD_END(ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(ctx.dlg);
+				PCB_DAD_PROGRESS(ctx.dlg);
+					ctx.wprog = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
@@ -167,10 +171,14 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	char *rowdata[] = {NULL, "ins", "dummy", NULL};
 	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+	pcb_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
 	new_row = pcb_dad_tree_insert(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
+
+	val.real_value = (double)ctx->ttctr / 20.0;
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
 }
 
 static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -179,10 +187,14 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	char *rowdata[] = {NULL, "app", "dummy", NULL};
 	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+	pcb_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
 	new_row = pcb_dad_tree_append(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
+
+	val.real_value = (double)ctx->ttctr / 20.0;
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
 }
 
 static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
