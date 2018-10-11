@@ -257,7 +257,7 @@ typedef struct {
 
 static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels)
 {
-	int j, i, n;
+	int j, i, n, expfill;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
 
 	for (j = start_from; j < ctx->n_attrs; j++) {
@@ -300,7 +300,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			case PCB_HATT_BEGIN_HBOX:
 				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 				hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(bparent), hbox, FALSE, FALSE, 0);
+				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
+				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
 				ctx->wl[j] = hbox;
 				j = ghid_attr_dlg_add(ctx, hbox, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				break;
@@ -308,7 +309,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			case PCB_HATT_BEGIN_VBOX:
 				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 				vbox1 = gtkc_vbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(bparent), vbox1, FALSE, FALSE, 0);
+				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
+				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
 				ctx->wl[j] = vbox1;
 				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				break;

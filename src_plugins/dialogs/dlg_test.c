@@ -100,8 +100,10 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* tab 2: tree table widget */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
+			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
 				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_SCROLL);
 				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
 				PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
 				PCB_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
