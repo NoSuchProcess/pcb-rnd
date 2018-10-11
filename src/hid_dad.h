@@ -158,15 +158,15 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PROGRESS); \
 } while(0)
 
-#define PCB_DAD_BEGIN_HPAN(table) \
+#define PCB_DAD_BEGIN_HPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPAN); \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
 	table[table ## _len - 1].default_val.float_value = 0.5; \
 } while(0)
 
-#define PCB_DAD_BEGIN_VPAN(table) \
+#define PCB_DAD_BEGIN_HPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VPAN); \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
 	table[table ## _len - 1].default_val.float_value = 0.5; \
 } while(0)
 
@@ -255,8 +255,8 @@ do { \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
-		case PCB_HATT_BEGIN_HPAN: \
-		case PCB_HATT_BEGIN_VPAN: \
+		case PCB_HATT_BEGIN_HPANE: \
+		case PCB_HATT_BEGIN_VPANE: \
 			table[table ## _len - 1].field.real_value = (double)val; \
 			break; \
 		case PCB_HATT_STRING: \
@@ -295,8 +295,8 @@ do { \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
-		case PCB_HATT_BEGIN_HPAN: \
-		case PCB_HATT_BEGIN_VPAN: \
+		case PCB_HATT_BEGIN_HPANE: \
+		case PCB_HATT_BEGIN_VPANE: \
 		case PCB_HATT_BEGIN_TABLE: \
 		case PCB_HATT_BEGIN_TABBED: \
 		case PCB_HATT_END: \
