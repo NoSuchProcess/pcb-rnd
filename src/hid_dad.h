@@ -164,9 +164,9 @@ do { \
 	table[table ## _len - 1].default_val.real_value = 0.5; \
 } while(0)
 
-#define PCB_DAD_BEGIN_HPANE(table) \
+#define PCB_DAD_BEGIN_VPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VPANE); \
 	table[table ## _len - 1].default_val.real_value = 0.5; \
 } while(0)
 
