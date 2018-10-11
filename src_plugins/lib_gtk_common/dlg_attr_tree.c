@@ -75,13 +75,26 @@ static void ghid_treetable_import(pcb_hid_attribute_t *attr, GtkTreeStore *tstor
 	}
 }
 
-static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row)
+/* Return the tree-store data model, which is the child of the filter model
+   attached to the tree widget */
+GtkTreeModel *ghid_treetable_get_model(attr_dlg_t *ctx, pcb_hid_attribute_t *attrib, int filter)
 {
-	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
+
+	if (filter)
+		return model;
+
+	model = gtk_tree_model_filter_get_model(model);
+	return model;
+}
+
+static void ghid_treetable_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row)
+{
+	attr_dlg_t *ctx = hid_ctx;
 	pcb_hid_row_t *sibling, *par = pcb_dad_tree_parent_row((pcb_hid_tree_t *)attrib->enumerations, new_row);
+	GtkTreeModel *model = ghid_treetable_get_model(ctx, attrib, 0);
 	GtkTreeIter *sibiter, *pariter;
 	int prepnd;
 
@@ -106,9 +119,7 @@ static void ghid_treetable_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, p
 static void ghid_treetable_update_hide(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	int idx = attrib - ctx->attrs;
-	GtkWidget *tt = ctx->wl[idx];
-	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
+	GtkTreeModel *model = ghid_treetable_get_model(ctx, attrib, 1);
 	gtk_tree_model_filter_refilter(model);
 }
 
