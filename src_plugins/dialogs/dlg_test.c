@@ -42,6 +42,7 @@ static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
@@ -115,6 +116,8 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
 				PCB_DAD_BUTTON(ctx.dlg, "jump!");
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
+				PCB_DAD_BOOL(ctx.dlg, "filter");
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
 			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
@@ -187,6 +190,26 @@ static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 	val.str_value = "two/under_two";
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->tt, &val);
+}
+
+static void ttbl_filt(gdl_list_t *list, int hide)
+{
+	pcb_hid_row_t *r;
+	for(r = gdl_first(list); r != NULL; r = gdl_next(list, r)) {
+		if (r->user_data2.lng)
+			r->hide = hide;
+		ttbl_filt(&r->children, hide);
+	}
+}
+
+static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)treea->enumerations;
+
+	ttbl_filt(&tree->rows, attr->default_val.int_value);
+	pcb_dad_tree_update_hide(treea);
 }
 
 /* table level selection */
