@@ -359,7 +359,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 {
 	int c;
 	const char **colhdr;
-	GtkWidget *view = gtk_tree_view_new(), *hbox;
+	GtkWidget *bparent, *view = gtk_tree_view_new();
 	GtkTreeModel *model;
 	GtkTreeStore *tstore;
 	GType *types;
@@ -372,9 +372,6 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	tree->hid_get_selected_cb = ghid_treetable_get_selected;
 	tree->hid_update_hide_cb = ghid_treetable_update_hide;
 	tree->hid_ctx = ctx;
-
-	hbox = gtkc_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 	/* create columns */
 	types = malloc(sizeof(GType) * (attr->pcb_hatt_table_cols+1));
@@ -418,7 +415,8 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
-	gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	gtk_box_pack_start(GTK_BOX(bparent), view, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
 	return view;
 }
