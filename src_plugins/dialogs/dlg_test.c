@@ -31,7 +31,7 @@ static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtab, tt, wprog;
+	int wtab, tt, wprog, whpane, wvpane;
 	int ttctr;
 } test_t;
 
@@ -46,13 +46,14 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 
 static int attr_idx, attr_idx2;
 static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
-	const char *tabs[] = { "original test", "new test", "tree-table", NULL };
+	const char *tabs[] = { "original test", "new test", "tree-table", "pane", NULL };
 	char *row1[] = {"one", "foo", "FOO", NULL};
 	char *row2[] = {"two", "bar", "BAR", NULL};
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
@@ -124,6 +125,28 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_DAD_BEGIN_VBOX(ctx.dlg);
 				PCB_DAD_PROGRESS(ctx.dlg);
 					ctx.wprog = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_END(ctx.dlg);
+		PCB_DAD_END(ctx.dlg);
+
+		/* tab 3: pane */
+		PCB_DAD_BEGIN_HPANE(ctx.dlg);
+			ctx.whpane = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(ctx.dlg);
+				PCB_DAD_LABEL(ctx.dlg, "left1");
+				PCB_DAD_LABEL(ctx.dlg, "left2");
+			PCB_DAD_END(ctx.dlg);
+			PCB_DAD_BEGIN_VPANE(ctx.dlg);
+				ctx.wvpane = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_BEGIN_VBOX(ctx.dlg);
+					PCB_DAD_LABEL(ctx.dlg, "right top1");
+					PCB_DAD_LABEL(ctx.dlg, "right top2");
+				PCB_DAD_END(ctx.dlg);
+				PCB_DAD_BEGIN_VBOX(ctx.dlg);
+					PCB_DAD_LABEL(ctx.dlg, "right bottom1");
+					PCB_DAD_LABEL(ctx.dlg, "right bottom2");
+					PCB_DAD_BUTTON(ctx.dlg, "set all to 30%");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_pane_set);
+				PCB_DAD_END(ctx.dlg);
 			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
@@ -250,3 +273,14 @@ static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	if (row->user_data2.lng)
 		free(row->cell[0]);
 }
+
+static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attr_val_t val;
+
+	val.real_value = 0.3;
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->whpane, &val);
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wvpane, &val);
+}
+
