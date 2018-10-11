@@ -161,13 +161,13 @@ do { \
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
-	table[table ## _len - 1].default_val.float_value = 0.5; \
+	table[table ## _len - 1].default_val.real_value = 0.5; \
 } while(0)
 
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
-	table[table ## _len - 1].default_val.float_value = 0.5; \
+	table[table ## _len - 1].default_val.real_value = 0.5; \
 } while(0)
 
 #define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
