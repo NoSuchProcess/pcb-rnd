@@ -158,6 +158,18 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PROGRESS); \
 } while(0)
 
+#define PCB_DAD_BEGIN_HPAN(table) \
+do { \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPAN); \
+	table[table ## _len - 1].default_val.float_value = 0.5; \
+} while(0)
+
+#define PCB_DAD_BEGIN_VPAN(table) \
+do { \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VPAN); \
+	table[table ## _len - 1].default_val.float_value = 0.5; \
+} while(0)
+
 #define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
 do { \
 	pcb_hid_tree_t *tree = calloc(sizeof(pcb_hid_tree_t), 1); \
@@ -243,6 +255,8 @@ do { \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
+		case PCB_HATT_BEGIN_HPAN: \
+		case PCB_HATT_BEGIN_VPAN: \
 			table[table ## _len - 1].field.real_value = (double)val; \
 			break; \
 		case PCB_HATT_STRING: \
@@ -281,6 +295,8 @@ do { \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
+		case PCB_HATT_BEGIN_HPAN: \
+		case PCB_HATT_BEGIN_VPAN: \
 		case PCB_HATT_BEGIN_TABLE: \
 		case PCB_HATT_BEGIN_TABBED: \
 		case PCB_HATT_END: \

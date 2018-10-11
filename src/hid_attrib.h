@@ -43,6 +43,8 @@ typedef enum pcb_hids_e {
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
 	PCB_HATT_BEGIN_VBOX,
+	PCB_HATT_BEGIN_HPAN,          /* horizontal split and offer two vboxes; the split ratio is real_value between 0 and 1, that describes the left side's size */
+	PCB_HATT_BEGIN_VPAN,          /* vertical split and offer two vboxes; the split ratio is real_value between 0 and 1, that describes the left side's size */
 	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
 	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->enumerations stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
