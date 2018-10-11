@@ -103,6 +103,16 @@ static void ghid_treetable_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, p
 	free(row->hid_data);
 }
 
+static void ghid_treetable_update_hide(pcb_hid_attribute_t *attrib, void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *tt = ctx->wl[idx];
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
+printf("REFILTER!\n");
+	gtk_tree_model_filter_refilter(model);
+}
+
 
 static pcb_hid_row_t *ghid_treetable_get_selected(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
@@ -349,6 +359,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	tree->hid_insert_cb = ghid_treetable_insert_cb;
 	tree->hid_free_cb = ghid_treetable_free_cb;
 	tree->hid_get_selected_cb = ghid_treetable_get_selected;
+	tree->hid_update_hide_cb = ghid_treetable_update_hide;
 	tree->hid_ctx = ctx;
 
 	hbox = gtkc_hbox_new(FALSE, 4);
