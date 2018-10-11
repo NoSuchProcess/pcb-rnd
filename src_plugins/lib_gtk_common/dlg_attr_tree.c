@@ -109,7 +109,6 @@ static void ghid_treetable_update_hide(pcb_hid_attribute_t *attrib, void *hid_ct
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tt));
-printf("REFILTER!\n");
 	gtk_tree_model_filter_refilter(model);
 }
 
