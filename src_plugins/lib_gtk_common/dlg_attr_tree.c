@@ -86,7 +86,7 @@ GtkTreeModel *ghid_treetable_get_model(attr_dlg_t *ctx, pcb_hid_attribute_t *att
 	if (filter)
 		return model;
 
-	model = gtk_tree_model_filter_get_model(model);
+	model = gtk_tree_model_filter_get_model(GTK_TREE_MODEL_FILTER(model));
 	return model;
 }
 
@@ -120,7 +120,7 @@ static void ghid_treetable_update_hide(pcb_hid_attribute_t *attrib, void *hid_ct
 {
 	attr_dlg_t *ctx = hid_ctx;
 	GtkTreeModel *model = ghid_treetable_get_model(ctx, attrib, 1);
-	gtk_tree_model_filter_refilter(model);
+	gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(model));
 }
 
 
