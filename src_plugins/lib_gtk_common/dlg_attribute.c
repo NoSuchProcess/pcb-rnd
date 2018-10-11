@@ -237,13 +237,12 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 	return parent;
 }
 
-#include "dlg_attr_tree.c"
-#include "dlg_attr_misc.c"
 
 typedef struct {
 	enum {
 		TB_TABLE,
-		TB_TABBED
+		TB_TABBED,
+		TB_PANE
 	} type;
 	union {
 		struct {
@@ -253,8 +252,17 @@ typedef struct {
 		struct {
 			const char **tablab;
 		} tabbed;
+		struct {
+			int next;
+		} pane;
 	} val;
 } ghid_attr_tb_t;
+
+static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels);
+
+#include "dlg_attr_tree.c"
+#include "dlg_attr_misc.c"
+#include "dlg_attr_box.c"
 
 static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels)
 {
@@ -291,6 +299,9 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 						widget = NULL;
 					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, widget);
 					break;
+				case TB_PANE:
+					parent = ghid_pane_append(ctx, tb_st, real_parent);
+					break;
 			}
 		}
 		else
@@ -314,6 +325,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
 				ctx->wl[j] = vbox1;
 				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				break;
+
+			case PCB_HATT_BEGIN_HPANE:
+			case PCB_HATT_BEGIN_VPANE:
+				j = ghid_pane_create(ctx, j, parent, (ctx->attrs[j].type == PCB_HATT_BEGIN_HPANE));
 				break;
 
 			case PCB_HATT_BEGIN_TABLE:
@@ -574,6 +590,12 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 
 		case PCB_HATT_PROGRESS:
 			ret = ghid_progress_set(ctx, idx, val);
+			ctx->inhibit_valchg = save;
+			return ret;
+
+		case PCB_HATT_BEGIN_HPANE:
+		case PCB_HATT_BEGIN_VPANE:
+			ret = ghid_pane_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
