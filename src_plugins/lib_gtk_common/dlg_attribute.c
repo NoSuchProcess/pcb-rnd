@@ -238,6 +238,7 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 }
 
 #include "dlg_attr_tree.c"
+#include "dlg_attr_misc.c"
 
 typedef struct {
 	enum {
@@ -484,6 +485,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				ctx->wl[j] = ghid_tree_table_create(ctx, &ctx->attrs[j], parent);
 				break;
 
+			case PCB_HATT_PROGRESS:
+				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent);
+				break;
+
 			case PCB_HATT_PATH:
 				vbox1 = ghid_category_vbox(parent, (add_labels ? ctx->attrs[j].name : NULL), 4, 2, TRUE, TRUE);
 				entry = gtk_entry_new();
@@ -564,6 +569,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 
 		case PCB_HATT_TREE:
 			ret = ghid_tree_table_set(ctx, idx, val);
+			ctx->inhibit_valchg = save;
+			return ret;
+
+		case PCB_HATT_PROGRESS:
+			ret = ghid_progress_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
