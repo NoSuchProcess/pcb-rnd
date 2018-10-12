@@ -182,6 +182,9 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(widget);
 
 	switch (preview->kind) {
+	case PCB_GTK_PREVIEW_GENERIC:
+		return preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
+
 	case PCB_GTK_PREVIEW_PINOUT:
 		preview->expose_data.view.X1 = preview->x_min;
 		preview->expose_data.view.Y1 = preview->y_min;
@@ -442,6 +445,17 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawi
 
 	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, NULL);
 	g_object_set(G_OBJECT(preview), "element-data", obj, NULL);
+
+	return GTK_WIDGET(preview);
+}
+
+GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data)
+{
+	pcb_gtk_preview_t *preview;
+
+	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, dialog_draw);
+	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "generic", draw_data, NULL);
 
 	return GTK_WIDGET(preview);
 }

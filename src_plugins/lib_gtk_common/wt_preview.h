@@ -100,8 +100,7 @@ GType pcb_gtk_preview_get_type(void);
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height);
 
 /* Generic, callback based API */
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com,
-															 pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
 
 /* Application-specific shorthands */
 GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com,
@@ -117,5 +116,8 @@ GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height);
 
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
+
+GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data);
 
 #endif /* PCB_GTK_WT_REVIEW_H */

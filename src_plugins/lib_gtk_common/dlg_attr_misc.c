@@ -57,22 +57,24 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, pcb_hid_attribute_t *att
 
 static void ghid_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_trace("preview expose!\n");
+	pcb_hid_preview_t *prv = e->content.draw_data;
+	pcb_trace("preview expose in dlg_attr_misc!\n");
+	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
-
 
 static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
 	GtkWidget *bparent, *prv;
 	pcb_gtk_preview_t *p;
 
-
-	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
-	prv = pcb_gtk_preview_dialog_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose);
+	prv = pcb_gtk_preview_generic_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose, attr->enumerations);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
+	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
 /*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
 /*	p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
-/*	gtk_widget_set_size_request(prv, 200, 200);*/
+#warning TODO make this configurable:
+	gtk_widget_set_size_request(prv, 200, 200);
+	return prv;
 }
