@@ -100,15 +100,19 @@ typedef struct {
 	void (*hid_update_hide_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 } pcb_hid_tree_t;
 
-typedef struct {
+typedef struct pcb_hid_preview_s pcb_hid_preview_t;
+struct pcb_hid_preview_s {
+	pcb_hid_attribute_t *attrib;
+
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
 	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
+	void (*user_expose_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_ctx;
 	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
-} pcb_hid_preview_t;
+};
 
 struct pcb_hid_attribute_s {
 	const char *name;
