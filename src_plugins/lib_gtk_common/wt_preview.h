@@ -64,6 +64,7 @@ typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_PINOUT, /* single subcircuit */
 	PCB_GTK_PREVIEW_LAYER,  /* specific (oftne virtual) layer */
 	PCB_GTK_PREVIEW_BOARD,  /* render the board (whole layer stack) */
+	PCB_GTK_PREVIEW_GENERIC,/* generic callback based draw */
 
 	PCB_GTK_PREVIEW_kind_max
 } pcb_gtk_preview_kind_t;

@@ -93,7 +93,8 @@ enum {
 	PROP_KIND = 5,
 	PROP_LAYER = 6,
 	PROP_COM = 7,
-	PROP_DIALOG_DRAW = 8  /* for PCB_LYT_DIALOG */
+	PROP_DIALOG_DRAW = 8, /* for PCB_LYT_DIALOG */
+	PROP_GENERIC = 9
 };
 
 static GObjectClass *ghid_preview_parent_class = NULL;
@@ -149,6 +150,12 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	case PROP_LAYER:
 		preview->kind = PCB_GTK_PREVIEW_LAYER;
 		preview->expose_data.content.layer_id = g_value_get_long(value);
+		if (window != NULL)
+			gdk_window_invalidate_rect(window, NULL, FALSE);
+		break;
+	case PROP_GENERIC:
+		preview->kind = PCB_GTK_PREVIEW_GENERIC;
+		preview->expose_data.content.draw_data = g_value_get_pointer(value);
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
@@ -229,6 +236,9 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 																	g_param_spec_long("layer", "", "", -(1UL << 31), (1UL << 31) - 1, -1, G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_DIALOG_DRAW, g_param_spec_pointer("dialog_draw", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_GENERIC,
+																	g_param_spec_pointer("generic", "", "", G_PARAM_WRITABLE));
 }
 
 static void update_expose_data(pcb_gtk_preview_t * prv)
