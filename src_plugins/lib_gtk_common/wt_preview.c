@@ -183,6 +183,10 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 
 	switch (preview->kind) {
 	case PCB_GTK_PREVIEW_GENERIC:
+		preview->expose_data.view.X1 = preview->x_min;
+		preview->expose_data.view.Y1 = preview->y_min;
+		preview->expose_data.view.X2 = preview->x_max;
+		preview->expose_data.view.Y2 = preview->y_max;
 		return preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
 
 	case PCB_GTK_PREVIEW_PINOUT:
@@ -449,16 +453,6 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawi
 	return GTK_WIDGET(preview);
 }
 
-GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data)
-{
-	pcb_gtk_preview_t *preview;
-
-	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, dialog_draw);
-	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "generic", draw_data, NULL);
-
-	return GTK_WIDGET(preview);
-}
 
 static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer, pcb_hid_dialog_draw_t dialog_draw)
@@ -498,6 +492,17 @@ static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_d
 */
 
 	return GTK_WIDGET(prv);
+}
+
+GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data)
+{
+	pcb_gtk_preview_t *preview;
+
+	preview = pcb_gtk_preview_any_new(com, init_widget, expose, -1, dialog_draw);
+	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "generic", draw_data, NULL);
+
+	return GTK_WIDGET(preview);
 }
 
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
