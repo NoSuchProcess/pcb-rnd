@@ -62,6 +62,13 @@ static void ghid_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
 
+static pcb_bool ghid_preview_mouse(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_hid_preview_t *prv = draw_data;
+	if (prv->user_mouse_cb != NULL)
+		prv->user_mouse_cb(prv->attrib, prv, kind, x, y);
+}
+
 static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
 	GtkWidget *bparent, *prv;
@@ -72,9 +79,8 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
+	p->mouse_cb = ghid_preview_mouse;
 
-
-/*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
 /*	p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
 #warning TODO make these configurable:
 	p->x_min = 0;
