@@ -42,6 +42,7 @@
 #include "dlg_flag_edit.c"
 #include "dlg_padstack.c"
 #include "dlg_about.c"
+#include "dlg_pinout.c"
 #include "dlg_export.c"
 
 pcb_action_t dialogs_action_list[] = {
@@ -50,6 +51,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
+	{"Pinout2", pcb_act_Pinout, pcb_acth_Pinout, pcb_acts_Pinout},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui}
