@@ -1138,6 +1138,15 @@ void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigne
 	pcb_text_draw_string_(info, font, string, x0, y0, scale, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny);
 }
 
+void pcb_text_draw_string_simple(pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
+{
+	if (font == NULL)
+		font = pcb_font(PCB, 0, 0);
+
+	pcb_text_draw_string_(NULL, font, string, x0, y0, scale, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP);
+}
+
+
 /* lowlevel drawing routine for text objects */
 static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
