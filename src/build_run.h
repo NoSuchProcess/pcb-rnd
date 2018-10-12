@@ -26,6 +26,9 @@
  *
  */
 
+#ifndef PCB_BUILD_RUN_H
+#define PCB_BUILD_RUN_H
+
 #include <genht/htsp.h>
 
 void pcb_quit_app(void);
@@ -104,3 +107,4 @@ int pcb_file_loaded_del_at(const char *catname, const char *name);
 void pcb_file_loaded_init(void);
 void pcb_file_loaded_uninit(void);
 
+#endif
