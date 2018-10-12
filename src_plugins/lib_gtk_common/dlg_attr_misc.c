@@ -58,7 +58,6 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, pcb_hid_attribute_t *att
 static void ghid_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_hid_preview_t *prv = e->content.draw_data;
-	pcb_trace("preview expose in dlg_attr_misc!\n");
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
 
