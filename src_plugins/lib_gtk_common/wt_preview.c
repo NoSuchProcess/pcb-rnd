@@ -497,12 +497,12 @@ static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_d
 GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data)
 {
-	pcb_gtk_preview_t *preview;
+	GtkWidget *preview;
 
 	preview = pcb_gtk_preview_any_new(com, init_widget, expose, -1, dialog_draw);
 	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "generic", draw_data, NULL);
 
-	return GTK_WIDGET(preview);
+	return preview;
 }
 
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
