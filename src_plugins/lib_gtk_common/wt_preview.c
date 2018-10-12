@@ -392,8 +392,8 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 	}
 
 	if (preview->mouse_cb != NULL) {
-		preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_MOTION, cx, cy);
-		gtk_widget_queue_draw(w);
+		if (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_MOTION, cx, cy))
+			gtk_widget_queue_draw(w);
 	}
 	return FALSE;
 }
