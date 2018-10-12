@@ -72,9 +72,17 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
+
+
 /*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
 /*	p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
-#warning TODO make this configurable:
+#warning TODO make these configurable:
+	p->x_min = 0;
+	p->y_min = 0;
+	p->x_max = PCB_MM_TO_COORD(100);
+	p->y_max = PCB_MM_TO_COORD(100);
+	p->w_pixels = PCB_MM_TO_COORD(10);
+	p->h_pixels = PCB_MM_TO_COORD(10);
 	gtk_widget_set_size_request(prv, 200, 200);
 	return prv;
 }
