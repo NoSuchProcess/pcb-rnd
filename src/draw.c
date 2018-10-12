@@ -1049,6 +1049,19 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	}
 }
 
+void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
+{
+	pcb_hid_t *old_gui = expose_begin(hid);
+
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
+	e->dialog_draw(pcb_draw_out.fgGC, e);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
+	pcb_gui->end_layer();
+
+	expose_end(old_gui);
+}
+
 static const char *lab_with_intconn(int intconn, const char *lab, char *buff, int bufflen)
 {
 	if (intconn <= 0)

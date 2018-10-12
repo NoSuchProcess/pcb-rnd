@@ -569,10 +569,11 @@ struct pcb_hid_expose_ctx_s {
 	union {
 		pcb_layer_id_t layer_id;
 		pcb_any_obj_t *obj;
+		void *draw_data;
 	} content;
 
 	/* for PCB_LYT_DIALOG */
-	pcb_hid_dialog_draw_t dialog_draw;
+	pcb_hid_dialog_draw_t dialog_draw; /* also use for generic draw */
 };
 
 typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
@@ -586,6 +587,9 @@ void pcb_hid_expose_pinout(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *element);
 
 /* Layer preview expose: draws a single layer; content.layer_id is used */
 void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ly);
+
+/* generic, dialog/callbakc based preview expose */
+void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
 
 
 /* This is initially set to a "no-gui" GUI, and later reset by
