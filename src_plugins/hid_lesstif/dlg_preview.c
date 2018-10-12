@@ -133,12 +133,12 @@ static void show_layer_inp_callback(Widget da, PreviewData * pd, XmDrawingAreaCa
 	switch(btn) {
 		case PCB_MB_LEFT:
 			if (pd->mouse_ev != NULL)
-				if (pd->mouse_ev(da, kind, cx, cy))
+				if (pd->mouse_ev(da, NULL, kind, cx, cy))
 					SHOW_DRAW;
 			break;
 		case PCB_MB_RIGHT:
 			if (pd->mouse_ev != NULL)
-				if (pd->mouse_ev(da, PCB_HID_MOUSE_POPUP, cx, cy))
+				if (pd->mouse_ev(da, NULL, PCB_HID_MOUSE_POPUP, cx, cy))
 					SHOW_DRAW;
 			break;
 		case PCB_MB_MIDDLE:
@@ -196,7 +196,7 @@ static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean
 		SHOW_DRAW;
 	}
 	else if (pd->mouse_ev != NULL) {
-		pd->mouse_ev(w, PCB_HID_MOUSE_MOTION, cx, cy);
+		pd->mouse_ev(w, NULL, PCB_HID_MOUSE_MOTION, cx, cy);
 		SHOW_DRAW;
 	}
 

@@ -282,12 +282,16 @@ static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
 	pcb_coord_t cx, cy;
 	gint wx, wy;
 	get_ptr(preview, &cx, &cy, &wx, &wy);
+	void *draw_data = NULL;
+
+	if (preview->kind == PCB_GTK_PREVIEW_GENERIC)
+		draw_data = preview->expose_data.content.draw_data;
 
 	switch (btn) {
 	case PCB_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("bp %mm %mm\n", cx, cy); */
-			if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
+			if (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_PRESS, cx, cy))
 				gtk_widget_queue_draw(w);
 		}
 		break;
@@ -340,6 +344,10 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	gint wx, wy;
 	pcb_coord_t cx, cy;
+	void *draw_data = NULL;
+
+	if (preview->kind == PCB_GTK_PREVIEW_GENERIC)
+		draw_data = preview->expose_data.content.draw_data;
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
@@ -347,13 +355,13 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 	case PCB_MB_MIDDLE:
 		preview->view.panning = 0;
 		if (((time(NULL) - preview->grabt) < 2) && (preview->grabmot < 4))
-			if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, PCB_HID_MOUSE_POPUP, cx, cy)))
+			if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_POPUP, cx, cy)))
 				gtk_widget_queue_draw(w);
 		break;
 	case PCB_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("br %mm %mm\n", cx, cy); */
-			if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy))
+			if (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_RELEASE, cx, cy))
 				gtk_widget_queue_draw(w);
 		}
 		break;
@@ -367,6 +375,11 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	pcb_coord_t cx, cy;
 	gint wx, wy;
+	void *draw_data = NULL;
+
+	if (preview->kind == PCB_GTK_PREVIEW_GENERIC)
+		draw_data = preview->expose_data.content.draw_data;
+
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
 	if (preview->view.panning) {
@@ -379,7 +392,7 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 	}
 
 	if (preview->mouse_cb != NULL) {
-		preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
+		preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_MOTION, cx, cy);
 		gtk_widget_queue_draw(w);
 	}
 	return FALSE;

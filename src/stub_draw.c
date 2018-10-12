@@ -45,7 +45,7 @@ void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
 	pcb_text_draw_(info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 }
 
-static pcb_bool dummy_mouse(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static pcb_bool dummy_mouse(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	return 0;
 }
@@ -77,7 +77,7 @@ static void dummy_draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 
 
 void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_csect;
-pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
+pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
 
 
 /****** font selector GUI ******/
@@ -91,7 +91,7 @@ static pcb_layer_t *dummy_fontsel_layer = NULL;
 static int dummy_fontsel_type = 0;
 
 void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_fontsel;
-pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
+pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
 pcb_text_t **pcb_stub_draw_fontsel_text_obj = &dummy_fontsel_text;
 pcb_layer_t **pcb_stub_draw_fontsel_layer_obj = &dummy_fontsel_layer;
 int *pcb_stub_draw_fontsel_text_type = &dummy_fontsel_type;

@@ -658,7 +658,7 @@ static void do_move_grp()
 }
 
 
-static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static pcb_bool mouse_csect(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool res = 0;
 	pcb_layer_id_t lid;

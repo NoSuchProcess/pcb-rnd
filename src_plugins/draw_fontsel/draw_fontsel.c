@@ -187,7 +187,7 @@ static pcb_font_id_t lookup_fid_for_coord(int ymm)
 	return -1;
 }
 
-static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static pcb_bool pcb_mouse_fontsel(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_font_id_t fid;
 	int ymm;

@@ -129,7 +129,7 @@ typedef struct PreviewData {
 	int v_width, v_height;				/* pixels */
 
 	pcb_hid_expose_ctx_t ctx;
-	pcb_bool (*mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
+	pcb_bool (*mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 	void (*pre_close)(struct PreviewData *pd);
 	pcb_hid_expose_t overlay_draw;
 	unsigned pan:1;
