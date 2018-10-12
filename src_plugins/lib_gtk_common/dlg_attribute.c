@@ -51,6 +51,7 @@
 #define PCB_OBJ_PROP "pcb-rnd_context"
 
 typedef struct {
+	pcb_gtk_common_t *com;
 	pcb_hid_attribute_t *attrs;
 	pcb_hid_attr_val_t *results;
 	GtkWidget **wl;
@@ -693,7 +694,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return 1;
 }
 
-void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
+void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox, *vbox;
@@ -707,6 +708,7 @@ void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n
 	}
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
+	ctx->com = com;
 	ctx->attrs = attrs;
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
@@ -714,7 +716,7 @@ void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n
 	ctx->caller_data = caller_data;
 
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
-																			 GTK_WINDOW(top_window),
+																			 GTK_WINDOW(com->top_window),
 																			 (GtkDialogFlags) ((modal?GTK_DIALOG_MODAL:0)
 																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
@@ -777,12 +779,12 @@ void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hi
 }
 
 
-int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
+int ghid_attribute_dialog(pcb_gtk_common_t *com, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
 	void *hid_ctx;
 	int rc;
 
-	hid_ctx = ghid_attr_dlg_new(top_window, attrs, n_attrs, results, title, descr, caller_data, pcb_true, NULL);
+	hid_ctx = ghid_attr_dlg_new(com, attrs, n_attrs, results, title, descr, caller_data, pcb_true, NULL);
 	rc = ghid_attr_dlg_run(hid_ctx);
 	ghid_attr_dlg_free(hid_ctx);
 

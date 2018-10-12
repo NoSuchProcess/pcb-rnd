@@ -378,12 +378,12 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 
 static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
-	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr, caller_data);
+	return ghid_attribute_dialog(&ghidgui->common, attrs, n_attrs, results, title, descr, caller_data);
 }
 
 static void *ghid_attr_dlg_new_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
-	return ghid_attr_dlg_new(ghid_port.top_window, attrs, n_attrs, results, title, descr, caller_data, modal, button_cb);
+	return ghid_attr_dlg_new(&ghidgui->common, attrs, n_attrs, results, title, descr, caller_data, modal, button_cb);
 }
 
 static void ghid_show_item(void *item)

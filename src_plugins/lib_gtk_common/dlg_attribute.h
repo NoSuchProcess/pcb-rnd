@@ -1,12 +1,13 @@
 #include <gtk/gtk.h>
 #include "hid.h"
+#include "glue.h"
 
-void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev));
+void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev));
 int ghid_attr_dlg_run(void *hid_ctx);
 void ghid_attr_dlg_free(void *hid_ctx);
 void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
 
-int ghid_attribute_dialog(GtkWidget *top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data);
+int ghid_attribute_dialog(pcb_gtk_common_t *com, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data);
 
 int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
 int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
