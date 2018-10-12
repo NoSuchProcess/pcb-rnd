@@ -158,12 +158,13 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PROGRESS); \
 } while(0)
 
-#define PCB_DAD_PREVIEW(table, expose_cb, free_cb, user_ctx_) \
+#define PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, user_ctx_) \
 do { \
 	pcb_hid_preview_t *prv = calloc(sizeof(pcb_hid_tree_t), 1); \
 	prv->attrib = &table[table ## _len-1]; \
 	prv->user_ctx = user_ctx_; \
 	prv->user_expose_cb = expose_cb; \
+	prv->user_mouse_cb = mouse_cb; \
 	prv->user_free_cb = free_cb; \
 	PCB_DAD_ALLOC(table, PCB_HATT_PREVIEW); \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)prv); \

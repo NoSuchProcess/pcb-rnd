@@ -51,6 +51,7 @@ static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
+static void prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 
 static int attr_idx, attr_idx2;
 static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -155,7 +156,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* tab 3: preview */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, NULL, NULL);
+			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL);
 			PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
@@ -301,3 +302,8 @@ static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_
 	printf("expose in dlg_test!\n");
 }
 
+
+static void prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_printf("Mouse %d %mm %mm\n", kind, x, y);
+}
