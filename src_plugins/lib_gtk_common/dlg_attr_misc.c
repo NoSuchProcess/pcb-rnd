@@ -65,7 +65,8 @@ static pcb_bool ghid_preview_mouse(void *widget, void *draw_data, pcb_hid_mouse_
 {
 	pcb_hid_preview_t *prv = draw_data;
 	if (prv->user_mouse_cb != NULL)
-		prv->user_mouse_cb(prv->attrib, prv, kind, x, y);
+		return prv->user_mouse_cb(prv->attrib, prv, kind, x, y);
+	return pcb_false;
 }
 
 static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
