@@ -158,6 +158,11 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PROGRESS); \
 } while(0)
 
+#define PCB_DAD_PREVIEW(table) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_PREVIEW); \
+} while(0)
+
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
@@ -269,6 +274,7 @@ do { \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
 		case PCB_HATT_END: \
+		case PCB_HATT_PREVIEW: \
 			assert(0); \
 	} \
 } while(0)
@@ -292,6 +298,13 @@ do { \
 			break; \
 		case PCB_HATT_TREE: \
 			pcb_dad_tree_free(&table[table ## _len - 1]); \
+			break; \
+		case PCB_HATT_PREVIEW: \
+			{ \
+				pcb_hid_preview_t *prv = (pcb_hid_preview_t *)table[table ## _len - 1].enumerations; \
+				prv->user_free_cb(&table[table ## _len - 1], prv->user_ctx, prv->hid_ctx); \
+				prv->hid_free_cb(&table[table ## _len - 1], prv->hid_ctx); \
+			} \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \

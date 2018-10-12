@@ -39,6 +39,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_BUTTON,              /* push button; default value is the label */
 	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'enumerations' */
 	PCB_HATT_PROGRESS,            /* progress bar; displays real_value between 0 and 1 */
+	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'enumerations' */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
@@ -98,6 +99,16 @@ typedef struct {
 	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_update_hide_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 } pcb_hid_tree_t;
+
+typedef struct {
+	/* optional callbacks the user set after widget creation */
+	void *user_ctx;
+	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
+
+	/* optional callbacks HIDs may set after widget creation */
+	void *hid_ctx;
+	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+} pcb_hid_preview_t;
 
 struct pcb_hid_attribute_s {
 	const char *name;
