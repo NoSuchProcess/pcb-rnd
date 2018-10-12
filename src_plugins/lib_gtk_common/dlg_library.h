@@ -51,7 +51,7 @@ struct pcb_gtk_library_s {
 	GtkTreeSelection *selection;
 	guint filter_timeout, param_timer;
 
-	void *gport;
+	void *gport, *com;
 };
 
 GType pcb_gtk_library_get_type(void);

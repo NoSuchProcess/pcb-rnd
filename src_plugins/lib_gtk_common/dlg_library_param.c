@@ -329,7 +329,7 @@ char *pcb_gtk_library_param_snapshot(pcb_gtk_library_param_cb_ctx_t *ctx)
 	return gen_cmd(ctx->entry->name, ctx->attrs, ctx->res, *ctx->numattr, ctx->first_optional);
 }
 
-char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt, pcb_gtk_library_param_cb_t cb)
+char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt, pcb_gtk_library_param_cb_t cb)
 {
 	FILE *f;
 	char *sres, *cmd, line[1024];
@@ -453,7 +453,7 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	if (dirty) /* had to replace the filter text, make it effective */
 		attr_change_cb(NULL, NULL, &attrs[0]);
 
-	if (ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr, NULL) == 0)
+	if (ghid_attribute_dialog(com, attrs, numattr, res, "Parametric footprint edition", descr, NULL) == 0)
 		sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
 	else
 		sres = NULL; /* cancel */

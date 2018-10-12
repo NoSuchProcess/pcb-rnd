@@ -340,7 +340,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC)) {
 		const char *in_para = gtk_entry_get_text(library_window->entry_filter);
 		char *orig = pcb_strdup(in_para);
-		name = pcb_gtk_library_param_ui(library_window, entry, in_para, lib_param_chg);
+		name = pcb_gtk_library_param_ui(library_window->com, library_window, entry, in_para, lib_param_chg);
 		lib_param_del_timer(library_window);
 		if (name == NULL) {
 			gtk_entry_set_text(library_window->entry_filter, orig);
@@ -796,6 +796,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	object = G_OBJECT_CLASS(library_window_parent_class)->constructor(type, n_construct_properties, construct_params);
 	lib_window = GHID_LIBRARY_WINDOW(object);
 	lib_window->param_timer = 0;
+	lib_window->com = lwcom;
 
 	/* dialog initialization */
 	g_object_set(object,
