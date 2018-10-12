@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "board.h"
+#include "obj_text.h"
 #include "hid_dad_tree.h"
 
 static const char dlg_test_syntax[] = "dlg_test()\n";
@@ -48,12 +50,13 @@ static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
+static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 static int attr_idx, attr_idx2;
 static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
-	const char *tabs[] = { "original test", "new test", "tree-table", "pane", NULL };
+	const char *tabs[] = { "original test", "new test", "tree-table", "pane", "preview", NULL };
 	char *row1[] = {"one", "foo", "FOO", NULL};
 	char *row2[] = {"two", "bar", "BAR", NULL};
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
@@ -148,6 +151,12 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						PCB_DAD_CHANGE_CB(ctx.dlg, cb_pane_set);
 				PCB_DAD_END(ctx.dlg);
 			PCB_DAD_END(ctx.dlg);
+		PCB_DAD_END(ctx.dlg);
+
+		/* tab 3: preview */
+		PCB_DAD_BEGIN_VBOX(ctx.dlg);
+			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, NULL, NULL);
+			PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
@@ -282,5 +291,12 @@ static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	val.real_value = 0.3;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->whpane, &val);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wvpane, &val);
+}
+
+static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+{
+	pcb_text_draw_string_simple(NULL, "foo", 1, 1, 100, 10.0, 0, 0, 0, 0, 0);
+
+	printf("expose in dlg_test!\n");
 }
 
