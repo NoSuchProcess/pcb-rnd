@@ -65,6 +65,7 @@ typedef struct {
 typedef struct {
 	int is_grp;
 	char *name;
+	pcb_hid_row_t *row;
 	vtp0_t parts;
 } group_t;
 
@@ -73,6 +74,7 @@ typedef struct {
 	char *name;
 	long int id;
 	int done;
+	pcb_hid_row_t *row;
 	group_t *parent;
 } part_t;
 
@@ -377,7 +379,7 @@ static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)
 static void done(void *hid_ctx, part_t *part, int done)
 {
 	part->done = 1;
-#warning TODO: update the gui
+	pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
 }
 
 static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -470,6 +472,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				row[6] = NULL;
 				parent = PCB_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
 				parent->user_data = *g;
+				(*g)->row = parent;
 				for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
 					void *r1, *r2, *r3;
 					pcb_subc_t *sc;
@@ -500,6 +503,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					row[6] = NULL;
 					child = PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
 					child->user_data = *p;
+					(*p)->row = child;
 				}
 			}
 			PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
