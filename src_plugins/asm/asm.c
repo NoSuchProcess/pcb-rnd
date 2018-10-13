@@ -40,10 +40,12 @@
 #include "obj_subc.h"
 #include "pcb-printf.h"
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
+#include "search.h"
 
 static const char *asm_cookie = "asm plugin";
-static char *sort_template  = "a.footprint, a.value, a.asm_group, side, x, y";
-static char *group_template = "a.footprint, a.value, a.asm_group";
+static char *sort_template  = "a.footprint, a.value, a.asm::group, side, x, y";
+static char *group_template = "a.footprint, a.value, a.asm::group";
 
 typedef enum {
 	TT_ATTR,
@@ -238,18 +240,11 @@ static int part_cmp(const void *pa_, const void *pb_)
 static void asm_sort(vtp0_t *gv)
 {
 	group_t **g;
-	part_t **p;
-	long n, i;
+	long n;
 
 	qsort(gv->array, gv->used, sizeof(void *), group_cmp);
-
-	for(g = (group_t **)gv->array, n = 0; n < gv->used; g++,n++) {
-		printf("%s\n", (*g)->name);
+	for(g = (group_t **)gv->array, n = 0; n < gv->used; g++,n++)
 		qsort((*g)->parts.array, (*g)->parts.used, sizeof(void *), part_cmp);
-		for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
-			printf("  %s\n", (*p)->name);
-		}
-	}
 }
 
 static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -264,7 +259,11 @@ static const char pcb_acts_asm[] = "asm()";
 static const char pcb_acth_asm[] = "Interactive assembly assistant";
 fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *hdr[] = { "name", "refdes", "comments", "done", NULL };
+	const char *hdr[] = { "name", "refdes", "footprint", "value", "comments", "done", NULL };
+	char *row[7];
+	group_t **g;
+	part_t **p;
+	long n, i;
 
 	if (asm_ctx.active) {
 		PCB_ACT_IRES(0);
@@ -277,9 +276,50 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
 			PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_TREE(asm_ctx.dlg, 4, 1, hdr);
+			PCB_DAD_TREE(asm_ctx.dlg, 6, 1, hdr);
 				asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
 				PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_SCROLL);
+				for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
+					pcb_hid_row_t *parent;
+					row[0] = (*g)->name;
+					row[1] = "";
+					row[2] = "";
+					row[3] = "";
+					row[4] = "";
+					row[5] = "";
+					row[6] = NULL;
+					parent = PCB_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
+					for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
+						void *r1, *r2, *r3;
+						pcb_subc_t *sc;
+						pcb_objtype_t type;
+
+						type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, (*p)->id, PCB_OBJ_SUBC);
+						sc = r2;
+
+						row[0] = (*p)->name;
+						if (type == PCB_OBJ_SUBC) {
+							int m;
+							row[1] = sc->refdes;
+							row[2] = pcb_attribute_get(&sc->Attributes, "footprint");
+							row[3] = pcb_attribute_get(&sc->Attributes, "value");
+							row[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
+							row[5] = "";
+							for(m = 1; m < 6; m++)
+								if (row[m] == NULL)
+									row[m] = "";
+						}
+						else {
+							row[1] = "";
+							row[2] = "";
+							row[3] = "";
+							row[4] = "";
+							row[5] = "";
+						}
+						row[6] = NULL;
+						PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
+					}
+				}
 /*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, free_cb, cb_free_row);*/
 /*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, cb_row_selected);*/
 			PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
