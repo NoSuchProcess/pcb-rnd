@@ -67,21 +67,22 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	}
 }
 
-static void pcb_dlg_pinout(pcb_data_t *data, long subc_id)
+static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
 {
 	char title[64];
 	pinout_ctx_t *ctx = calloc(sizeof(pinout_ctx_t), 1);
 
 	ctx->data = data;
-	ctx->subc_id = subc_id;
+	ctx->subc_id = sc->ID;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, NULL, NULL, ctx);
 	PCB_DAD_END(ctx->dlg);
 
-	ctx->subc_id = subc_id;
-
-	sprintf(title, "Subcircuit #%ld pinout", subc_id);
+	if (sc->refdes != NULL)
+		sprintf(title, "Subcircuit #%ld (%s) pinout", sc->ID, sc->refdes);
+	else
+		sprintf(title, "Subcircuit #%ld pinout", sc->ID);
 	PCB_DAD_NEW(ctx->dlg, title, "Pinout", ctx, pcb_false, pinout_close_cb);
 }
 
@@ -93,7 +94,7 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, pcb_crosshair.X, pcb_crosshair.Y, 1);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
-		pcb_dlg_pinout(PCB->Data, sc->ID);
+		pcb_dlg_pinout(PCB->Data, sc);
 		PCB_ACT_IRES(0);
 	}
 	else
