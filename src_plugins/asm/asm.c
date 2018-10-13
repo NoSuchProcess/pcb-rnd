@@ -280,7 +280,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
 				PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_SCROLL);
 				for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
-					pcb_hid_row_t *parent;
+					pcb_hid_row_t *parent, *child;
 					row[0] = (*g)->name;
 					row[1] = "";
 					row[2] = "";
@@ -289,6 +289,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					row[5] = "";
 					row[6] = NULL;
 					parent = PCB_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
+					parent->user_data = *g;
 					for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
 						void *r1, *r2, *r3;
 						pcb_subc_t *sc;
@@ -317,7 +318,8 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 							row[5] = "";
 						}
 						row[6] = NULL;
-						PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
+						child = PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
+						child->user_data = *p;
 					}
 				}
 /*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, free_cb, cb_free_row);*/
