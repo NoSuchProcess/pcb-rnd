@@ -211,16 +211,33 @@ static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_templat
 	templ_free(tmp_sort, &csort);
 }
 
+static int group_cmp(const void *ga_, const void *gb_)
+{
+	const group_t * const *ga = ga_;
+	const group_t * const *gb = gb_;
+	return strcmp((*ga)->name, (*gb)->name);
+}
+
+static int part_cmp(const void *pa_, const void *pb_)
+{
+	const part_t * const *pa = pa_;
+	const part_t * const *pb = pb_;
+	return strcmp((*pa)->name, (*pb)->name);
+}
+
 static void asm_sort(vtp0_t *gv)
 {
 	group_t **g;
 	part_t **p;
 	long n, i;
 
+	qsort(gv->array, gv->used, sizeof(void *), group_cmp);
+
 	for(g = (group_t **)gv->array, n = 0; n < gv->used; g++,n++) {
 		printf("%s\n", (*g)->name);
+		qsort((*g)->parts.array, (*g)->parts.used, sizeof(void *), part_cmp);
 		for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
-		printf("  %s\n", (*p)->name);
+			printf("  %s\n", (*p)->name);
 		}
 	}
 }
