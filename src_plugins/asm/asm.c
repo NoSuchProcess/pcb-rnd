@@ -526,7 +526,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					row[0] = (*p)->name;
 					if (type == PCB_OBJ_SUBC) {
 						int m;
-						row[1] = sc->refdes;
+						row[1] = (char *)sc->refdes;
 						row[2] = pcb_attribute_get(&sc->Attributes, "footprint");
 						row[3] = pcb_attribute_get(&sc->Attributes, "value");
 						row[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
