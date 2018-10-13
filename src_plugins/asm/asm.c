@@ -39,6 +39,7 @@
 #include "compat_misc.h"
 #include "obj_subc.h"
 #include "pcb-printf.h"
+#include "hid_dad.h"
 
 static const char *asm_cookie = "asm plugin";
 static char *sort_template  = "a.footprint, a.value, a.asm_group, side, x, y";
@@ -66,6 +67,15 @@ typedef struct {
 	char *name;
 	vtp0_t parts;
 } group_t;
+
+typedef struct{
+	PCB_DAD_DECL_NOINIT(dlg)
+	vtp0_t grps;
+	int wtbl;
+	int active; /* already open - allow only one instance */
+} asm_ctx_t;
+
+asm_ctx_t asm_ctx;
 
 static void templ_append(gdl_list_t *dst, ttype_t type, const char *key)
 {
@@ -242,15 +252,55 @@ static void asm_sort(vtp0_t *gv)
 	}
 }
 
+static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	asm_ctx_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
+#warning TODO: free fields
+	memset(ctx, 0, sizeof(asm_ctx_t));
+}
 
 static const char pcb_acts_asm[] = "asm()";
 static const char pcb_acth_asm[] = "Interactive assembly assistant";
 fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	vtp0_t grps;
-	vtp0_init(&grps);
-	asm_extract(&grps, PCB->Data, group_template, sort_template);
-	asm_sort(&grps);
+	const char *hdr[] = { "name", "refdes", "comments", "done", NULL };
+
+	if (asm_ctx.active) {
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+	vtp0_init(&asm_ctx.grps);
+	asm_extract(&asm_ctx.grps, PCB->Data, group_template, sort_template);
+	asm_sort(&asm_ctx.grps);
+
+		PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
+			PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_TREE(asm_ctx.dlg, 4, 1, hdr);
+				asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
+				PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_SCROLL);
+/*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, free_cb, cb_free_row);*/
+/*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, cb_row_selected);*/
+			PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
+				PCB_DAD_BUTTON(asm_ctx.dlg, "skip part");
+					PCB_DAD_HELP(asm_ctx.dlg, "Do not populate this part,\ncontinue with the next part");
+/*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_skip_part);*/
+				PCB_DAD_BUTTON(asm_ctx.dlg, "skip group");
+					PCB_DAD_HELP(asm_ctx.dlg, "Stop populating this group,\ncontinue with the next group");
+/*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_skip_group);*/
+				PCB_DAD_BUTTON(asm_ctx.dlg, "done part");
+					PCB_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
+/*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_done_part);*/
+				PCB_DAD_BUTTON(asm_ctx.dlg, "done group");
+					PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
+/*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_done_group);*/
+			PCB_DAD_END(asm_ctx.dlg);
+		PCB_DAD_END(asm_ctx.dlg);
+
+	asm_ctx.active = 1;
+	PCB_DAD_NEW(asm_ctx.dlg, "Hand assembly with pcb-rnd", "Asm", &asm_ctx, pcb_false, asm_close_cb);
+
 	PCB_ACT_IRES(0);
 	return 0;
 }
