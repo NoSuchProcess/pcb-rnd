@@ -61,11 +61,13 @@ typedef struct {
 } template_t;
 
 typedef struct {
+	int is_grp;
 	char *name;
 	long int id;
 } part_t;
 
 typedef struct {
+	int is_grp;
 	char *name;
 	vtp0_t parts;
 } group_t;
@@ -73,7 +75,7 @@ typedef struct {
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	vtp0_t grps;
-	int wtbl;
+	int wtbl, wskipg, wdoneg, wskipp, wdonep;
 	int active; /* already open - allow only one instance */
 } asm_ctx_t;
 
@@ -177,6 +179,7 @@ static group_t *group_lookup(vtp0_t *grps, htsp_t *gh, char *name, int alloc)
 	}
 
 	g = calloc(sizeof(group_t), 1);
+	g->is_grp = 1;
 	g->name = name;
 
 	vtp0_append(grps, g);
@@ -187,6 +190,7 @@ static group_t *group_lookup(vtp0_t *grps, htsp_t *gh, char *name, int alloc)
 static void part_append(group_t *g, char *sortstr, long int id)
 {
 	part_t *p = malloc(sizeof(part_t));
+	p->is_grp = 0;
 	p->name = sortstr;
 	p->id = id;
 	vtp0_append(&g->parts, p);
@@ -254,6 +258,29 @@ static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 #warning TODO: free fields
 	memset(ctx, 0, sizeof(asm_ctx_t));
 }
+
+static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	int isgrp = 0, ispart = 0;
+	if (row == NULL) {
+		goto skip;
+	}
+	if (*(int *)row->user_data) {
+		group_t *g = row->user_data;
+		isgrp = 1;
+	}
+	else {
+		part_t *g = row->user_data;
+		ispart = 1;
+	}
+
+	skip:;
+	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipg, isgrp | ispart);
+	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdoneg, isgrp | ispart);
+	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipp, ispart);
+	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdonep, ispart);
+}
+
 
 static const char pcb_acts_asm[] = "asm()";
 static const char pcb_acth_asm[] = "Interactive assembly assistant";
@@ -323,18 +350,22 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					}
 				}
 /*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, free_cb, cb_free_row);*/
-/*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, cb_row_selected);*/
+				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
 			PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
 				PCB_DAD_BUTTON(asm_ctx.dlg, "skip part");
+					asm_ctx.wskipp = PCB_DAD_CURRENT(asm_ctx.dlg);
 					PCB_DAD_HELP(asm_ctx.dlg, "Do not populate this part,\ncontinue with the next part");
 /*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_skip_part);*/
 				PCB_DAD_BUTTON(asm_ctx.dlg, "skip group");
+					asm_ctx.wskipg = PCB_DAD_CURRENT(asm_ctx.dlg);
 					PCB_DAD_HELP(asm_ctx.dlg, "Stop populating this group,\ncontinue with the next group");
 /*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_skip_group);*/
 				PCB_DAD_BUTTON(asm_ctx.dlg, "done part");
+					asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
 					PCB_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
 /*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_done_part);*/
 				PCB_DAD_BUTTON(asm_ctx.dlg, "done group");
+					asm_ctx.wdoneg = PCB_DAD_CURRENT(asm_ctx.dlg);
 					PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
 /*					PCB_DAD_CHANGE_CB(asm_ctx.dlg, cb_done_group);*/
 			PCB_DAD_END(asm_ctx.dlg);
