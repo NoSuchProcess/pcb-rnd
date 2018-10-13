@@ -368,75 +368,75 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	asm_extract(&asm_ctx.grps, PCB->Data, group_template, sort_template);
 	asm_sort(&asm_ctx.grps);
 
-		PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
-			PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_TREE(asm_ctx.dlg, 6, 1, hdr);
-				asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_SCROLL);
-				for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
-					pcb_hid_row_t *parent, *child;
-					row[0] = (*g)->name;
-					row[1] = "";
-					row[2] = "";
-					row[3] = "";
-					row[4] = "";
-					row[5] = "";
-					row[6] = NULL;
-					parent = PCB_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
-					parent->user_data = *g;
-					for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
-						void *r1, *r2, *r3;
-						pcb_subc_t *sc;
-						pcb_objtype_t type;
+	PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
+		PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_TREE(asm_ctx.dlg, 6, 1, hdr);
+			asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
+			PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_SCROLL);
+			for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
+				pcb_hid_row_t *parent, *child;
+				row[0] = (*g)->name;
+				row[1] = "";
+				row[2] = "";
+				row[3] = "";
+				row[4] = "";
+				row[5] = "";
+				row[6] = NULL;
+				parent = PCB_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
+				parent->user_data = *g;
+				for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
+					void *r1, *r2, *r3;
+					pcb_subc_t *sc;
+					pcb_objtype_t type;
 
-						type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, (*p)->id, PCB_OBJ_SUBC);
-						sc = r2;
+					type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, (*p)->id, PCB_OBJ_SUBC);
+					sc = r2;
 
-						row[0] = (*p)->name;
-						if (type == PCB_OBJ_SUBC) {
-							int m;
-							row[1] = sc->refdes;
-							row[2] = pcb_attribute_get(&sc->Attributes, "footprint");
-							row[3] = pcb_attribute_get(&sc->Attributes, "value");
-							row[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
-							row[5] = "";
-							for(m = 1; m < 6; m++)
-								if (row[m] == NULL)
-									row[m] = "";
-						}
-						else {
-							row[1] = "";
-							row[2] = "";
-							row[3] = "";
-							row[4] = "";
-							row[5] = "";
-						}
-						row[6] = NULL;
-						child = PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
-						child->user_data = *p;
+					row[0] = (*p)->name;
+					if (type == PCB_OBJ_SUBC) {
+						int m;
+						row[1] = sc->refdes;
+						row[2] = pcb_attribute_get(&sc->Attributes, "footprint");
+						row[3] = pcb_attribute_get(&sc->Attributes, "value");
+						row[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
+						row[5] = "";
+						for(m = 1; m < 6; m++)
+							if (row[m] == NULL)
+								row[m] = "";
 					}
+					else {
+						row[1] = "";
+						row[2] = "";
+						row[3] = "";
+						row[4] = "";
+						row[5] = "";
+					}
+					row[6] = NULL;
+					child = PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
+					child->user_data = *p;
 				}
+			}
 /*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, free_cb, cb_free_row);*/
-				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
-			PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
-				PCB_DAD_BUTTON(asm_ctx.dlg, "skip part");
-					asm_ctx.wskipp = PCB_DAD_CURRENT(asm_ctx.dlg);
-					PCB_DAD_HELP(asm_ctx.dlg, "Do not populate this part,\ncontinue with the next part");
-					PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_part);
-				PCB_DAD_BUTTON(asm_ctx.dlg, "skip group");
-					asm_ctx.wskipg = PCB_DAD_CURRENT(asm_ctx.dlg);
-					PCB_DAD_HELP(asm_ctx.dlg, "Stop populating this group,\ncontinue with the next group");
-					PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_group);
-				PCB_DAD_BUTTON(asm_ctx.dlg, "done part");
-					asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
-					PCB_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
-					PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_part);
-				PCB_DAD_BUTTON(asm_ctx.dlg, "done group");
-					asm_ctx.wdoneg = PCB_DAD_CURRENT(asm_ctx.dlg);
-					PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
-					PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_group);
-			PCB_DAD_END(asm_ctx.dlg);
+			PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
+		PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
+			PCB_DAD_BUTTON(asm_ctx.dlg, "skip part");
+				asm_ctx.wskipp = PCB_DAD_CURRENT(asm_ctx.dlg);
+				PCB_DAD_HELP(asm_ctx.dlg, "Do not populate this part,\ncontinue with the next part");
+				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_part);
+			PCB_DAD_BUTTON(asm_ctx.dlg, "skip group");
+				asm_ctx.wskipg = PCB_DAD_CURRENT(asm_ctx.dlg);
+				PCB_DAD_HELP(asm_ctx.dlg, "Stop populating this group,\ncontinue with the next group");
+				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_group);
+			PCB_DAD_BUTTON(asm_ctx.dlg, "done part");
+				asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
+				PCB_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
+				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_part);
+			PCB_DAD_BUTTON(asm_ctx.dlg, "done group");
+				asm_ctx.wdoneg = PCB_DAD_CURRENT(asm_ctx.dlg);
+				PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
+				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_group);
 		PCB_DAD_END(asm_ctx.dlg);
+	PCB_DAD_END(asm_ctx.dlg);
 
 	asm_ctx.active = 1;
 	PCB_DAD_NEW(asm_ctx.dlg, "Hand assembly with pcb-rnd", "Asm", &asm_ctx, pcb_false, asm_close_cb);
