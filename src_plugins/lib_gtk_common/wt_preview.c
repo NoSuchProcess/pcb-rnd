@@ -79,6 +79,7 @@ static void preview_set_view(pcb_gtk_preview_t * preview)
 	view.Y1 = preview->obj->BoundingBox.Y1;
 	view.X2 = preview->obj->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
 	view.Y2 = preview->obj->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
+	pcb_gtk_preview_zoomto(preview, &view);
 #warning switch for .kind here and do a zoom-to-extend on layer
 }
 
