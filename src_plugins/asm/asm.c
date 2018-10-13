@@ -373,7 +373,38 @@ static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 
 static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)
 {
-#warning TODO
+	pcb_hid_row_t *nr = NULL;
+	int is_grp = *(int *)row->user_data;
+
+	if (pick_grp && !is_grp) {
+		/* special case: next group from a part: skip the whole group */
+		goto skip_parent;
+	}
+	else if (!pick_grp || is_grp) {
+		/* try to pick the next row first */
+		nr = row->link.next;
+	}
+
+	if (nr == NULL) {
+		part_t *p;
+		if (is_grp)
+			goto last; /* skipping from the last group -> unselect all */
+		/* skipping from last part in a group -> jump to next group's first part */
+		skip_parent:;
+		p = row->user_data;
+		nr = p->parent->row;
+		nr = nr->link.next;
+		if (nr == NULL)
+			goto last; /* skipping from the last part of the last group -> unselect all */
+		nr = gdl_first(&nr->children);
+	}
+	pcb_dad_tree_jumpto(&asm_ctx.dlg[asm_ctx.wtbl], nr);
+	return;
+
+	last:;
+	/* what happens after the last */
+	pcb_dad_tree_jumpto(&asm_ctx.dlg[asm_ctx.wtbl], NULL);
+	return;
 }
 
 static void done(void *hid_ctx, part_t *part, int done)
@@ -394,7 +425,7 @@ static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 static void asm_skip_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
-	if (!*(int *)row->user_data)
+	if (*(int *)row->user_data)
 		return;
 	skip(hid_ctx, 0, row);
 }
@@ -402,23 +433,19 @@ static void asm_skip_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 static void asm_done_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	long n;
-	int skip_grp;
 	group_t *g;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
 	if (!*(int *)row->user_data) {
 		part_t *p = row->user_data;
 		g = p->parent;
-		skip_grp = 0;
 	}
-	else {
+	else
 		g = row->user_data;
-		skip_grp = 1;
-	}
 
 	for(n = 0; n < g->parts.used; n++)
 		done(hid_ctx, g->parts.array[n], 1);
-	skip(hid_ctx, skip_grp, row);
+	skip(hid_ctx, 1, row);
 }
 
 static void asm_skip_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -426,12 +453,7 @@ static void asm_skip_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	int skip_grp;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
-	if (!*(int *)row->user_data)
-		skip_grp = 0;
-	else
-		skip_grp = 1;
-
-	skip(hid_ctx, skip_grp, row);
+	skip(hid_ctx, 1, row);
 }
 
 
