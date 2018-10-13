@@ -1,0 +1,8 @@
+$class feature
+$short assembly GUI
+$long hand assembly assistant GUI
+$state WIP
+$package auto
+default buildin
+autoload 1
+
