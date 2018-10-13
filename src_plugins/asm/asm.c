@@ -416,7 +416,6 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					child->user_data = *p;
 				}
 			}
-/*				PCB_DAD_TREE_SET_CB(asm_ctx.dlg, free_cb, cb_free_row);*/
 			PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
 		PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
 			PCB_DAD_BUTTON(asm_ctx.dlg, "skip part");
