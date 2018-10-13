@@ -52,11 +52,16 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	pcb_objtype_t type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
+		pcb_dad_preview_zoomto(attrib, &sc->BoundingBox);
 		pcb_subc_draw_preview(sc, &e->view);
 	}
 	else {
 		char tmp[128];
+		pcb_box_t bbox;
 		sprintf(tmp, "Subcircuit #%ld not found.");
+		bbox.X1 = bbox.Y1 = 0;
+		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
+		pcb_dad_preview_zoomto(attrib, &bbox);
 		pcb_gui->set_color(gc, "#FF0000");
 		pcb_text_draw_string_simple(NULL, tmp, PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
 	}
