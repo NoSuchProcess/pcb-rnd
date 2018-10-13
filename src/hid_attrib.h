@@ -112,6 +112,7 @@ struct pcb_hid_preview_s {
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_ctx;
+	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, const pcb_box_t *view);
 	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 };
 

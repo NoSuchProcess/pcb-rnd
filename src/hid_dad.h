@@ -170,6 +170,14 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)prv); \
 } while(0)
 
+#define pcb_dad_preview_zoomto(attr, view) \
+do { \
+	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations; \
+	if (prv->hid_zoomto_cb != NULL) \
+		prv->hid_zoomto_cb(attr, prv->hid_ctx, view); \
+} while(0)
+
+
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
