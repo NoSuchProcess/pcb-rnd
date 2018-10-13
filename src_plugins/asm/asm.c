@@ -49,6 +49,8 @@ static const char *asm_cookie = "asm plugin";
 static char *sort_template  = "a.footprint, a.value, a.asm::group, side, x, y";
 static char *group_template = "a.footprint, a.value, a.asm::group";
 
+/*** internal list of all parts, grouped; have to be arrays for qsort(), so can't
+     avoid it and just use tree-table list based trees ***/
 typedef enum {
 	TT_ATTR,
 	TT_SIDE,
@@ -78,6 +80,7 @@ typedef struct {
 	group_t *parent;
 } part_t;
 
+/* dialog context */
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	vtp0_t grps;
@@ -88,6 +91,7 @@ typedef struct{
 
 asm_ctx_t asm_ctx;
 
+/*** template compiling ***/
 static void templ_append(gdl_list_t *dst, ttype_t type, const char *key)
 {
 	template_t *t = calloc(sizeof(template_t), 1);
@@ -123,6 +127,7 @@ static char *templ_compile(gdl_list_t *dst, const char *src_)
 	return src;
 }
 
+/* allocate a string and build a sortable text summary of a subc using the template */
 static char *templ_exec(pcb_subc_t *subc, gdl_list_t *temp)
 {
 	gds_t s;
@@ -205,6 +210,7 @@ static void part_append(group_t *g, char *sortstr, long int id)
 	vtp0_append(&g->parts, p);
 }
 
+/* Extract the part list from data */
 static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_template, const char *sort_template)
 {
 	gdl_list_t cgroup, csort;
@@ -236,6 +242,7 @@ static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_templat
 	templ_free(tmp_sort, &csort);
 }
 
+/*** Sort the part list ***/
 static int group_cmp(const void *ga_, const void *gb_)
 {
 	const group_t * const *ga = ga_;
@@ -260,6 +267,7 @@ static void asm_sort(vtp0_t *gv)
 		qsort((*g)->parts.array, (*g)->parts.used, sizeof(void *), part_cmp);
 }
 
+/*** Gray out all layers to make selection stick out more ***/
 static unsigned int chr2rgb(char s)
 {
 	if ((s >= '0') && (s <= '9')) return s - '0';
@@ -312,6 +320,7 @@ static void asm_greyout(int grey)
 	pcb_redraw();
 }
 
+/*** UI callbacks ***/
 static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	group_t **g;
