@@ -30,6 +30,7 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_data_t *data;
 	long subc_id;
 } pinout_ctx_t;
 
@@ -45,16 +46,27 @@ static void pinout_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	printf("pinout expose!\n");
+	pinout_ctx_t *ctx = prv->user_ctx;
+	void *r1, *r2, *r3;
+
+	pcb_objtype_t type = pcb_search_obj_by_id(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
+	if (type == PCB_OBJ_SUBC) {
+		pcb_subc_t *sc = r2;
+		printf("pinout expose FOUND\n");
+	}
+	else
+		printf("pinout expose not found\n");
 }
 
-static void pcb_dlg_pinout(long subc_id)
+static void pcb_dlg_pinout(pcb_data_t *data, long subc_id)
 {
 	char title[64];
 	pinout_ctx_t *ctx = calloc(sizeof(pinout_ctx_t), 1);
 
+	ctx->data = data;
+	ctx->subc_id = subc_id;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, NULL, NULL, NULL);
+		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, NULL, NULL, ctx);
 	PCB_DAD_END(ctx->dlg);
 
 	ctx->subc_id = subc_id;
@@ -71,7 +83,7 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, pcb_crosshair.X, pcb_crosshair.Y, 1);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
-		pcb_dlg_pinout(sc->ID);
+		pcb_dlg_pinout(PCB->Data, sc->ID);
 		PCB_ACT_IRES(0);
 	}
 	else
