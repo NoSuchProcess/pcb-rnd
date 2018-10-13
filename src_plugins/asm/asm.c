@@ -42,6 +42,8 @@
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 #include "search.h"
+#include "draw.h"
+#include "select.h"
 
 static const char *asm_cookie = "asm plugin";
 static char *sort_template  = "a.footprint, a.value, a.asm::group, side, x, y";
@@ -317,19 +319,46 @@ static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(asm_ctx_t));
 }
 
+static void select_part(part_t *p)
+{
+	void *r1, *r2, *r3;
+	pcb_objtype_t type;
+
+	type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, p->id, PCB_OBJ_SUBC);
+	if (type != PCB_OBJ_SUBC)
+		return;
+
+	pcb_subc_select(PCB, (pcb_subc_t *)r2, PCB_CHGFLG_SET, 1);
+}
+
 static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
+	long n;
 	int isgrp = 0, ispart = 0;
+	pcb_box_t box;
+
+	/* unselect all */
+	box.X1 = -PCB_MAX_COORD;
+	box.Y1 = -PCB_MAX_COORD;
+	box.X2 = PCB_MAX_COORD;
+	box.Y2 = PCB_MAX_COORD;
+	if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
+			pcb_board_set_changed_flag(pcb_true);
+
 	if (row == NULL) {
 		goto skip;
 	}
 	if (*(int *)row->user_data) {
 		group_t *g = row->user_data;
+		part_t **p;
 		isgrp = 1;
+		for(n = 0, p = (part_t **)g->parts.array; n < g->parts.used; n++,p++)
+			select_part(*p);
 	}
 	else {
 		part_t *p = row->user_data;
 		ispart = 1;
+		select_part(p);
 	}
 
 	skip:;
@@ -337,6 +366,7 @@ static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdoneg, isgrp | ispart);
 	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipp, ispart);
 	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdonep, ispart);
+	pcb_redraw(); /* for displaying the new selection */
 }
 
 static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)
