@@ -75,6 +75,7 @@ static void pcb_dlg_pinout(pcb_data_t *data, long subc_id)
 	ctx->data = data;
 	ctx->subc_id = subc_id;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, NULL, NULL, ctx);
 	PCB_DAD_END(ctx->dlg);
 
