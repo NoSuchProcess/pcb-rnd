@@ -75,6 +75,7 @@ void ghid_preview_zoomto(pcb_hid_attribute_t *attrib, void *hid_ctx, const pcb_b
 	int idx = attrib - ctx->attrs;
 	GtkWidget *prv = ctx->wl[idx];
 	pcb_gtk_preview_zoomto(PCB_GTK_PREVIEW(prv), view);
+	gtk_widget_queue_draw(prv);
 }
 
 static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
