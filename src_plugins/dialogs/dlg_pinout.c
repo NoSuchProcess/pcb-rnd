@@ -27,6 +27,7 @@
 #include <genvector/gds_char.h>
 #include "build_run.h"
 #include "pcb-printf.h"
+#include "obj_subc_parent.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -67,6 +68,34 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	}
 }
 
+static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+	if (kind == PCB_HID_MOUSE_RELEASE) {
+		pinout_ctx_t *ctx = prv->user_ctx;
+		void *r1, *r2, *r3;
+		pcb_subc_t *sc;
+		pcb_pstk_t *ps;
+		pcb_coord_t ox, oy ;
+		pcb_objtype_t type;
+
+		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
+		if (type != PCB_OBJ_SUBC)
+			return pcb_false;
+		sc = r2;
+
+		if (pcb_subc_get_origin(sc, &ox, &oy) != 0)
+			return pcb_false;
+/*pcb_trace("d1b %mm+%mm %mm+%mm %mm,%mm\n", x, ox, y, oy, x + ox, y + oy);*/
+
+		type = pcb_search_obj_by_location(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3, x + ox, y + oy, 1);
+		if ((type != PCB_OBJ_PSTK) || (pcb_obj_parent_subc(r2) != sc))
+			return pcb_false;
+		ps = r2;
+	}
+	
+	return pcb_false;
+}
+
 static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
 {
 	char title[64];
@@ -76,7 +105,7 @@ static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
 	ctx->subc_id = sc->ID;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, NULL, NULL, ctx);
+		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, ctx);
 	PCB_DAD_END(ctx->dlg);
 
 	if (sc->refdes != NULL)
