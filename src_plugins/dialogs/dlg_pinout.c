@@ -67,7 +67,14 @@ static const char pcb_acts_Pinout[] = "Pinout()\n";
 static const char pcb_acth_Pinout[] = "Present the subcircuit pinout box";
 static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dlg_pinout(42);
-	PCB_ACT_IRES(0);
+	void *r1, *r2, *r3;
+	pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, pcb_crosshair.X, pcb_crosshair.Y, 1);
+	if (type == PCB_OBJ_SUBC) {
+		pcb_subc_t *sc = r2;
+		pcb_dlg_pinout(sc->ID);
+		PCB_ACT_IRES(0);
+	}
+	else
+		PCB_ACT_IRES(-1);
 	return 0;
 }
