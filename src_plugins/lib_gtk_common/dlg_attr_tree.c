@@ -375,6 +375,29 @@ static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_
 	return 0;
 }
 
+void ghid_treetable_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *tt = ctx->wl[idx];
+	GtkTreeModel *model = ghid_treetable_get_model(ctx, attrib, 0);
+	GtkTreePath *path;
+
+	if (row == NULL) {
+		gtk_tree_view_set_cursor(GTK_TREE_VIEW(tt), NULL, NULL, FALSE);
+		return;
+	}
+
+	path = gtk_tree_model_get_path(model, row->hid_data);
+	if (path == NULL) {
+		gtk_tree_view_set_cursor(GTK_TREE_VIEW(tt), NULL, NULL, FALSE);
+		return;
+	}
+
+	gtk_tree_view_expand_to_path(GTK_TREE_VIEW(tt), path);
+	gtk_tree_view_set_cursor(GTK_TREE_VIEW(tt), path, NULL, FALSE);
+}
+
 
 static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
@@ -390,6 +413,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 
 	tree->hid_insert_cb = ghid_treetable_insert_cb;
 	tree->hid_modify_cb = ghid_treetable_modify_cb;
+	tree->hid_jumpto_cb = ghid_treetable_jumpto_cb;
 	tree->hid_free_cb = ghid_treetable_free_cb;
 	tree->hid_get_selected_cb = ghid_treetable_get_selected;
 	tree->hid_update_hide_cb = ghid_treetable_update_hide;
