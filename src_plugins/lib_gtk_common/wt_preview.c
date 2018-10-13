@@ -50,18 +50,16 @@
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp);
 
-static void preview_set_view(pcb_gtk_preview_t * preview)
+void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view)
 {
-	float scale = 100.0 / PCB_MIL_TO_COORD (150.); /* arbitrary zoom factor: 100 pixel per 150 mil */
 	double bigger;
+	float scale = 100.0 / PCB_MIL_TO_COORD (150.); /* arbitrary zoom factor: 100 pixel per 150 mil */
 	int max_pixels = 1024;
 
-#warning switch for .kind here and do a zoom-to-extend on layer
-
-	preview->x_min = preview->obj->BoundingBox.X1;
-	preview->y_min = preview->obj->BoundingBox.Y1;
-	preview->x_max = preview->obj->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
-	preview->y_max = preview->obj->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
+	preview->x_min = data_view->X1;
+	preview->y_min = data_view->Y1;
+	preview->x_max = data_view->X2;
+	preview->y_max = data_view->Y2;
 	preview->w_pixels = scale * (double)(preview->x_max - preview->x_min);
 	preview->h_pixels = scale * (double)(preview->y_max - preview->y_min);
 
@@ -71,6 +69,17 @@ static void preview_set_view(pcb_gtk_preview_t * preview)
 		preview->w_pixels /= fix;
 		preview->h_pixels /= fix;
 	}
+}
+
+static void preview_set_view(pcb_gtk_preview_t * preview)
+{
+	pcb_box_t view;
+
+	view.X1 = preview->obj->BoundingBox.X1;
+	view.Y1 = preview->obj->BoundingBox.Y1;
+	view.X2 = preview->obj->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
+	view.Y2 = preview->obj->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
+#warning switch for .kind here and do a zoom-to-extend on layer
 }
 
 static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)

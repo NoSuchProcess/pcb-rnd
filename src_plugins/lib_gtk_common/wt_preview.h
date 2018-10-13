@@ -120,4 +120,6 @@ GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawin
 GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data);
 
+void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
+
 #endif /* PCB_GTK_WT_REVIEW_H */
