@@ -385,7 +385,7 @@ static void done(void *hid_ctx, part_t *part, int done)
 static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
-	if (!*(int *)row->user_data)
+	if (*(int *)row->user_data)
 		return;
 	done(hid_ctx, row->user_data, 1);
 	skip(hid_ctx, 0, row);
