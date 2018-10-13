@@ -470,7 +470,6 @@ static void asm_done_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 static void asm_skip_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	int skip_grp;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
 	skip(hid_ctx, 1, row);
