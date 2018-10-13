@@ -77,6 +77,7 @@ typedef struct {
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	vtp0_t grps;
+	vtp0_t layer_colors; /* saved before greying out */
 	int wtbl, wskipg, wdoneg, wskipp, wdonep;
 	int active; /* already open - allow only one instance */
 } asm_ctx_t;
@@ -255,9 +256,62 @@ static void asm_sort(vtp0_t *gv)
 		qsort((*g)->parts.array, (*g)->parts.used, sizeof(void *), part_cmp);
 }
 
+static unsigned int chr2rgb(char s)
+{
+	if ((s >= '0') && (s <= '9')) return s - '0';
+	if ((s >= 'a') && (s <= 'f')) return s - 'a' + 10;
+	if ((s >= 'A') && (s <= 'F')) return s - 'A' + 10;
+	return 0;
+}
+
+static int str2rgb(const char *s)
+{
+	return chr2rgb(s[0]) << 4 | chr2rgb(s[1]);
+}
+
+static int fade(int c, int factor)
+{
+	if (c > 127)
+		return 127 + (c - 127) / factor;
+	return 127 - (127 - c) / factor;
+}
+
+static void asm_greyout(int grey)
+{
+	int n;
+	pcb_data_t *data = PCB->Data;
+	pcb_layer_t *ly;
+
+	if (grey) {
+		vtp0_init(&asm_ctx.layer_colors);
+		vtp0_enlarge(&asm_ctx.layer_colors, data->LayerN);
+		for(n = 0, ly = data->Layer; n < data->LayerN; n++,ly++) {
+			int r, g, b;
+
+			vtp0_set(&asm_ctx.layer_colors, n, ly->meta.real.color);
+			r = str2rgb(ly->meta.real.color+1);
+			g = str2rgb(ly->meta.real.color+3);
+			b = str2rgb(ly->meta.real.color+5);
+			r = fade(r, 4);
+			g = fade(g, 4);
+			b = fade(b, 4);
+			ly->meta.real.color = pcb_strdup_printf("#%02x%02x%02x", r, g, b);
+		}
+	}
+	else {
+		for(n = 0, ly = data->Layer; n < data->LayerN; n++,ly++) {
+			free(ly->meta.real.color);
+			ly->meta.real.color = asm_ctx.layer_colors.array[n];
+		}
+		vtp0_uninit(&asm_ctx.layer_colors);
+	}
+	pcb_redraw();
+}
+
 static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	asm_ctx_t *ctx = caller_data;
+	asm_greyout(0);
 	PCB_DAD_FREE(ctx->dlg);
 #warning TODO: free fields
 	memset(ctx, 0, sizeof(asm_ctx_t));
@@ -367,6 +421,8 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	vtp0_init(&asm_ctx.grps);
 	asm_extract(&asm_ctx.grps, PCB->Data, group_template, sort_template);
 	asm_sort(&asm_ctx.grps);
+
+	asm_greyout(1);
 
 	PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
 		PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_EXPFILL);
