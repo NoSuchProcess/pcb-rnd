@@ -69,10 +69,22 @@ static pcb_bool ghid_preview_mouse(void *widget, void *draw_data, pcb_hid_mouse_
 	return pcb_false;
 }
 
+void ghid_preview_zoomto(pcb_hid_attribute_t *attrib, void *hid_ctx, const pcb_box_t *view)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *prv = ctx->wl[idx];
+	pcb_gtk_preview_zoomto(PCB_GTK_PREVIEW(prv), view);
+}
+
 static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
 	GtkWidget *bparent, *prv;
 	pcb_gtk_preview_t *p;
+	pcb_hid_preview_t *hp = (pcb_hid_preview_t *)attr->enumerations;
+
+	hp->hid_ctx = ctx;
+	hp->hid_zoomto_cb = ghid_preview_zoomto;
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
 	prv = pcb_gtk_preview_generic_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose, attr->enumerations);
