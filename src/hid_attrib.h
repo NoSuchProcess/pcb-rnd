@@ -99,6 +99,7 @@ typedef struct {
 	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_jumpto_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* row = NULL means deselect all */
+	void (*hid_expcoll_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
 	void (*hid_update_hide_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 } pcb_hid_tree_t;
 
