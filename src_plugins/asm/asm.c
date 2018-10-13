@@ -563,6 +563,10 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	asm_ctx.active = 1;
 	PCB_DAD_NEW(asm_ctx.dlg, "Hand assembly with pcb-rnd", "Asm", &asm_ctx, pcb_false, asm_close_cb);
 
+	/* expand all groups by default */
+	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++)
+		pcb_dad_tree_expcoll(&asm_ctx.dlg[asm_ctx.wtbl], (*g)->row, 1, 0);
+
 	PCB_ACT_IRES(0);
 	return 0;
 }
