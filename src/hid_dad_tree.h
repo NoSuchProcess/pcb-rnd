@@ -184,4 +184,11 @@ PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t
 	return 0;
 }
 
+PCB_INLINE void pcb_dad_tree_jumpto(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	if (tree->hid_jumpto_cb != NULL)
+		tree->hid_jumpto_cb(tree->attrib, tree->hid_ctx, row);
+}
+
 #endif
