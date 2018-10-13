@@ -170,5 +170,18 @@ PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 		tree->hid_update_hide_cb(tree->attrib, tree->hid_ctx);
 }
 
+PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	if ((col < 0) || (col >= row->cols))
+		return 0;
+
+	row->cell[col] = new_val;
+	if (tree->hid_modify_cb != NULL)
+		tree->hid_modify_cb(tree->attrib, tree->hid_ctx, row, col);
+
+	return 0;
+}
 
 #endif
