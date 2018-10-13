@@ -49,13 +49,17 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	pinout_ctx_t *ctx = prv->user_ctx;
 	void *r1, *r2, *r3;
 
-	pcb_objtype_t type = pcb_search_obj_by_id(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
+	pcb_objtype_t type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
-		printf("pinout expose FOUND\n");
+		pcb_subc_draw_preview(sc, &e->view);
 	}
-	else
-		printf("pinout expose not found\n");
+	else {
+		char tmp[128];
+		sprintf(tmp, "Subcircuit #%ld not found.");
+		pcb_gui->set_color(gc, "#FF0000");
+		pcb_text_draw_string_simple(NULL, tmp, PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
+	}
 }
 
 static void pcb_dlg_pinout(pcb_data_t *data, long subc_id)
