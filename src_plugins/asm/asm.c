@@ -57,6 +57,16 @@ typedef struct {
 	gdl_elem_t link;
 } template_t;
 
+typedef struct {
+	char *name;
+	long int id;
+} part_t;
+
+typedef struct {
+	char *name;
+	vtp0_t parts;
+} group_t;
+
 static void templ_append(gdl_list_t *dst, ttype_t type, const char *key)
 {
 	template_t *t = calloc(sizeof(template_t), 1);
@@ -146,27 +156,73 @@ static void templ_free(char *tmp, gdl_list_t *dst)
 	free(tmp);
 }
 
-static void asm_extract(pcb_data_t *data, const char *group_template, const char *sort_template)
+static group_t *group_lookup(vtp0_t *grps, htsp_t *gh, char *name, int alloc)
+{
+	group_t *g = htsp_get(gh, name);
+	if (g != NULL) {
+		free(name);
+		return g;
+	}
+
+	g = calloc(sizeof(group_t), 1);
+	g->name = name;
+
+	vtp0_append(grps, g);
+	htsp_set(gh, name, g);
+	return g;
+}
+
+static void part_append(group_t *g, char *sortstr, long int id)
+{
+	part_t *p = malloc(sizeof(part_t));
+	p->name = sortstr;
+	p->id = id;
+	vtp0_append(&g->parts, p);
+}
+
+static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_template, const char *sort_template)
 {
 	gdl_list_t cgroup, csort;
 	char *tmp_group, *tmp_sort;
+	htsp_t gh;
+
 	memset(&cgroup, 0, sizeof(cgroup));
 	memset(&csort, 0, sizeof(csort));
 	tmp_group = templ_compile(&cgroup, group_template);
 	tmp_sort = templ_compile(&csort, sort_template);
 
+	htsp_init(&gh, strhash, strkeyeq);
+
 	PCB_SUBC_LOOP(data);
 	{
 		char *grp, *srt;
+		group_t *g;
+
 		grp = templ_exec(subc, &cgroup);
 		srt = templ_exec(subc, &csort);
-		printf("grp='%s' srt='%s'\n", grp, srt);
+		g = group_lookup(dst, &gh, grp, 1);
+		part_append(g, srt, subc->ID);
+		/* no need to free grp or srt, they are stored in the group and part structs */
 	}
 	PCB_END_LOOP;
 
-
+	htsp_uninit(&gh);
 	templ_free(tmp_group, &cgroup);
 	templ_free(tmp_sort, &csort);
+}
+
+static void asm_sort(vtp0_t *gv)
+{
+	group_t **g;
+	part_t **p;
+	long n, i;
+
+	for(g = (group_t **)gv->array, n = 0; n < gv->used; g++,n++) {
+		printf("%s\n", (*g)->name);
+		for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
+		printf("  %s\n", (*p)->name);
+		}
+	}
 }
 
 
@@ -174,7 +230,10 @@ static const char pcb_acts_asm[] = "asm()";
 static const char pcb_acth_asm[] = "Interactive assembly assistant";
 fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	asm_extract(PCB->Data, group_template, sort_template);
+	vtp0_t grps;
+	vtp0_init(&grps);
+	asm_extract(&grps, PCB->Data, group_template, sort_template);
+	asm_sort(&grps);
 	PCB_ACT_IRES(0);
 	return 0;
 }
