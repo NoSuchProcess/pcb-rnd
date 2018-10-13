@@ -314,10 +314,21 @@ static void asm_greyout(int grey)
 
 static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
+	group_t **g;
+	part_t **p;
+	long i, n;
 	asm_ctx_t *ctx = caller_data;
 	asm_greyout(0);
+
+	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
+		for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++)
+			free(*p);
+		vtp0_uninit(&(*g)->parts);
+		free(*g);
+	}
+	vtp0_uninit(&asm_ctx.grps);
+
 	PCB_DAD_FREE(ctx->dlg);
-#warning TODO: free fields
 	memset(ctx, 0, sizeof(asm_ctx_t));
 }
 
