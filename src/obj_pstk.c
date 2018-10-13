@@ -541,6 +541,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (mark2 > pcb_gui->coord_per_pix*3) {
 		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
 		pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
