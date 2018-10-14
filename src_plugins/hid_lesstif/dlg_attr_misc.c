@@ -38,7 +38,7 @@ static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 	else if (val > 1.0) val = 1.0;
 	
 	stdarg_n = 0;
-	stdarg(XmNsliderSize, val * PB_SCALE_UP);
+	stdarg(XmNsliderSize, (val * PB_SCALE_UP)+1);
 	XtSetValues(bar, stdarg_args, stdarg_n);
 }
 
@@ -49,8 +49,8 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
-	stdarg(XmNmaximum, (int)PB_SCALE_UP);
-	stdarg(XmNsliderSize, 0);
+	stdarg(XmNmaximum, (int)PB_SCALE_UP+1);
+	stdarg(XmNsliderSize, 1);
 	stdarg(XmNorientation, XmHORIZONTAL);
 	stdarg(XmNshowArrows, pcb_false);
 	stdarg_do_color("#000099", XmNforeground);
