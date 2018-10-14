@@ -603,7 +603,7 @@ int pplg_init_asm(void)
 {
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
+	conf_reg_field(conf_asm, field,isarray,type_name,cpath,cname,desc,flags);
 #include "asm_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(asm_action_list, asm_cookie)
