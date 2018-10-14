@@ -48,6 +48,7 @@
 #include "../src_plugins/asm/conf_internal.c"
 
 conf_asm_t conf_asm;
+#define ASM_CONF_FN "asm.conf"
 
 
 static const char *asm_cookie = "asm plugin";
@@ -595,6 +596,7 @@ int pplg_check_ver_asm(int ver_needed) { return 0; }
 void pplg_uninit_asm(void)
 {
 	pcb_remove_actions_by_cookie(asm_cookie);
+	conf_unreg_file(ASM_CONF_FN, asm_conf_internal);
 	conf_unreg_fields("plugins/asm/");
 }
 
@@ -603,6 +605,7 @@ void pplg_uninit_asm(void)
 int pplg_init_asm(void)
 {
 	PCB_API_CHK_VER;
+	conf_reg_file(ASM_CONF_FN, asm_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_asm, field,isarray,type_name,cpath,cname,desc,flags);
 #include "asm_conf_fields.h"
