@@ -737,6 +737,7 @@ typedef struct {
 
 static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, attr_dlg_tb_t *tb, int start_from, int add_labels);
 
+#include "dlg_attr_misc.c"
 #include "dlg_attr_box.c"
 
 /* returns the index of HATT_END where the loop had to stop */
@@ -932,6 +933,9 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
+		case PCB_HATT_PROGRESS:
+			ctx->wl[i] = ltf_progress_create(ctx, parent);
+			break;
 		case PCB_HATT_ENUM:
 			{
 				static XmString empty = 0;
@@ -1035,6 +1039,9 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 		case PCB_HATT_REAL:
 			pcb_snprintf(buf, sizeof(buf), "%g", val->real_value);
 			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
+			break;
+		case PCB_HATT_PROGRESS:
+			ltf_progress_set(ctx, idx, val->real_value);
 			break;
 		case PCB_HATT_ENUM:
 			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
