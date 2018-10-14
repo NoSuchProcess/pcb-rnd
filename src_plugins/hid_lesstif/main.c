@@ -3738,6 +3738,8 @@ static void lesstif_show_item(void *item)
 	pinout = 0;
 }
 
+#include "wt_preview.c"
+
 #include "dlg_preview.c"
 
 static void lesstif_beep(void)

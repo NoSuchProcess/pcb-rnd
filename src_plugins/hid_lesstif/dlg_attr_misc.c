@@ -61,3 +61,41 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 	return bar;
 }
 
+
+#include "wt_preview.h"
+
+static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+{
+	double scale;
+	Widget pw;
+	pcb_ltf_preview_t *pd;
+
+	pd = calloc(1, sizeof(pcb_ltf_preview_t));
+	pd->attr = attr;
+	pd->hid_ctx = ctx;
+
+	pd->resized = 0;
+#warning TODO make these configurable:
+	pd->left = 0;
+	pd->top = 0;
+	pd->right = PCB_MM_TO_COORD(100);
+	pd->bottom = PCB_MM_TO_COORD(100);
+	scale = sqrt(200.0 * 200.0 / ((pd->right - pd->left + 1.0) * (pd->bottom - pd->top + 1.0)));
+
+	stdarg_n = 0;
+	stdarg(XmNwidth, (int) (scale * (pd->right - pd->left + 1)));
+	stdarg(XmNheight, (int) (scale * (pd->bottom - pd->top + 1)));
+	stdarg(XmNleftAttachment, XmATTACH_FORM);
+	stdarg(XmNrightAttachment, XmATTACH_FORM);
+	stdarg(XmNtopAttachment, XmATTACH_FORM);
+	stdarg(XmNbottomAttachment, XmATTACH_FORM);
+	pw = XmCreateDrawingArea(parent, XmStrCast("pinout"), stdarg_args, stdarg_n);
+	XtManageChild(pw);
+
+	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
+	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
+
+	XtManageChild(pw);
+	return pw;
+}
+

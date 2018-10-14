@@ -891,6 +891,10 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			break;
 		}
 
+		case PCB_HATT_PREVIEW:
+			ctx->wl[i] = ltf_preview_create(ctx, parent, &ctx->attrs[i]);
+			break;
+	
 		case PCB_HATT_LABEL:
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
