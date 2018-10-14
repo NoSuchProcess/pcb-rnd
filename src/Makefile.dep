@@ -80,7 +80,8 @@
  pcb-printf.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
  hid_dad_tree.h hid_dad.h search.h rats.h netlist.h route_style.h draw.h \
  select.h operation.h ../src_plugins/asm/asm_conf.h conf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h conf.h dolists.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
+ ../src_plugins/asm/conf_internal.c dolists.h \
  ../src_plugins/asm/asm_conf_fields.h
 ../src_plugins/autocrop/autocrop.o: ../src_plugins/autocrop/autocrop.c \
  ../config.h board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
