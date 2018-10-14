@@ -53,6 +53,9 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 	stdarg(XmNsliderSize, 0);
 	stdarg(XmNorientation, XmHORIZONTAL);
 	stdarg(XmNshowArrows, pcb_false);
+	stdarg_do_color("#000099", XmNforeground);
+	stdarg(XmNsliderVisual, XmFOREGROUND_COLOR);
+	
 	bar = XmCreateScrollBar(parent, XmStrCast("scale"), stdarg_args, stdarg_n);
 	XtManageChild(bar);
 	return bar;
