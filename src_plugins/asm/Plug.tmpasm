@@ -1,8 +1,10 @@
 put /local/pcb/mod {asm}
+put /local/pcb/mod/CONF {$(PLUGDIR)/asm/asm_conf.h}
+put /local/pcb/mod/CONFFILE {asm.conf}
+put /local/pcb/mod/CONFVAR {asm_conf_internal}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/asm/asm.o
 @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/asm/asm_conf.h}
 
 
 switch /local/pcb/asm/controls

@@ -45,6 +45,7 @@
 #include "draw.h"
 #include "select.h"
 #include "asm_conf.h"
+#include "../src_plugins/asm/conf_internal.c"
 
 conf_asm_t conf_asm;
 
