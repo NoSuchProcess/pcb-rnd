@@ -2,6 +2,8 @@ put /local/pcb/mod {asm}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/asm/asm.o
 @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/asm/asm_conf.h}
+
 
 switch /local/pcb/asm/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

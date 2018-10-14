@@ -44,6 +44,10 @@
 #include "search.h"
 #include "draw.h"
 #include "select.h"
+#include "asm_conf.h"
+
+conf_asm_t conf_asm;
+
 
 static const char *asm_cookie = "asm plugin";
 static char *sort_template  = "a.footprint, a.value, a.asm::group, side, x, y";
@@ -590,6 +594,7 @@ int pplg_check_ver_asm(int ver_needed) { return 0; }
 void pplg_uninit_asm(void)
 {
 	pcb_remove_actions_by_cookie(asm_cookie);
+	conf_unreg_fields("plugins/asm/");
 }
 
 
@@ -597,6 +602,9 @@ void pplg_uninit_asm(void)
 int pplg_init_asm(void)
 {
 	PCB_API_CHK_VER;
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
+#include "asm_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(asm_action_list, asm_cookie)
 
