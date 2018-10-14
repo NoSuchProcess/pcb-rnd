@@ -52,8 +52,6 @@ conf_asm_t conf_asm;
 
 
 static const char *asm_cookie = "asm plugin";
-static char *sort_template  = "a.footprint, a.value, a.asm::group, side, x, y";
-static char *group_template = "a.footprint, a.value, a.asm::group";
 
 /*** internal list of all parts, grouped; have to be arrays for qsort(), so can't
      avoid it and just use tree-table list based trees ***/
@@ -498,7 +496,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	vtp0_init(&asm_ctx.grps);
-	asm_extract(&asm_ctx.grps, PCB->Data, group_template, sort_template);
+	asm_extract(&asm_ctx.grps, PCB->Data, conf_asm.plugins.asm1.group_template, conf_asm.plugins.asm1.sort_template);
 	asm_sort(&asm_ctx.grps);
 
 	asm_greyout(1);
