@@ -1727,6 +1727,7 @@
  compat_nls.h board.h vtroutestyle.h library.h rats_patch.h board.h \
  hid_attrib.h actions.h hid_init.h ../src_plugins/hid_lesstif/stdarg.h \
  misc_util.h search.h rats.h netlist.h route_style.h change.h \
+ ../src_plugins/hid_lesstif/dlg_attr_misc.c \
  ../src_plugins/hid_lesstif/dlg_attr_box.c
 ../src_plugins/hid_lesstif/library.o: \
  ../src_plugins/hid_lesstif/library.c \
