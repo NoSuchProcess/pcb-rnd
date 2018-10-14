@@ -595,7 +595,7 @@ void pplg_uninit_asm(void)
 {
 	pcb_remove_actions_by_cookie(asm_cookie);
 	conf_unreg_file(ASM_CONF_FN, asm_conf_internal);
-	conf_unreg_fields("plugins/asm/");
+	conf_unreg_fields("plugins/asm1/");
 }
 
 
