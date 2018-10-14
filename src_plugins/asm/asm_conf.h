@@ -5,10 +5,10 @@
 
 typedef struct {
 	const struct plugins {
-		const struct assm {
+		const struct asm1 {
 			CFT_STRING group_template;        /* asm template that determines grouping (parts resulting in the same string will be puit in the same group) */
 			CFT_STRING sort_template;         /* asm template that determines order of groups and parts within groups */
-		} assm;
+		} asm1;
 	} plugins;
 } conf_asm_t;
 
