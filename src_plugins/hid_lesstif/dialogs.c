@@ -735,6 +735,10 @@ typedef struct {
 	int tabs;
 } attr_dlg_tb_t;
 
+static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, attr_dlg_tb_t *tb, int start_from, int add_labels);
+
+#include "dlg_attr_box.c"
+
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, attr_dlg_tb_t *tb, int start_from, int add_labels)
 {
@@ -814,6 +818,11 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			XtManageChild(w);
 			ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			break;
+
+		case PCB_HATT_BEGIN_HPANE:
+		case PCB_HATT_BEGIN_VPANE:
+			i = ltf_pane_create(ctx, i, parent, (ctx->attrs[i].type == PCB_HATT_BEGIN_HPANE), add_labels);
 			break;
 
 		case PCB_HATT_BEGIN_TABLE:
