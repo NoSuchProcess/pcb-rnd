@@ -8,6 +8,82 @@
 <body>
 <h2> asm - manual assembly helper </h2>
 <p>
+The asm plugin provides an action called <i>asm</i> which pops up a dialog
+box that assists manual assembly of the current board. The plugin is useful only
+with a GUI HID.
+<p>
+The plugin lists, groups and sorts all subcircuits (parts) that are placed
+on the current board. The asm dialog presents all subcircuits in a tree of two
+levels. the first level is all part groups. In each part group, the second level
+is all parts that have the same grouping template. The list of groups is
+sorted by group properties and the lists of parts within each groups are
+sorted by the sorting template. While the assembly dialog is open, clicking a
+part or a group of parts will highlight (select) the parts in the main window.
+
+<h3> Intended use: rapid full board building </h3>
+<p>
+The intended use is configuring the plugin to group parts by assembly steps.
+Each group should contain parts that are "coming from the same bin". Within
+each group parts should be sorted by board side and location. 
+<p>
+The user should click the first part in the first group, check the highlight,
+solder on the part and click the 'part done' button. This will skip to the
+next part, while the focus stays on the same button. From now on, simply
+pressing enter indicates the currently highlighted part is done, soldered
+on the board.
+<p>
+In this setup the grouping template should contain a height hint attribute
+of the subcircuits so that taller parts are built last.
+
+<h3> Intended use: build by functionality </h3>
+<p>
+It is also possible to configure the grouping/sorting templates to support
+a per functionality build, which is more useful in building and testing the
+first prototype.
+<p>
+In this scenario subcircuits shall have a dedicated attribute defining
+which functionality each part belongs to - preferably this attribute
+should be coming from the schematics. The group template shall contain this
+attribute as the first field, so groups are created and sorted by functionality.
+
+<h3> Templates </h3>
+<p>
+There are two configured templates under /plugins/asm1:
+<ul>
+	<li> group_template: for rendering the <i>group string</i> for each part
+	<li> sort_template: for rendering the <i>sort string</i> for each part
+</ul>
+<p>
+The <i>group string</i> is used for grouping parts and as the sorting function
+for the groups. If two parts have the same group string, they will end up
+in the same group. The <i>sort string</i> is used for sorting parts within
+their group.
+<p>
+A template is comma separated list of directives. A directive is one of
+the following:
+<p>
+<table border=1 cellpadding=0 cellspacing=0>
+<tr><th>directive   <th>substituted with...
+<tr><td>side        <td>either "0/top" or "1/bottom" depending on which side the subcircuit is placed on
+<tr><td>x           <td>subcircuit origin X coordinate in mm, without unit
+<tr><td>y           <td>subcircuit origin X coordinate in mm, without unit
+<tr><td>a.<i>key</i><td>with the value of the subcircuit's attribute with matching <i>key</i>
+</table>
+<p>
+For example the group template
+<pre>
+a.footprint, a.value, a.asm::group
+</pre>
+<p>
+will be executed by pasting the footprint attribute, a comma, the value
+attribute, a comma and the asm::group attribute. This will typically result
+in something like "1206,100nF,". The resulting group string is then used for
+grouping and sorting the groups alphabetically.
+
+
+
+
+
 
 </body>
 </html>
