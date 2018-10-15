@@ -89,7 +89,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	pw = XmCreateDrawingArea(parent, XmStrCast("pinout"), stdarg_args, stdarg_n);
+	pw = XmCreateDrawingArea(parent, XmStrCast("dad_preview"), stdarg_args, stdarg_n);
 	XtManageChild(pw);
 
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
