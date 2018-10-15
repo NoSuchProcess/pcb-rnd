@@ -113,6 +113,7 @@ void pcb_route_add_line(pcb_route_t *p_route, pcb_point_t *point1, pcb_point_t *
 	p_object->point2 = *point2;
 	p_object->layer = layer;
 	p_object->type = PCB_OBJ_LINE;
+	p_route->end_point = *point2;
 }
 
 void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t start_angle, pcb_angle_t delta, pcb_coord_t radius, pcb_layer_id_t layer)
@@ -127,6 +128,9 @@ void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t st
 	p_object->radius = radius;
 	p_object->layer = layer;
 	p_object->type = PCB_OBJ_ARC;
+	
+	p_route->end_point.X = pcb_round((double)center->X - ((double)radius * cos((start_angle + delta) * PCB_M180)));
+	p_route->end_point.Y = pcb_round((double)center->Y + ((double)radius * sin((start_angle + delta) * PCB_M180)));
 }
 
 
