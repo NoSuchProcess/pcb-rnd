@@ -71,7 +71,6 @@ static void ltf_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	pcb_ltf_preview_t *pd = e->content.draw_data;
 	pcb_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
-printf("user exp!\n");
 	prv->user_expose_cb(attr, prv, gc, e);
 }
 
