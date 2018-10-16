@@ -97,7 +97,12 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
 	pcb_ltf_preview_t *pd = pd_;
-	printf("inp\n");
+	pcb_hid_cfg_mod_t btn = lesstif_mb2cfg(cbs->event->xbutton.button);
+	pcb_coord_t x, y;
+
+	pcb_ltf_preview_getxy(pd, cbs->event->xbutton.x, cbs->event->xbutton.y, &x, &y);
+
+	pcb_printf("inp %d;%d %mm;%mm\n", cbs->event->xbutton.x, cbs->event->xbutton.y, x, y);
 }
 
 

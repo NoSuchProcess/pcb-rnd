@@ -60,6 +60,21 @@ void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
 	}
 }
 
+void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, pcb_coord_t *dst_x, pcb_coord_t *dst_y)
+{
+	pcb_coord_t x, y;
+
+	if (conf_core.editor.view.flip_x)
+		px = pd->v_width - px;
+	x = pcb_round((double)px * pd->zoom + (double)pd->x1);
+
+	if (conf_core.editor.view.flip_y)
+		py = pd->v_height - py;
+	y = pcb_round((double)py * pd->zoom + (double)pd->y1);
+
+	*dst_x = x;
+	*dst_y = y;
+}
 
 void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 {

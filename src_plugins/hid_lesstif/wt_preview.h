@@ -31,3 +31,9 @@ void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd);
 /* Double buffered redraw using the current zoom, calling core function for
    generic preview */
 void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd);
+
+/* Convert widget pixel px;py back to preview render coordinates */
+void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, pcb_coord_t *dst_x, pcb_coord_t *dst_y);
+
+
+pcb_hid_cfg_mod_t lesstif_mb2cfg(int but);
