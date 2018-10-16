@@ -88,6 +88,19 @@ static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const p
 	pcb_ltf_preview_redraw(pd);
 }
 
+static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Boolean *ctd)
+{
+	pcb_ltf_preview_t *pd = pd_;
+	printf("mot\n");
+}
+
+static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
+{
+	pcb_ltf_preview_t *pd = pd_;
+	printf("inp\n");
+}
+
+
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget pw;
@@ -129,6 +142,9 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
+	XtAddCallback(pw, XmNinputCallback, (XtCallbackProc)ltf_preview_input_callback, (XtPointer)pd);
+	XtAddEventHandler(pw, PointerMotionMask | PointerMotionHintMask | EnterWindowMask | LeaveWindowMask, 0, ltf_preview_motion_callback, (XtPointer)pd);
+
 
 	XtManageChild(pw);
 	return pw;
