@@ -1710,9 +1710,10 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 
 	/* padstack mark goes on top */
 	for(o = pcb_rtree_first(&it, sc->data->padstack_tree, (pcb_rtree_box_t *)drawn_area); o != NULL; o = pcb_rtree_next(&it)) {
-		if (pcb_obj_is_under(o, sc->data))
+		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_mark_callback((pcb_box_t *)o, &info);
-		pcb_pstk_draw_label_callback((pcb_box_t *)o, &info);
+			pcb_pstk_draw_label_callback((pcb_box_t *)o, &info);
+		}
 	}
 }
 
