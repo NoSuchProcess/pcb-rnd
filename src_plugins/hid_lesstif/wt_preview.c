@@ -54,24 +54,19 @@ pcb_printf("zoomy: %ld %f %f\n", (pd->y2 - pd->y1 + 1), (double)pd->v_height, pd
 	pd->y = (pd->y1 + pd->y2) / 2 - pd->v_height * pd->zoom / 2;
 }
 
-void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
+
+void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 {
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
 	double save_vz;
 	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm;
-	int reason = cbs != NULL ? cbs->reason : 0;
 	XGCValues gcv;
 	GC gc;
 
 	memset(&gcv, 0, sizeof(gcv));
 	gcv.graphics_exposures = 0;
-	gc = XtGetGC(da, GCGraphicsExposures, &gcv);
-
-	if ((reason == XmCR_RESIZE) || (pd->resized == 0)) {
-
-		pcb_ltf_preview_zoom_update(pd);
-	}
+	gc = XtGetGC(pd->pw, GCGraphicsExposures, &gcv);
 
 	pinout = 0;
 	save_vx = view_left_x;
@@ -85,9 +80,9 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 	save_main_px = main_pixmap;
 	save_mask_px = mask_pixmap;
 	save_mask_bm = mask_bitmap;
-	main_pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da));
-	mask_pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da));
-	mask_bitmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, 1);
+	main_pixmap = XCreatePixmap(XtDisplay(pd->pw), XtWindow(pd->pw), pd->v_width, pd->v_height, widget_depth(pd->pw));
+	mask_pixmap = XCreatePixmap(XtDisplay(pd->pw), XtWindow(pd->pw), pd->v_width, pd->v_height, widget_depth(pd->pw));
+	mask_bitmap = XCreatePixmap(XtDisplay(pd->pw), XtWindow(pd->pw), pd->v_width, pd->v_height, 1);
 	pixmap = main_pixmap;
 	view_left_x = pd->x1;
 	view_top_y = pd->y1;
@@ -108,8 +103,8 @@ pcb_trace("exp: %mm;%mm %mm;%mm\n", pd->exp_ctx.view.X1, pd->exp_ctx.view.Y1, pd
 
 	pcb_hid_expose_generic(&lesstif_hid, &pd->exp_ctx);
 
-	XCopyArea(lesstif_display, pixmap, XtWindow(da), gc, 0, 0, pd->v_width, pd->v_height, 0, 0);
-	XtReleaseGC(da, gc);
+	XCopyArea(lesstif_display, pixmap, XtWindow(pd->pw), gc, 0, 0, pd->v_width, pd->v_height, 0, 0);
+	XtReleaseGC(pd->pw, gc);
 
 	view_left_x = save_vx;
 	view_top_y = save_vy;
@@ -125,4 +120,13 @@ pcb_trace("exp: %mm;%mm %mm;%mm\n", pd->exp_ctx.view.X1, pd->exp_ctx.view.Y1, pd
 	pixmap = save_px;
 	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+}
+
+void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
+{
+	int reason = cbs != NULL ? cbs->reason : 0;
+
+	if ((reason == XmCR_RESIZE) || (pd->resized == 0))
+		pcb_ltf_preview_zoom_update(pd);
+	pcb_ltf_preview_redraw(pd);
 }
