@@ -52,6 +52,15 @@ pcb_printf("zoomy: %ld %f %f\n", (pd->y2 - pd->y1 + 1), (double)pd->v_height, pd
 
 	pd->x = (pd->x1 + pd->x2) / 2 - pd->v_width * pd->zoom / 2;
 	pd->y = (pd->y1 + pd->y2) / 2 - pd->v_height * pd->zoom / 2;
+
+	/* might be called from within an user expose callback - should affect the rest of the drawing */
+	if (pd->expose_lock) {
+		view_left_x = pd->x1;
+		view_top_y = pd->y1;
+		view_zoom = pd->zoom;
+		view_width = pd->x2;
+		view_height = pd->y2;
+	}
 }
 
 
@@ -63,6 +72,11 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm;
 	XGCValues gcv;
 	GC gc;
+
+	if (pd->expose_lock)
+		return;
+
+	pd->expose_lock = 1;
 
 	memset(&gcv, 0, sizeof(gcv));
 	gcv.graphics_exposures = 0;
@@ -120,6 +134,8 @@ pcb_trace("exp: %mm;%mm %mm;%mm\n", pd->exp_ctx.view.X1, pd->exp_ctx.view.Y1, pd
 	pixmap = save_px;
 	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+
+	pd->expose_lock = 0;
 }
 
 void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
