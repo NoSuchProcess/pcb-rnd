@@ -64,6 +64,17 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 
 #include "wt_preview.h"
 
+/* called back from core (which is called from wt_preview) to get the user
+   expose function called */
+static void ltf_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+{
+	pcb_ltf_preview_t *pd = e->content.draw_data;
+	pcb_hid_attribute_t *attr = pd->attr;
+	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+printf("user exp!\n");
+	prv->user_expose_cb(attr, prv, gc, e);
+}
+
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget pw;
@@ -72,6 +83,10 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	pd = calloc(1, sizeof(pcb_ltf_preview_t));
 	pd->attr = attr;
 	pd->hid_ctx = ctx;
+	memset(&pd->exp_ctx, 0, sizeof(pd->exp_ctx));
+	pd->exp_ctx.content.draw_data = pd;
+	pd->exp_ctx.dialog_draw = ltf_preview_expose;
+	pd->exp_ctx.force = 1;
 
 	pd->resized = 0;
 #warning TODO make these configurable:

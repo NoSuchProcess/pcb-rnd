@@ -31,13 +31,11 @@ static int widget_depth(Widget w);
 
 void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
 {
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)pd->attr->enumerations;
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
 	double save_vz;
 	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm;
 	int reason = cbs != NULL ? cbs->reason : 0;
-	pcb_hid_expose_ctx_t ex;
 	XGCValues gcv;
 	GC gc;
 
@@ -91,15 +89,13 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-XDrawLine(display, pixmap, my_gc, 0, 0, pd->v_width, pd->v_height);
 
-	memset(&ex, 0, sizeof(ex));
-	ex.view.X1 = view_left_x;
-	ex.view.Y1 = view_top_y;
-	ex.view.X2 = view_left_x + pd->v_width;
-	ex.view.Y2 = view_top_y + pd->v_height;
+	pd->exp_ctx.view.X1 = view_left_x;
+	pd->exp_ctx.view.Y1 = view_top_y;
+	pd->exp_ctx.view.X2 = view_left_x + pd->v_width;
+	pd->exp_ctx.view.Y2 = view_top_y + pd->v_height;
 
-	pcb_hid_expose_generic(&lesstif_hid, &ex);
+	pcb_hid_expose_generic(&lesstif_hid, &pd->exp_ctx);
 
 	XCopyArea(lesstif_display, pixmap, XtWindow(da), gc, 0, 0, pd->v_width, pd->v_height, 0, 0);
 	XtReleaseGC(da, gc);

@@ -1,6 +1,8 @@
 typedef struct pcb_ltf_preview_s {
 	void *hid_ctx;
 	pcb_hid_attribute_t *attr;
+	pcb_hid_expose_ctx_t exp_ctx;
+
 	Window window;
 	pcb_coord_t x, y;										/* PCB coordinates of upper right corner of window */
 	pcb_coord_t left, right, top, bottom;	/* PCB extents of item */
