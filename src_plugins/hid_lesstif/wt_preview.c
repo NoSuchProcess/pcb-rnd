@@ -43,12 +43,9 @@ void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
 	pd->v_height = h;
 
 	pd->zoom = (pd->x2 - pd->x1 + 1) / (double)pd->v_width;
-pcb_printf("zoomx: %ld %f %f\n", (pd->x2 - pd->x1 + 1), (double)pd->v_width, pd->zoom);
 	z = (pd->y2 - pd->y1 + 1) / (double)pd->v_height;
 	if (pd->zoom < z)
 		pd->zoom = z;
-
-pcb_printf("zoomy: %ld %f %f\n", (pd->y2 - pd->y1 + 1), (double)pd->v_height, pd->zoom);
 
 	pd->x = (pd->x1 + pd->x2) / 2 - pd->v_width * pd->zoom / 2;
 	pd->y = (pd->y1 + pd->y2) / 2 - pd->v_height * pd->zoom / 2;
@@ -112,8 +109,6 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	pd->exp_ctx.view.Y1 = pd->y1;
 	pd->exp_ctx.view.X2 = pd->x2;
 	pd->exp_ctx.view.Y2 = pd->y2;
-
-pcb_trace("exp: %mm;%mm %mm;%mm\n", pd->exp_ctx.view.X1, pd->exp_ctx.view.Y1, pd->exp_ctx.view.X2, pd->exp_ctx.view.Y2);
 
 	pcb_hid_expose_generic(&lesstif_hid, &pd->exp_ctx);
 

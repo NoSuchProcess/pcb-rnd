@@ -85,6 +85,7 @@ static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const p
 	pd->y2 = view->Y2;
 
 	pcb_ltf_preview_zoom_update(pd);
+	pcb_ltf_preview_redraw(pd);
 }
 
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
