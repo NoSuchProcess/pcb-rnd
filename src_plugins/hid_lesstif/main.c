@@ -1302,7 +1302,7 @@ static void mod_changed(XKeyEvent * e, int set)
 	in_move_event = 0;
 }
 
-pcb_hid_cfg_mod_t lesstif_mb2cfg(int but)
+static pcb_hid_cfg_mod_t lesstif_mb2cfg(int but)
 {
 	switch(but) {
 		case 1: return PCB_MB_LEFT;
