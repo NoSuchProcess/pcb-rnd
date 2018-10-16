@@ -29,6 +29,31 @@
 
 static int widget_depth(Widget w);
 
+void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
+{
+	double z;
+	Dimension w, h;
+
+	pd->resized = 1;
+	stdarg_n = 0;
+	stdarg(XmNwidth, &w);
+	stdarg(XmNheight, &h);
+	XtGetValues(pd->pw, stdarg_args, stdarg_n);
+	pd->v_width = w;
+	pd->v_height = h;
+
+	pd->zoom = (pd->x2 - pd->x1 + 1) / (double)pd->v_width;
+pcb_printf("zoomx: %ld %f %f\n", (pd->x2 - pd->x1 + 1), (double)pd->v_width, pd->zoom);
+	z = (pd->y2 - pd->y1 + 1) / (double)pd->v_height;
+	if (pd->zoom < z)
+		pd->zoom = z;
+
+pcb_printf("zoomy: %ld %f %f\n", (pd->y2 - pd->y1 + 1), (double)pd->v_height, pd->zoom);
+
+	pd->x = (pd->x1 + pd->x2) / 2 - pd->v_width * pd->zoom / 2;
+	pd->y = (pd->y1 + pd->y2) / 2 - pd->v_height * pd->zoom / 2;
+}
+
 void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
 {
 	int save_vx, save_vy, save_vw, save_vh;
@@ -44,24 +69,8 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 	gc = XtGetGC(da, GCGraphicsExposures, &gcv);
 
 	if ((reason == XmCR_RESIZE) || (pd->resized == 0)) {
-		Dimension w, h;
-		double z;
 
-		pd->resized = 1;
-		pd->window = XtWindow(da);
-		stdarg_n = 0;
-		stdarg(XmNwidth, &w);
-		stdarg(XmNheight, &h);
-		XtGetValues(da, stdarg_args, stdarg_n);
-		pd->v_width = w;
-		pd->v_height = h;
-		pd->zoom = (pd->x2 - pd->x1 + 1) / (double) w;
-		z = (pd->y2 - pd->y1 + 1) / (double) h;
-		if (pd->zoom < z)
-			pd->zoom = z;
-
-		pd->x = (pd->x1 + pd->x2) / 2 - pd->v_width * pd->zoom / 2;
-		pd->y = (pd->y1 + pd->y2) / 2 - pd->v_height * pd->zoom / 2;
+		pcb_ltf_preview_zoom_update(pd);
 	}
 
 	pinout = 0;
@@ -80,20 +89,22 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 	mask_pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da));
 	mask_bitmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, 1);
 	pixmap = main_pixmap;
-	view_left_x = pd->x;
-	view_top_y = pd->y;
+	view_left_x = pd->x1;
+	view_top_y = pd->y1;
 	view_zoom = pd->zoom;
-	view_width = pd->v_width;
-	view_height = pd->v_height;
+	view_width = pd->x2;
+	view_height = pd->y2;
 	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
 	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
 
-	pd->exp_ctx.view.X1 = view_left_x;
-	pd->exp_ctx.view.Y1 = view_top_y;
-	pd->exp_ctx.view.X2 = view_left_x + pd->v_width;
-	pd->exp_ctx.view.Y2 = view_top_y + pd->v_height;
+	pd->exp_ctx.view.X1 = pd->x1;
+	pd->exp_ctx.view.Y1 = pd->y1;
+	pd->exp_ctx.view.X2 = pd->x2;
+	pd->exp_ctx.view.Y2 = pd->y2;
+
+pcb_trace("exp: %mm;%mm %mm;%mm\n", pd->exp_ctx.view.X1, pd->exp_ctx.view.Y1, pd->exp_ctx.view.X2, pd->exp_ctx.view.Y2);
 
 	pcb_hid_expose_generic(&lesstif_hid, &pd->exp_ctx);
 

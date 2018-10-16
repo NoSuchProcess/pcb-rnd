@@ -83,6 +83,8 @@ static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const p
 	pd->y1 = view->Y1;
 	pd->x2 = view->X2;
 	pd->y2 = view->Y2;
+
+	pcb_ltf_preview_zoom_update(pd);
 }
 
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
@@ -120,6 +122,9 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	pw = XmCreateDrawingArea(parent, XmStrCast("dad_preview"), stdarg_args, stdarg_n);
 	XtManageChild(pw);
+
+	pd->window = XtWindow(pw);
+	pd->pw = pw;
 
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);

@@ -4,6 +4,8 @@ typedef struct pcb_ltf_preview_s {
 	pcb_hid_expose_ctx_t exp_ctx;
 
 	Window window;
+	Widget pw;
+
 	pcb_coord_t x, y;										/* PCB coordinates of upper right corner of window */
 	pcb_coord_t x1, y1, x2, y2;	/* PCB extents of item */
 	double zoom;									/* PCB units per screen pixel */
