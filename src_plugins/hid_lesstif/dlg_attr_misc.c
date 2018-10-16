@@ -74,11 +74,15 @@ static void ltf_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	prv->user_expose_cb(attr, prv, gc, e);
 }
 
-static void ltr_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const pcb_box_t *view)
+static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const pcb_box_t *view)
 {
 	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
 	pcb_ltf_preview_t *pd = prv->hid_ctx;
 
+	pd->x1 = view->X1;
+	pd->y1 = view->Y1;
+	pd->x2 = view->X2;
+	pd->y2 = view->Y2;
 }
 
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
@@ -91,11 +95,13 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	prv->hid_ctx = pd;
 
 	pd->attr = attr;
-	pd->hid_ctx = ctx;
 	memset(&pd->exp_ctx, 0, sizeof(pd->exp_ctx));
 	pd->exp_ctx.content.draw_data = pd;
 	pd->exp_ctx.dialog_draw = ltf_preview_expose;
 	pd->exp_ctx.force = 1;
+
+	pd->hid_ctx = ctx;
+	prv->hid_zoomto_cb = ltf_preview_zoomto;
 
 	pd->resized = 0;
 #warning TODO make these configurable:
