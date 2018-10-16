@@ -23,3 +23,11 @@ typedef struct pcb_ltf_preview_s {
 } pcb_ltf_preview_t;
 
 void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs);
+
+/* Query current widget sizes and use pd->[xy]* to recalculate and apply the
+   zoom level before a redraw */
+void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd);
+
+/* Double buffered redraw using the current zoom, calling core function for
+   generic preview */
+void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd);
