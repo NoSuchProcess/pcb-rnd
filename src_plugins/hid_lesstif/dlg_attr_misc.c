@@ -97,12 +97,29 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
 	pcb_ltf_preview_t *pd = pd_;
-/*	pcb_hid_cfg_mod_t btn = lesstif_mb2cfg(cbs->event->xbutton.button);*/
+	pcb_hid_attribute_t *attr = pd->attr;
+	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
 	pcb_coord_t x, y;
+	pcb_hid_mouse_ev_t kind = -1;
+
+	if (prv->user_mouse_cb == NULL)
+		return;
+
+	if (cbs->event->xbutton.button == 1) {
+		if (cbs->event->type == ButtonPress) kind = PCB_HID_MOUSE_PRESS;
+		if (cbs->event->type == ButtonRelease) kind = PCB_HID_MOUSE_RELEASE;
+	}
+	else if (cbs->event->xbutton.button == 3) {
+		if (cbs->event->type == ButtonRelease) kind = PCB_HID_MOUSE_POPUP;
+	}
+
+	if (kind < 0)
+		return;
 
 	pcb_ltf_preview_getxy(pd, cbs->event->xbutton.x, cbs->event->xbutton.y, &x, &y);
 
-	pcb_printf("inp %d;%d %mm;%mm\n", cbs->event->xbutton.x, cbs->event->xbutton.y, x, y);
+	if (prv->user_mouse_cb(attr, prv, kind, x, y))
+		pcb_ltf_preview_redraw(pd);
 }
 
 
