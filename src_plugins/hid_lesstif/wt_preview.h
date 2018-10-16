@@ -7,9 +7,9 @@ typedef struct pcb_ltf_preview_s {
 	Widget pw;
 
 	pcb_coord_t x, y;            /* PCB coordinates of upper right corner of window */
-	pcb_coord_t x1, y1, x2, y2;  /* PCB extents of item */
+	pcb_coord_t x1, y1, x2, y2;  /* PCB extends of desired drawing area  */
 	double zoom;                 /* PCB units per screen pixel */
-	int v_width, v_height;       /* pixels */
+	int v_width, v_height;       /* widget dimensions in pixels */
 
 	pcb_hid_expose_ctx_t ctx;
 	pcb_bool (*mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
