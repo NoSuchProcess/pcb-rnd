@@ -91,7 +91,21 @@ static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const p
 static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Boolean *ctd)
 {
 	pcb_ltf_preview_t *pd = pd_;
-	printf("mot\n");
+	pcb_hid_attribute_t *attr = pd->attr;
+	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_coord_t x, y;
+	Window root, child;
+	unsigned int keys_buttons;
+	int root_x, root_y, pos_x, pos_y;
+
+	if (prv->user_mouse_cb == NULL)
+		return;
+
+	XQueryPointer(display, e->xmotion.window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
+	pcb_ltf_preview_getxy(pd, pos_x, pos_y, &x, &y);
+
+	if (prv->user_mouse_cb(attr, prv, PCB_HID_MOUSE_MOTION, x, y))
+		pcb_ltf_preview_redraw(pd);
 }
 
 static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
