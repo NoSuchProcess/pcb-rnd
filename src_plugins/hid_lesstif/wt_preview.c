@@ -55,13 +55,13 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 		XtGetValues(da, stdarg_args, stdarg_n);
 		pd->v_width = w;
 		pd->v_height = h;
-		pd->zoom = (pd->right - pd->left + 1) / (double) w;
-		z = (pd->bottom - pd->top + 1) / (double) h;
+		pd->zoom = (pd->x2 - pd->x1 + 1) / (double) w;
+		z = (pd->y2 - pd->y1 + 1) / (double) h;
 		if (pd->zoom < z)
 			pd->zoom = z;
 
-		pd->x = (pd->left + pd->right) / 2 - pd->v_width * pd->zoom / 2;
-		pd->y = (pd->top + pd->bottom) / 2 - pd->v_height * pd->zoom / 2;
+		pd->x = (pd->x1 + pd->x2) / 2 - pd->v_width * pd->zoom / 2;
+		pd->y = (pd->y1 + pd->y2) / 2 - pd->v_height * pd->zoom / 2;
 	}
 
 	pinout = 0;

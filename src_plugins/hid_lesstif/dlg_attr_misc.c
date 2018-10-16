@@ -99,10 +99,10 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	pd->resized = 0;
 #warning TODO make these configurable:
-	pd->left = 0;
-	pd->top = 0;
-	pd->right = PCB_MM_TO_COORD(100);
-	pd->bottom = PCB_MM_TO_COORD(100);
+	pd->x1 = 0;
+	pd->y1 = 0;
+	pd->x2 = PCB_MM_TO_COORD(100);
+	pd->y2 = PCB_MM_TO_COORD(100);
 
 	stdarg_n = 0;
 	stdarg(XmNwidth, 200);

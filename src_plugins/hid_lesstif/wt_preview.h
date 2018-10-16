@@ -5,7 +5,7 @@ typedef struct pcb_ltf_preview_s {
 
 	Window window;
 	pcb_coord_t x, y;										/* PCB coordinates of upper right corner of window */
-	pcb_coord_t left, right, top, bottom;	/* PCB extents of item */
+	pcb_coord_t x1, y1, x2, y2;	/* PCB extents of item */
 	double zoom;									/* PCB units per screen pixel */
 	int v_width, v_height;				/* pixels */
 
