@@ -56,6 +56,7 @@ struct pcb_gtk_preview_class_s {
 };
 
 typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
+typedef void (*pcb_gtk_preview_config_t)(pcb_gtk_preview_t *gp, GtkWidget *widget);
 typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget * widget, pcb_gtk_expose_t * ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t * ctx);
 typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 
@@ -81,6 +82,7 @@ struct pcb_gtk_preview_s {
 
 	void *gport;
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
+	pcb_gtk_preview_config_t config_cb;
 	pcb_gtk_preview_expose_t expose;
 	pcb_gtk_preview_kind_t kind;
 	pcb_gtk_preview_mouse_ev_t mouse_cb;
@@ -118,7 +120,7 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
 
 GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data);
+																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
 

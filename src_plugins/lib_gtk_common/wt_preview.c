@@ -100,7 +100,8 @@ enum {
 	PROP_LAYER = 6,
 	PROP_COM = 7,
 	PROP_DIALOG_DRAW = 8, /* for PCB_LYT_DIALOG */
-	PROP_GENERIC = 9
+	PROP_GENERIC = 9,
+	PROP_CONFIG = 10
 };
 
 static GObjectClass *ghid_preview_parent_class = NULL;
@@ -168,7 +169,9 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	case PROP_DIALOG_DRAW:
 		preview->expose_data.dialog_draw = (void *) g_value_get_pointer(value);
 		break;
-
+	case PROP_CONFIG:
+		preview->config_cb = (void *) g_value_get_pointer(value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
 	}
@@ -252,6 +255,9 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_GENERIC,
 																	g_param_spec_pointer("generic", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_CONFIG,
+																	g_param_spec_pointer("config", "", "", G_PARAM_WRITABLE));
 }
 
 static void update_expose_data(pcb_gtk_preview_t * prv)
@@ -276,6 +282,9 @@ static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev
 
 	preview->view.canvas_width = ev->width;
 	preview->view.canvas_height = ev->height;
+
+	if (preview->config_cb != NULL)
+		preview->config_cb(preview, w);
 
 	update_expose_data(preview);
 	return TRUE;
@@ -514,12 +523,12 @@ static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_d
 }
 
 GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, void *draw_data)
+																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	GtkWidget *preview;
 
 	preview = pcb_gtk_preview_any_new(com, init_widget, expose, -1, dialog_draw);
-	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "generic", draw_data, NULL);
+	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "config", config, "generic", draw_data, NULL);
 
 	return preview;
 }
