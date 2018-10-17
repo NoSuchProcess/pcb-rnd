@@ -55,6 +55,9 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	void (*orig)(void) = preview->com->pan_common;
 	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
 
+	preview->view.width = data_view->X2 - data_view->X1;
+	preview->view.height = data_view->Y2 - data_view->Y1;
+
 	pcb_gtk_zoom_view_win(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2);
 	preview->x_min = preview->view.x0;
 	preview->y_min = preview->view.y0;
