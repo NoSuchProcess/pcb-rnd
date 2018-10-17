@@ -32,6 +32,7 @@
 - FEATURE: session persistent message log  (messages are flushed after dialog is closed?) [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it
