@@ -156,11 +156,19 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	prv->hid_zoomto_cb = ltf_preview_zoomto;
 
 	pd->resized = 0;
-#warning TODO make these configurable:
-	pd->x1 = 0;
-	pd->y1 = 0;
-	pd->x2 = PCB_MM_TO_COORD(100);
-	pd->y2 = PCB_MM_TO_COORD(100);
+	if (prv->initial_view_valid) {
+		pd->x1 = prv->initial_view.X1;
+		pd->y1 = prv->initial_view.Y1;
+		pd->x2 = prv->initial_view.X2;
+		pd->y2 = prv->initial_view.Y2;
+		prv->initial_view_valid = 0;
+	}
+	else {
+		pd->x1 = 0;
+		pd->y1 = 0;
+		pd->x2 = PCB_MM_TO_COORD(100);
+		pd->y2 = PCB_MM_TO_COORD(100);
+	}
 
 	stdarg_n = 0;
 	stdarg(XmNwidth, 200);
