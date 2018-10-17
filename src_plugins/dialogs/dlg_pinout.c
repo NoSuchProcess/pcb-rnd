@@ -29,11 +29,16 @@
 #include "pcb-printf.h"
 #include "obj_subc_parent.h"
 #include "draw.h"
+#include "obj_term.h"
+#include "rtree.h"
+#include "search_r.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_data_t *data;
 	long subc_id;
+
+	pcb_subc_t *tempsc; /* non-persistent, should be used only within the scope of a callback, recirsively down */
 } pinout_ctx_t;
 
 pinout_ctx_t pinout_ctx;
@@ -71,29 +76,37 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	}
 }
 
+static pcb_r_dir_t pinout_mouse_search_cb(void *closure, const pcb_any_obj_t *obj, void *box)
+{
+	pinout_ctx_t *ctx = closure;
+
+	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc)) {
+pcb_trace("Found term %s\n", obj->term);
+		return PCB_R_DIR_CANCEL;
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	if (kind == PCB_HID_MOUSE_RELEASE) {
 		pinout_ctx_t *ctx = prv->user_ctx;
+		pcb_any_obj_t *o;
 		void *r1, *r2, *r3;
-		pcb_subc_t *sc;
-		pcb_pstk_t *ps;
-		pcb_coord_t ox, oy ;
 		pcb_objtype_t type;
+		pcb_box_t b;
 
 		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 		if (type != PCB_OBJ_SUBC)
 			return pcb_false;
-		sc = r2;
+		ctx->tempsc = r2;
 
-		if (pcb_subc_get_origin(sc, &ox, &oy) != 0)
-			return pcb_false;
-/*pcb_trace("d1b %mm+%mm %mm+%mm %mm,%mm\n", x, ox, y, oy, x + ox, y + oy);*/
-
-		type = pcb_search_obj_by_location(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3, x + ox, y + oy, 1);
-		if ((type != PCB_OBJ_PSTK) || (pcb_obj_parent_subc(r2) != sc))
-			return pcb_false;
-		ps = r2;
+		b.X1 = x;
+		b.Y1 = y;
+		b.X2 = x+1;
+		b.Y2 = y+1;
+		pcb_search_data_by_loc(ctx->data, PCB_TERM_OBJ_TYPES, &b, pinout_mouse_search_cb, ctx);
+		ctx->tempsc = NULL;
 	}
 	
 	return pcb_false;
