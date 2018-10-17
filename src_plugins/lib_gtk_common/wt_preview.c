@@ -280,16 +280,33 @@ static void update_expose_data(pcb_gtk_preview_t * prv)
 static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev, void *tmp)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
+	double xf, yf;
 	preview->win_w = ev->width;
 	preview->win_h = ev->height;
 
 	preview->view.canvas_width = ev->width;
 	preview->view.canvas_height = ev->height;
 
+	xf = (double)preview->view.width / preview->view.canvas_width;
+	yf = (double)preview->view.height / preview->view.canvas_height;
+	preview->view.coord_per_px = (xf > yf ? xf : yf);
+
+	if (preview->kind == PCB_GTK_PREVIEW_GENERIC) {
+		preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
+		preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
+	}
+	else {
+		/* Ugly hack: at the end we will have only GENERIC preview, so there's
+		   no point in fixing up mouse actions properly for the non-generic ones,
+		   but we don't want to risk current behavior until they are converted to
+		   GENERIC */
+		preview->xoffs = preview->yoffs = 0;
+	}
+
 	if (preview->config_cb != NULL)
 		preview->config_cb(preview, w);
 
-	update_expose_data(preview);
+/*	update_expose_data(preview);*/
 	return TRUE;
 }
 
@@ -605,8 +622,8 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 #undef SIDE_Y
 #define SIDE_X(x) x
 #define SIDE_Y(y) y
-	*cx = EVENT_TO_PCB_X(&preview->view, *xp);
-	*cy = EVENT_TO_PCB_Y(&preview->view, *yp);
+	*cx = EVENT_TO_PCB_X(&preview->view, *xp) + preview->xoffs;
+	*cy = EVENT_TO_PCB_Y(&preview->view, *yp) + preview->yoffs;
 #undef SIDE_X
 #undef SIDE_Y
 }

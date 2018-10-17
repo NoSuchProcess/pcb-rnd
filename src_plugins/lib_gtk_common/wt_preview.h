@@ -80,6 +80,8 @@ struct pcb_gtk_preview_s {
 	gint w_pixels, h_pixels;                  /* natural size of object preview */
 	gint win_w, win_h;
 
+	pcb_coord_t xoffs, yoffs; /* difference between desired x0;y0 and the actual window's top left coords */
+
 	void *gport;
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
 	pcb_gtk_preview_config_t config_cb;
