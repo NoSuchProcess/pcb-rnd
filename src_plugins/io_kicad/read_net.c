@@ -48,7 +48,7 @@
 #define if_strval(node, name) \
 	if (strcmp(node->str, #name) == 0) { \
 		if (name != NULL) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", #name); \
+			pcb_message(PCB_MSG_ERROR, "Invalid eeschema: multiple %s subtrees\n", #name); \
 			return -1; \
 		} \
 		if (node->children != NULL) \
@@ -58,7 +58,7 @@
 #define if_subtree(node, name) \
 	if (strcmp(node->str, #name) == 0) { \
 		if (name != NULL) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", #name); \
+			pcb_message(PCB_MSG_ERROR, "Invalid eeschema: multiple %s subtrees\n", #name); \
 			return -1; \
 		} \
 		name = node; \
@@ -66,7 +66,7 @@
 
 #define req_subtree(name) \
 	if (name == NULL) { \
-		pcb_message(PCB_MSG_ERROR, "Invalid eechema: missing %s subtree\n", #name); \
+		pcb_message(PCB_MSG_ERROR, "Invalid eeschema: missing %s subtree\n", #name); \
 		return -1; \
 	} \
 
@@ -77,7 +77,7 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 
 	/* check the header */
 	if (strcmp(dom->root->str, "export") != 0) {
-		pcb_message(PCB_MSG_ERROR, "Invalid eechema netlist header: not an export\n");
+		pcb_message(PCB_MSG_ERROR, "Invalid eeschema netlist header: not an export\n");
 		return -1;
 	}
 
@@ -92,7 +92,7 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 	req_subtree(nets);
 
 	if ((version->children == NULL) || (strcmp(version->children->str, "D") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Invalid eechema version: expected 'D', got '%s'\n", version->children->str);
+		pcb_message(PCB_MSG_ERROR, "Invalid eeschema version: expected 'D', got '%s'\n", version->children->str);
 		return -1;
 	}
 
@@ -109,11 +109,11 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 			else if_strval(n, footprint)
 		}
 		if (ref == NULL) {
-			pcb_message(PCB_MSG_WARNING, "eechema: ignoring component with no refdes\n");
+			pcb_message(PCB_MSG_WARNING, "eeschema: ignoring component with no refdes\n");
 			continue;
 		}
 		if (footprint == NULL) {
-			pcb_message(PCB_MSG_WARNING, "eechema: ignoring component %s with no footprint\n", ref);
+			pcb_message(PCB_MSG_WARNING, "eeschema: ignoring component %s with no footprint\n", ref);
 			continue;
 		}
 		pcb_actionl("ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
@@ -153,13 +153,13 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 						netname = code;
 				}
 				if (netname == NULL) {
-					pcb_message(PCB_MSG_WARNING, "eechema: ignoring pins of incomplete net\n");
+					pcb_message(PCB_MSG_WARNING, "eeschema: ignoring pins of incomplete net\n");
 					continue;
 				}
 
 				/* do the binding */
 				if ((ref == NULL) || (pin == NULL)) {
-					pcb_message(PCB_MSG_WARNING, "eechema: ignoring incomplete connection to net %s: refdes=%s pin=%s \n", netname, ref, pin);
+					pcb_message(PCB_MSG_WARNING, "eeschema: ignoring incomplete connection to net %s: refdes=%s pin=%s \n", netname, ref, pin);
 					continue;
 				}
 				pcb_snprintf(refpin, sizeof(refpin), "%s-%s", ref, pin);
