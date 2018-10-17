@@ -55,8 +55,6 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
 		int orig_po = pcb_draw_doing_pinout;
-		pcb_dad_preview_zoomto(attrib, &sc->BoundingBox);
-
 		pcb_draw_doing_pinout = pcb_true;
 		pcb_subc_draw_preview(sc, &e->view);
 		pcb_draw_doing_pinout = orig_po;
