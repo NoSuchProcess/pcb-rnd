@@ -110,7 +110,7 @@ static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
 	ctx->subc_id = sc->ID;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, ctx);
+		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, &sc->BoundingBox, ctx);
 	PCB_DAD_END(ctx->dlg);
 
 	if (sc->refdes != NULL)

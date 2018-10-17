@@ -107,6 +107,9 @@ typedef struct pcb_hid_preview_s pcb_hid_preview_t;
 struct pcb_hid_preview_s {
 	pcb_hid_attribute_t *attrib;
 
+	pcb_box_t initial_view;
+	unsigned initial_view_valid:1;
+
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
 	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
