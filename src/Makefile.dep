@@ -391,8 +391,9 @@
  ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
  operation.h obj_pstk_inlines.h data.h thermal.h operation.h \
  ../src_plugins/dialogs/dlg_about.c build_run.h pcb-printf.h \
- ../src_plugins/dialogs/dlg_pinout.c obj_subc_parent.h draw.h \
- ../src_plugins/dialogs/dlg_export.c hid_init.h dolists.h
+ ../src_plugins/dialogs/dlg_pinout.c obj_subc_parent.h draw.h obj_term.h \
+ rtree.h search_r.h ../src_plugins/dialogs/dlg_export.c hid_init.h \
+ dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
