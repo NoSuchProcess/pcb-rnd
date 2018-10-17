@@ -83,7 +83,8 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	 */
 	pcb_gtk_coords_event2pcb(v, event_x, event_y, &v->pcb_x, &v->pcb_y);
 
-	v->com->pan_common();
+	if (v->com->pan_common != NULL)
+		v->com->pan_common();
 }
 
 pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)

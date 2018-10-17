@@ -52,24 +52,20 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view)
 {
-	double bigger;
-	float scale = 100.0 / PCB_MIL_TO_COORD (150.); /* arbitrary zoom factor: 100 pixel per 150 mil */
-	int max_pixels = 1024;
+	void (*orig)(void) = preview->com->pan_common;
+	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
 
-	preview->x_min = data_view->X1;
-	preview->y_min = data_view->Y1;
-	preview->x_max = data_view->X2;
-	preview->y_max = data_view->Y2;
-	preview->w_pixels = scale * (double)(preview->x_max - preview->x_min);
-	preview->h_pixels = scale * (double)(preview->y_max - preview->y_min);
+	pcb_gtk_zoom_view_win(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2);
+	preview->x_min = preview->view.x0;
+	preview->y_min = preview->view.y0;
+	preview->x_max = preview->view.x0 + preview->view.width;
+	preview->y_max = preview->view.x0 + preview->view.height;
+	preview->w_pixels = preview->view.canvas_width;
+	preview->h_pixels = preview->view.canvas_height;
 
-	bigger = preview->w_pixels > preview->h_pixels ? preview->w_pixels : preview->h_pixels;
-	if (bigger > max_pixels) {
-		double fix = bigger / max_pixels;
-		preview->w_pixels /= fix;
-		preview->h_pixels /= fix;
-	}
+	preview->com->pan_common = orig;
 }
+
 
 static void preview_set_view(pcb_gtk_preview_t * preview)
 {
