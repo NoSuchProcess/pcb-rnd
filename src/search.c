@@ -1551,3 +1551,56 @@ int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_c
 	return 1;
 }
 
+
+pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const pcb_box_t *query_box, pcb_r_dir_t (*cb_)(void *closure, const pcb_any_obj_t *obj, void *box), void *closure)
+{
+	pcb_layer_t *ly;
+	pcb_layer_id_t lid;
+	pcb_r_dir_t res;
+	const pcb_rtree_box_t *query = (const pcb_rtree_box_t *)query_box;
+	pcb_rtree_dir_t (*cb)(void *, void *, const pcb_rtree_box_t *) = (pcb_rtree_dir_t(*)(void *, void *, const pcb_rtree_box_t *))cb_;
+
+	if ((type & PCB_OBJ_PSTK) && (data->padstack_tree != NULL)) {
+		res = pcb_rtree_search_any(data->padstack_tree, query, NULL, cb, closure, NULL);
+		if (res & pcb_RTREE_DIR_STOP)
+			return res;
+	}
+
+	if ((type & PCB_OBJ_SUBC) && (data->subc_tree != NULL)) {
+		res = pcb_rtree_search_any(data->subc_tree, query, NULL, cb, closure, NULL);
+		if (res & pcb_RTREE_DIR_STOP)
+			return res;
+	}
+
+	if ((type & PCB_OBJ_RAT) && (data->rat_tree != NULL)) {
+		res = pcb_rtree_search_any(data->rat_tree, query, NULL, cb, closure, NULL);
+		if (res & pcb_RTREE_DIR_STOP)
+			return res;
+	}
+
+	for(lid = 0, ly = data->Layer; lid < data->LayerN; lid++,ly++) {
+
+		if ((type & PCB_OBJ_ARC) && (ly->arc_tree != NULL)) {
+			res = pcb_rtree_search_any(ly->arc_tree, query, NULL, cb, closure, NULL);
+			if (res & pcb_RTREE_DIR_STOP)
+				return res;
+		}
+		if ((type & PCB_OBJ_LINE) && (ly->line_tree != NULL)) {
+			res = pcb_rtree_search_any(ly->line_tree, query, NULL, cb, closure, NULL);
+			if (res & pcb_RTREE_DIR_STOP)
+				return res;
+		}
+		if ((type & PCB_OBJ_POLY) && (ly->polygon_tree != NULL)) {
+			res = pcb_rtree_search_any(ly->polygon_tree, query, NULL, cb, closure, NULL);
+			if (res & pcb_RTREE_DIR_STOP)
+				return res;
+		}
+		if ((type & PCB_OBJ_TEXT) && (ly->text_tree != NULL)) {
+			res = pcb_rtree_search_any(ly->text_tree, query, NULL, cb, closure, NULL);
+			if (res & pcb_RTREE_DIR_STOP)
+				return res;
+		}
+
+	}
+}
+
