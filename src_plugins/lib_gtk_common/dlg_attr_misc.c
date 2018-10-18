@@ -82,7 +82,7 @@ void ghid_preview_config(pcb_gtk_preview_t *gp, GtkWidget *widget)
 {
 	pcb_hid_preview_t *prv = gp->expose_data.content.draw_data;
 	if (prv->initial_view_valid) {
-		pcb_gtk_preview_zoomto(widget, &prv->initial_view);
+		pcb_gtk_preview_zoomto(PCB_GTK_PREVIEW(widget), &prv->initial_view);
 		gtk_widget_queue_draw(widget);
 		prv->initial_view_valid = 0;
 	}
