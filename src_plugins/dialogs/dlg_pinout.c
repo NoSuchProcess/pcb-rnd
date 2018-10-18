@@ -117,6 +117,8 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_mid, &val);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_right, &val);
 
+pcb_printf("click: %ml;%ml\n", x, y);
+
 		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 		if (type != PCB_OBJ_SUBC)
 			return pcb_false;
@@ -144,13 +146,11 @@ static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, &sc->BoundingBox, ctx);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "");
+			PCB_DAD_LABEL(ctx->dlg, "a");
 			ctx->w_lab_left = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "");
+			PCB_DAD_LABEL(ctx->dlg, "b");
 			ctx->w_lab_mid = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "");
+			PCB_DAD_LABEL(ctx->dlg, "c");
 			ctx->w_lab_right = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
