@@ -39,7 +39,7 @@ typedef struct{
 	pcb_data_t *data;
 	long subc_id;
 
-	int w_lab_left, w_lab_mid, w_lab_right;
+	int w_lab_num, w_lab_name, w_lab_net;
 
 	pcb_subc_t *tempsc; /* non-persistent, should be used only within the scope of a callback, recirsively down */
 } pinout_ctx_t;
@@ -88,15 +88,15 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 		pcb_lib_menu_t *net;
 
 		val.str_value = obj->term;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_left, &val);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
 		val.str_value = pcb_attribute_get(&obj->Attributes, "name");
 		if (val.str_value != NULL)
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_mid, &val);
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		if (ctx->pcb != NULL) {
 			net = pcb_netlist_find_net4term(ctx->pcb, obj);
 			if (net != NULL) {
 				val.str_value = net->Name;
-				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_right, &val);
+				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
 			}
 		}
 	}
@@ -113,9 +113,9 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 		pcb_hid_attr_val_t val;
 
 		val.str_value = "n/a";
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_left, &val);
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_mid, &val);
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_right, &val);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
 
 		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 		if (type != PCB_OBJ_SUBC)
@@ -147,16 +147,16 @@ static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Term ID:");
 			PCB_DAD_LABEL(ctx->dlg, "");
-				ctx->w_lab_left = PCB_DAD_CURRENT(ctx->dlg);
+				ctx->w_lab_num = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Term name:");
 			PCB_DAD_LABEL(ctx->dlg, "");
-				ctx->w_lab_mid = PCB_DAD_CURRENT(ctx->dlg);
+				ctx->w_lab_name = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Net:");
 			PCB_DAD_LABEL(ctx->dlg, "");
-				ctx->w_lab_right = PCB_DAD_CURRENT(ctx->dlg);
+				ctx->w_lab_net = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
