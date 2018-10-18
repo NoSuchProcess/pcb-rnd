@@ -1552,7 +1552,7 @@ int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_c
 }
 
 
-pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const pcb_box_t *query_box, pcb_r_dir_t (*cb_)(void *closure, const pcb_any_obj_t *obj, void *box), void *closure)
+pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const pcb_box_t *query_box, pcb_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
 {
 	pcb_layer_t *ly;
 	pcb_layer_id_t lid;

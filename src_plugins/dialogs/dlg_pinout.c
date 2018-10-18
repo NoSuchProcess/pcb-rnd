@@ -79,7 +79,7 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	}
 }
 
-static pcb_r_dir_t pinout_mouse_search_cb(void *closure, const pcb_any_obj_t *obj, void *box)
+static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, void *box)
 {
 	pinout_ctx_t *ctx = closure;
 	pcb_hid_attr_val_t val;
