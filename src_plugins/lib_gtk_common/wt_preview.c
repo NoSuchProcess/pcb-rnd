@@ -50,6 +50,27 @@
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp);
 
+static void perview_update_offs(pcb_gtk_preview_t *preview)
+{
+	double xf, yf;
+
+	xf = (double)preview->view.width / preview->view.canvas_width;
+	yf = (double)preview->view.height / preview->view.canvas_height;
+	preview->view.coord_per_px = (xf > yf ? xf : yf);
+
+	if (preview->kind == PCB_GTK_PREVIEW_GENERIC) {
+		preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
+		preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
+	}
+	else {
+		/* Ugly hack: at the end we will have only GENERIC preview, so there's
+		   no point in fixing up mouse actions properly for the non-generic ones,
+		   but we don't want to risk current behavior until they are converted to
+		   GENERIC */
+		preview->xoffs = preview->yoffs = 0;
+	}
+}
+
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view)
 {
 	void (*orig)(void) = preview->com->pan_common;
@@ -65,6 +86,8 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	preview->y_max = preview->view.y0 + preview->view.height;
 	preview->w_pixels = preview->view.canvas_width;
 	preview->h_pixels = preview->view.canvas_height;
+
+	perview_update_offs(preview);
 
 	preview->com->pan_common = orig;
 }
@@ -277,26 +300,6 @@ static void update_expose_data(pcb_gtk_preview_t * prv)
 		prv->view.coord_per_px, prv->view.x0);*/
 }
 
-static void perview_update_offs(pcb_gtk_preview_t *preview)
-{
-	double xf, yf;
-
-	xf = (double)preview->view.width / preview->view.canvas_width;
-	yf = (double)preview->view.height / preview->view.canvas_height;
-	preview->view.coord_per_px = (xf > yf ? xf : yf);
-
-	if (preview->kind == PCB_GTK_PREVIEW_GENERIC) {
-		preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
-		preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
-	}
-	else {
-		/* Ugly hack: at the end we will have only GENERIC preview, so there's
-		   no point in fixing up mouse actions properly for the non-generic ones,
-		   but we don't want to risk current behavior until they are converted to
-		   GENERIC */
-		preview->xoffs = preview->yoffs = 0;
-	}
-}
 
 static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev, void *tmp)
 {
