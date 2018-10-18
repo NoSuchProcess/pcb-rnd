@@ -70,7 +70,7 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	else {
 		char tmp[128];
 		pcb_box_t bbox;
-		sprintf(tmp, "Subcircuit #%ld not found.");
+		sprintf(tmp, "Subcircuit #%ld not found.", ctx->subc_id);
 		bbox.X1 = bbox.Y1 = 0;
 		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
 		pcb_dad_preview_zoomto(attrib, &bbox);
