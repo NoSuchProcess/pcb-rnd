@@ -133,11 +133,12 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 	return pcb_false;
 }
 
-static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
+static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 {
 	char title[64];
 	pinout_ctx_t *ctx = calloc(sizeof(pinout_ctx_t), 1);
 
+	ctx->pcb = pcb;
 	ctx->data = data;
 	ctx->subc_id = sc->ID;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -168,7 +169,7 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, pcb_crosshair.X, pcb_crosshair.Y, 1);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
-		pcb_dlg_pinout(PCB->Data, sc);
+		pcb_dlg_pinout(PCB, PCB->Data, sc);
 		PCB_ACT_IRES(0);
 	}
 	else
