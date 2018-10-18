@@ -107,7 +107,6 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 {
 	if (kind == PCB_HID_MOUSE_RELEASE) {
 		pinout_ctx_t *ctx = prv->user_ctx;
-		pcb_any_obj_t *o;
 		void *r1, *r2, *r3;
 		pcb_objtype_t type;
 		pcb_box_t b;
