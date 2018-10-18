@@ -35,8 +35,11 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_board_t *pcb; /* for netlist lookups */
 	pcb_data_t *data;
 	long subc_id;
+
+	int w_lab_left, w_lab_mid, w_lab_right;
 
 	pcb_subc_t *tempsc; /* non-persistent, should be used only within the scope of a callback, recirsively down */
 } pinout_ctx_t;
@@ -79,10 +82,23 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 static pcb_r_dir_t pinout_mouse_search_cb(void *closure, const pcb_any_obj_t *obj, void *box)
 {
 	pinout_ctx_t *ctx = closure;
+	pcb_hid_attr_val_t val;
 
-	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc)) {
-pcb_trace("Found term %s\n", obj->term);
-		return PCB_R_DIR_CANCEL;
+	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc) && (obj->term != NULL)) {
+		pcb_lib_menu_t *net;
+
+		val.str_value = obj->term;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_left, &val);
+		val.str_value = pcb_attribute_get(&obj->Attributes, "name");
+		if (val.str_value != NULL)
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_mid, &val);
+		if (ctx->pcb != NULL) {
+			net = pcb_netlist_find_net4term(ctx->pcb, obj);
+			if (net != NULL) {
+				val.str_value = net->Name;
+				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_mid, &val);
+			}
+		}
 	}
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -95,6 +111,12 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 		void *r1, *r2, *r3;
 		pcb_objtype_t type;
 		pcb_box_t b;
+		pcb_hid_attr_val_t val;
+
+		val.str_value = "";
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_left, &val);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_mid, &val);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_right, &val);
 
 		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 		if (type != PCB_OBJ_SUBC)
@@ -122,6 +144,16 @@ static void pcb_dlg_pinout(pcb_data_t *data, pcb_subc_t *sc)
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, &sc->BoundingBox, ctx);
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "");
+			ctx->w_lab_left = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "");
+			ctx->w_lab_mid = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "");
+			ctx->w_lab_right = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
 	if (sc->refdes != NULL)
