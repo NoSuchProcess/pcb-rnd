@@ -62,7 +62,7 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	preview->x_min = preview->view.x0;
 	preview->y_min = preview->view.y0;
 	preview->x_max = preview->view.x0 + preview->view.width;
-	preview->y_max = preview->view.x0 + preview->view.height;
+	preview->y_max = preview->view.y0 + preview->view.height;
 	preview->w_pixels = preview->view.canvas_width;
 	preview->h_pixels = preview->view.canvas_height;
 
