@@ -277,15 +277,9 @@ static void update_expose_data(pcb_gtk_preview_t * prv)
 		prv->view.coord_per_px, prv->view.x0);*/
 }
 
-static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev, void *tmp)
+static void perview_update_offs(pcb_gtk_preview_t *preview)
 {
-	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	double xf, yf;
-	preview->win_w = ev->width;
-	preview->win_h = ev->height;
-
-	preview->view.canvas_width = ev->width;
-	preview->view.canvas_height = ev->height;
 
 	xf = (double)preview->view.width / preview->view.canvas_width;
 	yf = (double)preview->view.height / preview->view.canvas_height;
@@ -302,6 +296,18 @@ static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev
 		   GENERIC */
 		preview->xoffs = preview->yoffs = 0;
 	}
+}
+
+static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev, void *tmp)
+{
+	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
+	preview->win_w = ev->width;
+	preview->win_h = ev->height;
+
+	preview->view.canvas_width = ev->width;
+	preview->view.canvas_height = ev->height;
+
+	perview_update_offs(preview);
 
 	if (preview->config_cb != NULL)
 		preview->config_cb(preview, w);
