@@ -1602,5 +1602,6 @@ pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const p
 		}
 
 	}
+	return 0;
 }
 
