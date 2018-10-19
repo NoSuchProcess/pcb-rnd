@@ -5356,15 +5356,12 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
  error.h search.h rats.h netlist.h route_style.h tool.h rats.h rtree.h \
  flag_str.h macro.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h find.h \
- draw.h pcb-printf.h plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h actions.h misc_util.h \
- ../src_plugins/serpentine/serpentine_conf.h conf.h compat_misc.h \
- compat_nls.h layer.h obj_term.h obj_pstk.h obj_pstk_inlines.h thermal.h \
- obj_subc_parent.h ../src_3rd/genregex/regex_sei.h \
- ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
- ../src_plugins/serpentine/serpentine_conf_fields.h
+ draw.h draw_wireframe.h pcb-printf.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
+ ../src_plugins/serpentine/serpentine_conf.h conf.h compat_nls.h layer.h \
+ route.h dolists.h ../src_plugins/serpentine/serpentine_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
