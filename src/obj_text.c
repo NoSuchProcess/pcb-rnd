@@ -59,7 +59,7 @@
 #include "conf_core.h"
 
 /*** allocation ***/
-/* get next slot for a text object, allocates memory if necessary */
+
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
 {
 	pcb_text_t *new_obj;

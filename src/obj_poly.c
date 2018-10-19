@@ -59,7 +59,6 @@
 
 /*** allocation ***/
 
-/* get next slot for a polygon object, allocates memory if necessary */
 pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 {
 	pcb_poly_t *new_obj;

@@ -50,7 +50,6 @@
 #include "rats.h"
 
 /*** allocation ***/
-/* get next slot for a Rat, allocates memory if necessary */
 pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 {
 	pcb_rat_t *new_obj;
