@@ -54,6 +54,22 @@
 
 static const char core_pstk_cookie[] = "padstack";
 
+void pcb_pstk_reg(pcb_data_t *data, pcb_pstk_t *pstk)
+{
+	padstacklist_append(&data->padstack, pstk);
+	pcb_obj_id_reg(data, pstk);
+	PCB_SET_PARENT(pstk, data, data);
+}
+
+void pcb_pstk_unreg(pcb_pstk_t *pstk)
+{
+	pcb_data_t *data = pstk->parent.data;
+	assert(pstk->parent_type == PCB_PARENT_DATA);
+	padstacklist_remove(pstk);
+	pcb_obj_id_del(data, pstk);
+	PCB_CLEAR_PARENT(pstk);
+}
+
 pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 {
 	pcb_pstk_t *ps;
@@ -62,16 +78,15 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 	ps->protoi = -1;
 	ps->type = PCB_OBJ_PSTK;
 	ps->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(ps, data, data);
 
-	padstacklist_append(&data->padstack, ps);
+	pcb_pstk_reg(data, ps);
 
 	return ps;
 }
 
 void pcb_pstk_free(pcb_pstk_t *ps)
 {
-	padstacklist_remove(ps);
+	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);
 	free(ps);
 }

@@ -543,9 +543,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 		while((ps = padstacklist_first(&buffer->Data->padstack)) != NULL) {
 			const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-			padstacklist_remove(ps);
-			padstacklist_append(&sc->data->padstack, ps);
-			PCB_SET_PARENT(ps, data, sc->data);
+			pcb_pstk_unreg(ps);
+			pcb_pstk_reg(sc->data, ps);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
 			ps->proto = pcb_pstk_proto_insert_dup(sc->data, proto, 1);
 			ps->protoi = -1;

@@ -53,10 +53,10 @@ void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_PSTK, NULL, ps);
 	pcb_r_delete_entry(ctx->buffer.src->padstack_tree, (pcb_box_t *)ps);
 
-	padstacklist_remove(ps);
+	pcb_pstk_unreg(ps);
 	ps->proto = npid;
 	ps->protoi = -1; /* only the canonical trshape got copied, not the transofrmed ones */
-	padstacklist_append(&ctx->buffer.dst->padstack, ps);
+	pcb_pstk_reg(ctx->buffer.dst, ps);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, ps);
 
@@ -66,7 +66,6 @@ void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_PSTK, NULL, ps);
 
-	PCB_SET_PARENT(ps, data, ctx->buffer.dst);
 	return ps;
 }
 

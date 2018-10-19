@@ -95,6 +95,10 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
 void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps);
 
+void pcb_pstk_reg(pcb_data_t *data, pcb_pstk_t *pstk);
+void pcb_pstk_unreg(pcb_pstk_t *pstk);
+
+
 void pcb_pstk_pre(pcb_pstk_t *pstk);
 void pcb_pstk_post(pcb_pstk_t *pstk);
 
