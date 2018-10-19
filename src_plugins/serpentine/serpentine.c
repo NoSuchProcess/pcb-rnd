@@ -52,11 +52,7 @@
 #include "layer.h"
 #include "route.h"
 
-/*#include <genregex/regex_sei.h>*/
-
 conf_serpentine_t conf_serpentine;
-
-static pcb_route_t serpentine_route;
 
 static double
 point_on_line(	pcb_coord_t X,	pcb_coord_t Y,
@@ -223,9 +219,6 @@ serpentine_calculate_route(	pcb_route_t * route,
 
 static void tool_serpentine_init(void)
 {
-	pcb_route_init(&serpentine_route);
-
-
 }
 
 static void tool_serpentine_uninit(void)
@@ -234,7 +227,6 @@ static void tool_serpentine_uninit(void)
   pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
   pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
   pcb_notify_crosshair_change(pcb_true);
-  pcb_route_destroy(&serpentine_route);
 }
 
 
@@ -257,10 +249,8 @@ static void tool_serpentine_notify_mode(void)
 																&pcb_crosshair.AttachedObject.X,
 																&pcb_crosshair.AttachedObject.Y );
 
-			if((t >= 0.0) && (t <= 1.0)) {
-				pcb_route_reset(&serpentine_route);
+			if((t >= 0.0) && (t <= 1.0)) 
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
-			}
 		}
 		else
 			pcb_message(PCB_MSG_WARNING, _("Serpentines can be only drawn onto a line\n"));
@@ -306,6 +296,7 @@ static void tool_serpentine_draw_attached(void)
 	switch (pcb_crosshair.AttachedObject.State) {
 		case PCB_CH_STATE_SECOND:
 			{
+				pcb_route_t route;
 				pcb_line_t * p_line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
 				pcb_point_t point1;
 				pcb_point_t point2;
@@ -314,10 +305,10 @@ static void tool_serpentine_draw_attached(void)
 				point2.X = pcb_crosshair.AttachedObject.tx; 
 				point2.Y = pcb_crosshair.AttachedObject.ty;
 
-				pcb_route_reset(&serpentine_route);
-				if(serpentine_calculate_route(&serpentine_route,p_line, &point1, &point2, 5 * p_line->Thickness ) == 0) {
-					pcb_route_draw(&serpentine_route, pcb_crosshair.GC);
-					pcb_route_reset(&serpentine_route);
+				pcb_route_init(&route);
+				if(serpentine_calculate_route(&route,p_line, &point1, &point2, 5 * p_line->Thickness ) == 0) {
+					pcb_route_draw(&route, pcb_crosshair.GC);
+					pcb_route_destroy(&route);
 				}
 			}
 			break;
