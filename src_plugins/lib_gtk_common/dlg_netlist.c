@@ -110,39 +110,9 @@ static pcb_lib_menu_t *node_selected_net;
       PCB calls this to tell the gui netlist code the layout net has
       changed and the gui data structures (net and optionally node data
       models) should be rebuilt.
-*/
 
+    See doc/developer/old_netlist.txt for the core data model.
 
-/*  -------- The netlist nodes (pcb_lib_entry_t) data model ----------
-    Each time a net is selected in the left treeview, this node model
-    is recreated containing all the nodes (pins/pads) that are connected
-    to the net.  Loading the new model will update the right treeview with
-    all the new node names (C100-1, R100-1, etc).
-
-    The terminology is a bit confusing because the PCB netlist data
-    structures are generic structures used for library elements, netlist
-    data, and possibly other things also.  The mapping is that
-    the layout netlist data structure is a pcb_lib_t which
-    contains an allocated array of pcb_lib_menu_t structs.  Each of these
-    structs represents a net in the netlist and contains an array
-    of pcb_lib_entry_t structs which represent the nodes connecting to
-    the net.  So we have:
-
-   |                      Nets              Nodes
-   |       pcb_lib_t    pcb_lib_menu_t   pcb_lib_entry_t
-   | -------------------------------------------------------
-   |  PCB->NetlistLib------Menu[0]-----------Entry[0]
-   |                     |                   Entry[1]
-   |                     |                     ...
-   |                     |
-   |                     --Menu[1]-----------Entry[0]
-   |                     |                   Entry[1]
-   |                     |                     ...
-   |                     |
-   |                     -- ...
-   |
-   | Where for example Menu[] names would be nets GND, Vcc, etc and Entry[]
-   | names would be nodes C101-1, R101-2, etc
 */
 
 static pcb_lib_entry_t *node_get_node_from_name(pcb_gtk_common_t *com, gchar *node_name, pcb_lib_menu_t **node_net);
