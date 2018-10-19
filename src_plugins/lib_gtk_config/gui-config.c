@@ -70,7 +70,6 @@
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_entry.h"
-#include "../src_plugins/lib_gtk_common/bu_notebook.h"
 #include "../src_plugins/lib_gtk_common/bu_text_view.h"
 #include "../src_plugins/lib_gtk_common/bu_check_button.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
