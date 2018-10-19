@@ -37,15 +37,15 @@
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \
 		if (__obj__->type != exp_type) \
-			pcb_message(PCB_MSG_ERROR, CHK "%s %ld type proken (%d != %d)\n", pcb_obj_type_name(exp_type), __obj__->ID, __obj__->type, exp_type); \
+			pcb_message(PCB_MSG_ERROR, CHK "%s %ld type broken (%d != %d)\n", pcb_obj_type_name(exp_type), __obj__->ID, __obj__->type, exp_type); \
 	} while(0)
 
 #define check_parent(name, obj, pt, prnt) \
 	do { \
 		if (obj->parent_type != pt) \
-			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%d != %d)\n", whose, obj->ID, obj->parent_type, pt); \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type broken (%d != %d)\n", whose, obj->ID, obj->parent_type, pt); \
 		else if (obj->parent.any != prnt) \
-			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type broken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
 	} while(0)
 
 #define check_obj_id(name, data, obj) \
@@ -181,9 +181,9 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	htip_entry_t *e;
 
 	if (data->parent_type != pt)
-		pcb_message(PCB_MSG_ERROR, CHK "%s data: parent type proken (%d != %d)\n", whose, data->parent_type, pt);
+		pcb_message(PCB_MSG_ERROR, CHK "%s data: parent type broken (%d != %d)\n", whose, data->parent_type, pt);
 	else if (data->parent.any != parent)
-		pcb_message(PCB_MSG_ERROR, CHK "%s data: parent proken (%p != %p)\n", whose, data->parent, parent);
+		pcb_message(PCB_MSG_ERROR, CHK "%s data: parent broken (%p != %p)\n", whose, data->parent, parent);
 
 
 	for(n = 0; n < data->LayerN; n++) {
@@ -194,7 +194,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	
 		/* check layers */
 		if (data->Layer[n].parent.data != data)
-			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
+			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent broken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].name == NULL) || (*data->Layer[n].name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
 		check_type(&data->Layer[n], PCB_OBJ_LAYER);
