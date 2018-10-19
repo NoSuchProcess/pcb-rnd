@@ -61,6 +61,24 @@
 
 /**** allocation ****/
 
+void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line)
+{
+	linelist_append(&layer->Line, line);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_reg(layer->parent.data, line);
+	PCB_SET_PARENT(line, layer, layer);
+}
+
+void pcb_line_unreg(pcb_line_t *line)
+{
+	pcb_layer_t *layer = line->parent.layer;
+	assert(line->parent_type == PCB_PARENT_LAYER);
+	linelist_remove(line);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_del(layer->parent.data, line);
+	PCB_SET_PARENT(line, layer, NULL);
+}
+
 pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
 {
 	pcb_line_t *new_obj;
@@ -68,17 +86,16 @@ pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
 	new_obj = calloc(sizeof(pcb_line_t), 1);
 	new_obj->type = PCB_OBJ_LINE;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(new_obj, layer, layer);
 
-	linelist_append(&layer->Line, new_obj);
+	pcb_line_reg(layer, new_obj);
 
 	return new_obj;
 }
 
-void pcb_line_free(pcb_line_t * data)
+void pcb_line_free(pcb_line_t *line)
 {
-	linelist_remove(data);
-	free(data);
+	pcb_line_unreg(line);
+	free(line);
 }
 
 
@@ -408,8 +425,8 @@ void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *l
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_LINE, srcly, line);
 	pcb_r_delete_entry(srcly->line_tree, (pcb_box_t *)line);
 
-	linelist_remove(line);
-	linelist_append(&(dstly->Line), line);
+	pcb_line_unreg(line);
+	pcb_line_reg(dstly, line);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, line);
 
@@ -417,8 +434,6 @@ void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *l
 		dstly->line_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(dstly->line_tree, (pcb_box_t *)line);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_LINE, dstly, line);
-
-	PCB_SET_PARENT(line, layer, dstly);
 
 	return line;
 }
@@ -636,8 +651,8 @@ void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_l
 {
 	pcb_r_delete_entry(Source->line_tree, (pcb_box_t *) line);
 
-	linelist_remove(line);
-	linelist_append(&(Destination->Line), line);
+	pcb_line_unreg(line);
+	pcb_line_reg(Destination, line);
 
 	if (!Destination->line_tree)
 		Destination->line_tree = pcb_r_create_tree();

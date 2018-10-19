@@ -57,6 +57,8 @@ pcb_line_t *pcb_line_dup(pcb_layer_t *Layer, pcb_line_t *src);
 pcb_line_t *pcb_line_dup_at(pcb_layer_t *dst, pcb_line_t *src, pcb_coord_t dx, pcb_coord_t dy);
 void *pcb_line_destroy(pcb_layer_t *dst, pcb_line_t *src);
 
+void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line);
+void pcb_line_unreg(pcb_line_t *line);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);

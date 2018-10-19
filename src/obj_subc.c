@@ -462,9 +462,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			}
 			else {
 				/* copy the line */
-				linelist_remove(line);
-				linelist_append(&dst->Line, line);
-				PCB_SET_PARENT(line, layer, dst);
+				pcb_line_unreg(line);
+				pcb_line_reg(dst, line);
 				PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
 
 				if (termpad != NULL) {
