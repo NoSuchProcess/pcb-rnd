@@ -328,6 +328,7 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
 		pcb_layer_real2bound(&data->Layer[n], &pcb->Data->Layer[n], share_rtrees);
 		data->Layer[n].parent.data = data;
 		data->Layer[n].parent_type = PCB_PARENT_DATA;
+		data->Layer[n].type = PCB_OBJ_LAYER;
 	}
 	data->LayerN = pcb->Data->LayerN;
 }
