@@ -58,6 +58,23 @@
 
 #define SUBC_AUX_NAME "subc-aux"
 
+void pcb_subc_reg(pcb_data_t *data, pcb_subc_t *subc)
+{
+	pcb_subclist_append(&data->subc, subc);
+	pcb_obj_id_reg(data, subc);
+	PCB_SET_PARENT(subc->data, subc, subc);
+	PCB_SET_PARENT(subc, data, data);
+}
+
+void pcb_subc_unreg(pcb_subc_t *subc)
+{
+	pcb_data_t *data = subc->parent.data;
+	assert(subc->parent_type == PCB_PARENT_DATA);
+	pcb_subclist_remove(subc);
+	pcb_obj_id_del(data, subc);
+	PCB_CLEAR_PARENT(subc);
+}
+
 /* Modify dst to include src, if src is not a floater */
 static void pcb_box_bump_box_noflt(pcb_box_t *dst, pcb_box_t *src)
 {
@@ -104,7 +121,7 @@ pcb_subc_t *pcb_subc_new(void)
 void pcb_subc_free(pcb_subc_t *sc)
 {
 	pcb_term_uninit(&sc->terminals);
-	pcb_subclist_remove(sc);
+	pcb_subc_unreg(sc);
 	pcb_data_free(sc->data);
 	free(sc);
 }
@@ -112,9 +129,7 @@ void pcb_subc_free(pcb_subc_t *sc)
 
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
 {
-	PCB_SET_PARENT(sc->data, subc, sc);
-	PCB_SET_PARENT(sc, data, dt);
-	pcb_subclist_append(&dt->subc, sc);
+	pcb_subc_reg(dt, sc);
 }
 
 /* Create (and append) a new bound layer to a subc */
@@ -703,9 +718,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		sc->ID = pcb_create_ID_get();
 
 	minuid_cpy(sc->uid, src->uid);
-	PCB_SET_PARENT(sc->data, subc, sc);
-	PCB_SET_PARENT(sc, data, dst);
-	pcb_subclist_append(&dst->subc, sc);
+	pcb_subc_reg(dst, sc);
 
 	src_pcb = pcb_data_get_top(src->data);
 
@@ -1242,8 +1255,8 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if ((ctx->buffer.pcb != NULL) && (ctx->buffer.pcb->Data->subc_tree != NULL))
 		pcb_r_delete_entry(ctx->buffer.pcb->Data->subc_tree, (pcb_box_t *)sc);
 
-	pcb_subclist_remove(sc);
-	pcb_subclist_append(&ctx->buffer.dst->subc, sc);
+	pcb_subc_unreg(sc);
+	pcb_subc_reg(ctx->buffer.dst, sc);
 
 	if (dst_is_pcb) {
 		if (ctx->buffer.dst->subc_tree == NULL)
@@ -1284,7 +1297,6 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
-	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
 	return sc;
 }
 
@@ -1314,7 +1326,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 		return pcb_false;
 
 	subc = pcb_subclist_first(&buff->Data->subc);
-	pcb_subclist_remove(subc);
+	pcb_subc_unreg(subc);
 
 	/* relocate to NULL to get trees detached */
 	for(n = 0; n < subc->data->LayerN; n++) {
@@ -1429,7 +1441,7 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if (ctx->remove.pcb->Data->subc_tree != NULL)
 		pcb_r_delete_entry(ctx->remove.pcb->Data->subc_tree, (pcb_box_t *)sc);
 
-	pcb_subclist_remove(sc);
+	pcb_subc_unreg(sc);
 	EraseSubc(sc);
 	pcb_subc_free(sc);
 	return NULL;

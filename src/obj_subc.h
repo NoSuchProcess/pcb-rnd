@@ -57,6 +57,10 @@ pcb_subc_t *pcb_subc_alloc(void);
 pcb_subc_t *pcb_subc_new(void);
 void pcb_subc_free(pcb_subc_t *sc);
 
+void pcb_subc_reg(pcb_data_t *data, pcb_subc_t *subc);
+void pcb_subc_unreg(pcb_subc_t *subc);
+
+
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc);
 
 void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw);
