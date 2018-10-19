@@ -389,7 +389,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		sprintf(report + len, "\nPart of subcircuit #%ld\n", subc->ID);
 	}
 
-	if (strcmp(how, "log") == 0)
+	if ((how != NULL) && (strcmp(how, "log") == 0))
 		pcb_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", report);
 	else
 		pcb_gui->report_dialog("Report", report);
