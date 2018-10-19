@@ -56,7 +56,6 @@ void pcb_board_free(pcb_board_t * pcb)
 	free(pcb->PrintFilename);
 	pcb_ratspatch_destroy(pcb);
 	pcb_data_free(pcb->Data);
-	free(pcb->Data);
 
 	/* release font symbols */
 	pcb_fontkit_free(&pcb->fontkit);

@@ -106,7 +106,6 @@ void pcb_subc_free(pcb_subc_t *sc)
 	pcb_term_uninit(&sc->terminals);
 	pcb_subclist_remove(sc);
 	pcb_data_free(sc->data);
-	free(sc->data);
 	free(sc);
 }
 
@@ -1328,8 +1327,8 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	}
 	subc_relocate_globals(NULL, NULL, subc, 0);
 
-
-	pcb_data_free(buff->Data);
+#warning TODO: this should be pcb_data_free()
+	pcb_data_uninit(buff->Data);
 	buff->Data = subc->data;
 	buff->Data->parent_type = PCB_PARENT_INVALID;
 	buff->Data->parent.data = NULL;

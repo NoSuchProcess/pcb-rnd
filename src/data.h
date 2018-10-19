@@ -126,8 +126,8 @@ pcb_data_t *pcb_data_new(pcb_board_t *parent);
 /* Uninitialize and free the fields of data (doesn't free data) */
 void pcb_data_uninit(pcb_data_t *data);
 
-/* Calls pcb_data_uninit() and  */
-void pcb_data_free(pcb_data_t *);
+/* Calls pcb_data_uninit() and free data */
+void pcb_data_free(pcb_data_t *data);
 
 pcb_bool pcb_data_is_empty(pcb_data_t *);
 

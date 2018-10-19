@@ -110,7 +110,8 @@ static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_bool b
 		void *old_parent = Buffer->Data->parent.any;
 		pcb_parenttype_t old_pt = Buffer->Data->parent_type;
 
-		pcb_data_free(Buffer->Data);
+		pcb_data_uninit(Buffer->Data);
+		pcb_data_init(Buffer->Data);
 
 		Buffer->Data->parent.any = old_parent;
 		Buffer->Data->parent_type = old_pt;

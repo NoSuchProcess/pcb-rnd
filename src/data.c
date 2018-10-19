@@ -192,6 +192,7 @@ void pcb_data_free(pcb_data_t *data)
 		return;
 
 	pcb_data_uninit(data);
+	free(data);
 }
 
 pcb_bool pcb_data_is_empty(pcb_data_t *Data)
