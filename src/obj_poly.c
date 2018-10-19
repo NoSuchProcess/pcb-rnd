@@ -59,6 +59,24 @@
 
 /*** allocation ***/
 
+void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
+{
+	polylist_append(&layer->Polygon, poly);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_reg(layer->parent.data, poly);
+	PCB_SET_PARENT(poly, layer, layer);
+}
+
+void pcb_poly_unreg(pcb_poly_t *poly)
+{
+	pcb_layer_t *layer = poly->parent.layer;
+	assert(poly->parent_type == PCB_PARENT_LAYER);
+	polylist_remove(poly);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_del(layer->parent.data, poly);
+	PCB_SET_PARENT(poly, layer, NULL);
+}
+
 pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 {
 	pcb_poly_t *new_obj;
@@ -66,17 +84,16 @@ pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 	new_obj = calloc(sizeof(pcb_poly_t), 1);
 	new_obj->type = PCB_OBJ_POLY;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(new_obj, layer, layer);
 
-	polylist_append(&layer->Polygon, new_obj);
+	pcb_poly_reg(layer, new_obj);
 
 	return new_obj;
 }
 
-void pcb_poly_free(pcb_poly_t * data)
+void pcb_poly_free(pcb_poly_t *poly)
 {
-	polylist_remove(data);
-	free(data);
+	pcb_poly_unreg(poly);
+	free(poly);
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
@@ -112,6 +129,9 @@ pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon)
 /* frees memory used by a polygon */
 void pcb_poly_free_fields(pcb_poly_t * polygon)
 {
+	pcb_parent_t parent;
+	pcb_parenttype_t parent_type;
+
 	if (polygon == NULL)
 		return;
 
@@ -122,7 +142,12 @@ void pcb_poly_free_fields(pcb_poly_t * polygon)
 		pcb_polyarea_free(&polygon->Clipped);
 	pcb_poly_contours_free(&polygon->NoHoles);
 
+	/* have to preserve parent info for unreg */
+	parent = polygon->parent;
+	parent_type = polygon->parent_type;
 	reset_obj_mem(pcb_poly_t, polygon);
+	polygon->parent = parent;
+	polygon->parent_type = parent_type;
 }
 
 /*** utility ***/
@@ -481,16 +506,14 @@ void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_poly_t *p
 
 	pcb_r_delete_entry(srcly->polygon_tree, (pcb_box_t *)polygon);
 
-	polylist_remove(polygon);
-	polylist_append(&dstly->Polygon, polygon);
+	pcb_poly_unreg(polygon);
+	pcb_poly_reg(dstly, polygon);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, polygon);
 
 	if (!dstly->polygon_tree)
 		dstly->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(dstly->polygon_tree, (pcb_box_t *)polygon);
-
-	PCB_SET_PARENT(polygon, layer, dstly);
 
 	pcb_poly_ppclear(polygon);
 	return polygon;
@@ -689,14 +712,13 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 	pcb_r_delete_entry(Source->polygon_tree, (pcb_box_t *) polygon);
 
 	pcb_poly_pprestore(polygon);
-	polylist_remove(polygon);
-	polylist_append(&Destination->Polygon, polygon);
+	pcb_poly_unreg(polygon);
+	pcb_poly_reg(Destination, polygon);
 
 	if (!Destination->polygon_tree)
 		Destination->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon);
 
-	PCB_SET_PARENT(polygon, layer, Destination);
 	pcb_poly_ppclear(polygon);
 	return polygon;
 }

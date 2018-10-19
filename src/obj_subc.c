@@ -497,9 +497,9 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 
 		while((poly = polylist_first(&src->Polygon)) != NULL) {
-			polylist_remove(poly);
-			polylist_append(&dst->Polygon, poly);
-			PCB_SET_PARENT(poly, layer, dst);
+			pcb_poly_unreg(poly);
+			pcb_poly_reg(dst, poly);
+
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
 		}
 	}

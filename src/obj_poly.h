@@ -60,6 +60,9 @@ pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
 pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);
 void pcb_poly_free_fields(pcb_poly_t * polygon);
 
+void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly);
+void pcb_poly_unreg(pcb_poly_t *poly);
+
 void pcb_poly_bbox(pcb_poly_t *Polygon);
 pcb_poly_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags);
 pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags);
@@ -74,6 +77,7 @@ void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsign
 void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
 void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs);
 void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon);
+void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy);
 
 void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
 pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, pcb_coord_t dx, pcb_coord_t dy);
