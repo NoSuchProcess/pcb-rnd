@@ -581,7 +581,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
-	pcb_add_subc_to_data(data, sc);
+	pcb_subc_reg(data, sc);
 
 	if (tedax_parse_1fp_(sc, fn, buff, buff_size, argv, argv_size) != 0) {
 		pcb_subc_free(sc);

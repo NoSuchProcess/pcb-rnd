@@ -465,7 +465,7 @@ pcb_subc_t *hyp_create_subc_by_name(char *refdes, pcb_coord_t x, pcb_coord_t y)
 	pcb_subc_create_aux(subc, x, y, 0.0, on_bottom);
 	pcb_attribute_put(&subc->Attributes, "refdes", refdes);
 	pcb_subc_add_refdes_text(subc, x, y, text_direction, text_scale, on_bottom);
-	pcb_add_subc_to_data(hyp_dest, subc);
+	pcb_subc_reg(hyp_dest, subc);
 	pcb_subc_bind_globals(hyp_dest->parent.board, subc);
 
 	dev->subc = subc;

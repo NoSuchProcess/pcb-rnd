@@ -125,12 +125,6 @@ void pcb_subc_free(pcb_subc_t *sc)
 	free(sc);
 }
 
-
-void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
-{
-	pcb_subc_reg(dt, sc);
-}
-
 /* Create (and append) a new bound layer to a subc */
 static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 {
@@ -405,7 +399,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	vtp0_init(&paste_pads);
 
 	sc = pcb_subc_alloc();
-	pcb_add_subc_to_data(buffer->Data, sc);
+	pcb_subc_reg(buffer->Data, sc);
 
 	/* create layer matches and copy objects */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {

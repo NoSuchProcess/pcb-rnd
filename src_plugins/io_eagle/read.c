@@ -951,7 +951,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 
 			subc = pcb_subc_alloc();
 			pcb_attribute_put(&subc->Attributes, "refdes", "K1");
-			pcb_add_subc_to_data(st->pcb->Data, subc);
+			pcb_subc_reg(st->pcb->Data, subc);
 			pcb_subc_bind_globals(st->pcb, subc);
 			eagle_read_pkg(st, n, subc);
 			if (pcb_data_is_empty(subc->data)) {

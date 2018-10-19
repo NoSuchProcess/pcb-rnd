@@ -990,7 +990,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 {
 	pcb_subc_t *sc = pcb_subc_new();
 	pcb_text_t *txt;
-	pcb_add_subc_to_data(Data, sc);
+	pcb_subc_reg(Data, sc);
 	if (Data->padstack_tree == NULL)
 		Data->padstack_tree = pcb_r_create_tree();
 	sc->data->padstack_tree = Data->padstack_tree;

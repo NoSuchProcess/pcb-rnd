@@ -1560,7 +1560,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 					}
 					if (st->pcb != NULL) {
-						pcb_add_subc_to_data(st->pcb->Data, subc);
+						pcb_subc_reg(st->pcb->Data, subc);
 						pcb_subc_bind_globals(st->pcb, subc);
 					}
 					
@@ -2368,7 +2368,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				pcb_subc_rebind(st->pcb, subc);
 			}
 			else
-				pcb_add_subc_to_data(st->fp_data, subc);
+				pcb_subc_reg(st->fp_data, subc);
 
 			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
 				/* lossles module rotation for round steps */
