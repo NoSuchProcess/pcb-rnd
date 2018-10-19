@@ -215,6 +215,8 @@ static void ghid_preview_get_property(GObject * object, guint property_id, GValu
 static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(widget);
+	gboolean res;
+	int save_fx, save_fy;
 
 	switch (preview->kind) {
 	case PCB_GTK_PREVIEW_GENERIC:
@@ -222,7 +224,17 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 		preview->expose_data.view.Y1 = preview->y_min;
 		preview->expose_data.view.X2 = preview->x_max;
 		preview->expose_data.view.Y2 = preview->y_max;
-		return preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
+		save_fx = conf_core.editor.view.flip_x;
+		save_fy = conf_core.editor.view.flip_y;
+		conf_force_set_bool(conf_core.editor.view.flip_x, 0);
+		conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+
+		res = preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
+
+		conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
+		conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+
+		return res;
 
 	case PCB_GTK_PREVIEW_PINOUT:
 		preview->expose_data.view.X1 = preview->x_min;
