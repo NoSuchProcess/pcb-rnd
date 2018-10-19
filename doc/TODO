@@ -30,7 +30,7 @@
 - BUG: boardflip segfault on test file http://scififaster.net/public/boardfliptest.lht [report: Miloh]
 - BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
 - FEATURE: session persistent message log  (messages are flushed after dialog is closed?) [report: Miloh]
-- BUG: io_kicad parse err w/drill & roundrect pads  http://scififaster.net/cnc-card-edge-25.kicad_mod [report: Miloh]
+- BUG: io_kicad parse err w/drill & roundrect pads  http://scififaster.net/cnc-card-edge-25.kicad_mod http://scififaster.net/pcbnew_pad_handles_drill.png [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
