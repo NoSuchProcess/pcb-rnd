@@ -82,6 +82,7 @@ pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 	pcb_poly_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_poly_t), 1);
+	new_obj->ID = pcb_create_ID_get();
 	new_obj->type = PCB_OBJ_POLY;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
@@ -349,7 +350,7 @@ pcb_poly_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t F
 
 	/* copy values */
 	polygon->Flags = Flags;
-	polygon->ID = pcb_create_ID_get();
+
 	polygon->Clearance = Clearance;
 	polygon->Clipped = NULL;
 	polygon->NoHoles = NULL;
@@ -401,6 +402,7 @@ pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t 
 	/* copy values */
 	point->X = X;
 	point->Y = Y;
+#warning ID TODO: register points too
 	point->ID = pcb_create_ID_get();
 	return point;
 }

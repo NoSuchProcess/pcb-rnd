@@ -72,6 +72,7 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 	pcb_rat_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_rat_t), 1);
+	new_obj->ID = pcb_create_ID_get();
 	new_obj->type = PCB_OBJ_RAT;
 
 	pcb_rat_reg(data, new_obj);
@@ -94,7 +95,6 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	if (!Line)
 		return Line;
 
-	Line->ID = pcb_create_ID_get();
 	Line->Flags = Flags;
 	PCB_FLAG_SET(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;

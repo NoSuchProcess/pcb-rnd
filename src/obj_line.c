@@ -84,6 +84,7 @@ pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
 	pcb_line_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_line_t), 1);
+	new_obj->ID = pcb_create_ID_get();
 	new_obj->type = PCB_OBJ_LINE;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
@@ -234,13 +235,13 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 	Line = pcb_line_alloc(Layer);
 	if (!Line)
 		return Line;
-	Line->ID = pcb_create_ID_get();
 	Line->Flags = Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Clearance = Clearance;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
+#warning ID TODO: register points too
 	Line->Point1.ID = pcb_create_ID_get();
 	Line->Point2.X = X2;
 	Line->Point2.Y = Y2;

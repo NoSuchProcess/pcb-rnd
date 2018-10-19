@@ -102,6 +102,7 @@ pcb_subc_t *pcb_subc_alloc(void)
 {
 	pcb_subc_t *sc;
 	sc = calloc(sizeof(pcb_subc_t), 1);
+	sc->ID = pcb_create_ID_get();
 	sc->Attributes.post_change = pcb_subc_attrib_post_change;
 	sc->data = pcb_data_new(NULL);
 	sc->type = PCB_OBJ_SUBC;
@@ -113,9 +114,7 @@ pcb_subc_t *pcb_subc_alloc(void)
 
 pcb_subc_t *pcb_subc_new(void)
 {
-	pcb_subc_t *sc = pcb_subc_alloc();
-	sc->ID = pcb_create_ID_get();
-	return sc;
+	return pcb_subc_alloc();
 }
 
 void pcb_subc_free(pcb_subc_t *sc)
@@ -406,7 +405,6 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	vtp0_init(&paste_pads);
 
 	sc = pcb_subc_alloc();
-	sc->ID = pcb_create_ID_get();
 	pcb_add_subc_to_data(buffer->Data, sc);
 
 	/* create layer matches and copy objects */

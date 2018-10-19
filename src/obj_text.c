@@ -83,6 +83,7 @@ pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
 	pcb_text_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_text_t), 1);
+	new_obj->ID = pcb_create_ID_get();
 	new_obj->type = PCB_OBJ_TEXT;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
@@ -122,7 +123,6 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X,
 	text->thickness = thickness;
 	text->TextString = pcb_strdup(TextString);
 	text->fid = PCBFont->id;
-	text->ID = pcb_create_ID_get();
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
 

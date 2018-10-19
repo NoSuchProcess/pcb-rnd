@@ -75,6 +75,7 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 	pcb_pstk_t *ps;
 
 	ps = calloc(sizeof(pcb_pstk_t), 1);
+	ps->ID = pcb_create_ID_get();
 	ps->protoi = -1;
 	ps->type = PCB_OBJ_PSTK;
 	ps->Attributes.post_change = pcb_obj_attrib_post_change;
@@ -106,7 +107,6 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t 
 	ps->y = y;
 	ps->Clearance = clearance;
 	ps->Flags = Flags;
-	ps->ID = pcb_create_ID_get();
 	ps->rot = rot;
 	ps->xmirror = xmirror;
 	ps->smirror = smirror;
