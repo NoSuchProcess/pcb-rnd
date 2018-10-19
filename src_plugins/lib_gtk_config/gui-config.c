@@ -1078,6 +1078,20 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
+static GtkWidget *ghid_notebook_page(GtkWidget *tabs, const char *name, gint pad, gint border)
+{
+	GtkWidget *label;
+	GtkWidget *vbox;
+
+	vbox = gtkc_vbox_new(FALSE, pad);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), border);
+
+	label = gtk_label_new(name);
+	gtk_notebook_append_page(GTK_NOTEBOOK(tabs), vbox, label);
+
+	return vbox;
+}
+
 static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *tabs, *vbox, *text, *content_vbox, *prv;
