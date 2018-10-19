@@ -1327,8 +1327,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	}
 	subc_relocate_globals(NULL, NULL, subc, 0);
 
-#warning TODO: this should be pcb_data_free()
-	pcb_data_uninit(buff->Data);
+	pcb_data_free(buff->Data);
 	buff->Data = subc->data;
 	buff->Data->parent_type = PCB_PARENT_INVALID;
 	buff->Data->parent.data = NULL;
