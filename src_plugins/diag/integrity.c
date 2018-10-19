@@ -48,6 +48,15 @@
 			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
 	} while(0)
 
+#define check_obj_id(name, data, obj) \
+	do { \
+		pcb_any_obj_t *__ao__ = htip_get(&data->id2obj, obj->ID); \
+		if (__ao__ != (pcb_any_obj_t *)obj) \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld id hash broken (%p != %p)\n", whose, obj->ID, obj, __ao__); \
+		id_chk_cnt++; \
+	} while(0)
+
+
 #define chk_attr(name, obj) \
 	do { \
 		if (((obj)->Attributes.Number > 0) && ((obj)->Attributes.List == NULL)) \
@@ -168,6 +177,8 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk)
 {
 	pcb_layer_id_t n;
+	long id_chk_cnt = 0;
+	htip_entry_t *e;
 
 	if (data->parent_type != pt)
 		pcb_message(PCB_MSG_ERROR, CHK "%s data: parent type proken (%d != %d)\n", whose, data->parent_type, pt);
@@ -198,24 +209,28 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		/* check layer objects */
 		for(lin = linelist_first(&data->Layer[n].Line); lin != NULL; lin = linelist_next(lin)) {
 			check_parent("line", lin, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_obj_id("line", data, lin);
 			check_type(lin, PCB_OBJ_LINE);
 			chk_attr("line", lin);
 		}
 
 		for(txt = textlist_first(&data->Layer[n].Text); txt != NULL; txt = textlist_next(txt)) {
 			check_parent("text", txt, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_obj_id("text", data, txt);
 			check_type(txt, PCB_OBJ_TEXT);
 			chk_attr("text", txt);
 		}
 
 		for(poly = polylist_first(&data->Layer[n].Polygon); poly != NULL; poly = polylist_next(poly)) {
 			check_parent("polygon", poly, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_obj_id("polygon", data, poly);
 			check_type(poly, PCB_OBJ_POLY);
 			chk_attr("polygon", poly);
 		}
 
 		for(arc = arclist_first(&data->Layer[n].Arc); arc != NULL; arc = arclist_next(arc)) {
 			check_parent("arc", arc, PCB_PARENT_LAYER, &data->Layer[n]);
+			check_obj_id("arc", data, arc);
 			check_type(arc, PCB_OBJ_ARC);
 			chk_attr("arc", arc);
 		}
@@ -228,6 +243,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 			check_parent("padstack", ps, PCB_PARENT_DATA, data);
+			check_obj_id("padstack", data, ps);
 			check_type(ps, PCB_OBJ_PSTK);
 			chk_attr("padstack", ps);
 			chk_term("padstack", (pcb_any_obj_t *)ps);
@@ -235,11 +251,21 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 		for(subc = pcb_subclist_first(&data->subc); subc != NULL; subc = pcb_subclist_next(subc)) {
 			check_parent("subc", subc, PCB_PARENT_DATA, data);
+			check_obj_id("subc", data, subc);
 			check_type(subc, PCB_OBJ_SUBC);
 			chk_subc(whose, subc);
 			chk_attr("subc", subc);
 		}
 	}
+
+	/* Safe check for the other way around: if the hash contains more entries
+	   than the objects we checked above, we have some garbage left; the check
+	   is safe because it is not needed to dereference the garbage */
+	for(e = htip_first(&data->id2obj); e; e = htip_next(&data->id2obj, e))
+		id_chk_cnt--;
+	if (id_chk_cnt != 0)
+		pcb_message(PCB_MSG_ERROR, CHK "id hash contains %ld excess IDs in %s\n", id_chk_cnt, whose);
+
 #warning subc TODO: check buffers: parents
 }
 
