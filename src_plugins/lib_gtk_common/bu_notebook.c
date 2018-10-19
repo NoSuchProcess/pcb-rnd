@@ -48,13 +48,3 @@ GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint
 
 	return vbox;
 }
-
-GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name, gint border,
-																		 gint frame_border, gint vbox_pad, gint vbox_border)
-{
-	GtkWidget *vbox;
-
-	vbox = ghid_notebook_page(tabs, name, 0, border);
-	vbox = ghid_framed_vbox(vbox, NULL, frame_border, TRUE, vbox_pad, vbox_border);
-	return vbox;
-}
