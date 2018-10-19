@@ -737,6 +737,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		/* bind layer/resolve layers */
 		dl->is_bound = 1;
+		dl->type = PCB_OBJ_LAYER;
 		if ((pcb != NULL) && (pcb == src_pcb)) {
 			/* copy within the same board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
