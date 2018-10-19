@@ -658,8 +658,6 @@ void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_l
 		Destination->line_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Destination->line_tree, (pcb_box_t *) line);
 
-	PCB_SET_PARENT(line, layer, Destination);
-
 	return line;
 }
 
