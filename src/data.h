@@ -42,7 +42,6 @@
 #include "obj_pstk_list.h"
 #include "vtpadstack.h"
 
-
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */
 struct pcb_data_s {
@@ -116,8 +115,18 @@ void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_pstk_cb_t pscb
 );
 
+/* Initialize the fields of data */
+void pcb_data_init(pcb_data_t *data);
+
+/* Allocate new data and initialize all fields */
 pcb_data_t *pcb_data_new(pcb_board_t *parent);
+
+/* Uninitialize and free the fields of data (doesn't free data) */
+void pcb_data_uninit(pcb_data_t *data);
+
+/* Calls pcb_data_uninit() and  */
 void pcb_data_free(pcb_data_t *);
+
 pcb_bool pcb_data_is_empty(pcb_data_t *);
 
 /* gets minimum and maximum coordinates

@@ -151,13 +151,10 @@ void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_loop_pstk(pcb, ctx, pscb);
 }
 
-void pcb_data_free(pcb_data_t * data)
+void pcb_data_uninit(pcb_data_t *data)
 {
 	pcb_layer_t *layer;
 	int i, subc;
-
-	if (data == NULL)
-		return;
 
 	subc = (data->parent_type == PCB_PARENT_SUBC);
 
@@ -184,8 +181,15 @@ void pcb_data_free(pcb_data_t * data)
 	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++)
 		free((char *)layer->name);
 
-	/* clear struct */
 	memset(data, 0, sizeof(pcb_data_t));
+}
+
+void pcb_data_free(pcb_data_t *data)
+{
+	if (data == NULL)
+		return;
+
+	pcb_data_uninit(data);
 }
 
 pcb_bool pcb_data_is_empty(pcb_data_t *Data)
@@ -355,10 +359,16 @@ void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data)
 	}
 }
 
+void pcb_data_init(pcb_data_t *data)
+{
+	memset(data, 0, sizeof(pcb_data_t));
+}
+
 pcb_data_t *pcb_data_new(pcb_board_t *parent)
 {
 	pcb_data_t *data;
-	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
+	data = malloc(sizeof(pcb_data_t));
+	pcb_data_init(data);
 	if (parent != NULL)
 		PCB_SET_PARENT(data, board, parent);
 	pcb_data_set_layer_parents(data);
