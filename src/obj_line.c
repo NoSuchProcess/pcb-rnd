@@ -61,7 +61,6 @@
 
 /**** allocation ****/
 
-/* get next slot for a line, allocates memory if necessary */
 pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
 {
 	pcb_line_t *new_obj;
