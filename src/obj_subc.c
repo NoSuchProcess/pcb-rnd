@@ -488,9 +488,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 
 		while((text = textlist_first(&src->Text)) != NULL) {
-			textlist_remove(text);
-			textlist_append(&dst->Text, text);
-			PCB_SET_PARENT(text, layer, dst);
+			pcb_text_unreg(text);
+			pcb_text_reg(dst, text);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
 			if (!has_refdes_text && (text->TextString != NULL) && (strstr(text->TextString, "%a.parent.refdes%") != NULL))
 				has_refdes_text = 1;

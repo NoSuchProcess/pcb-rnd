@@ -60,6 +60,24 @@
 
 /*** allocation ***/
 
+void pcb_text_reg(pcb_layer_t *layer, pcb_text_t *text)
+{
+	textlist_append(&layer->Text, text);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_reg(layer->parent.data, text);
+	PCB_SET_PARENT(text, layer, layer);
+}
+
+void pcb_text_unreg(pcb_text_t *text)
+{
+	pcb_layer_t *layer = text->parent.layer;
+	assert(text->parent_type == PCB_PARENT_LAYER);
+	textlist_remove(text);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_del(layer->parent.data, text);
+	PCB_SET_PARENT(text, layer, NULL);
+}
+
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
 {
 	pcb_text_t *new_obj;
@@ -67,17 +85,16 @@ pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
 	new_obj = calloc(sizeof(pcb_text_t), 1);
 	new_obj->type = PCB_OBJ_TEXT;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(new_obj, layer, layer);
 
-	textlist_append(&layer->Text, new_obj);
+	pcb_text_reg(layer, new_obj);
 
 	return new_obj;
 }
 
-void pcb_text_free(pcb_text_t * data)
+void pcb_text_free(pcb_text_t *text)
 {
-	textlist_remove(data);
-	free(data);
+	pcb_text_unreg(text);
+	free(text);
 }
 
 /*** utility ***/
@@ -406,15 +423,13 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 	pcb_r_delete_entry(srcly->text_tree, (pcb_box_t *) text);
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_TEXT, srcly, text);
 
-	textlist_remove(text);
-	textlist_append(&dstly->Text, text);
+	pcb_text_unreg(text);
+	pcb_text_reg(dstly, text);
 
 	if (!dstly->text_tree)
 		dstly->text_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(dstly->text_tree, (pcb_box_t *) text);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_TEXT, dstly, text);
-
-	PCB_SET_PARENT(text, layer, dstly);
 
 	return text;
 }
@@ -599,8 +614,8 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Source, text);
 	pcb_r_delete_entry(Source->text_tree, (pcb_box_t *) text);
 
-	textlist_remove(text);
-	textlist_append(&Destination->Text, text);
+	pcb_text_unreg(text);
+	pcb_text_reg(Destination, text);
 
 	if (pcb_layer_flags_(Destination) & PCB_LYT_BOTTOM)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, text); /* get the text mirrored on display */
@@ -613,8 +628,6 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 		Destination->text_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Destination->text_tree, (pcb_box_t *) text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Destination, text);
-
-	PCB_SET_PARENT(text, layer, Destination);
 
 	return text;
 }
