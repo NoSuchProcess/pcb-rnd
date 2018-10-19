@@ -3358,11 +3358,6 @@
  ../src_plugins/lib_gtk_common/bu_mode_btn.data crosshair.h vtonpoint.h \
  hid.h route.h conf_core.h tool.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h
-../src_plugins/lib_gtk_common/bu_notebook.o: \
- ../src_plugins/lib_gtk_common/bu_notebook.c ../config.h \
- ../src_plugins/lib_gtk_common/bu_notebook.h \
- ../src_plugins/lib_gtk_common/bu_box.h \
- ../src_plugins/lib_gtk_common/compat.h
 ../src_plugins/lib_gtk_common/bu_spin_button.o: \
  ../src_plugins/lib_gtk_common/bu_spin_button.c ../config.h \
  ../src_plugins/lib_gtk_common/bu_spin_button.h \
@@ -4143,7 +4138,6 @@
  ../src_plugins/lib_gtk_common/bu_box.h \
  ../src_plugins/lib_gtk_common/bu_entry.h \
  ../src_plugins/lib_gtk_common/wt_coord_entry.h \
- ../src_plugins/lib_gtk_common/bu_notebook.h \
  ../src_plugins/lib_gtk_common/bu_text_view.h \
  ../src_plugins/lib_gtk_common/bu_check_button.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \

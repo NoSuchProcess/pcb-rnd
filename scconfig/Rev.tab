@@ -1,3 +1,4 @@
+20152	configure	remove notebook helper from gtk for the DAD transition
 20061	configure	made asm configurable
 20030	configure	new plugin: asm
 19890	configure	tree-table widget in DAD core
