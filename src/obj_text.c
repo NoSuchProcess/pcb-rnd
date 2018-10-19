@@ -246,10 +246,6 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 	pcb_coord_t cx[4], cy[4];
 
-#warning textrot TODO: rewrite the bounding box calculation
-	int dir;
-	pcb_text_old_direction(&dir, Text->rot);
-
 	s = rendered;
 
 	if (FontPtr == NULL)
