@@ -52,6 +52,14 @@ Low level (alloc/free):
 	pcb_*_copy():
 		copy fields of a complex obj to a pre-allocated target obj
 
+	pcb_*_pre() and pcb_*_post():
+		when an object needs to be moved/changed within its own context (e.g. layer
+		object moved within layer, global object moved within data), it first needs
+		to be removed from the rtree and uncleared from any sorrunding polygon.
+		After the changes are done, the object should be put back in the rtree and
+		the affected polygons should be cleared. These two steps are done by
+		pcb_*_pre() and pcb_*_post(). Call pre() before the operation, call post()
+		after the operation.
 
 Accessors:
 	pcb_*_get_*():
