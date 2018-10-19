@@ -76,7 +76,7 @@ void pcb_line_unreg(pcb_line_t *line)
 	linelist_remove(line);
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_del(layer->parent.data, line);
-	PCB_SET_PARENT(line, layer, NULL);
+	PCB_CLEAR_PARENT(line);
 }
 
 pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)

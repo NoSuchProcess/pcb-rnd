@@ -64,7 +64,7 @@ void pcb_rat_unreg(pcb_rat_t *rat)
 	assert(rat->parent_type == PCB_PARENT_DATA);
 	ratlist_remove(rat);
 	pcb_obj_id_del(data, rat);
-	PCB_SET_PARENT(rat, data, NULL);
+	PCB_CLEAR_PARENT(rat);
 }
 
 pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)

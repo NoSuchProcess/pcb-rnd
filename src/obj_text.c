@@ -75,7 +75,7 @@ void pcb_text_unreg(pcb_text_t *text)
 	textlist_remove(text);
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_del(layer->parent.data, text);
-	PCB_SET_PARENT(text, layer, NULL);
+	PCB_CLEAR_PARENT(text);
 }
 
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)

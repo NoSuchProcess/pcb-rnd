@@ -71,7 +71,7 @@ void pcb_arc_unreg(pcb_arc_t *arc)
 	arclist_remove(arc);
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_del(layer->parent.data, arc);
-	PCB_SET_PARENT(arc, layer, NULL);
+	PCB_CLEAR_PARENT(arc);
 }
 
 pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
