@@ -86,6 +86,7 @@ ha:{
 					li:submenu {
 						ha:Calibrate Printer...           = { a={<key>i;<key>c;<key>c}; action=PrintCalibrate() }
 						ha:Re-scan the footprint library  = { a={<key>i;<key>c;<key>r}; action=fp_rehash() }
+						ha:Data integrity check           = { a={<key>i;<key>c;<key>i}; action=Integrity() }
 						-
 						ha:Edit current font              = { action=FontEdit() }
 						ha:Edit on-disk font              = { action={ LoadFontFrom("", 126); conf(set, design/text_font_id, 126, design); FontEdit() } }
