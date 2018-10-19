@@ -41,10 +41,12 @@
 #include "obj_subc_list.h"
 #include "obj_pstk_list.h"
 #include "vtpadstack.h"
+#include <genht/htip.h>
 
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */
 struct pcb_data_s {
+	htip_t id2obj;                     /* long object ID -> (pcb_any_obj_t *) */
 	int LayerN;                        /* number of layers in this board */
 
 	pcb_vtpadstack_proto_t ps_protos;

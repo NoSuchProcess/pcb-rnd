@@ -181,6 +181,8 @@ void pcb_data_uninit(pcb_data_t *data)
 	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++)
 		free((char *)layer->name);
 
+	htip_uninit(&data->id2obj);
+
 	memset(data, 0, sizeof(pcb_data_t));
 }
 
@@ -362,6 +364,7 @@ void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data)
 void pcb_data_init(pcb_data_t *data)
 {
 	memset(data, 0, sizeof(pcb_data_t));
+	htip_init(&data->id2obj, longhash, longkeyeq);
 }
 
 pcb_data_t *pcb_data_new(pcb_board_t *parent)
