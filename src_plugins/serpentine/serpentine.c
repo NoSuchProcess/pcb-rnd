@@ -267,6 +267,23 @@ static void tool_serpentine_notify_mode(void)
 		break;
 
 	case PCB_CH_STATE_SECOND:
+		{
+			pcb_route_t route;
+			pcb_line_t * p_line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
+			pcb_point_t point1;
+			pcb_point_t point2;
+			point1.X = pcb_crosshair.AttachedObject.X;
+			point1.Y = pcb_crosshair.AttachedObject.Y;
+			point2.X = pcb_crosshair.AttachedObject.tx; 
+			point2.Y = pcb_crosshair.AttachedObject.ty;
+
+			pcb_route_init(&route);
+			if(serpentine_calculate_route(&route,p_line, &point1, &point2, 5 * p_line->Thickness ) == 0) {
+				pcb_route_apply_to_line(&route, (pcb_layer_t *)pcb_crosshair.AttachedObject.Ptr1, p_line);
+			}
+			pcb_route_destroy(&route);
+			pcb_undo_inc_serial();
+		}
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		break;
 
