@@ -216,6 +216,15 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 /* Returns the first invalid character of an ID (terminal, refdes) or NULL */
 const char *pcb_obj_id_invalid(const char *id);
 
+#define pcb_obj_id_reg(data, obj) \
+	do { \
+		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \
+		htip_set(&(data)->id2obj, __obj__->ID, __obj__); \
+	} while(0)
+
+#define pcb_obj_id_del(data, obj) \
+	htip_pop(&(data)->id2obj, (obj)->ID)
+
 #define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 
 /* Returns whether a subc part object is editable (not under the subc lock) */

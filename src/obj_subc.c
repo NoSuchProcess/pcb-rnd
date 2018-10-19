@@ -483,9 +483,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 
 		while((arc = arclist_first(&src->Arc)) != NULL) {
-			arclist_remove(arc);
-			arclist_append(&dst->Arc, arc);
-			PCB_SET_PARENT(arc, layer, dst);
+			pcb_arc_unreg(arc);
+			pcb_arc_reg(dst, arc);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
 		}
 

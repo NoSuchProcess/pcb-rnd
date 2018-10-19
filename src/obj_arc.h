@@ -52,6 +52,9 @@ pcb_arc_t *pcb_arc_dup(pcb_layer_t *dst, pcb_arc_t *src);
 pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, pcb_coord_t dx, pcb_coord_t dy);
 void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc);
 
+void pcb_arc_reg(pcb_layer_t *layer, pcb_arc_t *arc);
+void pcb_arc_unreg(pcb_arc_t *arc);
+
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
 

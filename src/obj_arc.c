@@ -56,6 +56,24 @@
 static int pcb_arc_end_addr = 1;
 int *pcb_arc_start_ptr = NULL, *pcb_arc_end_ptr = &pcb_arc_end_addr;
 
+void pcb_arc_reg(pcb_layer_t *layer, pcb_arc_t *arc)
+{
+	arclist_append(&layer->Arc, arc);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_reg(layer->parent.data, arc);
+	PCB_SET_PARENT(arc, layer, layer);
+}
+
+void pcb_arc_unreg(pcb_arc_t *arc)
+{
+	pcb_layer_t *layer = arc->parent.layer;
+	assert(arc->parent_type == PCB_PARENT_LAYER);
+	arclist_remove(arc);
+	assert(layer->parent_type == PCB_PARENT_DATA);
+	pcb_obj_id_del(layer->parent.data, arc);
+	PCB_SET_PARENT(arc, layer, NULL);
+}
+
 pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 {
 	pcb_arc_t *new_obj;
@@ -63,8 +81,8 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 	new_obj = calloc(sizeof(pcb_arc_t), 1);
 	new_obj->type = PCB_OBJ_ARC;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
-	PCB_SET_PARENT(new_obj, layer, layer);
-	arclist_append(&layer->Arc, new_obj);
+
+	pcb_arc_reg(layer, new_obj);
 
 	return new_obj;
 }
@@ -266,10 +284,10 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 
 
-void pcb_arc_free(pcb_arc_t * data)
+void pcb_arc_free(pcb_arc_t *arc)
 {
-	arclist_remove(data);
-	free(data);
+	pcb_arc_unreg(arc);
+	free(arc);
 }
 
 
@@ -377,8 +395,8 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_ARC, srcly, arc);
 	pcb_r_delete_entry(srcly->arc_tree, (pcb_box_t *) arc);
 
-	arclist_remove(arc);
-	arclist_append(&dstly->Arc, arc);
+	pcb_arc_unreg(arc);
+	pcb_arc_reg(dstly, arc);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, arc);
 
@@ -386,8 +404,6 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 		dstly->arc_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(dstly->arc_tree, (pcb_box_t *) arc);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_ARC, dstly, arc);
-
-	PCB_SET_PARENT(arc, layer, dstly);
 
 	return arc;
 }
@@ -613,14 +629,12 @@ void *pcb_arcop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_ar
 {
 	pcb_r_delete_entry(Source->arc_tree, (pcb_box_t *) arc);
 
-	arclist_remove(arc);
-	arclist_append(&Destination->Arc, arc);
+	pcb_arc_unreg(arc);
+	pcb_arc_reg(Destination, arc);
 
 	if (!Destination->arc_tree)
 		Destination->arc_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Destination->arc_tree, (pcb_box_t *) arc);
-
-	PCB_SET_PARENT(arc, layer, Destination);
 
 	return arc;
 }
