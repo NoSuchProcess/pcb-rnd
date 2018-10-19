@@ -50,23 +50,39 @@
 #include "rats.h"
 
 /*** allocation ***/
+
+void pcb_rat_reg(pcb_data_t *data, pcb_rat_t *rat)
+{
+	ratlist_append(&data->Rat, rat);
+	pcb_obj_id_reg(data, rat);
+	PCB_SET_PARENT(rat, data, data);
+}
+
+void pcb_rat_unreg(pcb_rat_t *rat)
+{
+	pcb_data_t *data = rat->parent.data;
+	assert(rat->parent_type == PCB_PARENT_DATA);
+	ratlist_remove(rat);
+	pcb_obj_id_del(data, rat);
+	PCB_SET_PARENT(rat, data, NULL);
+}
+
 pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 {
 	pcb_rat_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_rat_t), 1);
 	new_obj->type = PCB_OBJ_RAT;
-	PCB_SET_PARENT(new_obj, data, data);
 
-	ratlist_append(&data->Rat, new_obj);
+	pcb_rat_reg(data, new_obj);
 
 	return new_obj;
 }
 
-void pcb_rat_free(pcb_rat_t *data)
+void pcb_rat_free(pcb_rat_t *rat)
 {
-	ratlist_remove(data);
-	free(data);
+	pcb_rat_unreg(rat);
+	free(rat);
 }
 
 /*** utility ***/
@@ -135,16 +151,14 @@ void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
 	pcb_r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
 
-	ratlist_remove(rat);
-	ratlist_append(&ctx->buffer.dst->Rat, rat);
+	pcb_rat_unreg(rat);
+	pcb_rat_reg(ctx->buffer.dst, rat);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, rat);
 
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(ctx->buffer.dst->rat_tree, (pcb_box_t *) rat);
-
-	PCB_SET_PARENT(rat, data, ctx->buffer.dst);
 
 	return rat;
 }
