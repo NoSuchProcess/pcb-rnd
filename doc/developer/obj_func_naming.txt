@@ -38,12 +38,12 @@ Low level (alloc/free):
 	pcb_*_reg():
 		register an object in data; this includes adding the object in the right
 		object list and in the id hash, but does not include any rtree operation
-		(so coords/sizes may change later)
+		(so coords/sizes may change later). Also sets the object's parent.
 
 	pcb_*_unreg():
 		unregister an object from its data; this includes removing the object from
 		the right object list and from the id hash, but does not include any
-		rtree operation
+		rtree operation.  Also clears the object's parent.
 
 	pcb_add_*_on_layer():
 		Postprocessing: call this after a new object is allocated and fields are
