@@ -31,6 +31,7 @@
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <genvector/vts0.h>
 #include <ctype.h>
 #include "actions.h"
 #include "compat_misc.h"
@@ -67,6 +68,7 @@ typedef struct {
 	char *name;
 	int level;
 	tmp_t *tmp_str_head;
+	vts0_t change_cb;
 	unsigned running:1;
 } dad_t;
 
@@ -104,6 +106,15 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	dad_t *dad = caller_data;
 	PCB_DAD_FREE(dad->dlg);
 	dad_destroy(dad);
+}
+
+static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	dad_t *dad = caller_data;
+	int idx = attr - dad->dlg;
+	char **act = vts0_get(&dad->change_cb, idx, 0);
+	if ((act != NULL) && (*act != NULL))
+		pcb_parse_command(*act, 1);
 }
 
 static char *tmp_str_dup(dad_t *dad, const char *txt)
@@ -170,6 +181,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has\n"
 	"dad(dlgname, end) - end the last begin\n"
 	"dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget\n"
+	"dad(dlgname, onchange, action) - set the action to be called on widget change\n"
 	"dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog\n"
 	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
 	;
@@ -376,6 +388,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		PCB_DAD_COMPFLAG(dad->dlg, flg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "onchange") == 0) {
+		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		PCB_DAD_CHANGE_CB(dad->dlg, dad_change_cb);
+		vts0_set(&dad->change_cb, PCB_DAD_CURRENT(dad->dlg), tmp_str_dup(dad, txt));
+		rv = 0;
 	}
 	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
 		char *sh;
