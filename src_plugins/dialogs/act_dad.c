@@ -35,6 +35,7 @@
 #include "actions.h"
 #include "compat_misc.h"
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
 #include "error.h"
 
 #include "act_dad.h"
@@ -157,7 +158,10 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
 	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
-	"dad(dlgname, tree, cols, istree, [header]) - append tree-table widget\n"
+	"dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values\n"
+	"dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer\n"
+	"dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer\n"
+	"dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_hpane) - begin horizontal paned box\n"
@@ -290,6 +294,29 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else
 			rv = -1;
+	}
+	else if ((pcb_strcasecmp(cmd, "tree_append") == 0) || (pcb_strcasecmp(cmd, "tree_append_under") == 0) || (pcb_strcasecmp(cmd, "tree_insert") == 0)) {
+		void *row, *nrow = NULL;
+		char **values = tmp_new_strlist(dad);
+
+		if (dad->running) goto cant_chg;
+
+		PCB_ACT_CONVARG(3, FGW_PTR, dad, row = argv[3].val.ptr_void);
+		PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
+
+		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
+			if (cmd[5] == 'i')
+				nrow = PCB_DAD_TREE_INSERT(dad->dlg, row, values);
+			else if (cmd[11] == '_')
+				nrow = PCB_DAD_TREE_APPEND_UNDER(dad->dlg, row, values);
+			else
+				nrow = PCB_DAD_TREE_APPEND(dad->dlg, row, values);
+		}
+		else
+			nrow = NULL;
+		res->type = FGW_PTR;
+		res->val.ptr_void = nrow;
+		return 0;
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
 		if (dad->running) goto cant_chg;
