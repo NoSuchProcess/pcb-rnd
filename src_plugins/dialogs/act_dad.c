@@ -108,6 +108,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
+	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_table, cols) - begin table layout box\n"
@@ -195,6 +196,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "string") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_STRING(dad->dlg);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "progress") == 0) {
+		if (dad->running) goto cant_chg;
+		PCB_DAD_PROGRESS(dad->dlg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if ((pcb_strcasecmp(cmd, "enum") == 0) || (pcb_strcasecmp(cmd, "begin_tabbed") == 0)) {
