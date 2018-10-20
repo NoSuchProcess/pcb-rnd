@@ -38,10 +38,18 @@
 
 #include "act_dad.h"
 
+#define MAX_ENUM 128
+
+typedef struct tmp_str_s {
+	struct tmp_str_s *next;
+	char str[1];
+} tmp_str_t;
+
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
 	int level;
+	tmp_str_t *tmp_str_head;
 	unsigned running:1;
 } dad_t;
 
@@ -64,6 +72,11 @@ static int dad_new(const char *name)
 
 static void dad_destroy(dad_t *dad)
 {
+	tmp_str_t *t, *tnext;
+	for(t = dad->tmp_str_head; t != NULL; t = tnext) {
+		tnext = t->next;
+		free(t);
+	}
 	htsp_pop(&dads, dad->name);
 	free(dad->name);
 	free(dad);
@@ -79,6 +92,7 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 const char pcb_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
 	"dad(dlgname, label, text) - append a label widget\n"
+	"dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_table, cols) - begin table layout box\n"
@@ -115,6 +129,40 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_LABEL(dad->dlg, txt);
 		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "enum") == 0) {
+		char *s, *next;
+		const char *values[MAX_ENUM+1];
+		int len = 0;
+		tmp_str_t *tmp;
+
+		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+
+		len = strlen(txt);
+		tmp = malloc(sizeof(tmp_str_t) + len);
+		tmp->next = dad->tmp_str_head;
+		memcpy(tmp->str, txt, len+1);
+		dad->tmp_str_head = tmp;
+
+		s = tmp->str;
+		while(isspace(*s)) s++;
+		for(len = 0; s != NULL; s = next) {
+			if (len >= MAX_ENUM) {
+				pcb_message(PCB_MSG_ERROR, "Too many DAD enum values\n");
+				rv = -1;
+				break;
+			}
+			next = strchr(s, '\t');
+			if (next != NULL) {
+				*next = '\0';
+				next++;
+				while(isspace(*next)) next++;
+			}
+			values[len] = s;
+			len++;
+		}
+		values[len] = NULL;
+		PCB_DAD_ENUM(dad->dlg, values);
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
