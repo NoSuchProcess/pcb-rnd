@@ -187,6 +187,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog\n"
 	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
 	"dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)\n"
+	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -408,6 +409,39 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_CHANGE_CB(dad->dlg, dad_change_cb);
 		vts0_set(&dad->change_cb, PCB_DAD_CURRENT(dad->dlg), tmp_str_dup(dad, txt));
+		rv = 0;
+	}
+	else if (pcb_strcasecmp(cmd, "set") == 0) {
+		int wid, i;
+		pcb_coord_t c;
+
+		PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
+		if ((wid < 0) || (wid >= dad->dlg_len)) {
+			pcb_message(PCB_MSG_ERROR, "Invalid widget ID %d (set ignored)\n", wid);
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+
+		switch(dad->dlg[wid].type) {
+			case PCB_HATT_COORD:
+				PCB_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, coord_value, c);
+				break;
+			case PCB_HATT_INTEGER:
+				PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, int_value, i);
+				break;
+			case PCB_HATT_STRING:
+			case PCB_HATT_LABEL:
+			case PCB_HATT_BUTTON:
+				PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str_value, txt);
+				break;
+			default:
+				pcb_message(PCB_MSG_ERROR, "Invalid widget type %d - can not change value (set ignored)\n", wid);
+				PCB_ACT_IRES(-1);
+				return 0;
+		}
 		rv = 0;
 	}
 	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
