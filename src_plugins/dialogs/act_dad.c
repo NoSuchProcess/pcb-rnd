@@ -186,6 +186,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, onchange, action) - set the action to be called on widget change\n"
 	"dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog\n"
 	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
+	"dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
