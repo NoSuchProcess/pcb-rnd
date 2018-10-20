@@ -111,6 +111,8 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
+	"dad(dlgname, begin_hpane) - begin horizontal paned box\n"
+	"dad(dlgname, begin_vpane) - begin vertical paned box\n"
 	"dad(dlgname, begin_table, cols) - begin table layout box\n"
 	"dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has\n"
 	"dad(dlgname, end) - end the last begin\n"
@@ -247,6 +249,18 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "begin_vbox") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_VBOX(dad->dlg);
+		dad->level++;
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "begin_hpane") == 0) {
+		if (dad->running) goto cant_chg;
+		PCB_DAD_BEGIN_HPANE(dad->dlg);
+		dad->level++;
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "begin_vpane") == 0) {
+		if (dad->running) goto cant_chg;
+		PCB_DAD_BEGIN_VPANE(dad->dlg);
 		dad->level++;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
