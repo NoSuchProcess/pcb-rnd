@@ -133,6 +133,19 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_END(dad->dlg);
 		dad->level--;
 	}
+	else if (pcb_strcasecmp(cmd, "flags") == 0) {
+		int n;
+		pcb_hatt_compflags_t tmp, flg = 0;
+
+		for(n = 3; n < argc; n++) {
+			PCB_ACT_CONVARG(n, FGW_STR, dad, txt = argv[n].val.str);
+			tmp = pcb_hid_compflag_name2bit(txt);
+			if (tmp == 0)
+				pcb_message(PCB_MSG_ERROR, "Invalid DAD flag: %s (ignored)\n", txt);
+			flg |= tmp;
+		}
+		PCB_DAD_COMPFLAG(dad->dlg, flg);
+	}
 	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
 		char *sh;
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
