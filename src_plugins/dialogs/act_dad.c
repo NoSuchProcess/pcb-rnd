@@ -31,6 +31,7 @@
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <ctype.h>
 #include "actions.h"
 #include "compat_misc.h"
 #include "hid_dad.h"
