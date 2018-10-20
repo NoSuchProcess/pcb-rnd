@@ -94,6 +94,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
 	"dad(dlgname, label, text) - append a label widget\n"
 	"dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list\n"
+	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_table, cols) - begin table layout box\n"
@@ -129,6 +130,13 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_LABEL(dad->dlg, txt);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "bool") == 0) {
+		if (dad->running) goto cant_chg;
+		txt = "";
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		PCB_DAD_BOOL(dad->dlg, txt);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "enum") == 0) {
