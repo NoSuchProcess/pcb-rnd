@@ -78,8 +78,8 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 const char pcb_acts_dad[] =
 	"dad(new, dlgname) - create new dialog\n"
 	"dad(label, dlgname, text) - append a label widget\n"
-	"dad(run, dlgname) - present dlgname as a non-modal dialog\n"
-	"dad(run_modal, dlgname) - present dlgname as a modal dialog\n"
+	"dad(run, dlgname, longname, shortname) - present dlgname as a non-modal dialog\n"
+	"dad(run_modal, dlgname, longname, shortname) - present dlgname as a modal dialog\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
