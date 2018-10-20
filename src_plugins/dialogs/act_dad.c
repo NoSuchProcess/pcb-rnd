@@ -83,6 +83,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_table, cols) - begin table layout box\n"
 	"dad(dlgname, end) - end the last begin\n"
+	"dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget\n"
 	"dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog\n"
 	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
 	;
