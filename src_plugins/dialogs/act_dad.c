@@ -145,6 +145,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int len = 0;
 		tmp_str_t *tmp;
 
+		if (dad->running) goto cant_chg;
+
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
 		len = strlen(txt);
@@ -172,28 +174,42 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		values[len] = NULL;
 		PCB_DAD_ENUM(dad->dlg, values);
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
+		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
 		dad->level++;
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "begin_vbox") == 0) {
+		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_VBOX(dad->dlg);
 		dad->level++;
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "begin_table") == 0) {
 		int cols;
+
+		if (dad->running) goto cant_chg;
+
 		PCB_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
 		PCB_DAD_BEGIN_TABLE(dad->dlg, cols);
 		dad->level++;
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "end") == 0) {
+		if (dad->running) goto cant_chg;
+
 		PCB_DAD_END(dad->dlg);
 		dad->level--;
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "flags") == 0) {
 		int n;
 		pcb_hatt_compflags_t tmp, flg = 0;
+
+		if (dad->running) goto cant_chg;
 
 		for(n = 3; n < argc; n++) {
 			PCB_ACT_CONVARG(n, FGW_STR, dad, txt = argv[n].val.str);
@@ -205,9 +221,13 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			flg |= tmp;
 		}
 		PCB_DAD_COMPFLAG(dad->dlg, flg);
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
 		char *sh;
+
+		if (dad->running) goto cant_chg;
+
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_ACT_CONVARG(4, FGW_STR, dad, sh = argv[4].val.str);
 
@@ -215,8 +235,10 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog structure: %d levels not closed (missing 'end' calls)\n", dad->level);
 			rv = -1;
 		}
-		else
+		else {
 			PCB_DAD_NEW(dad->dlg, txt, sh, dad, (cmd[3] == '_'), dad_close_cb);
+			rv = PCB_DAD_CURRENT(dad->dlg);
+		}
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
