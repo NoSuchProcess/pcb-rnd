@@ -44,6 +44,7 @@
 #include "dlg_about.c"
 #include "dlg_pinout.c"
 #include "dlg_export.c"
+#include "act_dad.h"
 
 pcb_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
@@ -54,7 +55,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"Pinout2", pcb_act_Pinout, pcb_acth_Pinout, pcb_acts_Pinout},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
-	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui}
+	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
+	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
@@ -65,6 +67,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 }
 
@@ -73,5 +76,6 @@ int pplg_init_dialogs(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
+	pcb_act_dad_init();
 	return 0;
 }

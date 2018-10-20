@@ -1,6 +1,7 @@
 put /local/pcb/mod {dialogs}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dialogs.o
+ $(PLUGDIR)/dialogs/act_dad.o
 @]
 
 switch /local/pcb/dialogs/controls
