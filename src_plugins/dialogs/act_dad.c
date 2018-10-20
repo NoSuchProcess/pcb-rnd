@@ -41,16 +41,31 @@
 
 #define MAX_ENUM 128
 
+typedef union tmp_u tmp_t;
+
 typedef struct tmp_str_s {
-	struct tmp_str_s *next;
+	tmp_t *next;
 	char str[1];
 } tmp_str_t;
+
+typedef struct tmp_strlist_s {
+	tmp_t *next;
+	char values[MAX_ENUM+1];
+} tmp_strlist_t;
+
+union tmp_u {
+	struct {
+		tmp_t *next;
+	} list;
+	tmp_str_t str;
+	tmp_strlist_t strlist;
+};
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
 	int level;
-	tmp_str_t *tmp_str_head;
+	tmp_t *tmp_str_head;
 	unsigned running:1;
 } dad_t;
 
@@ -73,9 +88,9 @@ static int dad_new(const char *name)
 
 static void dad_destroy(dad_t *dad)
 {
-	tmp_str_t *t, *tnext;
+	tmp_t *t, *tnext;
 	for(t = dad->tmp_str_head; t != NULL; t = tnext) {
-		tnext = t->next;
+		tnext = t->list.next;
 		free(t);
 	}
 	htsp_pop(&dads, dad->name);
@@ -95,8 +110,17 @@ static char *tmp_str_dup(dad_t *dad, const char *txt)
 	size_t len = strlen(txt);
 	tmp_str_t *tmp = malloc(sizeof(tmp_str_t) + len);
 	tmp->next = dad->tmp_str_head;
+	dad->tmp_str_head = (tmp_t *)tmp;
 	memcpy(tmp->str, txt, len+1);
 	return tmp->str;
+}
+
+static char **tmp_new_strlist(dad_t *dad)
+{
+	tmp_strlist_t *tmp = malloc(sizeof(tmp_strlist_t));
+	tmp->next = dad->tmp_str_head;
+	dad->tmp_str_head = (tmp_t *)tmp;
+	return tmp->values;
 }
 
 static int split_tablist(dad_t *dad, char **values, const char *txt, const char *cmd)
@@ -231,7 +255,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if ((pcb_strcasecmp(cmd, "enum") == 0) || (pcb_strcasecmp(cmd, "begin_tabbed") == 0)) {
-		const char *values[MAX_ENUM+1];
+		const char **values = tmp_new_strlist(dad);
 
 		if (dad->running) goto cant_chg;
 
@@ -251,7 +275,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "tree") == 0) {
 		int cols, istree;
-		const char *values[MAX_ENUM+1];
+		const char **values = tmp_new_strlist(dad);
 
 		if (dad->running) goto cant_chg;
 
