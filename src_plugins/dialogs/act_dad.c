@@ -196,7 +196,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_STRING(dad->dlg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "enum") == 0) {
+	else if ((pcb_strcasecmp(cmd, "enum") == 0) || (pcb_strcasecmp(cmd, "begin_tabbed") == 0)) {
 		char *s, *next;
 		const char *values[MAX_ENUM+1];
 		int len = 0;
@@ -209,7 +209,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		while(isspace(*s)) s++;
 		for(len = 0; s != NULL; s = next) {
 			if (len >= MAX_ENUM) {
-				pcb_message(PCB_MSG_ERROR, "Too many DAD enum values\n");
+				pcb_message(PCB_MSG_ERROR, "Too many DAD %s values\n", cmd);
 				rv = -1;
 				break;
 			}
@@ -223,7 +223,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			len++;
 		}
 		values[len] = NULL;
-		PCB_DAD_ENUM(dad->dlg, values);
+		if (*cmd == 'b') {
+			PCB_DAD_BEGIN_TABBED(dad->dlg, values);
+			dad->level++;
+		}
+		else
+			PCB_DAD_ENUM(dad->dlg, values);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
