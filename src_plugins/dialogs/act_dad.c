@@ -77,14 +77,14 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 }
 
 const char pcb_acts_dad[] =
-	"dad(new, dlgname) - create new dialog\n"
-	"dad(label, dlgname, text) - append a label widget\n"
-	"dad(begin_hbox, dlgname) - begin horizontal box\n"
-	"dad(begin_vbox, dlgname) - begin vertical box\n"
-	"dad(begin_table, dlgname, cols) - begin table layout box\n"
-	"dad(end, dlgname) - end the last begin\n"
-	"dad(run, dlgname, longname, shortname) - present dlgname as a non-modal dialog\n"
-	"dad(run_modal, dlgname, longname, shortname) - present dlgname as a modal dialog\n"
+	"dad(dlgname, new) - create new dialog\n"
+	"dad(dlgname, label, text) - append a label widget\n"
+	"dad(dlgname, begin_hbox) - begin horizontal box\n"
+	"dad(dlgname, begin_vbox) - begin vertical box\n"
+	"dad(dlgname, begin_table, cols) - begin table layout box\n"
+	"dad(dlgname, end) - end the last begin\n"
+	"dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog\n"
+	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -93,8 +93,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	dad_t *dad;
 	int rv = 0;
 
-	PCB_ACT_CONVARG(1, FGW_STR, dad, cmd = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, dad, dlgname = argv[2].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, dad, dlgname = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
 
 	if (pcb_strcasecmp(cmd, "new") == 0) {
 		PCB_ACT_IRES(dad_new(dlgname));
