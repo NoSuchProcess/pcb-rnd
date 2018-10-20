@@ -33,13 +33,14 @@
 #include <genht/hash.h>
 #include "actions.h"
 #include "compat_misc.h"
+#include "hid_dad.h"
 #include "error.h"
 
 #include "act_dad.h"
 
 typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
-
 	unsigned running:1;
 } dad_t;
 
@@ -76,6 +77,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *cmd, *dlgname, *txt;
 	dad_t *dad;
+	int rv = 0;
 
 	PCB_ACT_CONVARG(1, FGW_STR, dad, cmd = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_STR, dad, dlgname = argv[2].val.str);
@@ -96,15 +98,15 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_strcasecmp(cmd, "label") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[2].val.str);
+		PCB_DAD_LABEL(dad->dlg, txt);
+		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
-		PCB_ACT_IRES(-1);
-		return 0;
+		rv = -1;
 	}
 
-
-	PCB_ACT_IRES(0);
+	PCB_ACT_IRES(rv);
 	return 0;
 
 	cant_chg:;
