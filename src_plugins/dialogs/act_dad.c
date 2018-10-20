@@ -133,6 +133,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
 	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
+	"dad(dlgname, tree, cols, istree, [header]) - append tree-table widget\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_hpane) - begin horizontal paned box\n"
@@ -243,6 +244,24 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			else
 				PCB_DAD_ENUM(dad->dlg, values);
+			rv = PCB_DAD_CURRENT(dad->dlg);
+		}
+		else
+			rv = -1;
+	}
+	else if (pcb_strcasecmp(cmd, "tree") == 0) {
+		int cols, istree;
+		const char *values[MAX_ENUM+1];
+
+		if (dad->running) goto cant_chg;
+
+		txt = NULL;
+		PCB_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
+		PCB_ACT_CONVARG(4, FGW_INT, dad, istree = argv[4].val.nat_int);
+		PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+
+		if ((txt == NULL) || (split_tablist(dad, (char **)values, txt, cmd) == 0)) {
+			PCB_DAD_TREE(dad->dlg, cols, istree, values);
 			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 		else
