@@ -139,6 +139,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		for(n = 3; n < argc; n++) {
 			PCB_ACT_CONVARG(n, FGW_STR, dad, txt = argv[n].val.str);
+			if ((*txt == '\0') || (*txt == '0'))
+				continue;
 			tmp = pcb_hid_compflag_name2bit(txt);
 			if (tmp == 0)
 				pcb_message(PCB_MSG_ERROR, "Invalid DAD flag: %s (ignored)\n", txt);
