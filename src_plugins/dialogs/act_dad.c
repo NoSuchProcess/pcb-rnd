@@ -41,6 +41,7 @@
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
+	int level;
 	unsigned running:1;
 } dad_t;
 
@@ -78,6 +79,10 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 const char pcb_acts_dad[] =
 	"dad(new, dlgname) - create new dialog\n"
 	"dad(label, dlgname, text) - append a label widget\n"
+	"dad(begin_hbox, dlgname) - begin horizontal box\n"
+	"dad(begin_vbox, dlgname) - begin vertical box\n"
+	"dad(begin_table, dlgname, cols) - begin table layout box\n"
+	"dad(end, dlgname) - end the last begin\n"
 	"dad(run, dlgname, longname, shortname) - present dlgname as a non-modal dialog\n"
 	"dad(run_modal, dlgname, longname, shortname) - present dlgname as a modal dialog\n"
 	;
@@ -110,11 +115,35 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_LABEL(dad->dlg, txt);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
+	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
+		PCB_DAD_BEGIN_HBOX(dad->dlg);
+		dad->level++;
+	}
+	else if (pcb_strcasecmp(cmd, "begin_vbox") == 0) {
+		PCB_DAD_BEGIN_VBOX(dad->dlg);
+		dad->level++;
+	}
+	else if (pcb_strcasecmp(cmd, "begin_table") == 0) {
+		int cols;
+		PCB_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
+		PCB_DAD_BEGIN_TABLE(dad->dlg, cols);
+		dad->level++;
+	}
+	else if (pcb_strcasecmp(cmd, "end") == 0) {
+		PCB_DAD_END(dad->dlg);
+		dad->level--;
+	}
 	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
 		char *sh;
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_ACT_CONVARG(4, FGW_STR, dad, sh = argv[4].val.str);
-		PCB_DAD_NEW(dad->dlg, txt, sh, dad, (cmd[3] == '_'), dad_close_cb);
+
+		if (dad->level != 0) {
+			pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog structure: %d levels not closed (missing 'end' calls)\n", dad->level);
+			rv = -1;
+		}
+		else
+			PCB_DAD_NEW(dad->dlg, txt, sh, dad, (cmd[3] == '_'), dad_close_cb);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
