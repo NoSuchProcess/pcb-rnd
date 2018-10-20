@@ -203,6 +203,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	dad = htsp_get(&dads, dlgname);
+	if (pcb_strcasecmp(cmd, "exists") == 0) {
+		PCB_ACT_IRES(dad != NULL);
+		return 0;
+	}
+
 	if (dad == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
 		PCB_ACT_IRES(-1);
