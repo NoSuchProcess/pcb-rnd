@@ -93,6 +93,7 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 const char pcb_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
 	"dad(dlgname, label, text) - append a label widget\n"
+	"dad(dlgname, button, text) - append a button widget\n"
 	"dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list\n"
 	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
@@ -132,6 +133,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_LABEL(dad->dlg, txt);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "button") == 0) {
+		if (dad->running) goto cant_chg;
+		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		PCB_DAD_BUTTON(dad->dlg, pcb_strdup(txt));
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "bool") == 0) {
