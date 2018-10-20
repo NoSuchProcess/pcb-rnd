@@ -68,9 +68,18 @@ static void dad_destroy(dad_t *dad)
 	free(dad);
 }
 
+static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	dad_t *dad = caller_data;
+	PCB_DAD_FREE(dad->dlg);
+	dad_destroy(dad);
+}
+
 const char pcb_acts_dad[] =
 	"dad(new, dlgname) - create new dialog\n"
 	"dad(label, dlgname, text) - append a label widget\n"
+	"dad(run, dlgname) - present dlgname as a non-modal dialog\n"
+	"dad(run_modal, dlgname) - present dlgname as a modal dialog\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -97,9 +106,15 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(cmd, "label") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[2].val.str);
+		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_LABEL(dad->dlg, txt);
 		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
+		char *sh;
+		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		PCB_ACT_CONVARG(4, FGW_STR, dad, sh = argv[4].val.str);
+		PCB_DAD_NEW(dad->dlg, txt, sh, dad, (cmd[3] == '_'), dad_close_cb);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
