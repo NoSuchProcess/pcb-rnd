@@ -66,6 +66,7 @@ union tmp_u {
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
+	const char *row_domain;
 	int level;
 	tmp_t *tmp_str_head;
 	vts0_t change_cb;
@@ -85,6 +86,7 @@ static int dad_new(const char *name)
 
 	dad = calloc(sizeof(dad_t), 1);
 	dad->name = pcb_strdup(name);
+	dad->row_domain = dad->name;
 	htsp_set(&dads, dad->name, dad);
 	return 0;
 }
@@ -316,6 +318,14 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(3, FGW_PTR, dad, row = argv[3].val.ptr_void);
 		PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 
+		if (row != NULL) {
+			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], dad->row_domain)) {
+				pcb_message(PCB_MSG_ERROR, "Invalid DAD row pointer\n");
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+		}
+
 		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
 			if (cmd[5] == 'i')
 				nrow = PCB_DAD_TREE_INSERT(dad->dlg, row, values);
@@ -326,8 +336,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else
 			nrow = NULL;
-		res->type = FGW_PTR;
-		res->val.ptr_void = nrow;
+		fgw_ptr_reg(&pcb_fgw, res, dad->row_domain, FGW_PTR, nrow);
 		return 0;
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
