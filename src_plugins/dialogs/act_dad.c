@@ -32,14 +32,33 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include "actions.h"
+#include "compat_misc.h"
+#include "error.h"
 
 #include "act_dad.h"
 
 typedef struct {
 	char *name;
+
+	unsigned running:1;
 } dad_t;
 
 htsp_t dads;
+
+static int dad_new(const char *name)
+{
+	dad_t *dad;
+
+	if (htsp_get(&dads, name) != NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't create named DAD dialog %s: already exists\n", name);
+		return -1;
+	}
+
+	dad = calloc(sizeof(dad_t), 1);
+	dad->name = pcb_strdup(name);
+	htsp_set(&dads, dad->name, dad);
+	return 0;
+}
 
 static void dad_destroy(dad_t *dad)
 {
@@ -49,12 +68,48 @@ static void dad_destroy(dad_t *dad)
 }
 
 const char pcb_acts_dad[] =
-	"dad()\n"
+	"dad(new, dlgname) - create new dialog\n"
+	"dad(label, dlgname, text) - append a label widget\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	char *cmd, *dlgname, *txt;
+	dad_t *dad;
+
+	PCB_ACT_CONVARG(1, FGW_STR, dad, cmd = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, dad, dlgname = argv[2].val.str);
+
+	if (pcb_strcasecmp(cmd, "new") == 0) {
+		PCB_ACT_IRES(dad_new(dlgname));
+		return 0;
+	}
+
+	dad = htsp_get(&dads, dlgname);
+	if (dad == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+
+	if (pcb_strcasecmp(cmd, "label") == 0) {
+		if (dad->running) goto cant_chg;
+		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[2].val.str);
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+
 	PCB_ACT_IRES(0);
+	return 0;
+
+	cant_chg:;
+	pcb_message(PCB_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
+	PCB_ACT_IRES(-1);
 	return 0;
 }
 
