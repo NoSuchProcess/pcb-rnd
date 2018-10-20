@@ -188,6 +188,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
 	"dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)\n"
 	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
+	"dad(dlgname, get, widgetID) - return the current value of a widget\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -444,7 +445,36 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		rv = 0;
 	}
-	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
+	else if (pcb_strcasecmp(cmd, "get") == 0) {
+		int wid;
+
+		PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
+		if ((wid < 0) || (wid >= dad->dlg_len)) {
+			pcb_message(PCB_MSG_ERROR, "Invalid widget ID %d (get ignored)\n", wid);
+			return FGW_ERR_NOT_FOUND;
+		}
+
+		switch(dad->dlg[wid].type) {
+			case PCB_HATT_COORD:
+				res->type = FGW_COORD;
+				fgw_coord(res) = dad->dlg[wid].default_val.coord_value;
+				break;
+			case PCB_HATT_INTEGER:
+				res->type = FGW_INT;
+				res->val.nat_int = dad->dlg[wid].default_val.int_value;
+				break;
+			case PCB_HATT_STRING:
+			case PCB_HATT_LABEL:
+			case PCB_HATT_BUTTON:
+				res->type = FGW_STR;
+				res->val.str = dad->dlg[wid].default_val.str_value;
+				break;
+			default:
+				pcb_message(PCB_MSG_ERROR, "Invalid widget type %d - can not retrieve value (get ignored)\n", wid);
+				return FGW_ERR_NOT_FOUND;
+		}
+		return 0;
+	}	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
 		char *sh;
 
 		if (dad->running) goto cant_chg;
