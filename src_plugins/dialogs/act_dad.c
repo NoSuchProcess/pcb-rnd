@@ -90,6 +90,16 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	dad_destroy(dad);
 }
 
+static char *tmp_str_dup(dad_t *dad, const char *txt)
+{
+	size_t len = strlen(txt);
+	tmp_str_t *tmp = malloc(sizeof(tmp_str_t) + len);
+	tmp->next = dad->tmp_str_head;
+	memcpy(tmp->str, txt, len+1);
+	return tmp->str;
+}
+
+
 const char pcb_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
 	"dad(dlgname, label, text) - append a label widget\n"
@@ -138,7 +148,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "button") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		PCB_DAD_BUTTON(dad->dlg, pcb_strdup(txt));
+		PCB_DAD_BUTTON(dad->dlg, tmp_str_dup(dad, txt));
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "bool") == 0) {
@@ -190,19 +200,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *s, *next;
 		const char *values[MAX_ENUM+1];
 		int len = 0;
-		tmp_str_t *tmp;
 
 		if (dad->running) goto cant_chg;
 
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
-		len = strlen(txt);
-		tmp = malloc(sizeof(tmp_str_t) + len);
-		tmp->next = dad->tmp_str_head;
-		memcpy(tmp->str, txt, len+1);
-		dad->tmp_str_head = tmp;
-
-		s = tmp->str;
+		s = tmp_str_dup(dad, txt);
 		while(isspace(*s)) s++;
 		for(len = 0; s != NULL; s = next) {
 			if (len >= MAX_ENUM) {
