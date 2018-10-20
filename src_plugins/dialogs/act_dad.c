@@ -99,6 +99,30 @@ static char *tmp_str_dup(dad_t *dad, const char *txt)
 	return tmp->str;
 }
 
+static int split_tablist(dad_t *dad, char **values, const char *txt, const char *cmd)
+{
+	char *next, *s = tmp_str_dup(dad, txt);
+	int len = 0;
+
+	while(isspace(*s)) s++;
+
+	for(len = 0; s != NULL; s = next) {
+		if (len >= MAX_ENUM) {
+			pcb_message(PCB_MSG_ERROR, "Too many DAD %s values\n", cmd);
+			return -1;
+		}
+		next = strchr(s, '\t');
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+			while(isspace(*next)) next++;
+		}
+		values[len] = s;
+		len++;
+	}
+	values[len] = NULL;
+	return 0;
+}
 
 const char pcb_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
@@ -206,39 +230,23 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if ((pcb_strcasecmp(cmd, "enum") == 0) || (pcb_strcasecmp(cmd, "begin_tabbed") == 0)) {
-		char *s, *next;
 		const char *values[MAX_ENUM+1];
-		int len = 0;
 
 		if (dad->running) goto cant_chg;
 
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
-		s = tmp_str_dup(dad, txt);
-		while(isspace(*s)) s++;
-		for(len = 0; s != NULL; s = next) {
-			if (len >= MAX_ENUM) {
-				pcb_message(PCB_MSG_ERROR, "Too many DAD %s values\n", cmd);
-				rv = -1;
-				break;
+		if (split_tablist(dad, (char **)values, txt, cmd) == 0) {
+			if (*cmd == 'b') {
+				PCB_DAD_BEGIN_TABBED(dad->dlg, values);
+				dad->level++;
 			}
-			next = strchr(s, '\t');
-			if (next != NULL) {
-				*next = '\0';
-				next++;
-				while(isspace(*next)) next++;
-			}
-			values[len] = s;
-			len++;
-		}
-		values[len] = NULL;
-		if (*cmd == 'b') {
-			PCB_DAD_BEGIN_TABBED(dad->dlg, values);
-			dad->level++;
+			else
+				PCB_DAD_ENUM(dad->dlg, values);
+			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 		else
-			PCB_DAD_ENUM(dad->dlg, values);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+			rv = -1;
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
 		if (dad->running) goto cant_chg;
