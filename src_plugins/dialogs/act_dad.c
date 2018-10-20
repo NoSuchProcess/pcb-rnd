@@ -95,6 +95,8 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, label, text) - append a label widget\n"
 	"dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list\n"
 	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
+	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
+	"dad(dlgname, string) - append a single line text input field\n"
 	"dad(dlgname, begin_hbox) - begin horizontal box\n"
 	"dad(dlgname, begin_vbox) - begin vertical box\n"
 	"dad(dlgname, begin_table, cols) - begin table layout box\n"
@@ -137,6 +139,44 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		txt = "";
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_BOOL(dad->dlg, txt);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "integer") == 0) {
+		long vmin, vmax;
+		if (dad->running) goto cant_chg;
+		txt = "";
+		PCB_ACT_CONVARG(3, FGW_LONG, dad, vmin = argv[3].val.nat_long);
+		PCB_ACT_CONVARG(4, FGW_LONG, dad, vmax = argv[4].val.nat_long);
+		PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		PCB_DAD_INTEGER(dad->dlg, txt);
+		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "real") == 0) {
+		double vmin, vmax;
+		if (dad->running) goto cant_chg;
+		txt = "";
+		PCB_ACT_CONVARG(3, FGW_DOUBLE, dad, vmin = argv[3].val.nat_double);
+		PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, vmax = argv[4].val.nat_double);
+		PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		PCB_DAD_REAL(dad->dlg, txt);
+		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "coord") == 0) {
+		pcb_coord_t vmin, vmax;
+		if (dad->running) goto cant_chg;
+		txt = "";
+		PCB_ACT_CONVARG(3, FGW_COORD_, dad, vmin = fgw_coord(&argv[3]));
+		PCB_ACT_CONVARG(4, FGW_COORD_, dad, vmax = fgw_coord(&argv[4]));
+		PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		PCB_DAD_COORD(dad->dlg, txt);
+		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
+		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "string") == 0) {
+		if (dad->running) goto cant_chg;
+		PCB_DAD_STRING(dad->dlg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "enum") == 0) {
