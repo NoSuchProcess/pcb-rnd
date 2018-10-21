@@ -71,6 +71,7 @@ static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static int flg_error(const char *msg)
 {
 	pcb_message(PCB_MSG_ERROR, "act_draw flag conversion error: %s\n", msg);
+	return 0;
 }
 
 static const char pcb_acts_LineNew[] = "LineNew(data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)";
