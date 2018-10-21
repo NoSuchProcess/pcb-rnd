@@ -116,17 +116,17 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_flag_t flags;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, LineNew, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, LineNew, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, LineNew, cx = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, LineNew, cy = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_COORD, LineNew, wr = fgw_coord(&argv[5]));
-	PCB_ACT_CONVARG(6, FGW_COORD, LineNew, hr = fgw_coord(&argv[6]));
-	PCB_ACT_CONVARG(7, FGW_DOUBLE, LineNew, sa = argv[7].val.nat_double);
-	PCB_ACT_CONVARG(8, FGW_DOUBLE, LineNew, da = argv[8].val.nat_double);
-	PCB_ACT_CONVARG(9, FGW_COORD, LineNew, th = fgw_coord(&argv[9]));
-	PCB_ACT_CONVARG(10, FGW_COORD, LineNew, cl = fgw_coord(&argv[10]));
-	PCB_ACT_CONVARG(11, FGW_STR, LineNew, sflg = argv[11].val.str);
+	PCB_ACT_CONVARG(1, FGW_DATA, ArcNew, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LAYER, ArcNew, layer = fgw_layer(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_COORD, ArcNew, cx = fgw_coord(&argv[3]));
+	PCB_ACT_CONVARG(4, FGW_COORD, ArcNew, cy = fgw_coord(&argv[4]));
+	PCB_ACT_CONVARG(5, FGW_COORD, ArcNew, wr = fgw_coord(&argv[5]));
+	PCB_ACT_CONVARG(6, FGW_COORD, ArcNew, hr = fgw_coord(&argv[6]));
+	PCB_ACT_CONVARG(7, FGW_DOUBLE, ArcNew, sa = argv[7].val.nat_double);
+	PCB_ACT_CONVARG(8, FGW_DOUBLE, ArcNew, da = argv[8].val.nat_double);
+	PCB_ACT_CONVARG(9, FGW_COORD, ArcNew, th = fgw_coord(&argv[9]));
+	PCB_ACT_CONVARG(10, FGW_COORD, ArcNew, cl = fgw_coord(&argv[10]));
+	PCB_ACT_CONVARG(11, FGW_STR, ArcNew, sflg = argv[11].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
