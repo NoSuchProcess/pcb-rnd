@@ -219,13 +219,48 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_PolyNewFromRectangle[] = "PolyNewFromRectangle(data, layer, x1, y1, x2, y2, clearance, flags)";
+static const char pcb_acth_PolyNewFromRectangle[] = "Create a rectangular polygon. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
+static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *sflg;
+	pcb_poly_t *poly;
+	pcb_data_t *data;
+	pcb_layer_t *layer;
+	pcb_coord_t x1, y1, x2, y2, cl;
+	pcb_flag_t flags;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromRectangle, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromRectangle, layer = fgw_layer(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_COORD, PolyNewFromRectangle, x1 = fgw_coord(&argv[3]));
+	PCB_ACT_CONVARG(4, FGW_COORD, PolyNewFromRectangle, y1 = fgw_coord(&argv[4]));
+	PCB_ACT_CONVARG(5, FGW_COORD, PolyNewFromRectangle, x2 = fgw_coord(&argv[5]));
+	PCB_ACT_CONVARG(6, FGW_COORD, PolyNewFromRectangle, y2 = fgw_coord(&argv[6]));
+	PCB_ACT_CONVARG(7, FGW_COORD, PolyNewFromRectangle, cl = fgw_coord(&argv[7]));
+	PCB_ACT_CONVARG(8, FGW_STR, PolyNewFromRectangle, sflg = argv[8].val.str);
+
+	if (data != PCB->Data)
+		return 0;
+
+	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
+	poly = pcb_poly_new_from_rectangle(layer, x1, y1, x2, y2, cl*2, flags);
+
+	if (poly != NULL) {
+		res->type = FGW_LONG;
+		res->val.nat_long = poly->ID;
+	}
+	return 0;
+}
+
 
 pcb_action_t act_draw_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
 	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew},
-	{"PstkNew", pcb_act_PstkNew, pcb_acth_PstkNew, pcb_acts_PstkNew}
+	{"PstkNew", pcb_act_PstkNew, pcb_acth_PstkNew, pcb_acts_PstkNew},
+	{"PolyNewFromRectangle", pcb_act_PolyNewFromRectangle, pcb_acth_PolyNewFromRectangle, pcb_acts_PolyNewFromRectangle}
 };
 
 static const char *act_draw_cookie = "act_draw";
