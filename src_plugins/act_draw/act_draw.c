@@ -141,11 +141,56 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_TextNew[] = "TextNew(data, layer, x, y, rot, scale, thickness, test_string, flags)";
+static const char pcb_acth_TextNew[] = "Create a pcb text on a layer. For now data must be \"pcb\". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.";
+static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *sflg, *str;
+	pcb_text_t *text = NULL;
+	pcb_data_t *data;
+	pcb_layer_t *layer;
+	pcb_coord_t x, y, th;
+	int scale, fontid;
+	double rot;
+	pcb_flag_t flags;
+	pcb_font_t *font;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_DATA, TextNew, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LAYER, TextNew, layer = fgw_layer(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_INT, TextNew, fontid = argv[3].val.nat_int);
+	PCB_ACT_CONVARG(4, FGW_COORD, TextNew, x = fgw_coord(&argv[4]));
+	PCB_ACT_CONVARG(5, FGW_COORD, TextNew, y = fgw_coord(&argv[5]));
+	PCB_ACT_CONVARG(6, FGW_DOUBLE, TextNew, rot = argv[6].val.nat_double);
+	PCB_ACT_CONVARG(7, FGW_INT, TextNew, scale = argv[7].val.nat_int);
+	PCB_ACT_CONVARG(8, FGW_COORD, TextNew, th = fgw_coord(&argv[8]));
+	PCB_ACT_CONVARG(9, FGW_STR, TextNew, str = argv[9].val.str);
+	PCB_ACT_CONVARG(10, FGW_STR, TextNew, sflg = argv[10].val.str);
+
+	if ((data != PCB->Data) || (layer == NULL))
+		return 0;
+
+	font = pcb_font(PCB, fontid, 0);
+	if (font != NULL) {
+		flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
+		text = pcb_text_new(layer, font, x, y, rot, scale, th, str, flags);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "NewText: font %d not found\n", fontid);
+
+	if (text != NULL) {
+		res->type = FGW_LONG;
+		res->val.nat_long = text->ID;
+	}
+	return 0;
+}
+
 
 pcb_action_t act_draw_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
-	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew}
+	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
+	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew}
 };
 
 static const char *act_draw_cookie = "act_draw";
