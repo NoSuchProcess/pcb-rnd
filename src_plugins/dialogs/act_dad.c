@@ -281,19 +281,19 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
 	else if ((pcb_strcasecmp(cmd, "enum") == 0) || (pcb_strcasecmp(cmd, "begin_tabbed") == 0)) {
-		const char **values = tmp_new_strlist(dad);
+		char **values = tmp_new_strlist(dad);
 
 		if (dad->running) goto cant_chg;
 
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
-		if (split_tablist(dad, (char **)values, txt, cmd) == 0) {
+		if (split_tablist(dad, values, txt, cmd) == 0) {
 			if (*cmd == 'b') {
-				PCB_DAD_BEGIN_TABBED(dad->dlg, values);
+				PCB_DAD_BEGIN_TABBED(dad->dlg, (const char **)values);
 				dad->level++;
 			}
 			else
-				PCB_DAD_ENUM(dad->dlg, values);
+				PCB_DAD_ENUM(dad->dlg, (const char **)values);
 			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 		else
@@ -301,7 +301,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "tree") == 0) {
 		int cols, istree;
-		const char **values = tmp_new_strlist(dad);
+		char **values = tmp_new_strlist(dad);
 
 		if (dad->running) goto cant_chg;
 
@@ -310,8 +310,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(4, FGW_INT, dad, istree = argv[4].val.nat_int);
 		PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
 
-		if ((txt == NULL) || (split_tablist(dad, (char **)values, txt, cmd) == 0)) {
-			PCB_DAD_TREE(dad->dlg, cols, istree, values);
+		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
+			PCB_DAD_TREE(dad->dlg, cols, istree, (const char **)values);
 			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 		else
@@ -480,7 +480,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_LABEL:
 			case PCB_HATT_BUTTON:
 				res->type = FGW_STR;
-				res->val.str = dad->dlg[wid].default_val.str_value;
+				res->val.str = (char *)dad->dlg[wid].default_val.str_value;
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Invalid widget type %d - can not retrieve value (get ignored)\n", wid);
