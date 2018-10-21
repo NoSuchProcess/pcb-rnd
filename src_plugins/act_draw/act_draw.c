@@ -35,6 +35,8 @@
 #include "flag_str.h"
 #include "obj_arc.h"
 #include "obj_line.h"
+#include "obj_pstk.h"
+#include "obj_text.h"
 #include "plugins.h"
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
@@ -185,12 +187,45 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_PstkNew[] = "PstkNew(data, protoID, x, y, glob_clearance, flags)";
+static const char pcb_acth_PstkNew[] = "Create a padstack. For now data must be \"pcb\". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.";
+static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *sflg;
+	pcb_pstk_t *pstk;
+	pcb_data_t *data;
+	long proto;
+	pcb_coord_t x, y, cl;
+	pcb_flag_t flags;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_DATA, PstkNew, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LONG, PstkNew, proto = argv[2].val.nat_int);
+	PCB_ACT_CONVARG(3, FGW_COORD, PstkNew, x = fgw_coord(&argv[3]));
+	PCB_ACT_CONVARG(4, FGW_COORD, PstkNew, y = fgw_coord(&argv[4]));
+	PCB_ACT_CONVARG(5, FGW_COORD, PstkNew, cl = fgw_coord(&argv[5]));
+	PCB_ACT_CONVARG(6, FGW_STR, PstkNew, sflg = argv[6].val.str);
+
+	if (data != PCB->Data)
+		return 0;
+
+	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
+	pstk = pcb_pstk_new(data, proto, x, y, cl, flags);
+
+	if (pstk != NULL) {
+		res->type = FGW_LONG;
+		res->val.nat_long = pstk->ID;
+	}
+	return 0;
+}
+
 
 pcb_action_t act_draw_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
-	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew}
+	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew},
+	{"PstkNew", pcb_act_PstkNew, pcb_acth_PstkNew, pcb_acts_PstkNew}
 };
 
 static const char *act_draw_cookie = "act_draw";
