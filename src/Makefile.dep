@@ -25,6 +25,27 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h conf_core.h \
  compat_misc.h error.h dolists.h
+../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c \
+ ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h globalconst.h actions.h hid.h error.h \
+ drc.h attrib.h layer.h obj_common.h flag.h data_parent.h obj_arc_list.h \
+ obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
+ layer_grp.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
+ vtroutestyle.h library.h rats_patch.h board.h compat_misc.h flag_str.h \
+ obj_arc.h obj_line.h obj_pstk.h obj_pstk_shape.h polygon.h rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h vtpadstack_t.h \
+ obj_text.h plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h dolists.h
 ../src_plugins/ar_cpcb/ar_cpcb.o: ../src_plugins/ar_cpcb/ar_cpcb.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
@@ -357,6 +378,23 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h error.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+../src_plugins/dialogs/act_dad.o: ../src_plugins/dialogs/act_dad.c \
+ ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/hash.h ../src_3rd/genvector/vts0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h actions.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h error.h drc.h unit.h global_typedefs.h \
+ pcb_bool.h attrib.h layer.h globalconst.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h layer_grp.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h compat_misc.h hid_dad.h compat_misc.h \
+ hid_attrib.h pcb-printf.h hid_dad_tree.h hid_dad.h error.h \
+ ../src_plugins/dialogs/act_dad.h
 ../src_plugins/dialogs/dialogs.o: ../src_plugins/dialogs/dialogs.c \
  ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
