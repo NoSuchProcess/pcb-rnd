@@ -52,7 +52,7 @@ typedef struct tmp_str_s {
 
 typedef struct tmp_strlist_s {
 	tmp_t *next;
-	char values[MAX_ENUM+1];
+	char *values[MAX_ENUM+1];
 } tmp_strlist_t;
 
 union tmp_u {
