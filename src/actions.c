@@ -928,6 +928,54 @@ static int layer_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+static int data_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_DATA) { /* convert to data */
+		if (FGW_BASE_TYPE(arg->type) == FGW_STR) {
+			if (pcb_strcasecmp(arg->val.str, "pcb") == 0) {
+				arg->val.ptr_void = PCB->Data;
+				arg->type = FGW_DATA;
+				return 0;
+			}
+			else if (pcb_strncasecmp(arg->val.str, "buffer#", 7) == 0) {
+				char *end;
+				long idx = strtol(arg->val.str+7, &end, 10);
+				if ((*end == '\0') && (idx >= 0) && (idx < PCB_MAX_BUFFER)) {
+					arg->val.ptr_void = pcb_buffers[idx].Data;
+					arg->type = FGW_DATA;
+					return 0;
+				}
+			}
+			else if (pcb_strcasecmp(arg->val.str, "buffer") == 0) {
+				arg->val.ptr_void = PCB_PASTEBUFFER->Data;
+				arg->type = FGW_DATA;
+				return 0;
+			}
+		}
+		arg->type = FGW_INVALID;
+		return -1;
+	}
+	if (arg->type == FGW_DATA) { /* convert from layer */
+		int n;
+		if (arg->val.ptr_void == PCB->Data) {
+			arg->val.str = "pcb";
+			arg->type = FGW_STR;
+			return 0;
+		}
+		for(n = 0; n < PCB_MAX_BUFFER; n++) {
+			if (arg->val.ptr_void == pcb_buffers[n].Data) {
+				arg->val.str = pcb_strdup_printf("buffer#%d", n);
+				arg->type = FGW_STR | FGW_DYN;
+				return 0;
+			}
+		}
+		arg->type = FGW_INVALID;
+		return -1;
+	}
+	fprintf(stderr, "Neither side of the conversion is data\n");
+	abort();
+}
+
 static void pcb_action_err(fgw_obj_t *obj, const char *msg)
 {
 	pcb_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
@@ -956,6 +1004,10 @@ void pcb_actions_init(void)
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_arg_conv, NULL) != FGW_LAYER) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_DATA, "data", data_arg_conv, NULL) != FGW_DATA) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_DATA\n");
 		abort();
 	}
 }
