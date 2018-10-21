@@ -188,7 +188,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
 	"dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)\n"
 	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
-	"dad(dlgname, get, widgetID) - return the current value of a widget\n"
+	"dad(dlgname, get, widgetID, [unit]) - return the current value of a widget\n"
 	;
 const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -456,8 +456,21 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		switch(dad->dlg[wid].type) {
 			case PCB_HATT_COORD:
-				res->type = FGW_COORD;
-				fgw_coord(res) = dad->dlg[wid].default_val.coord_value;
+				txt = NULL;
+				PCB_ACT_MAY_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
+				if (txt != NULL) {
+					const pcb_unit_t *u = get_unit_struct(txt);
+					if (u == NULL) {
+						pcb_message(PCB_MSG_ERROR, "Invalid unit %s (get ignored)\n", txt);
+						return FGW_ERR_NOT_FOUND;
+					}
+					res->type = FGW_DOUBLE;
+					res->val.nat_double = pcb_coord_to_unit(u, dad->dlg[wid].default_val.coord_value);
+				}
+				else {
+					res->type = FGW_COORD;
+					fgw_coord(res) = dad->dlg[wid].default_val.coord_value;
+				}
 				break;
 			case PCB_HATT_INTEGER:
 				res->type = FGW_INT;
