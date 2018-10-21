@@ -2,11 +2,14 @@
 <body>
 <h1> pcb-rnd hacking - plugin naming conventions </h1>
 	<ul>
-		<li> export plugins start with export_; these render to a non-native format that can not be then loaded
-		<li> native formats are prefixed with io_; even if your plugin can now only load or save, if it's possible to do a load-save-load round-trip without data loss, it's an io_
-		<li> interactive, often GUI, frontends are prefixed with hid_
-		<li> footprint access plugins start with fp_
+		<li> export_: export plugins start with export_; these render to a non-native format that can not be then loaded
+		<li> import_: import plugins start with import_; these perform partial data load from alien formats (typically: netlist/schematics)
+		<li> io_: full board save/load prefixed with io_; even if your plugin can now only load or save, if it's possible to do a load-save-load round-trip without data loss, it's an io_
+		<li> hid_: interactive, often GUI, frontends are prefixed with hid_
+		<li> fp_: footprint access plugins start with fp_
 		<li> lib_ plugins are libraries used by other plugins; they are disabled by default and are enabled through the plugin dependency system
+		<li> act_ plugins are stateless wrappers to expose existing C functions (moslty core functionality) over the action API (for scripts and users)
+		<li> ar_ plugins are related to external autorouting: they are reponsible for calling the external process and coordinate the routing but sometimes also implement export/import pair for the format
 		<li> anything else is considered a feature plugin and has no specific prefix.
 	</ul>
 </body>
