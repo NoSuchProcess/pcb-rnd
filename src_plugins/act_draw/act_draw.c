@@ -253,6 +253,76 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	return 0;
 }
 
+static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
+{
+	long len;
+	char *s, *next, *tmp = pcb_strdup(ptlist);
+	double c[2];
+	pcb_bool success;
+
+	s = tmp;
+	while (isspace(*s) || (*s == ',')) s++;
+	for(len = 0; s != NULL; s = next, len++) {
+		next = strchr(s, ',');
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+			while (isspace(*next) || (*next == ',')) next++;
+			if (*next == '\0')
+				next = NULL;
+		}
+		c[len % 2] = pcb_get_value_ex(s, NULL, NULL, NULL, "mm", &success);
+		if (!success) {
+			pcb_message(PCB_MSG_ERROR, "act_draw ptlist processing: '%s' is not a valid coordinate\n", s);
+			free(tmp);
+			return -1;
+		}
+		if ((len % 2) == 1)
+			pcb_poly_point_new(poly, c[0], c[1]);
+	}
+	free(tmp);
+	if ((len % 2) == 1) {
+		pcb_message(PCB_MSG_ERROR, "act_draw ptlist processing: odd number of points\n");
+		return -1;
+	}
+	return len/2;
+}
+
+static const char pcb_acts_PolyNewFromPoints[] = "PolyNewFromRectangle(data, layer, ptlist, clearance, flags)";
+static const char pcb_acth_PolyNewFromPoints[] = "Create a rectangular polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.";
+static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *sflg, *ptlist;
+	pcb_poly_t *poly;
+	pcb_data_t *data;
+	pcb_layer_t *layer;
+	pcb_coord_t cl;
+	pcb_flag_t flags;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_STR, PolyNewFromPoints, ptlist = argv[3].val.str);
+	PCB_ACT_CONVARG(4, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[4]));
+	PCB_ACT_CONVARG(5, FGW_STR, PolyNewFromPoints, sflg = argv[5].val.str);
+
+	if (data != PCB->Data)
+		return 0;
+
+	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
+	poly = pcb_poly_new(layer, cl*2, flags);
+
+	if (poly != NULL) {
+		if (poly_append_ptlist(poly, ptlist) > 2) {
+			pcb_poly_init_clip(data, layer, poly);
+			pcb_add_poly_on_layer(layer, poly);
+			res->type = FGW_LONG;
+			res->val.nat_long = poly->ID;
+		}
+	}
+	return 0;
+}
+
 
 pcb_action_t act_draw_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
@@ -260,7 +330,8 @@ pcb_action_t act_draw_action_list[] = {
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
 	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew},
 	{"PstkNew", pcb_act_PstkNew, pcb_acth_PstkNew, pcb_acts_PstkNew},
-	{"PolyNewFromRectangle", pcb_act_PolyNewFromRectangle, pcb_acth_PolyNewFromRectangle, pcb_acts_PolyNewFromRectangle}
+	{"PolyNewFromRectangle", pcb_act_PolyNewFromRectangle, pcb_acth_PolyNewFromRectangle, pcb_acts_PolyNewFromRectangle},
+	{"PolyNewFromPoints", pcb_act_PolyNewFromPoints, pcb_acth_PolyNewFromPoints, pcb_acts_PolyNewFromPoints}
 };
 
 static const char *act_draw_cookie = "act_draw";
