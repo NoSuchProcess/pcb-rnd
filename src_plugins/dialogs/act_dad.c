@@ -458,8 +458,6 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_COORD:
 				res->type = FGW_COORD;
 				fgw_coord(res) = dad->dlg[wid].default_val.coord_value;
-#warning fungw TODO: this conversion should not happen
-				fgw_arg_conv(&pcb_fgw, res, FGW_STR); /* mawk can't convert custom types yet */
 				break;
 			case PCB_HATT_INTEGER:
 				res->type = FGW_INT;
