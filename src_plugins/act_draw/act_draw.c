@@ -32,12 +32,15 @@
 
 #include "actions.h"
 #include "board.h"
+#include "compat_misc.h"
 #include "flag_str.h"
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_pstk.h"
 #include "obj_text.h"
 #include "plugins.h"
+
+static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
 static const char pcb_acth_GetValue[] = "Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().";
@@ -289,7 +292,7 @@ static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 }
 
 static const char pcb_acts_PolyNewFromPoints[] = "PolyNewFromRectangle(data, layer, ptlist, clearance, flags)";
-static const char pcb_acth_PolyNewFromPoints[] = "Create a rectangular polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_PolyNewFromPoints[] = "Create a polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg, *ptlist;
@@ -323,6 +326,86 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 	return 0;
 }
 
+static const char pcb_acts_PolyNew[] = "PolyNew(data, layer, ptlist, clearance, flags)";
+static const char pcb_acth_PolyNew[] = "Create an empty polygon. For now data must be \"pcb\". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.";
+static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *sflg;
+	pcb_poly_t *poly;
+	pcb_data_t *data;
+	pcb_layer_t *layer;
+	pcb_coord_t cl;
+	pcb_flag_t flags;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[3]));
+	PCB_ACT_CONVARG(4, FGW_STR, PolyNewFromPoints, sflg = argv[4].val.str);
+
+	if (data != PCB->Data)
+		return 0;
+
+	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
+	poly = pcb_poly_new(layer, cl*2, flags);
+
+	if (poly != NULL)
+		fgw_ptr_reg(&pcb_fgw, res, PTR_DOMAIN_POLY, FGW_PTR, poly);
+	return 0;
+}
+
+static const char pcb_acts_PolyNewPoints[] = "PolyNewPoints(poly, ptlist)";
+static const char pcb_acth_PolyNewPoints[] = "Add a list of points to a polygon created by PolyNew. Returns 0 on success.";
+static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_poly_t *poly;
+	const char *ptlist;
+
+	PCB_ACT_CONVARG(1, FGW_PTR, PolyNewPoints, poly = argv[1].val.ptr_void);
+	PCB_ACT_CONVARG(2, FGW_STR, PolyNewPoints, ptlist = argv[2].val.str);
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY)) {
+		pcb_message(PCB_MSG_ERROR, "PolyNewPoints: invalid polygon pointer\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+	if (poly_append_ptlist(poly, ptlist) < 0) {
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
+static const char pcb_acts_PolyNewEnd[] = "PolyNewEnd(data, layer, poly)";
+static const char pcb_acth_PolyNewEnd[] = "Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.";
+static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_poly_t *poly;
+	pcb_data_t *data;
+	pcb_layer_t *layer;
+
+	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2]));
+	PCB_ACT_CONVARG(3, FGW_PTR, PolyNewPoints, poly = argv[3].val.ptr_void);
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY)) {
+		pcb_message(PCB_MSG_ERROR, "PolyNewEnd: invalid polygon pointer\n");
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+	if (poly->PointN < 3) {
+		pcb_message(PCB_MSG_ERROR, "PolyNewEnd: can not finish polygon, need at least 3 points\n");
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+	pcb_poly_init_clip(data, layer, poly);
+	pcb_add_poly_on_layer(layer, poly);
+	res->type = FGW_LONG;
+	res->val.nat_long = poly->ID;
+	fgw_ptr_unreg(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY);
+	return 0;
+}
 
 pcb_action_t act_draw_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
@@ -331,7 +414,10 @@ pcb_action_t act_draw_action_list[] = {
 	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew},
 	{"PstkNew", pcb_act_PstkNew, pcb_acth_PstkNew, pcb_acts_PstkNew},
 	{"PolyNewFromRectangle", pcb_act_PolyNewFromRectangle, pcb_acth_PolyNewFromRectangle, pcb_acts_PolyNewFromRectangle},
-	{"PolyNewFromPoints", pcb_act_PolyNewFromPoints, pcb_acth_PolyNewFromPoints, pcb_acts_PolyNewFromPoints}
+	{"PolyNewFromPoints", pcb_act_PolyNewFromPoints, pcb_acth_PolyNewFromPoints, pcb_acts_PolyNewFromPoints},
+	{"PolyNew", pcb_act_PolyNew, pcb_acth_PolyNew, pcb_acts_PolyNew},
+	{"PolyNewPoints", pcb_act_PolyNewPoints, pcb_acth_PolyNewPoints, pcb_acts_PolyNewPoints},
+	{"PolyNewEnd", pcb_act_PolyNewEnd, pcb_acth_PolyNewEnd, pcb_acts_PolyNewEnd},
 };
 
 static const char *act_draw_cookie = "act_draw";
