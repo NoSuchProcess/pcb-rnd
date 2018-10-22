@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  ttf glyph import
+ *  ttf low level loader
  *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -26,47 +26,41 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "config.h"
+#ifndef PCB_TTF_LOAD_H
+#define PCB_TTF_LOAD_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <ft2build.h>
+#include <freetype/freetype.h>
 
-#include "board.h"
-#include "data.h"
+typedef struct pcb_ttf_s {
+	FT_Library library;
+	FT_Face face;
+} pcb_ttf_t;
 
-#include "actions.h"
-#include "plugins.h"
-#include "hid.h"
+/* Stroker backend; this low level lib does not know how to draw anything but
+   calls back the stroker for outline objects */
+typedef struct pcb_ttf_stroke_s pcb_ttf_stroke_t;
+struct pcb_ttf_stroke_s {
+	FT_Outline_Funcs funcs;
+	void (*init)(pcb_ttf_stroke_t *s);
+	void (*start)(pcb_ttf_stroke_t *s, int chr);
+	void (*finish)(pcb_ttf_stroke_t *s);
+	void (*uninit)(pcb_ttf_stroke_t *s);
 
-#include "ttf_load.h"
-
-static const char *ttf_cookie = "ttf importer";
-
-static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars])";
-static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
-fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	PCB_ACT_IRES(-1);
-	return 0;
-}
-
-pcb_action_t ttf_action_list[] = {
-	{"LoadTtfGlyphs", pcb_act_LoadTtfGlyphs, pcb_acth_LoadTtfGlyphs, pcb_acts_LoadTtfGlyphs}
+	double x, y;
+	double dx, dy, scale_x, scale_y;
 };
 
-PCB_REGISTER_ACTIONS(ttf_action_list, ttf_cookie)
+/* Load the ttf font from fn; return 0 on success */
+FT_Error pcb_ttf_load(pcb_ttf_t *ttf, const char *fn);
 
-int pplg_check_ver_import_ttf(int ver_needed) { return 0; }
+int pcb_ttf_unload(pcb_ttf_t *ctx);
 
-void pplg_uninit_import_ttf(void)
-{
-	pcb_remove_actions_by_cookie(ttf_cookie);
-}
+/* Use str to trace the outline of a glyph; returns 0 on success */
+FT_Error pcb_ttf_trace(pcb_ttf_t *ctx, FT_ULong ttf_chr, FT_ULong out_chr, pcb_ttf_stroke_t *str);
 
-#include "dolists.h"
-int pplg_init_import_ttf(void)
-{
-	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(ttf_action_list, ttf_cookie)
-	return 0;
-}
+/* Convert an error code into a human readable error message */
+const char *pcb_ttf_errmsg(FT_Error errnum);
+
+
+#endif

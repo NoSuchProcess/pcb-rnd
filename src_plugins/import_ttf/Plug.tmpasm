@@ -1,5 +1,8 @@
 put /local/pcb/mod {import_ttf}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_ttf/ttf.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/import_ttf/ttf.o
+	$(PLUGDIR)/import_ttf/ttf_load.o
+@]
 
 switch /local/pcb/export_png/controls
 	case {disable} end;
