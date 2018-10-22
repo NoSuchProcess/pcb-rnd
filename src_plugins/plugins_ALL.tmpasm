@@ -59,6 +59,7 @@ include {../src_plugins/import_mucs/Plug.tmpasm}
 include {../src_plugins/import_netlist/Plug.tmpasm}
 include {../src_plugins/import_sch/Plug.tmpasm}
 include {../src_plugins/import_tinycad/Plug.tmpasm}
+include {../src_plugins/import_ttf/Plug.tmpasm}
 include {../src_plugins/io_autotrax/Plug.tmpasm}
 include {../src_plugins/io_dsn/Plug.tmpasm}
 include {../src_plugins/io_eagle/Plug.tmpasm}
