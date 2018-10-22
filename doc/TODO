@@ -42,6 +42,7 @@
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
 - FEATURE: fungw: DAD dialog: mini parser from text
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
+- CLEANUP: dad: make the implicit buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
