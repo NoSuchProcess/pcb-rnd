@@ -61,6 +61,13 @@ size_t pcb_print_utc(char *out, size_t out_len, time_t when);
 /* Sleep for the specified number if miliseconds */
 void pcb_ms_sleep(long ms);
 
+/* Return system time (local, time zoned) in seconds and microseconds
+   since epoch. (gettimeofday() wrapper) */
+void pcb_ltime(unsigned long  *secs, unsigned long *usecs);
+
+/* Return system time (local, time zoned) since epoch. (gettimeofday() wrapper) */
+double pcb_dtime(void);
+
 int pcb_fileno(FILE *f);
 
 #endif /* PCB_COMPAT_MISC_H */

@@ -19,6 +19,7 @@ put /local/pcb/compat_inc [@
 @?/target/libs/io/fileno/includes@
 @?/target/libs/time/Sleep/includes@
 @?/target/libs/time/usleep/includes@
+@?/target/libs/time/gettimeofday/includes@
 @]
 
 put /tmpasm/IFS {\n}

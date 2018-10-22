@@ -1,3 +1,4 @@
+20249	configure	central gettimeofday() wrapper to fix a compilation bug on IRIX
 20233	configure	new plugin: act_draw
 20188	configure	dad() action
 20152	configure	remove notebook helper from gtk for the DAD transition

@@ -213,6 +213,23 @@ void pcb_ms_sleep(long ms)
 #endif
 }
 
+void pcb_ltime(unsigned long  *secs, unsigned long *usecs)
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	*secs  = tv.tv_sec;
+	if (usecs != NULL)
+		*usecs = tv.tv_usec;
+}
+
+double pcb_dtime(void)
+{
+ unsigned long  s, u;
+
+	pcb_ltime(&s, &u);
+	return (double)u / 1000000.0 + (double)s;
+}
+
 int pcb_fileno(FILE *f)
 {
 	return PCB_HOST_FILENO(f);

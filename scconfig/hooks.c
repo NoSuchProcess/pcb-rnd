@@ -412,6 +412,8 @@ int hook_detect_target()
 		return 1;
 	}
 
+	require("libs/time/gettimeofday/*",  0, 1);
+
 	if (require("libs/ldl",  0, 0) != 0) {
 		if (require("libs/LoadLibrary",  0, 0) != 0) {
 			report_repeat("\nERROR: no dynamic linking found on your system. Can not compile pcb-rnd.\n\n");
