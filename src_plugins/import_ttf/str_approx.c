@@ -29,9 +29,9 @@
 /* Dummy stroker that approximates curves with line segments */
 
 #include "ttf_load.h"
-#include "drv_approx.h"
+#include "str_approx.h"
 
-char *drv_approx_comment = "!!";
+char *str_approx_comment = "!!";
 
 static double sqr(double a)
 {
@@ -45,13 +45,13 @@ int stroke_approx_conic_to(const FT_Vector *control, const FT_Vector *to, void *
 	double nodes = 10, td = 1.0 / nodes;
 	FT_Vector v;
 
-	if (drv_approx_comment != NULL) printf("%s conic to {\n", drv_approx_comment);
+	if (str_approx_comment != NULL) printf("%s conic to {\n", str_approx_comment);
 	for(t = 0.0; t <= 1.0; t += td) {
 		v.x = sqr(1.0-t) * s->x + 2*t*(1.0-t)*control->x + t*t*to->x;
 		v.y = sqr(1.0-t) * s->y + 2*t*(1.0-t)*control->y + t*t*to->y;
 		s->funcs.line_to(&v, s);
 	}
-	if (drv_approx_comment != NULL) printf("%s }\n", drv_approx_comment);
+	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
 
 	s->x = to->x;
 	s->y = to->y;
@@ -61,7 +61,7 @@ int stroke_approx_conic_to(const FT_Vector *control, const FT_Vector *to, void *
 int stroke_approx_cubic_to(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *s_)
 {
 	pcb_ttf_stroke_t *s = (pcb_ttf_stroke_t *)s_;
-	if (drv_approx_comment != NULL) printf("%s cubic to {\n", drv_approx_comment);
-	if (drv_approx_comment != NULL) printf("%s }\n", drv_approx_comment);
+	if (str_approx_comment != NULL) printf("%s cubic to {\n", str_approx_comment);
+	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
 	return 0;
 }
