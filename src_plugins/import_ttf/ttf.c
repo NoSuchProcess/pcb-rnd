@@ -31,7 +31,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <qparse/qparse.h>
+#include <ft2build.h>
+#include <freetype/freetype.h>
+#include <freetype/ftmodapi.h>
+#include <freetype/ftglyph.h>
+#include <freetype/ftoutln.h>
 
 #include "board.h"
 #include "data.h"

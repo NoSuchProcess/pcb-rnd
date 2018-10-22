@@ -342,7 +342,7 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl, want_freetype2;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
@@ -352,6 +352,7 @@ int hook_detect_target()
 	want_stroke = plug_is_enabled("stroke");
 	want_cairo  = plug_is_enabled("export_bboard") | plug_is_enabled("hid_gtk3_cairo");
 	want_xml2   = plug_is_enabled("io_eagle");
+	want_freetype2 = plug_is_enabled("import_ttf");
 
 /****** TODO #21: core depends on this plugin (yes, this is a bug) ******/
 	hook_custom_arg("buildin-lib_compat_help", NULL);
@@ -458,6 +459,14 @@ int hook_detect_target()
 		if (!istrue(get("libs/gui/libstroke/presents"))) {
 			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
 			hook_custom_arg("Disable-stroke", NULL);
+		}
+	}
+
+	if (want_freetype2) {
+		require("libs/sul/freetype2/presents", 0, 0);
+		if (!istrue(get("libs/sul/freetype2/presents"))) {
+			report_repeat("WARNING: Since there's no libfreetype2 found, disabling the import_ttf plugin...\n");
+			hook_custom_arg("Disable-import_ttf", NULL);
 		}
 	}
 

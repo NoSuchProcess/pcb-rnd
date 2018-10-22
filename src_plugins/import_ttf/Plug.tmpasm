@@ -1,6 +1,14 @@
 put /local/pcb/mod {import_ttf}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_ttf/ttf.o @]
 
+switch /local/pcb/export_png/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/LDFLAGS         libs/sul/freetype2/ldflags
+		put /local/pcb/mod/CFLAGS          libs/sul/freetype2/cflags
+		end
+end
+
 switch /local/pcb/import_ttf/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
