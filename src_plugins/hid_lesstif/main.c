@@ -14,7 +14,6 @@
 #include <string.h>
 #include <math.h>
 #include <signal.h>
-#include <sys/time.h>
 #include <setjmp.h>
 
 #include "data.h"
@@ -3820,7 +3819,6 @@ static int lesstif_progress(int so_far, int total, const char *message)
 {
 	static pcb_bool started = pcb_false;
 	XEvent e;
-	struct timeval time;
 	double time_delta, time_now;
 	static double time_then = 0.0;
 	int retval = 0;
@@ -3838,9 +3836,7 @@ static int lesstif_progress(int so_far, int total, const char *message)
 		return retval;
 	}
 
-	gettimeofday(&time, NULL);
-	time_now = time.tv_sec + time.tv_usec / 1000000.0;
-
+	time_now = pcb_dtime();
 	time_delta = time_now - time_then;
 
 	if (started && time_delta < MIN_TIME_SEPARATION)
@@ -3863,8 +3859,7 @@ static int lesstif_progress(int so_far, int total, const char *message)
 
 	/* If rendering takes a while, make sure the core has enough time to
 	   do work.  */
-	gettimeofday(&time, NULL);
-	time_then = time.tv_sec + time.tv_usec / 1000000.0;
+	time_then = pcb_dtime();
 
 	return progress_cancelled;
 }
