@@ -2,6 +2,7 @@ put /local/pcb/mod {import_ttf}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/import_ttf/ttf.o
 	$(PLUGDIR)/import_ttf/ttf_load.o
+	$(PLUGDIR)/import_ttf/str_approx.o
 @]
 
 switch /local/pcb/export_png/controls
