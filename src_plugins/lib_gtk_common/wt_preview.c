@@ -244,6 +244,10 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 		return preview->expose(widget, ev, pcb_hid_expose_pinout, &preview->expose_data);
 
 	case PCB_GTK_PREVIEW_LAYER:
+		preview->expose_data.view.X1 = preview->x_min;
+		preview->expose_data.view.Y1 = preview->y_min;
+		preview->expose_data.view.X2 = preview->x_max;
+		preview->expose_data.view.Y2 = preview->y_max;
 		return preview->expose(widget, ev, pcb_hid_expose_layer, &preview->expose_data);
 
 	case PCB_GTK_PREVIEW_BOARD:
@@ -315,13 +319,23 @@ static void update_expose_data(pcb_gtk_preview_t * prv)
 
 static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev, void *tmp)
 {
+	int need_rezoom;
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	preview->win_w = ev->width;
 	preview->win_h = ev->height;
 
+	need_rezoom = (preview->view.canvas_width == 0) || (preview->view.canvas_height == 0);
+
 	preview->view.canvas_width = ev->width;
 	preview->view.canvas_height = ev->height;
 
+	if (need_rezoom) {
+		pcb_box_t b;
+		b.X1 = b.Y1 = 0;
+		b.X2 = preview->view.width;
+		b.Y2 = preview->view.height;
+		pcb_gtk_preview_zoomto(preview, &b);
+	}
 	perview_update_offs(preview);
 
 	if (preview->config_cb != NULL)
