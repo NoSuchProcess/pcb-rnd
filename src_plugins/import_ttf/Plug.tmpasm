@@ -5,7 +5,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/import_ttf/str_approx.o
 @]
 
-switch /local/pcb/export_png/controls
+switch /local/pcb/import_ttf/controls
 	case {disable} end;
 	default
 		put /local/pcb/mod/LDFLAGS         libs/sul/freetype2/ldflags
