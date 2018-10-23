@@ -66,11 +66,22 @@ int pcb_ttf_unload(pcb_ttf_t *ctx)
 }
 
 
-FT_Error pcb_ttf_trace(pcb_ttf_t *ctx, FT_ULong ttf_chr, FT_ULong out_chr, pcb_ttf_stroke_t *str)
+FT_Error pcb_ttf_trace(pcb_ttf_t *ctx, FT_ULong ttf_chr, FT_ULong out_chr, pcb_ttf_stroke_t *str, unsigned short int scale)
 {
 	FT_Error err;
 	FT_Glyph gly;
 	FT_OutlineGlyph ol;
+	FT_Matrix mx;
+
+	if (scale > 1) {
+		mx.xx = scale << 16;
+		mx.xy = 0;
+		mx.yy = scale << 16;
+		mx.yx = 0;
+		FT_Set_Transform(ctx->face, &mx, NULL);
+	}
+	else
+		FT_Set_Transform(ctx->face, NULL, NULL);
 
 	err = FT_Load_Glyph(ctx->face, FT_Get_Char_Index(ctx->face, ttf_chr), FT_LOAD_NO_BITMAP | FT_LOAD_NO_SCALE);
 	if (err != 0)

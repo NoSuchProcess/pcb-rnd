@@ -57,7 +57,7 @@ FT_Error pcb_ttf_load(pcb_ttf_t *ttf, const char *fn);
 int pcb_ttf_unload(pcb_ttf_t *ctx);
 
 /* Use str to trace the outline of a glyph; returns 0 on success */
-FT_Error pcb_ttf_trace(pcb_ttf_t *ctx, FT_ULong ttf_chr, FT_ULong out_chr, pcb_ttf_stroke_t *str);
+FT_Error pcb_ttf_trace(pcb_ttf_t *ctx, FT_ULong ttf_chr, FT_ULong out_chr, pcb_ttf_stroke_t *str, unsigned short int scale);
 
 /* Convert an error code into a human readable error message */
 const char *pcb_ttf_errmsg(FT_Error errnum);
