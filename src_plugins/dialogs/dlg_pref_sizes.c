@@ -31,6 +31,8 @@
 /* Actual board size to dialog box */
 static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 {
+	if (ctx->sizes.lock)
+		return;
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, coord_value, PCB->MaxWidth);
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, coord_value, PCB->MaxHeight);
 }
@@ -39,7 +41,10 @@ static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
+
+	ctx->sizes.lock++;
 	pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].default_val.coord_value, ctx->dlg[ctx->sizes.wheight].default_val.coord_value);
+	ctx->sizes.lock--;
 }
 
 
