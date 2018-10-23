@@ -26,7 +26,7 @@
 
 /* Preferences dialog, sizes tab */
 
-#include "dlg_pref_sizes.h"
+#include "dlg_pref.h"
 
 /* Actual board size to dialog box */
 static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
@@ -47,6 +47,15 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->sizes.lock--;
 }
 
+static pref_conflist_t drc_sizes[] = {
+	{"Minimum copper spacing", "design/bloat", 0},
+	{"Minimum copper width", "design/min_wid", 0},
+	{"Minimum touching copper overlap", "design/shrink", 0},
+	{"Minimum silk width", "design/min_slk", 0},
+	{"Minimum drill diameter", "design/min_drill", 0},
+	{"Minimum annular ring", "design/min_ring", 0},
+	{NULL, NULL, 0}
+};
 
 #define DLG_PREF_SIZES_DAD \
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
@@ -65,6 +74,14 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 				PCB_DAD_MINMAX(pref_ctx.dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD); \
 				PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxHeight); \
 				PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd); \
+		PCB_DAD_END(pref_ctx.dlg); \
+		\
+	PCB_DAD_END(pref_ctx.dlg); \
+	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
+		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
+		PCB_DAD_LABEL(pref_ctx.dlg, "DRC sizes"); \
+		PCB_DAD_BEGIN_TABLE(pref_ctx.dlg, 2); \
+			pcb_pref_create_conftable(&pref_ctx, drc_sizes); \
 		PCB_DAD_END(pref_ctx.dlg); \
 	PCB_DAD_END(pref_ctx.dlg);
 
