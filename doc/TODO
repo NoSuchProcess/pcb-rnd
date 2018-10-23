@@ -29,7 +29,8 @@
 - BUG: boardflip segfault on test file http://scififaster.net/public/boardfliptest.lht [report: Miloh]
 - BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
 - BUG: io_kicad parse err w/drill & roundrect pads  http://scififaster.net/cnc-card-edge-25.kicad_mod http://scififaster.net/pcbnew_pad_handles_drill.png [report: Miloh]
-
+- BUG: PS export draws layer indicators on heavy terminals on top-assembly and bottom-assembly pages. [report: Ade]
+ 
 2. For later releases ===============================================================================
 - CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
