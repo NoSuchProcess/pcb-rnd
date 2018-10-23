@@ -275,10 +275,12 @@ do { \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
-		case PCB_HATT_COORD: \
 		case PCB_HATT_UNIT: \
 		case PCB_HATT_BEGIN_TABBED: \
 			table[table ## _len - 1].field.int_value = (int)val; \
+			break; \
+		case PCB_HATT_COORD: \
+			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val; \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
