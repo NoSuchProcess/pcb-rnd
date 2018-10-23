@@ -219,6 +219,8 @@ serpentine_calculate_route(	pcb_route_t * route,
 
 static void tool_serpentine_init(void)
 {
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_true);
 }
 
 static void tool_serpentine_uninit(void)
@@ -308,6 +310,8 @@ static void tool_serpentine_draw_attached(void)
 				pcb_route_init(&route);
 				if(serpentine_calculate_route(&route,p_line, &point1, &point2, 5 * p_line->Thickness ) == 0) {
 					pcb_route_draw(&route, pcb_crosshair.GC);
+					if (conf_core.editor.show_drc)
+						pcb_route_draw_drc(&route,pcb_crosshair.GC);
 					pcb_route_destroy(&route);
 				}
 			}
