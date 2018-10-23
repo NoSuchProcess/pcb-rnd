@@ -57,6 +57,12 @@ static pref_conflist_t drc_sizes[] = {
 	{NULL, NULL, 0}
 };
 
+void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pref_ctx_t *ctx = caller_data;
+	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
+}
+
 #define DLG_PREF_SIZES_DAD \
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
@@ -81,7 +87,7 @@ static pref_conflist_t drc_sizes[] = {
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
 		PCB_DAD_LABEL(pref_ctx.dlg, "DRC sizes"); \
 		PCB_DAD_BEGIN_TABLE(pref_ctx.dlg, 2); \
-			pcb_pref_create_conftable(&pref_ctx, drc_sizes); \
+			pcb_pref_create_conftable(&pref_ctx, drc_sizes, pref_sizes_drc_dlg2conf); \
 		PCB_DAD_END(pref_ctx.dlg); \
 	PCB_DAD_END(pref_ctx.dlg);
 
