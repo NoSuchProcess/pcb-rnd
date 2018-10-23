@@ -47,8 +47,6 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void pcb_dlg_pref(void)
 {
 	const char *tabs[] = { "General", "Window", "Sizes & DRC",  "Library", "Layers", "Colors", "Config tree", NULL };
-	htsp_entry_t *e;
-	gds_t s;
 
 	if (pref_ctx.active)
 		return;
