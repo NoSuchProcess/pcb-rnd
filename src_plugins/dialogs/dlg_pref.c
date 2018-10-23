@@ -36,6 +36,24 @@
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
 
+void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
+{
+	PCB_DAD_LABEL(ctx->dlg, item->label);
+	PCB_DAD_COORD(ctx->dlg, "");
+		item->wid = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD);
+/*		PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxHeight);*/
+/*		PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd);*/
+}
+
+void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list)
+{
+	pref_conflist_t *c;
+	for(c = list; c->confpath != NULL; c++)
+		pcb_pref_create_conf_item(ctx, c);
+}
+
+
 static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pref_ctx_t *ctx = caller_data;
