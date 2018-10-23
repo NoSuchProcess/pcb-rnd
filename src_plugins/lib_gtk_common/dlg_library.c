@@ -264,8 +264,15 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 
 	/* update the preview with new symbol data */
 	if (PCB_PASTEBUFFER->Data != NULL) {
-		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
-			g_object_set(library_window->preview, "element-data", pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
+		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0) {
+			pcb_subc_t *sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
+			g_object_set(library_window->preview, "element-data", sc, NULL);
+			if (sc != NULL) {
+				pcb_box_t bbox;
+				pcb_data_bbox(&bbox, sc->data, 0);
+				pcb_gtk_preview_zoomto(PCB_GTK_PREVIEW(library_window->preview), &bbox);
+			}
+		}
 		else
 			g_object_set(library_window->preview, "element-data", NULL, NULL);
 	}
