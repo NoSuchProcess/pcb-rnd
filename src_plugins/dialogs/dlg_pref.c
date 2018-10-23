@@ -30,6 +30,8 @@
 #include "build_run.h"
 #include "pcb-printf.h"
 #include "dlg_pref.h"
+#include "error.h"
+#include "conf.h"
 
 #include "dlg_pref_sizes.c"
 
@@ -38,12 +40,28 @@ static const char *pref_cookie = "preferences dialog";
 
 void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
 {
+	conf_native_t *cn = conf_get_field(item->confpath);
+
+	if (cn == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: pcb_pref_create_conf_item(): invalid conf node %s\n", item->confpath);
+		item->wid = -1;
+		return;
+	}
+
 	PCB_DAD_LABEL(ctx->dlg, item->label);
-	PCB_DAD_COORD(ctx->dlg, "");
-		item->wid = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD);
-/*		PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxHeight);*/
-/*		PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd);*/
+
+	switch(cn->type) {
+		case CFN_COORD:
+			PCB_DAD_COORD(ctx->dlg, "");
+				item->wid = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
+				PCB_DAD_DEFAULT(ctx->dlg, cn->val.coord[0]);
+/*				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);*/
+			break;
+		default:
+			PCB_DAD_LABEL(ctx->dlg, "Internal error: pcb_pref_create_conf_item(): unhandled type");
+			item->wid = -1;
+	}
 }
 
 void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list)
