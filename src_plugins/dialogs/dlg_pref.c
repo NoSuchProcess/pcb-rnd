@@ -24,14 +24,14 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* The preferences dialog, invoked by the Preferences() action */
+
 #include <genvector/gds_char.h>
 #include "build_run.h"
 #include "pcb-printf.h"
+#include "dlg_pref.h"
 
-typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
-	int active; /* already open - allow only one instance */
-} pref_ctx_t;
+#include "dlg_pref_sizes.c"
 
 pref_ctx_t pref_ctx;
 
@@ -62,7 +62,7 @@ static void pcb_dlg_pref(void)
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			DLG_PREF_SIZES_DAD;
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
