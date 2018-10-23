@@ -49,6 +49,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
 	}
 
 	PCB_DAD_LABEL(ctx->dlg, item->label);
+		PCB_DAD_HELP(ctx->dlg, cn->description);
 
 	switch(cn->type) {
 		case CFN_COORD:
@@ -56,6 +57,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
 				PCB_DAD_DEFAULT(ctx->dlg, cn->val.coord[0]);
+				PCB_DAD_HELP(ctx->dlg, cn->description);
 /*				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);*/
 			break;
 		default:
