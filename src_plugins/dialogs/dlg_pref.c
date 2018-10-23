@@ -38,7 +38,33 @@
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
 
-void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
+void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_conflist_t *item, pcb_hid_attribute_t *attr)
+{
+	conf_native_t *cn = conf_get_field(item->confpath);
+
+	switch(cn->type) {
+		case CFN_COORD:
+			conf_setf(CFR_DESIGN, item->confpath, -1, "%.8$mm", attr->default_val.coord_value);
+			break;
+	}
+}
+
+void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_conflist_t *list, pcb_hid_attribute_t *attr)
+{
+	pref_conflist_t *c;
+	int wid = attr - ctx->dlg;
+
+	for(c = list; c->confpath != NULL; c++) {
+		if (c->wid == wid) {
+			pcb_pref_dlg2conf_item(ctx, c, attr);
+			return;
+		}
+	}
+	pcb_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_table(): widget not found\n");
+}
+
+
+void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
 	conf_native_t *cn = conf_get_field(item->confpath);
 
@@ -58,7 +84,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
 				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
 				PCB_DAD_DEFAULT(ctx->dlg, cn->val.coord[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
-/*				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);*/
+				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		default:
 			PCB_DAD_LABEL(ctx->dlg, "Internal error: pcb_pref_create_conf_item(): unhandled type");
@@ -66,11 +92,11 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item)
 	}
 }
 
-void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list)
+void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
 	pref_conflist_t *c;
 	for(c = list; c->confpath != NULL; c++)
-		pcb_pref_create_conf_item(ctx, c);
+		pcb_pref_create_conf_item(ctx, c, change_cb);
 }
 
 
