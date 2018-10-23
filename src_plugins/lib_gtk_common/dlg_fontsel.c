@@ -108,9 +108,16 @@ void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *
 	/* create the preview render */
 	{
 		pcb_gtk_preview_t *p;
+		pcb_box_t b;
 		prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, pcb_stub_draw_fontsel);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
+		b.X1 = b.Y1 = 0;
+		b.X2 = PCB_MM_TO_COORD(50);
+		b.Y2 = PCB_MM_TO_COORD(50);
+
+		pcb_gtk_preview_zoomto(p, &b);
+
 		p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;
 /*		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
 		gtk_widget_set_size_request(prv, 200, 200);
