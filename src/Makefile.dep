@@ -431,7 +431,9 @@
  ../src_plugins/dialogs/dlg_about.c build_run.h pcb-printf.h \
  ../src_plugins/dialogs/dlg_pinout.c obj_subc_parent.h draw.h obj_term.h \
  rtree.h search_r.h ../src_plugins/dialogs/dlg_export.c hid_init.h \
- ../src_plugins/dialogs/dlg_pref.c ../src_plugins/dialogs/act_dad.h \
+ ../src_plugins/dialogs/dlg_pref.c ../src_plugins/dialogs/dlg_pref.h \
+ ../src_plugins/dialogs/dlg_pref_sizes.h \
+ ../src_plugins/dialogs/dlg_pref_sizes.c ../src_plugins/dialogs/act_dad.h \
  dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h \
