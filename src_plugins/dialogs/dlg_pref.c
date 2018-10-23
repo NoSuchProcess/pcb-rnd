@@ -34,6 +34,7 @@
 #include "dlg_pref_sizes.c"
 
 pref_ctx_t pref_ctx;
+static const char *pref_cookie = "preferences dialog";
 
 static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -87,6 +88,35 @@ static void pcb_dlg_pref(void)
 	pref_ctx.active = 1;
 
 	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", "", &pref_ctx, pcb_false, pref_close_cb);
+}
+
+static void pref_ev_board_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pref_ctx_t *ctx = user_data;
+	if (!pref_ctx.active)
+		return;
+
+	pref_sizes_brd2dlg(ctx);
+}
+
+static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pref_ctx_t *ctx = user_data;
+	if (!pref_ctx.active)
+		return;
+
+	pref_sizes_brd2dlg(ctx);
+}
+
+static void dlg_pref_init(void)
+{
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
+}
+
+static void dlg_pref_uninit(void)
+{
+	pcb_event_unbind_allcookie(pref_cookie);
 }
 
 static const char pcb_acts_Preferences[] = "Preferences()\n";

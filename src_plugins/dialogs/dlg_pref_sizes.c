@@ -31,6 +31,8 @@
 /* Actual board size to dialog box */
 static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 {
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, coord_value, PCB->MaxWidth);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, coord_value, PCB->MaxHeight);
 }
 
 /* Dialog box to actual board size */

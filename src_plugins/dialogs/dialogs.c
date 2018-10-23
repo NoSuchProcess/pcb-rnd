@@ -69,6 +69,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	dlg_pref_uninit();
 	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 }
@@ -79,5 +80,6 @@ int pplg_init_dialogs(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_act_dad_init();
+	dlg_pref_init();
 	return 0;
 }
