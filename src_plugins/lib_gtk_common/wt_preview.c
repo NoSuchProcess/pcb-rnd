@@ -531,6 +531,10 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawi
 	pcb_gtk_preview_t *preview;
 
 	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, NULL);
+	preview->view.com = com;
+	g_object_set(G_OBJECT(preview), "width-request", 50, "height-request", 50, NULL);
+	preview->view.canvas_width = 50;
+	preview->view.canvas_height = 50;
 	g_object_set(G_OBJECT(preview), "element-data", obj, NULL);
 
 	return GTK_WIDGET(preview);
