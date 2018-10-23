@@ -28,6 +28,19 @@
 
 #include "dlg_pref_sizes.h"
 
+/* Actual board size to dialog box */
+static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
+{
+}
+
+/* Dialog box to actual board size */
+static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pref_ctx_t *ctx = caller_data;
+	pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].default_val.coord_value, ctx->dlg[ctx->sizes.wheight].default_val.coord_value);
+}
+
+
 #define DLG_PREF_SIZES_DAD \
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
@@ -38,11 +51,13 @@
 				pref_ctx.sizes.wwidth = PCB_DAD_CURRENT(pref_ctx.dlg); \
 				PCB_DAD_MINMAX(pref_ctx.dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD); \
 				PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxWidth); \
+				PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd); \
 			PCB_DAD_LABEL(pref_ctx.dlg, "Height="); \
 			PCB_DAD_COORD(pref_ctx.dlg, ""); \
 				pref_ctx.sizes.wheight = PCB_DAD_CURRENT(pref_ctx.dlg); \
 				PCB_DAD_MINMAX(pref_ctx.dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD); \
 				PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxHeight); \
+				PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd); \
 		PCB_DAD_END(pref_ctx.dlg); \
 	PCB_DAD_END(pref_ctx.dlg);
 
