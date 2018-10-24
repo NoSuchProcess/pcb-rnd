@@ -40,7 +40,7 @@ pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
 conf_hid_id_t pref_hid;
 
-void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_conflist_t *item)
+void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
 		case CFN_COORD: PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, coord_value, cn->val.coord[0]); break;
@@ -48,9 +48,9 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_conflist_t *item)
 	}
 }
 
-void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_conflist_t *item, pcb_hid_attribute_t *attr)
+void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attribute_t *attr)
 {
-	pref_conflist_t *old = ctx->conf_lock;
+	pref_confitem_t *old = ctx->conf_lock;
 	conf_native_t *cn = conf_get_field(item->confpath);
 
 	ctx->conf_lock = item;
@@ -62,9 +62,9 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_conflist_t *item, pcb_hid_attr
 	ctx->conf_lock = old;
 }
 
-void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_conflist_t *list, pcb_hid_attribute_t *attr)
+void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr)
 {
-	pref_conflist_t *c;
+	pref_confitem_t *c;
 	int wid = attr - ctx->dlg;
 
 	for(c = list; c->confpath != NULL; c++) {
@@ -77,7 +77,7 @@ void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_conflist_t *list, pcb_hid_att
 }
 
 
-void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
+void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
 	conf_native_t *cn = conf_get_field(item->confpath);
 
@@ -109,16 +109,16 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item, void (*ch
 	conf_hid_set_data(cn, pref_hid, item);
 }
 
-void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
+void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_confitem_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
-	pref_conflist_t *c;
+	pref_confitem_t *c;
 	for(c = list; c->confpath != NULL; c++)
 		pcb_pref_create_conf_item(ctx, c, change_cb);
 }
 
-void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_conflist_t *list)
+void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 {
-	pref_conflist_t *c;
+	pref_confitem_t *c;
 	for(c = list; c->confpath != NULL; c++) {
 		conf_native_t *cn = conf_get_field(c->confpath);
 		c->cnext = NULL;
@@ -202,7 +202,7 @@ static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_
 
 void pref_conf_changed(conf_native_t *cfg, int arr_idx)
 {
-	pref_conflist_t *i;
+	pref_confitem_t *i;
 
 	for(i = conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
 		if (i != pref_ctx.conf_lock)

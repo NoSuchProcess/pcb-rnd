@@ -47,7 +47,7 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->sizes.lock--;
 }
 
-static pref_conflist_t drc_sizes[] = {
+static pref_confitem_t drc_sizes[] = {
 	{"Minimum copper spacing", "design/bloat", 0, NULL},
 	{"Minimum copper width", "design/min_wid", 0, NULL},
 	{"Minimum touching copper overlap", "design/shrink", 0, NULL},
