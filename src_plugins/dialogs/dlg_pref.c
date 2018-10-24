@@ -113,10 +113,23 @@ void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list, void (*ch
 		pcb_pref_create_conf_item(ctx, c, change_cb);
 }
 
+void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_conflist_t *list)
+{
+	pref_conflist_t *c;
+	for(c = list; c->confpath != NULL; c++) {
+		conf_native_t *cn = conf_get_field(c->confpath);
+		c->cnext = NULL;
+		conf_hid_set_data(cn, pref_hid, NULL);
+	}
+}
+
 
 static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pref_ctx_t *ctx = caller_data;
+
+	pcb_pref_sizes_close(ctx);
+
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }

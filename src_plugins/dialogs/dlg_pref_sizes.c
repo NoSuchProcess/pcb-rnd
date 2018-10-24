@@ -63,6 +63,11 @@ static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_at
 	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
 }
 
+void pcb_pref_sizes_close(pref_ctx_t *ctx)
+{
+	pcb_pref_conflist_remove(ctx, drc_sizes);
+}
+
 #define DLG_PREF_SIZES_DAD \
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
