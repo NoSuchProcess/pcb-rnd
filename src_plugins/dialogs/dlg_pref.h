@@ -15,6 +15,8 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	pref_sizes_t sizes;
+
+	pref_conflist_t *conf_lock; /* the item being changed - should be ignored in a conf change callback */
 } pref_ctx_t;
 
 /* Create label-input widget pair for editing a conf item, or create whole

@@ -40,15 +40,23 @@ pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
 conf_hid_id_t pref_hid;
 
+void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_conflist_t *item)
+{
+pcb_trace("Conf change: '%s'\n", item->label);
+}
+
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_conflist_t *item, pcb_hid_attribute_t *attr)
 {
+	pref_conflist_t *old = ctx->conf_lock;
 	conf_native_t *cn = conf_get_field(item->confpath);
 
+	ctx->conf_lock = item;
 	switch(cn->type) {
 		case CFN_COORD:
 			conf_setf(CFR_DESIGN, item->confpath, -1, "%.8$mm", attr->default_val.coord_value);
 			break;
 	}
+	ctx->conf_lock = old;
 }
 
 void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_conflist_t *list, pcb_hid_attribute_t *attr)
@@ -91,6 +99,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item, void (*ch
 		default:
 			PCB_DAD_LABEL(ctx->dlg, "Internal error: pcb_pref_create_conf_item(): unhandled type");
 			item->wid = -1;
+			return;
 	}
 
 	item->cnext = conf_hid_get_data(cn, pref_hid);
@@ -175,13 +184,22 @@ static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_
 	pref_sizes_brd2dlg(ctx);
 }
 
-static const conf_hid_callbacks_t *pref_conf_cb;
+void pref_conf_changed(conf_native_t *cfg, int arr_idx)
+{
+	pref_conflist_t *i;
 
+	for(i = conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
+		if (i != pref_ctx.conf_lock)
+			pcb_pref_conf2dlg_item(cfg, i);
+}
+
+static conf_hid_callbacks_t pref_conf_cb;
 static void dlg_pref_init(void)
 {
+	pref_conf_cb.val_change_post = pref_conf_changed;
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
-	pref_hid = conf_hid_reg(pref_cookie, pref_conf_cb);
+	pref_hid = conf_hid_reg(pref_cookie, &pref_conf_cb);
 }
 
 static void dlg_pref_uninit(void)
