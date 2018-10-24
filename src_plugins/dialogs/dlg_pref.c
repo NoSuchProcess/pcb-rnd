@@ -45,6 +45,7 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
 		case CFN_COORD: PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, coord_value, cn->val.coord[0]); break;
+		case CFN_BOOLEAN: PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, int_value, cn->val.integer[0]); break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
 	}
 }
@@ -58,6 +59,9 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	switch(cn->type) {
 		case CFN_COORD:
 			conf_setf(CFR_DESIGN, item->confpath, -1, "%.8$mm", attr->default_val.coord_value);
+			break;
+		case CFN_BOOLEAN:
+			conf_setf(CFR_DESIGN, item->confpath, -1, "%d", attr->default_val.int_value);
 			break;
 	}
 	ctx->conf_lock = old;
@@ -97,6 +101,13 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
 				PCB_DAD_DEFAULT(ctx->dlg, cn->val.coord[0]);
+				PCB_DAD_HELP(ctx->dlg, cn->description);
+				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+			break;
+		case CFN_BOOLEAN:
+			PCB_DAD_BOOL(ctx->dlg, "");
+				item->wid = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_DEFAULT(ctx->dlg, cn->val.integer[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
