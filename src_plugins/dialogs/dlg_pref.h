@@ -4,6 +4,7 @@
 typedef struct pref_ctx_s pref_ctx_t;
 
 #include "dlg_pref_sizes.h"
+#include "dlg_pref_general.h"
 
 typedef struct pref_conflist_s pref_confitem_t;
 struct pref_conflist_s {
@@ -16,7 +17,9 @@ struct pref_conflist_s {
 struct pref_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+
 	pref_sizes_t sizes;
+	pref_general_t general;
 
 	pref_confitem_t *conf_lock; /* the item being changed - should be ignored in a conf change callback */
 };

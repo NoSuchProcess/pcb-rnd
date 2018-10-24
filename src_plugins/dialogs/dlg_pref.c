@@ -35,6 +35,7 @@
 #include "conf_hid.h"
 
 #include "dlg_pref_sizes.c"
+#include "dlg_pref_general.c"
 
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
@@ -132,6 +133,7 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pref_ctx_t *ctx = caller_data;
 
 	pcb_dlg_pref_sizes_close(ctx);
+	pcb_dlg_pref_general_close(ctx);
 
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
@@ -147,7 +149,7 @@ static void pcb_dlg_pref(void)
 
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			pcb_dlg_pref_general_create(&pref_ctx);
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
