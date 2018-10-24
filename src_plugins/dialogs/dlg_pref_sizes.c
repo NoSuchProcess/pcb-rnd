@@ -63,36 +63,37 @@ static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_at
 	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
 }
 
-void pcb_pref_sizes_close(pref_ctx_t *ctx)
+void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
 {
 	pcb_pref_conflist_remove(ctx, drc_sizes);
 }
 
-#define DLG_PREF_SIZES_DAD \
-	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
-		PCB_DAD_LABEL(pref_ctx.dlg, "Board size"); \
-		PCB_DAD_BEGIN_HBOX(pref_ctx.dlg); \
-			PCB_DAD_LABEL(pref_ctx.dlg, "Width="); \
-			PCB_DAD_COORD(pref_ctx.dlg, ""); \
-				pref_ctx.sizes.wwidth = PCB_DAD_CURRENT(pref_ctx.dlg); \
-				PCB_DAD_MINMAX(pref_ctx.dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD); \
-				PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxWidth); \
-				PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd); \
-			PCB_DAD_LABEL(pref_ctx.dlg, "Height="); \
-			PCB_DAD_COORD(pref_ctx.dlg, ""); \
-				pref_ctx.sizes.wheight = PCB_DAD_CURRENT(pref_ctx.dlg); \
-				PCB_DAD_MINMAX(pref_ctx.dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD); \
-				PCB_DAD_DEFAULT(pref_ctx.dlg, PCB->MaxHeight); \
-				PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_sizes_dlg2brd); \
-		PCB_DAD_END(pref_ctx.dlg); \
-		\
-	PCB_DAD_END(pref_ctx.dlg); \
-	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); \
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_FRAME); \
-		PCB_DAD_LABEL(pref_ctx.dlg, "DRC sizes"); \
-		PCB_DAD_BEGIN_TABLE(pref_ctx.dlg, 2); \
-			pcb_pref_create_conftable(&pref_ctx, drc_sizes, pref_sizes_drc_dlg2conf); \
-		PCB_DAD_END(pref_ctx.dlg); \
-	PCB_DAD_END(pref_ctx.dlg);
+void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
+{
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_LABEL(ctx->dlg, "Board size");
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Width=");
+			PCB_DAD_COORD(ctx->dlg, "");
+				ctx->sizes.wwidth = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD);
+				PCB_DAD_DEFAULT(ctx->dlg, PCB->MaxWidth);
+				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
+			PCB_DAD_LABEL(ctx->dlg, "Height=");
+			PCB_DAD_COORD(ctx->dlg, "");
+				ctx->sizes.wheight = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD);
+				PCB_DAD_DEFAULT(ctx->dlg, PCB->MaxHeight);
+				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
+		PCB_DAD_END(ctx->dlg);
 
+	PCB_DAD_END(ctx->dlg);
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_LABEL(ctx->dlg, "DRC sizes");
+		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
+		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+}
