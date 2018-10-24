@@ -40,17 +40,24 @@ static pref_confitem_t perf_backup[] = {
 	{NULL, NULL, 0}
 };
 
+static pref_confitem_t perf_cli[] = {
+	{"Number of commands to\nremember in the\nhistory list", "plugins/hid_gtk/history_size", 0, NULL},
+	{NULL, NULL, 0}
+};
+
 static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	pcb_pref_dlg2conf_table(ctx, perf_topwin, attr);
 	pcb_pref_dlg2conf_table(ctx, perf_backup, attr);
+	pcb_pref_dlg2conf_table(ctx, perf_cli, attr);
 }
 
 void pcb_dlg_pref_general_close(pref_ctx_t *ctx)
 {
 	pcb_pref_conflist_remove(ctx, perf_topwin);
 	pcb_pref_conflist_remove(ctx, perf_backup);
+	pcb_pref_conflist_remove(ctx, perf_cli);
 }
 
 void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
@@ -68,6 +75,14 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Backup");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, perf_backup, pref_general_dlg2conf);
+		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_LABEL(ctx->dlg, "Command line entry");
+		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+			pcb_pref_create_conftable(ctx, perf_cli, pref_general_dlg2conf);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 }
