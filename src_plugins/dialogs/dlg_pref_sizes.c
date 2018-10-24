@@ -57,7 +57,7 @@ static pref_conflist_t drc_sizes[] = {
 	{NULL, NULL, 0}
 };
 
-void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
