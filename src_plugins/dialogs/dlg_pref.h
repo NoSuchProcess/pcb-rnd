@@ -3,11 +3,13 @@
 
 #include "dlg_pref_sizes.h"
 
-typedef struct {
+typedef struct pref_conflist_s pref_conflist_t;
+struct pref_conflist_s {
 	const char *label;
 	const char *confpath;
 	int wid;
-} pref_conflist_t;
+	pref_conflist_t *cnext; /* linked list for conf callback - should be NULL initially */
+};
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)

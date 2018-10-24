@@ -32,11 +32,13 @@
 #include "dlg_pref.h"
 #include "error.h"
 #include "conf.h"
+#include "conf_hid.h"
 
 #include "dlg_pref_sizes.c"
 
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
+conf_hid_id_t pref_hid;
 
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_conflist_t *item, pcb_hid_attribute_t *attr)
 {
@@ -90,6 +92,9 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_conflist_t *item, void (*ch
 			PCB_DAD_LABEL(ctx->dlg, "Internal error: pcb_pref_create_conf_item(): unhandled type");
 			item->wid = -1;
 	}
+
+	item->cnext = conf_hid_get_data(cn, pref_hid);
+	conf_hid_set_data(cn, pref_hid, item);
 }
 
 void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_conflist_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
@@ -170,15 +175,19 @@ static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_
 	pref_sizes_brd2dlg(ctx);
 }
 
+static const conf_hid_callbacks_t *pref_conf_cb;
+
 static void dlg_pref_init(void)
 {
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
+	pref_hid = conf_hid_reg(pref_cookie, pref_conf_cb);
 }
 
 static void dlg_pref_uninit(void)
 {
 	pcb_event_unbind_allcookie(pref_cookie);
+	conf_hid_unreg(pref_cookie);
 }
 
 static const char pcb_acts_Preferences[] = "Preferences()\n";

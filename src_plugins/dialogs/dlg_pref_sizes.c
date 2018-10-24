@@ -48,12 +48,12 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 }
 
 static pref_conflist_t drc_sizes[] = {
-	{"Minimum copper spacing", "design/bloat", 0},
-	{"Minimum copper width", "design/min_wid", 0},
-	{"Minimum touching copper overlap", "design/shrink", 0},
-	{"Minimum silk width", "design/min_slk", 0},
-	{"Minimum drill diameter", "design/min_drill", 0},
-	{"Minimum annular ring", "design/min_ring", 0},
+	{"Minimum copper spacing", "design/bloat", 0, NULL},
+	{"Minimum copper width", "design/min_wid", 0, NULL},
+	{"Minimum touching copper overlap", "design/shrink", 0, NULL},
+	{"Minimum silk width", "design/min_slk", 0, NULL},
+	{"Minimum drill diameter", "design/min_drill", 0, NULL},
+	{"Minimum annular ring", "design/min_ring", 0, NULL},
 	{NULL, NULL, 0}
 };
 
