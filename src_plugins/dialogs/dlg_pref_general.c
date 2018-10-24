@@ -29,13 +29,13 @@
 #include "dlg_pref.h"
 
 static pref_confitem_t perf_topwin[] = {
-	{"Alternate window layout to allow smaller horizontal size", "plugins/hid_gtk/compact_horizontal", 0, NULL},
-	{"Alternate window layout to allow smaller vertical size", "plugins/hid_gtk/compact_vertical", 0, NULL},
+	{"Alternate window layout to\nallow smaller horizontal size", "plugins/hid_gtk/compact_horizontal", 0, NULL},
+	{"Alternate window layout to\nallow smaller vertical size", "plugins/hid_gtk/compact_vertical", 0, NULL},
 	{NULL, NULL, 0}
 };
 
 static pref_confitem_t perf_backup[] = {
-	{"Save unsaved layout to PCB.%i.save at exit", "editor/save_in_tmp", 0, NULL},
+	{"Save unsaved layout to\nPCB.%i.save at exit", "editor/save_in_tmp", 0, NULL},
 	{"Seconds between auto backups\n(set to zero to disable auto backups)", "rc/backup_interval", 0, NULL},
 	{NULL, NULL, 0}
 };
