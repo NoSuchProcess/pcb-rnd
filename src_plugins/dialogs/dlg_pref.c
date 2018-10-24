@@ -42,7 +42,10 @@ conf_hid_id_t pref_hid;
 
 void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_conflist_t *item)
 {
-pcb_trace("Conf change: '%s'\n", item->label);
+	switch(cn->type) {
+		case CFN_COORD: PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, coord_value, cn->val.coord[0]); break;
+		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
+	}
 }
 
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_conflist_t *item, pcb_hid_attribute_t *attr)
