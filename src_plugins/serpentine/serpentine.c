@@ -85,7 +85,8 @@ serpentine_calculate_route(	pcb_route_t * route,
 	pcb_coord_t sx,sy,ex,ey;
 	double angle_n,angle_l;
 	pcb_coord_t amplitude = 15.0 * line->Thickness;
-	const pcb_coord_t radius = pitch/2;
+	const double radius = pitch/2;
+	const double min_amplitude = (2.0*radius);
 	int count = 0;
 	double sind,cosd,sinn,cosn;
 
@@ -114,10 +115,10 @@ serpentine_calculate_route(	pcb_route_t * route,
 	
 	if((count == 0) || (nd < 0.1))
 		return -1;
-		
+
 	nnx = (double)nx/nd;
 	nny = (double)ny/nd;
-	
+
 	/* If the end point is closest to the start of the line then swap the start
 	 * and end points so that we are always going in the correct direction
 	 */
@@ -142,23 +143,22 @@ serpentine_calculate_route(	pcb_route_t * route,
 
 	/* Calculate Amplitude */
 	amplitude = nd;
-	if(amplitude < (2.0*radius))
-		amplitude = radius * 2;
+	if(amplitude < min_amplitude)
+		amplitude = 0.0;
 
 	/* Create the route */
 	if(count > 0) {
 		int i;
-		const double lpx = pitch * lnx;
-		const double lpy = pitch * lny;
-		const double nax = (amplitude - (radius * 2.0)) * nnx;
-		const double nay = (amplitude - (radius * 2.0)) * nny;
-		const pcb_coord_t slx = start.X + (radius * lnx) + (radius * nnx);
-		const pcb_coord_t sly = start.Y + (radius * lny) + (radius * nny);
-
+		const double lpx = pitch * lnx;														/* Pitch Vector X */
+		const double lpy = pitch * lny;														/* Pitch Vector Y */
+		const double nax = (amplitude - (radius * 2.0)) * nnx;		/* Line Segment Vector X */
+		const double nay = (amplitude - (radius * 2.0)) * nny;		/* Line Segment Vector Y */
+		double last_amplitude = 0.0;
 		pcb_point_t startpos;
 		pcb_point_t endpos;
 
-		route->start_point	= start;
+		route->start_point	= 
+		route->end_point		= line->Point1;
 		route->thickness		= line->Thickness;
 		route->clearance		= line->Clearance;
 		route->start_layer	= 
@@ -166,51 +166,78 @@ serpentine_calculate_route(	pcb_route_t * route,
 		route->PCB					= PCB;
 		route->flags				= line->Flags;
 
-		/* Add a line from the start of the original line to the start of the serpentine. */ 
-		pcb_route_add_line(route,&line->Point1,&start,route->start_layer);
-		
-		/* Add a quarter arc to lead into the serpentine. */
-		startpos.X = start.X + (nnx * radius);
-		startpos.Y = start.Y + (nny * radius);
-		pcb_route_add_arc(route,&startpos,angle_n/*+180*/,90*side,radius,route->start_layer);
-
-		/* Each cycle of the loop will add one phase of the serpentine.  The last 
-		 * cycle will finish with a quarter arc to lead back into the line.
-		 */
 		for(i=0;i<count;++i) {
+			const double amp = amplitude;
 			const pcb_coord_t of = (pitch * 2 * i)+pitch;
 			const pcb_coord_t px = start.X + (lnx * of);
 			const pcb_coord_t py = start.Y + (lny * of);
+			
+			/* TODO: Enforce DRC */
+			
+			if(last_amplitude == 0.0) {
+				if(amp == 0.0)
+					continue;
 
-			/* First Line */
-			startpos.X = slx + (lpx * i * 2);
-			startpos.Y = sly + (lpy * i * 2);
+				startpos.X = route->end_point.X;
+				startpos.Y = route->end_point.Y;
+				endpos.X = start.X + (lpx * 2.0 * (double)i);
+				endpos.Y = start.Y + (lpy * 2.0 * (double)i);
+				pcb_route_add_line(route,&startpos,&endpos,route->start_layer);
+
+				startpos.X = (px-lpx) + (nnx * radius);
+				startpos.Y = (py-lpy)	+ (nny * radius);
+				pcb_route_add_arc(route,&startpos,angle_n,90*side,radius,route->start_layer);
+			}	 
+			else {
+				startpos.X	= route->end_point.X;
+				startpos.Y	= route->end_point.Y;
+				endpos.X		= startpos.X - nax;
+				endpos.Y		= startpos.Y - nay;
+				pcb_route_add_line(route,&startpos,&endpos,route->start_layer);
+				
+				startpos.X = (px-lpx) + (nnx * radius);
+				startpos.Y = (py-lpy)	+ (nny * radius);
+
+				if(amp == 0.0) {
+					pcb_route_add_arc(route,&startpos,angle_n - (90.0 * side),90.0*side,radius,route->start_layer);
+					last_amplitude = amp;
+					continue;
+				}
+				else
+					pcb_route_add_arc(route,&startpos,angle_n - (90.0 * side),180.0*side,radius,route->start_layer);
+			}
+
+			startpos.X = route->end_point.X;
+			startpos.Y = route->end_point.Y;
 			endpos.X = startpos.X + nax;
 			endpos.Y = startpos.Y + nay;
 			pcb_route_add_line(route,&startpos,&endpos,route->start_layer);
 
-			/* First Arc */
 			startpos.X = px + (nnx * (amplitude-radius));
 			startpos.Y = py + (nny * (amplitude-radius));
 			pcb_route_add_arc(route,&startpos,angle_n + (side*270),(-180)*side,radius,route->start_layer);
-
-			/* Second Line */
-			startpos.X = slx + nax + (lpx * ((i * 2)+1));
-			startpos.Y = sly + nay + (lpy * ((i * 2)+1));
-			endpos.X = startpos.X - nax;
-			endpos.Y = startpos.Y - nay;
-			pcb_route_add_line(route,&endpos,&startpos,route->start_layer);
 			
-			/* Second Arc */
-			startpos.X = px + (nnx * radius) + (lnx * pitch);
-			startpos.Y = py + (nny * radius) + (lny * pitch);
-			pcb_route_add_arc(route,&startpos,angle_n + (side*270),(i+1 == count ? 90.0 : 180.0)*side,radius,route->start_layer);
+			last_amplitude = amp;
+		}
+
+		if(last_amplitude > 0.0) {
+			const pcb_coord_t of = (pitch * 2 * count)+pitch;
+			const pcb_coord_t px = start.X + (lnx * of);
+			const pcb_coord_t py = start.Y + (lny * of);
+			startpos.X = route->end_point.X;
+			startpos.Y = route->end_point.Y;
+			endpos.X	 = startpos.X - nax;
+			endpos.Y	 = startpos.Y - nay;
+			pcb_route_add_line(route,&startpos,&endpos,route->start_layer);
+			startpos.X = (px-lpx) + (nnx * radius);
+			startpos.Y = (py-lpy)	+ (nny * radius);
+			pcb_route_add_arc(route,&startpos,angle_n - (90.0 * side),90.0*side,radius,route->start_layer);
 		}
 
 		/* Add a line from the end of the serpentine to the end of the original line. */ 
 		pcb_route_add_line(route,&route->end_point,&line->Point2,route->start_layer);
 	}
-	
+
 	return 0;
 }
 
