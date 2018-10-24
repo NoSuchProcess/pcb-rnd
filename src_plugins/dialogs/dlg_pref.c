@@ -117,7 +117,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 		case CFN_INTEGER:
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, 1<<31);
+				PCB_DAD_MINMAX(ctx->dlg, 0, (1l<<31)-1);
 				PCB_DAD_DEFAULT(ctx->dlg, cn->val.integer[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
