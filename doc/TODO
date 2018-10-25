@@ -40,6 +40,10 @@
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
+- CLEANUP: color:
+	- remove src/hid_color.[ch] in favor of src/color_cache.[ch]
+	- switch over core from storing color names to storing pcb_color_t
+	- remove per hid, non-backup-lib custom color structs
 - FEATURE: fungw: DAD dialog: mini parser from text
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
