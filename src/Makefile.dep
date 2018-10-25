@@ -432,9 +432,11 @@
  ../src_plugins/dialogs/dlg_pinout.c obj_subc_parent.h draw.h obj_term.h \
  rtree.h search_r.h ../src_plugins/dialogs/dlg_export.c hid_init.h \
  ../src_plugins/dialogs/dlg_pref.c ../src_plugins/dialogs/dlg_pref.h \
- ../src_plugins/dialogs/dlg_pref_sizes.h \
- ../src_plugins/dialogs/dlg_pref_general.h error.h conf.h conf_hid.h \
+ conf_hid.h ../src_plugins/dialogs/dlg_pref_sizes.h \
+ ../src_plugins/dialogs/dlg_pref_board.h \
+ ../src_plugins/dialogs/dlg_pref_general.h error.h conf.h \
  ../src_plugins/dialogs/dlg_pref_sizes.c \
+ ../src_plugins/dialogs/dlg_pref_board.c \
  ../src_plugins/dialogs/dlg_pref_general.c \
  ../src_plugins/dialogs/act_dad.h dolists.h
 ../src_plugins/distalign/distalign.o: \
