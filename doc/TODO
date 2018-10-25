@@ -121,7 +121,6 @@
 		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
 - CLEANUP: resources/conf:
 	- FEATURE: preferences dialog, config pov: change prio
-	- (BUG: gtk preferences: poly isle area widget missing from the sizes tab)
 	- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
 - CLEANUP: Mark
