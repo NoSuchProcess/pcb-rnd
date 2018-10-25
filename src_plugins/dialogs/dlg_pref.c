@@ -71,7 +71,7 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	ctx->conf_lock = old;
 }
 
-void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr)
+pcb_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr)
 {
 	pref_confitem_t *c;
 	int wid = attr - ctx->dlg;
@@ -79,10 +79,10 @@ void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_att
 	for(c = list; c->confpath != NULL; c++) {
 		if (c->wid == wid) {
 			pcb_pref_dlg2conf_item(ctx, c, attr);
-			return;
+			return 1;
 		}
 	}
-	pcb_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_table(): widget not found\n");
+	return 0;
 }
 
 

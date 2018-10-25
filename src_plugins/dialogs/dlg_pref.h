@@ -30,9 +30,9 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_confitem_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr));
 
 /* Set the config node from the current widget value of a conf item, or
-   create whole list of them */
+   create whole list of them; the table version returns whether the item is found. */
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attribute_t *attr);
-void pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr);
+pcb_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr);
 
 /* Remove conf change binding - shall be called when widgets are removed
    (i.e. on dialog box close) */
