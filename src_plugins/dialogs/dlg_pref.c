@@ -167,7 +167,7 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pcb_dlg_pref(void)
 {
-	const char *tabs[] = { "General", "Window", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Config tree", NULL };
+	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Config tree", NULL };
 
 	if (pref_ctx.active)
 		return;
@@ -175,10 +175,6 @@ static void pcb_dlg_pref(void)
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
 			pcb_dlg_pref_general_create(&pref_ctx);
-		PCB_DAD_END(pref_ctx.dlg);
-
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
@@ -198,6 +194,10 @@ static void pcb_dlg_pref(void)
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
+			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+		PCB_DAD_END(pref_ctx.dlg);
+
+		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
 			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
 		PCB_DAD_END(pref_ctx.dlg);
 
