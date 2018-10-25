@@ -30,10 +30,12 @@
 #include "conf.h"
 #include "conf_core.h"
 
+#define PCB_EMPTY(a)           ((a) ? (a) : "")
+
 /* Actual board size to dialog box */
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str_value, PCB->Name);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str_value, PCB_EMPTY(PCB->Name));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, real_value, PCB->ThermScale);
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str_value, (PCB->is_footprint ? "footprint" : "PCB board"));
 }
@@ -62,7 +64,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Board name");
 		PCB_DAD_STRING(ctx->dlg);
 			ctx->board.wname = PCB_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[ctx->board.wname].default_val.str_value = PCB->Name;
+			ctx->dlg[ctx->board.wname].default_val.str_value = PCB_EMPTY(PCB->Name);
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		PCB_DAD_LABEL(ctx->dlg, "Thermal scale");
 		PCB_DAD_REAL(ctx->dlg, "");
