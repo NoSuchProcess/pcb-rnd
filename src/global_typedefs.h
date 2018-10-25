@@ -64,6 +64,7 @@ typedef struct pcb_hid_cfg_s pcb_hid_cfg_t;
 
 typedef unsigned int pcb_cardinal_t;
 typedef struct pcb_color_s pcb_color_t;
+typedef struct pcb_clrcache_s pcb_clrcache_t;
 typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */
 
 typedef struct pcb_action_s pcb_action_t;

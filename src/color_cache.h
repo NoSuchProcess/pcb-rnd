@@ -33,8 +33,6 @@
 #include "global_typedefs.h"
 #include "color.h"
 
-typedef struct pcb_clrcache_s pcb_clrcache_t;
-
 typedef void (*pcb_clrcache_free_t)(pcb_clrcache_t *cache, void *hidclr);
 
 struct pcb_clrcache_s {
