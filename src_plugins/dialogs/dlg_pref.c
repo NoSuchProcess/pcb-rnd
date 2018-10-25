@@ -62,11 +62,13 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	ctx->conf_lock = item;
 	switch(cn->type) {
 		case CFN_COORD:
-			conf_setf(CFR_DESIGN, item->confpath, -1, "%.8$mm", attr->default_val.coord_value);
+			if (cn->val.coord[0] != attr->default_val.coord_value)
+				conf_setf(CFR_DESIGN, item->confpath, -1, "%.8$mm", attr->default_val.coord_value);
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
-			conf_setf(CFR_DESIGN, item->confpath, -1, "%d", attr->default_val.int_value);
+			if (cn->val.integer[0] != attr->default_val.int_value)
+				conf_setf(CFR_DESIGN, item->confpath, -1, "%d", attr->default_val.int_value);
 			break;
 	}
 	ctx->conf_lock = old;
