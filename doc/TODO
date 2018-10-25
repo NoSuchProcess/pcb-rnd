@@ -10,8 +10,6 @@
 - BUG: gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: Locked objects can be moved when selected. [Report: Ade]
 	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
-+ FEATURE: subc/term: new terminal attribute: "pretend not connected to the same subc copper" (agaran's coil example)
-	+> intnoconn attribute
 - FEATURE: fontsel: ttf import?
 - layer rewrite:
 	- BUG: catch the layer change signal from polygons and reclip; Evan's test case:
