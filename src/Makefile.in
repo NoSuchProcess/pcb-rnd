@@ -58,6 +58,7 @@ append /local/pcb/OBJS [@
 	build_run.o
 	change.o
 	change_act.o
+	color.o
 	conf.o
 	conf_act.o
 	conf_core.o
