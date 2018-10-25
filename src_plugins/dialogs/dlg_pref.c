@@ -36,6 +36,7 @@
 #include "conf_hid.h"
 
 #include "dlg_pref_sizes.c"
+#include "dlg_pref_board.c"
 #include "dlg_pref_general.c"
 
 pref_ctx_t pref_ctx;
@@ -156,6 +157,7 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pref_ctx_t *ctx = caller_data;
 
 	pcb_dlg_pref_sizes_close(ctx);
+	pcb_dlg_pref_board_close(ctx);
 	pcb_dlg_pref_general_close(ctx);
 
 	PCB_DAD_FREE(ctx->dlg);
@@ -165,7 +167,7 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pcb_dlg_pref(void)
 {
-	const char *tabs[] = { "General", "Window", "Sizes & DRC",  "Library", "Layers", "Colors", "Config tree", NULL };
+	const char *tabs[] = { "General", "Window", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Config tree", NULL };
 
 	if (pref_ctx.active)
 		return;
@@ -177,6 +179,10 @@ static void pcb_dlg_pref(void)
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
 			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+		PCB_DAD_END(pref_ctx.dlg);
+
+		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
+			pcb_dlg_pref_board_create(&pref_ctx);
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
@@ -214,6 +220,7 @@ static void pref_ev_board_changed(void *user_data, int argc, pcb_event_arg_t arg
 		return;
 
 	pref_sizes_brd2dlg(ctx);
+	pref_board_brd2dlg(ctx);
 }
 
 static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -223,6 +230,7 @@ static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_
 		return;
 
 	pref_sizes_brd2dlg(ctx);
+	pref_board_brd2dlg(ctx);
 }
 
 void pref_conf_changed(conf_native_t *cfg, int arr_idx)
