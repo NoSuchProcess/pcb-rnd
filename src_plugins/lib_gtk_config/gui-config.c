@@ -407,7 +407,6 @@ static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpoint
 	gboolean active = gtk_toggle_button_get_active(button);
 
 	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_horizontal", -1, "%d", active);
-	com->set_status_line_label();
 }
 
 static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer data)
@@ -416,7 +415,6 @@ static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer
 	gboolean active = gtk_toggle_button_get_active(button);
 
 	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_vertical", -1, "%d", active);
-	com->pack_mode_buttons();
 }
 
 static GtkWidget *pref_auto_place_lab;
