@@ -121,7 +121,6 @@
 		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
 - CLEANUP: resources/conf:
 	- FEATURE: preferences dialog, config pov: change prio
-	- (BUG: gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed)
 	- (BUG: gtk preferences: poly isle area widget missing from the sizes tab)
 	- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
@@ -181,10 +180,6 @@
 - FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
-- BUG: gtk: preferences/user POV/sizes is not in sync with preferences/config POV/ [report: Alain]
-	- rewrite using DAD
-	- in sizes, add an apply button so the new settings can be applied from the non-modal preferences without closing
-	- react on conf change events, refresh the fields
 - CLEANUP: parent subc update:
 	- inhibit mechanism to speed things up:
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
