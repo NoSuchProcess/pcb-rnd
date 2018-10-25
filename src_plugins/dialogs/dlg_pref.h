@@ -3,6 +3,7 @@
 
 typedef struct pref_ctx_s pref_ctx_t;
 
+#include "conf_hid.h"
 #include "dlg_pref_sizes.h"
 #include "dlg_pref_general.h"
 
@@ -24,6 +25,8 @@ struct pref_ctx_s {
 	pref_confitem_t *conf_lock; /* the item being changed - should be ignored in a conf change callback */
 };
 
+extern pref_ctx_t pref_ctx;
+
 /* Create label-input widget pair for editing a conf item, or create whole
    list of them */
 void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr));
@@ -37,5 +40,7 @@ pcb_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid
 /* Remove conf change binding - shall be called when widgets are removed
    (i.e. on dialog box close) */
 void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list);
+
+conf_hid_id_t pref_hid;
 
 #endif

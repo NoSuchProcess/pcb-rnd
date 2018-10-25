@@ -27,6 +27,8 @@
 /* Preferences dialog, sizes tab */
 
 #include "dlg_pref.h"
+#include "conf.h"
+#include "conf_core.h"
 
 /* Actual board size to dialog box */
 static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
@@ -63,6 +65,23 @@ static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_at
 	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
 }
 
+static void pref_isle_brd2dlg(conf_native_t *cfg, int arr_idx)
+{
+	if ((pref_ctx.sizes.lock) || (!pref_ctx.active))
+		return;
+	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.sizes.wisle, real_value, conf_core.design.poly_isle_area / 1000000.0);
+}
+
+static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pref_ctx_t *ctx = caller_data;
+	double v = ctx->dlg[ctx->sizes.wisle].default_val.real_value * 1000000.0;
+
+	ctx->sizes.lock++;
+	conf_setf(CFR_DESIGN, "design/poly_isle_area", -1, "%f", v);
+	ctx->sizes.lock--;
+}
+
 void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
 {
 	pcb_pref_conflist_remove(ctx, drc_sizes);
@@ -96,4 +115,29 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_LABEL(ctx->dlg, "misc sizes");
+		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+			PCB_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
+			PCB_DAD_REAL(ctx->dlg, "");
+				ctx->sizes.wisle = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
+				ctx->dlg[ctx->sizes.wisle].default_val.real_value = (conf_core.design.poly_isle_area / 1000000.0);
+				PCB_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
+		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+}
+
+void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx)
+{
+	static conf_hid_callbacks_t cbs_isle;
+	conf_native_t *cn = conf_get_field("design/poly_isle_area");
+
+	if (cn != NULL) {
+		memset(&cbs_isle, 0, sizeof(conf_hid_callbacks_t));
+		cbs_isle.val_change_post = pref_isle_brd2dlg;
+		conf_hid_set_cb(cn, pref_hid, &cbs_isle);
+	}
 }
