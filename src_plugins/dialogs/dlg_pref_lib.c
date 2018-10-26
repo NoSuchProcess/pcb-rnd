@@ -269,10 +269,6 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 	pcb_hid_tree_t *tree;
 
 	PCB_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
-	PCB_DAD_BUTTON(ctx->dlg, "Help: $(variables)");
-		ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
-
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
@@ -292,6 +288,9 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 		PCB_DAD_BUTTON(ctx->dlg, "Remove");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+		PCB_DAD_BUTTON(ctx->dlg, "Help...");
+			ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
+			PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
 	PCB_DAD_END(ctx->dlg);
 
 }
