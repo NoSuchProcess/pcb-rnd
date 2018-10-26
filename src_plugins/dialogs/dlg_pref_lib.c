@@ -37,17 +37,30 @@ static void pref_lib_conf2dlg(conf_native_t *cfg, int arr_idx)
 	int idx;
 	const char *s;
 	char *cell[4];
+	char *cursor_path = NULL;
+	pcb_hid_row_t *r;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_attr_val_t hv;
 
 	if ((pref_ctx.lib.lock) || (!pref_ctx.active))
 		return;
+
+	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
 
 	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		cell[0] = (char *)i->payload;
 		pcb_path_resolve(cell[0], &cell[1], 0);
 		cell[2] = (char *)(i->prop.src->file_name == NULL ? "n/a" : i->prop.src->file_name);
 		cell[3] = NULL;
-		pcb_dad_tree_append(&pref_ctx.dlg[pref_ctx.lib.wlist], NULL, cell);
+		pcb_dad_tree_append(attr, NULL, cell);
 	}
+
+	hv.str_value = cursor_path;
+	pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+	free(cursor_path);
 }
 
 /* Dialog box to current libraries in config */
