@@ -167,21 +167,55 @@ static void lib_btn_remove(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void lib_btn_up(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	pcb_hid_row_t *prev, *r = pcb_dad_tree_get_selected(attr);
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	char *cell[4];
 
 	if (r == NULL)
 		return;
 
+	prev = gdl_prev(&tree->rows, r);
+	if (prev == NULL)
+		return;
+
+	cell[0] = pcb_strdup(r->cell[0]); /* have to copy because this is also the primary key (path for the hash) */
+	cell[1] = r->cell[1]; r->cell[1] = NULL;
+	cell[2] = r->cell[2]; r->cell[2] = NULL;
+	cell[3] = NULL;
+	if (pcb_dad_tree_remove(attr, r) == 0) {
+		pcb_hid_attr_val_t hv;
+		pcb_dad_tree_insert(attr, prev, cell);
+		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
+		hv.str_value = cell[0];
+		pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+	}
 }
 
 static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	pcb_hid_row_t *next, *r = pcb_dad_tree_get_selected(attr);
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	char *cell[4];
 
 	if (r == NULL)
 		return;
 
+	next = gdl_next(&tree->rows, r);
+	if (next == NULL)
+		return;
+
+	cell[0] = pcb_strdup(r->cell[0]); /* have to copy because this is also the primary key (path for the hash) */
+	cell[1] = r->cell[1]; r->cell[1] = NULL;
+	cell[2] = r->cell[2]; r->cell[2] = NULL;
+	cell[3] = NULL;
+	if (pcb_dad_tree_remove(attr, r) == 0) {
+		pcb_hid_attr_val_t hv;
+		pcb_dad_tree_append(attr, next, cell);
+		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
+		hv.str_value = cell[0];
+		pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+	}
 }
 
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
