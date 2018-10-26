@@ -256,6 +256,7 @@ static void dlg_pref_init(void)
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	pref_hid = conf_hid_reg(pref_cookie, &pref_conf_cb);
 	pcb_dlg_pref_sizes_init(&pref_ctx);
+	pcb_dlg_pref_lib_init(&pref_ctx);
 }
 
 static void dlg_pref_uninit(void)
