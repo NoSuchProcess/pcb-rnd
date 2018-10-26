@@ -52,8 +52,22 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 	return nrow;
 }
 
-PCB_INLINE void pcb_dad_tree_free_row(pcb_hid_row_t *row)
+PCB_INLINE void pcb_dad_tree_free_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
 {
+	int do_free_path = 0;
+	/* do this before the user callback just in case row->path == row->cell[0]
+	   and the user callback free's it */
+	if (row->path != NULL) {
+		htsp_pop(&tree->paths, row->path);
+		do_free_path = (row->path != row->cell[0]); /* user_free_cb may set row->cell[0] to NULL */
+	}
+
+	if (tree->user_free_cb != NULL)
+		tree->user_free_cb(tree->attrib, tree->hid_ctx, row);
+
+	if (do_free_path)
+		free(row->path);
+
 	free(row);
 }
 
@@ -185,7 +199,7 @@ PCB_INLINE int pcb_dad_tree_remove(pcb_hid_attribute_t *attr, pcb_hid_row_t *row
 
 	/* remove from dad */
 	gdl_remove(lst, row, link);
-	pcb_dad_tree_free_row(row);
+	pcb_dad_tree_free_row(tree, row);
 	return res;
 }
 
