@@ -111,6 +111,13 @@ static void ghid_tree_table_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx
 	ghid_tree_table_add(attrib, GTK_TREE_STORE(model), pariter, new_row, prepnd, sibiter);
 }
 
+static void ghid_tree_table_remove_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
+	gtk_tree_store_remove(GTK_TREE_STORE(model), (GtkTreeIter *)row->hid_data);
+}
+
 static void ghid_tree_table_modify_cb(pcb_hid_attribute_t *attr, void *hid_ctx, pcb_hid_row_t *row, int col)
 {
 	attr_dlg_t *ctx = hid_ctx;
@@ -440,6 +447,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 
 	tree->hid_insert_cb = ghid_tree_table_insert_cb;
+	tree->hid_remove_cb = ghid_tree_table_remove_cb;
 	tree->hid_modify_cb = ghid_tree_table_modify_cb;
 	tree->hid_jumpto_cb = ghid_tree_table_jumpto_cb;
 	tree->hid_expcoll_cb = ghid_tree_table_expcoll_cb;
