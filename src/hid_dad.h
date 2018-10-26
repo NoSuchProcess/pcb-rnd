@@ -264,14 +264,14 @@ do { \
 			table ## _alloced += 16; \
 			table = realloc(table, sizeof(table[0]) * table ## _alloced); \
 			for(__n__ = 0; __n__ < table ## _len; __n__++) { \
-				switch(table[table ## _len].type) { \
+				switch(table[__n__].type) { \
 					case PCB_HATT_PREVIEW: \
-						__prv__ = (pcb_hid_preview_t *)table[table ## _len].enumerations; \
-						__prv__->attrib = &table[table ## _len]; \
+						__prv__ = (pcb_hid_preview_t *)table[__n__].enumerations; \
+						__prv__->attrib = &table[__n__]; \
 						break; \
 					case PCB_HATT_TREE: \
-						__tree__ = (pcb_hid_tree_t *)table[table ## _len].enumerations; \
-						__tree__->attrib = &table[table ## _len]; \
+						__tree__ = (pcb_hid_tree_t *)table[__n__].enumerations; \
+						__tree__->attrib = &table[__n__]; \
 						break; \
 					default: break; \
 				} \
