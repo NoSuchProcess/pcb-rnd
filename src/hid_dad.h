@@ -99,7 +99,7 @@ do { \
 #define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HBOX)
 #define PCB_DAD_BEGIN_VBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VBOX)
 #define PCB_DAD_END(table)             PCB_DAD_BEGIN(table, PCB_HATT_END)
-#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, val)
+#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, val | (table[table ## _len-1].pcb_hatt_flags & PCB_HATF_TREE_COL))
 
 #define PCB_DAD_LABEL(table, text) \
 do { \
