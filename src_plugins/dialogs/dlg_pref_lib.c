@@ -30,15 +30,41 @@
 #include "conf.h"
 #include "conf_core.h"
 
-/* Current libraries from config to dialog box */
-static void pref_lib_conf2dlg(conf_native_t *cfg, int arr_idx)
+/* Current libraries from config to dialog box: remove everything from
+   the widget first as the char * cell data are pointing into the conf
+   data that might be changing now */
+static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+
+	if ((pref_ctx.lib.lock) || (!pref_ctx.active))
+		return;
+
+	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	free(pref_ctx.lib.cursor_path);
+	pref_ctx.lib.cursor_path = NULL;
+
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		pref_ctx.lib.cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove all existing entries */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(attr, r);
+}
+
+/* Current libraries from config to dialog box: after the change, fill
+   in all widget rows from the conf */
+static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 {
 	conf_listitem_t *i;
 	int idx;
 	const char *s;
 	char *cell[4];
-	char *cursor_path = NULL;
-	pcb_hid_row_t *r;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_attr_val_t hv;
 
@@ -46,10 +72,8 @@ static void pref_lib_conf2dlg(conf_native_t *cfg, int arr_idx)
 		return;
 
 	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	r = pcb_dad_tree_get_selected(attr);
-	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
 
+	/* copy everything from the config tree to the dialog */
 	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		cell[0] = (char *)i->payload;
 		pcb_path_resolve(cell[0], &cell[1], 0);
@@ -58,9 +82,10 @@ static void pref_lib_conf2dlg(conf_native_t *cfg, int arr_idx)
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
-	hv.str_value = cursor_path;
+	hv.str_value = pref_ctx.lib.cursor_path;
 	pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
-	free(cursor_path);
+	free(pref_ctx.lib.cursor_path);
+	pref_ctx.lib.cursor_path = NULL;
 }
 
 /* Dialog box to current libraries in config */
@@ -148,7 +173,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 {
 	conf_native_t *cn = conf_get_field("rc/library_search_paths");
-	pref_lib_conf2dlg(cn, -1);
+	pref_lib_conf2dlg_post(cn, -1);
 }
 
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
@@ -158,7 +183,8 @@ void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
 
 	if (cn != NULL) {
 		memset(&cbs_spth, 0, sizeof(conf_hid_callbacks_t));
-		cbs_spth.val_change_post = pref_lib_conf2dlg;
+		cbs_spth.val_change_pre = pref_lib_conf2dlg_pre;
+		cbs_spth.val_change_post = pref_lib_conf2dlg_post;
 		conf_hid_set_cb(cn, pref_hid, &cbs_spth);
 	}
 }
