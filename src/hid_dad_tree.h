@@ -31,6 +31,7 @@
 
 #include "hid_attrib.h"
 #include "hid_dad.h"
+#include <assert.h>
 #include <genvector/gds_char.h>
 #include <genht/hash.h>
 #include <genht/htsp.h>
@@ -96,6 +97,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
 
+	assert(attr == tree->attrib);
+
 	if (aft == NULL) {
 		par = &tree->rows;
 		aft = gdl_last(par);
@@ -117,6 +120,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of bfr and the new row */
+
+	assert(attr == tree->attrib);
 
 	if (bfr == NULL) {
 		par = &tree->rows;
@@ -140,6 +145,8 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
 
+	assert(attr == tree->attrib);
+
 	if (prn == NULL)
 		par = &tree->rows;
 	else
@@ -156,9 +163,10 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 
+	assert(attr == tree->attrib);
+
 	if (tree->hid_get_selected_cb == NULL)
 		return NULL;
-
 
 	return tree->hid_get_selected_cb(tree->attrib, tree->hid_ctx);
 }
@@ -166,6 +174,9 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	assert(attr == tree->attrib);
+
 	if (tree->hid_update_hide_cb != NULL)
 		tree->hid_update_hide_cb(tree->attrib, tree->hid_ctx);
 }
@@ -173,6 +184,8 @@ PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	assert(attr == tree->attrib);
 
 	if ((col < 0) || (col >= row->cols))
 		return 0;
@@ -187,6 +200,9 @@ PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t
 PCB_INLINE void pcb_dad_tree_jumpto(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	assert(attr == tree->attrib);
+
 	if (tree->hid_jumpto_cb != NULL)
 		tree->hid_jumpto_cb(tree->attrib, tree->hid_ctx, row);
 }
@@ -205,6 +221,8 @@ PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, 
 PCB_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, pcb_bool expanded, pcb_bool recursive)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	assert(attr == tree->attrib);
 
 	if (tree->hid_expcoll_cb != NULL)
 		pcb_dad_tree_expcoll_(tree, row, expanded, recursive);
