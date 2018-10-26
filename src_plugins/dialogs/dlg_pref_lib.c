@@ -218,6 +218,40 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	}
 }
 
+static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int before)
+{
+	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pcb_hid_row_t *nr, *r = pcb_dad_tree_get_selected(attr);
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	char *cell[4];
+
+	if (r == NULL)
+		return;
+
+	cell[0] = pcb_strdup("<new1>");
+	cell[1] = pcb_strdup("<new2>");
+	cell[2] = pcb_strdup("SRC_BRD");
+	cell[3] = NULL;
+
+	if (before)
+		nr = pcb_dad_tree_insert(attr, r, cell);
+	else
+		nr = pcb_dad_tree_append(attr, r, cell);
+
+	pref_lib_dlg2conf(hid_ctx, caller_data, attr);
+}
+
+static void lib_btn_insert_before(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
+{
+	lib_btn_insert(hid_ctx, caller_data, btn_attr, 1);
+}
+
+static void lib_btn_insert_after(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
+{
+	lib_btn_insert(hid_ctx, caller_data, btn_attr, 0);
+}
+
+
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
 {
 	if (ctx->lib.help.active)
@@ -284,7 +318,9 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 		PCB_DAD_BUTTON(ctx->dlg, "Move down");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_down);
 		PCB_DAD_BUTTON(ctx->dlg, "Insert before");
+			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_before);
 		PCB_DAD_BUTTON(ctx->dlg, "Insert after");
+			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_after);
 		PCB_DAD_BUTTON(ctx->dlg, "Remove");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
