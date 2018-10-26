@@ -32,7 +32,7 @@
 
 #define PCB_EMPTY(a)           ((a) ? (a) : "")
 
-/* Actual board size to dialog box */
+/* Actual board meta to dialog box */
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str_value, PCB_EMPTY(PCB->Name));
@@ -40,7 +40,7 @@ static void pref_board_brd2dlg(pref_ctx_t *ctx)
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str_value, (PCB->is_footprint ? "footprint" : "PCB board"));
 }
 
-/* Dialog box to actual board size */
+/* Dialog box to actual board meta */
 static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
