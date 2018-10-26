@@ -95,10 +95,35 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 {
+	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
+
 	PCB_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
 	PCB_DAD_BUTTON(ctx->dlg, "Help: $(variables)");
 		ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
+
+
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
+			ctx->lib.wlist = PCB_DAD_CURRENT(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		PCB_DAD_BUTTON(ctx->dlg, "Move up");
+		PCB_DAD_BUTTON(ctx->dlg, "Move down");
+		PCB_DAD_BUTTON(ctx->dlg, "Insert before");
+		PCB_DAD_BUTTON(ctx->dlg, "Insert after");
+		PCB_DAD_BUTTON(ctx->dlg, "Remove");
+		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+	PCB_DAD_END(ctx->dlg);
+
+}
+
+void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
+{
+	conf_native_t *cn = conf_get_field("rc/library_search_paths");
+	pref_lib_conf2dlg(cn, -1);
 }
 
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)

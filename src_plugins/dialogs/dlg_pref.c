@@ -215,6 +215,8 @@ static void pcb_dlg_pref(void)
 	pref_ctx.active = 1;
 
 	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", "", &pref_ctx, pcb_false, pref_close_cb);
+
+	pcb_dlg_pref_lib_open(&pref_ctx);
 }
 
 static void pref_ev_board_changed(void *user_data, int argc, pcb_event_arg_t argv[])

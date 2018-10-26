@@ -15,6 +15,7 @@ typedef struct {
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx);
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx);
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx);
+void pcb_dlg_pref_lib_open(pref_ctx_t *ctx);
 
 
 #endif
