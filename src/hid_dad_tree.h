@@ -76,7 +76,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_tree_t *tree, pcb_hid_
 	char *ptr = (char *)row->link.parent;
 	if ((ptr == NULL) || ((gdl_list_t *)ptr == &tree->rows))
 		return NULL;
-printf("sub: %d %d\n", offsetof(gdl_elem_t, parent), offsetof(pcb_hid_row_t, children));
+
 	ptr -= offsetof(gdl_elem_t, parent);
 	ptr -= offsetof(pcb_hid_row_t, children);
 	return (pcb_hid_row_t *)ptr;
