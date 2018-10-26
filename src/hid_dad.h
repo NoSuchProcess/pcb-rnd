@@ -160,7 +160,7 @@ do { \
 
 #define PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, user_ctx_) \
 do { \
-	pcb_hid_preview_t *prv = calloc(sizeof(pcb_hid_tree_t), 1); \
+	pcb_hid_preview_t *prv = calloc(sizeof(pcb_hid_preview_t), 1); \
 	prv->user_ctx = user_ctx_; \
 	prv->user_expose_cb = expose_cb; \
 	prv->user_mouse_cb = mouse_cb; \
@@ -252,11 +252,30 @@ do { \
 	} while(0)
 
 /*** DAD internals (do not use directly) ***/
+/* Allocate a new item at the end of the attribute table; updates stored
+   attribute pointers of existing items (e.g. previews, trees) as the base
+   address of the table may have changed. */
 #define PCB_DAD_ALLOC(table, item_type) \
 	do { \
 		if (table ## _len >= table ## _alloced) { \
+			pcb_hid_preview_t *__prv__; \
+			pcb_hid_tree_t *__tree__; \
+			int __n__; \
 			table ## _alloced += 16; \
 			table = realloc(table, sizeof(table[0]) * table ## _alloced); \
+			for(__n__ = 0; __n__ < table ## _len; __n__++) { \
+				switch(table[table ## _len].type) { \
+					case PCB_HATT_PREVIEW: \
+						__prv__ = (pcb_hid_preview_t *)table[table ## _len].enumerations; \
+						__prv__->attrib = &table[table ## _len]; \
+						break; \
+					case PCB_HATT_TREE: \
+						__tree__ = (pcb_hid_tree_t *)table[table ## _len].enumerations; \
+						__tree__->attrib = &table[table ## _len]; \
+						break; \
+					default: break; \
+				} \
+			} \
 		} \
 		memset(&table[table ## _len], 0, sizeof(table[0])); \
 		table[table ## _len].type = item_type; \
