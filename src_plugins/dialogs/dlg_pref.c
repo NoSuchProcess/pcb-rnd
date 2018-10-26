@@ -38,6 +38,7 @@
 #include "dlg_pref_sizes.c"
 #include "dlg_pref_board.c"
 #include "dlg_pref_general.c"
+#include "dlg_pref_lib.c"
 
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
@@ -161,6 +162,7 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pcb_dlg_pref_sizes_close(ctx);
 	pcb_dlg_pref_board_close(ctx);
 	pcb_dlg_pref_general_close(ctx);
+	pcb_dlg_pref_lib_close(ctx);
 
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
@@ -188,7 +190,7 @@ static void pcb_dlg_pref(void)
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			pcb_dlg_pref_lib_create(&pref_ctx);
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
