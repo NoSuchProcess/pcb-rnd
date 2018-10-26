@@ -361,6 +361,11 @@ static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_
 	pcb_hid_row_t *r;
 	const char *s = val->str_value;
 
+	if ((s == NULL) || (*s == '\0')) {
+#warning DAD TODO: remove cursor - is it possible with gtk?
+		return 0;
+	}
+
 	while(*s == '/') s++;
 	r = htsp_get(&tree->paths, s);
 	if (r == NULL)
