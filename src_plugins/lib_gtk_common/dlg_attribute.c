@@ -220,10 +220,11 @@ static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpoin
 static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 {
 	GtkWidget *fr;
+	int expfill = (flags & PCB_HATF_EXPFILL);
 
 	if (flags & PCB_HATF_FRAME) {
 		fr = gtk_frame_new(NULL);
-		gtk_box_pack_start(GTK_BOX(parent), fr, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(parent), fr, expfill, expfill, 0);
 
 		parent = gtkc_hbox_new(FALSE, 0);
 		gtk_container_add(GTK_CONTAINER(fr), parent);
