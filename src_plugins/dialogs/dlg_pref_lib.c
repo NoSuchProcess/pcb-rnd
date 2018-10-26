@@ -96,7 +96,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 {
 	PCB_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
-	PCB_DAD_BUTTON(ctx->dlg, "Help: $(variables) hints");
+	PCB_DAD_BUTTON(ctx->dlg, "Help: $(variables)");
 		ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
 }
