@@ -30,9 +30,16 @@
 #include "conf.h"
 #include "conf_core.h"
 
+static void pref_lib_row_free(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	free(row->cell[0]);
+	free(row->cell[1]);
+	free(row->cell[2]);
+	row->cell[0] = row->cell[1] = row->cell[2] = NULL;
+}
+
 /* Current libraries from config to dialog box: remove everything from
-   the widget first as the char * cell data are pointing into the conf
-   data that might be changing now */
+   the widget first */
 static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
 {
 	pcb_hid_attribute_t *attr;
@@ -45,16 +52,16 @@ static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
 	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
 
-	free(pref_ctx.lib.cursor_path);
-	pref_ctx.lib.cursor_path = NULL;
-
 	r = pcb_dad_tree_get_selected(attr);
-	if (r != NULL)
+	if (r != NULL) {
+		free(pref_ctx.lib.cursor_path);
 		pref_ctx.lib.cursor_path = pcb_strdup(r->cell[0]);
+	}
 
 	/* remove all existing entries */
-	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows)) {
 		pcb_dad_tree_remove(attr, r);
+	}
 }
 
 /* Current libraries from config to dialog box: after the change, fill
@@ -75,17 +82,20 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 
 	/* copy everything from the config tree to the dialog */
 	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
-		cell[0] = (char *)i->payload;
-		pcb_path_resolve(cell[0], &cell[1], 0);
-		cell[2] = (char *)(i->prop.src->file_name == NULL ? "n/a" : i->prop.src->file_name);
+		char *tmp;
+		cell[0] = pcb_strdup(i->payload);
+		pcb_path_resolve(cell[0], &tmp, 0);
+		cell[1] = pcb_strdup(tmp);
+		cell[2] = pcb_strdup((i->prop.src->file_name == NULL ? "n/a" : i->prop.src->file_name));
 		cell[3] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
 	hv.str_value = pref_ctx.lib.cursor_path;
-	pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
-	free(pref_ctx.lib.cursor_path);
-	pref_ctx.lib.cursor_path = NULL;
+	if (pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv) == 0) {
+		free(pref_ctx.lib.cursor_path);
+		pref_ctx.lib.cursor_path = NULL;
+	}
 }
 
 /* Dialog box to current libraries in config */
@@ -146,6 +156,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 {
 	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
+	pcb_hid_tree_t *tree;
 
 	PCB_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
 	PCB_DAD_BUTTON(ctx->dlg, "Help: $(variables)");
@@ -157,6 +168,8 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
 		PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
 			ctx->lib.wlist = PCB_DAD_CURRENT(ctx->dlg);
+			tree = (pcb_hid_tree_t *)ctx->dlg[ctx->lib.wlist].enumerations;
+			tree->user_free_cb = pref_lib_row_free;
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
