@@ -26,9 +26,12 @@
 
 /* Preferences dialog, library tab */
 
+#include <liblihata/tree.h>
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"
+
+static const char *SRC_BRD = "<board file>";
 
 static void pref_lib_row_free(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
@@ -86,7 +89,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 		cell[0] = pcb_strdup(i->payload);
 		pcb_path_resolve(cell[0], &tmp, 0);
 		cell[1] = pcb_strdup(tmp);
-		cell[2] = pcb_strdup((i->prop.src->file_name == NULL ? "n/a" : i->prop.src->file_name));
+		cell[2] = pcb_strdup((i->prop.src->file_name == NULL ? SRC_BRD : i->prop.src->file_name));
 		cell[3] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
@@ -98,14 +101,87 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 	}
 }
 
+#warning TODO: move this to liblihata
+static void lht_clean_list(lht_node_t * lst)
+{
+	lht_node_t *n;
+	while (lst->data.list.first != NULL) {
+		n = lst->data.list.first;
+		if (n->doc == NULL) {
+			if (lst->data.list.last == n)
+				lst->data.list.last = NULL;
+			lst->data.list.first = n->next;
+		}
+		else
+			lht_tree_unlink(n);
+		lht_dom_node_free(n);
+	}
+	lst->data.list.last = NULL;
+}
+
 /* Dialog box to current libraries in config */
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	lht_node_t *m, *lst, *nd;
+	pcb_hid_row_t *r;
 
 	ctx->lib.lock++;
-#warning TODO
+
+	/* get the list and clean it */
+	m = conf_lht_get_first(CFR_DESIGN, 0);
+	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
+	if (lst == NULL)
+		conf_set(CFR_DESIGN, "rc/library_search_paths", 0, "", POL_OVERWRITE);
+	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
+	assert(lst != NULL);
+	lht_clean_list(lst);
+
+	/* append items from the widget */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r)) {
+		nd = lht_dom_node_alloc(LHT_TEXT, "");
+		nd->data.text.value = pcb_strdup(r->cell[0]);
+		nd->doc = m->doc;
+		lht_dom_list_append(lst, nd);
+		pcb_dad_tree_modify_cell(attr, r, 2, SRC_BRD);
+	}
+
+	conf_update("rc/library_search_paths", -1);
+
 	ctx->lib.lock--;
+}
+
+static void lib_btn_remove(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
+{
+	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+
+	if (r == NULL)
+		return;
+
+	if (pcb_dad_tree_remove(attr, r) == 0)
+		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
+}
+
+static void lib_btn_up(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
+{
+	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+
+	if (r == NULL)
+		return;
+
+}
+
+static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
+{
+	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+
+	if (r == NULL)
+		return;
+
 }
 
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
@@ -174,10 +250,13 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Move up");
+			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_up);
 		PCB_DAD_BUTTON(ctx->dlg, "Move down");
+			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_down);
 		PCB_DAD_BUTTON(ctx->dlg, "Insert before");
 		PCB_DAD_BUTTON(ctx->dlg, "Insert after");
 		PCB_DAD_BUTTON(ctx->dlg, "Remove");
+			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 	PCB_DAD_END(ctx->dlg);
 
