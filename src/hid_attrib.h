@@ -96,6 +96,7 @@ typedef struct {
 	void *hid_ctx;
 	void (*hid_insert_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row);
 	void (*hid_modify_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row, int col); /* if col is negative, all columns have changed */
+	void (*hid_remove_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_jumpto_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* row = NULL means deselect all */
