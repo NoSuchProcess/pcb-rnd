@@ -33,9 +33,21 @@
 /* Current libraries from config to dialog box */
 static void pref_lib_conf2dlg(conf_native_t *cfg, int arr_idx)
 {
+	conf_listitem_t *i;
+	int idx;
+	const char *s;
+	char *cell[4];
+
 	if ((pref_ctx.lib.lock) || (!pref_ctx.active))
 		return;
-#warning TODO
+
+	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
+		cell[0] = (char *)i->payload;
+		pcb_path_resolve(cell[0], &cell[1], 0);
+		cell[2] = (char *)(i->prop.src->file_name == NULL ? "n/a" : i->prop.src->file_name);
+		cell[3] = NULL;
+		pcb_dad_tree_append(&pref_ctx.dlg[pref_ctx.lib.wlist], NULL, cell);
+	}
 }
 
 /* Dialog box to current libraries in config */
