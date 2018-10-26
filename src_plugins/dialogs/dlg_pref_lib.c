@@ -33,6 +33,8 @@
 
 static const char *SRC_BRD = "<board file>";
 
+static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+
 static void pref_lib_row_free(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	free(row->cell[0]);
@@ -218,6 +220,58 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	}
 }
 
+typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	int wpath, wexp;
+} cell_edit_ctx_t;
+
+static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int before)
+{
+	cell_edit_ctx_t *ctx = caller_data;
+	char *tmp;
+
+	pcb_path_resolve(ctx->dlg[ctx->wpath].default_val.str_value, &tmp, 0);
+	if (tmp != NULL)
+		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str_value, tmp);
+}
+
+static int lib_cell_edit(char **cell)
+{
+	cell_edit_ctx_t ctx;
+
+	memset(&ctx, 0, sizeof(ctx));
+
+	PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
+		PCB_DAD_LABEL(ctx.dlg, "Path:");
+		PCB_DAD_STRING(ctx.dlg);
+			ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
+			ctx.dlg[ctx.wpath].default_val.str_value = cell[0];
+			PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
+
+		PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
+		PCB_DAD_LABEL(ctx.dlg, cell[1]);
+			ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
+
+		PCB_DAD_LABEL(ctx.dlg, "");
+		PCB_DAD_BUTTON(ctx.dlg, "Help...");
+			PCB_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
+	PCB_DAD_END(ctx.dlg);
+
+	PCB_DAD_NEW(ctx.dlg, "Edit library path", "", &ctx, pcb_true, NULL);
+	if (PCB_DAD_RUN(ctx.dlg) != 0) {
+		PCB_DAD_FREE(ctx.dlg);
+		return -1;
+	}
+
+	free(cell[0]);
+	cell[0] = pcb_strdup(ctx.dlg[ctx.wpath].default_val.str_value);
+	free(cell[1]);
+	cell[1] = pcb_strdup(ctx.dlg[ctx.wexp].default_val.str_value);
+
+	PCB_DAD_FREE(ctx.dlg);
+	return 0;
+}
+
 static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int before)
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
@@ -228,11 +282,16 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	if (r == NULL)
 		return;
 
-	cell[0] = pcb_strdup("<new1>");
-	cell[1] = pcb_strdup("<new2>");
+	cell[0] = pcb_strdup("");
+	cell[1] = pcb_strdup("");
 	cell[2] = pcb_strdup("SRC_BRD");
 	cell[3] = NULL;
-
+	if (lib_cell_edit(cell) != 0) {
+		free(cell[0]);
+		free(cell[1]);
+		free(cell[2]);
+		return;
+	}
 	if (before)
 		nr = pcb_dad_tree_insert(attr, r, cell);
 	else
