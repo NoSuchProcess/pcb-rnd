@@ -1,0 +1,9 @@
+- modular how to create a plugin
+	- actions
+	- local conf
+	- local internal conf file
+	- how to bind conf nodes to react on changes
+	- how to bind events
+	- how to register io_ (e.g. exporter)
+
+- creating dad dialogs
