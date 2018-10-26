@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Preferences dialog, sizes tab */
+/* Preferences dialog, board tab */
 
 #include "dlg_pref.h"
 #include "conf.h"
