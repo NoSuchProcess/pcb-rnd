@@ -746,7 +746,7 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, pcb_bool mark, pcb_bool label, const pcb_box_t *drawn_area)
 {
 	pcb_draw_info_t info;
-	int n;
+	int n, draw_hole = 0;
 
 	info.pcb = pcb;
 	info.drawn_area = drawn_area;
@@ -761,10 +761,15 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 		if ((layers == NULL) || (layers[n] != 0)) {
 			info.objcb.pstk.shape_mask = pcb_proto_layers[n].mask;
 			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
-				pcb_pstk_draw_hole_callback((pcb_box_t *)ps, &info);
+				draw_hole = 1;
 			else
 				pcb_pstk_draw_callback((pcb_box_t *)ps, &info);
 		}
+	}
+
+	if (draw_hole) {
+		info.objcb.pstk.shape_mask = PCB_LYT_MECH;
+		pcb_pstk_draw_hole_callback((pcb_box_t *)ps, &info);
 	}
 
 	if (mark)
