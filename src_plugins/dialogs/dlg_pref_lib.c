@@ -245,11 +245,11 @@ static int lib_cell_edit(char **cell)
 		PCB_DAD_LABEL(ctx.dlg, "Path:");
 		PCB_DAD_STRING(ctx.dlg);
 			ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
-			ctx.dlg[ctx.wpath].default_val.str_value = cell[0];
+			ctx.dlg[ctx.wpath].default_val.str_value = pcb_strdup(cell[0]);
 			PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
 		PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
-		PCB_DAD_LABEL(ctx.dlg, cell[1]);
+		PCB_DAD_LABEL(ctx.dlg, pcb_strdup(cell[1]));
 			ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
 
 		PCB_DAD_LABEL(ctx.dlg, "");
