@@ -90,7 +90,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 		char *tmp;
 		cell[0] = pcb_strdup(i->payload);
 		pcb_path_resolve(cell[0], &tmp, 0, pcb_false);
-		cell[1] = pcb_strdup(tmp);
+		cell[1] = pcb_strdup(tmp == NULL ? "" : tmp);
 		cell[2] = pcb_strdup((i->prop.src->file_name == NULL ? SRC_BRD : i->prop.src->file_name));
 		cell[3] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
