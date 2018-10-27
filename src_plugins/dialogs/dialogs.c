@@ -45,6 +45,7 @@
 #include "dlg_pinout.c"
 #include "dlg_export.c"
 #include "dlg_pref.c"
+#include "dlg_lib_pstk.c"
 #include "act_dad.h"
 
 pcb_action_t dialogs_action_list[] = {
@@ -58,6 +59,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
 	{"Preferences", pcb_act_Preferences, pcb_acth_Preferences, pcb_acts_Preferences},
+	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad}
 };
 
@@ -69,6 +71,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	dlg_pstklib_uninit();
 	dlg_pref_uninit();
 	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
@@ -81,5 +84,6 @@ int pplg_init_dialogs(void)
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_act_dad_init();
 	dlg_pref_init();
+	dlg_pstklib_init();
 	return 0;
 }
