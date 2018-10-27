@@ -37,7 +37,7 @@ htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	int wlist, wprev;
+	int wlist, wprev, wgrid;
 	long subc_id;
 	pcb_cardinal_t proto_id;
 	pcb_box_t drawbox;
@@ -158,7 +158,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	x2 = ctx->drawbox.X2;
 	y2 = ctx->drawbox.Y2;
 
-	grid = PCB_MM_TO_COORD(1);
+	grid = ctx->dlg[ctx->wgrid].default_val.coord_value;
 	for(x = 0; x < x2; x += grid)
 		pcb_gui->draw_line(gc, x, y1, x, y2);
 	for(x = -grid; x > x1; x -= grid)
@@ -191,14 +191,20 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 		ps.BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
 		ps.BoundingBox.X2 += PCB_MM_TO_COORD(0.5);
 		ps.BoundingBox.Y2 += PCB_MM_TO_COORD(0.5);
-		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ps.BoundingBox);
 		memcpy(&ctx->drawbox, &ps.BoundingBox, sizeof(pcb_box_t));
+		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 	}
 	else
 		ctx->proto_id = PCB_PADSTACK_INVALID;
 
 	hv.str_value = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+}
+
+static void pstklib_grid_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
 static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
@@ -258,7 +264,14 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 			PCB_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, ctx);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
+
 			PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+				PCB_DAD_LABEL(ctx->dlg, "Grid:");
+				PCB_DAD_COORD(ctx->dlg, "");
+					ctx->wgrid = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
+					PCB_DAD_DEFAULT(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_grid_chg);
 				for(n = 0; n < pcb_proto_num_layers; n++) {
 					PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
 					PCB_DAD_BOOL(ctx->dlg, "");
