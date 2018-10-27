@@ -29,14 +29,18 @@
 #include "config.h"
 #include "obj_subc.h"
 #include "vtpadstack.h"
+#include "hid_inlines.h"
+#include "obj_text_draw.h"
 
 htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_board_t *pcb;
 	int wlist, wprev;
 	long subc_id;
 	pcb_cardinal_t proto_id;
+	pcb_box_t drawbox;
 } pstk_lib_ctx_t;
 
 static pcb_data_t *get_data(long id, pcb_subc_t **sc_out)
@@ -129,6 +133,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_pstk_t ps;
 	char layers[pcb_proto_num_layers];
 	int n;
+	pcb_coord_t x1, y1, x2, y2, x, y, grid;
 
 	if (data == NULL) {
 		return;
@@ -139,9 +144,33 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	pstklib_setps(&ps, data, ctx->proto_id);
 
+	/* draw the shapes */
 	for(n = 0; n < pcb_proto_num_layers; n++)
 		layers[n] = 1;
+	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
+	pcb_gui->set_color(gc, "#000000");
+	pcb_hid_set_line_cap(gc, pcb_cap_round);
+	pcb_hid_set_line_width(gc, -1);
+
+	x1 = ctx->drawbox.X1;
+	y1 = ctx->drawbox.Y1;
+	x2 = ctx->drawbox.X2;
+	y2 = ctx->drawbox.Y2;
+
+	grid = PCB_MM_TO_COORD(1);
+	for(x = 0; x < x2; x += grid)
+		pcb_gui->draw_line(gc, x, y1, x, y2);
+	for(x = -grid; x > x1; x -= grid)
+		pcb_gui->draw_line(gc, x, y1, x, y2);
+	for(y = 0; y < y2; y += grid)
+		pcb_gui->draw_line(gc, x1, y, x2, y);
+	for(y = -grid; y > y1; y -= grid)
+		pcb_gui->draw_line(gc, x1, y, x2, y);
+
+	/* draw the mark only */
+	for(n = 0; n < pcb_proto_num_layers; n++)
+		layers[n] = 0;
 	pcb_pstk_draw_preview(PCB, &ps, layers, 1, 0, &e->view);
 }
 
@@ -158,7 +187,12 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 		ctx->proto_id = strtol(row->cell[0], NULL, 10);
 		pstklib_setps(&ps, data, ctx->proto_id);
 		pcb_pstk_bbox(&ps);
+		ps.BoundingBox.X1 -= PCB_MM_TO_COORD(0.5);
+		ps.BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
+		ps.BoundingBox.X2 += PCB_MM_TO_COORD(0.5);
+		ps.BoundingBox.Y2 += PCB_MM_TO_COORD(0.5);
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ps.BoundingBox);
+		memcpy(&ctx->drawbox, &ps.BoundingBox, sizeof(pcb_box_t));
 	}
 	else
 		ctx->proto_id = PCB_PADSTACK_INVALID;
@@ -167,7 +201,7 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
-static int pcb_dlg_pstklib(long id)
+static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
@@ -187,6 +221,7 @@ static int pcb_dlg_pstklib(long id)
 		return 0; /* already open - have only one per id */
 
 	ctx = calloc(sizeof(pstk_lib_ctx_t), 1);
+	ctx->pcb = pcb;
 	ctx->subc_id = id;
 	ctx->proto_id = PCB_PADSTACK_INVALID;
 	htip_set(&pstk_libs, id, ctx);
@@ -250,7 +285,7 @@ static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	PCB_ACT_IRES(pcb_dlg_pstklib(id));
+	PCB_ACT_IRES(pcb_dlg_pstklib(PCB, id));
 	return 0;
 }
 
