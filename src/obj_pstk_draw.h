@@ -50,5 +50,7 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps);
 
 void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps);
 
+void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, const pcb_box_t *drawn_area);
+
 
 #endif
