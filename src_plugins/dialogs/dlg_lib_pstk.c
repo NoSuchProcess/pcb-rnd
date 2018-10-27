@@ -34,7 +34,7 @@ htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wlist;
+	int wlist, wprev;
 	long id;
 } pstk_lib_ctx_t;
 
@@ -102,6 +102,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
+	return 0;
 }
 
 static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -114,9 +115,31 @@ static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
+	pstk_lib_ctx_t *ctx = prv->user_ctx;
+	pcb_data_t *data = get_data(ctx->id, NULL);
+	pcb_pstk_t ps;
 
+	if (data == NULL) {
+		return;
+	}
+
+	memset(&ps, 0, sizeof(ps));
+	ps.parent.data = data;
+	ps.proto = ctx->id;
+
+	pcb_pstk_draw_preview(PCB, ps, &e->view);
 }
 
+static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_attr_val_t hv;
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pstk_lib_ctx_t *ctx = tree->user_ctx;
+
+	printf("Select!\n");
+	hv.str_value = NULL;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+}
 
 static int pcb_dlg_pstklib(long id)
 {
@@ -148,6 +171,8 @@ static int pcb_dlg_pstklib(long id)
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pstklib_select);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_STRING(ctx->dlg);
 				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist padstacks with matching name only");
@@ -166,6 +191,7 @@ static int pcb_dlg_pstklib(long id)
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, ctx);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 				for(n = 0; n < sizeof(pse_layer) / sizeof(pse_layer[0]); n++) {
 					PCB_DAD_LABEL(ctx->dlg, pse_layer[n].name);
