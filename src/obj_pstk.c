@@ -611,7 +611,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 		proto = pcb_pstk_get_proto(ps);
 
 	/* No hole at all */
-	if (proto->hdia <= 0)
+	if ((proto == NULL) || (proto->hdia <= 0))
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* hole is plated, but the caller doesn't want plated holes */
@@ -743,9 +743,10 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, ps->term, ps->intconn);
 }
 
-void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, const pcb_box_t *drawn_area)
+void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, pcb_bool mark, pcb_bool label, const pcb_box_t *drawn_area)
 {
 	pcb_draw_info_t info;
+	int n;
 
 	info.pcb = pcb;
 	info.drawn_area = drawn_area;
@@ -754,13 +755,23 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, const pcb_box
 	info.objcb.pstk.gid = -1;
 	info.objcb.pstk.is_current = 1;
 	info.objcb.pstk.comb = 0;
-	info.objcb.pstk.shape_mask = PCB_LYT_COPPER | PCB_LYT_TOP;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
 
-	pcb_pstk_draw_callback((pcb_box_t *)ps, &info);
-	pcb_pstk_draw_hole_callback((pcb_box_t *)ps, &info);
-	pcb_pstk_draw_mark_callback((pcb_box_t *)ps, &info);
-	pcb_pstk_draw_label_callback((pcb_box_t *)ps, &info);
+	for(n = pcb_proto_num_layers-1; n >= 0; n--) {
+		if ((layers == NULL) || (layers[n] != 0)) {
+			info.objcb.pstk.shape_mask = pcb_proto_layers[n].mask;
+			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
+				pcb_pstk_draw_hole_callback((pcb_box_t *)ps, &info);
+			else
+				pcb_pstk_draw_callback((pcb_box_t *)ps, &info);
+		}
+	}
+
+	if (mark)
+		pcb_pstk_draw_mark_callback((pcb_box_t *)ps, &info);
+
+	if (label)
+		pcb_pstk_draw_label_callback((pcb_box_t *)ps, &info);
 }
 
 
