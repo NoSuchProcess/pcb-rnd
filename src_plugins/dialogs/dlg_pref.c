@@ -88,6 +88,7 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 			if (strcmp(cn->val.string[0], attr->default_val.str_value) != 0)
 				conf_set(CFR_DESIGN, item->confpath, -1, attr->default_val.str_value, POL_OVERWRITE);
 			break;
+		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_item(): widget type not handled\n");
 	}
 	ctx->conf_lock = old;
 }
