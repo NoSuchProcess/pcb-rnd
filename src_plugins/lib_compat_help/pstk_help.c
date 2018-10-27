@@ -47,6 +47,7 @@ pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pc
 	proto.hdia = drill_dia;
 	proto.hplated = plated;
 
+	pcb_pstk_proto_update(&proto);
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 
 	return pcb_pstk_new(data, pid, x, y, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -305,6 +306,7 @@ pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	proto.hdia = drill_dia;
 	proto.hplated = plated;
 
+	pcb_pstk_proto_update(&proto);
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 	if (pid == PCB_PADSTACK_INVALID)
 		return NULL;

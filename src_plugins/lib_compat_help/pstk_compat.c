@@ -194,6 +194,7 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	proto.hdia = drill_dia;
 	proto.hplated = plated;
 
+	pcb_pstk_proto_update(&proto);
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 	if (pid == PCB_PADSTACK_INVALID) {
 		compat_shape_free(&copper_master);
@@ -517,6 +518,7 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_
 		shape[2].comb = PCB_LYC_AUTO;
 	}
 
+	pcb_pstk_proto_update(&proto);
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 
 	for(n = 0; n < tshp.len; n++)

@@ -582,6 +582,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	proto.hdia = pse->attrs[pse->gen_drill].default_val.coord_value;
 	proto.hplated = 1;
 
+	pcb_pstk_proto_update(&proto);
 	pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1);
 	pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
 

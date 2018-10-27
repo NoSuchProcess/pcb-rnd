@@ -810,6 +810,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		}
 	}
 
+	pcb_pstk_proto_update(prt);
 	htsp_set(&ctx->protos, prt->name, prt);
 
 	if (old_unit != NULL)
