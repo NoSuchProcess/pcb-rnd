@@ -152,7 +152,6 @@ static void pcb_dlg_export(void)
 						export_ctx.button[n] = PCB_DAD_CURRENT(export_ctx.dlg);
 						PCB_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
 				PCB_DAD_END(export_ctx.dlg);
-				PCB_DAD_CURRENT(export_ctx.dlg);
 			PCB_DAD_END(export_ctx.dlg);
 		}
 	PCB_DAD_END(export_ctx.dlg);
