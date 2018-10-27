@@ -28,11 +28,13 @@
 
 #include "config.h"
 #include "obj_subc.h"
+#include "vtpadstack.h"
 
 htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
+	int wlist;
 	long id;
 } pstk_lib_ctx_t;
 
@@ -57,6 +59,51 @@ static pcb_data_t *get_data(long id, pcb_subc_t **sc_out)
 	return sc->data;
 }
 
+static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
+{
+	pcb_pstk_proto_t *proto;
+	pcb_data_t *data = get_data(ctx->id, NULL);
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[4], *cursor_path = NULL;
+	long id;
+
+	if (data == NULL)
+		return -1;
+
+	attr = &ctx->dlg[ctx->wlist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(attr, r);
+
+	/* add all items */
+	cell[3] = NULL;
+	for(id = 0, proto = data->ps_protos.array; id < pcb_vtpadstack_proto_len(data->ps_protos.array); proto++,id++) {
+		if (!proto->in_use)
+			continue;
+		cell[0] = pcb_strdup_printf("%ld", id);
+		cell[1] = pcb_strdup(proto->name == NULL ? "" : proto->name);
+		cell[2] = pcb_strdup("");
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		free(cursor_path);
+	}
+}
+
 static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -73,6 +120,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 static int pcb_dlg_pstklib(long id)
 {
+	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
 	pcb_data_t *data;
 	pstk_lib_ctx_t *ctx;
@@ -98,8 +146,9 @@ static int pcb_dlg_pstklib(long id)
 		/* left */
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
+			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_STRING(ctx->dlg);
 				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist padstacks with matching name only");
 		PCB_DAD_END(ctx->dlg);
@@ -130,6 +179,7 @@ static int pcb_dlg_pstklib(long id)
 	PCB_DAD_NEW(ctx->dlg, name, "", ctx, pcb_false, pstklib_close_cb);
 
 	free(name);
+	pstklib_data2dlg(ctx);
 	return 0;
 }
 
