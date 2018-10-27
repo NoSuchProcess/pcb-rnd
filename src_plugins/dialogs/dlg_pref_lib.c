@@ -225,7 +225,7 @@ typedef struct {
 	int wpath, wexp;
 } cell_edit_ctx_t;
 
-static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int before)
+static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
 {
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
