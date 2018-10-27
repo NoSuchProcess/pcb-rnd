@@ -168,15 +168,45 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+/* Compare inp to fixed in case insensitive manner; accept full length match
+   or if inp contains the first word of fixed. Returns 0 on accept. */
+static int pref_strcmp(const char *fixed, const char *inp)
+{
+	for(;;) {
+		if ((*inp == '\0') && ((*fixed == '\0') || (*fixed == ' ')))
+			return 0;
+		if (tolower(*fixed) != tolower(*inp))
+			return -1;
+		fixed++;
+		inp++;
+	}
+}
 
-static void pcb_dlg_pref(void)
+static void pcb_dlg_pref(const char *target_tab_str)
 {
 	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Config tree", NULL };
+	int target_tab = -1;
 
-	if (pref_ctx.active)
+	if ((target_tab_str != NULL) && (*target_tab_str != '\0')) {
+		const char **t;
+		int tt;
+
+		for(tt = 0, t = tabs; *t != NULL; t++,tt++) {
+			if (pref_strcmp(*t, target_tab_str) == 0) {
+				target_tab = tt;
+				break;
+			}
+		}
+	}
+
+	if (pref_ctx.active) {
+		if (target_tab >= 0)
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
 		return;
+	}
 
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
+		pref_ctx.wtab = PCB_DAD_CURRENT(pref_ctx.dlg);
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
 			pcb_dlg_pref_general_create(&pref_ctx);
 		PCB_DAD_END(pref_ctx.dlg);
@@ -217,6 +247,8 @@ static void pcb_dlg_pref(void)
 	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", "", &pref_ctx, pcb_false, pref_close_cb);
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
+	if (target_tab >= 0)
+		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
 }
 
 static void pref_ev_board_changed(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -265,11 +297,13 @@ static void dlg_pref_uninit(void)
 	conf_hid_unreg(pref_cookie);
 }
 
-static const char pcb_acts_Preferences[] = "Preferences()\n";
-static const char pcb_acth_Preferences[] = "Present the preferences dialog";
+static const char pcb_acts_Preferences[] = "Preferences([tabname])\n";
+static const char pcb_acth_Preferences[] = "Present the preferences dialog, optionally opening the tab requested.";
 static fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dlg_pref();
+	const char *tab = NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Preferences, tab = argv[1].val.str);
+	pcb_dlg_pref(tab);
 	PCB_ACT_IRES(0);
 	return 0;
 }
