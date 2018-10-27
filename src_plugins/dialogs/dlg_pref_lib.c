@@ -30,6 +30,7 @@
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "paths.h"
 
 static const char *SRC_BRD = "<board file>";
 
