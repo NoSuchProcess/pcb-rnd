@@ -35,7 +35,8 @@ htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wlist, wprev;
-	long id;
+	long subc_id;
+	pcb_cardinal_t proto_id;
 } pstk_lib_ctx_t;
 
 static pcb_data_t *get_data(long id, pcb_subc_t **sc_out)
@@ -62,7 +63,7 @@ static pcb_data_t *get_data(long id, pcb_subc_t **sc_out)
 static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 {
 	pcb_pstk_proto_t *proto;
-	pcb_data_t *data = get_data(ctx->id, NULL);
+	pcb_data_t *data = get_data(ctx->subc_id, NULL);
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
@@ -108,26 +109,40 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
-	htip_pop(&pstk_libs, ctx->id);
+	htip_pop(&pstk_libs, ctx->subc_id);
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
+}
+
+static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, pcb_cardinal_t proto_id)
+{
+	memset(ps, 0, sizeof(pcb_pstk_t));
+	ps->parent_type = PCB_PARENT_DATA;
+	ps->parent.data = data;
+	ps->proto = proto_id;
 }
 
 static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pstk_lib_ctx_t *ctx = prv->user_ctx;
-	pcb_data_t *data = get_data(ctx->id, NULL);
+	pcb_data_t *data = get_data(ctx->subc_id, NULL);
 	pcb_pstk_t ps;
+	char layers[pcb_proto_num_layers];
+	int n;
 
 	if (data == NULL) {
 		return;
 	}
 
-	memset(&ps, 0, sizeof(ps));
-	ps.parent.data = data;
-	ps.proto = ctx->id;
+	if (ctx->proto_id == PCB_PADSTACK_INVALID)
+		return;
 
-	pcb_pstk_draw_preview(PCB, ps, &e->view);
+	pstklib_setps(&ps, data, ctx->proto_id);
+
+	for(n = 0; n < pcb_proto_num_layers; n++)
+		layers[n] = 1;
+
+	pcb_pstk_draw_preview(PCB, &ps, layers, 1, 0, &e->view);
 }
 
 static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -135,8 +150,19 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	pstk_lib_ctx_t *ctx = tree->user_ctx;
+	pcb_data_t *data = get_data(ctx->subc_id, NULL);
+	pcb_pstk_t ps;
 
-	printf("Select!\n");
+
+	if ((row != NULL) && (data != NULL)) {
+		ctx->proto_id = strtol(row->cell[0], NULL, 10);
+		pstklib_setps(&ps, data, ctx->proto_id);
+		pcb_pstk_bbox(&ps);
+		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ps.BoundingBox);
+	}
+	else
+		ctx->proto_id = PCB_PADSTACK_INVALID;
+
 	hv.str_value = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
@@ -161,7 +187,8 @@ static int pcb_dlg_pstklib(long id)
 		return 0; /* already open - have only one per id */
 
 	ctx = calloc(sizeof(pstk_lib_ctx_t), 1);
-	ctx->id = id;
+	ctx->subc_id = id;
+	ctx->proto_id = PCB_PADSTACK_INVALID;
 	htip_set(&pstk_libs, id, ctx);
 
 	/* create the dialog box */
