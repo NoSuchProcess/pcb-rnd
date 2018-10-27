@@ -275,8 +275,7 @@ static int lib_cell_edit(char **cell)
 static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int pos)
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *nr, *r = pcb_dad_tree_get_selected(attr);
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cell[4];
 
 	if (r == NULL)
@@ -295,10 +294,10 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 	switch(pos) {
 		case -1: /* before */
-			nr = pcb_dad_tree_insert(attr, r, cell);
+			pcb_dad_tree_insert(attr, r, cell);
 			break;
 		case +1: /* after */
-			nr = pcb_dad_tree_append(attr, r, cell);
+			pcb_dad_tree_append(attr, r, cell);
 			break;
 		case 0: /* replace */
 			pcb_dad_tree_modify_cell(attr, r, 0, cell[0]);
