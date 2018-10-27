@@ -43,16 +43,16 @@ typedef struct pstk_lib_ctx_s {
 	pcb_box_t drawbox;
 } pstk_lib_ctx_t;
 
-static pcb_data_t *get_data(long id, pcb_subc_t **sc_out)
+static pcb_data_t *get_data(pstk_lib_ctx_t *ctx, long id, pcb_subc_t **sc_out)
 {
 	int type;
 	void *r1, *r2, *r3;
 	pcb_subc_t *sc;
 
 	if (id < 0)
-		return PCB->Data;
+		return ctx->pcb->Data;
 
-	type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, id, PCB_OBJ_SUBC);
+	type = pcb_search_obj_by_id_(ctx->pcb->Data, &r1, &r2, &r3, id, PCB_OBJ_SUBC);
 	if (type != PCB_OBJ_SUBC)
 		return NULL;
 
@@ -67,7 +67,7 @@ static pcb_data_t *get_data(long id, pcb_subc_t **sc_out)
 static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 {
 	pcb_pstk_proto_t *proto;
-	pcb_data_t *data = get_data(ctx->subc_id, NULL);
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
@@ -129,7 +129,7 @@ static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, pcb_cardinal_t proto
 static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pstk_lib_ctx_t *ctx = prv->user_ctx;
-	pcb_data_t *data = get_data(ctx->subc_id, NULL);
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_pstk_t ps;
 	char layers[pcb_proto_num_layers];
 	int n;
@@ -179,7 +179,7 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	pstk_lib_ctx_t *ctx = tree->user_ctx;
-	pcb_data_t *data = get_data(ctx->subc_id, NULL);
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_pstk_t ps;
 
 
@@ -213,9 +213,6 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 	if (id <= 0)
 		id = -1;
 
-	data = get_data(id, &sc);
-	if (data == NULL)
-		return -1;
 
 	if (htip_get(&pstk_libs, id) != NULL)
 		return 0; /* already open - have only one per id */
@@ -224,6 +221,13 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 	ctx->pcb = pcb;
 	ctx->subc_id = id;
 	ctx->proto_id = PCB_PADSTACK_INVALID;
+
+	data = get_data(ctx, id, &sc);
+	if (data == NULL) {
+		free(ctx);
+		return -1;
+	}
+
 	htip_set(&pstk_libs, id, ctx);
 
 	/* create the dialog box */
