@@ -68,7 +68,7 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 static void pref_board_edit_attr(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-#warning TODO
+	pcb_actionl("Propedit", "board", NULL);
 }
 
 
@@ -96,7 +96,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 			ctx->board.wtype = PCB_DAD_CURRENT(ctx->dlg);
 			ctx->dlg[ctx->board.wtype].name = (PCB->is_footprint ? "footprint" : "PCB board");
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
-		PCB_DAD_LABEL(ctx->dlg, "Global attributes");
+		PCB_DAD_LABEL(ctx->dlg, "Board attributes");
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_edit_attr);
 		PCB_DAD_END(ctx->dlg);
