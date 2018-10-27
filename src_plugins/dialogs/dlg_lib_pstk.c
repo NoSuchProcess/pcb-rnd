@@ -151,6 +151,14 @@ static int pcb_dlg_pstklib(long id)
 				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_STRING(ctx->dlg);
 				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist padstacks with matching name only");
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+					PCB_DAD_HELP(ctx->dlg, "Edit the selected prototype\nusing the padstack editor");
+				PCB_DAD_BUTTON(ctx->dlg, "Count uses");
+					PCB_DAD_HELP(ctx->dlg, "Count how many times each prototype\nis used and update the \"used\"\ncolumn of the table");
+				PCB_DAD_BUTTON(ctx->dlg, "Del unused");
+					PCB_DAD_HELP(ctx->dlg, "Update prototype usage stats and\nremove prototypes that are not\nused by any padstack");
+			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
 		/* right */
