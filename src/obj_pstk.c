@@ -557,6 +557,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 
 	/* mark is a cross in the middle, right on the hole;
 	   cross size should extend beyond the hole */
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	mark = conf_core.appearance.padstack.cross_size;
 	proto = pcb_pstk_get_proto(ps);
 	if (proto != NULL)
