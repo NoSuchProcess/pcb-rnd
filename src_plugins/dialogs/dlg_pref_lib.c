@@ -146,7 +146,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		nd->data.text.value = pcb_strdup(r->cell[0]);
 		nd->doc = m->doc;
 		lht_dom_list_append(lst, nd);
-		pcb_dad_tree_modify_cell(attr, r, 2, SRC_BRD);
+		pcb_dad_tree_modify_cell(attr, r, 2, pcb_strdup(SRC_BRD));
 	}
 
 	conf_update("rc/library_search_paths", -1);
@@ -272,7 +272,7 @@ static int lib_cell_edit(char **cell)
 	return 0;
 }
 
-static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int before)
+static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int pos)
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
 	pcb_hid_row_t *nr, *r = pcb_dad_tree_get_selected(attr);
@@ -284,7 +284,7 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 	cell[0] = pcb_strdup("");
 	cell[1] = pcb_strdup("");
-	cell[2] = pcb_strdup("SRC_BRD");
+	cell[2] = pcb_strdup(SRC_BRD);
 	cell[3] = NULL;
 	if (lib_cell_edit(cell) != 0) {
 		free(cell[0]);
@@ -292,24 +292,37 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		free(cell[2]);
 		return;
 	}
-	if (before)
-		nr = pcb_dad_tree_insert(attr, r, cell);
-	else
-		nr = pcb_dad_tree_append(attr, r, cell);
 
+	switch(pos) {
+		case -1: /* before */
+			nr = pcb_dad_tree_insert(attr, r, cell);
+			break;
+		case +1: /* after */
+			nr = pcb_dad_tree_append(attr, r, cell);
+			break;
+		case 0: /* replace */
+			pcb_dad_tree_modify_cell(attr, r, 0, cell[0]);
+			pcb_dad_tree_modify_cell(attr, r, 1, cell[1]);
+			pcb_dad_tree_modify_cell(attr, r, 2, cell[2]);
+			break;
+	}
 	pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 }
 
 static void lib_btn_insert_before(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
 {
-	lib_btn_insert(hid_ctx, caller_data, btn_attr, 1);
+	lib_btn_insert(hid_ctx, caller_data, btn_attr, -1);
 }
 
 static void lib_btn_insert_after(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
 {
-	lib_btn_insert(hid_ctx, caller_data, btn_attr, 0);
+	lib_btn_insert(hid_ctx, caller_data, btn_attr, +1);
 }
 
+static void lib_btn_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
+{
+	lib_btn_insert(hid_ctx, caller_data, btn_attr, 0);
+}
 
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
 {
@@ -386,6 +399,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 		PCB_DAD_BUTTON(ctx->dlg, "Remove");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_edit);
 		PCB_DAD_BUTTON(ctx->dlg, "Help...");
 			ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
