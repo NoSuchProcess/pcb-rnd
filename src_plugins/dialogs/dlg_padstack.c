@@ -29,29 +29,6 @@
 #include "obj_pstk_inlines.h"
 #include "operation.h"
 
-typedef struct pse_proto_layer_s {
-	const char *name;
-	pcb_layer_type_t mask;
-	pcb_layer_combining_t comb;
-
-	int auto_from[2];
-	pcb_coord_t auto_bloat;
-} pse_proto_layer_t;
-
-#define PSE_MASK_BLOAT PCB_MIL_TO_COORD(2*3)
-
-static const pse_proto_layer_t pse_layer[] = {
-	{"top paste",            PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO,             {2,-1}, 0},
-	{"top mask",             PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB|PCB_LYC_AUTO, {2,-1}, PSE_MASK_BLOAT},
-	{"top copper",           PCB_LYT_TOP | PCB_LYT_COPPER,    0,                        {4,3},  0},
-	{"any internal copper",  PCB_LYT_INTERN | PCB_LYT_COPPER, 0,                        {2,4},  0},
-	{"bottom copper",        PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0,                        {2,3},  0},
-	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB|PCB_LYC_AUTO, {4,-1}, PSE_MASK_BLOAT},
-	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1}, 0},
-	{"slot",                 PCB_LYT_MECH,                    PCB_LYC_AUTO,             {-1,-1},0}
-};
-#define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
-
 static const char *shapes[] = { "circle", "square", NULL };
 static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only", "top only", "bottom only", "none", NULL };
 static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_INTERN, PCB_LYT_TOP | PCB_LYT_BOTTOM, PCB_LYT_TOP, PCB_LYT_BOTTOM, 0 };
@@ -66,10 +43,10 @@ typedef struct pse_s {
 	/* widget IDs */
 	int but_instance, but_prototype;
 	int proto_id, clearance, rot, xmirror, smirror;
-	int proto_shape[pse_num_layers];
-	int proto_info[pse_num_layers];
-	int proto_change[pse_num_layers];
-	pcb_coord_t proto_clr[pse_num_layers];
+	int proto_shape[pcb_proto_num_layers];
+	int proto_info[pcb_proto_num_layers];
+	int proto_change[pcb_proto_num_layers];
+	pcb_coord_t proto_clr[pcb_proto_num_layers];
 	int prname;
 	int hole_header;
 	int hdia, hplated;
@@ -130,8 +107,8 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, int_value, pse->ps->smirror);
 
 	/* proto - layers */
-	for(n = 0; n < pse_num_layers; n++) {
-		pcb_pstk_shape_t *shape = pcb_pstk_shape(pse->ps, pse_layer[n].mask, pse_layer[n].comb);
+	for(n = 0; n < pcb_proto_num_layers; n++) {
+		pcb_pstk_shape_t *shape = pcb_pstk_shape(pse->ps, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb);
 		if (shape != NULL) {
 			switch(shape->shape) {
 				case PCB_PSSH_HSHADOW:
@@ -304,7 +281,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		int n, idx = -1, sidx;
 		pcb_opctx_t ctx;
 
-		for(n = 0; n < pse_num_layers; n++)
+		for(n = 0; n < pcb_proto_num_layers; n++)
 			if (pse->proto_clr[n] == (attr - pse->attrs))
 				idx = n;
 		if (idx < 0) {
@@ -312,7 +289,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 			return;
 		}
 
-		sidx = pcb_pstk_get_shape_idx(&proto->tr.array[0], pse_layer[idx].mask, pse_layer[idx].comb);
+		sidx = pcb_pstk_get_shape_idx(&proto->tr.array[0], pcb_proto_layers[idx].mask, pcb_proto_layers[idx].comb);
 		if (sidx < 0) {
 			pcb_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (b)\n");
 			return;
@@ -341,7 +318,7 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 {
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
-	pcb_pstk_proto_del_shape(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_proto_del_shape(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
@@ -351,8 +328,8 @@ static void pse_shape_hshadow(void *hid_ctx, void *caller_data, pcb_hid_attribut
 {
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
-	pcb_pstk_proto_del_shape(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
-	pcb_pstk_shape_add_hshadow(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_proto_del_shape(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
+	pcb_pstk_shape_add_hshadow(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
 }
@@ -363,19 +340,19 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
-	int dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	int dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 	char src_shape_names[128];
 	char *end = src_shape_names;
 
 	for(n = 0; n < 2; n++) {
-		int from = pse_layer[pse->editing_shape].auto_from[n];
+		int from = pcb_proto_layers[pse->editing_shape].auto_from[n];
 		if (from < 0)
 			continue;
-		src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
+		src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
 		if (src_idx >= 0)
 			break;
-		strcpy(end, pse_layer[from].name);
-		end += strlen(pse_layer[from].name);
+		strcpy(end, pcb_proto_layers[from].name);
+		end += strlen(pcb_proto_layers[from].name);
 		*end = ',';
 		end++;
 	}
@@ -388,7 +365,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 	}
 
-	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pse_layer[pse->editing_shape].auto_bloat, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pcb_proto_layers[pse->editing_shape].auto_bloat, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
@@ -400,11 +377,11 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
 	int from = pse->shape_chg[pse->copy_from].default_val.int_value;
-	int dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
-	int src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
+	int dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
+	int src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
 
 	if (src_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pse_layer[from].name);
+		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
 		return;
 	}
 
@@ -413,7 +390,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 	}
 
-	pcb_pstk_shape_derive(proto, dst_idx, src_idx, 0, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_shape_derive(proto, dst_idx, src_idx, 0, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
@@ -425,14 +402,14 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
-	int n, dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	int n, dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 	pcb_coord_t bloat = pse->shape_chg[pse->amount].default_val.coord_value;
 
 	if (bloat <= 0)
 		return;
 
 	if (dst_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pse_layer[pse->editing_shape].name);
+		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[pse->editing_shape].name);
 		return;
 	}
 
@@ -461,17 +438,17 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pse_t *pse = caller_data;
 	int n;
 	char tmp[256];
-	const char *copy_from_names[pse_num_layers+1];
+	const char *copy_from_names[pcb_proto_num_layers+1];
 	PCB_DAD_DECL(dlg);
 
 	pse->parent_hid_ctx = hid_ctx;
 
-	for(n = 0; n < pse_num_layers; n++)
-		copy_from_names[n] = pse_layer[n].name;
+	for(n = 0; n < pcb_proto_num_layers; n++)
+		copy_from_names[n] = pcb_proto_layers[n].name;
 	copy_from_names[n] = NULL;
 
 	pse->editing_shape = -1;
-	for(n = 0; n < pse_num_layers; n++) {
+	for(n = 0; n < pcb_proto_num_layers; n++) {
 		if (pse->proto_change[n] == (attr - pse->attrs)) {
 			pse->editing_shape = n;
 			break;
@@ -567,7 +544,7 @@ static void pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape
 static void pse_drv_shape(pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int paste)
 {
 	int srci = (lyt & PCB_LYT_TOP) ? 0 : 1;
-	pcb_pstk_shape_derive(proto, -1, srci, PSE_MASK_BLOAT, lyt | PCB_LYT_MASK, PCB_LYC_SUB|PCB_LYC_AUTO);
+	pcb_pstk_shape_derive(proto, -1, srci, PCB_PROTO_MASK_BLOAT, lyt | PCB_LYT_MASK, PCB_LYC_SUB|PCB_LYC_AUTO);
 	if (paste)
 		pcb_pstk_shape_derive(proto, -1, srci, 0, lyt | PCB_LYT_PASTE, PCB_LYC_AUTO);
 }
@@ -698,8 +675,8 @@ static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
 				PCB_DAD_BEGIN_TABLE(dlg, 5);
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-					for(n = 0; n < pse_num_layers; n++) {
-						PCB_DAD_LABEL(dlg, pse_layer[n].name);
+					for(n = 0; n < pcb_proto_num_layers; n++) {
+						PCB_DAD_LABEL(dlg, pcb_proto_layers[n].name);
 						PCB_DAD_LABEL(dlg, "-");
 							pse.proto_shape[n] = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_LABEL(dlg, "-");

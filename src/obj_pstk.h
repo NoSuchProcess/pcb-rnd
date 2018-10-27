@@ -247,6 +247,21 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 /* Update caches and hash - must be called after any change to the prototype */
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);
 
+/*** layer info ***/
+typedef struct pcb_proto_layer_s {
+	const char *name;
+	pcb_layer_type_t mask;
+	pcb_layer_combining_t comb;
+
+	int auto_from[2];
+	pcb_coord_t auto_bloat;
+} pcb_proto_layer_t;
+
+#define PCB_PROTO_MASK_BLOAT PCB_MIL_TO_COORD(2*3)
+
+#define pcb_proto_num_layers 8
+const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers];
+
 /*** hash ***/
 unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p);
 int pcb_pstk_proto_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2);

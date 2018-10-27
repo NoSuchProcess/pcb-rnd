@@ -54,6 +54,18 @@
 
 static const char core_pstk_cookie[] = "padstack";
 
+const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers] = {
+	{"top paste",            PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO,             {2,-1}, 0},
+	{"top mask",             PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB|PCB_LYC_AUTO, {2,-1}, PCB_PROTO_MASK_BLOAT},
+	{"top copper",           PCB_LYT_TOP | PCB_LYT_COPPER,    0,                        {4,3},  0},
+	{"any internal copper",  PCB_LYT_INTERN | PCB_LYT_COPPER, 0,                        {2,4},  0},
+	{"bottom copper",        PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0,                        {2,3},  0},
+	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB|PCB_LYC_AUTO, {4,-1}, PCB_PROTO_MASK_BLOAT},
+	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1}, 0},
+	{"slot",                 PCB_LYT_MECH,                    PCB_LYC_AUTO,             {-1,-1},0}
+};
+
+
 void pcb_pstk_reg(pcb_data_t *data, pcb_pstk_t *pstk)
 {
 	padstacklist_append(&data->padstack, pstk);

@@ -193,8 +193,8 @@ static int pcb_dlg_pstklib(long id)
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
-				for(n = 0; n < sizeof(pse_layer) / sizeof(pse_layer[0]); n++) {
-					PCB_DAD_LABEL(ctx->dlg, pse_layer[n].name);
+				for(n = 0; n < pcb_proto_num_layers; n++) {
+					PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
 					PCB_DAD_BOOL(ctx->dlg, "");
 				}
 			PCB_DAD_END(ctx->dlg);
