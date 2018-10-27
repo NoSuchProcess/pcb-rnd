@@ -150,7 +150,9 @@ typedef enum {
 	PCB_SUBST_CONF = 4,
 	PCB_SUBST_BACKSLASH = 8, /* substitute \ sequences as printf(3) does */
 
-	PCB_SUBST_ALL = 0xff
+	PCB_SUBST_ALL = 0x7f, /* substitute all, but do not enable quiet */
+
+	PCB_SUBST_QUIET = 0x80
 } pcb_strdup_subst_t;
 
 /* Substitute template using cb, leaving extra room at the end and append the

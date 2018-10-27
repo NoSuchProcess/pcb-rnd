@@ -30,24 +30,25 @@
 
 /* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
    If extra_room is non-zero, allocate this many bytes extra for each slot;
-   this leaves some room to append a file name. */
-void pcb_path_resolve(const char *in, char **out, unsigned int extra_room);
+   this leaves some room to append a file name. If quiet is non-zero, suppress
+   error messages. */
+void pcb_path_resolve(const char *in, char **out, unsigned int extra_room, int quiet);
 
 /* Same as resolve_path, but it returns the pointer to the new path and calls
    free() on in */
-char *pcb_path_resolve_inplace(char *in, unsigned int extra_room);
+char *pcb_path_resolve_inplace(char *in, unsigned int extra_room, int quiet);
 
 
 /* Resolve all paths from a in[] into out[](should be large enough) */
-void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room);
+void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room, int quiet);
 
 /* Resolve all paths from a char *in[] into a freshly allocated char **out */
-#define pcb_paths_resolve_all(in, out, extra_room) \
+#define pcb_paths_resolve_all(in, out, extra_room, quiet) \
 do { \
 	int __numpath__ = sizeof(in) / sizeof(char *); \
 	if (__numpath__ > 0) { \
 		out = malloc(sizeof(char *) * __numpath__); \
-		pcb_paths_resolve(in, out, __numpath__, extra_room); \
+		pcb_paths_resolve(in, out, __numpath__, extra_room, quiet); \
 	} \
 } while(0)
 

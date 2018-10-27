@@ -174,16 +174,16 @@ static void load_base_and_cfg(void)
 	const char *home;
 	void **gpmi_asm_scriptname;
 
-	libdirg = pcb_path_resolve_inplace(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL), 0);
-	libdirh = pcb_path_resolve_inplace(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
-	wdirh = pcb_path_resolve_inplace(pcb_concat("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
+	libdirg = pcb_path_resolve_inplace(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL), 0, pcb_false);
+	libdirh = pcb_path_resolve_inplace(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0, pcb_false);
+	wdirh = pcb_path_resolve_inplace(pcb_concat("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0, pcb_false);
 	wdir = pcb_concat("plugins", NULL);
 
 	home = getenv ("PCB_RND_GPMI_HOME");
 	if (home == NULL)
 		home = conf_core.rc.path.home;
 
-	hdirh = pcb_path_resolve_inplace(pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
+	hdirh = pcb_path_resolve_inplace(pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0, pcb_false);
 
 	pcb_message(PCB_MSG_DEBUG, "gpmi dirs: lg=%s lh=%s wh=%s w=%s hh=%s\n", libdirg, libdirh, wdirh, wdir, hdirh);
 
@@ -227,7 +227,7 @@ static void load_base_and_cfg(void)
 	if (home != NULL) {
 		hid_gpmi_load_dir (hdirh, 0);
 
-		dir = pcb_path_resolve_inplace(pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL), 0);
+		dir = pcb_path_resolve_inplace(pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL), 0, pcb_false);
 		hid_gpmi_load_dir(dir, 1);
 		free(dir);
 	}

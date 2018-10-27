@@ -786,7 +786,7 @@ static char *get_misc_col_data(int row, int col, lht_node_t * nd)
 {
 	if ((nd != NULL) && (col == 1)) {
 		char *out;
-		pcb_path_resolve(nd->data.text.value, &out, 0);
+		pcb_path_resolve(nd->data.text.value, &out, 0, pcb_false);
 		return out;
 	}
 	return NULL;

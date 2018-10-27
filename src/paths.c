@@ -206,7 +206,8 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								char path[256], *q;
 								size_t len = end - start;
 								if (len > sizeof(path) - 1) {
-									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
+									if (!(flags & PCB_SUBST_QUIET))
+										pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
 									goto error;
 								}
 								memcpy(path, start, len);
@@ -216,11 +217,13 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 										*q = '/';
 								cn = conf_get_field(path);
 								if (cn == NULL) {
-									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
+									if (!(flags & PCB_SUBST_QUIET))
+										pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
 									goto error;
 								}
 								if (cn->type != CFN_STRING) {
-									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
+									if (!(flags & PCB_SUBST_QUIET))
+										pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
 									goto error;
 								}
 								if (cn->val.string[0] != NULL)
@@ -228,7 +231,8 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								curr = end+1;
 							}
 							else {
-								pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): unterminated $(%s)\n", start);
+								if (!(flags & PCB_SUBST_QUIET))
+									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): unterminated $(%s)\n", start);
 								goto error;
 							}
 							break;
@@ -276,21 +280,24 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
-void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room)
+void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
 {
+	pcb_strdup_subst_t flags = PCB_SUBST_ALL;
+	if (quiet)
+		flags |= PCB_SUBST_QUIET;
 	for (; numpaths > 0; numpaths--, in++, out++)
-		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, NULL, PCB_SUBST_ALL, extra_room);
+		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, NULL, flags, extra_room);
 }
 
-void pcb_path_resolve(const char *in, char **out, unsigned int extra_room)
+void pcb_path_resolve(const char *in, char **out, unsigned int extra_room, int quiet)
 {
-	pcb_paths_resolve(&in, out, 1, extra_room);
+	pcb_paths_resolve(&in, out, 1, extra_room, quiet);
 }
 
-char *pcb_path_resolve_inplace(char *in, unsigned int extra_room)
+char *pcb_path_resolve_inplace(char *in, unsigned int extra_room, int quiet)
 {
 	char *out;
-	pcb_path_resolve(in, &out, extra_room);
+	pcb_path_resolve(in, &out, extra_room, quiet);
 	free(in);
 	return out;
 }
