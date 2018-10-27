@@ -57,6 +57,9 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 		case CFN_REAL:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, real_value, cn->val.real[0]);
 			break;
+		case CFN_STRING:
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str_value, cn->val.string[0]);
+			break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
 	}
 }
@@ -80,6 +83,10 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 		case CFN_REAL:
 			if (cn->val.real[0] != attr->default_val.real_value)
 				conf_setf(CFR_DESIGN, item->confpath, -1, "%f", attr->default_val.real_value);
+			break;
+		case CFN_STRING:
+			if (strcmp(cn->val.string[0], attr->default_val.str_value) != 0)
+				conf_set(CFR_DESIGN, item->confpath, -1, attr->default_val.str_value, POL_OVERWRITE);
 			break;
 	}
 	ctx->conf_lock = old;
@@ -142,6 +149,13 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
 				ctx->dlg[item->wid].default_val.real_value = cn->val.real[0];
+				PCB_DAD_HELP(ctx->dlg, cn->description);
+				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+			break;
+		case CFN_STRING:
+			PCB_DAD_STRING(ctx->dlg);
+				item->wid = PCB_DAD_CURRENT(ctx->dlg);
+				ctx->dlg[item->wid].default_val.str_value = pcb_strdup(cn->val.string[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
