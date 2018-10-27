@@ -37,7 +37,7 @@ htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	int wlist, wprev, wgrid;
+	int wlist, wprev, wgrid, wlayer[pcb_proto_num_layers];
 	long subc_id;
 	pcb_cardinal_t proto_id;
 	pcb_box_t drawbox;
@@ -145,8 +145,10 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pstklib_setps(&ps, data, ctx->proto_id);
 
 	/* draw the shapes */
-	for(n = 0; n < pcb_proto_num_layers; n++)
-		layers[n] = 1;
+	for(n = 0; n < pcb_proto_num_layers; n++) {
+		printf("VAL: [%d] = %d\n", n, ctx->dlg[ctx->wlayer[n]].default_val.int_value);
+		layers[n] = !!ctx->dlg[ctx->wlayer[n]].default_val.int_value;
+	}
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
 	pcb_gui->set_color(gc, "#000000");
@@ -201,7 +203,7 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
-static void pstklib_grid_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_update_prv(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
@@ -271,10 +273,13 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 					ctx->wgrid = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
 					PCB_DAD_DEFAULT(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_grid_chg);
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 				for(n = 0; n < pcb_proto_num_layers; n++) {
 					PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
 					PCB_DAD_BOOL(ctx->dlg, "");
+						PCB_DAD_DEFAULT(ctx->dlg, 1);
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
+						ctx->wlayer[n] = PCB_DAD_CURRENT(ctx->dlg);
 				}
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
