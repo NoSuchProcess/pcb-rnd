@@ -17,7 +17,7 @@
 #include "../src_3rd/puplug/scconfig_hooks.h"
 #include "../src_3rd/libfungw/scconfig_hooks.h"
 
-int want_intl = 0, want_coord_bits;
+int want_coord_bits;
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
@@ -150,7 +150,7 @@ int hook_custom_arg(const char *key, const char *value)
 		return 1;
 	}
 	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
-		want_intl = 1;
+		report("ERROR: --with-intl is no longer supported, please do not use it\n");
 		return 1;
 	}
 	else if (strcmp(key, "help") == 0) {
@@ -442,17 +442,6 @@ int hook_detect_target()
 				report_repeat("\nERROR: Can not find any getcwd() variant.\n\n");
 				return 1;
 			}
-
-	if (want_intl) {
-		require("libs/sul/gettext/presents", 0, 0);
-		if (!istrue(get("libs/sul/gettext/presents"))) {
-			report_repeat("\nERROR: intl support explicitly requested but gettext is not found on your system.\n\n");
-			return 1;
-		}
-		put("/local/pcb/want_nls", strue);
-	}
-	else
-		put("/local/pcb/want_nls", sfalse);
 
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
@@ -919,7 +908,6 @@ int hook_generate()
 	printf("=====================\n");
 
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
-	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
 	print_sum_setting_or("/local/pcb/symbols",        "Include debug symbols", istrue(get("/local/pcb/debug")));
 	print_sum_setting("libs/sul/dmalloc/presents", "Compile with dmalloc");
