@@ -47,10 +47,13 @@ conf_hid_id_t pref_hid;
 void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
-		case CFN_COORD: PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, coord_value, cn->val.coord[0]); break;
+		case CFN_COORD:
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, coord_value, cn->val.coord[0]);
+			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, int_value, cn->val.integer[0]); break;
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, int_value, cn->val.integer[0]);
+			break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
 	}
 }
