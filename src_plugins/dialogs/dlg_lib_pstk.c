@@ -40,6 +40,7 @@ typedef struct pstk_lib_ctx_s {
 	int wlist, wprev, wgrid, wlayer[pcb_proto_num_layers];
 	long subc_id;
 	pcb_cardinal_t proto_id;
+	pcb_cardinal_t *stat; /* temporary usage stat */
 	pcb_box_t drawbox;
 } pstk_lib_ctx_t;
 
@@ -98,7 +99,10 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 			continue;
 		cell[0] = pcb_strdup_printf("%ld", id);
 		cell[1] = pcb_strdup(proto->name == NULL ? "" : proto->name);
-		cell[2] = pcb_strdup("");
+		if (ctx->stat != NULL)
+			cell[2] = pcb_strdup_printf("%d", ctx->stat[id]);
+		else
+			cell[2] = pcb_strdup("");
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
@@ -278,32 +282,22 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_cardinal_t *stat;
+
 	pcb_cardinal_t len, n;
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_hid_row_t *row;
-	pcb_hid_tree_t *tree;
-	pcb_hid_attribute_t *tree_attr;
 
 	if (data == NULL)
 		return;
 
-	tree_attr = &ctx->dlg[ctx->wlist];
-	tree = (pcb_hid_tree_t *)tree_attr->enumerations;
-
-	stat = pcb_pstk_proto_used_all(data, &len);
-	for(n = 0, row = gdl_first(&tree->rows); n < len; n++,row = gdl_next(&tree->rows, row)) {
-		char tmp[64];
-		sprintf(tmp, "%lu", stat[n]);
-		pcb_dad_tree_modify_cell(tree_attr, row, 2, tmp);
-	}
-	free(stat);
+	ctx->stat = pcb_pstk_proto_used_all(data, &len);
+	pstklib_data2dlg(ctx);
+	free(ctx->stat);
+	ctx->stat = NULL;
 }
 
 static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_cardinal_t *stat;
 	pcb_cardinal_t len, n;
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
@@ -311,13 +305,15 @@ static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	if (data == NULL)
 		return;
 
-	stat = pcb_pstk_proto_used_all(data, &len);
+#warning TODO: count routing style usage too
+	ctx->stat = pcb_pstk_proto_used_all(data, &len);
 	for(n = 0; n < len; n++) {
-		if (stat[n] == 0)
+		if (ctx->stat[n] == 0)
 			pcb_pstk_proto_del(data, n);
 	}
 	pstklib_data2dlg(ctx);
-	free(stat);
+	free(ctx->stat);
+	ctx->stat = NULL;
 }
 
 pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
