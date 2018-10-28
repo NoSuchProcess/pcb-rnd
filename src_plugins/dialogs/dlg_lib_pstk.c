@@ -91,7 +91,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 
 	/* add all items */
 	cell[3] = NULL;
-	for(id = 0, proto = data->ps_protos.array; id < pcb_vtpadstack_proto_len(data->ps_protos.array); proto++,id++) {
+	for(id = 0, proto = data->ps_protos.array; id < pcb_vtpadstack_proto_len(&data->ps_protos); proto++,id++) {
 		if (!proto->in_use)
 			continue;
 		cell[0] = pcb_strdup_printf("%ld", id);
