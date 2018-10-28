@@ -193,6 +193,7 @@ static void button_changed_cb(GtkButton *button, pcb_hid_attribute_t *dst)
 typedef struct {
 	void (*cb)(void *ctx, pcb_hid_attr_ev_t ev);
 	void *ctx;
+	attr_dlg_t *attrdlg;
 } resp_ctx_t;
 
 static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
@@ -203,13 +204,16 @@ static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpoin
 		switch (response_id) {
 		case GTK_RESPONSE_OK:
 			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
+			ctx->attrdlg->rc = 0;
 			break;
 		case GTK_RESPONSE_CANCEL:
 			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
+			ctx->attrdlg->rc = 1;
 			break;
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
 			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
+			ctx->attrdlg->rc = 1;
 			break;
 		}
 	}
@@ -706,19 +710,22 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	attr_dlg_t *ctx;
 	resp_ctx_t *resp_ctx = NULL;
 
+	ctx = calloc(sizeof(attr_dlg_t), 1);
+
 	if (button_cb != NULL) {
 		resp_ctx = malloc(sizeof(resp_ctx_t));
 		resp_ctx->cb = button_cb;
 		resp_ctx->ctx = caller_data;
+		resp_ctx->attrdlg = ctx;
 	}
 
-	ctx = calloc(sizeof(attr_dlg_t), 1);
 	ctx->com = com;
 	ctx->attrs = attrs;
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
+	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(com->top_window),
@@ -749,7 +756,11 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 int ghid_attr_dlg_run(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	if (gtk_dialog_run(GTK_DIALOG(ctx->dialog)) == GTK_RESPONSE_OK)
+	GtkResponseType res = gtk_dialog_run(GTK_DIALOG(ctx->dialog));
+	if (res == GTK_RESPONSE_NONE) {
+		/* the close cb destroyed the window; rc is already set */
+	}
+	else if (res == GTK_RESPONSE_OK)
 		ctx->rc = 0;
 	else
 		ctx->rc = 1;
