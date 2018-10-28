@@ -253,7 +253,6 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_cardinal_t pid;
 	pcb_pstk_proto_t proto;
 	pcb_hid_attr_val_t hv;
 	char tmp[64];
@@ -263,15 +262,16 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	memset(&proto, 0, sizeof(proto));
 	pcb_pstk_proto_update(&proto);
-	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
+	ctx->proto_id = pcb_pstk_proto_insert_dup(data, &proto, 1);
 
 	/* make sure the new item appears in the list and is selected */
 	pstklib_data2dlg(ctx);
-	sprintf(tmp, "%lu", pid);
+	sprintf(tmp, "%lu", ctx->proto_id);
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+	
 
-	pstklib_proto_edit_common(ctx, data, pid, 2);
+	pstklib_proto_edit_common(ctx, data, ctx->proto_id, 2);
 }
 
 
