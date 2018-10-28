@@ -748,19 +748,26 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 {
 	pcb_draw_info_t info;
 	int n, draw_hole = 0;
+	pcb_layer_id_t lid;
 
 	info.pcb = pcb;
 	info.drawn_area = drawn_area;
 	info.xform_caller = info.xform = NULL;
 	info.layer = NULL;
 	info.objcb.pstk.gid = -1;
-	info.objcb.pstk.is_current = 1;
-	info.objcb.pstk.comb = 0;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
 
+	/* draw non-currents */
+	info.objcb.pstk.is_current = 0;
 	for(n = pcb_proto_num_layers-1; n >= 0; n--) {
-		if ((layers == NULL) || (layers[n] != 0)) {
+		if ((layers == NULL) || (layers[n] == 1)) {
 			info.objcb.pstk.shape_mask = pcb_proto_layers[n].mask;
+			info.objcb.pstk.comb = pcb_proto_layers[n].comb;
+			info.objcb.pstk.layer1 = info.layer = NULL;
+			if (!(info.objcb.pstk.shape_mask & PCB_LYT_COPPER)) {
+				if (pcb_layer_list(pcb, info.objcb.pstk.shape_mask, &lid, 1) == 1)
+					info.objcb.pstk.layer1 = info.layer = pcb_get_layer(pcb->Data, lid);
+			}
 			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
 				draw_hole = 1;
 			else
@@ -768,8 +775,27 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 		}
 	}
 
+	/* draw current with strong */
+	info.objcb.pstk.is_current = 1;
+	for(n = pcb_proto_num_layers-1; n >= 0; n--) {
+		if ((layers == NULL) || (layers[n] > 1)) {
+			info.objcb.pstk.shape_mask = pcb_proto_layers[n].mask;
+			info.objcb.pstk.comb = pcb_proto_layers[n].comb;
+			info.objcb.pstk.layer1 = info.layer = NULL;
+			if (!(info.objcb.pstk.shape_mask & PCB_LYT_COPPER)) {
+				if (pcb_layer_list(pcb, info.objcb.pstk.shape_mask, &lid, 1) == 1)
+					info.objcb.pstk.layer1 = info.layer = pcb_get_layer(pcb->Data, lid);
+			}
+			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
+				draw_hole = 2;
+			else
+				pcb_pstk_draw_callback((pcb_box_t *)ps, &info);
+		}
+	}
+
 	if (draw_hole) {
 		info.objcb.pstk.shape_mask = PCB_LYT_MECH;
+		info.objcb.pstk.is_current = (draw_hole > 1);
 		pcb_pstk_draw_hole_callback((pcb_box_t *)ps, &info);
 	}
 
