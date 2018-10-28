@@ -276,6 +276,30 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, 2);
 }
 
+static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_cardinal_t *stat;
+	pcb_cardinal_t len, n;
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_hid_row_t *row;
+	pcb_hid_tree_t *tree;
+	pcb_hid_attribute_t *tree_attr;
+
+	if (data == NULL)
+		return;
+
+	tree_attr = &ctx->dlg[ctx->wlist];
+	tree = (pcb_hid_tree_t *)tree_attr->enumerations;
+
+	stat = pcb_pstk_proto_used_all(data, &len);
+	for(n = 0, row = gdl_first(&tree->rows); n < len; n++,row = gdl_next(&tree->rows, row)) {
+		char tmp[64];
+		sprintf(tmp, "%lu", stat[n]);
+		pcb_dad_tree_modify_cell(tree_attr, row, 2, tmp);
+	}
+	free(stat);
+}
 
 pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 {
@@ -330,6 +354,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "Count uses");
 					PCB_DAD_HELP(ctx->dlg, "Count how many times each prototype\nis used and update the \"used\"\ncolumn of the table");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_count_uses);
 				PCB_DAD_BUTTON(ctx->dlg, "Del unused");
 					PCB_DAD_HELP(ctx->dlg, "Update prototype usage stats and\nremove prototypes that are not\nused by any padstack");
 			PCB_DAD_END(ctx->dlg);
