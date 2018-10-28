@@ -269,7 +269,6 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	sprintf(tmp, "%lu", ctx->proto_id);
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
-	
 
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, 2);
 }
@@ -286,7 +285,6 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 
 	if (subc_id <= 0)
 		subc_id = -1;
-
 
 	if (htip_get(&pstk_libs, subc_id) != NULL)
 		return 0; /* already open - have only one per id */
