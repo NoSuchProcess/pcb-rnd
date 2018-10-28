@@ -175,6 +175,17 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 1, 0, &e->view);
 }
 
+static void pstklib_force_redraw(pstk_lib_ctx_t *ctx, pcb_pstk_t *ps)
+{
+	pcb_pstk_bbox(ps);
+	ps->BoundingBox.X1 -= PCB_MM_TO_COORD(0.5);
+	ps->BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
+	ps->BoundingBox.X2 += PCB_MM_TO_COORD(0.5);
+	ps->BoundingBox.Y2 += PCB_MM_TO_COORD(0.5);
+	memcpy(&ctx->drawbox, &ps->BoundingBox, sizeof(pcb_box_t));
+	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
+}
+
 static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_attr_val_t hv;
@@ -183,17 +194,10 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_pstk_t ps;
 
-
 	if ((row != NULL) && (data != NULL)) {
 		ctx->proto_id = strtol(row->cell[0], NULL, 10);
 		pstklib_setps(&ps, data, ctx->proto_id);
-		pcb_pstk_bbox(&ps);
-		ps.BoundingBox.X1 -= PCB_MM_TO_COORD(0.5);
-		ps.BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
-		ps.BoundingBox.X2 += PCB_MM_TO_COORD(0.5);
-		ps.BoundingBox.Y2 += PCB_MM_TO_COORD(0.5);
-		memcpy(&ctx->drawbox, &ps.BoundingBox, sizeof(pcb_box_t));
-		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
+		pstklib_force_redraw(ctx, &ps);
 	}
 	else
 		ctx->proto_id = PCB_PADSTACK_INVALID;
