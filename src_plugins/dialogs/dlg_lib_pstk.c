@@ -212,6 +212,11 @@ static void pstklib_update_prv(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
+static void pstklib_proto_edit_change_cb(pse_t *pse)
+{
+	pstklib_force_redraw(pse->user_data, pse->ps);
+}
+
 static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -232,6 +237,8 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pse.data = data;
 	pse.ps = &ps;
 	pse.disable_instance_tab = 1;
+	pse.user_data = ctx;
+	pse.change_cb = pstklib_proto_edit_change_cb;
 
 	pcb_pstkedit_dialog(&pse, 1);
 }
