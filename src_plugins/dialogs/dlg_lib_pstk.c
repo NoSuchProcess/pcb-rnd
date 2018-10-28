@@ -124,7 +124,7 @@ static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, pcb_cardinal_t proto
 	ps->parent_type = PCB_PARENT_DATA;
 	ps->parent.data = data;
 	ps->proto = proto_id;
-	ps->ID = -1;
+	ps->ID = -1; /* disable undo and clipping */
 }
 
 static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
