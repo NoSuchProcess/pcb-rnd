@@ -34,10 +34,14 @@ static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only",
 static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_INTERN, PCB_LYT_TOP | PCB_LYT_BOTTOM, PCB_LYT_TOP, PCB_LYT_BOTTOM, 0 };
 
 typedef struct pse_s {
+	/* caller conf */
+	int disable_instance_tab;
 	pcb_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
 	pcb_data_t *data; /* parent data where the proto is sitting; might be a subc */
 	pcb_pstk_t *ps;
+
+	/* internal states */
 	int tab;
 
 	/* widget IDs */
@@ -597,8 +601,13 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 	const char *tabs[] = { "this instance", "prototype", "generate common geometry", NULL };
 	PCB_DAD_DECL(dlg);
 
-	PCB_DAD_BEGIN_TABBED(dlg, tabs);
+	pse->disable_instance_tab = !!pse->disable_instance_tab;
+	target_tab -= pse->disable_instance_tab;
+
+	PCB_DAD_BEGIN_TABBED(dlg, tabs + pse->disable_instance_tab);
 		pse->tab = PCB_DAD_CURRENT(dlg);
+
+		if (!pse->disable_instance_tab) {
 		/* Tab 0: this instance */
 		PCB_DAD_BEGIN_VBOX(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
@@ -635,6 +644,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
+		}
 
 		/* Tab 1: prototype */
 		PCB_DAD_BEGIN_VBOX(dlg);

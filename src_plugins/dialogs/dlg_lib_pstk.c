@@ -223,9 +223,11 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	id = strtol(row->cell[0], NULL, 10);
 
 	pstklib_setps(&ps, data, id);
+	memset(&pse, 0, sizeof(pse));
 	pse.pcb = ctx->pcb;
 	pse.data = data;
 	pse.ps = &ps;
+	pse.disable_instance_tab = 1;
 
 	pcb_pstkedit_dialog(&pse, 1);
 }
