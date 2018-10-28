@@ -28,6 +28,7 @@
 #include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
 #include "operation.h"
+#include "dlg_lib_pstk.h"
 
 static const char *shapes[] = { "circle", "square", NULL };
 static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only", "top only", "bottom only", "none", NULL };

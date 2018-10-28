@@ -243,7 +243,7 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_pstkedit_dialog(&pse, 1);
 }
 
-static pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
+pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
