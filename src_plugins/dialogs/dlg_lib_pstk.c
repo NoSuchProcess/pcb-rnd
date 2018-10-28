@@ -582,12 +582,29 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 	return 0;
 }
 
-static const char pcb_acts_pstklib[] = "pstklib([board|subcid])\n";
+static const char pcb_acts_pstklib[] = "pstklib([board|subcid|object])\n";
 static const char pcb_acth_pstklib[] = "Present the padstack library dialog on board padstacks or the padstacks of a subcircuit";
 static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
-	PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
+	const char *cmd = NULL;
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
+	if ((cmd != NULL) && (strcmp(cmd, "object") == 0)) {
+		pcb_coord_t x, y;
+		void *r1, *r2, *r3;
+		pcb_subc_t *sc;
+		int type;
+		pcb_hid_get_coords("Pick a subcircuit for padstack lib editing", &x, &y, 0);
+		type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, PCB_SLOP * pcb_pixel_slop);
+		if (type != PCB_OBJ_SUBC) {
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+		sc = r2;
+		id = sc->ID;
+	}
+	else
+		PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
 	if (pcb_dlg_pstklib(PCB, id, pcb_false, NULL) == PCB_PADSTACK_INVALID)
 		PCB_ACT_IRES(-1);
 	else
