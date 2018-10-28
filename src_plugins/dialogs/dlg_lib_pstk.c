@@ -44,6 +44,7 @@ typedef struct pstk_lib_ctx_s {
 	pcb_cardinal_t proto_id;
 	pcb_cardinal_t *stat; /* temporary usage stat */
 	pcb_box_t drawbox;
+	pcb_bool modal;
 } pstk_lib_ctx_t;
 
 static pcb_cardinal_t pstklib_last_proto_id; /* set on close to preserve the id after free'ing the context; useful only for modal windows because of blocking calls */
@@ -121,7 +122,9 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
-	htip_pop(&pstk_libs, ctx->subc_id);
+
+	if (!ctx->modal)
+		htip_pop(&pstk_libs, ctx->subc_id);
 	pstklib_last_proto_id = ctx->proto_id;
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
@@ -282,6 +285,37 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, 2);
 }
 
+static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_hid_attribute_t *attr;
+	pcb_hid_row_t *r;
+	pcb_cardinal_t from_pid, to_pid;
+	pcb_pstk_t *ps;
+
+	if (data == NULL)
+		return;
+
+	attr = &ctx->dlg[ctx->wlist];
+	r = pcb_dad_tree_get_selected(attr);
+	if (r == NULL)
+		return;
+
+	from_pid = strtol(r->cell[0], NULL, 10);
+	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, pcb_true);
+	if (to_pid == PCB_PADSTACK_INVALID)
+		return;
+
+	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+		if (ps->proto == from_pid)
+			pcb_pstk_change_instance(ps, &to_pid, NULL, NULL, NULL, NULL);
+	}
+
+	pcb_gui->invalidate_all();
+}
+
+
 static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -371,13 +405,14 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 	if (subc_id <= 0)
 		subc_id = -1;
 
-	if (htip_get(&pstk_libs, subc_id) != NULL)
+	if ((!modal) && (htip_get(&pstk_libs, subc_id) != NULL))
 		return 0; /* already open - have only one per id */
 
 	ctx = calloc(sizeof(pstk_lib_ctx_t), 1);
 	ctx->pcb = pcb;
 	ctx->subc_id = subc_id;
 	ctx->proto_id = PCB_PADSTACK_INVALID;
+	ctx->modal = modal;
 
 	data = get_data(ctx, subc_id, &sc);
 	if (data == NULL) {
@@ -385,7 +420,8 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 		return PCB_PADSTACK_INVALID;
 	}
 
-	htip_set(&pstk_libs, subc_id, ctx);
+	if (!modal)
+		htip_set(&pstk_libs, subc_id, ctx);
 
 	/* create the dialog box */
 	PCB_DAD_BEGIN_HPANE(ctx->dlg);
@@ -408,6 +444,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_new);
 				PCB_DAD_BUTTON(ctx->dlg, "Switch");
 					PCB_DAD_HELP(ctx->dlg, "Find all padstacks using this prototype\nand modify them to use a different prototype\nmaking this prototype unused");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_switch);
 				PCB_DAD_BUTTON(ctx->dlg, "Select");
 					PCB_DAD_HELP(ctx->dlg, "Select all padstack ref. objects that\nreference (use) this prototype");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_select);
