@@ -1135,6 +1135,26 @@ void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb
 	pcb_pstk_proto_del_shape_idx(proto, idx);
 }
 
+pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out)
+{
+	pcb_cardinal_t len, n, *res;
+	pcb_pstk_t *ps;
+
+	len = data->ps_protos.used;
+	if (len == 0) {
+		*len_out = 0;
+		return NULL;
+	}
+
+	res = calloc(sizeof(pcb_cardinal_t), len);
+	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+		if ((ps->proto >= 0) && (ps->proto < len))
+			res[ps->proto]++;
+	}
+
+	*len_out = len;
+	return res;
+}
 
 /*** hash ***/
 static unsigned int pcb_pstk_shape_hash(const pcb_pstk_shape_t *sh)

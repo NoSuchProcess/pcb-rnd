@@ -252,6 +252,14 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);
 /* Overwrite all fields of a proto in-place; returns the id or INVALID on error */
 pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id, const pcb_pstk_proto_t *src);
 
+/* Cycle through all (first level) padstacks of data and count how many times
+   each prototype is referenced by them. The result is returned as an array
+   of counts per prototype ID; the array is as large as data's prototype array.
+   len_out is always filled with the length of the array. If the length is 0,
+   NULL is returned. The caller needs to call free() on the returned array. */
+pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out);
+
+
 /*** layer info ***/
 typedef struct pcb_proto_layer_s {
 	const char *name;
