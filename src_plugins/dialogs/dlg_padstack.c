@@ -38,7 +38,7 @@ static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_I
 typedef struct pse_s  pse_t;
 struct pse_s {
 	/* caller conf */
-	int disable_instance_tab;
+	int disable_instance_tab, gen_shape_in_place;
 	pcb_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
 	pcb_data_t *data; /* parent data where the proto is sitting; might be a subc */
@@ -638,8 +638,13 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	proto.hplated = 1;
 
 	pcb_pstk_proto_update(&proto);
-	pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1);
-	pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
+	if (pse->gen_shape_in_place) {
+		pcb_pstk_proto_replace(pse->data, pse->ps->proto, &proto);
+	}
+	else {
+		pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1);
+		pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
+	}
 
 	pse_ps2dlg(hid_ctx, pse);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */

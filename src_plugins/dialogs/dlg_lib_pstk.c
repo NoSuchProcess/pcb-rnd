@@ -231,6 +231,7 @@ static void pstklib_proto_edit_common(pstk_lib_ctx_t *ctx, pcb_data_t *data, pcb
 	pse.disable_instance_tab = 1;
 	pse.user_data = ctx;
 	pse.change_cb = pstklib_proto_edit_change_cb;
+	pse.gen_shape_in_place = 1;
 
 	pcb_pstkedit_dialog(&pse, tab);
 }
