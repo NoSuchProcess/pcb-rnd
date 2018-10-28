@@ -124,6 +124,7 @@ static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, pcb_cardinal_t proto
 	ps->parent_type = PCB_PARENT_DATA;
 	ps->parent.data = data;
 	ps->proto = proto_id;
+	ps->ID = -1;
 }
 
 static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
@@ -217,21 +218,12 @@ static void pstklib_proto_edit_change_cb(pse_t *pse)
 	pstklib_force_redraw(pse->user_data, pse->ps);
 }
 
-static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_proto_edit_common(pstk_lib_ctx_t *ctx, pcb_data_t *data, pcb_cardinal_t proto_id, int tab)
 {
-	pstk_lib_ctx_t *ctx = caller_data;
-	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
-	pcb_cardinal_t id;
 	pcb_pstk_t ps;
 	pse_t pse;
 
-
-	if ((row == NULL) && (data == NULL))
-		return;
-	id = strtol(row->cell[0], NULL, 10);
-
-	pstklib_setps(&ps, data, id);
+	pstklib_setps(&ps, data, proto_id);
 	memset(&pse, 0, sizeof(pse));
 	pse.pcb = ctx->pcb;
 	pse.data = data;
@@ -240,8 +232,47 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pse.user_data = ctx;
 	pse.change_cb = pstklib_proto_edit_change_cb;
 
-	pcb_pstkedit_dialog(&pse, 1);
+	pcb_pstkedit_dialog(&pse, tab);
 }
+
+
+static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+
+	if ((row == NULL) && (data == NULL))
+		return;
+
+	pstklib_proto_edit_common(ctx, data, strtol(row->cell[0], NULL, 10), 1);
+}
+
+static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_cardinal_t pid;
+	pcb_pstk_proto_t proto;
+	pcb_hid_attr_val_t hv;
+	char tmp[64];
+
+	if (data == NULL)
+		return;
+
+	memset(&proto, 0, sizeof(proto));
+	pcb_pstk_proto_update(&proto);
+	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
+
+	/* make sure the new item appears in the list and is selected */
+	pstklib_data2dlg(ctx);
+	sprintf(tmp, "%lu", pid);
+	hv.str_value = tmp;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+
+	pstklib_proto_edit_common(ctx, data, pid, 2);
+}
+
 
 pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 {
@@ -288,6 +319,9 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 				PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 					PCB_DAD_HELP(ctx->dlg, "Edit the selected prototype\nusing the padstack editor");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_edit);
+				PCB_DAD_BUTTON(ctx->dlg, "New...");
+					PCB_DAD_HELP(ctx->dlg, "Create a new prototype and edit it\nusing the padstack editor");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_new);
 				PCB_DAD_BUTTON(ctx->dlg, "Switch");
 					PCB_DAD_HELP(ctx->dlg, "Find all padstacks using this prototype\nand modify them to use a different prototype\nmaking this prototype unused");
 			PCB_DAD_END(ctx->dlg);
