@@ -43,6 +43,8 @@ typedef struct pstk_lib_ctx_s {
 	pcb_box_t drawbox;
 } pstk_lib_ctx_t;
 
+static pcb_cardinal_t pstklib_last_proto_id; /* set on close to preserve the id after free'ing the context; useful only for modal windows because of blocking calls */
+
 static pcb_data_t *get_data(pstk_lib_ctx_t *ctx, long id, pcb_subc_t **sc_out)
 {
 	int type;
@@ -114,6 +116,7 @@ static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	htip_pop(&pstk_libs, ctx->subc_id);
+	pstklib_last_proto_id = ctx->proto_id;
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
@@ -374,7 +377,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 	if (modal) {
 		if (PCB_DAD_RUN(ctx->dlg) != 0)
 			return PCB_PADSTACK_INVALID;
-		return ctx->proto_id;
+		return pstklib_last_proto_id;
 	}
 
 	return 0;
