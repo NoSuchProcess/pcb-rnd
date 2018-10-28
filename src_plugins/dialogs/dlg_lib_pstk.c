@@ -477,7 +477,7 @@ static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	if (pcb_dlg_pstklib(PCB, id, pcb_false+1) == PCB_PADSTACK_INVALID)
+	if (pcb_dlg_pstklib(PCB, id, pcb_false) == PCB_PADSTACK_INVALID)
 		PCB_ACT_IRES(-1);
 	else
 		PCB_ACT_IRES(0);
