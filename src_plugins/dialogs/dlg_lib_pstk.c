@@ -534,9 +534,6 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 
 				PCB_DAD_LABEL(ctx->dlg, "");
-				PCB_DAD_LABEL(ctx->dlg, "");
-
-				PCB_DAD_LABEL(ctx->dlg, "");
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_LABEL(ctx->dlg, "Vis");
 						PCB_DAD_HELP(ctx->dlg, "layer is visible");
