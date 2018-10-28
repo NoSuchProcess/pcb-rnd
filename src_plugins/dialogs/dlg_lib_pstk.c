@@ -327,8 +327,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-
-	pcb_cardinal_t len, n;
+	pcb_cardinal_t len;
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 
