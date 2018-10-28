@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: disable library_shell loading from board file [report: Igor2]
 - BUG: dialogs/act_dad.c: row pointers are never unreg'd from their domain - should happen on close or row removal [report: Igor2]
 - BUG: padstack geomety edit: shape grow and shrink are mixed up; make sure + is always grow, - is always shrink, recheck with cam bloat! [report: Igor2]
 - BUG: rendering: padstack poly in 1206 is rendered solid when rgabbed for move [report: Igor2]
@@ -28,7 +29,7 @@
 - BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
 - BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 - BUG: PS export draws layer indicators on heavy terminals on top-assembly and bottom-assembly pages. [report: Ade]
- 
+
 2. For later releases ===============================================================================
 - CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
@@ -55,6 +56,9 @@
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - FEATURE: route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+	- replace the route style dialog box's via part
+	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
+	- load/import from buffer and file
 - feature plugins:
 	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
