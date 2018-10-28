@@ -335,9 +335,15 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 
 	PCB_DAD_NEW(ctx->dlg, name, "", ctx, modal, pstklib_close_cb);
 
-	free(name);
 	pstklib_data2dlg(ctx);
-	return ctx->proto_id;
+	free(name);
+
+	if (modal) {
+		PCB_DAD_RUN(ctx->dlg);
+		return ctx->proto_id;
+	}
+
+	return 0;
 }
 
 static const char pcb_acts_pstklib[] = "pstklib([board|subcid])\n";
@@ -346,7 +352,7 @@ static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	if (pcb_dlg_pstklib(PCB, id, pcb_false) == PCB_PADSTACK_INVALID)
+	if (pcb_dlg_pstklib(PCB, id, pcb_false+1) == PCB_PADSTACK_INVALID)
 		PCB_ACT_IRES(-1);
 	else
 		PCB_ACT_IRES(0);
