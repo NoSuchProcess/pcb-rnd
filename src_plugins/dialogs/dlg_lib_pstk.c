@@ -209,6 +209,21 @@ static void pstklib_update_prv(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
+static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+	pcb_cardinal_t id;
+
+	if ((row == NULL) && (data == NULL))
+		return;
+	id = strtol(row->cell[0], NULL, 10);
+
+	printf("EDIT: %ld\n", id);
+
+}
+
 static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
@@ -253,6 +268,11 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 					PCB_DAD_HELP(ctx->dlg, "Edit the selected prototype\nusing the padstack editor");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_edit);
+				PCB_DAD_BUTTON(ctx->dlg, "Switch");
+					PCB_DAD_HELP(ctx->dlg, "Find all padstacks using this prototype\nand modify them to use a different prototype\nmaking this prototype unused");
+			PCB_DAD_END(ctx->dlg);
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "Count uses");
 					PCB_DAD_HELP(ctx->dlg, "Count how many times each prototype\nis used and update the \"used\"\ncolumn of the table");
 				PCB_DAD_BUTTON(ctx->dlg, "Del unused");
