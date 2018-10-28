@@ -249,6 +249,9 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 /* Update caches and hash - must be called after any change to the prototype */
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);
 
+/* Overwrite all fields of a proto in-place; returns the id or INVALID on error */
+pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id, const pcb_pstk_proto_t *src);
+
 /*** layer info ***/
 typedef struct pcb_proto_layer_s {
 	const char *name;

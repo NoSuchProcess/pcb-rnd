@@ -713,6 +713,23 @@ pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_
 	return n;
 }
 
+pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id, const pcb_pstk_proto_t *src)
+{
+	pcb_pstk_proto_t *dst;
+	if ((proto_id < 0) || (proto_id >= pcb_vtpadstack_proto_len(&data->ps_protos)))
+		return PCB_PADSTACK_INVALID;
+
+	dst = &data->ps_protos.array[proto_id];
+	pcb_pstk_proto_free_fields(dst);
+
+	pcb_pstk_proto_copy(dst, src);
+	dst->in_use = 1;
+	dst->parent = data;
+	pcb_pstk_proto_update(dst);
+	return proto_id;
+}
+
+
 pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, pcb_coord_t ox, pcb_coord_t oy)
 {
 	pcb_pstk_proto_t proto;
