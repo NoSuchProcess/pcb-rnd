@@ -1146,7 +1146,7 @@ void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id)
 
 pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out)
 {
-	pcb_cardinal_t len, n, *res;
+	pcb_cardinal_t len, *res;
 	pcb_pstk_t *ps;
 
 	len = data->ps_protos.used;
@@ -1159,6 +1159,18 @@ pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_ou
 	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 		if ((ps->proto >= 0) && (ps->proto < len))
 			res[ps->proto]++;
+	}
+
+	/* routing styles may also reference to prototypes if we are on a board */
+	if (data->parent_type == PCB_PARENT_BOARD) {
+		pcb_board_t *pcb = data->parent.board;
+		int n;
+
+		for(n = 0; n < pcb->RouteStyle.used; n++) {
+			pcb_cardinal_t pid = pcb->RouteStyle.array[n].via_proto;
+			if ((pid >= 0) && (pid < len))
+				res[pid]++;
+		}
 	}
 
 	*len_out = len;

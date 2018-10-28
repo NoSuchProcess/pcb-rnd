@@ -305,7 +305,6 @@ static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	if (data == NULL)
 		return;
 
-#warning TODO: count routing style usage too
 	ctx->stat = pcb_pstk_proto_used_all(data, &len);
 	for(n = 0; n < len; n++) {
 		if (ctx->stat[n] == 0)
