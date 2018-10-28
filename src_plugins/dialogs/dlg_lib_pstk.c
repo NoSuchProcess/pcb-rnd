@@ -243,7 +243,7 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_pstkedit_dialog(&pse, 1);
 }
 
-static int pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
+static pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
@@ -267,7 +267,7 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
 	data = get_data(ctx, subc_id, &sc);
 	if (data == NULL) {
 		free(ctx);
-		return -1;
+		return PCB_PADSTACK_INVALID;
 	}
 
 	htip_set(&pstk_libs, subc_id, ctx);
@@ -337,7 +337,7 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
 
 	free(name);
 	pstklib_data2dlg(ctx);
-	return 0;
+	return ctx->proto_id;
 }
 
 static const char pcb_acts_pstklib[] = "pstklib([board|subcid])\n";
@@ -346,7 +346,10 @@ static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	PCB_ACT_IRES(pcb_dlg_pstklib(PCB, id));
+	if (pcb_dlg_pstklib(PCB, id) == PCB_PADSTACK_INVALID)
+		PCB_ACT_IRES(-1);
+	else
+		PCB_ACT_IRES(0);
 	return 0;
 }
 
