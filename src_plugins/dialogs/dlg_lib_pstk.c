@@ -243,7 +243,7 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_pstkedit_dialog(&pse, 1);
 }
 
-static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
+static int pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
@@ -252,25 +252,25 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 	int n;
 	char *name;
 
-	if (id <= 0)
-		id = -1;
+	if (subc_id <= 0)
+		subc_id = -1;
 
 
-	if (htip_get(&pstk_libs, id) != NULL)
+	if (htip_get(&pstk_libs, subc_id) != NULL)
 		return 0; /* already open - have only one per id */
 
 	ctx = calloc(sizeof(pstk_lib_ctx_t), 1);
 	ctx->pcb = pcb;
-	ctx->subc_id = id;
+	ctx->subc_id = subc_id;
 	ctx->proto_id = PCB_PADSTACK_INVALID;
 
-	data = get_data(ctx, id, &sc);
+	data = get_data(ctx, subc_id, &sc);
 	if (data == NULL) {
 		free(ctx);
 		return -1;
 	}
 
-	htip_set(&pstk_libs, id, ctx);
+	htip_set(&pstk_libs, subc_id, ctx);
 
 	/* create the dialog box */
 	PCB_DAD_BEGIN_HPANE(ctx->dlg);
@@ -324,11 +324,11 @@ static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
-	if (id > 0) {
+	if (subc_id > 0) {
 		if (sc->refdes != NULL)
-			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld (%s)", id, sc->refdes);
+			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld (%s)", subc_id, sc->refdes);
 		else
-			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld", id);
+			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld", subc_id);
 	}
 	else
 		name = pcb_strdup("pcb-rnd padstacks - board");
