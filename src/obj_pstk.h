@@ -259,6 +259,8 @@ pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id,
    NULL is returned. The caller needs to call free() on the returned array. */
 pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out);
 
+/* Remove a prototype: free all fields and mark it unused */
+void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id);
 
 /*** layer info ***/
 typedef struct pcb_proto_layer_s {

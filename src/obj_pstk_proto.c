@@ -49,6 +49,7 @@ static const char core_proto_cookie[] = "padstack prototypes";
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 {
 #warning TODO: do a full field free here
+	dst->in_use = 0;
 }
 
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
@@ -1133,6 +1134,14 @@ void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb
 	/* search the 0th transformed, all other tshapes are the same */
 	idx = pcb_pstk_get_shape_idx(&proto->tr.array[0], lyt, comb);
 	pcb_pstk_proto_del_shape_idx(proto, idx);
+}
+
+void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id)
+{
+	pcb_pstk_proto_t *proto = pcb_vtpadstack_proto_get(&data->ps_protos, proto_id, 0);
+	if (proto == NULL)
+		return;
+	pcb_pstk_proto_free_fields(proto);
 }
 
 pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out)
