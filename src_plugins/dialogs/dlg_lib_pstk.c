@@ -339,7 +339,8 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 	free(name);
 
 	if (modal) {
-		PCB_DAD_RUN(ctx->dlg);
+		if (PCB_DAD_RUN(ctx->dlg) != 0)
+			return PCB_PADSTACK_INVALID;
 		return ctx->proto_id;
 	}
 
