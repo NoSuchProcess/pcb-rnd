@@ -304,7 +304,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 	from_pid = strtol(r->cell[0], NULL, 10);
 	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, pcb_true, "Select a prototype to switch to");
-	if (to_pid == PCB_PADSTACK_INVALID)
+	if ((to_pid == PCB_PADSTACK_INVALID) || (to_pid == from_pid))
 		return;
 
 	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
