@@ -1270,6 +1270,16 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 	long int parent_ID;
 	pcb_opctx_t ctx;
 
+	if (ps->ID <= 0) { /* off-board padstack: undo and clipping disabled */
+		if (proto != NULL) ps->proto = *proto;
+		if (clearance != NULL) ps->Clearance = *clearance;
+		if (rot != NULL) ps->rot = *rot;
+		if (xmirror != NULL) ps->xmirror = *xmirror;
+		if (smirror != NULL) ps->xmirror = *smirror;
+		pcb_pstk_bbox(ps);
+		return 0;
+	}
+
 	switch(ps->parent.data->parent_type) {
 		case PCB_PARENT_INVALID:
 			/* happens if parent is a buffer: do not undo operations done on the buffer */
