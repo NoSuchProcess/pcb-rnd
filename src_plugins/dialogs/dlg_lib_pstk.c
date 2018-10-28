@@ -301,6 +301,25 @@ static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	free(stat);
 }
 
+static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_cardinal_t *stat;
+	pcb_cardinal_t len, n;
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+
+	if (data == NULL)
+		return;
+
+	stat = pcb_pstk_proto_used_all(data, &len);
+	for(n = 0; n < len; n++) {
+		if (stat[n] == 0)
+			pcb_pstk_proto_del(data, n);
+	}
+	pstklib_data2dlg(ctx);
+	free(stat);
+}
+
 pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
