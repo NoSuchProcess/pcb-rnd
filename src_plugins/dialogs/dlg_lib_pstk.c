@@ -31,6 +31,8 @@
 #include "vtpadstack.h"
 #include "hid_inlines.h"
 #include "obj_text_draw.h"
+#include "undo_old.h"
+#include "select.h"
 
 htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 
@@ -280,6 +282,49 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, 2);
 }
 
+static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_hid_attribute_t *attr;
+	pcb_hid_row_t *r;
+	long pid;
+	pcb_box_t box;
+	int changed = 0;
+	pcb_pstk_t *ps;
+
+	if (data == NULL)
+		return;
+
+	attr = &ctx->dlg[ctx->wlist];
+	r = pcb_dad_tree_get_selected(attr);
+	if (r == NULL)
+		return;
+
+	pid = strtol(r->cell[0], NULL, 10);
+
+	/* unselect all */
+	box.X1 = -PCB_MAX_COORD;
+	box.Y1 = -PCB_MAX_COORD;
+	box.X2 = PCB_MAX_COORD;
+	box.Y2 = PCB_MAX_COORD;
+	if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
+		changed = 1;
+
+	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+		if (ps->proto == pid) {
+			changed = 1;
+			pcb_undo_add_obj_to_flag(ps);
+			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, ps);
+		}
+	}
+
+	if (changed) {
+		pcb_board_set_changed_flag(pcb_true);
+		pcb_gui->invalidate_all();
+	}
+}
+
 static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 
@@ -364,6 +409,9 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_new);
 				PCB_DAD_BUTTON(ctx->dlg, "Switch");
 					PCB_DAD_HELP(ctx->dlg, "Find all padstacks using this prototype\nand modify them to use a different prototype\nmaking this prototype unused");
+				PCB_DAD_BUTTON(ctx->dlg, "Select");
+					PCB_DAD_HELP(ctx->dlg, "Select all padstack ref. objects that\nreference (use) this prototype");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_select);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "Count uses");
