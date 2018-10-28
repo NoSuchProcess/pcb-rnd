@@ -372,6 +372,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_count_uses);
 				PCB_DAD_BUTTON(ctx->dlg, "Del unused");
 					PCB_DAD_HELP(ctx->dlg, "Update prototype usage stats and\nremove prototypes that are not\nused by any padstack");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_del_unused);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
