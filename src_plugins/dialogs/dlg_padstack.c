@@ -608,42 +608,42 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 		pse->tab = PCB_DAD_CURRENT(dlg);
 
 		if (!pse->disable_instance_tab) {
-		/* Tab 0: this instance */
-		PCB_DAD_BEGIN_VBOX(dlg);
+			/* Tab 0: this instance */
 			PCB_DAD_BEGIN_VBOX(dlg);
-				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-				PCB_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABEL(dlg, "prototype");
-					PCB_DAD_BUTTON(dlg, "#5");
-						pse->proto_id = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_HELP(dlg, "Padstack prototype ID\n(click to use a different prototype)");
-				PCB_DAD_END(dlg);
-				PCB_DAD_BEGIN_TABLE(dlg, 2);
-					PCB_DAD_LABEL(dlg, "Clearance");
-					PCB_DAD_COORD(dlg, "");
-						pse->clearance = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, 0);
-						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
-						PCB_DAD_HELP(dlg, "global clearance (affects all layers)");
-					PCB_DAD_LABEL(dlg, "Rotation");
-					PCB_DAD_REAL(dlg, "");
-						pse->rot = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, 0);
-						PCB_DAD_MAXVAL(dlg, 360);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
-					PCB_DAD_LABEL(dlg, "X-mirror");
-					PCB_DAD_BOOL(dlg, "");
-						pse->xmirror = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
-					PCB_DAD_LABEL(dlg, "S-mirror");
-					PCB_DAD_BOOL(dlg, "");
-						pse->smirror = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+				PCB_DAD_BEGIN_VBOX(dlg);
+					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+					PCB_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_LABEL(dlg, "prototype");
+						PCB_DAD_BUTTON(dlg, "#5");
+							pse->proto_id = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_HELP(dlg, "Padstack prototype ID\n(click to use a different prototype)");
+					PCB_DAD_END(dlg);
+					PCB_DAD_BEGIN_TABLE(dlg, 2);
+						PCB_DAD_LABEL(dlg, "Clearance");
+						PCB_DAD_COORD(dlg, "");
+							pse->clearance = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_MINVAL(dlg, 0);
+							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+							PCB_DAD_HELP(dlg, "global clearance (affects all layers)");
+						PCB_DAD_LABEL(dlg, "Rotation");
+						PCB_DAD_REAL(dlg, "");
+							pse->rot = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_MINVAL(dlg, 0);
+							PCB_DAD_MAXVAL(dlg, 360);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+						PCB_DAD_LABEL(dlg, "X-mirror");
+						PCB_DAD_BOOL(dlg, "");
+							pse->xmirror = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+						PCB_DAD_LABEL(dlg, "S-mirror");
+						PCB_DAD_BOOL(dlg, "");
+							pse->smirror = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+					PCB_DAD_END(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
-		PCB_DAD_END(dlg);
 		}
 
 		/* Tab 1: prototype */
