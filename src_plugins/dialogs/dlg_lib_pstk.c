@@ -145,10 +145,9 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pstklib_setps(&ps, data, ctx->proto_id);
 
 	/* draw the shapes */
-	for(n = 0; n < pcb_proto_num_layers; n++) {
-		printf("VAL: [%d] = %d\n", n, ctx->dlg[ctx->wlayer[n]].default_val.int_value);
+	for(n = 0; n < pcb_proto_num_layers; n++)
 		layers[n] = !!ctx->dlg[ctx->wlayer[n]].default_val.int_value;
-	}
+
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
 	pcb_gui->set_color(gc, "#000000");
