@@ -214,13 +214,20 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
 	pcb_cardinal_t id;
+	pcb_pstk_t ps;
+	pse_t pse;
+
 
 	if ((row == NULL) && (data == NULL))
 		return;
 	id = strtol(row->cell[0], NULL, 10);
 
-	printf("EDIT: %ld\n", id);
+	pstklib_setps(&ps, data, id);
+	pse.pcb = ctx->pcb;
+	pse.data = data;
+	pse.ps = &ps;
 
+	pcb_pstkedit_dialog(&pse, 1);
 }
 
 static int pcb_dlg_pstklib(pcb_board_t *pcb, long id)
