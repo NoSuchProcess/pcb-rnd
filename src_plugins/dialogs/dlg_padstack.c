@@ -222,7 +222,7 @@ static void pse_chg_protoid(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		return;
 
 	subc = pcb_obj_parent_subc((pcb_any_obj_t *)pse->ps);
-	proto_id = pcb_dlg_pstklib(pse->pcb, (subc == NULL ? 0 : subc->ID), pcb_true);
+	proto_id = pcb_dlg_pstklib(pse->pcb, (subc == NULL ? 0 : subc->ID), pcb_true, "Select a new prototype to be used on the padstack");
 	if (proto_id == PCB_PADSTACK_INVALID)
 		return;
 

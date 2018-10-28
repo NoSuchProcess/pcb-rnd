@@ -303,7 +303,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attri
 		return;
 
 	from_pid = strtol(r->cell[0], NULL, 10);
-	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, pcb_true);
+	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, pcb_true, "Select a prototype to switch to");
 	if (to_pid == PCB_PADSTACK_INVALID)
 		return;
 
@@ -393,7 +393,7 @@ static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->stat = NULL;
 }
 
-pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
+pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, const char *hint)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
@@ -422,6 +422,11 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 
 	if (!modal)
 		htip_set(&pstk_libs, subc_id, ctx);
+
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+
+		if (hint != NULL)
+			PCB_DAD_LABEL(ctx->dlg, hint);
 
 	/* create the dialog box */
 	PCB_DAD_BEGIN_HPANE(ctx->dlg);
@@ -484,6 +489,8 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
+	PCB_DAD_END(ctx->dlg);
+
 	if (subc_id > 0) {
 		if (sc->refdes != NULL)
 			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld (%s)", subc_id, sc->refdes);
@@ -513,7 +520,7 @@ static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	if (pcb_dlg_pstklib(PCB, id, pcb_false) == PCB_PADSTACK_INVALID)
+	if (pcb_dlg_pstklib(PCB, id, pcb_false, NULL) == PCB_PADSTACK_INVALID)
 		PCB_ACT_IRES(-1);
 	else
 		PCB_ACT_IRES(0);
