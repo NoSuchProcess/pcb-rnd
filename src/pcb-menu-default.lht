@@ -160,6 +160,7 @@ ha:{
 						ha:Edit...                    = { action=AdjustStyle(0) }
 					}
 				}
+				ha:Board padstack prototypes...   = { action=pstklib() }
 				-
 				ha:Subcircuit {
 					li:submenu {
@@ -651,6 +652,8 @@ ha:{
 				ha:External editor...     { action=extedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit layer bindings... { action=LayerBinding() }
+				ha:Edit padstack prototypes... = { action=pstklib(object) }
+
 #TODO: replace from lib
 				-
 				ha:Remove subcircuit      { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
