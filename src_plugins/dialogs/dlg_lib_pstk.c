@@ -225,6 +225,35 @@ static void pstklib_update_prv(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
+static void pstklib_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	const char *text;
+
+	if (data == NULL)
+		return;
+
+	attr = &ctx->dlg[ctx->wlist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+	text = attr_inp->default_val.str_value;
+
+	if ((text == NULL) || (*text == '\0')) {
+		for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r))
+			r->hide = 0;
+	}
+	else {
+		for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r))
+			r->hide = (strstr(r->cell[1], text) == NULL);
+	}
+
+	pcb_dad_tree_update_hide(attr);
+}
+
+
 static void pstklib_proto_edit_change_cb(pse_t *pse)
 {
 	pstklib_force_redraw(pse->user_data, pse->ps);
@@ -440,6 +469,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_STRING(ctx->dlg);
 				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist padstacks with matching name only");
+				PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_filter_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 					PCB_DAD_HELP(ctx->dlg, "Edit the selected prototype\nusing the padstack editor");
