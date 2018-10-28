@@ -1167,9 +1167,11 @@ pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_ou
 		int n;
 
 		for(n = 0; n < pcb->RouteStyle.used; n++) {
-			pcb_cardinal_t pid = pcb->RouteStyle.array[n].via_proto;
-			if ((pid >= 0) && (pid < len))
-				res[pid]++;
+			if (pcb->RouteStyle.array[n].via_proto_set) {
+				pcb_cardinal_t pid = pcb->RouteStyle.array[n].via_proto;
+				if ((pid >= 0) && (pid < len))
+					res[pid]++;
+			}
 		}
 	}
 
