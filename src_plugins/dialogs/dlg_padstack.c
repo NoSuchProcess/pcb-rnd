@@ -33,13 +33,18 @@ static const char *shapes[] = { "circle", "square", NULL };
 static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only", "top only", "bottom only", "none", NULL };
 static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_INTERN, PCB_LYT_TOP | PCB_LYT_BOTTOM, PCB_LYT_TOP, PCB_LYT_BOTTOM, 0 };
 
-typedef struct pse_s {
+typedef struct pse_s  pse_t;
+struct pse_s {
 	/* caller conf */
 	int disable_instance_tab;
 	pcb_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
 	pcb_data_t *data; /* parent data where the proto is sitting; might be a subc */
 	pcb_pstk_t *ps;
+
+	/* optional hooks */
+	void *user_data;                /* owned by the caller who sets up the struct */
+	void (*change_cb)(void *pse);
 
 	/* internal states */
 	int tab;
@@ -65,7 +70,7 @@ typedef struct pse_s {
 	int text_shape, del, derive, hshadow;
 	int copy_do, copy_from;
 	int shrink, amount, grow;
-} pse_t;
+};
 
 /* build a group/layer name string in tmp */
 char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int size)
@@ -198,6 +203,12 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 
 }
 
+static void pse_change_callback(pse_t *pse)
+{
+	if (pse->change_cb != NULL)
+		pse->change_cb(pse);
+}
+
 static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
@@ -217,6 +228,7 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -245,6 +257,7 @@ static void pse_chg_prname(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -269,6 +282,7 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -315,6 +329,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -325,6 +340,8 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_pstk_proto_del_shape(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
+
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -335,6 +352,8 @@ static void pse_shape_hshadow(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_pstk_proto_del_shape(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 	pcb_pstk_shape_add_hshadow(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
+
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -372,6 +391,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pcb_proto_layers[pse->editing_shape].auto_bloat, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -397,6 +417,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_shape_derive(proto, dst_idx, src_idx, 0, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -424,6 +445,7 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
 	pcb_pstk_proto_update(proto);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -509,6 +531,8 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	pse->shape_chg = NULL;
 	PCB_DAD_FREE(dlg);
+	pse_change_callback(pse);
+	pcb_gui->invalidate_all();
 }
 
 /* Auto gen shape on a single layer */
@@ -592,6 +616,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	pse_ps2dlg(hid_ctx, pse);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */
+	pse_change_callback(pse);
 	pcb_gui->invalidate_all();
 }
 
