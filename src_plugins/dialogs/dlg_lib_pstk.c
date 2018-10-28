@@ -39,7 +39,8 @@ htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 typedef struct pstk_lib_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	int wlist, wprev, wgrid, wlayer[pcb_proto_num_layers];
+	int wlist, wprev, wgrid;
+	int wlayerv[pcb_proto_num_layers], wlayerc[pcb_proto_num_layers]; /* layer visibility/current */
 	long subc_id;
 	pcb_cardinal_t proto_id;
 	pcb_cardinal_t *stat; /* temporary usage stat */
@@ -159,7 +160,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	/* draw the shapes */
 	for(n = 0; n < pcb_proto_num_layers; n++)
-		layers[n] = !!ctx->dlg[ctx->wlayer[n]].default_val.int_value;
+		layers[n] = !!ctx->dlg[ctx->wlayerv[n]].default_val.int_value + !!ctx->dlg[ctx->wlayerc[n]].default_val.int_value;
 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
@@ -224,6 +225,29 @@ static void pstklib_update_prv(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
+
+static void pstklib_update_layerc(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	int n, idx = -1, widx = attr - ctx->dlg;
+	pcb_hid_attr_val_t hv;
+
+	for(n = 0; n < pcb_proto_num_layers; n++) {
+		if (ctx->wlayerc[n] == widx) {
+			hv.int_value = 1;
+			idx = n;
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerv[n], &hv); /* current must be visible as well */
+		}
+		else
+			hv.int_value = 0;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerc[n], &hv);
+	}
+	if (idx < 0)
+		return;
+
+	pstklib_update_prv(hid_ctx, caller_data, attr);
+}
+
 
 static void pstklib_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
 {
@@ -508,12 +532,29 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 					PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
 					PCB_DAD_DEFAULT(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
 					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
+
+				PCB_DAD_LABEL(ctx->dlg, "");
+				PCB_DAD_LABEL(ctx->dlg, "");
+
+				PCB_DAD_LABEL(ctx->dlg, "");
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_LABEL(ctx->dlg, "Vis");
+						PCB_DAD_HELP(ctx->dlg, "layer is visible");
+					PCB_DAD_LABEL(ctx->dlg, "Curr");
+						PCB_DAD_HELP(ctx->dlg, "layer is set to current/primary\nfor display (color emphasis)");
+				PCB_DAD_END(ctx->dlg);
 				for(n = 0; n < pcb_proto_num_layers; n++) {
 					PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
-					PCB_DAD_BOOL(ctx->dlg, "");
-						PCB_DAD_DEFAULT(ctx->dlg, 1);
-						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
-						ctx->wlayer[n] = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_BEGIN_HBOX(ctx->dlg);
+						PCB_DAD_BOOL(ctx->dlg, "");
+							PCB_DAD_DEFAULT(ctx->dlg, 1);
+							PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
+							ctx->wlayerv[n] = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_BOOL(ctx->dlg, "");
+							PCB_DAD_DEFAULT(ctx->dlg, (pcb_proto_layers[n].mask == (PCB_LYT_TOP | PCB_LYT_COPPER)));
+							PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_layerc);
+							ctx->wlayerc[n] = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_END(ctx->dlg);
 				}
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
