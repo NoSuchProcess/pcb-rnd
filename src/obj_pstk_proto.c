@@ -59,10 +59,12 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 	dst->hash = pcb_pstk_proto_hash(dst);
 	dst->mech_idx = -1;
 
-	for(n = 0; n < ts->len; n++) {
-		if (ts->shape[n].layer_mask & PCB_LYT_MECH) {
-			dst->mech_idx = n;
-			break;
+	if (ts != NULL) {
+		for(n = 0; n < ts->len; n++) {
+			if (ts->shape[n].layer_mask & PCB_LYT_MECH) {
+				dst->mech_idx = n;
+				break;
+			}
 		}
 	}
 }
@@ -1146,9 +1148,12 @@ static unsigned int pcb_pstk_shape_hash(const pcb_pstk_shape_t *sh)
 unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p)
 {
 	pcb_pstk_tshape_t *ts = &p->tr.array[0];
-	unsigned int n, ret = pcb_hash_coord(p->hdia) ^ pcb_hash_coord(p->htop) ^ pcb_hash_coord(p->hbottom) ^ pcb_hash_coord(p->hplated) ^ pcb_hash_coord(ts->len);
-	for(n = 0; n < ts->len; n++)
-		ret ^= pcb_pstk_shape_hash(ts->shape + n);
+	unsigned int n, ret = pcb_hash_coord(p->hdia) ^ pcb_hash_coord(p->htop) ^ pcb_hash_coord(p->hbottom) ^ pcb_hash_coord(p->hplated);
+	if (ts != NULL) {
+	 ret ^= pcb_hash_coord(ts->len);
+		for(n = 0; n < ts->len; n++)
+			ret ^= pcb_pstk_shape_hash(ts->shape + n);
+	}
 	return ret;
 }
 
