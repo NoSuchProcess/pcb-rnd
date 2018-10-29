@@ -31,6 +31,7 @@
 #include "vtpadstack.h"
 #include "hid_inlines.h"
 #include "obj_text_draw.h"
+#include "obj_pstk_draw.h"
 #include "undo_old.h"
 #include "select.h"
 
