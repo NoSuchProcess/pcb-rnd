@@ -47,6 +47,22 @@ static void undo_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(undo_ctx_t));
 }
 
+static void cb_undo(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_undo(pcb_true);
+}
+
+static void cb_redo(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_redo(pcb_true);
+}
+
+static void cb_clear(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_undo_clear_list(pcb_true);
+}
+
+
 static void undo_data2dlg(undo_ctx_t *ctx)
 {
 	pcb_hid_attribute_t *attr;
@@ -113,8 +129,11 @@ static void pcb_dlg_undo(void)
 
 		PCB_DAD_BEGIN_HBOX(undo_ctx.dlg);
 			PCB_DAD_BUTTON(undo_ctx.dlg, "Undo");
+				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_undo);
 			PCB_DAD_BUTTON(undo_ctx.dlg, "Redo");
+				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_redo);
 			PCB_DAD_BUTTON(undo_ctx.dlg, "Clear");
+				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_clear);
 		PCB_DAD_END(undo_ctx.dlg);
 	PCB_DAD_END(undo_ctx.dlg);
 
