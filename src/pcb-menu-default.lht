@@ -91,6 +91,8 @@ ha:{
 						ha:Edit current font              = { action=FontEdit() }
 						ha:Edit on-disk font              = { action={ LoadFontFrom("", 126); conf(set, design/text_font_id, 126, design); FontEdit() } }
 						ha:Save font from font editor     = { action=FontSave() }
+						-
+						ha:Undo dialog (for debugging)    = { a={<key>u;<key>d;}; action=UndoDialog() }
 					}
 				}
 				-
