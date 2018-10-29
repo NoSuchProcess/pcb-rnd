@@ -46,7 +46,7 @@ struct pse_s {
 
 	/* optional hooks */
 	void *user_data;                /* owned by the caller who sets up the struct */
-	void (*change_cb)(void *pse);
+	void (*change_cb)(pse_t *pse);
 
 	/* internal states */
 	int tab;
