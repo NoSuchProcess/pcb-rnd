@@ -443,7 +443,8 @@
  ../src_plugins/dialogs/dlg_pref_lib.c ../src_3rd/liblihata/tree.h \
  paths.h ../src_plugins/dialogs/dlg_lib_pstk.c vtpadstack.h hid_inlines.h \
  obj_text_draw.h draw.h undo_old.h select.h \
- ../src_plugins/dialogs/act_dad.h dolists.h
+ ../src_plugins/dialogs/dlg_undo.c ../src_plugins/dialogs/act_dad.h \
+ dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
