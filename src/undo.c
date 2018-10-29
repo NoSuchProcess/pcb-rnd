@@ -72,7 +72,7 @@ static pcb_bool added_undo_between_increment_and_restore = pcb_false;
 pcb_data_t *pcb_removelist = NULL; /* lists of removed objects */
 static pcb_bool Locked = pcb_false; /* do not add entries if */
 pcb_bool pcb_undo_and_draw = pcb_true; /* flag is set; prevents from infinite loops */
-static uundo_list_t pcb_uundo;
+uundo_list_t pcb_uundo; /* only the undo dialog box should have access to it */
 
 void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len)
 {
