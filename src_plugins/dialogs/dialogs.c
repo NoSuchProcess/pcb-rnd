@@ -46,6 +46,7 @@
 #include "dlg_export.c"
 #include "dlg_pref.c"
 #include "dlg_lib_pstk.c"
+#include "dlg_undo.c"
 #include "act_dad.h"
 
 pcb_action_t dialogs_action_list[] = {
@@ -60,6 +61,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
 	{"Preferences", pcb_act_Preferences, pcb_acth_Preferences, pcb_acts_Preferences},
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
+	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad}
 };
 
