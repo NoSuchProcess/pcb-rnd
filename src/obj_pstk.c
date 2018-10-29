@@ -319,7 +319,7 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 /*** draw ***/
 
-static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, pcb_layer_t *ly1)
+static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1)
 {
 	const char *color, *layer_color = NULL;
 	char buf[sizeof("#XXXXXX")];
