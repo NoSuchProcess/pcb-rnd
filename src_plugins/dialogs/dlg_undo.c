@@ -32,6 +32,7 @@ const char *dlg_undo_cookie = "undo dialog";
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wlist;
+	long serial; /* last seen undo serial, for updating the dialog on change */
 	int active; /* already open - allow only one instance */
 } undo_ctx_t;
 
@@ -133,6 +134,7 @@ static fgw_error_t pcb_act_UndoDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* update the dialog after an undo operation */
 static void pcb_dlg_undo_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	undo_ctx_t *ctx = user_data;
@@ -141,10 +143,23 @@ static void pcb_dlg_undo_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 	undo_data2dlg(ctx);
 }
 
+/* Check if the serial has changed and update the dialog if so */
+static void pcb_dlg_undo_ev_chk(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	undo_ctx_t *ctx = user_data;
+	if (!ctx->active)
+		return;
+	if (ctx->serial != pcb_uundo.serial) {
+		undo_data2dlg(ctx);
+		ctx->serial = pcb_uundo.serial;
+	}
+}
+
 
 static void pcb_dlg_undo_init(void)
 {
 	pcb_event_bind(PCB_EVENT_UNDO_POST, pcb_dlg_undo_ev, &undo_ctx, dlg_undo_cookie);
+	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, pcb_dlg_undo_ev_chk, &undo_ctx, dlg_undo_cookie);
 }
 
 static void pcb_dlg_undo_uninit(void)
