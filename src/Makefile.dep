@@ -6037,6 +6037,7 @@ change_act.o: change_act.c ../config.h conf_core.h conf.h \
  rats_patch.h actions.h change.h draw.h search.h rats.h netlist.h \
  route_style.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h \
  compat_misc.h compat_nls.h obj_rat_draw.h data_it.h macro.h grid.h
+color.o: color.c ../config.h color.h global_typedefs.h pcb_bool.h unit.h
 compat_fs.o: compat_fs.c ../config.h compat_inc.h compat_fs.h \
  compat_misc.h compat_nls.h globalconst.h safe_fs.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -8045,10 +8046,11 @@ undo.o: undo.c ../config.h ../src_3rd/libuundo/uundo_debug.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h draw.h insert.h remove.h rotate.h compat_misc.h search.h \
- rats.h netlist.h route_style.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h flag_str.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h compat_nls.h obj_poly_draw.h
+ vtpadstack_t.h draw.h event.h insert.h remove.h rotate.h compat_misc.h \
+ search.h rats.h netlist.h route_style.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h flag_str.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h compat_nls.h \
+ obj_poly_draw.h
 undo_act.o: undo_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
