@@ -35,6 +35,13 @@
 /* Temporary for compatibility */
 #include "undo_old.h"
 
+typedef enum pcb_undo_ev_e {
+	PCB_UNDO_EV_UNDO,
+	PCB_UNDO_EV_REDO,
+	PCB_UNDO_EV_CLEAR_LIST,
+	PCB_UNDO_EV_TRUNCATE
+} pcb_undo_ev_t;
+
 void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len);
 int pcb_undo(pcb_bool);
 int pcb_redo(pcb_bool);
