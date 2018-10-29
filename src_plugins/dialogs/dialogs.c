@@ -73,6 +73,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	pcb_dlg_undo_uninit();
 	dlg_pstklib_uninit();
 	dlg_pref_uninit();
 	pcb_act_dad_uninit();
@@ -87,5 +88,6 @@ int pplg_init_dialogs(void)
 	pcb_act_dad_init();
 	dlg_pref_init();
 	dlg_pstklib_init();
+	pcb_dlg_undo_init();
 	return 0;
 }

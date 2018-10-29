@@ -25,6 +25,9 @@
  */
 
 #include <libuundo/uundo.h>
+#include "event.h"
+
+const char *dlg_undo_cookie = "undo dialog";
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -128,4 +131,23 @@ static fgw_error_t pcb_act_UndoDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_dlg_undo();
 	PCB_ACT_IRES(0);
 	return 0;
+}
+
+static void pcb_dlg_undo_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	undo_ctx_t *ctx = user_data;
+	if (!ctx->active)
+		return;
+	undo_data2dlg(ctx);
+}
+
+
+static void pcb_dlg_undo_init(void)
+{
+	pcb_event_bind(PCB_EVENT_UNDO_POST, pcb_dlg_undo_ev, &undo_ctx, dlg_undo_cookie);
+}
+
+static void pcb_dlg_undo_uninit(void)
+{
+	pcb_event_unbind_allcookie(dlg_undo_cookie);
 }
