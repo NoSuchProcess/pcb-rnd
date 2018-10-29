@@ -332,7 +332,7 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	/* make sure the new item appears in the list and is selected */
 	pstklib_data2dlg(ctx);
-	sprintf(tmp, "%lu", ctx->proto_id);
+	sprintf(tmp, "%u", ctx->proto_id);
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 
