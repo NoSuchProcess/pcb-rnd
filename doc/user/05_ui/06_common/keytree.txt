@@ -239,6 +239,7 @@ tab-ctrl	pcb-menu-default.lht	SwapSides(R) 	Spin 180 degrees
 tab-ctrl-shift	pcb-menu-default.lht	SwapSides() 	Swap Sides
 tab-shift	pcb-menu-default.lht	SwapSides(H) 	Flip left\057right
 u;c	pcb-menu-default.lht	Undo(ClearList) 	Clear undo-buffer
+u;d;	pcb-menu-default.lht	UndoDialog() 	Undo dialog (for debugging)
 u;r	pcb-menu-default.lht	Redo() 	Redo last undone operation
 u;u	pcb-menu-default.lht	Undo() 	Undo last operation
 up	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
