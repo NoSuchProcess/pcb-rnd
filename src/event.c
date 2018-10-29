@@ -48,6 +48,7 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_layervis_changed",
 	"pcbev_library_changed",
 	"pcbev_font_changed",
+	"pcbev_undo_post",
 	"pcbev_new_pstk",
 	"pcbev_busy",
 	"pcbev_rubber_reset",
