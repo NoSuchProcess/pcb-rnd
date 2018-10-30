@@ -119,6 +119,16 @@ static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		pcb_parse_command(*act, 1);
 }
 
+static void dad_row_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	dad_t *dad = tree->user_ctx;
+	fgw_arg_t res;
+	res.type = FGW_PTR | FGW_VOID;
+	res.val.ptr_void = row;
+	fgw_ptr_unreg(&pcb_fgw, &res, dad->row_domain);
+}
+
 static char *tmp_str_dup(dad_t *dad, const char *txt)
 {
 	size_t len = strlen(txt);
@@ -312,6 +322,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
 			PCB_DAD_TREE(dad->dlg, cols, istree, (const char **)values);
+			PCB_DAD_TREE_SET_CB(dad->dlg, free_cb, dad_row_free_cb);
+			PCB_DAD_TREE_SET_CB(dad->dlg, ctx, dad);
 			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 		else
