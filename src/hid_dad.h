@@ -324,9 +324,9 @@ do { \
 
 #define PCB_DAD_FREE_FIELD(table, field) \
 do { \
-	switch(table[table ## _len - 1].type) { \
+	switch(table[field].type) { \
 		case PCB_HATT_LABEL: \
-			free((char *)table[table ## _len - 1].name); \
+			free((char *)table[field].name); \
 			break; \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
@@ -340,13 +340,13 @@ do { \
 		case PCB_HATT_BUTTON: \
 			break; \
 		case PCB_HATT_TREE: \
-			pcb_dad_tree_free(&table[table ## _len - 1]); \
+			pcb_dad_tree_free(&table[field]); \
 			break; \
 		case PCB_HATT_PREVIEW: \
 			{ \
-				pcb_hid_preview_t *prv = (pcb_hid_preview_t *)table[table ## _len - 1].enumerations; \
-				prv->user_free_cb(&table[table ## _len - 1], prv->user_ctx, prv->hid_ctx); \
-				prv->hid_free_cb(&table[table ## _len - 1], prv->hid_ctx); \
+				pcb_hid_preview_t *prv = (pcb_hid_preview_t *)table[field].enumerations; \
+				prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_ctx); \
+				prv->hid_free_cb(&table[field], prv->hid_ctx); \
 			} \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
