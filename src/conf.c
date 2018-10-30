@@ -718,7 +718,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 	return res;
 }
 
-int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix);
+int conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default_prio, conf_policy_t default_policy, const char *path_prefix);
 
 typedef struct conf_ignore_s {
 	const char *name;
@@ -743,6 +743,12 @@ static conf_ignore_t conf_ignores[] = {
 	{NULL, 0, 0}
 };
 
+/* for security reasons ignore these nodes when coming from a board or project file */
+static conf_ignore_t conf_board_ignores[] = {
+	{"rc/library_shell", 16, 0},
+	{NULL, 0, 0}
+};
+
 static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
 {
 	conf_ignore_t *i;
@@ -758,10 +764,34 @@ static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
 	pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s'\n(it may be an obsolete setting, check your lht)\n", path);
 }
 
-int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, conf_policy_t default_policy)
+/* returns 1 if the config node should be ignored */
+static int conf_board_ignore(const char *path, lht_node_t *n)
+{
+	conf_ignore_t *i;
+
+	for(i = conf_board_ignores; i->name != NULL; i++) {
+		if (strncmp(path, i->name, i->len) == 0) {
+			if (!i->warned) {
+				i->warned = 1;
+				pcb_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from board or project file\nis ignored (probably due to security considerations)\n", path);
+			}
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
+int conf_merge_patch_item(const char *path, lht_node_t *n, conf_role_t role, int default_prio, conf_policy_t default_policy)
 {
 	conf_native_t *target = conf_get_field(path);
 	int res = 0;
+
+	if ((role == CFR_DESIGN) || (role == CFR_PROJECT)) {
+		if (conf_board_ignore(path, n))
+			return 0;
+	}
+
 	switch(n->type) {
 		case LHT_TEXT:
 			if (target == NULL)
@@ -771,7 +801,7 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 			break;
 		case LHT_HASH:
 			if (target == NULL) /* no leaf: another level of structs */
-				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
+				res |= conf_merge_patch_recurse(n, role, default_prio, default_policy, path);
 			else /* leaf: pretend it's text so it gets parsed */
 				conf_merge_patch_text(target, n, default_prio, default_policy);
 			break;
@@ -798,7 +828,7 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 
 
 /* merge main subtree of a patch */
-int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix)
+int conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default_prio, conf_policy_t default_policy, const char *path_prefix)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
@@ -824,12 +854,12 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 		memcpy(pathe, n->name, nl);
 		namee = pathe+nl;
 		*namee = '\0';
-		res |= conf_merge_patch_item(path, n, default_prio, default_policy);
+		res |= conf_merge_patch_item(path, n, role, default_prio, default_policy);
 	}
 	return res;
 }
 
-int conf_merge_patch(lht_node_t *root, long gprio)
+int conf_merge_patch(lht_node_t *root, conf_role_t role, long gprio)
 {
 	conf_policy_t gpolicy;
 	lht_node_t *n;
@@ -845,12 +875,13 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 	/* iterate over all hashes and insert them recursively */
 	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			conf_merge_patch_recurse(n, gprio, gpolicy, n->name);
+			conf_merge_patch_recurse(n, role, gprio, gpolicy, n->name);
 
 	return 0;
 }
 
 typedef struct {
+	conf_role_t role;
 	long prio;
 	conf_policy_t policy;
 	lht_node_t *subtree;
@@ -870,11 +901,12 @@ typedef struct {
 
 vmst_t merge_subtree; /* automatically initialized to all-zero */
 
-static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *subtree_root)
+static void add_subtree(conf_role_t role, lht_node_t *subtree_parent_root, lht_node_t *subtree_root)
 {
 	merge_subtree_t *m;
 
 	m = vmst_alloc_append(&merge_subtree, 1);
+	m->role = role;
 	m->prio = conf_default_prio[role];
 	m->policy = POL_invalid;
 
@@ -890,7 +922,7 @@ static int mst_prio_cmp(const void *a, const void *b)
 	return -1;
 }
 
-static void conf_merge_all_top(int role, const char *path, lht_node_t *cr)
+static void conf_merge_all_top(conf_role_t role, const char *path, lht_node_t *cr)
 {
 	lht_node_t *r, *r2;
 	for(r = cr->data.list.first; r != NULL; r = r->next) {
@@ -926,9 +958,9 @@ int conf_merge_all(const char *path)
 	qsort(merge_subtree.array, vmst_len(&merge_subtree), sizeof(merge_subtree_t), mst_prio_cmp);
 	for(n = 0; n < vmst_len(&merge_subtree); n++) {
 		if (path != NULL)
-			ret |= conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
+			ret |= conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].role, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
 		else
-			ret |= conf_merge_patch(merge_subtree.array[n].subtree, merge_subtree.array[n].prio);
+			ret |= conf_merge_patch(merge_subtree.array[n].subtree, merge_subtree.array[n].role, merge_subtree.array[n].prio);
 	}
 	return ret;
 }
