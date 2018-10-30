@@ -22,7 +22,7 @@
  *
  *  Contact:
  *    Project page: http://repo.hu/projects/pcb-rnd
- *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+ *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 #ifndef HID_GL_DRAW_GL_H

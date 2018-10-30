@@ -78,8 +78,8 @@ Sometimes we have minor releases with 1..2 month period, sometimes a
 longer period passes between releases.
 
 There's no automated release notification at the moment; if you want to
-get notified about new releases, please contact me (email
-pcb-rnd (at) igor2.repo.hu)
+get notified about new releases, please contact me
+(http://repo.hu/projects/pcb-rnd/contact.html)
 
 5. bug reporting and fixes for packaging
 
