@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: padstack geomety edit: shape grow and shrink are mixed up; make sure + is always grow, - is always shrink, recheck with cam bloat! [report: Igor2]
-- BUG: rendering: padstack poly in 1206 is rendered solid when rgabbed for move [report: Igor2]
 - BUG: cpcb command ignores path [report: celem mail oct 2]
 - BUG: scripting: ruler.awk createtext() fails when text is a number - string should be passed as STRNUM probably [report: miloh]
 + BUG: lesstif: zoom extents is syntax error [report: rqsall]
