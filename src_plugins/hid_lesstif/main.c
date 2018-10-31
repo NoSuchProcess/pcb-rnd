@@ -451,7 +451,7 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		x = Vx(x);
 		y = Vy(y);
 	}
-	if (argc < 1) {
+	if (argc < 2) {
 		zoom_max();
 		return 0;
 	}
