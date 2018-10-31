@@ -449,7 +449,8 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
 			pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
 		}
-		pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+		else
+			pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 	}
 }
 
