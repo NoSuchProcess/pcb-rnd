@@ -1001,8 +1001,19 @@ static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd)
  */
 static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index )
 {
-	pcb_rubberband_t *ptr = pcb_rubber_band_alloc(rbnd);
+	pcb_rubberband_t *ptr;
+	int n;
 
+	/* do not add any object twice; slow linear search but we expect to have only
+	   a few objects to check; required for special case: multiple terminals on
+	   the very same coord, the same rat endpoint found and added multiple times
+	   so the move operation is executed on it multiple times causing the move
+	   to end up with multiplied delta */
+	for(n = 0; n < rbnd->RubberbandN; n++)
+		if (rbnd->Rubberband[n].Line == Line)
+			return &rbnd->Rubberband[n];
+
+	ptr = pcb_rubber_band_alloc(rbnd);
 	point_number &= 1;
 	ptr->Layer = Layer;
 	ptr->Line = Line;
