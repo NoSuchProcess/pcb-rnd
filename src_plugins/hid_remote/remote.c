@@ -439,6 +439,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.name = "remote";
 	remote_hid.description = "remote-mode GUI for non-interactive use.";
 	remote_hid.gui = 1;
+	remote_hid.heavy_term_layer_ind = 1;
 
 	remote_hid.get_export_options = remote_get_export_options;
 	remote_hid.do_export = remote_do_export;

@@ -187,6 +187,9 @@ struct pcb_hid_s {
 	/* Always draw layers in compositing mode - no base layer */
 	unsigned force_compositing:1;
 
+	/* When enabled, indicate layer of heavy terminals graphically */
+	unsigned heavy_term_layer_ind:1;
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
