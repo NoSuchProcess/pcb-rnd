@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: recipe = start pcb-rnd, place subc from library, undo, place subc again -> segfault [report: Ade]
 - BUG: padstack geomety edit: shape grow and shrink are mixed up; make sure + is always grow, - is always shrink, recheck with cam bloat! [report: Igor2]
 - BUG: cpcb command ignores path [report: celem mail oct 2]
 - BUG: scripting: ruler.awk createtext() fails when text is a number - string should be passed as STRNUM probably [report: miloh]
@@ -23,7 +24,7 @@
 - BUG: boardflip segfault on test file http://scififaster.net/public/boardfliptest.lht [report: Miloh]
 - BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
 - BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
-+ BUG: PS export draws layer indicators on heavy terminals on top-assembly and bottom-assembly pages. [report: Ade]
+- BUG: PS export draws layer indicators on heavy terminals on top-assembly and bottom-assembly pages. [report: Ade; test file: in priv mail oct 31]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
