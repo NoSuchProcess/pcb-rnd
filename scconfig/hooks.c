@@ -319,7 +319,6 @@ int hook_detect_host()
 	require("fstools/rm",  0, 1);
 	require("fstools/cp",  0, 1);
 	require("fstools/ln",  0, 1);
-	require("fstools/mkdir",  0, 1);
 
 /* until we rewrite the generators in C */
 	require("fstools/awk",  0, 1);
