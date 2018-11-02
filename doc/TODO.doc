@@ -1,7 +1,3 @@
 - update the data model drawing for padstacks
 
-- modular how to create a plugin
-	- local internal conf file
-	- how to register io_ (e.g. exporter)
-
 - creating dad dialogs
