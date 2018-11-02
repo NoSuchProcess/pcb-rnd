@@ -1,0 +1,70 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - why not to create external plugins </h1>
+<p>
+Short answer: join us and create a core plugin instead.
+<p>
+Pcb-rnd has a fast paced, centralized development strategy, heavily building
+on coordinated team work. There is no "API stability": we do not promise
+that core APIs wouldn't change. But we do guarantee that any change to the
+core will be immediately tracked in all core plugins.
+<p>
+The core team, by definition, will <b>not</b> consider or upgrade any
+external plugin while changing core APIs.
+<p>
+Because of the high amount of development time goes into pcb-rnd these days,
+if you start maintaining your own external plugin, you will need to spend
+a portion of the time we spend on pcb-rnd on just keeping your plugin
+from bit-rotting. Example in geda/PCB, with much slower core development, showed
+that it does not pay back long term. There are usually four outcomes:
+<ul>
+	<li> You manage to keep up with core changes - but then you spend (waste) a
+	     lot of time on just keeping your project up-to-date. You also have to
+	     sync your release cycles to pcb-rnd's: users will have to pick the
+	     corresponding plugin version for each pcb-rnd release else the plugin
+	     won't work. That work could better be spent on developing the plugin
+	     if it was a core plugin.
+	<li> You support only one specific pcb-rnd version; this will get your plugin
+	     unaccessible for most users as they will go on upgrading pcb-rnd.
+	     Rationale: we probably spend more accumulated time on developing
+	     pcb-rnd than you spend on developing your plugin, which means more
+	     features and more bugfixes. Most users will sooner or later will choose
+	     more activity over less. Also, users using pcb-rnd from packages
+	     will be "forced" to upgrade by their distribution. So effectively
+	     this leads to the 3rd possibility:
+	<li> You maintain a plugin that practically will not be usable for
+	     anybody else. Which sometimes leads to the 4th possibility:
+	<li> Sometimes we import external plugins and start to maintain them as
+	     core plugins. We had such a mass-import back in 2016, for bit-rotten
+	     pcb plugins floating on the web. However, this could happen only with
+	     abandoned plugins, as we are not going to keep merging forth and back.
+	     Also, this method proven to be extremely inefficient: we already had
+	     to rewrite 1/3 of the imported plugins, had to remove a few and
+	     scheduled a full rewrite on another 1/3. This taught us that it's
+	     often cheaper to write something from scratch than insisting on reuse.
+	     We will especially refuse importing plugins that were started as external
+	     plugin in order to overcome pcb-rnd conventions (e.g. svn or C89). So
+	     if you can't accept our ways and can't join to do a core plugin, it
+	     is not worth starting an external plugin effort and hope it will get
+	     merged because there's high chance it will just bit-rot instead.
+</ul>
+<p>
+That said, there are some legitimate cases when you could consider maintaining
+an external plugin. For example if the goal of the plugin is so extremely
+far away from pcb-rnd's that we do not accept the <b>idea</b> at all. But
+if you start maintaining your plugin, and do not want to end up spending a lot
+of time just to have something bit-rotting, you should really consider how much
+time keeping things up to date will require, before you start.
+<p>
+Please also note that beause we really prefer our team work model, and we
+most likely consider an external plugin effort just waste of time, we will
+probably not endorse or promote your plugin in any way.
+<p>
+Please do <b>not</b> write an external plugin (or core plugin) off-svn and
+then contact us to ask for inclusion as a core plugin. The only way a core
+plugin can happen is that you contact the project lead, agree on some details,
+get an svn write access and do it in pcb-rnd's repo. We will refuse to import
+plugins developed differently.
+
+</body>
+</html>
