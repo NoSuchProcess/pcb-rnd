@@ -47,7 +47,7 @@ static fgw_error_t pcb_act_ExpFeatTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t expfeat_action_list[] = {
+static const pcb_action_t expfeat_action_list[] = {
 	{"ExpFeatTmp", pcb_act_ExpFeatTmp, pcb_acth_ExpFeatTmp, pcb_acts_ExpFeatTmp}
 };
 
