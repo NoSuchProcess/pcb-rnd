@@ -1433,7 +1433,6 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if (ctx->remove.pcb->Data->subc_tree != NULL)
 		pcb_r_delete_entry(ctx->remove.pcb->Data->subc_tree, (pcb_box_t *)sc);
 
-	pcb_subc_unreg(sc);
 	EraseSubc(sc);
 	pcb_subc_free(sc);
 	return NULL;
