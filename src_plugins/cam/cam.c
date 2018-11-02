@@ -45,7 +45,7 @@
 
 static const char *cam_cookie = "cam exporter";
 
-conf_cam_t conf_cam;
+const conf_cam_t conf_cam;
 #define CAM_CONF_FN "cam.conf"
 
 typedef struct {
