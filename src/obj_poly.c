@@ -1155,24 +1155,22 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 		pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
 	}
 	else {
-		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon)) {
+		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon) && pcb_draw_term_hid_permission()) {
+			pcb_vnode_t *n, *head;
+			int i;
 			pcb_gui->fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, info->drawn_area);
-			if (pcb_draw_term_hid_permission()) {
-				pcb_vnode_t *n, *head;
-				int i;
-				head = &polygon->Clipped->contours->head;
-				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-				for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
-					pcb_coord_t x, y, r;
-					x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
-					y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
+			head = &polygon->Clipped->contours->head;
+			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
+				pcb_coord_t x, y, r;
+				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
+				y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
 
 #warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
-					r = PCB_DRAW_TERM_GFX_WIDTH;
-					pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
-					pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y);
-				}
+				r = PCB_DRAW_TERM_GFX_WIDTH;
+				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+				pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}
 		else
