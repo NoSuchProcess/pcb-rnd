@@ -1,0 +1,95 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - API and initialization </h1>
+<p>
+Since plugins are managed by puplug, the minimal API a plugin must
+provide is as defined by the
+<a href="http://repo.hu/projects/puplug">puplug</a> project. This
+document describes that API with any pcb-rnd aspects included.
+<p>
+A minimalistic example of a plugin's main source file implementation
+can be found in the <a href="template/foobar.c">plugin template</a>.
+
+<h2> copyright banner </h2>
+<p>
+For core plugins the copyright banner is standard and shall not be
+changed (except for the year and name in the copyright line). All
+manually written .c files and any non-trivial .h file must have the
+banner. License: core plugins must be GPL2+.
+<p>
+External plugins can choose a different license banner, but since
+pcb-rnd is licensed under the GPL, they shall choose a license that is
+compatible with the GPL for run-time dynamic linking.
+
+<h2> headers and watchdogs </h2>
+<p>
+If the plugin consists of multiple source files compiled as separate
+compilation units (multiple .o files), there will be header (.h) files.
+The header watchdog #defines shall be PCB_<i>PLUGINNAME</i>_H, unless
+<i>PLUGINNAME</i> is short and generic and/or conflicts with already
+existing core or core plugin watchdogs. In that case use
+PCB_CPLUG_<i>PLUGINNAME</i>_H
+<p>
+For external plugins, always use PCB_EPLUG_<i>PLUGINNAME</i>_H.
+
+<h2> #includes </h2>
+<p>
+The first include in any .c file must be "config.h", to ensure
+configuration time detected libc feature macros are. The .h files
+shall not include "config.h".
+<p>
+The plugin shall #include pcb-rnd core's "plugins.h" for the mandatory
+PCB_API_CHK_VER call. This also requires &lt;stdio.h&gt;.
+
+<h2 id="ver"> int pplg_check_ver_<i>pluginname</i>(int ver_needed) </h2>
+<p>
+This function is called by puplug before the plugin is initialized. The
+code that triggered the load may have specified a required API version
+number in ver_needed and the plugin needs to decide if it can serve
+all functionality of that version - if so, it should return 0 and
+initializing the plugin will proceed. How the version number is interpreted
+is up to the plugin: can be a serially incremented number, a bitfield, a
+date encoded.
+<p>
+Most pcb-rnd plugins will not need this and can safely return 0 without
+even checking ver_needed. For pcb-rnd plugins the only situation when
+using this API makes sense is for external (non-core) lib plugins that
+other external plugins are likely to depend on.
+
+
+<h2> void pplg_uninit_<i>pluginname</i>(void) </h2>
+<p>
+Called before unloading the plugin. This often happens before quitting pcb-rnd,
+even for builtin (static linked) plugins, but for a dynamically loaded
+plugin it can happen any time while pcb-rnd is running.
+<p>
+The plugin needs to free all memory allocated and unregister from all central
+pcb-rnd infrastructure. The plugin <b>must</b> assume pcb-rnd will not exit
+after plugin uninitialization.
+<p>
+The rule of thumb is: anything registered in the init() callback must have
+an unregister call in this uninit() callback.
+
+<h2> int pplg_init_<i>pluginname</i>(void) </h2>
+<p>
+Called after the plugin is loaded and <a href="#ver">version is checked</a>,
+before any other plugin function or variable is accessed.
+<p>
+The plugin should set up its own infrastructure and register actions, callbacks,
+hooks, tools, etc. in central infrastructure.
+<p>
+Each plugin is loaded and initialized only once at a time (there are no
+multiple parallel instances of the same plugin), but it is possible to
+load-unload the same plugin multiple times during a single pcb-rnd session.
+<p>
+Before the init does anything else, it must issue a PCB_API_CHK_VER. This macro
+checks for ABI compatibility between the plugin and the core and returns
+failure on incompatibility (useful in the dynamic plugin load setup).
+<p>
+The init call shall return 0 on success and anything else on failure. After
+a failure, the plugin is unloaded - without a call to uninit. Thus on failure
+the init function needs to clean up any effect of partial initialization
+or registration before returning.
+
+</body>
+</html>
