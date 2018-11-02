@@ -6,63 +6,24 @@
 
 <h2> Setting up a new core plugin </h2>
 <ul>
-	<li> 1. make up a name for the plugin. There are a few <a href="plugin_naming.html"> conventions. </a> This document will refer to the name as <i>plg</i>, always replace it with your chosen name.
+	<li> 1. make up a name for the plugin. There are a few <a href="naming.html"> conventions. </a> This document will refer to the name as <i>plg</i>, always replace it with your chosen name.
 	<li> 2. cd src_plugins; svn mkdir <i>plg</i>
-	<li> 3. copy Makefile, Plug.tmpasm and .pup from another, small plugin, for example from the <i>report</i> plugin (the next points will assume you picked this plugin as the source of the copy)
-	<li> 4. edit Makefile: replace <b>report</b> to <i>plg</i>
-	<li> 5. edit <i>plg</i>.pup; there should be short summary about the purpose of the plugin then "#key: value" pairs for statistics:
-		<ul>
-			<li> <i>$class</i> the same as the plugin name prefix (see <a href="plugin_naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins - see <a href="mods3/post.html">mods3</a> for a short list of all classes
-			<li> <i>$short</i> short description - should be less than 32 characters; this shows up in the configure summary
-			<li> <i>$long</i> long description - used for documantation; no length limitation, but must be a single line
-			<li> <i>$state</i> <b>works</b>, <b>WIP</b>, <b>abandoned</b> or <b>deprecated</b> - see <a href="mods3/post.html">mods3</a> for explanation
-			<li> <i>$lstate</i> [optional] a chance to explain why the value of default is what it is; e.g. why a plugin is disabled
-			<li> <i>$package</i> when pcb-rnd is packaged for a distribution or OS, which package this plugin should end up in (see also: trunk/doc/developer/packaging/)
-			<li> <i>$fmt-native</i> only for io_ plugins: whether this format is considered native (see also: io_lihata's pup)
-			<li> <i>$fmt-feature-r</i> only for io_ plugins: a read/load feature supported by the plugin (multiple entries of this should be added; see also: io_lihata's pup)
-			<li> <i>$fmt-feature-w</i> only for io_ plugins: a write/save feature supported by the plugin (multiple entries of this should be added; see also: io_lihata's pup)
-			<li> <i>default</i> <b>disable-all</b> or <b>disable</b> or <b>buildin</b> or <b>plugin</b>
-			<li> <i>dep</i> [optional] a single plugin name on which <i>plg</i> depends; multiple dep lines can be added
-			<li> <i>conflict</i> [optional] a single plugin name on which <i>plg</i> conflicts with; multiple dep lines can be added
-			<li> <i>autoload</i> [optional] when 1, the plugin is automatically loaded and initialized (when not disabled); do not set this on libs and other code that are accessible only as a dependency of other plugins; set this 1 on HID, io, import, export, feature plugins
-		</ul>
-		Values of default:
-		<ul>
-		<ul>
-			<li> buildin - unless the user requests otherwise, your plugin is linked into the executable
-			<li> plugin - unless the user requests otherwise, your plugin is dynamically linked; not recommended: the policy is to let users explicitly request dynamic linking
-			<li> disable - unless the user requests otherwise, your plugin is not compiled (recommended until the plugin gets some user testing)
-			<li> disable-all - the plugin stays disabled even with ./configure --all=* and the only way to enable it is to excplicitly name it
-		</ul>
-		IMPORTANT: all fields are single-line, do not use semicolon (';') in any of the fields.
-	</ul>
-	<li> 6. edit Plug.tmpasm:
-		<pre>
-put /local/pcb/mod {<i>plg</i>}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/<i>plg</i>/foo.o $(PLUGDIR)/<i>plg</i>/bar.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/<i>plg</i>/foo_conf.h}
-put /local/pcb/mod/YACC [@ $(PLUGDIR)/<i>plg</i>/bary @]
-put /local/pcb/mod/LEX  [@ $(PLUGDIR)/<i>plg</i>/barl @]
-		</pre>
-
-		<ul>
-			<li> /local/pcb/mod: the name of the module we are compiling
-			<li> /local/pcb/mod/OBJS: a space separated list of object files to compile 
-			<li> /local/pcb/mod/CONF: optional: the name of the <a href="plugin_conf.h"> conf struct header </a> - if the plugin doesn't have runtime configuration settings, remove this line
-			<li> /local/pcb/mod/YACC: optional: if you have files for yacc-processing, list them without the .y suffix here (space separated)
-			<li> /local/pcb/mod/LEX: optional: if you have files for lex-processing, list them without the .l suffix here (space separated)
-			<li> Leave the switch part on the bottom intact.
-		</ul>
-	<li> 7. create your C sources and headers in src_plugins/<i>plg</i>/
-	The order of entries in the file is the same as the order in the summary table
-	at the end of ./configure; insert your plugin in the right group!
-	<li> 8. run "make map_plugins" in src/ to get your new plugin on the plugin list
-	<li> 9. run ./configure --buildin-<i>plg</i>
-	<li> 10. run make to see if it compiles and test
-	<li> (11. while developing, you can run make from src_plugins/<i>plg</i> - if
+	<li> 3. copy all files from the <a href="template">plugin template</a>
+	<li> 4. edit Makefile: replace "foobar" to <i>plg</i>
+	<li> 5. edit <i>plg</i>.pup; there should be short summary about the purpose of the plugin then "#key: value" pairs for statistics. Please refer to <a href="pup.html">the pup syntax</a>
+	<li> 6. edit <a href="tmpasm_vars.html">Plug.tmpasm</a>: replace "foobar" with <i>plg</i>, list all local objects you plan to have
+	<li> 7. rename and edit foobar.c: replace "foobar" with <i>plg</i>
+	<li> 8. create your C sources and headers in src_plugins/<i>plg</i>/
+	<li> 9. run "make map_plugins" in src/ to get your new plugin on the plugin list
+	<li> 10. run ./configure --buildin-<i>plg</i>
+	<li> 11. run make to see if it compiles and test
+	<li> (12. while developing, you can run make from src_plugins/<i>plg</i> - if
 	your plugin is a builtin, it will recompile pcb-rnd. For some of us it's convenient
 	to run make in the same directory where all the source files are.)
 </ul>
+
+Congratulations, you now have a compilable core plugin that does not do
+anything yet.
 
 </body>
 </html>
