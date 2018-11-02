@@ -1,23 +1,70 @@
 <html>
 <body>
 <h1> pcb-rnd hacking - plugin Plug.tmpasm variables </h1>
+<p>
+Plug.tmpasm is used for coordinating the build of the plugin. It is
+written in <a href="http://repo.hu/projects/scconfig/doc/tmpasm.txt">tmpasm</a>
+and is processed by scconfig while generating the Makefile. For core (src/)
+and core plugins (src_plugins/) there is a single central Makefile generated
+in src/Makefile. The plugin's own Makefile is just a call to the central
+Makefile for convenience.
+<p>
+Plug.tmpasm is a generic template, its output directly ends up in src/Makefile.
+This provides the plugin developer some flexibility, but using this feature
+needs deep understanding of the build system.
+<p>
+For the features that are most commonly needed, the system offers
+prewritten, turn key solutions. It is strongly recommended to use these
+features only. These features are accessible through setting /local/pcb/mod/*
+tmpasm variables (typically with the put and append instructions). The
+rest of this document lists and explains these variables.
 
-		<pre>
-put /local/pcb/mod {<i>plg</i>}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/<i>plg</i>/foo.o $(PLUGDIR)/<i>plg</i>/bar.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/<i>plg</i>/foo_conf.h}
-put /local/pcb/mod/YACC [@ $(PLUGDIR)/<i>plg</i>/bary @]
-put /local/pcb/mod/LEX  [@ $(PLUGDIR)/<i>plg</i>/barl @]
-		</pre>
-
-		<ul>
-			<li> /local/pcb/mod: the name of the module we are compiling
-			<li> /local/pcb/mod/OBJS: a space separated list of object files to compile 
-			<li> /local/pcb/mod/CONF: optional: the name of the <a href="plugin_conf.h"> conf struct header </a> - if the plugin doesn't have runtime configuration settings, remove this line
-			<li> /local/pcb/mod/YACC: optional: if you have files for yacc-processing, list them without the .y suffix here (space separated)
-			<li> /local/pcb/mod/LEX: optional: if you have files for lex-processing, list them without the .l suffix here (space separated)
-			<li> Leave the switch part on the bottom intact.
-		</ul>
+<table border=1 cellspacing=0>
+	<tr><th> variable <th> description
+	<tr>
+		<td>/local/pcb/mod
+		<td>the name of the plugin
+	<tr>
+		<td>/local/pcb/mod/OBJS
+		<td> a whitespace separated list of local object files to compile,
+		     e.g. foo.o
+	<tr>
+		<td>/local/pcb/mod/OBJS_C99
+		<td>same as OBJS, but for sources that can be compiled only with a C99
+		    compiler; plugins <b>must not use this variable</b> unless the source
+		    depends on 3rd party library which comes with a header that absolutely
+		    can not compiled with C89
+	<tr>
+		<td>/local/pcb/mod/CFLAGS
+		<td>
+	<tr>
+		<td>/local/pcb/mod/LDFLAGS
+		<td>
+	<tr>
+		<td>/local/pcb/mod/CONF
+		<td>optional: the name of the <a href="plugin_conf.h"> conf struct
+		    header </a> - if the plugin doesn't have runtime configuration
+		    settings, remove this line
+	<tr>
+		<td>/local/pcb/mod/CONFFILE
+		<td>optional: conf file's internal version: the file name of the conf
+		    file (without path) that should be encoded in conf_internal.c
+	<tr>
+		<td>/local/pcb/mod/CONFVAR
+		<td>optional: conf file's internal version: the variable name to use
+		    in conf_internal.c
+	<tr>
+		<td>/local/pcb/mod/YACC
+		<td>optional: if you have files for yacc-processing, list them without
+		    the .y suffix here (whitespace separated list)
+	<tr>
+		<td>/local/pcb/mod/LEX
+		<td>optional: if you have files for lex-processing, list them without
+		    the .l suffix here (whitespace separated list)
+	<tr>
+		<td>/local/pcb/mod/SPHASH
+		<td>optional: if the plugin uses an sphash (compile time perfect hash),
+		    the sphash source file name should be specified in this field
 
 </body>
 </html>
