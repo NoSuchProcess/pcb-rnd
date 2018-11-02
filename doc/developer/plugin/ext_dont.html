@@ -2,7 +2,8 @@
 <body>
 <h1> pcb-rnd - plugin development - why not to create external plugins </h1>
 <p>
-Short answer: join us and create a core plugin instead.
+Short answer: join us and create a core plugin instead. Or writing a script in
+one of the many scripting languages pcb-rnd supports.
 <p>
 Pcb-rnd has a fast paced, centralized development strategy, heavily building
 on coordinated team work. There is no "API stability": we do not promise
@@ -10,7 +11,9 @@ that core APIs wouldn't change. But we do guarantee that any change to the
 core will be immediately tracked in all core plugins.
 <p>
 The core team, by definition, will <b>not</b> consider or upgrade any
-external plugin while changing core APIs.
+external plugin while changing core APIs. Scripts are much less affected
+as they are using actions only and we try not to break action backward
+compatibility.
 <p>
 Because of the high amount of development time goes into pcb-rnd these days,
 if you start maintaining your own external plugin, you will need to spend
