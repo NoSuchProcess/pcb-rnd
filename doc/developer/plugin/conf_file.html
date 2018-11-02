@@ -1,0 +1,64 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - local default conf file </h1>
+<p>
+Each plugin can have a config file, <i>pluginname</i>.conf, stored
+locally and also installed. When this file is available, it specifies
+the default value for the <a href="conf.html">plugin-local config nodes</a>.
+It also allows users to create user config under ~/.pcb-rnd/ using the
+same file name, modularizing the config.
+
+<h2> create the config file </h2>
+<p>
+Copy <a href="conf_file.conf"> the template </a> and rename it to
+<i>pluginname</i>.conf, replace <i>pluginname</i> and the config nodes
+to match the plugin's conf.h.
+<p>
+Create an empty file called <i>conf_internal.c</i> (but do <b>not</b> commit it).
+
+<h2> include the internal version of the config file </h2>
+<p>
+Insert the following lines in the main plugin c source:
+<pre>
+#include "../src_plugins/<i>pluginname</i>/conf_internal.c"
+</pre>
+
+<h2> Register the custom conf file </h2>
+<p>
+Define the file name (will be used twice) somewhere around the top of
+the main source file, then in plugin init callback issue a conf_reg_file():
+<pre>
+#define <i>PLUGINNAME</i>_CONF_FN "<i>pluginname</i>.conf"
+
+int pplg_init_<i>pluginname</i>(void)
+{
+	PCB_API_CHK_VER;
+	conf_reg_file(<i>PLUGINNAME</i>_CONF_FN, <i>pluginname</i>_conf_internal);
+	...
+</pre>
+<p>
+The conf_reg_file() call should be before the conf fields initialization.
+
+
+
+<h2> Unregister the custom conf file </h2>
+<p>
+In the uninit callback of the plugin, insert the following line:
+<pre>
+	conf_unreg_file(<i>PLUGINNAME</i>_CONF_FN, <i>pluginname</i>_conf_internal);
+</pre>
+
+<h2> make dep </h2>
+<p>
+After finishing all these, before the commit, you will need to run make
+dep in src/. Before committing that, double check svn diff: it must not
+have any unrelated change, only files related to your plugin.
+<p>
+When done, the build system knows how to generate conf_internal.c -
+remove the dummy empty file and run make to get it generated.
+<p>
+The file will contain one large character array, holding the internal
+version of <i>pluginname</i>.conf
+
+</body>
+</html>
