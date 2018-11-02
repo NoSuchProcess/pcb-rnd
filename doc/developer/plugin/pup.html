@@ -1,13 +1,20 @@
 <html>
 <body>
 <h1> pcb-rnd hacking - plugin .pup fields </h1>
-
-<b>IMPORTANT:</b> all fields are single-line, do not use semicolon (';') in any of the fields.
-
+<p>
+The pup file holds all metadata for a plugin that is required for
+./configure and for puplug to load the plugin run-time. Fields starting
+with $ are pcb-rnd-specific fields, the rest are common puplug fields that
+will behave the same in other puplug modularized projects as well.
+<p>
+Each field is a single-line and can not contain semicolon (';').
+<p>
+The fields in use for pcb-rnd plugins:
+<p>
 <ul>
 	<li> <i>$class</i> the same as the plugin name prefix (see <a href="naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins - see <a href="../mods3/post.html">mods3</a> for a short list of all classes
 	<li> <i>$short</i> short description - should be less than 32 characters; this shows up in the configure summary
-	<li> <i>$long</i> long description - used for documantation; no length limitation, but must be a single line
+	<li> <i>$long</i> long description - used for documentation; no length limitation, but must be a single line
 	<li> <i>$state</i> <b>works</b>, <b>WIP</b>, <b>abandoned</b> or <b>deprecated</b> - see <a href="../mods3/post.html">mods3</a> for explanation
 	<li> <i>$lstate</i> [optional] a chance to explain why the value of default is what it is; e.g. why a plugin is disabled
 	<li> <i>$package</i> when pcb-rnd is packaged for a distribution or OS, which package this plugin should end up in (see also: <a href="../packaging/">packaging howto</a>)
@@ -24,7 +31,7 @@
 	<li> buildin - unless the user requests otherwise, your plugin is linked into the executable
 	<li> plugin - unless the user requests otherwise, your plugin is dynamically linked; not recommended: the policy is to let users explicitly request dynamic linking
 	<li> disable - unless the user requests otherwise, your plugin is not compiled (recommended until the plugin gets some user testing)
-	<li> disable-all - the plugin stays disabled even with ./configure --all=* and the only way to enable it is to excplicitly name it
+	<li> disable-all - the plugin stays disabled even with ./configure --all=* and the only way to enable it is to explicitly name it
 </ul>
 
 </body>
