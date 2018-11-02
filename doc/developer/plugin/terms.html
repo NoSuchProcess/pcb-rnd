@@ -1,0 +1,23 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - terminology </h1>
+<p>
+The <b>core</b> is pcb-rnd's core source code that lives in pcb-rnd svn, in
+trunk/src. Maintained by the pcb-rnd team.
+<p>
+A <b>plugin</b> is a small portion of the code.
+<p>
+<b>Core plugins</b> are those plugins that are in pcb-rnd svn,
+in trunk/src_plugins. Maintained by the pcb-rnd team.
+<p>
+<b>External plugins</b> are those plugins that are written, maintained
+and hosted by developers not part of the pcb-rnd team. External plugins
+are not hosted in the pcb-rnd svn and are not supported by the pcb-rnd team.
+<p>
+A core plugin can be <b>disabled</b> (not compiled at all),
+static linked (<b>builtin</b>), or dynamically linked (<b>plugin</b>). This is
+selected during pcb-rnd ./configure time. An external plugin is always dynamically
+linked.
+
+</body>
+</html>
