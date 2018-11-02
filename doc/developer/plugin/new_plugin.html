@@ -1,0 +1,38 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - when to create a new plugin </h1>
+<p>
+The generic structure of the pcb-rnd source code is:
+<ul>
+	<li> core (always linked into the pcb-rnd executable)
+	<li> core plugins (disabled, linked into the executable or installed as runtime dynamic loadable plugins)
+	<li> utilities (never linked to the pcb-rnd executable, as they are stand-alone programs)
+</ul>
+<p>
+Core is mainly providing startup and basic infrastructure, including basic
+objects, basic operations on those objects, event and action systems, configuration
+system, etc. Anything else, including any file format, GUI, and majority of the
+user features are implemented in core plugins. Thus most of the code of
+pcb-rnd are in the core plugins.
+<p>
+When a new feature is to be introduced, it should go into a plugin by
+default. Adding it in core should be considered only if it's a basic, central
+infrastructure multiple other plugins will depend on.
+<p>
+Whether the new feature should go in an existing core plugin or should get
+a new plugin depends on how far it is from existing plugin functionality.
+We generally prefer to have more, smaller plugins instead of few large ones.
+However we also prefer to avoid code duplications.
+<p>
+<b>Before</b> creating a new plugin or adding the feature in an existing plugin,
+please consult the project leader. We are liberal and welcoming about new
+plugins; however, any new plugin must meet a few requirements:
+<ul>
+	<li> Programming language: C89. In a few special cases C99 (project leader permission required). Plugins can <b>not</b> be written in C11, C++, etc.
+	<li> External dependencies should be reasonable: reuse only when it pays off. Shall not depend on glib, apr and other large solves-everything megalib.
+	<li> Core plugins are in our central svn repository. It is not possible to maintain core plugins in git, hg, fossil, etc. Consult the project leader, you will get svn write access from day 0.
+	<li> If you start writing a plugin, we expect you to be able to allocate enough time to at least finish the initial version, but it's even better if you can maintain it afterward. If you implement the first 10% then lose interest and stop working on it, the code will eventually get removed from the project.
+</ul>
+
+</body>
+</html>
