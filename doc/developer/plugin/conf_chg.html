@@ -1,0 +1,83 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - config change notification </h1>
+<p>
+All settings are stored in one central <a href="../../conf/">conf tree</a>.
+Any part of the code can register function callbacks that are activated when
+a specific (or any) conf node changes.
+<p>
+Multiple callback functions can be bound to the same config node and
+the same callback function can be bound to multiple config nodes. It is
+also possible to bind the callback function to <i>global change</i>, which
+means it would be called on any config change.
+<p>
+Config change notification is also called 'watch'.
+
+<h2> how to declare a callback function </h2>
+<pre>
+void <i>bar</i>_confchg(conf_native_t *cfg, int arr_idx)
+{
+}
+</pre>
+
+<h2> local: how to bind the callback function to a node </h2>
+<p>
+This typically happens in the plugin init callback:
+<pre>
+	conf_native_t *cn;
+	conf_hid_id_t confid;
+	static const conf_hid_callbacks_t <i>foo</i>_cbs = { NULL, <i>bar</i>_confchg, NULL, NULL };
+
+	confid = conf_hid_reg(<i>pluginname</i>_cookie, NULL);
+
+	cn = conf_get_field("editor/all_direction_lines");
+	if (cn != NULL)
+		conf_hid_set_cb(cn, confid, &amp;<i>foo</i>_cbs);
+	else
+		/* handle the error */
+</pre>
+<p>
+The callbacks struct needs to be static because it is not copied, but the pointer
+is stored after registration. The fields of this structure are callback function
+pointers for different event types, e.g. "call before the change", "call after
+the change" or "call when a new item is created in the conf database"; refer
+to src/conf_hid.h for more info.
+<p>
+For registering config watches, a confid needs to be registered using conf_hid_reg().
+The registration is done by the plugins <a href="cookie.html">standard cookie</a>.
+The second argument to this call is for global conf change watches (see below).
+<p>
+The next step is to resolve the conf node's conf_native_t pointer, using
+conf_get_field(), which takes the plain text config node path as argument.
+<p>
+If that worked, conf_hid_set_cb() binds the callback structure to the
+config node. There can be only one such binding per conf node per confid,
+but the plugin may request multiple confid's with different cookies.
+
+<h2> global: how to bind the callback function to any change </h2>
+<p>
+Sometimes a plugin needs to run on any conf change or needs to react on
+new conf nodes being created. For these, use the global callback
+argument of conf_hid_reg(): load it with a pointer to a static
+conf_hid_callbacks_t struct.
+<p>
+Do <b>not</b> do this if you are watching a finite set of conf nodes with
+known names - just do a per conf node local binding, even if it means
+10 bindings.
+
+<h2> how to unbind the callback function to a node </h2>
+<p>
+When the watch is no longer needed, conf_hid_unreg(),
+typically from the uninit callback of the plugin. This will unregister
+all watches (local and global) and confid. If only one watch need to be
+removed, conf_hid_set_cb() should be called with a callback struct that
+has NULL for the given function pointer. (Note: this doesn't replace the
+function pointer, but the callback struct pointer in the central registry).
+<p>
+For example, place this line in the plugin uninit callback:
+<pre>
+	conf_hid_unreg(<i>pluginname</i>_cookie);
+</pre>
+
+</body>
+</html>
