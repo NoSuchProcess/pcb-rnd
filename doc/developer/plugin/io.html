@@ -1,0 +1,82 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - registering I/O </h1>
+<p>
+A plugin can serve as an I/O interface. Note the  <a
+href="../../user/03_data/index.html#io">difference between plain
+import/export and a full I/O</a> - do not implement an I/O for a simple
+import or export task but do not implement a pair of import/export
+plugins for an I/O task either.
+<p>
+A plugin can register multiple I/O interfaces. This is typical for
+formats with multiple versions, or for format families with alternative
+sub-formats for the same purpose. But the most common setup is that an
+io plugin registers one I/O interface.
+<p>
+Each I/O interface has a name and priorities. The name is displayed to
+the user and priorities determine in what order different options are
+presented - this helps ordering common file formats first, exotic options
+last.
+<p>
+Each I/O interface also has hooks for testing whether it will be able
+to load an input file, before doing the real parse. When a file needs to
+be loaded, the plugins that will attempt to load are not selected by the
+file name, but by file content.
+<p>
+For more details on the I/O interface fields, callback functions and
+mechanism, refer to src/plug_io.h.
+
+<h2> Registering an I/O interface </h2>
+<p>
+Declare a static variable of pcb_plug_io_t and fill it in from the plugin
+init callback:
+<pre>
+static pcb_plug_io_t io_<i>pluginname</i>;
+
+...
+
+int pplg_init_io_<i>pluginname</i>(void)
+{
+	PCB_API_CHK_VER;
+
+	memset(&amp;io_<i>pluginname</i>, 0, sizeof(io_<i>pluginname</i>));
+
+	/* these are mandatory: */
+	io_<i>pluginname</i>.default_fmt = "shortname";
+	io_<i>pluginname</i>.description = "longname";
+	io_<i>pluginname</i>.save_preference_prio = 89;
+	io_<i>pluginname</i>.default_extension = ".foo";
+	io_<i>pluginname</i>.fp_extension = ".bar";
+	io_<i>pluginname</i>.mime_type = "application/x-pcb-layout";
+	io_<i>pluginname</i>.fmt_support_prio = io_<i>pluginname</i>_fmt;
+	io_<i>pluginname</i>.test_parse = io_<i>pluginname</i>_test_parse;
+
+	/* these are optional (leave NULL if not supported): */
+	io_<i>pluginname</i>.plugin_data = &amp;ctx;
+	io_<i>pluginname</i>.parse_pcb = io_<i>pluginname</i>_parse_pcb;
+	io_<i>pluginname</i>.parse_footprint = io_<i>pluginname</i>_parse_footprint;
+	io_<i>pluginname</i>.parse_font = io_<i>pluginname</i>_parse_font;
+	io_<i>pluginname</i>.write_buffer = io_<i>pluginname</i>_write_buffer;
+	io_<i>pluginname</i>.write_footprint = io_<i>pluginname</i>_write_footprint;
+	io_<i>pluginname</i>.write_pcb = io_<i>pluginname</i>_write_pcb;
+
+	/* the actual registration */
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &amp;io_<i>pluginname</i>);
+</pre>
+<p>
+The memset is required in case the core struct is extended with new fields.
+The convention is that NULL or 0 is the default/unused value. With the
+memset extending the core struct won't force us to update all plugins.
+
+
+<h2> Unregistering an I/O interface </h2>
+<p>
+On plugin uninit any I/O interface registered by the plugin must be
+removed. This is done using the PCB_HOOK_UNREGISTER() macro:
+<pre>
+	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &amp;io_<i>pluginname</i>);
+</pre>
+
+
+</body>
+</html>
