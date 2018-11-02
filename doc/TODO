@@ -24,7 +24,6 @@
 - BUG: boardflip segfault on test file http://scififaster.net/public/boardfliptest.lht [report: Miloh]
 - BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
 - BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
-+ BUG: PS export draws layer indicators on heavy terminals on top-assembly and bottom-assembly pages. [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
