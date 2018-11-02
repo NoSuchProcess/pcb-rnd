@@ -1,0 +1,58 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - binding to events </h1>
+<p>
+The pcb-rnd event system is a very simple callback system: a list
+of function pointers registered by different parts of the code (e.g. plugins),
+to be called back on certain events. Different events have different number
+and type of arguments, which are passed as an argc/argv pair. An event may
+be bound to any number of functions.
+<p>
+Upon the occurrence of the event, all event handler functions bound to it
+are called, in no particular order.
+<p>
+An event handler function can be bound to one or more events, and it can
+be bound and unbound runtime.
+<p>
+For more details, please read the API in src/event.h.
+
+<h2> Creating the event handler </h2>
+<p>
+Create an event handler function of type <i>pcb_event_handler_t</i>.
+<pre>
+static void ev_my_event_handler_name(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+
+}
+</pre>
+
+<h2> Binding the event </h2>
+<p>
+Call <i>pcb_event_bind()</i>, typically in the init callback of the plugin:
+<pre>
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_my_event_handler_name, NULL, <i>pluginname</i>_cookie);
+</pre>
+<p>
+The registration requires a <a href="cookie.html">standard plugin cookie</a>.
+<p>
+The 3rd argument is an arbitrary user data pointer that will get passed to
+each call of the event handler. It can be used to communicate between the
+code that registers the event and the event handler code. The event system
+only stores and passes it on, never dereferences, allocates or frees it.
+Should be NULL if not used.
+
+<h2> Unbinding events </h2>
+<p>
+Events are normally unbound in the plugin's uninit callback, using
+<i>pcb_event_unbind_cookie()</i>, which unregisters all events registered
+with the same cookie. The typical call is:
+<pre>
+	pcb_event_unbind_allcookie(<i>pluginname</i>_cookie);
+</pre>
+<p>
+Events can be unbound one by one, on an event_id/callback_function basis,
+using pcb_event_unbind(). This is useful if an event needs to be installed
+and uninstalled temporarily.
+
+</body>
+</html>
