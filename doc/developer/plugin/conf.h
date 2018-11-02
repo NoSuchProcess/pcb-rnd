@@ -1,14 +1,17 @@
-#ifndef PCB_VENDOR_CONF_H
-#define PCB_VENDOR_CONF_H
+!!! replace FOOBAR and foobar with your plugin name !!!
+
+#ifndef PCB_FOOBAR_CONF_H
+#define PCB_FOOBAR_CONF_H
 
 #include "conf.h"
 
 typedef struct {
 	const struct plugins {
-		const struct vendor {
-			CFT_BOOLEAN enable;         /* Enable vendor mapping */
-		} vendor;
+		const struct foobar {
+			CFT_BOOLEAN enable;         /* Enable the plugin */
+			CFT_INTEGER snow;           /* intensity of snowing, 0..100 */
+		} foobar;
 	} plugins;
-} conf_vendor_t;
+} conf_foobar_t;
 
 #endif

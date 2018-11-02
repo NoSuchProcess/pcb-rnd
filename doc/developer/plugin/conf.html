@@ -1,0 +1,78 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - per plugin config subtree </h1>
+<p>
+Each plugin can maintain its own configuration subtree within the central
+conf tree. For this, the plugin needs to create the subtree under its own
+name under the plugins/. From then on, the config values are loaded and
+handled by the central system and are accessible through a global
+struct variable declared within the plugin.
+
+<h2> the config header </h2>
+<p>
+The source of all information on what nodes consists the plugin's own
+subtree is the file <i>pluginname</i>_conf.h in the plugin dir. It can
+be created by copying and renaming <a href="conf.h">this template</a>.
+<p>
+The structure must reproduce the plugin sub-struct and the <i>pluginname</i>
+sub-struct nested in it, in order to keep the C struct field reference path
+the same as the textual conf path.
+<p>
+Create an empty file called <i>pluginname</i>_conf_fields.h for placeholder.
+Do <b>not</b> add it to the svn repo.
+
+<h2> tmpasm </h2>
+<p>
+The conf file must be registered in the tmpasm file. Add this line in
+Plug.tmpasm to set the file name:
+<pre>
+put /local/pcb/mod/CONFFILE {<i>pluginname</i>.conf}
+</pre>
+
+<h2> Create the conf variable </h2>
+<p>
+The conf access variable should be a global variable in the main plugin c file:
+<pre>
+#include "<i>pluginname</i>_conf.h"
+
+const conf_<i>pluginname</i>_t conf_<i>pluginname</i>;
+</pre>
+<p>
+From now on, the example fields can be accessed like:
+<pre>
+conf_<i>pluginname</i>.plugins.<i>pluginname</i>.snow
+</pre>
+<p>
+Note: these variables are strictly read-only. Use conf_set*() from src/conf.h
+to change the value.
+
+
+<h2> plugin init </h2>
+<p>
+Copy these lines in the plugin init callback:
+<pre>
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_<i>pluginname</i>, field,isarray,type_name,cpath,cname,desc,flags);
+#include "<i>pluginname</i>_conf_fields.h"
+</pre>
+
+<h2> plugin uninit </h2>
+<p>
+On uninit all local config nodes need to be removed from the config system.
+This is easy, since all our nodes are under a single subtree. Copy this line
+in the plugin uninit callback:
+<pre>
+	conf_unreg_fields("plugins/<i>pluginname</i>/");
+</pre>
+
+<h2> make dep </h2>
+<p>
+After committing all these, you will need to run make dep in src/. Before committing
+that, double check svn diff: it must not have any unrelated change, only files
+related to your plugin.
+<p>
+When done, the build system knows how to generate <i>pluginname</i>_conf_fields.h - 
+remove the dummy empty file and run make to get it generated.
+
+</body>
+</html>
