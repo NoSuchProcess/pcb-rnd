@@ -1,0 +1,69 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - external pup plugin + FAQ </h1>
+<p>
+First of all: <b><a href="ext_dont.html">you should write a core plugin, not
+an external plugin</a></b>.
+<p>
+If you absolutely can't avoid writing an external plugin, you have two choices:
+a native pup plugin or a fungw engine plugin. This page is about the pup plugin
+method. Pro: have full access to all APIs. Con: more boilerplate code.
+<p>
+Please refer to the <a href="template_pup/">example/template plugin</a>.
+After make and make install, starting pcb-rnd should auto-load the plugin.
+The stderr message from init should appear. The ExtFoo action should
+be available.
+<p>
+To start your external plugin, copy it to new directory and rename
+ext_foo both in file names and file content. Make sure to fill in the
+fields in the pup file. Please preserve the ext_ prefix.
+
+<h2> how to develop the plugin </h2>
+<p>
+Other than some naming conventions and the #includes, which are
+either "src/*.h" or you need an extra -I for src/, everything is
+as documented for core plugins.
+
+<h2> how to access pcb-rnd's CC, CFLAGS, LDFLAGS, etc.</h2>
+<p>
+For that you need to use <a href="http://repo.hu/projects/scconfig">scconfig</a>
+to configure your external plugin. Once you do that, you can use the
+--import=$(TRUNK)/scconfig/config.cache argument, which will get scconfig
+to read everything cached during pcb-rnd's configuration. This will save
+running some detections that are already done for pcb-rnd and will also
+import the exact results of CC, CFLAGS, LDFLAGS, etc.
+<p>
+After that, you should get your hooks.c to generate a conf file you can
+include from your Makefile.
+<p>
+Note: we generally do not support having external plugins, so please do
+not make requests for pcb-rnd's Makefile.conf to contain whatever nodes
+your external plugin may need.
+
+<h2> How to use autotools, cmake, qmake, ...</h2>
+<p>
+No idea, at pcb-rnd we don't use those - we don't provide support for those
+tools.
+
+<h2> Suddenly pcb-rnd core API changed and my external plugin broke!</h2>
+<p>
+<a href="ext_dont.html">We told you so</a>. Please consider restarting
+your plugin from scratch as a core plugin. If you can't, you will have to
+live with frequent API changes. pcb-rnd is not a lib, but an application,
+we do not promote developing external plugins, so we don't feel obliged
+to keep internal API backward compatibility.
+
+<h2> The API changes too often. Can you stop doing that please? </h2>
+<p>
+<a href="ext_dont.html">No.</a>
+
+<h2> The API changes too often. Could you please maintain my external plugin? </h2>
+<p>
+<a href="ext_dont.html">No.</a>
+
+<h2> The API changes too often. Could you please include my external plugin as core plugin? </h2>
+<p>
+<a href="ext_dont.html">No.</a>
+
+</body>
+</html>
