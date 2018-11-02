@@ -1,0 +1,105 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - creating actions </h1>
+<p>
+Actions are fungw functions typically implemented in C or in a script language.
+Actions are used by pcb-rnd to act upon any user request - there's always
+an action behind any GUI, CLI or automated operation. pcb-rnd plugins are
+written in C, thus they are registering actions written in C.
+
+<h2> Includes and other requirements</h2>
+<p>
+The plugin must #include "actions.h" to be able to register actions.
+<p>
+Registering actions require <a href="cookie.html">the standard plugin cookie</a>.
+
+<h2> action implementation </h2>
+<p>
+The following example shows how an action is implemented:
+<pre>
+static const char pcb_acts_ActionName[] = "ActionName(arg1, arg2, [arg3]...)";
+static const char pcb_acth_ActionName[] = "Help text: short description of what the action does.";
+static fgw_error_t pcb_act_ActionName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	/* process arguments */
+	/* implement the action */
+	/* return on no-error: */
+	PCB_ACT_IRES(0);
+	return 0;
+}
+</pre>
+<p>
+More on how arguments are and return value are handled can be found in the
+<a href="../fungw_actions.txt">fungw action documentation</a>.
+<p>
+Because of historical reasons action names are in CamelCase. This is the
+only context where pcb-rnd tolerates CamelCase.
+<p>
+A plugin is free to register any amount of actions. Action names are globally
+unique within pcb-rnd. For core plugins, the maintainer of the plugin is
+responsible to avoid action name collision. For external plugins, the action
+name <b>must be</b> prefixed with the plugin's name.
+
+<h2> action table </h2>
+<p>
+For convenience, actions are most often registered from data tables. The table
+shall contain all actions provided by the plugin:
+<pre>
+static const pcb_action_t <i>pluginname</i>_action_list[] = {
+	{"Action1", pcb_act_Action1, pcb_acth_Action1, pcb_acts_Action1},
+	{"Action2", pcb_act_Action2, pcb_acth_Action2, pcb_acts_Action2}
+};
+PCB_REGISTER_ACTIONS(<i>pluginname</i>_action_list, <i>pluginname</i>_cookie)
+</pre>
+<p>
+The action name in the first column must be unique. If an action has
+alternative names (e.g. shorthands), multiple lines may contain the
+same pcb_act* fields with only the name differing. If multiple actions
+are implemented in the same function (that e.g. looks at argv[0] to
+decide which one was invoked), multiple lines may contain the same
+pcb_act_ function, with different name and help/syntax text.
+In the very unlikely case multiple action functions have the same
+syntax or help, the same pcb_acth_ and/or pcb_acts_ can be used in multiple
+rows of the table.
+<p>
+The table should be placed after the last action to avoid action
+function/help/syntax forward declarations. Most often the table is placed
+right above the check_ver callback.
+<p>
+The PCB_REGISTER_ACTIONS() macro invocation is right after the table; it
+requires <a href="cookie.html">the standard plugin cookie</a>.
+
+<h2> action registration on init </h2>
+<p>
+Place <b>#include "dolists.h"</b> right above the plugins standard init
+callback function. This include will change some global states so
+that PCB_REGISTER_ACTIONS will work differently, so its place is significant.
+<p>
+Invoke macro
+<b>PCB_REGISTER_ACTIONS(<i>pluginname</i>_action_list, <i>pluginname</i>_cookie)</b>
+again, from the init callback.
+<p>
+In practice, the plugin init will look like this:
+<pre>
+#include "dolists.h"
+
+int pplg_init_expfeat(void)
+{
+	PCB_API_CHK_VER;
+	PCB_REGISTER_ACTIONS(<i>pluginname</i>_action_list, <i>pluginname</i>_cookie)
+	return 0;
+}
+</pre>
+
+<h2> action removal on uninit </h2>
+<p>
+When the plugin is uninitialized, all actions must be removed (to avoid
+dangling function pointers after a dynamic plugin unload). This is normally
+done by calling
+<pre>
+	pcb_remove_actions_by_cookie(<i>pluginname</i>_cookie);
+</pre>
+from the plugin's uninit callback.
+
+</body>
+</html>

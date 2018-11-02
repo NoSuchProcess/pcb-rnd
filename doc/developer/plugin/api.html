@@ -91,5 +91,11 @@ a failure, the plugin is unloaded - without a call to uninit. Thus on failure
 the init function needs to clean up any effect of partial initialization
 or registration before returning.
 
+<h2> conventions </h2>
+<p>
+These functions are implemented in the main c file of the plugin, which is
+called <i>pluginname</i>.c. These functions are normally the last ones on
+the bottom of the file. They are never exposed in header files.
+
 </body>
 </html>

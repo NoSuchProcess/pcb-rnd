@@ -1,0 +1,37 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - plugin cookie </h1>
+<p>
+Many of the pcb-rnd infrastructure API requires a <i>cookie</i> for
+registering new objects. This cookie is typically a const char *, which
+is used only in pointer comparison. It is also useful for debugging:
+when objects are not unregistered properly, the code can print the value
+(string) of the cookie in the error message, which can be a hint on the
+source of the registration.
+<p>
+The cookie should be a <i>static const char</i> string, normally on top
+of the main c file of the plugin:
+<pre>
+static const char *<i>pluginname</i>_cookie = "<i>pluginname</i> + a 2..3 word description";
+</pre>
+
+<h2> multiple cookies </h2>
+<p>
+The plugin may use multiple cookies, e.g. different cookie for registering
+different set of objects, if that potentially helps debugging. This is especially
+useful if the plugin is consists of largely independent subsystems - each
+subsystem can have its own cookie.
+
+<h2> multiple source files vs. cookies </h2>
+<p>
+If the plugin contains multiple compilation units (object files), these files
+may need to use the same cookie. In that case <i>pluginname</i>_cookie
+should not be static and shall be exposed in a plugin header file using
+<i>extern</i>.
+<p>
+Since cookies are used by pointer, it is important <b>not to copy</b> the
+string into multiple objects - those copies will not match. This can happen
+accidentally on some systems if the header is missing <i>extern</i>.
+
+</body>
+</html>
