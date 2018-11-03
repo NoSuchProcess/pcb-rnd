@@ -398,10 +398,6 @@ static const char pcb_acts_Change2ndSize[] =
 
 static const char pcb_acth_Change2ndSize[] = "Changes the drilling hole size of objects.";
 
-/* %start-doc actions ChangeDrillSize
-
-%end-doc */
-
 static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;

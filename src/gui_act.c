@@ -925,9 +925,6 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name)";
 static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style into the current pen.";
-/* %start-doc actions RouteStyle
-
-%end-doc */
 static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *end;
@@ -970,11 +967,6 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, dummy, accel, tooltip, cookie)";
 static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
-
-/* %start-doc actions RouteStyle
-
-%end-doc */
-
 static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
@@ -1009,11 +1001,6 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path|cookie)";
 static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
-
-/* %start-doc actions RemoveMenu
-
-%end-doc */
-
 static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {

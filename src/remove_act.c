@@ -41,11 +41,6 @@
 
 static const char pcb_acts_Delete[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
 static const char pcb_acth_Delete[] = "Delete stuff.";
-
-/* %start-doc actions Delete
-
-%end-doc */
-
 static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int id;
@@ -84,11 +79,6 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_RemoveSelected[] = "pcb_remove_selected()";
 static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
-
-/* %start-doc actions RemoveSelected
-
-%end-doc */
-
 static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_remove_selected(pcb_false))
