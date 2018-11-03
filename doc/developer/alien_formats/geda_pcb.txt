@@ -7,7 +7,10 @@ These extensions are kept for backward compatibility: just in case a file
 needs to be loaded that was produced with pre-lihata pcb-rnd. However,
 new extensions are not added to the geda/pcb format.
 
-This file attempts to (vaguely) list the extensions.
+This file attempts to (vaguely) list the extensions. Unless otherwise
+mentioned, geda/pcb will (often silently) ignore the extension and a
+load-save with geda/pcb will remove the extended properties from the file
+(while pcb-rnd still does proper round trips on them).
 
 1. .fp file: element tagging
 
@@ -35,3 +38,8 @@ This file attempts to (vaguely) list the extensions.
  pcb does NOT handle this and throws a syntax error. geda/pcb users are
  required to remove this subtree manually.
 
+5. .pcb file: new setting: enablemincut
+
+ Another of the first few new featrures in pcb-rnd was mincut for shorts.
+ This also happened years before lihata boards, so a new global
+ setting was registered, which may even be saved in a board file.
