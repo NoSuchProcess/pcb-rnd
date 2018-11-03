@@ -91,29 +91,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 static const char pcb_acts_Polygon[] = "Polygon(Close|CloseHole|PreviousPoint)";
 static const char pcb_acth_Polygon[] = "Some polygon related stuff.";
-
-/* %start-doc actions Polygon
-
-Polygons need a special action routine to make life easier.
-
-@table @code
-
-@item Close
-Creates the final segment of the polygon.  This may fail if clipping
-to 45 degree lines is switched on, in which case a warning is issued.
-
-@item CloseHole
-Creates the final segment of the polygon hole.  This may fail if clipping
-to 45 degree lines is switched on, in which case a warning is issued.
-
-@item PreviousPoint
-Resets the newly entered corner to the previous one. The Undo action
-will call Polygon(PreviousPoint) when appropriate to do so.
-
-@end table
-
-%end-doc */
-
+/* DOC: polygon.html */
 static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;

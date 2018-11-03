@@ -490,12 +490,6 @@ then
 <tr>
 
 <th>
-  
-<td>
-    
-<tr>
-
-<th>
  find  
 <td>
  Nets which apply are marked @emph{found} and are drawn in the       
@@ -557,6 +551,34 @@ connected-color
  Temporarily prevents changes to the netlist from being reflected in the GUI. 
 </table>
  
+
+<h3 id="polygon">polygon</h3>
+<p>
+Argument: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Close  
+<td>
+ Creates the final segment of the polygon.  This may fail if clipping       to 45 degree lines is switched on, in which case a warning is issued.   
+<tr>
+
+<th>
+ CloseHole  
+<td>
+ Creates the final segment of the polygon hole.  This may fail if clipping       to 45 degree lines is switched on, in which case a warning is issued.   
+<tr>
+
+<th>
+ PreviousPoint  
+<td>
+ Resets the newly entered corner to the previous one. The Undo action       will call Polygon(PreviousPoint) when appropriate to do so.  
+</table>
+  
 
 <h3 id="printcalibrate">printcalibrate</h3>
 <p>
