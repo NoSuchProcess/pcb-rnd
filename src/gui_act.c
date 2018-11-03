@@ -1118,15 +1118,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_SwitchHID[] = "SwitchHID(lesstif|gtk|batch)";
-
 static const char pcb_acth_SwitchHID[] = "Switch to another HID.";
-
-/* %start-doc actions SwitchHID
-
-Switch to another HID.
-
-%end-doc */
-
 static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_hid_t *ng;
