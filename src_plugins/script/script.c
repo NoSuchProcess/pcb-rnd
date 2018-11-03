@@ -43,7 +43,6 @@
 #include "pcb-printf.h"
 #include "globalconst.h"
 
-
 typedef struct {
 	char *id, *fn, *lang;
 	pup_plugin_t *pup;
@@ -53,6 +52,8 @@ typedef struct {
 static htsp_t scripts; /* ID->script_t */
 
 static pup_context_t script_pup;
+
+#include "c_script.c"
 
 static const char *script_pup_paths[] = {
 	"/usr/local/lib/puplug",
@@ -65,7 +66,8 @@ static void script_unload_entry(htsp_entry_t *e)
 	script_t *s = (script_t *)e->value;
 	if (s->obj != NULL)
 		fgw_obj_unreg(&pcb_fgw, s->obj);
-	pup_unload(&script_pup, s->pup, NULL);
+	if (s->pup != NULL)
+		pup_unload(&script_pup, s->pup, NULL);
 	free(s->id);
 	free(s->fn);
 	free(s);
@@ -100,14 +102,18 @@ static int script_load(const char *id, const char *fn, const char *lang)
 		return -1;
 	}
 
-	pcb_snprintf(name, sizeof(name), "fungw_%s", lang);
+	if (strcmp(lang, "c") != 0) {
+		pcb_snprintf(name, sizeof(name), "fungw_%s", lang);
 
-
-
-	pup = pup_load(&script_pup, script_pup_paths, name, 0, &st);
-	if (pup == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
-		return -1;
+		pup = pup_load(&script_pup, script_pup_paths, name, 0, &st);
+		if (pup == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
+			return -1;
+		}
+	}
+	else {
+		lang = "pcb_rnd_c";
+		pup = NULL;
 	}
 
 	s = calloc(1, sizeof(script_t));
@@ -198,8 +204,8 @@ int pplg_init_script(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(script_action_list, script_cookie);
+	pcb_c_script_init();
 	htsp_init(&scripts, strhash, strkeyeq);
 	pup_init(&script_pup);
-
 	return 0;
 }
