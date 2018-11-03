@@ -766,40 +766,7 @@ static int report_net_length_by_name(const char *tofind)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * reports on an object
- */
-
-
-/* %start-doc actions Report
-
-@table @code
-
-@item Object
-The object under the crosshair will be reported, describing various
-aspects of the object.
-
-@item DrillReport
-A report summarizing the number of drill sizes used, and how many of
-each, will be produced.
-
-@item FoundPins
-A report listing all pins and pads which are marked as ``found'' will
-be produced.
-
-@item NetLength
-The name and length of the net under the crosshair will be reported to
-the message log.
-
-@item AllNetLengths
-The name and length of the net under the crosshair will be reported to
-the message log.  An optional parameter specifies mm, mil, pcb, or in
-units
-
-@end table
-
-%end-doc */
-
+/* DOC: report.html */
 static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *name;

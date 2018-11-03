@@ -1128,6 +1128,46 @@ The
 <a href="#redo">redo</a>
  action allows you to recover from the last undo command. You might want to do this if you thought that undo was going to revert something other than what it actually did (in case you are confused about which operations are un-doable), or if you have been backing up through a long undo list and over-shoot your stopping point.  Any change that is made since the undo in question will trim the redo list.  For example if you add ten lines, then undo three of them you could use redo to put them back, but if you move a line on the board before performing the redo, you will lose the ability to "redo" the three "undone" lines. 
 
+<h3 id="report">report</h3>
+<p>
+Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Object  
+<td>
+ The object under the crosshair will be reported, describing various       aspects of the object.   
+<tr>
+
+<th>
+ DrillReport  
+<td>
+ A report summarizing the number of drill sizes used, and how many of       each, will be produced.   
+<tr>
+
+<th>
+ FoundPins  
+<td>
+ A report listing all pins and pads which are marked as "found" will       be produced.   
+<tr>
+
+<th>
+ NetLength  
+<td>
+ The name and length of the net under the crosshair will be reported to       the message log.   
+<tr>
+
+<th>
+ AllNetLengths  
+<td>
+ The name and length of the net under the crosshair will be reported to       the message log.  An optional parameter specifies mm, mil, pcb, or in       units  
+</table>
+  
+
 <h3 id="reportdialog">reportdialog</h3>
 <p>
 This is a shortcut for 
