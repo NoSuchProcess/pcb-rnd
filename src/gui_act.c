@@ -1977,11 +1977,7 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 const char pcb_acts_chkrst[] = "ChkRst(route_style_id)\n";
 const char pcb_acth_chkrst[] = "Return 1 if route_style_id matches pen.";
-
-/* %start-doc actions ChkRst
-Return 1 if route_style_id matches pen.
-%end-doc */
-
+/* DOC: chkrst.html */
 static fgw_error_t pcb_act_ChkRst(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int rid;
