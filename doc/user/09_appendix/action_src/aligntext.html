@@ -1,0 +1,22 @@
+<p>
+<example>AlignText(X, [Lefts/Rights/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</example>
+<p>
+<example>AlignText(Y, [Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</example>
+<p>
+Arguments:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> X or Y
+	<td> Select which axis will move, other is untouched.
+
+	<tr><th>Lefts, Rights, Tops, Bottoms, Centers 
+	<td> Pick alignment point within each element. <br> NB: text objects have no Mark.
+
+	<tr><th> First, Last, pcb_crosshair, Average 
+	<td> Alignment reference, First=Topmost/Leftmost, Last=Bottommost/Rightmost, Average or pcb_crosshair point \n
+
+	<tr><th> Gridless 
+	<td> Do not force results to align to prevailing grid. \n
+</table>
+<p>
+Defaults are Lefts/Tops, First

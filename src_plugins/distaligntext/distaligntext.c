@@ -252,24 +252,8 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 	return q;
 }
 
-
-/*
- * AlignText(X, [Lefts/Rights/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])\n
- * AlignText(Y, [Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])
- *
- * X or Y - Select which axis will move, other is untouched. \n
- * Lefts, Rights, \n
- * Tops, Bottoms, \n
- * Centers - Pick alignment point within each element. \n
- * NB: text objects have no Mark. \n
- * First, Last, \n
- * pcb_crosshair, \n
- * Average - Alignment reference, First=Topmost/Leftmost, \n
- * Last=Bottommost/Rightmost, Average or pcb_crosshair point \n
- * Gridless - Do not force results to align to prevailing grid. \n
- *
- * Defaults are Lefts/Tops, First */
 static const char pcb_acts_aligntext[] = "AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
+/* DOC: aligntext.html */
 static fgw_error_t pcb_act_aligntext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1, *a2, *a3;
