@@ -11,8 +11,7 @@
 - BUG: if a subc has no refdes attribute, other "xor labels" are not pritned either; reproduce: place a 1206 from lib, switch subc id display to footprint -> no red printout until a refdes is set [report: Igor2]
 - BUG: gtk: Can't close the window while command entry is open. If the layout was modified, it will issue an "Are you sure..." dialog, where ignoring the changes does nothing. Then, as soon as I hit 'escape' to close the action input box, pcb-rnd exits immediately. [report: TwisteR]
 - BUG: gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
-- BUG: Locked objects can be moved when selected. [Report: Ade mail aug 28]
-	-> solution: locked objects are not removed on buffer/move operations (but they are still copied)
++ BUG: Locked objects can be moved when selected. [Report: Ade mail aug 28]
 - layer rewrite:
 	- BUG: catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
