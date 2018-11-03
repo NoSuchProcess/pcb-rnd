@@ -1615,21 +1615,7 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_setunits[] = "SetUnits(mm|mil)";
 static const char pcb_acth_setunits[] = "Set the default measurement units.";
-
-/* %start-doc actions SetUnits
-
-@table @code
-
-@item mil
-Sets the display units to mils (1/1000 inch).
-
-@item mm
-Sets the display units to millimeters.
-
-@end table
-
-%end-doc */
-
+/* DOC: setunits.html */
 static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const pcb_unit_t *new_unit;
