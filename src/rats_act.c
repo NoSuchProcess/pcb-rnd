@@ -50,31 +50,9 @@
 
 #include "obj_rat_draw.h"
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close)";
-
 static const char pcb_acth_AddRats[] = "Add one or more rat lines to the board.";
-
-/* %start-doc actions AddRats
-
-@table @code
-
-@item AllRats
-Create rat lines for all loaded nets that aren't already connected on
-with copper.
-
-@item SelectedRats
-Similarly, but only add rat lines for nets connected to selected pins
-and pads.
-
-@item Close
-Selects the shortest unselected rat on the board.
-
-@end table
-
-%end-doc */
-
+/* DOC: addrats.html */
 static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
