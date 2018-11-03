@@ -45,6 +45,7 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_route_styles_changed",
 	"pcbev_netlist_changed",
 	"pcbev_layers_changed",
+	"pcbev_layer_changed_grp",
 	"pcbev_layervis_changed",
 	"pcbev_library_changed",
 	"pcbev_font_changed",

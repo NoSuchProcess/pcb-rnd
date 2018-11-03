@@ -55,6 +55,7 @@
 /* Prototypes */
 
 void pcb_polygon_init(void);
+void pcb_polygon_uninit(void);
 pcb_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point);
 pcb_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, pcb_cardinal_t point);
 pcb_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, pcb_cardinal_t point);

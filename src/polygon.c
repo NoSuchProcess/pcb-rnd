@@ -51,6 +51,7 @@
 #include "compat_nls.h"
 #include "obj_poly_draw.h"
 #include "polygon_selfi.h"
+#include "event.h"
 
 #define ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))
 
@@ -70,6 +71,29 @@ static double rotate_circle_seg[4];
 
 static int Unsubtract(pcb_polyarea_t * np1, pcb_poly_t * p);
 
+static const char *polygon_cookie = "core polygon";
+
+
+void pcb_poly_layers_chg(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_layer_t *ly;
+	pcb_data_t *data;
+
+	if ((argc < 2) || (argv[1].type != PCB_EVARG_PTR))
+		return;
+	ly = argv[1].d.p;
+	if ((ly->is_bound) || (ly->parent_type != PCB_PARENT_DATA))
+		return;
+
+	data = ly->parent.data;
+	pcb_data_clip_inhibit_inc(data);
+	PCB_POLY_LOOP(ly); {
+		polygon->clip_dirty = 1;
+	}
+	PCB_END_LOOP;
+	pcb_data_clip_inhibit_dec(data, 1);
+}
+
 void pcb_polygon_init(void)
 {
 	double cos_ang = cos(2.0 * M_PI / PCB_POLY_CIRC_SEGS_F);
@@ -79,6 +103,13 @@ void pcb_polygon_init(void)
 	rotate_circle_seg[1] = -sin_ang;
 	rotate_circle_seg[2] = sin_ang;
 	rotate_circle_seg[3] = cos_ang;
+
+	pcb_event_bind(PCB_EVENT_LAYER_CHANGED_GRP, pcb_poly_layers_chg, NULL, polygon_cookie);
+}
+
+void pcb_polygon_uninit(void)
+{
+	pcb_event_unbind_allcookie(polygon_cookie);
 }
 
 pcb_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point)

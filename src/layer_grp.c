@@ -185,6 +185,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, 
 	if (pcb_layergrp_del_layer(pcb, -1, lid) != 0)
 		return -1;
 	pcb_layer_add_in_group(pcb, lid, gid);
+	pcb_event(PCB_EVENT_LAYER_CHANGED_GRP, "p", &pcb->Data->Layer[lid]);
 	NOTIFY(pcb);
 	return gid;
 }
