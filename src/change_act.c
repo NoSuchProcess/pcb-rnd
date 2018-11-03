@@ -68,15 +68,7 @@ static const char pcb_acts_ChangeClearSize[] =
 	"ChangeClearSize(SelectedLines|SelectedArcs, delta|style)\n"
 	"ChangeClearSize(Selected|SelectedObjects, delta|style)";
 static const char pcb_acth_ChangeClearSize[] = "Changes the clearance size of objects.";
-
-/* %start-doc actions ChangeClearSize
-
-If the solder mask is currently showing, this action changes the
-solder mask clearance.  If the mask is not showing, this action
-changes the polygon clearance.
-
-%end-doc */
-
+/* DOC: changeclearsize.html */
 static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;
