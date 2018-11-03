@@ -22,7 +22,7 @@
 - BUG: {u u} undo is piecemeal after flipping {s f } a group of subc to backside. repro: place a part, copy, select a few to flip sides, then flipsides and undo doesn't work on the group. 
 - BUG: boardflip doesn't undo [report: Miloh]
 ? BUG: boardflip segfault on test file http://scififaster.net/boardfliptest.lht [report: Miloh]
-- BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
++ BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
 - BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 
 2. For later releases ===============================================================================
