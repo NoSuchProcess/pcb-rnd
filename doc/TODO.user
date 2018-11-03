@@ -7,3 +7,8 @@
 	- pcb_pstk_shape_hole_break(): min ring DRC rules on padstack, especially with asymmetric (non-centered) shapes
 	- test advanced search with padstacks
 	- query on subc
+
+VERIFY DOC:
+	- check if each action detail doc is in sync with the action
+		- check vs. the table
+		- check vs. the code keywords
