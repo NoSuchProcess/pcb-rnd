@@ -61,16 +61,8 @@ static void conf_toggle(conf_role_t role, const char *path)
 	conf_set(role, path, -1, n->val.boolean[0] ? "0" : "1", POL_OVERWRITE);
 }
 
-/* -------------------------------------------------------------------------- */
-
 static const char pcb_acts_DumpLibrary[] = "DumpLibrary()";
-
 static const char pcb_acth_DumpLibrary[] = "Display the entire contents of the libraries.";
-
-/* %start-doc actions DumpLibrary
-
-
-%end-doc */
 static void ind(int level)
 {
 	static char inds[] = "                                                                               ";
@@ -140,30 +132,13 @@ static fgw_error_t pcb_act_Bell(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_debug[] = "Debug(...)";
-
 static const char pcb_acth_debug[] = "Debug action.";
-
-/* %start-doc actions Debug
-
-This action exists to help debug scripts; it simply prints all its
-arguments to stdout.
-
-%end-doc */
+/* This action exists to help debug scripts; it simply prints all its arguments to stdout. */
 
 static const char pcb_acts_debugxy[] = "DebugXY(...)";
-
 static const char pcb_acth_debugxy[] = "Debug action, with coordinates";
-
-/* %start-doc actions DebugXY
-
-Like @code{Debug}, but requires a coordinate.  If the user hasn't yet
-indicated a location on the board, the user will be prompted to click
-on one.
-
-%end-doc */
+/* Like @code{Debug}, but requires a coordinate.  If the user hasn't yet indicated a location on the board, the user will be prompted to click on one. */
 
 static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -182,16 +157,8 @@ static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_return[] = "Return(0|1)";
-
 static const char pcb_acth_return[] = "Simulate a passing or failing action.";
-
-/* %start-doc actions Return
-
-This is for testing.  If passed a 0, does nothing and succeeds.  If
-passed a 1, does nothing but pretends to fail.
-
-%end-doc */
-
+/* This is for testing.  If passed a 0, does nothing and succeeds. If passed a 1, does nothing but pretends to fail. */
 static fgw_error_t pcb_act_Return(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int rv;
@@ -202,11 +169,8 @@ static fgw_error_t pcb_act_Return(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static const char pcb_acts_djopt_sao[] = "OptAutoOnly()";
-
 static const char pcb_acth_djopt_sao[] = "Toggles the optimize-only-autorouted flag.";
-
-/* %start-doc actions OptAutoOnly
-
+/*
 The original purpose of the trace optimizer was to clean up the traces
 created by the various autorouters that have been used with PCB.  When
 a board has a mix of autorouted and carefully hand-routed traces, you
@@ -214,11 +178,7 @@ don't normally want the optimizer to move your hand-routed traces.
 But, sometimes you do.  By default, the optimizer only optimizes
 autorouted traces.  This action toggles that setting, so that you can
 optimize hand-routed traces also.
-
-%end-doc */
-
-
-
+*/
 fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
@@ -226,14 +186,9 @@ fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-/* ************************************************************ */
-
 static const char pcb_acts_toggle_vendor[] = "ToggleVendor()";
-
 static const char pcb_acth_toggle_vendor[] = "Toggles the state of automatic drill size mapping.";
-
-/* %start-doc actions ToggleVendor
-
+/*
 @cindex vendor map
 @cindex vendor drill table
 @findex ToggleVendor()
@@ -243,9 +198,7 @@ have their drill holes mapped to one of the allowed drill sizes
 specified in the currently loaded vendor drill table.  To enable drill
 mapping, a vendor lihata file containing a drill table must be
 loaded first.
-
-%end-doc */
-
+*/
 fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
@@ -253,26 +206,18 @@ fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ************************************************************ */
-
 static const char pcb_acts_enable_vendor[] = "EnableVendor()";
-
 static const char pcb_acth_enable_vendor[] = "Enables automatic drill size mapping.";
-
-/* %start-doc actions EnableVendor
-
+/*
 @cindex vendor map
 @cindex vendor drill table
 @findex EnableVendor()
-
 When drill mapping is enabled, new instances of pins and vias will
 have their drill holes mapped to one of the allowed drill sizes
 specified in the currently loaded vendor drill table.  To enable drill
 mapping, a vendor lihata file containing a drill table must be
 loaded first.
-
-%end-doc */
-
+*/
 fgw_error_t pcb_act_EnableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
@@ -280,24 +225,16 @@ fgw_error_t pcb_act_EnableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ************************************************************ */
-
 static const char pcb_acts_disable_vendor[] = "DisableVendor()";
-
 static const char pcb_acth_disable_vendor[] = "Disables automatic drill size mapping.";
-
-/* %start-doc actions DisableVendor
-
+/*
 @cindex vendor map
 @cindex vendor drill table
 @findex DisableVendor()
-
 When drill mapping is enabled, new instances of pins and vias will
 have their drill holes mapped to one of the allowed drill sizes
 specified in the currently loaded vendor drill table.
-
-%end-doc */
-
+*/
 fgw_error_t pcb_act_DisableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
