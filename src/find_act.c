@@ -43,16 +43,8 @@
 /* -------------------------------------------------------------------------- */
 
 static const char drc_syntax[] = "DRC()";
-
 static const char drc_help[] = "Invoke the DRC check.";
-
-/* %start-doc actions DRC
-
-Note that the design rule check uses the current board rule settings,
-not the current style settings.
-
-%end-doc */
-
+/* DOC: drc.html */
 static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int count;
