@@ -469,10 +469,6 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 static const char pcb_acts_SavePatch[] = "SavePatch(filename)";
 static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation.";
-
-/* %start-doc actions SavePatch
-Save netlist patch for back annotation.
-%end-doc */
 static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fn = NULL;
