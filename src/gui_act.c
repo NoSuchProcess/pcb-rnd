@@ -2049,16 +2049,7 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_PromptFor[] = "PromptFor([message[,default]])";
 static const char pcb_acth_PromptFor[] = "Prompt for a response.";
-
-/* %start-doc actions PromptFor
-
-This is mostly for testing the lesstif HID interface.  The parameters
-are passed to the @code{prompt_for()} HID function, causing the user
-to be prompted for a response.  The respose is simply printed to the
-user's stdout.
-
-%end-doc */
-
+/* DOC: promptfor.html */
 static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0 = NULL, *a1 = NULL;
