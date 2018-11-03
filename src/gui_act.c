@@ -1706,12 +1706,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 const char pcb_acts_chklayer[] = "ChkLayer(layerid)";
 const char pcb_acth_chklayer[] = "Returns 1 if the specified layer is the active layer";
-/* %start-doc actions ChkLayer
-
-Returns 1 if the specified layer is the active layer.
-
-%end-doc */
-
+/* DOC: chklayer.html */
 static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layer_id_t lid;
