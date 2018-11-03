@@ -379,59 +379,7 @@ static const char pcb_acts_Mode[] =
 	"Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Mode(Notify|Release|Cancel|Stroke)\n" "Mode(Save|Restore)";
 
 static const char pcb_acth_Mode[] = "Change or use the tool mode.";
-
-/* %start-doc actions Mode
-
-@table @code
-
-@item Arc
-@itemx Arrow
-@itemx Copy
-@itemx InsertPoint
-@itemx Line
-@itemx Lock
-@itemx Move
-@itemx None
-@itemx PasteBuffer
-@itemx Polygon
-@itemx Rectangle
-@itemx Remove
-@itemx Rotate
-@itemx Text
-@itemx Thermal
-@itemx Via
-Select the indicated tool.
-
-@item Notify
-Called when you press the mouse button, or move the mouse.
-
-@item Release
-Called when you release the mouse button.
-
-@item Cancel
-Cancels any pending tool activity, allowing you to restart elsewhere.
-For example, this allows you to start a new line rather than attach a
-line to the previous line.
-
-@item Escape
-Similar to Cancel but calling this action a second time will return
-to the Arrow tool.
-
-@item Stroke
-If your @code{pcb} was built with libstroke, this invokes the stroke
-input method.  If not, this will restart a drawing mode if you were
-drawing, else it will select objects.
-
-@item Save
-Remembers the current tool.
-
-@item Restore
-Restores the tool to the last saved tool.
-
-@end table
-
-%end-doc */
-
+/* DOC: mode.html */
 static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_ACT_IRES(0);
