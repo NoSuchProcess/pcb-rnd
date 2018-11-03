@@ -164,20 +164,9 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t
 	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false);
 }
 
-/*---------------------------------------------------------------------------*/
-
 static const char pcb_acts_LoadFootprint[] = "pcb_load_footprint(filename[,refdes,value])";
-
 static const char pcb_acth_LoadFootprint[] = "Loads a single footprint by name.";
-
-/* %start-doc actions LoadFootprint
-
-Loads a single footprint by name, rather than by reference or through
-the library.  If a refdes and value are specified, those are inserted
-into the footprint as well.  The footprint remains in the paste buffer.
-
-%end-doc */
-
+/* DOC: loadfootprint.html */
 fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *name, *refdes = NULL, *value = NULL;
