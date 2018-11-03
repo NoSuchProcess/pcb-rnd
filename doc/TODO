@@ -40,6 +40,7 @@
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
+- CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
