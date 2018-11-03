@@ -173,27 +173,7 @@ static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 static const char pcb_acts_SaveLayout[] = "s [name]\nw [name]";
 static const char pcb_acth_SaveLayout[] = "Saves layout data.";
-
-/* %start-doc actions s
-
-Data and the filename are passed to the command defined by the
-resource @emph{savepcb_act_}. It must read the layout data from
-@emph{stdin}.  If no filename is entered, either the last one is used
-again or, if it is not available, a file select box will pop up.
-
-@colonaction
-
-%end-doc */
-
-/* %start-doc actions w
-
-This commands has been added for the convenience of @code{vi} users
-and has the same functionality as @code{s}.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: s.html w.html */
 static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename = NULL;
