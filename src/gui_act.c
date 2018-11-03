@@ -651,18 +651,8 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* -------------------------------------------------------------------------- */
 
 static const char pcb_acts_Message[] = "message(message)";
-
 static const char pcb_acth_Message[] = "Writes a message to the log window.";
-
-/* %start-doc actions Message
-
-This action displays a message to the log window.  This action is primarily
-provided for use by other programs which may interface with PCB.  If
-multiple arguments are given, each one is sent to the log window
-followed by a newline.
-
-%end-doc */
-
+/* DOC: message.html */
 static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int i;
