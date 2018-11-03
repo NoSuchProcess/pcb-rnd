@@ -61,122 +61,13 @@ conf_import_sch_t conf_import_sch;
 
 extern fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
-/* ---------------------------------------------------------------- */
 static const char pcb_acts_Import[] =
 	"Import()\n"
-	"Import([gnetlist|make[,source,source,...]])\n" "Import(setnewpoint[,(mark|center|X,Y)])\n" "Import(setdisperse,D,units)\n";
-
+	"Import([gnetlist|make[,source,source,...]])\n"
+	"Import(setnewpoint[,(mark|center|X,Y)])\n"
+	"Import(setdisperse,D,units)\n";
 static const char pcb_acth_Import[] = "Import schematics.";
-
-/* %start-doc actions Import
-
-Imports subcircuits and netlist data from the schematics (or some other
-source).  The first parameter, which is optional, is the mode.  If not
-specified, the @code{import::mode} attribute in the PCB is used.
-@code{gnetlist} means gnetlist is used to obtain the information from
-the schematics.  @code{make} invokes @code{make}, assuming the user
-has a @code{Makefile} in the current directory.  The @code{Makefile}
-will be invoked with the following variables set:
-
-@table @code
-
-@item PCB
-The name of the .pcb file
-
-@item SRCLIST
-A space-separated list of source files
-
-@item OUT
-The name of the file in which to put the command script, which may
-contain any @pcb{} actions.  By default, this is a temporary file
-selected by @pcb{}, but if you specify an @code{import::outfile}
-attribute, that file name is used instead (and not automatically
-deleted afterwards).
-
-@end table
-
-The target specified to be built is the first of these that apply:
-
-@itemize @bullet
-
-@item
-The target specified by an @code{import::target} attribute.
-
-@item
-The output file specified by an @code{import::outfile} attribute.
-
-@item
-If nothing else is specified, the target is @code{pcb_import}.
-
-@end itemize
-
-If you specify an @code{import::makefile} attribute, then "-f <that
-file>" will be added to the command line.
-
-If you specify the mode, you may also specify the source files
-(schematics).  If you do not specify any, the list of schematics is
-obtained by reading the @code{import::src@var{N}} attributes (like
-@code{import::src0}, @code{import::src1}, etc).
-
-For compatibility with future extensions to the import file format,
-the generated file @emph{must not} start with the two characters
-@code{#%}.
-
-If a temporary file is needed the @code{TMPDIR} environment variable
-is used to select its location.
-*/
-
-/*
-Note that the programs @code{gnetlist} and @code{make} must be
-configured.
-
-If @pcb{} cannot determine which schematic(s) to import from, the GUI
-is called to let user choose (see @code{ImportGUI()}).
-
-Note that Import() doesn't delete anything - after an Import, subcircuits
-which shouldn't be on the board are selected and may be removed once
-it's determined that the deletion is appropriate.
-
-If @code{Import()} is called with @code{setnewpoint}, then the location
-of new components can be specified.  This is where parts show up when
-they're added to the board.  The default is the center of the board.
-
-@table @code
-
-@item Import(setnewpoint)
-
-Prompts the user to click on the board somewhere, uses that point.  If
-called by a hotkey, uses the current location of the crosshair.
-
-@item Import(setnewpoint,mark)
-
-Uses the location of the mark.  If no mark is present, the point is
-not changed.
-
-@item Import(setnewpoint,center)
-
-Resets the point to the center of the board.
-
-@item Import(setnewpoint,X,Y,units)
-
-Sets the point to the specific coordinates given.  Example:
-@code{Import(setnewpoint,50,25,mm)}
-
-@end table
-
-Note that the X and Y locations are stored in attributes named
-@code{import::newX} and @code{import::newY} so you could change them
-manually if you wished.
-
-Calling @code{Import(setdisperse,D,units)} sets how much the newly
-placed subcircuits are dispersed relative to the set point.  For example,
-@code{Import(setdisperse,10,mm)} will offset each part randomly up to
-10mm away from the point.  The default dispersion is 1/10th of the
-smallest board dimension.  Dispersion is saved in the
-@code{import::disperse} attribute.
-
-%end-doc */
-
+/* DOC: import.html */
 static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *mode = NULL;

@@ -622,6 +622,198 @@ Rotates the contents of the pastebuffer by an arbitrary angle.  If no angle is g
 <p>
 Prompts the user for a coordinate, if one is not already selected. 
 
+<h3 id="import">import</h3>
+<p>
+Imports subcircuits and netlist data from the schematics (or some other source).  The first parameter, which is optional, is the mode.  If not specified, the 
+<i>
+import::mode
+</i>
+ attribute in the board is used. Possible values: 
+<i>
+gnetlist
+</i>
+ means gnetlist is used to obtain the information from the schematics;  
+<i>
+make
+</i>
+ invokes make, assuming the user has a Makefile in the current directory.  The Makefile will be invoked with the following variables set: 
+<p>
+ 
+<table border=1 cellspacing=0>
+         
+<tr>
+
+<th>
+PCB  
+<td>
+ The name of the .pcb file   
+<tr>
+
+<th>
+ SRCLIST  
+<td>
+ A space-separated list of source files   
+<tr>
+
+<th>
+ OUT  
+<td>
+ The name of the file in which to put the command script, which may       contain any @pcb{} actions.  By default, this is a temporary file       selected by @pcb{}, but if you specify an 
+<i>
+import::outfile
+</i>
+       attribute, that file name is used instead (and not automatically       deleted afterwards). 
+</table>
+ 
+<p>
+ The target specified to be built is the first of these that apply:  
+<ul>
+  
+<li>
+The target specified by an 
+<i>
+import::target
+</i>
+ attribute.  
+<li>
+The output file specified by an 
+<i>
+import::outfile
+</i>
+ attribute.  
+<li>
+If nothing else is specified, the target is 
+<i>
+pcb_import
+</i>
+. 
+</ul>
+  
+<p>
+ If you specify an 
+<i>
+import::makefile
+</i>
+ attribute, then "-f 
+<i>
+that file
+</i>
+" will be added to the command line. 
+<p>
+ If you specify the mode, you may also specify the source files (schematics).  If you do not specify any, the list of schematics is obtained by reading the 
+<i>
+import::srcN
+</i>
+ attributes (like 
+<i>
+import::src0
+</i>
+, 
+<i>
+import::src1
+</i>
+, etc). 
+<p>
+ For compatibility with future extensions to the import file format, the generated file 
+<b>
+must not
+</b>
+ start with the two characters #%. 
+<p>
+ If a temporary file is needed the 
+<i>
+TMPDIR
+</i>
+ environment variable is used to select its location. 
+<p>
+ Note that the programs 
+<i>
+gnetlist
+</i>
+ and 
+<i>
+make
+</i>
+ must be configured. 
+<p>
+ If pcb-rnd cannot determine which schematic(s) to import from, the GUI is called to let user choose (see 
+<a href="#importgui()">importgui()</a>
+). 
+<p>
+ Note that 
+<a href="#import()">import()</a>
+ doesn't delete anything - after an Import, subcircuits which shouldn't be on the board are selected and may be removed once it's determined that the deletion is appropriate. TODO: is this still true? 
+<p>
+ If 
+<a href="#import()">import()</a>
+ is called with 
+<i>setnewpoint</i>
+, then the location of new components can be specified.  This is where parts show up when they're added to the board.  The default is the center of the board.  Argument combinations: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Import(setnewpoint)  
+<td>
+ Prompts the user to click on the board somewhere, uses that point.  If       called by a hotkey, uses the current location of the crosshair.   
+<tr>
+
+<th>
+ Import(setnewpoint,mark)  
+<td>
+ Uses the location of the mark.  If no mark is present, the point is       not changed.   
+<tr>
+
+<th>
+ Import(setnewpoint,center)  
+<td>
+ Resets the point to the center of the board.   
+<tr>
+
+<th>
+ Import(setnewpoint,X,Y,units)  
+<td>
+ Sets the point to the specific coordinates given.
+<br>
+       
+<exampl>
+Import(setnewpoint,50,25,mm)
+</example>
+  
+</table>
+  
+<p>
+ Note that the 
+<i>X</i>
+ and 
+<i>Y</i>
+ locations are stored in attributes named 
+<i>
+import::newX
+</i>
+ and 
+<i>
+import::newY}
+</i>
+ so you could change them manually if you wished. 
+<p>
+ Calling 
+<i>
+Import(setdisperse,D,units)
+</i>
+ sets how much the newly placed subcircuits are dispersed relative to the set point.  For example, 
+<i>
+Import(setdisperse,10,mm)
+</i>
+ will offset each part randomly up to 10mm away from the point.  The default dispersion is 1/10th of the smallest board dimension.  Dispersion is saved in the 
+<i>
+import::disperse
+<i>
+ attribute. 
+
 <h3 id="l">l</h3>
 <p>
 Loads a new datafile (layout) and, if confirmed, overwrites any existing unsaved data. If no filename is specified a file select box will popup.  

@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20632
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20642
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -99,7 +99,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
-<tr><td>Import</td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
+<tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
@@ -244,10 +244,10 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>javascript</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>jostle</td><td>Make room by moving wires away.</td><td>Jostle(diameter)</td><td>jostle plugin</td>
 <tr><td>js</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>l</td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
-<tr><td>le</td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#l">l</a></td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
 <tr><td>lua</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>m</td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#m">m</a></td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
 <tr><td>mawk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>mesh</td><td>generate a mesh for simulation</td><td>mesh()</td><td>openems HID</td>
 <tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill()</td><td>millpath plugin</td>
@@ -264,14 +264,14 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>py</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
-<tr><td>q</td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
 <tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression</td><td></td>
 <tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
 <tr><td>rehash</td><td>Reload all gpmi scripts</td><td>TODO</td><td>GPMI plugin cookie</td>
-<tr><td>rn</td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation]])</td><td>shape plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>s</td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
 <tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
 <tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
@@ -284,8 +284,8 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>tang</td><td>Draw a line to be tangential to a circle</td><td>tang()</td><td>ddraft plugin</td>
 <tr><td>tcl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>trim</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
-<tr><td>w</td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
-<tr><td>wq</td><td>Saves the layout data and quits.</td><td>wq</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#w">w</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#wq">wq</a></td><td>Saves the layout data and quits.</td><td>wq</td><td>shand_cmd plugin</td>
 </table>
 </body>
 </html>
