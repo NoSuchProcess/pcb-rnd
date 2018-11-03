@@ -1760,20 +1760,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|BackSide)\n" "ToggleView(All, Open|Vis, Set|Clear|Toggle)";
 const char pcb_acth_toggleview[] = "Toggle the visibility of the specified layer or layer group.";
-
-/* %start-doc actions ToggleView
-
-If you pass an integer, that layer is specified by index (the first
-layer is @code{1}, etc).  If you pass a layer name, that layer is
-specified by name.  When a layer is specified, the visibility of the
-layer group containing that layer is toggled.
-
-If you pass a special layer name, the visibility of those components
-(silk, rats, etc) is toggled.  Note that if you have a layer named
-the same as a special layer, the layer is chosen over the special layer.
-
-%end-doc */
-
+/* DOC: toggleview.html */
 static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layer_id_t lid;
