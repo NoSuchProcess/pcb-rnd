@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <libfungw/fungw.h>
 
+/* Action ExtBar() */
 static fgw_error_t extbar(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_ctx_t *ctx = argv[0].val.func->obj->parent;
@@ -46,11 +47,13 @@ static fgw_error_t extbar(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* Called once before the plugin is unloaded */
 void pcb_rnd_uninit(fgw_obj_t *obj)
 {
 	fprintf(stderr, "EXT BAR uninit\n");
 }
 
+/* Called once when the plugin is loaded; returns 0 on success */
 int pcb_rnd_init(fgw_obj_t *obj, const char *opts)
 {
 	fgw_func_reg(obj, "extbar", extbar); /* need to register with lowercase name */
