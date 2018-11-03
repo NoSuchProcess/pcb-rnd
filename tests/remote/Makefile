@@ -1,6 +1,6 @@
 ROOT=../..
 REM=$(ROOT)/src_plugins/hid_remote
-CFLAGS = -Wall -g -I$(REM) -I$(ROOT)/src -I$(ROOT)
+CFLAGS = -g -I$(REM) -I$(ROOT)/src -I$(ROOT)
 
 all: test_parse
 
