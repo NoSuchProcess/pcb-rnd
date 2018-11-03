@@ -118,17 +118,7 @@ static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *res, int argc, fgw_arg
 
 static const char pcb_acts_LoadLayoutToBuffer[] = "m [name]";
 static const char pcb_acth_LoadLayoutToBuffer[] = "Loads a layout into the current buffer.";
-
-/* %start-doc actions m
-
-The filename and the searchpath (@emph{filePath}) are passed to the
-command defined by @emph{filepcb_act_}.
-If no filename is specified a file select box will popup.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: m.html */
 static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename, *format = NULL;
