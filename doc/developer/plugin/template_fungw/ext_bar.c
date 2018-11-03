@@ -21,17 +21,26 @@
  *  Contact: TODO: FILL THIS IN
  */
 
-/* This is pcb-rnd's config.h from trunk: */
-#include "config.h"
-
 #include <stdio.h>
 #include <libfungw/fungw.h>
 
-#include "src/error.h"
-
 static fgw_error_t extbar(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_ERROR, "PLEASE CONSIDER DEVELOPING A CORE PLUGIN INSTEAD!\n");
+	fgw_ctx_t *ctx = argv[0].val.func->obj->parent;
+	fgw_arg_t call_res;
+	int retval;
+
+	/* pcb-rnd API shall be accessed through fungw calls */
+	retval = fgw_vcall(ctx, &call_res, "message", FGW_STR, "PLEASE CONSIDER DEVELOPING A CORE PLUGIN INSTEAD!\n", 0);
+
+	/* need to check and free the return value - any action call may fail */
+	if (retval != 0)
+		fprintf(stderr, "ERROR: failed to call message() (fungw level)\n");
+	else if ((call_res.type != FGW_INT) || (call_res.val.nat_int != 0))
+		fprintf(stderr, "ERROR: failed to call message() (action level)\n");
+	fgw_arg_free(ctx, &call_res);
+
+	/* Set the return value of this action */
 	res->val.nat_int = 0;
 	res->type = FGW_INT;
 	return 0;
