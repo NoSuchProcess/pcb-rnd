@@ -49,17 +49,10 @@
 
 #include "pcb-printf.h"
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Renumber[] = "Renumber()\n" "Renumber(filename)";
-
 static const char pcb_acth_Renumber[] =
 	"Renumber all subcircuits.  The changes will be recorded to filename\n"
 	"for use in backannotating these changes to the schematic.";
-
-/* %start-doc actions Renumber
-
-%end-doc */
 
 #define WTF 0
 
