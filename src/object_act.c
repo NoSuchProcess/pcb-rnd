@@ -153,17 +153,9 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_DisperseElements[] = "DisperseElements(All|Selected)";
 static const char pcb_acth_DisperseElements[] = "Disperses subcircuits.";
 
-/* %start-doc actions DisperseElements
-
-Normally this is used when starting a board, by selecting all subcircuits
-and then dispersing them.  This scatters the subcircuits around the board
-so that you can pick individual ones, rather than have all the
-subcircuits at the same 0,0 coordinate and thus impossible to choose
-from.
-
-%end-doc */
-
 #define GAP PCB_MIL_TO_COORD(100)
+
+/* DOC: disperseelements.html */
 
 static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
 {
