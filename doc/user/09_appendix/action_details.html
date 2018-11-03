@@ -88,6 +88,10 @@ Toggles the given flag on the indicated object(s).  The flag may be one of the f
 <p>
 The join flag determines whether a line or arc, drawn to intersect a polygon, electrically connects to the polygon or not.  When joined, the line/arc is simply drawn over the polygon, making an electrical connection.  When not joined, a gap is drawn between the line and the polygon, insulating them from each other. 
 
+<h3 id="changesize">changesize</h3>
+<p>
+For lines and arcs, this changes the width.  For padstacks, this changes the shape size (but does not touch the hole diameter). For texts, this changes the scaling factor.  For subcircuits, this changes the width of the silk layer lines and arcs for this subcircuit (TODO: is this still true?).  
+
 <h3 id="changesizes">changesizes</h3>
 <p>
 Call ChangeSize, ChangeDrillSize and ChangeClearSize with the same arguments. If any of them did not fail, return success. 

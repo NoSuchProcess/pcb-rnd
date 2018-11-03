@@ -267,18 +267,8 @@ static const char pcb_acts_ChangeSize[] =
 	"ChangeSize(SelectedObjects|Selected, delta|style)\n"
 	"ChangeSize(SelectedLines|SelectedPins|SelectedVias, delta|style)\n"
 	"ChangeSize(SelectedPads|SelectedTexts|SelectedNames, delta|style)\n" "ChangeSize(SelectedElements, delta|style)";
-
 static const char pcb_acth_ChangeSize[] = "Changes the size of objects.";
-
-/* %start-doc actions ChangeSize
-
-For lines and arcs, this changes the width.  For padstacks, this
-changes the shape size (but does not touch the hole diameter). For
-texts, this changes the scaling factor.  For subcircuits, this
-changes the width of the silk layer lines and arcs for this element.
-
-%end-doc */
-
+/* DOC: changesize.html */
 static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;
