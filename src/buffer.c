@@ -354,21 +354,11 @@ pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
 }
 
 
-/* -------------------------------------------------------------------------- */
-
 static const char pcb_acts_FreeRotateBuffer[] = "FreeRotateBuffer([Angle])";
-
 static const char pcb_acth_FreeRotateBuffer[] =
 	"Rotates the current paste buffer contents by the specified angle.  The\n"
 	"angle is given in degrees.  If no angle is given, the user is prompted\n" "for one.\n";
-
-/* %start-doc actions FreeRotateBuffer
-
-Rotates the contents of the pastebuffer by an arbitrary angle.  If no
-angle is given, the user is prompted for one.
-
-%end-doc */
-
+/* DOC: freerotatebuffer */
 fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *angle_s = NULL;
