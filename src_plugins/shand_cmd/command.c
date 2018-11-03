@@ -135,16 +135,7 @@ static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *res, int argc, fgw_arg_
 
 static const char pcb_acts_Quit[] = "q";
 static const char pcb_acth_Quit[] = "Quits the application after confirming.";
-
-/* %start-doc actions q
-
-If you have unsaved changes, you will be prompted to confirm (or
-save) before quitting.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: q.html */
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
@@ -155,16 +146,7 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_ReallyQuit[] = "q!";
 static const char pcb_acth_ReallyQuit[] = "Quits the application without confirming.";
-
-/* %start-doc actions q!
-
-Note that this command neither saves your data nor prompts for
-confirmation.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: q.html */
 static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_quit_app();
