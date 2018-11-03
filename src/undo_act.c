@@ -140,20 +140,7 @@ static const char pcb_acts_Redo[] = "redo()";
 
 static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 
-/* %start-doc actions Redo
-
-This routine allows you to recover from the last undo command.  You
-might want to do this if you thought that undo was going to revert
-something other than what it actually did (in case you are confused
-about which operations are un-doable), or if you have been backing up
-through a long undo list and over-shoot your stopping point.  Any
-change that is made since the undo in question will trim the redo
-list.  For example if you add ten lines, then undo three of them you
-could use redo to put them back, but if you move a line on the board
-before performing the redo, you will lose the ability to "redo" the
-three "undone" lines.
-
-%end-doc */
+/* DOC: redo.html */
 
 fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
