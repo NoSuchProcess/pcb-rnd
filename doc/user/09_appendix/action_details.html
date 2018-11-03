@@ -80,6 +80,10 @@ This action allows making multiple-action bindings into an atomic operation that
 <p>
 If the solder mask is currently showing, this action changes the solder mask cutout size. If the mask is not showing, this action changes the polygon clearance. 
 
+<h3 id="changeflag">changeflag</h3>
+<p>
+Toggles the given flag on the indicated object(s).  The flag may be one of the flags listed above (thermal, join).  The value may be the number 0 or 1.  If the value is 0, the flag is cleared.  If the value is 1, the flag is set. 
+
 <h3 id="changejoin">changejoin</h3>
 <p>
 The join flag determines whether a line or arc, drawn to intersect a polygon, electrically connects to the polygon or not.  When joined, the line/arc is simply drawn over the polygon, making an electrical connection.  When not joined, a gap is drawn between the line and the polygon, insulating them from each other. 

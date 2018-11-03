@@ -151,18 +151,8 @@ static const char pcb_acts_ChangeFlag[] =
 	"ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)\n"
 	"ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)\n"
 	"ChangeFlag(SelectedElements, flag, value)\n" "flag = thermal | join\n" "value = 0 | 1";
-
 static const char pcb_acth_ChangeFlag[] = "Sets or clears flags on objects.";
-
-/* %start-doc actions ChangeFlag
-
-Toggles the given flag on the indicated object(s).  The flag may be
-one of the flags listed above (thermal, join).  The
-value may be the number 0 or 1.  If the value is 0, the flag is
-cleared.  If the value is 1, the flag is set.
-
-%end-doc */
-
+/* DOC: changeflag.html */
 static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;
