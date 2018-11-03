@@ -337,25 +337,8 @@ static int find_pair(int Px, int Py)
 
 
 static const char pcb_acts_Puller[] = "pcb_act_Puller()";
-
 static const char pcb_acth_Puller[] = "Pull an arc-line junction tight.";
-
-/* %start-doc actions pcb_act_Puller
-
-The @code{pcb_act_Puller()} action is a special-purpose optimization.  When
-invoked while the crosshair is over the junction of an arc and a line,
-it will adjust the arc's angle and the connecting line's endpoint such
-that the line intersects the arc at a tangent.  In the example below,
-the left side is ``before'' with the black target marking where to put
-the crosshair:
-
-@center @image{puller,,,Example of how puller works,png}
-
-The right side is ``after'' with the black target marking where the
-arc-line intersection was moved to.
-
-%end-doc */
-
+/* DOC: puller.html */
 static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t Ux, Uy;
