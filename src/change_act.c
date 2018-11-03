@@ -243,15 +243,8 @@ static const char pcb_acts_ChangeSizes[] =
 	"ChangeSizes(SelectedObjects|Selected, delta|style)\n"
 	"ChangeSizes(SelectedLines|SelectedPins|SelectedVias, delta|style)\n"
 	"ChangeSizes(SelectedPads|SelectedTexts|SelectedNames, delta|style)\n" "ChangeSizes(SelectedElements, delta|style)";
-
 static const char pcb_acth_ChangeSizes[] = "Changes all sizes of objects.";
-
-/* %start-doc actions ChangeSize
-
-Call pcb_act_ChangeSize, ActionChangeDrillSize and pcb_act_ChangeClearSize
-with the same arguments. If any of them did not fail, return success.
-%end-doc */
-
+/* DOC: changesizes.html */
 static fgw_error_t pcb_act_ChangeSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_error_t a, b, c;
