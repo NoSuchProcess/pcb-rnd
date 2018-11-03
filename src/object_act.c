@@ -250,17 +250,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 
 static const char pcb_acts_Flip[] = "Flip(Object|Selected)";
 static const char pcb_acth_Flip[] = "Flip a subcircuit to the opposite side of the board.";
-
-/* %start-doc actions Flip
-
-Note that the location of the subcircuit will be symmetric about the
-cursor location; i.e. if the part you are pointing at will still be at
-the same spot once the subcircuit is on the other side.  When flipping
-multiple subcircuits, this retains their positions relative to each
-other, not their absolute positions on the board.
-
-%end-doc */
-
+/* DOC: flip.html */
 static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
