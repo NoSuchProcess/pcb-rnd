@@ -631,22 +631,7 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 static const char pcb_acts_RipUp[] = "RipUp(All|Selected|Element)";
 static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks";
-
-/* %start-doc actions RipUp
-
-@table @code
-
-@item All
-Removes all lines and vias which were created by the autorouter.
-
-@item Selected
-Removes all selected lines and vias which were created by the
-autorouter.
-
-@end table
-
-%end-doc */
-
+/* DOC: ripup.html */
 static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
