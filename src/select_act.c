@@ -147,24 +147,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_Unselect[] = "Unselect(All|Block|Connection)\n";
 static const char pcb_acth_Unselect[] = "Unselects the object at the pointer location or the specified objects.";
-
-/* %start-doc actions Unselect
-
-@table @code
-
-@item All
-Unselect all objects.
-
-@item Block
-Unselect all objects in a rectangle given by the cursor.
-
-@item Connection
-Unselect all connections with the ``found'' flag set.
-
-@end table
-
-%end-doc */
-
+/* DOC: unselect.html */
 static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
