@@ -332,6 +332,50 @@ Lines starting with
 <p>
 Prompts the user for a coordinate, if one is not already selected. 
 
+<h3 id="loadfrom">loadfrom</h3>
+<p>
+This action assumes you know what the filename is.  The various GUIs should have a similar 
+<a href="#load">load</a>
+ action where the filename is optional, and will provide their own file selection mechanism to let you choose the file name. 
+<p>
+ Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Layout  
+<td>
+ Loads an entire PCB layout, replacing the current one.   
+<tr>
+
+<th>
+ LayoutToBuffer  
+<td>
+ Loads an entire PCB layout to the paste buffer.   
+<tr>
+
+<th>
+ ElementToBuffer  
+<td>
+ Loads the given footprint file into the paste buffer. Footprint files       contain only a single subcircuit definition in one of the various       supported file formats.   
+<tr>
+
+<th>
+ Netlist  
+<td>
+ Loads a new netlist, replacing any current netlist.   
+<tr>
+
+<th>
+ Revert  
+<td>
+ Re-loads the current layout from its disk file, reverting any changes       you may have made.  
+</table>
+  
+
 <h3 id="markcrosshair">markcrosshair</h3>
 <p>
 The "mark" is a small X-shaped target on the display which is treated like a second origin (the normal origin is the upper let corner of the board).  The GUI will display a second set of coordinates for this mark, which tells you how far you are from it. 

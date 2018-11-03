@@ -1,0 +1,28 @@
+This action assumes you know what the filename is.  The various GUIs
+should have a similar <act>Load</act> action where the filename is
+optional, and will provide their own file selection mechanism to let
+you choose the file name.
+<p>
+Arguments:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> Layout
+	<td> Loads an entire PCB layout, replacing the current one.
+
+	<tr><th> LayoutToBuffer
+	<td> Loads an entire PCB layout to the paste buffer.
+
+	<tr><th> ElementToBuffer
+	<td> Loads the given footprint file into the paste buffer. Footprint files
+	     contain only a single subcircuit definition in one of the various
+	     supported file formats.
+
+	<tr><th> Netlist
+	<td> Loads a new netlist, replacing any current netlist.
+
+	<tr><th> Revert
+	<td> Re-loads the current layout from its disk file, reverting any changes
+	     you may have made.
+
+</table>
+

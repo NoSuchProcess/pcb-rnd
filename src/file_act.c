@@ -55,38 +55,7 @@
 
 static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])";
 static const char pcb_acth_LoadFrom[] = "Load layout data from a file.";
-
-/* %start-doc actions LoadFrom
-
-This action assumes you know what the filename is.  The various GUIs
-should have a similar @code{Load} action where the filename is
-optional, and will provide their own file selection mechanism to let
-you choose the file name.
-
-@table @code
-
-@item Layout
-Loads an entire PCB layout, replacing the current one.
-
-@item LayoutToBuffer
-Loads an entire PCB layout to the paste buffer.
-
-@item ElementToBuffer
-Loads the given footprint file into the paste buffer. Footprint files
-contain only a single subcircuit definition in one of the various
-supported file formats.
-
-@item Netlist
-Loads a new netlist, replacing any current netlist.
-
-@item Revert
-Re-loads the current layout from its disk file, reverting any changes
-you may have made.
-
-@end table
-
-%end-doc */
-
+/* DOC: loadfrom.html */
 fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *name, *format = NULL;
