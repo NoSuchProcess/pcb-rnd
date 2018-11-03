@@ -330,15 +330,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_MoveToCurrentLayer[] = "MoveToCurrentLayer(Object|SelectedObjects)";
 static const char pcb_acth_MoveToCurrentLayer[] = "Moves objects to the current layer.";
-
-/* %start-doc actions MoveToCurrentLayer
-
-Note that moving an subcircuit from a component layer to a solder layer,
-or from solder to component, won't automatically flip it.  Use the
-@code{Flip()} action to do that.
-
-%end-doc */
-
+/* DOC: movetocurrentlayer.html */
 static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int id;
