@@ -480,6 +480,72 @@ Toggles whether the names of terminals will be      displayed. If the cursor is 
 </table>
   
 
+<h3 id="djopt">djopt</h3>
+<p>
+The different types of optimizations change your board in order to reduce the total trace length and via count. 
+<p>
+ Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+   
+<tr>
+
+<th>
+ debumpify  
+<td>
+ Looks for U-shaped traces that can be shortened or eliminated.   
+<tr>
+
+<th>
+ unjaggy  
+<td>
+ Looks for corners which could be flipped to eliminate one or more       corners (i.e. jaggy lines become simpler).   
+<tr>
+
+<th>
+ simple  
+<td>
+ Removing uneeded vias, replacing two or more trace segments in a row       with a single segment.  This is usually performed automatically after       other optimizations.   
+<tr>
+
+<th>
+ vianudge  
+<td>
+ Looks for vias where all traces leave in the same direction.  Tries to       move via in that direction to eliminate one of the traces (and thus a       corner).   
+<tr>
+
+<th>
+ viatrim  
+<td>
+ Looks for traces that go from via to via, where moving that trace to a       different layer eliminates one or both vias.   
+<tr>
+
+<th>
+ orthopull  
+<td>
+ Looks for chains of traces all going in one direction, with more       traces orthogonal on one side than on the other.  Moves the chain in       that direction, causing a net reduction in trace length, possibly       eliminating traces and/or corners.   
+<tr>
+
+<th>
+ splitlines  
+<td>
+ Looks for lines that pass through vias, pins, or pads, and splits them       into separate lines so they can be managed separately.   
+<tr>
+
+<th>
+ auto  
+<td>
+ Performs the above options, repeating until no further optimizations       can be made.   
+<tr>
+
+<th>
+ miter  
+<td>
+ Replaces 90 degree corners with a pair of 45 degree corners, to reduce       RF losses and trace length.  
+</table>
+ 
+
 <h3 id="drc">drc</h3>
 <p>
 Note that the design rule check uses the current board rule settings, not the current style settings. 

@@ -2436,61 +2436,9 @@ static void grok_layer_groups()
 	}
 }
 
-static const char pcb_acts_DJopt[] =
-	"djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)\n" "djopt(auto) - all of the above\n" "djopt(miter)";
-
+static const char pcb_acts_DJopt[] = "djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)\n" "djopt(auto) - all of the above\n" "djopt(miter)";
 static const char pcb_acth_DJopt[] = "Perform various optimizations on the current board.";
-
-/* %start-doc actions djopt
-
-The different types of optimizations change your board in order to
-reduce the total trace length and via count.
-
-@table @code
-
-@item debumpify
-Looks for U-shaped traces that can be shortened or eliminated.
-
-@item unjaggy
-Looks for corners which could be flipped to eliminate one or more
-corners (i.e. jaggy lines become simpler).
-
-@item simple
-Removing uneeded vias, replacing two or more trace segments in a row
-with a single segment.  This is usually performed automatically after
-other optimizations.
-
-@item vianudge
-Looks for vias where all traces leave in the same direction.  Tries to
-move via in that direction to eliminate one of the traces (and thus a
-corner).
-
-@item viatrim
-Looks for traces that go from via to via, where moving that trace to a
-different layer eliminates one or both vias.
-
-@item orthopull
-Looks for chains of traces all going in one direction, with more
-traces orthogonal on one side than on the other.  Moves the chain in
-that direction, causing a net reduction in trace length, possibly
-eliminating traces and/or corners.
-
-@item splitlines
-Looks for lines that pass through vias, pins, or pads, and splits them
-into separate lines so they can be managed separately.
-
-@item auto
-Performs the above options, repeating until no further optimizations
-can be made.
-
-@item miter
-Replaces 90 degree corners with a pair of 45 degree corners, to reduce
-RF losses and trace length.
-
-@end table
-
-%end-doc */
-
+/* DOC: djopt.html */
 static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *arg = NULL;
