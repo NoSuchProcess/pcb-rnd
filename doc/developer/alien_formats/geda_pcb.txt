@@ -1,0 +1,37 @@
+Before pcb-rnd switched to lihata for native file format, we used to use
+geda/pcb's format as native. Since pcb-rnd got a lot of new features and
+since geda/pcb refused to cooperate, there are unfortunately some 
+non-intrusive local file format extensions to the geda/pcb format.
+
+These extensions are kept for backward compatibility: just in case a file
+needs to be loaded that was produced with pre-lihata pcb-rnd. However,
+new extensions are not added to the geda/pcb format.
+
+This file attempts to (vaguely) list the extensions.
+
+1. .fp file: element tagging
+
+ Any comment in an element file that starts with double # is taken
+ as a tag. The syntax is: ##key:value. A tag is basically the same
+ as an attribute, except tags are not becoming subcircuit attributes
+ after loading a footprint. Tags are used to ease footprint searches.
+
+2. .pcb and .fp file: pin shape
+
+ Early in pcb-rnd development, years before padstacks, a minor feature
+ was added to allow 16 different asymmetric pin shapes. The pin shape
+ is saved as a flag.
+
+3. .pcb file: intconn
+
+ Because elements couldn't have attributes, we abused the flag field for
+ storing intconn() info. 
+
+4. .pcb file: netlist patch
+
+ For back annotation pcb-rnd keeps track on deliberate netlist changes.
+ Since this feature happened before lihata got stable, it is also
+ saved in the old pcb format in a NetListPatch subtree. Unfortunately
+ pcb does NOT handle this and throws a syntax error. geda/pcb users are
+ required to remove this subtree manually.
+
