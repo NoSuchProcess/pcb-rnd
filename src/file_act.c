@@ -264,14 +264,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_Quit[] = "Quit()";
 static const char pcb_acth_Quit[] = "Quits the application after confirming.";
-
-/* %start-doc actions Quit
-
-If you have unsaved changes, you will be prompted to confirm (or
-save) before quitting.
-
-%end-doc */
-
+/* DOC: quit.html */
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *force = NULL;
