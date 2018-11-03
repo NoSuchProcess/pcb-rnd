@@ -217,6 +217,7 @@
 		- new outline/mech layers and slots
 		- new doc layers
 - BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
+- CLEANUP: move DiesperseElements out from core
 - FEATURE: lihata v7
 	- remove via geometry from route style
 
