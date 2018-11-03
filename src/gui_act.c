@@ -1041,16 +1041,8 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_SetSame[] = "SetSame()";
-
 static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match indicated item.";
-
-/* %start-doc actions SetSame
-
-When invoked over any line, arc, polygon, or via, this changes the
-current layer to be the layer that item is on, and changes the current
-sizes (thickness, clearance, drill, etc) according to that item.
-
-%end-doc */
+/* DOC: setsame.html */
 static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
 {
 	int known;
