@@ -128,26 +128,10 @@ fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ************************************************************ */
 
 static const char pcb_acts_LoadVendorFrom[] = "LoadVendorFrom(filename)";
-
 static const char pcb_acth_LoadVendorFrom[] = "Loads the specified vendor lihata file.";
-
-/* %start-doc actions LoadVendorFrom
-
-@cindex vendor map
-@cindex vendor drill table
-@findex LoadVendorFrom()
-
-@table @var
-@item filename
-Name of the vendor lihata file.  If not specified, the user will
-be prompted to enter one.
-@end table
-
-%end-doc */
-
+/* DOC: loadvendorfrom.html */
 fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
