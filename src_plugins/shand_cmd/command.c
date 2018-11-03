@@ -85,19 +85,7 @@ static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_LoadLayout[] = "l [name] [format]";
 static const char pcb_acth_LoadLayout[] = "Loads layout data.";
-
-/* %start-doc actions l
-
-Loads a new datafile (layout) and, if confirmed, overwrites any
-existing unsaved data.  The filename and the searchpath
-(@emph{filePath}) are passed to the command defined by
-@emph{filepcb_act_}.  If no filename is specified a file select box
-will popup.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: l.html */
 static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename, *format = NULL;
