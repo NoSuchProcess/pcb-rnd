@@ -641,25 +641,7 @@ static const char pcb_acth_SetThermal[] =
 	"Style = 3 is a solid connection to the plane.\n"
 	"Style = 4 has diagonal fingers with rounded edges.\n"
 	"Style = 5 has horizontal and vertical fingers with rounded edges.\n";
-
-/* %start-doc actions SetThermal
-
-This changes how/whether padstacks connect to any rectangle or polygon
-on the current layer. The first argument can specify one object, or all
-selected padstacks.
-The second argument specifies the style of connection.
-There are 5 possibilities:
-0 - no connection,
-1 - 45 degree fingers with sharp edges,
-2 - horizontal & vertical fingers with sharp edges,
-3 - solid connection,
-4 - 45 degree fingers with rounded corners,
-5 - horizontal & vertical fingers with rounded corners.
-
-Padstacks may have thermals whether or not there is a polygon available
-to connect with. However, they will have no effect without the polygon.
-%end-doc */
-
+/* DOC: setthermal.html */
 static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;

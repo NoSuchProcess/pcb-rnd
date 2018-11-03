@@ -1,0 +1,31 @@
+This changes how/whether padstacks connect to any rectangle or polygon
+on the current layer. The first argument can specify one object, or all
+selected padstacks.
+The second argument specifies the style of connection.
+<p>
+Thermal styles:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th>0
+	<td> no connection,
+
+	<tr><th>1
+	<td> 45 degree fingers with sharp edges,
+
+	<tr><th>2
+	<td> horizontal & vertical fingers with sharp edges,
+
+	<tr><th>3
+	<td> solid connection,
+
+	<tr><th>4
+	<td> 45 degree fingers with rounded corners,
+
+	<tr><th>5
+	<td> horizontal & vertical fingers with rounded corners.
+</table>
+<p>
+Padstacks may have thermals whether or not there is a polygon available
+to connect with. However, they will have no visible effect until a polygon
+is drawn around the padstack.
+
