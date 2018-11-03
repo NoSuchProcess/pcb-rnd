@@ -204,16 +204,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_SaveLayoutAndQuit[] = "wq";
 static const char pcb_acth_SaveLayoutAndQuit[] = "Saves the layout data and quits.";
-
-/* %start-doc actions wq
-
-This command has been added for the convenience of @code{vi} users and
-has the same functionality as @code{s} combined with @code{q}.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: wq.html */
 static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (PCB_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) == 0)
