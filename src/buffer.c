@@ -127,7 +127,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 }
 
 /* add (or move) selected */
-static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool on_locked_too)
 {
 	pcb_opctx_t ctx;
 
@@ -144,7 +144,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	pcb_notify_crosshair_change(pcb_false);
 	ctx.buffer.src = pcb->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), pcb_true);
+	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), on_locked_too);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -161,7 +161,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 
 void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
-	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected);
+	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false);
 }
 
 /*---------------------------------------------------------------------------*/

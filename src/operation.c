@@ -128,6 +128,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
 				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(arc);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
@@ -143,6 +145,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		PCB_TEXT_ALL_LOOP(data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !pcb_text_is_visible(PCB, layer, text))
+				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, text))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(text);
@@ -160,6 +164,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(polygon);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
@@ -173,6 +179,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if ((type & (PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART)) && F->subc) {
 		PCB_SUBC_LOOP(data);
 		{
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
+				continue;
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
 				if (Reset) {
 					pcb_undo_add_obj_to_flag(subc);
@@ -195,6 +203,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack))
 				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(padstack);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, padstack);
@@ -210,6 +220,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		PCB_RAT_LOOP(data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
+				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(line);
