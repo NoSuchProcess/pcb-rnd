@@ -603,15 +603,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 static const char pcb_acts_ElementSetAttr[] = "ElementSetAttr(refdes,name[,value])";
 static const char pcb_acth_ElementSetAttr[] = "Sets or clears an element-specific attribute.";
-
-/* %start-doc actions elementsetattr
-
-If a value is specified, the named attribute is added (if not already
-present) or changed (if it is) to the given value.  If the value is
-not specified, the given attribute is removed if present.
-
-%end-doc */
-
+/* DOC: elementsetattr */
 static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_subc_t *sc;
