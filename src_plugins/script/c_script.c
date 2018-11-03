@@ -106,6 +106,5 @@ static fgw_eng_t pcb_fgw_c_eng = {
 
 static void pcb_c_script_init(void)
 {
-printf("ENG REG!\n");
 	fgw_eng_reg(&pcb_fgw_c_eng);
 }
