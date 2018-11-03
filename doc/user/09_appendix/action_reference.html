@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20642
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20654
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -122,7 +122,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file. Type can be: netlist or footprint.</td><td>LoadTedaxFrom(netlist|footprint, filename)</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
-<tr><td>LoadVendorFrom</td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
+<tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
 <tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td></td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
@@ -211,7 +211,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
 <tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
-<tr><td>align</td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>aligntext</td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>

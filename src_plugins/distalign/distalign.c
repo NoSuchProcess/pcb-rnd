@@ -235,23 +235,8 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 	return q;
 }
 
-/*
- * Align(X, [Lefts/Rights/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])
- * Align(Y, [Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])
- *
- * X or Y - Select which axis will move, other is untouched.
- * Lefts, Rights,
- * Tops, Bottoms,
- * Centers, Marks - Pick alignment point within each subcircuit
- * First, Last,
- * pcb_crosshair,
- * Average - Alignment reference, First=Topmost/Leftmost,
- * Last=Bottommost/Rightmost, Average or pcb_crosshair point
- * Gridless - Do not force results to align to prevailing grid.
- *
- * Defaults are Marks, First.
- */
 static const char pcb_acts_align[] = "Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])";
+/* DOC: align.html */
 static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1, *a2, *a3;
