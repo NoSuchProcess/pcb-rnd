@@ -102,6 +102,188 @@ board
 </table>
  
 
+<h3 id="display">display</h3>
+<p>
+Changes random display related global states. 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ SubcID 
+<br>
+ Description 
+<br>
+ Value  
+<td>
+Specify the subcircuit ID template to be printed on the subcircuit layer   
+<tr>
+
+<th>
+ Redraw  
+<td>
+Redraw the whole board.   
+<tr>
+
+<th>
+ ToggleAllDirections  
+<td>
+When clear, lines can be drawn at any angle.  When set, lines are      restricted to multiples of 45 degrees and requested lines may be      broken up according to the clip setting.   
+<tr>
+
+<th>
+ CycleClip  
+<td>
+Changes the way lines are restricted to 45 degree increments. The      various settings are: straight only, orthogonal then angled, and angled      then orthogonal. If AllDirections is set, this action disables it.   
+<tr>
+
+<th>
+ CycleCrosshair  
+<td>
+Changes crosshair drawing. Crosshair may accept form of 4-ray,      8-ray and 12-ray cross.   
+<tr>
+
+<th>
+ ToggleRubberBandMode  
+<td>
+If set, moving an object moves all the lines attached to it too.   
+<tr>
+
+<th>
+ ToggleStartDirection  
+<td>
+If set, each time you set a point in a line, the Clip toggles between      orth-angle and angle-ortho.   
+<tr>
+
+<th>
+ ToggleUniqueNames  
+<td>
+If set, you will not be permitted to change the name of an element to      match that of another element.   
+<tr>
+
+<th>
+ ToggleSnapPin  
+<td>
+If set, pin centers and pad end points are treated as additional grid      points that the cursor can snap to.   
+<tr>
+
+<th>
+ ToggleSnapOffGridLine  
+<td>
+If set, snap at some sensible point along a line.   
+<tr>
+
+<th>
+ ToggleHighlightOnPoint  
+<td>
+If set, highlights lines and arcs when the crosshair is on one of their      two (end) points.   
+<tr>
+
+<th>
+ ToggleLocalRef  
+<td>
+If set, the mark is automatically set to the beginning of any move, so      you can see the relative distance you've moved.   
+<tr>
+
+<th>
+ ToggleThindraw  
+<td>
+If set, objects on the screen are drawn as outlines (lines are drawn      as center-lines). This lets you see line endpoints hidden under pins,      for example.   
+<tr>
+
+<th>
+ ToggleThindrawPoly  
+<td>
+If set, polygons on the screen are drawn as outlines.   
+<tr>
+
+<th>
+ ToggleShowDRC  
+<td>
+If set, pending objects (i.e. lines you're in the process of drawing)      will be drawn with an outline showing how far away from other copper      you need to be.   
+<tr>
+
+<th>
+ ToggleLiveRoute  
+<td>
+If set, the progress of the autorouter will be visible on the screen.   
+<tr>
+
+<th>
+ ToggleAutoDRC  
+<td>
+If set, you will not be permitted to make connections which violate      the current DRC and netlist settings.   
+<tr>
+
+<th>
+ ToggleCheckPlanes  
+<td>
+If set, lines and arcs aren't drawn, which usually leaves just the      polygons.  If you also disable all but the layer you're interested in,      this allows you to check for isolated regions.   
+<tr>
+
+<th>
+ ToggleOrthoMove  
+<td>
+If set, the crosshair is only allowed to move orthogonally from its      previous position.  I.e. you can move a subcircuit or line up, down,      left, or right, but not up+left or down+right.   
+<tr>
+
+<th>
+ ToggleName  
+<td>
+Selects whether the pinouts show the pin names or the pin numbers.   
+<tr>
+
+<th>
+ ToggleLockNames  
+<td>
+If set, text will ignore left mouse clicks and actions that work on      objects under the mouse. You can still select text with a lasso (left      mouse drag) and perform actions on the selection.   
+<tr>
+
+<th>
+ ToggleOnlyNames  
+<td>
+If set, only text will be sensitive for mouse clicks and actions that      work on objects under the mouse. You can still select other objects      with a lasso (left mouse drag) and perform actions on the selection.   
+<tr>
+
+<th>
+ ToggleClearLine  
+<td>
+When set, the clear-line flag causes new lines and arcs to have their      "clear polygons" flag set, so they won't be electrically connected      to any polygons they overlap.   
+<tr>
+
+<th>
+ ToggleFullPoly  
+<td>
+When set, the full-poly flag causes new polygons to have their      "full polygon" flag set, so all parts of them will be displayed      instead of only the biggest one.   
+<tr>
+
+<th>
+ ToggleGrid  
+<td>
+Resets the origin of the current grid to be wherever the crosshair is.      If you provide two numbers after this, the origin is set to that      coordinate.   
+<tr>
+
+<th>
+ Grid  
+<td>
+Toggles whether the grid is displayed or not.   
+<tr>
+
+<th>
+ Pinout  
+<td>
+Causes the pinout of the subcircuit indicated by the cursor to be      displayed, usually in a separate window.   
+<tr>
+
+<th>
+ PinOrPadName  
+<td>
+Toggles whether the names of terminals will be      displayed. If the cursor is over an subcircuit, all of its terminals      are affected.  
+</table>
+  
+
 <h3 id="getxy">getxy</h3>
 <p>
 Prompts the user for a coordinate, if one is not already selected. 

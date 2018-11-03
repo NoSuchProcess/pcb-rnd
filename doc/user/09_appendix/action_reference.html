@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20560
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20574
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -45,18 +45,18 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ChkBuffer</td><td>Return 1 if currently selected buffer's index matches idx</td><td>ChkBuffer(idx)</td><td></td>
 <tr><td>ChkGridSize</td><td>Return 1 if the currently selected grid matches the expected_size. If argument is "none" return 1 if there is no grid.</td><td>ChkGridSize(expected_size)<br>ChkGridSize(none)</td><td></td>
 <tr><td>ChkGridUnits</td><td>Return 1 if currently selected grid unit matches the expected (normally mm or mil)</td><td>ChkGridUnits(expected)</td><td></td>
-<tr><td>ChkLayer</td><td>Returns 1 if the specified layer is the active layer</td><td>ChkLayer(layerid)</td><td></td>
+<tr><td><a href="action_details.html#chklayer">ChkLayer</a></td><td>Returns 1 if the specified layer is the active layer</td><td>ChkLayer(layerid)</td><td></td>
 <tr><td>ChkMode</td><td>Return 1 if the currently selected mode is the expected_mode</td><td>ChkMode(expected_mode)</td><td></td>
-<tr><td>ChkRst</td><td>Return 1 if route_style_id matches pen.</td><td>ChkRst(route_style_id)</td><td></td>
+<tr><td><a href="action_details.html#chkrst">ChkRst</a></td><td>Return 1 if route_style_id matches pen.</td><td>ChkRst(route_style_id)</td><td></td>
 <tr><td>ChkSubcID</td><td>Return 1 if currently shown subc ID matches the requested pattern</td><td>ChkSubcID(pattern)</td><td></td>
-<tr><td>ChkView</td><td>Return 1 if layerid is visible.</td><td>ChkView(layerid)</td><td></td>
+<tr><td><a href="action_details.html#chkview">ChkView</a></td><td>Return 1 if layerid is visible.</td><td>ChkView(layerid)</td><td></td>
 <tr><td>ClearOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClearSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClrFlag</td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td>Connection</td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, dummy, accel, tooltip, cookie)</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
-<tr><td>Cursor</td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
+<tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
 <tr><td>CycleDrag</td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
 <tr><td>DRC</td><td>Invoke the DRC check.</td><td>DRC()</td><td></td>
 <tr><td>Debug</td><td>Debug action.</td><td>Debug(...)</td><td>oldactions plugin</td>
@@ -66,7 +66,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>DeleteRats</td><td>Delete rat lines.</td><td>DeleteRats(AllRats|Selected|SelectedRats)</td><td></td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td>DisperseElements</td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
-<tr><td>Display</td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
+<tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
 <tr><td>DumpLibrary</td><td>Display the entire contents of the libraries.</td><td>DumpLibrary()</td><td>oldactions plugin</td>
@@ -95,7 +95,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>pcb_act_FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
 <tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_draw</td>
-<tr><td>GetXY</td><td>Get a coordinate.</td><td>GetXY()</td><td></td>
+<tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate.</td><td>GetXY()</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
@@ -159,13 +159,13 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>Polygon</td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
-<tr><td>PrintCalibrate</td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td></td>
+<tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td></td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
 <tr><td>PrintFiles</td><td>Print files currently loaded.</td><td>PrintFiles()</td><td></td>
 <tr><td>PrintPaths</td><td>Print full paths and search paths.</td><td>PrintPaths()</td><td></td>
 <tr><td>PrintUsage</td><td>Print command line arguments of pcb-rnd or a plugin loaded.</td><td>PrintUsage()<br>PrintUsage(plugin)</td><td></td>
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
-<tr><td>PromptFor</td><td>Prompt for a response.</td><td>PromptFor([message[,default]])</td><td></td>
+<tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a response.</td><td>PromptFor([message[,default]])</td><td></td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew(data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>Puller</td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
 <tr><td>Quit</td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
@@ -189,10 +189,10 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>SaveTo</td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td>Select</td><td>Toggles or sets the selection.</td><td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(Convert)</td><td></td>
-<tr><td>SelectLayer</td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
+<tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td>SetFlag</td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td>SetOctagon</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td>SetSame</td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
+<tr><td><a href="action_details.html#setsame">SetSame</a></td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
 <tr><td>SetSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>SetThermal</td><td>Set the thermal (on the current layer) of padstacks to the given style.<br>Style = 0 means no thermal.<br>Style = 1 has diagonal fingers with sharp edges.<br>Style = 2 has horizontal and vertical fingers with sharp edges.<br>Style = 3 is a solid connection to the plane.<br>Style = 4 has diagonal fingers with rounded edges.<br>Style = 5 has horizontal and vertical fingers with rounded edges.</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
 <tr><td>SetUnits</td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
@@ -204,7 +204,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
-<tr><td>ToggleView</td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
+<tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
 <tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
 <tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
 <tr><td>UnloadScript</td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
