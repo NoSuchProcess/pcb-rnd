@@ -26,9 +26,6 @@
  *
  */
 
-/* executes commands from user
- */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -49,19 +46,6 @@
 #include "compat_misc.h"
 #include "misc_util.h"
 #include "tool.h"
-
-/*  %start-doc actions 00macros
-
-@macro colonaction
-
-This is one of the command box helper actions.  While it is a regular
-action and can be used like any other action, its name and syntax are
-optimized for use with the command box (@code{:}) and thus the syntax
-is documented for that purpose.
-
-@end macro
-
-%end-doc */
 
 static const char pcb_acts_Help[] = "h";
 static const char pcb_acth_Help[] = "Print a help message for commands.";
