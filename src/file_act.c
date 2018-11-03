@@ -114,13 +114,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_New[] = "New([name])";
 static const char pcb_acth_New[] = "Starts a new layout.";
-
-/* %start-doc actions New
-
-If a name is not given, one is prompted for.
-
-%end-doc */
-
+/* DOC: new.html */
 static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *argument_name = NULL;
