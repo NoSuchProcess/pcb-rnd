@@ -17,3 +17,39 @@ Note that freeze/thaw requests may nest, with the netlist being fully thawed
 only when all pending freezes are thawed.  You can bypass the nesting
 by using <arg>forcethaw</arg>, which resets the freeze count and immediately
 updates the GUI.
+<p>
+Argument summary:
+<p>
+<p>
+<table border=1 cellspacing=0>
+	<tr><th>
+	<td> 
+
+	<tr><th> find
+	<td> Nets which apply are marked @emph{found} and are drawn in the
+	     <i>connected-color</i> color.
+
+	<tr><th> select
+	<td> Nets which apply are selected.
+
+	<tr><th> rats
+	<td> Nets which apply are marked as available for the rats nest.
+
+	<tr><th> norats
+	<td> Nets which apply are marked as not available for the rats nest.
+
+	<tr><th> clear
+	<td> Clears the netlist.
+
+	<tr><th> add
+	<td> Add the given pin to the given netlist, creating either if needed.
+
+	<tr><th> swap
+	<td> Swap the connections one end of two selected rats and pins.
+
+	<tr><th> sort
+	<td> Called after a list of add's, this sorts the netlist.
+
+	<tr><th> freeze <br> thaw <br> forcethaw
+	<td> Temporarily prevents changes to the netlist from being reflected in the GUI.
+</table>

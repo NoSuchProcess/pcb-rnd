@@ -160,45 +160,6 @@ static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 
 /* DOC: netlist.html */
 
-/* %start-doc actions Netlist
-
-@table @code
-
-@item find
-Nets which apply are marked @emph{found} and are drawn in the
-@code{connected-color} color.
-
-@item select
-Nets which apply are selected.
-
-@item rats
-Nets which apply are marked as available for the rats nest.
-
-@item norats
-Nets which apply are marked as not available for the rats nest.
-
-@item clear
-Clears the netlist.
-
-@item add
-Add the given pin to the given netlist, creating either if needed.
-
-@item swap
-Swap the connections one end of two selected rats and pins.
-
-@item sort
-Called after a list of add's, this sorts the netlist.
-
-@item freeze
-@itemx thaw
-@itemx forcethaw
-Temporarily prevents changes to the netlist from being reflected in
-the GUI.
-
-@end table
-
-%end-doc */
-
 typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
 
 static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
