@@ -40,6 +40,6 @@ load-save with geda/pcb will remove the extended properties from the file
 
 5. .pcb file: new setting: enablemincut
 
- Another of the first few new featrures in pcb-rnd was mincut for shorts.
+ Another of the first few new features in pcb-rnd was mincut for shorts.
  This also happened years before lihata boards, so a new global
  setting was registered, which may even be saved in a board file.
