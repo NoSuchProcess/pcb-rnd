@@ -51,17 +51,7 @@
 
 static const char pcb_acts_MorphPolygon[] = "pcb_poly_morph(Object|Selected)";
 static const char pcb_acth_MorphPolygon[] = "Converts dead polygon islands into separate polygons.";
-
-/* %start-doc actions MorphPolygon
-
-If a polygon is divided into unconnected "islands", you can use
-this command to convert the otherwise disappeared islands into
-separate polygons. Be sure the cursor is over a portion of the
-polygon that remains visible. Very small islands that may flake
-off are automatically deleted.
-
-%end-doc */
-
+/* DOC: morphpolygon.html */
 static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
