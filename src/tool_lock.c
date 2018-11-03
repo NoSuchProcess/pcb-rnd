@@ -58,7 +58,7 @@ void pcb_tool_lock_notify_mode(void)
 
 		DrawSubc(subc);
 		pcb_draw();
-		pcb_actionl("Report", "Subc", NULL);
+		pcb_actionl("Report", "Subc", "log", NULL);
 	}
 	else if (type != PCB_OBJ_VOID) {
 		pcb_text_t *thing = (pcb_text_t *) ptr3;
