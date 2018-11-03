@@ -248,18 +248,6 @@ static void WritePCBDataHeader(FILE * FP)
 
 	memset(&pcb_flags, 0, sizeof(pcb_flags));
 
-	/*
-	 * ************************** README *******************
-	 * ************************** README *******************
-	 *
-	 * If the file format is modified in any way, update
-	 * PCB_FILE_VERSION in file.h as well as PCBFileVersionNeeded()
-	 * at the top of this file.
-	 *
-	 * ************************** README *******************
-	 * ************************** README *******************
-	 */
-
 	io_pcb_attrib_c2a(PCB);
 
 	/* set binary flags from conf hash; these flags used to be checked
