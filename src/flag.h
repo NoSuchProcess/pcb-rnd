@@ -49,22 +49,7 @@ typedef struct {
 
 extern pcb_flag_t no_flags;
 
-/* ---------------------------------------------------------------------------
- * object flags
- */
-
-/* %start-doc pcbfile ~objectflags
-@node Object Flags
-@section Object Flags
-
-Note that object flags can be given numerically (like @code{0x0147})
-or symbolically (like @code{"found,showname,square"}.  Some numeric
-values are reused for different object types.  The table below lists
-the numeric value followed by the symbolic name.
-
-Explanation of each bit can be found in flag_str.c
-
-%end-doc */
+/*** object flags ***/
 typedef enum {
 	PCB_FLAG_NO           = 0x00000,
 	PCB_FLAG_PIN          = 0x00001,
@@ -102,18 +87,6 @@ typedef enum {
 	PCB_FLAG_FLOATER      = 0x800000
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_values_t;
-
-/* ---------------------------------------------------------------------------
- * PCB flags - kept only for file format compatibility reasons; these bits
-   should be a mirror of booleans from the conf.
- */
-
-/*
-+@item 0x800000
-+snap to certain off-grid points.
-+@item 0x1000000
-+highlight lines and arcs when the crosshair is on one of their endpoints.
-*/
 
 #define PCB_FLAGS               0x01ffffff	/* all used flags */
 
