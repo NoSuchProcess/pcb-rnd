@@ -65,13 +65,6 @@ is documented for that purpose.
 
 static const char pcb_acts_Help[] = "h";
 static const char pcb_acth_Help[] = "Print a help message for commands.";
-
-/* %start-doc actions h
-
-@colonaction
-
-%end-doc */
-
 static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_INFO,
