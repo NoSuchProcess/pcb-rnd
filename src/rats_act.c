@@ -105,35 +105,9 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Connection[] = "Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)";
-
 static const char pcb_acth_Connection[] = "Searches connections of the object at the cursor position.";
-
-/* %start-doc actions Connection
-
-Connections found with this action will be highlighted in the
-``connected-color'' color and will have the ``found'' flag set.
-
-@table @code
-
-@item Find
-The net under the cursor is ``found''.
-
-@item ResetLinesAndPolygons
-Any ``found'' lines and polygons are marked ``not found''.
-
-@item ResetPinsAndVias
-Any ``found'' pins and vias are marked ``not found''.
-
-@item Reset
-All ``found'' objects are marked ``not found''.
-
-@end table
-
-%end-doc */
-
+/* DOC: connection.html */
 static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
