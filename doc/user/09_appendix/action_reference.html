@@ -12,12 +12,12 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20659
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20669
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#addrats">AddRats</a></td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
-<tr><td>ApplyVendor</td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
+<tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew(data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
 <tr><td><a href="action_details.html#attributes">Attributes</a></td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
@@ -174,7 +174,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
 <tr><td><a href="action_details.html#renumberblock">RenumberBlock</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
-<tr><td>RenumberBuffer</td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
+<tr><td><a href="action_details.html#renumberbuffer">RenumberBuffer</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td>ReplaceFootprint</td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint()</td><td></td>
 <tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])</td><td>report plugin</td>
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>

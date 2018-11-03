@@ -108,7 +108,7 @@ static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc);
 
 static const char apply_vendor_syntax[] = "ApplyVendor()";
 static const char apply_vendor_help[] = "Applies the currently loaded vendor drill table to the current design.";
-/* DOC: vendor.html */
+/* DOC: applyvendor.html */
 fgw_error_t pcb_act_ApplyVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_event(PCB_EVENT_BUSY, NULL);
