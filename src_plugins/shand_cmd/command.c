@@ -102,16 +102,7 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_LoadElementToBuffer[] = "le [name]";
 static const char pcb_acth_LoadElementToBuffer[] = "Loads an element (subcircuit, footprint) into the current buffer.";
-
-/* %start-doc actions le
-
-The filename and the searchpath (@emph{elementSearchPaths}) are passed to the
-element loader.  If no filename is specified a file select box will popup.
-
-@colonaction
-
-%end-doc */
-
+/* DOC: le.html */
 static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename;
