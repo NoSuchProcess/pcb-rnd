@@ -1,13 +1,3 @@
-
-/*
- * ************************** README *******************
- *
- * If the file format is modified in any way, update
- * PCB_FILE_VERSION in file.h
- *
- * ************************** README *******************
- */
-
 %{
 /*
  *                            COPYRIGHT
@@ -38,8 +28,7 @@
  *
  */
 
-/* grammar to parse ASCII input of PCB description
- */
+/* grammar to parse ASCII input of geda/PCB description (alien format) */
 
 #include "config.h"
 #include "flag.h"
