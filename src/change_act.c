@@ -591,19 +591,9 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_ChangeNonetlist[] =
 	"ChangeNonetlist(ToggleObject)\n" "ChangeNonetlist(SelectedElements)\n" "ChangeNonetlist(Selected|SelectedObjects)";
-
 static const char pcb_acth_ChangeNonetlist[] = "Changes the nonetlist flag of subcircuits.";
-
-/* %start-doc actions ChangeNonetlist
-
-Note that @code{Pins} means both pins and pads.
-
-%end-doc */
-
 static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
