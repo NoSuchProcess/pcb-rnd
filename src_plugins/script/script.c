@@ -61,9 +61,8 @@ static const char *script_pup_paths[] = {
 	NULL
 };
 
-static void script_unload_entry(htsp_entry_t *e)
+static void script_free(script_t *s)
 {
-	script_t *s = (script_t *)e->value;
 	if (s->obj != NULL)
 		fgw_obj_unreg(&pcb_fgw, s->obj);
 	if (s->pup != NULL)
@@ -71,6 +70,12 @@ static void script_unload_entry(htsp_entry_t *e)
 	free(s->id);
 	free(s->fn);
 	free(s);
+}
+
+static void script_unload_entry(htsp_entry_t *e)
+{
+	script_t *s = (script_t *)e->value;
+	script_free(s);
 	e->key = NULL;
 	htsp_delentry(&scripts, e);
 }
@@ -121,13 +126,15 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	s->id = pcb_strdup(id);
 	s->fn = pcb_strdup(fn);
 	s->lang = pcb_strdup(lang);
-	htsp_set(&scripts, s->id, s);
 
 	s->obj = fgw_obj_new(&pcb_fgw, s->id, s->lang, s->fn, NULL);
 	if (s->obj == NULL) {
+		script_free(s);
 		pcb_message(PCB_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
 		return -1;
 	}
+
+	htsp_set(&scripts, s->id, s);
 	return 0;
 }
 
