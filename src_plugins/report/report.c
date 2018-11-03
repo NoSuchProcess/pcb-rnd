@@ -121,14 +121,8 @@ static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static const char pcb_acts_reportdialog[] = "ReportObject()";
-
 static const char pcb_acth_reportdialog[] = "Report on the object under the crosshair";
-
-/* %start-doc actions ReportDialog
-
-This is a shortcut for @code{Report(Object)}.
-
-%end-doc */
+/* DOC: reportdialog.html */
 
 #define gen_locked(obj) (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) ? "It is LOCKED.\n" : "")
 #define gen_term(obj) \
