@@ -1857,11 +1857,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 const char pcb_acts_chkview[] = "ChkView(layerid)\n";
 const char pcb_acth_chkview[] = "Return 1 if layerid is visible.";
-
-/* %start-doc actions ChkView
-Return 1 if layerid is visible. Intended for meu item 'checked' fields.
-%end-doc */
-
+/* DOC: chkview.html */
 static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layer_id_t lid;
