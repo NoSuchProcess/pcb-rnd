@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20671
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20673
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -147,7 +147,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
 <tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(Push)<br>PasteBuffer(Pop)</td><td></td>
 <tr><td>Pinout2</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
-<tr><td>PolyCombine</td><td></td><td></td><td>polycombine plugin</td>
+<tr><td><a href="action_details.html#polycombine">PolyCombine</a></td><td></td><td></td><td>polycombine plugin</td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
 <tr><td>PolyNew</td><td>Create an empty polygon. For now data must be "pcb". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.</td><td>PolyNew(data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
 <tr><td>PolyNewEnd</td><td>Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.</td><td>PolyNewEnd(data, layer, poly)</td><td>act_draw</td>
@@ -155,7 +155,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>PolyNewFromRectangle</td><td>Create a rectangular polygon. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>PolyNewFromRectangle(data, layer, x1, y1, x2, y2, clearance, flags)</td><td>act_draw</td>
 <tr><td>PolyNewPoints</td><td>Add a list of points to a polygon created by PolyNew. Returns 0 on success.</td><td>PolyNewPoints(poly, ptlist)</td><td>act_draw</td>
 <tr><td>PolyOffs</td><td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td><td>PolyOffs(offset)</td><td>lib_polyhelp</td>
-<tr><td>PolyStitch</td><td></td><td></td><td>polystitch plugin</td>
+<tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>

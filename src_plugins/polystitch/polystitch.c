@@ -10,13 +10,6 @@
  * Mostly rewritten for poly holes by Tibor 'Igor2' Palinkas in 2018.
  *
  * Original source: http://www.delorie.com/pcb/polystitch.c
- *
- * Usage: PolyStitch()
- *
- * The polygon under the cursor (based on closest-corner) is stitched
- * together with the polygon surrounding it on the same layer.
- * Use with pstoedit conversions where there's a "hole" in the shape -
- * select the hole.
  */
 
 #include <stdio.h>
