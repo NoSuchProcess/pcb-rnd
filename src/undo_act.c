@@ -113,20 +113,7 @@ static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList)";
 
 static const char pcb_acth_Undo[] = "Undo recent changes.";
 
-/* %start-doc actions Undo
-
-The unlimited undo feature of @code{Pcb} allows you to recover from
-most operations that materially affect you work.  Calling
-@code{pcb_undo()} without any parameter recovers from the last (non-undo)
-operation. @code{ClearList} is used to release the allocated
-memory. @code{ClearList} is called whenever a new layout is started or
-loaded. See also @code{Redo} and @code{Atomic}.
-
-Note that undo groups operations by serial number; changes with the
-same serial number will be undone (or redone) as a group.  See
-@code{Atomic}.
-
-%end-doc */
+/* DOC: undo.html */
 
 fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

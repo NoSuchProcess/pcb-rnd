@@ -1,0 +1,11 @@
+The unlimited undo feature of pcb-rnd allows you to recover from
+most operations that materially affect you work.  Calling
+<act>pcb_undo()</act> without any parameter recovers from the last (non-undo)
+operation. <arg>ClearList</arg> is used to release the allocated
+memory. <arg>ClearList</arg> is called whenever a new layout is started or
+loaded. See also <act>Redo</act>.
+<p>
+Note that undo groups operations by serial number; changes with the
+same serial number will be undone (or redone) as a group.  See
+<act>Atomic</act>.
+
