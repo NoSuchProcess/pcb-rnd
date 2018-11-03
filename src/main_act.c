@@ -355,11 +355,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_ExecuteFile[] = "ExecuteFile(filename)";
 static const char pcb_acth_ExecuteFile[] = "Run actions from the given file.";
-/* %start-doc actions ExecuteFile
-
-Lines starting with @code{#} are ignored.
-
-%end-doc */
+/* DOC: executefile.html */
 fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	FILE *fp;
