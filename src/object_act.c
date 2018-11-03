@@ -885,7 +885,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
-static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)";
+static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)\nMoveLayer(lid,group,gid)";
 static const char pcb_acth_MoveLayer[] = "Moves/Creates/Deletes Layers.";
 
 /* %start-doc actions MoveLayer
@@ -960,6 +960,13 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (strcmp(a1, "ga") == 0) {
 		PCB_ACT_IRES(pcb_layer_move(PCB, -1, 1, pcb_actd_EditGroup_gid));
+		return 0;
+	}
+	else if (strcmp(a1, "group") == 0) {
+		long gid;
+		PCB_ACT_CONVARG(3, FGW_LONG, MoveLayer, gid = argv[3].val.nat_long);
+		pcb_layer_move_to_group(PCB, old_index, gid);
+		PCB_ACT_IRES(0);
 		return 0;
 	}
 	else if (strcmp(a1, "up") == 0) {
