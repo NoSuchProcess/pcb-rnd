@@ -25,33 +25,27 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <libfungw/fungw.h>
 
-#include "src/actions.h"
 #include "src/error.h"
 
-static fgw_error_t pcb_act_ExtBar(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t extbar(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "PLEASE CONSIDER DEVELOPING A CORE PLUGIN INSTEAD!\n");
-	PCB_ACT_IRES(0);
+	res->val.nat_int = 0;
+	res->type = FGW_INT;
 	return 0;
 }
 
-int pplg_check_ver_ext_bar(int ver_needed) { return 0; }
-
-void pplg_uninit_ext_bar(void)
+void pcb_rnd_uninit(fgw_obj_t *obj)
 {
 	fprintf(stderr, "EXT BAR uninit\n");
-	pcb_remove_actions_by_cookie(ext_bar_cookie);
 }
 
-#include "src/dolists.h"
-
-int pplg_init_ext_bar(void)
+int pcb_rnd_init(fgw_obj_t *obj, const char *opts)
 {
-	PCB_API_CHK_VER; /* for external plugins this is CRITICAL */
+	fgw_func_reg(obj, "extbar", extbar); /* need to register with lowercase name */
 
-	fgw_func_reg(&pcb_fgw, "extbar", ExtBar); /* need to register with lowercase name */
-
-	fprintf(stderr, "EXT BAR init\n");
+	fprintf(stderr, "EXT BAR init with '%s'\n", opts);
 	return 0;
 }
