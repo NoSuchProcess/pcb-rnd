@@ -738,31 +738,9 @@ static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_SetValue[] = "SetValue(Grid|Line|LineSize|Text|TextScale, delta)";
-
 static const char pcb_acth_SetValue[] = "Change various board-wide values and sizes.";
-
-/* %start-doc actions SetValue
-
-@table @code
-
-@item Grid
-Sets the grid spacing.
-
-@item Line
-@item LineSize
-Changes the thickness of new lines.
-
-@item Text
-@item TextScale
-Changes the size of new text.
-
-@end table
-
-%end-doc */
-
+/* DOC: setvalue.html */
 static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int fnc_id;
