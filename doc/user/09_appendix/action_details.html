@@ -646,6 +646,52 @@ The
 <a href="#redo">redo</a>
  action allows you to recover from the last undo command. You might want to do this if you thought that undo was going to revert something other than what it actually did (in case you are confused about which operations are un-doable), or if you have been backing up through a long undo list and over-shoot your stopping point.  Any change that is made since the undo in question will trim the redo list.  For example if you add ten lines, then undo three of them you could use redo to put them back, but if you move a line on the board before performing the redo, you will lose the ability to "redo" the three "undone" lines. 
 
+<h3 id="saveto">saveto</h3>
+<p>
+Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Layout  
+<td>
+ Saves the current layout.   
+<tr>
+
+<th>
+ LayoutAs  
+<td>
+ Saves the current layout, and remembers the filename used.   
+<tr>
+
+<th>
+ AllConnections  
+<td>
+ Save all connections to a file.   
+<tr>
+
+<th>
+ AllUnusedPins  
+<td>
+ List all unused pins to a file.   
+<tr>
+
+<th>
+ ElementConnections  
+<td>
+ Save connections to the subcircuit at the cursor to a file.   
+<tr>
+
+<th>
+ PasteBuffer  
+<td>
+ Save the content of the active Buffer to a file. This is       the graphical way to create a footprint.  
+</table>
+ 
+
 <h3 id="selectlayer">selectlayer</h3>
 <p>
 The specified layer becomes the currently active layer.  It is made visible if it is not already visible 

@@ -173,33 +173,7 @@ static const char pcb_acts_SaveTo[] =
 	"SaveTo(Layout|LayoutAs,filename,[fmt])\n"
 	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename,[fmt])";
 static const char pcb_acth_SaveTo[] = "Saves data to a file.";
-
-/* %start-doc actions SaveTo
-
-@table @code
-
-@item Layout
-Saves the current layout.
-
-@item LayoutAs
-Saves the current layout, and remembers the filename used.
-
-@item AllConnections
-Save all connections to a file.
-
-@item AllUnusedPins
-List all unused pins to a file.
-
-@item ElementConnections
-Save connections to the subcircuit at the cursor to a file.
-
-@item PasteBuffer
-Save the content of the active Buffer to a file. This is the graphical way to create a footprint.
-
-@end table
-
-%end-doc */
-
+/* DOC: saveto.html */
 fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
