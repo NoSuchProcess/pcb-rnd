@@ -1,5 +1,3 @@
-
-
 %{
 /*
  *                            COPYRIGHT
@@ -29,8 +27,8 @@
  *
  */
 
-/* lexical definitions to parse ASCII input of PCB and Element description
- */
+/* lexical definitions to parse ASCII input of geda/pcb PCB and Element
+   description */
 
 #include "config.h"
 #include "conf_core.h"
