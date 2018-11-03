@@ -425,21 +425,8 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 /* ---------------------------------------------------------------------------  */
 
 static const char pcb_acts_ChangePinName[] = "ChangePinName(Refdes,PinNumber,PinName)";
-
 static const char pcb_acth_ChangePinName[] = "Sets the name of a specific pin on a specific subcircuit.";
-
-/* %start-doc actions ChangePinName
-
-This can be especially useful for annotating pin names from a
-schematic to the layout without requiring knowledge of the pcb file
-format.
-
-@example
-ChangePinName(U3, 7, VCC)
-@end example
-
-%end-doc */
-
+/* DOC: changepinname.html */
 static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_cardinal_t changed = 0;

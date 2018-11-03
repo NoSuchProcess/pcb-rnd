@@ -47,6 +47,12 @@ compile()
 		next
 	}
 
+	/^<example>/ {
+		ex = read_tag("example")
+		print "Example:", ex, "<br>"
+		next
+	}
+
 	/^<act>/ {
 		act = tolower(read_tag("act"))
 		print "<a href=" q "#" act q ">" act "</a>"
