@@ -50,33 +50,9 @@
 
 #include "tool.h"
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_Atomic[] = "Atomic(Save|Restore|Close|Block)";
-
 static const char pcb_acth_Atomic[] = "Save or restore the undo serial number.";
 /* DOC: atomic.html */
-
-/* %start-doc actions Atomic
-
-@table @code
-
-@item Save
-Saves the undo serial number.
-
-@item Restore
-Returns it to the last saved number.
-
-@item Close
-Sets it to 1 greater than the last save.
-
-@item Block
-Does a Restore if there was nothing to undo, else does a Close.
-
-@end table
-
-%end-doc */
-
 fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
