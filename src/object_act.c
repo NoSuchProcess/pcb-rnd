@@ -790,54 +790,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)\nMoveLayer(lid,group,gid)";
 static const char pcb_acth_MoveLayer[] = "Moves/Creates/Deletes Layers.";
-
-/* %start-doc actions MoveLayer
-
-Moves a layer, creates a new layer, or deletes a layer.
-
-@table @code
-
-@item old
-The is the layer number to act upon.  Allowed values are:
-@table @code
-
-@item c
-Currently selected layer.
-
-@item -1
-Create a new layer.
-
-@item number
-An existing layer number.
-
-@end table
-
-@item new
-Specifies where to move the layer to.  Allowed values are:
-@table @code
-@item -1
-Deletes the layer.
-
-@item up
-Moves the layer up.
-
-@item down
-Moves the layer down.
-
-@item step+
-Moves the layer towards the end of its group's list.
-
-@item step-
-Moves the layer towards the beginning of its group's list.
-
-@item c
-Creates a new layer.
-
-@end table
-
-@end table
-
-%end-doc */
+/* DOC: movelayer.html */
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

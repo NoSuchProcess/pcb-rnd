@@ -1,0 +1,25 @@
+Moves a layer, creates a new layer, or deletes a layer.
+<p>
+Arguments:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> old
+	<td> The is the layer number to act upon.  Allowed values are:
+	     <ul>
+	     <li> c = Currently selected layer.
+	     <li> -1 = Create a new layer.
+	     <li> <i>number</i> = An existing layer number.
+	     </ul>
+	<tr><th> new
+	<td> Specifies where to move the layer to.  Allowed values are:
+	     <ul>
+	     <li> -1 = Deletes the layer.
+	     <li> up = Moves the layer up (TODO: is this supported?)
+	     <li> down = Moves the layer down (TODO: is this supported?)
+	     <li> step+ = Moves the layer towards the end of its group's list.
+	     <li> step- = Moves the layer towards the beginning of its group's list.
+	     <li> c = Creates a new layer.
+	     <li> grp <i>gid</i> = move layer into group; target group ID is the 3rd argument
+	     </ul>
+
+</table>
