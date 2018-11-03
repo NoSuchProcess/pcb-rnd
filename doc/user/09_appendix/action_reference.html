@@ -12,12 +12,13 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 19712
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20557
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
 <tr><td>AddRats</td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
 <tr><td>ApplyVendor</td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
+<tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew(data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td>Atomic</td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
 <tr><td>Attributes</td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
 <tr><td>AutoPlaceSelected</td><td>Auto-place selected components.</td><td>AutoPlaceSelected()</td><td>autoplace plugin</td>
@@ -93,6 +94,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>FreeRotateBuffer</td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>pcb_act_FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
+<tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_draw</td>
 <tr><td>GetXY</td><td>Get a coordinate.</td><td>GetXY()</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
@@ -102,6 +104,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
 <tr><td>LibraryChanged</td><td>Tells the GUI that the libraries have changed.</td><td>LibraryChanged()</td><td>oldactions plugin</td>
+<tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>LineNew(data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
 <tr><td>ListRotations</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ListScripts</td><td>List a fungw script</td><td>ListScripts([pat])</td><td>script plugin</td>
 <tr><td>LoadDsnFrom</td><td>Loads the specified routed dsn file.</td><td>LoadDsnFrom(filename)</td><td>dsn importer</td>
@@ -118,6 +121,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>LoadScript</td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
 <tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file. Type can be: netlist or footprint.</td><td>LoadTedaxFrom(netlist|footprint, filename)</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
+<tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td>LoadVendorFrom</td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
 <tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td></td>
@@ -127,7 +131,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>Mode</td><td>Change or use the tool mode.</td><td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td><td></td>
 <tr><td>MorphPolygon</td><td>Converts dead polygon islands into separate polygons.</td><td>pcb_poly_morph(Object|Selected)</td><td></td>
-<tr><td>MoveLayer</td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)</td><td></td>
+<tr><td>MoveLayer</td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
 <tr><td>MoveObject</td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td>MoveToCurrentLayer</td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
 <tr><td>NetlistChanged</td><td>Tells the GUI that the netlist has changed.</td><td>NetlistChanged()</td><td>oldactions plugin</td>
@@ -142,11 +146,18 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
 <tr><td>PasteBuffer</td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(Push)<br>PasteBuffer(Pop)</td><td></td>
+<tr><td>Pinout2</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
 <tr><td>PolyCombine</td><td></td><td></td><td>polycombine plugin</td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
+<tr><td>PolyNew</td><td>Create an empty polygon. For now data must be "pcb". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.</td><td>PolyNew(data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
+<tr><td>PolyNewEnd</td><td>Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.</td><td>PolyNewEnd(data, layer, poly)</td><td>act_draw</td>
+<tr><td>PolyNewFromPoints</td><td>Create a polygon. For now data must be "pcb". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.</td><td>PolyNewFromRectangle(data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
+<tr><td>PolyNewFromRectangle</td><td>Create a rectangular polygon. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>PolyNewFromRectangle(data, layer, x1, y1, x2, y2, clearance, flags)</td><td>act_draw</td>
+<tr><td>PolyNewPoints</td><td>Add a list of points to a polygon created by PolyNew. Returns 0 on success.</td><td>PolyNewPoints(poly, ptlist)</td><td>act_draw</td>
 <tr><td>PolyOffs</td><td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td><td>PolyOffs(offset)</td><td>lib_polyhelp</td>
 <tr><td>PolyStitch</td><td></td><td></td><td>polystitch plugin</td>
 <tr><td>Polygon</td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
+<tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
 <tr><td>PrintCalibrate</td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td></td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
@@ -155,6 +166,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>PrintUsage</td><td>Print command line arguments of pcb-rnd or a plugin loaded.</td><td>PrintUsage()<br>PrintUsage(plugin)</td><td></td>
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
 <tr><td>PromptFor</td><td>Prompt for a response.</td><td>PromptFor([message[,default]])</td><td></td>
+<tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew(data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>Puller</td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
 <tr><td>Quit</td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
 <tr><td>Redo</td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
@@ -188,17 +200,20 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>SwitchHID</td><td>Switch to another HID.</td><td>SwitchHID(lesstif|gtk|batch)</td><td></td>
 <tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
+<tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.</td><td>TextNew(data, layer, x, y, rot, scale, thickness, test_string, flags)</td><td>act_draw</td>
 <tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
 <tr><td>ToggleView</td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
 <tr><td>Undo</td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
+<tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
 <tr><td>UnloadScript</td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
 <tr><td>Unselect</td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
 <tr><td>align</td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>aligntext</td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
+<tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script)<br>cam(call, jobname)</td><td>cam exporter</td>
@@ -207,6 +222,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
 <tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
 <tr><td>d1</td><td>debug action for development</td><td>d1()</td><td>diag plugin</td>
+<tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool, [label]) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max, [label]) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>dialogs plugin</td>
 <tr><td>ddraft</td><td>Enter 2d drafting CLI mode or execute command</td><td>ddraft([command])</td><td>ddraft plugin</td>
 <tr><td>distribute</td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>distributetext</td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
@@ -244,6 +260,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>propedit</td><td>Run the property editor</td><td>propedit()</td><td>propedit</td>
 <tr><td>propset</td><td>Change the named property of all selected objects to/by value</td><td>propset(name, value)</td><td>propedit</td>
 <tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
+<tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
 <tr><td>py</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
@@ -258,6 +275,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
 <tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
 <tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
+<tr><td>sktransform</td><td>Transform sketch to geometrical wiring</td><td>sktransform(rect|oct|alldir)</td><td>sketch_route plugin</td>
 <tr><td>smartdisperse</td><td>TODO</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>stroke</td><td>Various gesture recognition related functions</td><td>stroke(gesture, seq)</td><td>stroke plugin</td>
