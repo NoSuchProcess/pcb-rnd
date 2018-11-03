@@ -23,6 +23,7 @@ compile()
 		sub(".html$", "", current)
 		print ""
 		print "<h3 id=" q current q ">" current "</h3>"
+		print "<p>"
 	}
 
 	function strip(s) {
