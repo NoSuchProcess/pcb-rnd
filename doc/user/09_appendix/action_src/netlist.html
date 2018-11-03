@@ -1,0 +1,19 @@
+Each of these actions apply to a specified set of nets. <arg>net</arg> and
+<arg>pin</arg> are patterns which match one or more nets or pins; these
+patterns may be full names or regular expressions.  If an exact match
+is found, it is the only match; if no exact match is found,
+<b>then</b> the pattern is tried as a regular expression.
+<p>
+If neither <arg>net</arg> nor <arg>pin</arg> are specified, all nets apply.
+If <arg>net</arg> is specified but not <arg>pin</arg>, all nets matching
+<arg>net</arg> apply.  If both are specified, nets which match <arg>net</arg>
+and contain a pin matching <arg>pin</arg> apply.
+<p>
+<arg>freeze</arg>, <arg>thaw</arg> and <arg>forcethaw</arg>
+temporarily prevents changes to the netlist from being reflected in
+the GUI. For example, if you need to make multiple changes, you
+<arg>freeze</arg> the netlist, make the changes, then <arg>thaw</arg> it.
+Note that freeze/thaw requests may nest, with the netlist being fully thawed
+only when all pending freezes are thawed.  You can bypass the nesting
+by using <arg>forcethaw</arg>, which resets the freeze count and immediately
+updates the GUI.

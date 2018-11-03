@@ -158,18 +158,9 @@ static const char pcb_acts_Netlist[] =
 
 static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 
+/* DOC: netlist.html */
+
 /* %start-doc actions Netlist
-
-Each of these actions apply to a specified set of nets.  @var{net} and
-@var{pin} are patterns which match one or more nets or pins; these
-patterns may be full names or regular expressions.  If an exact match
-is found, it is the only match; if no exact match is found,
-@emph{then} the pattern is tried as a regular expression.
-
-If neither @var{net} nor @var{pin} are specified, all nets apply.  If
-@var{net} is specified but not @var{pin}, all nets matching @var{net}
-apply.  If both are specified, nets which match @var{net} and contain
-a pin matching @var{pin} apply.
 
 @table @code
 
@@ -202,12 +193,7 @@ Called after a list of add's, this sorts the netlist.
 @itemx thaw
 @itemx forcethaw
 Temporarily prevents changes to the netlist from being reflected in
-the GUI.  For example, if you need to make multiple changes, you
-freeze the netlist, make the changes, then thaw it.  Note that
-freeze/thaw requests may nest, with the netlist being fully thawed
-only when all pending freezes are thawed.  You can bypass the nesting
-by using forcethaw, which resets the freeze count and immediately
-updates the GUI.
+the GUI.
 
 @end table
 
