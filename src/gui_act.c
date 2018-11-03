@@ -1654,14 +1654,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 const char pcb_acts_selectlayer[] = "SelectLayer(1..MAXLAYER|Silk|Rats)";
 const char pcb_acth_selectlayer[] = "Select which layer is the current layer.";
-
-/* %start-doc actions SelectLayer
-
-The specified layer becomes the currently active layer.  It is made
-visible if it is not already visible
-
-%end-doc */
-
+/* DOC: selectlayer.html */
 static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layer_id_t lid;
