@@ -8,10 +8,6 @@
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  *
- * Usage: PolyCombine()
- *
- * The selected polygons are combined together according to the ordering
- * of their points.
  */
 
 #include <stdio.h>
@@ -264,6 +260,7 @@ static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_
 	return accumulate;
 }
 
+/* DOC: polycombine.html */
 static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_polyarea_t *rs;
