@@ -2027,14 +2027,7 @@ static pcb_hid_attr_val_t printer_calibrate_values[3];
 
 const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
 const char pcb_acth_PrintCalibrate[] = N_("Calibrate the printer.");
-
-/* %start-doc actions PrintCalibrate
-
-This will print a calibration page, which you would measure and type
-the measurements in, so that future printouts will be more precise.
-
-%end-doc */
-
+/* DOC: printcalibrate.html */
 fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_hid_t *printer = pcb_hid_find_printer();
