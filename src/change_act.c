@@ -616,15 +616,7 @@ static const char pcb_acts_ChangeJoin[] = "ChangeJoin(ToggleObject|SelectedLines
 
 static const char pcb_acth_ChangeJoin[] = "Changes the join (clearance through polygons) of objects.";
 
-/* %start-doc actions ChangeJoin
-
-The join flag determines whether a line or arc, drawn to intersect a
-polygon, electrically connects to the polygon or not.  When joined,
-the line/arc is simply drawn over the polygon, making an electrical
-connection.  When not joined, a gap is drawn between the line and the
-polygon, insulating them from each other.
-
-%end-doc */
+/* DOC: changejoin.html */
 
 static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

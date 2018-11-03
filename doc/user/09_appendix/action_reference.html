@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20559
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20560
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -32,7 +32,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ChangeDrillSize</td><td>Changes the drilling hole size of objects.</td><td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td><td></td>
 <tr><td>ChangeFlag</td><td>Sets or clears flags on objects.</td><td>ChangeFlag(Object|Selected|SelectedObjects, flag, value)<br>ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)<br>ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)<br>ChangeFlag(SelectedElements, flag, value)<br>flag = thermal | join<br>value = 0 | 1</td><td></td>
 <tr><td>ChangeHole</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td>ChangeJoin</td><td>Changes the join (clearance through polygons) of objects.</td><td>ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected)</td><td></td>
+<tr><td><a href="action_details.html#changejoin">ChangeJoin</a></td><td>Changes the join (clearance through polygons) of objects.</td><td>ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected)</td><td></td>
 <tr><td>ChangeName</td><td>Sets the name (or pin number) of objects.</td><td>ChangeName(Object)<br>ChangeName(Layout|Layer)</td><td></td>
 <tr><td>ChangeNonetlist</td><td>Changes the nonetlist flag of subcircuits.</td><td>ChangeNonetlist(ToggleObject)<br>ChangeNonetlist(SelectedElements)<br>ChangeNonetlist(Selected|SelectedObjects)</td><td></td>
 <tr><td>ChangeOctagon</td><td></td><td></td><td>oldactions plugin</td>

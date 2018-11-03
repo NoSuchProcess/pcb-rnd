@@ -16,6 +16,10 @@ This action allows making multiple-action bindings into an atomic operation that
 <i>Block</i>
 , which checks to see if the deletions or additions actually did anything.  If not, the serial number is set to the saved number, as there's nothing to undo.  If something did happen, the serial number is incremented so that these actions are counted as a single undo step. 
 
+<h3 id="changejoin">changejoin</h3>
+<p>
+The join flag determines whether a line or arc, drawn to intersect a polygon, electrically connects to the polygon or not.  When joined, the line/arc is simply drawn over the polygon, making an electrical connection.  When not joined, a gap is drawn between the line and the polygon, insulating them from each other. 
+
 <h3 id="netlist">netlist</h3>
 <p>
 Each of these actions apply to a specified set of nets. 
