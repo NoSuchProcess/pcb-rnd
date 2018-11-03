@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20654
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20659
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -173,7 +173,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path|cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
-<tr><td>RenumberBlock</td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
+<tr><td><a href="action_details.html#renumberblock">RenumberBlock</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td>RenumberBuffer</td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td>ReplaceFootprint</td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint()</td><td></td>
 <tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])</td><td>report plugin</td>
@@ -212,7 +212,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
 <tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td>aligntext</td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
+<tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -224,8 +224,8 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>d1</td><td>debug action for development</td><td>d1()</td><td>diag plugin</td>
 <tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool, [label]) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max, [label]) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>dialogs plugin</td>
 <tr><td>ddraft</td><td>Enter 2d drafting CLI mode or execute command</td><td>ddraft([command])</td><td>ddraft plugin</td>
-<tr><td>distribute</td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td>distributetext</td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
+<tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#distributetext">distributetext</a></td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
 <tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
 <tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>

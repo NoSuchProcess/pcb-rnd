@@ -9,15 +9,6 @@
  *
  * Original source: http://www.delorie.com/pcb/renumberblock.c
  *
- * Usage: RenumberBlock(oldnum,newnum)
- *
- * All selected elements are renumbered by adding (newnum-oldnum) to
- * the existing number.  I.e. RenumberBlock(100,200) will change R213
- * to R313.
- *
- * Usage: RenumberBuffer(oldnum,newnum)
- *
- * Same, but the paste buffer is renumbered.
  */
 
 #include <stdio.h>
@@ -36,7 +27,7 @@
 
 const char pcb_acts_RenumberBlock[] = "RenumberBlock(old_base,new_base)\n";
 const char pcb_acth_RenumberBlock[] = "TODO";
-
+/* DOC: renumberblock.html */
 fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char num_buf[15];
@@ -81,7 +72,7 @@ fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 const char pcb_acts_RenumberBuffer[] = "RenumberBlock(old_base,new_base)\n";
 const char pcb_acth_RenumberBuffer[] = "TODO";
-
+/* DOC: renumberbuffer.html */
 fgw_error_t pcb_act_RenumberBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char num_buf[15];
