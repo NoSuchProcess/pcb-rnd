@@ -84,6 +84,32 @@ Pops up a dialog letting the user edit the attributes of the pcb, a subcircuit, 
 <p>
 Attempts to re-arrange the selected components such that the nets connecting them are minimized.  Note that you cannot undo this. 
 
+<h3 id="autoroute">autoroute</h3>
+<p>
+Before autorouting, it's important to set up a few things.  First, make sure any layers you aren't using are disabled, else the autorouter may use them.  Next, make sure the current routing styles are set accordingly.  Last, make sure "new lines clear polygons" is set, in case you eventually want to add a copper pour. 
+<p>
+ Autorouting takes a while.  During this time, the program may not be responsive. 
+<p>
+ Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ AllRats  
+<td>
+ Attempt to autoroute all rats.   
+<tr>
+
+<th>
+ SelectedRats  
+<td>
+ Attempt to autoroute the selected rats. 
+</table>
+ 
+
 <h3 id="changeclearsize">changeclearsize</h3>
 <p>
 If the solder mask is currently showing, this action changes the solder mask cutout size. If the mask is not showing, this action changes the polygon clearance. 

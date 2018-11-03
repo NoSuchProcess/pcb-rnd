@@ -39,36 +39,9 @@
 #include "event.h"
 #include "funchash_core.h"
 
-/* action routines for the autorouter
- */
-
 static const char pcb_acts_AutoRoute[] = "AutoRoute(AllRats|SelectedRats)";
-
 static const char pcb_acth_AutoRoute[] = "Auto-route some or all rat lines.";
-
-/* %start-doc actions AutoRoute
-
-@table @code
-
-@item AllRats
-Attempt to autoroute all rats.
-
-@item SelectedRats
-Attempt to autoroute the selected rats.
-
-@end table
-
-Before autorouting, it's important to set up a few things.  First,
-make sure any layers you aren't using are disabled, else the
-autorouter may use them.  Next, make sure the current line and via
-styles are set accordingly.  Last, make sure "new lines clear
-polygons" is set, in case you eventually want to add a copper pour.
-
-Autorouting takes a while.  During this time, the program may not be
-responsive.
-
-%end-doc */
-
+/* DOC: autoroute.html */
 static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
