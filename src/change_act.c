@@ -722,20 +722,8 @@ static const char pcb_acts_ClrFlag[] =
 	"ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)\n"
 	"ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)\n"
 	"ClrFlag(SelectedElements, flag)\n" "flag = thermal | join";
-
 static const char pcb_acth_ClrFlag[] = "Clears flags on objects.";
-
-/* %start-doc actions ClrFlag
-
-Turns the given flag off, regardless of its previous setting.  See
-@code{ChangeFlag}.
-
-@example
-ClrFlag(SelectedLines,join)
-@end example
-
-%end-doc */
-
+/* DOC: clrflag.html */
 static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;
