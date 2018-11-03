@@ -10,16 +10,6 @@
  *
  * Original source was: http://www.delorie.com/pcb/boardflip.c
  *
- * Usage: Boardflip()
- *
- * All objects on the board are up-down flipped.
- *
- * Command line board flipping:
- *
- * pcb --action-string "BoardFlip() SaveTo(LayoutAs,$OUTFILE) Quit()" $INFILE
- *
- * To flip the board physically, use BoardFlip(sides)
- *
  */
 
 #include <stdio.h>
@@ -169,6 +159,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 
 static const char pcb_acts_boardflip[] = "BoardFlip([sides])";
 static const char pcb_acth_boardflip[] = "Mirror the board over the x axis, optionally mirroring sides as well.";
+/* DOC: boardflip.html */
 static fgw_error_t pcb_act_boardflip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2;

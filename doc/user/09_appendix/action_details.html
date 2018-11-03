@@ -126,6 +126,10 @@ Lefts, Rights, Tops, Bottoms, Centers
 <p>
  Defaults are Lefts/Tops, First 
 
+<h3 id="applyvendor">applyvendor</h3>
+<p>
+This will modify all of your drill holes to match the list of allowed sizes for your vendor. 
+
 <h3 id="atomic">atomic</h3>
 <p>
 This action allows making multiple-action bindings into an atomic operation that will be undone by a single Undo command.  For example, to optimize rat lines, you'd delete the rats and re-add them.  To group these into a single undo, you'd want the deletions and the additions to have the same undo serial number.  So, you 
@@ -201,6 +205,18 @@ Before autorouting, it's important to set up a few things.  First, make sure any
  Attempt to autoroute the selected rats. 
 </table>
  
+
+<h3 id="boardflip">boardflip</h3>
+<p>
+All objects on the board are up-down flipped (mirrored over the x axis). 
+<p>
+ Command line board flipping: 
+<pre>
+ echo " BoardFlip() SaveTo(LayoutAs,$OUTFILE) Quit() " | pcb $INFILE 
+</pre>
+ 
+<p>
+ To flip the board physically, use BoardFlip(sides) 
 
 <h3 id="changeclearsize">changeclearsize</h3>
 <p>
@@ -1889,10 +1905,6 @@ Arguments:
  Unselect all connections with the "found" flag set. 
 </table>
    
-
-<h3 id="vendor">vendor</h3>
-<p>
-This will modify all of your drill holes to match the list of allowed sizes for your vendor. 
 
 <h3 id="w">w</h3>
 <p>

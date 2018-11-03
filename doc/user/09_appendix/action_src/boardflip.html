@@ -1,0 +1,12 @@
+All objects on the board are up-down flipped (mirrored over the x axis).
+<p>
+Command line board flipping:
+<pre>
+echo "
+BoardFlip()
+SaveTo(LayoutAs,$OUTFILE)
+Quit()
+" | pcb $INFILE
+</pre>
+<p>
+To flip the board physically, use BoardFlip(sides)
