@@ -70,11 +70,6 @@
 
 static const char pcb_acts_fontedit[] = "FontEdit()";
 static const char pcb_acth_fontedit[] = "Convert the current font to a PCB for editing.";
-
-/* %start-doc actions FontEdit
-
-%end-doc */
-
 static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 {
 	pcb_layer_id_t lid;
@@ -235,11 +230,6 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_fontsave[] = "FontSave()";
 static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.";
-
-/* %start-doc actions FontSave
-
-%end-doc */
-
 static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_font_t *font;
