@@ -1181,41 +1181,7 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_Cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
 static const char pcb_acth_Cursor[] = "Move the cursor.";
-/* %start-doc actions Cursor
-
-This action moves the mouse cursor.  Unlike other actions which take
-coordinates, this action's coordinates are always relative to the
-user's view of the board.  Thus, a positive @var{DeltaUp} may move the
-cursor towards the board origin if the board is inverted.
-
-Type is one of @samp{Pan} or @samp{Warp}.  @samp{Pan} causes the
-viewport to move such that the crosshair is under the mouse cursor.
-@samp{Warp} causes the mouse cursor to move to be above the crosshair.
-
-@var{Units} can be one of the following:
-
-@table @samp
-
-@item mil
-@itemx mm
-The cursor is moved by that amount, in board units.
-
-@item grid
-The cursor is moved by that many grid points.
-
-@item view
-The values are percentages of the viewport's view.  Thus, a pan of
-@samp{100} would scroll the viewport by exactly the width of the
-current view.
-
-@item board
-The values are percentages of the board size.  Thus, a move of
-@samp{50,50} moves you halfway across the board.
-
-@end table
-
-%end-doc */
-
+/* DOC: cursor.html */
 static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_unit_list_t extra_units_x = {

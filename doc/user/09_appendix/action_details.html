@@ -32,6 +32,76 @@ Return 1 if route_style_id matches pen.
 <p>
 Return 1 if layerid is visible. Intended for menu item 'checked' fields. 
 
+<h3 id="cursor">cursor</h3>
+<p>
+This action moves the mouse cursor.  Unlike other actions which take coordinates, this action's coordinates are always relative to the user's view of the board.  Thus, a positive 
+<i>DeltaUp</i>
+ may move the cursor away from the board origin if the board is inverted (flipped, looked from the bottom). 
+<p>
+ 
+<i>Type</i>
+ is one of 
+<i>
+Pan
+</i>
+ or 
+<i>
+Warp
+</i>
+. 
+<i>
+Pan
+</i>
+ causes the viewport to move such that the crosshair is under the mouse cursor. 
+<i>
+Warp
+</i>
+ causes the mouse cursor to move to be above the crosshair. 
+<p>
+ 
+<i>Units</i>
+ can be one of the following: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<td>
+mil
+<br>
+mm  
+<td>
+The cursor is moved by that amount, in board units.   
+<tr>
+
+<td>
+grid  
+<td>
+The cursor is moved by that many grid points.   
+<tr>
+
+<td>
+view  
+<td>
+The values are percentages of the viewport's view. Thus, a pan of      
+<i>
+100
+</i>
+ would scroll the viewport by exactly the width of the current view.    
+<tr>
+
+<td>
+board  
+<td>
+ The values are percentages of the board size. Thus, a move of       
+<i>
+50,50
+</i>
+ moves you halfway across the board.  
+</table>
+ 
+
 <h3 id="getxy">getxy</h3>
 <p>
 Prompts the user for a coordinate, if one is not already selected. 
