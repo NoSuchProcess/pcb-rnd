@@ -156,21 +156,7 @@ static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_LoadNetlist[] = "rn [name]";
 static const char pcb_acth_LoadNetlist[] = "Reads netlist.";
-
-/* %start-doc actions rn
-
-If no filename is given a file select box will pop up.  The file is
-read via the command defined by the @emph{Ratpcb_act_} resource. The
-command must send its output to @emph{stdout}.
-
-Netlists are used for generating rat's nests (see @ref{Rats Nest}) and
-for verifying the board layout (which is also accomplished by the
-@emph{Ratsnest} command).
-
-@colonaction
-
-%end-doc */
-
+/* DOC: rn.html */
 static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename;
