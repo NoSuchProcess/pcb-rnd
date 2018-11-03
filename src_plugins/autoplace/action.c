@@ -41,16 +41,8 @@
 #include "event.h"
 
 static const char autoplace_syntax[] = "AutoPlaceSelected()";
-
 static const char autoplace_help[] = "Auto-place selected components.";
-
-/* %start-doc actions AutoPlaceSelected
-
-Attempts to re-arrange the selected components such that the nets
-connecting them are minimized.  Note that you cannot undo this.
-
-%end-doc */
-
+/* DOC: autoplaceselected */
 static fgw_error_t pcb_act_AutoPlaceSelected(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_event(PCB_EVENT_BUSY, NULL);
