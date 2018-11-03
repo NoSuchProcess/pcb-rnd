@@ -117,20 +117,8 @@ fgw_error_t pcb_act_ApplyVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ************************************************************ */
-
 static const char unload_vendor_syntax[] = "UnloadVendor()";
-
 static const char unload_vendor_help[] = "Unloads the current vendor drill mapping table.";
-
-/* %start-doc actions UnloadVendor
-
-@cindex vendor map
-@cindex vendor drill table
-@findex UnloadVendor()
-
-%end-doc */
-
 fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	cached_drill = -1;
