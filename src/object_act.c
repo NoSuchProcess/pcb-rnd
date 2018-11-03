@@ -382,32 +382,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 
 static const char pcb_acts_ElementList[] = "ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)";
 static const char pcb_acth_ElementList[] = "Adds the given element if it doesn't already exist.";
-
-/* %start-doc actions elementlist
-
-@table @code
-
-@item Start
-Indicates the start of an subcircuit list; call this before any Need
-actions.
-
-@item Need
-Searches the board for an subcircuit with a matching refdes.
-
-If found, the value and footprint are updated.
-
-If not found, a new subcircuit is created with the given footprint and value.
-
-@item Done
-Compares the list of subcircuits needed since the most recent
-@code{start} with the list of subcircuits actually on the board.  Any
-subcircuits that weren't listed are selected, so that the user may delete
-them.
-
-@end table
-
-%end-doc */
-
+/* DOC: elementlist.html */
 static int number_of_footprints_not_found;
 
 static int parse_layout_attribute_units(const char *name, int def)

@@ -1,0 +1,26 @@
+Arguments:
+<p>
+<table border=1 cellspacing=0>
+
+	<td> 
+	<tr><th> @code
+
+	<tr><th> Start
+	<tr><th> Indicates the start of an subcircuit list; call this before any
+	         <arg>Need</arg> actions.
+
+	<tr><th> Need
+	<tr><th> Searches the board for an subcircuit with a matching refdes. <br>
+	         If found, the value and footprint are updated. <br>
+	         If not found, a new subcircuit is created with the given
+	         footprint and value.
+
+	<tr><th> Done
+	<tr><th> Compares the list of subcircuits needed since the most recent
+	         <arg>Start</arg> with the list of subcircuits actually on the
+	         board. Any subcircuits that weren't listed are selected, so
+	         that the user may delete them.
+
+</table>
+
+

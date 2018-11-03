@@ -454,6 +454,54 @@ Toggles whether the names of terminals will be      displayed. If the cursor is 
 <p>
 Note that the design rule check uses the current board rule settings, not the current style settings. 
 
+<h3 id="elementlist">elementlist</h3>
+<p>
+Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+   
+<td>
+   
+<tr>
+
+<th>
+ @code   
+<tr>
+
+<th>
+ Start  
+<tr>
+
+<th>
+ Indicates the start of an subcircuit list; call this before any           
+<i>Need</i>
+ actions.   
+<tr>
+
+<th>
+ Need  
+<tr>
+
+<th>
+ Searches the board for an subcircuit with a matching refdes. 
+<br>
+           If found, the value and footprint are updated. 
+<br>
+           If not found, a new subcircuit is created with the given           footprint and value.   
+<tr>
+
+<th>
+ Done  
+<tr>
+
+<th>
+ Compares the list of subcircuits needed since the most recent           
+<i>Start</i>
+ with the list of subcircuits actually on the           board. Any subcircuits that weren't listed are selected, so           that the user may delete them.  
+</table>
+   
+
 <h3 id="executefile">executefile</h3>
 <p>
 Lines starting with 
