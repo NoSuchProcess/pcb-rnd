@@ -7,6 +7,7 @@
 
 
 <h3 id="atomic">atomic</h3>
+<p>
 This action allows making multiple-action bindings into an atomic operation that will be undone by a single Undo command.  For example, to optimize rat lines, you'd delete the rats and re-add them.  To group these into a single undo, you'd want the deletions and the additions to have the same undo serial number.  So, you 
 <i>Save</i>
 , delete the rats, 
@@ -16,6 +17,7 @@ This action allows making multiple-action bindings into an atomic operation that
 , which checks to see if the deletions or additions actually did anything.  If not, the serial number is set to the saved number, as there's nothing to undo.  If something did happen, the serial number is incremented so that these actions are counted as a single undo step. 
 
 <h3 id="netlist">netlist</h3>
+<p>
 Each of these actions apply to a specified set of nets. 
 <i>net</i>
  and 
@@ -57,11 +59,13 @@ then
 , which resets the freeze count and immediately updates the GUI. 
 
 <h3 id="redo">redo</h3>
+<p>
 The 
 <a href="#redo">redo</a>
  action allows you to recover from the last undo command. You might want to do this if you thought that undo was going to revert something other than what it actually did (in case you are confused about which operations are un-doable), or if you have been backing up through a long undo list and over-shoot your stopping point.  Any change that is made since the undo in question will trim the redo list.  For example if you add ten lines, then undo three of them you could use redo to put them back, but if you move a line on the board before performing the redo, you will lose the ability to "redo" the three "undone" lines. 
 
 <h3 id="undo">undo</h3>
+<p>
 The unlimited undo feature of pcb-rnd allows you to recover from most operations that materially affect you work.  Calling 
 <a href="#pcb_undo">pcb_undo</a>
  without any parameter recovers from the last (non-undo) operation. 

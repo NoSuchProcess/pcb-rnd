@@ -12,14 +12,14 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20557
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20559
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
 <tr><td>AddRats</td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
 <tr><td>ApplyVendor</td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew(data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
-<tr><td>Atomic</td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
+<tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
 <tr><td>Attributes</td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
 <tr><td>AutoPlaceSelected</td><td>Auto-place selected components.</td><td>AutoPlaceSelected()</td><td>autoplace plugin</td>
 <tr><td>AutoRoute</td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
@@ -169,7 +169,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew(data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>Puller</td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
 <tr><td>Quit</td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
-<tr><td>Redo</td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
+<tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path|cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
@@ -205,7 +205,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
 <tr><td>ToggleView</td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
-<tr><td>Undo</td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
+<tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
 <tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
 <tr><td>UnloadScript</td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
@@ -253,7 +253,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill()</td><td>millpath plugin</td>
 <tr><td>mruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
-<tr><td>netlist</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
+<tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
@@ -286,7 +286,6 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>trim</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>w</td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td>wq</td><td>Saves the layout data and quits.</td><td>wq</td><td>shand_cmd plugin</td>
-
 </table>
 </body>
 </html>

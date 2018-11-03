@@ -2,6 +2,8 @@
 
 # collates the pcb-rnd action table into a html doc page
 
+asrc="../action_src"
+
 cd ../../../../src
 pcb_rnd_ver=`./pcb-rnd --version`
 pcb_rnd_rev=`svn info ^/ | awk '/Revision:/ {
@@ -45,7 +47,7 @@ function flush_sd()
 			sub("^<br>", "", d)
 			sub("^<br>", "", s)
 			sub("^<br>", "", c)
-			print  "<tr><td>" a "</td>" "<td>" d "</td>" "<td>" s "</td>" "<td>" c "</td>"
+			print  "<tr><act>" a "</act>" "<td>" d "</td>" "<td>" s "</td>" "<td>" c "</td>"
 			}
 		
 	a=""
@@ -80,9 +82,34 @@ function flush_sd()
 	next
 }
 
-' | sort -u
+' | sort -u | awk -v "asrc=$asrc" '
+# insert links around actions where applicable
+	BEGIN {
+		q = "\""
+	}
+	/<act>/ {
+		pre = $0
+		sub("<act>.*", "", pre)
+		post = $0
+		sub(".*</act>", "", post)
+		act = $0
+		sub(".*<act>", "", act)
+		sub("</act>.*", "", act)
+		loact = tolower(act)
+		fn = asrc "/" loact ".html"
+		if ((getline < fn) == 1)
+			print pre "<td><a href=" q "action_details.html#" loact q ">" act "</a></td>" post
+		else
+			print pre "<td>" act "</td>" post
+		close(fn)
+		next
+	}
 
-echo "
-</table>
-</body>
-</html>"
+	{ print $0 }
+	
+	END {
+		print "</table>"
+		print "</body>"
+		print "</html>"
+	}
+'
