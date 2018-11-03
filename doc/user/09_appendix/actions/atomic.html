@@ -1,0 +1,11 @@
+This action allows making multiple-action bindings into an atomic
+operation that will be undone by a single Undo command.  For example,
+to optimize rat lines, you'd delete the rats and re-add them.  To
+group these into a single undo, you'd want the deletions and the
+additions to have the same undo serial number.  So, you <arg>Save</arg>,
+delete the rats, <arg>Restore</arg>, add the rats - using the same serial
+number as the deletes, then <arg>Block</arg>, which checks to see if the
+deletions or additions actually did anything.  If not, the serial
+number is set to the saved number, as there's nothing to undo.  If
+something did happen, the serial number is incremented so that these
+actions are counted as a single undo step.

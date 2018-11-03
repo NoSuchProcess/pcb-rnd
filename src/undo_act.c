@@ -55,20 +55,9 @@
 static const char pcb_acts_Atomic[] = "Atomic(Save|Restore|Close|Block)";
 
 static const char pcb_acth_Atomic[] = "Save or restore the undo serial number.";
+/* DOC: atomic.html */
 
 /* %start-doc actions Atomic
-
-This action allows making multiple-action bindings into an atomic
-operation that will be undone by a single Undo command.  For example,
-to optimize rat lines, you'd delete the rats and re-add them.  To
-group these into a single undo, you'd want the deletions and the
-additions to have the same undo serial number.  So, you @code{Save},
-delete the rats, @code{Restore}, add the rats - using the same serial
-number as the deletes, then @code{Block}, which checks to see if the
-deletions or additions actually did anything.  If not, the serial
-number is set to the saved number, as there's nothing to undo.  If
-something did happen, the serial number is incremented so that these
-actions are counted as a single undo step.
 
 @table @code
 
