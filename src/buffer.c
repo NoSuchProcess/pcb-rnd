@@ -745,8 +745,6 @@ pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 }
 
 
-/* ---------------------------------------------------------------------- */
-
 static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)\n"
 	"PasteBuffer(Rotate, 1..3)\n"
@@ -757,66 +755,8 @@ static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(Push)\n"
 	"PasteBuffer(Pop)\n"
 	;
-
 static const char pcb_acth_PasteBuffer[] = "Various operations on the paste buffer.";
-
-/* %start-doc actions PasteBuffer
-
-There are a number of paste buffers; the actual limit is a
-compile-time constant @code{PCB_MAX_BUFFER} in @file{globalconst.h}.  It
-is currently @code{5}.  One of these is the ``current'' paste buffer,
-often referred to as ``the'' paste buffer.
-
-@table @code
-
-@item AddSelected
-Copies the selected objects to the current paste buffer.
-
-@item Clear
-Remove all objects from the current paste buffer.
-
-@item Convert
-Convert the current paste buffer to an subcircuit.
-
-@item Restore
-Convert any subcircuit in the paste buffer back to plain objects.
-
-@item Mirror
-Flip all objects in the paste buffer vertically (up/down flip).  To mirror
-horizontally, combine this with rotations.
-
-@item Rotate
-Rotates the current buffer.  The number to pass is 1..3, where 1 means
-90 degrees counter clockwise, 2 means 180 degrees, and 3 means 90
-degrees clockwise (270 CCW).
-
-@item Normalize
-Set the buffer origin to the center of the paste buffer bounding box.
-This is useful especially if an import plugin loaded objects in the buffer
-with a large offset.
-
-@item Save
-Saves any elements in the current buffer to the indicated file. If
-format is specified, try to use that file format, else use the default.
-If force is specified, overwrite target, don't ask.
-
-@item ToLayout
-Pastes objects in the current buffer to the indicated X, Y
-coordinates in the layout.  The @code{X} and @code{Y} are treated like
-@code{delta} is for many other objects.  For each, if it's prefixed by
-@code{+} or @code{-}, then that amount is relative to the last
-location.  Otherwise, it's absolute.  Units can be
-@code{mil} or @code{mm}; if unspecified, units are PCB's internal
-units, currently 1/100 mil. If "crosshair" is used instead of coordinates,
-the paste happens at the current crosshair coords.
-
-
-@item 1..PCB_MAX_BUFFER
-Selects the given buffer to be the current paste buffer.
-
-@end table
-
-%end-doc */
+/* DOC: pastebuffer.html */
 static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op, force;
