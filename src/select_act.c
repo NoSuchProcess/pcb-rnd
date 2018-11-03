@@ -57,32 +57,7 @@ static const char pcb_acts_Select[] =
 	"Select(All|Block|Connection)\n"
 	"Select(Convert)";
 static const char pcb_acth_Select[] = "Toggles or sets the selection.";
-
-/* %start-doc actions Select
-
-@table @code
-
-@item Object
-@item ToggleObject
-Selects the object under the cursor.
-
-@item Block
-Selects all objects in a rectangle indicated by the cursor.
-
-@item All
-Selects all objects on the board.
-
-@item Connection
-Selects all connections with the ``found'' flag set.
-
-@item Convert
-Converts the selected objects to a subcircuit.  This uses the highest
-numbered paste buffer.
-
-@end table
-
-%end-doc */
-
+/* DOC: select.html */
 static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
