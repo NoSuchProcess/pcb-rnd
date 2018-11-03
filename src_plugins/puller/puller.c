@@ -453,12 +453,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /*****************************************************************************/
 
 static const char pcb_acts_GlobalPuller[] = "pcb_act_GlobalPuller([Found|Selected])";
-
 static const char pcb_acth_GlobalPuller[] = "Pull all traces tight.";
-
-/* %start-doc actions pcb_act_GlobalPuller
-
-%end-doc */
 
 /* Ok, here's the deal.  We look for the intersection of two traces.
    The triangle formed by those traces is searched for things we need
