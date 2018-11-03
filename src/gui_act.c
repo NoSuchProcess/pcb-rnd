@@ -1999,11 +1999,7 @@ static fgw_error_t pcb_act_ChkRst(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_GetXY[] = "GetXY()";
 static const char pcb_acth_GetXY[] = "Get a coordinate.";
-/* %start-doc actions GetXY
-
-Prompts the user for a coordinate, if one is not already selected.
-
-%end-doc */
+/* DOC: getxy.html */
 static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
