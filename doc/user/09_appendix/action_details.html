@@ -610,6 +610,42 @@ Example: Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crossha
 <p>
  Distributed subcircuits always retain the same relative order they had before they were distributed. 
 
+<h3 id="distributetext">distributetext</h3>
+<p>
+
+<p>
+ 
+Example: DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) <br>
+ 
+<p>
+ 
+Example: DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) <br>
+ 
+<p>
+ As with align, plus: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Gaps  
+<td>
+ Make gaps even rather than spreading points evenly.   
+<tr>
+
+<th>
+ First, Last, pcb_crosshair   
+<td>
+ Two arguments specifying both ends of the distribution, they can't both be the same.  
+</table>
+ 
+<p>
+ Defaults are Lefts/Tops, First, Last  
+<p>
+ Distributed texts always retain the same relative order they had before they were distributed. 
+
 <h3 id="djopt">djopt</h3>
 <p>
 The different types of optimizations change your board in order to reduce the total trace length and via count. 

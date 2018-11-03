@@ -1,0 +1,20 @@
+<p>
+<example>DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</example>
+<p>
+<example>DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</example>
+<p>
+As with align, plus:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> Gaps
+	<td> Make gaps even rather than spreading points evenly.
+
+	<tr><th> First, Last, pcb_crosshair 
+	<td> Two arguments specifying both ends of the distribution, they can't both be the same.
+
+</table>
+<p>
+Defaults are Lefts/Tops, First, Last 
+<p>
+Distributed texts always retain the same relative order they had
+before they were distributed.

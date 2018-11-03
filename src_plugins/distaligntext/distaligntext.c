@@ -406,19 +406,8 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
-   DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
-
-   As with align, plus:
-
-   Gaps - Make gaps even rather than spreading points evenly.
-   First, Last, pcb_crosshair - Two arguments specifying both ends of the distribution, they can't both be the same.
-
-   Defaults are Lefts/Tops, First, Last 
-
-   Distributed texts always retain the same relative order they had
-   before they were distributed. */
 static const char pcb_acts_distributetext[] = "DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
+/* DOC: distributetext.html */
 static fgw_error_t pcb_act_distributetext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1, *a2 = NULL, *a3 = NULL, *a4 = NULL;
