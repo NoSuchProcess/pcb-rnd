@@ -36,9 +36,10 @@
 
 static const char pcb_acts_ExpFeatTmp[] = "ExpFeatTmp(...)";
 static const char pcb_acth_ExpFeatTmp[] = "Experimental Feature Template.";
-/* %start-doc actions Debug
-This action is a template, copy and rename this to create new actions.
-%end-doc */
+/* DOC: foobar.html */
+/* (change the name of the above reference to the lowercase version of
+   your action name and create the document in
+   doc/user/09_appendix/action_src/) */
 static fgw_error_t pcb_act_ExpFeatTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_INFO, "Hello world from expfeat!\n");
