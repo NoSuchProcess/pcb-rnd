@@ -699,20 +699,8 @@ static const char pcb_acts_SetFlag[] =
 	"SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)\n"
 	"SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)\n"
 	"SetFlag(SelectedElements, flag)\n" "flag = thermal | join";
-
 static const char pcb_acth_SetFlag[] = "Sets flags on objects.";
-
-/* %start-doc actions SetFlag
-
-Turns the given flag on, regardless of its previous setting.  See
-@code{ChangeFlag}.
-
-@example
-SetFlag(SelectedPins,thermal)
-@end example
-
-%end-doc */
-
+/* DOC: setflag.html */
 static fgw_error_t pcb_act_SetFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;
