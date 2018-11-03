@@ -673,23 +673,8 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_MarkCrosshair[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
-
 static const char pcb_acth_MarkCrosshair[] = "Set/Reset the pcb_crosshair mark.";
-
-/* %start-doc actions MarkCrosshair
-
-The ``mark'' is a small X-shaped target on the display which is
-treated like a second origin (the normal origin is the upper let
-corner of the board).  The GUI will display a second set of
-coordinates for this mark, which tells you how far you are from it.
-
-If no argument is given, the mark is toggled - disabled if it was
-enabled, or enabled at the current cursor position of disabled.  If
-the @code{Center} argument is given, the mark is moved to the current
-cursor location.
-
-%end-doc */
-
+/* DOC: markcrosshair.html */
 static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int id = -2;

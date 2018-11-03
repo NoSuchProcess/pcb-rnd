@@ -288,6 +288,14 @@ Toggles whether the names of terminals will be      displayed. If the cursor is 
 <p>
 Prompts the user for a coordinate, if one is not already selected. 
 
+<h3 id="markcrosshair">markcrosshair</h3>
+<p>
+The "mark" is a small X-shaped target on the display which is treated like a second origin (the normal origin is the upper let corner of the board).  The GUI will display a second set of coordinates for this mark, which tells you how far you are from it. 
+<p>
+ If no argument is given, the mark is toggled - disabled if it was enabled, or enabled at the current cursor position of disabled.  If the 
+<i>Center</i>
+ argument is given, the mark is moved to the current cursor location. 
+
 <h3 id="message">message</h3>
 <p>
 This action displays a message to the log window.  This action is primarily provided for use by scripts and external programs which may interface with pcb-rnd. If multiple arguments are given, each one is sent to the log window followed by a newline. 
