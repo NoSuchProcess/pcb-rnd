@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20603
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20611
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -20,7 +20,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ApplyVendor</td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew(data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
-<tr><td>Attributes</td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
+<tr><td><a href="action_details.html#attributes">Attributes</a></td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
 <tr><td>AutoPlaceSelected</td><td>Auto-place selected components.</td><td>AutoPlaceSelected()</td><td>autoplace plugin</td>
 <tr><td>AutoRoute</td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
@@ -52,7 +52,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#chkview">ChkView</a></td><td>Return 1 if layerid is visible.</td><td>ChkView(layerid)</td><td></td>
 <tr><td>ClearOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClearSquare</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td>ClrFlag</td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
+<tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, dummy, accel, tooltip, cookie)</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
@@ -65,7 +65,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>Delete</td><td>Delete stuff.</td><td>Delete(Object|Selected)<br>Delete(AllRats|SelectedRats)</td><td></td>
 <tr><td>DeleteRats</td><td>Delete rat lines.</td><td>DeleteRats(AllRats|Selected|SelectedRats)</td><td></td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
-<tr><td>DisperseElements</td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
+<tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
 <tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
@@ -88,7 +88,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ExportScadPoly</td><td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td><td>ScadExportPoly(filename)</td><td>openscad HID</td>
 <tr><td>ExportcpcbTo</td><td>Dumps the current board in c-pcb format.</td><td>ExportcpcbTo(filename)</td><td>cpcb plugin</td>
 <tr><td>FlagEdit</td><td>Change the layer binding.</td><td>FlagEdit(object)</td><td>dialogs plugin</td>
-<tr><td>Flip</td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
+<tr><td><a href="action_details.html#flip">Flip</a></td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
 <tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave()</td><td>fontmode plugin</td>
 <tr><td>FreeRotateBuffer</td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
@@ -132,7 +132,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td><td></td>
 <tr><td><a href="action_details.html#morphpolygon">MorphPolygon</a></td><td>Converts dead polygon islands into separate polygons.</td><td>pcb_poly_morph(Object|Selected)</td><td></td>
 <tr><td>MoveLayer</td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
-<tr><td>MoveObject</td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
+<tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td>MoveToCurrentLayer</td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
 <tr><td>NetlistChanged</td><td>Tells the GUI that the netlist has changed.</td><td>NetlistChanged()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#new">New</a></td><td>Starts a new layout.</td><td>New([name])</td><td></td>
@@ -190,13 +190,13 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
-<tr><td>SetFlag</td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
+<tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td>SetOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#setsame">SetSame</a></td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
 <tr><td>SetSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#setthermal">SetThermal</a></td><td>Set the thermal (on the current layer) of padstacks to the given style.<br>Style = 0 means no thermal.<br>Style = 1 has diagonal fingers with sharp edges.<br>Style = 2 has horizontal and vertical fingers with sharp edges.<br>Style = 3 is a solid connection to the plane.<br>Style = 4 has diagonal fingers with rounded edges.<br>Style = 5 has horizontal and vertical fingers with rounded edges.</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
-<tr><td>SetValue</td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
+<tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
 <tr><td>SwitchHID</td><td>Switch to another HID.</td><td>SwitchHID(lesstif|gtk|batch)</td><td></td>
 <tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>

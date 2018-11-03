@@ -620,6 +620,30 @@ Selects the tool or changes tool related global states.
 <p>
 If a polygon is divided into unconnected "islands", you can use this command to convert the otherwise disappeared islands into separate polygons. Be sure the cursor is over a portion of the polygon that remains visible. Very small islands that may flake off are automatically deleted. 
 
+<h3 id="moveobject">moveobject</h3>
+<p>
+The 
+<i>code</i>
+ and 
+<i>Y</i>
+ are treated like 
+<i>
+delta
+</i>
+ if they are prefixed by + or -, otherwise, they are absolute.  Units can be 
+<i>
+mil
+</i>
+ or 
+<i>
+mm
+</i>
+ and is used when 
+<i>X</i>
+ and 
+<i>Y</i>
+ have no unit specified. If no unit unspecified in coords or units, nanometer is assumed. 
+
 <h3 id="netlist">netlist</h3>
 <p>
 Each of these actions apply to a specified set of nets. 

@@ -287,17 +287,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_MoveObject[] = "pcb_move_obj(X,Y,[units])";
 static const char pcb_acth_MoveObject[] = "Moves the object under the crosshair.";
-
-/* %start-doc actions MoveObject
-
-The @code{X} and @code{Y} are treated like @code{delta} is for many
-other objects.  For each, if it's prefixed by @code{+} or @code{-},
-then that amount is relative.  Otherwise, it's absolute.  Units can be
-@code{mil} or @code{mm} and is used when X and Y have no unit specified.
-If no unit unspecified in coords or units, nanometer is assumed.
-
-%end-doc */
-
+/* DOC: moveobject.html */
 static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *units = NULL, *saved;
