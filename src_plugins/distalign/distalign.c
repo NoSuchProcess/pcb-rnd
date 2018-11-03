@@ -351,23 +351,8 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/*
- * Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])
- * Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])
- *
- * As with align, plus:
- *
- * Gaps - Make gaps even rather than spreading points evenly.
- * First, Last,
- * pcb_crosshair - Two arguments specifying both ends of the distribution,
- * they can't both be the same.
- *
- * Defaults are Marks, First, Last
- *
- * Distributed subcircuits always retain the same relative order they had
- * before they were distributed.
- */
 static const char pcb_acts_distribute[] = "Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
+/* DOC: distribute.html */
 static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1, *a2 = NULL, *a3 = NULL, *a4 = NULL;

@@ -524,6 +524,44 @@ Toggles whether the names of terminals will be      displayed. If the cursor is 
 </table>
   
 
+<h3 id="distribute">distribute</h3>
+<p>
+
+Example: Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) <br>
+ 
+<p>
+ 
+Example: Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) <br>
+ 
+<p>
+ As with 
+<a href="#align">align</a>
+, plus: 
+<p>
+ Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Gaps  
+<td>
+ Make gaps even rather than spreading points evenly.   
+<tr>
+
+<th>
+ First, Last, pcb_crosshair  
+<td>
+ Two arguments specifying both ends of the distribution, they can't both be the same. 
+</table>
+ 
+<p>
+ Defaults are Marks, First, Last 
+<p>
+ Distributed subcircuits always retain the same relative order they had before they were distributed. 
+
 <h3 id="djopt">djopt</h3>
 <p>
 The different types of optimizations change your board in order to reduce the total trace length and via count. 

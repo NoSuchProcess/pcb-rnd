@@ -1,0 +1,20 @@
+<example>Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</example>
+<p>
+<example>Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</example>
+<p>
+As with <act>align</act>, plus:
+<p>
+Arguments:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> Gaps
+	<td> Make gaps even rather than spreading points evenly.
+
+	<tr><th> First, Last, pcb_crosshair
+	<td> Two arguments specifying both ends of the distribution, they can't both be the same.
+</table>
+<p>
+Defaults are Marks, First, Last
+<p>
+Distributed subcircuits always retain the same relative order they had
+before they were distributed.
