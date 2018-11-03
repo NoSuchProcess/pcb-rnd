@@ -1,10 +1,11 @@
 Ready to blog:
+- subcircuit support for outline aka edge cut layers, i.e. mousebites, outlines; also slots in padstacks!
+- easyeda import
 
 less urgent, almost finished:
 - braille font
 - unicode bdf bitmap dot matrix glyph insertion
 - eeschema import (needs testing?)
-- subcircuit support for outline aka edge cut layers, i.e. mousebites, outlines
 - up vs down swipe selection blog writeup
 
 pre-planned/TO-DO:
