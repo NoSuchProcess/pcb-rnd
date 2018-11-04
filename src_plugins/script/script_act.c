@@ -132,6 +132,7 @@ static pcb_action_t script_action_list[] = {
 	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
 	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
 	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts},
+	{"AddTimer", pcb_act_AddTimer, pcb_acth_AddTimer, pcb_acts_AddTimer},
 
 	/* script shorthands */
 	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},

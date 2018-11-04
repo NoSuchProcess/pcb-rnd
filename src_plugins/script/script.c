@@ -187,6 +187,7 @@ int script_oneliner(const char *lang, const char *src)
 	return res;
 }
 
+#include "timer.c"
 #include "script_act.c"
 
 char *script_cookie = "script plugin";
