@@ -921,7 +921,7 @@ static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* --------------------------------------------------------------------------- */
 
 /* This action is provided for CLI convenience */
-static const char pcb_acts_FullScreen[] = "pcb_act_FullScreen(on|off|toggle)\n";
+static const char pcb_acts_FullScreen[] = "FullScreen(on|off|toggle)\n";
 static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full screen";
 
 static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
