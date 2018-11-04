@@ -198,13 +198,7 @@ static const char pcb_acts_Popup[] = "Popup(MenuName, [Button])";
 static const char pcb_acth_Popup[] =
 N_("Bring up the popup menu specified by @code{MenuName}.\n"
 	 "If called by a mouse event then the mouse button number\n" "must be specified as the optional second argument.");
-
-/* %start-doc actions Popup
-
-This just pops up the specified menu.  The menu must have been defined
-in the popups subtree in the menu lht file.
-
-%end-doc */
+/* DOC: popup.html */
 static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	GtkWidget *menu = NULL;
