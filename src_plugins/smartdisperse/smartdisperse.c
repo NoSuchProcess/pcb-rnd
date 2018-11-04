@@ -11,12 +11,6 @@
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  * Upgraded to subc by Tibor 'Igor2' Palinkas in 2017.
  *
- * Improve the initial dispersion of subcircuits by choosing an order based
- * on the netlist, rather than the arbitrary subcircuit order.  This isn't
- * the same as a global autoplace, it's more of a linear autoplace.  It
- * might make some useful local groupings.  For example, you should not
- * have to chase all over the board to find the resistor that goes with
- * a given LED.
  */
 
 #include <stdio.h>
@@ -114,7 +108,8 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 #define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
 static const char pcb_acts_smartdisperse[] = "SmartDisperse([All|Selected])";
-static const char pcb_acth_smartdisperse[] = "TODO";
+static const char pcb_acth_smartdisperse[] = "Disperse subcircuits into clusters, by netlist connections";
+/* DOC: smartdisperse.html */
 static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2;
