@@ -366,13 +366,7 @@ void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 }
 
 static const char pcb_acts_LesstifNetlistShow[] = "NetlistShow(pinname|netname)";
-
 static const char pcb_acth_LesstifNetlistShow[] = "Selects the given pinname or netname in the netlist window.";
-
-/* %start-doc actions NetlistShow
-
-%end-doc */
-
 static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 		const char *nn;

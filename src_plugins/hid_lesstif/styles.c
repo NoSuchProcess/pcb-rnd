@@ -304,13 +304,7 @@ static Widget style_button(int i)
 }
 
 static const char pcb_acts_AdjustStyle[] = "AdjustStyle()";
-
 static const char pcb_acth_AdjustStyle[] = "Displays the route style adjustment window.";
-
-/* %start-doc actions AdjustStyle
-
-%end-doc */
-
 static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if ((!mainwind) || (PCB->RouteStyle.array == NULL)) {
