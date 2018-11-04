@@ -21,6 +21,7 @@
 - BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: move PCB_GROUNDPLANEFRAME and PCB_MASKFRAME from globalconst to io_pcb [report: Igor2]
 - CLEANUP: boardflip doesn't undo - rewrite it to use data_mirror [report: Miloh]
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: run indent on rubberband_orig and route.c
