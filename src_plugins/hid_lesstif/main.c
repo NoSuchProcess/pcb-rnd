@@ -395,46 +395,8 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 }
 
 static const char pcb_acts_Zoom[] = "Zoom()\n" "Zoom(factor)";
-
 static const char pcb_acth_Zoom[] = "Various zoom factor changes.";
-
-/* %start-doc actions Zoom
-
-Changes the zoom (magnification) of the view of the board.  If no
-arguments are passed, the view is scaled such that the board just fits
-inside the visible window (i.e. ``view all'').  Otherwise,
-@var{factor} specifies a change in zoom factor.  It may be prefixed by
-@code{+}, @code{-}, or @code{=} to change how the zoom factor is
-modified.  The @var{factor} is a floating point number, such as
-@code{1.5} or @code{0.75}.
-
-@table @code
-
-@item +@var{factor}
-Values greater than 1.0 cause the board to be drawn smaller; more of
-the board will be visible.  Values between 0.0 and 1.0 cause the board
-to be drawn bigger; less of the board will be visible.
-
-@item -@var{factor}
-Values greater than 1.0 cause the board to be drawn bigger; less of
-the board will be visible.  Values between 0.0 and 1.0 cause the board
-to be drawn smaller; more of the board will be visible.
-
-@item =@var{factor}
-
-The @var{factor} is an absolute zoom factor; the unit for this value
-is "PCB units per screen pixel".  Since PCB units are 0.01 mil, a
-@var{factor} of 1000 means 10 mils (0.01 in) per pixel, or 100 DPI,
-about the actual resolution of most screens - resulting in an "actual
-size" board.  Similarly, a @var{factor} of 100 gives you a 10x actual
-size.
-
-@end table
-
-Note that zoom factors of zero are silently ignored.
-
-%end-doc */
-
+/* DOC: zoom.html */
 static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;

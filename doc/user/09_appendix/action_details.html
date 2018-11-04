@@ -1938,6 +1938,86 @@ vi
 <a href="#q">q</a>
 . 
 
+<h3 id="zoom">zoom</h3>
+<p>
+Changes the zoom (magnification) of the view of the board.  If no arguments are passed, the view is scaled such that the board just fits inside the visible window (i.e. "view all").  Otherwise, 
+<i>factor</i>
+ specifies a change in zoom factor. It may be prefixed by 
+<i>
++
+</i>
+, 
+<i>
+-
+</i>
+, 
+<i>
+=
+</i>
+ to change how the zoom factor is modified (relative or absolute).  The 
+<i>factor</i>
+ is a floating point number, such as 
+<i>
+1.5
+</i>
+ or 
+<i>
+0.75
+</i>
+. 
+<p>
+ Alternatively a box can be specified with 4 coordinates and 
+<a href="#zoom">zoom</a>
+ will set the zoom level (and modifies pan) so that the given box of the design is visible and as large as possible in the current window. 
+<p>
+ Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+   
+<tr>
+
+<th>
+ +factor  
+<td>
+ Values greater than 1.0 cause the board to be drawn smaller; more of       the board will be visible.  Values between 0.0 and 1.0 cause the board       to be drawn bigger; less of the board will be visible.   
+<tr>
+
+<th>
+ -factor  
+<td>
+ Values greater than 1.0 cause the board to be drawn bigger; less of       the board will be visible.  Values between 0.0 and 1.0 cause the board       to be drawn smaller; more of the board will be visible.   
+<tr>
+
+<th>
+ =factor  
+<td>
+ The @var{factor} is an absolute zoom factor; the unit for this value       is "PCB units per screen pixel".  Since PCB units are nanometer, a       
+<i>factor</i>
+ of 1000 means 1 micrometer per pixel (TODO: test this).   
+<tr>
+
+<th>
+ x1, y1, x2, y2  
+<td>
+ Zoom to the specified portion of the design, described as a rectangle       (using board space coordinates)   
+<tr>
+
+<th>
+ ?  
+<td>
+ Print the current zoom level in the message log (as an info line).   
+<tr>
+
+<th>
+ get  
+<td>
+ Return the zoom level in the message log (as an info line).  
+</table>
+ 
+<p>
+ Note that zoom factors of zero are silently ignored.  
+
 </body>
 </html>
 
