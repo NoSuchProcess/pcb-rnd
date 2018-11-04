@@ -1692,6 +1692,16 @@ Rotates the object under the mouse pointer by 90 degree
 <p>
 If no filename is entered, either the last one is used again or, if it is not available, a file select box will pop up. 
 
+<h3 id="save">save</h3>
+<p>
+This action is a GUI front-end to the core's 
+<a href="#saveto">saveto</a>
+ action. If you happen to pass a filename then 
+<a href="#saveto">saveto</a>
+ is called directly. Else, the user is prompted for a filename to save, and then 
+<a href="#saveto">saveto</a>
+ is called with that filename. 
+
 <h3 id="saveto">saveto</h3>
 <p>
 Arguments: 

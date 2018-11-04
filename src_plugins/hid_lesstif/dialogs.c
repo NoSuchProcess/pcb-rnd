@@ -159,18 +159,8 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_Save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
-
 static const char pcb_acth_Save[] = "Save layout data to a user-selected file.";
-
-/* %start-doc actions Save
-
-This action is a GUI front-end to the core's @code{SaveTo} action
-(@pxref{SaveTo Action}).  If you happen to pass a filename, like
-@code{SaveTo}, then @code{SaveTo} is called directly.  Else, the
-user is prompted for a filename to save, and then @code{SaveTo} is
-called with that filename.
-
-%end-doc */
+/* DOC: save.html */
 extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
