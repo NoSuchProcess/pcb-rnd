@@ -90,12 +90,10 @@ typedef struct hid_gc_s *pcb_hid_gc_t;
 /* File Watch flags */
 /* Based upon those in dbus/dbus-connection.h */
 typedef enum {
-	PCB_WATCH_READABLE = 1 << 0,
-														 /**< As in POLLIN */
-	PCB_WATCH_WRITABLE = 1 << 1,
-														 /**< As in POLLOUT */
-	PCB_WATCH_ERROR = 1 << 2,	 /**< As in POLLERR */
-	PCB_WATCH_HANGUP = 1 << 3	 /**< As in POLLHUP */
+	PCB_WATCH_READABLE = 1 << 0,  /* As in POLLIN */
+	PCB_WATCH_WRITABLE = 1 << 1,  /* As in POLLOUT */
+	PCB_WATCH_ERROR = 1 << 2,     /* As in POLLERR */
+	PCB_WATCH_HANGUP = 1 << 3     /* As in POLLHUP */
 } pcb_watch_flags_t;
 
 /* DRC GUI Hooks */
