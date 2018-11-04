@@ -1341,18 +1341,8 @@ static Widget size_field(Widget parent, const char *label, int posn)
 }
 
 static const char pcb_acts_AdjustSizes[] = "AdjustSizes()";
-
 static const char pcb_acth_AdjustSizes[] = "Let the user change the board size, DRC parameters, etc";
-
-/* %start-doc actions AdjustSizes
-
-Displays a dialog box that lets the user change the board
-size, DRC parameters, and text scale.
-
-The units are determined by the default display units.
-
-%end-doc */
-
+/* DOC: adjustsizes.html */
 static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (!sizes_dialog) {
