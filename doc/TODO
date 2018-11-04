@@ -118,6 +118,7 @@
 	- remove Attribute()
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - FEATURE: library window: allow long tags and long location text to split
+- CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
