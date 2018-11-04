@@ -363,41 +363,7 @@ fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 /* ---------------------------------------------------------------------- */
 const char pcb_acts_swapsides[] = "SwapSides(|v|h|r, [S])";
 const char pcb_acth_swapsides[] = "Swaps the side of the board you're looking at.";
-
-/* %start-doc actions SwapSides
-
-This action changes the way you view the board.
-
-@table @code
-
-@item v
-Flips the board over vertically (up/down).
-
-@item h
-Flips the board over horizontally (left/right), like flipping pages in
-a book.
-
-@item r
-Rotates the board 180 degrees without changing sides.
-
-@end table
-
-If no argument is given, the board isn't moved but the opposite side
-is shown.
-
-Normally, this action changes which pads and silk layer are drawn as
-pcb_true silk, and which are drawn as the "invisible" layer.  It also
-determines which solder mask you see.
-
-As a special case, if the layer group for the side you're looking at
-is visible and currently active, and the layer group for the opposite
-is not visible (i.e. disabled), then this action will also swap which
-layer group is visible and active, effectively swapping the ``working
-side'' of the board.
-
-%end-doc */
-
-
+/* DOC: swapsides.html */
 fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
