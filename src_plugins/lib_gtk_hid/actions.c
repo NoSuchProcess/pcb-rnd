@@ -55,18 +55,9 @@
 
 static const char *ghid_act_cookie = "gtk HID actions";
 
-/* ------------------------------------------------------------ */
-
 static const char pcb_acts_AdjustStyle[] = "AdjustStyle()\n";
-
 static const char pcb_acth_AdjustStyle[] = "Open the window which allows editing of the route styles.";
-
-/* %start-doc actions AdjustStyle
-
-Opens the window which allows editing of the route styles.
-
-%end-doc */
-
+/* DOC: adjuststyle.html */
 static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (argc > 2)
@@ -76,8 +67,6 @@ static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	PCB_ACT_IRES(0);
 	return 0;
 }
-
-/* ------------------------------------------------------------ */
 
 static const char pcb_acts_fontsel[] = "FontSel()\n";
 static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
