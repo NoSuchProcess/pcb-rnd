@@ -403,6 +403,41 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *vp, *ovp;
 	double v;
 
+	PCB_ACT_IRES(0);
+
+	if ((argc > 1) && ((argv[1].type & FGW_STR) == FGW_STR)) {
+		if (pcb_strcasecmp(argv[1].val.str, "selected") == 0) {
+			pcb_box_t sb;
+			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
+				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+			else
+				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+			return 0;
+		}
+		if (pcb_strcasecmp(argv[1].val.str, "found") == 0) {
+			pcb_box_t sb;
+			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
+				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+			else
+				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing is found\n");
+			return 0;
+		}
+		if (pcb_strcasecmp(argv[1].val.str, "?") == 0) {
+			pcb_message(PCB_MSG_INFO, "Current lesstif zoom level: %f\n", view_zoom);
+			return 0;
+		}
+	}
+
+	if (argc > 3) {
+		pcb_coord_t x1, y1, x2, y2;
+		PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
+		PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
+		PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
+		PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
+		zoom_win(x1, y1, x2, y2, 1);
+		return 0;
+	}
+
 	pcb_hid_get_coords("Click on a place to zoom in", &x, &y, 0);
 
 	if (x == 0 && y == 0) {
@@ -441,65 +476,6 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		zoom_to(v, x, y);
 		break;
 	}
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-
-static const char pcb_acts_ZoomTo[] = "ZoomTo(x1, y1, x2, y2)";
-
-static const char pcb_acth_ZoomTo[] = "Zoom to a specific window on the board.";
-
-/* %start-doc actions ZoomTo
-
-Changes the zoom (magnification) of the view of the board.  If no
-arguments are passed, the view is scaled such that the board just fits
-inside the visible window (i.e. ``view all'').  Otherwise,
-@var{factor} specifies a change in zoom factor.  It may be prefixed by
-@code{+}, @code{-}, or @code{=} to change how the zoom factor is
-modified.  The @var{factor} is a floating point number, such as
-@code{1.5} or @code{0.75}.
-
-@table @code
-
-@item @var{x1}, @var{y1}, @var{x2}, @var{y2}
-Zoom and pan so that a specific box of the board is shown.
-@end table
-
-Note that zoom factors of zero are silently ignored.
-
-%end-doc */
-
-static fgw_error_t pcb_act_ZoomTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_coord_t x1, y1, x2, y2;
-
-	if ((argc > 1) && ((argv[1].type & FGW_STR) == FGW_STR)) {
-		if (pcb_strcasecmp(argv[1].val.str, "selected") == 0) {
-			pcb_box_t sb;
-			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
-			else
-				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
-			return 0;
-		}
-		if (pcb_strcasecmp(argv[1].val.str, "found") == 0) {
-			pcb_box_t sb;
-			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
-			else
-				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing is found\n");
-			return 0;
-		}
-	}
-
-	PCB_ACT_CONVARG(1, FGW_COORD, ZoomTo, x1 = fgw_coord(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_COORD, ZoomTo, y1 = fgw_coord(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, ZoomTo, x2 = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, ZoomTo, y2 = fgw_coord(&argv[4]));
-
-	zoom_win(x1, y1, x2, y2, 1);
-
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -871,7 +847,7 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 pcb_action_t lesstif_main_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
-	{"ZoomTo", pcb_act_ZoomTo, pcb_acth_ZoomTo, pcb_acts_ZoomTo},
+	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
 	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
