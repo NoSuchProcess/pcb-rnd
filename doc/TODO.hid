@@ -1,4 +1,4 @@
-HID API simplification, first stage
+HID API simplification: DAD
 
 - blockers:
 	- implementing a list/tree/table "widget" for lesstif
@@ -15,3 +15,12 @@ HID API simplification, first stage
 	(- rewrite the pinout dialog as DAD (depends on a preview HATT, which is a bigger chunk))
 	- rewrite the report dialog as DAD
 
+HID API simplification: actions
+
+- obsolete actions to remove/revise:
+	- lesstif: AdjustStyle (lesstif has its own window!)
+	- lesstif: LesstifNetlistShow
+
+- action unification:
+	- Zoom
+		- also impelment zoom get
