@@ -24,3 +24,4 @@ HID API simplification: actions
 - action unification:
 	- Zoom
 		- also impelment zoom get
+	- Scroll is only in the gtk hid

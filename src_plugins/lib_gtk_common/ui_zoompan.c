@@ -422,22 +422,9 @@ fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 	return 0;
 }
 
-/* ------------------------------------------------------------ */
 const char pcb_acts_scroll[] = "Scroll(up|down|left|right, [div])";
 const char pcb_acth_scroll[] = "Scroll the viewport.";
-
-/* % start-doc actions Scroll
-
-@item up|down|left|right
-Specifies the direction to scroll
-
-@item div
-Optional.  Specifies how much to scroll by.  The viewport is scrolled
-by 1/div of what is visible, so div = 1 scrolls a whole page. If not
-default is given, div=40.
-
-%end-doc */
-
+/* DOC: scroll.html */
 fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op;
