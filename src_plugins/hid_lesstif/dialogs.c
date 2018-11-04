@@ -1223,19 +1223,10 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ------------------------------------------------------------ */
 
 static const char pcb_acts_Print[] = "Print()";
-
 static const char pcb_acth_Print[] = "Print the layout.";
-
-/* %start-doc actions Print
-
-This will find the default printing HID, prompt the user for its
-options, and print the layout.
-
-%end-doc */
-
+/* DOC: print.html */
 static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_hid_attribute_t *opts;

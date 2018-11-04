@@ -118,6 +118,7 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* DOC: print.html */
 fgw_error_t pcb_gtk_act_print_(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return pcb_gtk_act_print(&ghidgui->common, res, argc, argv);

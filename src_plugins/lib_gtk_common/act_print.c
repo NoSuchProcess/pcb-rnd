@@ -43,6 +43,7 @@
 
 const char pcb_gtk_acts_print[] = "Print()";
 const char pcb_gtk_acth_print[] = "Print the layout.";
+/* DOC: print.html */
 fgw_error_t pcb_gtk_act_print(pcb_gtk_common_t *com, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_hid_t **hids;
