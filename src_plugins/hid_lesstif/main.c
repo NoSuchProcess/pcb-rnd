@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r)";
+static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r, [S])";
 static const char pcb_acth_SwapSides[] = "Swaps the side of the board you're looking at.";
 /* DOC: swapsides.html */
 static int group_showing(int g, int *c)
