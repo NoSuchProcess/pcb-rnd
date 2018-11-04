@@ -732,17 +732,8 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_Benchmark[] = "Benchmark()";
-
 static const char pcb_acth_Benchmark[] = "Benchmark the GUI speed.";
-
-/* %start-doc actions Benchmark
-
-This action is used to speed-test the Lesstif graphics subsystem.  It
-redraws the current screen as many times as possible in ten seconds.
-It reports the amount of time needed to draw the screen once.
-
-%end-doc */
-
+/* DOC: benchmark.html */
 static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int i = 0;

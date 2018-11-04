@@ -123,8 +123,7 @@ fgw_error_t pcb_gtk_act_print_(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return pcb_gtk_act_print(&ghidgui->common, res, argc, argv);
 }
 
-/* ------------------------------------------------------------ */
-
+/* DOC: benchmark.html */
 static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int i = 0;
@@ -150,8 +149,6 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_DRES(i/10.0);
 	return 0;
 }
-
-/* ------------------------------------------------------------ */
 
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
