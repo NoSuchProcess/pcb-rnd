@@ -263,6 +263,7 @@ fgw_error_t pcb_gtk_act_save(GtkWidget *top_window, fgw_arg_t *res, int argc, fg
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
 const char pcb_gtk_acth_importgui[] = "Asks user which schematics to import into PCB.\n";
+/* DOC: importgui.html */
 fgw_error_t pcb_gtk_act_importgui(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *name = NULL;

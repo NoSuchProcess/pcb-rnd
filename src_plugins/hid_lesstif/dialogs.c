@@ -1759,20 +1759,9 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 	return;
 }
 
-/* ------------------------------------------------------------ */
-
 static const char pcb_acts_ImportGUI[] = "ImportGUI()";
-
 static const char pcb_acth_ImportGUI[] = "Lets the user choose the schematics to import from";
-
-/* %start-doc actions ImportGUI
-
-Displays a dialog that lets the user select the schematic(s) to import
-from, then saves that information in the layout's attributes for
-future imports.
-
-%end-doc */
-
+/* DOC: importgui.html */
 static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	static int I_am_recursing = 0;
