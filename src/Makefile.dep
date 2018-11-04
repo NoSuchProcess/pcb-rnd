@@ -5415,7 +5415,8 @@
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h pcb-printf.h globalconst.h \
  ../src_plugins/script/c_script.c fptr_cast.h \
- ../src_plugins/script/script_act.c dolists.h
+ ../src_plugins/script/timer.c ../src_plugins/script/script_act.c \
+ dolists.h
 ../src_plugins/serpentine/serpentine.o: \
  ../src_plugins/serpentine/serpentine.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -7375,7 +7376,7 @@ polygon.o: polygon.c ../config.h conf_core.h conf.h global_typedefs.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h remove.h \
  search.h rats.h netlist.h route_style.h thermal.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h compat_nls.h obj_poly_draw.h \
- polygon_selfi.h polygon_offs.c compat_misc.h polygon_offs.h
+ polygon_selfi.h event.h polygon_offs.c compat_misc.h polygon_offs.h
 polygon1.o: polygon1.c ../config.h rtree.h global_typedefs.h pcb_bool.h \
  unit.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h math_helper.h \
  heap.h compat_cc.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
