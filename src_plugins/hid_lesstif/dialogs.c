@@ -1422,21 +1422,8 @@ void lesstif_update_layer_groups()
 }
 
 static const char pcb_acts_EditLayerGroups[] = "EditLayerGroups()";
-
 static const char pcb_acth_EditLayerGroups[] = "Let the user change the layer groupings";
-
-/* %start-doc actions EditLayerGroups
-
-Displays a dialog that lets the user view and change the layer
-groupings.  Each layer (row) can be a member of any one layer group
-(column).  Note the special layers @code{solder} and @code{component}
-allow you to specify which groups represent the top and bottom of the
-board.
-
-See @ref{ChangeName Action}.
-
-%end-doc */
-
+/* DOC: editlayergroups.html */
 extern void lesstif_show_layergrp_edit(void);
 static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
