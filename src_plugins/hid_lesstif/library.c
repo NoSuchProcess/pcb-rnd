@@ -160,15 +160,7 @@ void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 }
 
 static const char pcb_acts_LibraryShow[] = "LibraryShow()";
-
 static const char pcb_acth_LibraryShow[] = "[DEPRECATED] Displays the library window.";
-
-/* %start-doc actions LibraryShow
-
-Deprecated.
-
-%end-doc */
-
 static fgw_error_t pcb_act_LibraryShow(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_ACT_IRES(build_library_dialog());
