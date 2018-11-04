@@ -5,9 +5,7 @@ CLEANFILES=../action_reference.html ../dialogtable.html ../bridges.svg ../format
 all: ../action_details.html ../action_reference.html ../dialogtable.html ../formats.html ../bridges.svg
 
 ../action_details.html: ./action_compiler.sh ../action_src/*.html
-	@./action_compiler.sh HEADER > ../action_details.html
-	for a in ../action_src/*.html; do ./action_compiler.sh $$a; done >> ../action_details.html
-	@./action_compiler.sh FOOTER >> ../action_details.html
+	./action_compiler.sh ../action_src/*.html > ../action_details.html
 
 ../action_reference.html : ./dump_actions_to_html.sh ../../../../src/pcb-rnd
 	./dump_actions_to_html.sh > ../action_reference.html
