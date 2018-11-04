@@ -1,15 +1,13 @@
 #!/bin/sh
 
+SEP="<@@@@>"
+
 compile()
 {
-	tr "\n\r\t" "   " < $1 | sed "s@<@\n<@g;s@>@>\n@g;" | tee A | awk -v "current=$1" '
+	awk -v "SEP=$SEP" '
 	BEGIN {
 		q="\""
-		sub("^.*/", "", current)
-		sub(".html$", "", current)
-		print ""
-		print "<h3 id=" q current q ">" current "</h3>"
-		print "<p>"
+		SEP="^" SEP
 	}
 
 	function strip(s) {
@@ -25,6 +23,17 @@ compile()
 			return tmp1
 		print "Error: expected closing tag " tag " in line " NR " of " current > "/dev/stderr"
 		exit(1)
+	}
+
+	($0 ~ SEP) {
+		$1=""
+		current=strip($0)
+		sub("^.*/", "", current)
+		sub(".html$", "", current)
+		print ""
+		print "<h3 id=" q current q ">" current "</h3>"
+		print "<p>"
+		next
 	}
 
 	/^<arg>/ {
@@ -61,8 +70,10 @@ echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www
 
 for fn in "$@"
 do
-	compile $fn
-done
+	echo ""
+	echo "$SEP $fn"
+	tr "\n\r\t" "   " < $fn | sed "s@<@\n<@g;s@>@>\n@g;"
+done | compile
 
 echo '
 </body>
