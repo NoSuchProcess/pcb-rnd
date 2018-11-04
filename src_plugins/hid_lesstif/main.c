@@ -769,6 +769,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* DOC: center.html */
 static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
@@ -780,9 +781,6 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	view_left_x = x - (view_width * view_zoom) / 2;
 	view_top_y = y - (view_height * view_zoom) / 2;
 	lesstif_pan_fixup();
-	/* Move the pointer to the center of the window, but only if it's
-	   currently within the window already.  Watch out for edges,
-	   though.  */
 	XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
 	PCB_ACT_IRES(0);
 	return 0;

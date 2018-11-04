@@ -320,18 +320,9 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 	return 0;
 }
 
-/* ------------------------------------------------------------ */
-
 const char pcb_acts_center[] = "Center()\n";
 const char pcb_acth_center[] = "Moves the pointer to the center of the window.";
-
-/* %start-doc actions Center
-
-Move the pointer to the center of the window, but only if it's
-currently within the window already.
-
-%end-doc */
-
+/* DOC: center.html */
 fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
 {
 	int widget_x, widget_y;
