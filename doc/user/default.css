@@ -17,6 +17,25 @@ PRE {
 	margin-left: 20px;
 }
 
+table.actsum {
+	border: none;
+	margin-left: 20px;
+}
+
+td.actsum {
+	background-color: #f0f0f0;
+	border: none;
+	padding: 15px;
+	align: left;
+}
+
+th.actsum {
+	background-color: #f0f0f0;
+	border: none;
+	padding: 15px;
+	align: right;
+}
+
 table {
 	border-collapse: collapse;
 	border: 2px solid #555555;
@@ -33,6 +52,7 @@ th {
 	background-color: #e0e0e0;
 	padding: 5px;
 }
+
 
 ul.toc {
 	list-style-type: none;
