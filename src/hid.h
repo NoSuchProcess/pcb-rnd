@@ -41,7 +41,7 @@ defined in this file.  Code in the HID layers *may* rely on data and
 functions in the common code (like, board size and such) but it's
 considered bad form to do so when not needed.
 
-Coordinates are ALWAYS in pcb's default resolution (1/100 mil at the
+Coordinates are ALWAYS in pcb's internal units (nanometer at the
 moment).  Positive X is right, positive Y is down.  Angles are
 degrees, with 0 being right (positive X) and 90 being up (negative Y).
 All zoom, scaling, panning, and conversions are hidden inside the HID
@@ -237,10 +237,7 @@ struct pcb_hid_s {
 	/* Tell the GUI the layer last selected has been finished with. */
 	void (*end_layer)(void);
 
-	/* Drawing Functions.  Coordinates and distances are ALWAYS in PCB's
-	   default coordinates (1/100 mil at the time this comment was
-	   written).  Angles are always in degrees, with 0 being "right"
-	   (positive X) and 90 being "up" (positive Y).  */
+	/*** Drawing Functions. ***/
 
 	/* Make an empty graphics context.  */
 	pcb_hid_gc_t (*make_gc)(void);
