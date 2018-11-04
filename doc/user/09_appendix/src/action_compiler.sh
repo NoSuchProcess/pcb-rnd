@@ -41,12 +41,17 @@ compile()
 		end_act()
 		action = ""
 		$1=""
-		current=strip($0)
+		current=tolower(strip($0))
 		sub("^.*/", "", current)
 		sub(".html$", "", current)
+
+		if (current in ANAME)
+			aname = ANAME[current]
+		else
+			aname = current
+
 		print ""
-		print "<h2 id=" q current q ">" current "</h2>"
-		current = tolower(current)
+		print "<h2 id=" q current q ">" aname "</h2>"
 		print "<dl><dd>"
 		print "<p>"
 		print "<table border=0 cellspacing=10 class=actsum>"
@@ -60,12 +65,15 @@ compile()
 
 	(current == "") && (/^A/) {
 		# reading the action list: new action
-		action=$0
+		action=strip($0)
 		sub("^A", "", action)
+		aname= action
 		action = tolower(action)
 # avoid saving duplicates at the main action node
 		if (action in SEEN)
 			action = action "_dup"
+		else
+			ANAME[action] = aname
 		SEEN[action] = 1
 		next
 	}
