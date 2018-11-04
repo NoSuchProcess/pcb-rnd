@@ -29,13 +29,6 @@
 #define MIN_LINE_LENGTH 700
 #define MAX_DISTANCE 700
 
-/* changed MAX_DISTANCE to 0.5 mm below */
- /* 0.5mm */
-/* #define MAX_DISTANCE 500000 */
-/* #define MAX_DISTANCE 2000000 */
- /* 1 mm */
-/* #define MAX_DISTANCE 1000000 */
-
 #define MIN_LINE_LENGTH2 ((double)MIN_LINE_LENGTH*(double)MIN_LINE_LENGTH)
 #define MAX_DISTANCE2 ((double)MAX_DISTANCE*(double)MAX_DISTANCE)
 
