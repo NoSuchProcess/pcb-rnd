@@ -484,7 +484,7 @@ static int pan_thumb_mode;
 
 static const char pcb_acts_Pan[] = "Pan([thumb], mode)";
 static const char pcb_acth_Pan[] = "TODO";
-
+/* DOC: pan.html */
 static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1;

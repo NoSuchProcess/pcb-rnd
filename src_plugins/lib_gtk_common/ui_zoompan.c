@@ -451,17 +451,9 @@ fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 	return 0;
 }
 
-/* ------------------------------------------------------------ */
 const char pcb_acts_pan[] = "Pan([thumb], Mode)";
 const char pcb_acth_pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n";
-
-/* %start-doc actions Pan
-
-Start or stop panning.  To start call with Mode = 1, to stop call with
-Mode = 0.
-
-%end-doc */
-
+/* DOC: pan.html */
 fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int mode;
