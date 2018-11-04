@@ -34,6 +34,7 @@
 typedef struct {
 	double next, period;
 	long count;
+	char *user_data;
 	char aname[1];
 } script_timer_t;
 
@@ -75,8 +76,17 @@ static void timer_cb(pcb_hidval_t hv)
 			argv[1].val.nat_double = now;
 			argv[2].type = FGW_LONG;
 			argv[2].val.nat_long = t->count;
+			if (t->user_data != NULL) {
+				argv[3].type = FGW_STR;
+				argv[3].val.str = t->user_data;
+			}
+			else {
+				argv[3].type = FGW_STR;
+				argv[3].val.str = "";
+			}
+
 			res.type = FGW_INVALID;
-			if (pcb_actionv_(f, &res, 3, argv) != 0)
+			if (pcb_actionv_(f, &res, 4, argv) != 0)
 				goto remove;
 			fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
 			if ((res.type != FGW_INT) || (res.val.nat_int != 0)) /* action requested timer removal */
@@ -87,6 +97,7 @@ static void timer_cb(pcb_hidval_t hv)
 				if (t->count == 0) {
 					remove:;
 					vtp0_remove(&timers, n, 1);
+					free(t->user_data);
 					free(t);
 				}
 			}
@@ -105,10 +116,10 @@ static void start_timer(void)
 
 
 static const char pcb_acth_AddTimer[] = "Add a new timer";
-static const char pcb_acts_AddTimer[] = "AddTimer(action, period, [repeat])";
+static const char pcb_acts_AddTimer[] = "AddTimer(action, period, [repeat], [userdata])";
 static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *act;
+	const char *act, *user_data = NULL;
 	double period;
 	int count = 1, len;
 	char fn[PCB_ACTION_NAME_MAX];
@@ -117,6 +128,7 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, AddTimer, act = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_DOUBLE, AddTimer, period = argv[2].val.nat_double);
 	PCB_ACT_MAY_CONVARG(3, FGW_INT, AddTimer, count = argv[3].val.nat_int);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, AddTimer, user_data = argv[4].val.str);
 
 	pcb_aname(fn, act);
 	len = strlen(fn);
@@ -125,6 +137,10 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	t->period = period;
 	t->count = count;
 	strcpy(t->aname, fn);
+	if (user_data != NULL)
+		t->user_data = pcb_strdup(user_data);
+	else
+		t->user_data = NULL;
 
 	vtp0_append(&timers, t);
 
