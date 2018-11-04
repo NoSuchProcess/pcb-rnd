@@ -1,5 +1,3 @@
-/* 15 Oct 2008 Ineiev: add different crosshair shapes */
-
 #include "xincludes.h"
 
 #include "config.h"
