@@ -153,46 +153,8 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
 	"DoWindows(Layout|Library|Log|Netlist|Preferences|DRC|Search [,false])";
-
 static const char pcb_acth_DoWindows[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
-
-/* %start-doc actions DoWindows
-
-@table @code
-
-@item 1
-@itemx Layout
-Open the layout window.  Since the layout window is always shown
-anyway, this has no effect.
-
-@item 2
-@itemx Library
-Open the library window.
-
-@item 3
-@itemx Log
-Open the log window.
-
-@item 4
-@itemx Netlist
-Open the netlist window.
-
-@item 5
-@itemx Preferences
-Open the preferences window.
-
-@item 6
-@itemx DRC
-Open the DRC violations window.
-
-@item 7
-@itemx Search
-Open the advanced search window.
-
-@end table
-
-%end-doc */
-
+/* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a = "", *b = NULL, *c = NULL;

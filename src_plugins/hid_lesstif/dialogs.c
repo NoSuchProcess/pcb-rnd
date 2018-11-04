@@ -1194,37 +1194,9 @@ int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t 
 }
 
 
-/* ------------------------------------------------------------ */
-
 static const char pcb_acts_DoWindows[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";
-
 static const char pcb_acth_DoWindows[] = "Open various GUI windows.";
-
-/* %start-doc actions DoWindows
-
-@table @code
-
-@item 1
-@itemx Layout
-Open the layout window.  Since the layout window is always shown
-anyway, this has no effect.
-
-@item 2
-@itemx Library
-Open the library window.
-
-@item 3
-@itemx Log
-Open the log window.
-
-@item 4
-@itemx Netlist
-Open the netlist window.
-
-@end table
-
-%end-doc */
-
+/* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a = "";
