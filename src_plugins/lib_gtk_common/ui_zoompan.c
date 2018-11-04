@@ -296,6 +296,12 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 		return 0;
 	}
 
+	if (pcb_strcasecmp(argv[1].val.str, "get") == 0) {
+		res->type = FGW_DOUBLE;
+		res->val.nat_double = vw->coord_per_px;
+		return 0;
+	}
+
 	if (*vp == '+' || *vp == '-' || *vp == '=')
 		vp++;
 	v = g_ascii_strtod(vp, 0);

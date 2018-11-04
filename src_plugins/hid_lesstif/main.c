@@ -426,6 +426,11 @@ static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_INFO, "Current lesstif zoom level: %f\n", view_zoom);
 			return 0;
 		}
+		if (pcb_strcasecmp(argv[1].val.str, "get") == 0) {
+			res->type = FGW_DOUBLE;
+			res->val.nat_double = view_zoom;
+			return 0;
+		}
 	}
 
 	if (argc > 3) {
