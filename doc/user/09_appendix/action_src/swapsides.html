@@ -1,0 +1,30 @@
+This action changes the way you view the board (flipping the board).
+<p>
+Arguments:
+<p>
+<table border=1 cellspacing=0>
+
+	<tr><th> v
+	<td> Flips the board over vertically (up/down).
+
+	<tr><th> h
+	<td> Flips the board over horizontally (left/right), like flipping pages in
+	     a book.
+
+	<tr><th> r
+	<td> Rotates the board 180 degrees without changing sides.
+</table>
+<p>
+If no argument is given, the board isn't moved but the opposite side
+is shown.
+<p>
+Normally, this action changes which pads and silk layer are drawn as
+pcb_true silk, and which are drawn as the "invisible" layer.  It also
+determines which solder mask you see.
+<p>
+If <arg>S</arg> is specified as a second argument,
+if the layer group for the side you're looking at
+is visible and currently active, and the layer group for the opposite
+is not visible (i.e. disabled), then this action will also swap which
+layer group is visible and active, effectively swapping the "working
+side" of the board.
