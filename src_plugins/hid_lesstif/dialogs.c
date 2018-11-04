@@ -106,18 +106,8 @@ static void setup_fsb_dialog()
 }
 
 static const char pcb_acts_Load[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
-
 static const char pcb_acth_Load[] = "Load layout data from a user-selected file.";
-
-/* %start-doc actions Load
-
-This action is a GUI front-end to the core's @code{LoadFrom} action
-(@pxref{LoadFrom Action}).  If you happen to pass a filename, like
-@code{LoadFrom}, then @code{LoadFrom} is called directly.  Else, the
-user is prompted for a filename to load, and then @code{LoadFrom} is
-called with that filename.
-
-%end-doc */
+/* DOC: load.html */
 extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

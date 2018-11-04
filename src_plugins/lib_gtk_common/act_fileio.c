@@ -60,6 +60,7 @@ static char *dup_cwd()
 static const char pcb_acts_load[] = "TODO";
 static const char pcb_acth_load[] = "TODO";
 extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+/* DOC: load.html */
 fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function = "Layout";

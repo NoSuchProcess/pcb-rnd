@@ -1034,6 +1034,16 @@ The
 <i>filename</i>
  is passed to the footprint loader.  If no filename is specified a file select box will popup. 
 
+<h3 id="load">load</h3>
+<p>
+This action is a GUI front-end to the core's 
+<a href="#loadfrom">loadfrom</a>
+ action. If you happen to pass a filename, 
+<a href="#loadfrom">loadfrom</a>
+ is called directly. Else, the user is prompted for a filename to load, and then 
+<a href="#loadfrom">loadfrom</a>
+ is called with that filename.  
+
 <h3 id="loadfootprint">loadfootprint</h3>
 <p>
 Loads a single footprint by name, rather than by reference or through the library.  If a refdes and value are specified, those are inserted into the footprint as well.  The footprint remains in the paste buffer.  
