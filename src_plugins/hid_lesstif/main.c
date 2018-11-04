@@ -717,23 +717,8 @@ static const char *lesstif_command_entry(const char *ovr, int *cursor)
 }
 
 static const char pcb_acts_Command[] = "Command()";
-
 static const char pcb_acth_Command[] = "Displays the command line input window.";
-
-/* %start-doc actions Command
-
-The command window allows the user to manually enter actions to be
-executed.
-
-There are two ways to finish with the command window.  If you press
-the @code{Enter} key, the command is invoked, the window goes away,
-and the next time you bring up the command window it's empty.  If you
-press the @code{Esc} key, the window goes away without invoking
-anything, and the next time you bring up the command window it's
-empty.
-
-%end-doc */
-
+/* DOC: command */
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_clihist_init();

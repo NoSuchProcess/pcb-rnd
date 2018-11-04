@@ -110,16 +110,13 @@ static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-
+/* DOC: command.html */
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 	PCB_ACT_IRES(0);
 	return 0;
 }
-
-/* ------------------------------------------------------------ */
 
 fgw_error_t pcb_gtk_act_print_(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
