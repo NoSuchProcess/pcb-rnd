@@ -1,5 +1,5 @@
 #ifndef PCB_HID_FLAGS_H
-#define  PCB_HID_FLAGS_H
+#define PCB_HID_FLAGS_H
 
 /* Use this to temporarily enable all layers, so that they can be
    exported even if they're not currently visible.  save_array must be
