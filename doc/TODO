@@ -20,6 +20,7 @@
 - BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: remove hid_extent.[ch] in favor of bbox [report: Igor2]
 - CLEANUP: move PCB_GROUNDPLANEFRAME and PCB_MASKFRAME and PCB_DEFAULT_DRILLINGHOLE from globalconst to io_pcb [report: Igor2]
 - CLEANUP: remove PCB_MAX_ELEMENTNAMES, MIN_PADSIZE and MAX_PADSIZE from globalconst [report: Igor2]
 - CLEANUP: boardflip doesn't undo - rewrite it to use data_mirror [report: Miloh]
