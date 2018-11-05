@@ -1609,60 +1609,62 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
+	pcb_coord_t x0, y0, dx, dy;
+	pcb_font_t *font = &PCB->fontkit.dflt;
 
+	/* do not display anyting from the other-side subcs */
 	draw_subc_per_layer();
 
-	{
-		pcb_coord_t x0, y0, dx, dy;
-		pcb_font_t *font = &PCB->fontkit.dflt;
+	/* calculate where the label ends up - always top-right, even if board is flipped */
+	dx = font->MaxWidth/2;
+	dy = font->MaxHeight/2;
 
-		dx = font->MaxWidth/2;
-		dy = font->MaxHeight/2;
+	if (conf_core.editor.view.flip_x) {
+		x0 = bb->X2;
+		dx = -dx;
+	}
+	else
+		x0 = bb->X1;
 
-		if (conf_core.editor.view.flip_x) {
-			x0 = bb->X2;
-			dx = -dx;
-		}
-		else
-			x0 = bb->X1;
+	if (conf_core.editor.view.flip_y) {
+		y0 = bb->Y2;
+		dy = -dy;
+	}
+	else
+		y0 = bb->Y1;
 
-		if (conf_core.editor.view.flip_y) {
-			y0 = bb->Y2;
-			dy = -dy;
-		}
-		else
-			y0 = bb->Y1;
+	/* draw the label from template; if template is not available, draw the refdes */
+	if ((conf_core.editor.subc_id != NULL) && (*conf_core.editor.subc_id != '\0')) {
+		static gds_t s;
 
-		if ((conf_core.editor.subc_id != NULL) && (*conf_core.editor.subc_id != '\0')) {
-			static gds_t s;
-			s.used = 0;
-			if (pcb_append_dyntext(&s, (pcb_any_obj_t *)subc, conf_core.editor.subc_id) == 0) {
-				char *curr, *next;
-				pcb_coord_t x = x0, y = y0;
+		s.used = 0;
+		if (pcb_append_dyntext(&s, (pcb_any_obj_t *)subc, conf_core.editor.subc_id) == 0) {
+			char *curr, *next;
+			pcb_coord_t x = x0, y = y0;
 
-				for(curr = s.array; curr != NULL; curr = next) {
-					int ctrl = 0;
-					next = strchr(curr, '\\');
-					if (next != NULL) {
-						*next = '\0';
-						next++;
-						ctrl = 1;
+			for(curr = s.array; curr != NULL; curr = next) {
+				int ctrl = 0;
+				next = strchr(curr, '\\');
+				if (next != NULL) {
+					*next = '\0';
+					next++;
+					ctrl = 1;
+				}
+				pcb_term_label_draw(info, x, y, conf_core.appearance.term_label_size/2, 0, 0, curr, subc->intconn);
+				if (ctrl) {
+					switch(*next) {
+						case 'n': y += dy; x = x0; break;
 					}
-					pcb_term_label_draw(info, x, y, conf_core.appearance.term_label_size/2, 0, 0, curr, subc->intconn);
-					if (ctrl) {
-						switch(*next) {
-							case 'n': y += dy; x = x0; break;
-						}
-						next++;
-					}
+					next++;
 				}
 			}
-			else
-				pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, "<err>", subc->intconn);
 		}
-		else if (subc->refdes != NULL)
-			pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes, subc->intconn);
+		else
+			pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, "<err>", subc->intconn);
 	}
+	else if (subc->refdes != NULL)
+		pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes, subc->intconn);
+
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
