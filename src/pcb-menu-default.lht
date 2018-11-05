@@ -655,6 +655,7 @@ ha:{
 				ha:External editor...     { action=extedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit layer bindings... { action=LayerBinding() }
+				ha:Change refdes          { action=ChangeName(Refdes) }
 				ha:Edit padstack prototypes... = { action=pstklib(object) }
 
 #TODO: replace from lib
