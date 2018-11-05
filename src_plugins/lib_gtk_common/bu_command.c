@@ -118,6 +118,20 @@ static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 	pcb_clihist_sync(ctx, ghid_chist_append);
 }
 
+void ghid_cmd_close(pcb_gtk_command_t *ctx)
+{
+	if (!ctx->com->command_entry_is_active())
+		return;
+
+	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
+		g_main_loop_quit(ctx->ghid_entry_loop);
+	ctx->command_entered = NULL; /* We are aborting */
+	/* Hidding the widgets */
+	if (conf_core.editor.fullscreen) {
+		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+	}
+}
+
 static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
@@ -128,18 +142,12 @@ static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_g
 	}
 
 	/* escape key handling */
-	if (ksym != GDK_KEY_Escape)
-		return FALSE;
-
-	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
-		g_main_loop_quit(ctx->ghid_entry_loop);
-	ctx->command_entered = NULL; /* We are aborting */
-	/* Hidding the widgets */
-	if (conf_core.editor.fullscreen) {
-		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+	if (ksym == GDK_KEY_Escape) {
+		ghid_cmd_close(ctx);
+		return TRUE;
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
@@ -254,3 +262,4 @@ const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, i
 		*cursor = gtk_editable_get_position(GTK_EDITABLE(ctx->command_entry));
 	return gtk_entry_get_text(ctx->command_entry);
 }
+
