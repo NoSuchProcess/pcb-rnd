@@ -43,7 +43,7 @@
 #include "obj_common.h"
 #include "macro.h"
 
-/* Because all the macros expect it, that's why.  */
+/* Because the common flag access macros expect an object struct to work on. */
 typedef struct {
 	pcb_flag_t Flags;
 } FlagHolder;
