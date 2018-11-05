@@ -205,6 +205,7 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 
 static void ghid_do_exit(pcb_hid_t * hid)
 {
+	ghid_cmd_close(&ghidgui->topwin.cmd);
 	gtk_main_quit();
 }
 
