@@ -451,7 +451,13 @@ Arguments:
 <th>
  Object  
 <td>
- Changes the name of the element under the cursor.   
+ Changes the "name" of the object under the cursor. For a text object       this is the text string. For a terminal, this is the terminal ID.       For a subcircuit this is the refdes. For a subc text object that has       only the refdes template in it, it offers changing the text object       (template) or the parent subcircuit's refdes attribute.   
+<tr>
+
+<th>
+ Refdes  
+<td>
+ Changes the refdes attribute of a subcircuit under the cursor.   
 <tr>
 
 <th>
@@ -3037,7 +3043,7 @@ Arguments:
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 SmartDisperse([All|Selected])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-TODO
+Disperse subcircuits into clusters, by netlist connections
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 smartdisperse plugin
 </table>

@@ -3,7 +3,11 @@ Arguments:
 <table border=1 cellspacing=0>
 
 	<tr><th> Object
-	<td> Changes the name of the element under the cursor.
+	<td> Changes the "name" of the object under the cursor. For a text object
+	     this is the text string. For a terminal, this is the terminal ID.
+	     For a subcircuit this is the refdes. For a subc text object that has
+	     only the refdes template in it, it offers changing the text object
+	     (template) or the parent subcircuit's refdes attribute.
 
 	<tr><th> Refdes
 	<td> Changes the refdes attribute of a subcircuit under the cursor.
