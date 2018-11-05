@@ -127,9 +127,6 @@ void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, 
 	}
 }
 
-/*-----------------------------------------------------------
- * Draws the outline of an attached arc
- */
 void pcb_xordraw_attached_arc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
@@ -498,9 +495,6 @@ void pcb_draw_attached(pcb_bool inhibit_drawing_mode)
 }
 
 
-/* --------------------------------------------------------------------------
- * draw the marker position
- */
 void pcb_draw_mark(pcb_bool inhibit_drawing_mode)
 {
 	pcb_coord_t ms = conf_core.appearance.mark_size;
@@ -728,9 +722,6 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * Returns the square of the given number
- */
 static double square(double x)
 {
 	return x * x;
@@ -1027,9 +1018,6 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 	return pcb_false;
 }
 
-/* ---------------------------------------------------------------------------
- * sets the valid range for the crosshair cursor
- */
 void pcb_crosshair_set_range(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb_coord_t MaxY)
 {
 	pcb_crosshair.MinX = MAX(0, MinX);
@@ -1087,9 +1075,6 @@ void pcb_crosshair_init(void)
 
 }
 
-/* ---------------------------------------------------------------------------
- * exits crosshair routines, release GCs
- */
 void pcb_crosshair_uninit(void)
 {
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
@@ -1097,7 +1082,6 @@ void pcb_crosshair_uninit(void)
 	pcb_hid_destroy_gc(pcb_crosshair.GC);
 }
 
-/* sets the crosshair range to the current buffer extents */
 void pcb_crosshair_range_to_buffer(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
