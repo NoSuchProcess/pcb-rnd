@@ -471,8 +471,8 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static const char pcb_acts_ChangeName[] = "ChangeName(Object)\n" "ChangeName(Layout|Layer)";
-static const char pcb_acth_ChangeName[] = "Sets the name (or pin number) of objects.";
+static const char pcb_acts_ChangeName[] = "ChangeName(Object)\n" "ChangeName(Refdes)\n" "ChangeName(Layout|Layer)";
+static const char pcb_acth_ChangeName[] = "Sets the name, text string, terminal ID or refdes of objects.";
 /* DOC: changename.html */
 static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
