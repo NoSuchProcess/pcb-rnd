@@ -27,10 +27,6 @@
  *
  */
 
-/* functions used to change object properties
- *
- */
-
 #include "config.h"
 
 #include "conf_core.h"
