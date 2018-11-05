@@ -205,7 +205,10 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 
 static void ghid_do_exit(pcb_hid_t * hid)
 {
+	/* Need to force-close the command entry first because it has its own main
+	   loop that'd block the exit until the user closes the entry */
 	ghid_cmd_close(&ghidgui->topwin.cmd);
+
 	gtk_main_quit();
 }
 
