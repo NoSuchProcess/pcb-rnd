@@ -317,17 +317,8 @@ static char *print_layer_list()
 	return buf;
 }
 
-/*
- * Ok, now the two entry points to this file.  The first, string_to_flags,
- * is passed a string (usually from parse_y.y) and returns a "set of flags".
- * In theory, this can be anything, but for now it's just an integer.  Later
- * it might be a structure, for example.
- *
- * Currently, there is no error handling :-P
- */
-
 static int error_ignore(const char *msg)
-{																/* do nothing */
+{
 	return 0;
 }
 
@@ -437,16 +428,6 @@ pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg)
 	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn, compat);
 }
 
-
-/*
- * Given a set of flags for a given type of object, return a string
- * which reflects those flags.  The only requirement is that this
- * string be parseable by string_to_flags.
- *
- * Note that this function knows a little about what kinds of flags
- * will be automatically set by parsing, so it won't (for example in
- * the old data model) include the "via" flag for PCB_OBJ_VIAs because
- * it knows those get forcibly set when vias are parsed. */
 char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn, int compat)
 {
 	int len;

@@ -75,7 +75,9 @@ pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg)
 
 /* Given a set of flags for a given object type, return a string which
    can be output to a file.  The returned pointer must not be
-   freed.  */
+   freed. If compat is set, allow some old flags set on new object types
+   which normally won't handle them - this is only for io_pcb, for the
+   transitional period */
 char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn, int compat);
 
 
