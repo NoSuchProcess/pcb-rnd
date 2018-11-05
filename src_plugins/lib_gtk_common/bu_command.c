@@ -123,13 +123,14 @@ void ghid_cmd_close(pcb_gtk_command_t *ctx)
 	if (!ctx->com->command_entry_is_active())
 		return;
 
-	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
+	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be (the entry is active) */
 		g_main_loop_quit(ctx->ghid_entry_loop);
+
 	ctx->command_entered = NULL; /* We are aborting */
-	/* Hidding the widgets */
-	if (conf_core.editor.fullscreen) {
+
+	/* Hide the host widget in full screen - not enough if only the entry is gone */
+	if (conf_core.editor.fullscreen)
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
-	}
 }
 
 static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
