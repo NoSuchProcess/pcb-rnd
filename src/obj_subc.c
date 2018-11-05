@@ -1612,7 +1612,7 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 
 	draw_subc_per_layer();
 
-	if (subc->refdes != NULL) {
+	{
 		pcb_coord_t x0, y0, dx, dy;
 		pcb_font_t *font = &PCB->fontkit.dflt;
 
@@ -1660,7 +1660,7 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 			else
 				pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, "<err>", subc->intconn);
 		}
-		else
+		else if (subc->refdes != NULL)
 			pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes, subc->intconn);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
