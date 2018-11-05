@@ -494,11 +494,12 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 			/* change the name of an object */
 		case F_Object:
+		case F_Refdes:
 			{
 				pcb_coord_t x, y;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_hid_get_coords(_("Select an Object"), &x, &y, 0);
-				type = PCB_CHANGENAME_TYPES;
+				type = op == F_Refdes ? PCB_OBJ_SUBC : PCB_CHANGENAME_TYPES;
 				do_chg_name:;
 				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();

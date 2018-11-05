@@ -144,6 +144,7 @@ ha:{
 					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 					li:submenu {
 						ha:text or name               = { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
+						ha:subcircuit refdes          = { li:a={{<key>e;<key>r};};  action=ChangeName(Refdes) }
 						ha:layout                     = {                           action=ChangeName(Layout) }
 						ha:active layer               = {                           action=ChangeName(Layer) }
 					}
