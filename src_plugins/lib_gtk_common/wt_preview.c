@@ -58,7 +58,7 @@ static void perview_update_offs(pcb_gtk_preview_t *preview)
 	yf = (double)preview->view.height / preview->view.canvas_height;
 	preview->view.coord_per_px = (xf > yf ? xf : yf);
 
-	if (preview->kind == PCB_GTK_PREVIEW_GENERIC) {
+	if ((preview->kind == PCB_GTK_PREVIEW_GENERIC) || (preview->kind == PCB_GTK_PREVIEW_LAYER)) {
 		preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
 		preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
 	}
