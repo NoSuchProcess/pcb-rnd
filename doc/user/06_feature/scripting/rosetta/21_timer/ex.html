@@ -1,0 +1,16 @@
+Create a function <i>timer_cb</i> that will be registered as an action.
+This is what the timer will execute. It only prints its arguments in
+the message log so it is easy to trace how it is called.
+<p>
+Different combination of timer initialization arguments for period and count
+(2nd and 3rd argument of addtimer()):
+<p>
+<table border=1 cellspacing=0>
+	<tr><th>period <th> count <th> effect
+	<tr><td> 0     <td> 1     <td> call timer_cb once, but only after the script finished initialization (async); 0 means "0 seconds after the current script call returns" - but in practice this is a shortest non-zero time the timer system can do
+	<tr><td> 1.2   <td> 1     <td> call timer_cb once, in 1.2 sec from now
+	<tr><td> 0.5   <td> 3     <td> call timer_cb three times, with 0.5 sec in between
+</table>
+<p>
+All timers start counting after a short period of time <b>after</b> the
+script's initialization finished. The three timers are kept track on separately.
