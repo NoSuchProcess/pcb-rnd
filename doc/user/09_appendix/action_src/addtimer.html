@@ -1,0 +1,23 @@
+This action is intended for scripts to create async timers.
+<p>
+Creates a timer that executes an <arg>action</arg> (by name) periodically.
+<arg>Period</arg> is a real number specified in seconds. Internal timer
+resolution is in the order of 0.1 second.
+<p>
+If <arg>repeat</arg> is not specified or is less than 1, the timer is repeated
+indefinitely. If the optional <arg>userdata</arg> string is specified, it is
+also passed to the action.
+<p>
+The <arg>action</arg> is specified only by a name, call arguments are always
+the following:
+<ul>
+	<li> <arg>period</arg>
+	<li> integer: remaining number of calls (or 0 for infinite)
+	<li> <arg>userdata</arg> or empty string
+</ul>
+<p>
+<arg>Action</arg> shall return integer 0 on success.
+If the action does not exist or returns anything else, the timer is
+uninstalled.
+<p>
+There can be any number of timers in parallel.

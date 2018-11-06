@@ -117,6 +117,7 @@ static void start_timer(void)
 
 static const char pcb_acth_AddTimer[] = "Add a new timer";
 static const char pcb_acts_AddTimer[] = "AddTimer(action, period, [repeat], [userdata])";
+/* DOC: addtimer.html */
 static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *act, *user_data = NULL;
