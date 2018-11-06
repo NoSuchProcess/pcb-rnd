@@ -429,9 +429,10 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 	switch (ghid_mouse_button(ev->button)) {
 	case PCB_MB_MIDDLE:
 		preview->view.panning = 0;
-		if (((time(NULL) - preview->grabt) < 2) && (preview->grabmot < 4))
-			if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_POPUP, cx, cy)))
-				gtk_widget_queue_draw(w);
+		break;
+	case PCB_MB_RIGHT:
+		if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_POPUP, cx, cy)))
+			gtk_widget_queue_draw(w);
 		break;
 	case PCB_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
