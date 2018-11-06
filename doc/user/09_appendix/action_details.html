@@ -49,6 +49,57 @@ Arguments:
   
 </dd></dl>
 
+<h2 id="addtimer">AddTimer</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+AddTimer(action, period, [repeat], [userdata])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Add a new timer
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+This action is intended for scripts to create async timers. 
+<p>
+ Creates a timer that executes an 
+<i>action</i>
+ (by name) periodically. 
+<i>Period</i>
+ is a real number specified in seconds. Internal timer resolution is in the order of 0.1 second. 
+<p>
+ If 
+<i>repeat</i>
+ is not specified or is less than 1, the timer is repeated indefinitely. If the optional 
+<i>userdata</i>
+ string is specified, it is also passed to the action. 
+<p>
+ The 
+<i>action</i>
+ is specified only by a name, call arguments are always the following: 
+<ul>
+  
+<li>
+ 
+<i>period</i>
+  
+<li>
+ integer: remaining number of calls (or 0 for infinite)  
+<li>
+ 
+<i>userdata</i>
+ or empty string 
+</ul>
+ 
+<p>
+ 
+<i>Action</i>
+ shall return integer 0 on success. If the action does not exist or returns anything else, the timer is uninstalled. 
+<p>
+ There can be any number of timers in parallel. 
+</dd></dl>
+
 <h2 id="adjustsizes">adjustsizes</h2>
 <dl><dd>
 <p>
@@ -435,9 +486,10 @@ The join flag determines whether a line or arc, drawn to intersect a polygon, el
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 ChangeName(Object)
+ChangeName(Refdes)
 ChangeName(Layout|Layer)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Sets the name (or pin number) of objects.
+Sets the name, text string, terminal ID or refdes of objects.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
