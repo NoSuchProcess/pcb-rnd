@@ -12,12 +12,12 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20721
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20752
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#addrats">AddRats</a></td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
-<tr><td>AddTimer</td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#addtimer">AddTimer</a></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew(data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
@@ -34,7 +34,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#changeflag">ChangeFlag</a></td><td>Sets or clears flags on objects.</td><td>ChangeFlag(Object|Selected|SelectedObjects, flag, value)<br>ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)<br>ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)<br>ChangeFlag(SelectedElements, flag, value)<br>flag = thermal | join<br>value = 0 | 1</td><td></td>
 <tr><td>ChangeHole</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#changejoin">ChangeJoin</a></td><td>Changes the join (clearance through polygons) of objects.</td><td>ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected)</td><td></td>
-<tr><td><a href="action_details.html#changename">ChangeName</a></td><td>Sets the name (or pin number) of objects.</td><td>ChangeName(Object)<br>ChangeName(Layout|Layer)</td><td></td>
+<tr><td><a href="action_details.html#changename">ChangeName</a></td><td>Sets the name, text string, terminal ID or refdes of objects.</td><td>ChangeName(Object)<br>ChangeName(Refdes)<br>ChangeName(Layout|Layer)</td><td></td>
 <tr><td>ChangeNonetlist</td><td>Changes the nonetlist flag of subcircuits.</td><td>ChangeNonetlist(ToggleObject)<br>ChangeNonetlist(SelectedElements)<br>ChangeNonetlist(Selected|SelectedObjects)</td><td></td>
 <tr><td>ChangeOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ChangePaste</td><td></td><td></td><td>oldactions plugin</td>
@@ -58,7 +58,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, dummy, accel, tooltip, cookie)</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
 <tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
-<tr><td>CycleDrag</td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
+<tr><td><a href="action_details.html#cycledrag">CycleDrag</a></td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
 <tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check.</td><td>DRC()</td><td></td>
 <tr><td>Debug</td><td>Debug action.</td><td>Debug(...)</td><td>oldactions plugin</td>
 <tr><td>DebugXY</td><td>Debug action, with coordinates</td><td>DebugXY(...)</td><td>oldactions plugin</td>
@@ -93,7 +93,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
 <tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave()</td><td>fontmode plugin</td>
 <tr><td><a href="action_details.html#freerotatebuffer">FreeRotateBuffer</a></td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
-<tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>pcb_act_FullScreen(on|off|toggle)</td><td></td>
+<tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
 <tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate.</td><td>GetXY()</td><td></td>
@@ -277,7 +277,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
 <tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
 <tr><td>sktransform</td><td>Transform sketch to geometrical wiring</td><td>sktransform(rect|oct|alldir)</td><td>sketch_route plugin</td>
-<tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>TODO</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
+<tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>Disperse subcircuits into clusters, by netlist connections</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>stroke</td><td>Various gesture recognition related functions</td><td>stroke(gesture, seq)</td><td>stroke plugin</td>
 <tr><td>stt</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
