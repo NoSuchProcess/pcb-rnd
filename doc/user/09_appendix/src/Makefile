@@ -7,7 +7,7 @@ all: ../action_details.html ../action_reference.html ../dialogtable.html ../form
 ../action_details.html: ./action_compiler.sh ../action_src/*.html
 	./action_compiler.sh ../action_src/*.html > ../action_details.html
 
-../action_reference.html : ./dump_actions_to_html.sh ../../../../src/pcb-rnd
+../action_reference.html : ./dump_actions_to_html.sh ../../../../src/pcb-rnd ../action_details.html
 	./dump_actions_to_html.sh > ../action_reference.html
 
 ../dialogtable.html: pcb-rnd-dialogs ./process_dialogtable.sh ../../../../src/pcb-rnd
