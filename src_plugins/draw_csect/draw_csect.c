@@ -332,6 +332,9 @@ static pcb_layergrp_id_t outline_gactive = -1;
 static pcb_layer_id_t lactive = -1;
 int lactive_idx = -1;
 
+/* true if we are dragging somehting */
+#define DRAGGING ((drag_lid >= 0) || (drag_addgrp | drag_delgrp | drag_addlayer | drag_dellayer) || (drag_gid >= 0))
+
 typedef enum {
 	MARK_GRP_FRAME,
 	MARK_GRP_MIDDLE,
@@ -561,7 +564,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	x = 2 + create_button(gc, x, y, "Del logical layer", &btn_dellayer);
 
 
-	if ((drag_lid >= 0) || (drag_addgrp | drag_delgrp | drag_addlayer | drag_dellayer) || (drag_gid >= 0)) {
+	if (DRAGGING) {
 		pcb_gui->set_color(gc, "#000000");
 
 		/* draw the actual operation */
@@ -842,6 +845,7 @@ static pcb_bool mouse_csect(void *widget, void *draw_data, pcb_hid_mouse_ev_t ki
 		case PCB_HID_MOUSE_MOTION:
 			cx = x;
 			cy = y;
+			res = DRAGGING;
 			break;
 		case PCB_HID_MOUSE_POPUP:
 			lid = get_layer_coords(x, y);
