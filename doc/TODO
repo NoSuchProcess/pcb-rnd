@@ -57,6 +57,9 @@
 	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - FEATURE: fontsel: ttf import?
+- FEATURE: DOC: new examples
+	- blinking led with parametric footprints
+	- example of nonetlist: 1206 jumpers and logos
 - FEATURE: route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- replace the route style dialog box's via part
@@ -266,9 +269,6 @@ FEATURES
 - CLEANUP: replace mkdtemp() with something safer
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
-- FEATURE: new examples
-	- blinking led with parametric footprints
-	- example of nonetlist: 1206 jumpers and logos
 - CLEANUP: In-line help needs update/re-structuration <lib_gtk_common/dlg_command.c>
 - CLEANUP: rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
