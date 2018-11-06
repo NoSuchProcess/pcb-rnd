@@ -263,7 +263,6 @@ FEATURES
 	which is strange
 - FEATURE: missing rotate polygon (mainline too)
 - BUG: zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
-- FEATURE: scconfig: check if it picks up settings from env vars (for a gentoo build)
 - CLEANUP: replace mkdtemp() with something safer
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
