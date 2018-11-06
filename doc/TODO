@@ -14,7 +14,7 @@
 - BUG: {u u} undo is piecemeal after flipping {s f } a group of subc to backside. repro: place a part, copy, select a few to flip sides, then flipsides and undo doesn't work on the group. 
 ? BUG: boardflip segfault on test file http://scififaster.net/boardfliptest.lht [report: Miloh]
 + BUG: loadscript won't load a script using same ID after an IOerror (eg typo in path) [report: Miloh]
-- BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
+- BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove GPMI
@@ -29,6 +29,13 @@
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it
+- CLEANUP: move DisperseElements out from core
+- CLEANUP: find.c rewrite:
+	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
+	- CLEANUP: netlist rewrite
+		- when no netlist is loaded, new rats can't be drawn [report: agaran]
+	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found
+	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - CLEANUP:  do not require top and bottom silk (also grep for TODO #tbs)
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
@@ -94,12 +101,6 @@
 	- display number of items at top of drc window
 	- export to file 
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
-- find.c rewrite:
-	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
-	- CLEANUP: netlist rewrite
-		- when no netlist is loaded, new rats can't be drawn [report: agaran]
-	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found
-	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - SUBC: element removal:
 	- BUG? check if drc outline is drawn on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
@@ -183,7 +184,7 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 - FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-- BUG: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
+- CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - CLEANUP: parent subc update:
 	- inhibit mechanism to speed things up:
@@ -196,6 +197,7 @@
 	- kicad:
 		- BUG:  segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
 		- BUG: does not save the netlist [TwisteR]
+		- BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 	- eagle:
 		- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 		- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
@@ -217,8 +219,6 @@
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
-- BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
-- CLEANUP: move DiesperseElements out from core
 - FEATURE: lihata v7
 	- remove via geometry from route style
 
