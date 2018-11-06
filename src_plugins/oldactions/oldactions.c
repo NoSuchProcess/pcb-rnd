@@ -156,18 +156,6 @@ static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_return[] = "Return(0|1)";
-static const char pcb_acth_return[] = "Simulate a passing or failing action.";
-/* This is for testing.  If passed a 0, does nothing and succeeds. If passed a 1, does nothing but pretends to fail. */
-static fgw_error_t pcb_act_Return(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	int rv;
-	PCB_ACT_CONVARG(1, FGW_INT, return, rv = argv[1].val.nat_int);
-	PCB_ACT_IRES(rv);
-	return 0;
-}
-
-
 static const char pcb_acts_djopt_sao[] = "OptAutoOnly()";
 static const char pcb_acth_djopt_sao[] = "Toggles the optimize-only-autorouted flag.";
 /*
@@ -364,7 +352,6 @@ pcb_action_t oldactions_action_list[] = {
 	{"Bell", pcb_act_Bell, pcb_acth_Bell, pcb_acts_Bell},
 	{"Debug", pcb_act_Debug, pcb_acth_debug, pcb_acts_debug},
 	{"DebugXY", pcb_act_Debug, pcb_acth_debugxy, pcb_acts_debugxy},
-	{"Return", pcb_act_Return, pcb_acth_return, pcb_acts_return},
 	{"OptAutoOnly", pcb_act_djopt_set_auto_only, pcb_acth_djopt_sao, pcb_acts_djopt_sao},
 	{"ToggleVendor", pcb_act_ToggleVendor, pcb_acth_toggle_vendor, pcb_acts_toggle_vendor},
 	{"EnableVendor", pcb_act_EnableVendor, pcb_acth_enable_vendor, pcb_acts_enable_vendor},
