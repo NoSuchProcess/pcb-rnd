@@ -71,6 +71,18 @@ static void perview_update_offs(pcb_gtk_preview_t *preview)
 	}
 }
 
+static void pcb_gtk_preview_update_x0y0(pcb_gtk_preview_t *preview)
+{
+	preview->x_min = preview->view.x0;
+	preview->y_min = preview->view.y0;
+	preview->x_max = preview->view.x0 + preview->view.width;
+	preview->y_max = preview->view.y0 + preview->view.height;
+	preview->w_pixels = preview->view.canvas_width;
+	preview->h_pixels = preview->view.canvas_height;
+
+	perview_update_offs(preview);
+}
+
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view)
 {
 	void (*orig)(void) = preview->com->pan_common;
@@ -80,15 +92,7 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	preview->view.height = data_view->Y2 - data_view->Y1;
 
 	pcb_gtk_zoom_view_win(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2);
-	preview->x_min = preview->view.x0;
-	preview->y_min = preview->view.y0;
-	preview->x_max = preview->view.x0 + preview->view.width;
-	preview->y_max = preview->view.y0 + preview->view.height;
-	preview->w_pixels = preview->view.canvas_width;
-	preview->h_pixels = preview->view.canvas_height;
-
-	perview_update_offs(preview);
-
+	pcb_gtk_preview_update_x0y0(preview);
 	preview->com->pan_common = orig;
 }
 
@@ -386,6 +390,7 @@ static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
 do_zoom:;
 	preview->view.x0 = cx - (preview->view.canvas_width / 2) * preview->view.coord_per_px;
 	preview->view.y0 = cy - (preview->view.canvas_height / 2) * preview->view.coord_per_px;
+	pcb_gtk_preview_update_x0y0(preview);
 	update_expose_data(preview);
 	gtk_widget_queue_draw(w);
 
@@ -451,11 +456,11 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 		draw_data = preview->expose_data.content.draw_data;
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
-
 	if (preview->view.panning) {
 		preview->grabmot++;
 		preview->view.x0 = preview->grabx - wx * preview->view.coord_per_px;
 		preview->view.y0 = preview->graby - wy * preview->view.coord_per_px;
+		pcb_gtk_preview_update_x0y0(preview);
 		update_expose_data(preview);
 		gtk_widget_queue_draw(w);
 		return FALSE;
