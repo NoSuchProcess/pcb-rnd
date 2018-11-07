@@ -57,6 +57,9 @@ static pup_context_t script_pup;
 #include "conf_core.h"
 #include "compat_fs.h"
 
+/* dir name under dotdir for saving script persistency data */
+#define SCRIPT_PERS "script_pers"
+
 static const char *script_pup_paths[] = {
 	"/usr/local/lib/puplug",
 	"/usr/lib/puplug",
@@ -66,23 +69,30 @@ static const char *script_pup_paths[] = {
 static int script_save_preunload(script_t *s, const char *data)
 {
 	FILE *f;
-	char *fn;
+	gds_t fn;
 
-	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, NULL);
-	pcb_mkdir(fn, 0755);
-	free(fn);
+	gds_init(&fn);
+	gds_append_str(&fn, conf_core.rc.path.home);
+	gds_append(&fn, PCB_DIR_SEPARATOR_C);
+	gds_append_str(&fn, DOT_PCB_RND);
+	pcb_mkdir(fn.array, 0755);
 
-	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "scripts", NULL);
-	pcb_mkdir(fn, 0750);
-	free(fn);
+	gds_append(&fn, PCB_DIR_SEPARATOR_C);
+	gds_append_str(&fn, SCRIPT_PERS);
+	pcb_mkdir(fn.array, 0750);
 
-	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "scripts", PCB_DIR_SEPARATOR_S, s->obj->name, NULL);
-	f = pcb_fopen(fn, "w");
+	gds_append(&fn, PCB_DIR_SEPARATOR_C);
+	gds_append_str(&fn, s->obj->name);
+
+	f = pcb_fopen(fn.array, "w");
 	if (f != NULL) {
+		gds_uninit(&fn);
 		fputs(data, f);
 		fclose(f);
 		return 0;
 	}
+
+	gds_uninit(&fn);
 	return -1;
 }
 
