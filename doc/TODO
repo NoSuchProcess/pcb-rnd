@@ -13,7 +13,7 @@
 - BUG: gl hid, press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge, miloh]
 - BUG: {u u} undo is piecemeal after flipping {s f } a group of subc to backside. repro: place a part, copy, select a few to flip sides, then flipsides and undo doesn't work on the group. 
 - BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
-- BUG: loadscript(graphics,/path/to/graphicstypo.awk,mawk);loadscript(graphics,/path/to/graphics.awk,mawk) fails with '(null): cannot convert to realpath', then issues 'ID already in use' [report:Miloh]
+? BUG: loadscript(graphics,/path/to/graphicstypo.awk,mawk);loadscript(graphics,/path/to/graphics.awk,mawk) fails with '(null): cannot convert to realpath', then issues 'ID already in use' [report:Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove GPMI
@@ -47,7 +47,7 @@
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
 - CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
-- CLEANUP/BUG: high level pcb_mkdir() shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
+- CLEANUP/BUG: high level pcb_mkdir() and pcb_file_size() and is-dir shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
 - FEATURE: auto calculated alternative action names to convert between CamelCase and underscores [report: igor2]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
