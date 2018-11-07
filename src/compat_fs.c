@@ -41,6 +41,7 @@
 #include <memory.h>
 #include <ctype.h>
 #include <signal.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <assert.h>
@@ -301,6 +302,16 @@ int pcb_is_dir(const char *path)
 	if (stat(path, &st) != 0)
 		return 0;
 	return S_ISDIR(st.st_mode);
+}
+
+long pcb_file_size(const char *path)
+{
+	struct stat st;
+	if (stat(path, &st) != 0)
+		return -1;
+	if (st.st_size > LONG_MAX)
+		return -1;
+	return st.st_size;
 }
 
 int pcb_is_path_abs(const char *fn)
