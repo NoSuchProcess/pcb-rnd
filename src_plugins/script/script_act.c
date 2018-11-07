@@ -47,7 +47,7 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	const char *id = NULL;
 	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
 
-	PCB_ACT_IRES(script_unload(id));
+	PCB_ACT_IRES(script_unload(id, "unload"));
 	return 0;
 }
 

@@ -54,6 +54,8 @@ static htsp_t scripts; /* ID->script_t */
 static pup_context_t script_pup;
 
 #include "c_script.c"
+#include "conf_core.h"
+#include "compat_fs.h"
 
 static const char *script_pup_paths[] = {
 	"/usr/local/lib/puplug",
@@ -61,8 +63,53 @@ static const char *script_pup_paths[] = {
 	NULL
 };
 
-static void script_free(script_t *s)
+static int script_save_preunload(script_t *s, const char *data)
 {
+	FILE *f;
+	char *fn;
+
+	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, NULL);
+	pcb_mkdir(fn, 0755);
+	free(fn);
+
+	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "scripts", NULL);
+	pcb_mkdir(fn, 0750);
+	free(fn);
+
+	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "scripts", PCB_DIR_SEPARATOR_S, s->obj->name, NULL);
+	f = pcb_fopen(fn, "w");
+	if (f != NULL) {
+		fputs(data, f);
+		fclose(f);
+		return 0;
+	}
+	return -1;
+}
+
+/* unload a script, free all memory and remove it from all lists/hashes.
+   If preunload is not NULL, it's the unload reason the script's own
+   preunload() function is called and its return is saved. */
+static void script_free(script_t *s, const char *preunload)
+{
+	if ((preunload != NULL) && (s->obj != NULL)) {
+		fgw_func_t *f;
+		fgw_arg_t res, argv[2];
+
+		f = fgw_func_lookup(s->obj, "preunload");
+		if (f != NULL) {
+			argv[0].type = FGW_FUNC;
+			argv[0].val.func = f;
+			argv[1].type = FGW_STR;
+			argv[1].val.cstr = preunload;
+			res.type = FGW_INVALID;
+			if (f->func(&res, 2, argv) == 0) {
+				if ((fgw_arg_conv(&pcb_fgw, &res, FGW_STR) == 0) && (res.val.str != NULL) && (*res.val.str != '\0'))
+					script_save_preunload(s, res.val.str);
+			}
+			fgw_arg_free(&pcb_fgw, &res);
+		}
+	}
+
 	if (s->obj != NULL)
 		fgw_obj_unreg(&pcb_fgw, s->obj);
 	if (s->pup != NULL)
@@ -72,20 +119,20 @@ static void script_free(script_t *s)
 	free(s);
 }
 
-static void script_unload_entry(htsp_entry_t *e)
+static void script_unload_entry(htsp_entry_t *e, const char *preunload)
 {
 	script_t *s = (script_t *)e->value;
-	script_free(s);
+	script_free(s, preunload);
 	e->key = NULL;
 	htsp_delentry(&scripts, e);
 }
 
-static int script_unload(const char *id)
+static int script_unload(const char *id, const char *preunload)
 {
 	htsp_entry_t *e = htsp_getentry(&scripts, id);
 	if (e == NULL)
 		return -1;
-	script_unload_entry(e);
+	script_unload_entry(e, preunload);
 	return 0;
 }
 
@@ -129,7 +176,7 @@ static int script_load(const char *id, const char *fn, const char *lang)
 
 	s->obj = fgw_obj_new(&pcb_fgw, s->id, s->lang, s->fn, NULL);
 	if (s->obj == NULL) {
-		script_free(s);
+		script_free(s, NULL);
 		pcb_message(PCB_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
 		return -1;
 	}
@@ -181,7 +228,7 @@ int script_oneliner(const char *lang, const char *src)
 		pcb_message(PCB_MSG_ERROR, "script oneliner: can't load/parse the script\n");
 		res = -1;
 	}
-	script_unload("__oneliner");
+	script_unload("__oneliner", NULL);
 
 	pcb_tempfile_unlink(fn);
 	return res;
@@ -201,7 +248,7 @@ void pplg_uninit_script(void)
 	htsp_entry_t *e;
 	pcb_remove_actions_by_cookie(script_cookie);
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e))
-		script_unload_entry(e);
+		script_unload_entry(e, "unload");
 
 	htsp_uninit(&scripts);
 	pup_uninit(&script_pup);
