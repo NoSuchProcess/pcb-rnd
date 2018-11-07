@@ -48,6 +48,7 @@
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
 - CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
 - CLEANUP/BUG: high level pcb_mkdir() shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
+- FEATURE: auto calculated alternative action names to convert between CamelCase and underscores [report: igor2]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
