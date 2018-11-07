@@ -265,6 +265,27 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	return 0;
 }
 
+static int script_reload(const char *id)
+{
+	int ret;
+	char *fn, *lang;
+	script_t *s;
+	htsp_entry_t *e = htsp_getentry(&scripts, id);
+
+	if (e == NULL)
+		return -1;
+
+	s = e->value;
+	fn = pcb_strdup(s->fn);
+	lang = pcb_strdup(s->lang);
+	script_unload_entry(e, "reload");
+
+	ret = script_load(id, fn, lang);
+	free(fn);
+	free(lang);
+	return ret;
+}
+
 void script_list(const char *pat)
 {
 	htsp_entry_t *e;

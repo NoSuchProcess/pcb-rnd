@@ -51,6 +51,17 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
+static const char pcb_acth_ReloadScript[] = "Reload a fungw script";
+static const char pcb_acts_ReloadScript[] = "ReloadScript(id)";
+static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *id = NULL;
+	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+
+	PCB_ACT_IRES(script_reload(id));
+	return 0;
+}
+
 static const char pcb_acth_ScriptPersistency[] = "Read or remove script persistency data savd on preunload";
 static const char pcb_acts_ScriptPersistency[] = "ScriptPersistency(read|remove)";
 static fgw_error_t pcb_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -140,6 +151,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static pcb_action_t script_action_list[] = {
 	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
 	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
+	{"ReloadScript", pcb_act_ReloadScript, pcb_acth_ReloadScript, pcb_acts_ReloadScript},
 	{"ScriptPersistency", pcb_act_ScriptPersistency, pcb_acth_ScriptPersistency, pcb_acts_ScriptPersistency},
 	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts},
 	{"AddTimer", pcb_act_AddTimer, pcb_acth_AddTimer, pcb_acts_AddTimer},
