@@ -60,6 +60,9 @@ static pup_context_t script_pup;
 /* dir name under dotdir for saving script persistency data */
 #define SCRIPT_PERS "script_pers"
 
+/* allow only 1 megabyte of script persistency to be loaded */
+#define PERS_MAX_SIZE 1024*1024
+
 static const char *script_pup_paths[] = {
 	"/usr/local/lib/puplug",
 	"/usr/lib/puplug",
@@ -146,12 +149,72 @@ static int script_unload(const char *id, const char *preunload)
 	return 0;
 }
 
+static const char *script_persistency_id = NULL;
+static int script_persistency(fgw_arg_t *res, const char *cmd)
+{
+	char *fn;
+
+	if (script_persistency_id == NULL) {
+		pcb_message(PCB_MSG_ERROR, "ScriptPersistency may be called only from the init part of a script\n");
+		goto err;
+	}
+
+	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, SCRIPT_PERS, PCB_DIR_SEPARATOR_S, script_persistency_id, NULL);
+
+	if (strcmp(cmd, "remove") == 0) {
+		PCB_ACT_IRES(pcb_remove(fn));
+		goto succ;
+	}
+
+	if (strcmp(cmd, "read") == 0) {
+		FILE *f;
+		long fsize = pcb_file_size(fn);
+		char *data;
+
+		if ((fsize < 0) || (fsize > PERS_MAX_SIZE))
+			goto err;
+
+		data = malloc(fsize+1);
+		if (data == NULL)
+			goto err;
+
+		f = pcb_fopen(fn, "r");
+		if (f == NULL) {
+			free(data);
+			goto err;
+		}
+
+		if (fread(data, 1, fsize, f) != fsize) {
+			free(data);
+			fclose(f);
+			goto err;
+		}
+
+		fclose(f);
+		data[fsize] = '\0';
+		res->type = FGW_STR | FGW_DYN;
+		res->val.str = data;
+		goto succ;
+	}
+
+	pcb_message(PCB_MSG_ERROR, "Unknown command for ScriptPersistency\n");
+
+	err:;
+	PCB_ACT_IRES(-1);
+	return 0;
+
+	succ:
+	free(fn);
+	return 0; /* assume IRES is set already */
+}
+
 static int script_load(const char *id, const char *fn, const char *lang)
 {
 	char name[PCB_PATH_MAX];
 	pup_plugin_t *pup;
 	script_t *s;
 	int st;
+	const char *old_id;
 
 	if (htsp_has(&scripts, id)) {
 		pcb_message(PCB_MSG_ERROR, "Can not load script %s from file %s: ID already in use\n", id, fn);
@@ -167,7 +230,10 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	if (strcmp(lang, "c") != 0) {
 		pcb_snprintf(name, sizeof(name), "fungw_%s", lang);
 
+		old_id = script_persistency_id;
+		script_persistency_id = id;
 		pup = pup_load(&script_pup, script_pup_paths, name, 0, &st);
+		script_persistency_id = old_id;
 		if (pup == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
 			return -1;
@@ -184,7 +250,11 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	s->fn = pcb_strdup(fn);
 	s->lang = pcb_strdup(lang);
 
+	old_id = script_persistency_id;
+	script_persistency_id = id;
 	s->obj = fgw_obj_new(&pcb_fgw, s->id, s->lang, s->fn, NULL);
+	script_persistency_id = old_id;
+
 	if (s->obj == NULL) {
 		script_free(s, NULL);
 		pcb_message(PCB_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
