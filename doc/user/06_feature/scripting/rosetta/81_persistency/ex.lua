@@ -1,5 +1,5 @@
 function preunload(why)
-	message("preunload for " .. why .. "; counter will be " .. ctr)
+	message("preunload for " .. why .. "; counter will be " .. ctr .. "\n")
 	return ctr
 end
 
@@ -9,7 +9,7 @@ if ctr == -1 then
 end
 ctr = ctr + 1
 
-message("pers reload: the script has been loaded " .. ctr .. " times so far.")
+message("pers reload: the script has been loaded " .. ctr .. " times so far.\n")
 --	scriptpersistency("remove")
 
 fgw_func_reg("preunload")
