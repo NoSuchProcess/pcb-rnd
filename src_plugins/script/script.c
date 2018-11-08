@@ -33,6 +33,7 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include <puplug/puplug.h>
+#include <genregex/regex_se.h>
 
 #include "actions.h"
 #include "plugins.h"
@@ -289,11 +290,19 @@ static int script_reload(const char *id)
 void script_list(const char *pat)
 {
 	htsp_entry_t *e;
+	re_se_t *r = NULL;
+
+	if ((pat != NULL) && (*pat != '\0'))
+		r = re_se_comp(pat);
+
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
 		script_t *s = (script_t *)e->value;
-		if ((pat == NULL) || (*pat == '\0'))
+		if ((r == NULL) || (re_se_exec(r, s->id)) || (re_se_exec(r, s->fn)) || (re_se_exec(r, s->lang)))
 			pcb_message(PCB_MSG_INFO, "id=%s fn=%s lang=%s\n", s->id, s->fn, s->lang);
 	}
+	
+	if (r != NULL)
+		re_se_free(r);
 }
 
 static void oneliner_boilerplate(FILE *f, const char *lang, int pre)
