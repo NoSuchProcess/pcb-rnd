@@ -115,6 +115,7 @@ static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 static const char pcb_acth_Oneliner[] = "Execute a script one-liner using a specific language";
 static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
+/* DOC: onliner.html */
 static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first = NULL, *lang = argv[0].val.func->name, *scr = NULL;

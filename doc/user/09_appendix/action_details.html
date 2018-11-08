@@ -1697,7 +1697,7 @@ The
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 ListScripts([pat])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-List a fungw script
+List fungw scripts, optionally filtered wiht regex pat.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 script plugin
 </table>
@@ -2293,6 +2293,70 @@ Starts a new layout.
 </table>
 <p>
 If a name is not given, one is prompted for. 
+</dd></dl>
+
+<h2 id="onliner">onliner</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+The 
+<a href="#oneliner">oneliner</a>
+ action is designed for quick execution of short, trivial scripts, such as a for loop for repeating an action. It supports any scripting language currently availabel through fungw. Each oneliner is an independent script context - variables, functions and other global states do not persist. 
+<p>
+ This group of actions offers three forms: 
+<ul>
+  
+<li>
+ 
+<a href="#oneliner">oneliner</a>
+(
+<i>lang</i>
+, 
+<i>script</i>
+) - execute the script in the language specified  
+<li>
+ lang(script) - shorthand for the above  
+<li>
+ lang - switch the command line interpreter to execute one-liners in the given language, until /exit 
+</ul>
+ 
+<p>
+ For example, a simple calculation using awk can be done in three ways: 
+<ul>
+  
+<li>
+ 
+<i>
+oneliner(awk, 'print 42*3')
+</i>
+  
+<li>
+ 
+<i>
+awk('print 42*3')
+</i>
+  
+<li>
+ 
+<i>
+awk
+</i>
+, then 
+<i>
+print 42*3
+</i>
+, then 
+<i>
+/exit
+</i>
+ 
+</ul>
+ 
 </dd></dl>
 
 <h2 id="pan">pan</h2>
