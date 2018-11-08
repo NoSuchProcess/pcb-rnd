@@ -1776,6 +1776,37 @@ This action assumes you know what the filename is.  The various GUIs should have
   
 </dd></dl>
 
+<h2 id="loadscript">LoadScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+LoadScript(id, filename, [language])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Load a fungw script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+
+<i>id</i>
+ is an arbitrary string assigned by the user. 
+<i>id</i>
+ must be unique per pcb-rnd session per script and may contain alphanumeric characters and undescrore. 
+<p>
+ 
+<i>fn</i>
+ is the file name of the script, which is a path. Pcb-rnd does not do any search, it only opens the path as specified. 
+<p>
+ 
+<i>lang</i>
+ is the scripting language, as in  
+<a href="http://repo.hu/projects/fungw/lang.html">
+fungw plugin name
+</a>
+. When not specified, the code makes a guess (based on the file name). 
+</dd></dl>
+
 <h2 id="loadvendorfrom">LoadVendorFrom</h2>
 <dl><dd>
 <p>
@@ -2542,6 +2573,27 @@ The
  action allows you to recover from the last undo command. You might want to do this if you thought that undo was going to revert something other than what it actually did (in case you are confused about which operations are un-doable), or if you have been backing up through a long undo list and over-shoot your stopping point.  Any change that is made since the undo in question will trim the redo list.  For example if you add ten lines, then undo three of them you could use redo to put them back, but if you move a line on the board before performing the redo, you will lose the ability to "redo" the three "undone" lines. 
 </dd></dl>
 
+<h2 id="reloadscript">ReloadScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ReloadScript(id)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Reload a fungw script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+
+<i>id</i>
+ is the same that was specified for 
+<a href="#loadscript">loadscript</a>
+. If loading the new verison of the script fails, 
+<i>id</i>
+ is released (can be reused for a new LoadScript).  
+</dd></dl>
+
 <h2 id="renumberblock">RenumberBlock</h2>
 <dl><dd>
 <p>
@@ -3199,6 +3251,27 @@ The unlimited undo feature of pcb-rnd allows you to recover from most operations
  Note that undo groups operations by serial number; changes with the same serial number will be undone (or redone) as a group.  See 
 <a href="#atomic">atomic</a>
 .  
+</dd></dl>
+
+<h2 id="unloadscript">UnloadScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+UnloadScript(id)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Unload a fungw script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+
+<i>id</i>
+ is the same that was specified for 
+<a href="#loadscript">loadscript</a>
+. After the call 
+<i>id</i>
+ is released (can be reused for a new LoadScript). 
 </dd></dl>
 
 <h2 id="unselect">Unselect</h2>

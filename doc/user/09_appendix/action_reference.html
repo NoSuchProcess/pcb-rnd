@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20760
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20786
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -119,7 +119,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>LoadLtspiceFrom</td><td>Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.</td><td>LoadLtspiceFrom(filename)</td><td>ltspice importer</td>
 <tr><td>LoadMentorFrom</td><td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td><td>LoadMentorFrom(filename)</td><td>mentor_sch importer</td>
 <tr><td>LoadMucsFrom</td><td>Loads the specified mucs routing file.</td><td>LoadMucsFrom(filename)</td><td>mucs importer</td>
-<tr><td>LoadScript</td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
 <tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file. Type can be: netlist or footprint.</td><td>LoadTedaxFrom(netlist|footprint, filename)</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
@@ -171,6 +171,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
+<tr><td><a href="action_details.html#reloadscript">ReloadScript</a></td><td>Reload a fungw script</td><td>ReloadScript(id)</td><td>script plugin</td>
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path|cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
@@ -179,7 +180,6 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ReplaceFootprint</td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint()</td><td></td>
 <tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])</td><td>report plugin</td>
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>
-<tr><td>Return</td><td>Simulate a passing or failing action.</td><td>Return(0|1)</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#ripup">RipUp</a></td><td>Ripup auto-routed tracks</td><td>RipUp(All|Selected|Element)</td><td></td>
 <tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
 <tr><td>RouteStyle</td><td>Copies the indicated routing style into the current pen.</td><td>RouteStyle(style_id|style_name)</td><td></td>
@@ -189,6 +189,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file. Type can be: board-footprints</td><td>SaveTedax(board-footprints, filename)</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
+<tr><td>ScriptPersistency</td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
@@ -208,7 +209,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
 <tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
 <tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
-<tr><td>UnloadScript</td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#unloadscript">UnloadScript</a></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
 <tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>

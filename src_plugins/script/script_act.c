@@ -29,6 +29,7 @@
 
 static const char pcb_acth_LoadScript[] = "Load a fungw script";
 static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])";
+/* doc: loadscript.html */
 static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id, *fn, *lang = NULL;
@@ -42,6 +43,7 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acth_UnloadScript[] = "Unload a fungw script";
 static const char pcb_acts_UnloadScript[] = "UnloadScript(id)";
+/* doc: unloadscript.html */
 static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
@@ -53,6 +55,7 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 static const char pcb_acth_ReloadScript[] = "Reload a fungw script";
 static const char pcb_acts_ReloadScript[] = "ReloadScript(id)";
+/* doc: reloadscript.html */
 static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
