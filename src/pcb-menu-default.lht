@@ -501,6 +501,10 @@ ha:{
 	
 		ha:Plugins {
 			li:submenu {
+				ha:script            = {
+					# submenu dedicated for user scripts to register their menu items
+					li:submenu { }
+				}
 				ha:Manage plugins... = { a={<Key>f;<Key>c;<Key>p;}; action=ManagePlugins() }
 			}
 		} # Plugins
