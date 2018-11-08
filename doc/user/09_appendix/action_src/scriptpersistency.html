@@ -1,0 +1,8 @@
+When a script is unloaded, its action <act>preunload</act> is called. The
+return value is saved as script persistent data. When the script is loaded
+again later, it can use <act>ScriptPersistency</act>(<arg>read</arg>) to
+read the data saved.
+<p>
+<act>ScriptPersistency</act>(<arg>remove</arg>) deletes the data from disk.
+<p>
+Note: the data is per script id, not per script file name.

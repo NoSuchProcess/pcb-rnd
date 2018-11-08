@@ -91,6 +91,7 @@ static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 static const char pcb_acth_ScriptPersistency[] = "Read or remove script persistency data savd on preunload";
 static const char pcb_acts_ScriptPersistency[] = "ScriptPersistency(read|remove)";
+/* DOC: scriptpersistency.html */
 static fgw_error_t pcb_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;

@@ -1,0 +1,15 @@
+<act>preunload</act> is an optional action scripts may provide. When present,
+it is called by pcb-rnd as the last call to the script before the script is
+unloaded. It has two purposes:
+<ul>
+	<li> give scripts a chance to clean up, uninit and unregister
+	<li> give scripts a chance to perist their state
+</ul>
+<p>
+State persisting is achieved through returning a string from this action. That
+string is then saved by pcb-rnd under the scripts' load ID (as specified by
+the user). In a later script load, the script with the same ID may read the
+persistent data frolm disk using the <act>ScriptPersistency</act>(read) action
+and can remove the save using the <act>ScriptPersistency</act>(remove) action.
+<p>
+<b>It should never be called by the user or other code or other actions.</a>

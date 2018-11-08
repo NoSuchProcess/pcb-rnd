@@ -2467,6 +2467,40 @@ The polygon under the cursor (based on closest-corner) is stitched together with
 This just pops up the specified menu.  The menu must have been defined in the popups subtree in the menu lht file.  
 </dd></dl>
 
+<h2 id="preunload">preunload</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+
+<a href="#preunload">preunload</a>
+ is an optional action scripts may provide. When present, it is called by pcb-rnd as the last call to the script before the script is unloaded. It has two purposes: 
+<ul>
+  
+<li>
+ give scripts a chance to clean up, uninit and unregister  
+<li>
+ give scripts a chance to perist their state 
+</ul>
+ 
+<p>
+ State persisting is achieved through returning a string from this action. That string is then saved by pcb-rnd under the scripts' load ID (as specified by the user). In a later script load, the script with the same ID may read the persistent data frolm disk using the 
+<a href="#scriptpersistency">scriptpersistency</a>
+(read) action and can remove the save using the 
+<a href="#scriptpersistency">scriptpersistency</a>
+(remove) action. 
+<p>
+ 
+<b>
+It should never be called by the user or other code or other actions.
+</a>
+ 
+</dd></dl>
+
 <h2 id="print">print</h2>
 <dl><dd>
 <p>
@@ -2860,6 +2894,35 @@ Arguments:
  Save the content of the active Buffer to a file. This is       the graphical way to create a footprint.  
 </table>
  
+</dd></dl>
+
+<h2 id="scriptpersistency">ScriptPersistency</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ScriptPersistency(read|remove)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Read or remove script persistency data savd on preunload
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+When a script is unloaded, its action 
+<a href="#preunload">preunload</a>
+ is called. The return value is saved as script persistent data. When the script is loaded again later, it can use 
+<a href="#scriptpersistency">scriptpersistency</a>
+(
+<i>read</i>
+) to read the data saved. 
+<p>
+ 
+<a href="#scriptpersistency">scriptpersistency</a>
+(
+<i>remove</i>
+) deletes the data from disk. 
+<p>
+ Note: the data is per script id, not per script file name. 
 </dd></dl>
 
 <h2 id="scroll">scroll</h2>

@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20786
+This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20792
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -189,7 +189,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file. Type can be: board-footprints</td><td>SaveTedax(board-footprints, filename)</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
-<tr><td>ScriptPersistency</td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
