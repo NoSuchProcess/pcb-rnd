@@ -141,15 +141,6 @@ static void script_unload_entry(htsp_entry_t *e, const char *preunload)
 	htsp_delentry(&scripts, e);
 }
 
-static int script_unload(const char *id, const char *preunload)
-{
-	htsp_entry_t *e = htsp_getentry(&scripts, id);
-	if (e == NULL)
-		return -1;
-	script_unload_entry(e, preunload);
-	return 0;
-}
-
 static const char *script_persistency_id = NULL;
 static int script_persistency(fgw_arg_t *res, const char *cmd)
 {
@@ -216,6 +207,15 @@ static char *script_gen_cookie(void)
 		return NULL;
 	}
 	return pcb_concat("script::fungw::", script_persistency_id, NULL);
+}
+
+static int script_unload(const char *id, const char *preunload)
+{
+	htsp_entry_t *e = htsp_getentry(&scripts, id);
+	if (e == NULL)
+		return -1;
+	script_unload_entry(e, preunload);
+	return 0;
 }
 
 static int script_load(const char *id, const char *fn, const char *lang)
