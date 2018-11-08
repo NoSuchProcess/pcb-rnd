@@ -27,6 +27,24 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <ctype.h>
+
+static int script_id_invalid(const char *id)
+{
+	for(; *id != '\0'; id++)
+		if (!isalnum(*id) && (*id != '_'))
+			return 1;
+	return 0;
+}
+
+#define ID_VALIDATE(id, act) \
+do { \
+	if (script_id_invalid(id)) { \
+		pcb_message(PCB_MSG_ERROR, #act ": Invalid script ID '%s' (must contain only alphanumeric characters and underscores)\n", id); \
+		return FGW_ERR_ARG_CONV; \
+	} \
+} while(0)
+
 static const char pcb_acth_LoadScript[] = "Load a fungw script";
 static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])";
 /* doc: loadscript.html */
@@ -36,6 +54,8 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
+
+	ID_VALIDATE(id, LoadScript);
 
 	PCB_ACT_IRES(script_load(id, fn, lang));
 	return 0;
@@ -49,6 +69,8 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	const char *id = NULL;
 	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
 
+	ID_VALIDATE(id, UnloadScript);
+
 	PCB_ACT_IRES(script_unload(id, "unload"));
 	return 0;
 }
@@ -60,6 +82,8 @@ static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	const char *id = NULL;
 	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+
+	ID_VALIDATE(id, ReloadScript);
 
 	PCB_ACT_IRES(script_reload(id));
 	return 0;
