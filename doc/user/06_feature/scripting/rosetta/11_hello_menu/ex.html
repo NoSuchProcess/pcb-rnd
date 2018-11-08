@@ -1,0 +1,14 @@
+Create a function <i>hello</i> that will be registered as an action.
+The name of the action and the function is always the same. Action names
+shall be lowercase.
+<p>
+When the action is called, use <i>message</i> to append a log message.
+<p>
+In the "main" section of the script, register the action using fgw_func_reg().
+Then save the script cookie and register a new submenu using it. Registering
+the submenu with this cookie makes pcb-rnd auto-remove the menu when the script
+is unloaded.
+<p>
+The menu path starts with /main_menu, because it is also possible to
+insert menu entries in popups.
+
