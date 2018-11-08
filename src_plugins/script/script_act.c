@@ -99,8 +99,9 @@ static fgw_error_t pcb_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t
 	return script_persistency(res, cmd);
 }
 
-static const char pcb_acth_ListScripts[] = "List a fungw script";
+static const char pcb_acth_ListScripts[] = "List fungw scripts, optionally filtered wiht regex pat.";
 static const char pcb_acts_ListScripts[] = "ListScripts([pat])";
+/* DOC: listscripts.html */
 static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *pat = NULL;
