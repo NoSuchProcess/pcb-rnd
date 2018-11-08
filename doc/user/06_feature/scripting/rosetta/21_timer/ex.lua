@@ -1,5 +1,5 @@
 function timer_cb(now, remain, ud)
-	message("timer_cb: " .. now .. " " .. remain .. " " .. ud)
+	message("timer_cb: " .. now .. " " .. remain .. " " .. ud .. "\n")
 	return 0
 end
 
