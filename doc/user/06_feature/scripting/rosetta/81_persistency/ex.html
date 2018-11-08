@@ -1,0 +1,34 @@
+Create a function <i>preunload</i> that will be registered as an action.
+This function will be called automatically right before the script is unloaded.
+The return value of this function, automatically converted to string, will
+be saved on disk (by pcb-rnd).
+<p>
+On init, scriptpersistency("read") reads back the last saved string. If
+it returns -1, that means there was no saved data, reset the counter to 0.
+<p>
+When scriptpersistency("remove") is called, it removes the file from disk.
+This matters if pcb-rnd exits abruptly (e.g. crashes), not calling script
+unload to overwrite it or if multiple pcb-rnd processes would be running in
+parallel and only one should load the data into the script. Keeping it
+on disk means the script would still load the last known-to-be-good data
+after a pcb-rnd crash.
+<p>
+Note #1: the script can save and reload multiple items, as data is an opaque
+string to pcb-rnd. However, serialization (packing and unpacking of the items
+into a single string) needs to be done by the script.
+<p>
+Note #2: persistency data is stored by script ID. Script ID is assigned
+run-time by the user. That means the ID can be reused by a different script
+next time and persistency data saved by one script may need to be passed to
+another. This simplified example does not deal with that. A real script should
+either do sanity checks or even better store a signature in the data.
+<p>
+Note #3: however, this also means compatible scripts can share data written
+in a common format. The example scripts in this directory can be all loaded
+under the same ID and will continue the counting. In a case like this, a safer
+approach is to store a format-specific signature.
+<p>
+Note #4: ReloadScript() really does an unload and a load, but the reason
+passed to preunload() will be "reload". The script may decide to save
+persistency differently knowing that the reload will be immediate.
+

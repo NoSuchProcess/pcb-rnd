@@ -1,0 +1,2 @@
+Counts how many times the script was loaded, in a persistent on-disk counter.
+
