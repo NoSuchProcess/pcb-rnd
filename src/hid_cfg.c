@@ -194,9 +194,38 @@ int pcb_hid_cfg_remove_menu_node(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_
 	return hid_cfg_remove_item(hr, root, gui_remove, ctx);
 }
 
+int pcb_hid_cfg_remove_menu_cookie(pcb_hid_cfg_t *hr, const char *cookie, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx, int level, lht_node_t *curr)
+{
+	lht_err_t err;
+	lht_dom_iterator_t it;
+
+	if ((curr != hr->doc->root) && (level > 1)) {
+		curr = lht_tree_path_(hr->doc, curr, "submenu", 1, 0, &err);
+		if (curr == NULL)
+			return 0;
+	}
+
+	for(curr = lht_dom_first(&it, curr); curr != NULL; curr = lht_dom_next(&it)) {
+		lht_node_t *nck = lht_tree_path_(hr->doc, curr, "cookie", 1, 0, &err);
+
+		if ((nck != NULL) && (strcmp(nck->data.text.value, cookie) == 0))
+			pcb_hid_cfg_remove_menu_node(hr, curr, gui_remove, ctx);
+		else
+			pcb_hid_cfg_remove_menu_cookie(hr, cookie, gui_remove, ctx, level+1, curr);
+	}
+
+	/* always success: not finding any menu is not considered an error */
+	return 0;
+}
+
 int pcb_hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
-	return pcb_hid_cfg_remove_menu_node(hr, pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL), gui_remove, ctx);
+	lht_node_t *nd = pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL);
+
+	if (nd == NULL)
+		return pcb_hid_cfg_remove_menu_cookie(hr, path, gui_remove, ctx, 0, hr->doc->root);
+	else
+		return pcb_hid_cfg_remove_menu_node(hr, nd, gui_remove, ctx);
 }
 
 static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t err)
