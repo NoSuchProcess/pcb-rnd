@@ -1,0 +1,9 @@
+The script:
+<ul>
+	<li> may call ScriptCookie() <b>during script initialization</b> and save the resulting cookie string
+	<li> may use the cookie string to register to core pcb-rnd infrastructure that requires cookie, such as <act>CreateMenu</act>
+	<li> can depend on pcb-rnd to call any unregistering associated with this specific cookie atomatically after script unload (<act>preunload</act>).
+</ul>
+<p>
+The function can not be called outside of script initialization. The cookie
+string can be used any time between script load and script unload.

@@ -113,6 +113,18 @@ static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char pcb_acth_ScriptCookie[] = "Return a cookie specific to the current script instance during script initialization";
+static const char pcb_acts_ScriptCookie[] = "ScriptCookie()";
+/* DOC: scriptcookie.html */
+static fgw_error_t pcb_act_ScriptCookie(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = script_gen_cookie();
+	if (res->val.str == NULL)
+		return -1;
+	return 0;
+}
+
 static const char pcb_acth_Oneliner[] = "Execute a script one-liner using a specific language";
 static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
 /* DOC: onliner.html */
@@ -185,6 +197,7 @@ static pcb_action_t script_action_list[] = {
 	{"ScriptPersistency", pcb_act_ScriptPersistency, pcb_acth_ScriptPersistency, pcb_acts_ScriptPersistency},
 	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts},
 	{"AddTimer", pcb_act_AddTimer, pcb_acth_AddTimer, pcb_acts_AddTimer},
+	{"ScriptCookie", pcb_act_ScriptCookie, pcb_acth_ScriptCookie, pcb_acts_ScriptCookie},
 
 	/* script shorthands */
 	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},

@@ -2979,6 +2979,41 @@ Arguments:
  
 </dd></dl>
 
+<h2 id="scriptcookie">ScriptCookie</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ScriptCookie()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Return a cookie specific to the current script instance during script initialization
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+The script: 
+<ul>
+  
+<li>
+ may call ScriptCookie() 
+<b>
+during script initialization
+</b>
+ and save the resulting cookie string  
+<li>
+ may use the cookie string to register to core pcb-rnd infrastructure that requires cookie, such as 
+<a href="#createmenu">createmenu</a>
+  
+<li>
+ can depend on pcb-rnd to call any unregistering associated with this specific cookie atomatically after script unload (
+<a href="#preunload">preunload</a>
+). 
+</ul>
+ 
+<p>
+ The function can not be called outside of script initialization. The cookie string can be used any time between script load and script unload. 
+</dd></dl>
+
 <h2 id="scriptpersistency">ScriptPersistency</h2>
 <dl><dd>
 <p>

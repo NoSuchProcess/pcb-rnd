@@ -209,6 +209,15 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 	return 0; /* assume IRES is set already */
 }
 
+static char *script_gen_cookie(void)
+{
+	if (script_persistency_id == NULL) {
+		pcb_message(PCB_MSG_ERROR, "ScriptCookie called from outside of script init, can not generate the cookie\n");
+		return NULL;
+	}
+	return pcb_concat("script::fungw::", script_persistency_id, NULL);
+}
+
 static int script_load(const char *id, const char *fn, const char *lang)
 {
 	char name[PCB_PATH_MAX];
