@@ -100,10 +100,18 @@ static int script_save_preunload(script_t *s, const char *data)
 	return -1;
 }
 
+/* auto-unregister from any central infra the script may have regitered in using
+   the standard script cookie */
+static void script_unreg(const char *cookie)
+{
+	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))
+		pcb_gui->remove_menu(cookie);
+}
+
 /* unload a script, free all memory and remove it from all lists/hashes.
    If preunload is not NULL, it's the unload reason the script's own
    preunload() function is called and its return is saved. */
-static void script_free(script_t *s, const char *preunload)
+static void script_free(script_t *s, const char *preunload, const char *cookie)
 {
 	if ((preunload != NULL) && (s->obj != NULL)) {
 		fgw_func_t *f;
@@ -124,6 +132,9 @@ static void script_free(script_t *s, const char *preunload)
 		}
 	}
 
+	if (cookie != NULL)
+		script_unreg(cookie);
+
 	if (s->obj != NULL)
 		fgw_obj_unreg(&pcb_fgw, s->obj);
 	if (s->pup != NULL)
@@ -133,10 +144,10 @@ static void script_free(script_t *s, const char *preunload)
 	free(s);
 }
 
-static void script_unload_entry(htsp_entry_t *e, const char *preunload)
+static void script_unload_entry(htsp_entry_t *e, const char *preunload, const char *cookie)
 {
 	script_t *s = (script_t *)e->value;
-	script_free(s, preunload);
+	script_free(s, preunload, cookie);
 	e->key = NULL;
 	htsp_delentry(&scripts, e);
 }
@@ -200,21 +211,28 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 	return 0; /* assume IRES is set already */
 }
 
-static char *script_gen_cookie(void)
+static char *script_gen_cookie(const char *force_id)
 {
-	if (script_persistency_id == NULL) {
-		pcb_message(PCB_MSG_ERROR, "ScriptCookie called from outside of script init, can not generate the cookie\n");
-		return NULL;
+	if (force_id == NULL) {
+		if (script_persistency_id == NULL) {
+			pcb_message(PCB_MSG_ERROR, "ScriptCookie called from outside of script init, can not generate the cookie\n");
+			return NULL;
+		}
+		force_id = script_persistency_id;
 	}
-	return pcb_concat("script::fungw::", script_persistency_id, NULL);
+	return pcb_concat("script::fungw::", force_id, NULL);
 }
 
 static int script_unload(const char *id, const char *preunload)
 {
+	char *cookie;
 	htsp_entry_t *e = htsp_getentry(&scripts, id);
 	if (e == NULL)
 		return -1;
-	script_unload_entry(e, preunload);
+
+	cookie = script_gen_cookie(id);
+	script_unload_entry(e, preunload, cookie);
+	free(cookie);
 	return 0;
 }
 
@@ -266,7 +284,7 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	script_persistency_id = old_id;
 
 	if (s->obj == NULL) {
-		script_free(s, NULL);
+		script_free(s, NULL, NULL);
 		pcb_message(PCB_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
 		return -1;
 	}
@@ -278,7 +296,7 @@ static int script_load(const char *id, const char *fn, const char *lang)
 static int script_reload(const char *id)
 {
 	int ret;
-	char *fn, *lang;
+	char *fn, *lang, *cookie;
 	script_t *s;
 	htsp_entry_t *e = htsp_getentry(&scripts, id);
 
@@ -288,7 +306,10 @@ static int script_reload(const char *id)
 	s = e->value;
 	fn = pcb_strdup(s->fn);
 	lang = pcb_strdup(s->lang);
-	script_unload_entry(e, "reload");
+
+	cookie = script_gen_cookie(id);
+	script_unload_entry(e, "reload", cookie);
+	free(cookie);
 
 	ret = script_load(id, fn, lang);
 	free(fn);
@@ -366,8 +387,12 @@ void pplg_uninit_script(void)
 {
 	htsp_entry_t *e;
 	pcb_remove_actions_by_cookie(script_cookie);
-	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e))
-		script_unload_entry(e, "unload");
+	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
+		script_t *script = e->value;
+		char *cookie = script_gen_cookie(script->id);
+		script_unload_entry(e, "unload", cookie);
+		free(cookie);
+	}
 
 	htsp_uninit(&scripts);
 	pup_uninit(&script_pup);

@@ -119,7 +119,7 @@ static const char pcb_acts_ScriptCookie[] = "ScriptCookie()";
 static fgw_error_t pcb_act_ScriptCookie(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	res->type = FGW_STR | FGW_DYN;
-	res->val.str = script_gen_cookie();
+	res->val.str = script_gen_cookie(NULL);
 	if (res->val.str == NULL)
 		return -1;
 	return 0;
