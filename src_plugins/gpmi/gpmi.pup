@@ -4,5 +4,5 @@ $long Scriptable plugin system with about 10 scripting languages supported and d
 $state works
 $ldefault: if gpmi is installed
 dep lib_compat_help
-default buildin
+default disable
 autoload 1
