@@ -762,7 +762,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, dummy, accel, tooltip, cookie)";
+static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, tooltip, cookie)";
 static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -782,10 +782,19 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 1) {
 		pcb_menu_prop_t props;
 		memset(&props, 0, sizeof(props));
-		props.action = (argc > 2) ? argv[2].val.str : NULL;
-		props.accel = (argc > 4) ? argv[4].val.str : NULL;
-		props.tip = (argc > 5) ? argv[5].val.str : NULL;
-		props.cookie = (argc > 6) ? argv[6].val.str : NULL;
+		if (argc > 6) {
+			/* old syntax - do not use */
+			props.action = (argc > 2) ? argv[2].val.str : NULL;
+			props.accel = (argc > 4) ? argv[4].val.str : NULL;
+			props.tip = (argc > 5) ? argv[5].val.str : NULL;
+			props.cookie = (argc > 6) ? argv[6].val.str : NULL;
+		}
+		else {
+			/* new syntax */
+			props.action = (argc > 2) ? argv[2].val.str : NULL;
+			props.tip = (argc > 3) ? argv[3].val.str : NULL;
+			props.cookie = (argc > 4) ? argv[4].val.str : NULL;
+		}
 		pcb_gui->create_menu(argv[1].val.str, &props);
 		PCB_ACT_IRES(0);
 		return 0;
