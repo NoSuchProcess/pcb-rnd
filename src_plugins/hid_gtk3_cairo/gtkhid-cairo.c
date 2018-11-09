@@ -1342,6 +1342,9 @@ static void draw_crosshair(cairo_t * xor_gc, gint x, gint y)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
+	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
+		return;
+
 	draw_right_cross(xor_gc, x, y);
 	if (prev == pcb_ch_shape_union_jack)
 		draw_slanted_cross(xor_gc, x, y);
