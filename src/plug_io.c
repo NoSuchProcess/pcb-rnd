@@ -888,18 +888,14 @@ void pcb_enable_autosave(void)
 		backup_timer = pcb_gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
-/* ---------------------------------------------------------------------------
- * creates backup file.  The default is to use the pcb file name with
- * a "-" appended (like "foo.pcb-") and if we don't have a pcb file name
- * then use the template in conf_core.rc.backup_name
- */
+/* Saves the board in a backup file using the name configured in
+   conf_core.rc.backup_name */
 void pcb_backup(void)
 {
 	char *filename = NULL;
 	const char *fmt = NULL;
 	pcb_plug_io_t *orig;
 
-	/* conf_core.rc.backup_name has %.8i which will be replaced by the process ID */
 	filename = pcb_build_fn(conf_core.rc.backup_name);
 	if (filename == NULL) {
 		fprintf(stderr, "pcb_backup(): can't build file name for a backup\n");
