@@ -37,12 +37,45 @@ typedef struct {
 	int active; /* already open - allow only one instance */
 
 	int wslist; /* list of scripts */
+	int walist; /* list of actions */
 } script_dlg_t;
 
 script_dlg_t script_dlg;
 
+static void script_dlg_s2d_act(script_dlg_t *ctx)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[2];
+	htsp_entry_t *e;
+	script_t *sc;
 
-void script_dlg_s2d(script_dlg_t *ctx)
+	attr = &ctx->dlg[ctx->walist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remove existing items */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(attr, r);
+
+	r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
+	if (r == NULL)
+		return;
+
+	sc = htsp_get(&scripts, r->cell[0]);
+	if (sc == NULL)
+		return NULL;
+
+	/* add all actions */
+	cell[1] = NULL;
+	for(e = htsp_first(&sc->obj->func_tbl); e; e = htsp_next(&sc->obj->func_tbl, e)) {
+		cell[0] = pcb_strdup(e->key);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+}
+
+
+static void script_dlg_s2d(script_dlg_t *ctx)
 {
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
@@ -79,6 +112,7 @@ void script_dlg_s2d(script_dlg_t *ctx)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wslist, &hv);
 		free(cursor_path);
 	}
+	script_dlg_s2d_act(ctx);
 }
 
 void script_dlg_update(void)
@@ -114,6 +148,11 @@ static void btn_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	script_reload(row->cell[0]);
 	script_dlg_s2d(ctx);
+}
+
+static void slist_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	script_dlg_s2d_act((script_dlg_t *)caller_data);
 }
 
 static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -177,6 +216,7 @@ static void script_dlg_open(void)
 			PCB_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
 				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 				script_dlg.wslist = PCB_DAD_CURRENT(script_dlg.dlg);
+				PCB_DAD_CHANGE_CB(script_dlg.dlg, slist_cb);
 			PCB_DAD_BEGIN_HBOX(script_dlg.dlg);
 				PCB_DAD_BUTTON(script_dlg.dlg, "Unload");
 					PCB_DAD_HELP(script_dlg.dlg, "Unload the currently selected script");
@@ -196,6 +236,7 @@ static void script_dlg_open(void)
 			PCB_DAD_LABEL(script_dlg.dlg, "Actions:");
 			PCB_DAD_TREE(script_dlg.dlg, 1, 0, NULL);
 				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				script_dlg.walist = PCB_DAD_CURRENT(script_dlg.dlg);
 		PCB_DAD_END(script_dlg.dlg);
 	PCB_DAD_END(script_dlg.dlg);
 
