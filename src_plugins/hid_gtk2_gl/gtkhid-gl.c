@@ -735,6 +735,9 @@ void pcb_gl_draw_crosshair(GLint x, GLint y, GLint z)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
+	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
+		return;
+
 	pcb_gl_draw_right_cross(x, y, z);
 	if (prev == pcb_ch_shape_union_jack)
 		pcb_gl_draw_slanted_cross(x, y, z);
