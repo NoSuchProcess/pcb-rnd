@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + BUG: plugin conf files are not listed in packaging docs [report: barjac]
 - BUG: padstack geomety edit: shape grow and shrink are mixed up; make sure + is always grow, - is always shrink, recheck with cam bloat! [report: Igor2]
+- BUG: cam: in @layergrp(bloat=0.2mm) the bloat part is ignored [report: Igor2]
 ? BUG: cpcb command ignores path [report: celem mail oct 2]
 - BUG: scripting: ruler.awk createtext() fails when text is a number - string should be passed as STRNUM probably [report: miloh]
 + BUG: fungw: 'make clean' removes libfungwbind/lua/fungw_lua.mak -> make install fails later on [report: Ade]
