@@ -14,7 +14,6 @@
 + BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
 ? BUG: loadscript(graphics,/path/to/graphicstypo.awk,mawk);loadscript(graphics,/path/to/graphics.awk,mawk) fails with '(null): cannot convert to realpath', then issues 'ID already in use' [report:Miloh]
 + BUG: lib_hid_gl should use its own CFLAGS/LDFLAGS in tmpasm [report: Vuokko]
-- BUG: zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove GPMI (from the menu too!)
