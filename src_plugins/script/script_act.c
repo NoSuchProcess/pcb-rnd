@@ -28,6 +28,72 @@
  */
 
 #include <ctype.h>
+#include "hid_dad.h"
+
+/*** dialog box ***/
+typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	int active; /* already open - allow only one instance */
+} script_dlg_t;
+
+script_dlg_t script_dlg;
+
+
+void script_dlg_s2d(script_dlg_t *ctx)
+{
+
+}
+
+void script_dlg_update(void)
+{
+	if (script_dlg.active)
+		script_dlg_s2d(&script_dlg);
+}
+
+static void script_dlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	script_dlg_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(script_dlg_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+static void script_dlg_open(void)
+{
+	static const char *hdr[] = {"ID", "language", "file", NULL};
+	if (script_dlg.active)
+		return; /* do not open another */
+
+	PCB_DAD_BEGIN_HPANE(script_dlg.dlg);
+		PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+		/* left side */
+		PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
+			PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
+				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_BEGIN_HBOX(script_dlg.dlg);
+				PCB_DAD_BUTTON(script_dlg.dlg, "Unload");
+				PCB_DAD_BUTTON(script_dlg.dlg, "Reload");
+				PCB_DAD_BUTTON(script_dlg.dlg, "Load...");
+			PCB_DAD_END(script_dlg.dlg);
+		PCB_DAD_END(script_dlg.dlg);
+
+		/* right side */
+		PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
+			PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_LABEL(script_dlg.dlg, "Actions:");
+			PCB_DAD_TREE(script_dlg.dlg, 1, 0, NULL);
+				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+		PCB_DAD_END(script_dlg.dlg);
+	PCB_DAD_END(script_dlg.dlg);
+
+	/* set up the context */
+	script_dlg.active = 1;
+
+	PCB_DAD_NEW(script_dlg.dlg, "pcb-rnd Scripts", "", &script_dlg, pcb_false, script_dlg_close_cb);
+	script_dlg_s2d(&script_dlg);
+}
+
+/*** actions ***/
 
 static int script_id_invalid(const char *id)
 {
@@ -58,6 +124,7 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	ID_VALIDATE(id, LoadScript);
 
 	PCB_ACT_IRES(script_load(id, fn, lang));
+	script_dlg_update();
 	return 0;
 }
 
@@ -86,6 +153,7 @@ static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	ID_VALIDATE(id, ReloadScript);
 
 	PCB_ACT_IRES(script_reload(id));
+	script_dlg_update();
 	return 0;
 }
 
@@ -109,6 +177,15 @@ static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	script_list(pat);
 
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
+static const char pcb_acth_BrowseScripts[] = "Present a dialog box for browsing scripts";
+static const char pcb_acts_BrowseScripts[] = "BrowseScripts()";
+static fgw_error_t pcb_act_BrowseScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	script_dlg_open();
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -196,6 +273,7 @@ static pcb_action_t script_action_list[] = {
 	{"ReloadScript", pcb_act_ReloadScript, pcb_acth_ReloadScript, pcb_acts_ReloadScript},
 	{"ScriptPersistency", pcb_act_ScriptPersistency, pcb_acth_ScriptPersistency, pcb_acts_ScriptPersistency},
 	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts},
+	{"BrowseScripts", pcb_act_BrowseScripts, pcb_acth_BrowseScripts, pcb_acts_BrowseScripts},
 	{"AddTimer", pcb_act_AddTimer, pcb_acth_AddTimer, pcb_acts_AddTimer},
 	{"ScriptCookie", pcb_act_ScriptCookie, pcb_acth_ScriptCookie, pcb_acts_ScriptCookie},
 
