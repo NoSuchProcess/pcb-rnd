@@ -14,6 +14,9 @@
 - BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
 ? BUG: loadscript(graphics,/path/to/graphicstypo.awk,mawk);loadscript(graphics,/path/to/graphics.awk,mawk) fails with '(null): cannot convert to realpath', then issues 'ID already in use' [report:Miloh]
 - BUG: lib_hid_gl should use its own CFLAGS/LDFLAGS in tmpasm [report: Vuokko]
+- BUG: padstack doesn't show drc xor shape while moving [report: igor2]
+- BUG: main.c: SIGPIPE - detect it (needed for popen)
+- BUG: zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove GPMI (from the menu too!)
@@ -22,7 +25,9 @@
 - CLEANUP: remove hid_extent.[ch] in favor of bbox [report: Igor2]
 - CLEANUP: move PCB_GROUNDPLANEFRAME and PCB_MASKFRAME and PCB_DEFAULT_DRILLINGHOLE from globalconst to io_pcb [report: Igor2]
 - CLEANUP: remove PCB_MAX_ELEMENTNAMES, MIN_PADSIZE and MAX_PADSIZE from globalconst [report: Igor2]
-- CLEANUP: boardflip doesn't undo - rewrite it to use data_mirror [report: Miloh]
+- CLEANUP: boardflip rewrite: use data_mirror
+	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
+	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: run indent on rubberband_orig and route.c
 - CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
@@ -30,11 +35,16 @@
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it
 - CLEANUP: move DisperseElements out from core
+- FEATURE: route style upgrade to prototypes:
+	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+	- replace the route style dialog box's via part
+	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
+	- load/import from buffer and file
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- CLEANUP: netlist rewrite
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
-	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found
+	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - CLEANUP:  do not require top and bottom silk (also grep for TODO #tbs)
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
@@ -62,16 +72,9 @@
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
-- FEATURE: route style upgrade to prototypes:
-	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
-	- replace the route style dialog box's via part
-	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
-	- load/import from buffer and file
 - feature plugins:
 	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
-	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
-	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
@@ -109,7 +112,6 @@
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - SUBC: element removal:
-	- BUG? check if drc outline is drawn on padstacks XorDraw*DRC in draw.c in the old code [report: igor2]
 	- FEATURE: "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- CLEANUP: convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
@@ -251,7 +253,6 @@ FEATURES
 - BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: igor2, miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
-- BUG: main.c: SIGPIPE - detect it (needed for popen)
 - FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - FEATURE: advanced grid settings: make it possible to edit the lists in preferences
 - improve locking:
@@ -268,7 +269,6 @@ FEATURES
 	object, like arc split does) lines can be inserted mostly only in all-dir-line
 	which is strange
 - FEATURE: missing rotate polygon (mainline too)
-- BUG: zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
 - CLEANUP: replace mkdtemp() with something safer
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
