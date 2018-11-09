@@ -6,6 +6,14 @@ put /local/pcb/mod/OBJS_C99 [@
 @]
 
 switch /local/pcb/lib_hid_gl/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/CFLAGS   [@@/target/libs/gui/gl/cflags@ @/target/libs/gui/glu/cflags@@]
+		put /local/pcb/mod/LDFLAGS  [@@/target/libs/gui/gl/ldflags@ @/target/libs/gui/glu/ldflags@@]
+	end
+end
+
+switch /local/pcb/lib_hid_gl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
