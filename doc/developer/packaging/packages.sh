@@ -8,11 +8,19 @@ meta_deps="core io-standard io-alien hid-gtk2-dl hid-gtk2-gdk export export-sim 
 <body>
 '
 
+(
 for n in $proot/*/*.pup
 do
 	pkg=`basename $n`
 	sed "s/^/$pkg /" < $n
-done | awk -v "meta_deps=$meta_deps" '
+done 
+
+for n in $proot/*/*.tmpasm
+do
+	sed "s@^@$n @" < $n
+done 
+
+)| awk -v "meta_deps=$meta_deps" '
 	BEGIN {
 		gsub(" ", " pcb-rnd-", meta_deps)
 		sub("^", "pcb-rnd-", meta_deps)
@@ -27,27 +35,46 @@ done | awk -v "meta_deps=$meta_deps" '
 		}
 	}
 
-	{
+	($1 ~ "[.]pup$") {
 		pkg = $1;
 		sub("[.]pup$", "", pkg)
 		if (pkg == "(core)") pkg="core"
-		
+	}
 
+	($1 ~ "[.]tmpasm$") {
+		pkg = $1;
+		sub("/Plug.tmpasm$", "", pkg)
+		sub(".*/", "", pkg)
+		if (pkg == "(core)") pkg="core"
+	}
+
+	($1 ~ "[.]pup$") {
 		val=$3
 		if (val == "(core)") val="core"
 		cfg = pkg
-		pkg = "pcb-rnd-" pkg
 		val = "pcb-rnd-" val
 	}
 
-	($2 == "$package") {
+	{
+		pkg = "pcb-rnd-" pkg
+	}
+
+	($1 ~ "[.]pup$") && ($2 == "$package") {
 		PKG[val] = PKG[val] " " cfg;
 		PLUGIN[pkg] = val;
-		IFILES[val] = IFILES[val] " " cfg ".pup " cfg ".so"
+		IFILES[val] = IFILES[val] " $P/" cfg ".pup $P/" cfg ".so"
 		if (val == "pcb-rnd-core") CFG_BUILDIN[cfg]++
 		else CFG_PLUGIN[cfg]++
 	}
-	($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
+
+	($1 ~ "[.]pup$") && ($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
+
+	($1 ~ "[.]tmpasm$") && ($3 == "/local/pcb/mod/CONFFILE") {
+		fn=$4
+		sub("[{][ \t]*", "", fn)
+		sub("[ \t]*[}]", "", fn)
+		CONFFILE[PLUGIN[pkg]] = "$C/" fn
+	}
 
 	function add_dep(pkg, depson,    ds)
 	{
@@ -110,12 +137,16 @@ done | awk -v "meta_deps=$meta_deps" '
 		for(pkg in PKG) {
 			if (SHORT[pkg] == "") SHORT[pkg] = "&nbsp;"
 			if (LONG[pkg] == "") LONG[pkg] = "&nbsp;"
-			print "<tr><th>" pkg "<td>" IFILES[pkg] "<td>" SHORT[pkg]  "<td>" LONG[pkg]
-			print strip(IFILES[pkg]) > "auto/" pkg ".files"
+			print "<tr><th>" pkg "<td>" IFILES[pkg] " <i>" CONFFILE[pkg] "</i>" "<td>" SHORT[pkg]  "<td>" LONG[pkg]
+			print strip(IFILES[pkg] " " CONFFILE[pkg]) > "auto/" pkg ".files"
 			print strip(SHORT[pkg]) > "auto/" pkg ".short"
 			print strip(LONG[pkg]) > "auto/" pkg ".long"
 		}
 		print "</table>"
+		print "<p>File prefixes:<ul>"
+		print "	<li> $P: plugin install dir (e.g. /usr/lib/pcb-rnd/)"
+		print "	<li> $C: conf dir (e.g. /usr/share/pcb-rnd/)"
+		print "</ul>"
 
 		print "<h3> ./configure arguments </h3>"
 		print "--all=disable"
