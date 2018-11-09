@@ -334,7 +334,8 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 
 		curr = strip(curr);
 		if (*curr == '@') {
-			/* named layer */
+			/* named layer group */
+			pcb_xform_t *xf, xf_;
 			pcb_layergrp_id_t gid;
 			curr++;
 			gid = pcb_layergrp_by_name(pcb, curr);
@@ -346,6 +347,11 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 				continue;
 			pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 			dst->grp_vis[gid] = 1;
+
+			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
+
+			dst->xform[gid] = &dst->xform_[gid];
+			memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
 		}
 		else {
 			/* by layer type */
