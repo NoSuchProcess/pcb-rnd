@@ -52,7 +52,7 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			return 0;
 		case 'F':
 			name = pcb_board_get_filename();
-			gds_append_str(s, (name != NULL) ? name : "no_file_name");
+			gds_append_str(s, (name != NULL) ? name : "PCB-anon");
 			(*input)++;
 			return 0;
 		case 'B':
