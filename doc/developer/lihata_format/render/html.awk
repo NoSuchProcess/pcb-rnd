@@ -10,7 +10,7 @@ BEGIN {
 
 function tbl_hdr(node, level)
 {
-	print "<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description"
+	print "<tr><th align=left> type:name <th align=left> value <th align=left> <a href=\"#ver\">ver</a> <th align=left> description"
 }
 
 function get_valtype(node,    vt)
@@ -110,6 +110,8 @@ END {
 	print "<p>"
 	gen_types("/lht_tree_doc/types")
 
+	print "<h2> Comments </h2>"
+	print "<p id=\"ver\">ver column: <a href=\"../io_lihata_ver.html\">Format version</a> range the subtree may appear in."
 	print "</body>"
 	print "</html>"
 }
