@@ -266,16 +266,18 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Object:
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
-				pcb_undo_save_serial();
+				pcb_undo_freeze_serial();
 				pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+				pcb_undo_unfreeze_serial();
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 			break;
 		case F_Selected:
 		case F_SelectedElements:
-			pcb_undo_save_serial();
+			pcb_undo_freeze_serial();
 			pcb_selected_subc_change_side();
+			pcb_undo_unfreeze_serial();
 			pcb_undo_inc_serial();
 			pcb_draw();
 			break;
