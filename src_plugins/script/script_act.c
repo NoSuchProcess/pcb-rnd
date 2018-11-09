@@ -29,11 +29,14 @@
 
 #include <ctype.h>
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
 
 /*** dialog box ***/
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+
+	int wslist; /* list of scripts */
 } script_dlg_t;
 
 script_dlg_t script_dlg;
@@ -41,7 +44,41 @@ script_dlg_t script_dlg;
 
 void script_dlg_s2d(script_dlg_t *ctx)
 {
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[4], *cursor_path = NULL;
+	htsp_entry_t *e;
 
+	attr = &ctx->dlg[ctx->wslist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(attr, r);
+
+	/* add all items */
+	cell[3] = NULL;
+	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
+		script_t *s = (script_t *)e->value;
+		cell[0] = pcb_strdup(s->id);
+		cell[1] = pcb_strdup(s->lang);
+		cell[2] = pcb_strdup(s->fn);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wslist, &hv);
+		free(cursor_path);
+	}
 }
 
 void script_dlg_update(void)
@@ -70,6 +107,7 @@ static void script_dlg_open(void)
 			PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
 				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				script_dlg.wslist = PCB_DAD_CURRENT(script_dlg.dlg);
 			PCB_DAD_BEGIN_HBOX(script_dlg.dlg);
 				PCB_DAD_BUTTON(script_dlg.dlg, "Unload");
 				PCB_DAD_BUTTON(script_dlg.dlg, "Reload");
