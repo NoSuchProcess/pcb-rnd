@@ -16,7 +16,7 @@
 <tr><td> menu_file <td><a href="CFN_STRING.html"> string </a><td> 0 <td> where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht
 <tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty.
 <tr><td> emergency_format <td><a href="CFN_STRING.html"> string </a><td> 0 <td> if set, use this format for the backups; if unset, use the default format
-<tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid
+<tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup of board files; optional fields (the usual % substitutions work)
 <tr><td> backup_format <td><a href="CFN_STRING.html"> string </a><td> 0 <td> if set, use this format for the backups; if unset or set to 'original', use the original format
 <tr><td> save_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> command to pipe the pcb, footprint or buffer file into, when saving (makes lihata persist impossible)
 <tr><td> keep_save_backups <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> a copy is made before a save operation overwrites an existing file; if this setting is true, keep the copy even after a successful save
