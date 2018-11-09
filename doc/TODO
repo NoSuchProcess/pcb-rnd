@@ -13,6 +13,7 @@
 - BUG: {u u} undo is piecemeal after flipping {s f } a group of subc to backside. repro: place a part, copy, select a few to flip sides, then flipsides and undo doesn't work on the group. 
 - BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
 ? BUG: loadscript(graphics,/path/to/graphicstypo.awk,mawk);loadscript(graphics,/path/to/graphics.awk,mawk) fails with '(null): cannot convert to realpath', then issues 'ID already in use' [report:Miloh]
+- BUG: lib_hid_gl should use its own CFLAGS/LDFLAGS in tmpasm [report: Vuokko]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove GPMI (from the menu too!)
@@ -29,7 +30,6 @@
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it
 - CLEANUP: move DisperseElements out from core
-- CLEANUP: lib_hid_gl should use its own CFLAGS/LDFLAGS in tmpasm [report: Vuokko]
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- CLEANUP: netlist rewrite
