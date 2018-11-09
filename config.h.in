@@ -132,6 +132,8 @@ print [@
 @]
 
 print {\n\n/* Define whether we have specific signals. */\n}
+print_ternary ?signal/names/SIGPIPE/presents    {#define PCB_HAVE_SIGPIPE 1} {/* #undef PCB_HAVE_SIGPIPE */}
+print {\n}
 print_ternary ?signal/names/SIGSEGV/presents    {#define PCB_HAVE_SIGSEGV 1} {/* #undef PCB_HAVE_SIGSEGV */}
 print {\n}
 print_ternary ?signal/names/SIGABRT/presents    {#define PCB_HAVE_SIGABRT 1} {/* #undef PCB_HAVE_SIGABRT */}

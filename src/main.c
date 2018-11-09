@@ -101,9 +101,8 @@ static void InitHandler(void)
 #endif
 
 	/* calling external program by popen() may cause a PIPE signal,
-	 * so we ignore it
-	 */
-#ifdef SIGPIPE
+	   so we ignore it */
+#ifdef PCB_HAVE_SIGPIPE
 	signal(SIGPIPE, SIG_IGN);
 #endif
 }
