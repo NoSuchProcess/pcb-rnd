@@ -31,7 +31,7 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
  ha:layer_stack                physical layer stack information: geometry and properties of physical layers
   li:groups                    ordered list of physical layers from top to bottom
    ha:INTEGER                  a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node
-    name            string     user assigned name of the layer group, e.g. "top copper"
+    name            string >=6 purpose of layer groups (useful with mechanical/documentation groups
     ha:type                    a flag-list of layer type flag bits
      top            flag       location: top side
      bottom         flag       location: bottom side
@@ -43,6 +43,7 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
      paste          flag       material: paste
      outline        flag       "material": router path (board outline, slots, cutouts)
      substrate      flag       material: substrate or insulator
+    name            string >=6 purpose of layer groups (useful with mechanical/documentation groups
     li:layers                  ordered list of logical layer IDs hosted by this layer group
  ha:font                       font kit: all fonts used on the board (if no font specified, default font will be used)
   ha:FONT-ID                   the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
@@ -234,7 +235,7 @@ ha:data                              Layers and global objects of the board
      round              none         shape: rounded edge fingers
      sharp              none         shape: sharp edge fingers
      solid              none         shape: no thermal relief, solid connection without clearance
-     noshape            none         shape: special: omit copper shape of the padstack on this layer
+     noshape            none     >=6 shape: special: omit copper shape of the padstack on this layer
   ha:via.ID                      <=4 an old via object (loaded as padstack in the new model)
    x                    coord        place padstack with origin at this horizontal coordinate
    y                    coord        place padstack with origin at this vertical coordinate
@@ -264,7 +265,7 @@ ha:data                              Layers and global objects of the board
  li:layers                           ordered list of layers; v1 required the order to be top-bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non-bound) layers have attributes)
   ha:NAME                            a logical layer
    lid                  integer  >=2 layer ID
-   visible              integer      only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)
+   visible              integer  <6  only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)
    group                integer      only in real (non-boud) layers: "parent" layer group ID
    color                string   >=5 layer color on UI, in #rrggbb format
    stack_offs           integer      only in bound layers: match offset e.g. for internal copper layers
@@ -279,6 +280,7 @@ ha:data                              Layers and global objects of the board
     paste               flag         material: paste
     outline             flag         "material": router path (board outline, slots, cutouts)
     substrate           flag         material: substrate or insulator
+   purpose              integer  >=6 only in bound layers: match layer group purpose
    combining                     >=2 layer combination (compositing) flags
     sub                 flag         draw in negative
     auto                flag         padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
@@ -368,8 +370,8 @@ ha:data                              Layers and global objects of the board
      string             string       text string (payload)
      fid                integer      font ID
      scale              integer      text size scale in %
-     direction          integer      rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Special value 0x7f (127) means the rot field shall be used instead (from v6).
-     rot                angle    >=6 rotation angle; applied when direction is 0x7f (127)
+     direction          integer  <=5 rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Starting from v6, the rot field shall be used instead of direction
+     rot                angle    >=6 rotation angle in degrees, [0..360), CCW
      thickness          coord    >=6 if zero, use the default width algorithm; if non-zero use this value as rotation angle in degrees
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
@@ -394,7 +396,7 @@ ha:data                              Layers and global objects of the board
    name                 string   >=5 optional user assigned prototype name
    li:shape                          shape per layer type definition
     ha:ps_shape_v4                   shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are
-                                     relative to padstack origin
+                                     relative to padstack origin; layer mask shall contain one material and at most one location bit
      ha:layer_mask                   layer type and location
       top               flag         location: top side
       bottom            flag         location: bottom side
@@ -422,6 +424,7 @@ ha:data                              Layers and global objects of the board
       x                 coord        center, horizontal offset
       y                 coord        center, vertical offset
       dia               coord        circle diameter
+     te:ps_hshadow               >=6 hole/slot shadow
  ha:subc.ID                      >=3 an instance (full copy) of a subcircuit
   uid                   minuid       UID assigned by the user to track subc history
   ha:attributes                      a hash of attribute key=value pairs
@@ -597,3 +600,7 @@ Types
 |--------+------------------------------------------------------|
 |string  |Free form text data                                   |
 +---------------------------------------------------------------+
+
+Comments
+
+ver column: Format version range the subtree may appear in.

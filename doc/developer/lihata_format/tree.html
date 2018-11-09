@@ -10,7 +10,7 @@
 <h3 id="/lht_tree_doc/roots/pcb-rnd-board-v*">ha:pcb-rnd-board-v*</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*"><td> ha:pcb-rnd-board-v* <td> &nbsp; <td> &nbsp; <td>     The full, self-contained description of a printed circuit board.    This is the root of a board .lht file. The * after the v in the name    is an integer which is the format version.   
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/meta"><td> &nbsp;ha:meta <td> &nbsp; <td> &nbsp; <td>  Any meta-data that won't directly turn into physical material (e.g. copper). 
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/meta/children/board_name"><td> &nbsp;&nbsp;board_name <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> User assigned name of the board
@@ -37,7 +37,7 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack"><td> &nbsp;ha:layer_stack <td> &nbsp; <td> &nbsp; <td>  physical layer stack information: geometry and properties of physical layers 
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups"><td> &nbsp;&nbsp;li:groups <td> &nbsp; <td> &nbsp; <td>  ordered list of physical layers from top to bottom 
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups/children/INTEGER"><td> &nbsp;&nbsp;&nbsp;ha:INTEGER <td> &nbsp; <td> &nbsp; <td>  a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node 
-<tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups/children/INTEGER/children/name"><td> &nbsp;&nbsp;&nbsp;&nbsp;name <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> user assigned name of the layer group, e.g. "top copper"
+<tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups/children/INTEGER/children/name"><td> &nbsp;&nbsp;&nbsp;&nbsp;name <td> <a href="#valtype:string">string</a> <td> >=6 <td> purpose of layer groups (useful with mechanical/documentation groups
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups/children/INTEGER/children/type"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:type <td> &nbsp; <td> &nbsp; <td>  a flag-list of layer type flag bits 
 <tr id="/lht_tree_doc/comm/layer_mask/children/top"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> location: top side
 <tr id="/lht_tree_doc/comm/layer_mask/children/bottom"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> location: bottom side
@@ -49,6 +49,7 @@
 <tr id="/lht_tree_doc/comm/layer_mask/children/paste"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paste <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> material: paste
 <tr id="/lht_tree_doc/comm/layer_mask/children/outline"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> "material": router path (board outline, slots, cutouts) 
 <tr id="/lht_tree_doc/comm/layer_mask/children/substrate"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substrate <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> material: substrate or insulator
+<tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups/children/INTEGER/children/name"><td> &nbsp;&nbsp;&nbsp;&nbsp;name <td> <a href="#valtype:string">string</a> <td> >=6 <td> purpose of layer groups (useful with mechanical/documentation groups
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/layer_stack/children/groups/children/INTEGER/children/layers"><td> &nbsp;&nbsp;&nbsp;&nbsp;li:layers <td> &nbsp; <td> &nbsp; <td>  ordered list of logical layer IDs hosted by this layer group 
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/font"><td> &nbsp;ha:font <td> &nbsp; <td> &nbsp; <td>  font kit: all fonts used on the board (if no font specified, default font will be used) 
 <tr id="/lht_tree_doc/roots/pcb-rnd-board-v*/children/font/children/FONT-ID"><td> &nbsp;&nbsp;ha:FONT-ID <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID"> the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below  -&gt; </a>
@@ -82,7 +83,7 @@
 <h3 id="/lht_tree_doc/roots/pcb-rnd-conf-v1">li:pcb-rnd-conf-v1</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/roots/pcb-rnd-conf-v1"><td> li:pcb-rnd-conf-v1 <td> &nbsp; <td> &nbsp; <td> complete pcb-rnd configuration tree
 <tr id="/lht_tree_doc/roots/pcb-rnd-conf-v1/children/overwrite"><td> &nbsp;ha:overwrite <td> &nbsp; <td> &nbsp; <td> overwrite values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
 <tr id="/lht_tree_doc/roots/pcb-rnd-conf-v1/children/prepend"><td> &nbsp;ha:prepend <td> &nbsp; <td> &nbsp; <td> prepend values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
@@ -91,7 +92,7 @@
 <h3 id="/lht_tree_doc/roots/pcb-rnd-font-v1">li:pcb-rnd-font-v1</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1"><td> li:pcb-rnd-font-v1 <td> &nbsp; <td> &nbsp; <td> font description
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID"><td> &nbsp;ha:FONT-ID <td> &nbsp; <td> &nbsp; <td>  the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below 
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID/children/cell_height"><td> &nbsp;&nbsp;cell_height <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> height of the tallest glyph
@@ -122,7 +123,7 @@
 <h3 id="/lht_tree_doc/roots/menu">ha:menu</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/roots/menu"><td> ha: <td> &nbsp; <td> &nbsp; <td> Menu file
 <tr id="/lht_tree_doc/roots/menu/children/mouse"><td> &nbsp;li:mouse <td> &nbsp; <td> &nbsp; <td> mouse bindings
 <tr id="/lht_tree_doc/roots/menu/children/mouse/children/left"><td> &nbsp;&nbsp;li:left <td> &nbsp; <td> &nbsp; <td> actions to execute on left button click
@@ -166,7 +167,7 @@
 <h3 id="/lht_tree_doc/roots/geda-project-v1">ha:geda-project-v1</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/roots/geda-project-v1"><td> ha:geda-project-v1 <td> &nbsp; <td> &nbsp; <td> Project file root. Except for "common", each software package should create a single subtree under the root; the subtree shall be named after the software package 
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/common"><td> &nbsp;ha:common <td> &nbsp; <td> &nbsp; <td> project settings that should be common to all software packages
 <tr id="/lht_tree_doc/roots/geda-project-v1/children/common/children/name"><td> &nbsp;&nbsp;name <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> long name of the project 
@@ -190,7 +191,7 @@
 <h3 id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*">li:pcb-rnd-subcircuit-v*</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*"><td> li:pcb-rnd-subcircuit-v* <td> &nbsp; <td> &nbsp; <td> footprint file containing a single subcircuit
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID"><td> &nbsp;ha:subc.ID <td> &nbsp; <td> >=3 <td> an instance (full copy) of a subcircuit
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> <a href="#valtype:minuid">minuid</a> <td> &nbsp; <td> UID assigned by the user to track subc history 
@@ -212,7 +213,7 @@
 <h3 id="/lht_tree_doc/comm/data">ha:data</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/comm/data"><td> ha:data <td> &nbsp; <td> &nbsp; <td>  Layers and global objects of the board 
 <tr id="/lht_tree_doc/comm/data/children/objects"><td> &nbsp;li:objects <td> &nbsp; <td> &nbsp; <td>  List of global (non-layer/multi-layer) objects 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID"><td> &nbsp;&nbsp;ha:padstack_ref.ID <td> &nbsp; <td> >=4 <td>  a padstack reference (instance) placed on the board (e.g. used as a via) 
@@ -243,7 +244,7 @@
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID/children/round"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;round <td> <a href="#valtype:none">none</a> <td> &nbsp; <td>  shape: rounded edge fingers 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID/children/sharp"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sharp <td> <a href="#valtype:none">none</a> <td> &nbsp; <td>  shape: sharp edge fingers 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID/children/solid"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;solid <td> <a href="#valtype:none">none</a> <td> &nbsp; <td>  shape: no thermal relief, solid connection without clearance 
-<tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID/children/noshape"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;noshape <td> <a href="#valtype:none">none</a> <td> &nbsp; <td>  shape: special: omit copper shape of the padstack on this layer 
+<tr id="/lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID/children/thermal/children/LAYERID/children/noshape"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;noshape <td> <a href="#valtype:none">none</a> <td> >=6 <td>  shape: special: omit copper shape of the padstack on this layer 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID"><td> &nbsp;&nbsp;ha:via.ID <td> &nbsp; <td> <=4 <td>  an old via object (loaded as padstack in the new model) 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID/children/x"><td> &nbsp;&nbsp;&nbsp;x <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> place padstack with origin at this horizontal coordinate 
 <tr id="/lht_tree_doc/comm/data/children/objects/children/via.ID/children/y"><td> &nbsp;&nbsp;&nbsp;y <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> place padstack with origin at this vertical coordinate 
@@ -273,7 +274,7 @@
 <tr id="/lht_tree_doc/comm/data/children/layers"><td> &nbsp;li:layers <td> &nbsp; <td> &nbsp; <td> ordered list of layers; v1 required the order to be top-bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non-bound) layers have attributes)
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME"><td> &nbsp;&nbsp;ha:NAME <td> &nbsp; <td> &nbsp; <td> a logical layer
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/lid"><td> &nbsp;&nbsp;&nbsp;lid <td> <a href="#valtype:integer">integer</a> <td> >=2 <td> layer ID
-<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/visible"><td> &nbsp;&nbsp;&nbsp;visible <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)
+<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/visible"><td> &nbsp;&nbsp;&nbsp;visible <td> <a href="#valtype:integer">integer</a> <td> <6 <td> only in real (non-boud) layers: 1 if the layer is visible, 0 if not (UI setting)
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/group"><td> &nbsp;&nbsp;&nbsp;group <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> only in real (non-boud) layers: "parent" layer group ID 
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/color"><td> &nbsp;&nbsp;&nbsp;color <td> <a href="#valtype:string">string</a> <td> >=5 <td>  layer color on UI, in #rrggbb format 
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/stack_offs"><td> &nbsp;&nbsp;&nbsp;stack_offs <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> only in bound layers: match offset e.g. for internal copper layers
@@ -288,6 +289,7 @@
 <tr id="/lht_tree_doc/comm/layer_mask/children/paste"><td> &nbsp;&nbsp;&nbsp;&nbsp;paste <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> material: paste
 <tr id="/lht_tree_doc/comm/layer_mask/children/outline"><td> &nbsp;&nbsp;&nbsp;&nbsp;outline <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> "material": router path (board outline, slots, cutouts) 
 <tr id="/lht_tree_doc/comm/layer_mask/children/substrate"><td> &nbsp;&nbsp;&nbsp;&nbsp;substrate <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> material: substrate or insulator
+<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/purpose"><td> &nbsp;&nbsp;&nbsp;purpose <td> <a href="#valtype:integer">integer</a> <td> >=6 <td> only in bound layers: match layer group purpose
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/combining"><td> &nbsp;&nbsp;&nbsp;combining <td> &nbsp; <td> >=2 <td> layer combination (compositing) flags
 <tr id="/lht_tree_doc/comm/combining/children/sub"><td> &nbsp;&nbsp;&nbsp;&nbsp;sub <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> draw in negative
 <tr id="/lht_tree_doc/comm/combining/children/auto"><td> &nbsp;&nbsp;&nbsp;&nbsp;auto <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
@@ -377,8 +379,8 @@
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/string"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> text string (payload)
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/fid"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fid <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> font ID
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/scale"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scale <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> text size scale in %
-<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/direction"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Special value 0x7f (127) means the rot field shall be used instead (from v6).
-<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/rot"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rot <td> <a href="#valtype:angle">angle</a> <td> >=6 <td> rotation angle; applied when direction is 0x7f (127)
+<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/direction"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction <td> <a href="#valtype:integer">integer</a> <td> <=5 <td> rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Starting from v6, the rot field shall be used instead of direction
+<tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/rot"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rot <td> <a href="#valtype:angle">angle</a> <td> >=6 <td> rotation angle in degrees, [0..360), CCW
 <tr id="/lht_tree_doc/comm/data/children/layers/children/NAME/children/objects/children/text.ID/children/thickness"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thickness <td> <a href="#valtype:coord">coord</a> <td> >=6 <td> if zero, use the default width algorithm; if non-zero use this value as rotation angle in degrees
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
 <tr id="/lht_tree_doc/comm/attributes/children/attrib-key"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrib-key <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> attribute value
@@ -402,7 +404,7 @@
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/plated"><td> &nbsp;&nbsp;&nbsp;plated <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> 0=unplated hole; 1=plated hole
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/name"><td> &nbsp;&nbsp;&nbsp;name <td> <a href="#valtype:string">string</a> <td> >=5 <td> optional user assigned prototype name
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape"><td> &nbsp;&nbsp;&nbsp;li:shape <td> &nbsp; <td> &nbsp; <td> shape per layer type definition
-<tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:ps_shape_v4 <td> &nbsp; <td> &nbsp; <td> shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin
+<tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4"><td> &nbsp;&nbsp;&nbsp;&nbsp;ha:ps_shape_v4 <td> &nbsp; <td> &nbsp; <td> shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are relative to padstack origin; layer mask shall contain one material and at most one location bit
 <tr id="/lht_tree_doc/comm/layer_mask"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ha:layer_mask <td> &nbsp; <td> &nbsp; <td> layer type and location
 <tr id="/lht_tree_doc/comm/layer_mask/children/top"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> location: top side
 <tr id="/lht_tree_doc/comm/layer_mask/children/bottom"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> location: bottom side
@@ -430,6 +432,7 @@
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_circ/children/x"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> center, horizontal offset 
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_circ/children/y"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> center, vertical offset 
 <tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_circ/children/dia"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dia <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> circle diameter 
+<tr id="/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/ps_hshadow"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;te:ps_hshadow <td> &nbsp; <td> >=6 <td> hole/slot shadow
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID"><td> &nbsp;ha:subc.ID <td> &nbsp; <td> >=3 <td> an instance (full copy) of a subcircuit
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/uid"><td> &nbsp;&nbsp;uid <td> <a href="#valtype:minuid">minuid</a> <td> &nbsp; <td> UID assigned by the user to track subc history 
 <tr id="/lht_tree_doc/comm/attributes"><td> &nbsp;&nbsp;ha:attributes <td> &nbsp; <td> &nbsp; <td>  a hash of attribute key=value pairs 
@@ -539,7 +542,7 @@
 <h3 id="/lht_tree_doc/comm/submenu">li:submenu</h3>
 <p>
 <table border=0 cellspacing=0>
-<tr><th align=left> type:name <th align=left> value <th align=left> ver <th align=left> description
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
 <tr id="/lht_tree_doc/comm/submenu"><td> li:submenu <td> &nbsp; <td> &nbsp; <td> ordered list of menu items for a submenu
 <tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
 <tr id="/lht_tree_doc/comm/submenu/children/-"><td> &nbsp;- <td> <a href="#valtype:none">none</a> <td> &nbsp; <td> horizontal separator
@@ -632,5 +635,7 @@ ta:foo = { 1mm; 2.1mm;  5mm;   5.2mm;  3.7mm; 12mil; }
  Free form text data
 
 </table>
+<h2> Comments </h2>
+<p id="ver">ver column: <a href="../io_lihata_ver.html">Format version</a> range the subtree may appear in.
 </body>
 </html>
