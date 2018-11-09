@@ -1538,7 +1538,9 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	if ((data != NULL) && (data->subc_tree != NULL))
 		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)(*subc));
 
+	pcb_undo_freeze_add();
 	pcb_data_mirror((*subc)->data, yoff, PCB_TXM_SIDE, 1);
+	pcb_undo_unfreeze_add();
 
 	for(n = 0; n < (*subc)->data->LayerN; n++) {
 		pcb_layer_t *ly = (*subc)->data->Layer + n;
