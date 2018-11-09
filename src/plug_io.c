@@ -899,21 +899,11 @@ void pcb_backup(void)
 	const char *fmt = NULL;
 	pcb_plug_io_t *orig;
 
-	if (PCB && PCB->Filename) {
-		filename = (char *) malloc(sizeof(char) * (strlen(PCB->Filename) + 2));
-		if (filename == NULL) {
-			fprintf(stderr, "pcb_backup():  malloc failed\n");
-			exit(1);
-		}
-		sprintf(filename, "%s-", PCB->Filename);
-	}
-	else {
-		/* conf_core.rc.backup_name has %.8i which  will be replaced by the process ID */
-		filename = pcb_build_fn(conf_core.rc.backup_name);
-		if (filename == NULL) {
-			fprintf(stderr, "pcb_backup(): can't build file name for a backup\n");
-			exit(1);
-		}
+	/* conf_core.rc.backup_name has %.8i which will be replaced by the process ID */
+	filename = pcb_build_fn(conf_core.rc.backup_name);
+	if (filename == NULL) {
+		fprintf(stderr, "pcb_backup(): can't build file name for a backup\n");
+		exit(1);
 	}
 
 	if ((conf_core.rc.backup_format != NULL) && (strcmp(conf_core.rc.backup_format, "original") != 0))

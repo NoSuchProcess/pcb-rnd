@@ -76,7 +76,7 @@ li:pcb-rnd-conf-v1 {
 
 			emergency_name = {PCB.%ld.save}
 			emergency_format = {lihata}
-			backup_name = {PCB.%P.backup}
+			backup_name = {%F.%P.backup}
 			backup_format = {lihata}
 
 			li:library_search_paths = {
