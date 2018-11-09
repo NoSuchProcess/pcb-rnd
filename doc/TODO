@@ -29,6 +29,7 @@
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it
 - CLEANUP: move DisperseElements out from core
+- CLEANUP: lib_hid_gl should use its own CFLAGS/LDFLAGS in tmpasm [report: Vuokko]
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- CLEANUP: netlist rewrite
