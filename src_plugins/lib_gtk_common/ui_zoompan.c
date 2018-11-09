@@ -227,8 +227,8 @@ static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord
 
 void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
 {
-	v->x0 = SIDE_X(pcb_x) - widget_x * v->coord_per_px;
-	v->y0 = SIDE_Y(pcb_y) - widget_y * v->coord_per_px;
+	v->x0 = pcb_round((double)SIDE_X(pcb_x) - (double)widget_x * v->coord_per_px);
+	v->y0 = pcb_round((double)SIDE_Y(pcb_y) - (double)widget_y * v->coord_per_px);
 
 	pcb_gtk_pan_common(v);
 }

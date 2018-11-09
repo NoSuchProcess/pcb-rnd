@@ -51,8 +51,8 @@
 #define	DRAW_X(view, x)         (gint)((SIDE_X(x) - (view)->x0) / (view)->coord_per_px)
 #define	DRAW_Y(view, y)         (gint)((SIDE_Y(y) - (view)->y0) / (view)->coord_per_px)
 
-#define	EVENT_TO_PCB_X(view, x) SIDE_X((pcb_coord_t)((x) * (view)->coord_per_px + (view)->x0))
-#define	EVENT_TO_PCB_Y(view, y) SIDE_Y((pcb_coord_t)((y) * (view)->coord_per_px + (view)->y0))
+#define	EVENT_TO_PCB_X(view, x) (pcb_coord_t)pcb_round(SIDE_X((double)(x) * (view)->coord_per_px + (double)(view)->x0))
+#define	EVENT_TO_PCB_Y(view, y) (pcb_coord_t)pcb_round(SIDE_Y((double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
 
 typedef struct {
