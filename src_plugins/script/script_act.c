@@ -94,6 +94,75 @@ static void script_dlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(script_dlg_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static void btn_unload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	script_dlg_t *ctx = caller_data;
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
+	if (row == NULL)
+		return;
+
+	script_unload(row->cell[0], "unload");
+	script_dlg_s2d(ctx);
+}
+
+static void btn_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	script_dlg_t *ctx = caller_data;
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
+	if (row == NULL)
+		return;
+
+	script_reload(row->cell[0]);
+	script_dlg_s2d(ctx);
+}
+
+static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	script_dlg_t *ctx = caller_data;
+	char *tmp, *fn = pcb_gui->fileselect("script to load", "Select a script file to load", NULL, NULL, "script", HID_FILESELECT_READ);
+	typedef struct {
+		PCB_DAD_DECL_NOINIT(dlg)
+		int wid, wlang;
+	} idlang_t;
+	idlang_t idlang;
+
+	if (fn == NULL)
+		return;
+
+	memset(&idlang, 0, sizeof(idlang));
+	PCB_DAD_BEGIN_VBOX(idlang.dlg);
+		PCB_DAD_BEGIN_HBOX(idlang.dlg);
+			PCB_DAD_LABEL(idlang.dlg, "ID:");
+			PCB_DAD_STRING(idlang.dlg);
+				idlang.wid = PCB_DAD_CURRENT(idlang.dlg);
+				tmp = strrchr(fn, PCB_DIR_SEPARATOR_C);
+				if (tmp != NULL) {
+					tmp++;
+					idlang.dlg[idlang.wid].default_val.str_value = tmp = pcb_strdup(tmp);
+					tmp = strchr(tmp, '.');
+					if (tmp != NULL)
+						*tmp = '\0';
+				}
+		PCB_DAD_END(idlang.dlg);
+		PCB_DAD_BEGIN_HBOX(idlang.dlg);
+			PCB_DAD_LABEL(idlang.dlg, "language:");
+			PCB_DAD_STRING(idlang.dlg);
+				idlang.wlang = PCB_DAD_CURRENT(idlang.dlg);
+				tmp = strrchr(fn, '.');
+				if (tmp != NULL)
+					idlang.dlg[idlang.wlang].default_val.str_value = pcb_strdup(tmp+1);
+		PCB_DAD_END(idlang.dlg);
+	PCB_DAD_END(idlang.dlg);
+
+
+	PCB_DAD_AUTORUN(idlang.dlg, "load script", "", NULL);
+
+	if (script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0)
+		script_dlg_s2d(ctx);
+
+	PCB_DAD_FREE(idlang.dlg);
+}
+
 static void script_dlg_open(void)
 {
 	static const char *hdr[] = {"ID", "language", "file", NULL};
@@ -110,8 +179,14 @@ static void script_dlg_open(void)
 				script_dlg.wslist = PCB_DAD_CURRENT(script_dlg.dlg);
 			PCB_DAD_BEGIN_HBOX(script_dlg.dlg);
 				PCB_DAD_BUTTON(script_dlg.dlg, "Unload");
+					PCB_DAD_HELP(script_dlg.dlg, "Unload the currently selected script");
+					PCB_DAD_CHANGE_CB(script_dlg.dlg, btn_unload_cb);
 				PCB_DAD_BUTTON(script_dlg.dlg, "Reload");
+					PCB_DAD_HELP(script_dlg.dlg, "Reload the currently selected script\n(useful if the script has changed)");
+					PCB_DAD_CHANGE_CB(script_dlg.dlg, btn_reload_cb);
 				PCB_DAD_BUTTON(script_dlg.dlg, "Load...");
+					PCB_DAD_HELP(script_dlg.dlg, "Load a new script from disk");
+					PCB_DAD_CHANGE_CB(script_dlg.dlg, btn_load_cb);
 			PCB_DAD_END(script_dlg.dlg);
 		PCB_DAD_END(script_dlg.dlg);
 
