@@ -1083,6 +1083,15 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t
 	return p;
 }
 
+void io_pcb_preproc_board(pcb_board_t *pcb)
+{
+	int n;
+
+	/* make postproc able to detect layers with broken link */
+	for(n = 0; n < PCB_MAX_LAYER; n++)
+		PCB->Data->Layer[n].meta.real.grp = -1;
+}
+
 void io_pcb_postproc_board(pcb_board_t *pcb)
 {
 	gdl_iterator_t it;
@@ -1094,6 +1103,21 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 		if (pcb->LayerGroups.grp[n].len == 0) {
 			pcb_layergrp_del(pcb, n, 0);
 			n--;
+		}
+	}
+
+	/* check if we have layers that are not present in the group string (broken input) */
+	for(n = 0; n < PCB->Data->LayerN; n++) {
+		if (PCB->Data->Layer[n].meta.real.grp == -1) {
+			pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
+
+			pcb_message(PCB_MSG_WARNING, "Broken input file: layer group string doesn't contain layer %ld\n(Trying to fix it by introducing a new intern copper layer)\n", n);
+			if (grp != NULL) {
+				pcb_layergrp_id_t gid = grp - PCB->LayerGroups.grp;
+				pcb_layer_move_to_group(pcb, n, gid);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "Failed to add a new layer group - the board in memory IS BROKEN.\n");
 		}
 	}
 

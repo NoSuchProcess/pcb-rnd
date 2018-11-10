@@ -2525,6 +2525,8 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	if (settings_dest != CFR_invalid)
 		conf_reset(settings_dest, Filename);
 
+	io_pcb_preproc_board(PCB);
+
 	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
 
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
