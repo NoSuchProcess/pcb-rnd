@@ -53,7 +53,7 @@ static void help1(void)
 	printf("options are:\n");
 	printf(" --prefix=path              change installation prefix from /usr/local to path\n");
 	printf(" --debug                    build full debug version (-g -O0, extra asserts)\n");
-	printf(" --profile                  build prifiling version if availabel (-pg)\n");
+	printf(" --profile                  build profiling version if available (-pg)\n");
 	printf(" --symbols                  include symbols (add -g, but no -O0 or extra asserts)\n");
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
