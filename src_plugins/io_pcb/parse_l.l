@@ -384,6 +384,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 
 	io_pcb_preproc_board(PCB);
 
+	pcb_data_clip_inhibit_inc(PCB->Data);
 	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
 
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
@@ -463,6 +464,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	}
 	pcb_layer_auto_fixup(PCB);
 	io_pcb_postproc_board(PCB);
+	pcb_data_clip_inhibit_dec(PCB->Data, 1);
 	return retval;
 }
 
