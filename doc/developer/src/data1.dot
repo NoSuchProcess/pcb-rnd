@@ -12,6 +12,7 @@ digraph pcb_data {
 	pcb_subc_t [shape=box style=filled color="#aaffaa"]
 	pcb_rat_line_t [shape=box style=filled color="#aaffaa"]
 	pcb_pstk_t [shape=box style=filled color="#aaffaa"]
+	pcb_padstack_proto_t [shape=box]
 	pcb_arc_t [shape=box style=filled color="#aaffaa"]
 	pcb_line_t [shape=box style=filled color="#aaffaa"]
 	pcb_text_t [shape=box style=filled color="#aaffaa"]
@@ -45,8 +46,10 @@ digraph pcb_data {
 	DataType_listrt -> pcb_subc_t
 	DataType_listrt -> pcb_rat_line_t
 	DataType_listrt -> pcb_pstk_t
+	DataType_listrt -> pcb_padstack_proto_t
 
 	pcb_subc_t -> pcb_data_t2
+	pcb_pstk_t -> pcb_padstack_proto_t [constraint=no color=blue label="id\nref."]
 
 	LayerType_lines [label="list and rtree of lines"]
 	LayerType_arcs [label="list and rtree of arcs"]
