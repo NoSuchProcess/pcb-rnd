@@ -1123,6 +1123,12 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 
 	pcb_layergrp_create_missing_substrate(pcb);
 
+	for(n = 0; n < pcb->LayerGroups.len; n++)
+		if ((pcb->LayerGroups.grp[n].ltype & PCB_LYT_COPPER) && (pcb->LayerGroups.grp[n].ltype & PCB_LYT_INTERN))
+			pcb_layergrp_fix_old_outline_detect(pcb, &pcb->LayerGroups.grp[n]);
+
+	pcb_layergrp_fix_old_outline(pcb);
+
 	/* have to rebind all subcircuits because the layer stack was not ready
 	   when they got loaded */
 	subclist_foreach(&pcb->Data->subc, &it, sc)
