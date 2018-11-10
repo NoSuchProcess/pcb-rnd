@@ -1262,6 +1262,16 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		gid = pcb_layergrp_id(PCB, g);
 	}
 
+#warning TODO #tbs
+	{
+		pcb_layer_type_t lyt = pcb_layergrp_flags(PCB, gid);
+		if ((lyt & PCB_LYT_SILK) && ((lyt & PCB_LYT_TOP) || (lyt & PCB_LYT_BOTTOM))) {
+			pcb_message(PCB_MSG_ERROR, "Can not remove top or bottom silk layers (yet - we need some more months of development for that)\n");
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+	}
+
 	PCB_ACT_IRES(pcb_layergrp_del(PCB, gid, 1));
 	return 0;
 }
