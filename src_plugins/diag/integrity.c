@@ -191,6 +191,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		pcb_text_t *txt;
 		pcb_arc_t *arc;
 		pcb_poly_t *poly;
+		pcb_layergrp_t *grp;
 	
 		/* check layers */
 		if (data->Layer[n].parent.data != data)
@@ -200,6 +201,23 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		check_type(&data->Layer[n], PCB_OBJ_LAYER);
 		check_parent("layer", (&data->Layer[n]), PCB_PARENT_DATA, data);
 		chk_attr("layer", &data->Layer[n]);
+
+		if (!data->Layer[n].is_bound) {
+			grp = pcb_get_layergrp(data->parent.board, data->Layer[n].meta.real.grp);
+			if (grp != NULL) {
+				int i, found = 0;
+				for(i = 0; i < grp->len; i++) {
+					if (grp->lid[i] == n) {
+						found = 1;
+						break;
+					}
+				}
+				if (!found)
+					pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld is linked to group %ld but the group does not link back to the layer\n", whose, n, data->Layer[n].meta.real.grp);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld is linked to non-existing group %ld\n", whose, n, data->Layer[n].meta.real.grp);
+		}
 
 		if (data->Layer[n].is_bound) {
 			if ((data->Layer[n].meta.bound.type & PCB_LYT_BOUNDARY) && (data->Layer[n].meta.bound.type & PCB_LYT_ANYWHERE))
