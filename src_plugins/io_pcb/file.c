@@ -841,9 +841,7 @@ pcb_layer_id_t static existing_or_new_ly_end(pcb_board_t *pcb, const char *name)
 	if (lid >= 0) {
 		if (pcb->Data->Layer[lid].meta.real.grp >= 0) {
 			pcb_layergrp_id_t gid = pcb->Data->Layer[lid].meta.real.grp;
-			pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
-			grp->len = 0;
-
+			pcb_layergrp_del_layer(pcb, gid, lid);
 			pcb->Data->Layer[lid].meta.real.grp = -1;
 		}
 		return lid;
