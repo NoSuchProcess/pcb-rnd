@@ -738,6 +738,21 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	return 0;
 }
 
+typedef enum {
+	EAGLE_PSH_OCTAGON,
+	EAGLE_PSH_SQUARE,
+	EAGLE_PSH_LONG,
+	EAGLE_PSH_SMD          /* special round rect */
+} eagle_pstk_shape_t;
+
+/* Create a padstack at x;y; roundness and onbottom, applies only to
+   EAGLE_PSH_SMD. dx and dy are the size; for some shapes they have to
+   be equal. Returns NULL on error. */
+static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_coord_t x, pcb_coord_t y, eagle_pstk_shape_t shape, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t clr, int roundness, int rot, int onbottom)
+{
+	return NULL;
+}
+
 static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	pcb_coord_t x, y, dx, dy;
@@ -784,7 +799,9 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 		pcb_pstk_shape_rot(&sh[2], sina, cosa, rot);
 	}
 
+#warning TODO: call eagle_create_pstk() instead
 	ps = pcb_pstk_new_from_shape(subc->data, x, y, 0, 0, clr, sh);
+
 	if (ps == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to load smd pad\n");
 
@@ -828,7 +845,8 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 #warning padstack TODO: process the extent attribute for bbvia
 #warning padstack TODO: revise this for numeric values ?
 	/* shape = {square, round, octagon, long, offset} binary */
-	
+
+#warning TODO: call eagle_create_pstk() instead
 	if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
 			cshp = PCB_PSTK_COMPAT_OCTAGON;
