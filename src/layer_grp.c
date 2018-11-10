@@ -109,8 +109,11 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 		return -1;
 
 	layer = pcb->Data->Layer + lid;
-	if (gid < 0)
+	if (gid < 0) {
 		gid = layer->meta.real.grp;
+		if (gid == -1)
+			return 0; /* already deleted from groups */
+	}
 	if (gid >= pcb->LayerGroups.len)
 		return -1;
 
