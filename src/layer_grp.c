@@ -563,6 +563,29 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 
 
 #define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].name != NULL) && ((strcmp(pcb->Data->Layer[idx].name, "route") == 0 || strcmp(pcb->Data->Layer[(idx)].name, "outline") == 0)))
+
+void pcb_layergrp_fix_old_outline_detect(pcb_board_t *pcb, pcb_layergrp_t *g)
+{
+	int n, converted = 0;
+
+	for(n = 0; n < g->len; n++) {
+		if (g->lid[n] < 0)
+			continue;
+		if (LAYER_IS_OUTLINE(g->lid[n])) {
+			if (!converted) {
+				pcb_layergrp_fix_turn_to_outline(g);
+				converted = 1;
+				break;
+			}
+		}
+	}
+
+	if (converted) {
+		for(n = 0; n < g->len; n++)
+			pcb->Data->Layer[g->lid[n]].comb = PCB_LYC_AUTO;
+	}
+}
+
 int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int LayerN, int oldfmt)
 {
 	const char *s, *start;

@@ -222,6 +222,8 @@ void pcb_layergrp_fix_old_outline(pcb_board_t *pcb);
 /* ugly hack: turn an old intern layer group into an outline group after realizing it is really an outline (reading the old layers) */
 void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g);
 
+/* ugly hack: look at layers and convert g into an outline group if needed */
+void pcb_layergrp_fix_old_outline_detect(pcb_board_t *pcb, pcb_layergrp_t *g);
 
 
 /* Cached layer group lookups foir a few common cases */
