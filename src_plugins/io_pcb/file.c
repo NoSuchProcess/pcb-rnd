@@ -208,12 +208,21 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 }
 
 
-static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char *prefix)
+static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char *prefix, const char **inhibit)
 {
 	int i;
+	char **ih;
 
-	for (i = 0; i < list->Number; i++)
+	for (i = 0; i < list->Number; i++) {
+		if (inhibit != NULL) {
+			for(ih = inhibit; *ih != NULL; ih++) {
+				if (strcmp(list->List[i].name, *ih) == 0)
+					goto skip;
+			}
+		}
 		fprintf(FP, "%sAttribute(\"%s\" \"%s\")\n", prefix, list->List[i].name, list->List[i].value);
+		skip:;
+	}
 }
 
 static void WritePCBInfoHeader(FILE * FP)
@@ -409,6 +418,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 	gdl_iterator_t sit, it;
 	pcb_subc_t *sc;
 	int l;
+	const char *attr_inhibit[] = {"refdes", "value", "footprint", NULL }; /* these are saved in the header if the element */
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
@@ -457,7 +467,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		fputc(' ', FP);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "value")));
 		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_OBJ_ELEMENT_NAME) : "\"\"");
-		WriteAttributeList(FP, &sc->Attributes, "\t");
+		WriteAttributeList(FP, &sc->Attributes, "\t", attr_inhibit);
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
 			pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
@@ -559,7 +569,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
 		pcb_print_quoted_string(FP, layer_name_hack(layer, PCB_EMPTY(layer->name)));
 		fputs(")\n(\n", FP);
-		WriteAttributeList(FP, &layer->Attributes, "\t");
+		WriteAttributeList(FP, &layer->Attributes, "\t", NULL);
 
 		linelist_foreach(&layer->Line, &it, line) {
 			pcb_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
@@ -692,7 +702,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WritePCBInfoHeader(FP);
 	WritePCBDataHeader(FP);
 	WritePCBFontData(FP);
-	WriteAttributeList(FP, &PCB->Attributes, "");
+	WriteAttributeList(FP, &PCB->Attributes, "", NULL);
 	WriteViaData(FP, PCB->Data);
 	io_pcb_WriteSubcData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
