@@ -27,7 +27,7 @@ int main()
 	char **f;
 	int n, rep;
 
-	setlocale(LC_ALL, "");
+	setlocale(LC_ALL, "C");
 
 	for(rep = 0; rep < NUMREP; rep++) {
 		for(n = 0; n < sizeof(c) / sizeof(c[0]); n++) {

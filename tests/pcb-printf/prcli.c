@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <locale.h>
 #include "misc_util.h"
 #include "pcb-printf.h"
 #include "pcb_bool.h"
@@ -8,6 +9,8 @@ int main(int argc, char *argv[])
 	const char *fmt = argv[1];
 	pcb_coord_t crd;
 	int n;
+
+	setlocale(LC_ALL, "C");
 
 	pcb_printf_slot[0] = "%mr";
 
