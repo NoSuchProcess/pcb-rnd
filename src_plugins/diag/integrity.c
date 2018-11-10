@@ -294,10 +294,28 @@ static void chk_layergrps(pcb_board_t *pcb)
 
 	for(n = 0; n < pcb->LayerGroups.len; n++) {
 		pcb_layergrp_t *grp = &pcb->LayerGroups.grp[n];
+		int i, i2;
+
 		check_parent("layer_group", grp, PCB_PARENT_BOARD, pcb);
 		check_type(grp, PCB_OBJ_LAYERGRP);
 		if ((grp->ltype & PCB_LYT_BOUNDARY) && (grp->ltype & PCB_LYT_ANYWHERE))
 			pcb_message(PCB_MSG_ERROR, CHK "layer group %ld/%s is a non-global boundary\n", n, grp->name);
+
+		for(i = 0; i < grp->len; i++) {
+			pcb_layer_t *ly;
+
+			for(i2 = 0; i2 < i; i2++)
+				if (grp->lid[i] == grp->lid[i2])
+					pcb_message(PCB_MSG_ERROR, CHK "layer group %ld/%s has duplicate layer entry: %ld\n", n, grp->name, (long)grp->lid[i]);
+
+			ly = pcb_get_layer(pcb->Data, grp->lid[i]);
+			if (ly != NULL) {
+				if (ly->meta.real.grp != n)
+					pcb_message(PCB_MSG_ERROR, CHK "layer group %ld/%s conains layer %ld/%s but it doesn't link back to the group but links to %ld instead \n", n, grp->name, (long)grp->lid[i], ly->name, ly->meta.real.grp);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, CHK "layer group %ld/%s contains invalid layer entry: %ld\n", n, grp->name, (long)grp->lid[i]);
+		}
 	}
 }
 
