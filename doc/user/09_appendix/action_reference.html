@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,  Revision: 20797
+This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,  Revision: 20880
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -28,6 +28,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td>boardflip plugin</td>
 <tr><td>Brave</td><td>Changes brave settings.</td><td>Brave()<br>Brave(setting, on|off)</td><td></td>
+<tr><td>BrowseScripts</td><td>Present a dialog box for browsing scripts</td><td>BrowseScripts()</td><td>script plugin</td>
 <tr><td>ChangeAngle</td><td>Changes the start angle, delta angle or both angles of an arc.</td><td>ChangeAngle(Object, start|delta|both, delta)<br>ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)<br>ChangeAngle(SelectedArcs, start|delta|both, delta)</td><td></td>
 <tr><td><a href="action_details.html#changeclearsize">ChangeClearSize</a></td><td>Changes the clearance size of objects.</td><td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td><td></td>
 <tr><td>ChangeDrillSize</td><td>Changes the drilling hole size of objects.</td><td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td><td></td>
@@ -55,7 +56,7 @@ This is pcb-rnd 2.0.0 (svn r18442) an interactive printed circuit board editor ,
 <tr><td>ClearSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
-<tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, dummy, accel, tooltip, cookie)</td><td></td>
+<tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie)</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
 <tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
 <tr><td><a href="action_details.html#cycledrag">CycleDrag</a></td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
