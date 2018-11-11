@@ -197,7 +197,7 @@ run_test()
 
 	if test "$valg" -gt 0
 	then
-		export valgr="valgrind -v --log-file=`pwd`/$fn.vlog"
+		export valgr="valgrind -v --leak-check=full --show-leak-kinds=all --log-file=`pwd`/$fn.vlog"
 	fi
 
 	if test "$verbose" -gt 0
