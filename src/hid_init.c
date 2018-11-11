@@ -225,6 +225,11 @@ pcb_hid_t *pcb_hid_find_exporter(const char *which)
 		goto list;
 	}
 
+	if (strcmp(which, "-list-") == 0) {
+		pcb_hid_print_exporter_list(stdout, "", "\n");
+		return 0;
+	}
+
 	for (i = 0; i < pcb_hid_num_hids; i++)
 		if (pcb_hid_list[i]->exporter && strcmp(which, pcb_hid_list[i]->name) == 0)
 			return pcb_hid_list[i];
