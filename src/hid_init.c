@@ -208,6 +208,14 @@ pcb_hid_t *pcb_hid_find_printer()
 	return 0;
 }
 
+void pcb_hid_print_exporter_list(FILE *f, const char *prefix, const char *suffix)
+{
+	int i;
+	for (i = 0; i < pcb_hid_num_hids; i++)
+		if (pcb_hid_list[i]->exporter)
+			fprintf(f, "%s%s%s", prefix, pcb_hid_list[i]->name, suffix);
+}
+
 pcb_hid_t *pcb_hid_find_exporter(const char *which)
 {
 	int i;
@@ -224,9 +232,7 @@ pcb_hid_t *pcb_hid_find_exporter(const char *which)
 	fprintf(stderr, "Invalid exporter %s, available ones:", which);
 
 	list:;
-	for (i = 0; i < pcb_hid_num_hids; i++)
-		if (pcb_hid_list[i]->exporter)
-			fprintf(stderr, " %s", pcb_hid_list[i]->name);
+	pcb_hid_print_exporter_list(stderr, " ", "");
 	fprintf(stderr, "\n");
 
 	return 0;
