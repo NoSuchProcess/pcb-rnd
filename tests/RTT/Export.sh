@@ -11,11 +11,24 @@ CONVERT=convert
 
 if test -z "$pcb_rnd_bin"
 then
-	pcb_rnd_bin="$TRUNK/src/pcb-rnd"
+# running from source
+	pcb_rnd_cd="$TRUNK/src"
+	pcb_rnd_bin="./pcb-rnd"
 fi
 
-
 fmt_args=""
+
+# Execute pcb-rnd, optionally from trunk/src/, optionally wrapped in valgrind
+run_pcb_rnd()
+{
+	(
+		if test ! -z "$pcb_rnd_cd"
+		then
+			cd "$pcb_rnd_cd"
+		fi
+		$valgr $pcb_rnd_bin "$@"
+	)
+}
 
 need_convert()
 {
@@ -180,11 +193,11 @@ cmp_fmt()
 
 run_test()
 {
-	local fn="$1" valgr res res2
+	local ffn fn="$1" valgr res res2
 
 	if test "$valg" -gt 0
 	then
-		valgr="valgrind -v --log-file=$fn.vlog"
+		export valgr="valgrind -v --log-file=`pwd`/$fn.vlog"
 	fi
 
 	if test "$verbose" -gt 0
@@ -194,7 +207,8 @@ run_test()
 
 	# run and save stderr in file res2 and stdout in variable res
 	res2=`mktemp`
-	res=`$valgr $pcb_rnd_bin -x "$fmt" $global_args $fmt_args "$fn" 2>$res2`
+	ffn="`pwd`/$fn"
+	res=`run_pcb_rnd -x "$fmt" $global_args $fmt_args "$ffn" 2>$res2`
 
 	# special case error: empty design is not exported; skip the file
 	if test ! -z "$res"
@@ -223,10 +237,7 @@ do
 	case "$1"
 	in
 		--list)
-			$pcb_rnd_bin -x nonexistentexporter 2>&1 | sed '
-				/available/ { s/^[^:]*: *//; s/ /\n/g; q; }
-				{ d }
-			'
+			run_pcb_rnd -x -list-
 			exit 0;;
 		-t) test_announce=1;;
 		-f|-x) fmt=$2; shift 1;;
