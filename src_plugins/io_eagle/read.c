@@ -810,8 +810,9 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			pcb_shape_oval(&shapes[6], dx + mask_gap, dy + mask_gap);
 			shapes[7].layer_mask = 0;
 			break;
-		case EAGLE_PSH_SMD: /* will need to address roundness in due course */
+		case EAGLE_PSH_SMD:
 			{
+#warning TODO need to implement SMD roundness 
 				pcb_layer_type_t side = onbottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 				shapes[0].layer_mask = side | PCB_LYT_MASK;
 				shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
