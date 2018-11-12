@@ -1172,6 +1172,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask = 0;
 	char *Name = NULL, *Number = NULL;
 	int err = 0;
+	long int id;
 
 	warn_old_model(obj, "pad", 2);
 
@@ -1190,7 +1191,10 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	if (err != 0)
 		return -1;
 
-	p = pcb_pstk_new_compat_pad(subc->data, -1, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)));
+	if (parse_id(&id, obj, 4) != 0)
+		return -1;
+
+	p = pcb_pstk_new_compat_pad(subc->data, id, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)));
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
@@ -1199,7 +1203,6 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	if (subc_on_bottom)
 		pcb_pstk_mirror(p, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0);
 
-	parse_id(&p->ID, obj, 4);
 	pcb_attrib_compat_set_intconn(&p->Attributes, intconn);
 	parse_attributes(&p->Attributes, lht_dom_hash_get(obj, "attributes"));
 
