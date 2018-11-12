@@ -1027,6 +1027,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	unsigned char intconn = 0;
 	unsigned long int pid;
 	int tmp, err = 0;
+	long int id;
 
 	if (obj->type != LHT_HASH)
 		return iolht_error(obj, "pstk.ID must be a hash\n");
@@ -1035,9 +1036,11 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	if (pcb_pstk_get_proto_(dt, pid) == NULL)
 		return iolht_error(obj, "Padstack references to non-existent prototype\n");
 
-	ps = pcb_pstk_alloc(dt);
+	if (parse_id(&id, obj, 13) != 0)
+		return -1;
 
-	parse_id(&ps->ID, obj, 13);
+	ps = pcb_pstk_alloc_id(dt, id);
+
 	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PSTK, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
