@@ -93,10 +93,14 @@ void pcb_rat_free(pcb_rat_t *rat)
 
 /*** utility ***/
 /* creates a new rat-line */
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags)
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags)
 {
-	pcb_rat_t *Line = pcb_rat_alloc(Data);
+	pcb_rat_t *Line;
 
+	if (id <= 0)
+		id = pcb_create_ID_get();
+
+	Line = pcb_rat_alloc_id(Data, id);
 	if (!Line)
 		return Line;
 
@@ -146,7 +150,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 /* copies a rat-line to paste buffer */
 void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
-	return (pcb_rat_new(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
+	return (pcb_rat_new(ctx->buffer.dst, -1, Rat->Point1.X, Rat->Point1.Y,
 		Rat->Point2.X, Rat->Point2.Y, Rat->group1, Rat->group2, Rat->Thickness,
 		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
