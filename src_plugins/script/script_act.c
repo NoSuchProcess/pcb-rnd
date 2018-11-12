@@ -64,7 +64,7 @@ static void script_dlg_s2d_act(script_dlg_t *ctx)
 
 	sc = htsp_get(&scripts, r->cell[0]);
 	if (sc == NULL)
-		return NULL;
+		return;
 
 	/* add all actions */
 	cell[1] = NULL;
