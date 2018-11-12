@@ -789,7 +789,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 			return iolht_error(obj, "invalid role: text on layer shall not have a role\n");
 		text = pcb_text_alloc(ly);
 		if (text == NULL)
-			return iolht_error(obj, "failed to allocate yrcy object\n");
+			return iolht_error(obj, "failed to allocate text object\n");
 	}
 
 	parse_id(&text->ID, obj, 5);
