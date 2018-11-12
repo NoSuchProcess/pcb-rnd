@@ -700,16 +700,19 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord
 
 static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 {
-	pcb_poly_t *poly = pcb_poly_alloc(ly);
+	pcb_poly_t *poly;
 	lht_node_t *geo;
 	pcb_cardinal_t n = 0, c;
 	unsigned char intconn = 0;
 	int err = 0;
+	long int id;
 
 	if (obj->type != LHT_HASH)
 		return iolht_error(obj, "polygon.ID must be a hash\n");
 
-	parse_id(&poly->ID, obj, 8);
+	if (parse_id(&id, obj, 8) != 0)
+		return -1;
+	poly = pcb_poly_alloc_id(ly, id);
 	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_POLY, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
