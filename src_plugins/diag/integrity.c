@@ -259,6 +259,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	{
 		pcb_subc_t *subc;
 		pcb_pstk_t *ps;
+		pcb_rat_t *rat;
 
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 			check_parent("padstack", ps, PCB_PARENT_DATA, data);
@@ -274,6 +275,14 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 			check_type(subc, PCB_OBJ_SUBC);
 			chk_subc(whose, subc);
 			chk_attr("subc", subc);
+		}
+
+		/* check rat line objects */
+		for(rat = ratlist_first(&data->Rat); rat != NULL; rat = ratlist_next(rat)) {
+			check_parent("rat", rat, PCB_PARENT_DATA, data);
+			check_obj_id("rat", data, rat);
+			check_type(rat, PCB_OBJ_RAT);
+			chk_attr("rat", rat);
 		}
 	}
 
