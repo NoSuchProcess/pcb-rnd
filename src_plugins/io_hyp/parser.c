@@ -2294,7 +2294,7 @@ pcb_bool exec_useg(parse_param * h)
 		return 0;
 	}
 
-	pcb_rat_new(hyp_dest, x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), layer1_grp_id, layer2_grp_id,
+	pcb_rat_new(hyp_dest, -1, x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), layer1_grp_id, layer2_grp_id,
 							xy2coord(h->width), pcb_no_flags());
 
 	return 0;
