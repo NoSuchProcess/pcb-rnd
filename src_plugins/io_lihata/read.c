@@ -628,7 +628,8 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	pcb_rat_t rat, *new_rat;
 	int tmp, err = 0;
 
-	parse_id(&rat.ID, obj, 4);
+	if (parse_id(&rat.ID, obj, 4) != 0)
+		return -1;
 	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, NULL, 0);
 
 	err |= parse_coord(&rat.Point1.X, hash_get(obj, "x1", 0));
@@ -642,15 +643,13 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	rat.group2 = tmp;
 
 
-	new_rat = pcb_rat_new(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
+	new_rat = pcb_rat_new(dt, rat.ID, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
 		conf_core.appearance.rat_thickness, rat.Flags);
 
 	parse_attributes(&new_rat->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	post_id_req(&new_rat->Point1);
 	post_id_req(&new_rat->Point2);
-
-	new_rat->ID = rat.ID;
 
 	return err;
 }
