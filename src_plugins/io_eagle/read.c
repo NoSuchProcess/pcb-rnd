@@ -825,6 +825,9 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 				shapes[3].layer_mask = 0;
 			}	
 			break;
+		case EAGLE_PSH_OFFSET:
+#warning TODO need OFFSET shape generation function, once OFFSET object understood
+			return NULL;
 	}
 	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
 }
