@@ -753,6 +753,8 @@ typedef enum {
 static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, eagle_pstk_shape_t shape, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t clr, pcb_coord_t drill_dia, int roundness, int rot, int onbottom, pcb_bool plated)
 {
 	pcb_pstk_shape_t shapes[8];
+#warning TODO need to establish how mask clearance is defined and done in eagle
+	pcb_coord_t mask_gap = clr;
 	int current_layer = 0;
 	if (!onbottom) {
 		shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
