@@ -1223,9 +1223,12 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 
 	warn_old_model(obj, "element", 3);
 
-	pcb_subc_reg(dt, subc);
+	if (parse_id(&subc->ID, obj, 8) != 0)
+		return -1;
 
-	parse_id(&subc->ID, obj, 8);
+	pcb_subc_reg(dt, subc);
+	pcb_obj_id_reg(dt, subc);
+
 	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, NULL, 0);
 	parse_attributes(&subc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	err |= parse_coord(&ox, hash_get(obj, "x", 0));
@@ -1316,6 +1319,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	sc->data->padstack_tree = dt->padstack_tree;
 
 	pcb_subc_reg(dt, sc);
+	pcb_obj_id_reg(dt, sc);
 
 	if (parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt) == 0)
 		return iolht_error(obj, "Invalid subc: no data\n");
