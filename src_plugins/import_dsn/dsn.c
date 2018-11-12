@@ -196,7 +196,7 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 
 	{
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, x, PCB->MaxHeight - y, drill, dia, clear, 0, PCB_PSTK_COMPAT_ROUND, 1);
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, -1, x, PCB->MaxHeight - y, drill, dia, clear, 0, PCB_PSTK_COMPAT_ROUND, 1);
 		PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 	}
 }

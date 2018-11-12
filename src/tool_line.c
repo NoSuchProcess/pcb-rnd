@@ -181,7 +181,7 @@ void pcb_tool_line_notify_mode(void)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (!PCB->is_footprint)
 #warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
-				&& ((ps = pcb_pstk_new_compat_via(PCB->Data,
+				&& ((ps = pcb_pstk_new_compat_via(PCB->Data, -1,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
 				conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
@@ -271,7 +271,7 @@ void pcb_tool_line_notify_mode(void)
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID
 #warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
-				&& ((ps = pcb_pstk_new_compat_via(PCB->Data,
+				&& ((ps = pcb_pstk_new_compat_via(PCB->Data, -1,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
 															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,

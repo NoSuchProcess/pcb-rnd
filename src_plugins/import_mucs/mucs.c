@@ -121,7 +121,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				y1 = (getc(fi) + (getc(fi) * 256));
 				r = (getc(fi) + (getc(fi) * 256));
 				pcb_trace("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
-				ps = pcb_pstk_new_compat_via(PCB->Data, PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
+				ps = pcb_pstk_new_compat_via(PCB->Data, -1, PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
 				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 				break;
 			case 'n':

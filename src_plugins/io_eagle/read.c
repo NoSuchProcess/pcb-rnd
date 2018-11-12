@@ -861,7 +861,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 		pcb_message(PCB_MSG_ERROR, "Invalid padstack shape: '%s' - using octagon instead\n", shape);
 	}
 
-	ps = pcb_pstk_new_compat_via(data, x, y, drill, dia, clr, mask,  cshp, !hole);
+	ps = pcb_pstk_new_compat_via(data, -1, x, y, drill, dia, clr, mask,  cshp, !hole);
 
 	if (name != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", name);

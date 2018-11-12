@@ -93,7 +93,7 @@ static void *layout_create_via_(int x, int y, int thickness, int clearance, int 
 {
 	void *pin;
 
-	pin = pcb_pstk_new_compat_via(PCB->Data, x, y, hole, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, 1);
+	pin = pcb_pstk_new_compat_via(PCB->Data, -1, x, y, hole, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, 1);
 
 	if (pin != NULL) {
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, pin, pin, pin);

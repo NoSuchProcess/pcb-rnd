@@ -1138,7 +1138,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_
 	if (err != 0)
 		return -1;
 
-	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
+	ps = pcb_old_via_new(dt, -1, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
 	if (ps == NULL) {
 		iolht_error(obj, "Failed to convert old via to padstack (this via is LOST)\n");
 		return 0;

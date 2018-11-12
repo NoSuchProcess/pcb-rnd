@@ -137,7 +137,7 @@ static void compat_shape_free(pcb_pstk_shape_t *shp)
 		free(shp->data.poly.x);
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated)
+pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
@@ -731,7 +731,7 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 }
 
 
-pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
 	pcb_pstk_compshape_t shp;
@@ -747,7 +747,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_
 	else
 		shp = PCB_PSTK_COMPAT_ROUND;
 
-	p = pcb_pstk_new_compat_via(data, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
+	p = pcb_pstk_new_compat_via(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
 	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
 	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);

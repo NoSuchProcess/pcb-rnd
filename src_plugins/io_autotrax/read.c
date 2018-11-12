@@ -483,7 +483,7 @@ static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 
 	Mask = Thickness + st->mask_clearance;
 
-	ps = pcb_pstk_new_compat_via(data, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, 1);
+	ps = pcb_pstk_new_compat_via(data, -1, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, 1);
 	return ps != NULL;
 }
 

@@ -896,7 +896,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1);
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		if (pcb_pstk_new_compat_via(st->pcb->Data, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, pcb_true) == NULL)
+		if (pcb_pstk_new_compat_via(st->pcb->Data, -1, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, pcb_true) == NULL)
 			return kicad_error(subtree, "failed to create via-padstack");
 		return 0;
 	}

@@ -1061,7 +1061,7 @@ pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y
 pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
-	p = pcb_old_via_new(subc->data, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
+	p = pcb_old_via_new(subc->data, -1, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)

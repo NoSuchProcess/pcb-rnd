@@ -54,6 +54,7 @@
 		if (__ao__ != (pcb_any_obj_t *)obj) \
 			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld id hash broken (%p != %p)\n", whose, obj->ID, obj, __ao__); \
 		id_chk_cnt++; \
+printf("checked ok: %ld %ld\n", (long)obj->ID, (long)id_chk_cnt); \
 	} while(0)
 
 
@@ -279,8 +280,10 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	/* Safe check for the other way around: if the hash contains more entries
 	   than the objects we checked above, we have some garbage left; the check
 	   is safe because it is not needed to dereference the garbage */
-	for(e = htip_first(&data->id2obj); e; e = htip_next(&data->id2obj, e))
+	for(e = htip_first(&data->id2obj); e; e = htip_next(&data->id2obj, e)) {
 		id_chk_cnt--;
+printf("decremn ok: %ld %ld\n", (long)e->key, (long)id_chk_cnt);
+	}
 	if (id_chk_cnt != 0)
 		pcb_message(PCB_MSG_ERROR, CHK "id hash contains %ld excess IDs in %s\n", id_chk_cnt, whose);
 
