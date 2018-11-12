@@ -62,7 +62,6 @@ static void timer_cb(pcb_hidval_t hv)
 		script_timer_t *t = timers.array[n];
 		fgw_func_t *f;
 		fgw_arg_t res, argv[4];
-		char fn[PCB_ACTION_NAME_MAX];
 
 		if (t->next <= now) {
 			t->next += t->period;
