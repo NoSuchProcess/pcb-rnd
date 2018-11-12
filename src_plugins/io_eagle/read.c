@@ -757,6 +757,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 	pcb_coord_t mask_gap = clr;
 #warning TODO need to establish how paste clearance, if any, is defined and done in eagle
 	pcb_coord_t paste_gap = 0;
+	pcb_layer_type_t side = onbottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 	switch (shape) {
 		case EAGLE_PSH_SQUARE:
 			shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
@@ -811,29 +812,16 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			shapes[7].layer_mask = 0;
 			break;
 		case EAGLE_PSH_SMD: /* will need to address roundness in due course */
-			if (!onbottom) {
-				shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
-				shapes[0].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[0], dx + mask_gap, dy + mask_gap);
-				shapes[1].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
-				shapes[1].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[1], dx + paste_gap, dy + paste_gap);
-				shapes[2].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-				shapes[2].comb = 0;
-				pcb_shape_rect(&shapes[2], dx, dy);
-				shapes[3].layer_mask = 0;
-			} else {
-				shapes[0].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
-				shapes[0].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[0], dx + mask_gap, dy + mask_gap);
-				shapes[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
-				shapes[1].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[1], dx + paste_gap, dy + paste_gap);
-				shapes[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-				shapes[2].comb = 0;
-				pcb_shape_rect(&shapes[2], dx, dy);
-				shapes[3].layer_mask = 0;
-			}
+			shapes[0].layer_mask = side | PCB_LYT_MASK;
+			shapes[0].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			pcb_shape_rect(&shapes[0], dx + mask_gap, dy + mask_gap);
+			shapes[1].layer_mask = side | PCB_LYT_PASTE;
+			shapes[1].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			pcb_shape_rect(&shapes[1], dx + paste_gap, dy + paste_gap);
+			shapes[2].layer_mask = side | PCB_LYT_COPPER;
+			shapes[2].comb = 0;
+			pcb_shape_rect(&shapes[2], dx, dy);
+			shapes[3].layer_mask = 0;
 			break;
 	}
 	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
