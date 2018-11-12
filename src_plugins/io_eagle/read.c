@@ -783,8 +783,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
 			break;
 		case EAGLE_PSH_OCTAGON:
-/*		need_an_octagon_shape_gen(&shapes[current_layer++], dx+mask_gap);
-			break;*/
+#warning TODO need octagon shape generation function/API accessible from read.c padstack creation function
 		case EAGLE_PSH_ROUND:
 		case EAGLE_PSH_LONG:
 			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
