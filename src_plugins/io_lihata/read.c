@@ -583,16 +583,18 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coor
 	pcb_line_t *line;
 	unsigned char intconn = 0;
 	int err = 0;
+	long int id;
 
 	if (obj->type != LHT_HASH)
 		return iolht_error(obj, "line.ID must be a hash\n");
 
-	if (ly != NULL)
-		line = pcb_line_alloc(ly);
-	else
+	if (ly == NULL)
 		return iolht_error(obj, "failed to allocate line object\n");
 
-	parse_id(&line->ID, obj, 5);
+	if (parse_id(&id, obj, 5) != 0)
+		return -1;
+
+	line = pcb_line_alloc_id(ly, id);
 	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
