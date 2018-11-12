@@ -659,16 +659,18 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord
 	pcb_arc_t *arc;
 	unsigned char intconn = 0;
 	int err = 0;
+	long int id;
 
 	if (obj->type != LHT_HASH)
 		return iolht_error(obj, "arc.ID must be a hash\n");
 
-	if (ly != NULL)
-		arc = pcb_arc_alloc(ly);
-	else
+	if (ly == NULL)
 		return iolht_error(obj, "failed to allocate arc object\n");
 
-	parse_id(&arc->ID, obj, 4);
+	if (parse_id(&id, obj, 4) != 0)
+		return -1;
+
+	arc = pcb_arc_alloc_id(ly, id);
 	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&arc->Attributes, intconn);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
