@@ -785,6 +785,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 		case EAGLE_PSH_OCTAGON:
 #warning TODO need octagon shape generation function/API accessible from read.c padstack creation function
 		case EAGLE_PSH_ROUND:
+			assert(dx == dy);
 		case EAGLE_PSH_LONG:
 			shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
 			shapes[0].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
