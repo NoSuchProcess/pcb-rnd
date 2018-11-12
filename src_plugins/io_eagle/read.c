@@ -756,7 +756,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 #warning TODO need to establish how mask clearance is defined and done in eagle
 	pcb_coord_t mask_gap = clr;
 #warning TODO need to establish how paste clearance, if any, is defined and done in eagle
-	pcb_coord_t paste_gap = o;
+	pcb_coord_t paste_gap = 0;
 	int current_layer = 0;
 	if (!onbottom) {
 		shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
