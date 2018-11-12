@@ -744,7 +744,7 @@ typedef enum {
 	EAGLE_PSH_OCTAGON,
 	EAGLE_PSH_LONG,
 	EAGLE_PSH_OFFSET, /* need example of this */
-	EAGLE_PSH_SMD	  /* special round rect */
+	EAGLE_PSH_SMD     /* special round rect */
 } eagle_pstk_shape_t;
 
 /* Create a padstack at x;y; roundness and onbottom, applies only to
