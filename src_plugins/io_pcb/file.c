@@ -211,7 +211,7 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char *prefix, const char **inhibit)
 {
 	int i;
-	char **ih;
+	const char **ih;
 
 	for (i = 0; i < list->Number; i++) {
 		if (inhibit != NULL) {
