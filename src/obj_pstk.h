@@ -88,6 +88,7 @@ typedef struct pcb_pstk_proto_s {
 
 
 pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data);
+pcb_pstk_t *pcb_pstk_alloc_id(pcb_data_t *data, long int id);
 void pcb_pstk_free(pcb_pstk_t *ps);
 pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags);
 pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror);

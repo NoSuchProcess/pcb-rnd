@@ -74,18 +74,23 @@ void pcb_arc_unreg(pcb_arc_t *arc)
 	PCB_CLEAR_PARENT(arc);
 }
 
-pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
+pcb_arc_t *pcb_arc_alloc_id(pcb_layer_t *layer, long int id)
 {
 	pcb_arc_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_arc_t), 1);
-	new_obj->ID = pcb_create_ID_get();
+	new_obj->ID = id;
 	new_obj->type = PCB_OBJ_ARC;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
 	pcb_arc_reg(layer, new_obj);
 
 	return new_obj;
+}
+
+pcb_arc_t *pcb_arc_alloc(pcb_layer_t *layer)
+{
+	return pcb_arc_alloc_id(layer, pcb_create_ID_get());
 }
 
 /* computes the bounding box of an arc */

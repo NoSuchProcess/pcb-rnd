@@ -82,12 +82,12 @@ void pcb_pstk_unreg(pcb_pstk_t *pstk)
 	PCB_CLEAR_PARENT(pstk);
 }
 
-pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
+pcb_pstk_t *pcb_pstk_alloc_id(pcb_data_t *data, long int id)
 {
 	pcb_pstk_t *ps;
 
 	ps = calloc(sizeof(pcb_pstk_t), 1);
-	ps->ID = pcb_create_ID_get();
+	ps->ID = id;
 	ps->protoi = -1;
 	ps->type = PCB_OBJ_PSTK;
 	ps->Attributes.post_change = pcb_obj_attrib_post_change;
@@ -96,6 +96,12 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 
 	return ps;
 }
+
+pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
+{
+ return pcb_pstk_alloc_id(data, pcb_create_ID_get());
+}
+
 
 void pcb_pstk_free(pcb_pstk_t *ps)
 {

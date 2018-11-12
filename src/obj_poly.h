@@ -55,6 +55,7 @@ struct pcb_poly_s  {           /* holds information about a polygon */
 
 
 pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer);
+pcb_poly_t *pcb_poly_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_poly_free(pcb_poly_t * data);
 pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
 pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);

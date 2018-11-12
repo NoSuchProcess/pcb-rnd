@@ -67,17 +67,22 @@ void pcb_rat_unreg(pcb_rat_t *rat)
 	PCB_CLEAR_PARENT(rat);
 }
 
-pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
+pcb_rat_t *pcb_rat_alloc_id(pcb_data_t *data, long int id)
 {
 	pcb_rat_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_rat_t), 1);
-	new_obj->ID = pcb_create_ID_get();
+	new_obj->ID = id;
 	new_obj->type = PCB_OBJ_RAT;
 
 	pcb_rat_reg(data, new_obj);
 
 	return new_obj;
+}
+
+pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
+{
+	return pcb_rat_alloc_id(data, pcb_create_ID_get());
 }
 
 void pcb_rat_free(pcb_rat_t *rat)

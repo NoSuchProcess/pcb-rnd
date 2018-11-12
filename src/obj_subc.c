@@ -98,11 +98,11 @@ static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *
 	pcb_text_dyn_bbox_update(sc->data);
 }
 
-pcb_subc_t *pcb_subc_alloc(void)
+pcb_subc_t *pcb_subc_alloc_id(long int id)
 {
 	pcb_subc_t *sc;
 	sc = calloc(sizeof(pcb_subc_t), 1);
-	sc->ID = pcb_create_ID_get();
+	sc->ID = id;
 	sc->Attributes.post_change = pcb_subc_attrib_post_change;
 	sc->data = pcb_data_new(NULL);
 	sc->type = PCB_OBJ_SUBC;
@@ -111,6 +111,13 @@ pcb_subc_t *pcb_subc_alloc(void)
 	pcb_term_init(&sc->terminals);
 	return sc;
 }
+
+pcb_subc_t *pcb_subc_alloc(void)
+{
+	return pcb_subc_alloc_id(pcb_create_ID_get());
+
+}
+
 
 pcb_subc_t *pcb_subc_new(void)
 {

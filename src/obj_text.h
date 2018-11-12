@@ -52,6 +52,7 @@ struct pcb_text_s {
 #define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * (100.0 / (double)(TEXTSCALE))))
 
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
+pcb_text_t *pcb_text_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_text_free(pcb_text_t * data);
 pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, double rot, int Scale, pcb_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src);

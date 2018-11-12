@@ -42,6 +42,7 @@ struct pcb_rat_line_s {          /* a rat-line */
 
 
 pcb_rat_t *pcb_rat_alloc(pcb_data_t *data);
+pcb_rat_t *pcb_rat_alloc_id(pcb_data_t *data, long int id);
 void pcb_rat_free(pcb_rat_t *data);
 void pcb_rat_reg(pcb_data_t *data, pcb_rat_t *rat);
 void pcb_rat_unreg(pcb_rat_t *rat);

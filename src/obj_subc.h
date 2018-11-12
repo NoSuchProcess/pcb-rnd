@@ -54,6 +54,7 @@ struct pcb_subc_s {
 };
 
 pcb_subc_t *pcb_subc_alloc(void);
+pcb_subc_t *pcb_subc_alloc_id(long int id);
 pcb_subc_t *pcb_subc_new(void);
 void pcb_subc_free(pcb_subc_t *sc);
 

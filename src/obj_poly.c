@@ -77,12 +77,12 @@ void pcb_poly_unreg(pcb_poly_t *poly)
 	PCB_SET_PARENT(poly, layer, NULL);
 }
 
-pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
+pcb_poly_t *pcb_poly_alloc_id(pcb_layer_t *layer, long int id)
 {
 	pcb_poly_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_poly_t), 1);
-	new_obj->ID = pcb_create_ID_get();
+	new_obj->ID = id;
 	new_obj->type = PCB_OBJ_POLY;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
@@ -90,6 +90,12 @@ pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 
 	return new_obj;
 }
+
+pcb_poly_t *pcb_poly_alloc(pcb_layer_t *layer)
+{
+	return pcb_poly_alloc_id(layer, pcb_create_ID_get());
+}
+
 
 void pcb_poly_free(pcb_poly_t *poly)
 {

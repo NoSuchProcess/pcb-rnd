@@ -49,6 +49,7 @@ typedef struct {								/* current marked line */
 
 
 pcb_line_t *pcb_line_alloc(pcb_layer_t * layer);
+pcb_line_t *pcb_line_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_line_free(pcb_line_t * data);
 
 pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);

@@ -78,18 +78,23 @@ void pcb_text_unreg(pcb_text_t *text)
 	PCB_CLEAR_PARENT(text);
 }
 
-pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
+pcb_text_t *pcb_text_alloc_id(pcb_layer_t *layer, long int id)
 {
 	pcb_text_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_text_t), 1);
-	new_obj->ID = pcb_create_ID_get();
+	new_obj->ID = id;
 	new_obj->type = PCB_OBJ_TEXT;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
 	pcb_text_reg(layer, new_obj);
 
 	return new_obj;
+}
+
+pcb_text_t *pcb_text_alloc(pcb_layer_t *layer)
+{
+	return pcb_text_alloc_id(layer, pcb_create_ID_get());
 }
 
 void pcb_text_free(pcb_text_t *text)

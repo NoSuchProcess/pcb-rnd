@@ -79,18 +79,23 @@ void pcb_line_unreg(pcb_line_t *line)
 	PCB_CLEAR_PARENT(line);
 }
 
-pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
+pcb_line_t *pcb_line_alloc_id(pcb_layer_t *layer, long int id)
 {
 	pcb_line_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_line_t), 1);
-	new_obj->ID = pcb_create_ID_get();
+	new_obj->ID = id;
 	new_obj->type = PCB_OBJ_LINE;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 
 	pcb_line_reg(layer, new_obj);
 
 	return new_obj;
+}
+
+pcb_line_t *pcb_line_alloc(pcb_layer_t *layer)
+{
+	return pcb_line_alloc_id(layer, pcb_create_ID_get());
 }
 
 void pcb_line_free(pcb_line_t *line)
