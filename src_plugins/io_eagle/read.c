@@ -816,10 +816,10 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			pcb_shape_rect(&shapes[current_layer++], dx, dy);
 			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-			pcb_shape_rect(&shapes[current_layer++], dx, dy);
+			pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
 			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 			shapes[current_layer].comb = 0;
-			pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+			pcb_shape_rect(&shapes[current_layer++], dx, dy);
 			break;
 		case EAGLE_PSH_OCTAGON:
 /*		      need_an_octagon_shape_gen(&shapes[current_layer++], dx+mask_gap);
@@ -829,20 +829,20 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			pcb_shape_oval(&shapes[current_layer++], dx, dy);
 			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-			pcb_shape_oval(&shapes[current_layer++], dx, dy);
+			pcb_shape_oval(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
 			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 			shapes[current_layer].comb = 0;
-			pcb_shape_oval(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+			pcb_shape_oval(&shapes[current_layer++], dx, dy);
 			break;
 		case EAGLE_PSH_SMD: /* will need to address roundness in due course */
 			if (onbottom) {
 				pcb_shape_rect(&shapes[current_layer++], dx, dy);
 				shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[current_layer++], dx, dy);
+				pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
 				shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 				shapes[current_layer].comb = 0;
-				pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+				pcb_shape_rect(&shapes[current_layer++], dx, dy);
 			}
 			break;
 	}
