@@ -758,90 +758,75 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 #warning TODO need to establish how paste clearance, if any, is defined and done in eagle
 	pcb_coord_t paste_gap = 0;
 	int current_layer = 0;
-	if (!onbottom) {
-		shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
-		shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-		switch (shape) { /*need shapes for {mask, paste, top} +/- (inner), &/or {bottom, paste, mask}*/
-			case EAGLE_PSH_SQUARE:
-				pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
-				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
-				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
-				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-				shapes[current_layer].comb = 0;
-				pcb_shape_rect(&shapes[current_layer++], dx, dy);
-				break;
-			case EAGLE_PSH_OCTAGON:
-/*			      need_an_octagon_shape_gen(&shapes[current_layer++], dx+mask_gap);
-				break;*/
-			case EAGLE_PSH_ROUND:
-			case EAGLE_PSH_LONG:
-				pcb_shape_oval(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
-				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
-				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_oval(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
-				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-				shapes[current_layer].comb = 0;
-				pcb_shape_oval(&shapes[current_layer++], dx, dy);
-				break;
-			case EAGLE_PSH_SMD: /* will need to address roundness in due course */
-				pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
-				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
-				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
-				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-				shapes[current_layer].comb = 0;
-				pcb_shape_rect(&shapes[current_layer++], dx, dy);
-				break;
-		}
-	}
-	if (shape != EAGLE_PSH_SMD) {
-		switch (shape) { /* need shapes for {mask, paste, top}, +/- (inner), &/or {bottom, paste, mask} */
+	switch (shape) {
+		case EAGLE_PSH_SQUARE:
+			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			pcb_shape_rect(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
+			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+			shapes[current_layer].comb = 0;
+			pcb_shape_rect(&shapes[current_layer++], dx, dy);
 			shapes[current_layer].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
 			shapes[current_layer].comb = 0;
-			case EAGLE_PSH_SQUARE: /* or should this just be round ? */
-				pcb_shape_rect(&shapes[current_layer++], dx, dy);
-				break;
-			case EAGLE_PSH_OCTAGON: /* or should this just be round ? */
-/*			      need_an_octagon_shape_gen(&shapes[current_layer++], dx+mask_gap);
-				break;*/
-			case EAGLE_PSH_ROUND:
-			case EAGLE_PSH_LONG: /* or should this just be round ? */
-				pcb_shape_oval(&shapes[current_layer++], dx, dy);
-				break;
-		}
-	}
-	shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
-	shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
-	switch (shape) { /* need shapes for {mask, paste, top}, +/- (inner), &/or {bottom, paste, mask} */
-		case EAGLE_PSH_SQUARE:
+			pcb_shape_rect(&shapes[current_layer++], dx, dy);
+			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+			shapes[current_layer].comb = 0;
+			pcb_shape_rect(&shapes[current_layer++], dx, dy);
+			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 			pcb_shape_rect(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
 			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 			pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
-			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-			shapes[current_layer].comb = 0;
-			pcb_shape_rect(&shapes[current_layer++], dx, dy);
 			break;
 		case EAGLE_PSH_OCTAGON:
-/*		      need_an_octagon_shape_gen(&shapes[current_layer++], dx+mask_gap);
+/*		need_an_octagon_shape_gen(&shapes[current_layer++], dx+mask_gap);
 			break;*/
 		case EAGLE_PSH_ROUND:
 		case EAGLE_PSH_LONG:
+			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			pcb_shape_oval(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+			pcb_shape_oval(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
+			shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+			shapes[current_layer].comb = 0;
+			pcb_shape_oval(&shapes[current_layer++], dx, dy);				
+			shapes[current_layer].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+			shapes[current_layer].comb = 0;
+			pcb_shape_oval(&shapes[current_layer++], dx, dy);
+			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+			shapes[current_layer].comb = 0;
+			pcb_shape_oval(&shapes[current_layer++], dx, dy);
+			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 			pcb_shape_oval(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
 			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 			shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 			pcb_shape_oval(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
-			shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-			shapes[current_layer].comb = 0;
-			pcb_shape_oval(&shapes[current_layer++], dx, dy);
 			break;
 		case EAGLE_PSH_SMD: /* will need to address roundness in due course */
-			if (onbottom) {
+			if (!onbottom) {
+				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+				pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 				pcb_shape_rect(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
+				shapes[current_layer].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+				shapes[current_layer].comb = 0;
+				pcb_shape_rect(&shapes[current_layer++], dx, dy);
+			} else {
 				shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 				pcb_shape_rect(&shapes[current_layer++], dx + mask_gap, dy + mask_gap);
+				shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+				shapes[current_layer].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+				pcb_shape_rect(&shapes[current_layer++], dx + paste_gap, dy + paste_gap);
 				shapes[current_layer].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 				shapes[current_layer].comb = 0;
 				pcb_shape_rect(&shapes[current_layer++], dx, dy);
