@@ -331,10 +331,13 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtp0_t *ge
 	}
 
 	if (newone) {
+		pcb_lib_menu_t *m = (pcb_lib_menu_t *)(term->ratconn);
 		menu = vtp0_alloc_append(generic, 1);
 		*menu = term->ratconn;
-		pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-						&theNet->Name[2], &((pcb_lib_menu_t *) (term->ratconn))->Name[2]);
+		if ((m == NULL) || (m->Name == NULL))
+			pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to an unknown net\n"), &theNet->Name[2]);
+		else
+			pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"), &theNet->Name[2], &(m)->Name[2]);
 		pcb_stub_rat_found_short((pcb_any_obj_t *)term, &theNet->Name[2]);
 	}
 	return menu;
