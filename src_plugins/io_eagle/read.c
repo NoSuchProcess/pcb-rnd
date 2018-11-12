@@ -849,7 +849,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			break;
 	}
 	shapes[current_layer].layer_mask = 0;
-	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, mask_gap, shapes);
+	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
 }
 
 static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int type)
