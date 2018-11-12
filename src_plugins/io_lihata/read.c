@@ -778,21 +778,25 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	lht_node_t *role, *nthickness, *nrot, *ndir;
 	int tmp, err = 0, dir;
 	unsigned char intconn = 0;
+	long int id;
 
 	if (obj->type != LHT_HASH)
 		return iolht_error(obj, "text.ID must be a hash\n");
 
 	role = lht_dom_hash_get(obj, "role");
 
-	if (ly != NULL) {
-		if (role != NULL)
-			return iolht_error(obj, "invalid role: text on layer shall not have a role\n");
-		text = pcb_text_alloc(ly);
-		if (text == NULL)
-			return iolht_error(obj, "failed to allocate text object\n");
-	}
+	if (ly == NULL)
+		return iolht_error(obj, "failed to allocate text object (layer == NULL)\n");
 
-	parse_id(&text->ID, obj, 5);
+	if (parse_id(&id, obj, 5) != 0)
+		return -1;
+
+	if (role != NULL)
+		return iolht_error(obj, "invalid role: text on layer shall not have a role\n");
+
+	text = pcb_text_alloc_id(ly, id);
+	if (text == NULL)
+		return iolht_error(obj, "failed to allocate text object\n");
 
 	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_TEXT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&text->Attributes, intconn);
