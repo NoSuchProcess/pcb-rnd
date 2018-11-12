@@ -206,7 +206,7 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x
 	if (mask > 0)
 		compat_shape_free(&mask_master);
 
-	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	return pcb_pstk_new(data, -1, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
 static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
@@ -479,7 +479,7 @@ static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square, pcb_bool nopaste, pcb_bool onotherside)
+pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square, pcb_bool nopaste, pcb_bool onotherside)
 {
 	pcb_layer_type_t side;
 	pcb_pstk_proto_t proto;
@@ -527,7 +527,7 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_
 	if (pid == PCB_PADSTACK_INVALID)
 		return NULL;
 
-	return pcb_pstk_new(data, pid, cx, cy, clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	return pcb_pstk_new(data, id, pid, cx, cy, clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
 

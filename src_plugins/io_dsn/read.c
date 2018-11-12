@@ -847,7 +847,7 @@ static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 
 		DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
 		pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1);
-		pcb_pstk_new(subc->data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		pcb_pstk_new(subc->data, -1, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 
 	return 0;
@@ -897,7 +897,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	}
 
 	pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1);
-	ps = pcb_pstk_new(subc->data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	ps = pcb_pstk_new(subc->data, -1, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	if (ps != NULL) {
 		if (rotang != 0.0) {
 			ps->rot = rotang;
@@ -1412,7 +1412,7 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 	DSN_LOAD_COORDS_FMT(crd, vnd->children->next, "xy", goto err_coord);
 
 	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1);
-	if (pcb_pstk_new(ctx->pcb->Data, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
+	if (pcb_pstk_new(ctx->pcb->Data, -1, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
 
 	return 0;
@@ -1474,7 +1474,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 		pcb_pstk_proto_free_fields(&tpp);
 	}
 
-	ps = pcb_pstk_new(ctx->pcb->Data, ctx->testpoint, crd[0], crd[1], 0, pcb_no_flags());
+	ps = pcb_pstk_new(ctx->pcb->Data, -1, ctx->testpoint, crd[0], crd[1], 0, pcb_no_flags());
 	if (ps == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to create testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
 		return 0;

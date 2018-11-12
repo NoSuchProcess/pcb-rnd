@@ -110,14 +110,17 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 	free(ps);
 }
 
-pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
 {
 	pcb_pstk_t *ps;
 
 	if (proto >= pcb_vtpadstack_proto_len(&data->ps_protos))
 		return NULL;
 
-	ps = pcb_pstk_alloc(data);
+	if (id <= 0)
+		id = pcb_create_ID_get();
+
+	ps = pcb_pstk_alloc_id(data, id);
 
 	/* copy values */
 	ps->proto = proto;
@@ -134,9 +137,9 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t 
 	return ps;
 }
 
-pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
+pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
 {
-	return pcb_pstk_new_tr(data, proto, x, y, clearance, Flags, 0, 0, 0);
+	return pcb_pstk_new_tr(data, id, proto, x, y, clearance, Flags, 0, 0, 0);
 }
 
 

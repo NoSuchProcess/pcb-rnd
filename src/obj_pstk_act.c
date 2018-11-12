@@ -90,7 +90,7 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pid != PCB_PADSTACK_INVALID) {
 		pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
-		pcb_pstk_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		pcb_pstk_new(PCB_PASTEBUFFER->Data, -1, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
 	}
@@ -200,7 +200,7 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return -1;
 	}
 
-	ps = pcb_pstk_new(PCB->Data, pid, x, y, conf_core.design.clearance, pcb_no_flags());
+	ps = pcb_pstk_new(PCB->Data, -1, pid, x, y, conf_core.design.clearance, pcb_no_flags());
 	if (ps == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to place padstack\n");
 		return -1;

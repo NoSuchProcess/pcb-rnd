@@ -50,7 +50,7 @@ pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pc
 	pcb_pstk_proto_update(&proto);
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 
-	return pcb_pstk_new(data, pid, x, y, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	return pcb_pstk_new(data, -1, pid, x, y, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
 pcb_layer_type_t lyts[] = {
@@ -98,7 +98,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 			proto.hplated = plated;
 		pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
 		if (pid != PCB_PADSTACK_INVALID) {
-			pcb_pstk_t *ps = pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
+			pcb_pstk_t *ps = pcb_pstk_new(data, -1, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
 			vtp0_append(objs, ps);
 			if (term != NULL)
 				pcb_attribute_put(&ps->Attributes, "term", term);
@@ -311,7 +311,7 @@ pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	if (pid == PCB_PADSTACK_INVALID)
 		return NULL;
 
-	return pcb_pstk_new(data, pid, x, y, glob_clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	return pcb_pstk_new(data, -1, pid, x, y, glob_clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
 void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)

@@ -214,7 +214,7 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
-	pstk = pcb_pstk_new(data, proto, x, y, cl, flags);
+	pstk = pcb_pstk_new(data, -1, proto, x, y, cl, flags);
 
 	if (pstk != NULL) {
 		res->type = FGW_LONG;

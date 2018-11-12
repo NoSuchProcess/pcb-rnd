@@ -1076,7 +1076,7 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t
 {
 	pcb_pstk_t *p;
 
-	p = pcb_pstk_new_compat_pad(subc->data, X1, Y1, X2, Y2, Thickness, Clearance, Mask, Flags.f & PCB_FLAG_SQUARE, Flags.f & PCB_FLAG_NOPASTE, (!!(Flags.f & PCB_FLAG_ONSOLDER)) != yysubc_bottom);
+	p = pcb_pstk_new_compat_pad(subc->data, -1, X1, Y1, X2, Y2, Thickness, Clearance, Mask, Flags.f & PCB_FLAG_SQUARE, Flags.f & PCB_FLAG_NOPASTE, (!!(Flags.f & PCB_FLAG_ONSOLDER)) != yysubc_bottom);
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
