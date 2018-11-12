@@ -578,7 +578,7 @@ static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
 	return 0;
 }
 
-static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_line(pcb_layer_t *ly, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_line_t *line;
 	unsigned char intconn = 0;
@@ -592,10 +592,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 	else
 		return iolht_error(obj, "failed to allocate line object\n");
 
-	if (no_id)
-		line->ID = 0;
-	else
-		parse_id(&line->ID, obj, 5);
+	parse_id(&line->ID, obj, 5);
 	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -615,10 +612,8 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, int no_id, pcb_coord_t d
 	line->Point1.Y += dy;
 	line->Point2.Y += dy;
 
-	if (!no_id) {
-		post_id_req(&line->Point1);
-		post_id_req(&line->Point2);
-	}
+	post_id_req(&line->Point1);
+	post_id_req(&line->Point2);
 
 	if (ly != NULL)
 		pcb_add_line_on_layer(ly, line);
@@ -991,7 +986,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(ly, n, 0, 0, 0);
+				parse_line(ly, n, 0, 0);
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(ly, n, 0, 0);
 			if (strncmp(n->name, "polygon.", 8) == 0)
@@ -1242,7 +1237,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(silk, n, 0, ox, oy);
+				parse_line(silk, n, ox, oy);
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(silk, n, ox, oy);
 			if (strncmp(n->name, "text.", 5) == 0) {
