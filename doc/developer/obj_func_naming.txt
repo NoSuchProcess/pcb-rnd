@@ -31,6 +31,10 @@ Low level (alloc/free):
 		processing may be needed after filling in the fields
 		(see also: pcb_add_*_on_layer()). Calls pcb_*_reg() automatically.
 
+	pcb_*_alloc_id():
+		same as pcb_*_alloc(), but instead of automatically pick the next id,
+		uses the user supplied ID
+
 	pcb_*_free():
 		free the struct memory (but not the fields!) of an object and remove
 		it from the parent list. Calls pcb_*_unreg() automatically.
