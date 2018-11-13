@@ -158,6 +158,7 @@ static void slist_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
+	int failed;
 	char *tmp, *fn = pcb_gui->fileselect("script to load", "Select a script file to load", NULL, NULL, "script", HID_FILESELECT_READ);
 	typedef struct {
 		PCB_DAD_DECL_NOINIT(dlg)
@@ -194,9 +195,9 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	PCB_DAD_END(idlang.dlg);
 
 
-	PCB_DAD_AUTORUN(idlang.dlg, "load script", "", NULL);
+	PCB_DAD_AUTORUN(idlang.dlg, "load script", "", NULL, failed);
 
-	if (script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0)
+	if ((!failed) && (script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0))
 		script_dlg_s2d(ctx);
 
 	PCB_DAD_FREE(idlang.dlg);
