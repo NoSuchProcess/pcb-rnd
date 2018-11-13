@@ -345,8 +345,10 @@ do { \
 		case PCB_HATT_PREVIEW: \
 			{ \
 				pcb_hid_preview_t *prv = (pcb_hid_preview_t *)table[field].enumerations; \
-				prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_ctx); \
-				prv->hid_free_cb(&table[field], prv->hid_ctx); \
+				if (prv->user_free_cb != NULL) \
+					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_ctx); \
+				if (prv->hid_free_cb != NULL) \
+					prv->hid_free_cb(&table[field], prv->hid_ctx); \
 			} \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
