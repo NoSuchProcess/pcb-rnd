@@ -70,11 +70,12 @@ do { \
 
 #define PCB_DAD_RUN(table) pcb_gui->attr_dlg_run(table ## _hid_ctx)
 
-#define PCB_DAD_AUTORUN(table, title, descr, caller_data) \
+/* failed is non-zero on cancel */
+#define PCB_DAD_AUTORUN(table, title, descr, caller_data, failed) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
-	pcb_attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
+	failed = pcb_attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
 } while(0)
 
 /* Return the index of the item currenty being edited */
