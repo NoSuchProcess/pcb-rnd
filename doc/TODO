@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: pstklib crashes on close (reproduce: empty layout, invokie pstklib()) [report: Wojciech, Ade]
-- BUG: Canceling the 2nd dialog box of BrowseScripts() is core dumping [report: Alain]
++ BUG: Canceling the 2nd dialog box of BrowseScripts() is core dumping [report: Alain]
 + BUG: plugin conf files are not listed in packaging docs [report: barjac]
 ? BUG: cpcb command ignores path [report: celem mail oct 2]
 + BUG: scripting: ruler.awk createtext() fails when text is a number - string should be passed as STRNUM probably [report: miloh]
