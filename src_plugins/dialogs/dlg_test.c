@@ -64,6 +64,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row3[] = {"three", "baz", "BAZ", NULL};
 	const char *hdr[] = {"num", "data1", "data2", NULL};
 	pcb_hid_row_t *row;
+	int failed;
 
 	test_t ctx;
 	memset(&ctx, 0, sizeof(ctx));
@@ -161,7 +162,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
-	PCB_DAD_AUTORUN(ctx.dlg, "dlg_test", "attribute dialog test", &ctx);
+	PCB_DAD_AUTORUN(ctx.dlg, "dlg_test", "attribute dialog test", &ctx, failed);
 
 	PCB_DAD_FREE(ctx.dlg);
 
