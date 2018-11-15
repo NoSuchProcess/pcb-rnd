@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: arc undo unreg bug: 1. draw arc; 2. undo; 3. draw new arc -> assert [report: Ade]
++ BUG: arc undo unreg bug: 1. draw arc; 2. undo; 3. draw new arc -> assert [report: Ade]
 + BUG: plugin conf files are not listed in packaging docs [report: barjac]
 ? BUG: cpcb command ignores path [report: celem mail oct 2]
 + BUG: scripting: ruler.awk createtext() fails when text is a number - string should be passed as STRNUM probably [report: miloh]
