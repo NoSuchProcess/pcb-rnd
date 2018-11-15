@@ -708,6 +708,14 @@ static void del_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	del_attr(ctx, &ps->Attributes);
 }
 
+static void del_board_cb(void *ctx, pcb_board_t *pcb)
+{
+	if (!propedit_board)
+		return;
+
+	del_attr(ctx, &pcb->Attributes);
+}
+
 int pcb_propsel_del(const char *key)
 {
 	del_ctx_t st;
@@ -723,6 +731,7 @@ int pcb_propsel_del(const char *key)
 		del_subc_cb,
 		del_pstk_cb
 	);
+	del_board_cb(&st, PCB);
 	return st.del_cnt;
 }
 
