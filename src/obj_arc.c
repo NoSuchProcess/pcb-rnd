@@ -674,9 +674,7 @@ void *pcb_arcop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 
-	PCB_CLEAR_PARENT(Arc);
 	pcb_arc_free(Arc);
-
 	return NULL;
 }
 
