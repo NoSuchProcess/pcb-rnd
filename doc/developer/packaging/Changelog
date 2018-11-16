@@ -1,0 +1,52 @@
+Packaging changes between 2.0.1 and 2.1.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+How to get a release candidate tarball in /tmp:
+
+  ver=2.1.0
+  cd /tmp
+  svn export svn://repo.hu/pcb-rnd/trunk pcb-$ver
+  tar -cf pcb-$ver.tar pcb-$ver
+
+A. changes that probably don't need action
+
+1. FYI, the html now contains a more installed complete file listing: not
+just the .so and .pup files but also the per plugin .conf files.
+Installed files got a path prefix $P/ or $C/ depending on where they end
+up (plugin dir or conf dir) after the installation.
+
+2. New plugin: ar_cpcb (in pcb-rnd-auto); this is our new interface for
+external autorouter c-pcb. c-pcb doesn't seem to have standard installation
+yet, so packaging it would be hard. If there's interest, in packaging
+c-pcb, I can try to push for a make install.
+
+3. Scripting and fungw: by now fungw scripting is at least as capable
+as gpmi scripting is. I will remove gpmi in December. However, for
+packaged pcb-rnd scripting is not yet available because fungw is not
+yet packaged. If you plan to make pcb-rnd scriptable in your distro,
+you will need to package libmawk and fungw first - please contact me.
+(Packaging those don't need to be in sync with pcb-rnd releases, can
+happen any time).
+
+4. New io plugin: io_dsn, in pcb-rnd-io-alien; it can load a full board
+from dsn, which is a de-facto industrial standard for autorouting.
+
+5. New mini-plugin: act_draw in pcb-rnd-core; it implements actions to
+low level drawing (exposes pcb-rnd's native drawing functions)
+
+6. New GUI plugin asm in pcb-rnd-auto; it's a feature that helps manually
+building a board by preseting the BoM in a grouped, sorted list, keeping
+track on what's put on the board already and highlighting what needs to be
+put on next. It has a high eye-candy factor, may look good in the screenshots.
+
+
+B. changes that probably DO need action
+
+7. We have removed our nelma support; please make sure you remove them
+from any documentation/metadata/material.
+
+8. New, preliminary plugin in pcb-rnd-import-geo: ttf import; this makes
+pcb-rnd-import-geo depend on libfreetype6
+
+9. Package pcb-rnd-auto started to depend on package pcb-rnd-io
+(because of external autorouters like ar_cpcb)
