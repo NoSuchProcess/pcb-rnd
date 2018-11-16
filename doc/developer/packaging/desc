@@ -38,7 +38,7 @@
 @pcb-rnd-export-sim
 	Export plugins to simulators
 
-	Export the board in formats that can be used for simulation: openems and nelma.
+	Export the board in formats that can be used for simulation: openems.
 
 @pcb-rnd-export
 	Common export plugins.
