@@ -94,7 +94,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Type");
 		PCB_DAD_LABEL(ctx->dlg, "");
 			ctx->board.wtype = PCB_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[ctx->board.wtype].name = (PCB->is_footprint ? "footprint" : "PCB board");
+			ctx->dlg[ctx->board.wtype].name = pcb_strdup((PCB->is_footprint ? "footprint" : "PCB board"));
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		PCB_DAD_LABEL(ctx->dlg, "Board attributes");
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
