@@ -26,7 +26,8 @@ packaged pcb-rnd scripting is not yet available because fungw is not
 yet packaged. If you plan to make pcb-rnd scriptable in your distro,
 you will need to package libmawk and fungw first - please contact me.
 (Packaging those don't need to be in sync with pcb-rnd releases, can
-happen any time).
+happen any time). For more details see:
+http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=script_pkg
 
 4. New io plugin: io_dsn, in pcb-rnd-io-alien; it can load a full board
 from dsn, which is a de-facto industrial standard for autorouting.
