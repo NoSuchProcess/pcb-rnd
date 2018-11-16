@@ -310,8 +310,14 @@ void pcb_gtk_coord_entry_set_value(pcb_gtk_coord_entry_t * ce, pcb_coord_t val)
 
 int pcb_gtk_coord_entry_set_unit(pcb_gtk_coord_entry_t *ce, const pcb_unit_t *unit)
 {
+	const char *text;
+	char *suffix;
+
 	if (ce->unit == unit)
 		return 0;
+
+	text = gtk_entry_get_text(GTK_ENTRY(ce));
+	ce->value = pcb_unit_to_coord(unit, strtod(text, &suffix));
 	ce->unit = unit;
 	coord_cfg(ce);
 	return 1;
