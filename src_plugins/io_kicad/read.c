@@ -2160,6 +2160,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				/*pcb_trace("fp_arc or fp_circle found\n"); */
 				featureTally = 0;
 
+				if (n->str != NULL && strcmp("fp_circle", n->str) == 0)
+					delta = 360;
+
 /* ********************************************************** */
 
 				if (subtree->str != NULL) {
