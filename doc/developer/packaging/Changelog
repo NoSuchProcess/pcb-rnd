@@ -10,7 +10,7 @@ How to get a release candidate tarball in /tmp:
 
 A. changes that probably don't need action
 
-1. FYI, the html now contains a more installed complete file listing: not
+1. FYI, the html now contains a more complete installed file listing: not
 just the .so and .pup files but also the per plugin .conf files.
 Installed files got a path prefix $P/ or $C/ depending on where they end
 up (plugin dir or conf dir) after the installation.
