@@ -4,7 +4,6 @@
 + BUG: arc undo unreg bug: 1. draw arc; 2. undo; 3. draw new arc -> assert [report: Ade]
 + BUG: plugin conf files are not listed in packaging docs [report: barjac]
 ? BUG: cpcb command ignores path [report: celem mail oct 2]
-+ BUG: scripting: ruler.awk createtext() fails when text is a number - string should be passed as STRNUM probably [report: miloh]
 ? BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 + BUG: gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 + BUG: gl hid, press {t t} (or any other invalid key seq) while the mouse cursor is not in the drawing area but over the top window: crosshair is drawn (it shouldn't appear until the mosue cursor enters the drawing area) [report: pstuge, miloh]
