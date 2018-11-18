@@ -11,6 +11,7 @@
 ? BUG: loadscript(graphics,/path/to/graphicstypo.awk,mawk);loadscript(graphics,/path/to/graphics.awk,mawk) fails with '(null): cannot convert to realpath', then issues 'ID already in use' [report:Miloh]
 
 2. For later releases ===============================================================================
+- FEATURE: (prio) invert selection [report: Keantoken]
 - CLEANUP: remove GPMI (from the menu too!)
 - CLEANUP: remove old, compatibility mode of CreateMenu(); check if there's any user [report: Igor2]
 - CLEANUP: remove pcb_uint8_t - use unsigned char or some purpose-specific type instead [report: Igor2]
