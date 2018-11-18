@@ -423,6 +423,7 @@ int pplg_check_ver_ddraft(int ver_needed) { return 0; }
 
 void pplg_uninit_ddraft(void)
 {
+	conf_hid_unreg(ddraft_cookie);
 	pcb_event_unbind_allcookie(ddraft_cookie);
 	pcb_remove_actions_by_cookie(ddraft_cookie);
 	pcb_tool_unreg_by_cookie(ddraft_cookie);
