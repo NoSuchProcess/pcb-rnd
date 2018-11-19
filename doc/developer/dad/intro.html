@@ -1,0 +1,56 @@
+<html>
+<body>
+
+<h1> DAD: Dynamic Attribute Dialogs </h1>
+
+<h2> History </h2>
+<p>
+Attribute Dialogs are coming from geda/PCB. They were invented for export
+HIDs to store a static, flat list of options that are then presented both
+as command line options and as the GUI dialog box for export parameters.
+
+<h2> Intro </h2>
+<p>
+DAD is the dyamically allocated version, extended with new widget types for
+providing tools for building more complex dialog boxes. It is not connected
+with command line options in any way at the moment.
+<p>
+The list of widgets is still a flat, growing C array, often called the
+<i>table</i>. But inside the table, widgets build a a logical tree
+structure. Widgets with name that includes "BEGIN" will open a new
+logical layout level that has to be closed with an PCB_DAD_END().
+
+<h2> Calling conventions </h2>
+<p>
+A table is always built incrementally and sequentially. In this sense
+the dialog box is static: once build and created, the number and
+type of widgets can not be modified. The dynamic aspect is that the code
+may create (and destroy) arbitrary DAD boxes, even with loops and
+runtime conditions on what widgets end up in the box.
+<p>
+There are two kind of widget calls: widget creation and property set.
+Property set calls always change the last created widget. This, by
+convention, is often indicated by code indentation as well. For exaple:
+<pre>
+	PCB_DAD_INTEGER(dlg, "foo");
+		PCB_DAD_MINVAL(dlg, 1);
+		PCB_DAD_MAXVAL(dlg, 10);
+		PCB_DAD_DEFAULT(dlg, 3);
+		widget_id_foo = PCB_DAD_CURRENT(dlg);
+	PCB_DAD_BUTTON(dlg, "update!");
+		PCB_DAD_CHANGE_CB(dlg, pcb_act_attr_chg);
+</pre>
+<p>
+PCB_DAD_INTEGER() and PCB_DAD_BUTTON() are (macro) calls to create
+new widgets (an integer entry and a button), the rest of the calls
+change the last created widget's properties.
+<p>
+The main widget of the box, the root widget of the widget tree is
+any widget. It is practical to make it a container widget (e.g. a HBOX, VBOX,
+TABLE, PANE, or TABBED) so that it can host children widgets.
+<p>
+After each creaton, the caller can query and store the integer widget
+identifier using the PCB_DAD_CURRENT() macro. The widget identifier can
+be used, together with the table, to query or change widget properties
+and current value any time the dialog box is active.
+

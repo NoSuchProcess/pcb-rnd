@@ -1,0 +1,67 @@
+<html>
+<body>
+
+<h1> DAD: Dynamic Attribute Dialogs </h1>
+
+<h2> Input widgets </h2>
+<p>
+Input widgets are leaf widgets in the widget tree that typically
+implement a field where user input takes place. Available 
+input widgets are:
+<table border=1 cellspacing=0>
+<tr><th>creation call    <th> screenshot (gtk2)         <th> description
+<tr><td>PCB_DAD_LABEL    <td> <img src="wlabel.png">    <td> single line or multi line of plain text, from a string
+<tr><td>PCB_DAD_LABELF   <td> <img src="wlabel.png">    <td> single line or multi line of plain text, using printf formatting
+<tr><td>PCB_DAD_ENUM     <td> <img src="wenum.png">     <td> select one value from a fixed set (typical implementation is a combo box)
+<tr><td>PCB_DAD_BOOL     <td> <img src="wbool.png">     <td> checkbox
+<tr><td>PCB_DAD_INTEGER  <td> <img src="winteger.png">  <td> set an integer value
+<tr><td>PCB_DAD_REAL     <td> <img src="wreal.png">     <td> set a real (floating point) value
+<tr><td>PCB_DAD_COORD    <td> <img src="wcoord.png">    <td> set a coordinate value
+<tr><td>PCB_DAD_STRING   <td> <img src="wstring.png">   <td> input single line string value (plain text)
+<tr><td>PCB_DAD_BUTTON   <td> <img src="wbutton.png">   <td> clicable push button
+<tr><td>PCB_DAD_PROGRESS <td> <img src="wprogress.png"> <td> progress bad
+<tr><td>PCB_DAD_TREE     <td> <img src="wtree.png">     <td> a list, table or tree of text data
+<tr><td>PCB_DAD_PREVIEW  <td> <img src="wpreview.png">  <td> drawing area
+</table>
+
+
+
+<h3>PCB_DAD_LABEL(table, text)</h3>
+<h3>PCB_DAD_LABELF(table, printf_args)</h3>
+<h3>PCB_DAD_ENUM(table, choices)</h3>
+<h3>PCB_DAD_BOOL(table, label)</h3>
+<h3>PCB_DAD_INTEGER(table, label)</h3>
+<h3>PCB_DAD_REAL(table, label)</h3>
+<h3>PCB_DAD_COORD(table, label)</h3>
+<h3>PCB_DAD_STRING(table)</h3>
+<h3>PCB_DAD_BUTTON(table, text)</h3>
+<h3>PCB_DAD_PROGRESS(table)</h3>
+<h3>PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header)</h3>
+<h3>PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, user_ctx_)</h3>
+
+
+
+<h2> Layout widgets </h2>
+
+<table border=1 cellspacing=0>
+<tr><th>creation call         <th> screenshot (gtk2)         <th> description
+<tr><td>PCB_DAD_BEGIN_HBOX    <td> <img src="whbox.png">     <td> arrange children widgets in a horizontal list
+<tr><td>PCB_DAD_BEGIN_VBOX    <td> <img src="wvbox.png">     <td> arrange children widgets in a vertical list
+<tr><td>PCB_DAD_BEGIN_HPANE   <td> <img src="whpane.png">    <td> split the parent box horizontally into two sections; the split ratio is adjustable
+<tr><td>PCB_DAD_BEGIN_VPANE   <td> <img src="wvpane.png">    <td> split the parent box vertically into two sections; the split ratio is adjustable
+<tr><td>PCB_DAD_BEGIN_TABLE   <td> <img src="wtable.png">    <td> arrange children widgets into a n*m matrix, allocate each cell the same size
+<tr><td>PCB_DAD_BEGIN_TABBED  <td> <img src="wtabbed.png">   <td> create a "tabbed notebook" view, each children is a new tab
+</table>
+
+
+<h3>PCB_DAD_BEGIN_HBOX(table)</h3>
+<h3>PCB_DAD_BEGIN_VBOX(table)</h3>
+<h3>PCB_DAD_BEGIN_HPANE(table)</h3>
+<h3>PCB_DAD_BEGIN_VPANE(table)</h3>
+<h3>PCB_DAD_BEGIN_TABLE(table, cols)</h3>
+<h3>PCB_DAD_BEGIN_TABBED(table, tabs)</h3>
+
+
+<h2> Property sets </h2>
+
+#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, val | (table[table ## _len-1].pcb_hatt_flags & PCB_HATF_TREE_COL))
