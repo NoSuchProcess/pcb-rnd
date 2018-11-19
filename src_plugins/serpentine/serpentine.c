@@ -52,7 +52,20 @@
 #include "layer.h"
 #include "route.h"
 
+typedef struct {
+	pcb_point_t start;
+	pcb_point_t end;
+	double amplitude;
+	double minimum_amplitude;
+	double nx,ny; /* Normal of host line */
+	double lx,ly; /* Vector along the line */
+	pcb_coord_t length; /* Length of serpentine section */
+	pcb_coord_t section_length; /* Length of the line section that hosts the serpentine */
+	pcb_coord_t total_length; /* Total length of the line including the serpentine */
+} serpentine_info_t;
+
 conf_serpentine_t conf_serpentine;
+static const char *serpentine_cookie = "serpentine plugin";
 
 static double
 point_on_line(	pcb_coord_t X,	pcb_coord_t Y,
@@ -75,16 +88,35 @@ point_on_line(	pcb_coord_t X,	pcb_coord_t Y,
 	return t;
 }
 
+static void
+draw_serpentine_ui(serpentine_info_t * p_info)
+{
+	const double amplitude = (p_info->amplitude < p_info->minimum_amplitude ? p_info->minimum_amplitude : p_info->amplitude);
+	const pcb_coord_t nx = (pcb_coord_t)(p_info->nx * p_info->amplitude);
+	const pcb_coord_t ny = (pcb_coord_t)(p_info->ny * p_info->amplitude);
+	const pcb_coord_t x1 = p_info->start.X + nx;
+	const pcb_coord_t y1 = p_info->start.Y + ny;
+	const pcb_coord_t x2 = p_info->end.X + nx;
+	const pcb_coord_t y2 = p_info->end.Y + ny;
+	
+	pcb_gui->set_color(pcb_crosshair.GC, "#808080" /*conf_core.appearance.color.crosshair*/ );
+	pcb_gui->draw_line(pcb_crosshair.GC, p_info->start.X, p_info->start.Y, p_info->end.X, p_info->end.Y );
+	pcb_gui->draw_line(pcb_crosshair.GC, p_info->start.X, p_info->start.Y, x1, y1 );
+	pcb_gui->draw_line(pcb_crosshair.GC, p_info->end.X, p_info->end.Y, x2, y2 );
+	pcb_gui->draw_line(pcb_crosshair.GC, x1, y1, x2, y2 );
+}
+
 int 
 serpentine_calculate_route(	pcb_route_t * route,
 														const pcb_line_t * line,
 														const pcb_point_t * point1,
 														const pcb_point_t * point2,
-														const pcb_coord_t pitch )
+														const pcb_coord_t pitch,
+														serpentine_info_t * p_info )
 {
 	pcb_coord_t sx,sy,ex,ey;
 	double angle_n,angle_l;
-	pcb_coord_t amplitude = 15.0 * line->Thickness;
+	pcb_coord_t amplitude = 0;
 	const double radius = pitch/2;
 	const double min_amplitude = (2.0*radius);
 	int count = 0;
@@ -112,9 +144,6 @@ serpentine_calculate_route(	pcb_route_t * route,
 	lny = ly/ld;
 	nd = sqrt(nx*nx + ny*ny);
 	count = ld/(pitch*2);
-	
-	if((count == 0) || (nd < 0.1))
-		return -1;
 
 	nnx = (double)nx/nd;
 	nny = (double)ny/nd;
@@ -151,8 +180,8 @@ serpentine_calculate_route(	pcb_route_t * route,
 		int i;
 		const double lpx = pitch * lnx; /* Pitch Vector X */
 		const double lpy = pitch * lny; /* Pitch Vector Y */
-		const double nax = (amplitude - (radius * 2.0)) * nnx; /* Line Segment Vector X */
-		const double nay = (amplitude - (radius * 2.0)) * nny; /* Line Segment Vector Y */
+		double nax = 0.0;
+		double nay = 0.0;
 		double last_amplitude = 0.0;
 		pcb_point_t startpos;
 		pcb_point_t endpos;
@@ -165,12 +194,15 @@ serpentine_calculate_route(	pcb_route_t * route,
 		route->flags = line->Flags;
 
 		for(i=0;i<count;++i) {
-			const double amp = amplitude;
+			const double amp = (amplitude < (line->Thickness/2) ? 0.0 : amplitude - (line->Thickness/2));
 			const pcb_coord_t of = (pitch * 2 * i)+pitch;
 			const pcb_coord_t px = start.X + (lnx * of);
 			const pcb_coord_t py = start.Y + (lny * of);
 			
 			/* TODO: Enforce DRC */
+
+			nax = (amp - (radius * 2.0)) * nnx; /* Line Segment Vector X */
+			nay = (amp - (radius * 2.0)) * nny; /* Line Segment Vector Y */
 			
 			if(last_amplitude == 0.0) {
 				if(amp == 0.0)
@@ -192,7 +224,7 @@ serpentine_calculate_route(	pcb_route_t * route,
 				endpos.X = startpos.X - nax;
 				endpos.Y = startpos.Y - nay;
 				pcb_route_add_line(route,&startpos,&endpos,route->start_layer);
-				
+
 				startpos.X = (px-lpx) + (nnx * radius);
 				startpos.Y = (py-lpy)	+ (nny * radius);
 
@@ -211,8 +243,8 @@ serpentine_calculate_route(	pcb_route_t * route,
 			endpos.Y = startpos.Y + nay;
 			pcb_route_add_line(route,&startpos,&endpos,route->start_layer);
 
-			startpos.X = px + (nnx * (amplitude-radius));
-			startpos.Y = py + (nny * (amplitude-radius));
+			startpos.X = px + (nnx * (amp-radius));
+			startpos.Y = py + (nny * (amp-radius));
 			pcb_route_add_arc(route,&startpos,angle_n + (side*270),(-180)*side,radius,route->start_layer);
 			
 			last_amplitude = amp;
@@ -236,9 +268,21 @@ serpentine_calculate_route(	pcb_route_t * route,
 		pcb_route_add_line(route,&route->end_point,&line->Point2,route->start_layer);
 	}
 
+	if(p_info != NULL) {
+		p_info->start.X = sx;
+		p_info->start.Y = sy;
+		p_info->end.X = ex;
+		p_info->end.Y = ey;
+		p_info->amplitude = amplitude;
+		p_info->minimum_amplitude = min_amplitude;
+		p_info->nx = nnx;
+		p_info->ny = nny;
+		p_info->lx = lx;
+		p_info->ly = ly;
+	}
+
 	return 0;
 }
-
 
 /*** Serpentine Tool ***/
 
@@ -250,18 +294,17 @@ static void tool_serpentine_init(void)
 
 static void tool_serpentine_uninit(void)
 {
-  pcb_notify_crosshair_change(pcb_false);
-  pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
-  pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-  pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
 }
-
 
 static void tool_serpentine_notify_mode(void)
 {
 	int type;
 	pcb_any_obj_t *term_obj;
-	
+
 	switch (pcb_crosshair.AttachedObject.State) {
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedObject.Type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_LINE, 
@@ -299,7 +342,7 @@ static void tool_serpentine_notify_mode(void)
 				pitch_mult = 1.0;
 				
 			pcb_route_init(&route);
-			if(serpentine_calculate_route(&route,p_line, &point1, &point2, pitch_mult * p_line->Thickness ) == 0) {
+			if(serpentine_calculate_route(&route,p_line, &point1, &point2, pitch_mult * p_line->Thickness, NULL ) == 0) {
 				pcb_route_apply_to_line(&route, (pcb_layer_t *)pcb_crosshair.AttachedObject.Ptr1, p_line);
 			}
 			pcb_route_destroy(&route);
@@ -318,8 +361,8 @@ static void tool_serpentine_notify_mode(void)
 
 static void tool_serpentine_adjust_attached_objects(void)
 {
-		pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
-		pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
+	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
+	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
 static void tool_serpentine_draw_attached(void)
@@ -329,6 +372,7 @@ static void tool_serpentine_draw_attached(void)
 			{
 				double pitch_mult = conf_serpentine.plugins.serpentine.pitch;
 				pcb_route_t route;
+				serpentine_info_t info;
 				pcb_line_t * p_line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
 				pcb_point_t point1;
 				pcb_point_t point2;
@@ -341,11 +385,13 @@ static void tool_serpentine_draw_attached(void)
 					pitch_mult = 1.0;
 					
 				pcb_route_init(&route);
-				if(serpentine_calculate_route(&route,p_line, &point1, &point2, pitch_mult * p_line->Thickness ) == 0) {
+				if(serpentine_calculate_route(&route,p_line, &point1, &point2, pitch_mult * p_line->Thickness, &info ) == 0) {
 					pcb_route_draw(&route, pcb_crosshair.GC);
 					if (conf_core.editor.show_drc)
 						pcb_route_draw_drc(&route,pcb_crosshair.GC);
 					pcb_route_destroy(&route);
+					
+					draw_serpentine_ui(&info);
 				}
 			}
 			break;
@@ -395,7 +441,6 @@ pcb_action_t serpentine_action_list[] = {
   {"Serpentine", pcb_act_serpentine, pcb_acth_serpentine, pcb_acts_serpentine}
 };
 
-static const char *serpentine_cookie = "serpentine plugin";
 
 PCB_REGISTER_ACTIONS(serpentine_action_list, serpentine_cookie)
 
