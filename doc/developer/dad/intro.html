@@ -16,9 +16,9 @@ providing tools for building more complex dialog boxes. It is not connected
 with command line options in any way at the moment.
 <p>
 The list of widgets is still a flat, growing C array, often called the
-<i>table</i>. But inside the table, widgets build a a logical tree
+<i>table</i>. But inside the table, widgets build as a logical tree
 structure. Widgets with name that includes "BEGIN" will open a new
-logical layout level that has to be closed with an PCB_DAD_END().
+logical layout level that has to be closed with a PCB_DAD_END().
 
 <h2> Calling conventions </h2>
 <p>
@@ -30,7 +30,7 @@ runtime conditions on what widgets end up in the box.
 <p>
 There are two kind of widget calls: widget creation and property set.
 Property set calls always change the last created widget. This, by
-convention, is often indicated by code indentation as well. For exaple:
+convention, is often indicated by code indentation as well. For example:
 <pre>
 	PCB_DAD_INTEGER(dlg, "foo");
 		PCB_DAD_MINVAL(dlg, 1);
@@ -49,7 +49,7 @@ The main widget of the box, the root widget of the widget tree is
 any widget. It is practical to make it a container widget (e.g. a HBOX, VBOX,
 TABLE, PANE, or TABBED) so that it can host children widgets.
 <p>
-After each creaton, the caller can query and store the integer widget
+After each creation, the caller can query and store the integer widget
 identifier using the PCB_DAD_CURRENT() macro. The widget identifier can
 be used, together with the table, to query or change widget properties
 and current value any time the dialog box is active.
