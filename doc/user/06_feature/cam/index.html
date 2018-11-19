@@ -140,6 +140,15 @@ cam(call, doc_png)
 When exporting to ps, consider using the --no-show-toc. It is
 possible to combine multiple layers (e.g. top silk and top copper, which
 may be useful for a single-layer board) using the --single-page option.
-
+<p>
+The plugin field has the same values command line -x has.
+The list of currently available exporter names can be acquired by running
+<pre>
+pcb-rnd -x
+</pre>
+Note: this list contains all exporter plugins currently available
+(depends on your configure time options and plugin availability). Some export
+plugins can not do per layer exporting and those will not support CAM exporting
+either.
 </body>
 </html>
