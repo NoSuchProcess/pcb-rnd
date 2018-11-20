@@ -44,7 +44,7 @@ PCB_DAD_LABELF(dlg, ("Cats: %d", num_cats))
 <p>
 The user can choose one value out of an ordered list of strings. The list
 is passed as a NULL terminalte char * array. The <i>value</i>
-of the enum is an integer index into that array.
+of the enum is an integer index into that array, 0 being the first string.
 <p>
 Typical GUI implementation is a combo box, without text editing.
 
@@ -64,7 +64,7 @@ to increase or decrease the value ("spinbox").
 
 <h3>PCB_DAD_REAL(table, label)</h3>
 <p>
-Ask for a double precision floating point value, between a <i>minval</i>
+Ask for a REAL (double precision floating point value), between a <i>minval</i>
 and a <i>maxval</i>.
 <p>
 Typical GUI implementation is a text entry, often upgraded with small buttons
@@ -87,11 +87,52 @@ Ask for a single line of plain text input.
 The <i>value</i> is a dynamically allocated string.
 
 <h3>PCB_DAD_BUTTON(table, text)</h3>
+<p>
+A push button the user can click on. <i>text</i> is not allocated or copied
+(shall be a static const string or allocated/free'd by the user).
+<p>
+There is no <i>value</i>, the only interface is the <i>change callback</i>.
+
+
 <h3>PCB_DAD_PROGRESS(table)</h3>
+<p>
+Present a progress bar which is not an user input. <i>value</i> is a
+REAL value between 0.0 and 1.0. When the code changes the value, the
+GUI makes sure the dialog box is drawn and flushed, because typical use
+is in a busy loop calculation.
+
 <h3>PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header)</h3>
-<h3>PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, user_ctx_)</h3>
+<p>
+Present a tree-table with <i>cols</i> columns of text objects. When 
+<i>first_col_is_tree</i> is 1, the first column works as a tree, with
+indentation and/or tree graphics and logics for collapsing/expanding subtrees.
+If <i>opt_header</i> is not NULL, it is a NULL terminated static const
+array of header strings describing the table header to be displayed, in as
+many strings as <i>cols</i> specified.
+<p>
+A special cases:
+<p>
+<table border=1 cellspacing=0>
+<tr><th> case               <th> parameters
+<tr><td> plain flat list    <td> <i>cols</i>=1, <i>first_col_is_tree</i>=0
+<tr><td> tree-only          <td> <i>cols</i>=1, <i>first_col_is_tree</i>=1
+<tr><td> table-only         <td> <i>cols</i>&gt;1, <i>first_col_is_tree</i>=0
+</table>
+<p>
+Manipulating the data and the view are both done using
+<a href="tree.html"> special tree-table macros</a>.
 
-
+<h3>PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, user_ctx)</h3>
+<p>
+Present a drawing area with callbacks to the host code to handle drawing:
+<table border=1 cellspacing=0>
+<tr><th> argument           <th> meaning
+<tr><td> expose_cb          <td> called when (parts of) the preview needs to be redrawn
+<tr><td> mouse_cb           <td> called on mouse events
+<tr><td> free_cb            <td> called before the widget is destroyed
+<tr><td> initial_view_box   <td> set the initial zoom/pan to match the view box specified in drawing units
+<tr><td> user_ctx           <td> opaque pointer that is passed to every callback
+</table>
 
 <h2> Layout widgets </h2>
 
@@ -106,12 +147,42 @@ The <i>value</i> is a dynamically allocated string.
 </table>
 
 
-<h3>PCB_DAD_BEGIN_HBOX(table)</h3>
-<h3>PCB_DAD_BEGIN_VBOX(table)</h3>
+<h3>PCB_DAD_BEGIN_HBOX(table) and PCB_DAD_BEGIN_VBOX(table)</h3>
+<p>
+Arrange children widgets in a horizontal or vertical row.
+
 <h3>PCB_DAD_BEGIN_HPANE(table)</h3>
+<p>
+Expect exactly two child widgets. Arrange them horizontally, with
+a widget in between them that allows the user to change the space allocation
+between the sides.
+
 <h3>PCB_DAD_BEGIN_VPANE(table)</h3>
+<p>
+Expect exactly two child widgets. Arrange them vertically, with
+a widget in between them that allows the user to change the space allocation
+between the sides.
+
 <h3>PCB_DAD_BEGIN_TABLE(table, cols)</h3>
+<p>
+Place children widgets in a table with <i>cols</i> columns. Widgets are
+placed by filling up rows first. If there are not enough widget to finish
+the last row, rightmost columns are left empty.
+<p>
+The table is homogenous, which means the cell size is the same for all cells
+and is either determined by the size of the smallest cell content or if
+the table fills in a larger widget space than its minimal size, then cell
+space is evenly distributed.
+
 <h3>PCB_DAD_BEGIN_TABBED(table, tabs)</h3>
+<p>
+Creates a "tabbed notebook": each child widget ends up on a new
+page, there is only one page shown at a time and there is a GUI way
+to switch page (the tab). The list of tab names is passed as <i>tabs</i>,
+as a NULL terminalte char * array. The number of tab names must match
+the number of children widgets. The <i>value</i>
+of is an integer index into that array, 0 being the first tab.
+
 
 
 <h2> Property sets </h2>
