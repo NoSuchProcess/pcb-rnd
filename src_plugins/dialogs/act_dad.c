@@ -426,6 +426,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "set") == 0) {
 		int wid, i;
+		double d;
 		pcb_coord_t c;
 
 		PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
@@ -439,6 +440,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_COORD:
 				PCB_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, coord_value, c);
+				break;
+			case PCB_HATT_REAL:
+			case PCB_HATT_PROGRESS:
+				PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, d = argv[4].val.nat_double);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, real_value, d);
 				break;
 			case PCB_HATT_INTEGER:
 				PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
