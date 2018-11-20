@@ -27,13 +27,65 @@ input widgets are:
 
 
 <h3>PCB_DAD_LABEL(table, text)</h3>
-<h3>PCB_DAD_LABELF(table, printf_args)</h3>
+<p>
+Draw a label, which is not an input field (unmodifiable by the user).
+<i>text</i> is copied by the call into a new allocation. The only
+control <i>text</i> accepts is '\n', which is line break.
+
+<h3>PCB_DAD_LABELF(table, (printf_args))</h3>
+<p>
+Same as PCB_DAD_LABEL() but the text is rendered using printf. Note:
+printf args, including the format string, shall be in parenthesis, e.g.
+<pre>
+PCB_DAD_LABELF(dlg, ("Cats: %d", num_cats))
+</pre>
+
 <h3>PCB_DAD_ENUM(table, choices)</h3>
+<p>
+The user can choose one value out of an ordered list of strings. The list
+is passed as a NULL terminalte char * array. The <i>value</i>
+of the enum is an integer index into that array.
+<p>
+Typical GUI implementation is a combo box, without text editing.
+
 <h3>PCB_DAD_BOOL(table, label)</h3>
+<p>
+Ask the user about a boolean value, typically using a checkbox. The <i>value</i>
+of the bool is an integer which is either 0 or 1.
+
 <h3>PCB_DAD_INTEGER(table, label)</h3>
+<p>
+Ask for an integer value, between a <i>minval</i> and a <i>maxval</i>.
+The <i>value</i> is an int, which is not guaranteed to be wider than a
+16 bit signed value.
+<p>
+Typical GUI implementation is a text entry, often upgraded with small buttons
+to increase or decrease the value ("spinbox").
+
 <h3>PCB_DAD_REAL(table, label)</h3>
+<p>
+Ask for a double precision floating point value, between a <i>minval</i>
+and a <i>maxval</i>.
+<p>
+Typical GUI implementation is a text entry, often upgraded with small buttons
+to increase or decrease the value ("spinbox").
+
+
 <h3>PCB_DAD_COORD(table, label)</h3>
+<p>
+Ask for a coordinate value, between a <i>minval</i> and a <i>maxval</i>.
+The <i>value</i> is pcb_coord_t.
+<p>
+Typical GUI implementation is a text entry that understands unit suffix,
+often upgraded with small buttons to increase or decrease the value ("spinbox").
+
+
 <h3>PCB_DAD_STRING(table)</h3>
+<p>
+Ask for a single line of plain text input.
+<p>
+The <i>value</i> is a dynamically allocated string.
+
 <h3>PCB_DAD_BUTTON(table, text)</h3>
 <h3>PCB_DAD_PROGRESS(table)</h3>
 <h3>PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header)</h3>
