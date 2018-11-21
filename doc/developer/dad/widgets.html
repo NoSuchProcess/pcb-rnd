@@ -146,6 +146,20 @@ Present a drawing area with callbacks to the host code to handle drawing:
 <tr><td>PCB_DAD_BEGIN_TABBED  <td> <img src="wtabbed.png">   <td> create a "tabbed notebook" view, each children is a new tab
 </table>
 
+<h3>Box common flags</h3>
+<p>
+hbox, vbox and table share a few common compflags, that are defined in
+hid_attrib.h, pcb_hatt_compflags_t. The explanation of what each flag does
+can be found there. The most commonly used ones are PCB_HATF_FRAME,
+PCB_HATF_SCROLL, PCB_HATF_EXPFILL.
+<p>
+If PCB_HATF_EXPFILL is set, the given box tries to expannd and fill, using
+up all available space in its parent widget. If multiple sibling boxes
+have this flag set the behaviour is unspecified; some HIDs may prefer
+to grow only one box, others may evenly distribute the avaialble space
+among boxes. If this flag is not set, the box uses only as much space
+as its children widgets require.
+
 
 <h3>PCB_DAD_BEGIN_HBOX(table) and PCB_DAD_BEGIN_VBOX(table)</h3>
 <p>
@@ -182,7 +196,15 @@ to switch page (the tab). The list of tab names is passed as <i>tabs</i>,
 as a NULL terminalte char * array. The number of tab names must match
 the number of children widgets. The <i>value</i>
 of is an integer index into that array, 0 being the first tab.
-
+<p>
+If compflag includes PCB_HATF_HIDE_TABLAB, the tab graphics are hidden - 
+no tab labels printed and the user can not click to switch tab. This is
+useful for dialog boxes where the code needs to present different tabs
+using the same screen estate.
+<p>
+If compflag PCB_HATF_LEFT_TAB is set, tab labels are presented in a vertical
+row on the left side of the widget. This is useful if there are a lot of
+tabs with short names.
 
 <h3>PCB_DAD_DUP_ATTR(table, attr)</h3>
 <p>
@@ -192,5 +214,18 @@ BEGIN*, it will need a corresponding PCB_DAD_END.
 
 
 <h2> Property sets </h2>
-
-#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, val | (table[table ## _len-1].pcb_hatt_flags & PCB_HATF_TREE_COL))
+<p>
+The raw macro call is PCB_DAD_SET_VALUE, which can change (overwrite) a named
+field of the current (last created) widget. The following table lists high
+level macros that usually call PCB_DAD_SET_VALUE on a specific field.
+<p>
+<table border=1 cellspacing=0>
+<tr><th> name                                <th> description
+<tr><td>PCB_DAD_COMPFLAG(table, val)         <td> set all compflags
+<tr><td>PCB_DAD_MINVAL(table, val)           <td> change the minimal value for numeric input
+<tr><td>PCB_DAD_MAXVAL(table, val)           <td> change the maximal value for numeric input
+<tr><td>PCB_DAD_DEFAULT(table, val)          <td> set the default (initial) value
+<tr><td>PCB_DAD_MINMAX(table, min, max)      <td> hange both the minimal and the maximal value for numeric input
+<tr><td>PCB_DAD_CHANGE_CB(table, cb)         <td> <i>cb</i> is a function that shall be called upon any change to the widget value
+<tr><td>PCB_DAD_HELP(table, val)             <td> set the help text (typically presented as a tooltip)
+</table>
