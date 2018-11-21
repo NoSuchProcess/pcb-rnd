@@ -2,7 +2,6 @@ HID API simplification: DAD
 
 - blockers:
 	- implementing a list/tree/table "widget" for lesstif
-	- implementing and testing the PCB_HATT_TREE in gtk
 	- implementing and testing the PCB_HATT_TREE in lesstif
 	- implement and test a new text/log entry HATT (API not yet specified) in lesstif
 	- implement and test a new text/log entry HATT (API not yet specified) in gtk
