@@ -1,1 +1,32 @@
-TODO
+<html>
+<body>
+
+<h1> DAD: Dynamic Attribute Dialogs </h1>
+<p>
+The table tree widget is a table containint cells arranged in a
+fixed number of columns. Each cell is a dynamically allocated
+char * string.
+
+<h2> Helper macros for widget creation </h2>
+<p>
+These macros, defined in hid_dad.h, are used to fill up the last
+created (tree) widget with initial data. They return a row pointer. If the
+row pointer is NULL, root is used - in this case insert means inserting at
+the beginning of the row list, append means append at the end of the row list.
+<ul>
+	<li>PCB_DAD_TREE_APPEND - append a sibling row after an existing row
+	<li>PCB_DAD_TREE_APPEND_UNDER - append a child node (at the end of the child list) under an existing row.
+	<li>PCB_DAD_TREE_INSERT - insert a new sibling row before an existing row
+	<li>PCB_DAD_TREE_SET_CB - install an user callback function on a tree event
+</ul>
+
+<h2> Inline functions for manipulating the tree runtime </h2>
+<p>
+When the tree widget is already created, typically when the dialog box
+is already running, the code can use hid_dad_tree.h for reading or
+changing cells or rows of the tree. Any change is immediately reflected
+on the GUI. Please refer to the comments in hid_dad_tree.h for details
+on the functions and arguments.
+
+</body>
+</html>
