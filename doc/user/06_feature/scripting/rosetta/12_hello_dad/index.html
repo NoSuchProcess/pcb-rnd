@@ -12,7 +12,13 @@ Create a new action hello() that prints "Hello world!" in a modal dialog box usi
 <H2> Example implementations </H2>
 <a href="ex.awk">awk</a>
  | 
+<a href="ex.lua">lua</a>
+ | 
 <a href="ex.pl">pl</a>
+ | 
+<a href="ex.py">py</a>
+ | 
+<a href="ex.tcl">tcl</a>
 <h2> Explanation, step by step </h2>
 Create a function 
 <i>hello</i>
@@ -20,5 +26,8 @@ Create a function
 <p> When the action is called, build a dad dialog called "heldi", with a single label containing "Hello world!". When the dialog is ran in modal mode, it will be open and block other pcb-rnd windows until the user closes it. 
 <p> Note: the window title (4th parameter of the 3rd dad() call) is displayed because the root node of the DAD is not a box. For a more complex version, see 13_hello_dad. 
 <p> In the "main" section of the script, register the action using fgw_func_reg(). 
+<p> More details on DAD: 
+<a href="../../../../../developer/dad/index.html">DAD developer's doc</a>
+ 
 </body>
 </html>
