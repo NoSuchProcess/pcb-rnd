@@ -229,3 +229,15 @@ level macros that usually call PCB_DAD_SET_VALUE on a specific field.
 <tr><td>PCB_DAD_CHANGE_CB(table, cb)         <td> <i>cb</i> is a function that shall be called upon any change to the widget value
 <tr><td>PCB_DAD_HELP(table, val)             <td> set the help text (typically presented as a tooltip)
 </table>
+
+<h2> Actions and scripting </h2>
+<p>
+There is a dad() action in the dialogd plugin that exposes all the above macros.
+The dialog table ID is am arbitrary unique string and commands are the macro
+names without PCB_DAD, written in lowercase.
+<p>
+Please refer to <a href="../../user/06_feature/scripting/rosetta/">scripting rosetta</a>
+project for examples. An example of a typical small dialog box is the
+<a href="../../user/06_feature/scripting/rosetta/72_dad_unitconv">unit conveter</a>
+script.
+
