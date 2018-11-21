@@ -68,7 +68,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 																"Picks a PCB font file to load.\n",
 																default_file, ".font", "pcbfont", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_ACT_FAIL(load_font_from);
+			return 0; /* cancel */
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
