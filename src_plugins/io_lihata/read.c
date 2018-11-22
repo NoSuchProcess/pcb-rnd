@@ -1688,6 +1688,9 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 	if (res != 0)
 		return iolht_error(nlyt != NULL ? nlyt : nshape, "Failed to parse pad stack shape (layer mask)\n");
 
+	if (dst->layer_mask == 0)
+		iolht_warn(nlyt, -1, "Failed to parse pad stack shape (empty layer mask)\nThe padstack may have shapes that will behave strangely - please fix it manually");
+
 	ncmb = lht_dom_hash_get(nshape, "combining");
 	if ((ncmb != NULL) && (ncmb->type == LHT_HASH))
 		dst->comb = parse_comb(pcb, ncmb);
