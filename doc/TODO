@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: arc undo unreg bug: 1. draw arc; 2. undo; 3. draw new arc -> assert [report: Ade]
-+ BUG: plugin conf files are not listed in packaging docs [report: barjac]
 ? BUG: cpcb command ignores path [report: celem mail oct 2]
 ? BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 + BUG: gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
