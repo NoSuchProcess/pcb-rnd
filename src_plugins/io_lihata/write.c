@@ -759,11 +759,14 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 			pcb_pstk_shape_t *shape = ts->shape + sn;
 			pcb_layer_type_t save_mask;
 
+			save_mask = shape->layer_mask & lyt_permit;
+			if (save_mask != shape->layer_mask) {
+				pcb_io_incompat_save(data, NULL, "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes are omitted");
+				continue;
+			}
+
 			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
 
-			save_mask = shape->layer_mask & lyt_permit;
-			if (save_mask != shape->layer_mask)
-				pcb_io_incompat_save(data, NULL, "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes will not show up correctly");
 			lht_dom_hash_put(nshape, nmask = lht_dom_node_alloc(LHT_HASH, "layer_mask"));
 			pcb_layer_type_map(save_mask, nmask, build_layer_stack_flag);
 
