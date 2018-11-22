@@ -628,7 +628,7 @@ static void drill_print_objs(aperture_list_t *apl, pending_drill_t *pd, pcb_card
 		}
 		if (pd[i].is_slot) {
 			if (first) {
-				pcb_fprintf(f, "G00\r\n");
+				pcb_fprintf(f, "G00");
 				first = 0;
 			}
 			if (force_g85)
