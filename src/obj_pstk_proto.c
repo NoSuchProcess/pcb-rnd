@@ -366,6 +366,9 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 		pcb_coord_t clr;
 		pcb_poly_t *p;
 
+		if ((shp->layer_mask & PCB_LYT_ANYTHING) == 0)
+			pcb_message(PCB_MSG_ERROR, "ERROR: breaking up padstack prototype: shape %d has invalid layer type, placing it on a random layer\nTHIS PADSTACK PROTOTYPE MUST BE FIXED.\n");
+
 		/* look up the best layer type */
 		for(lid = 0; lid < dst->LayerN; lid++) {
 			ly = &dst->Layer[lid];
