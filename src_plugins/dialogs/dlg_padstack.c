@@ -102,6 +102,8 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	pcb_layergrp_id_t top_gid, bottom_gid;
 	pcb_layergrp_t *top_grp, *bottom_grp;
 	pcb_bb_type_t htype;
+	char shp_found[32];
+	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(pse->ps);
 
 	htype = pcb_pstk_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
 	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
@@ -118,9 +120,14 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, int_value, pse->ps->smirror);
 
 	/* proto - layers */
+	memset(shp_found, 0, sizeof(shp_found));
 	for(n = 0; n < pcb_proto_num_layers; n++) {
 		pcb_pstk_shape_t *shape = pcb_pstk_shape(pse->ps, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb);
+
 		if (shape != NULL) {
+			int shape_idx = shape - ts->shape;
+			if ((shape_idx >= 0) && (shape_idx < sizeof(shp_found)))
+				shp_found[shape_idx] = 1;
 			switch(shape->shape) {
 				case PCB_PSSH_HSHADOW:
 					*tmp = '\0';
@@ -156,6 +163,15 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, "");
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, 0);
 		}
+	}
+
+	{
+		int not_found = 0;
+		for(n = 0; n < ts->len; n++)
+			if (shp_found[n] == 0)
+				not_found++;
+		if (not_found)
+			pcb_message(PCB_MSG_ERROR, "This padstack has %d shape(s) that are not listed in the padstack editor\nFor editing all shapes, please break the padstack up\n", not_found);
 	}
 
 	/* proto - hole */
