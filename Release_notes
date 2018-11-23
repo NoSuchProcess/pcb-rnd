@@ -1,36 +1,32 @@
-pcb-rnd 2.0.1
+pcb-rnd 2.1.0
 ~~~~~~~~~~~~~
 
-Focus of this release is infrastructural cleanups, bugfixes
-and GUI rendering optimization. The new features added in this
-release are all about extending the infrastructure to get the
-flexibility of pcb-rnd to the next level.
+The main focus was introducing mech/doc/misc layers and proper
+slot support in padstacks.
 
 New feature highlights:
 
-1. Cam exporting interface: a simple, unified interface to tell
-any exporter what layers to export to what file names.
+1. layer model upgrade: mechanical layers for boundary and cuts and slots;
+   remove layer stack assumption for a single outline layer
 
-2. Command line modes: the command line interpreter can be switched
-to interpret syntax different from pcb actions.
+2. layer model upgrade: optional custom documentation layers
 
-3. Scripting support upgrade to using fungw (10 scripting languages,
-including awk, python, perl, ruby, javascript, lisp). Support for
-switching the command line into script mode using any of the
-supported scripting languages (the user can enter script one-liners directly).
+3. padstacks: support for plated and unplated slots of arbitrary shape
 
-4. ddraft: angle/length constraint actions and GUI, trim() and split() actions,
-a new command line mode with a syntax designed for 2d drafting. Similar
-to those in mechanical cads, with actions to draw lines perpendicular or
-parallel to existing lines.
+4. padstacks: hshadow (clearance around the hole, without copper)
+   and UI support for "no shape" (no copper) thermal type for per layer control
 
-5. Command line GUI upgrade: more seamless integration of command line
-editing and mouse actions.
+5. arbitrary angle text rotation, option for user specified text line width
 
-6. New, single-stage, non-modal export dialog with tabs available exporters
-(also available in lesstif).
+6. optional: user specified text object thickness, per text
 
-7. Import plugin: freepcb netlist - schematics from EasyEDA can be imported
+7. ScaleBuffer() action that can resuze (scale up/down) the buffer
 
-8. Persistent layer color, saved with the board. Layer colors from the
-configuration are used only as initial color for new layers.
+8. trdraw: generic rendering transformations, such as object bloat/shrink
+   while rendering for any output; accessible from the cam plugin
+
+9. new dialog boxes: padstack browser with preview; undo dialog; fungw scripts
+
+10. new io plugin: full board load from the DSN format
+
+11. Major documentation extensions: resurrect action docs, add a lot of dev doc

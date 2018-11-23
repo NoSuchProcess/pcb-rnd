@@ -1,2 +1,355 @@
 pcb-rnd 2.1.0 (r20998)
 ~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Add: new plugin to host basic drawing actions: LineNew, ArcNew, TextNew, PstkNew, polygon creation
+
+	[ar_cpcb]
+		-Add: import/export/autoroute plugin for external auto-router c-pcb
+
+	[asm]
+		-Add: hand assembly helper plugin 
+
+	[cam]
+		-Add: parse supplements: purpose field, transformations
+
+	[conf]
+		-Fix: ignore rc/library_shell from board and project fiels - might be unsafe
+		-Fix: ignore all command conf nodes from unsafe sources while doing a conf merge instead of wiating until popen() - this way valid values from safe sources are not masked
+
+	[core]
+		-Fix: ChkView() action shall return the state value properly for named virtual layers
+		-Fix: arc remove op: do not clear the parent field before unregistering the arc - arc unreg will do it anyway
+		-Fix: call end_layer for each set_layer in board boundary draw
+		-Fix: do not let empty-bbox footprints load as board to avoid a slowdown/crash
+		-Fix: don't crash when the rat code announces a short circuit for an unknown net
+		-Fix: file name pattern subs: shorter name that also includes PCB for anonymous files in %F
+		-Fix: heavy terminal poly color mixup on HIDs that turned off layer indication gfx
+		-Fix: initialize all fields of dummy text object before drawing in drawing stub error message
+		-Fix: keep side flip operations together in the same serial group of undo
+		-Fix: make text thickness change operation undoable
+		-Fix: pcb_backup() should always use the same, configured pattern, which should have the file name and the PID to minimize the chance of accidental overwrite of backup files
+		-Fix: refuse to execute on-selected operations on objects that are locked
+		-Fix: search_data_by_loc return value when nothing matched
+		-Fix: search_data_by_loc shouldn't pass object as const, the callback may need to change the object
+		-Fix: survive nonexisting silk layers in draw (silk color determination is optional)
+		-Fix: use the layer recipe for unbound subc layers to avoid a crash on NULL layer ptr
+		-Fix: wrong plug footprint temp var initialization (potential buffer overrun)
+		-Del: no need to pass layer pointer to many object draw functions
+		-Change: CreateMenu(): new, simplified syntax (plus compatibility with the old syntax for now)
+		-Change: off-limits default color is a bit darker so that holes and slots stick out more
+		-Change: the lock tool uses the log through Report() isntead of spamming the desktop with popups
+		-Cleanup: data init/new and uninit/free terminology: free should free the pointer
+		-Cleanup: remove CamelCase from draw code
+		-Cleanup: remove CursorX, CursorY and Zoom from the board struct - these are not board specific properties but GUI/editor specific ones
+		-Add: 'quiet' option in path resolve to suppress error log for the case the caller checks the result and handles broken substs
+		-Add: -x -list- prints a script readable list of export plugins
+		-Add: NewGroup() accepts a 4th argument to set the comb bits of the new layer
+		-Add: bump default2.lht to v6 and add mech layers
+		-Add: bump default4.lht to v6 and add mech layers
+		-Add: change refdes action and menu - change name too often picks up the wrong object
+		-Add: check hid_conf registration leftovers on uninit, in debug mode
+		-Add: extend MoveLayer() so it can be used to move a layer into a different group from CLI
+		-Add: gettimeofday() wrapper to fix a compilation bug on IRIX
+		-Add: give the caller a chance to set rat id on creation
+		-Add: helper code for generic 2d transformation matrices
+		-Add: id->obj hash in data
+		-Add: new standard object call: reg/unreg for ID administration
+		-Add: pass an extended draw info structure from the top of drawing requests all way through the recursion to the bottom calls; this will help injecting object rendering transformations
+		-Add: pstk creation gets an optional id (that will let io_lihata enforce id on pads later)
+		-Add: silently ignore the "connected" flag (it is not supported)
+		-Add: simplified text render call API - to be used with preview widget drawing
+		-Add: standard obj call: text/poly pre/post
+
+	[dad]
+		-Fix: memory leak: free all fields of a dialog, not only the last
+		-Fix: tolerate NULL pointer in preview free callbacks
+		-Fix: autorun didn't deliver the return value so it was impossible to detect a cancel
+		-Add: tree-table widget: API
+		-Add: tree-table widget: gtk implementation
+		-Add: progress bar widget: API
+		-Add: progress bar widget: gtk and lesstif implementation
+		-Add: hpane and vpane widget: API
+		-Add: hpane and vpane widget: gtk and lesstif implementation
+		-Add: preview widget: API
+		-Add: preview widget: gtk implementation
+		-Add: dad() action
+		-Add: scripted dialogs: free tree table rows
+
+	[diag]
+		-Fix: data integrity: rewrite checks from LYT_OUTLINE to LYT_BOUNDARY
+		-Fix: data integrity: considers global rat lines
+		-Add: data integrity: check for the new ID hash
+		-Add: data integrity: check for layer->group->layer links
+		-Add: data integrity: test for duplicate layer entry in group and for group->layer->group links
+
+	[dialogs]
+		-Fix: make it clear that group edit is about not logical, but physical layers
+		-Fix: padstack edit shall allow setting hole dia to 0, that's how hole is removed
+		-Fix: when regenerating the padstack shape, invalidate the drawing so the new shape shows up
+		-Rename: layer and group GUI editing is not only about flags, rename the actions to be more clear about the purpose
+		-Add: undo dialog
+		-Add: 'change type' combo box in the group type/name dialog
+		-Add: support for layer group location change from the GUI
+		-Add: layer group flags dialog: purpose field, location field
+		-Add: purpose field in layer bindings
+		-Add: new pinout dialog
+		-Add: pstklib: padstack library dialog, with preview
+		-Add: padstack dialog: the prototype button invokes the pstklib dialog for selecting a new proto
+
+	[doc]
+		-Fix: some layer groups are 'maybe' for compositing
+		-Fix: lesstif SwapSides should have S mentioned in the syntax
+		-Fix: internal units is not 1/100 mil anymore
+		-Update: edit and update acompnet content
+		-Update: bridges: add xschem and c-pcb
+		-Update: mark gpmi deprecated
+		-Del: remove nelma (plugin retired)
+		-Del: old shorthand command summary from the code - don't advertise these actions
+		-Move: action doc moved from code to doc action appendix (and script that generates the output doc and links)
+		-Add: lihata v6 change log
+		-Add: lihata board format spec: explain that padstack shape layer mask needs to contain no more than 1 location bits
+		-Add: new terminology: the "main type" of layer groups
+		-Add: actions are sorted and dedup'd in the appendix
+		-Add: cam layer supplements
+		-Add: coralEDA link in index
+		-Add: eagle and protel compatibility on main page
+		-Add: Mageia and Fedora have official package
+		-Add: FAQ
+		-Add: FAQ entry for dsn missing holes on import
+		-Add: FAQ entries on DSN import vs. silk, mask and paste
+		-Add: developer doc: object API: document reg/unreg, pre/post API
+		-Add: rosetta: DAD examples
+		-Add: explain what a pup file is for
+		-Add: developer doc: detailed description of the basic infra of a plugin
+		-Add: document geda/pcb format extensions
+		-Add: extend the datasheet with data model points
+		-Add: Zoom() doc with selected and found
+		-Add: document the purpose of CycleDrag()
+		-Add: scripting: document AddTimer()
+		-Add: scripting: LoadScript(), UnloadScript(), ReloadScript() and ListScripts
+		-Add: scripting: ScriptPersistency() and script action preunload()
+		-Add: scripting: Oneliner()
+		-Add: DAD documentation
+
+	[export_gerber]
+		-Fix: handle multiple outline layers
+		-Fix: drill file end marker is M30
+		-Add: support for drilled (G85) slots and routed (G00) slots
+
+	[export_png]
+		-Fix: more robust outline coord cheat for working around gd's broken line clipping
+		-Fix: workaround on alpha+photomode if the core sets the boundary layer twice (when mech layers are missing)
+		-Fix: multi-step outline draw: let all layer groups be drawn
+		-Change: draw rectangles by drawing lines to guarantee the right brush
+		-Change: mark png-bloat obsolete (use cam transformations instead)
+
+	[export_ps]
+		-Fix: handle multiple route layers
+		-Fix: more robust and efficient way to determine if there's explicit outline
+		-Fix: reproduce the implicit outline using the same line width that draw.c in core does
+		-Change: mark ps-bloat obsolete - use cam layer transformations instead
+
+	[export_stat]
+		-Fix: when deciding if a subc is smd or not, count slots for through-hole
+		-Add: upgrade for counting slots
+
+	[export_svg]
+		-Fix: don't write the group of empty layers
+
+	[gsch2pcb-rnd]
+		-Fix: -q inhibits printing the instructions and the no-method-specified warning
+
+	[gtk]
+		-Fix: key presses doesn't mean the cursor has entered the view - fixes bug: getxy returned valid-looking coords instead of asking the user if there was no crosshair but keyboard input
+		-Fix: use all screen space for the command entry
+		-Fix: the print dialog needs to get the gtk common struct instead of topwin because of the preview API
+		-Fix: old pinout preview should call the new zoomto API to get the footprint zoomed
+		-Fix: set definite drawing area size for the font selector
+		-Fix: preview: set initial size request and canvas size of pinout windows so the zoom logics can calculate the initial zoom level
+		-Fix: library preview: more accurate initial zoom with all floaters included
+		-Fix: when setting up the perview widget for csect, set default width and height so that zoomto does the right thing (fixes: graphics does not appear)
+		-Fix: apply horizontal and vertical compactness from conf change events, not hardwired calls from gui config so direct conf change is applied too
+		-Fix: DAD: when creating a new box for a frame (requested in flags), respect the EXPFILL flag
+		-Fix: DAD: if caller's close callback destroys the modal dialog, make sure the original response (wheter it was ok or cancel) is preserved and returned
+		-Fix: apply xoffs/yoffs margin correction to layer previews as well
+		-Fix: preview popup is on the right click (in-line with the default menu config)
+		-Fix: proper rounding in screen<->coord conversion (fixes the slipping tab bug)
+		-Fix: after entering a new value, even if with new unit, preserve the text, don't overwrite it with canonical form until it's necessary (for stepping or clamping)
+		-Change: split the layer selector widget to have a separate section for in-stack and out-of-stack layers
+		-Change: replace local cli history implementation with the central one from lib_hid_common
+		-Change: tune status line print: use shorter bolds to decrease horizontal size
+		-Cleanup: CLI's main loop is in the context, not a global var
+		-Del: remove the separate command window entry - does not play well together with the new CLI ideas, doesn't fit in the unified GUI approach and didn't seem to get much use anyway
+		-Del: route style dialog: no 'save style as default' any more: route style is not in the config, the default board should be edited
+		-Del: text direction from the advanced search dialog
+		-Del: bu_notebook and framed notebook page builder: no code uses it
+		-Add: advanced search tabs: rotation and thickness text fields are available in query()
+		-Add: advanced search: tab entry for host layer's purpose
+		-Add: resize grip on top window
+		-Add: route style dialog: entry to text thickness
+		-Add: route style dialog has a text scale entry
+		-Add: new, more generic preview widget API, compatible with the DAD idea
+		-Add: on top win close, close the command entry first, as it has its own main loop that can block everything - fixes bug: can't exit while command entry is open
+
+	[hid]
+		-Change: API CHANGE: pass on purpose and purpi to layer group set so that decisions can be made based on subtype of mech/doc layers later
+		-Change: API CHANGE: pass on editable "caller xform" struct pointer to the set layer API so exporters can configure the core do do transformations on drawing
+		-Fix: give control to the HIDs about whether heavy term layer inidcation gfx shall be drawn or not
+		-Add: remove menu by cookie if not by path
+		-Add: cli central history API
+
+	[hid_gtk2_gl]
+		-Fix: do not draw the crosshair if the cursor is not in the drawing area (follow lesstif and gtk2+gdk on this)
+
+	[hid_gtk3_cairo]
+		-Fix: do not draw the crosshair if mouse cursor is not in the drawing area (unify behavior across HDIs - untested)
+
+	[hid_lesstif]
+		-Fix: typo in action handling code made zoom() (a.k.a. zoom extent) a syntax error
+		-Fix: lesstif Zoom() must do the same as gtk Zoom()
+		-Add: load/save/append to the central command line history
+
+	[io_dsn]
+		-Add: full board parse/load
+
+	[io_kicad]
+		-Fix: fp_circle is a 360 degree arc
+
+	[io_kicad_legacy]
+		-Fix: scaling of exported legacy module library fixed, and integer decidegree pad rotations enforced
+
+	[io_lihata]
+		-Fix: don't attempt to fix up the outline layers if there's no board (subc loaded)
+		-Fix: properly return NULL for failed padstack write
+		-Fix: warn for saving text thickness in route style only under v6
+		-Fix: create polygon with the right ID on load
+		-Fix: load lines, rats, arcs, text, padstacks, and subcircuits with the right ID, create them only with the right ID
+		-Del: 'no_id' from parse_line(): we always need to have an ID because of the ID registration
+		-Change: do not save layer visibility bit in v6, warn when it is loaded from v6
+		-Add: lihata board format version 6, for supporting new layers types and slots, new text props
+		-Add: when loading pre-v6 lihata, make sure the outline layer's comb is marked 'auto'
+		-Add: save noshape thermal as an explicit flag from v6 up
+
+	[io_pcb]
+		-Fix: recover from broken group string - create intern copper layer for any layer that is not referenced from the group string
+		-Fix: do poly clipping only once during load - shorter load times
+		-Fix: do not save duplicate element attributes (footprint, value and refdes - they are saved as property in this old format)
+		-Fix: do not lose multiple special layers on load, even tho only the first one is placed in the right group
+		-Del: pcb format documentation from the .y file - pcb-rnd should not attempt to document alien formats, we should leave this task to the maintainer of the format (geda/pcb in this case)
+		-Add: warn the user when saving a NetListPatch - geda/pcb won't like it
+		-Add: fix up broken (unlinked) outline layers after load (it's probably pstoedit that generates such files)
+
+	[layer]
+		-API CHANGE: creating a new bound layer gets a purpose string
+		-Fix: whether the implicit outline layer needs to be drawn does not depend on how many outline objects got draw, but really depends on how many outline objects there were on those layers
+		-Fix: when fixing up outline layer (e.g. after loading from old file formats), set the auto comb flag on the layers (to allow padstack use)
+		-Fix: ask the hid whether plated and unplated slots should be drawn only if they exist
+		-Fix: when creating real layers for bound layers, set new layer's object type to PCB_OBJ_LAYER
+		-Fix: #tbs: do not let the user remove top/bottom silk groups (temporary workaround)
+		-Del: PCB_LYT_ASSY, PCB_LYT_FAB, PCB_LYT_CSECT - use the purpose field instead
+		-Del: PCB_LYT_UDRILL and PCB_LYT_PDRILL - use the purpose field instead
+		-Del: PCB_LYT_OUTLINE - use BOUNDARY and purpose
+		-Change: side-based silk+doc layer rendering to make sure about layer order; properly draw global doc layers (between intern and current-side doc layers)
+		-Add: DOC and MECH layer types
+		-Add: purpose field
+		-Add: draw mech layers together with boundary layers, at the end
+		-Add: when drawing boundaries and mech layers, pick best candidate for unplated and plated slots
+		-Add: NewGroup() action for making it easy creating new layers from the menu (with context menu)
+		-Add: DupGroup(): new action and menu item for duplicating a layer group
+
+	[nelma]
+		-Del: retire the plugin - upstream stopped maintenance and there was no user either (openems and other sims will take the role)
+
+	[oldactions]
+		-Del: Return() - something we never used
+
+	[polygon]
+		-Fix: rewrite the polygon offset code based on the colinear-corner-shift idea to avoid line-line intersections
+		-Fix: when a layer is moved to a different group, reclip all polygons of the layer automatically
+		-Change: expose the API of polygon offset low level - to be reused by padstacks
+		-Add: polygon offset cache normal vector calculator
+		-Add: draw_info bloat transformation works on polygons
+
+	[propedit]
+		-Fix: use the undoable text rotation change API
+		-Del: text direction - use text rotation instead
+		-Change: rename text rotation to direction to match the code and make room for real rotation
+		-Add: code for handling text thickness and partial code for handling text rotation
+		-Add: layer group purpose field
+		-Add: missing code for removing attributes from board
+
+	[pstk]
+		-Fix: use ortho-grow for padstack shape offseting for more accurate results of derive/grow/shrink
+		-Fix: do not crash is prototype is empty
+		-Fix: missing 'else' made wireframe/thin draw poly shape filled
+		-Add: no-thermal clearance for hshadow should trace the hole or slot shape
+		-Add: slot support: convert to pstk: accept one boundary or mech layer for slot
+		-Add: hshadow support (special shape for clearance around the hole, without copper)
+		-Add: low level pcb_pstk_shape_at_() that can be forced to return the shape even if thermal is NOSHAPE
+		-Add: padstack draw respects the noshape thermal and inhibits drawing
+		-Add: the thermal tool cycles through the no-shape bit now
+		-Add: special treatment of off-board padstacks: do not clip or undo
+		-Add: low level proto call for replacing the geometry in-place, without creating a new proto
+		-Add: utility function to count prototype usage under data
+		-Add: utility function for removing a padstack prototype
+
+	[query]
+		-Change: rename text rotation to text direction to make room for the real rot field
+		-Cleanup: layer is a searcahble object now, let the low level code search/list layers, but disable it from high level for now to keep compatibility
+		-Add: support for text rot and thickness
+		-Add: access layer purpose (group's purpose)
+
+	[res/menu]
+		-Fix: editing layer or layer group properies should unselect all so nothing else is edited
+		-Del: mnemonics from the menu files (for HID API simplifiaction)
+		-Change: better key binding for the plugin management dialog: {p m p}
+		-Add: integrity check in the maintenance menu
+		-Add: change refdes submenu in subc context menu
+		-Add: dedicated submenu for user scripts
+		-Add: subc layer binding in the subc context popup menu
+
+	[tests/rtt]
+		-Fix: unify how pcb-rnd is executed; proper from-src-dir execution
+		-Add: visual compare script, format-independent
+		-Add: valgrind flags: detect memory leaks
+
+	[rubberband_orig]
+		-Fix: rat line connected to multiple terminals on the same coord would move the rat endpoint multiple times when the subc is moved
+		-Update: moving a line with rubberband will remain connected to arcs by inserting a new route.
+		-Update: Moving a line point that is connected to an arc will insert a new route to ensure that the arc remains connected.
+
+	[scale]
+		-Add: low level: text, arc, poly, line, padstack scaling
+		-Add: pcb_data_t and buffer scaler functions
+		-Add: ScaleBuffer() action
+
+	[scconfig]
+		-Fix: stroke: insert the internal conf file to DEPDEP so make dep runs even when stroke is disabled
+		-Fix: cam, export_xy, fp_wget: explain enough of the internal conf so make dep works even if the are disabled
+		-Fix: remove --with-intl - it can render pcb-rnd unusable while we don't really have support for non-english locales
+		-Fix: detect popen(), missing popen is fatal (make the dependency explicit)
+		-Change: centralize the plugin internal conf mechanism
+		-Add: detect SIGPIPE and if present, set it to ignore to avoid external programs to exit pcb-rnd
+
+	[script]
+		-Add: fungw engine (glue code) for "scripting" in C
+		-Add: Zoom(get) - useful for scripts
+		-Add: action AddTimer() and a minimalistic timer implementation
+		-Add: script data persistency: action for reloading and removing data
+		-Add: dialog frame for a script dialog
+
+	[subc]
+		-Fix: do not change the subc pointer when moving to other side, rather do it in-place so pointers are not messed up (as reported by celem with autoplace)
+		-Fix: preview displays terminal labels when enabled
+		-Fix: when drawing preview do not draw the label of non-owned terminals
+		-Fix: memory leak on subc-in-buffer breakup
+		-Fix: subc dup needs to set layer struct type do PCB_OBJ_LAYER else the object is broken
+		-Fix: do not double-unreg objects on subc destroy (caused asserts on undo)
+		-Fix: display subc ID (red subc marking overlay) even if refdes is NULL - what we display is configurable and may differ from the refdes
+		-Fix: side flip: put only the subc flip on the undo list, not each subc part's flip, to avoid double-flip attempt on undo
+
+	[text]
+		-Add: text string render: use transformation matrix instead of manual transformation calcualtions (preparing for arbitrary angle rotation)
+		-Add: buffer free rotation: also rotate text
+		-Add: user selectable text thickness
+		-Change: io_lihata saves only rot, not direction from v6
