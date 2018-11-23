@@ -1,0 +1,65 @@
+(pcb notnamed
+  (parser
+    (string_quote ")
+    (space_in_quoted_tokens on)
+    (host_cad "pcb-rnd")
+    (host_version "<version>")
+  )
+  (resolution mm 1000000)
+  (structure
+    (layer "3__top_copper"
+      (type signal)
+    )
+    (layer "5__Intern"
+      (type signal)
+    )
+    (layer "10__bottom_copper"
+      (type signal)
+    )
+    (boundary
+      (rect pcb 0.0 0.0 12.700000 12.700000)
+    )
+    (via via_685800_381000)
+    (rule
+      (width 0.2032)
+      (clear 0.2032)
+      (clear 0.2032 (type wire_area))
+      (clear 0.2032 (type via_smd via_pin))
+      (clear 0.2032 (type smd_smd))
+      (clear 0.2032 (type default_smd))
+    )
+  )
+  (placement
+    (component 117
+      (place 117 3.556000 11.430000 front 0 (PN 0))
+    )
+    (component 140
+      (place 140 5.588000 11.430000 front 0 (PN 0))
+    )
+    (component 332
+      (place 332 3.556000 9.906000 front 0 (PN 0))
+    )
+    (component 361
+      (place 361 5.588000 9.906000 front 0 (PN 0))
+    )
+    (component 542
+      (place 542 3.810000 4.318000 front 0 (PN 0))
+    )
+    (component 543
+      (place 543 5.842000 4.318000 front 0 (PN 0))
+    )
+  )
+  (library
+  )
+  (network
+    (class geda_default
+      (circuit
+        (use_via via_685800_381000)
+      )
+      (rule (width 0.203200))
+    )
+  )
+    (wiring
+
+    )
+)
