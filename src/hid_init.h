@@ -55,5 +55,9 @@ struct pcb_plugin_dir_s {
 
 extern pcb_plugin_dir_t *pcb_plugin_dir_first, *pcb_plugin_dir_last;
 
+/* Safe file name for inclusion in export file comments/headers; if the
+   user requested in the config, this becomes the basename of filename,
+   else it is the full file name */
+const char *pcb_hid_export_fn(const char *filename);
 
 #endif

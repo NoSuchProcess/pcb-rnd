@@ -247,3 +247,15 @@ pcb_hid_t **pcb_hid_enumerate()
 {
 	return pcb_hid_list;
 }
+
+const char *pcb_hid_export_fn(const char *filename)
+{
+	if (conf_core.rc.export_basename) {
+		const char *outfn = strrchr(filename, PCB_DIR_SEPARATOR_C);
+		if (outfn == NULL)
+			return filename;
+		return outfn + 1;
+	}
+	else
+		return filename;
+}

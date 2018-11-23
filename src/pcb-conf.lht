@@ -73,6 +73,7 @@ li:pcb-rnd-conf-v1 {
 #			file_command = {}
 #			file_path = {}
 			library_shell = {}
+			export_basename = 0
 
 			emergency_name = {PCB.%ld.save}
 			emergency_format = {lihata}
