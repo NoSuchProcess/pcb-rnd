@@ -20,7 +20,7 @@ New feature highlights:
 
 6. optional: user specified text object thickness, per text
 
-7. ScaleBuffer() action that can resuze (scale up/down) the buffer
+7. ScaleBuffer() action that can resize (scale up/down) the buffer
 
 8. trdraw: generic rendering transformations, such as object bloat/shrink
    while rendering for any output; accessible from the cam plugin

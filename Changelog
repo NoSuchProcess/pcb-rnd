@@ -13,8 +13,8 @@ pcb-rnd 2.1.0 (r20998)
 		-Add: parse supplements: purpose field, transformations
 
 	[conf]
-		-Fix: ignore rc/library_shell from board and project fiels - might be unsafe
-		-Fix: ignore all command conf nodes from unsafe sources while doing a conf merge instead of wiating until popen() - this way valid values from safe sources are not masked
+		-Fix: ignore rc/library_shell from board and project fields - might be unsafe
+		-Fix: ignore all command conf nodes from unsafe sources while doing a conf merge instead of waiting until popen() - this way valid values from safe sources are not masked
 
 	[core]
 		-Fix: ChkView() action shall return the state value properly for named virtual layers
@@ -37,7 +37,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Del: no need to pass layer pointer to many object draw functions
 		-Change: CreateMenu(): new, simplified syntax (plus compatibility with the old syntax for now)
 		-Change: off-limits default color is a bit darker so that holes and slots stick out more
-		-Change: the lock tool uses the log through Report() isntead of spamming the desktop with popups
+		-Change: the lock tool uses the log through Report() instead of spamming the desktop with popups
 		-Cleanup: data init/new and uninit/free terminology: free should free the pointer
 		-Cleanup: remove CamelCase from draw code
 		-Cleanup: remove CursorX, CursorY and Zoom from the board struct - these are not board specific properties but GUI/editor specific ones
@@ -126,7 +126,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Add: Zoom() doc with selected and found
 		-Add: document the purpose of CycleDrag()
 		-Add: scripting: document AddTimer()
-		-Add: scripting: LoadScript(), UnloadScript(), ReloadScript() and ListScripts
+		-Add: scripting: LoadScript(), UnloadScript(), ReloadScript() and ListScripts()
 		-Add: scripting: ScriptPersistency() and script action preunload()
 		-Add: scripting: Oneliner()
 		-Add: DAD documentation
@@ -167,7 +167,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: set definite drawing area size for the font selector
 		-Fix: preview: set initial size request and canvas size of pinout windows so the zoom logics can calculate the initial zoom level
 		-Fix: library preview: more accurate initial zoom with all floaters included
-		-Fix: when setting up the perview widget for csect, set default width and height so that zoomto does the right thing (fixes: graphics does not appear)
+		-Fix: when setting up the preview widget for csect, set default width and height so that zoomto does the right thing (fixes: graphics does not appear)
 		-Fix: apply horizontal and vertical compactness from conf change events, not hardwired calls from gui config so direct conf change is applied too
 		-Fix: DAD: when creating a new box for a frame (requested in flags), respect the EXPFILL flag
 		-Fix: DAD: if caller's close callback destroys the modal dialog, make sure the original response (wheter it was ok or cancel) is preserved and returned
@@ -193,8 +193,8 @@ pcb-rnd 2.1.0 (r20998)
 
 	[hid]
 		-Change: API CHANGE: pass on purpose and purpi to layer group set so that decisions can be made based on subtype of mech/doc layers later
-		-Change: API CHANGE: pass on editable "caller xform" struct pointer to the set layer API so exporters can configure the core do do transformations on drawing
-		-Fix: give control to the HIDs about whether heavy term layer inidcation gfx shall be drawn or not
+		-Change: API CHANGE: pass on editable "caller xform" struct pointer to the set layer API so exporters can configure the core to do transformations on drawing
+		-Fix: give control to the HIDs about whether heavy term layer indication gfx shall be drawn or not
 		-Add: remove menu by cookie if not by path
 		-Add: cli central history API
 
@@ -202,7 +202,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: do not draw the crosshair if the cursor is not in the drawing area (follow lesstif and gtk2+gdk on this)
 
 	[hid_gtk3_cairo]
-		-Fix: do not draw the crosshair if mouse cursor is not in the drawing area (unify behavior across HDIs - untested)
+		-Fix: do not draw the crosshair if mouse cursor is not in the drawing area (unify behavior across HIDs - untested)
 
 	[hid_lesstif]
 		-Fix: typo in action handling code made zoom() (a.k.a. zoom extent) a syntax error
@@ -280,7 +280,7 @@ pcb-rnd 2.1.0 (r20998)
 
 	[pstk]
 		-Fix: use ortho-grow for padstack shape offseting for more accurate results of derive/grow/shrink
-		-Fix: do not crash is prototype is empty
+		-Fix: do not crash if prototype is empty
 		-Fix: missing 'else' made wireframe/thin draw poly shape filled
 		-Add: no-thermal clearance for hshadow should trace the hole or slot shape
 		-Add: slot support: convert to pstk: accept one boundary or mech layer for slot
@@ -295,13 +295,13 @@ pcb-rnd 2.1.0 (r20998)
 
 	[query]
 		-Change: rename text rotation to text direction to make room for the real rot field
-		-Cleanup: layer is a searcahble object now, let the low level code search/list layers, but disable it from high level for now to keep compatibility
+		-Cleanup: layer is a searchable object now, let the low level code search/list layers, but disable it from high level for now to keep compatibility
 		-Add: support for text rot and thickness
 		-Add: access layer purpose (group's purpose)
 
 	[res/menu]
-		-Fix: editing layer or layer group properies should unselect all so nothing else is edited
-		-Del: mnemonics from the menu files (for HID API simplifiaction)
+		-Fix: editing layer or layer group properties should unselect all so nothing else is edited
+		-Del: mnemonics from the menu files (for HID API simplification)
 		-Change: better key binding for the plugin management dialog: {p m p}
 		-Add: integrity check in the maintenance menu
 		-Add: change refdes submenu in subc context menu
@@ -325,7 +325,7 @@ pcb-rnd 2.1.0 (r20998)
 
 	[scconfig]
 		-Fix: stroke: insert the internal conf file to DEPDEP so make dep runs even when stroke is disabled
-		-Fix: cam, export_xy, fp_wget: explain enough of the internal conf so make dep works even if the are disabled
+		-Fix: cam, export_xy, fp_wget: explain enough of the internal conf so make dep works even if they are disabled
 		-Fix: remove --with-intl - it can render pcb-rnd unusable while we don't really have support for non-english locales
 		-Fix: detect popen(), missing popen is fatal (make the dependency explicit)
 		-Change: centralize the plugin internal conf mechanism
@@ -343,13 +343,13 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: preview displays terminal labels when enabled
 		-Fix: when drawing preview do not draw the label of non-owned terminals
 		-Fix: memory leak on subc-in-buffer breakup
-		-Fix: subc dup needs to set layer struct type do PCB_OBJ_LAYER else the object is broken
+		-Fix: subc dup needs to set layer struct type to PCB_OBJ_LAYER else the object is broken
 		-Fix: do not double-unreg objects on subc destroy (caused asserts on undo)
 		-Fix: display subc ID (red subc marking overlay) even if refdes is NULL - what we display is configurable and may differ from the refdes
 		-Fix: side flip: put only the subc flip on the undo list, not each subc part's flip, to avoid double-flip attempt on undo
 
 	[text]
-		-Add: text string render: use transformation matrix instead of manual transformation calcualtions (preparing for arbitrary angle rotation)
+		-Add: text string render: use transformation matrix instead of manual transformation calculations (preparing for arbitrary angle rotation)
 		-Add: buffer free rotation: also rotate text
 		-Add: user selectable text thickness
 		-Change: io_lihata saves only rot, not direction from v6
