@@ -197,6 +197,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
+	const char *outfn;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -276,7 +277,10 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	fprintf(f, "save countdictstack mark newpath /showpage {} def /setpagedevice {pop} def\n");
 	fprintf(f, "%%%%EndProlog\n");
 	fprintf(f, "%%%%Page: 1 1\n");
-	fprintf(f, "%%%%BeginDocument: %s\n\n", filename);
+
+	outfn = pcb_hid_export_fn(filename);
+
+	fprintf(f, "%%%%BeginDocument: %s\n\n", outfn);
 
 	fprintf(f, "72 72 scale\n");
 	fprintf(f, "1 dup neg scale\n");
