@@ -54,6 +54,11 @@
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 - BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
+- BUG: footprint replace (backann): bug_files/replfp.lht, {a b f}, type 1206 [report: Igor2]
+	- BUG: pads are not rotated
+	- BUG: attributes are not kept
+	- BUG: warnings/errors in the log
+	- would it keep a floater?
 - FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
