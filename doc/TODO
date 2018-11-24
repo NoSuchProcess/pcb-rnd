@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 ? BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
-+ BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
 
 2. For later releases ===============================================================================
 - BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
