@@ -1,4 +1,4 @@
-pcb-rnd 2.1.0 (r20998)
+pcb-rnd 2.1.0 (r21054)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Add: new plugin to host basic drawing actions: LineNew, ArcNew, TextNew, PstkNew, polygon creation
@@ -34,6 +34,8 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: survive nonexisting silk layers in draw (silk color determination is optional)
 		-Fix: use the layer recipe for unbound subc layers to avoid a crash on NULL layer ptr
 		-Fix: wrong plug footprint temp var initialization (potential buffer overrun)
+		-Fix: don't throw error on font load cancel
+		-Fix: when destroying font with arcs in it, do not unreg the arcs, they are not registered
 		-Del: no need to pass layer pointer to many object draw functions
 		-Change: CreateMenu(): new, simplified syntax (plus compatibility with the old syntax for now)
 		-Change: off-limits default color is a bit darker so that holes and slots stick out more
@@ -59,6 +61,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Add: silently ignore the "connected" flag (it is not supported)
 		-Add: simplified text render call API - to be used with preview widget drawing
 		-Add: standard obj call: text/poly pre/post
+		-Add: config setting for using basename of the board in export files comments/headers instead of the full path (to fix path leaking)
 
 	[dad]
 		-Fix: memory leak: free all fields of a dialog, not only the last
@@ -86,6 +89,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: make it clear that group edit is about not logical, but physical layers
 		-Fix: padstack edit shall allow setting hole dia to 0, that's how hole is removed
 		-Fix: when regenerating the padstack shape, invalidate the drawing so the new shape shows up
+		-Fix: padstack editor doesn't silently ignore unknown shapes layer types, but throw an error
 		-Rename: layer and group GUI editing is not only about flags, rename the actions to be more clear about the purpose
 		-Add: undo dialog
 		-Add: 'change type' combo box in the group type/name dialog
@@ -134,6 +138,7 @@ pcb-rnd 2.1.0 (r20998)
 	[export_gerber]
 		-Fix: handle multiple outline layers
 		-Fix: drill file end marker is M30
+		-Workaround: OSHpark import doesn't take G00 in separate line
 		-Add: support for drilled (G85) slots and routed (G00) slots
 
 	[export_png]
@@ -224,6 +229,8 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: warn for saving text thickness in route style only under v6
 		-Fix: create polygon with the right ID on load
 		-Fix: load lines, rats, arcs, text, padstacks, and subcircuits with the right ID, create them only with the right ID
+		-Fix: warn for empty layer type in padstack proto shape on load
+		-Fix: when saving padtsacks with slot to lihata v5, do not save the slot shape with empty layer type but omit it - causes less confusion and on broken files
 		-Del: 'no_id' from parse_line(): we always need to have an ID because of the ID registration
 		-Change: do not save layer visibility bit in v6, warn when it is loaded from v6
 		-Add: lihata board format version 6, for supporting new layers types and slots, new text props
@@ -282,6 +289,7 @@ pcb-rnd 2.1.0 (r20998)
 		-Fix: use ortho-grow for padstack shape offseting for more accurate results of derive/grow/shrink
 		-Fix: do not crash if prototype is empty
 		-Fix: missing 'else' made wireframe/thin draw poly shape filled
+		-Fix: throw a loud error when a padstack with empty shape layer is broken up
 		-Add: no-thermal clearance for hshadow should trace the hole or slot shape
 		-Add: slot support: convert to pstk: accept one boundary or mech layer for slot
 		-Add: hshadow support (special shape for clearance around the hole, without copper)
@@ -310,6 +318,8 @@ pcb-rnd 2.1.0 (r20998)
 
 	[tests/rtt]
 		-Fix: unify how pcb-rnd is executed; proper from-src-dir execution
+		-Fix: use basename in ps/eps export to get reproducible output
+		-Add: slot/mech example
 		-Add: visual compare script, format-independent
 		-Add: valgrind flags: detect memory leaks
 
