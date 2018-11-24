@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-? BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
 
 2. For later releases ===============================================================================
 - BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
