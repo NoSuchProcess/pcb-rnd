@@ -1,0 +1,38 @@
+How to document actions
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Detailed action doc lives in trunk/doc/user/09_appendix/action_src in
+almost-html files. There is no html header and the standard tags in use
+are restricted to: b, i, p, pre, ul, li, table, tr, td.
+
+There are a few extra, non-standard tags:
+
+- <arg> argname </arg> names an argument of the current action
+- <act> actname </act> links to another action; actname is all lowercase
+
+The name of the file should be actname.html.
+
+Documentation policy:
+
+	- do not document the trivial - do not write alibi docs. We do not want
+	  action doc to just repeat the syntax description. Please explore
+	  what the action does, all aspects, all use cases; see if the syntax
+	  help string already covers everything and the action is trivial to use;
+	  if so, the action does nto need any more documentation
+
+	- after creating the html doc, please add a
+	  /* DOC: actname.html */
+	  comment above the action function in the source code
+
+	- the doc is high level in the sense that it should tell the basic ideas
+	  behind the action, how to use it, what it is for
+
+	- it should not tell much about what bigger scheme it fits in (that's
+	  even higher level, plugin doc; but should cross link relevan sibling
+	  actions)
+
+	- it should not repeat low level info (e.g. enumerate possible arguments
+	  from the syntax string) if no extra info is added
+
+	- do not do custom styling, the doc format is unified
+
