@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 ? BUG: property editor can not change padstack prototype ID because of mm conversion [report: TwisteR]
-+ BUG: gtk: 'tab' drifts cursor when used repeatedly, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 + BUG: pcb_backup() should always use the file name pattern from config, not the "-" [report: TwisteR]
 
 2. For later releases ===============================================================================
@@ -238,6 +237,7 @@
 		- new doc layers
 - FEATURE: lihata v7
 	- remove via geometry from route style
+- BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
