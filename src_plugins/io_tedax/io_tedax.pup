@@ -1,4 +1,4 @@
-$class import
+$class io
 $short tEDAx (Trivial EDA eXchange)
 $long Import and export tEDAx netlists and footprints.
 $state works
