@@ -1,8 +1,0 @@
-$class feature
-$short GPMI scripting
-$long Scriptable plugin system with about 10 scripting languages supported and dynamic load/unload of scripts that can manipulate the GUI, the board, can implement exporters, etc.
-$state works
-$ldefault: if gpmi is installed
-dep lib_compat_help
-default disable
-autoload 1

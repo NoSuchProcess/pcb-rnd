@@ -682,14 +682,6 @@ int hook_detect_target()
 	/* plugin dependencies */
 	plugin_deps(1);
 
-	if (plug_is_enabled("gpmi")) {
-		require("libs/script/gpmi/presents", 0, 0);
-		if (!istrue(get("libs/script/gpmi/presents"))) {
-			report_repeat("WARNING: disabling the gpmi scripting because libgpmi is not found or not configured...\n");
-			hook_custom_arg("Disable-gpmi", NULL);
-		}
-	}
-
 	/* figure coordinate bits */
 	{
 		int int_bits       = safe_atoi(get("sys/types/size/signed_int")) * 8;
@@ -779,29 +771,6 @@ void generator_callback(char *cmd, char *args)
 }
 #endif
 
-static int gpmi_config(void)
-{
-	char *tmp;
-	const char *gcfg = get("libs/script/gpmi/gpmi-config");
-	int generr = 0;
-
-	printf("Generating pcb-gpmi/Makefile.conf (%d)\n", generr |= tmpasm("../src_plugins/gpmi/pcb-gpmi", "Makefile.config.in", "Makefile.config"));
-
-
-	printf("Configuring gpmi packages...\n");
-	tmp = str_concat("", "cd ../src_plugins/gpmi/pcb-gpmi/gpmi_plugin/gpmi_pkg && ", gcfg, " --pkggrp && ./configure", NULL);
-	generr |= system(tmp);
-	free(tmp);
-
-	printf("Configuring gpmi plugin \"app\"\n");
-	tmp = str_concat("", "cd ../src_plugins/gpmi//pcb-gpmi/gpmi_plugin && ", gcfg, " --app", NULL);
-	generr |= system(tmp);
-	free(tmp);
-
-	printf("Finished configuring gpmi packages\n");
-
-	return generr;
-}
 static void plugin_stat(const char *header, const char *path, const char *name)
 {
 	const char *val = get(path);
@@ -892,8 +861,6 @@ int hook_generate()
 	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src", "compat_inc.h.in", "compat_inc.h"));
 
 	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/lib_hid_gl", "opengl.h.in", "opengl.h"));
-	if (plug_is_enabled("gpmi"))
-		gpmi_config();
 
 	generr |= pup_hook_generate("../src_3rd/puplug");
 

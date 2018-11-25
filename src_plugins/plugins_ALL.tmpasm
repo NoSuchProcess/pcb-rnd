@@ -40,7 +40,6 @@ include {../src_plugins/fontmode/Plug.tmpasm}
 include {../src_plugins/fp_board/Plug.tmpasm}
 include {../src_plugins/fp_fs/Plug.tmpasm}
 include {../src_plugins/fp_wget/Plug.tmpasm}
-include {../src_plugins/gpmi/Plug.tmpasm}
 include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk2_gdk/Plug.tmpasm}
 include {../src_plugins/hid_gtk2_gl/Plug.tmpasm}
