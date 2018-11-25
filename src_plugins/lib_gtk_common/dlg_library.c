@@ -6,6 +6,7 @@
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2017 Alain Vigne
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,6 +68,7 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "actions.h"
+#include "draw.h"
 
 #include <gdk/gdkkeysyms.h>
 
@@ -266,7 +268,7 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 	if (PCB_PASTEBUFFER->Data != NULL) {
 		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0) {
 			pcb_subc_t *sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
-			g_object_set(library_window->preview, "element-data", sc, NULL);
+			g_object_set(library_window->preview, "generic", sc, NULL);
 			if (sc != NULL) {
 				pcb_box_t bbox;
 				pcb_data_bbox(&bbox, sc->data, 0);
@@ -274,10 +276,10 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 			}
 		}
 		else
-			g_object_set(library_window->preview, "element-data", NULL, NULL);
+			g_object_set(library_window->preview, "generic", NULL, NULL);
 	}
 	else
-		g_object_set(library_window->preview, "element-data", NULL, NULL);
+		g_object_set(library_window->preview, "generic", NULL, NULL);
 
 	/* update the text */
 	pt = g_string_new("Tags:");
@@ -361,7 +363,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 			   the buffer: we may have a valid parametric footprint output in there
 			   that happened before the cancel */
 			norefresh = 1;
-			g_object_set(library_window->preview, "element-data", NULL, NULL);
+			g_object_set(library_window->preview, "generic", NULL, NULL);
 			pcb_actionl("PasteBuffer", "clear", NULL);
 		}
 		else
@@ -789,6 +791,19 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 #warning TODO: figure how this can be passed to the constructor without a global var
 static pcb_gtk_common_t *lwcom;
 
+static void pinout_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+{
+	pcb_subc_t *sc = e->content.draw_data;
+
+	if (sc != NULL) {
+		int orig_po = pcb_draw_doing_pinout;
+		pcb_draw_doing_pinout = pcb_true;
+ 		pcb_subc_draw_preview(sc, &e->view);
+		pcb_draw_doing_pinout = orig_po;
+	}
+}
+
+
 static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam * construct_params)
 {
 	GObject *object;
@@ -836,7 +851,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																	/* GtkFrame */
 																	"label", _("Preview"), NULL));
 
-	preview = pcb_gtk_preview_pinout_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, NULL);
+	preview = pcb_gtk_preview_generic_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, pinout_expose, NULL, NULL);
 	gtk_widget_set_size_request(preview, 150, 150);
 
 	preview_text = gtk_label_new("");

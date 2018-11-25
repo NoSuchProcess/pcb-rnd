@@ -74,6 +74,7 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	/* Don't pan so far the board is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
 	v->y0 = MAX(-v->height, v->y0);
+#warning TODO: #gtkzoom: do not use PCB sizes here, as we may be in a preview
 	v->x0 = MIN(v->x0, PCB->MaxWidth);
 	v->y0 = MIN(v->y0, PCB->MaxHeight);
 
