@@ -696,7 +696,7 @@
 </g>
 <!-- io_tedax -->
 <g id="node81" class="node"><title>io_tedax</title>
-<ellipse fill="#a0ffff" stroke="black" cx="4207.06" cy="-3017.32" rx="40.8928" ry="18"/>
+<ellipse fill="#ffa0a0" stroke="black" cx="4207.06" cy="-3017.32" rx="40.8928" ry="18"/>
 <text text-anchor="middle" x="4207.06" y="-3013.62" font-family="Times,serif" font-size="14.00">io_tedax</text>
 </g>
 <!-- user&#45;&gt;io_tedax -->
