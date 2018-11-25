@@ -27,7 +27,6 @@ int cb_configure(scm_ctx_t *ctx, scm_menu_t *menu, scm_win_t *w, int selection)
 scm_menu_entry_t me_hid_gtk[8]        = {{SCM_TERMINATOR,     NULL, NULL, NULL, NULL, NULL, 0}};
 scm_menu_entry_t me_hid_lesstif[8]    = {{SCM_TERMINATOR,     NULL, NULL, NULL, NULL, NULL, 0}};
 scm_menu_entry_t me_export[8]         = {{SCM_TERMINATOR,     NULL, NULL, NULL, NULL, NULL, 0}};
-scm_menu_entry_t me_gpmi[8]           = {{SCM_TERMINATOR,     NULL, NULL, NULL, NULL, NULL, 0}};
 scm_menu_entry_t me_autorouter[8]     = {{SCM_TERMINATOR,     NULL, NULL, NULL, NULL, NULL, 0}};
 scm_menu_entry_t me_all_settings[32]  = {{SCM_TERMINATOR,     NULL, NULL, NULL, NULL, NULL, 0}};
 
@@ -35,7 +34,6 @@ scm_menu_entry_t me_settings[] = {
 	{SCM_SUBMENU,        NULL, "HID: gtk",           "gtk settings -->",           NULL, me_hid_gtk, SCM_AUTO_RUN},
 	{SCM_SUBMENU,        NULL, "HID: lesstif",       "lesstif settings -->",       NULL, me_hid_lesstif, SCM_AUTO_RUN},
 	{SCM_SUBMENU,        NULL, "HID: exporters",     "export format settings -->", NULL, me_export, SCM_AUTO_RUN},
-	{SCM_SUBMENU,        NULL, "scripting",          "gpmi settings -->",          NULL, me_gpmi, SCM_AUTO_RUN},
 	{SCM_SUBMENU,        NULL, "auto routers",       "autorouter settings -->",    NULL, me_autorouter, SCM_AUTO_RUN},
 	{SCM_EMPTY,          NULL, NULL, NULL, NULL, 0},
 	{SCM_SUBMENU,        NULL, "all",                "all settings at once -->",   NULL, me_all_settings, SCM_AUTO_RUN},
