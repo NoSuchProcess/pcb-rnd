@@ -31,9 +31,6 @@
 
 #include "config.h"
 
-/* ---------------------------------------------------------------------------
- * some limit specifications
- */
 #define PCB_LARGE_VALUE      (COORD_MAX / 2 - 1) /* maximum extent of board and elements */
 
 #define PCB_MAX_LAYER        38    /* max number of layer, check source code for more changes, a *lot* more changes */
