@@ -227,6 +227,14 @@ parsepcb
 		  { LayerFlag[0] = pcb_true;
 		    LayerFlag[1] = pcb_true;
 		    yyData->LayerN = 2;
+		    yyData->Layer[0].parent_type = PCB_PARENT_DATA;
+		    yyData->Layer[0].parent.data = yyData;
+		    yyData->Layer[0].is_bound = 1;
+		    yyData->Layer[0].meta.bound.type = PCB_LYT_SILK | PCB_LYT_TOP;
+		    yyData->Layer[1].parent_type = PCB_PARENT_DATA;
+		    yyData->Layer[1].parent.data = yyData;
+		    yyData->Layer[1].is_bound = 1;
+		    yyData->Layer[1].meta.bound.type = PCB_LYT_SILK | PCB_LYT_BOTTOM;
 		    PostLoadElementPCB ();
 		  }
 		;
