@@ -49,6 +49,12 @@
 #include "compat_misc.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
+/* frame between the groundplane and the copper or mask - noone seems
+   to remember what these two are for; changing them may have unforeseen
+   side effects. */
+#define PCB_GROUNDPLANEFRAME        PCB_MIL_TO_COORD(15)
+#define PCB_MASKFRAME               PCB_MIL_TO_COORD(3)
+
 static	pcb_layer_t *Layer;
 static	pcb_poly_t *Polygon;
 static	pcb_symbol_t *Symbol;

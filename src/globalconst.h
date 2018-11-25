@@ -31,13 +31,6 @@
 
 #include "config.h"
 
-
-/* frame between the groundplane and the copper or mask - noone seems
-   to remember what these two are for; changing them may have unforeseen
-   side effects. */
-#define PCB_GROUNDPLANEFRAME        PCB_MIL_TO_COORD(15)
-#define PCB_MASKFRAME               PCB_MIL_TO_COORD(3)
-
 /* ---------------------------------------------------------------------------
  * some limit specifications
  */
