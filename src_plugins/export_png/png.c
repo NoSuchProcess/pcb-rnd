@@ -897,6 +897,8 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+	gdImageSetResolution(im, dpi, dpi);
+
 	master_im = im;
 
 	parse_bloat(options[HA_bloat].str_value);
