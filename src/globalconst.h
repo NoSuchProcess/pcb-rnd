@@ -61,8 +61,6 @@
 #define PCB_MIN_PINORVIAHOLE PCB_MIL_TO_COORD(4)	/* size of a pins or vias drilling hole */
 #define PCB_MAX_PINORVIASIZE ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_PINORVIACOPPER PCB_MIL_TO_COORD(4)	/* min difference outer-inner diameter */
-#define PCB_MIN_PADSIZE      PCB_MIL_TO_COORD(1)	/* min size of a pad */
-#define PCB_MAX_PADSIZE      ((pcb_coord_t)PCB_LARGE_VALUE)   /* max size of a pad */
 #define PCB_MIN_DRC_VALUE    PCB_MIL_TO_COORD(0.1)
 #define PCB_MAX_DRC_VALUE    PCB_MIL_TO_COORD(500)
 #define PCB_MIN_DRC_SILK     PCB_MIL_TO_COORD(1)
@@ -93,7 +91,6 @@
 
 #define PCB_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points; same for arc point */
 #define PCB_MAX_POLYGON_POINT_DISTANCE  0   /* maximum distance when searching polygon points */
-#define PCB_MAX_ELEMENTNAMES            3   /* number of supported names of an element */
 #define PCB_MAX_NETLIST_LINE_LENGTH     255 /* maximum line length for netlist files */
 #define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 #define PCB_MIN_GRID_DISTANCE           4   /* minimum distance between point to enable grid drawing */
