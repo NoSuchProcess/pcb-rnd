@@ -200,6 +200,16 @@ fgw_error_t pcb_act_PrintVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_DumpVersion[] = "DumpVersion()";
+static const char pcb_acth_DumpVersion[] = "Dump version in script readable format.";
+fgw_error_t pcb_act_DumpVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	printf("%s\n", PCB_VERSION);
+	printf("%s\n", PCB_REVISION);
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
 static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
 fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -413,6 +423,7 @@ pcb_action_t main_action_list[] = {
 	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
 	{"PrintUsage", pcb_act_PrintUsage, pcb_acth_PrintUsage, pcb_acts_PrintUsage},
 	{"PrintVersion", pcb_act_PrintVersion, pcb_acth_PrintVersion, pcb_acts_PrintVersion},
+	{"DumpVersion", pcb_act_DumpVersion, pcb_acth_DumpVersion, pcb_acts_DumpVersion},
 	{"PrintCopyright", pcb_act_PrintCopyright, pcb_acth_PrintCopyright, pcb_acts_PrintCopyright},
 	{"PrintPaths", pcb_act_PrintPaths, pcb_acth_PrintPaths, pcb_acts_PrintPaths},
 	{"PrintFiles", pcb_act_PrintFiles, pcb_acth_PrintFiles, pcb_acts_PrintFiles},

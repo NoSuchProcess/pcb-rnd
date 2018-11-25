@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + FEATURE: (prio) invert selection [report: Keantoken]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
++ FEATURE: an alternative --version that has script-parsable output [report: bdale]
 - CLEANUP: boardflip rewrite: use data_mirror
 	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
@@ -56,7 +57,6 @@
 	- switch over core from storing color names to storing pcb_color_t
 	- remove per hid, non-backup-lib custom color structs
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
-- FEATURE: an alternative --version that has script-parsable output [report: bdale]
 - FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 - FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]

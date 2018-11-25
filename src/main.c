@@ -300,6 +300,7 @@ const char *pcb_action_args[] = {
 	NULL, "-show-paths",      "PrintPaths()",       "Print all configured paths and exit",                     NULL,
 	NULL, "-dump-config",     "dumpconf(native,1)", "Print the config tree and exit",                          "Config dump not available - make sure you have configured pcb-rnd with --buildin-diag",
 	"V",  "-version",         "PrintVersion()",     "Print version info and exit",                             NULL,
+	"V",  "-dump-version",    "DumpVersion()",      "Print version info in script readable format and exit",   NULL,
 	NULL, "-copyright",       "PrintCopyright()",   "Print copyright and exit",                                NULL,
 	NULL, NULL, NULL, NULL, NULL /* terminator */
 };
