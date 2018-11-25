@@ -40,9 +40,8 @@ typedef struct pcb_gl_color_s {
 
 void drawgl_uninit();
 void drawgl_flush();
-void drawgl_set_colour(GLfloat r,GLfloat g,GLfloat b,GLfloat a);
+void drawgl_set_colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 void drawgl_reset();
 
 
 #endif /* ! defined HID_GL_DRAW_GL_H */
-

@@ -39,21 +39,20 @@
 
 #include "opengl.h"
 
-void		stencilgl_init();
-int 		stencilgl_bit_count();
-void 		stencilgl_clear_stencil_bits(int bits);
-void 		stencilgl_clear_unassigned_stencil();
-int 		stencilgl_allocate_clear_stencil_bit();
-void 		stencilgl_return_stencil_bit(int bit);
-void 		stencilgl_reset_stencil_usage();
+void stencilgl_init();
+int stencilgl_bit_count();
+void stencilgl_clear_stencil_bits(int bits);
+void stencilgl_clear_unassigned_stencil();
+int stencilgl_allocate_clear_stencil_bit();
+void stencilgl_return_stencil_bit(int bit);
+void stencilgl_reset_stencil_usage();
 
 /* stencilgl_mode_write_set
  * Setup the stencil buffer so that writes will set stencil bits
  */
-static inline void
-stencilgl_mode_write_set(int bits)
+static inline void stencilgl_mode_write_set(int bits)
 {
-	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	glStencilMask(bits);
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
@@ -61,13 +60,11 @@ stencilgl_mode_write_set(int bits)
 /* stencilgl_mode_write_clear
  * Setup the stencil buffer so that writes will clear stencil bits
  */
-static inline void
-stencilgl_mode_write_clear(int bits)
+static inline void stencilgl_mode_write_clear(int bits)
 {
-	glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 	glStencilMask(bits);
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
 
 #endif /* !defined STENCIL_GL_H */
-

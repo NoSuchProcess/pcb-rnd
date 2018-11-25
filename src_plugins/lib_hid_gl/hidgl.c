@@ -51,81 +51,77 @@ void hidgl_init(void)
 }
 
 static pcb_composite_op_t composite_op = PCB_HID_COMP_RESET;
-static pcb_bool						direct_mode = pcb_true;
-static int								comp_stencil_bit = 0;
+static pcb_bool direct_mode = pcb_true;
+static int comp_stencil_bit = 0;
 
-static GLfloat * grid_points = NULL;
+static GLfloat *grid_points = NULL;
 static int grid_point_capacity = 0;
 
 
-static inline void
-mode_reset(pcb_bool direct,const pcb_box_t * screen)
+static inline void mode_reset(pcb_bool direct, const pcb_box_t *screen)
 {
-			drawgl_flush();
-			drawgl_reset();
-			glColorMask(0, 0, 0, 0);	/* Disable colour drawing */
-			stencilgl_reset_stencil_usage();
-			comp_stencil_bit = 0;
+	drawgl_flush();
+	drawgl_reset();
+	glColorMask(0, 0, 0, 0); /* Disable colour drawing */
+	stencilgl_reset_stencil_usage();
+	comp_stencil_bit = 0;
 }
 
-static inline void
-mode_positive(pcb_bool direct,const pcb_box_t * screen)
+static inline void mode_positive(pcb_bool direct, const pcb_box_t *screen)
 {
-	if(comp_stencil_bit == 0)
+	if (comp_stencil_bit == 0)
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 	else
-		drawgl_flush();		
+		drawgl_flush();
 
 	glEnable(GL_STENCIL_TEST);
 	stencilgl_mode_write_set(comp_stencil_bit);
 }
 
-static inline void
-mode_negative(pcb_bool direct,const pcb_box_t * screen)
+static inline void mode_negative(pcb_bool direct, const pcb_box_t *screen)
 {
 	glEnable(GL_STENCIL_TEST);
 
-	if(comp_stencil_bit == 0)	{
+	if (comp_stencil_bit == 0) {
 		/* The stencil isn't valid yet which means that this is the first pos/neg mode
 		 * set since the reset. The compositing stencil bit will be allocated. Because 
 		 * this is a negative mode and it's the first mode to be set, the stencil buffer
 		 * will be set to all ones.
-		 */ 
+		 */
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 		stencilgl_mode_write_set(comp_stencil_bit);
-		drawgl_direct_draw_solid_rectangle(screen->X1,screen->Y1,screen->X2,screen->Y2);
+		drawgl_direct_draw_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
 	}
 	else
-		drawgl_flush();	
+		drawgl_flush();
 
 	stencilgl_mode_write_clear(comp_stencil_bit);
 	drawgl_set_marker();
 }
 
-static inline void
-mode_flush(pcb_bool direct,pcb_bool xor_mode,const pcb_box_t * screen)
+static inline void mode_flush(pcb_bool direct, pcb_bool xor_mode, const pcb_box_t *screen)
 {
 	drawgl_flush();
-	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);	
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-	if(comp_stencil_bit) {
+	if (comp_stencil_bit) {
 		glEnable(GL_STENCIL_TEST);
 
 		/* Setup the stencil to allow writes to the colour buffer if the 
 		 * comp_stencil_bit is set. After the operation, the comp_stencil_bit
 		 * will be cleared so that any further writes to this pixel are disabled.
 		 */
-		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 		glStencilMask(comp_stencil_bit);
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
-			
-		if(xor_mode) {
+
+		if (xor_mode) {
 			glEnable(GL_COLOR_LOGIC_OP);
 			glLogicOp(GL_EQUIV);
 		}
 
 		/* Draw all primtives through the stencil to the colour buffer. */
-		drawgl_draw_all(comp_stencil_bit);    
+		drawgl_draw_all(comp_stencil_bit);
 
 		glDisable(GL_COLOR_LOGIC_OP);
 	}
@@ -136,8 +132,7 @@ mode_flush(pcb_bool direct,pcb_bool xor_mode,const pcb_box_t * screen)
 }
 
 
-void 
-hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t * screen)
+void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	pcb_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
 
@@ -147,7 +142,7 @@ hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *
 	 * discarded by rewinding the primitive buffer to the marker that was
 	 * set when entering NEGATIVE mode.
 	 */
-	if(composite_op == PCB_HID_COMP_NEGATIVE)	{
+	if (composite_op == PCB_HID_COMP_NEGATIVE) {
 		drawgl_flush();
 		drawgl_rewind_to_marker();
 	}
@@ -155,13 +150,22 @@ hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *
 	composite_op = op;
 	direct_mode = direct;
 
-	switch(op) {
-		case PCB_HID_COMP_RESET :				mode_reset(direct,screen);						break;
-		case PCB_HID_COMP_POSITIVE_XOR:	
-		case PCB_HID_COMP_POSITIVE : 		mode_positive(direct,screen);					break; 
-  	case PCB_HID_COMP_NEGATIVE :		mode_negative(direct,screen);					break; 
-  	case PCB_HID_COMP_FLUSH :  			mode_flush(direct,xor_mode,screen);		break; 
-		default : break;
+	switch (op) {
+		case PCB_HID_COMP_RESET:
+			mode_reset(direct, screen);
+			break;
+		case PCB_HID_COMP_POSITIVE_XOR:
+		case PCB_HID_COMP_POSITIVE:
+			mode_positive(direct, screen);
+			break;
+		case PCB_HID_COMP_NEGATIVE:
+			mode_negative(direct, screen);
+			break;
+		case PCB_HID_COMP_FLUSH:
+			mode_flush(direct, xor_mode, screen);
+			break;
+		default:
+			break;
 	}
 
 }
@@ -173,7 +177,7 @@ void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 	drawgl_add_triangle(x2, y1, x2, y2, x1, y1);
 }
 
-	
+
 static inline void reserve_grid_points(int n)
 {
 	if (n > grid_point_capacity) {
@@ -182,10 +186,10 @@ static inline void reserve_grid_points(int n)
 	}
 }
 
-void hidgl_draw_local_grid(pcb_coord_t cx,pcb_coord_t cy,int radius)
+void hidgl_draw_local_grid(pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	int npoints = 0;
-	pcb_coord_t x,y;
+	pcb_coord_t x, y;
 
 	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
 	const int r2 = radius * radius;
@@ -194,11 +198,11 @@ void hidgl_draw_local_grid(pcb_coord_t cx,pcb_coord_t cy,int radius)
 	reserve_grid_points(n);
 
 	for(y = -radius; y <= radius; y++) {
-		int y2 = y*y;
+		int y2 = y * y;
 		for(x = -radius; x <= radius; x++) {
-			if (x*x + y2 < r2) {
-				grid_points[npoints*2] = x*PCB->Grid + cx;
-				grid_points[npoints*2+1] = y*PCB->Grid + cy;
+			if (x * x + y2 < r2) {
+				grid_points[npoints * 2] = x * PCB->Grid + cx;
+				grid_points[npoints * 2 + 1] = y * PCB->Grid + cy;
 				npoints++;
 			}
 		}
@@ -211,7 +215,7 @@ void hidgl_draw_local_grid(pcb_coord_t cx,pcb_coord_t cy,int radius)
 
 }
 
-void hidgl_draw_grid(pcb_box_t * drawn_area)
+void hidgl_draw_grid(pcb_box_t *drawn_area)
 {
 	pcb_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
@@ -233,18 +237,18 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 		y2 = tmp;
 	}
 
-	n = (int) ((x2 - x1) / PCB->Grid + 0.5) + 1;
+	n = (int)((x2 - x1) / PCB->Grid + 0.5) + 1;
 	reserve_grid_points(n);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, 0, grid_points);
 
 	n = 0;
-	for (x = x1; x <= x2; x += PCB->Grid, ++n) 
+	for(x = x1; x <= x2; x += PCB->Grid, ++n)
 		grid_points[2 * n + 0] = x;
 
-	for (y = y1; y <= y2; y += PCB->Grid) {
-		for (i = 0; i < n; i++)
+	for(y = y1; y <= y2; y += PCB->Grid) {
+		for(i = 0; i < n; i++)
 			grid_points[2 * i + 1] = y;
 		glDrawArrays(GL_POINTS, 0, n);
 	}
@@ -262,7 +266,7 @@ int calc_slices(float pix_radius, float sweep_angle)
 		return MIN_SLICES;
 
 	slices = sweep_angle / acosf(1 - MAX_PIXELS_ARC_TO_CHORD / pix_radius) / 2.;
-	return (int) ceilf(slices);
+	return (int)ceilf(slices);
 }
 
 #define MIN_TRIANGLES_PER_CAP 3
@@ -285,10 +289,10 @@ static void draw_cap(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_angle_
 
 	last_capx = radius * cosf(angle * M_PI / 180.) + x;
 	last_capy = -radius * sinf(angle * M_PI / 180.) + y;
-	for (i = 0; i < slices; i++) {
-		capx = radius * cosf(angle * M_PI / 180. + ((float) (i + 1)) * M_PI / (float) slices) + x;
-		capy = -radius * sinf(angle * M_PI / 180. + ((float) (i + 1)) * M_PI / (float) slices) + y;
-		drawgl_add_triangle(last_capx,last_capy,capx,capy,x,y);
+	for(i = 0; i < slices; i++) {
+		capx = radius * cosf(angle * M_PI / 180. + ((float)(i + 1)) * M_PI / (float)slices) + x;
+		capy = -radius * sinf(angle * M_PI / 180. + ((float)(i + 1)) * M_PI / (float)slices) + y;
+		drawgl_add_triangle(last_capx, last_capy, capx, capy, x, y);
 		last_capx = capx;
 		last_capy = capy;
 	}
@@ -305,7 +309,7 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 	pcb_coord_t orig_width = width;
 
 	if ((width == 0) || (!NEEDS_CAP(orig_width, scale)))
-		drawgl_add_line(x1,y1,x2,y2);
+		drawgl_add_line(x1, y1, x2, y2);
 	else {
 		if (width < scale)
 			width = scale;
@@ -338,26 +342,26 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 		}
 
 		switch (cap) {
-		case pcb_cap_round:
-			circular_caps = 1;
-			break;
+			case pcb_cap_round:
+				circular_caps = 1;
+				break;
 
-		case pcb_cap_square:
-			x1 -= deltax * width / 2. / length;
-			y1 -= deltay * width / 2. / length;
-			x2 += deltax * width / 2. / length;
-			y2 += deltay * width / 2. / length;
-			break;
+			case pcb_cap_square:
+				x1 -= deltax * width / 2. / length;
+				y1 -= deltay * width / 2. / length;
+				x2 += deltax * width / 2. / length;
+				y2 += deltay * width / 2. / length;
+				break;
 
-		default:
-			assert(!"unhandled cap");
-			circular_caps = 1;
+			default:
+				assert(!"unhandled cap");
+				circular_caps = 1;
 		}
 
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
 		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
 
-		if (circular_caps)  {
+		if (circular_caps) {
 			draw_cap(width, x1, y1, angle, scale);
 			draw_cap(width, x2, y2, angle + 180., scale);
 		}
@@ -412,7 +416,7 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 
 	drawgl_reserve_triangles(2 * slices);
 
-	angle_incr_rad = delta_angle_rad / (float) slices;
+	angle_incr_rad = delta_angle_rad / (float)slices;
 
 	cos_ang = cosf(start_angle_rad);
 	sin_ang = sinf(start_angle_rad);
@@ -420,16 +424,16 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	last_inner_y = inner_r * sin_ang + y;
 	last_outer_x = -outer_r * cos_ang + x;
 	last_outer_y = outer_r * sin_ang + y;
-	for (i = 1; i <= slices; i++) {
-		cos_ang = cosf(start_angle_rad + ((float) (i)) * angle_incr_rad);
-		sin_ang = sinf(start_angle_rad + ((float) (i)) * angle_incr_rad);
+	for(i = 1; i <= slices; i++) {
+		cos_ang = cosf(start_angle_rad + ((float)(i)) * angle_incr_rad);
+		sin_ang = sinf(start_angle_rad + ((float)(i)) * angle_incr_rad);
 		inner_x = -inner_r * cos_ang + x;
 		inner_y = inner_r * sin_ang + y;
 		outer_x = -outer_r * cos_ang + x;
 		outer_y = outer_r * sin_ang + y;
 
-		drawgl_add_triangle( last_inner_x, last_inner_y, last_outer_x, last_outer_y, outer_x, outer_y);
-		drawgl_add_triangle( last_inner_x, last_inner_y, inner_x, inner_y, outer_x, outer_y);
+		drawgl_add_triangle(last_inner_x, last_inner_y, last_outer_x, last_outer_y, outer_x, outer_y);
+		drawgl_add_triangle(last_inner_x, last_inner_y, inner_x, inner_y, outer_x, outer_y);
 
 		last_inner_x = inner_x;
 		last_inner_y = inner_y;
@@ -443,8 +447,7 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 
 	if (NEEDS_CAP(orig_width, scale)) {
 		draw_cap(width, x + rx * -cosf(start_angle_rad), y + rx * sinf(start_angle_rad), start_angle, scale);
-		draw_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad),
-			y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
+		draw_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad), y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
 	}
 }
 
@@ -457,7 +460,7 @@ void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double sc
 {
 #define MIN_TRIANGLES_PER_CIRCLE 6
 #define MAX_TRIANGLES_PER_CIRCLE 360
-			
+
 	float last_x, last_y;
 	float radius = vr;
 	int slices;
@@ -478,10 +481,10 @@ void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double sc
 	last_x = vx + vr;
 	last_y = vy;
 
-	for (i = 0; i < slices; i++) {
+	for(i = 0; i < slices; i++) {
 		float x, y;
-		x = radius * cosf(((float) (i + 1)) * 2. * M_PI / (float) slices) + vx;
-		y = radius * sinf(((float) (i + 1)) * 2. * M_PI / (float) slices) + vy;
+		x = radius * cosf(((float)(i + 1)) * 2. * M_PI / (float)slices) + vx;
+		y = radius * sinf(((float)(i + 1)) * 2. * M_PI / (float)slices) + vy;
 		drawgl_add_triangle(vx, vy, last_x, last_y, x, y);
 		last_x = x;
 		last_y = y;
@@ -504,14 +507,14 @@ static void myError(GLenum errno)
 
 static void myFreeCombined()
 {
-	while (combined_num_to_free)
+	while(combined_num_to_free)
 		free(combined_to_free[--combined_num_to_free]);
 }
 
 static void myCombine(GLdouble coords[3], void *vertex_data[4], GLfloat weight[4], void **dataOut)
 {
 #define MAX_COMBINED_VERTICES 2500
-	static GLdouble combined_vertices[3 * MAX_COMBINED_VERTICES];
+	static GLdouble combined_vertices[3 *MAX_COMBINED_VERTICES];
 	static int num_combined_vertices = 0;
 
 	GLdouble *new_vertex;
@@ -545,9 +548,9 @@ static void myBegin(GLenum type)
 
 static double global_scale;
 
-static void myVertex(GLdouble * vertex_data)
+static void myVertex(GLdouble *vertex_data)
 {
-	static GLfloat triangle_vertices[2 * 3];
+	static GLfloat triangle_vertices[2 *3];
 
 	if (tessVertexType == GL_TRIANGLE_STRIP || tessVertexType == GL_TRIANGLE_FAN) {
 		if (stashed_vertices < 2) {
@@ -556,8 +559,7 @@ static void myVertex(GLdouble * vertex_data)
 			stashed_vertices++;
 		}
 		else {
-			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1],
-												 	triangle_vertices[2], triangle_vertices[3], vertex_data[0], vertex_data[1]);
+			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2], triangle_vertices[3], vertex_data[0], vertex_data[1]);
 			if (tessVertexType == GL_TRIANGLE_STRIP) {
 				/* STRIP saves the last two vertices for re-use in the next triangle */
 				triangle_vertices[0] = triangle_vertices[2];
@@ -573,8 +575,7 @@ static void myVertex(GLdouble * vertex_data)
 		triangle_vertices[triangle_comp_idx++] = vertex_data[1];
 		stashed_vertices++;
 		if (stashed_vertices == 3) {
-			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1],
-												 	triangle_vertices[2], triangle_vertices[3], triangle_vertices[4], triangle_vertices[5]);
+			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2], triangle_vertices[3], triangle_vertices[4], triangle_vertices[5]);
 			triangle_comp_idx = 0;
 			stashed_vertices = 0;
 		}
@@ -584,7 +585,7 @@ static void myVertex(GLdouble * vertex_data)
 }
 
 /* Intentaional code duplication for performance */
-void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+void hidgl_fill_polygon(int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 {
 	int i;
 	GLUtesselator *tobj;
@@ -603,7 +604,7 @@ void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 	gluTessBeginPolygon(tobj, NULL);
 	gluTessBeginContour(tobj);
 
-	for (i = 0; i < n_coords; i++) {
+	for(i = 0; i < n_coords; i++) {
 		vertices[0 + i * 3] = x[i];
 		vertices[1 + i * 3] = y[i];
 		vertices[2 + i * 3] = 0.;
@@ -638,7 +639,7 @@ void hidgl_fill_polygon_offs(int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_c
 	gluTessBeginPolygon(tobj, NULL);
 	gluTessBeginContour(tobj);
 
-	for (i = 0; i < n_coords; i++) {
+	for(i = 0; i < n_coords; i++) {
 		vertices[0 + i * 3] = x[i] + dx;
 		vertices[1 + i * 3] = y[i] + dy;
 		vertices[2 + i * 3] = 0.;
@@ -653,11 +654,11 @@ void hidgl_fill_polygon_offs(int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_c
 	free(vertices);
 }
 
-void tesselate_contour(GLUtesselator * tobj, pcb_pline_t * contour, GLdouble * vertices, double scale)
+void tesselate_contour(GLUtesselator *tobj, pcb_pline_t *contour, GLdouble *vertices, double scale)
 {
 	pcb_vnode_t *vn = &contour->head;
 	int offset = 0;
-	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = scale*2;
+	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = scale * 2;
 
 	/* If the contour is round, and hidgl_fill_circle would use
 	 * less slices than we have vertices to draw it, then call
@@ -683,7 +684,7 @@ void tesselate_contour(GLUtesselator * tobj, pcb_pline_t * contour, GLdouble * v
 		lasty = vn->point[1];
 		gluTessVertex(tobj, &vertices[offset], &vertices[offset]);
 		offset += 3;
-	} while ((vn = vn->next) != &contour->head);
+	} while((vn = vn->next) != &contour->head);
 	gluTessEndContour(tobj);
 	gluTessEndPolygon(tobj);
 }
@@ -694,7 +695,7 @@ struct do_hole_info {
 	double scale;
 };
 
-static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t do_hole(const pcb_box_t *b, void *cl)
 {
 	struct do_hole_info *info = cl;
 	pcb_pline_t *curc = (pcb_pline_t *) b;
@@ -709,12 +710,12 @@ static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
 }
 
 
-void hidgl_fill_pcb_polygon(pcb_poly_t * poly, const pcb_box_t * clip_box, double scale)
+void hidgl_fill_pcb_polygon(pcb_poly_t *poly, const pcb_box_t *clip_box, double scale)
 {
 	int vertex_count = 0;
 	pcb_pline_t *contour;
 	struct do_hole_info info;
-	pcb_polyarea_t * p_area;
+	pcb_polyarea_t *p_area;
 	const int fullpoly = PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly);
 
 	info.scale = scale;
@@ -731,10 +732,10 @@ void hidgl_fill_pcb_polygon(pcb_poly_t * poly, const pcb_box_t * clip_box, doubl
 	/* This gives an upper bound on the amount of storage required */
 	p_area = poly->Clipped;
 	do {
-		for (contour = p_area->contours; contour != NULL; contour = contour->next)
+		for(contour = p_area->contours; contour != NULL; contour = contour->next)
 			vertex_count = MAX(vertex_count, contour->Count);
 		p_area = p_area->f;
-	} while (fullpoly && (p_area != poly->Clipped));
+	} while(fullpoly && (p_area != poly->Clipped));
 
 	/* Allocate a vertex buffer */
 	info.vertices = malloc(sizeof(GLdouble) * vertex_count * 3);
@@ -753,7 +754,7 @@ void hidgl_fill_pcb_polygon(pcb_poly_t * poly, const pcb_box_t * clip_box, doubl
 	p_area = poly->Clipped;
 	do {
 
-		/* Create a MASK (stencil). All following drawing will affect the mask only */			
+		/* Create a MASK (stencil). All following drawing will affect the mask only */
 		drawgl_add_mask_create();
 
 		/* Find and draw the cutouts */
@@ -773,10 +774,9 @@ void hidgl_fill_pcb_polygon(pcb_poly_t * poly, const pcb_box_t * clip_box, doubl
 		drawgl_flush();
 
 		p_area = p_area->f;
-	} while (fullpoly && (p_area != poly->Clipped));
+	} while(fullpoly && (p_area != poly->Clipped));
 
 	gluDeleteTess(info.tobj);
 	myFreeCombined();
 	free(info.vertices);
 }
-

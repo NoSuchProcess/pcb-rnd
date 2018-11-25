@@ -68,7 +68,7 @@ int stencilgl_allocate_clear_stencil_bit(void)
 	}
 
 	/* Look for a bitplane we don't have to clear */
-	for (test = 1; test & stencil_bitmask; test <<= 1) {
+	for(test = 1; test & stencil_bitmask; test <<= 1) {
 		if (!(test & dirty_bits)) {
 			assigned_bits |= test;
 			dirty_bits |= test;
@@ -97,8 +97,7 @@ void stencilgl_reset_stencil_usage()
 	assigned_bits = 0;
 }
 
-void
-stencilgl_init()
+void stencilgl_init()
 {
 	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
 
