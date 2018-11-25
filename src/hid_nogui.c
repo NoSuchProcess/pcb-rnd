@@ -408,11 +408,6 @@ static int nogui_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_
 	CRASH("attribute_dialog");
 }
 
-static void nogui_show_item(void *item)
-{
-	CRASH("show_item");
-}
-
 static void nogui_beep(void)
 {
 	putchar(7);
@@ -490,7 +485,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->attr_dlg_free = nogui_attr_dlg_free;
 	hid->attr_dlg_property = nogui_attr_dlg_property;
 	hid->attribute_dialog = nogui_attribute_dialog;
-	hid->show_item = nogui_show_item;
 	hid->beep = nogui_beep;
 	hid->progress = nogui_progress;
 	hid->create_menu = nogui_create_menu;
