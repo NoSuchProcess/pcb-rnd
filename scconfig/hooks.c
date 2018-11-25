@@ -160,7 +160,10 @@ int hook_custom_arg(const char *key, const char *value)
 		exit(0);
 	}
 
-	return arg_auto_set(key, value, disable_libs);
+	if (arg_auto_set(key, value, disable_libs) == 0) {
+		fprintf(stderr, "Error: unknown argumnet %s\n", key);
+		exit(1);
+	}
 }
 
 /* execute plugin dependency statements, depending on "require":
