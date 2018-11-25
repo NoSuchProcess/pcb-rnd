@@ -62,10 +62,10 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	pcb_objtype_t type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
-		int orig_po = pcb_draw_doing_pinout;
-		pcb_draw_doing_pinout = pcb_true;
+		int orig_po = pcb_draw_force_termlab;
+		pcb_draw_force_termlab = pcb_true;
 		pcb_subc_draw_preview(sc, &e->view);
-		pcb_draw_doing_pinout = orig_po;
+		pcb_draw_force_termlab = orig_po;
 	}
 	else {
 		char tmp[128];

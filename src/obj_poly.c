@@ -1192,7 +1192,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 	}
 
 	if (polygon->term != NULL) {
-		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, polygon))
+		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, polygon))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)polygon);
 	}
 

@@ -796,10 +796,10 @@ static void pinout_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	pcb_subc_t *sc = e->content.draw_data;
 
 	if (sc != NULL) {
-		int orig_po = pcb_draw_doing_pinout;
-		pcb_draw_doing_pinout = pcb_true;
+		int orig_po = pcb_draw_force_termlab;
+		pcb_draw_force_termlab = pcb_true;
  		pcb_subc_draw_preview(sc, &e->view);
-		pcb_draw_doing_pinout = orig_po;
+		pcb_draw_force_termlab = orig_po;
 	}
 }
 

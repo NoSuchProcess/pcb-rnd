@@ -1210,7 +1210,7 @@ void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *text, pcb_coord_t min_lin
 	DrawTextLowLevel_(info, text, min_line_width, 0, 0, 0, tiny);
 
 	if (text->term != NULL) {
-		if ((allow_term_gfx) && ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text)))
+		if ((allow_term_gfx) && ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text)))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)text);
 	}
 }

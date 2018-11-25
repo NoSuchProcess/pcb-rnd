@@ -105,7 +105,7 @@ do { \
 	pcb_draw_invalidated.Y2 = MAX(pcb_draw_invalidated.Y2, box->Y2); \
 } while(0)
 
-extern int pcb_draw_doing_pinout;
+extern int pcb_draw_force_termlab; /* force drawing terminal lables - useful for pinout previews */
 extern pcb_bool pcb_draw_doing_assy;
 
 void pcb_lighten_color(const char *orig, char buf[8], double factor);

@@ -960,7 +960,7 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 			pcb_draw_wireframe_arc(pcb_draw_out.fgGC, arc, thickness);
 	}
 	if (arc->term != NULL) {
-		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, arc))
+		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, arc))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)arc);
 	}
 }

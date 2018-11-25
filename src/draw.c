@@ -63,7 +63,7 @@ pcb_output_t pcb_draw_out; /* global context used for drawing */
 
 pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX };
 
-int pcb_draw_doing_pinout = 0;
+int pcb_draw_force_termlab = 0;
 pcb_bool pcb_draw_doing_assy = pcb_false;
 static vtp0_t delayed_labels, delayed_objs;
 pcb_bool delayed_labels_enabled = pcb_false;
@@ -877,7 +877,7 @@ static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb
 		return;
 
 	/* do not show layer-object labels of the other side on non-pinout views */
-	if ((!pcb_draw_doing_pinout) && (obj->parent_type == PCB_PARENT_LAYER)) {
+	if ((!pcb_draw_force_termlab) && (obj->parent_type == PCB_PARENT_LAYER)) {
 		pcb_layer_t *ly = pcb_layer_get_real(obj->parent.layer);
 		if ((ly != NULL) && (ly->meta.real.grp != gid))
 			return;
@@ -1080,10 +1080,10 @@ void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, do
 	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.pin_name);
 
 	if (pcb_gui->gui)
-		pcb_draw_doing_pinout++;
+		pcb_draw_force_termlab++;
 	pcb_text_draw_string(info, font, label, x, y, scale, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	if (pcb_gui->gui)
-		pcb_draw_doing_pinout--;
+		pcb_draw_force_termlab--;
 }
 
 void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)

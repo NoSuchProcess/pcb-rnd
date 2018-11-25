@@ -342,7 +342,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 
 	if (ps->term == NULL) {
 		/* normal via, not a terminal */
-		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
+		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
 				color = conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
@@ -367,7 +367,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 	}
 	else {
 		/* terminal */
-		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
+		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
 				color = conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
@@ -597,7 +597,7 @@ pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl)
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
-		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
+		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
 			pcb_pstk_draw_label(info, ps);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
