@@ -287,18 +287,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* display the pinout of a subcircuit */
 		case F_Pinout:
-			{
-				pcb_subc_t *subc;
-				void *ptrtmp;
-				pcb_coord_t x, y;
-
-				pcb_hid_get_coords(_("Click on a subcircuit"), &x, &y, 0);
-				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
-					subc = (pcb_subc_t *) ptrtmp;
-					pcb_gui->show_item(subc);
-				}
-				break;
-			}
+			return pcb_actionl("pinout2", NULL);
 
 			/* toggle displaying of terminal names */
 		case F_PinOrPadName:
