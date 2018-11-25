@@ -62,7 +62,6 @@ typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb
 
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
-	PCB_GTK_PREVIEW_PINOUT, /* single subcircuit */
 	PCB_GTK_PREVIEW_LAYER,  /* specific (oftne virtual) layer */
 	PCB_GTK_PREVIEW_BOARD,  /* render the board (whole layer stack) */
 	PCB_GTK_PREVIEW_GENERIC,/* generic callback based draw */
@@ -107,10 +106,6 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *h
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
 
 /* Application-specific shorthands */
-GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com,
-																			pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_any_obj_t *obj);
-
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);

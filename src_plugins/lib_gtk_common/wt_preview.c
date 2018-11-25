@@ -122,7 +122,6 @@ static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)
 }
 
 enum {
-	PROP_ELEMENT_DATA = 1,
 	PROP_GPORT = 2,
 	PROP_INIT_WIDGET = 3,
 	PROP_EXPOSE = 4,
@@ -162,13 +161,6 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(preview));
 
 	switch (property_id) {
-	case PROP_ELEMENT_DATA:
-		preview->kind = PCB_GTK_PREVIEW_PINOUT;
-		preview_set_data(preview, (pcb_any_obj_t *)g_value_get_pointer(value));
-		preview->expose_data.content.obj = preview->obj;
-		if (window != NULL)
-			gdk_window_invalidate_rect(window, NULL, FALSE);
-		break;
 	case PROP_GPORT:
 		preview->gport = (void *) g_value_get_pointer(value);
 		break;
@@ -240,13 +232,6 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 
 		return res;
 
-	case PCB_GTK_PREVIEW_PINOUT:
-		preview->expose_data.view.X1 = preview->x_min;
-		preview->expose_data.view.Y1 = preview->y_min;
-		preview->expose_data.view.X2 = preview->x_max;
-		preview->expose_data.view.Y2 = preview->y_max;
-		return preview->expose(widget, ev, pcb_hid_expose_pinout, &preview->expose_data);
-
 	case PCB_GTK_PREVIEW_LAYER:
 		preview->expose_data.view.X1 = preview->x_min;
 		preview->expose_data.view.Y1 = preview->y_min;
@@ -279,9 +264,6 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 	PCB_GTK_EXPOSE_EVENT_SET(gtk_widget_class, ghid_preview_expose);
 
 	ghid_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
-
-	g_object_class_install_property(gobject_class, PROP_ELEMENT_DATA,
-																	g_param_spec_pointer("element-data", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_GPORT, g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_COM, g_param_spec_pointer("com", "", "", G_PARAM_WRITABLE));
@@ -521,7 +503,7 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 																							 "com", com,
 																							 "gport", com->gport,
 																							 "init-widget", init_widget,
-																							 "kind", PCB_GTK_PREVIEW_PINOUT,	/* May change in the future */
+																							 "kind", PCB_GTK_PREVIEW_GENERIC,
 																							 "expose", expose,
 																							 "dialog_draw", dialog_draw,
 																							 NULL);
@@ -530,22 +512,6 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 
 	return GTK_WIDGET(preview);
 }
-
-GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_any_obj_t *obj)
-{
-	pcb_gtk_preview_t *preview;
-
-	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, NULL);
-	preview->view.com = com;
-	g_object_set(G_OBJECT(preview), "width-request", 50, "height-request", 50, NULL);
-	preview->view.canvas_width = 50;
-	preview->view.canvas_height = 50;
-	g_object_set(G_OBJECT(preview), "element-data", obj, NULL);
-
-	return GTK_WIDGET(preview);
-}
-
 
 static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer, pcb_hid_dialog_draw_t dialog_draw)
