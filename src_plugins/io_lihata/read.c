@@ -1477,12 +1477,13 @@ static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 		}
 	}
 
-#warning layer TODO: #tbs do not require top and bottom silk to present
-	/* for now, require top and bottom silk */
-	if (pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
-		return iolht_error(loc, "Unsupported layer stackup: top silk layer missing\n");
-	if (pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
-		return iolht_error(loc, "Unsupported layer stackup: bottom silk layer missing\n");
+	if (rdver == 1) { /* v1 used to require top and bottom silk */
+		if (pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
+			iolht_warn(loc, -1, "Strange layer stackup for v1: top silk layer missing\n");
+		if (pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
+			iolht_warn(loc, -1, "Strange layer stackup for v1: bottom silk layer missing\n");
+	}
+
 	if (rdver < 6) {
 		if (pcb_layer_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1)
 			return iolht_error(loc, "Unsupported layer stackup: multiple outline layers was not possible before lihata board v6\n");
@@ -1494,12 +1495,12 @@ static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
 {
 	pcb_layergrp_id_t tmp[2];
 
-#warning layer TODO: #tbs do not require top and bottom silk to present
-	/* for now, require top and bottom silk */
-	if (pcb_layergrp_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
-		return iolht_error(loc, "Unsupported layer stackup: top silk layer group missing\n");
-	if (pcb_layergrp_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
-		return iolht_error(loc, "Unsupported layer stackup: bottom silk layer group missing\n");
+	if (rdver == 1) { /*v1 required top and bottom silk */
+		if (pcb_layergrp_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
+			iolht_warn(loc, -1, "Strange layer stackup in v1: top silk layer group missing\n");
+		if (pcb_layergrp_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
+			iolht_warn(loc, -1, "Strange layer stackup in v1: bottom silk layer group missing\n");
+	}
 	if ((pcb_layergrp_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1) && (rdver < 6))
 		return iolht_error(loc, "Unsupported layer stackup: multiple outline layer groups was not possible before lihata board v6\n");
 	return 0;
