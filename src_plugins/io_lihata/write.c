@@ -1036,9 +1036,17 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 		}
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+		if (g == NULL) {
+			pcb_io_incompat_save(NULL, NULL, "lihata board v1 did not support a layer stackup without bottom silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
+			return NULL;
+		}
 		grp[g - PCB->LayerGroups.grp] = gbottom;
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
+		if (g == NULL) {
+			pcb_io_incompat_save(NULL, NULL, "lihata board v1 did not support a layer stackup without top silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
+			return NULL;
+		}
 		grp[g - PCB->LayerGroups.grp] = gtop;
 
 		/* v1 needs to have silk at the end of the list */
@@ -1071,16 +1079,20 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 
 static lht_node_t *build_data(pcb_data_t *data)
 {
-	lht_node_t *grp, *ndt;
+	lht_node_t *grp, *ndt, *dlr;
 	pcb_pstk_t *ps;
 	pcb_subc_t *sc;
 	gdl_iterator_t it;
 	pcb_rat_t *line;
 
+	dlr = build_data_layers(data);
+	if (dlr == NULL)
+		return NULL;
+
 	ndt = lht_dom_node_alloc(LHT_HASH, "data");
 
 	/* build layers */
-	lht_dom_hash_put(ndt, build_data_layers(data));
+	lht_dom_hash_put(ndt, dlr);
 
 	/* build a list of all global objects */
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
@@ -1397,6 +1409,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 {
 	char vers[32];
 	lht_doc_t *brd = lht_dom_init();
+	lht_node_t *ntmp;
 
 	sprintf(vers, "pcb-rnd-board-v%d", wrver);
 	brd->root = lht_dom_node_alloc(LHT_HASH, vers);
@@ -1407,7 +1420,12 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 			goto error;
 		lht_dom_hash_put(brd->root, stack);
 	}
-	lht_dom_hash_put(brd->root, build_data(pcb->Data));
+
+	ntmp = build_data(pcb->Data);
+	if (ntmp == NULL)
+		goto error;
+
+	lht_dom_hash_put(brd->root, ntmp);
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
