@@ -1158,6 +1158,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	double HigherBound = 0;
 	int HigherAvail = PCB_OBJ_VOID;
 	int objst = Type & (PCB_OBJ_LOCKED | PCB_OBJ_SUBC_PART);
+	pcb_layer_id_t front_silk_id, back_silk_id;
 
 	/* setup variables used by local functions */
 	PosX = X;
@@ -1218,17 +1219,26 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		HigherAvail = PCB_OBJ_SUBC;
 	}
 
+	front_silk_id = conf_core.editor.show_solder_side ? pcb_layer_get_bottom_silk() : pcb_layer_get_top_silk();
+	back_silk_id = conf_core.editor.show_solder_side ? pcb_layer_get_top_silk() : pcb_layer_get_bottom_silk();
+
 	for (i = -1; i < pcb_max_layer + 1; i++) {
 		int found;
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are i=-1 and i=max+1, if we meet them elsewhere, skip */
 			continue;
-		if (i < 0)
-			SearchLayer = &PCB->Data->SILKLAYER;
-		else if (i < pcb_max_layer)
-			SearchLayer = LAYER_ON_STACK(i);
 
+		if (i < 0) {
+			if (front_silk_id < 0)
+				continue;
+			SearchLayer = &PCB->Data->Layer[front_silk_id];
+		}
+		else if (i < pcb_max_layer) {
+			SearchLayer = LAYER_ON_STACK(i);
+		}
 		else {
-			SearchLayer = &PCB->Data->BACKSILKLAYER;
+			if (back_silk_id < 0)
+				continue;
+			SearchLayer = &PCB->Data->Layer[back_silk_id];
 			if (!PCB->InvisibleObjectsOn)
 				continue;
 		}

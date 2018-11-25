@@ -195,10 +195,6 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
 #define	CURRENT	(LAYER_ON_STACK(0))
 #define	INDEXOFCURRENT	(pcb_layer_stack[0])
-#define SILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? pcb_layer_get_bottom_silk() : pcb_layer_get_top_silk())]
-#define BACKSILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? pcb_layer_get_top_silk() : pcb_layer_get_bottom_silk())]
 
 #define LAYER_LOOP(data, ml) do { \
         pcb_cardinal_t n; \
