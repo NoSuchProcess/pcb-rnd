@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef	__GLOBALCONST_INCLUDED__
-#define	__GLOBALCONST_INCLUDED__
+#ifndef PCB_GLOBALCONST_H
+#define PCB_GLOBALCONST_H
 
 #include "config.h"
 
