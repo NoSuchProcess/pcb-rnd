@@ -302,10 +302,6 @@ batch_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_
 	return 0;
 }
 
-static void batch_show_item(void *item)
-{
-}
-
 static void batch_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
@@ -397,7 +393,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.add_block_hook = batch_add_block_hook;
 	batch_hid.stop_block_hook = batch_stop_block_hook;
 	batch_hid.attribute_dialog = batch_attribute_dialog;
-	batch_hid.show_item = batch_show_item;
 	batch_hid.create_menu = batch_create_menu;
 	batch_hid.usage = batch_usage;
 

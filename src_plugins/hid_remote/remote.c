@@ -384,10 +384,6 @@ static int remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, p
 	return 0;
 }
 
-static void remote_show_item(void *item)
-{
-}
-
 static void remote_create_menu(const char *menu, const char *action, const char *dummy, const char *accel, const char *tip, const char *cookie)
 {
 }
@@ -479,7 +475,6 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
 	remote_hid.attribute_dialog = remote_attribute_dialog;
-	remote_hid.show_item = remote_show_item;
 	remote_hid.create_menu = remote_create_menu;
 
 	remote_hid.propedit_start = remote_propedit_start;
