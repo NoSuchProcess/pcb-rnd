@@ -65,30 +65,30 @@
 conf_rubberband_orig_t conf_rbo;
 
 
-typedef struct {								/* rubberband lines for element moves */
-	pcb_layer_t *Layer;						/* layer that holds the line */
-	pcb_line_t *Line;							/* the line itself */
-/*	pcb_point_t *MovedPoint;	*/		/* and finally the point */
+typedef struct { /* rubberband lines for element moves */
+	pcb_layer_t *Layer; /* layer that holds the line */
+	pcb_line_t *Line; /* the line itself */
+	/*	pcb_point_t *MovedPoint;	*//* and finally the point */
 /*
 	pcb_coord_t DX;
 	pcb_coord_t DY;
 	int delta_is_valid; */
 
-	int delta_index[2];           /* The index into the delta array for the two line points */
+	int delta_index[2]; /* The index into the delta array for the two line points */
 } pcb_rubberband_t;
 
 typedef struct {
-	pcb_layer_t * Layer;					/* Layer that holds the arc */
-	pcb_arc_t 	* Arc;						/* The arc itself */
-	int           delta_index[2]; /* The index into the delta array for each arc end. -1 = end not attached */
+	pcb_layer_t *Layer; /* Layer that holds the arc */
+	pcb_arc_t *Arc; /* The arc itself */
+	int delta_index[2]; /* The index into the delta array for each arc end. -1 = end not attached */
 } pcb_rubberband_arc_t;
 
 
 typedef struct {
-	pcb_cardinal_t RubberbandN;  /* number of lines in array */
+	pcb_cardinal_t RubberbandN; /* number of lines in array */
 	pcb_cardinal_t RubberbandMax;
 	pcb_rubberband_t *Rubberband;
-	pcb_cardinal_t RubberbandArcN;  /* number of lines in array */
+	pcb_cardinal_t RubberbandArcN; /* number of lines in array */
 	pcb_cardinal_t RubberbandArcMax;
 	pcb_rubberband_arc_t *RubberbandArcs;
 } rubber_ctx_t;
@@ -109,27 +109,27 @@ struct rubber_info {
 
 static pcb_rubberband_t *pcb_rubber_band_alloc(rubber_ctx_t *rbnd);
 static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd);
-static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number,int delta_index);
-static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end,int delta_index);
-static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *,int delta_index);
+static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index);
+static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end, int delta_index);
+static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, int delta_index);
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, pcb_bool);
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_poly_t *);
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
 static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *);
 
-static void	calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,int end, pcb_coord_t dx,pcb_coord_t dy,pcb_route_t * route);
+static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t *arcptr, int end, pcb_coord_t dx, pcb_coord_t dy, pcb_route_t *route);
 
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 
 static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl);
-static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl);
+static pcb_r_dir_t rubber_callback_arc(const pcb_box_t *b, void *cl);
 
-static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	pcb_rubberband_t *have_line = NULL;
-	struct rubber_info *i = (struct rubber_info *) cl;
+	struct rubber_info *i = (struct rubber_info *)cl;
 	rubber_ctx_t *rbnd = i->rbnd;
 	double x, y, rad, dist1, dist2;
 	pcb_coord_t t;
@@ -143,14 +143,14 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	for(n = 0; (n < rbnd->RubberbandN) && (have_line == NULL); n++)
 		if (rbnd->Rubberband[n].Line == line) {
 			have_line = &rbnd->Rubberband[n];
-			if(rbnd->Rubberband[n].delta_index[0] >= 0)
+			if (rbnd->Rubberband[n].delta_index[0] >= 0)
 				have_point1 = 1;
-			if(rbnd->Rubberband[n].delta_index[1] >= 0)
+			if (rbnd->Rubberband[n].delta_index[1] >= 0)
 				have_point2 = 1;
 		}
 
-	if(have_point1 && have_point2)
-			return PCB_R_DIR_NOT_FOUND;
+	if (have_point1 && have_point2)
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 		return PCB_R_DIR_NOT_FOUND;
@@ -165,11 +165,8 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	 */
 	if (i->radius == 0) {
 
-		if (!have_point1
-				&& line->Point1.X + t >= i->box.X1 && line->Point1.X - t <= i->box.X2
-				&& line->Point1.Y + t >= i->box.Y1 && line->Point1.Y - t <= i->box.Y2) {
-			if (((i->box.X1 <= line->Point1.X) &&
-					 (line->Point1.X <= i->box.X2)) || ((i->box.Y1 <= line->Point1.Y) && (line->Point1.Y <= i->box.Y2))) {
+		if (!have_point1 && line->Point1.X + t >= i->box.X1 && line->Point1.X - t <= i->box.X2 && line->Point1.Y + t >= i->box.Y1 && line->Point1.Y - t <= i->box.Y2) {
+			if (((i->box.X1 <= line->Point1.X) && (line->Point1.X <= i->box.X2)) || ((i->box.Y1 <= line->Point1.Y) && (line->Point1.Y <= i->box.Y2))) {
 				/*
 				 * The circle is positioned such that the closest point
 				 * on the rectangular region boundary is not at a corner
@@ -195,11 +192,8 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 					touches1 = 1;
 			}
 		}
-		if (!have_point2
-				&& line->Point2.X + t >= i->box.X1 && line->Point2.X - t <= i->box.X2
-				&& line->Point2.Y + t >= i->box.Y1 && line->Point2.Y - t <= i->box.Y2) {
-			if (((i->box.X1 <= line->Point2.X) &&
-					 (line->Point2.X <= i->box.X2)) || ((i->box.Y1 <= line->Point2.Y) && (line->Point2.Y <= i->box.Y2))) {
+		if (!have_point2 && line->Point2.X + t >= i->box.X1 && line->Point2.X - t <= i->box.X2 && line->Point2.Y + t >= i->box.Y1 && line->Point2.Y - t <= i->box.Y2) {
+			if (((i->box.X1 <= line->Point2.X) && (line->Point2.X <= i->box.X2)) || ((i->box.Y1 <= line->Point2.Y) && (line->Point2.Y <= i->box.Y2))) {
 				touches2 = 1;
 			}
 			else {
@@ -214,11 +208,10 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 			}
 		}
 	}
-	else
-	{
+	else {
 		/* circular search region */
 		if (i->radius < 0)
-			rad = 0;										/* require exact match */
+			rad = 0; /* require exact match */
 		else
 			rad = PCB_SQUARE(i->radius + t);
 
@@ -237,10 +230,10 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 		if (dist1 > 0 && dist2 > 0)
 			return PCB_R_DIR_NOT_FOUND;
 #if 0
-#ifdef CLOSEST_ONLY							/* keep this to remind me */
+#ifdef CLOSEST_ONLY /* keep this to remind me */
 		if ((dist1 < dist2) && !have_point1)
 			touches1 = 1;
-		else if(!have_point2)
+		else if (!have_point2)
 			touches2 = 1;
 #else
 		if ((dist1 <= 0) && !have_point1)
@@ -256,26 +249,26 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	}
 
 	if (touches1) {
-		if(have_line)
+		if (have_line)
 			have_line->delta_index[0] = i->delta_index;
 		else
-			have_line = pcb_rubber_band_create(rbnd, i->layer, line, 0,i->delta_index);
+			have_line = pcb_rubber_band_create(rbnd, i->layer, line, 0, i->delta_index);
 	}
 
 	if (touches2) {
-		if(have_line)
+		if (have_line)
 			have_line->delta_index[1] = i->delta_index;
 		else
-			pcb_rubber_band_create(rbnd, i->layer, line, 1,i->delta_index);
+			pcb_rubber_band_create(rbnd, i->layer, line, 1, i->delta_index);
 	}
 
 	return touches1 || touches2 ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t rubber_callback_arc(const pcb_box_t *b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
-	struct rubber_info *i = (struct rubber_info *) cl;
+	struct rubber_info *i = (struct rubber_info *)cl;
 	rubber_ctx_t *rbnd = i->rbnd;
 	double x, y, rad, dist1, dist2;
 	pcb_coord_t t;
@@ -296,18 +289,18 @@ static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl)
 			have_point2 = !(rbnd->RubberbandArcs[n].delta_index[1] < 0);
 		}
 
-	if(have_point1 && have_point2)
-			return PCB_R_DIR_NOT_FOUND;
+	if (have_point1 && have_point2)
+		return PCB_R_DIR_NOT_FOUND;
 
-	/* Calculate the arc end points */	
-	pcb_arc_get_end(arc,0,&ex1, &ey1);
-	pcb_arc_get_end(arc,1,&ex2, &ey2);
+	/* Calculate the arc end points */
+	pcb_arc_get_end(arc, 0, &ex1, &ey1);
+	pcb_arc_get_end(arc, 1, &ex2, &ey2);
 
 	/* circular search region */
 	t = arc->Thickness / 2;
 
 	if (i->radius < 0)
-		rad = 0;										/* require exact match */
+		rad = 0; /* require exact match */
 	else
 		rad = PCB_SQUARE(i->radius + t);
 
@@ -328,18 +321,18 @@ static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl)
 
 	/* The Arc end-point is touching so create an entry in the rubberband arc list */
 
-#ifdef CLOSEST_ONLY							/* keep this to remind me */
+#ifdef CLOSEST_ONLY /* keep this to remind me */
 	if ((dist1 < dist2) && !have_point1)
 		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 0);
-	else if(!have_point2)
+	else if (!have_point2)
 		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 1);
 #else
 	if ((dist1 <= 0) && !have_point1)
-		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 0,i->delta_index);
+		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 0, i->delta_index);
 	if ((dist2 <= 0) && !have_point2)
-		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 1,i->delta_index);
+		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 1, i->delta_index);
 #endif
-		
+
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -352,27 +345,27 @@ struct rinfo {
 	int delta_index;
 };
 
-static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t rat_callback(const pcb_box_t *box, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) box;
-	struct rinfo *i = (struct rinfo *) cl;
+	struct rinfo *i = (struct rinfo *)cl;
 	rubber_ctx_t *rbnd = i->rbnd;
 
 	switch (i->type) {
-	case PCB_OBJ_PSTK:
-		if (rat->Point1.X == i->pstk->x && rat->Point1.Y == i->pstk->y)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
-		else if (rat->Point2.X == i->pstk->x && rat->Point2.Y == i->pstk->y)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
-		break;
-	case PCB_OBJ_LINE_POINT:
-		if (rat->group1 == i->group && rat->Point1.X == i->point->X && rat->Point1.Y == i->point->Y)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0,i->delta_index);
-		else if (rat->group2 == i->group && rat->Point2.X == i->point->X && rat->Point2.Y == i->point->Y)
-			pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1,i->delta_index);
-		break;
-	default:
-		pcb_message(PCB_MSG_ERROR, "hace: bad rubber-rat lookup callback\n");
+		case PCB_OBJ_PSTK:
+			if (rat->Point1.X == i->pstk->x && rat->Point1.Y == i->pstk->y)
+				pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0, i->delta_index);
+			else if (rat->Point2.X == i->pstk->x && rat->Point2.Y == i->pstk->y)
+				pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1, i->delta_index);
+			break;
+		case PCB_OBJ_LINE_POINT:
+			if (rat->group1 == i->group && rat->Point1.X == i->point->X && rat->Point1.Y == i->point->Y)
+				pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 0, i->delta_index);
+			else if (rat->group2 == i->group && rat->Point2.X == i->point->X && rat->Point2.Y == i->point->Y)
+				pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1, i->delta_index);
+			break;
+		default:
+			pcb_message(PCB_MSG_ERROR, "hace: bad rubber-rat lookup callback\n");
 	}
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -405,15 +398,15 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poi
  * If one of the endpoints of the line is connected to an endpoint of the 
  * passed line, the scanned line is added to the 'rubberband' list
  */
-static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint,int delta_index)
+static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, int delta_index)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
-	if(group >= 0) {
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const pcb_coord_t t = Line->Thickness / 2;
@@ -431,11 +424,11 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 		info.Y = LinePoint->Y;
 		info.delta_index = delta_index;
 
-		for(entry = 0;entry < length;++entry)	{
+		for(entry = 0; entry < length; ++entry) {
 			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
-			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb))	{
+			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				info.layer = layer;
 				pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 			}
@@ -451,12 +444,12 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
-	if(group >= 0) {
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const pcb_coord_t t = Line->Thickness / 2;
@@ -474,11 +467,11 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 		info.Y = LinePoint->Y;
 		info.delta_index = 0;
 
-		for(entry = 0;entry < length;++entry)	{
+		for(entry = 0; entry < length; ++entry) {
 			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
-			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb))	{
+			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				info.layer = layer;
 				pcb_r_search(layer->arc_tree, &info.box, NULL, rubber_callback_arc, &info, NULL);
 			}
@@ -494,20 +487,20 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int *end_pt, pcb_bool Exact)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
-	if(group >= 0) {
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const pcb_coord_t t = Arc->Thickness / 2;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 		struct rubber_info info;
-		int end; /* = end_pt == pcb_arc_start_ptr ? 0 : 1;*/
-	
-		for(end=0;end<=1;++end)	{
+		int end; /* = end_pt == pcb_arc_start_ptr ? 0 : 1; */
+
+		for(end = 0; end <= 1; ++end) {
 			pcb_coord_t ex, ey;
 			pcb_arc_get_end(Arc, end, &ex, &ey);
 
@@ -522,11 +515,11 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 			info.Y = ey;
 			info.delta_index = end;
 
-			for(entry = 0;entry < length;++entry)	{
+			for(entry = 0; entry < length; ++entry) {
 				const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-				pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+				pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
-				if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb))	{
+				if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 					info.layer = layer;
 					pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 				}
@@ -546,18 +539,18 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 	int which;
 	pcb_coord_t t = Arc->Thickness / 2, ex, ey;
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
-	if(group >= 0) {
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
-		for(which=0; which<=1; ++which) {
-			pcb_arc_get_end(Arc,which,&ex, &ey);
+		for(which = 0; which <= 1; ++which) {
+			pcb_arc_get_end(Arc, which, &ex, &ey);
 
 			/* lookup layergroup and check all visible lines in this group */
 			info.radius = Exact ? -1 : MAX(Arc->Thickness / 2, 1);
@@ -571,11 +564,11 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 			info.Y = ey;
 			info.delta_index = which;
 
-			for(entry = 0;entry < length;++entry) {
+			for(entry = 0; entry < length; ++entry) {
 				const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-				pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+				pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
-				if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
+				if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 					/* check all visible lines of the group member */
 					info.layer = layer;
 					pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
@@ -590,27 +583,27 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
  * If either of the endpoints of the line lays anywhere inside the passed Arc,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * Layer, pcb_arc_t * Arc)
+static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 	pcb_layergrp_id_t group;
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
 	/* lookup layergroup and check all visible lines in this group */
 	group = pcb_layer_get_group_(Layer);
 
-	if(group >= 0) {
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
-		for(entry = 0;entry < length;++entry) {
+		for(entry = 0; entry < length; ++entry) {
 			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
-			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
+			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				pcb_coord_t thick;
 
 				/* the following code just stupidly compares the endpoints of the lines */
@@ -626,7 +619,7 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 
 					/* Check whether the line is already in the rubberband list. */
 					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-						if (rbnd->Rubberband[l].Line == line) 
+						if (rbnd->Rubberband[l].Line == line)
 							have_line = &rbnd->Rubberband[l];
 
 					/* Check whether any of the scanned line points touch the passed line */
@@ -634,18 +627,18 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 					touches1 = pcb_is_point_on_arc(line->Point1.X, line->Point1.Y, thick, Arc);
 					touches2 = pcb_is_point_on_arc(line->Point2.X, line->Point2.Y, thick, Arc);
 
-					if(touches1) {
-						if(have_line)
+					if (touches1) {
+						if (have_line)
 							have_line->delta_index[0] = 0;
-						else 
-							have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+						else
+							have_line = pcb_rubber_band_create(rbnd, layer, line, 0, 0);
 					}
 
-					if(touches2) {
-						if(have_line)
+					if (touches2) {
+						if (have_line)
 							have_line->delta_index[1] = 0;
-						else 
-							have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+						else
+							have_line = pcb_rubber_band_create(rbnd, layer, line, 1, 0);
 					}
 				}
 				PCB_END_LOOP;
@@ -661,24 +654,23 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
  */
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
-	const pcb_bool clearpoly = PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY,Polygon);
+	const pcb_bool clearpoly = PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon);
 	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
-	if(group >= 0)
-	{
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
-		for(entry = 0;entry < length;++entry) {
+		for(entry = 0; entry < length; ++entry) {
 			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
-			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
+			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				pcb_coord_t thick;
 
 				/* the following code just stupidly compares the endpoints
@@ -697,7 +689,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 
 					/* Check whether the line is already in the rubberband list. */
 					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-						if (rbnd->Rubberband[l].Line == line) 
+						if (rbnd->Rubberband[l].Line == line)
 							have_line = &rbnd->Rubberband[l];
 
 					/* Check whether any of the line points touch the polygon */
@@ -705,18 +697,18 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 					touches1 = (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon));
 					touches2 = (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon));
 
-					if(touches1) {
-						if(have_line)
+					if (touches1) {
+						if (have_line)
 							have_line->delta_index[0] = 0;
-						else 
-							have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+						else
+							have_line = pcb_rubber_band_create(rbnd, layer, line, 0, 0);
 					}
 
-					if(touches2) {
-						if(have_line)
+					if (touches2) {
+						if (have_line)
 							have_line->delta_index[1] = 0;
-						else 
-							have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+						else
+							have_line = pcb_rubber_band_create(rbnd, layer, line, 1, 0);
 					}
 				}
 				PCB_END_LOOP;
@@ -730,22 +722,22 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
  * If either of the endpoints of the line lays anywhere inside the passed line,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * Layer, pcb_line_t * Line)
+static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
-	pcb_board_t * board = pcb_data_get_top(PCB->Data);
+	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
-	if(board == NULL)
+	if (board == NULL)
 		board = PCB;
 
-	if(group >= 0) {
+	if (group >= 0) {
 		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
 		pcb_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
-		for(entry = 0;entry < length;++entry) {
+		for(entry = 0; entry < length; ++entry) {
 			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
-			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				pcb_coord_t thick;
@@ -763,7 +755,7 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * L
 
 					/* Check whether the line is already in the rubberband list. */
 					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-						if (rbnd->Rubberband[l].Line == line) 
+						if (rbnd->Rubberband[l].Line == line)
 							have_line = &rbnd->Rubberband[l];
 
 					/* Check whether any of the scanned line points touch the passed line */
@@ -771,18 +763,18 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * L
 					touches1 = pcb_is_point_on_line(line->Point1.X, line->Point1.Y, thick, Line);
 					touches2 = pcb_is_point_on_line(line->Point2.X, line->Point2.Y, thick, Line);
 
-					if(touches1) {
-						if(have_line)
+					if (touches1) {
+						if (have_line)
 							have_line->delta_index[0] = 0;
-						else 
-							have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+						else
+							have_line = pcb_rubber_band_create(rbnd, layer, line, 0, 0);
 					}
 
-					if(touches2) {
-						if(have_line)
+					if (touches2) {
+						if (have_line)
 							have_line->delta_index[1] = 0;
-						else 
-							have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+						else
+							have_line = pcb_rubber_band_create(rbnd, layer, line, 1, 0);
 					}
 				}
 				PCB_END_LOOP;
@@ -796,18 +788,16 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * L
  * anywhere inside the passed padstack, the scanned line is added to the 
  * 'rubberband' list.
  */
-static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd,pcb_pstk_t * pstk)
+static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
 {
-	pcb_layergrp_id_t top;	
+	pcb_layergrp_id_t top;
 	pcb_layergrp_id_t bottom;
 	pcb_bb_type_t bb_type;
 
-	bb_type = pcb_pstk_bbspan(PCB,pstk,&top,&bottom,NULL);
+	bb_type = pcb_pstk_bbspan(PCB, pstk, &top, &bottom, NULL);
 
-	if(bb_type != PCB_BB_INVALID)
-	{
-		for(;top<=bottom;++top)
-		{
+	if (bb_type != PCB_BB_INVALID) {
+		for(; top <= bottom; ++top) {
 			PCB_COPPER_GROUP_LOOP(PCB->Data, top);
 			{
 				if (layer->meta.real.vis) {
@@ -826,7 +816,7 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd,pcb_pstk_t *
 
 						/* Check whether the line is already in the rubberband list. */
 						for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-							if (rbnd->Rubberband[l].Line == line) 
+							if (rbnd->Rubberband[l].Line == line)
 								have_line = &rbnd->Rubberband[l];
 
 						/* Check whether any of the scanned line points touch the passed padstack */
@@ -834,18 +824,18 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd,pcb_pstk_t *
 						touches1 = pcb_is_point_in_pstk(line->Point1.X, line->Point1.Y, thick, pstk, layer);
 						touches2 = pcb_is_point_in_pstk(line->Point2.X, line->Point2.Y, thick, pstk, layer);
 
-						if(touches1) {
-							if(have_line)
+						if (touches1) {
+							if (have_line)
 								have_line->delta_index[0] = 0;
-							else 
-								have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+							else
+								have_line = pcb_rubber_band_create(rbnd, layer, line, 0, 0);
 						}
 
-						if(touches2) {
-							if(have_line)
+						if (touches2) {
+							if (have_line)
 								have_line->delta_index[1] = 0;
-							else 
-								have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+							else
+								have_line = pcb_rubber_band_create(rbnd, layer, line, 1, 0);
 						}
 					}
 					PCB_END_LOOP;
@@ -870,64 +860,73 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 	 * is connected
 	 */
 	switch (Type) {
-	case PCB_OBJ_PSTK:
-		CheckPadStackForRubberbandConnection(rbnd,(pcb_pstk_t *)Ptr1);
-		break;
+		case PCB_OBJ_PSTK:
+			CheckPadStackForRubberbandConnection(rbnd, (pcb_pstk_t *) Ptr1);
+			break;
 
-	case PCB_OBJ_SUBC:
-		{
-			pcb_subc_t * subc = (pcb_subc_t *)Ptr1;
-			pcb_data_it_t	it;
-			pcb_any_obj_t * p_obj;
-		 
-			p_obj	= pcb_data_first(&it,subc->data,PCB_OBJ_CLASS_REAL);
-
-			while(p_obj)
+		case PCB_OBJ_SUBC:
 			{
-				pcb_layer_t * layer = p_obj->parent.layer;
-				switch(p_obj->type)
-				{
-					case PCB_OBJ_LINE :	if(p_obj->term) CheckLineForRubberbandConnection(rbnd, layer, (pcb_line_t *) p_obj); break;
-					case PCB_OBJ_POLY :	if(p_obj->term) CheckPolygonForRubberbandConnection(rbnd, layer, (pcb_poly_t *) p_obj); break;
-					case PCB_OBJ_ARC :	/*if(p_obj->term)*/ CheckEntireArcForRubberbandConnection(rbnd, layer, (pcb_arc_t *) p_obj); break;
-					case PCB_OBJ_PSTK :	CheckPadStackForRubberbandConnection(rbnd, (pcb_pstk_t *) p_obj); break;
-					default : 					break;
+				pcb_subc_t *subc = (pcb_subc_t *) Ptr1;
+				pcb_data_it_t it;
+				pcb_any_obj_t *p_obj;
+
+				p_obj = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL);
+
+				while(p_obj) {
+					pcb_layer_t *layer = p_obj->parent.layer;
+					switch (p_obj->type) {
+						case PCB_OBJ_LINE:
+							if (p_obj->term)
+								CheckLineForRubberbandConnection(rbnd, layer, (pcb_line_t *) p_obj);
+							break;
+						case PCB_OBJ_POLY:
+							if (p_obj->term)
+								CheckPolygonForRubberbandConnection(rbnd, layer, (pcb_poly_t *) p_obj);
+							break;
+						case PCB_OBJ_ARC: /*if(p_obj->term) */
+							CheckEntireArcForRubberbandConnection(rbnd, layer, (pcb_arc_t *) p_obj);
+							break;
+						case PCB_OBJ_PSTK:
+							CheckPadStackForRubberbandConnection(rbnd, (pcb_pstk_t *) p_obj);
+							break;
+						default:
+							break;
+					}
+					p_obj = pcb_data_next(&it);
 				}
-				p_obj = pcb_data_next(&it);
+				break;
 			}
-			break;
-		}
 
-	case PCB_OBJ_LINE:
-		{
-			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
-			pcb_line_t *line = (pcb_line_t *) Ptr2;
-			CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1,0 );
-			CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2,1 );
-			if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-				CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point1, pcb_true);
-				CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point2, pcb_true);
+		case PCB_OBJ_LINE:
+			{
+				pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
+				pcb_line_t *line = (pcb_line_t *) Ptr2;
+				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1, 0);
+				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2, 1);
+				if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
+					CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point1, pcb_true);
+					CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point2, pcb_true);
+				}
+				break;
 			}
+
+		case PCB_OBJ_LINE_POINT:
+			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, 0);
+			if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
+				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 			break;
-		}
 
-	case PCB_OBJ_LINE_POINT:
-		CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3,0);
-		if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
-			CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
-		break;
+		case PCB_OBJ_ARC_POINT:
+			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *)Ptr3, pcb_true);
+			break;
 
-	case PCB_OBJ_ARC_POINT:
-		CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3, pcb_true);
-		break;
+		case PCB_OBJ_ARC:
+			CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
+			break;
 
-	case PCB_OBJ_ARC:
-		CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
-		break;
-
-	case PCB_OBJ_POLY:
-		CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
-		break;
+		case PCB_OBJ_POLY:
+			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
+			break;
 	}
 }
 
@@ -935,31 +934,31 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 {
 	switch (Type) {
 
-	case PCB_OBJ_SUBC:
-		{
-			pcb_subc_t *subc = (pcb_subc_t *) Ptr1;
-
-			PCB_PADSTACK_LOOP(subc->data);
+		case PCB_OBJ_SUBC:
 			{
-				CheckPadstackForRat(rbnd, padstack);
+				pcb_subc_t *subc = (pcb_subc_t *) Ptr1;
+
+				PCB_PADSTACK_LOOP(subc->data);
+				{
+					CheckPadstackForRat(rbnd, padstack);
+				}
+				PCB_END_LOOP;
+				break;
 			}
-			PCB_END_LOOP;
+
+		case PCB_OBJ_LINE:
+			{
+				pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
+				pcb_line_t *line = (pcb_line_t *) Ptr2;
+
+				CheckLinePointForRat(rbnd, layer, &line->Point1);
+				CheckLinePointForRat(rbnd, layer, &line->Point2);
+				break;
+			}
+
+		case PCB_OBJ_LINE_POINT:
+			CheckLinePointForRat(rbnd, (pcb_layer_t *) Ptr1, (pcb_point_t *) Ptr3);
 			break;
-		}
-
-	case PCB_OBJ_LINE:
-		{
-			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
-			pcb_line_t *line = (pcb_line_t *) Ptr2;
-
-			CheckLinePointForRat(rbnd, layer, &line->Point1);
-			CheckLinePointForRat(rbnd, layer, &line->Point2);
-			break;
-		}
-
-	case PCB_OBJ_LINE_POINT:
-		CheckLinePointForRat(rbnd, (pcb_layer_t *) Ptr1, (pcb_point_t *) Ptr3);
-		break;
 
 	}
 }
@@ -999,7 +998,7 @@ static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd)
  * adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
-static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index )
+static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index)
 {
 	pcb_rubberband_t *ptr;
 	int n;
@@ -1018,30 +1017,30 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 	ptr->Layer = Layer;
 	ptr->Line = Line;
 	ptr->delta_index[point_number] = delta_index;
-	ptr->delta_index[point_number^1] = -1;
+	ptr->delta_index[point_number ^ 1] = -1;
 
 	return ptr;
 }
 
-static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int end,int delta_index)
+static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int end, int delta_index)
 {
 	pcb_rubberband_arc_t *ptr = NULL;
 	int n;
 
-	for(n = 0; (n < rbnd->RubberbandArcN) && (ptr == NULL); n++) 
-		if (rbnd->RubberbandArcs[n].Arc == Arc) 
+	for(n = 0; (n < rbnd->RubberbandArcN) && (ptr == NULL); n++)
+		if (rbnd->RubberbandArcs[n].Arc == Arc)
 			ptr = &rbnd->RubberbandArcs[n];
 
-	if(ptr == NULL) {
+	if (ptr == NULL) {
 		ptr = pcb_rubber_band_arc_alloc(rbnd);
 		ptr->Layer = Layer;
 		ptr->Arc = Arc;
 		ptr->delta_index[0] = -1;
 		ptr->delta_index[1] = -1;
 	}
-	
+
 	ptr->delta_index[end] = delta_index;
-	
+
 	return ptr;
 }
 
@@ -1063,7 +1062,7 @@ static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 	rbnd->RubberbandN = 0;
 	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
 	ptr = rbnd->Rubberband;
-	for (i = 0; i < rbnd->RubberbandN; i++) {
+	for(i = 0; i < rbnd->RubberbandN; i++) {
 		if (PCB->RatOn)
 			pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 
@@ -1079,62 +1078,53 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 	int direct = argv[1].d.i;
 
 
-	while (rbnd->RubberbandN) {
+	while(rbnd->RubberbandN) {
 		const int dindex1 = ptr->delta_index[0];
 		const int dindex2 = ptr->delta_index[1];
 
-		if((dindex1 >= 0) && (dindex2 >= 0) && !direct)	{
+		if ((dindex1 >= 0) && (dindex2 >= 0) && !direct) {
 			/* Move both ends with route. */
-			const int argi1 = (dindex1*2)+2;
-			const int argi2 = (dindex2*2)+2;
+			const int argi1 = (dindex1 * 2) + 2;
+			const int argi2 = (dindex2 * 2) + 2;
 			pcb_point_t point1 = ptr->Line->Point1;
 			pcb_point_t point2 = ptr->Line->Point2;
 			pcb_route_t route;
 
 			point1.X += argv[argi1].d.i;
-			point1.Y += argv[argi1+1].d.i;
+			point1.Y += argv[argi1 + 1].d.i;
 			point2.X += argv[argi2].d.i;
-			point2.Y += argv[argi2+1].d.i;
+			point2.Y += argv[argi2 + 1].d.i;
 
 			pcb_route_init(&route);
-			pcb_route_calculate(	PCB,
-														&route,
-														&point1,
-														&point2,
-														pcb_layer_id(PCB->Data,ptr->Layer),
-														ptr->Line->Thickness,
-														ptr->Line->Clearance,
-														ptr->Line->Flags,
-														pcb_gui->shift_is_pressed(),
-														pcb_gui->control_is_pressed() );
-			pcb_route_apply_to_line(&route,ptr->Layer,ptr->Line);
+			pcb_route_calculate(PCB, &route, &point1, &point2, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(), pcb_gui->control_is_pressed());
+			pcb_route_apply_to_line(&route, ptr->Layer, ptr->Line);
 			pcb_route_destroy(&route);
 		}
 		else {
-			if(dindex1 >= 0) {
-				const int argi = (dindex1*2)+2;
+			if (dindex1 >= 0) {
+				const int argi = (dindex1 * 2) + 2;
 				pcb_opctx_t ctx;
 				ctx.move.pcb = PCB;
 				ctx.move.dx = argv[argi].d.i;
-				ctx.move.dy = argv[argi+1].d.i;
-	
-				if(direct) {
-					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, ctx.move.dx, ctx.move.dy);			
+				ctx.move.dy = argv[argi + 1].d.i;
+
+				if (direct) {
+					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, ctx.move.dx, ctx.move.dy);
 					pcb_lineop_move_point(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point1);
 				}
 				else
 					pcb_lineop_move_point_with_route(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point1);
 			}
 
-			if(dindex2 >= 0) {
-				const int argi = (dindex2*2)+2;
+			if (dindex2 >= 0) {
+				const int argi = (dindex2 * 2) + 2;
 				pcb_opctx_t ctx;
 				ctx.move.pcb = PCB;
 				ctx.move.dx = argv[argi].d.i;
-				ctx.move.dy = argv[argi+1].d.i;
-	
-				if(direct) {
-					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, ctx.move.dx, ctx.move.dy);			
+				ctx.move.dy = argv[argi + 1].d.i;
+
+				if (direct) {
+					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, ctx.move.dx, ctx.move.dy);
 					pcb_lineop_move_point(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point2);
 				}
 				else
@@ -1147,31 +1137,34 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 
 	/* TODO: Move rubberband arcs. */
-	if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-		pcb_rubberband_arc_t * arcptr = rbnd->RubberbandArcs;
+	if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
+		pcb_rubberband_arc_t *arcptr = rbnd->RubberbandArcs;
 		int i = rbnd->RubberbandArcN;
 
-		while (i) {
-			int connections = (arcptr->delta_index[0] >= 0 ? 1:0) | (arcptr->delta_index[1] >= 0 ? 2:0);
+		while(i) {
+			int connections = (arcptr->delta_index[0] >= 0 ? 1 : 0) | (arcptr->delta_index[1] >= 0 ? 2 : 0);
 			int end = 0;
 
-			switch(connections) {
-				case 2 : ++end;
-				case 1 :
+			switch (connections) {
+				case 2:
+					++end;
+				case 1:
 					{
-						const int argi = (arcptr->delta_index[end]*2)+2;
+						const int argi = (arcptr->delta_index[end] * 2) + 2;
 						const pcb_coord_t dx = argv[argi].d.i;
-						const pcb_coord_t dy = argv[argi+1].d.i;
+						const pcb_coord_t dy = argv[argi + 1].d.i;
 						pcb_route_t route;
 						pcb_route_init(&route);
-						calculate_route_rubber_arc_point_move(arcptr,end,dx,dy,&route);
+						calculate_route_rubber_arc_point_move(arcptr, end, dx, dy, &route);
 						pcb_route_apply_to_arc(&route, arcptr->Layer, arcptr->Arc);
 						pcb_route_destroy(&route);
-					} 
+					}
 					break;
 
-				case 3 : break; /* TODO: Both arc points are moving */
-				default : break;
+				case 3:
+					break; /* TODO: Both arc points are moving */
+				default:
+					break;
 			}
 
 			arcptr++;
@@ -1190,7 +1183,7 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 	/* draw the attached rubberband lines too */
 	i = rbnd->RubberbandN;
 	ptr = rbnd->Rubberband;
-	while (i) {
+	while(i) {
 
 		if (PCB_FLAG_TEST(PCB_FLAG_VIA, ptr->Line)) {
 			/* this is a rat going to a polygon.  do not draw for rubberband */ ;
@@ -1205,27 +1198,27 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 			x[1] = ptr->Line->Point2.X;
 			y[1] = ptr->Line->Point2.Y;
 
-			for(p=0;p<2;++p) {
+			for(p = 0; p < 2; ++p) {
 				const int dindex = ptr->delta_index[p];
 
-				if(dindex >= 0) {
-					const int argi = (dindex*2)+2;
+				if (dindex >= 0) {
+					const int argi = (dindex * 2) + 2;
 					x[p] += argv[argi].d.i;
-					y[p] += argv[argi+1].d.i;
+					y[p] += argv[argi + 1].d.i;
 				}
 			}
 
 			if (PCB_FLAG_TEST(PCB_FLAG_RAT, ptr->Line)) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.rat);
-				pcb_draw_wireframe_line(pcb_crosshair.GC,x[0],y[0],x[1],y[1], ptr->Line->Thickness, 0);
+				pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness, 0);
 			}
-			else if(direct || (conf_core.editor.move_linepoint_uses_route == 0)) {
-				pcb_gui->set_color(pcb_crosshair.GC,ptr->Layer->meta.real.color);
-				pcb_draw_wireframe_line(pcb_crosshair.GC,x[0],y[0],x[1],y[1], ptr->Line->Thickness, 0);
+			else if (direct || (conf_core.editor.move_linepoint_uses_route == 0)) {
+				pcb_gui->set_color(pcb_crosshair.GC, ptr->Layer->meta.real.color);
+				pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness, 0);
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-					pcb_draw_wireframe_line(pcb_crosshair.GC,x[0],y[0],x[1],y[1],ptr->Line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
+					pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
 				}
 			}
 			else {
@@ -1239,19 +1232,13 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 				point2.Y = y[1];
 
 				pcb_route_init(&route);
-				pcb_route_calculate(	PCB,
-															&route,
-															ptr->delta_index[0] < 0 ? &point1 : &point2,
-															ptr->delta_index[0] < 0 ? &point2 : &point1,
-															pcb_layer_id(PCB->Data,ptr->Layer),
-															ptr->Line->Thickness,
-															ptr->Line->Clearance,
-															ptr->Line->Flags,
-															pcb_gui->shift_is_pressed(),
-															pcb_gui->control_is_pressed() );
-				pcb_route_draw(&route,pcb_crosshair.GC);
+				pcb_route_calculate(PCB,
+														&route,
+														ptr->delta_index[0] < 0 ? &point1 : &point2,
+														ptr->delta_index[0] < 0 ? &point2 : &point1, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(), pcb_gui->control_is_pressed());
+				pcb_route_draw(&route, pcb_crosshair.GC);
 				if (conf_core.editor.show_drc)
-					pcb_route_draw_drc(&route,pcb_crosshair.GC);
+					pcb_route_draw_drc(&route, pcb_crosshair.GC);
 				pcb_route_destroy(&route);
 			}
 			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
@@ -1262,31 +1249,34 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 
 	/* draw the attached rubberband arcs */
-	if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-		pcb_rubberband_arc_t * arcptr = rbnd->RubberbandArcs;
+	if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
+		pcb_rubberband_arc_t *arcptr = rbnd->RubberbandArcs;
 		i = rbnd->RubberbandArcN;
 
-		while (i) {
-			int connections = (arcptr->delta_index[0] >= 0 ? 1:0) | (arcptr->delta_index[1] >= 0 ? 2:0);
+		while(i) {
+			int connections = (arcptr->delta_index[0] >= 0 ? 1 : 0) | (arcptr->delta_index[1] >= 0 ? 2 : 0);
 			int end = 0;
 
-			switch(connections) {
-				case 2 : ++end;
-				case 1 :
+			switch (connections) {
+				case 2:
+					++end;
+				case 1:
 					{
-						const int argi = (arcptr->delta_index[end]*2)+2;
+						const int argi = (arcptr->delta_index[end] * 2) + 2;
 						const pcb_coord_t dx = argv[argi].d.i;
-						const pcb_coord_t dy = argv[argi+1].d.i;
+						const pcb_coord_t dy = argv[argi + 1].d.i;
 						pcb_route_t route;
 						pcb_route_init(&route);
-						calculate_route_rubber_arc_point_move(arcptr,end,dx,dy,&route);
-						pcb_route_draw(&route,pcb_crosshair.GC);
+						calculate_route_rubber_arc_point_move(arcptr, end, dx, dy, &route);
+						pcb_route_draw(&route, pcb_crosshair.GC);
 						pcb_route_destroy(&route);
-					} 
+					}
 					break;
 
-				case 3 : break; /* TODO: Both arc points are moving */
-				default : break;
+				case 3:
+					break; /* TODO: Both arc points are moving */
+				default:
+					break;
 			}
 
 			arcptr++;
@@ -1305,15 +1295,15 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	/* move all the rubberband lines... and reset the counter */
 	ptr = rbnd->Rubberband;
-	while (rbnd->RubberbandN) {
+	while(rbnd->RubberbandN) {
 		const int dindex1 = ptr->delta_index[0];
 		const int dindex2 = ptr->delta_index[1];
-		
+
 		*changed = 1;
-		
-		if(dindex1 >= 0) 
+
+		if (dindex1 >= 0)
 			pcb_undo_add_obj_to_rotate90(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, cx, cy, steps);
-		if(dindex2 >= 0) 
+		if (dindex2 >= 0)
 			pcb_undo_add_obj_to_rotate90(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, cx, cy, steps);
 
 		pcb_line_invalidate_erase(ptr->Line);
@@ -1324,12 +1314,12 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		else
 			pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
 
-		if(dindex1 >= 0) 
+		if (dindex1 >= 0)
 			pcb_point_rotate90(&ptr->Line->Point1, cx, cy, steps);
-		
-		if(dindex2 >= 0) 
+
+		if (dindex2 >= 0)
 			pcb_point_rotate90(&ptr->Line->Point2, cx, cy, steps);
-	
+
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
 			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
@@ -1368,7 +1358,7 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 		rbnd->RubberbandN = 0;
 		pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
 		ptr = rbnd->Rubberband;
-		for (i = 0; i < rbnd->RubberbandN; i++, ptr++) {
+		for(i = 0; i < rbnd->RubberbandN; i++, ptr++) {
 			if (PCB->RatOn)
 				pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 			pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, ptr->Line, ptr->Line, ptr->Line);
@@ -1402,24 +1392,24 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_line_t *line = argv[1].d.p;
-	int * constrained = argv[2].d.p;
-	pcb_coord_t * dx1 = argv[3].d.p;	/* in/out */
-	pcb_coord_t * dy1 = argv[4].d.p;	/* in/out */
-	pcb_coord_t * dx2 = argv[5].d.p;	/* out */
-	pcb_coord_t * dy2 = argv[6].d.p;	/* out */
+	int *constrained = argv[2].d.p;
+	pcb_coord_t *dx1 = argv[3].d.p; /* in/out */
+	pcb_coord_t *dy1 = argv[4].d.p; /* in/out */
+	pcb_coord_t *dx2 = argv[5].d.p; /* out */
+	pcb_coord_t *dy2 = argv[6].d.p; /* out */
 	pcb_line_t *rub1, *rub2;
 	int rub1end, rub2end;
 	pcb_fline_t fmain, frub1, frub2;
-	
+
 	*constrained = 0;
 
 	if (rbnd->RubberbandN != 2)
 		return;
-			
+
 	rub1 = rbnd->Rubberband[0].Line;
 	rub2 = rbnd->Rubberband[1].Line;
 	rub1end = rbnd->Rubberband[0].delta_index[0] >= 0 ? 1 : 2;
-	rub2end =	rbnd->Rubberband[1].delta_index[0] >= 0 ? 1 : 2;
+	rub2end = rbnd->Rubberband[1].delta_index[0] >= 0 ? 1 : 2;
 
 	/* Create float point-vector representations of the lines */
 	fmain = pcb_fline_create_from_points(&line->Point1, &line->Point2);
@@ -1435,8 +1425,7 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 		frub2 = pcb_fline_create_from_points(&rub2->Point2, &rub2->Point1);
 
 	/* If either of the lines are parallel to the main line then the main line cannot be constrained */
-	if( (fabs(pcb_fvector_dot(fmain.direction,frub1.direction)) > 0.990) ||
-			(fabs(pcb_fvector_dot(fmain.direction,frub2.direction)) > 0.990) ) 
+	if ((fabs(pcb_fvector_dot(fmain.direction, frub1.direction)) > 0.990) || (fabs(pcb_fvector_dot(fmain.direction, frub2.direction)) > 0.990))
 		return;
 
 	*constrained = 1;
@@ -1445,8 +1434,8 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	if (pcb_fline_is_valid(fmain) && pcb_fline_is_valid(frub1) && pcb_fline_is_valid(frub2)) {
 		pcb_fvector_t fmove;
 
-			fmove.x = *dx1;
-			fmove.y = *dy1;
+		fmove.x = *dx1;
+		fmove.y = *dy1;
 
 		if (!pcb_fvector_is_null(fmove)) {
 			pcb_fvector_t fnormal;
@@ -1459,17 +1448,17 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 				fnormal.y = -fnormal.y;
 			}
 			rub1_move = pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub1.direction, fnormal);
-			*dx1 = rub1_move*frub1.direction.x;
-			*dy1 = rub1_move*frub1.direction.y;
+			*dx1 = rub1_move * frub1.direction.x;
+			*dy1 = rub1_move * frub1.direction.y;
 
 			rub2_move = pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub2.direction, fnormal);
-			*dx2 = rub2_move*frub2.direction.x;
-			*dy2 = rub2_move*frub2.direction.y;
+			*dx2 = rub2_move * frub2.direction.x;
+			*dy2 = rub2_move * frub2.direction.y;
 		}
 	}
 }
 
-static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,int end,pcb_coord_t dx,pcb_coord_t dy,pcb_route_t * route)
+static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t *arcptr, int end, pcb_coord_t dx, pcb_coord_t dy, pcb_route_t *route)
 {
 	/* This basic implementation simply connects the arc to the moving
 	   point with a new route so that they remain connected. */
@@ -1487,7 +1476,7 @@ static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,
 		arc.Delta = -arc.Delta;
 	}
 
-	pcb_arc_get_end(&arc,0,&startpoint.X, &startpoint.Y);
+	pcb_arc_get_end(&arc, 0, &startpoint.X, &startpoint.Y);
 	pcb_route_start(PCB, route, &startpoint, layerid, arc.Thickness, arc.Clearance, arc.Flags);
 
 	center.X = arc.X;
@@ -1509,7 +1498,10 @@ void rb_uninit(void)
 	pcb_event_unbind_allcookie(rubber_cookie);
 }
 
-int pplg_check_ver_rubberband_orig(int ver_needed) { return 0; }
+int pplg_check_ver_rubberband_orig(int ver_needed)
+{
+	return 0;
+}
 
 void pplg_uninit_rubberband_orig(void)
 {
@@ -1538,4 +1530,3 @@ int pplg_init_rubberband_orig(void)
 
 	return 0;
 }
-
