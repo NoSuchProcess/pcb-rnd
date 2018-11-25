@@ -26,11 +26,6 @@
  *
  */
 
-/* global constants
- * most of these values are also required by files outside the source tree
- * (manuals...)
- */
-
 #ifndef	__GLOBALCONST_INCLUDED__
 #define	__GLOBALCONST_INCLUDED__
 
