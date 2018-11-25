@@ -94,7 +94,6 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	gcv.graphics_exposures = 0;
 	gc = XtGetGC(pd->pw, GCGraphicsExposures, &gcv);
 
-	pinout = 0;
 	save_vx = view_left_x;
 	save_vy = view_top_y;
 	save_vz = view_zoom;

@@ -115,7 +115,6 @@ static int bgred, bggreen, bgblue;
 
 static GC arc1_gc, arc2_gc;
 
-/* These are for the pinout windows. */
 typedef struct PreviewData {
 	struct PreviewData *prev, *next;
 	Widget form;
@@ -133,11 +132,6 @@ typedef struct PreviewData {
 	int pan_ox, pan_oy;
 	pcb_coord_t pan_opx, pan_opy;
 } PreviewData;
-
-/* Linked list of all pinout windows.  */
-static PreviewData *pinouts = 0;
-/* If set, we are currently updating this pinout window.  */
-static PreviewData *pinout = 0;
 
 static pcb_coord_t crosshair_x = 0, crosshair_y = 0;
 static int in_move_event = 0, crosshair_in_window = 1;
@@ -244,8 +238,6 @@ static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
 static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch);
 static void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y);
 static void zoom_toggle(pcb_coord_t x, pcb_coord_t y);
-static void pinout_callback(Widget, PreviewData *, XmDrawingAreaCallbackStruct *);
-static void pinout_unmap(Widget, PreviewData *, void *);
 static void Pan(int mode, pcb_coord_t x, pcb_coord_t y);
 
 /* Px converts view->pcb, Vx converts pcb->view */
@@ -381,8 +373,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	LesstifRouteStylesChanged(NULL, 0, NULL);
 	lesstif_sizes_reset();
 	lesstif_update_layer_groups();
-	while (pinouts)
-		pinout_unmap(0, pinouts, 0);
 	if (PCB->Filename) {
 		char *cp = strrchr(PCB->Filename, '/');
 		stdarg_n = 0;
@@ -2795,14 +2785,11 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 		autofade = 0;
 #endif
 
-	if ((flags & PCB_LYT_MASK) || (flags & PCB_LYT_PASTE)) {
-		if (pinout)
-			return 0;
+	if ((flags & PCB_LYT_MASK) || (flags & PCB_LYT_PASTE))
 		return (PCB->Data->Layer[idx].meta.real.vis && PCB_LAYERFLG_ON_VISIBLE_SIDE(flags));
-	}
 
 	if (flags & PCB_LYT_COPPER)
-		return pinout ? 1 : PCB->Data->Layer[idx].meta.real.vis;
+		return PCB->Data->Layer[idx].meta.real.vis;
 
 	if (PCB_LAYER_IS_ASSY(flags, purpi))
 		return 0;
@@ -2814,7 +2801,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, const char *purpose,
 
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
-			return pinout ? 0 : PCB->InvisibleObjectsOn;
+			return PCB->InvisibleObjectsOn;
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return pcb_silk_on(PCB);
@@ -3026,7 +3013,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 {
 	double dx1, dy1, dx2, dy2;
 	int vw = Vw(gc->width);
-	if ((pinout || conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
+	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
 	pcb_printf("draw_line %#mD-%#mD @%#mS", x1, y1, x2, y2, gc->width);
@@ -3064,7 +3051,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 
 static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
+	if (conf_core.editor.thin_draw && gc->erase)
 		return;
 #if 0
 	pcb_printf("draw_arc %#mD %#mSx%#mS s %d d %d", cx, cy, width, height, start_angle, delta_angle);
@@ -3116,7 +3103,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int vw = Vw(gc->width);
-	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
+	if (conf_core.editor.thin_draw && gc->erase)
 		return;
 	x1 = Vx(x1);
 	y1 = Vy(y1);
@@ -3148,8 +3135,6 @@ static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 
 static void lesstif_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
-	if (pinout && use_mask() && gc->erase)
-		return;
 	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
@@ -3228,7 +3213,7 @@ static void lesstif_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t
 static void lesstif_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int vw = Vw(gc->width);
-	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
+	if (conf_core.editor.thin_draw && gc->erase)
 		return;
 	x1 = Vx(x1);
 	y1 = Vy(y1);
@@ -3480,144 +3465,6 @@ extern int lesstif_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
 extern int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
 extern int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
-
-
-static void pinout_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackStruct * cbs)
-{
-	int save_vx, save_vy, save_vw, save_vh;
-	int save_fx, save_fy;
-	double save_vz;
-	Pixmap save_px;
-	int reason = cbs ? cbs->reason : 0;
-
-	if (pd->window == 0 && reason == XmCR_RESIZE)
-		return;
-	if (pd->window == 0 || reason == XmCR_RESIZE) {
-		Dimension w, h;
-		double z;
-
-		stdarg_n = 0;
-		stdarg(XmNwidth, &w);
-		stdarg(XmNheight, &h);
-		XtGetValues(da, stdarg_args, stdarg_n);
-
-		pd->window = XtWindow(da);
-		pd->v_width = w;
-		pd->v_height = h;
-		pd->zoom = (pd->right - pd->left + 1) / (double) w;
-		z = (pd->bottom - pd->top + 1) / (double) h;
-		if (pd->zoom < z)
-			pd->zoom = z;
-
-		pd->x = (pd->left + pd->right) / 2 - pd->v_width * pd->zoom / 2;
-		pd->y = (pd->top + pd->bottom) / 2 - pd->v_height * pd->zoom / 2;
-	}
-
-	save_vx = view_left_x;
-	save_vy = view_top_y;
-	save_vz = view_zoom;
-	save_vw = view_width;
-	save_vh = view_height;
-	save_fx = conf_core.editor.view.flip_x;
-	save_fy = conf_core.editor.view.flip_y;
-	save_px = main_pixmap;
-	pinout = pd;
-	main_pixmap = pd->window;
-	view_left_x = pd->x;
-	view_top_y = pd->y;
-	view_zoom = pd->zoom;
-	view_width = pd->v_width;
-	view_height = pd->v_height;
-	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
-/*	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;*/
-
-	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-	pcb_hid_expose_pinout(&lesstif_hid, &pd->ctx);
-
-	pinout = 0;
-	view_left_x = save_vx;
-	view_top_y = save_vy;
-	view_zoom = save_vz;
-	view_width = save_vw;
-	view_height = save_vh;
-	main_pixmap = save_px;
-	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
-	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
-}
-
-static void pinout_unmap(Widget w, PreviewData * pd, void *v)
-{
-	if (pd->prev)
-		pd->prev->next = pd->next;
-	else
-		pinouts = pd->next;
-	if (pd->next)
-		pd->next->prev = pd->prev;
-	XtDestroyWidget(XtParent(pd->form));
-	free(pd);
-}
-
-static void lesstif_show_item(void *item)
-{
-	double scale;
-	Widget da;
-	pcb_box_t *extents;
-	PreviewData *pd;
-
-	for (pd = pinouts; pd; pd = pd->next)
-		if (pd->ctx.content.obj == item)
-			return;
-	if (!mainwind)
-		return;
-
-	pd = (PreviewData *) calloc(1, sizeof(PreviewData));
-
-	pd->ctx.content.obj = item;
-
-	extents = pcb_hid_get_extents_pinout(&pd->ctx);
-	pd->left = extents->X1;
-	pd->right = extents->X2;
-	pd->top = extents->Y1;
-	pd->bottom = extents->Y2;
-
-	if (pd->left > pd->right) {
-		free(pd);
-		return;
-	}
-	pd->prev = 0;
-	pd->next = pinouts;
-	if (pd->next)
-		pd->next->prev = pd;
-	pinouts = pd;
-	pd->zoom = 0;
-
-	stdarg_n = 0;
-	pd->form = XmCreateFormDialog(mainwind, XmStrCast("pinout"), stdarg_args, stdarg_n);
-	pd->window = 0;
-	XtAddCallback(pd->form, XmNunmapCallback, (XtCallbackProc) pinout_unmap, (XtPointer) pd);
-
-	scale = sqrt(200.0 * 200.0 / ((pd->right - pd->left + 1.0) * (pd->bottom - pd->top + 1.0)));
-
-	stdarg_n = 0;
-	stdarg(XmNwidth, (int) (scale * (pd->right - pd->left + 1)));
-	stdarg(XmNheight, (int) (scale * (pd->bottom - pd->top + 1)));
-	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	da = XmCreateDrawingArea(pd->form, XmStrCast("pinout"), stdarg_args, stdarg_n);
-	XtManageChild(da);
-
-	XtAddCallback(da, XmNexposeCallback, (XtCallbackProc) pinout_callback, (XtPointer) pd);
-	XtAddCallback(da, XmNresizeCallback, (XtCallbackProc) pinout_callback, (XtPointer) pd);
-
-	XtManageChild(pd->form);
-	pinout = 0;
-}
 
 #include "wt_preview.c"
 
@@ -3893,7 +3740,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_widget_state = lesstif_attr_dlg_widget_state;
 	lesstif_hid.attr_dlg_widget_hide = lesstif_attr_dlg_widget_hide;
 	lesstif_hid.attr_dlg_set_value = lesstif_attr_dlg_set_value;
-	lesstif_hid.show_item = lesstif_show_item;
 	lesstif_hid.beep = lesstif_beep;
 	lesstif_hid.progress = lesstif_progress;
 	lesstif_hid.edit_attributes = lesstif_attributes_dialog;

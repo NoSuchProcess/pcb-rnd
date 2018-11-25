@@ -18,7 +18,6 @@ static int widget_depth(Widget w) {
 /* saving flip setting in this macro is required to properly calculate coordinates of an event (Px, Py functions) */
 #define SHOW_ENTER \
 do { \
-	pinout = 0; \
 	save_vx = view_left_x; \
 	save_vy = view_top_y; \
 	save_vz = view_zoom; \
