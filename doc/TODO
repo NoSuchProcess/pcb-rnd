@@ -22,7 +22,9 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 2. For later releases ===============================================================================
+- CLEANUP: review the core conf for pinout [report: Igor2]
 - BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
+- CLEANUP: remove preview for layers -> use the generic expose preview [report: Igor2]
 - BUG: drc rendering broke -> rather rewrite using DAD [report: Igor2]
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
