@@ -430,7 +430,7 @@ device_t *hyp_device_by_name(char *device_name)
 pcb_subc_t *hyp_create_subc_by_name(char *refdes, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_subc_t *subc;
-	pcb_uint8_t text_direction = 0;
+	unsigned int text_direction = 0;
 	int text_scale = 100;
 	device_t *dev;
 	int on_bottom;

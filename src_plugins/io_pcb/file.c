@@ -983,7 +983,7 @@ extern	pcb_coord_t yysubc_ox, yysubc_oy;
 
 pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
-	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
+	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, unsigned int Direction,
 	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
 {
 	pcb_subc_t *sc = pcb_subc_new();

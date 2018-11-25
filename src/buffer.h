@@ -56,7 +56,7 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *, pcb_coord_t, pcb_
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
 
 /* rotates the contents of the pastebuffer by Number * 90 degrees or free angle*/
-void pcb_buffer_rotate90(pcb_buffer_t *Buffer, pcb_uint8_t Number);
+void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number);
 void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle);
 
 /* flip elements/subcircuits/tracks from one side to the other; also swap

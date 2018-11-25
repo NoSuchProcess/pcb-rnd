@@ -80,7 +80,7 @@ int PCBFileVersionNeeded(void);
 /* Improvise layers and groups for a partial input file that lacks layer groups (and maybe even some layers) */
 int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup);
 
-pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *Element, pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB, char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction, int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
+pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *Element, pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB, char *Value, pcb_coord_t TextX, pcb_coord_t TextY, unsigned int Direction, int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
 void io_pcb_element_fin(pcb_data_t *Data);
 pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness);

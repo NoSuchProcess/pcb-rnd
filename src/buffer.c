@@ -236,7 +236,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	return pcb_false;
 }
 
-void pcb_buffer_rotate90(pcb_buffer_t *Buffer, pcb_uint8_t Number)
+void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number)
 {
 	pcb_undo_freeze_serial();
 	pcb_undo_freeze_add();
@@ -835,7 +835,10 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Rotate:
 			if (sbufnum) {
-				pcb_buffer_rotate90(PCB_PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
+				int numtmp = atoi(sbufnum);
+				if (numtmp < 0)
+					numtmp = 4-numtmp;
+				pcb_buffer_rotate90(PCB_PASTEBUFFER, (unsigned int)numtmp);
 				pcb_crosshair_range_to_buffer();
 			}
 			break;

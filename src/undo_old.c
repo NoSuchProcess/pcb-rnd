@@ -929,7 +929,7 @@ void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 /* ---------------------------------------------------------------------------
  * adds an object to the list of 90-deg rotated objects
  */
-void pcb_undo_add_obj_to_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_uint8_t Steps)
+void pcb_undo_add_obj_to_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, unsigned int Steps)
 {
 	UndoListTypePtr undo;
 
