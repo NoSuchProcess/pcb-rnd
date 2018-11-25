@@ -14,6 +14,7 @@
 <tr><td> library_shell <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <library_shell>
 <tr><td> library_search_paths <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <library_search_paths>
 <tr><td> menu_file <td><a href="CFN_STRING.html"> string </a><td> 0 <td> where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht
+<tr><td> export_basename <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if an exported file contains the source file name, remove path from it, keeping the basename only
 <tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty.
 <tr><td> emergency_format <td><a href="CFN_STRING.html"> string </a><td> 0 <td> if set, use this format for the backups; if unset, use the default format
 <tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup of board files; optional fields (the usual % substitutions work)
