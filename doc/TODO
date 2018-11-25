@@ -28,7 +28,6 @@
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
-- CLEANUP: conf: remove alignment_distance - nothing uses it
 - CLEANUP: remove compact_vertical from gtk - see bug_files/remove_compact.txt
 - propedit bugs:
 	- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
