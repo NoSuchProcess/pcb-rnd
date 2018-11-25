@@ -3015,10 +3015,10 @@
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h error.h \
- ../src_plugins/io_pcb/file.h board.h plug_io.h hid.h layer.h move.h \
- ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h rats.h \
- netlist.h route_style.h remove.h flag_str.h compat_fs.h compat_misc.h \
- paths.h rats_patch.h actions.h hid_flags.h \
+ ../src_plugins/io_pcb/file.h board.h plug_io.h hid.h layer.h layer_grp.h \
+ move.h ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h \
+ rats.h netlist.h route_style.h remove.h flag_str.h compat_fs.h \
+ compat_misc.h paths.h rats_patch.h actions.h hid_flags.h \
  ../src_plugins/io_pcb/attribs.h route_style.h obj_poly.h thermal.h \
  event.h macro.h funchash_core.h funchash.h funchash_core_list.h \
  ../src_plugins/lib_compat_help/layer_compat.h \
