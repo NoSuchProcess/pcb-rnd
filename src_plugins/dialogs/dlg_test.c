@@ -164,6 +164,9 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_DAD_AUTORUN(ctx.dlg, "dlg_test", "attribute dialog test", &ctx, failed);
 
+	if (failed)
+		pcb_message(PCB_MSG_WARNING, "Test dialog cancelled");
+
 	PCB_DAD_FREE(ctx.dlg);
 
 	PCB_ACT_IRES(0);
