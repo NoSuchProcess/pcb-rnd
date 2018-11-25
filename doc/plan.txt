@@ -62,7 +62,6 @@ user manual
  		fab layer in some exports       yes, buildin    [draw_fab]
  		font selection GUI              yes, buildin    [draw_fontsel]
  		font editor                     yes, buildin    [fontmode]
- 		GPMI scripting                  yes, buildin    [gpmi]				y
  		push lines out of the way       yes, buildin    [jostle]
  		diagnostics: log HID calls      no              [loghid]
  		calculate toolpath for milling  no              [millpath]

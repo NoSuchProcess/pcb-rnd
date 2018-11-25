@@ -10,8 +10,9 @@ Pcb-rnd has different frontends: graphical and stdio/text based batch
 processing. There are different graphical frontends - pcb-rnd does not
 depend on gtk or motif, the specific frontend modules may depend on them.
 
-Pcb-rnd is scriptable if libgpmi is available. Since libgpmi is not
-a mainstream library for the scripting feature it should also be packaged.
+Pcb-rnd is scriptable if system installed libfungw is available. Since
+libfungw is not a mainstream library, it is most probably not already
+present in your distro and it should also be packaged too.
 
 Pcb-rnd is intended for UNIX-fans. It is heavily keyboard-oriented and it
 doesn't assume its users don't want to understand or learn how it works.
