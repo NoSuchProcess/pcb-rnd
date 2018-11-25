@@ -776,26 +776,17 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
 	PCB_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
-	PCB_ACT_MAY_CONVARG(5, FGW_STR, CreateMenu, ;);
-	PCB_ACT_MAY_CONVARG(6, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
 		pcb_menu_prop_t props;
+
 		memset(&props, 0, sizeof(props));
-		if (argc > 6) {
-			/* old syntax - do not use */
-			props.action = (argc > 2) ? argv[2].val.str : NULL;
-			props.accel = (argc > 4) ? argv[4].val.str : NULL;
-			props.tip = (argc > 5) ? argv[5].val.str : NULL;
-			props.cookie = (argc > 6) ? argv[6].val.str : NULL;
-		}
-		else {
-			/* new syntax */
-			props.action = (argc > 2) ? argv[2].val.str : NULL;
-			props.tip = (argc > 3) ? argv[3].val.str : NULL;
-			props.cookie = (argc > 4) ? argv[4].val.str : NULL;
-		}
+		props.action = (argc > 2) ? argv[2].val.str : NULL;
+		props.tip = (argc > 3) ? argv[3].val.str : NULL;
+		props.cookie = (argc > 4) ? argv[4].val.str : NULL;
+
 		pcb_gui->create_menu(argv[1].val.str, &props);
+
 		PCB_ACT_IRES(0);
 		return 0;
 	}
