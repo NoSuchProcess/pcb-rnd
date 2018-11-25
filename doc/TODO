@@ -1,19 +1,32 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- FEATURE: (prio) invert selection [report: Keantoken]
+- BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
+- CLEANUP: boardflip rewrite: use data_mirror
+	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
+	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
+- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
+- BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
+- BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
+- BUG: footprint replace (backann): bug_files/replfp.lht, {a b f}, type 1206 [report: Igor2]
+	- BUG: pads are not rotated
+	- BUG: attributes are not kept
+	- BUG: warnings/errors in the log
+	- would it keep a floater?
+- BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
+- BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
+- BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
+	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 2. For later releases ===============================================================================
-- BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
-- FEATURE: (prio) invert selection [report: Keantoken]
 - CLEANUP: remove GPMI (from the menu too!)
 - CLEANUP: remove old, compatibility mode of CreateMenu(); check if there's any user [report: Igor2]
 - CLEANUP: remove pcb_uint8_t - use unsigned char or some purpose-specific type instead [report: Igor2]
 - CLEANUP: remove hid_extent.[ch] in favor of bbox [report: Igor2]
 - CLEANUP: move PCB_GROUNDPLANEFRAME and PCB_MASKFRAME and PCB_DEFAULT_DRILLINGHOLE from globalconst to io_pcb [report: Igor2]
 - CLEANUP: remove PCB_MAX_ELEMENTNAMES, MIN_PADSIZE and MAX_PADSIZE from globalconst [report: Igor2]
-- CLEANUP: boardflip rewrite: use data_mirror
-	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
-	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: run indent on rubberband_orig and route.c
 - CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
@@ -47,15 +60,6 @@
 	- switch over core from storing color names to storing pcb_color_t
 	- remove per hid, non-backup-lib custom color structs
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
-- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
-- BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
-- BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
-- BUG: footprint replace (backann): bug_files/replfp.lht, {a b f}, type 1206 [report: Igor2]
-	- BUG: pads are not rotated
-	- BUG: attributes are not kept
-	- BUG: warnings/errors in the log
-	- would it keep a floater?
-- BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 - FEATURE: an alternative --version that has script-parsable output [report: bdale]
 - FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 - FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
@@ -103,10 +107,6 @@
 	- padstack
 	- clearing polygon
 	- text
-- BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
-- BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
-	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
