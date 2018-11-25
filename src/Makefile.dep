@@ -1834,11 +1834,10 @@
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h \
  hid_cfg_input.h hid_cfg.h compat_nls.h board.h vtroutestyle.h library.h \
- rats_patch.h board.h hid_attrib.h hid_init.h hid_color.h \
- hid_flags.h actions.h ../src_plugins/hid_lesstif/stdarg.h grid.h \
- misc_util.h compat_misc.h layer_vis.h tool.h \
- ../src_plugins/lib_hid_common/clip.h global_typedefs.h \
- ../src_plugins/lib_hid_common/util.h \
+ rats_patch.h board.h hid_attrib.h hid_init.h hid_color.h hid_flags.h \
+ actions.h ../src_plugins/hid_lesstif/stdarg.h grid.h misc_util.h \
+ compat_misc.h layer_vis.h tool.h ../src_plugins/lib_hid_common/clip.h \
+ global_typedefs.h ../src_plugins/lib_hid_common/util.h \
  ../src_plugins/lib_hid_common/cli_history.h \
  ../src_plugins/hid_lesstif/wt_preview.c \
  ../src_plugins/hid_lesstif/wt_preview.h \
@@ -3637,7 +3636,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h plug_footprint.h \
- vtlibrary.h data.h compat_nls.h compat_misc.h actions.h \
+ vtlibrary.h data.h compat_nls.h compat_misc.h actions.h draw.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
  ../src_plugins/lib_gtk_common/wt_preview.h layer.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
