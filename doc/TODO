@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: (prio) invert selection [report: Keantoken]
-- BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
++ BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - CLEANUP: boardflip rewrite: use data_mirror
 	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
