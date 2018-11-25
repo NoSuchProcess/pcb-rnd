@@ -160,6 +160,11 @@ PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps,
 		return PCB_BB_INVALID;
 	}
 
+	if ((topi < 0) || (boti < 0)) {
+		/* special case: if there's no top or bottom copper, we do not know where to count from - do not support bbvias */
+		return PCB_BB_THRU;
+	}
+
 	if (top != NULL) *top = pcb->LayerGroups.cache.copper[topi];
 	if (bottom != NULL) *bottom = pcb->LayerGroups.cache.copper[boti];
 
