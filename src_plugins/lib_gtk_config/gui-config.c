@@ -76,6 +76,16 @@
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 
+#define PCB_MIN_DRC_VALUE    PCB_MIL_TO_COORD(0.1)
+#define PCB_MAX_DRC_VALUE    PCB_MIL_TO_COORD(500)
+#define PCB_MIN_DRC_SILK     PCB_MIL_TO_COORD(1)
+#define PCB_MAX_DRC_SILK     PCB_MIL_TO_COORD(30)
+#define PCB_MIN_DRC_DRILL    PCB_MIL_TO_COORD(1)
+#define PCB_MAX_DRC_DRILL    PCB_MIL_TO_COORD(50)
+#define PCB_MIN_DRC_RING     0
+#define PCB_MAX_DRC_RING     PCB_MIL_TO_COORD(100)
+
+
 /* Ugly hack: save a copy of gport on window construct in case we need to
    reconstruct */
 static pcb_gtk_common_t *priv_copy_com;

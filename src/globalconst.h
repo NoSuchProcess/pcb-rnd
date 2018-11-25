@@ -61,14 +61,6 @@
 #define PCB_MIN_PINORVIAHOLE PCB_MIL_TO_COORD(4)	/* size of a pins or vias drilling hole */
 #define PCB_MAX_PINORVIASIZE ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_PINORVIACOPPER PCB_MIL_TO_COORD(4)	/* min difference outer-inner diameter */
-#define PCB_MIN_DRC_VALUE    PCB_MIL_TO_COORD(0.1)
-#define PCB_MAX_DRC_VALUE    PCB_MIL_TO_COORD(500)
-#define PCB_MIN_DRC_SILK     PCB_MIL_TO_COORD(1)
-#define PCB_MAX_DRC_SILK     PCB_MIL_TO_COORD(30)
-#define PCB_MIN_DRC_DRILL    PCB_MIL_TO_COORD(1)
-#define PCB_MAX_DRC_DRILL    PCB_MIL_TO_COORD(50)
-#define PCB_MIN_DRC_RING     0
-#define PCB_MAX_DRC_RING     PCB_MIL_TO_COORD(100)
 #define PCB_MIN_GRID         1
 #define PCB_MAX_GRID         PCB_MIL_TO_COORD(1000)
 #define PCB_MAX_FONTPOSITION 255 /* upper limit of characters in my font */
