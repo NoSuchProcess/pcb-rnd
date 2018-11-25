@@ -3085,7 +3085,7 @@ WARNING:
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 Select(Object|ToggleObject)
-Select(All|Block|Connection)
+Select(All|Block|Connection|Invert)
 Select(Convert)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Toggles or sets the selection.
@@ -3128,7 +3128,13 @@ Arguments:
 <th>
  Convert  
 <td>
- Converts the selected objects to a subcircuit.  This uses the highest       numbered paste buffer. 
+ Converts the selected objects to a subcircuit.  This uses the highest       numbered paste buffer.   
+<tr>
+
+<th>
+ Invert  
+<td>
+ Invert selection: anything that was not selected becomes selected,       everything that was selected becomes unselected. Locked objects       are not affected. 
 </table>
  
 </dd></dl>

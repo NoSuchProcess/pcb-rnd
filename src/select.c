@@ -377,6 +377,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 typedef struct {
 	pcb_box_t box;
 	pcb_bool flag;
+	pcb_bool invert;
 } select_ctx_t;
 
 static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
@@ -384,7 +385,7 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
 	select_ctx_t *ctx = cl;
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj) == ctx->flag) /* cheap check on the flag: don't do anything if the flag is already right */
+	if (!ctx->invert && (PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj) == ctx->flag)) /* cheap check on the flag: don't do anything if the flag is already right */
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* do not let locked object selected, but allow deselection */
@@ -396,7 +397,10 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
 
 	pcb_undo_add_obj_to_flag((void *)obj);
 	pcb_draw_obj(obj);
-	PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, ctx->flag, obj);
+	if (ctx->invert)
+		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, obj);
+	else
+		PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, ctx->flag, obj);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -405,7 +409,7 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
  * Flag determines if the block is to be selected or unselected
  * returns pcb_true if the state of any object has changed
  */
-pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only)
+pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only, pcb_bool invert)
 {
 	select_ctx_t ctx;
 
@@ -413,6 +417,7 @@ pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_b
 
 	ctx.box = *Box;
 	ctx.flag = flag;
+	ctx.invert = invert;
 
 	fix_box_dir(Box, 1);
 

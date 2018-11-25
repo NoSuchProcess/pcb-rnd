@@ -54,7 +54,7 @@
 
 static const char pcb_acts_Select[] =
 	"Select(Object|ToggleObject)\n"
-	"Select(All|Block|Connection)\n"
+	"Select(All|Block|Connection|Invert)\n"
 	"Select(Convert)";
 static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 /* DOC: select.html */
@@ -83,7 +83,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_tool_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true, pcb_true)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
@@ -100,7 +100,20 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = -PCB_MAX_COORD;
 				box.X2 = PCB_MAX_COORD;
 				box.Y2 = PCB_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_true, pcb_true))
+				if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false))
+					pcb_board_set_changed_flag(pcb_true);
+				break;
+			}
+
+		case F_Invert:
+			{
+				pcb_box_t box;
+
+				box.X1 = -PCB_MAX_COORD;
+				box.Y1 = -PCB_MAX_COORD;
+				box.X2 = PCB_MAX_COORD;
+				box.Y2 = PCB_MAX_COORD;
+				if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_true))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
@@ -166,7 +179,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_tool_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false, pcb_true)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false, pcb_true, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
@@ -183,7 +196,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = -PCB_MAX_COORD;
 				box.X2 = PCB_MAX_COORD;
 				box.Y2 = PCB_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
+				if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}

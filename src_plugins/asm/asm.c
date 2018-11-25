@@ -368,7 +368,7 @@ static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	box.Y1 = -PCB_MAX_COORD;
 	box.X2 = PCB_MAX_COORD;
 	box.Y2 = PCB_MAX_COORD;
-	if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
+	if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 			pcb_board_set_changed_flag(pcb_true);
 
 	if (row == NULL) {

@@ -111,7 +111,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.X2 = PCB_MAX_COORD;
 			box.Y2 = PCB_MAX_COORD;
 			/* unselect first if shift key not down */
-			if (!pcb_gui->shift_is_pressed() && pcb_select_block(PCB, &box, pcb_false, pcb_false))
+			if (!pcb_gui->shift_is_pressed() && pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			pcb_tool_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = pcb_tool_note.X;
@@ -173,7 +173,7 @@ void pcb_tool_arrow_release_mode(void)
 		pcb_undo_save_serial();
 		/* unselect first if shift key not down */
 		if (!pcb_gui->shift_is_pressed()) {
-			if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
+			if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			if (pcb_tool_note.Moving) {
 				pcb_tool_note.Moving = 0;
@@ -198,7 +198,7 @@ void pcb_tool_arrow_release_mode(void)
 		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
 
 		pcb_undo_restore_serial();
-		if (pcb_select_block(PCB, &box, pcb_true, pcb_true))
+		if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false))
 			pcb_board_set_changed_flag(pcb_true);
 		else if (pcb_bumped)
 			pcb_undo_inc_serial();

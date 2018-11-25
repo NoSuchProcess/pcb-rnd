@@ -396,7 +396,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attri
 	box.Y1 = -PCB_MAX_COORD;
 	box.X2 = PCB_MAX_COORD;
 	box.Y2 = PCB_MAX_COORD;
-	if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
+	if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 		changed = 1;
 
 	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
