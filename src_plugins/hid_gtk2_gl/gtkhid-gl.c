@@ -180,7 +180,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
 		case PCB_LYT_PASTE:
-			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis /*&& !pinout */ );
+			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis);
 	}
 
 	/* normal layers */

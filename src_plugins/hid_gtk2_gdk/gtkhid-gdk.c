@@ -117,11 +117,11 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, const char *purpose
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
 		case PCB_LYT_PASTE:
-			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis /*&& !pinout */ );
+			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis);
 	}
 
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
-		return /*pinout ? 1 : */ PCB->Data->Layer[idx].meta.real.vis;
+		return PCB->Data->Layer[idx].meta.real.vis;
 
 	if (PCB_LAYER_IS_ASSY(flags, purpi))
 		return 0;
@@ -133,9 +133,9 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, const char *purpose
 
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
-			return /* pinout ? 0 : */ PCB->InvisibleObjectsOn;
+			return PCB->InvisibleObjectsOn;
 		case PCB_LYT_SILK:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*|| pinout */ )
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return pcb_silk_on(PCB);
 			return 0;
 		case PCB_LYT_UI:
