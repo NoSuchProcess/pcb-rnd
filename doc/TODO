@@ -46,7 +46,7 @@
 		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
-- CLEANUP:  do not require top and bottom silk (also grep for TODO #tbs)
+- CLEANUP: layre order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
