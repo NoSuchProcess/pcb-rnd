@@ -571,10 +571,6 @@ typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx
 /* Normal expose: draw all layers with all flags (no .content is used) */
 void pcb_hid_expose_all(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region);
 
-/* Pinout preview expose: draws a subc; content.elem is used */
-void pcb_hid_expose_pinout(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *element);
-
-
 /* Layer preview expose: draws a single layer; content.layer_id is used */
 void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ly);
 

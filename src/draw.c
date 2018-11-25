@@ -964,39 +964,6 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 	}
 }
 
-void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
-{
-	pcb_hid_t *old_gui = expose_begin(hid);
-	int fx, fy, fs;
-
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &ctx->view);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &ctx->view);
-
-	fx = conf_core.editor.view.flip_x;
-	fy = conf_core.editor.view.flip_y;
-	fs = conf_core.editor.show_solder_side;
-
-	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
-	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
-
-	if (ctx->content.obj != NULL) {
-		pcb_draw_doing_pinout = pcb_true;
-		switch(ctx->content.obj->type) {
-			case PCB_OBJ_SUBC:    pcb_subc_draw_preview((pcb_subc_t *)ctx->content.obj, &ctx->view); break;
-			default:              pcb_message(PCB_MSG_ERROR, "pcb_hid_expose_pinout: unknown object type %x\n", ctx->content.obj->type);
-		}
-		pcb_draw_doing_pinout = pcb_false;
-	}
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &ctx->view);
-
-	conf_force_set_bool(conf_core.editor.view.flip_x, fx);
-	conf_force_set_bool(conf_core.editor.view.flip_y, fy);
-	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
-
-	expose_end(old_gui);
-}
-
 void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_hid_t *old_gui = expose_begin(hid);
