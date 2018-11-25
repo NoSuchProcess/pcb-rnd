@@ -1,4 +1,4 @@
-pcb-rnd 2.1.0 (r21054)
+pcb-rnd 2.1.0 (r21060)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Add: new plugin to host basic drawing actions: LineNew, ArcNew, TextNew, PstkNew, polygon creation
