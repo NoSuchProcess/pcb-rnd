@@ -13,4 +13,4 @@ RTRIP="$TRUNK/util/devhelpers/pcb-rtrip"
 	then
 		mv core "$fn.core"
 	fi
-)  2>&1  | grep -v "PCBChanged\|readres=-1\|No PCB loaded\|pcb-gpmi hid is loaded\|has no font information, using default font\|WARNING.*is not uninited\|but first saves\|WARNING.*left registered\|gpmi dirs:"
+)  2>&1  | grep -v "PCBChanged\|readres=-1\|No PCB loaded\|has no font information, using default font\|WARNING.*is not uninited\|but first saves\|WARNING.*left registered\|gpmi dirs:"
