@@ -43,7 +43,7 @@
 	- replace the route style dialog box's via part
 	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
 	- load/import from buffer and file
-	- CLEANUP: remove PCB_MIN_PINORVIA* macros - nothing should use them anymore
+	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- CLEANUP: netlist rewrite
