@@ -48,7 +48,7 @@ void conf_pcb_hid_uninit(void)
 	{
 		htpp_entry_t *e;
 		for(e = htpp_first(conf_hid_ids); e != NULL; e = htpp_next(conf_hid_ids, e))
-			fprintf(stderr, "ERROR: conf_hid id left registered: '%s'\n", e->key);
+			fprintf(stderr, "ERROR: conf_hid id left registered: '%s'\n", (char *)e->key);
 	}
 #endif
 
