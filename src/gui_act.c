@@ -287,7 +287,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* display the pinout of a subcircuit */
 		case F_Pinout:
-			return pcb_actionl("pinout2", NULL);
+			return pcb_actionl("pinout", NULL);
 
 			/* toggle displaying of terminal names */
 		case F_PinOrPadName:
