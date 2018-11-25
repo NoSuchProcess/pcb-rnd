@@ -92,7 +92,6 @@ append /local/pcb/OBJS [@
 	hid_color.o
 	hid_dad_tree.o
 	hid_draw_helpers.o
-	hid_extents.o
 	hid_flags.o
 	hid_init.o
 	hid_nogui.o

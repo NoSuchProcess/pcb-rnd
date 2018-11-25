@@ -1834,7 +1834,7 @@
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h \
  hid_cfg_input.h hid_cfg.h compat_nls.h board.h vtroutestyle.h library.h \
- rats_patch.h board.h hid_attrib.h hid_init.h hid_color.h hid_extents.h \
+ rats_patch.h board.h hid_attrib.h hid_init.h hid_color.h \
  hid_flags.h actions.h ../src_plugins/hid_lesstif/stdarg.h grid.h \
  misc_util.h compat_misc.h layer_vis.h tool.h \
  ../src_plugins/lib_hid_common/clip.h global_typedefs.h \
@@ -6476,27 +6476,6 @@ hid_draw_helpers.o: hid_draw_helpers.c ../config.h hid.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer_grp.h polygon.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h hid_inlines.h
-hid_extents.o: hid_extents.c ../config.h board.h global_typedefs.h \
- pcb_bool.h unit.h vtroutestyle.h attrib.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
- ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h \
- ../src_3rd/genvector/gds_char.h layer_grp.h library.h rats_patch.h \
- data.h crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h error.h drc.h route.h buffer.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
- obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
- rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h hid_draw_helpers.h hid_extents.h funchash_core.h \
- funchash.h funchash_core_list.h
 hid_flags.o: hid_flags.c ../config.h data.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h layer.h attrib.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \

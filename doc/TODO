@@ -22,9 +22,9 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 2. For later releases ===============================================================================
-- CLEANUP: remove hid_extent.[ch] in favor of bbox [report: Igor2]
+- BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
+- BUG: drc rendering broke -> rather rewrite using DAD [report: Igor2]
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
-- CLEANUP: remove the old pinout dialog with all HID aspects and core rendering code [report: Igor2]
 - CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
 - CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
 - CLEANUP: conf: remove alignment_distance - nothing uses it

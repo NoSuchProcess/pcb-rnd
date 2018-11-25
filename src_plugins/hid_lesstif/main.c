@@ -35,7 +35,6 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "hid_color.h"
-#include "hid_extents.h"
 #include "hid_flags.h"
 #include "actions.h"
 #include "stdarg.h"
