@@ -18,7 +18,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
-#include "../src_plugins/lib_gtk_common/dlg_pinout.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
@@ -390,11 +389,6 @@ static void *ghid_attr_dlg_new_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid
 	return ghid_attr_dlg_new(&ghidgui->common, attrs, n_attrs, results, title, descr, caller_data, modal, button_cb);
 }
 
-static void ghid_show_item(void *item)
-{
-	ghid_pinout_window_show(&ghidgui->common, (pcb_subc_t *)item);
-}
-
 static void ghid_beep()
 {
 	gdk_beep();
@@ -554,7 +548,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->attr_dlg_widget_state = ghid_attr_dlg_widget_state;
 	dst->attr_dlg_widget_hide = ghid_attr_dlg_widget_hide;
 	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
-	dst->show_item = ghid_show_item;
 	dst->beep = ghid_beep;
 	dst->progress = ghid_progress;
 	dst->edit_attributes = ghid_attributes;

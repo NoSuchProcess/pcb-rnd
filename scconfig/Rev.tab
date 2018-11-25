@@ -1,3 +1,4 @@
+21091	configure	old pinout dialog removal
 20317	configure	new core color infra
 20260	configure	plugin frame for ttf import
 20249	configure	central gettimeofday() wrapper to fix a compilation bug on IRIX
