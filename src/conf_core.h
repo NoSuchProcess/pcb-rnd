@@ -145,7 +145,6 @@ typedef struct {
 		CFT_COORD line_thickness;
 		CFT_COORD clearance;
 
-		CFT_COORD alignment_distance;      /* OBSOLETE (default drc size?) */
 		CFT_COORD bloat;                   /* minimum space between copper features on different networks */
 		CFT_COORD shrink;                  /* minimum overlap between connected copper features */
 		CFT_COORD min_wid;                 /* minimum copper width */

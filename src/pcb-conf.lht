@@ -122,7 +122,6 @@ li:pcb-rnd-conf-v1 {
 			via_thickness = 2000.00 um
 			via_drilling_hole = 31.50 mil
 
-#			alignment_distance = 0
 			text_scale = 100
 			text_thickness = 0
 			text_font_id = 0
