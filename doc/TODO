@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: scconfig: --disable-nonexistingfeature exits without an error message [report: Igor2]
 - FEATURE: (prio) invert selection [report: Keantoken]
 - BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - CLEANUP: boardflip rewrite: use data_mirror
