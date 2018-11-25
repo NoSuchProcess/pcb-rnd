@@ -63,13 +63,13 @@ void pcb_route_destroy(pcb_route_t *p_route);
 void pcb_route_reset(pcb_route_t *p_route);
 void pcb_route_reserve(pcb_route_t *p_route, int size);
 void pcb_route_resize(pcb_route_t *p_route, int size);
-void pcb_route_start( pcb_board_t * PCB, pcb_route_t * route, pcb_point_t * point, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags );
+void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
 
 void pcb_route_add_line(pcb_route_t *p_route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer);
 void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t start_angle, pcb_angle_t delta, pcb_coord_t radius, pcb_layer_id_t layer);
 
 void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags, int mod1, int mod2);
-void pcb_route_calculate_to( pcb_route_t * route, pcb_point_t * point, int mod1, int mod2 );
+void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, int mod2);
 void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *p_route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
 
 int pcb_route_apply(const pcb_route_t *p_route);

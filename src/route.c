@@ -128,7 +128,7 @@ void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t st
 	p_object->radius = radius;
 	p_object->layer = layer;
 	p_object->type = PCB_OBJ_ARC;
-	
+
 	p_route->end_point.X = pcb_round((double)center->X - ((double)radius * cos((start_angle + delta) * PCB_M180)));
 	p_route->end_point.Y = pcb_round((double)center->Y + ((double)radius * sin((start_angle + delta) * PCB_M180)));
 }
@@ -287,13 +287,7 @@ void pcb_route_calculate_45(pcb_point_t *start_point, pcb_point_t *target_point)
 	}
 }
 
-void pcb_route_start(	pcb_board_t *		PCB, 
-											pcb_route_t *		route, 
-											pcb_point_t *		point,
-											pcb_layer_id_t 	layer_id, 
-											pcb_coord_t 		thickness, 
-											pcb_coord_t		 	clearance, 
-											pcb_flag_t 			flags )
+void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
 {
 	/* Restart the route */
 	pcb_route_reset(route);
@@ -307,17 +301,14 @@ void pcb_route_start(	pcb_board_t *		PCB,
 	route->flags = flags;
 }
 
-void pcb_route_calculate_to(	pcb_route_t *   route,
-															pcb_point_t *   point,
-															int							mod1,
-															int							mod2 )
+void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, int mod2)
 {
 	/* TODO: If an external route calculator has been selected then use it instead of this default one. */
 	/* TODO: Add DRC Checking */
 
-	pcb_point_t * 	point1 = &route->end_point;
-	pcb_point_t * 	point2 = point;
-	pcb_layer_id_t	layer_id = route->end_layer;
+	pcb_point_t *point1 = &route->end_point;
+	pcb_point_t *point2 = point;
+	pcb_layer_id_t layer_id = route->end_layer;
 
 	/* Set radius to 0 for standard 45/90 operation */
 	const pcb_coord_t radius = route->thickness * conf_core.editor.route_radius;
@@ -326,7 +317,7 @@ void pcb_route_calculate_to(	pcb_route_t *   route,
 	 * If a 0-length line is not added then some operations such as moving a line point
 	 * could cause the line to disappear.
 	 */
-	if((point1->X == point2->X) && (point1->Y == point2->Y)) {
+	if ((point1->X == point2->X) && (point1->Y == point2->Y)) {
 		route->end_point = *point2;
 		pcb_route_add_line(route, point1, point2, layer_id);
 	}
@@ -399,7 +390,7 @@ void pcb_route_calculate_to(	pcb_route_t *   route,
 			route->end_point = *point2;
 		}
 	}
-	
+
 }
 
 /* TODO: Pass in other required information such as object flags */
@@ -408,7 +399,7 @@ void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *poin
 	/* Set radius to 0 for standard 45/90 operation */
 	const pcb_coord_t radius = thickness * conf_core.editor.route_radius;
 
-	pcb_route_start( PCB,route,point1,layer_id,thickness,clearance,flags ); 
+	pcb_route_start(PCB, route, point1, layer_id, thickness, clearance, flags);
 
 	/* If the line can be drawn directly to the target then add a single line segment. */
 	if (conf_core.editor.all_direction_lines) {
@@ -416,7 +407,7 @@ void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *poin
 		return;
 	}
 
-	pcb_route_calculate_to(	route, point2, mod1, mod2 );
+	pcb_route_calculate_to(route, point2, mod1, mod2);
 }
 
 int pcb_route_apply(const pcb_route_t *p_route)
@@ -526,42 +517,42 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 {
 	int i;
 	int applied = 0;
-	
+
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
 		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer));
 
 		switch (p_obj->type) {
-		  case PCB_OBJ_ARC:
-			  /* If the route is being applied to an existing arc then the existing
-					 arc will be used as the first arc in the route. This maintains the
-					 ID of the arc.
+			case PCB_OBJ_ARC:
+				/* If the route is being applied to an existing arc then the existing
+				   arc will be used as the first arc in the route. This maintains the
+				   ID of the arc.
 				 */
-			  if (apply_to_arc) {
+				if (apply_to_arc) {
 					int changes = 0;
 
 					/* Move the existing line points to the position of the route line. */
-					if((p_obj->radius != apply_to_arc->Width) || (p_obj->radius != apply_to_arc->Height)) {
+					if ((p_obj->radius != apply_to_arc->Width) || (p_obj->radius != apply_to_arc->Height)) {
 						pcb_undo_add_obj_to_change_radii(PCB_OBJ_ARC, apply_to_arc, apply_to_arc, apply_to_arc);
 						++changes;
 					}
 
-					if((p_obj->start_angle != apply_to_arc->StartAngle) || (p_obj->delta_angle != apply_to_arc->Delta)) {
+					if ((p_obj->start_angle != apply_to_arc->StartAngle) || (p_obj->delta_angle != apply_to_arc->Delta)) {
 						pcb_undo_add_obj_to_change_angles(PCB_OBJ_ARC, apply_to_arc, apply_to_arc, apply_to_arc);
 						++changes;
 					}
 
-					if(p_route->thickness != apply_to_arc->Thickness) {
+					if (p_route->thickness != apply_to_arc->Thickness) {
 						pcb_undo_add_obj_to_size(PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc, apply_to_arc);
 						++changes;
 					}
 
-					if((p_obj->point1.X != apply_to_arc->X) || (p_obj->point1.Y != apply_to_arc->Y)) {
+					if ((p_obj->point1.X != apply_to_arc->X) || (p_obj->point1.Y != apply_to_arc->Y)) {
 						pcb_undo_add_obj_to_move(PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc, NULL, p_obj->point1.X - apply_to_arc->X, p_obj->point1.Y - apply_to_arc->Y);
 						++changes;
 					}
 
-					if(changes > 0) {
+					if (changes > 0) {
 						/* Modify the existing arc */
 						pcb_arc_invalidate_erase(apply_to_arc);
 
@@ -588,16 +579,16 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 				}
 				else {
 					/* Create a new arc */
-					pcb_arc_t *arc = pcb_arc_new(	layer,
-					                              p_obj->point1.X,
-					                              p_obj->point1.Y,
-					                              p_obj->radius,
-					                              p_obj->radius,
-					                              p_obj->start_angle,
-					                              p_obj->delta_angle,
-					                              p_route->thickness,
-					                              p_route->clearance,
-					                              p_route->flags, pcb_true);
+					pcb_arc_t *arc = pcb_arc_new(layer,
+																			 p_obj->point1.X,
+																			 p_obj->point1.Y,
+																			 p_obj->radius,
+																			 p_obj->radius,
+																			 p_obj->start_angle,
+																			 p_obj->delta_angle,
+																			 p_route->thickness,
+																			 p_route->clearance,
+																			 p_route->flags, pcb_true);
 					if (arc) {
 						pcb_added_lines++;
 						pcb_obj_add_attribs(arc, PCB->pen_attr);
@@ -606,19 +597,19 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						applied = 1;
 					}
 				}
-			break;
+				break;
 
-		  case PCB_OBJ_LINE:
-		    {
-			    /* Create a new line */
-			    pcb_line_t *line = pcb_line_new_merge(layer,
-					                                      p_obj->point1.X,
-					                                      p_obj->point1.Y,
-					                                      p_obj->point2.X,
-					                                      p_obj->point2.Y,
-					                                      p_route->thickness,
-					                                      p_route->clearance,
-					                                      p_route->flags);
+			case PCB_OBJ_LINE:
+				{
+					/* Create a new line */
+					pcb_line_t *line = pcb_line_new_merge(layer,
+																								p_obj->point1.X,
+																								p_obj->point1.Y,
+																								p_obj->point2.X,
+																								p_obj->point2.Y,
+																								p_route->thickness,
+																								p_route->clearance,
+																								p_route->flags);
 					if (line) {
 						pcb_added_lines++;
 						pcb_obj_add_attribs(line, PCB->pen_attr);
@@ -626,11 +617,11 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
 					}
-		    }
-			  break;
+				}
+				break;
 
-		  default:
-			  break;
+			default:
+				break;
 		}
 	}
 
