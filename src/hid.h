@@ -439,14 +439,6 @@ struct pcb_hid_s {
 	   except the value-changed callback is inhibited */
 	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 
-
-	/* This causes a second window to display, which only shows the
-	   selected item_. The expose callback is called twice; once to size
-	   the extents of the item, and once to draw it.  To pass magic
-	   values, pass the address of a variable created for this
-	   purpose.  */
-	void (*show_item)(void *item);
-
 	/* Something to alert the user.  */
 	void (*beep)(void);
 
