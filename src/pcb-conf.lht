@@ -184,14 +184,6 @@ li:pcb-rnd-conf-v1 {
 				mask = {#ff0000}
 				paste = {#cd00cd}
 			}
-			ha:pinout {
-#				name_length = 0
-#				zoom = 0
-				offset_x = 25400
-				offset_y = 25400
-				text_offset_x = 0.1 mm
-				text_offset_y = 0.1 mm
-			}
 			ha:padstack {
 				cross_thick = 1
 				cross_size = 0.1 mm

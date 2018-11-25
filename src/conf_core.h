@@ -203,14 +203,6 @@ typedef struct {
 			CFT_COLOR paste;                 /* default paste layer color (when a new paste layer is created) */
 			CFT_COLOR element;               /* default silk layer color (when a new silk layer is created) */
 		} color;
-		struct pinout {
-			CFT_INTEGER name_length;
-			CFT_REAL zoom;
-			CFT_COORD offset_x;           /* X offset of origin */
-			CFT_COORD offset_y;           /* Y offset of origin */
-			CFT_COORD text_offset_x;      /* X offset of text from pin center */
-			CFT_COORD text_offset_y;      /* Y offset of text from pin center */
-		} pinout;
 		struct padstack {
 			CFT_INTEGER cross_thick;      /* cross thickness in pixels - 0 means disable crosses */
 			CFT_COORD cross_size;         /* cross size in word coords - size of one arm of the cross (minus the hole radius) */
