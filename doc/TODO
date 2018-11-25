@@ -22,7 +22,6 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 2. For later releases ===============================================================================
-- CLEANUP: remove GPMI (from the menu too!)
 - CLEANUP: remove old, compatibility mode of CreateMenu(); check if there's any user [report: Igor2]
 - CLEANUP: remove pcb_uint8_t - use unsigned char or some purpose-specific type instead [report: Igor2]
 - CLEANUP: remove hid_extent.[ch] in favor of bbox [report: Igor2]
