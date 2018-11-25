@@ -1012,12 +1012,13 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 {
 	long int n;
 	lht_node_t *layers;
-	pcb_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
 	pcb_layergrp_t *g;
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
-	{ /* produce an old layer group assignment from top to bottom (needed for v1, good for other versions too) */
+	if (wrver == 1) { /* produce an old layer group assignment from top to bottom (needed for v1, good for other versions too) */
+		pcb_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
+
 		gm = 0;
 		for(n = 0; n < pcb_max_group(PCB); n++) {
 			unsigned int gflg = pcb_layergrp_flags(PCB, n);
@@ -1039,9 +1040,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
 		grp[g - PCB->LayerGroups.grp] = gtop;
-	}
 
-	if (wrver == 1) {
 		/* v1 needs to have silk at the end of the list */
 		for(n = 0; n < pcb_max_layer; n++) {
 			if ((pcb_layer_flags(PCB, n) & PCB_LYT_SILK) == 0) {
