@@ -37,8 +37,6 @@
 #include "obj_poly_draw.h"
 #include "obj_pstk_draw.h"
 
-/* DRC related functions */
-
 static void GotoError(void);
 static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3);
 
