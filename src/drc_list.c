@@ -3,8 +3,6 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 1994,1995,1996, 2005 Thomas Nau
  *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
