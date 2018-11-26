@@ -77,7 +77,6 @@ void pcb_layout_lookup_uninit(void);
 void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats);
 void pcb_save_find_flag(int);
 void pcb_restore_find_flag(void);
-int pcb_drc_all(void);
 pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_poly_t *);
 pcb_bool pcb_is_arc_in_poly(pcb_arc_t *, pcb_poly_t *);
 pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b);

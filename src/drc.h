@@ -51,6 +51,7 @@ struct drc_violation_s {
 void pcb_drc_list_free_fields(pcb_drc_violation_t *drc);
 void pcb_drc_list_free(pcb_drc_violation_t *drc);
 
+
 /* List of drc violations */
 #define TDL(x)      pcb_drc_list_ ## x
 #define TDL_LIST_T  pcb_drc_list_t
@@ -64,5 +65,7 @@ void pcb_drc_list_free(pcb_drc_violation_t *drc);
 
 #include <genlist/gentdlist_impl.h>
 #include <genlist/gentdlist_undef.h>
+
+int pcb_drc_all(pcb_drc_list_t *lst);
 
 #endif

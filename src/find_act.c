@@ -46,6 +46,7 @@ static const char drc_help[] = "Invoke the DRC check.";
 static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int count;
+	pcb_drc_list_t lst;
 
 	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
 		pcb_message(PCB_MSG_INFO, _("%m+Rules are minspace %$mS, minoverlap %$mS "
@@ -53,7 +54,7 @@ static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 							"min drill %$mS, min annular ring %$mS\n"),
 						conf_core.editor.grid_unit->allow, conf_core.design.bloat, conf_core.design.shrink, conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);
 	}
-	count = pcb_drc_all();
+	count = pcb_drc_all(&lst);
 	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
 		if (count == 0)
 			pcb_message(PCB_MSG_INFO, _("No DRC problems found.\n"));
