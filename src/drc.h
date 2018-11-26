@@ -42,9 +42,8 @@ struct drc_violation_s {
 	int have_measured;
 	pcb_coord_t measured_value;
 	pcb_coord_t required_value;
-	int object_count;
-	long int *object_id_list;
-	int *object_type_list;
+
+	vtid_t objs[2];               /* two groups of offending objects */
 
 	gdl_elem_t link;              /* always part of a list */
 };

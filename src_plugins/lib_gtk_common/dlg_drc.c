@@ -210,24 +210,22 @@ void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * vio
 		/* Flag the objects listed against this DRC violation */
 		for (i = 0; i < violation->object_count; i++) {
 			int object_id = violation->object_id_list[i];
-			int object_type = violation->object_type_list[i];
-			int found_type;
-			void *ptr1, *ptr2, *ptr3;
+			pcb_any_obj_t *obj;
 
-			found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
-			if (found_type == PCB_OBJ_VOID) {
+			obj = htip_get(&PCB->Data->id2obj, object_id);
+			if (obj == NULL) {
 				pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
 				continue;
 			}
-			pcb_undo_add_obj_to_flag(ptr2);
-			PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
-			switch (violation->object_type_list[i]) {
+			pcb_undo_add_obj_to_flag(obj);
+			PCB_FLAG_SET(PCB_FLAG_FOUND, obj);
+			switch (obj->type) {
 			case PCB_OBJ_LINE:
 			case PCB_OBJ_ARC:
 			case PCB_OBJ_POLY:
-				pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
+				pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, obj->parent.layer), pcb_true, pcb_true);
 			}
-			pcb_draw_obj((pcb_any_obj_t *)ptr2);
+			pcb_draw_obj(obj);
 		}
 		pcb_board_set_changed_flag(pcb_true);
 		pcb_undo_inc_serial();
@@ -262,8 +260,6 @@ static void ghid_drc_violation_finalize(GObject * object)
 
 	g_free(violation->title);
 	g_free(violation->explanation);
-	g_free(violation->object_id_list);
-	g_free(violation->object_type_list);
 
 	G_OBJECT_CLASS(ghid_drc_violation_parent_class)->finalize(object);
 }
@@ -271,7 +267,6 @@ static void ghid_drc_violation_finalize(GObject * object)
 typedef struct object_list {
 	int count;
 	long int *id_list;
-	int *type_list;
 } object_list;
 
 static void ghid_drc_violation_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
@@ -308,14 +303,10 @@ static void ghid_drc_violation_set_property(GObject * object, guint property_id,
 		break;
 	case PROP_OBJECT_LIST:
 		/* Copy the passed data to make new lists */
-		g_free(violation->object_id_list);
-		g_free(violation->object_type_list);
 		obj_list = (object_list *) g_value_get_pointer(value);
 		violation->object_count = obj_list->count;
 		violation->object_id_list = g_new(long int, obj_list->count);
-		violation->object_type_list = g_new(int, obj_list->count);
 		memcpy(violation->object_id_list, obj_list->id_list, sizeof(long int) * obj_list->count);
-		memcpy(violation->object_type_list, obj_list->type_list, sizeof(int) * obj_list->count);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
@@ -393,9 +384,8 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation)
 {
 	object_list obj_list;
 
-	obj_list.count = violation->object_count;
-	obj_list.id_list = violation->object_id_list;
-	obj_list.type_list = violation->object_type_list;
+	obj_list.count = violation->objs[0].used;
+	obj_list.id_list = violation->objs[0].array;
 
 	return (GhidDrcViolation *) g_object_new(GHID_TYPE_DRC_VIOLATION,
 																					 "title", violation->title,
