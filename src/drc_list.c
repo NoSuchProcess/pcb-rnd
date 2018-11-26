@@ -1,10 +1,11 @@
 /*
+ *
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 1994,1995,1996, 2004 Thomas Nau
- *  15 Oct 2008 Ineiev: add different crosshair shapes
+ *  Copyright (C) 1994,1995,1996, 2005 Thomas Nau
+ *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,43 +27,18 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-#ifndef PCB_DRC_H
-#define PCB_DRC_H
 
-#include <genlist/gendlist.h>
-#include "unit.h"
+#define TDL_DONT_UNDEF
+#include "drc.h"
+#include <genlist/gentdlist_impl.c>
 
-typedef struct drc_violation_s pcb_drc_violation_t;
-struct drc_violation_s {
-	char *title;
-	char *explanation;
-	pcb_coord_t x, y;
-	pcb_angle_t angle;
-	int have_measured;
-	pcb_coord_t measured_value;
-	pcb_coord_t required_value;
-	int object_count;
-	long int *object_id_list;
-	int *object_type_list;
+void pcb_drc_list_free_fields(pcb_drc_violation_t *drc)
+{
+	free(drc);
+}
 
-	gdl_elem_t link;              /* always part of a list */
-};
-
-void pcb_drc_list_free_fields(pcb_drc_violation_t *drc);
-void pcb_drc_list_free(pcb_drc_violation_t *drc);
-
-/* List of drc violations */
-#define TDL(x)      pcb_drc_list_ ## x
-#define TDL_LIST_T  pcb_drc_list_t
-#define TDL_ITEM_T  pcb_drc_violation_t
-#define TDL_FIELD   link
-#define TDL_SIZE_T  size_t
-#define TDL_FUNC
-
-#define pcb_drc_list_foreach(list, iterator, loop_elem) \
-	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
-
-#include <genlist/gentdlist_impl.h>
-#include <genlist/gentdlist_undef.h>
-
-#endif
+void pcb_drc_list_free(pcb_drc_violation_t *drc)
+{
+	pcb_drc_list_free_fields(drc);
+	free(drc);
+}
