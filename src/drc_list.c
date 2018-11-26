@@ -30,13 +30,26 @@
 #include "drc.h"
 #include <genlist/gentdlist_impl.c>
 
-void pcb_drc_list_free_fields(pcb_drc_violation_t *drc)
+void pcb_drc_free(pcb_drc_violation_t *item)
 {
-	free(drc);
+	pcb_drc_list_remove(item);
+	free(item->title);
+	free(item->explanation);
+	free(item);
 }
 
-void pcb_drc_list_free(pcb_drc_violation_t *drc)
+void pcb_drc_list_free_fields(pcb_drc_list_t *lst)
 {
-	pcb_drc_list_free_fields(drc);
-	free(drc);
+	for(;;) {
+		pcb_drc_violation_t *item = pcb_drc_list_first(lst);
+		if (item == NULL)
+			break;
+		pcb_drc_free(item);
+	}
+}
+
+void pcb_drc_list_free(pcb_drc_list_t *lst)
+{
+	pcb_drc_list_free_fields(lst);
+	free(lst);
 }

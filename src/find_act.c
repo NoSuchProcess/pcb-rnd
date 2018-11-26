@@ -54,6 +54,8 @@ static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 							"min drill %$mS, min annular ring %$mS\n"),
 						conf_core.editor.grid_unit->allow, conf_core.design.bloat, conf_core.design.shrink, conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);
 	}
+
+	memset(&lst, 0, sizeof(lst));
 	count = pcb_drc_all(&lst);
 	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
 		if (count == 0)
@@ -64,6 +66,7 @@ static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_INFO, _("Aborted DRC after %d design rule errors.\n"), -count);
 	}
 
+	pcb_drc_list_free_fields(&lst);
 	PCB_ACT_IRES(count);
 	return 0;
 }
