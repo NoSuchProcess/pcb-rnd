@@ -47,6 +47,8 @@
 #include "dlg_pref.c"
 #include "dlg_lib_pstk.c"
 #include "dlg_undo.c"
+
+#include "dlg_drc.h"
 #include "act_dad.h"
 
 pcb_action_t dialogs_action_list[] = {
@@ -62,7 +64,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"Preferences", pcb_act_Preferences, pcb_acth_Preferences, pcb_acts_Preferences},
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
-	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad}
+	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
+	{"DRC2", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";

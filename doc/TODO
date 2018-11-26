@@ -9,6 +9,7 @@
 	- export to file 
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 	- BUG: DRC rendering broke -> rather rewrite using DAD [report: Igor2]
+	- CLEANUP: remove find_act.c
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
