@@ -1,15 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: rewrite the preview API:
-	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
-	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
-	- ... but there also should be an option for going with board flip (drc view)
-- CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
-- CLEANUP: remove compact_vertical from gtk - see bug_files/remove_compact.txt
-- CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
-- BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
-- CLEANUP: remove preview for layers -> use the generic expose preview (requires switching to the new preferences dialog for the layer stackup) [report: Igor2]
 - CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
 	- buttons to select one or all items or all items including locked
 	- io infra for save incompatibility note with DRC list
@@ -18,6 +9,15 @@
 	- export to file 
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 	- BUG: DRC rendering broke -> rather rewrite using DAD [report: Igor2]
+- CLEANUP: rewrite the preview API:
+	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
+	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
+	- ... but there also should be an option for going with board flip (drc view)
+	- CLEANUP: remove preview for layers -> use the generic expose preview (requires switching to the new preferences dialog for the layer stackup) [report: Igor2]
+- CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
+- CLEANUP: remove compact_vertical from gtk - see bug_files/remove_compact.txt
+- CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
+- BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
