@@ -1,10 +1,44 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- CLEANUP: rewrite the preview API:
+	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
+	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
+	- ... but there also should be an option for going with board flip (drc view)
+- CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
+- CLEANUP: remove compact_vertical from gtk - see bug_files/remove_compact.txt
+- CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
+- BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
+- CLEANUP: remove preview for layers -> use the generic expose preview (requires switching to the new preferences dialog for the layer stackup) [report: Igor2]
+- CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
+	- buttons to select one or all items or all items including locked
+	- io infra for save incompatibility note with DRC list
+	- import sch. shouldn't select elements to be removed but put them on a drc list
+	- display number of items at top of drc window
+	- export to file 
+	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
+	- BUG: DRC rendering broke -> rather rewrite using DAD [report: Igor2]
+- CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
+- CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
+	- FEATURE: library window: allow long tags and long location text to split
+- FEATURE: auto calculated alternative action names to convert between CamelCase and underscores [report: igor2]
+- FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
+- FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
+- FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
+- FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - CLEANUP: boardflip rewrite: use data_mirror
 	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
+- CLEANUP: propedit revamp:
+	- move the property editor out from gtk, using the DAD, into propedit
+	- test under lesstif
+	- remove Attribute()
+	- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
+	- CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
+	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
+	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
+	- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 - BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
@@ -20,17 +54,7 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 2. For later releases ===============================================================================
-- BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
-- CLEANUP: remove preview for layers -> use the generic expose preview (requires switching to the new preferences dialog for the layer stackup) [report: Igor2]
-- BUG: drc rendering broke -> rather rewrite using DAD [report: Igor2]
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
-- CLEANUP: remove ps_bloat (in favor of cam bloat) [report: Igor2]
-- CLEANUP: pcb_subc_change_side() should take pcb_subc_t *, not ** as it won't change the poiter - waiting for testing [report: Igor2]
-- CLEANUP: remove compact_vertical from gtk - see bug_files/remove_compact.txt
-- propedit bugs:
-	- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - FEATURE: route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
@@ -52,14 +76,9 @@
 	- remove src/hid_color.[ch] in favor of src/color_cache.[ch]
 	- switch over core from storing color names to storing pcb_color_t
 	- remove per hid, non-backup-lib custom color structs
-- FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
-- FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
-- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
-- CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
 - CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
 - CLEANUP/BUG: high level pcb_mkdir() and pcb_file_size() and is-dir shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
-- FEATURE: auto calculated alternative action names to convert between CamelCase and underscores [report: igor2]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
@@ -82,10 +101,6 @@
 - XOR rendering upgrade:
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
-- CLEANUP: rewrite the preview API:
-	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
-	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
-	- ... but there also should be an option for going with board flip (drc view)
 - opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
@@ -100,14 +115,6 @@
 	- clearing polygon
 	- text
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
-- CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
-	- buttons to select one or all items or all items including locked
-	- io infra for save incompatibility note with DRC list
-	- import sch. shouldn't select elements to be removed but put them on a drc list
-	- display number of items at top of drc window
-	- export to file 
-	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
-- FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - SUBC: element removal:
 	- FEATURE: "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- CLEANUP: convert pcblib to subcircuits:
@@ -119,13 +126,7 @@
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
 - FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
-- CLEANUP: propedit revamp:
-	- move the property editor out from gtk, using the DAD, into propedit
-	- test under lesstif
-	- remove Attribute()
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- FEATURE: library window: allow long tags and long location text to split
-- CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
@@ -141,7 +142,6 @@
 - unravel the undo code
 	- FEATURE: grid size change should be undoable? [report:Evan]
 	- FEATURE: maybe other conf settings too?
-- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
@@ -149,8 +149,7 @@
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
 	- CLEANUP: re-add dynamic menus after a gui change:
-		- either remember dynamic menus in a separate list so they can be rebuilt
-		- or provide hooks and let plugins deal with it
+		- provide hooks and let plugins deal with a re-add as they may be added anywhere
 	- FEATURE: fungw: auto-remove menus by cookie (TODO#2)
 	- FEATURE: load new res on the fly (replace the menu system):
 		- low level reload code (re-add the dynamic menus too!)
@@ -188,7 +187,6 @@
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
-- FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - CLEANUP: parent subc update:
