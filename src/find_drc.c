@@ -90,9 +90,7 @@ static void append_drc_dialog_message(const char *fmt, ...)
 
 static void GotoError(void);
 
-/*----------------------------------------------------------------------------
- * Build a list of the of offending items by ID. (Currently just "thing")
- */
+/* Build a list of the of offending items by ID. (Currently just "thing") */
 static void BuildObjectList(int *object_count, long int **object_id_list, int **object_type_list)
 {
 	*object_count = 0;
@@ -119,9 +117,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 
 
 
-/*----------------------------------------------------------------------------
- * Locate the coordinates of offending item (thing)
- */
+/* Locate the coordinates of offending item (thing) */
 static void LocateError(pcb_coord_t *x, pcb_coord_t *y)
 {
 	switch (thing_type) {
@@ -178,10 +174,7 @@ static void append_drc_violation(pcb_drc_violation_t *violation)
 }
 
 
-/*
- * message when asked about continuing DRC checks after next
- * violation is found.
- */
+/* message when asked about continuing DRC checks after next violation is found. */
 #define DRC_CONTINUE "Press Next to continue DRC checking"
 #define DRC_NEXT "Next"
 #define DRC_CANCEL "Cancel"
@@ -260,9 +253,9 @@ doIsBad:
 	BuildObjectList(&object_count, &object_id_list, &object_type_list);
 	violation = pcb_drc_violation_new(message, 
 		"Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.",
-		x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-		pcb_false,	/* MEASUREMENT OF ERROR UNKNOWN */
-		0,	/* MAGNITUDE OF ERROR UNKNOWN */
+		x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+		pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
+		0, /* MAGNITUDE OF ERROR UNKNOWN */
 		conf_core.design.bloat, object_count, object_id_list, object_type_list);
 	append_drc_violation(violation);
 	pcb_drc_violation_free(violation);
@@ -317,10 +310,7 @@ static int drc_text(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid, p
 	return 0;
 }
 
-/*-----------------------------------------------------------------------------
- * Check for DRC violations
- * see if the connectivity changes when everything is bloated, or shrunk
- */
+/* Check for DRC violations see if the connectivity changes when everything is bloated, or shrunk */
 int pcb_drc_all(void)
 {
 	pcb_coord_t x, y;
@@ -523,7 +513,7 @@ int pcb_drc_all(void)
 	Bloat = 0;
 
 	/* check silkscreen minimum widths outside of subcircuits */
-	/* XXX - need to check text and polygons too! */
+#warning DRC TODO: need to check text and polygons too!
 	TheFlag = PCB_FLAG_SELECTED;
 	if (!IsBad) {
 		PCB_LINE_SILK_LOOP(PCB->Data);
@@ -570,10 +560,8 @@ int pcb_drc_all(void)
 
 
 
-/*-----------------------------------------------------------------------------
- * Check for DRC violations on a single net starting from the pad or pin
- * sees if the connectivity changes when everything is bloated, or shrunk
- */
+/* Check for DRC violations on a single net starting from the pad or pin
+   sees if the connectivity changes when everything is bloated, or shrunk */
 static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 {
 	pcb_coord_t x, y;
@@ -697,9 +685,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	return pcb_false;
 }
 
-/*----------------------------------------------------------------------------
- * center the display to show the offending item (thing)
- */
+/* center the display to show the offending item (thing) */
 static void GotoError(void)
 {
 	pcb_coord_t X, Y;
