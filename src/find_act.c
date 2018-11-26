@@ -40,8 +40,6 @@
 #include "find.h"
 #include "compat_nls.h"
 
-/* -------------------------------------------------------------------------- */
-
 static const char drc_syntax[] = "DRC()";
 static const char drc_help[] = "Invoke the DRC check.";
 /* DOC: drc.html */
