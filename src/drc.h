@@ -31,6 +31,7 @@
 
 #include <genlist/gendlist.h>
 #include "unit.h"
+#include "vtid.h"
 
 typedef struct drc_violation_s pcb_drc_violation_t;
 struct drc_violation_s {

@@ -188,6 +188,7 @@ append /local/pcb/OBJS [@
 	unit.o
 	vtlibrary.o
 	vtc0.o
+	vtid.o
 	vtonpoint.o
 	vtpadstack.o
 	vtpadstack_t.o
