@@ -33,7 +33,7 @@
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	pcb_drc_violation_t drc;
+	pcb_drc_list_t drc;
 	int alloced, active;
 } drc_ctx_t;
 
