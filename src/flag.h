@@ -43,7 +43,7 @@ struct pcb_unknown_flag_s {
 typedef struct {
 	unsigned long f;                           /* generic flags */
 	unsigned char t[(PCB_MAX_LAYER + 1) / 2];  /* thermals */
-	unsigned char q;                           /* square geometry flag */
+	unsigned char q;                           /* square geometry flag - need to keep only for .pcb compatibility */
 	pcb_unknown_flag_t *unknowns;
 } pcb_flag_t;
 
