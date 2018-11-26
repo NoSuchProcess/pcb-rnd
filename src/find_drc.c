@@ -194,7 +194,7 @@ static int throw_drc_dialog(void)
 }
 
 /* DRC clearance callback */
-static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2)
+static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	const char *message;
 	pcb_coord_t x, y;
@@ -388,7 +388,7 @@ int pcb_drc_all(void)
 		PCB_LINE_COPPER_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
-			pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback, NULL);
 			if (IsBad)
 				break;
 			if (line->Thickness < conf_core.design.min_wid) {
@@ -422,7 +422,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_ARC_COPPER_LOOP(PCB->Data);
 		{
-			pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback, NULL);
 			if (IsBad)
 				break;
 			if (arc->Thickness < conf_core.design.min_wid) {
@@ -458,7 +458,7 @@ int pcb_drc_all(void)
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
 			pcb_coord_t ring = 0, hole = 0;
-			pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback, NULL);
 			if (IsBad)
 				break;
 			pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);

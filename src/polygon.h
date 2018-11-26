@@ -69,8 +69,9 @@ void pcb_polygon_copy_attached_to_layer(void);
 void pcb_polygon_close_hole(void);
 void pcb_polygon_hole_create_from_attached(void);
 int pcb_poly_holes(pcb_poly_t * ptr, const pcb_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
-int pcb_poly_plows(pcb_data_t *, int, void *, void *,
-								 pcb_r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_poly_t *, int, void *, void *));
+int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
+	pcb_r_dir_t (*cb)(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
+	void *user_data);
 void pcb_poly_compute_no_holes(pcb_poly_t * poly);
 
 /* helpers: create complex shaped polygons */

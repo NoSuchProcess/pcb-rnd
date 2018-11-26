@@ -1642,10 +1642,11 @@ struct plow_info {
 	void *ptr1, *ptr2;
 	pcb_layer_t *layer;
 	pcb_data_t *data;
-	pcb_r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_poly_t *, int, void *, void *);
+	void *user_data;
+	pcb_r_dir_t (*callback)(pcb_data_t *, pcb_layer_t *, pcb_poly_t *, int, void *, void *, void *user_data);
 };
 
-static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2)
+static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	if (!Polygon->Clipped)
 		return 0;
@@ -1677,7 +1678,7 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2)
+static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	switch (type) {
 	case PCB_OBJ_PSTK:
@@ -1704,14 +1705,14 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Po
 
 int pcb_poly_sub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *obj)
 {
-	if (subtract_plow(Data, Layer, Polygon, type, NULL, obj) == PCB_R_DIR_FOUND_CONTINUE)
+	if (subtract_plow(Data, Layer, Polygon, type, NULL, obj, NULL) == PCB_R_DIR_FOUND_CONTINUE)
 		return 0;
 	return -1;
 }
 
 int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *obj)
 {
-	if (add_plow(Data, Layer, Polygon, type, NULL, obj) == PCB_R_DIR_FOUND_CONTINUE)
+	if (add_plow(Data, Layer, Polygon, type, NULL, obj, NULL) == PCB_R_DIR_FOUND_CONTINUE)
 		return 0;
 	return -1;
 }
@@ -1723,21 +1724,21 @@ static pcb_r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon))
-		return plow->callback(plow->data, plow->layer, polygon, plow->type, plow->ptr1, plow->ptr2);
+		return plow->callback(plow->data, plow->layer, polygon, plow->type, plow->ptr1, plow->ptr2, plow->user_data);
 	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* poly plows while clipping inhibit is on: mark any potentail polygon dirty */
-static pcb_r_dir_t poly_plows_inhibited_cb(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2)
+static pcb_r_dir_t poly_plows_inhibited_cb(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	poly->clip_dirty = 1;
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 
-int
-pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
-						 pcb_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2))
+int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
+	pcb_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
+	void *user_data)
 {
 	pcb_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
@@ -1750,6 +1751,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	info.ptr1 = ptr1;
 	info.ptr2 = ptr2;
 	info.data = Data;
+	info.user_data = user_data;
 	info.callback = call_back;
 	switch (type) {
 	case PCB_OBJ_PSTK:
@@ -1760,7 +1762,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			{
 				if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
 					continue;
-				r += pcb_poly_plows(Data, type, layer, ptr2, call_back);
+				r += pcb_poly_plows(Data, type, layer, ptr2, call_back, NULL);
 			}
 			PCB_END_LOOP;
 			return r;
@@ -1813,7 +1815,7 @@ void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 		return;
 	if (type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(dt, (pcb_layer_t *) ptr1, (pcb_poly_t *) ptr2);
-	pcb_poly_plows(dt, type, ptr1, ptr2, add_plow);
+	pcb_poly_plows(dt, type, ptr1, ptr2, add_plow, NULL);
 }
 
 void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
@@ -1825,7 +1827,7 @@ void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 		return;
 	if (type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(dt, (pcb_layer_t *) ptr1, (pcb_poly_t *) ptr2);
-	pcb_poly_plows(dt, type, ptr1, ptr2, subtract_plow);
+	pcb_poly_plows(dt, type, ptr1, ptr2, subtract_plow, NULL);
 }
 
 pcb_bool pcb_poly_isects_poly(pcb_polyarea_t * a, pcb_poly_t *p, pcb_bool fr)
