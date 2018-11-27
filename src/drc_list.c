@@ -53,3 +53,14 @@ void pcb_drc_list_free(pcb_drc_list_t *lst)
 	pcb_drc_list_free_fields(lst);
 	free(lst);
 }
+
+pcb_drc_violation_t *pcb_drc_by_uid(const pcb_drc_list_t *lst, unsigned long int uid)
+{
+	pcb_drc_violation_t *v;
+
+	for(v = pcb_drc_list_first((pcb_drc_list_t *)lst); v != NULL; v = pcb_drc_list_next(v))
+		if (v->uid == uid)
+			return v;
+
+	return NULL;
+}

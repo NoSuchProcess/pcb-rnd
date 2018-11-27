@@ -75,4 +75,7 @@ void pcb_drc_list_free(pcb_drc_list_t *lst);
 
 int pcb_drc_all(pcb_drc_list_t *lst);
 
+/* Slow, linear search for an UID in a list; returns NULL if not found */
+pcb_drc_violation_t *pcb_drc_by_uid(const pcb_drc_list_t *lst, unsigned long int uid);
+
 #endif
