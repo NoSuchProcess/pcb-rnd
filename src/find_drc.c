@@ -42,7 +42,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 
 static pcb_drc_violation_t *pcb_drc_violation_new(
 	const char *title, const char *explanation, pcb_coord_t x, pcb_coord_t y,
-	pcb_angle_t angle, pcb_bool have_measured, pcb_coord_t measured_value,
+	pcb_bool have_measured, pcb_coord_t measured_value,
 	pcb_coord_t required_value, vtid_t objs[2])
 {
 	pcb_drc_violation_t *violation = malloc(sizeof(pcb_drc_violation_t));
@@ -51,7 +51,6 @@ static pcb_drc_violation_t *pcb_drc_violation_new(
 	violation->explanation = pcb_strdup(explanation);
 	violation->x = x;
 	violation->y = y;
-	violation->angle = angle;
 	violation->have_measured = have_measured;
 	violation->measured_value = measured_value;
 	violation->required_value = required_value;
@@ -230,7 +229,7 @@ doIsBad:
 	drc_append_obj(objs, (pcb_any_obj_t *)ptr2);
 	violation = pcb_drc_violation_new(message,
 		"Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.",
-		x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+		x, y,
 		pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
 		0, /* MAGNITUDE OF ERROR UNKNOWN */
 		conf_core.design.bloat, objs);
@@ -265,7 +264,7 @@ static int drc_text(pcb_drc_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, p
 		violation = pcb_drc_violation_new(
 			"Text thickness is too thin",
 			"Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced",
-			*x, *y, 0, /* ANGLE OF ERROR UNKNOWN */
+			*x, *y,
 			pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 			text->thickness, min_wid, objs);
 		append_drc_violation(lst, violation);
@@ -372,7 +371,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 				violation = pcb_drc_violation_new(
 					"Line width is too thin",
 					"Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced",
-					x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+					x, y,
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 					line->Thickness, conf_core.design.min_wid, objs);
 				append_drc_violation(lst, violation);
@@ -402,7 +401,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 				violation = pcb_drc_violation_new(
 					"Arc width is too thin",
 					"Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced",
-					x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+					x, y,
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 					arc->Thickness, conf_core.design.min_wid, objs);
 				append_drc_violation(lst, violation);
@@ -436,7 +435,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 					violation = pcb_drc_violation_new(
 						"padstack annular ring too small",
 						"Annular rings that are too small may erode during etching,\n" "resulting in a broken connection",
-						x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+						x, y,
 						pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 						ring,
 						conf_core.design.min_ring, objs);
@@ -449,7 +448,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 					violation = pcb_drc_violation_new(
 						"Padstack drill size is too small",
 						"Process rules dictate the minimum drill size which can be used",
-						x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+						x, y,
 						pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 						hole, conf_core.design.min_drill, objs);
 					append_drc_violation(lst, violation);
@@ -482,7 +481,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 				violation = pcb_drc_violation_new(
 					"Silk line is too thin",
 					"Process specifications dictate a minimum silkscreen feature-width\n" "that can reliably be reproduced",
-					x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+					x, y,
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 					line->Thickness, conf_core.design.min_slk, objs);
 				append_drc_violation(lst, violation);
@@ -558,7 +557,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 			violation = pcb_drc_violation_new(
 				"Potential for broken trace",
 				"Insufficient overlap between objects can lead to broken tracks\n" "due to registration errors with old wheel style photo-plotters.",
-				x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+				x, y,
 				pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
 				0, /* MAGNITUDE OF ERROR UNKNOWN */
 				conf_core.design.shrink, objs);
@@ -602,7 +601,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 		violation = pcb_drc_violation_new(
 			"Copper areas too close",
 			"Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.",
-			x, y, 0, /* ANGLE OF ERROR UNKNOWN */
+			x, y,
 			pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
 			0, /* MAGNITUDE OF ERROR UNKNOWN */
 			conf_core.design.bloat, objs);

@@ -241,7 +241,6 @@ enum {
 	PROP_EXPLANATION,
 	PROP_X_COORD,
 	PROP_Y_COORD,
-	PROP_ANGLE,
 	PROP_HAVE_MEASURED,
 	PROP_MEASURED_VALUE,
 	PROP_REQUIRED_VALUE,
@@ -288,9 +287,6 @@ static void ghid_drc_violation_set_property(GObject * object, guint property_id,
 		break;
 	case PROP_Y_COORD:
 		violation->y_coord = g_value_get_int(value);
-		break;
-	case PROP_ANGLE:
-		violation->angle = g_value_get_double(value);
 		break;
 	case PROP_HAVE_MEASURED:
 		violation->have_measured = g_value_get_boolean(value);
@@ -340,8 +336,6 @@ static void ghid_drc_violation_class_init(GhidViolationRendererClass * klass)
 																	g_param_spec_int("x-coord", "", "", G_MININT, G_MAXINT, 0, G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_Y_COORD,
 																	g_param_spec_int("y-coord", "", "", G_MININT, G_MAXINT, 0, G_PARAM_WRITABLE));
-	g_object_class_install_property(gobject_class, PROP_ANGLE,
-																	g_param_spec_double("angle", "", "", G_MININT, G_MAXINT, 0, G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_HAVE_MEASURED,
 																	g_param_spec_boolean("have-measured", "", "", 0, G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_MEASURED_VALUE,
@@ -392,7 +386,6 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation)
 																					 "explanation", violation->explanation,
 																					 "x-coord", violation->x,
 																					 "y-coord", violation->y,
-																					 "angle", violation->angle,
 																					 "have-measured", violation->have_measured,
 																					 "measured-value", violation->measured_value,
 																					 "required-value", violation->required_value,
