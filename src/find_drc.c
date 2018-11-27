@@ -40,12 +40,17 @@
 static void GotoError(void);
 static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
 
+static unsigned long int pcb_drc_next_uid = 0;
+
 static pcb_drc_violation_t *pcb_drc_violation_new(
 	const char *title, const char *explanation,
 	pcb_bool have_measured, pcb_coord_t measured_value,
 	pcb_coord_t required_value, vtid_t objs[2])
 {
 	pcb_drc_violation_t *violation = calloc(sizeof(pcb_drc_violation_t), 1);
+
+	pcb_drc_next_uid++;
+	violation->uid = pcb_drc_next_uid;
 
 	violation->title = pcb_strdup(title);
 	violation->explanation = pcb_strdup(explanation);

@@ -36,6 +36,8 @@
 
 typedef struct drc_violation_s pcb_drc_violation_t;
 struct drc_violation_s {
+	unsigned long int uid;        /* ID unique for each violation within the drc subsystem (for GUI identification of violations) */
+
 	char *title;
 	char *explanation;
 
