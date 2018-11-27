@@ -32,13 +32,17 @@
 #include <genlist/gendlist.h>
 #include "unit.h"
 #include "vtid.h"
+#include "box.h"
 
 typedef struct drc_violation_s pcb_drc_violation_t;
 struct drc_violation_s {
 	char *title;
 	char *explanation;
-	pcb_coord_t x, y;
-	
+
+	unsigned have_coord:1;
+	pcb_coord_t x, y;             /* center of error, for the indication */
+	pcb_box_t bbox;               /* bounding box of all error objects (in both groups) */
+
 	unsigned have_measured:1;
 	pcb_coord_t measured_value;
 	pcb_coord_t required_value;
