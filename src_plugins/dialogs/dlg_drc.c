@@ -162,48 +162,48 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-	PCB_DAD_BEGIN_HPANE(ctx->dlg);
+		PCB_DAD_BEGIN_HPANE(ctx->dlg);
 
-		/* left */
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "Number of violations:");
-				PCB_DAD_LABEL(ctx->dlg, "n/a");
-				ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
-
-			PCB_DAD_TREE(ctx->dlg, 2, 0, hdr);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
-				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, drc_select);
-				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
-				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
-
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "Copy");
-				PCB_DAD_BUTTON(ctx->dlg, "Cut");
-				PCB_DAD_BUTTON(ctx->dlg, "Del");
-			PCB_DAD_END(ctx->dlg);
-
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "Paste before");
-				PCB_DAD_BUTTON(ctx->dlg, "Paste after");
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-
-		/* right */
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_PREVIEW(ctx->dlg, drc_expose_cb, drc_mouse_cb, NULL, NULL, ctx);
-				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
+			/* left */
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_LABEL(ctx->dlg, "(explanation)");
-				ctx->wexplanation = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(measure)");
-				ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
+
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_LABEL(ctx->dlg, "Number of violations:");
+					PCB_DAD_LABEL(ctx->dlg, "n/a");
+					ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_END(ctx->dlg);
+
+				PCB_DAD_TREE(ctx->dlg, 2, 0, hdr);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, drc_select);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
+
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "Copy");
+					PCB_DAD_BUTTON(ctx->dlg, "Cut");
+					PCB_DAD_BUTTON(ctx->dlg, "Del");
+				PCB_DAD_END(ctx->dlg);
+
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "Paste before");
+					PCB_DAD_BUTTON(ctx->dlg, "Paste after");
+				PCB_DAD_END(ctx->dlg);
+			PCB_DAD_END(ctx->dlg);
+
+			/* right */
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_PREVIEW(ctx->dlg, drc_expose_cb, drc_mouse_cb, NULL, NULL, ctx);
+					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_LABEL(ctx->dlg, "(explanation)");
+					ctx->wexplanation = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "(measure)");
+					ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
+			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
@@ -213,7 +213,6 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 					PCB_DAD_BUTTON(ctx->dlg, "Close");
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
-
 
 	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, drc_close_cb);
 
