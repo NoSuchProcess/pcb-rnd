@@ -127,11 +127,14 @@ static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t
 	if (row != NULL) {
 		ctx->selected = strtoul(row->cell[0], NULL, 10);
 		v = pcb_drc_by_uid(&ctx->drc, ctx->selected);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
-		if (v->have_measured)
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value, v->measured_value));
-		else
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value));
+		if (v != NULL) {
+			pcb_drc_goto(v);
+			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
+			if (v->have_measured)
+				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value, v->measured_value));
+			else
+				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value));
+		}
 	}
 
 	if (v == NULL) {
