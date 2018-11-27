@@ -26,12 +26,15 @@
 
 #include "config.h"
 
+#include <ctype.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
 
 #include "actions.h"
+#include "conf_core.h"
 #include "drc.h"
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -39,7 +42,9 @@ typedef struct {
 	pcb_drc_list_t drc;
 	int alloced, active;
 
-	int wlist, wcount, wexplanation, wmeasure;
+	unsigned long int selected;
+
+	int wlist, wcount, wprev, wexplanation, wmeasure;
 } drc_ctx_t;
 
 drc_ctx_t drc_ctx;
@@ -58,12 +63,85 @@ void drc2dlg(drc_ctx_t *ctx)
 {
 	char tmp[32];
 	pcb_drc_violation_t *v;
-	
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[2], *cursor_path = NULL;
+
 	sprintf(tmp, "%d", pcb_drc_list_length(&ctx->drc));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
 
+	attr = &ctx->dlg[ctx->wlist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(attr, r);
+
+	/* add all items */
 	for(v = pcb_drc_list_first(&ctx->drc); v != NULL; v = pcb_drc_list_next(v)) {
+		cell[0] = pcb_strdup_printf("%lu", v->uid);
+		cell[1] = pcb_strdup(v->title);
+		pcb_dad_tree_append(attr, NULL, cell);
 	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		free(cursor_path);
+	}
+}
+
+static char *re_wrap(char *inp, int len)
+{
+	int cnt;
+	char *s, *lastspc = NULL;
+	for(s = inp, cnt = 0; *s != '\0'; s++,cnt++) {
+		if (*s == '\n')
+			*s = ' ';
+		if ((cnt >= len) && (lastspc != NULL)) {
+			cnt = 0;
+			*lastspc = '\n';
+			lastspc = NULL;
+		}
+		else if (isspace(*s))
+			lastspc = s;
+	}
+	return inp;
+}
+
+static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_attr_val_t hv;
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	drc_ctx_t *ctx = tree->user_ctx;
+	pcb_drc_violation_t *v = NULL;
+
+	if (row != NULL) {
+		ctx->selected = strtoul(row->cell[0], NULL, 10);
+		v = pcb_drc_by_uid(&ctx->drc, ctx->selected);
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
+		if (v->have_measured)
+			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value, v->measured_value));
+		else
+			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value));
+	}
+
+	if (v == NULL) {
+		ctx->selected = 0;
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, pcb_strdup(""));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
+	}
+
+	hv.str_value = NULL;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
 static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
@@ -97,6 +175,8 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 
 			PCB_DAD_TREE(ctx->dlg, 2, 0, hdr);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, drc_select);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
 
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
@@ -117,7 +197,10 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 
 		/* right */
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_PREVIEW(ctx->dlg, drc_expose_cb, drc_mouse_cb, NULL, NULL, ctx);
+				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_LABEL(ctx->dlg, "(explanation)");
 				ctx->wexplanation = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(measure)");
