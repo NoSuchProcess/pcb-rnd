@@ -35,6 +35,9 @@ typedef struct {
 	pcb_board_t *pcb;
 	pcb_drc_list_t drc;
 	int alloced, active;
+
+	int wlist, wcount;
+
 } drc_ctx_t;
 
 drc_ctx_t drc_ctx;
@@ -49,10 +52,45 @@ static void drc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		free(ctx);
 }
 
+void drc2dlg(drc_ctx_t *ctx)
+{
+	char tmp[32];
+	
+	sprintf(tmp, "%d", pcb_drc_list_length(&ctx->drc));
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
+}
+
 static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 {
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_LABEL(ctx->dlg, "drc");
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Number of violations:");
+			PCB_DAD_LABEL(ctx->dlg, "n/a");
+			ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_FRAME | PCB_HATF_EXPFILL);
+			ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Copy entry");
+			PCB_DAD_BUTTON(ctx->dlg, "Paste entry before");
+			PCB_DAD_BUTTON(ctx->dlg, "Paste entry after");
+		PCB_DAD_END(ctx->dlg);
+
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
+			PCB_DAD_BUTTON(ctx->dlg, "Remove entry");
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Close");
+		PCB_DAD_END(ctx->dlg);
+
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, drc_close_cb);
@@ -68,6 +106,9 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	if (!ctx.active)
 		pcb_dlg_drc(&ctx, "DRC violations");
+
+	pcb_drc_all(&ctx.drc);
+	drc2dlg(&ctx);
 
 	return 0;
 }
