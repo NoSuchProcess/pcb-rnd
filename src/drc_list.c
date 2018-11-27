@@ -25,10 +25,17 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
+#include "config.h"
 
 #define TDL_DONT_UNDEF
 #include "drc.h"
 #include <genlist/gentdlist_impl.c>
+#undef TDL_DONT_UNDEF
+#include <genlist/gentdlist_undef.h>
+
+
+#include "actions.h"
+
 
 void pcb_drc_free(pcb_drc_violation_t *item)
 {
@@ -64,3 +71,17 @@ pcb_drc_violation_t *pcb_drc_by_uid(const pcb_drc_list_t *lst, unsigned long int
 
 	return NULL;
 }
+
+void pcb_drc_goto(pcb_drc_violation_t *item)
+{
+	if (item->have_coord) {
+		fgw_arg_t res, argv[5];
+
+		argv[1].type = FGW_COORD; fgw_coord(&argv[1]) = item->bbox.X1;
+		argv[2].type = FGW_COORD; fgw_coord(&argv[2]) = item->bbox.Y1;
+		argv[3].type = FGW_COORD; fgw_coord(&argv[3]) = item->bbox.X2;
+		argv[4].type = FGW_COORD; fgw_coord(&argv[4]) = item->bbox.Y2;
+		pcb_actionv_bin("zoom", &res, 5, argv);
+	}
+}
+
