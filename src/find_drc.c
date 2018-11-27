@@ -135,6 +135,7 @@ void drc_auto_loc(pcb_drc_violation_t *v)
 		if (obj != NULL) {
 			v->have_coord = 1;
 			pcb_obj_center(obj, &v->x, &v->y);
+			memcpy(&v->bbox, &obj->BoundingBox, sizeof(obj->BoundingBox));
 			return;
 		}
 	}
