@@ -38,7 +38,8 @@ struct drc_violation_s {
 	char *title;
 	char *explanation;
 	pcb_coord_t x, y;
-	int have_measured;
+	
+	unsigned have_measured:1;
 	pcb_coord_t measured_value;
 	pcb_coord_t required_value;
 
