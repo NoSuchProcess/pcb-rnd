@@ -292,6 +292,22 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	return ret;
 }
 
+fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char fn[PCB_ACTION_NAME_MAX];
+	fgw_func_t *f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, name));
+
+	if (f == NULL)
+		return FGW_ERR_NOT_FOUND;
+
+	argv[0].type = FGW_FUNC;
+	argv[0].val.func = f;
+
+	res->type = FGW_INVALID;
+	return pcb_actionv_(f, res, argc, argv);
+}
+
+
 int pcb_actionv(const char *name, int argc, const char **argsv)
 {
 	fgw_func_t *f;

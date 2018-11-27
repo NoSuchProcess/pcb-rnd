@@ -65,6 +65,11 @@ int pcb_actionl(const char *action_, ...); /* NULL terminated */
 int pcb_actionv(const char *action_, int argc_, const char **argv_);
 fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
+/* Call an action by name, passing arguments and res in fungw binary format;
+   Caller must leave argv[0] empty for the function designator. */
+fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
+
 /* Parse the given command string into action calls, and call
    hid_actionv for each action found.  Accepts both "action(arg1,
    arg2)" and command-style "action arg1 arg2", allowing only one
