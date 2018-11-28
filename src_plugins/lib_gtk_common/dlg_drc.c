@@ -378,8 +378,8 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation)
 {
 	object_list obj_list;
 
-	obj_list.count = violation->objs[0].used;
-	obj_list.id_list = violation->objs[0].array;
+	obj_list.count = 0;
+	obj_list.id_list = NULL;
 
 	return (GhidDrcViolation *) g_object_new(GHID_TYPE_DRC_VIOLATION,
 																					 "title", violation->title,
