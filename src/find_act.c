@@ -45,7 +45,8 @@ static const char drc_help[] = "Invoke the DRC check.";
 /* DOC: drc.html */
 static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int count;
+	int count = 0;
+#if 0
 	pcb_drc_list_t lst;
 
 	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
@@ -67,6 +68,10 @@ static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_drc_list_free_fields(&lst);
+#endif
+
+	pcb_message(PCB_MSG_ERROR, "drc() is disabled for the rewrite, please use drc2()\n");
+
 	PCB_ACT_IRES(count);
 	return 0;
 }

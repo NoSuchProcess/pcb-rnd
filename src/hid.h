@@ -6,7 +6,6 @@
 
 #include "config.h"
 #include "error.h"
-#include "drc.h"
 #include "global_typedefs.h"
 #include "attrib.h"
 #include "layer.h"
@@ -95,15 +94,6 @@ typedef enum {
 	PCB_WATCH_ERROR = 1 << 2,     /* As in POLLERR */
 	PCB_WATCH_HANGUP = 1 << 3     /* As in POLLHUP */
 } pcb_watch_flags_t;
-
-/* DRC GUI Hooks */
-typedef struct {
-	int log_drc_overview;
-	int log_drc_violations;
-	void (*reset_drc_dialog_message) (void);
-	void (*append_drc_violation) (pcb_drc_violation_t *violation);
-	int (*throw_drc_dialog) (void);
-} pcb_hid_drc_gui_t;
 
 typedef enum pcb_composite_op_s {
 	PCB_HID_COMP_RESET,         /* reset (allocate and clear) the sketch canvas */
@@ -446,8 +436,6 @@ struct pcb_hid_s {
 	   Pass all zeros to flush display and remove any dialogs.
 	   Returns nonzero if the user wishes to cancel the operation.  */
 	int (*progress)(int so_far, int total, const char *message);
-
-	pcb_hid_drc_gui_t *drc_gui;
 
 	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
 

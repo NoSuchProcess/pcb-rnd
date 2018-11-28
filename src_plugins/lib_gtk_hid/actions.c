@@ -45,7 +45,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
-#include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
@@ -179,7 +178,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
-		ghid_drc_window_show(&ghidgui->drcwin, raise);
+		pcb_message(PCB_MSG_ERROR, "Please use the new drc action instead\n");
 	}
 	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "Search") == 0) {
 		ghid_search_window_show(gport->top_window, raise);

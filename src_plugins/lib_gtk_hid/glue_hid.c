@@ -22,7 +22,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_attributes.h"
-#include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/util_listener.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
@@ -159,7 +158,6 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
 	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
-	pcb_gtk_drcwin_init(&ghidgui->drcwin);     /* DRC window is not built, yet    */
 
 	/* assume pcb_gui is us */
 	pcb_gui->hid_cfg = ghidgui->topwin.ghid_cfg;
@@ -476,29 +474,6 @@ static int ghid_usage(const char *topic)
 	return 0;
 }
 
-static void ghid_drc_window_reset_message_glue()
-{
-	ghid_drc_window_reset_message(&ghidgui->drcwin);
-}
-
-static void ghid_drc_window_append_violation_glue(pcb_drc_violation_t *violation)
-{
-	ghid_drc_window_append_violation(&ghidgui->drcwin, &ghidgui->common, violation);
-}
-
-static int ghid_drc_window_throw_dialog_glue()
-{
-	return ghid_drc_window_throw_dialog(&ghidgui->drcwin);
-}
-
-pcb_hid_drc_gui_t ghid_drc_gui = {
-	1,  /* log_drc_overview */
-	0,  /* log_drc_details */
-	ghid_drc_window_reset_message_glue,
-	ghid_drc_window_append_violation_glue,
-	ghid_drc_window_throw_dialog_glue,
-};
-
 static const char *ghid_command_entry(const char *ovr, int *cursor)
 {
 	return pcb_gtk_cmd_command_entry(&ghidgui->topwin.cmd, ovr, cursor);
@@ -562,8 +537,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 /*	dst->propedit_add_prop = ghid_propedit_add_prop;*/
 /*	dst->propedit_add_value = ghid_propedit_add_value;*/
 	dst->command_entry = ghid_command_entry;
-
-	dst->drc_gui = &ghid_drc_gui;
 
 	dst->create_menu = ghid_create_menu;
 	dst->remove_menu = ghid_remove_menu;

@@ -67,8 +67,8 @@ static gds_t drc_dialog_message;
 static void reset_drc_dialog_message(void)
 {
 	gds_truncate(&drc_dialog_message, 0);
-	if (pcb_gui->drc_gui != NULL)
-		pcb_gui->drc_gui->reset_drc_dialog_message();
+/*	if (pcb_gui->drc_gui != NULL)
+		pcb_gui->drc_gui->reset_drc_dialog_message();*/
 }
 
 static void append_drc_dialog_message(const char *fmt, ...)
@@ -105,6 +105,7 @@ static void drc_append_obj(pcb_idpath_list_t objs[2], pcb_any_obj_t *obj)
 
 static void append_drc_violation(pcb_drc_list_t *lst, pcb_drc_violation_t *violation)
 {
+#if 0
 	if (pcb_gui->drc_gui != NULL) {
 		pcb_gui->drc_gui->append_drc_violation(violation);
 	}
@@ -119,6 +120,7 @@ static void append_drc_violation(pcb_drc_list_t *lst, pcb_drc_violation_t *viola
 		pcb_message(PCB_MSG_WARNING, "WARNING!  Design Rule error - %s\n", violation->title);
 		pcb_message(PCB_MSG_WARNING, "%m+near location %$mD\n", conf_core.editor.grid_unit->allow, violation->x, violation->y);
 	}
+#endif
 
 	pcb_drc_list_append(lst, violation);
 }
@@ -175,8 +177,8 @@ void drc_auto_loc(pcb_drc_violation_t *v)
 
 static int throw_drc_dialog(void)
 {
-	int r;
-
+	int r = 0;
+#if 0
 	if (pcb_gui->drc_gui != NULL) {
 		r = pcb_gui->drc_gui->throw_drc_dialog();
 	}
@@ -186,6 +188,7 @@ static int throw_drc_dialog(void)
 		r = pcb_gui->confirm_dialog(drc_dialog_message.array, DRC_CANCEL, DRC_NEXT);
 		reset_drc_dialog_message();
 	}
+#endif
 	return r;
 }
 
