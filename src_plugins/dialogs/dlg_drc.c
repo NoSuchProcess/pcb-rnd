@@ -143,13 +143,14 @@ static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
 	}
 
-	hv.str_value = NULL;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
 static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-
+	/* NOTE: zoom box was already set on select */
+	/* draw the board */
+	pcb_hid_expose_all(pcb_gui, e);
 }
 
 
